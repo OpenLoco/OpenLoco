@@ -269,7 +269,7 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.eax = pos.x;
             regs.cx = pos.y;
-            regs.edi = pos.z | (mods << 16) | (unk ? 0x800000 : 0);
+            regs.edi = (0xFFFF & pos.z) | (mods << 16) | (unk ? 0x800000 : 0);
             regs.bh = rotation;
             regs.edx = trackObjectId | (trackId << 8) | (bridge << 24);
             return regs;

@@ -29,6 +29,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
     static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
 
+    static loco_global<Map::Pos3, 0x00F24942> _constructionArrowPos;
+    static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
+
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
     static loco_global<uint8_t[18], 0x0050A006> available_objects;   // toptoolbar
@@ -937,6 +940,22 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         disableUnusedTrackPieces(self, trackObj, disabledWidgets);
     }
 
+    static void setMapSelectedTilesFromPiece(const std::vector<TrackData::PreviewTrack>& pieces, const Map::Pos2& origin, const uint8_t rotation)
+    {
+        size_t i = 0;
+        for (const auto& piece : pieces)
+        {
+            if (piece.flags & Map::TrackData::PreviewTrackFlags::diagonal)
+            {
+                continue;
+            }
+            _mapSelectedTiles[i++] = origin + Math::Vector::rotate(Map::Pos2{ piece.x, piece.y }, rotation);
+        }
+
+        _mapSelectedTiles[i].x = -1;
+        mapInvalidateMapSelectionTiles();
+    }
+
     static void activateSelectedRoadWidgets(Window* window)
     {
         TileManager::mapInvalidateMapSelectionTiles();
@@ -962,28 +981,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         const auto& roadPiece = Map::TrackData::getRoadPiece(roadId);
-        auto posId = 0;
         rotation &= 3;
 
-        for (const auto& roadPart : roadPiece)
-        {
-            if (roadPart.flags & Map::TrackData::PreviewTrackFlags::diagonal)
-            {
-                continue;
-            }
-
-            Pos2 pos = { roadPart.x, roadPart.y };
-
-            pos = Math::Vector::rotate(pos, rotation);
-
-            pos.x += x;
-            pos.y += y;
-            _mapSelectedTiles[posId] = pos;
-            posId++;
-        }
-
-        _mapSelectedTiles[posId].x = -1;
-        mapInvalidateMapSelectionTiles();
+        setMapSelectedTilesFromPiece(roadPiece, Map::Pos2(x, y), rotation);
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackType = _trackType & ~(1 << 7);
@@ -1156,27 +1156,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         const auto& trackPiece = Map::TrackData::getTrackPiece(trackId);
-        auto posId = 0;
         rotation &= 3;
 
-        for (const auto& trackPart : trackPiece)
-        {
-            if (trackPart.flags & Map::TrackData::PreviewTrackFlags::diagonal)
-            {
-                continue;
-            }
-            Pos2 pos = { trackPart.x, trackPart.y };
-
-            pos = Math::Vector::rotate(pos, rotation);
-
-            pos.x += x;
-            pos.y += y;
-            _mapSelectedTiles[posId] = pos;
-            posId++;
-        }
-
-        _mapSelectedTiles[posId].x = -1;
-        mapInvalidateMapSelectionTiles();
+        setMapSelectedTilesFromPiece(trackPiece, Map::Pos2(x, y), rotation);
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackObj = ObjectManager::get<TrackObject>(_trackType);
@@ -2218,28 +2200,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    // 0x0049DC8C
-    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049DC8C, regs);
-    }
-
-    static int16_t getMaxPieceHeight(const std::vector<TrackData::PreviewTrack>& piece)
-    {
-        int16_t maxPieceHeight = 0;
-
-        for (const auto& part : piece)
-        {
-            maxPieceHeight = std::max(maxPieceHeight, part.z);
-        }
-        return maxPieceHeight;
-    }
-
     // 0 if nothing currently selected
     static int16_t getMaxConstructHeightFromExistingSelection()
     {
@@ -2247,13 +2207,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
         {
-            auto i = 0;
-            for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
+            for (const auto& tile : _mapSelectedTiles)
             {
+                if (tile.x == -1)
+                {
+                    break;
+                }
                 if (!Map::validCoords(tile))
                     continue;
 
-                const auto tileHeight = getConstructionHeight(_mapSelectedTiles[i]);
+                const auto tileHeight = getConstructionHeight(tile);
                 if (!tileHeight)
                 {
                     continue;
@@ -2306,7 +2269,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return std::nullopt;
     }
 
-    static std::optional<std::pair<Map::TilePos2, int16_t>> getConstructionPos(const int16_t x, const int16_t y, const int16_t baseHeight)
+    static std::optional<std::pair<Map::TilePos2, int16_t>> getConstructionPos(const int16_t x, const int16_t y, const int16_t baseHeight = std::numeric_limits<int16_t>::max())
     {
         auto mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
 
@@ -2322,6 +2285,322 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         height = std::max(height, tileHeight->waterHeight);
 
         return { std::make_pair(Map::TilePos2(*mapPos), height) };
+    }
+
+    static int16_t getMaxPieceHeight(const std::vector<TrackData::PreviewTrack>& piece)
+    {
+        int16_t maxPieceHeight = 0;
+
+        for (const auto& part : piece)
+        {
+            maxPieceHeight = std::max(maxPieceHeight, part.z);
+        }
+        return maxPieceHeight;
+    }
+
+    // 0x004A193B
+    static void sub_4A193B()
+    {
+        for (const auto bridgeType : _bridgeList)
+        {
+            if (bridgeType == 0xFF)
+            {
+                return;
+            }
+            if (*_byte_1136075 == bridgeType)
+            {
+                _lastSelectedBridge = bridgeType;
+                return;
+            }
+        }
+    }
+
+    static void removeTrackGhosts()
+    {
+        call(0x004A006C);
+    }
+
+    static loco_global<uint16_t[44], 0x004F8764> _4F8764;
+    static loco_global<uint16_t[10], 0x004F8764> _4F7284;
+
+    // 0x0049FB63
+    static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args)
+    {
+        removeTrackGhosts();
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        if (res == GameCommands::FAILURE)
+        {
+            if (GameCommands::getErrorText() == StringIds::bridge_type_unsuitable_for_this_configuration)
+            {
+                _byte_113603A = 0;
+                for (const auto bridgeType : _bridgeList)
+                {
+                    if (bridgeType == 0xFF)
+                    {
+                        break;
+                    }
+                    const auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
+                    if (bridgeObj->disabled_track_cfg & _4F8764[args.trackId])
+                    {
+                        continue;
+                    }
+
+                    if (bridgeType == _lastSelectedBridge)
+                    {
+                        break;
+                    }
+
+                    auto newArgs(args);
+                    newArgs.bridge = bridgeType;
+                    _lastSelectedBridge = bridgeType;
+                    WindowManager::invalidate(WindowType::construction);
+                    return placeTrackGhost(args);
+                }
+            }
+        }
+        else
+        {
+            _ghostRemovalTrackPos = args.pos;
+            _ghostRemovalTrackId = args.trackId;
+            _ghostRemovalTrackObjectId = args.trackObjectId;
+            _ghostRemovalTrackRotation = args.rotation;
+            _byte_522096 = (1 << 1) | *_byte_522096;
+            const auto newViewState = (_byte_1136072 & (1 << 1)) ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
+            WindowManager::viewportSetVisibility(newViewState);
+            if (_lastSelectedTrackGradient != 0)
+            {
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnLand);
+            }
+        }
+        _byte_113603A = 0;
+        return res;
+    }
+
+    // 0x0049FC60
+    static uint32_t placeRoadGhost(const GameCommands::RoadPlacementArgs& args)
+    {
+        removeTrackGhosts();
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        if (res == GameCommands::FAILURE)
+        {
+            if (GameCommands::getErrorText() == StringIds::bridge_type_unsuitable_for_this_configuration)
+            {
+                _byte_113603A = 0;
+                for (const auto bridgeType : _bridgeList)
+                {
+                    if (bridgeType == 0xFF)
+                    {
+                        break;
+                    }
+                    const auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
+                    if (bridgeObj->disabled_track_cfg & _4F7284[args.roadId])
+                    {
+                        continue;
+                    }
+
+                    if (bridgeType == _lastSelectedBridge)
+                    {
+                        break;
+                    }
+
+                    auto newArgs(args);
+                    newArgs.bridge = bridgeType;
+                    _lastSelectedBridge = bridgeType;
+                    WindowManager::invalidate(WindowType::construction);
+                    return placeRoadGhost(args);
+                }
+            }
+        }
+        else
+        {
+            _ghostRemovalTrackPos = args.pos;
+            _ghostRemovalTrackId = args.roadId;
+            _ghostRemovalTrackObjectId = args.roadObjectId | (1 << 7);
+            _ghostRemovalTrackRotation = args.rotation;
+            _byte_522096 = (1 << 1) | *_byte_522096;
+            const auto newViewState = (_byte_1136072 & (1 << 1)) ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
+            WindowManager::viewportSetVisibility(newViewState);
+            if (_lastSelectedTrackGradient != 0)
+            {
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnLand);
+            }
+        }
+        _byte_113603A = 0;
+        return res;
+    }
+
+    static std::optional<GameCommands::TrackPlacementArgs> getTrackPlacementArgs(const Map::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation)
+    {
+        auto trackId = getTrackPieceId(trackPiece, gradient, rotation);
+        if (!trackId)
+        {
+            return std::nullopt;
+        }
+        GameCommands::TrackPlacementArgs args;
+        args.pos = pos;
+        args.bridge = _lastSelectedBridge;
+        args.mods = _lastSelectedMods;
+        args.rotation = trackId->rotation;
+        args.trackObjectId = _trackType;
+        args.trackId = trackId->id;
+        args.unk = _byte_113607E & (1 << 0);
+        return args;
+    }
+
+    static std::optional<GameCommands::RoadPlacementArgs> getRoadPlacementArgs(const Map::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation)
+    {
+        auto roadId = getRoadPieceId(trackPiece, gradient, rotation);
+        if (!roadId)
+        {
+            return std::nullopt;
+        }
+        GameCommands::RoadPlacementArgs args;
+        args.pos = pos;
+        args.bridge = _lastSelectedBridge;
+        args.mods = _lastSelectedMods;
+        args.rotation = roadId->rotation;
+        args.roadObjectId = _trackType & ~(1 << 7);
+        args.roadId = roadId->id;
+        return args;
+    }
+
+    template<typename GetPlacementArgsFunc, typename PlaceGhostFunc>
+    static void constructionGhostLoop(const Pos3& mapPos, uint32_t maxRetries, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
+    {
+        _x = mapPos.x;
+        _y = mapPos.y;
+        _constructionZ = mapPos.z;
+        if (_byte_522096 & (1 << 1))
+        {
+            if (*_ghostTrackPos == mapPos)
+            {
+                return;
+            }
+        }
+        _ghostTrackPos = mapPos;
+
+        auto args = getPlacementArgs(mapPos, _lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+        if (!args)
+        {
+            return;
+        }
+        while (true)
+        {
+
+            auto res = placeGhost(*args);
+            _trackCost = res;
+            _byte_1136076 = _byte_1136073;
+            sub_4A193B();
+
+            if (_trackCost == 0x80000000)
+            {
+                maxRetries--;
+                if (maxRetries != 0)
+                {
+                    args->pos.z -= 16;
+                    if (args->pos.z >= 0)
+                    {
+                        if (Input::hasKeyModifier(Input::KeyModifier::shift))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            args->pos.z += 32;
+                            continue;
+                        }
+                    }
+                }
+            }
+            activateSelectedConstructionWidgets();
+            return;
+        }
+    }
+
+    // 0x004A1968
+    template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece, typename GetPlacementArgsFunc, typename PlaceGhostFunc>
+    static void onToolUpdateTrack(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
+    {
+        Map::TileManager::mapInvalidateMapSelectionTiles();
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+
+        Pos2 constructPos;
+        int16_t constructHeight = 0;
+        const auto junctionRes = tryMakeJunction(x, y);
+        if (junctionRes)
+        {
+            constructPos = junctionRes->first;
+            constructHeight = junctionRes->second;
+
+            _makeJunction = 1;
+        }
+        else
+        {
+            const auto constRes = getConstructionPos(x, y);
+            if (!constRes)
+            {
+                return;
+            }
+            constructPos = constRes->first;
+            constructHeight = constRes->second;
+
+            _makeJunction = 0;
+        }
+
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
+
+        _constructionArrowPos = Map::Pos3(constructPos.x, constructPos.y, constructHeight);
+        _constructionArrowDirection = _constructionRotation;
+        _mapSelectedTiles[0] = constructPos;
+        _mapSelectedTiles[1].x = -1;
+
+        auto pieceId = getPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+        if (!pieceId)
+        {
+            removeConstructionGhosts();
+            Map::TileManager::mapInvalidateMapSelectionTiles();
+            return;
+        }
+        _byte_1136065 = pieceId->id;
+        const auto& trackPieces = getPiece(pieceId->id);
+        setMapSelectedTilesFromPiece(trackPieces, constructPos, _constructionRotation);
+
+        if (_makeJunction != 1)
+        {
+            constructHeight = std::max(getMaxConstructHeightFromExistingSelection(), constructHeight);
+        }
+
+        _constructionArrowPos->z = constructHeight - getMaxPieceHeight(trackPieces);
+        constructHeight -= 16;
+        auto maxRetries = 2;
+
+        if (Input::hasKeyModifier(Input::KeyModifier::shift))
+        {
+            maxRetries = 0x80000008;
+            constructHeight -= 16;
+            _constructionArrowPos->z = constructHeight;
+        }
+        constructionGhostLoop({ constructPos.x, constructPos.y, constructHeight }, maxRetries, getPlacementArgs, placeGhost);
+        Map::TileManager::mapInvalidateMapSelectionTiles();
+    }
+
+    // 0x0049DC8C
+    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    {
+        if (widgetIndex != widx::construct)
+        {
+            return;
+        }
+
+        if (_trackType & (1 << 7))
+        {
+            onToolUpdateTrack(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, getRoadPlacementArgs, placeRoadGhost);
+        }
+        else
+        {
+            onToolUpdateTrack(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
+        }
     }
 
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>
