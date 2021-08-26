@@ -724,6 +724,19 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00446E2F
     static void upOneLevel()
     {
+#ifdef _WIN32
+        // Showing drive letters?
+        if (_currentDirectory.empty())
+            return;
+
+        // The drive letter level is above file system root level.
+        if (_currentDirectory == _currentDirectory.root_path())
+        {
+            _currentDirectory.clear();
+            refreshDirectoryList();
+        }
+#endif
+        // Going up one level (compensating for trailing slashes).
         changeDirectory(_currentDirectory.parent_path().parent_path());
     }
 
