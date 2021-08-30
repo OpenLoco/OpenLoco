@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 
 namespace OpenLoco::S5::Limits
 {

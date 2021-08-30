@@ -219,8 +219,13 @@ namespace OpenLoco::CompanyManager
     // Returns a string between 1810 and 1816 with up to two arguments.
     string_id getOwnerStatus(CompanyId_t id, FormatArguments& args)
     {
-        auto& company = *get(id);
-        if (company.challenge_flags & CompanyFlags::bankrupt)
+        auto* company = get(id);
+        if (company == nullptr)
+        {
+            return StringIds::company_status_empty;
+        }
+
+        if (company->challenge_flags & CompanyFlags::bankrupt)
             return StringIds::company_status_bankrupt;
 
         const string_id observationStatusStrings[] = {
@@ -232,22 +237,22 @@ namespace OpenLoco::CompanyManager
             StringIds::company_status_surveying_landscape,
         };
 
-        string_id statusString = observationStatusStrings[company.observationStatus];
-        if (company.observationStatus == ObservationStatus::empty || company.observationTownId == 0xFFFF)
+        string_id statusString = observationStatusStrings[company->observationStatus];
+        if (company->observationStatus == ObservationStatus::empty || company->observationTownId == 0xFFFF)
             return StringIds::company_status_empty;
 
-        switch (company.observationStatus)
+        switch (company->observationStatus)
         {
             case ObservationStatus::buildingTrackRoad:
-                if (company.observationObject & 0x80)
+                if (company->observationObject & 0x80)
                 {
-                    auto* obj = ObjectManager::get<RoadObject>(company.observationObject & 0xFF7F);
+                    auto* obj = ObjectManager::get<RoadObject>(company->observationObject & 0xFF7F);
                     if (obj != nullptr)
                         args.push(obj->name);
                 }
                 else
                 {
-                    auto* obj = ObjectManager::get<TrackObject>(company.observationObject);
+                    auto* obj = ObjectManager::get<TrackObject>(company->observationObject);
                     if (obj != nullptr)
                         args.push(obj->name);
                 }
@@ -255,7 +260,7 @@ namespace OpenLoco::CompanyManager
 
             case ObservationStatus::buildingAirport:
             {
-                auto* obj = ObjectManager::get<AirportObject>(company.observationObject);
+                auto* obj = ObjectManager::get<AirportObject>(company->observationObject);
                 if (obj != nullptr)
                     args.push(obj->name);
                 break;
@@ -263,7 +268,7 @@ namespace OpenLoco::CompanyManager
 
             case ObservationStatus::buildingDock:
             {
-                auto* obj = ObjectManager::get<DockObject>(company.observationObject);
+                auto* obj = ObjectManager::get<DockObject>(company->observationObject);
                 if (obj != nullptr)
                     args.push(obj->name);
                 break;
@@ -273,7 +278,7 @@ namespace OpenLoco::CompanyManager
                 break;
         }
 
-        auto* town = TownManager::get(company.observationTownId);
+        auto* town = TownManager::get(company->observationTownId);
         args.push(town->name);
 
         return statusString;
