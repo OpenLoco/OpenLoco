@@ -57,7 +57,8 @@ namespace OpenLoco
         uint8_t var_19D;                                                       // 0x00019D (0x00525FB5)
         uint8_t var_19E;                                                       // 0x00019E (0x00525FB6)
         uint8_t maxCompetingCompanies;                                         // 0x00019F (0x00525FB7)
-        uint8_t pad_01A0[0x02BC - 0x1A0];                                      // 0x0001A0
+        uint8_t pad_01A0[0x01BC - 0x1A0];                                      // 0x0001A0
+        char scenarioFileName[256];                                            // 0x0001BC (0x00525FD4)
         char scenarioName[64];                                                 // 0x0002BC (0x005260D4)
         char scenarioDetails[256];                                             // 0x0002FC (0x00526114)
         uint8_t pad_03FC[0x434 - 0x3FC];                                       // 0x0003FC
