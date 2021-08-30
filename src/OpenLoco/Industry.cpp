@@ -31,12 +31,6 @@ namespace OpenLoco
         { { Location::null, 0 }, 0 }
     };
 
-    IndustryId_t Industry::id() const
-    {
-        auto first = (Industry*)0x005C455C;
-        return (IndustryId_t)(this - first);
-    }
-
     IndustryObject* Industry::object() const
     {
         return ObjectManager::get<IndustryObject>(object_id);
