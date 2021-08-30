@@ -190,7 +190,8 @@ namespace OpenLoco::Paint
     // 0x00461CF8
     void paintTileElements(PaintSession& session, const Map::Pos2& loc)
     {
-        if (!Map::validCoords(loc))
+        using Map::Inclusivity;
+        if (!Map::validCoordsWithinBounds(loc, { Inclusivity::Inclusive, Map::tile_size - 1 }, { Inclusivity::Exclusive, Map::map_width - Map::tile_size }))
         {
             paintVoid(session, loc);
             return;
