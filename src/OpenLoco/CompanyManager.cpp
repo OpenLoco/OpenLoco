@@ -463,4 +463,14 @@ namespace OpenLoco::CompanyManager
     {
         return competingColourMask(_updating_company_id);
     }
+
+}
+
+namespace OpenLoco
+{
+    CompanyId_t Company::id() const
+    {
+        auto* first = &CompanyManager::rawCompanies()[0];
+        return (CompanyId_t)(this - first);
+    }
 }

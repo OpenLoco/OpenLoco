@@ -26,12 +26,6 @@ namespace OpenLoco
         return findResult != _playerCompanies.end();
     }
 
-    CompanyId_t Company::id() const
-    {
-        auto first = (Company*)0x00531784;
-        return (CompanyId_t)(this - first);
-    }
-
     bool Company::empty() const
     {
         return name == StringIds::empty;
