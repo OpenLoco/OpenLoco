@@ -1,16 +1,15 @@
 #pragma once
 
 #include "Core/LocoFixedVector.hpp"
+#include "Limits.h"
 #include "Station.h"
 #include <array>
 #include <cstddef>
 
 namespace OpenLoco::StationManager
 {
-    constexpr size_t max_stations = 1024;
-
     void reset();
-    LocoFixedVector<Station> stations();
+    FixedVector<Station, Limits::maxStations> stations();
     Station* get(StationId_t id);
     void update();
     void updateLabels();
