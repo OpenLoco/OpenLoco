@@ -2,6 +2,7 @@
 #include "../Console.h"
 #include "../Entities/Misc.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
@@ -13,18 +14,19 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::EntityManager
 {
-    loco_global<EntityId_t[numEntityLists], 0x00525E3E> _heads;
-    loco_global<uint16_t[numEntityLists], 0x00525E4C> _listCounts;
-    loco_global<Entity[maxEntities], 0x006DB6DC> _entities;
+    loco_global<EntityId_t[Limits::numEntityLists], 0x00525E3E> _heads;
+    loco_global<uint16_t[Limits::numEntityLists], 0x00525E4C> _listCounts;
     loco_global<EntityId_t[0x40001], 0x01025A8C> _entitySpatialIndex;
     loco_global<uint32_t, 0x01025A88> _entitySpatialCount;
     constexpr size_t _entitySpatialIndexNull = 0x40000;
+
+    static auto& rawEntities() { return getGameState().entities; }
 
     // 0x0046FDFD
     void reset()
     {
         // Reset all entities to 0
-        std::fill_n(_entities.get(), maxEntities, Entity{});
+        std::fill_n(rawEntities(), Limits::maxEntities, Entity{});
         // Reset all entity lists
         for (auto& count : _listCounts)
         {
@@ -38,9 +40,9 @@ namespace OpenLoco::EntityManager
         // Remake null entities (size maxNormalEntities)
         EntityBase* previous = nullptr;
         EntityId_t id = 0;
-        for (; id < maxNormalEntities; ++id)
+        for (; id < Limits::maxNormalEntities; ++id)
         {
-            auto& ent = _entities[id];
+            auto& ent = rawEntities()[id];
             ent.base_type = EntityBaseType::null;
             ent.id = id;
             ent.next_thing_id = EntityId::null;
@@ -57,13 +59,13 @@ namespace OpenLoco::EntityManager
             }
             previous = &ent;
         }
-        _listCounts[static_cast<uint8_t>(EntityListType::null)] = maxNormalEntities;
+        _listCounts[static_cast<uint8_t>(EntityListType::null)] = Limits::maxNormalEntities;
 
         // Remake null money entities (size maxMoneyEntities)
         previous = nullptr;
-        for (; id < maxEntities; ++id)
+        for (; id < Limits::maxEntities; ++id)
         {
-            auto& ent = _entities[id];
+            auto& ent = rawEntities()[id];
             ent.base_type = EntityBaseType::null;
             ent.id = id;
             ent.next_thing_id = EntityId::null;
@@ -80,7 +82,7 @@ namespace OpenLoco::EntityManager
             }
             previous = &ent;
         }
-        _listCounts[static_cast<uint8_t>(EntityListType::nullMoney)] = maxMoneyEntities;
+        _listCounts[static_cast<uint8_t>(EntityListType::nullMoney)] = Limits::maxMoneyEntities;
 
         resetSpatialIndex();
         EntityTweener::get().reset();
@@ -106,9 +108,9 @@ namespace OpenLoco::EntityManager
     EntityBase* get(EntityId_t id)
     {
         EntityBase* result = nullptr;
-        if (id < maxEntities)
+        if (id < Limits::maxEntities)
         {
-            return &_entities.get()[id];
+            return &rawEntities()[id];
         }
         return result;
     }
@@ -146,7 +148,7 @@ namespace OpenLoco::EntityManager
     // 0x0046FC57
     void updateSpatialIndex()
     {
-        for (auto& ent : _entities)
+        for (auto& ent : rawEntities())
         {
             if (!ent.isEmpty())
             {
@@ -184,7 +186,7 @@ namespace OpenLoco::EntityManager
     // 0x004700A5
     EntityBase* createEntityMisc()
     {
-        if (getListCount(EntityListType::misc) >= maxMiscEntities)
+        if (getListCount(EntityListType::misc) >= Limits::maxMiscEntities)
         {
             return nullptr;
         }
@@ -234,7 +236,7 @@ namespace OpenLoco::EntityManager
         // Remove from spatial lists
         auto* quadId = &_entitySpatialIndex[getSpatialIndexOffset(entity->position)];
         _entitySpatialCount = 0;
-        while (*quadId < maxEntities)
+        while (*quadId < Limits::maxEntities)
         {
             auto* quadEnt = get<EntityBase>(*quadId);
             if (quadEnt == entity)
@@ -243,7 +245,7 @@ namespace OpenLoco::EntityManager
                 return;
             }
             _entitySpatialCount++;
-            if (_entitySpatialCount > maxEntities)
+            if (_entitySpatialCount > Limits::maxEntities)
             {
                 break;
             }

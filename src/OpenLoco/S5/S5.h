@@ -244,7 +244,10 @@ namespace OpenLoco::S5
         uint8_t savedViewZoom;                                                         // 0x000022
         uint8_t savedViewRotation;                                                     // 0x000023
         uint8_t playerCompanyId;                                                       // 0x000024
-        uint8_t pad_0025[0x146 - 0x25];                                                // 0x000025
+        uint8_t pad_0025[0x104 - 0x25];                                                // 0x000025
+        uint16_t entityListHeads[S5::Limits::numEntityLists];                          // 0x000104 (0x00525E3E)
+        uint16_t entityListCounts[S5::Limits::numEntityLists];                         // 0x000112 (0x00525E4C)
+        uint8_t pad_0120[0x146 - 0x120];                                               // 0x000120
         uint32_t scenarioTicks;                                                        // 0x000146 (0x00525F5E)
         uint16_t pad_014A;                                                             // 0x00014A (0x00525F62)
         uint32_t scenarioTicks2;                                                       // 0x00014C (0x00525F64)
