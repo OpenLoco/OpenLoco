@@ -22,9 +22,9 @@ namespace OpenLoco::Map::WaveManager
         Pos2(0, -32),
     };
 
-    static LocoFixedVector<Wave> waves()
+    static FixedVector<Wave, 64> waves()
     {
-        return LocoFixedVector<Wave>(getGameState().waves);
+        return FixedVector(getGameState().waves);
     }
 
     // 0x0046956E
