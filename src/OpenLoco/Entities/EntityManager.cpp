@@ -14,13 +14,13 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::EntityManager
 {
-    loco_global<EntityId_t[Limits::numEntityLists], 0x00525E3E> _heads;
-    loco_global<uint16_t[Limits::numEntityLists], 0x00525E4C> _listCounts;
     loco_global<EntityId_t[0x40001], 0x01025A8C> _entitySpatialIndex;
     loco_global<uint32_t, 0x01025A88> _entitySpatialCount;
     constexpr size_t _entitySpatialIndexNull = 0x40000;
 
     static auto& rawEntities() { return getGameState().entities; }
+    static auto& rawListHeads() { return getGameState().entityListHeads; }
+    static auto& rawListCounts() { return getGameState().entityListCounts; }
 
     // 0x0046FDFD
     void reset()
@@ -28,11 +28,11 @@ namespace OpenLoco::EntityManager
         // Reset all entities to 0
         std::fill_n(rawEntities(), Limits::maxEntities, Entity{});
         // Reset all entity lists
-        for (auto& count : _listCounts)
+        for (auto& count : rawListCounts())
         {
             count = 0;
         }
-        for (auto& head : _heads)
+        for (auto& head : rawListHeads())
         {
             head = EntityId::null;
         }
@@ -50,7 +50,7 @@ namespace OpenLoco::EntityManager
             if (previous == nullptr)
             {
                 ent.llPreviousId = EntityId::null;
-                _heads[static_cast<uint8_t>(EntityListType::null)] = id;
+                rawListHeads()[static_cast<uint8_t>(EntityListType::null)] = id;
             }
             else
             {
@@ -59,7 +59,7 @@ namespace OpenLoco::EntityManager
             }
             previous = &ent;
         }
-        _listCounts[static_cast<uint8_t>(EntityListType::null)] = Limits::maxNormalEntities;
+        rawListCounts()[static_cast<uint8_t>(EntityListType::null)] = Limits::maxNormalEntities;
 
         // Remake null money entities (size maxMoneyEntities)
         previous = nullptr;
@@ -73,7 +73,7 @@ namespace OpenLoco::EntityManager
             if (previous == nullptr)
             {
                 ent.llPreviousId = EntityId::null;
-                _heads[static_cast<uint8_t>(EntityListType::nullMoney)] = id;
+                rawListHeads()[static_cast<uint8_t>(EntityListType::nullMoney)] = id;
             }
             else
             {
@@ -82,7 +82,7 @@ namespace OpenLoco::EntityManager
             }
             previous = &ent;
         }
-        _listCounts[static_cast<uint8_t>(EntityListType::nullMoney)] = Limits::maxMoneyEntities;
+        rawListCounts()[static_cast<uint8_t>(EntityListType::nullMoney)] = Limits::maxMoneyEntities;
 
         resetSpatialIndex();
         EntityTweener::get().reset();
@@ -90,12 +90,12 @@ namespace OpenLoco::EntityManager
 
     EntityId_t firstId(EntityListType list)
     {
-        return _heads[(size_t)list];
+        return rawListHeads()[(size_t)list];
     }
 
     uint16_t getListCount(const EntityListType list)
     {
-        return _listCounts[static_cast<size_t>(list)];
+        return rawListCounts()[static_cast<size_t>(list)];
     }
 
     template<>
@@ -195,7 +195,7 @@ namespace OpenLoco::EntityManager
             return nullptr;
         }
 
-        auto newId = _heads[static_cast<uint8_t>(EntityListType::null)];
+        auto newId = rawListHeads()[static_cast<uint8_t>(EntityListType::null)];
         return createEntity(newId, EntityListType::misc);
     }
 
@@ -207,7 +207,7 @@ namespace OpenLoco::EntityManager
             return nullptr;
         }
 
-        auto newId = _heads[static_cast<uint8_t>(EntityListType::nullMoney)];
+        auto newId = rawListHeads()[static_cast<uint8_t>(EntityListType::nullMoney)];
         return createEntity(newId, EntityListType::misc);
     }
 
@@ -219,7 +219,7 @@ namespace OpenLoco::EntityManager
             return nullptr;
         }
 
-        auto newId = _heads[static_cast<uint8_t>(EntityListType::null)];
+        auto newId = rawListHeads()[static_cast<uint8_t>(EntityListType::null)];
         return createEntity(newId, EntityListType::vehicle);
     }
 
@@ -295,7 +295,7 @@ namespace OpenLoco::EntityManager
         // Unlink previous entity from this entity
         if (previousId == EntityId::null)
         {
-            _heads[curList] = nextId;
+            rawListHeads()[curList] = nextId;
         }
         else
         {
@@ -325,8 +325,8 @@ namespace OpenLoco::EntityManager
 
         entity->llPreviousId = EntityId::null;
         entity->linkedListOffset = newListOffset;
-        entity->next_thing_id = _heads[static_cast<uint8_t>(list)];
-        _heads[static_cast<uint8_t>(list)] = entity->id;
+        entity->next_thing_id = rawListHeads()[static_cast<uint8_t>(list)];
+        rawListHeads()[static_cast<uint8_t>(list)] = entity->id;
         // Link next entity to this entity
         if (entity->next_thing_id != EntityId::null)
         {
@@ -341,8 +341,8 @@ namespace OpenLoco::EntityManager
             }
         }
 
-        _listCounts[curList]--;
-        _listCounts[static_cast<uint8_t>(list)]++;
+        rawListCounts()[curList]--;
+        rawListCounts()[static_cast<uint8_t>(list)]++;
     }
 
     // 0x00470188

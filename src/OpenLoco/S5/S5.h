@@ -244,10 +244,10 @@ namespace OpenLoco::S5
         uint8_t savedViewZoom;                                                         // 0x000022
         uint8_t savedViewRotation;                                                     // 0x000023
         uint8_t playerCompanyId;                                                       // 0x000024
-        uint8_t pad_0025[0x104 - 0x25];                                                // 0x000025
-        uint16_t entityListHeads[S5::Limits::numEntityLists];                          // 0x000104 (0x00525E3E)
-        uint16_t entityListCounts[S5::Limits::numEntityLists];                         // 0x000112 (0x00525E4C)
-        uint8_t pad_0120[0x146 - 0x120];                                               // 0x000120
+        uint8_t pad_0025;                                                              // 0x000025
+        uint16_t entityListHeads[Limits::numEntityLists];                              // 0x000026 (0x00525E3E)
+        uint16_t entityListCounts[Limits::numEntityLists];                             // 0x000034 (0x00525E4C)
+        uint8_t pad_0042[0x146 - 0x042];                                               // 0x000042
         uint32_t scenarioTicks;                                                        // 0x000146 (0x00525F5E)
         uint16_t pad_014A;                                                             // 0x00014A (0x00525F62)
         uint32_t scenarioTicks2;                                                       // 0x00014C (0x00525F64)
@@ -268,7 +268,7 @@ namespace OpenLoco::S5
         Wave waves[S5::Limits::maxWaves];                                              // 0x4328C4 (0x009586DC)
         uint8_t userStrings[S5::Limits::maxUserStrings][32];                           // 0x432A44 (0x0095885C)
         uint16_t routings[S5::Limits::maxVehicles][S5::Limits::maxRoutingsPerVehicle]; // 0x442A44 (0x0096885C)
-        uint8_t orders[S5::Limits::maxOrders];                                         // 0x461E44 (0x0096885C)
+        uint8_t orders[S5::Limits::maxOrders];                                         // 0x461E44 (0x00987C5C)
     };
 #pragma pack(pop)
     static_assert(sizeof(GameState) == 0x4A0644);
