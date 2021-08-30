@@ -22,16 +22,20 @@ namespace OpenLoco::Map::WaveManager
         Pos2(0, -32),
     };
 
-    static FixedVector<Wave, 64> waves()
+    static auto& rawWaves()
     {
-        return FixedVector(getGameState().waves);
+        return getGameState().waves;
     }
 
+    static FixedVector<Wave, 64> waves()
+    {
+        return FixedVector(rawWaves());
+    }
     // 0x0046956E
     void createWave(SurfaceElement& surface, const Map::Pos2& pos)
     {
         const auto waveIndex = getWaveIndex(pos);
-        if (!getGameState().waves[getWaveIndex(pos)].empty())
+        if (!rawWaves()[getWaveIndex(pos)].empty())
         {
             return;
         }
@@ -61,8 +65,8 @@ namespace OpenLoco::Map::WaveManager
                 return;
         }
 
-        getGameState().waves[waveIndex].loc = pos;
-        getGameState().waves[waveIndex].frame = 0;
+        rawWaves()[waveIndex].loc = pos;
+        rawWaves()[waveIndex].frame = 0;
         surface.setFlag6(true);
 
         ViewportManager::invalidate(pos, surface.water() * 16, surface.water() * 16, ZoomLevel::full);
@@ -105,7 +109,7 @@ namespace OpenLoco::Map::WaveManager
     // 0x004C4BC0
     void reset()
     {
-        for (auto& wave : getGameState().waves)
+        for (auto& wave : rawWaves())
         {
             wave.loc.x = Location::null;
         }

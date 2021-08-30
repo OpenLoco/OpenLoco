@@ -259,6 +259,7 @@
     <ClInclude Include="Interop\Interop.hpp" />
     <ClInclude Include="Intro.h" />
     <ClInclude Include="LabelFrame.h" />
+    <ClInclude Include="Limits.h" />
     <ClInclude Include="Localisation\ArgsWrapper.hpp" />
     <ClInclude Include="Localisation\Conversion.h" />
     <ClInclude Include="Localisation\FormatArguments.hpp" />
@@ -325,6 +326,7 @@
     <ClInclude Include="Platform/Crash.h" />
     <ClInclude Include="Platform\Platform.h" />
     <ClInclude Include="ProgressBar.h" />
+    <ClInclude Include="S5\Limits.h" />
     <ClInclude Include="S5\S5.h" />
     <ClInclude Include="S5\SawyerStream.h" />
     <ClInclude Include="Scenario.h" />
