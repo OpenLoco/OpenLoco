@@ -2,6 +2,7 @@
 #include "../Core/LocoFixedVector.hpp"
 #include "../GameState.h"
 #include "../Interop/Interop.hpp"
+#include "../Limits.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Prng.hpp"
 #include "../ViewportManager.h"
@@ -27,7 +28,7 @@ namespace OpenLoco::Map::WaveManager
         return getGameState().waves;
     }
 
-    static FixedVector<Wave, 64> waves()
+    static FixedVector<Wave, Limits::maxWaves> waves()
     {
         return FixedVector(rawWaves());
     }
