@@ -3,6 +3,7 @@
 #include "Entities/EntityManager.h"
 #include "Entities/Misc.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
@@ -27,11 +28,15 @@ namespace OpenLoco::CompanyManager
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<uint8_t, 0x00526214> _company_competition_delay;
     static loco_global<uint8_t, 0x00525FB7> _company_max_competing;
-    static loco_global<Company[max_companies], 0x00531784> _companies;
-    static loco_global<uint8_t[max_companies + 1], 0x009C645C> _company_colours;
+    static loco_global<uint8_t[Limits::maxCompanies + 1], 0x009C645C> _company_colours;
     static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
 
     static void produceCompanies();
+
+    static auto& rawCompanies()
+    {
+        return getGameState().companies;
+    }
 
     // 0x0042F7F8
     void reset()
@@ -60,7 +65,7 @@ namespace OpenLoco::CompanyManager
         }
 
         // Reset primary company colours.
-        _companies[0].mainColours.primary = Colour::saturated_green;
+        rawCompanies()[0].mainColours.primary = Colour::saturated_green;
         updateColours();
     }
 
@@ -74,17 +79,17 @@ namespace OpenLoco::CompanyManager
         _updating_company_id = id;
     }
 
-    LocoFixedVector<Company> companies()
+    FixedVector<Company, Limits::maxCompanies> companies()
     {
-        return LocoFixedVector<Company>(_companies);
+        return FixedVector(rawCompanies());
     }
 
     Company* get(CompanyId_t id)
     {
         auto index = id;
-        if (index < _companies.size())
+        if (index < Limits::maxCompanies)
         {
-            return &_companies[index];
+            return &rawCompanies()[index];
         }
         return nullptr;
     }
@@ -111,7 +116,7 @@ namespace OpenLoco::CompanyManager
 
     Company* getPlayerCompany()
     {
-        return &_companies[_player_company[0]];
+        return get(_player_company[0]);
     }
 
     uint8_t getCompanyColour(CompanyId_t id)
@@ -175,11 +180,8 @@ namespace OpenLoco::CompanyManager
     // 0x0042FDE2
     void determineAvailableVehicles()
     {
-        for (auto& company : _companies)
+        for (auto& company : companies())
         {
-            if (company.empty())
-                continue;
-
             VehicleManager::determineAvailableVehicles(company);
         }
     }
@@ -210,14 +212,14 @@ namespace OpenLoco::CompanyManager
 
     Company* getOpponent()
     {
-        return &_companies[_player_company[1]];
+        return get(_player_company[1]);
     }
 
     // 0x00438047
     // Returns a string between 1810 and 1816 with up to two arguments.
     string_id getOwnerStatus(CompanyId_t id, FormatArguments& args)
     {
-        auto& company = _companies[id];
+        auto& company = *get(id);
         if (company.challenge_flags & CompanyFlags::bankrupt)
             return StringIds::company_status_bankrupt;
 
@@ -397,7 +399,7 @@ namespace OpenLoco::CompanyManager
     void updateColours()
     {
         size_t index = 0;
-        for (auto& company : _companies)
+        for (auto& company : rawCompanies())
         {
             _company_colours[index] = company.mainColours.primary;
             index++;
