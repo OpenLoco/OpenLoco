@@ -247,7 +247,9 @@ namespace OpenLoco::S5
         uint8_t pad_0025;                                                              // 0x000025
         uint16_t entityListHeads[Limits::numEntityLists];                              // 0x000026 (0x00525E3E)
         uint16_t entityListCounts[Limits::numEntityLists];                             // 0x000034 (0x00525E4C)
-        uint8_t pad_0042[0x146 - 0x042];                                               // 0x000042
+        uint8_t pad_0042[0x046 - 0x042];                                               // 0x000042
+        uint32_t currencyMultiplicationFactor[32];                                     // 0x000046 (0x00525E5E)
+        uint32_t unusedCurrencyMultiplicationFactor[32];                               // 0x0000C6 (0x00525EDE)
         uint32_t scenarioTicks;                                                        // 0x000146 (0x00525F5E)
         uint16_t pad_014A;                                                             // 0x00014A (0x00525F62)
         uint32_t scenarioTicks2;                                                       // 0x00014C (0x00525F64)
