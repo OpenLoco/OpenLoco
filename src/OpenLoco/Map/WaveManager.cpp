@@ -1,29 +1,18 @@
 #include "WaveManager.h"
 #include "../Core/LocoFixedVector.hpp"
+#include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Prng.hpp"
 #include "../ViewportManager.h"
 #include "TileManager.h"
+#include "Wave.h"
 
 namespace OpenLoco::Map::WaveManager
 {
     using namespace OpenLoco::Interop;
     using namespace OpenLoco::Ui;
 
-#pragma pack(push, 1)
-    struct Wave
-    {
-        Map::Pos2 loc;  // 0x00
-        uint16_t frame; // 0x04
-        bool empty() const
-        {
-            return loc.x == Location::null;
-        }
-    };
-#pragma pack(pop)
-
-    static loco_global<Wave[64], 0x009586DC> _waves;
     static loco_global<Utility::prng, 0x00525E20> _prng; // not the gPrng
 
     const static Pos2 _offsets[4] = {
@@ -35,14 +24,14 @@ namespace OpenLoco::Map::WaveManager
 
     static LocoFixedVector<Wave> waves()
     {
-        return LocoFixedVector<Wave>(_waves);
+        return LocoFixedVector<Wave>(getGameState().waves);
     }
 
     // 0x0046956E
     void createWave(SurfaceElement& surface, const Map::Pos2& pos)
     {
         const auto waveIndex = getWaveIndex(pos);
-        if (!_waves[getWaveIndex(pos)].empty())
+        if (!getGameState().waves[getWaveIndex(pos)].empty())
         {
             return;
         }
@@ -72,8 +61,8 @@ namespace OpenLoco::Map::WaveManager
                 return;
         }
 
-        _waves[waveIndex].loc = pos;
-        _waves[waveIndex].frame = 0;
+        getGameState().waves[waveIndex].loc = pos;
+        getGameState().waves[waveIndex].frame = 0;
         surface.setFlag6(true);
 
         ViewportManager::invalidate(pos, surface.water() * 16, surface.water() * 16, ZoomLevel::full);
@@ -116,7 +105,7 @@ namespace OpenLoco::Map::WaveManager
     // 0x004C4BC0
     void reset()
     {
-        for (auto& wave : _waves)
+        for (auto& wave : getGameState().waves)
         {
             wave.loc.x = Location::null;
         }

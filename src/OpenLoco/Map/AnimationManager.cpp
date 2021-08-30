@@ -1,24 +1,14 @@
 #include "AnimationManager.h"
 #include "../Interop/Interop.hpp"
+#include "Animation.h"
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Map::AnimationManager
 {
-
-#pragma pack(push, 1)
-    struct TileAnimation
-    {
-        uint8_t baseZ;
-        uint8_t type;
-        Map::Pos2 pos;
-    };
-    static_assert(sizeof(TileAnimation) == 6);
-#pragma pack(pop)
-
     constexpr size_t maxAnimations = 0x2000;
 
-    static loco_global<TileAnimation[maxAnimations], 0x0094C6DC> _animations;
+    static loco_global<Animation[maxAnimations], 0x0094C6DC> _animations;
     static loco_global<uint16_t, 0x00525F6C> _numAnimations;
     // 0x004612A6
     void createAnimation(uint8_t type, const Pos2& pos, tile_coord_t baseZ)
