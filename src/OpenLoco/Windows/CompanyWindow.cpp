@@ -5,6 +5,7 @@
 #include "../Economy/Expenditures.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
@@ -2291,7 +2292,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Challenge
     {
-        static loco_global<char[256], 0x00526114> scenarioDetails;
         static loco_global<uint8_t, 0x00526231> objectiveFlags;
         static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
         static loco_global<uint16_t, 0x00526243> objectiveMonthsInChallenge;
@@ -2344,7 +2344,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *buffer_2039++ = static_cast<char>(ControlCodes::colour_black);
-            char* scenarioDetailsString = &scenarioDetails[0];
+            char* scenarioDetailsString = getGameState().scenarioDetails;
             strcpy(buffer_2039, scenarioDetailsString);
 
             int16_t y = self->y + 47;
