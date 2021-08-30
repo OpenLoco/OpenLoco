@@ -119,7 +119,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
             Dropdown::add(index, StringIds::dropdown_company_performance, args);
 
-            if (isPlayerCompany(company->id()))
+            if (CompanyManager::isPlayerCompany(company->id()))
             {
                 highlightIndex = index;
             }

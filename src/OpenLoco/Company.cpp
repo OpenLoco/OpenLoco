@@ -15,17 +15,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    static loco_global<CompanyId_t[2], 0x00525E3C> _playerCompanies;
-
-    bool isPlayerCompany(CompanyId_t id)
-    {
-        auto findResult = std::find(
-            _playerCompanies.begin(),
-            _playerCompanies.end(),
-            id);
-        return findResult != _playerCompanies.end();
-    }
-
     bool Company::empty() const
     {
         return name == StringIds::empty;

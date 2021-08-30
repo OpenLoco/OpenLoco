@@ -1,4 +1,5 @@
 #include "../Audio/Audio.h"
+#include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Date.h"
 #include "../GameCommands/GameCommands.h"
@@ -746,7 +747,7 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 if ((industry->flags & IndustryFlags::flag_04) == 0)
                     return;
-                if (!isPlayerCompany(industry->owner))
+                if (!CompanyManager::isPlayerCompany(industry->owner))
                     return;
             }
 

@@ -24,8 +24,7 @@ namespace OpenLoco
         int16_t savedViewY;                                                    // 0x000020
         uint8_t savedViewZoom;                                                 // 0x000022
         uint8_t savedViewRotation;                                             // 0x000023
-        uint8_t playerCompanyId;                                               // 0x000024
-        uint8_t pad_0025;                                                      // 0x000025
+        CompanyId_t playerCompanies[2];                                        // 0x000024 (0x00525E3C)
         EntityId_t entityListHeads[Limits::numEntityLists];                    // 0x000026 (0x00525E3E)
         uint16_t entityListCounts[Limits::numEntityLists];                     // 0x000034 (0x00525E4C)
         uint8_t pad_0042[0x046 - 0x042];                                       // 0x000042

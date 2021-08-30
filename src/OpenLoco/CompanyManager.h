@@ -23,6 +23,7 @@ namespace OpenLoco::CompanyManager
     Company* getPlayerCompany();
     uint8_t getCompanyColour(CompanyId_t id);
     uint8_t getPlayerCompanyColour();
+    bool isPlayerCompany(CompanyId_t id);
     void update();
     void updateQuarterly();
     void determineAvailableVehicles();

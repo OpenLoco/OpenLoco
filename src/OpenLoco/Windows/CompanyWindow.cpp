@@ -789,7 +789,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y += 10;
             }
 
-            if (!isPlayerCompany(self->number))
+            if (!CompanyManager::isPlayerCompany(self->number))
             {
                 drawAIdetails(*context, x + 5, y, *company);
             }

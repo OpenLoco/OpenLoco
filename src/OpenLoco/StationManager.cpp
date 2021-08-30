@@ -106,7 +106,7 @@ namespace OpenLoco::StationManager
             if (station.stationTileSize == 0)
             {
                 station.var_29++;
-                if (station.var_29 != 5 && isPlayerCompany(station.owner))
+                if (station.var_29 != 5 && CompanyManager::isPlayerCompany(station.owner))
                 {
                     sub_437F29(station.owner, 8);
                 }

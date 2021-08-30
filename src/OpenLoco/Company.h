@@ -140,7 +140,6 @@ namespace OpenLoco
     static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
     static_assert(offsetof(Company, var_8BB0) == 0x8BB0);
 
-    bool isPlayerCompany(CompanyId_t id);
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
 }

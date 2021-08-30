@@ -766,7 +766,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto company = CompanyManager::get(head->owner);
             FormatArguments args{};
-            if (isPlayerCompany(head->owner))
+            if (CompanyManager::isPlayerCompany(head->owner))
             {
                 args.push(StringIds::company_vehicle);
             }
@@ -811,7 +811,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             int viewportRight = self->width - 26;
             if (head->var_0C & Vehicles::Flags0C::manualControl)
             {
-                if (isPlayerCompany(head->owner))
+                if (CompanyManager::isPlayerCompany(head->owner))
                 {
                     viewportRight -= 27;
                     self->widgets[widx::speedControl].type = WidgetType::wt_5;
@@ -838,7 +838,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets[widx::speedControl].left = self->width - 2 - 23 - 26;
             self->widgets[widx::speedControl].right = self->width - 2 - 23 - 26 + 23;
 
-            if (!isPlayerCompany(head->owner))
+            if (!CompanyManager::isPlayerCompany(head->owner))
             {
                 self->widgets[widx::stopStart].type = WidgetType::none;
                 self->widgets[widx::pickup].type = WidgetType::none;
@@ -1629,7 +1629,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static bool canRefit(Vehicles::VehicleHead* headVehicle)
         {
-            if (!isPlayerCompany(headVehicle->owner))
+            if (!CompanyManager::isPlayerCompany(headVehicle->owner))
             {
                 return false;
             }
@@ -2431,7 +2431,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case widx::localMode:
                 {
                     auto head = Common::getVehicle(self);
-                    if (!isPlayerCompany(head->owner))
+                    if (!CompanyManager::isPlayerCompany(head->owner))
                         return;
 
                     Vehicles::Vehicle train(head);
@@ -2445,7 +2445,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case widx::expressMode:
                 {
                     auto head = Common::getVehicle(self);
-                    if (!isPlayerCompany(head->owner))
+                    if (!CompanyManager::isPlayerCompany(head->owner))
                         return;
 
                     Vehicles::Vehicle train(head);

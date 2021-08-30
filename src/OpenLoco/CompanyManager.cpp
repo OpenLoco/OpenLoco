@@ -24,7 +24,6 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::CompanyManager
 {
-    static loco_global<CompanyId_t[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<uint8_t, 0x00526214> _company_competition_delay;
     static loco_global<uint8_t, 0x00525FB7> _company_max_competing;
@@ -38,6 +37,8 @@ namespace OpenLoco::CompanyManager
         return getGameState().companies;
     }
 
+    static auto& rawPlayerCompanies() { return getGameState().playerCompanies; }
+
     // 0x0042F7F8
     void reset()
     {
@@ -50,18 +51,18 @@ namespace OpenLoco::CompanyManager
         // Reset player companies depending on network mode.
         if (isNetworkHost())
         {
-            _player_company[0] = 1;
-            _player_company[1] = 0;
+            rawPlayerCompanies()[0] = 1;
+            rawPlayerCompanies()[1] = 0;
         }
         else if (isNetworked())
         {
-            _player_company[0] = 0;
-            _player_company[1] = 1;
+            rawPlayerCompanies()[0] = 0;
+            rawPlayerCompanies()[1] = 1;
         }
         else
         {
-            _player_company[0] = 0;
-            _player_company[1] = 0xFF;
+            rawPlayerCompanies()[0] = 0;
+            rawPlayerCompanies()[1] = CompanyId::null;
         }
 
         // Reset primary company colours.
@@ -96,27 +97,27 @@ namespace OpenLoco::CompanyManager
 
     CompanyId_t getControllingId()
     {
-        return _player_company[0];
+        return rawPlayerCompanies()[0];
     }
 
     CompanyId_t getSecondaryPlayerId()
     {
-        return _player_company[1];
+        return rawPlayerCompanies()[1];
     }
 
     void setControllingId(CompanyId_t id)
     {
-        _player_company[0] = id;
+        rawPlayerCompanies()[0] = id;
     }
 
     void setSecondaryPlayerId(CompanyId_t id)
     {
-        _player_company[1] = id;
+        rawPlayerCompanies()[1] = id;
     }
 
     Company* getPlayerCompany()
     {
-        return get(_player_company[0]);
+        return get(rawPlayerCompanies()[0]);
     }
 
     uint8_t getCompanyColour(CompanyId_t id)
@@ -126,7 +127,16 @@ namespace OpenLoco::CompanyManager
 
     uint8_t getPlayerCompanyColour()
     {
-        return _company_colours[_player_company[0]];
+        return _company_colours[rawPlayerCompanies()[0]];
+    }
+
+    bool isPlayerCompany(CompanyId_t id)
+    {
+        auto findResult = std::find(
+            std::begin(rawPlayerCompanies()),
+            std::end(rawPlayerCompanies()),
+            id);
+        return findResult != std::end(rawPlayerCompanies());
     }
 
     // 0x00430319
@@ -212,7 +222,7 @@ namespace OpenLoco::CompanyManager
 
     Company* getOpponent()
     {
-        return get(_player_company[1]);
+        return get(rawPlayerCompanies()[1]);
     }
 
     // 0x00438047
