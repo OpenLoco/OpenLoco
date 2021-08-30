@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Core/LocoFixedVector.hpp"
+#include "Limits.h"
 #include "Town.h"
 #include <array>
-#include "Limits.h"
 
 namespace OpenLoco::TownManager
 {
