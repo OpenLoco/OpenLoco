@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             try
             {
-                for (auto& file : fs::directory_iterator(_currentDirectory))
+                for (auto& file : fs::directory_iterator(_currentDirectory, fs::directory_options::skip_permission_denied))
                 {
                     // Only list directories and normal files
                     if (!(fs::is_regular_file(file) || fs::is_directory(file)))
