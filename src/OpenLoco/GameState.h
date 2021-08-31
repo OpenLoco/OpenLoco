@@ -15,7 +15,7 @@ namespace OpenLoco
     struct GameState
     {
         Utility::prng rng;                                                     // 0x000000 (0x00525E18)
-        uint32_t pad_0008[3];                                                  // 0x000008 (0x00525E20)
+        uint32_t var_0008[3];                                                  // 0x000008 (0x00525E20)
         uint32_t currentDay;                                                   // 0x000014 (0x00525E2C)
         uint16_t dayCounter;                                                   // 0x000018 (0x00525E30)
         uint16_t currentYear;                                                  // 0x00001A (0x00525E32)
@@ -32,7 +32,7 @@ namespace OpenLoco
         uint32_t currencyMultiplicationFactor[32];                             // 0x000046 (0x00525E5E)
         uint32_t unusedCurrencyMultiplicationFactor[32];                       // 0x0000C6 (0x00525EDE)
         uint32_t scenarioTicks;                                                // 0x000146 (0x00525F5E)
-        uint16_t pad_014A;                                                     // 0x00014A (0x00525F62)
+        uint16_t var_014A;                                                     // 0x00014A (0x00525F62)
         uint32_t scenarioTicks2;                                               // 0x00014C (0x00525F64)
         uint32_t magicNumber;                                                  // 0x000150 (0x00525F68)
         uint16_t numMapAnimations;                                             // 0x000154 (0x00525F6C)
@@ -114,9 +114,28 @@ namespace OpenLoco
         uint32_t var_464;                                                      // 0x000464 (0x0052627C)
         uint32_t var_468;                                                      // 0x000468 (0x00526280)
         uint32_t var_46C;                                                      // 0x00046C (0x00526284)
-        uint8_t pad_0470[0x13BA - 0x470];                                      // 0x000470
+        uint16_t var_470;                                                      // 0x000470 (0x00526288)
+        uint16_t var_472;                                                      // 0x000472 (0x0052628A)
+        uint16_t var_474;                                                      // 0x000474 (0x0052628C)
+        uint16_t var_476;                                                      // 0x000476 (0x0052628E)
+        uint32_t var_478;                                                      // 0x000478 (0x00526290)
+        uint8_t pad_047C[0x13B6 - 0x47C];                                      // 0x00047C
+        uint16_t var_13B6;                                                     // 0x0013B6 (0x005271CE)
+        uint16_t var_13B8;                                                     // 0x0013B8 (0x005271D0)
         Message messages[Limits::maxMessages];                                 // 0x0013BA (0x005271D2)
-        uint8_t pad_B886[0xB96C - 0xB886];                                     // 0x00B886
+        uint8_t pad_B886[0xB94C - 0xB886];                                     // 0x00B886
+        uint8_t var_B94C;                                                      // 0x00B94C (0x00531774)
+        uint8_t pad_B94D[0xB950 - 0xB94D];                                     // 0x00B94D
+        uint8_t var_B950;                                                      // 0x00B950 (0x00531778)
+        uint8_t pad_B951;                                                      // 0x00B951
+        uint8_t var_B952;                                                      // 0x00B952 (0x0053177A)
+        uint8_t pad_B953;                                                      // 0x00B953
+        uint8_t var_B954;                                                      // 0x00B954 (0x0053177C)
+        uint8_t pad_B955;                                                      // 0x00B955
+        uint8_t var_B956;                                                      // 0x00B956 (0x0053177E)
+        uint8_t pad_B957[0xB968 - 0xB957];                                     // 0x00B957
+        uint8_t currentRainLevel;                                              // 0x00B968 (0x00531780)
+        uint8_t pad_B969[0xB96C - 0xB969];                                     // 0x00B969
         Company companies[Limits::maxCompanies];                               // 0x00B96C (0x00531784)
         Town towns[Limits::maxTowns];                                          // 0x092444 (0x005B825C)
         Industry industries[Limits::maxIndustries];                            // 0x09E744 (0x005C455C)
