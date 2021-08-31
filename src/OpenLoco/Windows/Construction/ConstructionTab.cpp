@@ -2315,9 +2315,35 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
+    // 0x004A006C
     void removeTrackGhosts()
     {
-        call(0x004A006C);
+        if (_byte_522096 & (1 << 1))
+        {
+            if (_ghostRemovalTrackObjectId & (1 << 7))
+            {
+                GameCommands::RoadRemovalArgs args;
+                args.pos = _ghostRemovalTrackPos;
+                args.pos.z += TrackData::getRoadPiece(_ghostRemovalTrackId)[0].z;
+                args.unkDirection = _ghostRemovalTrackRotation & 3;
+                args.sequenceIndex = 0;
+                args.roadId = _ghostRemovalTrackId;
+                args.objectId = _ghostRemovalTrackObjectId & ~(1 << 7);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            }
+            else
+            {
+                GameCommands::TrackRemovalArgs args;
+                args.pos = _ghostRemovalTrackPos;
+                args.pos.z += TrackData::getTrackPiece(_ghostRemovalTrackId)[0].z;
+                args.rotation = _ghostRemovalTrackRotation & 3;
+                args.index = 0;
+                args.trackId = _ghostRemovalTrackId;
+                args.trackObjectId = _ghostRemovalTrackObjectId;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            }
+            _byte_522096 = _byte_522096 & ~(1 << 1);
+        }
     }
 
     static loco_global<uint16_t[44], 0x004F8764> _4F8764;
