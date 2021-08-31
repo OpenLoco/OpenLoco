@@ -203,6 +203,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 break;
             case widx::parent_button:
                 upOneLevel();
+                window->var_85A = -1;
                 window->invalidate();
                 break;
             case widx::ok_button:
@@ -242,6 +243,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (Input::state() == Input::State::scrollLeft && fs::is_directory(entry))
         {
             changeDirectory(entry);
+            self->var_85A = -1;
             self->invalidate();
             return;
         }
