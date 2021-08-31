@@ -279,9 +279,6 @@ namespace OpenLoco::Input
                 break;
             }
 
-            if (nextKey->keyCode >= 255)
-                continue;
-
             if (nextKey->keyCode == SDLK_LSHIFT || nextKey->keyCode == SDLK_RSHIFT)
                 continue;
 
