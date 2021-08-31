@@ -1,19 +1,8 @@
 #include "../Ui/TextInput.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringManager.h"
-#include "../Win32.h"
 
-#ifdef _WIN32
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#define WIN32_LEAN_AND_MEAN
-#include <shlobj.h>
-#include <windows.h>
-
-// `interface` is defined as a macro for `struct` in `windows.h`
-#undef interface
-#endif
+#include <SDL2/SDL.h>
 
 using namespace OpenLoco::Interop;
 
@@ -24,7 +13,7 @@ namespace OpenLoco::Ui::TextInput
     // Common code from 0x0044685C, 0x004CE910
     bool InputSession::handleInput(uint32_t charCode, uint32_t keyCode)
     {
-        if ((charCode >= VK_SPACE && charCode < VK_F12) || (charCode >= 159 && charCode <= 255))
+        if ((charCode >= SDLK_SPACE && charCode < SDLK_F12) || (charCode >= 159 && charCode <= 255))
         {
             if (buffer.length() == 199)
             {
@@ -41,7 +30,7 @@ namespace OpenLoco::Ui::TextInput
             }
             cursorPosition += 1;
         }
-        else if (charCode == VK_BACK)
+        else if (charCode == SDLK_BACKSPACE)
         {
             if (cursorPosition == 0)
             {
@@ -52,7 +41,7 @@ namespace OpenLoco::Ui::TextInput
             buffer.erase(cursorPosition - 1, 1);
             cursorPosition -= 1;
         }
-        else if (keyCode == VK_DELETE)
+        else if (keyCode == SDLK_DELETE)
         {
             if (cursorPosition == buffer.length())
             {
@@ -61,15 +50,15 @@ namespace OpenLoco::Ui::TextInput
 
             buffer.erase(cursorPosition, 1);
         }
-        else if (keyCode == VK_HOME)
+        else if (keyCode == SDLK_HOME)
         {
             cursorPosition = 0;
         }
-        else if (keyCode == VK_END)
+        else if (keyCode == SDLK_END)
         {
             cursorPosition = buffer.length();
         }
-        else if (keyCode == VK_LEFT)
+        else if (keyCode == SDLK_LEFT)
         {
             if (cursorPosition == 0)
             {
@@ -79,7 +68,7 @@ namespace OpenLoco::Ui::TextInput
 
             cursorPosition -= 1;
         }
-        else if (keyCode == VK_RIGHT)
+        else if (keyCode == SDLK_RIGHT)
         {
             if (cursorPosition == buffer.length())
             {

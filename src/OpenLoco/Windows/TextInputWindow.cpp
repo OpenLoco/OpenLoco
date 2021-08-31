@@ -8,20 +8,7 @@
 #include "../Ui/TextInput.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
-#include "../Win32.h"
-#include <cassert>
-
-#ifdef _WIN32
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#define WIN32_LEAN_AND_MEAN
-#include <shlobj.h>
-#include <windows.h>
-
-// `interface` is defined as a macro for `struct` in `windows.h`
-#undef interface
-#endif
+#include <SDL2/SDL.h>
 
 using namespace OpenLoco::Interop;
 
@@ -310,12 +297,12 @@ namespace OpenLoco::Ui::Windows::TextInput
             return;
         }
 
-        if (charCode == VK_RETURN)
+        if (charCode == SDLK_RETURN)
         {
             w->callOnMouseUp(Widx::ok);
             return;
         }
-        else if (charCode == VK_ESCAPE)
+        else if (charCode == SDLK_ESCAPE)
         {
             w->callOnMouseUp(Widx::close);
             return;

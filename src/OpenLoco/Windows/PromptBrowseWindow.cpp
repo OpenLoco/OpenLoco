@@ -17,19 +17,8 @@
 #include "../Ui/WindowManager.h"
 #include "../Utility/String.hpp"
 #include "../Widget.h"
-#include "../Win32.h"
 
-#ifdef _WIN32
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#define WIN32_LEAN_AND_MEAN
-#include <shlobj.h>
-#include <windows.h>
-
-// `interface` is defined as a macro for `struct` in `windows.h`
-#undef interface
-#endif
+#include <SDL2/SDL.h>
 
 #include <algorithm>
 #include <cstring>
@@ -692,12 +681,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (w == nullptr)
             return;
 
-        if (keyCode == VK_RETURN)
+        if (keyCode == SDLK_RETURN)
         {
             w->callOnMouseUp(widx::ok_button);
             return;
         }
-        else if (keyCode == VK_ESCAPE)
+        else if (keyCode == SDLK_ESCAPE)
         {
             w->callOnMouseUp(widx::close_button);
             return;

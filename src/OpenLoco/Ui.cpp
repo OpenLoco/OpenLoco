@@ -1,5 +1,4 @@
 #include "Ui/Cursor.h"
-#include "Win32.h"
 #include <algorithm>
 #include <cmath>
 #include <codecvt>
@@ -101,7 +100,6 @@ namespace OpenLoco::Ui
     static void setWindowIcon();
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
-    static int32_t convertSdlKeycodeToWindows(int32_t keyCode);
     static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -577,93 +575,6 @@ namespace OpenLoco::Ui
         }
     }
 
-    static int32_t convertSdlScancodeToDirectInput(int32_t scancode)
-    {
-        switch (scancode)
-        {
-            case SDL_SCANCODE_UP: return DIK_UP;
-            case SDL_SCANCODE_LEFT: return DIK_LEFT;
-            case SDL_SCANCODE_RIGHT: return DIK_RIGHT;
-            case SDL_SCANCODE_DOWN: return DIK_DOWN;
-            case SDL_SCANCODE_LSHIFT: return DIK_LSHIFT;
-            case SDL_SCANCODE_RSHIFT: return DIK_RSHIFT;
-            case SDL_SCANCODE_LCTRL: return DIK_LCONTROL;
-            case SDL_SCANCODE_RCTRL: return DIK_RCONTROL;
-            case SDL_SCANCODE_INSERT:
-                return DIK_INSERT;
-
-            // Simulate INSERT for smaller keyboards
-            case SDL_SCANCODE_LALT: return DIK_INSERT;
-            case SDL_SCANCODE_RALT: return DIK_INSERT;
-
-            default: return 0;
-        }
-    }
-
-    static int32_t convertSdlKeycodeToWindows(int32_t keyCode)
-    {
-        switch (keyCode)
-        {
-            case SDLK_PAUSE: return VK_PAUSE;
-            case SDLK_PAGEUP: return VK_PRIOR;
-            case SDLK_PAGEDOWN: return VK_NEXT;
-            case SDLK_END: return VK_END;
-            case SDLK_HOME: return VK_HOME;
-            case SDLK_LEFT: return VK_LEFT;
-            case SDLK_UP: return VK_UP;
-            case SDLK_RIGHT: return VK_RIGHT;
-            case SDLK_DOWN: return VK_DOWN;
-            case SDLK_SELECT: return VK_SELECT;
-            case SDLK_EXECUTE: return VK_EXECUTE;
-            case SDLK_PRINTSCREEN: return VK_SNAPSHOT;
-            case SDLK_INSERT: return VK_INSERT;
-            case SDLK_DELETE: return VK_DELETE;
-            case SDLK_SEMICOLON: return VK_OEM_1;
-            case SDLK_EQUALS: return VK_OEM_PLUS;
-            case SDLK_COMMA: return VK_OEM_COMMA;
-            case SDLK_MINUS: return VK_OEM_MINUS;
-            case SDLK_PERIOD: return VK_OEM_PERIOD;
-            case SDLK_SLASH: return VK_OEM_2;
-            case SDLK_QUOTE: return VK_OEM_3;
-            case SDLK_LEFTBRACKET: return VK_OEM_4;
-            case SDLK_BACKSLASH: return VK_OEM_5;
-            case SDLK_RIGHTBRACKET: return VK_OEM_6;
-            case SDLK_HASH: return VK_OEM_7;
-            case SDLK_BACKQUOTE: return VK_OEM_8;
-            case SDLK_APPLICATION: return VK_APPS;
-            case SDLK_KP_0: return VK_NUMPAD0;
-            case SDLK_KP_1: return VK_NUMPAD1;
-            case SDLK_KP_2: return VK_NUMPAD2;
-            case SDLK_KP_3: return VK_NUMPAD3;
-            case SDLK_KP_4: return VK_NUMPAD4;
-            case SDLK_KP_5: return VK_NUMPAD5;
-            case SDLK_KP_6: return VK_NUMPAD6;
-            case SDLK_KP_7: return VK_NUMPAD7;
-            case SDLK_KP_8: return VK_NUMPAD8;
-            case SDLK_KP_9: return VK_NUMPAD9;
-            case SDLK_KP_MULTIPLY: return VK_MULTIPLY;
-            case SDLK_KP_PLUS: return VK_ADD;
-            case SDLK_KP_ENTER: return VK_SEPARATOR;
-            case SDLK_KP_MINUS: return VK_SUBTRACT;
-            case SDLK_KP_PERIOD: return VK_DECIMAL;
-            case SDLK_KP_DIVIDE: return VK_DIVIDE;
-            default:
-                if (keyCode >= SDLK_a && keyCode <= SDLK_z)
-                {
-                    return 'A' + (keyCode - SDLK_a);
-                }
-                else if (keyCode >= SDLK_F1 && keyCode <= SDLK_F12)
-                {
-                    return VK_F1 + (keyCode - SDLK_F1);
-                }
-                else if (keyCode <= 127)
-                {
-                    return keyCode;
-                }
-                return 0;
-        }
-    }
-
     // 0x0040477F
     static void readKeyboardState()
     {
@@ -683,11 +594,7 @@ namespace OpenLoco::Ui
                 if (!isDown)
                     continue;
 
-                auto dinputCode = convertSdlScancodeToDirectInput(scanCode);
-                if (dinputCode != 0)
-                {
-                    dst[dinputCode] = 0x80;
-                }
+                dst[scanCode] = 0x80;
             }
             addr<0x005251CC, uint8_t>() = 1;
         }
@@ -816,11 +723,7 @@ namespace OpenLoco::Ui
                         keycode = SDLK_RETURN;
                     }
 
-                    auto locokey = convertSdlKeycodeToWindows(keycode);
-                    if (locokey != 0)
-                    {
-                        enqueueKey(locokey);
-                    }
+                    enqueueKey(keycode);
                     break;
                 }
                 case SDL_KEYUP:
