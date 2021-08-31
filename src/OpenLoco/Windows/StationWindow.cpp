@@ -725,7 +725,7 @@ namespace OpenLoco::Ui::Windows::Station
     }
 
     // 0x00491BC6
-    static void sub_491BC6()
+    void sub_491BC6()
     {
         TileLoop tileLoop;
 

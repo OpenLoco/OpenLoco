@@ -2315,7 +2315,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    static void removeTrackGhosts()
+    void removeTrackGhosts()
     {
         call(0x004A006C);
     }

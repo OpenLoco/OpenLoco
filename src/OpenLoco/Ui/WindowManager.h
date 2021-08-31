@@ -282,6 +282,7 @@ namespace OpenLoco::Ui::Windows
         Window* open(uint16_t id);
         void reset();
         void showStationCatchment(uint16_t windowNumber);
+        void sub_491BC6();
     }
 
     namespace StationList

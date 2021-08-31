@@ -187,6 +187,39 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         return { args };
     }
 
+    // 0x0049FF0
+    void removeTrackModsGhost()
+    {
+        if (_byte_522096 & (1 << 4))
+        {
+            if (_modGhostTrackObjId & (1 << 7))
+            {
+                GameCommands::RoadModsRemovalArgs args;
+                args.pos = _modGhostPos;
+                args.rotation = _modGhostRotation;
+                args.roadId = _modGhostTrackId;
+                args.index = _modGhostTileIndex;
+                args.roadObjType = _modGhostTrackObjId & ~(1 << 7);
+                args.type = _lastSelectedMods;
+                args.modSection = _lastSelectedTrackModSection;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            }
+            else
+            {
+                GameCommands::TrackModsRemovalArgs args;
+                args.pos = _modGhostPos;
+                args.rotation = _modGhostRotation;
+                args.trackId = _modGhostTrackId;
+                args.index = _modGhostTileIndex;
+                args.trackObjType = _modGhostTrackObjId & ~(1 << 7);
+                args.type = _lastSelectedMods;
+                args.modSection = _lastSelectedTrackModSection;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            }
+            _byte_522096 = _byte_522096 & ~(1 << 4);
+        }
+    }
+
     static uint32_t placeRoadModGhost(const GameCommands::RoadModsPlacementArgs& args)
     {
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);

@@ -47,6 +47,9 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<Map::Pos3, 0x01135FBA> _ghostTrackPos;
     static loco_global<Map::Pos3, 0x01135FC0> _ghostRemovalTrackPos;
     static loco_global<uint8_t, 0x0113606A> _ghostRemovalTrackId;
+    static loco_global<uint8_t, 0x0113606B> _stationGhostRotation;
+    static loco_global<uint8_t, 0x0113606C> _stationGhostTrackId;
+    static loco_global<uint8_t, 0x0113606D> _stationGhostTileIndex;
     static loco_global<uint8_t, 0x01136069> _ghostRemovalTrackRotation;
     static loco_global<uint8_t, 0x00522093> _ghostRemovalTrackObjectId;
     static loco_global<Map::Pos3, 0x01135FC6> _nextTile;
@@ -56,6 +59,8 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
     static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
+    static loco_global<Map::Pos3, 0x01135FE6> _stationGhostPos;
+    static loco_global<uint16_t, 0x01135FEE> _stationGhostType;
     static loco_global<Map::Pos3, 0x01135FF8> _modGhostPos;
     static loco_global<uint16_t, 0x01135FFE> _word_1135FFE;
     static loco_global<int16_t, 0x01136000> _word_1136000;
@@ -222,6 +227,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void initEvents();
         void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
         void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
+        void removeTrackGhosts();
     }
 
     namespace Station
@@ -241,6 +247,7 @@ namespace OpenLoco::Ui::Windows::Construction
         extern WindowEventList events;
         void tabReset(Window* self);
         void initEvents();
+        void removeStationGhost();
     }
 
     namespace Signal
@@ -260,6 +267,7 @@ namespace OpenLoco::Ui::Windows::Construction
         extern WindowEventList events;
         void tabReset(Window* self);
         void initEvents();
+        void removeSignalGhost();
     }
 
     namespace Overhead
@@ -282,5 +290,6 @@ namespace OpenLoco::Ui::Windows::Construction
         extern WindowEventList events;
         void tabReset(Window* self);
         void initEvents();
+        void removeTrackModsGhost();
     }
 }
