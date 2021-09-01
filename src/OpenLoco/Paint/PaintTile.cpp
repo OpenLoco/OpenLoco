@@ -166,6 +166,10 @@ namespace OpenLoco::Paint
             return;
         }
 
+        static loco_global<uint8_t[8 * 44], 0x004F87BC> _4F87BC;
+        static loco_global<uint8_t[4 * 16], 0x004FE830> _4FE830;
+        static loco_global<uint8_t[4 * 16], 0x004FE870> _4FE870;
+
         if (elTrack->sequenceIndex() != 0)
         {
             if (elSignal.hasLeftSignal())
@@ -173,13 +177,23 @@ namespace OpenLoco::Paint
                 session.setItemType(InteractionItem::signal);
                 session.setTrackModId(0);
                 auto* signalObj = ObjectManager::get<TrainSignalObject>(elSignal.leftSignalObjectId());
-                const auto& track = Map::TrackData::getUnkTrack(elTrack->trackId()).rotationBegin;
+                const auto trackRotation = Map::TrackData::getUnkTrack(elTrack->trackId()).rotationBegin;
+                if (signalObj->track_side & (1 << 0))
+                {
+                    _4FE870;
+                }
+                else
+                {
+                    _4FE830;
+                }
                 Map::Pos3 offset();
             }
             else
             {
+                // 0x00488853
             }
         }
+        // 0x004888EB
         registers regs;
         regs.esi = X86Pointer(&elSignal);
         regs.ecx = (session.getRotation() + (elSignal.data()[0] & 0x3)) & 0x3;
