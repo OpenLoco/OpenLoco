@@ -565,7 +565,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    bool isRootPath(const fs::path& entry)
+    static bool isRootPath(const fs::path& entry)
     {
         return (entry == entry.root_path());
     }
