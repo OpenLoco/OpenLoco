@@ -301,8 +301,11 @@ namespace OpenLoco::Map
         uint8_t _7;
 
     public:
+        bool isLeftGhost() const { return _type & 0x80; }
+        bool isRightGhost() const { return _type & 0x40; }
         bool hasLeftSignal() const { return _4 & 0x80; }
         uint8_t leftSignalObjectId() const { return _4 & 0xF; } // _4l
+        uint8_t leftFrame() const { return _5 & 0xF; }          // _5l
         bool hasRightSignal() const { return _6 & 0x80; }
         uint8_t rightSignalObjectId() const { return _6 & 0xF; } // _6l
     };

@@ -10,6 +10,7 @@
 #include "../Ui.h"
 #include "Paint.h"
 #include "PaintTree.h"
+#include <iostream>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -141,6 +142,266 @@ namespace OpenLoco::Paint
         call(0x0048B313, regs);
     }
 
+    struct OffsetAndBBOffset
+    {
+        Map::Pos2 offset;
+        Map::Pos2 boundingOffset;
+    };
+    std::array<OffsetAndBBOffset, 16> _4FE830 = {
+        OffsetAndBBOffset{ { 24, 4 }, { 24, 4 } },
+        OffsetAndBBOffset{ {
+                               4,
+                               8,
+                           },
+                           {
+                               4,
+                               8,
+                           } },
+        OffsetAndBBOffset{ {
+                               8,
+                               28,
+                           },
+                           {
+                               8,
+                               28,
+                           } },
+        OffsetAndBBOffset{ {
+                               28,
+                               24,
+                           },
+                           {
+                               28,
+                               24,
+                           } },
+        OffsetAndBBOffset{ {
+                               24,
+                               1,
+                           },
+                           {
+                               24,
+                               1,
+                           } },
+        OffsetAndBBOffset{ {
+                               1,
+                               8,
+                           },
+                           {
+                               1,
+                               8,
+                           } },
+        OffsetAndBBOffset{ {
+                               8,
+                               31,
+                           },
+                           {
+                               8,
+                               31,
+                           } },
+        OffsetAndBBOffset{ {
+                               31,
+                               24,
+                           },
+                           {
+                               31,
+                               24,
+                           } },
+        OffsetAndBBOffset{ {
+                               24,
+                               16,
+                           },
+                           {
+                               24,
+                               16,
+                           } },
+        OffsetAndBBOffset{ {
+                               16,
+                               8,
+                           },
+                           {
+                               16,
+                               8,
+                           } },
+        OffsetAndBBOffset{ {
+                               8,
+                               16,
+                           },
+                           {
+                               8,
+                               16,
+                           } },
+        OffsetAndBBOffset{ {
+                               16,
+                               24,
+                           },
+                           {
+                               16,
+                               24,
+                           } },
+        OffsetAndBBOffset{ {
+                               6,
+                               10,
+                           },
+                           {
+                               0,
+                               0,
+                           } },
+        OffsetAndBBOffset{ {
+                               10,
+                               26,
+                           },
+                           {
+                               10,
+                               26,
+                           } },
+        OffsetAndBBOffset{ {
+                               26,
+                               22,
+                           },
+                           {
+                               26,
+                               22,
+                           } },
+        OffsetAndBBOffset{ {
+                               22,
+                               6,
+                           },
+                           {
+                               22,
+                               6,
+                           } },
+    };
+
+    std::array<OffsetAndBBOffset, 16> _4FE870 = {
+        OffsetAndBBOffset{ {
+                               24,
+                               28,
+                           },
+                           {
+                               24,
+                               28,
+                           } },
+        OffsetAndBBOffset{ {
+                               28,
+                               8,
+                           },
+                           {
+                               28,
+                               8,
+                           } },
+        OffsetAndBBOffset{ {
+                               8,
+                               4,
+                           },
+                           {
+                               8,
+                               4,
+                           } },
+        OffsetAndBBOffset{ {
+                               4,
+                               24,
+                           },
+                           {
+                               4,
+                               24,
+                           } },
+        OffsetAndBBOffset{ {
+                               24,
+                               16,
+                           },
+                           {
+                               24,
+                               16,
+                           } },
+        OffsetAndBBOffset{ {
+                               16,
+                               8,
+                           },
+                           {
+                               16,
+                               8,
+                           } },
+        OffsetAndBBOffset{ {
+                               8,
+                               16,
+                           },
+                           {
+                               8,
+                               16,
+                           } },
+        OffsetAndBBOffset{ {
+                               16,
+                               24,
+                           },
+                           {
+                               16,
+                               24,
+                           } },
+        OffsetAndBBOffset{ {
+                               24,
+                               31,
+                           },
+                           {
+                               24,
+                               31,
+                           } },
+        OffsetAndBBOffset{ {
+                               31,
+                               8,
+                           },
+                           {
+                               31,
+                               8,
+                           } },
+        OffsetAndBBOffset{ {
+                               8,
+                               1,
+                           },
+                           {
+                               8,
+                               1,
+                           } },
+        OffsetAndBBOffset{ {
+                               31,
+                               24,
+                           },
+                           {
+                               31,
+                               24,
+                           } },
+        OffsetAndBBOffset{ {
+                               22,
+                               26,
+                           },
+                           {
+                               22,
+                               26,
+                           } },
+        OffsetAndBBOffset{ {
+                               26,
+                               10,
+                           },
+                           {
+                               26,
+                               10,
+                           } },
+        OffsetAndBBOffset{ {
+                               10,
+                               6,
+                           },
+                           {
+                               0,
+                               0,
+                           } },
+        OffsetAndBBOffset{ {
+                               6,
+                               22,
+                           },
+                           {
+                               6,
+                               22,
+                           } },
+    };
+
     // 0x0048864C
     static void paintSignal(PaintSession& session, Map::SignalElement& elSignal)
     {
@@ -167,10 +428,8 @@ namespace OpenLoco::Paint
         }
 
         static loco_global<uint8_t[8 * 44], 0x004F87BC> _4F87BC;
-        static loco_global<uint8_t[4 * 16], 0x004FE830> _4FE830;
-        static loco_global<uint8_t[4 * 16], 0x004FE870> _4FE870;
 
-        if (elTrack->sequenceIndex() != 0)
+        if (elTrack->sequenceIndex() == 0)
         {
             if (elSignal.hasLeftSignal())
             {
@@ -178,15 +437,23 @@ namespace OpenLoco::Paint
                 session.setTrackModId(0);
                 auto* signalObj = ObjectManager::get<TrainSignalObject>(elSignal.leftSignalObjectId());
                 const auto trackRotation = Map::TrackData::getUnkTrack(elTrack->trackId()).rotationBegin;
-                if (signalObj->track_side & (1 << 0))
+                const auto& offsetAndBBoffsetArr = (signalObj->flags & TrainSignalObjectFlags::isLeft) ? _4FE870 : _4FE830;
+                const auto& offsetAndBBoffset = offsetAndBBoffsetArr[trackRotation];
+                const auto imageRotationOffset = ((trackRotation & 0x3) << 1) | (trackRotation >= 12 ? 1 : 0);
+                const auto imageOffset = imageRotationOffset + signalObj->image + (elSignal.leftFrame() << 3);
+
+                uint32_t imageId = imageOffset;
+                if (elSignal.isGhost() || elSignal.isLeftGhost())
                 {
-                    _4FE870;
+                    session.setItemType(InteractionItem::noInteraction);
+                    imageId = Gfx::applyGhostToImage(imageOffset);
                 }
-                else
-                {
-                    _4FE830;
-                }
-                Map::Pos3 offset();
+                Map::Pos3 offset(offsetAndBBoffset.offset.x, offsetAndBBoffset.offset.y, _4F87BC[elTrack->trackId() * 8 + 3] + elSignal.baseZ() * 4);
+                Map::Pos3 bbOffset(offsetAndBBoffset.boundingOffset.x, offsetAndBBoffset.boundingOffset.y, offset.z + 4);
+                Map::Pos3 bbSize(1, 1, 14);
+                session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
+                // 0x00488775
+                return;
             }
             else
             {
