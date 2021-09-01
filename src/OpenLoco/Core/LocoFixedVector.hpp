@@ -14,22 +14,32 @@ namespace OpenLoco
         {
         private:
             ValueType* arr;
-            int32_t i = 0;
+            size_t i = 0;
+
+            constexpr void findNonEmpty()
+            {
+                for (; i < Count; ++i)
+                {
+                    if (!arr[i].empty())
+                    {
+                        break;
+                    }
+                }
+            }
 
         public:
-            constexpr Iter(ValueType* _arr, int32_t _index)
+            constexpr Iter(ValueType* _arr, size_t _index)
                 : arr(_arr)
                 , i(_index)
             {
                 // finds first valid entry
-                ++(*this);
+                findNonEmpty();
             }
 
             constexpr Iter& operator++()
             {
-                while (i != Count && (arr[++i]).empty())
-                {
-                }
+                ++i;
+                findNonEmpty();
                 return *this;
             }
 
@@ -69,7 +79,7 @@ namespace OpenLoco
 
         Iter begin() const
         {
-            return Iter(startAddress, -1);
+            return Iter(startAddress, 0);
         }
         Iter end() const
         {
