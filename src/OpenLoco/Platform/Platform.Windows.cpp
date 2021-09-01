@@ -114,7 +114,12 @@ namespace OpenLoco::platform
             if (driveMask & (1 << i))
             {
                 drive[0] = 'A' + i;
-                drives.push_back(drive);
+                std::error_code ec;
+                // Remove unaccessable drives (if error it is unaccessable)
+                if (fs::is_directory(drive, ec))
+                {
+                    drives.push_back(drive);
+                }
             }
         }
         return drives;

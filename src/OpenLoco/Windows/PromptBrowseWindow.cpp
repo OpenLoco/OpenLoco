@@ -688,16 +688,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         _files.clear();
         if (_currentDirectory.empty())
         {
-            // Get all drives then remove all unusable drives such as CD-ROM drives with no cd in them
-            for (const auto& drive : platform::getDrives())
-            {
-                // Unready drives will generate an error code and are classed as not directories
-                std::error_code ec;
-                if (fs::is_directory(drive, ec))
-                {
-                    _files.emplace_back(drive);
-                }
-            }
+            // Get all drives
+            _files = platform::getDrives();
             return; // no need to sort these as they are already sorted
         }
         else
