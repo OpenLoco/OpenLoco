@@ -14,7 +14,7 @@ namespace OpenLoco::Map
     // 0x00477FC2
     bool RoadElement::update(const Map::Pos2& loc)
     {
-        if (owner() == CompanyId::neutral || isPlayerCompany(owner()))
+        if (owner() == CompanyId::neutral || CompanyManager::isPlayerCompany(owner()))
             return true;
 
         if (!(_525FBC & (1 << roadObjectId())))
@@ -44,7 +44,7 @@ namespace OpenLoco::Map
             if (roadEl->baseZ() != baseZ())
                 continue;
 
-            if (roadEl->owner() == CompanyId::neutral || isPlayerCompany(roadEl->owner()))
+            if (roadEl->owner() == CompanyId::neutral || CompanyManager::isPlayerCompany(roadEl->owner()))
                 continue;
 
             if (!(_525FBC & (1 << roadEl->roadObjectId())))

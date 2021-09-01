@@ -12,15 +12,6 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::EntityManager
 {
-    constexpr size_t numEntityLists = 7;
-    constexpr size_t maxEntities = 20000;
-    // There is a seperate pool of 200 entities dedicated for money
-    constexpr size_t maxMoneyEntities = 200;
-    // This is the main pool for everything that isn't money
-    constexpr size_t maxNormalEntities = maxEntities - maxMoneyEntities;
-    // Money is not counted in this limit
-    constexpr size_t maxMiscEntities = 4000;
-
     enum class EntityListType
     {
         null,      // Used for vehicles and other misc entities (not money)

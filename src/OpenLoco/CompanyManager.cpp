@@ -3,6 +3,7 @@
 #include "Entities/EntityManager.h"
 #include "Entities/Misc.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
@@ -23,15 +24,20 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::CompanyManager
 {
-    static loco_global<CompanyId_t[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<uint8_t, 0x00526214> _company_competition_delay;
     static loco_global<uint8_t, 0x00525FB7> _company_max_competing;
-    static loco_global<Company[max_companies], 0x00531784> _companies;
-    static loco_global<uint8_t[max_companies + 1], 0x009C645C> _company_colours;
+    static loco_global<uint8_t[Limits::maxCompanies + 1], 0x009C645C> _company_colours;
     static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
 
     static void produceCompanies();
+
+    static auto& rawCompanies()
+    {
+        return getGameState().companies;
+    }
+
+    static auto& rawPlayerCompanies() { return getGameState().playerCompanies; }
 
     // 0x0042F7F8
     void reset()
@@ -45,22 +51,22 @@ namespace OpenLoco::CompanyManager
         // Reset player companies depending on network mode.
         if (isNetworkHost())
         {
-            _player_company[0] = 1;
-            _player_company[1] = 0;
+            rawPlayerCompanies()[0] = 1;
+            rawPlayerCompanies()[1] = 0;
         }
         else if (isNetworked())
         {
-            _player_company[0] = 0;
-            _player_company[1] = 1;
+            rawPlayerCompanies()[0] = 0;
+            rawPlayerCompanies()[1] = 1;
         }
         else
         {
-            _player_company[0] = 0;
-            _player_company[1] = 0xFF;
+            rawPlayerCompanies()[0] = 0;
+            rawPlayerCompanies()[1] = CompanyId::null;
         }
 
         // Reset primary company colours.
-        _companies[0].mainColours.primary = Colour::saturated_green;
+        rawCompanies()[0].mainColours.primary = Colour::saturated_green;
         updateColours();
     }
 
@@ -74,44 +80,44 @@ namespace OpenLoco::CompanyManager
         _updating_company_id = id;
     }
 
-    LocoFixedVector<Company> companies()
+    FixedVector<Company, Limits::maxCompanies> companies()
     {
-        return LocoFixedVector<Company>(_companies);
+        return FixedVector(rawCompanies());
     }
 
     Company* get(CompanyId_t id)
     {
         auto index = id;
-        if (index < _companies.size())
+        if (index < Limits::maxCompanies)
         {
-            return &_companies[index];
+            return &rawCompanies()[index];
         }
         return nullptr;
     }
 
     CompanyId_t getControllingId()
     {
-        return _player_company[0];
+        return rawPlayerCompanies()[0];
     }
 
     CompanyId_t getSecondaryPlayerId()
     {
-        return _player_company[1];
+        return rawPlayerCompanies()[1];
     }
 
     void setControllingId(CompanyId_t id)
     {
-        _player_company[0] = id;
+        rawPlayerCompanies()[0] = id;
     }
 
     void setSecondaryPlayerId(CompanyId_t id)
     {
-        _player_company[1] = id;
+        rawPlayerCompanies()[1] = id;
     }
 
     Company* getPlayerCompany()
     {
-        return &_companies[_player_company[0]];
+        return get(rawPlayerCompanies()[0]);
     }
 
     uint8_t getCompanyColour(CompanyId_t id)
@@ -121,7 +127,16 @@ namespace OpenLoco::CompanyManager
 
     uint8_t getPlayerCompanyColour()
     {
-        return _company_colours[_player_company[0]];
+        return _company_colours[rawPlayerCompanies()[0]];
+    }
+
+    bool isPlayerCompany(CompanyId_t id)
+    {
+        auto findResult = std::find(
+            std::begin(rawPlayerCompanies()),
+            std::end(rawPlayerCompanies()),
+            id);
+        return findResult != std::end(rawPlayerCompanies());
     }
 
     // 0x00430319
@@ -175,11 +190,8 @@ namespace OpenLoco::CompanyManager
     // 0x0042FDE2
     void determineAvailableVehicles()
     {
-        for (auto& company : _companies)
+        for (auto& company : companies())
         {
-            if (company.empty())
-                continue;
-
             VehicleManager::determineAvailableVehicles(company);
         }
     }
@@ -210,15 +222,20 @@ namespace OpenLoco::CompanyManager
 
     Company* getOpponent()
     {
-        return &_companies[_player_company[1]];
+        return get(rawPlayerCompanies()[1]);
     }
 
     // 0x00438047
     // Returns a string between 1810 and 1816 with up to two arguments.
     string_id getOwnerStatus(CompanyId_t id, FormatArguments& args)
     {
-        auto& company = _companies[id];
-        if (company.challenge_flags & CompanyFlags::bankrupt)
+        auto* company = get(id);
+        if (company == nullptr)
+        {
+            return StringIds::company_status_empty;
+        }
+
+        if (company->challenge_flags & CompanyFlags::bankrupt)
             return StringIds::company_status_bankrupt;
 
         const string_id observationStatusStrings[] = {
@@ -230,22 +247,22 @@ namespace OpenLoco::CompanyManager
             StringIds::company_status_surveying_landscape,
         };
 
-        string_id statusString = observationStatusStrings[company.observationStatus];
-        if (company.observationStatus == ObservationStatus::empty || company.observationTownId == 0xFFFF)
+        string_id statusString = observationStatusStrings[company->observationStatus];
+        if (company->observationStatus == ObservationStatus::empty || company->observationTownId == 0xFFFF)
             return StringIds::company_status_empty;
 
-        switch (company.observationStatus)
+        switch (company->observationStatus)
         {
             case ObservationStatus::buildingTrackRoad:
-                if (company.observationObject & 0x80)
+                if (company->observationObject & 0x80)
                 {
-                    auto* obj = ObjectManager::get<RoadObject>(company.observationObject & 0xFF7F);
+                    auto* obj = ObjectManager::get<RoadObject>(company->observationObject & 0xFF7F);
                     if (obj != nullptr)
                         args.push(obj->name);
                 }
                 else
                 {
-                    auto* obj = ObjectManager::get<TrackObject>(company.observationObject);
+                    auto* obj = ObjectManager::get<TrackObject>(company->observationObject);
                     if (obj != nullptr)
                         args.push(obj->name);
                 }
@@ -253,7 +270,7 @@ namespace OpenLoco::CompanyManager
 
             case ObservationStatus::buildingAirport:
             {
-                auto* obj = ObjectManager::get<AirportObject>(company.observationObject);
+                auto* obj = ObjectManager::get<AirportObject>(company->observationObject);
                 if (obj != nullptr)
                     args.push(obj->name);
                 break;
@@ -261,7 +278,7 @@ namespace OpenLoco::CompanyManager
 
             case ObservationStatus::buildingDock:
             {
-                auto* obj = ObjectManager::get<DockObject>(company.observationObject);
+                auto* obj = ObjectManager::get<DockObject>(company->observationObject);
                 if (obj != nullptr)
                     args.push(obj->name);
                 break;
@@ -271,7 +288,7 @@ namespace OpenLoco::CompanyManager
                 break;
         }
 
-        auto* town = TownManager::get(company.observationTownId);
+        auto* town = TownManager::get(company->observationTownId);
         args.push(town->name);
 
         return statusString;
@@ -397,7 +414,7 @@ namespace OpenLoco::CompanyManager
     void updateColours()
     {
         size_t index = 0;
-        for (auto& company : _companies)
+        for (auto& company : rawCompanies())
         {
             _company_colours[index] = company.mainColours.primary;
             index++;
@@ -455,5 +472,15 @@ namespace OpenLoco::CompanyManager
     uint32_t competingColourMask()
     {
         return competingColourMask(_updating_company_id);
+    }
+
+}
+
+namespace OpenLoco
+{
+    CompanyId_t Company::id() const
+    {
+        auto* first = &CompanyManager::rawCompanies()[0];
+        return (CompanyId_t)(this - first);
     }
 }

@@ -4,33 +4,42 @@
 
 namespace OpenLoco
 {
-    template<typename ValueType>
-    class LocoFixedVector
+    template<typename ValueType, size_t Count>
+    class FixedVector
     {
     private:
         ValueType* startAddress = nullptr;
-        ValueType* endAddress = nullptr;
 
         class Iter
         {
         private:
             ValueType* arr;
-            ValueType* endAdd;
+            size_t i = 0;
+
+            constexpr void findNonEmpty()
+            {
+                for (; i < Count; ++i)
+                {
+                    if (!arr[i].empty())
+                    {
+                        break;
+                    }
+                }
+            }
 
         public:
-            constexpr Iter(ValueType* _arr, ValueType* _endAdd)
+            constexpr Iter(ValueType* _arr, size_t _index)
                 : arr(_arr)
-                , endAdd(_endAdd)
+                , i(_index)
             {
                 // finds first valid entry
-                ++(*this);
+                findNonEmpty();
             }
 
             constexpr Iter& operator++()
             {
-                while (arr != endAdd && (++arr)->empty())
-                {
-                }
+                ++i;
+                findNonEmpty();
                 return *this;
             }
 
@@ -43,7 +52,7 @@ namespace OpenLoco
 
             constexpr bool operator==(Iter other) const
             {
-                return arr == other.arr;
+                return i == other.i;
             }
             constexpr bool operator!=(Iter other) const
             {
@@ -52,7 +61,7 @@ namespace OpenLoco
 
             constexpr ValueType& operator*() const
             {
-                return *arr;
+                return arr[i];
             }
             // iterator traits
             using difference_type = std::ptrdiff_t;
@@ -63,20 +72,18 @@ namespace OpenLoco
         };
 
     public:
-        template<typename T>
-        LocoFixedVector(T& _arr)
-            : startAddress(reinterpret_cast<ValueType*>(T::address))
-            , endAddress(reinterpret_cast<ValueType*>(T::endAddress))
+        FixedVector(ValueType (&_arr)[Count])
+            : startAddress(_arr)
         {
         }
 
         Iter begin() const
         {
-            return Iter(startAddress - 1, endAddress);
+            return Iter(startAddress, 0);
         }
         Iter end() const
         {
-            return Iter(endAddress, endAddress);
+            return Iter(startAddress, Count);
         }
     };
 }

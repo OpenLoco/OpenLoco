@@ -4,6 +4,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../Limits.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/CompetitorObject.h"
@@ -836,7 +837,7 @@ namespace OpenLoco::Ui::Dropdown
         CompanyId_t companyId = CompanyId::null;
 
         size_t index = 0;
-        for (; index < CompanyManager::max_companies; index++)
+        for (; index < Limits::maxCompanies; index++)
         {
             int16_t maxPerformanceIndex = -1;
             for (const auto& company : CompanyManager::companies())
@@ -878,7 +879,7 @@ namespace OpenLoco::Ui::Dropdown
         {
             highlightedIndex++;
 
-            if (highlightedIndex > CompanyManager::max_companies)
+            if (highlightedIndex > Limits::maxCompanies)
             {
                 highlightedIndex = -1;
                 break;

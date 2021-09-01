@@ -1,41 +1,38 @@
 #include "AnimationManager.h"
+#include "../GameState.h"
 #include "../Interop/Interop.hpp"
+#include "Animation.h"
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Map::AnimationManager
 {
-
-#pragma pack(push, 1)
-    struct TileAnimation
+    static auto& rawAnimations()
     {
-        uint8_t baseZ;
-        uint8_t type;
-        Map::Pos2 pos;
-    };
-    static_assert(sizeof(TileAnimation) == 6);
-#pragma pack(pop)
+        return getGameState().animations;
+    }
 
-    constexpr size_t maxAnimations = 0x2000;
+    static auto& numAnimations()
+    {
+        return getGameState().numMapAnimations;
+    }
 
-    static loco_global<TileAnimation[maxAnimations], 0x0094C6DC> _animations;
-    static loco_global<uint16_t, 0x00525F6C> _numAnimations;
     // 0x004612A6
     void createAnimation(uint8_t type, const Pos2& pos, tile_coord_t baseZ)
     {
-        if (_numAnimations >= maxAnimations)
+        if (numAnimations() >= Limits::maxAnimations)
             return;
 
-        for (size_t i = 0; i < _numAnimations; i++)
+        for (size_t i = 0; i < numAnimations(); i++)
         {
-            auto& animation = _animations[i];
+            auto& animation = rawAnimations()[i];
             if (animation.type == type && animation.pos == pos && animation.baseZ == baseZ)
             {
                 return;
             }
         }
 
-        auto& newAnimation = _animations[_numAnimations++];
+        auto& newAnimation = rawAnimations()[numAnimations()++];
         newAnimation.baseZ = baseZ;
         newAnimation.type = type;
         newAnimation.pos = pos;
@@ -44,7 +41,7 @@ namespace OpenLoco::Map::AnimationManager
     // 0x00461166
     void reset()
     {
-        _numAnimations = 0;
+        numAnimations() = 0;
     }
 
     // 0x004612EC

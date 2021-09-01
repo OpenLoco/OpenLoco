@@ -4,8 +4,6 @@
 
 namespace OpenLoco::MessageManager
 {
-    constexpr size_t max_messages = 199;
-
     Message* get(MessageId_t id);
 
     // 0x004285BA

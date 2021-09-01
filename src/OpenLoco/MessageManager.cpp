@@ -1,4 +1,5 @@
 #include "MessageManager.h"
+#include "GameState.h"
 #include "Interop/Interop.hpp"
 #include "OpenLoco.h"
 
@@ -6,15 +7,15 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::MessageManager
 {
-    static loco_global<Message[max_messages], 0x005271D2> _messages;
+    static auto& rawMessages() { return getGameState().messages; }
 
     Message* get(MessageId_t id)
     {
-        if (id >= _messages.size())
+        if (id >= Limits::maxMessages)
         {
             return nullptr;
         }
-        return &_messages[id];
+        return &rawMessages()[id];
     }
 
     void post(

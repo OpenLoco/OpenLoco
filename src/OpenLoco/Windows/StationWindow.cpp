@@ -1013,7 +1013,7 @@ namespace OpenLoco::Ui::Windows::Station
             auto station = StationManager::get(self->number);
             if (station->owner != 255)
             {
-                if (isPlayerCompany(station->owner))
+                if (CompanyManager::isPlayerCompany(station->owner))
                 {
                     self->enabled_widgets |= (1 << Common::widx::caption);
                 }

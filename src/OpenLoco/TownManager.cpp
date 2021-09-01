@@ -1,5 +1,6 @@
 #include "TownManager.h"
 #include "CompanyManager.h"
+#include "GameState.h"
 #include "Interop/Interop.hpp"
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
@@ -9,30 +10,30 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::TownManager
 {
-    static loco_global<Town[max_towns], 0x005B825C> _towns;
+    static auto& rawTowns() { return getGameState().towns; }
 
     // 0x00496B38
     void reset()
     {
-        for (auto& town : _towns)
+        for (auto& town : rawTowns())
         {
             town.name = StringIds::null;
         }
         Ui::Windows::TownList::reset();
     }
 
-    LocoFixedVector<Town> towns()
+    FixedVector<Town, Limits::maxTowns> towns()
     {
-        return LocoFixedVector<Town>(_towns);
+        return FixedVector(rawTowns());
     }
 
     Town* get(TownId_t id)
     {
-        if (id >= _towns.size())
+        if (id >= Limits::maxTowns)
         {
             return nullptr;
         }
-        return &_towns[id];
+        return &rawTowns()[id];
     }
 
     // 0x00496B6D
@@ -187,8 +188,8 @@ OpenLoco::TownId_t OpenLoco::Town::id() const
 {
     // TODO check if this is stored in Town structure
     //      otherwise add it when possible
-    auto index = static_cast<size_t>(this - &TownManager::_towns[0]);
-    if (index > TownManager::max_towns)
+    auto index = static_cast<size_t>(this - &TownManager::rawTowns()[0]);
+    if (index > Limits::maxTowns)
     {
         index = TownId::null;
     }

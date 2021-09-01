@@ -44,6 +44,7 @@
     <ClCompile Include="GameCommands\RenameTown.cpp" />
     <ClCompile Include="GameCommands\TogglePause.cpp" />
     <ClCompile Include="GameCommands\VehiclePickup.cpp" />
+    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Graphics\Colour.cpp" />
     <ClCompile Include="Graphics\Gfx.cpp" />
     <ClCompile Include="Gui.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCommands\Cheat.h" />
     <ClInclude Include="GameCommands\GameCommands.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="Graphics\Colour.h" />
     <ClInclude Include="Graphics\Gfx.h" />
     <ClInclude Include="Graphics\ImageIds.h" />
@@ -257,6 +259,7 @@
     <ClInclude Include="Interop\Interop.hpp" />
     <ClInclude Include="Intro.h" />
     <ClInclude Include="LabelFrame.h" />
+    <ClInclude Include="Limits.h" />
     <ClInclude Include="Localisation\ArgsWrapper.hpp" />
     <ClInclude Include="Localisation\Conversion.h" />
     <ClInclude Include="Localisation\FormatArguments.hpp" />
@@ -266,12 +269,14 @@
     <ClInclude Include="Localisation\StringIds.h" />
     <ClInclude Include="Localisation\Unicode.h" />
     <ClInclude Include="Location.hpp" />
+    <ClInclude Include="Map\Animation.h" />
     <ClInclude Include="Map\AnimationManager.h" />
     <ClInclude Include="Map\Map.hpp" />
     <ClInclude Include="Map\MapGenerator.h" />
     <ClInclude Include="Map\Tile.h" />
     <ClInclude Include="Map\TileLoop.hpp" />
     <ClInclude Include="Map\TileManager.h" />
+    <ClInclude Include="Map\Wave.h" />
     <ClInclude Include="Map\WaveManager.h" />
     <ClInclude Include="Math\Bound.hpp" />
     <ClInclude Include="Math\Trigonometry.hpp" />
@@ -321,6 +326,7 @@
     <ClInclude Include="Platform/Crash.h" />
     <ClInclude Include="Platform\Platform.h" />
     <ClInclude Include="ProgressBar.h" />
+    <ClInclude Include="S5\Limits.h" />
     <ClInclude Include="S5\S5.h" />
     <ClInclude Include="S5\SawyerStream.h" />
     <ClInclude Include="Scenario.h" />

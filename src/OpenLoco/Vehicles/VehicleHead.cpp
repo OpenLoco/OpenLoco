@@ -1745,7 +1745,7 @@ namespace OpenLoco::Vehicles
                 return airplaneApproachTarget(targetZ);
             }
 
-            if (!isPlayerCompany(owner))
+            if (!CompanyManager::isPlayerCompany(owner))
             {
                 stationId = orderStationId;
                 airportMovementEdge = cAirportMovementNodeNull;

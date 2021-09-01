@@ -508,7 +508,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 {
                     auto vehicle = EntityManager::get<Vehicles::VehicleHead>(itemIndex);
                     auto company = CompanyManager::get(vehicle->owner);
-                    if (isPlayerCompany(vehicle->owner))
+                    if (CompanyManager::isPlayerCompany(vehicle->owner))
                     {
                         args.push(StringIds::company_vehicle);
                     }

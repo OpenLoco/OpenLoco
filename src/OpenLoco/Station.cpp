@@ -165,19 +165,6 @@ namespace OpenLoco
     static void sub_491BF5(const Pos2& pos, const uint8_t flag);
     static StationElement* getStationElement(const Pos3& pos);
 
-    StationId_t Station::id() const
-    {
-        // TODO check if this is stored in station structure
-        //      otherwise add it when possible
-        static loco_global<Station[1024], 0x005E6EDC> _stations;
-        auto index = (size_t)(this - _stations);
-        if (index > 1024)
-        {
-            index = StationId::null;
-        }
-        return (StationId_t)index;
-    }
-
     // 0x0048B23E
     void Station::update()
     {
@@ -686,7 +673,7 @@ namespace OpenLoco
             }
         }
 
-        if ((flags & (StationFlags::flag_7 | StationFlags::flag_8)) == 0 && !isPlayerCompany(owner))
+        if ((flags & (StationFlags::flag_7 | StationFlags::flag_8)) == 0 && !CompanyManager::isPlayerCompany(owner))
         {
             rating = 120;
         }

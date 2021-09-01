@@ -1,5 +1,6 @@
 #include "IndustryManager.h"
 #include "CompanyManager.h"
+#include "GameState.h"
 #include "Interop/Interop.hpp"
 #include "Math/Vector.hpp"
 #include "Objects/IndustryObject.h"
@@ -10,30 +11,30 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::IndustryManager
 {
-    static loco_global<Industry[max_industries], 0x005C455C> _industries;
+    static auto& rawIndustries() { return getGameState().industries; }
 
     // 0x00453214
     void reset()
     {
-        for (auto& industry : _industries)
+        for (auto& industry : rawIndustries())
         {
             industry.name = StringIds::null;
         }
         Ui::Windows::IndustryList::reset();
     }
 
-    LocoFixedVector<Industry> industries()
+    FixedVector<Industry, Limits::maxIndustries> industries()
     {
-        return LocoFixedVector<Industry>(_industries);
+        return FixedVector(rawIndustries());
     }
 
     Industry* get(IndustryId_t id)
     {
-        if (id >= _industries.size())
+        if (id >= Limits::maxIndustries)
         {
             return nullptr;
         }
-        return &_industries[id];
+        return &rawIndustries()[id];
     }
 
     // 0x00453234
@@ -83,4 +84,10 @@ namespace OpenLoco::IndustryManager
 
         return false;
     }
+}
+
+OpenLoco::IndustryId_t OpenLoco::Industry::id() const
+{
+    auto* first = &IndustryManager::rawIndustries()[0];
+    return IndustryId_t(this - first);
 }

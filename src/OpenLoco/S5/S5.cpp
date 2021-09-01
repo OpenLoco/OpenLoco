@@ -148,7 +148,7 @@ namespace OpenLoco::S5
     static std::unique_ptr<SaveDetails> prepareSaveDetails(GameState& gameState)
     {
         auto saveDetails = std::make_unique<SaveDetails>();
-        const auto& playerCompany = gameState.companies[gameState.playerCompanyId];
+        const auto& playerCompany = gameState.companies[gameState.playerCompanies[0]];
         StringManager::formatString(saveDetails->company, sizeof(saveDetails->company), playerCompany.name);
         StringManager::formatString(saveDetails->owner, sizeof(saveDetails->owner), playerCompany.ownerName);
         saveDetails->date = gameState.currentDay;

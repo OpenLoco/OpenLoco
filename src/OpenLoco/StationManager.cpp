@@ -1,5 +1,6 @@
 #include "StationManager.h"
 #include "CompanyManager.h"
+#include "GameState.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
@@ -19,29 +20,29 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::StationManager
 {
-    static loco_global<Station[max_stations], 0x005E6EDC> _stations;
+    static auto& rawStations() { return getGameState().stations; }
 
     // 0x0048B1D8
     void reset()
     {
-        for (auto& station : _stations)
+        for (auto& station : rawStations())
         {
             station.name = StringIds::null;
         }
         Ui::Windows::Station::reset();
     }
 
-    LocoFixedVector<Station> stations()
+    FixedVector<Station, Limits::maxStations> stations()
     {
-        return LocoFixedVector<Station>(_stations);
+        return FixedVector(rawStations());
     }
 
     Station* get(StationId_t id)
     {
         auto index = (size_t)id;
-        if (index < _stations.size())
+        if (index < Limits::maxStations)
         {
-            return &_stations[index];
+            return &rawStations()[index];
         }
         return nullptr;
     }
@@ -105,7 +106,7 @@ namespace OpenLoco::StationManager
             if (station.stationTileSize == 0)
             {
                 station.var_29++;
-                if (station.var_29 != 5 && isPlayerCompany(station.owner))
+                if (station.var_29 != 5 && CompanyManager::isPlayerCompany(station.owner))
                 {
                     sub_437F29(station.owner, 8);
                 }
@@ -398,7 +399,7 @@ namespace OpenLoco::StationManager
     // 0x0049088B
     void zeroUnused()
     {
-        for (auto& station : _stations)
+        for (auto& station : rawStations())
         {
             if (station.empty())
             {
@@ -517,4 +518,16 @@ namespace OpenLoco::StationManager
                 return 0;
             });
     }
+}
+
+OpenLoco::StationId_t OpenLoco::Station::id() const
+{
+    // TODO check if this is stored in station structure
+    //      otherwise add it when possible
+    auto index = (size_t)(this - &StationManager::rawStations()[0]);
+    if (index > 1024)
+    {
+        index = StationId::null;
+    }
+    return (StationId_t)index;
 }

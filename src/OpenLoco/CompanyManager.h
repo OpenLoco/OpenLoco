@@ -2,6 +2,7 @@
 
 #include "Company.h"
 #include "Core/LocoFixedVector.hpp"
+#include "Limits.h"
 #include "Map/Map.hpp"
 #include "Types.hpp"
 #include <array>
@@ -9,13 +10,11 @@
 
 namespace OpenLoco::CompanyManager
 {
-    constexpr size_t max_companies = 15;
-
     void reset();
     CompanyId_t updatingCompanyId();
     void updatingCompanyId(CompanyId_t id);
 
-    LocoFixedVector<Company> companies();
+    FixedVector<Company, Limits::maxCompanies> companies();
     Company* get(CompanyId_t id);
     CompanyId_t getControllingId();
     CompanyId_t getSecondaryPlayerId();
@@ -24,6 +23,7 @@ namespace OpenLoco::CompanyManager
     Company* getPlayerCompany();
     uint8_t getCompanyColour(CompanyId_t id);
     uint8_t getPlayerCompanyColour();
+    bool isPlayerCompany(CompanyId_t id);
     void update();
     void updateQuarterly();
     void determineAvailableVehicles();

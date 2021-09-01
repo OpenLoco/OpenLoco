@@ -33,6 +33,7 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GameException.hpp"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
@@ -98,7 +99,6 @@ namespace OpenLoco
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-    loco_global<Utility::prng, 0x00525E18> _prng;
     static loco_global<CompanyId_t[2], 0x00525E3C> _playerCompanies;
     loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
     static loco_global<int16_t, 0x00525F62> _525F62;
@@ -253,7 +253,7 @@ namespace OpenLoco
 
     Utility::prng& gPrng()
     {
-        return _prng;
+        return getGameState().rng;
     }
 
     static bool sub_4054B9()
@@ -534,7 +534,7 @@ namespace OpenLoco
             _updating_company_id = _playerCompanies[0];
             if (!isTitleMode())
             {
-                auto edx = _prng->srand_0();
+                auto edx = gPrng().srand_0();
                 edx ^= CompanyManager::get(0)->cash.var_00;
                 edx ^= CompanyManager::get(1)->cash.var_00;
                 if (edx != eax)
@@ -829,8 +829,8 @@ namespace OpenLoco
     {
         _scenario_ticks++;
         addr<0x00525F64, int32_t>()++;
-        addr<0x00525FCC, uint32_t>() = _prng->srand_0();
-        addr<0x00525FD0, uint32_t>() = _prng->srand_1();
+        addr<0x00525FCC, uint32_t>() = gPrng().srand_0();
+        addr<0x00525FD0, uint32_t>() = gPrng().srand_1();
         call(0x004613F0);
         addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
         dateTick();
