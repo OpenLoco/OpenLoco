@@ -147,260 +147,45 @@ namespace OpenLoco::Paint
         Map::Pos2 offset;
         Map::Pos2 boundingOffset;
     };
+    // clang-format off
     std::array<OffsetAndBBOffset, 16> _4FE830 = {
-        OffsetAndBBOffset{ { 24, 4 }, { 24, 4 } },
-        OffsetAndBBOffset{ {
-                               4,
-                               8,
-                           },
-                           {
-                               4,
-                               8,
-                           } },
-        OffsetAndBBOffset{ {
-                               8,
-                               28,
-                           },
-                           {
-                               8,
-                               28,
-                           } },
-        OffsetAndBBOffset{ {
-                               28,
-                               24,
-                           },
-                           {
-                               28,
-                               24,
-                           } },
-        OffsetAndBBOffset{ {
-                               24,
-                               1,
-                           },
-                           {
-                               24,
-                               1,
-                           } },
-        OffsetAndBBOffset{ {
-                               1,
-                               8,
-                           },
-                           {
-                               1,
-                               8,
-                           } },
-        OffsetAndBBOffset{ {
-                               8,
-                               31,
-                           },
-                           {
-                               8,
-                               31,
-                           } },
-        OffsetAndBBOffset{ {
-                               31,
-                               24,
-                           },
-                           {
-                               31,
-                               24,
-                           } },
-        OffsetAndBBOffset{ {
-                               24,
-                               16,
-                           },
-                           {
-                               24,
-                               16,
-                           } },
-        OffsetAndBBOffset{ {
-                               16,
-                               8,
-                           },
-                           {
-                               16,
-                               8,
-                           } },
-        OffsetAndBBOffset{ {
-                               8,
-                               16,
-                           },
-                           {
-                               8,
-                               16,
-                           } },
-        OffsetAndBBOffset{ {
-                               16,
-                               24,
-                           },
-                           {
-                               16,
-                               24,
-                           } },
-        OffsetAndBBOffset{ {
-                               6,
-                               10,
-                           },
-                           {
-                               0,
-                               0,
-                           } },
-        OffsetAndBBOffset{ {
-                               10,
-                               26,
-                           },
-                           {
-                               10,
-                               26,
-                           } },
-        OffsetAndBBOffset{ {
-                               26,
-                               22,
-                           },
-                           {
-                               26,
-                               22,
-                           } },
-        OffsetAndBBOffset{ {
-                               22,
-                               6,
-                           },
-                           {
-                               22,
-                               6,
-                           } },
+        OffsetAndBBOffset{ { 24, 4, },  { 24, 4, } },
+        OffsetAndBBOffset{ { 4, 8, },   { 4, 8, } },
+        OffsetAndBBOffset{ { 8, 28, },  { 8, 28, } },
+        OffsetAndBBOffset{ { 28, 24, }, { 28, 24, } },
+        OffsetAndBBOffset{ { 24, 1, },  { 24, 1, } },
+        OffsetAndBBOffset{ { 1, 8, },   { 1, 8, } },
+        OffsetAndBBOffset{ { 8, 31, },  { 8, 31, } },
+        OffsetAndBBOffset{ { 31, 24, }, { 31, 24, } },
+        OffsetAndBBOffset{ { 24, 16, }, { 24, 16, } },
+        OffsetAndBBOffset{ { 16, 8, },  { 16, 8, } },
+        OffsetAndBBOffset{ { 8, 16, },  { 8, 16, } },
+        OffsetAndBBOffset{ { 16, 24, }, { 16, 24, } },
+        OffsetAndBBOffset{ { 6, 10, },  { 0, 0, } },
+        OffsetAndBBOffset{ { 10, 26, }, { 10, 26, } },
+        OffsetAndBBOffset{ { 26, 22, }, { 26, 22, } },
+        OffsetAndBBOffset{ { 22, 6, },  { 22, 6, } },
     };
 
     std::array<OffsetAndBBOffset, 16> _4FE870 = {
-        OffsetAndBBOffset{ {
-                               24,
-                               28,
-                           },
-                           {
-                               24,
-                               28,
-                           } },
-        OffsetAndBBOffset{ {
-                               28,
-                               8,
-                           },
-                           {
-                               28,
-                               8,
-                           } },
-        OffsetAndBBOffset{ {
-                               8,
-                               4,
-                           },
-                           {
-                               8,
-                               4,
-                           } },
-        OffsetAndBBOffset{ {
-                               4,
-                               24,
-                           },
-                           {
-                               4,
-                               24,
-                           } },
-        OffsetAndBBOffset{ {
-                               24,
-                               16,
-                           },
-                           {
-                               24,
-                               16,
-                           } },
-        OffsetAndBBOffset{ {
-                               16,
-                               8,
-                           },
-                           {
-                               16,
-                               8,
-                           } },
-        OffsetAndBBOffset{ {
-                               8,
-                               16,
-                           },
-                           {
-                               8,
-                               16,
-                           } },
-        OffsetAndBBOffset{ {
-                               16,
-                               24,
-                           },
-                           {
-                               16,
-                               24,
-                           } },
-        OffsetAndBBOffset{ {
-                               24,
-                               31,
-                           },
-                           {
-                               24,
-                               31,
-                           } },
-        OffsetAndBBOffset{ {
-                               31,
-                               8,
-                           },
-                           {
-                               31,
-                               8,
-                           } },
-        OffsetAndBBOffset{ {
-                               8,
-                               1,
-                           },
-                           {
-                               8,
-                               1,
-                           } },
-        OffsetAndBBOffset{ {
-                               31,
-                               24,
-                           },
-                           {
-                               31,
-                               24,
-                           } },
-        OffsetAndBBOffset{ {
-                               22,
-                               26,
-                           },
-                           {
-                               22,
-                               26,
-                           } },
-        OffsetAndBBOffset{ {
-                               26,
-                               10,
-                           },
-                           {
-                               26,
-                               10,
-                           } },
-        OffsetAndBBOffset{ {
-                               10,
-                               6,
-                           },
-                           {
-                               0,
-                               0,
-                           } },
-        OffsetAndBBOffset{ {
-                               6,
-                               22,
-                           },
-                           {
-                               6,
-                               22,
-                           } },
+        OffsetAndBBOffset{ { 24, 28, }, { 24, 4, } },
+        OffsetAndBBOffset{ { 28, 8, },  { 4, 8, } },
+        OffsetAndBBOffset{ { 8, 4, },   { 8, 28, } },
+        OffsetAndBBOffset{ { 4, 24, },  { 28, 24, } },
+        OffsetAndBBOffset{ { 24, 16, }, { 24, 1, } },
+        OffsetAndBBOffset{ { 16, 8, },  { 1, 8, } },
+        OffsetAndBBOffset{ { 8, 16, },  { 8, 31, } },
+        OffsetAndBBOffset{ { 16, 24, }, { 31, 24, } },
+        OffsetAndBBOffset{ { 24, 31, }, { 24, 16, } },
+        OffsetAndBBOffset{ { 31, 8, },  { 16, 8, } },
+        OffsetAndBBOffset{ { 8, 1, },   { 8, 16, } },
+        OffsetAndBBOffset{ { 31, 24, }, { 16, 24, } },
+        OffsetAndBBOffset{ { 22, 26, }, { 0, 0, } },
+        OffsetAndBBOffset{ { 26, 10, }, { 10, 26, } },
+        OffsetAndBBOffset{ { 10, 6, },  { 26, 22, } },
+        OffsetAndBBOffset{ { 6, 22, },  { 22, 6, } },
     };
+    // clang-format on
 
     // 0x0048864C
     static void paintSignal(PaintSession& session, Map::SignalElement& elSignal)
