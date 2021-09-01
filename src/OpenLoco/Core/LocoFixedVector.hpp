@@ -16,21 +16,29 @@ namespace OpenLoco
         private:
             ValueType* arr;
             ValueType* endAdd;
-
+            constexpr void findNonEmpty()
+            {
+                for (; arr != endAdd; ++arr)
+                {
+                    if (!arr->empty())
+                    {
+                        break;
+                    }
+                }
+            }
         public:
             constexpr Iter(ValueType* _arr, ValueType* _endAdd)
                 : arr(_arr)
                 , endAdd(_endAdd)
             {
                 // finds first valid entry
-                ++(*this);
+                findNonEmpty();
             }
 
             constexpr Iter& operator++()
             {
-                while (arr != endAdd && (++arr)->empty())
-                {
-                }
+                ++arr;
+                findNonEmpty();
                 return *this;
             }
 
@@ -72,7 +80,7 @@ namespace OpenLoco
 
         Iter begin() const
         {
-            return Iter(startAddress - 1, endAddress);
+            return Iter(startAddress, endAddress);
         }
         Iter end() const
         {
