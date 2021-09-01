@@ -341,6 +341,7 @@ namespace OpenLoco::Paint
         if ((addr<0x00525E28, uint32_t>() & (1 << 0)) == 0)
             return;
 
+        viewFlags = addr<0x00E3F0BC, uint16_t>();
         currentRotation = Ui::WindowManager::getCurrentRotation();
         switch (currentRotation)
         {

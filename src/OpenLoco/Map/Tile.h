@@ -301,11 +301,16 @@ namespace OpenLoco::Map
         uint8_t _7;
 
     public:
+        bool rotation() const { return _type & 0x3; }
         bool isLeftGhost() const { return _type & 0x80; }
         bool isRightGhost() const { return _type & 0x40; }
         bool hasLeftSignal() const { return _4 & 0x80; }
         uint8_t leftSignalObjectId() const { return _4 & 0xF; } // _4l
         uint8_t leftFrame() const { return _5 & 0xF; }          // _5l
+        bool hasRedLight() const { return _5 & 0x40; }          // TBC colours
+        bool hasRedLight2() const { return _5 & 0x10; }         // TBC colours
+        bool hasGreenLight() const { return _5 & 0x80; }        // TBC colours
+        bool hasGreenLight2() const { return _5 & 0x20; }       // TBC colours
         bool hasRightSignal() const { return _6 & 0x80; }
         uint8_t rightSignalObjectId() const { return _6 & 0xF; } // _6l
     };

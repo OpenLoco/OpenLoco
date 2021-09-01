@@ -16,6 +16,13 @@ namespace OpenLoco
         constexpr uint16_t hasLights = 1 << 1;
     }
 
+    namespace TrainSignal::ImageIds
+    {
+        constexpr uint32_t redLights = 80;
+        constexpr uint32_t redLights2 = 88;
+        constexpr uint32_t greenLights = 96;
+        constexpr uint32_t greenLights2 = 104;
+    }
 #pragma pack(push, 1)
     struct TrainSignalObject
     {

@@ -148,7 +148,7 @@ namespace OpenLoco::Paint
         Map::Pos2 boundingOffset;
     };
     // clang-format off
-    std::array<OffsetAndBBOffset, 16> _4FE830 = {
+    static constexpr std::array<OffsetAndBBOffset, 16> _4FE830 = {
         OffsetAndBBOffset{ { 24, 4, },  { 24, 4, } },
         OffsetAndBBOffset{ { 4, 8, },   { 4, 8, } },
         OffsetAndBBOffset{ { 8, 28, },  { 8, 28, } },
@@ -167,7 +167,7 @@ namespace OpenLoco::Paint
         OffsetAndBBOffset{ { 22, 6, },  { 22, 6, } },
     };
 
-    std::array<OffsetAndBBOffset, 16> _4FE870 = {
+    static constexpr std::array<OffsetAndBBOffset, 16> _4FE870 = {
         OffsetAndBBOffset{ { 24, 28, }, { 24, 4, } },
         OffsetAndBBOffset{ { 28, 8, },  { 4, 8, } },
         OffsetAndBBOffset{ { 8, 4, },   { 8, 28, } },
@@ -186,6 +186,8 @@ namespace OpenLoco::Paint
         OffsetAndBBOffset{ { 6, 22, },  { 22, 6, } },
     };
     // clang-format on
+
+    static constexpr std::array<uint8_t, 16> _4FE8B0 = { 0, 2, 4, 6, 0, 2, 4, 6, 0, 4, 6, 1, 3, 5, 7 };
 
     // 0x0048864C
     static void paintSignal(PaintSession& session, Map::SignalElement& elSignal)
@@ -213,7 +215,8 @@ namespace OpenLoco::Paint
         }
 
         static loco_global<uint8_t[8 * 44], 0x004F87BC> _4F87BC;
-
+        static loco_global<int8_t[2 * 44], 0x004F86B4> _4F86B4;
+        const uint8_t rotation = (session.getRotation() + elSignal.rotation()) & 0x3;
         if (elTrack->sequenceIndex() == 0)
         {
             if (elSignal.hasLeftSignal())
@@ -221,7 +224,7 @@ namespace OpenLoco::Paint
                 session.setItemType(InteractionItem::signal);
                 session.setTrackModId(0);
                 auto* signalObj = ObjectManager::get<TrainSignalObject>(elSignal.leftSignalObjectId());
-                const auto trackRotation = Map::TrackData::getUnkTrack(elTrack->trackId()).rotationBegin;
+                const auto trackRotation = Map::TrackData::getUnkTrack((elTrack->trackId() << 3) | rotation).rotationBegin;
                 const auto& offsetAndBBoffsetArr = (signalObj->flags & TrainSignalObjectFlags::isLeft) ? _4FE870 : _4FE830;
                 const auto& offsetAndBBoffset = offsetAndBBoffsetArr[trackRotation];
                 const auto imageRotationOffset = ((trackRotation & 0x3) << 1) | (trackRotation >= 12 ? 1 : 0);
@@ -237,20 +240,57 @@ namespace OpenLoco::Paint
                 Map::Pos3 bbOffset(offsetAndBBoffset.boundingOffset.x, offsetAndBBoffset.boundingOffset.y, offset.z + 4);
                 Map::Pos3 bbSize(1, 1, 14);
                 session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
-                // 0x00488775
-                return;
+
+                if (signalObj->flags & TrainSignalObjectFlags::hasLights)
+                {
+                    if (elSignal.hasRedLight())
+                    {
+                        const auto lightOffset = elSignal.hasRedLight2() ? TrainSignal::ImageIds::redLights2 : TrainSignal::ImageIds::redLights;
+                        const auto lightImageOffset = imageRotationOffset + signalObj->image + lightOffset;
+                        imageId = imageOffset;
+                        if (elSignal.isGhost() || elSignal.isLeftGhost())
+                        {
+                            session.setItemType(InteractionItem::noInteraction);
+                            imageId = Gfx::applyGhostToImage(imageOffset);
+                        }
+                        session.addToPlotList4FD1E0(imageId, offset, bbOffset, bbSize);
+                    }
+                    if (elSignal.hasGreenLight())
+                    {
+                        const auto lightOffset = elSignal.hasGreenLight2() ? TrainSignal::ImageIds::greenLights2 : TrainSignal::ImageIds::greenLights;
+                        const auto lightImageOffset = imageRotationOffset + signalObj->image + lightOffset;
+                        imageId = imageOffset;
+                        if (elSignal.isGhost() || elSignal.isLeftGhost())
+                        {
+                            session.setItemType(InteractionItem::noInteraction);
+                            imageId = Gfx::applyGhostToImage(imageOffset);
+                        }
+                        session.addToPlotList4FD1E0(imageId, offset, bbOffset, bbSize);
+                    }
+                }
             }
             else
             {
-                // 0x00488853
+                if (session.getViewFlags() & (1 << 4) && session.getContext()->zoom_level == 0)
+                {
+                    session.setItemType(InteractionItem::noInteraction);
+                    const auto trackRotation = Map::TrackData::getUnkTrack((elTrack->trackId() << 3) | rotation).rotationBegin;
+                    const auto imageOffset = ImageIds::one_way_direction_arrow_north + (_4FE8B0[trackRotation] ^ (1 << 2));
+                    const auto imageId = Gfx::recolour(imageOffset, Colour::bright_green);
+                    const Map::Pos3 offset(0, 0, elSignal.baseZ() * 4 + _4F86B4[elTrack->trackId() * 2] + 2);
+                    const Map::Pos3 bbOffset(15, 15, offset.z + 16);
+                    const Map::Pos3 bbSize(1, 1, 0);
+                    session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
+                }
             }
         }
+        return;
         // 0x004888EB
-        registers regs;
-        regs.esi = X86Pointer(&elSignal);
-        regs.ecx = (session.getRotation() + (elSignal.data()[0] & 0x3)) & 0x3;
-        regs.dx = elSignal.baseZ() * 4;
-        call(0x0048864C, regs);
+        //registers regs;
+        //regs.esi = X86Pointer(&elSignal);
+        //regs.ecx = (session.getRotation() + (elSignal.data()[0] & 0x3)) & 0x3;
+        //regs.dx = elSignal.baseZ() * 4;
+        //call(0x0048864C, regs);
     }
 
     // 0x0042C6C4
