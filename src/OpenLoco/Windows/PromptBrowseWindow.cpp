@@ -565,6 +565,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
+    bool isRootPath(const fs::path& entry)
+    {
+        return (entry == entry.root_path());
+    }
+
     // 0x00446314
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
     {
@@ -575,7 +580,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         auto i = 0;
         auto y = 0;
         auto lineHeight = window.row_height;
-        for (auto& entry : _files)
+        for (const auto& entry : _files)
         {
             if (y + lineHeight >= context.y && y <= context.y + context.height)
             {
@@ -587,16 +592,16 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     stringId = StringIds::wcolour2_stringid;
                 }
 
-                // Draw the folder icon
+                // Draw the folder icon (TODO: draw a drive for rootPath)
                 auto x = 1;
-                if (fs::is_directory(entry))
+                if (isRootPath(entry) || fs::is_directory(entry))
                 {
                     Gfx::drawImage(&context, x, y, ImageIds::icon_folder);
                     x += 14;
                 }
 
-                // Copy name to our work buffer
-                const std::string nameBuffer = entry.stem().u8string();
+                // Copy name to our work buffer (if drive letter use the full path)
+                const std::string nameBuffer = isRootPath(entry) ? entry.u8string() : entry.stem().u8string();
 
                 // Draw the name
                 auto args = getStringPtrFormatArgs(nameBuffer.c_str());
@@ -683,20 +688,30 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         _files.clear();
         if (_currentDirectory.empty())
         {
-            _files = platform::getDrives();
+            // Get all drives then remove all unusable drives such as CD-ROM drives with no cd in them
+            for (const auto& drive : platform::getDrives())
+            {
+                // Unready drives will generate an error code and are classed as not directories
+                std::error_code ec;
+                if (fs::is_directory(drive, ec))
+                {
+                    _files.emplace_back(drive);
+                }
+            }
+            return; // no need to sort these as they are already sorted
         }
         else
         {
             try
             {
-                for (auto& file : fs::directory_iterator(_currentDirectory, fs::directory_options::skip_permission_denied))
+                for (const auto& file : fs::directory_iterator(_currentDirectory, fs::directory_options::skip_permission_denied))
                 {
                     // Only list directories and normal files
-                    if (!(fs::is_regular_file(file) || fs::is_directory(file)))
+                    if (!(file.is_regular_file() || file.is_directory()))
                         continue;
 
                     // Filter files by extension
-                    if (fs::is_regular_file(file))
+                    if (file.is_regular_file())
                     {
                         auto extension = file.path().extension().u8string();
                         if (!Utility::iequals(extension, filterExtension))
@@ -730,7 +745,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             return;
 
         // The drive letter level is above file system root level.
-        if (_currentDirectory == _currentDirectory.root_path())
+        if (isRootPath(_currentDirectory))
         {
             _currentDirectory.clear();
             refreshDirectoryList();
