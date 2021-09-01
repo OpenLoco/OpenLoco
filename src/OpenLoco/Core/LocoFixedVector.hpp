@@ -61,7 +61,7 @@ namespace OpenLoco
 
             constexpr ValueType& operator*() const
             {
-                return *arr;
+                return arr[i];
             }
             // iterator traits
             using difference_type = std::ptrdiff_t;
