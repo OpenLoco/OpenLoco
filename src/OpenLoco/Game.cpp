@@ -44,15 +44,12 @@ namespace OpenLoco::Game
 
     static bool openBrowsePrompt(string_id titleId, browse_type type, const char* filter)
     {
-        char titleBuffer[256] = {};
-        StringManager::formatString(titleBuffer, std::size(titleBuffer), titleId);
-
         Audio::pauseSound();
         setPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Gfx::render();
 
-        bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleBuffer);
+        bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleId);
 
         Audio::unpauseSound();
         Ui::processMessagesMini();
@@ -85,10 +82,7 @@ namespace OpenLoco::Game
     // 0x00441843
     bool saveSaveGameOpen()
     {
-        if (!isNetworked())
-            strncpy(&_savePath[0], &_path_saves_single_player[0], std::size(_savePath));
-        else
-            strncpy(&_savePath[0], &_path_saves_two_player[0], std::size(_savePath));
+        strncpy(&_savePath[0], &_currentScenarioFilename[0], std::size(_savePath));
 
         return openBrowsePrompt(StringIds::title_prompt_save_game, browse_type::save, S5::filterSV5);
     }
