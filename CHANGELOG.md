@@ -1,6 +1,7 @@
 21.08+ (???)
 ------------------------------------------------------------------------
 - Fix: [#1108] Road selection not being remembered.
+- Fix: [#1123] Right click interaction of road/tram causing crashes or money.
 - Fix: [#1124] Confirmation prompt captions are not rendered correctly.
 - Change: [#1104] Exceptions now trigger a message box popup, instead of only being written to the console.
 
