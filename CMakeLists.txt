@@ -223,8 +223,8 @@ find_package(SDL2_mixer REQUIRED)
 
 find_package(PNG REQUIRED)
 
-find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
-include_directories(${YAML_CPP_INCLUDE_DIR})
+find_package(yaml-cpp CONFIG REQUIRED)
+set(YAML_CPP_LIBRARIES yaml-cpp)
 
 # breakpad is also required
 if (WIN32)
@@ -253,7 +253,7 @@ else ()
 endif ()
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
-target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
+target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
 target_link_libraries(${PROJECT} ${PNG_LIBRARIES})
 
 if (WIN32)
