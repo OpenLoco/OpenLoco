@@ -334,6 +334,10 @@ else ()
     add_custom_target(${PROJECT}-headers-check)
 endif ()
 
+if (WIN32)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -D_USE_MATH_DEFINES -DSDL_MAIN_HANDLED -D_WINSOCK_DEPRECATED_NO_WARNINGS -DUSE_BREAKPAD)
+endif ()
+
 install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
 install(FILES "resources/logo/icon_x16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "openloco.png")
 install(FILES "resources/logo/icon_x32.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps" RENAME "openloco.png")
