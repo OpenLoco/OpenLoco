@@ -369,7 +369,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _lastSelectedMods = 0;
         auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1ULL << 7));
-        if (roadObj->flags & Flags12::unk_03)
+        if (!(roadObj->flags & Flags12::unk_03))
         {
             _lastSelectedMods = copyElement->mods();
         }
