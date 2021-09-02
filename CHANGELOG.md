@@ -3,6 +3,7 @@
 - Fix: [#1108] Road selection not being remembered.
 - Fix: [#1123] Right click interaction of road/tram causing crashes or money.
 - Fix: [#1124] Confirmation prompt captions are not rendered correctly.
+- Fix: [#1127] Crash during vehicle renewal cheat.
 - Change: [#1104] Exceptions now trigger a message box popup, instead of only being written to the console.
 
 21.08 (2021-08-12)
