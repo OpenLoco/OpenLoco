@@ -75,21 +75,24 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
     OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
 
 # Set some compiler features
-set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter")
+if (NOT WIN32)
+    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter")
+endif ()
 
-if (STRICT)
+if (STRICT AND NOT WIN32)
     set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -Werror")
 endif ()
 
-# Poke some holes in -Wall:
-set(COMMON_COMPILE_OPTIONS
+if (NOT WIN32)
+    # Poke some holes in -Wall:
+    set(COMMON_COMPILE_OPTIONS
     "${COMMON_COMPILE_OPTIONS} \
     -Wno-unknown-pragmas \
     -Wno-unused-private-field \
     ")
 
-# Set warnings common to supported compilers
-set(COMMON_COMPILE_OPTIONS
+    # Set warnings common to supported compilers
+    set(COMMON_COMPILE_OPTIONS
     "${COMMON_COMPILE_OPTIONS} \
     -Waddress \
     -Warray-bounds \
@@ -106,6 +109,7 @@ set(COMMON_COMPILE_OPTIONS
     -Wundef \
     -Wunreachable-code \
     ")
+endif ()
 
 set(OBJ_FORMAT "elf32-i386")
 set(LINKER_SCRIPT "ld_script_i386.xc")
@@ -233,6 +237,10 @@ if (MINGW)
     target_link_libraries(${PROJECT} winmm)
 else ()
     add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
+    # Protect against empty linker flags
+    if ("${LOCO_SEGMENT_LINKER_FLAGS}" STREQUAL "")
+        set(LOCO_SEGMENT_LINKER_FLAGS "/NOLOGO")
+    endif ()
     set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 endif ()
 
@@ -241,7 +249,7 @@ target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
 target_link_libraries(${PROJECT} ${PNG_LIBRARIES})
 
 
-if (NOT MINGW)
+if (NOT MINGW AND NOT WIN32)
     add_dependencies(${PROJECT} segfiles)
 endif()
 
