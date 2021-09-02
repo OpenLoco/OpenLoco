@@ -5,15 +5,6 @@
 
 namespace OpenLoco::Map
 {
-
-    enum Inclusivity
-    {
-        Inclusive = 0,
-        Exclusive,
-    };
-
-    using Bounds = std::pair<Inclusivity, int16_t>;
-
     constexpr coord_t tile_size = 32;
     constexpr coord_t map_rows = 384;
     constexpr coord_t map_columns = 384;
@@ -36,34 +27,14 @@ namespace OpenLoco::Map
     static_assert(sizeof(Pos3) == 6);
     static_assert(sizeof(TilePos2) == 4);
 
-    constexpr bool isWithinLowerBound(const coord_t& coord, const Bounds& lowerBound)
-    {
-        return lowerBound.first ? coord > lowerBound.second : coord >= lowerBound.second;
-    }
-
-    constexpr bool isWithinUpperBound(const coord_t& coord, const Bounds& upperBound)
-    {
-        return upperBound.first ? coord < upperBound.second : coord <= upperBound.second;
-    }
-
-    constexpr bool validCoordWithinBounds(const coord_t& coord, const Bounds& lowerBound, const Bounds& upperBound)
-    {
-        return isWithinLowerBound(coord, lowerBound) && isWithinUpperBound(coord, upperBound);
-    }
-
     constexpr bool validCoord(const coord_t& coord)
     {
-        return validCoordWithinBounds(coord, { Inclusive, 0 }, { Exclusive, map_width });
+        return (coord >= 0) && (coord < map_width);
     }
 
     constexpr bool validTileCoord(const coord_t& coord)
     {
-        return validCoordWithinBounds(coord, { Inclusive, 0 }, { Exclusive, map_columns });
-    }
-
-    constexpr bool validCoordsWithinBounds(const Pos2& coords, const Bounds& lowerBound, const Bounds& upperBound)
-    {
-        return validCoordWithinBounds(coords.x, lowerBound, upperBound) && validCoordWithinBounds(coords.y, lowerBound, upperBound);
+        return (coord >= 0) && (coord < map_columns);
     }
 
     constexpr bool validCoords(const Pos2& coords)
@@ -74,5 +45,16 @@ namespace OpenLoco::Map
     constexpr bool validCoords(const TilePos2& coords)
     {
         return validTileCoord(coords.x) && validTileCoord(coords.y);
+    }
+
+    // drawing coordinates validation differs from general valid coordinate validation
+    constexpr bool drawableCoord(const coord_t& coord)
+    {
+        return (coord >= (Map::tile_size - 1)) && (coord < (Map::map_width - Map::tile_size));
+    }
+
+    constexpr bool drawableCoords(const Pos2& coords)
+    {
+        return drawableCoord(coords.x) && drawableCoord(coords.y);
     }
 }
