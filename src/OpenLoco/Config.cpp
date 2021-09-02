@@ -51,8 +51,11 @@ namespace OpenLoco::Config
         if (!fs::exists(configPath))
             return _new_config;
 
-        // WARNING: on Windows, YAML::LoadFile only supports ANSI paths
-        _config_yaml = YAML::LoadFile(configPath.string());
+        // On Windows, YAML::LoadFile only supports ANSI paths, so we pass an ifstream instead.
+        std::ifstream stream;
+        stream.exceptions(std::ifstream::failbit);
+        stream.open(configPath, std::ios::in | std::ios::binary);
+        _config_yaml = YAML::Load(stream);
 
         const auto& config = _config_yaml;
         auto& displayNode = config["display"];
