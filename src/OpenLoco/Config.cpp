@@ -116,6 +116,7 @@ namespace OpenLoco::Config
         _config_yaml = YAML::Load(stream);
 
         const auto& config = _config_yaml;
+
         auto& displayNode = config["display"];
         if (displayNode && displayNode.IsMap())
         {
@@ -159,6 +160,47 @@ namespace OpenLoco::Config
             _new_config.showFPS = config["showFPS"].as<bool>();
         if (config["uncapFPS"])
             _new_config.uncapFPS = config["uncapFPS"].as<bool>();
+
+        auto& scNode = config["shortcuts"];
+        if (scNode && scNode.IsMap())
+        {
+            auto& shortcuts = _new_config.shortcuts;
+            shortcuts.closeTopmostWindow = scNode["closeTopmostWindow"].as<KeyboardShortcut>();
+            shortcuts.closeAllFloatingWindows = scNode["closeAllFloatingWindows"].as<KeyboardShortcut>();
+            shortcuts.cancelConstructionMode = scNode["cancelConstructionMode"].as<KeyboardShortcut>();
+            shortcuts.pauseUnpauseGame = scNode["pauseUnpauseGame"].as<KeyboardShortcut>();
+            shortcuts.zoomViewOut = scNode["zoomViewOut"].as<KeyboardShortcut>();
+            shortcuts.zoomViewIn = scNode["zoomViewIn"].as<KeyboardShortcut>();
+            shortcuts.rotateView = scNode["rotateView"].as<KeyboardShortcut>();
+            shortcuts.rotateConstructionObject = scNode["rotateConstructionObject"].as<KeyboardShortcut>();
+            shortcuts.toggleUndergroundView = scNode["toggleUndergroundView"].as<KeyboardShortcut>();
+            shortcuts.toggleHideForegroundTracks = scNode["toggleHideForegroundTracks"].as<KeyboardShortcut>();
+            shortcuts.toggleHideForegroundScenery = scNode["toggleHideForegroundScenery"].as<KeyboardShortcut>();
+            shortcuts.toggleHeightMarksOnLand = scNode["toggleHeightMarksOnLand"].as<KeyboardShortcut>();
+            shortcuts.toggleHeightMarksOnTracks = scNode["toggleHeightMarksOnTracks"].as<KeyboardShortcut>();
+            shortcuts.toggleDirArrowsOnTracks = scNode["toggleDirArrowsOnTracks"].as<KeyboardShortcut>();
+            shortcuts.adjustLand = scNode["adjustLand"].as<KeyboardShortcut>();
+            shortcuts.adjustWater = scNode["adjustWater"].as<KeyboardShortcut>();
+            shortcuts.plantTrees = scNode["plantTrees"].as<KeyboardShortcut>();
+            shortcuts.bulldozeArea = scNode["bulldozeArea"].as<KeyboardShortcut>();
+            shortcuts.buildTracks = scNode["buildTracks"].as<KeyboardShortcut>();
+            shortcuts.buildRoads = scNode["buildRoads"].as<KeyboardShortcut>();
+            shortcuts.buildAirports = scNode["buildAirports"].as<KeyboardShortcut>();
+            shortcuts.buildShipPorts = scNode["buildShipPorts"].as<KeyboardShortcut>();
+            shortcuts.buildNewVehicles = scNode["buildNewVehicles"].as<KeyboardShortcut>();
+            shortcuts.showVehiclesList = scNode["showVehiclesList"].as<KeyboardShortcut>();
+            shortcuts.showStationsList = scNode["showStationsList"].as<KeyboardShortcut>();
+            shortcuts.showTownsList = scNode["showTownsList"].as<KeyboardShortcut>();
+            shortcuts.showIndustriesList = scNode["showIndustriesList"].as<KeyboardShortcut>();
+            shortcuts.showMap = scNode["showMap"].as<KeyboardShortcut>();
+            shortcuts.showCompaniesList = scNode["showCompaniesList"].as<KeyboardShortcut>();
+            shortcuts.showCompanyInformation = scNode["showCompanyInformation"].as<KeyboardShortcut>();
+            shortcuts.showFinances = scNode["showFinances"].as<KeyboardShortcut>();
+            shortcuts.showAnnouncementsList = scNode["showAnnouncementsList"].as<KeyboardShortcut>();
+            shortcuts.makeScreenshot = scNode["makeScreenshot"].as<KeyboardShortcut>();
+            shortcuts.toggleLastAnnouncement = scNode["toggleLastAnnouncement"].as<KeyboardShortcut>();
+            shortcuts.sendMessage = scNode["sendMessage"].as<KeyboardShortcut>();
+        }
 
         return _new_config;
     }
@@ -210,6 +252,46 @@ namespace OpenLoco::Config
         node["autosave_amount"] = _new_config.autosave_amount;
         node["showFPS"] = _new_config.showFPS;
         node["uncapFPS"] = _new_config.uncapFPS;
+
+        // Shortcuts
+        const auto& shortcuts = _new_config.shortcuts;
+        auto scNode = node["shortcuts"];
+        scNode["closeTopmostWindow"] = shortcuts.closeTopmostWindow;
+        scNode["closeAllFloatingWindows"] = shortcuts.closeAllFloatingWindows;
+        scNode["cancelConstructionMode"] = shortcuts.cancelConstructionMode;
+        scNode["pauseUnpauseGame"] = shortcuts.pauseUnpauseGame;
+        scNode["zoomViewOut"] = shortcuts.zoomViewOut;
+        scNode["zoomViewIn"] = shortcuts.zoomViewIn;
+        scNode["rotateView"] = shortcuts.rotateView;
+        scNode["rotateConstructionObject"] = shortcuts.rotateConstructionObject;
+        scNode["toggleUndergroundView"] = shortcuts.toggleUndergroundView;
+        scNode["toggleHideForegroundTracks"] = shortcuts.toggleHideForegroundTracks;
+        scNode["toggleHideForegroundScenery"] = shortcuts.toggleHideForegroundScenery;
+        scNode["toggleHeightMarksOnLand"] = shortcuts.toggleHeightMarksOnLand;
+        scNode["toggleHeightMarksOnTracks"] = shortcuts.toggleHeightMarksOnTracks;
+        scNode["toggleDirArrowsOnTracks"] = shortcuts.toggleDirArrowsOnTracks;
+        scNode["adjustLand"] = shortcuts.adjustLand;
+        scNode["adjustWater"] = shortcuts.adjustWater;
+        scNode["plantTrees"] = shortcuts.plantTrees;
+        scNode["bulldozeArea"] = shortcuts.bulldozeArea;
+        scNode["buildTracks"] = shortcuts.buildTracks;
+        scNode["buildRoads"] = shortcuts.buildRoads;
+        scNode["buildAirports"] = shortcuts.buildAirports;
+        scNode["buildShipPorts"] = shortcuts.buildShipPorts;
+        scNode["buildNewVehicles"] = shortcuts.buildNewVehicles;
+        scNode["showVehiclesList"] = shortcuts.showVehiclesList;
+        scNode["showStationsList"] = shortcuts.showStationsList;
+        scNode["showTownsList"] = shortcuts.showTownsList;
+        scNode["showIndustriesList"] = shortcuts.showIndustriesList;
+        scNode["showMap"] = shortcuts.showMap;
+        scNode["showCompaniesList"] = shortcuts.showCompaniesList;
+        scNode["showCompanyInformation"] = shortcuts.showCompanyInformation;
+        scNode["showFinances"] = shortcuts.showFinances;
+        scNode["showAnnouncementsList"] = shortcuts.showAnnouncementsList;
+        scNode["makeScreenshot"] = shortcuts.makeScreenshot;
+        scNode["toggleLastAnnouncement"] = shortcuts.toggleLastAnnouncement;
+        scNode["sendMessage"] = shortcuts.sendMessage;
+        node["shortcuts"] = scNode;
 
         std::ofstream stream(configPath);
         if (stream.is_open())

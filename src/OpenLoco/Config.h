@@ -28,12 +28,6 @@ namespace OpenLoco::Config
         metric = 1,
     };
 
-    struct KeyboardShortcut
-    {
-        uint8_t var_0;
-        uint8_t var_1;
-    };
-
     enum class NewsType : uint8_t
     {
         none = 0,
@@ -59,6 +53,12 @@ namespace OpenLoco::Config
 
     struct LocoConfig
     {
+        struct KeyboardShortcut
+        {
+            uint8_t var_0;
+            uint8_t var_1;
+        };
+
         uint32_t flags;                               // 0x50AEB4, 0x00
         int16_t resolution_width;                     // 0x50AEB8, 0x04
         int16_t resolution_height;                    // 0x50AEBA, 0x06
@@ -147,6 +147,51 @@ namespace OpenLoco::Config
         bool play_title_music = true;
     };
 
+    struct KeyboardShortcut
+    {
+        uint16_t keyCode;
+        uint8_t modifiers;
+    };
+
+    struct KeyboardShortcuts
+    {
+        KeyboardShortcut closeTopmostWindow;
+        KeyboardShortcut closeAllFloatingWindows;
+        KeyboardShortcut cancelConstructionMode;
+        KeyboardShortcut pauseUnpauseGame;
+        KeyboardShortcut zoomViewOut;
+        KeyboardShortcut zoomViewIn;
+        KeyboardShortcut rotateView;
+        KeyboardShortcut rotateConstructionObject;
+        KeyboardShortcut toggleUndergroundView;
+        KeyboardShortcut toggleHideForegroundTracks;
+        KeyboardShortcut toggleHideForegroundScenery;
+        KeyboardShortcut toggleHeightMarksOnLand;
+        KeyboardShortcut toggleHeightMarksOnTracks;
+        KeyboardShortcut toggleDirArrowsOnTracks;
+        KeyboardShortcut adjustLand;
+        KeyboardShortcut adjustWater;
+        KeyboardShortcut plantTrees;
+        KeyboardShortcut bulldozeArea;
+        KeyboardShortcut buildTracks;
+        KeyboardShortcut buildRoads;
+        KeyboardShortcut buildAirports;
+        KeyboardShortcut buildShipPorts;
+        KeyboardShortcut buildNewVehicles;
+        KeyboardShortcut showVehiclesList;
+        KeyboardShortcut showStationsList;
+        KeyboardShortcut showTownsList;
+        KeyboardShortcut showIndustriesList;
+        KeyboardShortcut showMap;
+        KeyboardShortcut showCompaniesList;
+        KeyboardShortcut showCompanyInformation;
+        KeyboardShortcut showFinances;
+        KeyboardShortcut showAnnouncementsList;
+        KeyboardShortcut makeScreenshot;
+        KeyboardShortcut toggleLastAnnouncement;
+        KeyboardShortcut sendMessage;
+    };
+
     struct NewConfig
     {
         Display display;
@@ -163,6 +208,7 @@ namespace OpenLoco::Config
         int32_t autosave_amount = 12;
         bool showFPS = false;
         bool uncapFPS = false;
+        KeyboardShortcuts shortcuts;
     };
 
     LocoConfig& get();
