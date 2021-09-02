@@ -75,7 +75,7 @@ Regardless of platform, the following libraries/dependencies are required:
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-- [breakpad]
+- [breakpad](TODO: Insert link here)
 
 ### Windows
 - 7 / 8 / 10

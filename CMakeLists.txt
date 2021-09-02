@@ -176,8 +176,10 @@ if (APPLE)
     set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif ()
 
-set(PIE_FLAG "-fno-pie")
-set(TARGET_M "-m32")
+if (NOT WIN32)
+    set(PIE_FLAG "-fno-pie")
+    set(TARGET_M "-m32")
+endif ()
 
 # Check if a flag exists and add it to the list of compiler (so, not linker) options
 function (ADD_CHECK_CXX_COMPILER_FLAG _CXXFLAGS _CACHE_VAR _FLAG)
@@ -224,6 +226,12 @@ find_package(PNG REQUIRED)
 find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
 include_directories(${YAML_CPP_INCLUDE_DIR})
 
+# breakpad is also required
+if (WIN32)
+    find_package(unofficial-breakpad CONFIG REQUIRED)
+    set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
+endif ()
+
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
 # builds without need for -fno-omit-frame-pointer
 set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
@@ -236,24 +244,28 @@ if (MINGW)
     add_library(${PROJECT} ${OLOCO_SOURCES})
     target_link_libraries(${PROJECT} winmm)
 else ()
-    add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
-    # Protect against empty linker flags
-    if ("${LOCO_SEGMENT_LINKER_FLAGS}" STREQUAL "")
-        set(LOCO_SEGMENT_LINKER_FLAGS "/NOLOGO")
+    if (WIN32)
+        add_library(${PROJECT} SHARED ${OLOCO_SOURCES})
+    else ()
+        add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
+        set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
     endif ()
-    set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 endif ()
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
 target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
 target_link_libraries(${PROJECT} ${PNG_LIBRARIES})
 
+if (WIN32)
+    target_link_libraries(${PROJECT} ${BREAKPAD_LIBRARIES})
+    target_link_libraries(${PROJECT} winmm SDL2::SDL2main)
+endif ()
 
 if (NOT MINGW AND NOT WIN32)
     add_dependencies(${PROJECT} segfiles)
 endif()
 
-if (NOT APPLE)
+if (NOT APPLE AND NOT WIN32)
     target_link_libraries(${PROJECT} stdc++fs)
 endif()
 
@@ -261,7 +273,9 @@ if (MINGW)
     target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
     target_link_libraries(${PROJECT} imm32 winmm version)
 else ()
-    target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
+    if (WIN32)
+        target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _NO_LOCO_WIN32_=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
+    endif ()
 endif()
 
 if (APPLE)
@@ -332,10 +346,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 else ()
     # Dummy target to ease invocation
     add_custom_target(${PROJECT}-headers-check)
-endif ()
-
-if (WIN32)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -D_USE_MATH_DEFINES -DSDL_MAIN_HANDLED -D_WINSOCK_DEPRECATED_NO_WARNINGS -DUSE_BREAKPAD)
 endif ()
 
 install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
