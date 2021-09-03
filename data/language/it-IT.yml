@@ -870,7 +870,7 @@ strings:
   845: TastNum 9
   846: TastNum *
   847: TastNum +
-  848: ???
+  848: TastNum Enter
   849: TastNum -
   850: TastNum .
   851: TastNum /

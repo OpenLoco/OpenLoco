@@ -681,12 +681,6 @@ namespace OpenLoco::Ui
                     }
 #endif
 
-                    // Map keypad enter to normal enter
-                    if (keycode == SDLK_KP_ENTER)
-                    {
-                        keycode = SDLK_RETURN;
-                    }
-
                     enqueueKey(keycode);
                     break;
                 }

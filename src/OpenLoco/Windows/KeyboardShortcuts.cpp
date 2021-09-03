@@ -129,6 +129,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             { SDLK_KP_9, StringIds::keyboard_numpad_9 },
             { SDLK_KP_0, StringIds::keyboard_numpad_0 },
             { SDLK_KP_DIVIDE, StringIds::keyboard_numpad_divide },
+            { SDLK_KP_ENTER, StringIds::keyboard_numpad_enter },
             { SDLK_KP_MINUS, StringIds::keyboard_numpad_minus },
             { SDLK_KP_MULTIPLY, StringIds::keyboard_numpad_multiply },
             { SDLK_KP_PERIOD, StringIds::keyboard_numpad_period },

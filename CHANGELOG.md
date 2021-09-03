@@ -5,6 +5,7 @@
 - Fix: [#1124] Confirmation prompt captions are not rendered correctly.
 - Fix: [#1127] Crash during vehicle renewal cheat.
 - Change: [#1104] Exceptions now trigger a message box popup, instead of only being written to the console.
+- Change: [#1141] The Enter key on the numeric keypad can now be bound separately.
 
 21.08 (2021-08-12)
 ------------------------------------------------------------------------

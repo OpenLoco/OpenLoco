@@ -657,6 +657,7 @@ namespace OpenLoco::StringIds
     constexpr string_id keyboard_numpad_9 = 845;
     constexpr string_id keyboard_numpad_multiply = 846;
     constexpr string_id keyboard_numpad_plus = 847;
+    constexpr string_id keyboard_numpad_enter = 848;
     constexpr string_id keyboard_numpad_minus = 849;
     constexpr string_id keyboard_numpad_period = 850;
     constexpr string_id keyboard_numpad_divide = 851;
