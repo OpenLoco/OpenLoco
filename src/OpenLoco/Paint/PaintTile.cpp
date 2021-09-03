@@ -187,7 +187,44 @@ namespace OpenLoco::Paint
     };
     // clang-format on
 
-    static constexpr std::array<uint8_t, 16> _4FE8B0 = { 0, 2, 4, 6, 0, 2, 4, 6, 0, 4, 6, 1, 3, 5, 7 };
+    // 0x004FE8B0
+    static constexpr std::array<uint32_t, 16> _oneWayArrowLeft = {
+        ImageIds::one_way_direction_arrow_north,
+        ImageIds::one_way_direction_arrow_east,
+        ImageIds::one_way_direction_arrow_south,
+        ImageIds::one_way_direction_arrow_west,
+        ImageIds::one_way_direction_arrow_north,
+        ImageIds::one_way_direction_arrow_east,
+        ImageIds::one_way_direction_arrow_south,
+        ImageIds::one_way_direction_arrow_west,
+        ImageIds::one_way_direction_arrow_north,
+        ImageIds::one_way_direction_arrow_east,
+        ImageIds::one_way_direction_arrow_south,
+        ImageIds::one_way_direction_arrow_west,
+        ImageIds::one_way_direction_arrow_north_east,
+        ImageIds::one_way_direction_arrow_south_east,
+        ImageIds::one_way_direction_arrow_south_west,
+        ImageIds::one_way_direction_arrow_north_west,
+    };
+    // 0x004FE8B0
+    static constexpr std::array<uint32_t, 16> _oneWayArrowRight = {
+        ImageIds::one_way_direction_arrow_south,
+        ImageIds::one_way_direction_arrow_west,
+        ImageIds::one_way_direction_arrow_north,
+        ImageIds::one_way_direction_arrow_east,
+        ImageIds::one_way_direction_arrow_south,
+        ImageIds::one_way_direction_arrow_west,
+        ImageIds::one_way_direction_arrow_north,
+        ImageIds::one_way_direction_arrow_east,
+        ImageIds::one_way_direction_arrow_south,
+        ImageIds::one_way_direction_arrow_west,
+        ImageIds::one_way_direction_arrow_north,
+        ImageIds::one_way_direction_arrow_east,
+        ImageIds::one_way_direction_arrow_south_west,
+        ImageIds::one_way_direction_arrow_north_west,
+        ImageIds::one_way_direction_arrow_north_east,
+        ImageIds::one_way_direction_arrow_south_east,
+    };
 
     // 0x0048864C
     static void paintSignal(PaintSession& session, Map::SignalElement& elSignal)
@@ -276,8 +313,7 @@ namespace OpenLoco::Paint
                 {
                     session.setItemType(InteractionItem::noInteraction);
                     const auto trackRotation = Map::TrackData::getUnkTrack((elTrack->trackId() << 3) | rotation).rotationBegin;
-                    const auto imageOffset = ImageIds::one_way_direction_arrow_north + (_4FE8B0[trackRotation] ^ (1 << 2));
-                    const auto imageId = Gfx::recolour(imageOffset, Colour::bright_green);
+                    const auto imageId = Gfx::recolour(_oneWayArrowRight[trackRotation], Colour::bright_green);
                     const Map::Pos3 offset(0, 0, elSignal.baseZ() * 4 + _4F86B4[elTrack->trackId() * 2] + 2);
                     const Map::Pos3 bbOffset(15, 15, offset.z + 16);
                     const Map::Pos3 bbSize(1, 1, 0);
