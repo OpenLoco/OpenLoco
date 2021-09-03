@@ -27,12 +27,12 @@ namespace OpenLoco::Map
     static_assert(sizeof(Pos3) == 6);
     static_assert(sizeof(TilePos2) == 4);
 
-    constexpr bool validCoord(const coord_t& coord)
+    constexpr bool validCoord(const coord_t coord)
     {
         return (coord >= 0) && (coord < map_width);
     }
 
-    constexpr bool validTileCoord(const coord_t& coord)
+    constexpr bool validTileCoord(const coord_t coord)
     {
         return (coord >= 0) && (coord < map_columns);
     }
@@ -48,7 +48,7 @@ namespace OpenLoco::Map
     }
 
     // drawing coordinates validation differs from general valid coordinate validation
-    constexpr bool drawableCoord(const coord_t& coord)
+    constexpr bool drawableCoord(const coord_t coord)
     {
         return (coord >= (Map::tile_size - 1)) && (coord < (Map::map_width - Map::tile_size));
     }
