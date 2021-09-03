@@ -17,6 +17,8 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Config
 {
     static loco_global<LocoConfig, 0x0050AEB4> _config;
+    static loco_global<uint8_t, 0x0050AEAD> _50AEAD;
+    static loco_global<uint32_t, 0x0113E21C> _113E21C;
     static NewConfig _new_config;
     static YAML::Node _config_yaml;
 
@@ -30,17 +32,70 @@ namespace OpenLoco::Config
         return _new_config;
     }
 
+    constexpr uint8_t _defaultMaxVehicleSounds[3] = { 4, 8, 16 };
+    constexpr uint8_t _defaultMaxSoundInstances[3] = { 6, 8, 10 };
+    constexpr uint8_t _defaultPreferredCurrency[16] = { 0x82, 0, 0, 0, 0x43, 0x55, 0x52, 0x52, 0x44, 0x4F, 0x4C, 0x4C, 0, 0, 0, 0 };
+
     // 0x00441A6C
     LocoConfig& read()
     {
-        call(0x00441A6C);
+        std::ifstream stream;
+        stream.exceptions(std::ifstream::failbit);
+        stream.open(Environment::getPathNoWarning(Environment::path_id::gamecfg), std::ios::in | std::ios::binary);
+        if (stream.is_open())
+        {
+            uint32_t magicNumber{};
+            stream.read(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
+            if (magicNumber == 0x62272)
+            {
+                stream.read(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
+                return _config;
+            }
+        }
+
+        if (_113E21C > 0x4000000)
+        {
+            _config->sound_quality = 1;
+            _config->vehicles_min_scale = 1;
+        }
+        else if (_113E21C > 0x8000000)
+        {
+            _config->sound_quality = 2;
+            _config->vehicles_min_scale = 2;
+        }
+        else
+        {
+            _config->sound_quality = 0;
+            _config->vehicles_min_scale = 1;
+        }
+        _config->max_vehicle_sounds = _defaultMaxVehicleSounds[_config->sound_quality];
+        _config->max_sound_instances = _defaultMaxSoundInstances[_config->sound_quality];
+        for (size_t i = 0; i < std::size(_config->preferred_currency); ++i)
+        {
+            _config->preferred_currency[i] = _defaultPreferredCurrency[i];
+        }
+        _50AEAD = 1;
         return _config;
+    }
+
+    // 0x00441BB8
+    void writeLocoConfig()
+    {
+        std::ofstream stream;
+        stream.exceptions(std::ifstream::failbit);
+        stream.open(Environment::getPathNoWarning(Environment::path_id::gamecfg), std::ios::out | std::ios::binary);
+        if (stream.is_open())
+        {
+            uint32_t magicNumber = 0x62272;
+            stream.write(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
+            stream.write(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
+        }
     }
 
     // 0x00441BB8
     void write()
     {
-        call(0x00441BB8);
+        writeLocoConfig();
         writeNewConfig();
     }
 
