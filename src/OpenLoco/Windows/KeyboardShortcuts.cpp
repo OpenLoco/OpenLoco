@@ -98,6 +98,57 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         self->draw(context);
     }
 
+    static void getBindingString(uint32_t keyCode, char* buffer)
+    {
+        static const std::unordered_map<uint32_t, string_id> keysToString = { {
+            { SDLK_BACKSPACE, StringIds::keyboard_backspace },
+            { SDLK_TAB, StringIds::keyboard_tab },
+            { SDLK_RETURN, StringIds::keyboard_return },
+            { SDLK_PAUSE, StringIds::keyboard_pause },
+            { SDLK_CAPSLOCK, StringIds::keyboard_caps },
+            { SDLK_ESCAPE, StringIds::keyboard_escape },
+            { SDLK_SPACE, StringIds::keyboard_spacebar },
+            { SDLK_PAGEUP, StringIds::keyboard_pageup },
+            { SDLK_PAGEDOWN, StringIds::keyboard_pagedown },
+            { SDLK_END, StringIds::keyboard_end },
+            { SDLK_HOME, StringIds::keyboard_home },
+            { SDLK_LEFT, StringIds::keyboard_left },
+            { SDLK_UP, StringIds::keyboard_up },
+            { SDLK_RIGHT, StringIds::keyboard_right },
+            { SDLK_DOWN, StringIds::keyboard_down },
+            { SDLK_INSERT, StringIds::keyboard_insert },
+            { SDLK_DELETE, StringIds::keyboard_delete },
+            { SDLK_KP_1, StringIds::keyboard_numpad_1 },
+            { SDLK_KP_2, StringIds::keyboard_numpad_2 },
+            { SDLK_KP_3, StringIds::keyboard_numpad_3 },
+            { SDLK_KP_4, StringIds::keyboard_numpad_4 },
+            { SDLK_KP_5, StringIds::keyboard_numpad_5 },
+            { SDLK_KP_6, StringIds::keyboard_numpad_6 },
+            { SDLK_KP_7, StringIds::keyboard_numpad_7 },
+            { SDLK_KP_8, StringIds::keyboard_numpad_8 },
+            { SDLK_KP_9, StringIds::keyboard_numpad_9 },
+            { SDLK_KP_0, StringIds::keyboard_numpad_0 },
+            { SDLK_KP_DIVIDE, StringIds::keyboard_numpad_divide },
+            { SDLK_KP_MINUS, StringIds::keyboard_numpad_minus },
+            { SDLK_KP_MULTIPLY, StringIds::keyboard_numpad_multiply },
+            { SDLK_KP_PERIOD, StringIds::keyboard_numpad_period },
+            { SDLK_KP_PLUS, StringIds::keyboard_numpad_plus },
+            { SDLK_NUMLOCKCLEAR, StringIds::keyboard_numlock },
+            { SDLK_SCROLLLOCK, StringIds::keyboard_scroll },
+        } };
+
+        auto match = keysToString.find(keyCode);
+        if (match != keysToString.end())
+        {
+            StringManager::formatString(buffer, match->second);
+        }
+        else
+        {
+            const char* sdlBuffer = SDL_GetKeyName(keyCode);
+            strncpy(buffer, sdlBuffer, 128);
+        }
+    }
+
     // 0x004BE72C
     static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
     {
@@ -118,9 +169,9 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
             auto modifierStringId = StringIds::empty;
             auto baseStringId = StringIds::empty;
-            const char* bufferPtr = nullptr;
+            char buffer[128]{};
 
-            if (shortcuts[i].keyCode != 0xFF)
+            if (shortcuts[i].keyCode != 0xFFFFFFFF)
             {
                 if (shortcuts[i].modifiers == 1)
                     modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
@@ -128,7 +179,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                     modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
 
                 baseStringId = StringIds::stringptr;
-                bufferPtr = SDL_GetKeyName(shortcuts[i].keyCode);
+                getBindingString(shortcuts[i].keyCode, buffer);
             }
 
             auto formatter = FormatArguments::common();
@@ -136,7 +187,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
             formatter.push(modifierStringId);
             formatter.push(baseStringId);
-            formatter.push(bufferPtr);
+            formatter.push(buffer);
 
             Gfx::drawString_494B3F(context, 0, yPos - 1, Colour::black, format, &formatter);
             yPos += rowHeight;
