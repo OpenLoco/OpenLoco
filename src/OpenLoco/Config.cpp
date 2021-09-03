@@ -2,6 +2,7 @@
 #include "ConfigConvert.hpp"
 #include "Core/FileSystem.hpp"
 #include "Environment.h"
+#include "Input/ShortcutManager.h"
 #include "Interop/Interop.hpp"
 #include "Utility/Yaml.hpp"
 #include <fstream>
@@ -96,52 +97,6 @@ namespace OpenLoco::Config
         writeNewConfig();
     }
 
-    struct ShortcutDescription
-    {
-        std::string name;
-        std::string defaultBinding;
-    };
-
-    // clang-format off
-    static std::array<ShortcutDescription, 35> _shortcutDefs = { {
-        { "closeTopmostWindow",          "Backspace" },
-        { "closeAllFloatingWindows",     "Left Shift+Backspace" },
-        { "cancelConstructionMode",      "Escape" },
-        { "pauseUnpauseGame",            "Pause" },
-        { "zoomViewOut",                 "PageUp" },
-        { "zoomViewIn",                  "PageDown" },
-        { "rotateView",                  "Return" },
-        { "rotateConstructionObject",    "Z" },
-        { "toggleUndergroundView",       "1" },
-        { "toggleHideForegroundTracks",  "2" },
-        { "toggleHideForegroundScenery", "3" },
-        { "toggleHeightMarksOnLand",     "4" },
-        { "toggleHeightMarksOnTracks",   "5" },
-        { "toggleDirArrowsOnTracks",     "6" },
-        { "adjustLand",                  "L" },
-        { "adjustWater",                 "W" },
-        { "plantTrees",                  "P" },
-        { "bulldozeArea",                "X" },
-        { "buildTracks",                 "T" },
-        { "buildRoads",                  "R" },
-        { "buildAirports",               "A" },
-        { "buildShipPorts",              "D" },
-        { "buildNewVehicles",            "N" },
-        { "showVehiclesList",            "V" },
-        { "showStationsList",            "S" },
-        { "showTownsList",               "U" },
-        { "showIndustriesList",          "I" },
-        { "showMap",                     "M" },
-        { "showCompaniesList",           "C" },
-        { "showCompanyInformation",      "Q" },
-        { "showFinances",                "F" },
-        { "showAnnouncementsList",       "Tab" },
-        { "makeScreenshot",              "Left Ctrl+S" },
-        { "toggleLastAnnouncement",      "Space" },
-        { "sendMessage",                 "F1" },
-    } };
-    // clang-format on
-
     NewConfig& readNewConfig()
     {
         auto configPath = Environment::getPathNoWarning(Environment::path_id::openloco_yml);
@@ -201,13 +156,14 @@ namespace OpenLoco::Config
         if (config["uncapFPS"])
             _new_config.uncapFPS = config["uncapFPS"].as<bool>();
 
+        const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto& scNode = config["shortcuts"];
         auto& shortcuts = _new_config.shortcuts;
         for (size_t i = 0; i < std::size(shortcuts); i++)
         {
-            auto& def = _shortcutDefs[i];
-            if (scNode && scNode.IsMap() && scNode[def.name])
-                shortcuts[i] = scNode[def.name].as<KeyboardShortcut>();
+            auto& def = shortcutDefs[i];
+            if (scNode && scNode.IsMap() && scNode[def.configName])
+                shortcuts[i] = scNode[def.configName].as<KeyboardShortcut>();
             else
                 shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
         }
@@ -265,11 +221,12 @@ namespace OpenLoco::Config
 
         // Shortcuts
         const auto& shortcuts = _new_config.shortcuts;
+        const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto scNode = node["shortcuts"];
         for (size_t i = 0; i < std::size(shortcuts); i++)
         {
-            auto& def = _shortcutDefs[i];
-            scNode[def.name] = shortcuts[i];
+            auto& def = shortcutDefs[i];
+            scNode[def.configName] = shortcuts[i];
         }
         node["shortcuts"] = scNode;
 

@@ -15,8 +15,6 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Input::ShortcutManager
 {
-    static constexpr size_t _count = 35;
-
     static void closeTopmostWindow();
     static void closeAllFloatingWindows();
     static void cancelConstructionMode();
@@ -53,56 +51,45 @@ namespace OpenLoco::Input::ShortcutManager
     static void toggleLastAnnouncement();
     static void sendMessage();
 
-    struct KeyboardShortcut
-    {
-        void (*function)();
-        string_id name;
-    };
-
     // clang-format off
-    static std::array<KeyboardShortcut, _count> _shortcuts = { {
-        { closeTopmostWindow,          StringIds::shortcut_close_topmost_window           },
-        { closeAllFloatingWindows,     StringIds::shortcut_close_all_floating_windows     },
-        { cancelConstructionMode,      StringIds::shortcut_cancel_construction_mode       },
-        { pauseUnpauseGame,            StringIds::shortcut_pause_unpause_game             },
-        { zoomViewOut,                 StringIds::shortcut_zoom_view_out                  },
-        { zoomViewIn,                  StringIds::shortcut_zoom_view_in                   },
-        { rotateView,                  StringIds::shortcut_rotate_view                    },
-        { rotateConstructionObject,    StringIds::shortcut_rotate_construction_object     },
-        { toggleUndergroundView,       StringIds::shortcut_toggle_underground_view        },
-        { toggleHideForegroundTracks,  StringIds::shortcut_toggle_hide_foreground_tracks  },
-        { toggleHideForegroundScenery, StringIds::shortcut_toggle_hide_foreground_scenery },
-        { toggleHeightMarksOnLand,     StringIds::shortcut_toggle_height_marks_on_land    },
-        { toggleHeightMarksOnTracks,   StringIds::shortcut_toggle_height_marks_on_tracks  },
-        { toggleDirArrowsOnTracks,     StringIds::shortcut_toggle_dir_arrows_on_tracks    },
-        { adjustLand,                  StringIds::shortcut_adjust_land                    },
-        { adjustWater,                 StringIds::shortcut_adjust_water                   },
-        { plantTrees,                  StringIds::shortcut_plant_trees                    },
-        { bulldozeArea,                StringIds::shortcut_bulldoze_area                  },
-        { buildTracks,                 StringIds::shortcut_build_tracks                   },
-        { buildRoads,                  StringIds::shortcut_build_roads                    },
-        { buildAirports,               StringIds::shortcut_build_airports                 },
-        { buildShipPorts,              StringIds::shortcut_build_ship_ports               },
-        { buildNewVehicles,            StringIds::shortcut_build_new_vehicles             },
-        { showVehiclesList,            StringIds::shortcut_show_vehicles_list             },
-        { showStationsList,            StringIds::shortcut_show_stations_list             },
-        { showTownsList,               StringIds::shortcut_show_towns_list                },
-        { showIndustriesList,          StringIds::shortcut_show_industries_list           },
-        { showMap,                     StringIds::shortcut_show_map                       },
-        { showCompaniesList,           StringIds::shortcut_show_companies_list            },
-        { showCompanyInformation,      StringIds::shortcut_show_company_information       },
-        { showFinances,                StringIds::shortcut_show_finances                  },
-        { showAnnouncementsList,       StringIds::shortcut_show_announcements_list        },
-        { makeScreenshot,              StringIds::shortcut_screenshot                     },
-        { toggleLastAnnouncement,      StringIds::shortcut_toggle_last_announcement       },
-        { sendMessage,                 StringIds::shortcut_send_message                   },
+    static std::array<const KeyboardShortcut, count> _shortcuts = { {
+        { closeTopmostWindow,          StringIds::shortcut_close_topmost_window,           "closeTopmostWindow",          "Backspace" },
+        { closeAllFloatingWindows,     StringIds::shortcut_close_all_floating_windows,     "closeAllFloatingWindows",     "Left Shift+Backspace" },
+        { cancelConstructionMode,      StringIds::shortcut_cancel_construction_mode,       "cancelConstructionMode",      "Escape" },
+        { pauseUnpauseGame,            StringIds::shortcut_pause_unpause_game,             "pauseUnpauseGame",            "Pause" },
+        { zoomViewOut,                 StringIds::shortcut_zoom_view_out,                  "zoomViewOut",                 "PageUp" },
+        { zoomViewIn,                  StringIds::shortcut_zoom_view_in,                   "zoomViewIn",                  "PageDown" },
+        { rotateView,                  StringIds::shortcut_rotate_view,                    "rotateView",                  "Return" },
+        { rotateConstructionObject,    StringIds::shortcut_rotate_construction_object,     "rotateConstructionObject",    "Z" },
+        { toggleUndergroundView,       StringIds::shortcut_toggle_underground_view,        "toggleUndergroundView",       "1" },
+        { toggleHideForegroundTracks,  StringIds::shortcut_toggle_hide_foreground_tracks,  "toggleHideForegroundTracks",  "2" },
+        { toggleHideForegroundScenery, StringIds::shortcut_toggle_hide_foreground_scenery, "toggleHideForegroundScenery", "3" },
+        { toggleHeightMarksOnLand,     StringIds::shortcut_toggle_height_marks_on_land,    "toggleHeightMarksOnLand",     "4" },
+        { toggleHeightMarksOnTracks,   StringIds::shortcut_toggle_height_marks_on_tracks,  "toggleHeightMarksOnTracks",   "5" },
+        { toggleDirArrowsOnTracks,     StringIds::shortcut_toggle_dir_arrows_on_tracks,    "toggleDirArrowsOnTracks",     "6" },
+        { adjustLand,                  StringIds::shortcut_adjust_land,                    "adjustLand",                  "L" },
+        { adjustWater,                 StringIds::shortcut_adjust_water,                   "adjustWater",                 "W" },
+        { plantTrees,                  StringIds::shortcut_plant_trees,                    "plantTrees",                  "P" },
+        { bulldozeArea,                StringIds::shortcut_bulldoze_area,                  "bulldozeArea",                "X" },
+        { buildTracks,                 StringIds::shortcut_build_tracks,                   "buildTracks",                 "T" },
+        { buildRoads,                  StringIds::shortcut_build_roads,                    "buildRoads",                  "R" },
+        { buildAirports,               StringIds::shortcut_build_airports,                 "buildAirports",               "A" },
+        { buildShipPorts,              StringIds::shortcut_build_ship_ports,               "buildShipPorts",              "D" },
+        { buildNewVehicles,            StringIds::shortcut_build_new_vehicles,             "buildNewVehicles",            "N" },
+        { showVehiclesList,            StringIds::shortcut_show_vehicles_list,             "showVehiclesList",            "V" },
+        { showStationsList,            StringIds::shortcut_show_stations_list,             "showStationsList",            "S" },
+        { showTownsList,               StringIds::shortcut_show_towns_list,                "showTownsList",               "U" },
+        { showIndustriesList,          StringIds::shortcut_show_industries_list,           "showIndustriesList",          "I" },
+        { showMap,                     StringIds::shortcut_show_map,                       "showMap",                     "M" },
+        { showCompaniesList,           StringIds::shortcut_show_companies_list,            "showCompaniesList",           "C" },
+        { showCompanyInformation,      StringIds::shortcut_show_company_information,       "showCompanyInformation",      "Q" },
+        { showFinances,                StringIds::shortcut_show_finances,                  "showFinances",                "F" },
+        { showAnnouncementsList,       StringIds::shortcut_show_announcements_list,        "showAnnouncementsList",       "Tab" },
+        { makeScreenshot,              StringIds::shortcut_screenshot,                     "makeScreenshot",              "Left Ctrl+S" },
+        { toggleLastAnnouncement,      StringIds::shortcut_toggle_last_announcement,       "toggleLastAnnouncement",      "Space" },
+        { sendMessage,                 StringIds::shortcut_send_message,                   "sendMessage",                 "F1" },
     } };
     // clang-format on
-
-    size_t count()
-    {
-        return _count;
-    }
 
     void execute(Shortcut s)
     {
@@ -111,7 +98,12 @@ namespace OpenLoco::Input::ShortcutManager
 
     string_id getName(Shortcut s)
     {
-        return _shortcuts[s].name;
+        return _shortcuts[s].displayName;
+    }
+
+    std::array<const KeyboardShortcut, count>& getList()
+    {
+        return _shortcuts;
     }
 
     // 0x004BF089
