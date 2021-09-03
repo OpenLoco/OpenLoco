@@ -1588,7 +1588,7 @@ namespace OpenLoco::Ui::Windows::Options
                 if (index == ax)
                 {
                     auto& cfg = OpenLoco::Config::get();
-                    memcpy(cfg.preferred_currency, object.second._header, 0x10);
+                    cfg.preferred_currency = *object.second._header;
 
                     sub_4C1519();
                     Config::write();

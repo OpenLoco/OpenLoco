@@ -34,25 +34,11 @@ namespace OpenLoco::Config
 
     constexpr uint8_t _defaultMaxVehicleSounds[3] = { 4, 8, 16 };
     constexpr uint8_t _defaultMaxSoundInstances[3] = { 6, 8, 10 };
-    constexpr uint8_t _defaultPreferredCurrency[16] = { 0x82, 0, 0, 0, 0x43, 0x55, 0x52, 0x52, 0x44, 0x4F, 0x4C, 0x4C, 0, 0, 0, 0 };
+    constexpr ObjectHeader _defaultPreferredCurrency = { 0x00000082u, { 'C', 'U', 'R', 'R', 'D', 'O', 'L', 'L' }, 0u };
+    constexpr uint32_t _legacyConfigMagicNumber = 0x62272;
 
-    // 0x00441A6C
-    LocoConfig& read()
+    static void setDefaultsLegacyConfig()
     {
-        std::ifstream stream;
-        stream.exceptions(std::ifstream::failbit);
-        stream.open(Environment::getPathNoWarning(Environment::path_id::gamecfg), std::ios::in | std::ios::binary);
-        if (stream.is_open())
-        {
-            uint32_t magicNumber{};
-            stream.read(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
-            if (magicNumber == 0x62272)
-            {
-                stream.read(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
-                return _config;
-            }
-        }
-
         if (_113E21C > 0x4000000)
         {
             _config->sound_quality = 1;
@@ -70,23 +56,40 @@ namespace OpenLoco::Config
         }
         _config->max_vehicle_sounds = _defaultMaxVehicleSounds[_config->sound_quality];
         _config->max_sound_instances = _defaultMaxSoundInstances[_config->sound_quality];
-        for (size_t i = 0; i < std::size(_config->preferred_currency); ++i)
+        _config->preferred_currency = _defaultPreferredCurrency;
+    }
+
+    // 0x00441A6C
+    LocoConfig& read()
+    {
+        std::ifstream stream;
+        stream.exceptions(std::ifstream::failbit);
+        stream.open(Environment::getPathNoWarning(Environment::path_id::gamecfg), std::ios::in | std::ios::binary);
+        if (stream.is_open())
         {
-            _config->preferred_currency[i] = _defaultPreferredCurrency[i];
+            uint32_t magicNumber{};
+            stream.read(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
+            if (magicNumber == _legacyConfigMagicNumber)
+            {
+                stream.read(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
+                return _config;
+            }
         }
+
+        setDefaultsLegacyConfig();
         _50AEAD = 1;
         return _config;
     }
 
     // 0x00441BB8
-    void writeLocoConfig()
+    static void writeLocoConfig()
     {
         std::ofstream stream;
         stream.exceptions(std::ifstream::failbit);
         stream.open(Environment::getPathNoWarning(Environment::path_id::gamecfg), std::ios::out | std::ios::binary);
         if (stream.is_open())
         {
-            uint32_t magicNumber = 0x62272;
+            uint32_t magicNumber = _legacyConfigMagicNumber;
             stream.write(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
             stream.write(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
         }
