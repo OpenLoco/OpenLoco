@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         self->draw(context);
     }
 
-    static void getBindingString(uint32_t keyCode, char* buffer)
+    static void getBindingString(uint32_t keyCode, char* buffer, const size_t bufferLength)
     {
         static const std::unordered_map<uint32_t, string_id> keysToString = { {
             { SDLK_BACKSPACE, StringIds::keyboard_backspace },
@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         else
         {
             const char* sdlBuffer = SDL_GetKeyName(keyCode);
-            strncpy(buffer, sdlBuffer, 128);
+            strncpy(buffer, sdlBuffer, bufferLength);
         }
     }
 
@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                     modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
 
                 baseStringId = StringIds::stringptr;
-                getBindingString(shortcuts[i].keyCode, buffer);
+                getBindingString(shortcuts[i].keyCode, buffer, std::size(buffer));
             }
 
             auto formatter = FormatArguments::common();
