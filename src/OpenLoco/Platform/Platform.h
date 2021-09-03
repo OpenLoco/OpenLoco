@@ -5,12 +5,12 @@
 
 #include "../Core/FileSystem.hpp"
 
-namespace OpenLoco::platform
+namespace OpenLoco::Platform
 {
     uint32_t getTime();
     fs::path getUserDirectory();
     fs::path promptDirectory(const std::string& title);
-    fs::path GetCurrentExecutablePath();
+    fs::path getCurrentExecutablePath();
     std::vector<fs::path> getDrives();
     bool isRunningInWine();
 #if defined(__APPLE__) && defined(__MACH__)

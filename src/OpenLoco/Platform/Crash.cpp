@@ -71,7 +71,7 @@ static bool onCrash(
 
 static std::wstring getDumpDirectory()
 {
-    auto user_dir = OpenLoco::platform::getUserDirectory();
+    auto user_dir = OpenLoco::Platform::getUserDirectory();
     auto result = OpenLoco::Utility::toUtf16(user_dir.string());
     return result;
 }

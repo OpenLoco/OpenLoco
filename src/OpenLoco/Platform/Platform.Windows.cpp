@@ -14,7 +14,7 @@
 #include "../Utility/String.hpp"
 #include "Platform.h"
 
-namespace OpenLoco::platform
+namespace OpenLoco::Platform
 {
     uint32_t getTime()
     {
@@ -99,7 +99,7 @@ namespace OpenLoco::platform
         return fs::path(wExePath.get());
     }
 
-    fs::path GetCurrentExecutablePath()
+    fs::path getCurrentExecutablePath()
     {
         return WIN32_GetModuleFileNameW(nullptr);
     }
