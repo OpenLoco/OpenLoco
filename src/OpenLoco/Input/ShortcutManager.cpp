@@ -53,81 +53,51 @@ namespace OpenLoco::Input::ShortcutManager
     static void toggleLastAnnouncement();
     static void sendMessage();
 
-    static std::array<void (*)(), _count> _shortcuts = { {
-        closeTopmostWindow,
-        closeAllFloatingWindows,
-        cancelConstructionMode,
-        pauseUnpauseGame,
-        zoomViewOut,
-        zoomViewIn,
-        rotateView,
-        rotateConstructionObject,
-        toggleUndergroundView,
-        toggleHideForegroundTracks,
-        toggleHideForegroundScenery,
-        toggleHeightMarksOnLand,
-        toggleHeightMarksOnTracks,
-        toggleDirArrowsOnTracks,
-        adjustLand,
-        adjustWater,
-        plantTrees,
-        bulldozeArea,
-        buildTracks,
-        buildRoads,
-        buildAirports,
-        buildShipPorts,
-        buildNewVehicles,
-        showVehiclesList,
-        showStationsList,
-        showTownsList,
-        showIndustriesList,
-        showMap,
-        showCompaniesList,
-        showCompanyInformation,
-        showFinances,
-        showAnnouncementsList,
-        makeScreenshot,
-        toggleLastAnnouncement,
-        sendMessage,
-    } };
+    struct KeyboardShortcut
+    {
+        void (*function)();
+        string_id name;
+    };
 
-    static std::array<string_id, _count> _shortcutNames = { {
-        StringIds::shortcut_close_topmost_window,
-        StringIds::shortcut_close_all_floating_windows,
-        StringIds::shortcut_cancel_construction_mode,
-        StringIds::shortcut_pause_unpause_game,
-        StringIds::shortcut_zoom_view_out,
-        StringIds::shortcut_zoom_view_in,
-        StringIds::shortcut_rotate_view,
-        StringIds::shortcut_rotate_construction_object,
-        StringIds::shortcut_toggle_underground_view,
-        StringIds::shortcut_toggle_hide_foreground_tracks,
-        StringIds::shortcut_toggle_hide_foreground_scenery,
-        StringIds::shortcut_toggle_height_marks_on_land,
-        StringIds::shortcut_toggle_height_marks_on_tracks,
-        StringIds::shortcut_toggle_dir_arrows_on_tracks,
-        StringIds::shortcut_adjust_land,
-        StringIds::shortcut_adjust_water,
-        StringIds::shortcut_plant_trees,
-        StringIds::shortcut_bulldoze_area,
-        StringIds::shortcut_build_tracks,
-        StringIds::shortcut_build_roads,
-        StringIds::shortcut_build_airports,
-        StringIds::shortcut_build_ship_ports,
-        StringIds::shortcut_build_new_vehicles,
-        StringIds::shortcut_show_vehicles_list,
-        StringIds::shortcut_show_stations_list,
-        StringIds::shortcut_show_towns_list,
-        StringIds::shortcut_show_industries_list,
-        StringIds::shortcut_show_map,
-        StringIds::shortcut_show_companies_list,
-        StringIds::shortcut_show_company_information,
-        StringIds::shortcut_show_finances,
-        StringIds::shortcut_show_announcements_list,
-        StringIds::shortcut_screenshot,
-        StringIds::shortcut_toggle_last_announcement,
-        StringIds::shortcut_send_message,
+    // clang-format off
+    static std::array<KeyboardShortcut, _count> _shortcuts = { {
+        { closeTopmostWindow,          StringIds::shortcut_close_topmost_window           },
+        { closeAllFloatingWindows,     StringIds::shortcut_close_all_floating_windows     },
+        { cancelConstructionMode,      StringIds::shortcut_cancel_construction_mode       },
+        { pauseUnpauseGame,            StringIds::shortcut_pause_unpause_game             },
+        { zoomViewOut,                 StringIds::shortcut_zoom_view_out                  },
+        { zoomViewIn,                  StringIds::shortcut_zoom_view_in                   },
+        { rotateView,                  StringIds::shortcut_rotate_view                    },
+        { rotateConstructionObject,    StringIds::shortcut_rotate_construction_object     },
+        { toggleUndergroundView,       StringIds::shortcut_toggle_underground_view        },
+        { toggleHideForegroundTracks,  StringIds::shortcut_toggle_hide_foreground_tracks  },
+        { toggleHideForegroundScenery, StringIds::shortcut_toggle_hide_foreground_scenery },
+        { toggleHeightMarksOnLand,     StringIds::shortcut_toggle_height_marks_on_land    },
+        { toggleHeightMarksOnTracks,   StringIds::shortcut_toggle_height_marks_on_tracks  },
+        { toggleDirArrowsOnTracks,     StringIds::shortcut_toggle_dir_arrows_on_tracks    },
+        { adjustLand,                  StringIds::shortcut_adjust_land                    },
+        { adjustWater,                 StringIds::shortcut_adjust_water                   },
+        { plantTrees,                  StringIds::shortcut_plant_trees                    },
+        { bulldozeArea,                StringIds::shortcut_bulldoze_area                  },
+        { buildTracks,                 StringIds::shortcut_build_tracks                   },
+        { buildRoads,                  StringIds::shortcut_build_roads                    },
+        { buildAirports,               StringIds::shortcut_build_airports                 },
+        { buildShipPorts,              StringIds::shortcut_build_ship_ports               },
+        { buildNewVehicles,            StringIds::shortcut_build_new_vehicles             },
+        { showVehiclesList,            StringIds::shortcut_show_vehicles_list             },
+        { showStationsList,            StringIds::shortcut_show_stations_list             },
+        { showTownsList,               StringIds::shortcut_show_towns_list                },
+        { showIndustriesList,          StringIds::shortcut_show_industries_list           },
+        { showMap,                     StringIds::shortcut_show_map                       },
+        { showCompaniesList,           StringIds::shortcut_show_companies_list            },
+        { showCompanyInformation,      StringIds::shortcut_show_company_information       },
+        { showFinances,                StringIds::shortcut_show_finances                  },
+        { showAnnouncementsList,       StringIds::shortcut_show_announcements_list        },
+        { makeScreenshot,              StringIds::shortcut_screenshot                     },
+        { toggleLastAnnouncement,      StringIds::shortcut_toggle_last_announcement       },
+        { sendMessage,                 StringIds::shortcut_send_message                   },
     } };
+    // clang-format on
 
     size_t count()
     {
@@ -136,12 +106,12 @@ namespace OpenLoco::Input::ShortcutManager
 
     void execute(Shortcut s)
     {
-        _shortcuts[s]();
+        _shortcuts[s].function();
     }
 
     string_id getName(Shortcut s)
     {
-        return _shortcutNames[s];
+        return _shortcuts[s].name;
     }
 
     // 0x004BF089
