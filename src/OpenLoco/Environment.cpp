@@ -94,7 +94,7 @@ namespace OpenLoco::Environment
             std::cerr << "Unable to find install path for Locomotion." << std::endl
                       << "You will need to manually provide it." << std::endl;
             Ui::showMessageBox("OpenLoco", "Select your Locomotion install path.");
-            path = platform::promptDirectory("Select your Locomotion install path.");
+            path = Platform::promptDirectory("Select your Locomotion install path.");
             if (validateLocoInstallPath(path))
             {
                 cfg.loco_install_path = path.make_preferred().u8string();
@@ -250,12 +250,12 @@ namespace OpenLoco::Environment
             case path_id::openloco_yml:
             case path_id::save:
             case path_id::autosave:
-                return platform::getUserDirectory();
+                return Platform::getUserDirectory();
             case path_id::language_files:
 #if defined(__APPLE__) && defined(__MACH__)
-                return platform::GetBundlePath();
+                return Platform::GetBundlePath();
 #else
-                return platform::GetCurrentExecutablePath().parent_path() / "data";
+                return Platform::getCurrentExecutablePath().parent_path() / "data";
 #endif
             default:
                 return getLocoInstallPath();

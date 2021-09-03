@@ -678,7 +678,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (_currentDirectory.empty())
         {
             // Get all drives
-            _files = platform::getDrives();
+            _files = Platform::getDrives();
             return; // no need to sort these as they are already sorted
         }
         else

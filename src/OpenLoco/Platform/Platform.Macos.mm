@@ -6,7 +6,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-namespace OpenLoco::platform
+namespace OpenLoco::Platform
 {
     fs::path getUserDirectory()
     {
