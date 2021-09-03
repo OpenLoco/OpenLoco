@@ -18,6 +18,5 @@ namespace OpenLoco::Input::ShortcutManager
         const char* defaultBinding;
     };
 
-    // clang-format off
-    std::array<const KeyboardShortcut, count>& getList();
+    const std::array<const KeyboardShortcut, count>& getList();
 }
