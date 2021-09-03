@@ -86,6 +86,8 @@ namespace YAML
         static bool decode(const Node& node, KeyboardShortcut& rhs)
         {
             auto s = node.as<std::string>();
+            rhs.modifiers = 0;
+
             std::size_t current = 0;
             std::size_t pos = s.find_first_of(delimiter, 0);
             std::string token = s;
