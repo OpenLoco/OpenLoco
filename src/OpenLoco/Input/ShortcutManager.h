@@ -2,7 +2,6 @@
 #include "Shortcut.h"
 #include <array>
 #include <cstddef>
-#include <string>
 
 namespace OpenLoco::Input::ShortcutManager
 {
@@ -15,8 +14,8 @@ namespace OpenLoco::Input::ShortcutManager
     {
         void (*function)();
         string_id displayName;
-        std::string configName;
-        std::string defaultBinding;
+        const char* configName;
+        const char* defaultBinding;
     };
 
     // clang-format off
