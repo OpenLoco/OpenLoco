@@ -301,7 +301,7 @@ namespace OpenLoco::Map
         uint8_t _7;
 
     public:
-        bool rotation() const { return _type & 0x3; }
+        uint8_t rotation() const { return _type & 0x3; }
         bool isLeftGhost() const { return _type & 0x80; }
         bool isRightGhost() const { return _type & 0x40; }
         bool hasLeftSignal() const { return _4 & 0x80; }

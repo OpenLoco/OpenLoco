@@ -168,22 +168,22 @@ namespace OpenLoco::Paint
     };
 
     static constexpr std::array<OffsetAndBBOffset, 16> _4FE870 = {
-        OffsetAndBBOffset{ { 24, 28, }, { 24, 4, } },
-        OffsetAndBBOffset{ { 28, 8, },  { 4, 8, } },
-        OffsetAndBBOffset{ { 8, 4, },   { 8, 28, } },
-        OffsetAndBBOffset{ { 4, 24, },  { 28, 24, } },
-        OffsetAndBBOffset{ { 24, 16, }, { 24, 1, } },
-        OffsetAndBBOffset{ { 16, 8, },  { 1, 8, } },
-        OffsetAndBBOffset{ { 8, 16, },  { 8, 31, } },
-        OffsetAndBBOffset{ { 16, 24, }, { 31, 24, } },
-        OffsetAndBBOffset{ { 24, 31, }, { 24, 16, } },
-        OffsetAndBBOffset{ { 31, 8, },  { 16, 8, } },
-        OffsetAndBBOffset{ { 8, 1, },   { 8, 16, } },
-        OffsetAndBBOffset{ { 31, 24, }, { 16, 24, } },
-        OffsetAndBBOffset{ { 22, 26, }, { 0, 0, } },
-        OffsetAndBBOffset{ { 26, 10, }, { 10, 26, } },
-        OffsetAndBBOffset{ { 10, 6, },  { 26, 22, } },
-        OffsetAndBBOffset{ { 6, 22, },  { 22, 6, } },
+        OffsetAndBBOffset{ { 24, 28, }, { 24, 28, } },
+        OffsetAndBBOffset{ { 28, 8, },  { 28, 8, } },
+        OffsetAndBBOffset{ { 8, 4, },   { 8, 4, } },
+        OffsetAndBBOffset{ { 4, 24, },  { 4, 24, } },
+        OffsetAndBBOffset{ { 24, 16, }, { 24, 16, } },
+        OffsetAndBBOffset{ { 16, 8, },  { 16, 8, } },
+        OffsetAndBBOffset{ { 8, 16, },  { 8, 16, } },
+        OffsetAndBBOffset{ { 16, 24, }, { 16, 24, } },
+        OffsetAndBBOffset{ { 24, 31, }, { 24, 31, } },
+        OffsetAndBBOffset{ { 31, 8, },  { 31, 8, } },
+        OffsetAndBBOffset{ { 8, 1, },   { 8, 1, } },
+        OffsetAndBBOffset{ { 31, 24, }, { 31, 24, } },
+        OffsetAndBBOffset{ { 22, 26, }, { 22, 26, } },
+        OffsetAndBBOffset{ { 26, 10, }, { 26, 10, } },
+        OffsetAndBBOffset{ { 10, 6, },  { 0, 0, } },
+        OffsetAndBBOffset{ { 6, 22, },  { 6, 22, } },
     };
     // clang-format on
 
@@ -224,6 +224,7 @@ namespace OpenLoco::Paint
                 session.setItemType(InteractionItem::signal);
                 session.setTrackModId(0);
                 auto* signalObj = ObjectManager::get<TrainSignalObject>(elSignal.leftSignalObjectId());
+                const uint16_t trackIdAndRotation = (elTrack->trackId() << 3) | rotation;
                 const auto trackRotation = Map::TrackData::getUnkTrack((elTrack->trackId() << 3) | rotation).rotationBegin;
                 const auto& offsetAndBBoffsetArr = (signalObj->flags & TrainSignalObjectFlags::isLeft) ? _4FE870 : _4FE830;
                 const auto& offsetAndBBoffset = offsetAndBBoffsetArr[trackRotation];
@@ -283,8 +284,8 @@ namespace OpenLoco::Paint
                     session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
                 }
             }
+            return;
         }
-        return;
         // 0x004888EB
         //registers regs;
         //regs.esi = X86Pointer(&elSignal);
