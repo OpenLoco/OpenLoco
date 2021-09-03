@@ -1,16 +1,10 @@
-#include <fstream>
-
-#ifdef _WIN32
-#include <shlobj.h>
-#include <windows.h>
-#endif
-
 #include "Config.h"
 #include "ConfigConvert.hpp"
 #include "Core/FileSystem.hpp"
 #include "Environment.h"
 #include "Interop/Interop.hpp"
 #include "Utility/Yaml.hpp"
+#include <fstream>
 
 using namespace OpenLoco::Interop;
 
