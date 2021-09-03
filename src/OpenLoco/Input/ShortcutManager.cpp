@@ -9,6 +9,7 @@
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include <array>
+#include <unordered_map>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
