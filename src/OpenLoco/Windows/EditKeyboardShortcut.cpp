@@ -19,7 +19,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     constexpr Ui::Size windowSize = { 280, 72 };
 
     static WindowEventList events;
-    static loco_global<uint8_t, 0x011364A4> _11364A4;
+    static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
 
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary, 0xFFFFFFFF),                                                 // 0,
@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     Window* open(const uint8_t shortcutIndex)
     {
         WindowManager::close(WindowType::editKeyboardShortcut);
-        _11364A4 = shortcutIndex;
+        _editingShortcutIndex = shortcutIndex;
 
         // TODO: only needs to be called once
         initEvents();
@@ -70,7 +70,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         self->draw(ctx);
 
         FormatArguments args{};
-        args.push(ShortcutManager::getName(static_cast<Shortcut>(*_11364A4)));
+        args.push(ShortcutManager::getName(static_cast<Shortcut>(*_editingShortcutIndex)));
         auto point = Ui::Point(self->x + 140, self->y + 32);
         Gfx::drawStringCentredWrapped(*ctx, point, 272, 0, StringIds::change_keyboard_shortcut_desc, &args);
     }
