@@ -9,6 +9,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
+#include <SDL2/SDL.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
@@ -104,6 +105,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         auto shade = Colour::getShade(colour, 4);
         Gfx::clearSingle(context, shade);
 
+        const auto& shortcuts = Config::getNew().shortcuts;
         auto yPos = 0;
         for (auto i = 0; i < self.row_count; i++)
         {
@@ -116,21 +118,17 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
             auto modifierStringId = StringIds::empty;
             auto baseStringId = StringIds::empty;
+            const char* bufferPtr = nullptr;
 
-            if (Config::get().keyboard_shortcuts[i].var_0 != 0xFF)
+            if (shortcuts[i].keyCode != 0xFF)
             {
-                if (Config::get().keyboard_shortcuts[i].var_1 != 0)
-                {
-                    if (Config::get().keyboard_shortcuts[i].var_1 != 1)
-                    {
-                        modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
-                    }
-                    else
-                    {
-                        modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
-                    }
-                }
-                baseStringId = StringIds::shortcut_key_base + Config::get().keyboard_shortcuts[i].var_0;
+                if (shortcuts[i].modifiers == 1)
+                    modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
+                else if (shortcuts[i].modifiers != 0)
+                    modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
+
+                baseStringId = StringIds::stringptr;
+                bufferPtr = SDL_GetKeyName(shortcuts[i].keyCode);
             }
 
             auto formatter = FormatArguments::common();
@@ -138,6 +136,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
             formatter.push(modifierStringId);
             formatter.push(baseStringId);
+            formatter.push(bufferPtr);
 
             Gfx::drawString_494B3F(context, 0, yPos - 1, Colour::black, format, &formatter);
             yPos += rowHeight;
