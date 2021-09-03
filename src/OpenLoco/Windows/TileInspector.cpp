@@ -233,10 +233,10 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 if (signal != nullptr)
                 {
                     TrainSignalObject* object = nullptr;
-                    if (signal->hasLeftSignal())
-                        object = ObjectManager::get<TrainSignalObject>(signal->leftSignalObjectId());
-                    else if (signal->hasRightSignal())
-                        object = ObjectManager::get<TrainSignalObject>(signal->rightSignalObjectId());
+                    if (signal->getLeft().hasSignal())
+                        object = ObjectManager::get<TrainSignalObject>(signal->getLeft().signalObjectId());
+                    else if (signal->getRight().hasSignal())
+                        object = ObjectManager::get<TrainSignalObject>(signal->getRight().signalObjectId());
 
                     if (object != nullptr)
                         return object->name;

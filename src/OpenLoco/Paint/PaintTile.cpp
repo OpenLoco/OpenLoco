@@ -219,17 +219,17 @@ namespace OpenLoco::Paint
         const uint8_t rotation = (session.getRotation() + elSignal.rotation()) & 0x3;
         if (elTrack->sequenceIndex() == 0)
         {
-            if (elSignal.hasLeftSignal())
+            auto& leftSignal = elSignal.getLeft();
+            if (leftSignal.hasSignal())
             {
                 session.setItemType(InteractionItem::signal);
                 session.setTrackModId(0);
-                auto* signalObj = ObjectManager::get<TrainSignalObject>(elSignal.leftSignalObjectId());
-                const uint16_t trackIdAndRotation = (elTrack->trackId() << 3) | rotation;
+                auto* signalObj = ObjectManager::get<TrainSignalObject>(leftSignal.signalObjectId());
                 const auto trackRotation = Map::TrackData::getUnkTrack((elTrack->trackId() << 3) | rotation).rotationBegin;
                 const auto& offsetAndBBoffsetArr = (signalObj->flags & TrainSignalObjectFlags::isLeft) ? _4FE870 : _4FE830;
                 const auto& offsetAndBBoffset = offsetAndBBoffsetArr[trackRotation];
                 const auto imageRotationOffset = ((trackRotation & 0x3) << 1) | (trackRotation >= 12 ? 1 : 0);
-                const auto imageOffset = imageRotationOffset + signalObj->image + (elSignal.leftFrame() << 3);
+                const auto imageOffset = imageRotationOffset + signalObj->image + (leftSignal.frame() << 3);
 
                 uint32_t imageId = imageOffset;
                 if (elSignal.isGhost() || elSignal.isLeftGhost())
@@ -244,9 +244,9 @@ namespace OpenLoco::Paint
 
                 if (signalObj->flags & TrainSignalObjectFlags::hasLights)
                 {
-                    if (elSignal.hasRedLight())
+                    if (leftSignal.hasRedLight())
                     {
-                        const auto lightOffset = elSignal.hasRedLight2() ? TrainSignal::ImageIds::redLights2 : TrainSignal::ImageIds::redLights;
+                        const auto lightOffset = leftSignal.hasRedLight2() ? TrainSignal::ImageIds::redLights2 : TrainSignal::ImageIds::redLights;
                         const auto lightImageOffset = imageRotationOffset + signalObj->image + lightOffset;
                         imageId = imageOffset;
                         if (elSignal.isGhost() || elSignal.isLeftGhost())
@@ -256,9 +256,9 @@ namespace OpenLoco::Paint
                         }
                         session.addToPlotList4FD1E0(imageId, offset, bbOffset, bbSize);
                     }
-                    if (elSignal.hasGreenLight())
+                    if (leftSignal.hasGreenLight())
                     {
-                        const auto lightOffset = elSignal.hasGreenLight2() ? TrainSignal::ImageIds::greenLights2 : TrainSignal::ImageIds::greenLights;
+                        const auto lightOffset = leftSignal.hasGreenLight2() ? TrainSignal::ImageIds::greenLights2 : TrainSignal::ImageIds::greenLights;
                         const auto lightImageOffset = imageRotationOffset + signalObj->image + lightOffset;
                         imageId = imageOffset;
                         if (elSignal.isGhost() || elSignal.isLeftGhost())
