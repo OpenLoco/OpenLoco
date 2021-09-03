@@ -149,47 +149,8 @@ namespace OpenLoco::Config
 
     struct KeyboardShortcut
     {
-        uint16_t keyCode;
+        uint32_t keyCode;
         uint8_t modifiers;
-    };
-
-    struct KeyboardShortcuts
-    {
-        KeyboardShortcut closeTopmostWindow;
-        KeyboardShortcut closeAllFloatingWindows;
-        KeyboardShortcut cancelConstructionMode;
-        KeyboardShortcut pauseUnpauseGame;
-        KeyboardShortcut zoomViewOut;
-        KeyboardShortcut zoomViewIn;
-        KeyboardShortcut rotateView;
-        KeyboardShortcut rotateConstructionObject;
-        KeyboardShortcut toggleUndergroundView;
-        KeyboardShortcut toggleHideForegroundTracks;
-        KeyboardShortcut toggleHideForegroundScenery;
-        KeyboardShortcut toggleHeightMarksOnLand;
-        KeyboardShortcut toggleHeightMarksOnTracks;
-        KeyboardShortcut toggleDirArrowsOnTracks;
-        KeyboardShortcut adjustLand;
-        KeyboardShortcut adjustWater;
-        KeyboardShortcut plantTrees;
-        KeyboardShortcut bulldozeArea;
-        KeyboardShortcut buildTracks;
-        KeyboardShortcut buildRoads;
-        KeyboardShortcut buildAirports;
-        KeyboardShortcut buildShipPorts;
-        KeyboardShortcut buildNewVehicles;
-        KeyboardShortcut showVehiclesList;
-        KeyboardShortcut showStationsList;
-        KeyboardShortcut showTownsList;
-        KeyboardShortcut showIndustriesList;
-        KeyboardShortcut showMap;
-        KeyboardShortcut showCompaniesList;
-        KeyboardShortcut showCompanyInformation;
-        KeyboardShortcut showFinances;
-        KeyboardShortcut showAnnouncementsList;
-        KeyboardShortcut makeScreenshot;
-        KeyboardShortcut toggleLastAnnouncement;
-        KeyboardShortcut sendMessage;
     };
 
     struct NewConfig
@@ -208,7 +169,7 @@ namespace OpenLoco::Config
         int32_t autosave_amount = 12;
         bool showFPS = false;
         bool uncapFPS = false;
-        KeyboardShortcuts shortcuts;
+        KeyboardShortcut shortcuts[35];
     };
 
     LocoConfig& get();

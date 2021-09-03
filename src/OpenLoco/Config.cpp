@@ -96,6 +96,52 @@ namespace OpenLoco::Config
         writeNewConfig();
     }
 
+    struct ShortcutDescription
+    {
+        std::string name;
+        std::string defaultBinding;
+    };
+
+    // clang-format off
+    static std::array<ShortcutDescription, 35> _shortcutDefs = { {
+        { "closeTopmostWindow",          "Backspace" },
+        { "closeAllFloatingWindows",     "Left Shift+Backspace" },
+        { "cancelConstructionMode",      "Escape" },
+        { "pauseUnpauseGame",            "Pause" },
+        { "zoomViewOut",                 "PageUp" },
+        { "zoomViewIn",                  "PageDown" },
+        { "rotateView",                  "Return" },
+        { "rotateConstructionObject",    "Z" },
+        { "toggleUndergroundView",       "1" },
+        { "toggleHideForegroundTracks",  "2" },
+        { "toggleHideForegroundScenery", "3" },
+        { "toggleHeightMarksOnLand",     "4" },
+        { "toggleHeightMarksOnTracks",   "5" },
+        { "toggleDirArrowsOnTracks",     "6" },
+        { "adjustLand",                  "L" },
+        { "adjustWater",                 "W" },
+        { "plantTrees",                  "P" },
+        { "bulldozeArea",                "X" },
+        { "buildTracks",                 "T" },
+        { "buildRoads",                  "R" },
+        { "buildAirports",               "A" },
+        { "buildShipPorts",              "D" },
+        { "buildNewVehicles",            "N" },
+        { "showVehiclesList",            "V" },
+        { "showStationsList",            "S" },
+        { "showTownsList",               "U" },
+        { "showIndustriesList",          "I" },
+        { "showMap",                     "M" },
+        { "showCompaniesList",           "C" },
+        { "showCompanyInformation",      "Q" },
+        { "showFinances",                "F" },
+        { "showAnnouncementsList",       "Tab" },
+        { "makeScreenshot",              "Left Ctrl+S" },
+        { "toggleLastAnnouncement",      "Space" },
+        { "sendMessage",                 "F1" },
+    } };
+    // clang-format on
+
     NewConfig& readNewConfig()
     {
         auto configPath = Environment::getPathNoWarning(Environment::path_id::openloco_yml);
@@ -156,44 +202,14 @@ namespace OpenLoco::Config
             _new_config.uncapFPS = config["uncapFPS"].as<bool>();
 
         auto& scNode = config["shortcuts"];
-        if (scNode && scNode.IsMap())
+        auto& shortcuts = _new_config.shortcuts;
+        for (size_t i = 0; i < std::size(shortcuts); i++)
         {
-            auto& shortcuts = _new_config.shortcuts;
-            shortcuts.closeTopmostWindow = scNode["closeTopmostWindow"].as<KeyboardShortcut>();
-            shortcuts.closeAllFloatingWindows = scNode["closeAllFloatingWindows"].as<KeyboardShortcut>();
-            shortcuts.cancelConstructionMode = scNode["cancelConstructionMode"].as<KeyboardShortcut>();
-            shortcuts.pauseUnpauseGame = scNode["pauseUnpauseGame"].as<KeyboardShortcut>();
-            shortcuts.zoomViewOut = scNode["zoomViewOut"].as<KeyboardShortcut>();
-            shortcuts.zoomViewIn = scNode["zoomViewIn"].as<KeyboardShortcut>();
-            shortcuts.rotateView = scNode["rotateView"].as<KeyboardShortcut>();
-            shortcuts.rotateConstructionObject = scNode["rotateConstructionObject"].as<KeyboardShortcut>();
-            shortcuts.toggleUndergroundView = scNode["toggleUndergroundView"].as<KeyboardShortcut>();
-            shortcuts.toggleHideForegroundTracks = scNode["toggleHideForegroundTracks"].as<KeyboardShortcut>();
-            shortcuts.toggleHideForegroundScenery = scNode["toggleHideForegroundScenery"].as<KeyboardShortcut>();
-            shortcuts.toggleHeightMarksOnLand = scNode["toggleHeightMarksOnLand"].as<KeyboardShortcut>();
-            shortcuts.toggleHeightMarksOnTracks = scNode["toggleHeightMarksOnTracks"].as<KeyboardShortcut>();
-            shortcuts.toggleDirArrowsOnTracks = scNode["toggleDirArrowsOnTracks"].as<KeyboardShortcut>();
-            shortcuts.adjustLand = scNode["adjustLand"].as<KeyboardShortcut>();
-            shortcuts.adjustWater = scNode["adjustWater"].as<KeyboardShortcut>();
-            shortcuts.plantTrees = scNode["plantTrees"].as<KeyboardShortcut>();
-            shortcuts.bulldozeArea = scNode["bulldozeArea"].as<KeyboardShortcut>();
-            shortcuts.buildTracks = scNode["buildTracks"].as<KeyboardShortcut>();
-            shortcuts.buildRoads = scNode["buildRoads"].as<KeyboardShortcut>();
-            shortcuts.buildAirports = scNode["buildAirports"].as<KeyboardShortcut>();
-            shortcuts.buildShipPorts = scNode["buildShipPorts"].as<KeyboardShortcut>();
-            shortcuts.buildNewVehicles = scNode["buildNewVehicles"].as<KeyboardShortcut>();
-            shortcuts.showVehiclesList = scNode["showVehiclesList"].as<KeyboardShortcut>();
-            shortcuts.showStationsList = scNode["showStationsList"].as<KeyboardShortcut>();
-            shortcuts.showTownsList = scNode["showTownsList"].as<KeyboardShortcut>();
-            shortcuts.showIndustriesList = scNode["showIndustriesList"].as<KeyboardShortcut>();
-            shortcuts.showMap = scNode["showMap"].as<KeyboardShortcut>();
-            shortcuts.showCompaniesList = scNode["showCompaniesList"].as<KeyboardShortcut>();
-            shortcuts.showCompanyInformation = scNode["showCompanyInformation"].as<KeyboardShortcut>();
-            shortcuts.showFinances = scNode["showFinances"].as<KeyboardShortcut>();
-            shortcuts.showAnnouncementsList = scNode["showAnnouncementsList"].as<KeyboardShortcut>();
-            shortcuts.makeScreenshot = scNode["makeScreenshot"].as<KeyboardShortcut>();
-            shortcuts.toggleLastAnnouncement = scNode["toggleLastAnnouncement"].as<KeyboardShortcut>();
-            shortcuts.sendMessage = scNode["sendMessage"].as<KeyboardShortcut>();
+            auto& def = _shortcutDefs[i];
+            if (scNode && scNode.IsMap() && scNode[def.name])
+                shortcuts[i] = scNode[def.name].as<KeyboardShortcut>();
+            else
+                shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
         }
 
         return _new_config;
@@ -250,41 +266,11 @@ namespace OpenLoco::Config
         // Shortcuts
         const auto& shortcuts = _new_config.shortcuts;
         auto scNode = node["shortcuts"];
-        scNode["closeTopmostWindow"] = shortcuts.closeTopmostWindow;
-        scNode["closeAllFloatingWindows"] = shortcuts.closeAllFloatingWindows;
-        scNode["cancelConstructionMode"] = shortcuts.cancelConstructionMode;
-        scNode["pauseUnpauseGame"] = shortcuts.pauseUnpauseGame;
-        scNode["zoomViewOut"] = shortcuts.zoomViewOut;
-        scNode["zoomViewIn"] = shortcuts.zoomViewIn;
-        scNode["rotateView"] = shortcuts.rotateView;
-        scNode["rotateConstructionObject"] = shortcuts.rotateConstructionObject;
-        scNode["toggleUndergroundView"] = shortcuts.toggleUndergroundView;
-        scNode["toggleHideForegroundTracks"] = shortcuts.toggleHideForegroundTracks;
-        scNode["toggleHideForegroundScenery"] = shortcuts.toggleHideForegroundScenery;
-        scNode["toggleHeightMarksOnLand"] = shortcuts.toggleHeightMarksOnLand;
-        scNode["toggleHeightMarksOnTracks"] = shortcuts.toggleHeightMarksOnTracks;
-        scNode["toggleDirArrowsOnTracks"] = shortcuts.toggleDirArrowsOnTracks;
-        scNode["adjustLand"] = shortcuts.adjustLand;
-        scNode["adjustWater"] = shortcuts.adjustWater;
-        scNode["plantTrees"] = shortcuts.plantTrees;
-        scNode["bulldozeArea"] = shortcuts.bulldozeArea;
-        scNode["buildTracks"] = shortcuts.buildTracks;
-        scNode["buildRoads"] = shortcuts.buildRoads;
-        scNode["buildAirports"] = shortcuts.buildAirports;
-        scNode["buildShipPorts"] = shortcuts.buildShipPorts;
-        scNode["buildNewVehicles"] = shortcuts.buildNewVehicles;
-        scNode["showVehiclesList"] = shortcuts.showVehiclesList;
-        scNode["showStationsList"] = shortcuts.showStationsList;
-        scNode["showTownsList"] = shortcuts.showTownsList;
-        scNode["showIndustriesList"] = shortcuts.showIndustriesList;
-        scNode["showMap"] = shortcuts.showMap;
-        scNode["showCompaniesList"] = shortcuts.showCompaniesList;
-        scNode["showCompanyInformation"] = shortcuts.showCompanyInformation;
-        scNode["showFinances"] = shortcuts.showFinances;
-        scNode["showAnnouncementsList"] = shortcuts.showAnnouncementsList;
-        scNode["makeScreenshot"] = shortcuts.makeScreenshot;
-        scNode["toggleLastAnnouncement"] = shortcuts.toggleLastAnnouncement;
-        scNode["sendMessage"] = shortcuts.sendMessage;
+        for (size_t i = 0; i < std::size(shortcuts); i++)
+        {
+            auto& def = _shortcutDefs[i];
+            scNode[def.name] = shortcuts[i];
+        }
         node["shortcuts"] = scNode;
 
         std::ofstream stream(configPath);
