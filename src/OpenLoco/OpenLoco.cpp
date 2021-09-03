@@ -423,7 +423,6 @@ namespace OpenLoco
         Ui::ProgressBar::setProgress(30);
         startupChecks();
         Ui::ProgressBar::setProgress(40);
-        call(0x004BE5DE);
         Ui::ProgressBar::end();
         Config::read();
         ObjectManager::loadIndex();

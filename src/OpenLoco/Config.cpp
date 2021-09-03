@@ -236,4 +236,18 @@ namespace OpenLoco::Config
             stream << node << std::endl;
         }
     }
+
+    // 0x004BE3F3
+    void resetShortcuts()
+    {
+        const auto& shortcutDefs = Input::ShortcutManager::getList();
+        auto& shortcuts = _new_config.shortcuts;
+        for (size_t i = 0; i < std::size(shortcuts); i++)
+        {
+            auto& def = shortcutDefs[i];
+            shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
+        }
+
+        writeNewConfig();
+    }
 }

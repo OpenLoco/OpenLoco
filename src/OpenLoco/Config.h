@@ -179,4 +179,6 @@ namespace OpenLoco::Config
     NewConfig& readNewConfig();
     void write();
     void writeNewConfig();
+
+    void resetShortcuts();
 }
