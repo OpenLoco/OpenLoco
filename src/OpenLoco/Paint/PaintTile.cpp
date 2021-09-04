@@ -190,7 +190,7 @@ namespace OpenLoco::Paint
     // 0x00461CF8
     void paintTileElements(PaintSession& session, const Map::Pos2& loc)
     {
-        if (loc.x >= 383 * Map::tile_size || loc.y >= 383 * Map::tile_size || loc.x < 32 || loc.y < 32)
+        if (!Map::drawableCoords(loc))
         {
             paintVoid(session, loc);
             return;
