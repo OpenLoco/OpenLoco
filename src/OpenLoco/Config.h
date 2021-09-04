@@ -53,6 +53,7 @@ namespace OpenLoco::Config
 
     struct LocoConfig
     {
+        // This struct has been deprecated; please use Config::KeyboardShortcut instead.
         struct KeyboardShortcut
         {
             uint8_t var_0;

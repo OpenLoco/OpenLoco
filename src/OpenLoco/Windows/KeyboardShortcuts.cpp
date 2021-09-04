@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         else
         {
             const char* sdlBuffer = SDL_GetKeyName(keyCode);
-            strncpy(buffer, sdlBuffer, bufferLength);
+            strncpy(buffer, sdlBuffer, bufferLength - 1);
         }
     }
 
