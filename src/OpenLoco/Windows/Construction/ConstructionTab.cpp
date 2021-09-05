@@ -3001,7 +3001,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     void previousTrackPiece(Window* self)
     {
         WidgetIndex_t currentTrackWidget = -1;
-        for (WidgetIndex_t i = widx::left_hand_curve_very_small; i < widx::s_bend_dual_track_right; i++)
+        for (WidgetIndex_t i = widx::left_hand_curve_very_small; i <= widx::s_bend_dual_track_right; i++)
         {
             if (self->isActivated(i))
             {
@@ -3020,12 +3020,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (currentTrackWidget < widx::left_hand_curve_very_small)
             currentTrackWidget = widx::s_bend_dual_track_right;
 
-        for (WidgetIndex_t i = currentTrackWidget; i > widx::left_hand_curve_very_small; i--)
+        for (WidgetIndex_t i = currentTrackWidget; i >= widx::left_hand_curve_very_small; i--)
         {
             printf("Considering %d\n", i);
             if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
             {
                 printf("%d is disabled, continuing\n", i);
+                if (i == widx::left_hand_curve_very_small)
+                    i = widx::s_bend_dual_track_right;
                 continue;
             }
 
@@ -3038,7 +3040,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     void nextTrackPiece(Window* self)
     {
         WidgetIndex_t currentTrackWidget = -1;
-        for (WidgetIndex_t i = widx::left_hand_curve_very_small; i < widx::s_bend_dual_track_right; i++)
+        for (WidgetIndex_t i = widx::left_hand_curve_very_small; i <= widx::s_bend_dual_track_right; i++)
         {
             if (self->isActivated(i))
             {
@@ -3057,12 +3059,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (currentTrackWidget > widx::s_bend_dual_track_right)
             currentTrackWidget = widx::left_hand_curve_very_small;
 
-        for (WidgetIndex_t i = currentTrackWidget; i < widx::s_bend_dual_track_right; i++)
+        for (WidgetIndex_t i = currentTrackWidget; i <= widx::s_bend_dual_track_right; i++)
         {
             printf("Considering %d\n", i);
             if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
             {
                 printf("%d is disabled, continuing\n", i);
+                if (i == widx::s_bend_dual_track_right)
+                    i = widx::left_hand_curve_very_small;
                 continue;
             }
 
@@ -3075,7 +3079,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     void previousSlope(Window* self)
     {
         WidgetIndex_t currentSlopeWidget = -1;
-        for (WidgetIndex_t i = widx::steep_slope_down; i < widx::steep_slope_up; i++)
+        for (WidgetIndex_t i = widx::steep_slope_down; i <= widx::steep_slope_up; i++)
         {
             if (self->isActivated(i))
             {
@@ -3094,7 +3098,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (currentSlopeWidget < widx::steep_slope_down)
             currentSlopeWidget = widx::steep_slope_up;
 
-        for (WidgetIndex_t i = currentSlopeWidget; i > widx::steep_slope_down; i--)
+        for (WidgetIndex_t i = currentSlopeWidget; i >= widx::steep_slope_down; i--)
         {
             printf("Considering %d\n", i);
             if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
@@ -3112,7 +3116,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     void nextSlope(Window* self)
     {
         WidgetIndex_t currentSlopeWidget = -1;
-        for (WidgetIndex_t i = widx::steep_slope_down; i < widx::steep_slope_up; i++)
+        for (WidgetIndex_t i = widx::steep_slope_down; i <= widx::steep_slope_up; i++)
         {
             if (self->isActivated(i))
             {
@@ -3131,7 +3135,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (currentSlopeWidget > widx::steep_slope_up)
             currentSlopeWidget = widx::steep_slope_down;
 
-        for (WidgetIndex_t i = currentSlopeWidget; i < widx::steep_slope_up; i++)
+        for (WidgetIndex_t i = currentSlopeWidget; i <= widx::steep_slope_up; i++)
         {
             printf("Considering %d\n", i);
             if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
