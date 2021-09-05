@@ -2998,156 +2998,106 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         events.draw = draw;
     }
 
-    void previousTrackPiece(Window* self)
+    static WidgetIndex_t prevAvailableWidgetInRange(Window* self, WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
     {
-        WidgetIndex_t currentTrackWidget = -1;
-        for (WidgetIndex_t i = widx::left_hand_curve_very_small; i <= widx::s_bend_dual_track_right; i++)
+        WidgetIndex_t activeIndex = -1;
+        for (WidgetIndex_t i = minIndex; i <= maxIndex; i++)
         {
             if (self->isActivated(i))
             {
-                currentTrackWidget = i;
+                activeIndex = i;
                 break;
             }
         }
 
-        if (currentTrackWidget == -1)
-        {
-            printf("currentTrackWidget == -1\n");
-            return;
-        }
+        // We'll need to have something to work with. If not, bail out.
+        if (activeIndex == -1)
+            return activeIndex;
 
-        currentTrackWidget -= 1;
-        if (currentTrackWidget < widx::left_hand_curve_very_small)
-            currentTrackWidget = widx::s_bend_dual_track_right;
+        // Offset, wrapping around if needed.
+        activeIndex -= 1;
+        if (activeIndex < minIndex)
+            activeIndex = maxIndex;
 
-        for (WidgetIndex_t i = currentTrackWidget; i >= widx::left_hand_curve_very_small; i--)
+        for (WidgetIndex_t i = activeIndex; i >= minIndex; i--)
         {
-            printf("Considering %d\n", i);
             if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
             {
-                printf("%d is disabled, continuing\n", i);
-                if (i == widx::left_hand_curve_very_small)
-                    i = widx::s_bend_dual_track_right;
+                // Wrap around?
+                if (i == minIndex)
+                    i = maxIndex;
                 continue;
             }
 
-            printf("Calling %d\n", i);
-            self->callOnMouseDown(i);
-            return;
+            return i;
         }
+
+        return -1;
+    }
+
+    static WidgetIndex_t nextAvailableWidgetInRange(Window* self, WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
+    {
+        WidgetIndex_t activeIndex = -1;
+        for (WidgetIndex_t i = minIndex; i <= maxIndex; i++)
+        {
+            if (self->isActivated(i))
+            {
+                activeIndex = i;
+                break;
+            }
+        }
+
+        // We'll need to have something to work with. If not, bail out.
+        if (activeIndex == -1)
+            return activeIndex;
+
+        // Offset, wrapping around if needed.
+        activeIndex += 1;
+        if (activeIndex > maxIndex)
+            activeIndex = minIndex;
+
+        for (WidgetIndex_t i = activeIndex; i <= maxIndex; i++)
+        {
+            if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
+            {
+                // Wrap around?
+                if (i == maxIndex)
+                    i = minIndex;
+                continue;
+            }
+
+            return i;
+        }
+
+        return -1;
+    }
+
+    void previousTrackPiece(Window* self)
+    {
+        WidgetIndex_t prev = prevAvailableWidgetInRange(self, widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
+        if (prev != -1)
+            self->callOnMouseDown(prev);
     }
 
     void nextTrackPiece(Window* self)
     {
-        WidgetIndex_t currentTrackWidget = -1;
-        for (WidgetIndex_t i = widx::left_hand_curve_very_small; i <= widx::s_bend_dual_track_right; i++)
-        {
-            if (self->isActivated(i))
-            {
-                currentTrackWidget = i;
-                break;
-            }
-        }
-
-        if (currentTrackWidget == -1)
-        {
-            printf("currentTrackWidget == -1\n");
-            return;
-        }
-
-        currentTrackWidget += 1;
-        if (currentTrackWidget > widx::s_bend_dual_track_right)
-            currentTrackWidget = widx::left_hand_curve_very_small;
-
-        for (WidgetIndex_t i = currentTrackWidget; i <= widx::s_bend_dual_track_right; i++)
-        {
-            printf("Considering %d\n", i);
-            if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
-            {
-                printf("%d is disabled, continuing\n", i);
-                if (i == widx::s_bend_dual_track_right)
-                    i = widx::left_hand_curve_very_small;
-                continue;
-            }
-
-            printf("Calling %d\n", i);
-            self->callOnMouseDown(i);
-            return;
-        }
+        WidgetIndex_t next = nextAvailableWidgetInRange(self, widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
+        if (next != -1)
+            self->callOnMouseDown(next);
     }
 
     void previousSlope(Window* self)
     {
-        WidgetIndex_t currentSlopeWidget = -1;
-        for (WidgetIndex_t i = widx::steep_slope_down; i <= widx::steep_slope_up; i++)
-        {
-            if (self->isActivated(i))
-            {
-                currentSlopeWidget = i;
-                break;
-            }
-        }
-
-        if (currentSlopeWidget == -1)
-        {
-            printf("currentSlopeWidget == -1\n");
-            return;
-        }
-
-        currentSlopeWidget -= 1;
-        if (currentSlopeWidget < widx::steep_slope_down)
-            currentSlopeWidget = widx::steep_slope_up;
-
-        for (WidgetIndex_t i = currentSlopeWidget; i >= widx::steep_slope_down; i--)
-        {
-            printf("Considering %d\n", i);
-            if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
-            {
-                printf("%d is disabled, continuing\n", i);
-                continue;
-            }
-
-            printf("Calling %d\n", i);
-            self->callOnMouseDown(i);
-            return;
-        }
+        WidgetIndex_t prev = prevAvailableWidgetInRange(self, widx::steep_slope_down, widx::steep_slope_up);
+        if (prev != -1)
+            self->callOnMouseDown(prev);
     }
 
     void nextSlope(Window* self)
     {
-        WidgetIndex_t currentSlopeWidget = -1;
-        for (WidgetIndex_t i = widx::steep_slope_down; i <= widx::steep_slope_up; i++)
-        {
-            if (self->isActivated(i))
-            {
-                currentSlopeWidget = i;
-                break;
-            }
-        }
-
-        if (currentSlopeWidget == -1)
-        {
-            printf("currentSlopeWidget == -1\n");
-            return;
-        }
-
-        currentSlopeWidget += 1;
-        if (currentSlopeWidget > widx::steep_slope_up)
-            currentSlopeWidget = widx::steep_slope_down;
-
-        for (WidgetIndex_t i = currentSlopeWidget; i <= widx::steep_slope_up; i++)
-        {
-            printf("Considering %d\n", i);
-            if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
-            {
-                printf("%d is disabled, continuing\n", i);
-                continue;
-            }
-
-            printf("Calling %d\n", i);
-            self->callOnMouseDown(i);
-            return;
-        }
+        WidgetIndex_t next = nextAvailableWidgetInRange(self, widx::steep_slope_down, widx::steep_slope_up);
+        if (next != -1)
+            self->callOnMouseDown(next);
     }
 
     void buildAtCurrentPos(Window* self)
