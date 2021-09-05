@@ -3000,10 +3000,76 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     void previousTrackPiece(Window* self)
     {
+        WidgetIndex_t currentTrackWidget = -1;
+        for (WidgetIndex_t i = widx::left_hand_curve_very_small; i < widx::s_bend_dual_track_right; i++)
+        {
+            if (self->isActivated(i))
+            {
+                currentTrackWidget = i;
+                break;
+            }
+        }
+
+        if (currentTrackWidget == -1)
+        {
+            printf("currentTrackWidget == -1\n");
+            return;
+        }
+
+        currentTrackWidget -= 1;
+        if (currentTrackWidget < widx::left_hand_curve_very_small)
+            currentTrackWidget = widx::s_bend_dual_track_right;
+
+        for (WidgetIndex_t i = currentTrackWidget; i > widx::left_hand_curve_very_small; i--)
+        {
+            printf("Considering %d\n", i);
+            if (self->isDisabled(i))
+            {
+                printf("%d is disabled, continuing\n", i);
+                continue;
+            }
+
+            printf("Calling %d\n", i);
+            self->callOnMouseDown(i);
+            return;
+        }
     }
 
     void nextTrackPiece(Window* self)
     {
+        WidgetIndex_t currentTrackWidget = -1;
+        for (WidgetIndex_t i = widx::left_hand_curve_very_small; i < widx::s_bend_dual_track_right; i++)
+        {
+            if (self->isActivated(i))
+            {
+                currentTrackWidget = i;
+                break;
+            }
+        }
+
+        if (currentTrackWidget == -1)
+        {
+            printf("currentTrackWidget == -1\n");
+            return;
+        }
+
+        currentTrackWidget += 1;
+        if (currentTrackWidget > widx::s_bend_dual_track_right)
+            currentTrackWidget = widx::left_hand_curve_very_small;
+
+        for (WidgetIndex_t i = currentTrackWidget; i < widx::s_bend_dual_track_right; i++)
+        {
+            printf("Considering %d\n", i);
+            if (self->isDisabled(i))
+            {
+                printf("%d is disabled, continuing\n", i);
+                continue;
+            }
+
+            printf("Calling %d\n", i);
+            self->callOnMouseDown(i);
+            return;
+        }
     }
 
     void previousSlope(Window* self)
