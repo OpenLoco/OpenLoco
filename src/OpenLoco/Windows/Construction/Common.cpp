@@ -1516,10 +1516,46 @@ namespace OpenLoco::Ui::Windows::Construction
 
         void previousTab(Window* self)
         {
+            switch (self->current_tab)
+            {
+                case widx::tab_construction - widx::tab_construction:
+                    if (!self->isDisabled(widx::tab_overhead))
+                        return self->callOnMouseUp(widx::tab_overhead);
+                    [[fallthrough]];
+                case widx::tab_station - widx::tab_construction:
+                    if (!self->isDisabled(widx::tab_construction))
+                        return self->callOnMouseUp(widx::tab_construction);
+                    [[fallthrough]];
+                case widx::tab_signal - widx::tab_construction:
+                    if (!self->isDisabled(widx::tab_station))
+                        return self->callOnMouseUp(widx::tab_station);
+                    [[fallthrough]];
+                case widx::tab_overhead - widx::tab_construction:
+                    if (!self->isDisabled(widx::tab_signal))
+                        return self->callOnMouseUp(widx::tab_signal);
+            }
         }
 
         void nextTab(Window* self)
         {
+            switch (self->current_tab)
+            {
+                case widx::tab_construction - widx::tab_construction:
+                    if (!self->isDisabled(widx::tab_station))
+                        return self->callOnMouseUp(widx::tab_station);
+                    [[fallthrough]];
+                case widx::tab_station - widx::tab_construction:
+                    if (!self->isDisabled(widx::tab_signal))
+                        return self->callOnMouseUp(widx::tab_signal);
+                    [[fallthrough]];
+                case widx::tab_signal - widx::tab_construction:
+                    if (!self->isDisabled(widx::tab_overhead))
+                        return self->callOnMouseUp(widx::tab_overhead);
+                    [[fallthrough]];
+                case widx::tab_overhead - widx::tab_construction:
+                    if (!self->isDisabled(widx::tab_construction))
+                        return self->callOnMouseUp(widx::tab_construction);
+            }
         }
     }
 
