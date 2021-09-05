@@ -4,6 +4,7 @@
 - Fix: [#1123] Right click interaction of road/tram causing crashes or money.
 - Fix: [#1124] Confirmation prompt captions are not rendered correctly.
 - Fix: [#1127] Crash during vehicle renewal cheat.
+- Fix: [#1144] Options window spawns behind title logo.
 - Change: [#1104] Exceptions now trigger a message box popup, instead of only being written to the console.
 - Change: [#1141] The Enter key on the numeric keypad can now be bound separately.
 
