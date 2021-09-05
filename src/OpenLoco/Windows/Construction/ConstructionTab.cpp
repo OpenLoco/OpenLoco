@@ -3074,10 +3074,76 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     void previousSlope(Window* self)
     {
+        WidgetIndex_t currentSlopeWidget = -1;
+        for (WidgetIndex_t i = widx::steep_slope_down; i < widx::steep_slope_up; i++)
+        {
+            if (self->isActivated(i))
+            {
+                currentSlopeWidget = i;
+                break;
+            }
+        }
+
+        if (currentSlopeWidget == -1)
+        {
+            printf("currentSlopeWidget == -1\n");
+            return;
+        }
+
+        currentSlopeWidget -= 1;
+        if (currentSlopeWidget < widx::steep_slope_down)
+            currentSlopeWidget = widx::steep_slope_up;
+
+        for (WidgetIndex_t i = currentSlopeWidget; i > widx::steep_slope_down; i--)
+        {
+            printf("Considering %d\n", i);
+            if (self->isDisabled(i))
+            {
+                printf("%d is disabled, continuing\n", i);
+                continue;
+            }
+
+            printf("Calling %d\n", i);
+            self->callOnMouseDown(i);
+            return;
+        }
     }
 
     void nextSlope(Window* self)
     {
+        WidgetIndex_t currentSlopeWidget = -1;
+        for (WidgetIndex_t i = widx::steep_slope_down; i < widx::steep_slope_up; i++)
+        {
+            if (self->isActivated(i))
+            {
+                currentSlopeWidget = i;
+                break;
+            }
+        }
+
+        if (currentSlopeWidget == -1)
+        {
+            printf("currentSlopeWidget == -1\n");
+            return;
+        }
+
+        currentSlopeWidget += 1;
+        if (currentSlopeWidget > widx::steep_slope_up)
+            currentSlopeWidget = widx::steep_slope_down;
+
+        for (WidgetIndex_t i = currentSlopeWidget; i < widx::steep_slope_up; i++)
+        {
+            printf("Considering %d\n", i);
+            if (self->isDisabled(i))
+            {
+                printf("%d is disabled, continuing\n", i);
+                continue;
+            }
+
+            printf("Calling %d\n", i);
+            self->callOnMouseDown(i);
+            return;
+        }
     }
 
     void buildAtCurrentPos(Window* self)
