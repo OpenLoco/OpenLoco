@@ -1513,6 +1513,14 @@ namespace OpenLoco::Ui::Windows::Construction
 
             sortList(signalList);
         }
+
+        void previousTab(Window* self)
+        {
+        }
+
+        void nextTab(Window* self)
+        {
+        }
     }
 
     bool rotate(Window* self)

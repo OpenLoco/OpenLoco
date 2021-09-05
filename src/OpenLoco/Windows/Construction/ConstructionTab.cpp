@@ -2997,4 +2997,32 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         events.prepare_draw = prepareDraw;
         events.draw = draw;
     }
+
+    void previousTrackPiece(Window* self)
+    {
+    }
+
+    void nextTrackPiece(Window* self)
+    {
+    }
+
+    void previousSlope(Window* self)
+    {
+    }
+
+    void nextSlope(Window* self)
+    {
+    }
+
+    void buildAtCurrentPos(Window* self)
+    {
+    }
+
+    void removeAtCurrentPos(Window* self)
+    {
+    }
+
+    void selectPosition(Window* self)
+    {
+    }
 }

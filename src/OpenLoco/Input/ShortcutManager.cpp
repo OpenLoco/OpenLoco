@@ -8,6 +8,7 @@
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
+#include "../Windows/Construction/Construction.h"
 #include <array>
 #include <unordered_map>
 
@@ -504,37 +505,64 @@ namespace OpenLoco::Input::ShortcutManager
 
     static void constructionPreviousTab()
     {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Common::previousTab(window);
     }
 
     static void constructionNextTab()
     {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Common::nextTab(window);
     }
 
     static void constructionPreviousTrackPiece()
     {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::previousTrackPiece(window);
     }
 
     static void constructionNextTrackPiece()
     {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::nextTrackPiece(window);
     }
 
     static void constructionPreviousSlope()
     {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::previousSlope(window);
     }
 
     static void constructionNextSlope()
     {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::nextSlope(window);
     }
 
     static void constructionBuildAtCurrentPos()
     {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::buildAtCurrentPos(window);
     }
 
     static void constructionRemoveAtCurrentPos()
     {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::removeAtCurrentPos(window);
     }
 
     static void constructionSelectPosition()
     {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::selectPosition(window);
     }
 }
