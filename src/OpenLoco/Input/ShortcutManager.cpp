@@ -51,6 +51,15 @@ namespace OpenLoco::Input::ShortcutManager
     static void makeScreenshot();
     static void toggleLastAnnouncement();
     static void sendMessage();
+    static void constructionPreviousTab();
+    static void constructionNextTab();
+    static void constructionPreviousTrackPiece();
+    static void constructionNextTrackPiece();
+    static void constructionPreviousSlope();
+    static void constructionNextSlope();
+    static void constructionBuildAtCurrentPos();
+    static void constructionRemoveAtCurrentPos();
+    static void constructionSelectPosition();
 
     // clang-format off
     static constexpr std::array<const KeyboardShortcut, count> _shortcuts = { {
@@ -89,6 +98,15 @@ namespace OpenLoco::Input::ShortcutManager
         { makeScreenshot,              StringIds::shortcut_screenshot,                     "makeScreenshot",              "Left Ctrl+S" },
         { toggleLastAnnouncement,      StringIds::shortcut_toggle_last_announcement,       "toggleLastAnnouncement",      "Space" },
         { sendMessage,                 StringIds::shortcut_send_message,                   "sendMessage",                 "F1" },
+        { constructionPreviousTab,        StringIds::shortcut_construction_previous_tab,          "constructionPreviousTab",        "" },
+        { constructionNextTab,            StringIds::shortcut_construction_next_tab,              "constructionNextTab",            "" },
+        { constructionPreviousTrackPiece, StringIds::shortcut_construction_previous_track_piece,  "constructionPreviousTrackPiece", "" },
+        { constructionNextTrackPiece,     StringIds::shortcut_construction_next_track_piece,      "constructionNextTrackPiece",     "" },
+        { constructionPreviousSlope,      StringIds::shortcut_construction_previous_slope,        "constructionPreviousSlope",      "" },
+        { constructionNextSlope,          StringIds::shortcut_construction_next_slope,            "constructionNextSlope",          "" },
+        { constructionBuildAtCurrentPos,  StringIds::shortcut_construction_build_at_current_pos,  "constructionBuildAtCurrentPos",  "" },
+        { constructionRemoveAtCurrentPos, StringIds::shortcut_construction_remove_at_current_pos, "constructionRemoveAtCurrentPos", "" },
+        { constructionSelectPosition,     StringIds::shortcut_construction_select_position,       "constructionSelectPosition",     "" },
     } };
     // clang-format on
 
@@ -482,5 +500,41 @@ namespace OpenLoco::Input::ShortcutManager
     static void sendMessage()
     {
         call(0x004BF3DC);
+    }
+
+    static void constructionPreviousTab()
+    {
+    }
+
+    static void constructionNextTab()
+    {
+    }
+
+    static void constructionPreviousTrackPiece()
+    {
+    }
+
+    static void constructionNextTrackPiece()
+    {
+    }
+
+    static void constructionPreviousSlope()
+    {
+    }
+
+    static void constructionNextSlope()
+    {
+    }
+
+    static void constructionBuildAtCurrentPos()
+    {
+    }
+
+    static void constructionRemoveAtCurrentPos()
+    {
+    }
+
+    static void constructionSelectPosition()
+    {
     }
 }

@@ -170,7 +170,7 @@ namespace OpenLoco::Config
         int32_t autosave_amount = 12;
         bool showFPS = false;
         bool uncapFPS = false;
-        KeyboardShortcut shortcuts[35];
+        KeyboardShortcut shortcuts[44];
     };
 
     LocoConfig& get();
