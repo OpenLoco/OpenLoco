@@ -9,14 +9,13 @@
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include <array>
+#include <unordered_map>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Input::ShortcutManager
 {
-    static constexpr size_t _count = 35;
-
     static void closeTopmostWindow();
     static void closeAllFloatingWindows();
     static void cancelConstructionMode();
@@ -53,95 +52,59 @@ namespace OpenLoco::Input::ShortcutManager
     static void toggleLastAnnouncement();
     static void sendMessage();
 
-    static std::array<void (*)(), _count> _shortcuts = { {
-        closeTopmostWindow,
-        closeAllFloatingWindows,
-        cancelConstructionMode,
-        pauseUnpauseGame,
-        zoomViewOut,
-        zoomViewIn,
-        rotateView,
-        rotateConstructionObject,
-        toggleUndergroundView,
-        toggleHideForegroundTracks,
-        toggleHideForegroundScenery,
-        toggleHeightMarksOnLand,
-        toggleHeightMarksOnTracks,
-        toggleDirArrowsOnTracks,
-        adjustLand,
-        adjustWater,
-        plantTrees,
-        bulldozeArea,
-        buildTracks,
-        buildRoads,
-        buildAirports,
-        buildShipPorts,
-        buildNewVehicles,
-        showVehiclesList,
-        showStationsList,
-        showTownsList,
-        showIndustriesList,
-        showMap,
-        showCompaniesList,
-        showCompanyInformation,
-        showFinances,
-        showAnnouncementsList,
-        makeScreenshot,
-        toggleLastAnnouncement,
-        sendMessage,
+    // clang-format off
+    static constexpr std::array<const KeyboardShortcut, count> _shortcuts = { {
+        { closeTopmostWindow,          StringIds::shortcut_close_topmost_window,           "closeTopmostWindow",          "Backspace" },
+        { closeAllFloatingWindows,     StringIds::shortcut_close_all_floating_windows,     "closeAllFloatingWindows",     "Left Shift+Backspace" },
+        { cancelConstructionMode,      StringIds::shortcut_cancel_construction_mode,       "cancelConstructionMode",      "Escape" },
+        { pauseUnpauseGame,            StringIds::shortcut_pause_unpause_game,             "pauseUnpauseGame",            "Pause" },
+        { zoomViewOut,                 StringIds::shortcut_zoom_view_out,                  "zoomViewOut",                 "PageUp" },
+        { zoomViewIn,                  StringIds::shortcut_zoom_view_in,                   "zoomViewIn",                  "PageDown" },
+        { rotateView,                  StringIds::shortcut_rotate_view,                    "rotateView",                  "Return" },
+        { rotateConstructionObject,    StringIds::shortcut_rotate_construction_object,     "rotateConstructionObject",    "Z" },
+        { toggleUndergroundView,       StringIds::shortcut_toggle_underground_view,        "toggleUndergroundView",       "1" },
+        { toggleHideForegroundTracks,  StringIds::shortcut_toggle_hide_foreground_tracks,  "toggleHideForegroundTracks",  "2" },
+        { toggleHideForegroundScenery, StringIds::shortcut_toggle_hide_foreground_scenery, "toggleHideForegroundScenery", "3" },
+        { toggleHeightMarksOnLand,     StringIds::shortcut_toggle_height_marks_on_land,    "toggleHeightMarksOnLand",     "4" },
+        { toggleHeightMarksOnTracks,   StringIds::shortcut_toggle_height_marks_on_tracks,  "toggleHeightMarksOnTracks",   "5" },
+        { toggleDirArrowsOnTracks,     StringIds::shortcut_toggle_dir_arrows_on_tracks,    "toggleDirArrowsOnTracks",     "6" },
+        { adjustLand,                  StringIds::shortcut_adjust_land,                    "adjustLand",                  "L" },
+        { adjustWater,                 StringIds::shortcut_adjust_water,                   "adjustWater",                 "W" },
+        { plantTrees,                  StringIds::shortcut_plant_trees,                    "plantTrees",                  "P" },
+        { bulldozeArea,                StringIds::shortcut_bulldoze_area,                  "bulldozeArea",                "X" },
+        { buildTracks,                 StringIds::shortcut_build_tracks,                   "buildTracks",                 "T" },
+        { buildRoads,                  StringIds::shortcut_build_roads,                    "buildRoads",                  "R" },
+        { buildAirports,               StringIds::shortcut_build_airports,                 "buildAirports",               "A" },
+        { buildShipPorts,              StringIds::shortcut_build_ship_ports,               "buildShipPorts",              "D" },
+        { buildNewVehicles,            StringIds::shortcut_build_new_vehicles,             "buildNewVehicles",            "N" },
+        { showVehiclesList,            StringIds::shortcut_show_vehicles_list,             "showVehiclesList",            "V" },
+        { showStationsList,            StringIds::shortcut_show_stations_list,             "showStationsList",            "S" },
+        { showTownsList,               StringIds::shortcut_show_towns_list,                "showTownsList",               "U" },
+        { showIndustriesList,          StringIds::shortcut_show_industries_list,           "showIndustriesList",          "I" },
+        { showMap,                     StringIds::shortcut_show_map,                       "showMap",                     "M" },
+        { showCompaniesList,           StringIds::shortcut_show_companies_list,            "showCompaniesList",           "C" },
+        { showCompanyInformation,      StringIds::shortcut_show_company_information,       "showCompanyInformation",      "Q" },
+        { showFinances,                StringIds::shortcut_show_finances,                  "showFinances",                "F" },
+        { showAnnouncementsList,       StringIds::shortcut_show_announcements_list,        "showAnnouncementsList",       "Tab" },
+        { makeScreenshot,              StringIds::shortcut_screenshot,                     "makeScreenshot",              "Left Ctrl+S" },
+        { toggleLastAnnouncement,      StringIds::shortcut_toggle_last_announcement,       "toggleLastAnnouncement",      "Space" },
+        { sendMessage,                 StringIds::shortcut_send_message,                   "sendMessage",                 "F1" },
     } };
-
-    static std::array<string_id, _count> _shortcutNames = { {
-        StringIds::shortcut_close_topmost_window,
-        StringIds::shortcut_close_all_floating_windows,
-        StringIds::shortcut_cancel_construction_mode,
-        StringIds::shortcut_pause_unpause_game,
-        StringIds::shortcut_zoom_view_out,
-        StringIds::shortcut_zoom_view_in,
-        StringIds::shortcut_rotate_view,
-        StringIds::shortcut_rotate_construction_object,
-        StringIds::shortcut_toggle_underground_view,
-        StringIds::shortcut_toggle_hide_foreground_tracks,
-        StringIds::shortcut_toggle_hide_foreground_scenery,
-        StringIds::shortcut_toggle_height_marks_on_land,
-        StringIds::shortcut_toggle_height_marks_on_tracks,
-        StringIds::shortcut_toggle_dir_arrows_on_tracks,
-        StringIds::shortcut_adjust_land,
-        StringIds::shortcut_adjust_water,
-        StringIds::shortcut_plant_trees,
-        StringIds::shortcut_bulldoze_area,
-        StringIds::shortcut_build_tracks,
-        StringIds::shortcut_build_roads,
-        StringIds::shortcut_build_airports,
-        StringIds::shortcut_build_ship_ports,
-        StringIds::shortcut_build_new_vehicles,
-        StringIds::shortcut_show_vehicles_list,
-        StringIds::shortcut_show_stations_list,
-        StringIds::shortcut_show_towns_list,
-        StringIds::shortcut_show_industries_list,
-        StringIds::shortcut_show_map,
-        StringIds::shortcut_show_companies_list,
-        StringIds::shortcut_show_company_information,
-        StringIds::shortcut_show_finances,
-        StringIds::shortcut_show_announcements_list,
-        StringIds::shortcut_screenshot,
-        StringIds::shortcut_toggle_last_announcement,
-        StringIds::shortcut_send_message,
-    } };
-
-    size_t count()
-    {
-        return _count;
-    }
+    // clang-format on
 
     void execute(Shortcut s)
     {
-        _shortcuts[s]();
+        _shortcuts[s].function();
     }
 
     string_id getName(Shortcut s)
     {
-        return _shortcutNames[s];
+        return _shortcuts[s].displayName;
+    }
+
+    const std::array<const KeyboardShortcut, count>& getList()
+    {
+        return _shortcuts;
     }
 
     // 0x004BF089

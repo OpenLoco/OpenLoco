@@ -1,16 +1,11 @@
-#include <fstream>
-
-#ifdef _WIN32
-#include <shlobj.h>
-#include <windows.h>
-#endif
-
 #include "Config.h"
 #include "ConfigConvert.hpp"
 #include "Core/FileSystem.hpp"
 #include "Environment.h"
+#include "Input/ShortcutManager.h"
 #include "Interop/Interop.hpp"
 #include "Utility/Yaml.hpp"
+#include <fstream>
 
 using namespace OpenLoco::Interop;
 
@@ -116,6 +111,7 @@ namespace OpenLoco::Config
         _config_yaml = YAML::Load(stream);
 
         const auto& config = _config_yaml;
+
         auto& displayNode = config["display"];
         if (displayNode && displayNode.IsMap())
         {
@@ -159,6 +155,18 @@ namespace OpenLoco::Config
             _new_config.showFPS = config["showFPS"].as<bool>();
         if (config["uncapFPS"])
             _new_config.uncapFPS = config["uncapFPS"].as<bool>();
+
+        const auto& shortcutDefs = Input::ShortcutManager::getList();
+        auto& scNode = config["shortcuts"];
+        auto& shortcuts = _new_config.shortcuts;
+        for (size_t i = 0; i < std::size(shortcuts); i++)
+        {
+            auto& def = shortcutDefs[i];
+            if (scNode && scNode.IsMap() && scNode[def.configName])
+                shortcuts[i] = scNode[def.configName].as<KeyboardShortcut>();
+            else
+                shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
+        }
 
         return _new_config;
     }
@@ -211,10 +219,35 @@ namespace OpenLoco::Config
         node["showFPS"] = _new_config.showFPS;
         node["uncapFPS"] = _new_config.uncapFPS;
 
+        // Shortcuts
+        const auto& shortcuts = _new_config.shortcuts;
+        const auto& shortcutDefs = Input::ShortcutManager::getList();
+        auto scNode = node["shortcuts"];
+        for (size_t i = 0; i < std::size(shortcuts); i++)
+        {
+            auto& def = shortcutDefs[i];
+            scNode[def.configName] = shortcuts[i];
+        }
+        node["shortcuts"] = scNode;
+
         std::ofstream stream(configPath);
         if (stream.is_open())
         {
             stream << node << std::endl;
         }
+    }
+
+    // 0x004BE3F3
+    void resetShortcuts()
+    {
+        const auto& shortcutDefs = Input::ShortcutManager::getList();
+        auto& shortcuts = _new_config.shortcuts;
+        for (size_t i = 0; i < std::size(shortcuts); i++)
+        {
+            auto& def = shortcutDefs[i];
+            shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
+        }
+
+        writeNewConfig();
     }
 }
