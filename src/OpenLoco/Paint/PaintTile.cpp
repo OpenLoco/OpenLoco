@@ -3,6 +3,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Map/TileManager.h"
+#include "../Station.h"
 #include "../Ui.h"
 #include "Paint.h"
 #include "PaintTree.h"
@@ -187,42 +188,16 @@ namespace OpenLoco::Paint
         call(0x00453C52, regs);
     }
 
-    // 0x00461CF8
-    void paintTileElements(PaintSession& session, const Map::Pos2& loc)
+    // Returns std::nullopt on no need to paint
+    static std::optional<Ui::viewport_pos> paintTileElementsSetup(PaintSession& session, const Map::Pos2& loc)
     {
-        if (!Map::drawableCoords(loc))
-        {
-            paintVoid(session, loc);
-            return;
-        }
-
         session.setSegmentSupportHeight(Segment::all, std::numeric_limits<uint16_t>::max(), 0);
         session.setGeneralSupportHeight(std::numeric_limits<uint16_t>::max(), 0);
         session.resetTunnels();
         session.setUnkPosition(loc);
         session.setMapPosition(loc);
 
-        auto tile = Map::TileManager::get(loc);
-        uint8_t maxClearZ = 0;
-        for (const auto& el : tile)
-        {
-            maxClearZ = std::max(maxClearZ, el.clearZ());
-            const auto* surface = el.asSurface();
-            if (!surface)
-            {
-                continue;
-            }
-
-            if (surface->water())
-            {
-                maxClearZ = std::max<uint8_t>(maxClearZ, surface->water() * 4);
-            }
-            if (surface->hasHighTypeFlag())
-            {
-                maxClearZ = std::max<uint8_t>(maxClearZ, surface->clearZ() + 24);
-            }
-        }
-        session.setMaxHeight((maxClearZ * 4) + 32);
+        session.setMaxHeight(loc);
 
         constexpr Map::Pos2 unkOffsets[4] = {
             { 0, 0 },
@@ -237,21 +212,78 @@ namespace OpenLoco::Paint
 
         if (vpPos.y + 52 <= session.getContext()->y)
         {
-            return;
+            return std::nullopt;
         }
         if (vpPos.y - session.getMaxHeight() > session.getContext()->y + session.getContext()->height)
         {
-            return;
+            return std::nullopt;
         }
 
         session.setEntityPosition(loc2);
         session.resetTileColumn({ vpPos.x, vpPos.y });
+        return { vpPos };
+    }
 
+    static void paintTileElementsEndLoop(PaintSession& session, const Map::TileElement& el)
+    {
+        if (el.isLast() || el.baseZ() != ((&el) + 1)->baseZ())
+        {
+            if (session.get112C300() != 0)
+            {
+                sub_4792E7(session);
+            }
+            if (session.getF003F4() != 0)
+            {
+                sub_46748F(session);
+            }
+
+            sub_45CA67(session);
+            sub_45CC1B(session);
+            session.setF003F6(0);
+            if (session.get525CE4(0) != 0xFFFF)
+            {
+                if (sub_42AC9C(session))
+                {
+                    session.setSegmentSupportHeight(Segment::all, 0xFFFF, 0);
+                }
+                if (session.getGeneralSupportHeight().height >= session.get525CE4(0))
+                {
+                    session.setGeneralSupportHeight(session.get525CE4(0), 0x20);
+                }
+                session.set525CE4(0, 0xFFFF);
+                session.set525CF0(0);
+            }
+
+            if (session.get525CF8() != 0)
+            {
+                for (auto bit = Utility::bitScanForward(session.get525CF8()); bit != -1; bit = Utility::bitScanForward(session.get525CF8()))
+                {
+                    session.set525CF8(session.get525CF8() & ~(1 << bit));
+                    session.setSegmentSupportHeight(1 << bit, 0xFFFF, 0);
+                }
+            }
+        }
+    }
+
+    // 0x00461CF8
+    void paintTileElements(PaintSession& session, const Map::Pos2& loc)
+    {
+        if (!Map::drawableCoords(loc))
+        {
+            paintVoid(session, loc);
+            return;
+        }
+
+        const auto vpPos = paintTileElementsSetup(session, loc);
+        if (!vpPos)
+        {
+            return;
+        }
+
+        auto tile = TileManager::get(loc);
         for (auto& el : tile)
         {
-            // This is not a good idea not all tiles (surface) have a rotation
-            //const uint8_t rotation = (el.rotation() + session.getRotation()) & 0x3;
-            session.setUnkVpY(vpPos.y - el.baseZ() * 4);
+            session.setUnkVpY(vpPos->y - el.baseZ() * 4);
             session.setCurrentItem(&el);
             switch (el.type())
             {
@@ -337,52 +369,86 @@ namespace OpenLoco::Paint
                     break;
                 }
             }
-            if (el.isLast() || el.baseZ() != ((&el) + 1)->baseZ())
-            {
-                if (session.get112C300() != 0)
-                {
-                    sub_4792E7(session);
-                }
-                if (session.getF003F4() != 0)
-                {
-                    sub_46748F(session);
-                }
-
-                sub_45CA67(session);
-                sub_45CC1B(session);
-                session.setF003F6(0);
-                if (session.get525CE4(0) != 0xFFFF)
-                {
-                    if (sub_42AC9C(session))
-                    {
-                        session.setSegmentSupportHeight(Segment::all, 0xFFFF, 0);
-                    }
-                    if (session.getGeneralSupportHeight().height >= session.get525CE4(0))
-                    {
-                        session.setGeneralSupportHeight(session.get525CE4(0), 0x20);
-                    }
-                    session.set525CE4(0, 0xFFFF);
-                    session.set525CF0(0);
-                }
-
-                if (session.get525CF8() != 0)
-                {
-                    for (auto bit = Utility::bitScanForward(session.get525CF8()); bit != -1; bit = Utility::bitScanForward(session.get525CF8()))
-                    {
-                        session.set525CF8(session.get525CF8() & ~(1 << bit));
-                        session.setSegmentSupportHeight(1 << bit, 0xFFFF, 0);
-                    }
-                }
-            }
+            paintTileElementsEndLoop(session, el);
         }
     }
 
     // 0x004617C6
     void paintTileElements2(PaintSession& session, const Map::Pos2& loc)
     {
-        registers regs{};
-        regs.eax = loc.x;
-        regs.ecx = loc.y;
-        call(0x004617C6, regs);
+        if (!Map::drawableCoords(loc))
+        {
+            return;
+        }
+
+        const auto vpPos = paintTileElementsSetup(session, loc);
+        if (!vpPos)
+        {
+            return;
+        }
+
+        auto tile = TileManager::get(loc);
+        for (auto& el : tile)
+        {
+            session.setUnkVpY(vpPos->y - el.baseZ() * 4);
+            session.setCurrentItem(&el);
+            switch (el.type())
+            {
+                case Map::ElementType::surface:
+                case Map::ElementType::track:
+                case Map::ElementType::signal:
+                case Map::ElementType::wall:
+                case Map::ElementType::road:
+                    continue;
+
+                case Map::ElementType::station:
+                {
+                    auto* elStation = el.asStation();
+                    if (elStation != nullptr)
+                    {
+                        switch (elStation->stationType())
+                        {
+                            case StationType::airport:
+                            case StationType::docks:
+                                paintStation(session, *elStation);
+                                break;
+                            default:
+                            case StationType::roadStation:
+                            case StationType::trainStation:
+                                continue;
+                        }
+                    }
+                    break;
+                }
+                case Map::ElementType::building:
+                {
+                    auto* elBuilding = el.asBuilding();
+                    if (elBuilding != nullptr)
+                    {
+                        paintBuilding(session, *elBuilding);
+                    }
+                    break;
+                }
+                case Map::ElementType::tree:
+                {
+                    auto* elTree = el.asTree();
+                    if (elTree != nullptr)
+                    {
+                        paintTree(session, *elTree);
+                    }
+                    break;
+                }
+                case Map::ElementType::industry:
+                {
+                    auto* elIndustry = el.asIndustry();
+                    if (elIndustry != nullptr)
+                    {
+                        paintIndustry(session, *elIndustry);
+                    }
+                    break;
+                }
+            }
+            paintTileElementsEndLoop(session, el);
+        }
     }
 }

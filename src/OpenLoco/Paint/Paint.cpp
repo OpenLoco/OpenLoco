@@ -2,6 +2,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
+#include "../Map/TileManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui.h"
@@ -51,6 +52,31 @@ namespace OpenLoco::Paint
         std::fill(std::begin(_E400E4), std::end(_E400E4), nullptr);
         _112C300 = 0;
         _112C306 = 0;
+    }
+
+    void PaintSession::setMaxHeight(const Map::Pos2& loc)
+    {
+        auto tile = Map::TileManager::get(loc);
+        uint8_t maxClearZ = 0;
+        for (const auto& el : tile)
+        {
+            maxClearZ = std::max(maxClearZ, el.clearZ());
+            const auto* surface = el.asSurface();
+            if (!surface)
+            {
+                continue;
+            }
+
+            if (surface->water())
+            {
+                maxClearZ = std::max<uint8_t>(maxClearZ, surface->water() * 4);
+            }
+            if (surface->hasHighTypeFlag())
+            {
+                maxClearZ = std::max<uint8_t>(maxClearZ, surface->clearZ() + 24);
+            }
+        }
+        _maxHeight = (maxClearZ * 4) + 32;
     }
 
     loco_global<int32_t[4], 0x4FD120> _4FD120;
@@ -238,9 +264,9 @@ namespace OpenLoco::Paint
     {
         std::fill(std::begin(_tunnelCounts), std::end(_tunnelCounts), 0);
         _tunnels0[0].height = 0xFF;
-        _tunnels0[1].height = 0xFF;
-        _tunnels0[2].height = 0xFF;
-        _tunnels0[3].height = 0xFF;
+        _tunnels1[0].height = 0xFF;
+        _tunnels2[0].height = 0xFF;
+        _tunnels3[0].height = 0xFF;
     }
 
     struct GenerationParameters
