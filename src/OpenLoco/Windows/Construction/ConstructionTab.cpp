@@ -3016,13 +3016,22 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     void buildAtCurrentPos(Window* self)
     {
+        if (self->current_tab == Common::widx::tab_construction - Common::widx::tab_construction)
+            self->callOnMouseUp(widx::construct);
     }
 
     void removeAtCurrentPos(Window* self)
     {
+        if (self->current_tab == Common::widx::tab_construction - Common::widx::tab_construction)
+            self->callOnMouseUp(widx::remove);
     }
 
     void selectPosition(Window* self)
     {
+        if (self->current_tab != Common::widx::tab_construction - Common::widx::tab_construction)
+            return;
+
+        if (_constructionHover == 0)
+            self->callOnMouseUp(widx::rotate_90);
     }
 }
