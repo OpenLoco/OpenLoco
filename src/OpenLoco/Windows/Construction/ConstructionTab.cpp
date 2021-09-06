@@ -2998,104 +2998,30 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         events.draw = draw;
     }
 
-    static WidgetIndex_t prevAvailableWidgetInRange(Window* self, WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
-    {
-        WidgetIndex_t activeIndex = -1;
-        for (WidgetIndex_t i = minIndex; i <= maxIndex; i++)
-        {
-            if (self->isActivated(i))
-            {
-                activeIndex = i;
-                break;
-            }
-        }
-
-        // We'll need to have something to work with. If not, bail out.
-        if (activeIndex == -1)
-            return activeIndex;
-
-        // Offset, wrapping around if needed.
-        activeIndex -= 1;
-        if (activeIndex < minIndex)
-            activeIndex = maxIndex;
-
-        for (WidgetIndex_t i = activeIndex; i >= minIndex; i--)
-        {
-            if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
-            {
-                // Wrap around (while compensating for next iteration)
-                if (i == minIndex)
-                    i = maxIndex + 1;
-                continue;
-            }
-
-            return i;
-        }
-
-        return -1;
-    }
-
-    static WidgetIndex_t nextAvailableWidgetInRange(Window* self, WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
-    {
-        WidgetIndex_t activeIndex = -1;
-        for (WidgetIndex_t i = minIndex; i <= maxIndex; i++)
-        {
-            if (self->isActivated(i))
-            {
-                activeIndex = i;
-                break;
-            }
-        }
-
-        // We'll need to have something to work with. If not, bail out.
-        if (activeIndex == -1)
-            return activeIndex;
-
-        // Offset, wrapping around if needed.
-        activeIndex += 1;
-        if (activeIndex > maxIndex)
-            activeIndex = minIndex;
-
-        for (WidgetIndex_t i = activeIndex; i <= maxIndex; i++)
-        {
-            if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
-            {
-                // Wrap around (while compensating for next iteration)
-                if (i == maxIndex)
-                    i = minIndex - 1;
-                continue;
-            }
-
-            return i;
-        }
-
-        return -1;
-    }
-
     void previousTrackPiece(Window* self)
     {
-        WidgetIndex_t prev = prevAvailableWidgetInRange(self, widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
+        WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
         if (prev != -1)
             self->callOnMouseDown(prev);
     }
 
     void nextTrackPiece(Window* self)
     {
-        WidgetIndex_t next = nextAvailableWidgetInRange(self, widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
+        WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
         if (next != -1)
             self->callOnMouseDown(next);
     }
 
     void previousSlope(Window* self)
     {
-        WidgetIndex_t prev = prevAvailableWidgetInRange(self, widx::steep_slope_down, widx::steep_slope_up);
+        WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::steep_slope_down, widx::steep_slope_up);
         if (prev != -1)
             self->callOnMouseDown(prev);
     }
 
     void nextSlope(Window* self)
     {
-        WidgetIndex_t next = nextAvailableWidgetInRange(self, widx::steep_slope_down, widx::steep_slope_up);
+        WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::steep_slope_down, widx::steep_slope_up);
         if (next != -1)
             self->callOnMouseDown(next);
     }

@@ -429,6 +429,9 @@ namespace OpenLoco::Ui
         void callPrepareDraw();                                                                        // 26
         void callDraw(Gfx::Context* context);                                                          // 27
         void callDrawScroll(Gfx::Context* context, uint32_t scrollIndex);                              // 28
+
+        WidgetIndex_t prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
+        WidgetIndex_t nextAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
     };
     assert_struct_size(Window, 0x88E);
 
