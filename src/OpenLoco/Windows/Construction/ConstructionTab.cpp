@@ -1972,17 +1972,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 _byte_113603A = 0xFF;
                 removeConstructionGhosts();
-                _lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
                 _trackCost = 0x80000000;
-                if (self->widgets[widx::s_bend_dual_track_left].image != ImageIds::construction_s_bend_dual_track_left)
-                {
+
+                if (self->widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_s_bend_dual_track_left)
+                    _lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
+                else if (self->widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_left_turnaround)
                     _lastSelectedTrackPiece = TrackPiece::turnaround;
-                    if (self->widgets[widx::s_bend_dual_track_left].image != ImageIds::construction_right_turnaround)
-                    {
-                        if (self->widgets[widx::s_bend_dual_track_left].image != ImageIds::construction_left_turnaround)
-                            _lastSelectedTrackPiece = TrackPiece::s_bend_to_single_track;
-                    }
-                }
+                else
+                    _lastSelectedTrackPiece = TrackPiece::s_bend_to_single_track;
+
                 activateSelectedConstructionWidgets();
                 break;
             }
@@ -1991,14 +1989,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 _byte_113603A = 0xFF;
                 removeConstructionGhosts();
-                _lastSelectedTrackPiece = TrackPiece::s_bend_to_single_track;
                 _trackCost = 0x80000000;
-                if (self->widgets[widx::s_bend_dual_track_right].image != ImageIds::construction_s_bend_dual_track_right)
-                {
+
+                if (self->widgets[widx::s_bend_dual_track_right].image == ImageIds::construction_s_bend_dual_track_right)
+                    _lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
+                else if (self->widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_right_turnaround)
                     _lastSelectedTrackPiece = TrackPiece::turnaround;
-                    if (self->widgets[widx::s_bend_dual_track_left].image != ImageIds::construction_left_turnaround)
-                        _lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
-                }
+                else
+                    _lastSelectedTrackPiece = TrackPiece::s_bend_to_single_track;
+
                 activateSelectedConstructionWidgets();
                 break;
             }
