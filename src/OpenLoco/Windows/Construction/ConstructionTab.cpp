@@ -3023,9 +3023,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
             {
-                // Wrap around?
+                // Wrap around (while compensating for next iteration)
                 if (i == minIndex)
-                    i = maxIndex;
+                    i = maxIndex + 1;
                 continue;
             }
 
@@ -3060,9 +3060,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             if (self->isDisabled(i) || self->widgets[i].type == WidgetType::none)
             {
-                // Wrap around?
+                // Wrap around (while compensating for next iteration)
                 if (i == maxIndex)
-                    i = minIndex;
+                    i = minIndex - 1;
                 continue;
             }
 
