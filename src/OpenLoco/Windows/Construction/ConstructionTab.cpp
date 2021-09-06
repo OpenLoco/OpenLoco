@@ -115,6 +115,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         widx::right_hand_curve_large,
         widx::s_bend_left,
         widx::s_bend_right,
+        widx::s_bend_dual_track_left, // s_bend_to_dual_track; unused?
+        widx::s_bend_dual_track_left, // s_bend_to_single_track; unused?
+        widx::s_bend_dual_track_left, // turnaround
     };
 
     WindowEventList events;
