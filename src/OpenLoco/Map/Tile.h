@@ -197,7 +197,7 @@ namespace OpenLoco::Map
         StationType stationType() const;
         uint8_t rotation() const { return _type & 0x3; }
         uint8_t multiTileIndex() const { return (_type >> 6) & 3; }
-        StationId_t stationId() const { return _station_id & 0x3FF; }
+        StationId stationId() const { return StationId(_station_id & 0x3FF); }
     };
 
     struct BuildingElement : public TileElementBase

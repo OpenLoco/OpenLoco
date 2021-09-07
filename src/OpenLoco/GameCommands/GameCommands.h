@@ -1343,14 +1343,14 @@ namespace OpenLoco::GameCommands
 
         VehicleAirPlacementArgs() = default;
         explicit VehicleAirPlacementArgs(const registers& regs)
-            : stationId(regs.bp)
+            : stationId(StationId(regs.bp))
             , airportNode(regs.dl)
             , head(regs.di)
             , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
 
-        StationId_t stationId;
+        StationId stationId;
         uint8_t airportNode;
         EntityId_t head;
         bool convertGhost = false;
@@ -1358,7 +1358,7 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.bp = stationId;
+            regs.bp = enumValue(stationId);
             regs.di = head;
             regs.dl = airportNode;
             regs.ebx = convertGhost ? 0xFFFF0000 : 0;

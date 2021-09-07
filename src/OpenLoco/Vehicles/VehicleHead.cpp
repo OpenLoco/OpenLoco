@@ -1116,7 +1116,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8D8F
-    bool VehicleHead::roadNormalMovementUpdate(uint8_t al, StationId_t nextStation)
+    bool VehicleHead::roadNormalMovementUpdate(uint8_t al, StationId nextStation)
     {
         uint8_t bl = sub_4AA36A();
         if (bl == 1)
@@ -1149,7 +1149,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8D63
-    bool VehicleHead::trainNormalMovementUpdate(uint8_t al, uint8_t flags, StationId_t nextStation)
+    bool VehicleHead::trainNormalMovementUpdate(uint8_t al, uint8_t flags, StationId nextStation)
     {
         Vehicle train(this);
         if (al == 4)
@@ -1735,7 +1735,7 @@ namespace OpenLoco::Vehicles
                 return airplaneApproachTarget(targetZ);
             }
 
-            StationId_t orderStationId = order->getStation();
+            StationId orderStationId = order->getStation();
 
             auto station = StationManager::get(orderStationId);
 
@@ -1785,7 +1785,7 @@ namespace OpenLoco::Vehicles
                         MessageType::unableToLandAtAirport,
                         owner,
                         id,
-                        orderStationId);
+                        enumValue(orderStationId));
                 }
 
                 airportMovementEdge = cAirportMovementNodeNull;
@@ -1922,7 +1922,7 @@ namespace OpenLoco::Vehicles
     std::tuple<uint32_t, uint16_t, uint8_t> VehicleHead::sub_427122()
     {
         vehicleUpdate_var_525BB0 = 0;
-        StationId_t targetStationId = StationId::null;
+        StationId targetStationId = StationId::null;
         std::optional<Map::Pos3> targetPos{};
         if (stationId == StationId::null)
         {
@@ -2133,7 +2133,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00426E26
-    std::pair<uint32_t, Map::Pos3> VehicleHead::airportGetMovementEdgeTarget(StationId_t targetStation, uint8_t curEdge)
+    std::pair<uint32_t, Map::Pos3> VehicleHead::airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
     {
         auto station = StationManager::get(targetStation);
 
@@ -3032,7 +3032,7 @@ namespace OpenLoco::Vehicles
                         }
                         if (owner == CompanyManager::getControllingId())
                         {
-                            MessageManager::post(MessageType::cantWaitForFullLoad, owner, id, stationId);
+                            MessageManager::post(MessageType::cantWaitForFullLoad, owner, id, enumValue(stationId));
                         }
                         cantWait = true;
                         break;
@@ -3046,7 +3046,7 @@ namespace OpenLoco::Vehicles
                         }
                         if (owner == CompanyManager::getControllingId())
                         {
-                            MessageManager::post(MessageType::cantWaitForFullLoad, owner, id, stationId);
+                            MessageManager::post(MessageType::cantWaitForFullLoad, owner, id, enumValue(stationId));
                         }
                         cantWait = true;
                         break;
@@ -3116,14 +3116,14 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00427FC9
-    std::tuple<StationId_t, Map::Pos2, Map::Pos3> VehicleHead::sub_427FC9()
+    std::tuple<StationId, Map::Pos2, Map::Pos3> VehicleHead::sub_427FC9()
     {
         registers regs;
         regs.esi = X86Pointer(this);
         call(0x00427FC9, regs);
         Map::Pos2 headTarget = { regs.ax, regs.cx };
         Map::Pos3 stationTarget = { regs.di, regs.bp, regs.dx };
-        return std::make_tuple(regs.bx, headTarget, stationTarget);
+        return std::make_tuple(StationId(regs.bx), headTarget, stationTarget);
     }
 
     // 0x0042750E
@@ -3159,7 +3159,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ACEE7
-    std::tuple<uint8_t, uint8_t, StationId_t> VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
+    std::tuple<uint8_t, uint8_t, StationId> VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
     {
         registers regs;
         regs.esi = X86Pointer(this);
@@ -3167,7 +3167,7 @@ namespace OpenLoco::Vehicles
         regs.ebx = var_113612C;
         call(0x004ACEE7, regs);
         // status, flags, stationId
-        return std::make_tuple(static_cast<uint8_t>(regs.al), static_cast<uint8_t>(regs.ah), static_cast<StationId_t>(regs.bp));
+        return std::make_tuple(static_cast<uint8_t>(regs.al), static_cast<uint8_t>(regs.ah), static_cast<StationId>(regs.bp));
     }
 
     // 0x004AC1C2
@@ -3202,7 +3202,7 @@ namespace OpenLoco::Vehicles
         call(0x004AD93A, regs);
     }
 
-    static StationId_t tryFindStationAt(VehicleBogie* bogie)
+    static StationId tryFindStationAt(VehicleBogie* bogie)
     {
         auto direction = bogie->var_2C.track.cardinalDirection();
         auto trackId = bogie->var_2C.track.id();
@@ -3274,7 +3274,7 @@ namespace OpenLoco::Vehicles
     // 0x004BABAD
     // Manual control has much broader detection of when at a station
     // it is defined as stationary with at least one bogie at the station
-    StationId_t VehicleHead::manualFindTrainStationAtLocation()
+    StationId VehicleHead::manualFindTrainStationAtLocation()
     {
         Vehicle train(this);
         for (auto& car : train.cars)

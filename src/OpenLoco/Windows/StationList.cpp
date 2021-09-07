@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x0049111A
     static void updateStationList(Window* window)
     {
-        auto edi = -1;
+        StationId edi = StationId::null;
 
         for (auto& station : StationManager::stations())
         {
@@ -237,7 +237,7 @@ namespace OpenLoco::Ui::Windows::StationList
             if ((station.flags & StationFlags::flag_4) != 0)
                 continue;
 
-            if (edi == -1)
+            if (edi == StationId::null)
             {
                 edi = station.id();
                 continue;
@@ -249,16 +249,16 @@ namespace OpenLoco::Ui::Windows::StationList
             }
         }
 
-        if (edi != -1)
+        if (edi != StationId::null)
         {
             bool dl = false;
 
             StationManager::get(edi)->flags |= StationFlags::flag_4;
 
             auto ebp = window->row_count;
-            if (edi != window->row_info[ebp])
+            if (edi != StationId(window->row_info[ebp]))
             {
-                window->row_info[ebp] = edi;
+                window->row_info[ebp] = enumValue(edi);
                 dl = true;
             }
 
@@ -468,10 +468,10 @@ namespace OpenLoco::Ui::Windows::StationList
         uint16_t yPos = 0;
         for (uint16_t i = 0; i < window.var_83C; i++)
         {
-            StationId_t stationId = window.row_info[i];
+            auto stationId = StationId(window.row_info[i]);
 
             // Skip items outside of view, or irrelevant to the current filter.
-            if (yPos + rowHeight < context.y || yPos >= yPos + rowHeight + context.height || stationId == (uint16_t)-1)
+            if (yPos + rowHeight < context.y || yPos >= yPos + rowHeight + context.height || stationId == StationId::null)
             {
                 yPos += rowHeight;
                 continue;
@@ -480,7 +480,7 @@ namespace OpenLoco::Ui::Windows::StationList
             string_id text_colour_id = StringIds::black_stringid;
 
             // Highlight selection.
-            if (stationId == window.row_hover)
+            if (stationId == StationId(window.row_hover))
             {
                 Gfx::drawRect(context, 0, yPos, window.width, rowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
@@ -679,8 +679,8 @@ namespace OpenLoco::Ui::Windows::StationList
         if (currentRow > window->var_83C)
             return;
 
-        int16_t currentStation = window->row_info[currentRow];
-        if (currentStation == -1)
+        const auto currentStation = StationId(window->row_info[currentRow]);
+        if (currentStation == StationId::null)
             return;
 
         Station::open(currentStation);

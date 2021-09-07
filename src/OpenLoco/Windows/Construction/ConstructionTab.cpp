@@ -332,8 +332,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t, 0x0112C2EE> _112C2EE;
     static loco_global<uint8_t, 0x0112C2EE> _112C2ED;
     static loco_global<uint32_t, 0x00525FC0> _525FC0;
-    static loco_global<StationId_t, 0x01135FAE> _1135FAE;
-    static loco_global<StationId_t, 0x01136087> _1136087;
+    static loco_global<StationId, 0x01135FAE> _1135FAE;
+    static loco_global<uint16_t, 0x01136087> _1136087;
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
 
     // 0x00478895
