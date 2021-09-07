@@ -699,13 +699,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto args = FormatArguments();
 
+        // Todo: change globals type to be StationId and make this StationId::null
         if (_constructingStationId == 0xFFFFFFFF)
         {
             args.push(StringIds::new_station);
         }
         else
         {
-            auto station = StationManager::get(_constructingStationId);
+            auto station = StationManager::get(StationId(*_constructingStationId));
             args.push(station->name);
             args.push(station->town);
         }

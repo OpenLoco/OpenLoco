@@ -241,7 +241,7 @@ namespace OpenLoco::Vehicles
         uint32_t acceptedTypes; // 0x48
         uint8_t type;           // 0x4C
         uint8_t maxQty;         // 0x4D
-        StationId_t townFrom;   // 0x4E
+        StationId townFrom;     // 0x4E
         uint8_t numDays;        // 0x50
         uint8_t qty;            // 0x51
     };
@@ -274,7 +274,7 @@ namespace OpenLoco::Vehicles
         uint32_t var_4E;           // 0x4E
         uint8_t var_52;
         uint8_t pad_53;
-        StationId_t stationId;         // 0x54
+        StationId stationId;           // 0x54
         uint16_t cargoTransferTimeout; // 0x56
         uint32_t var_58;
         uint8_t var_5C;
@@ -325,8 +325,8 @@ namespace OpenLoco::Vehicles
         bool landTryBeginUnloading();
         bool landLoadingUpdate();
         bool landNormalMovementUpdate();
-        bool trainNormalMovementUpdate(uint8_t al, uint8_t flags, StationId_t nextStation);
-        bool roadNormalMovementUpdate(uint8_t al, StationId_t nextStation);
+        bool trainNormalMovementUpdate(uint8_t al, uint8_t flags, StationId nextStation);
+        bool roadNormalMovementUpdate(uint8_t al, StationId nextStation);
         bool landReverseFromSignal();
         bool updateAir();
         bool airplaneLoadingUpdate();
@@ -336,7 +336,7 @@ namespace OpenLoco::Vehicles
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
         std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
-        std::pair<uint32_t, Map::Pos3> airportGetMovementEdgeTarget(StationId_t targetStation, uint8_t curEdge);
+        std::pair<uint32_t, Map::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge);
         bool updateWater();
         uint32_t getVehicleTotalLength();
         void tryCreateInitialMovementSound();
@@ -357,17 +357,17 @@ namespace OpenLoco::Vehicles
         void advanceToNextRoutableOrder();
         Status sub_427BF2();
         void produceLeavingDockSound();
-        std::tuple<StationId_t, Map::Pos2, Map::Pos3> sub_427FC9();
+        std::tuple<StationId, Map::Pos2, Map::Pos3> sub_427FC9();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
         void sub_4AD778();
         void sub_4AA625();
-        std::tuple<uint8_t, uint8_t, StationId_t> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
+        std::tuple<uint8_t, uint8_t, StationId> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool sub_4AC0A3();
         bool sub_4ACCDC();
         void sub_4AD93A();
-        StationId_t manualFindTrainStationAtLocation();
+        StationId manualFindTrainStationAtLocation();
         bool sub_4BADE4();
         bool isOnExpectedRoadOrTrack();
         void sub_4ADB47(bool unk);

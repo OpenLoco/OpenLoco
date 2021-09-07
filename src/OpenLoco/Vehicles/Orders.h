@@ -63,15 +63,15 @@ namespace OpenLoco::Vehicles
     {
         uint8_t _data = 0; // 0x1
 
-        StationId_t getStation() const
+        StationId getStation() const
         {
-            return ((_type & 0xC0) << 2) | _data;
+            return StationId(((_type & 0xC0) << 2) | _data);
         }
-        void setStation(const StationId_t station)
+        void setStation(const StationId station)
         {
             _type &= ~(0xC0);
-            _type |= (station >> 2) & 0xC0;
-            _data = station & 0xFF;
+            _type |= (enumValue(station) >> 2) & 0xC0;
+            _data = enumValue(station) & 0xFF;
         }
         void setFormatArguments(FormatArguments& args) const;
     };
@@ -79,7 +79,7 @@ namespace OpenLoco::Vehicles
     struct OrderStopAt : OrderStation
     {
         static constexpr OrderType TYPE = OrderType::StopAt;
-        OrderStopAt(const StationId_t station)
+        OrderStopAt(const StationId station)
         {
             setType(TYPE);
             setStation(station);
@@ -89,7 +89,7 @@ namespace OpenLoco::Vehicles
     struct OrderRouteThrough : OrderStation
     {
         static constexpr OrderType TYPE = OrderType::RouteThrough;
-        OrderRouteThrough(const StationId_t station)
+        OrderRouteThrough(const StationId station)
         {
             setType(TYPE);
             setStation(station);

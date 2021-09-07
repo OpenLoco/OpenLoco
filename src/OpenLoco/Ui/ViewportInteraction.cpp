@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     static bool getStationArguments(InteractionArg& interaction);
-    static bool getStationArguments(StationId_t id);
+    static bool getStationArguments(StationId id);
 
     // 0x004CD95A
     static bool _track(InteractionArg& interaction)
@@ -108,15 +108,15 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (station->isGhost())
             return false;
 
-        interaction.value = station->stationId();
+        interaction.value = enumValue(station->stationId());
         interaction.type = InteractionItem::stationLabel;
         return getStationArguments(station->stationId());
     }
 
-    static loco_global<uint16_t, 0x00F252A4> _hoveredStationId;
+    static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
     // 0x004CD9B0
-    static bool getStationArguments(const StationId_t id)
+    static bool getStationArguments(const StationId id)
     {
         _hoveredStationId = id;
 
@@ -340,7 +340,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 success = getTownArguments(static_cast<TownId_t>(interaction.value));
                 break;
             case InteractionItem::stationLabel:
-                success = getStationArguments(static_cast<StationId_t>(interaction.value));
+                success = getStationArguments(static_cast<StationId>(interaction.value));
                 break;
             case InteractionItem::trackStation:
             case InteractionItem::roadStation:

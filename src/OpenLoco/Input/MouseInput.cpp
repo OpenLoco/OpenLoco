@@ -99,7 +99,7 @@ namespace OpenLoco::Input
 
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
 
-    static loco_global<uint16_t, 0x00F252A4> _hoveredStationId;
+    static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
@@ -542,7 +542,7 @@ namespace OpenLoco::Input
 
                         case InteractionItem::stationLabel:
                         {
-                            Ui::Windows::Station::open(interaction.value);
+                            Ui::Windows::Station::open(StationId(interaction.value));
                             break;
                         }
 
@@ -844,7 +844,7 @@ namespace OpenLoco::Input
                                 break;
                             case InteractionItem::stationLabel:
                             {
-                                auto station = StationManager::get(item2.value);
+                                auto station = StationManager::get(StationId(item2.value));
                                 Ui::Windows::StationList::open(station->owner);
                                 break;
                             }

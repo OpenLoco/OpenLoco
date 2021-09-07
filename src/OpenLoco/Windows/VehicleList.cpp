@@ -143,7 +143,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     using Vehicles::VehicleHead;
 
-    static bool vehicleStopsAtActiveStation(const VehicleHead* head, StationId_t filterStationId)
+    static bool vehicleStopsAtActiveStation(const VehicleHead* head, StationId filterStationId)
     {
         auto orders = Vehicles::OrderRingView(head->orderTableOffset);
         for (auto& order : orders)
@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (vehicle->owner != self->number)
                 continue;
 
-            if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, self->var_88C))
+            if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))
                 continue;
 
             if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
@@ -277,7 +277,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (vehicle->var_0C & Vehicles::Flags0C::sorted)
                 continue;
 
-            if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, self->var_88C))
+            if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))
                 continue;
 
             if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
@@ -655,7 +655,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             filterActive = true;
             if (self->var_88C != -1)
             {
-                auto station = StationManager::get(self->var_88C);
+                auto station = StationManager::get(StationId(self->var_88C));
                 args = FormatArguments::common(station->name, station->town);
             }
             else

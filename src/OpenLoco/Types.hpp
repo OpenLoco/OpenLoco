@@ -1,12 +1,24 @@
 #pragma once
 
 #include <cstdint>
+#include <limits>
+#include <type_traits>
 
 namespace OpenLoco
 {
+    // To be replaced with std::to_underlying in c++23
+    template<typename TEnum>
+    constexpr auto enumValue(TEnum enumerator) noexcept
+    {
+        return static_cast<std::underlying_type_t<TEnum>>(enumerator);
+    }
+
     using coord_t = int16_t;
     using CompanyId_t = uint8_t;
-    using StationId_t = uint16_t;
+    enum class StationId : uint16_t
+    {
+        null = std::numeric_limits<uint16_t>::max(),
+    };
     using IndustryId_t = uint8_t;
     using string_id = uint16_t;
     using EntityId_t = uint16_t;

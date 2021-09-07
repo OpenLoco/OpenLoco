@@ -87,7 +87,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                                 break;
 
                             case newsItemSubTypes::station:
-                                Ui::Windows::Station::open(itemId);
+                                Ui::Windows::Station::open(StationId(itemId));
                                 break;
 
                             case newsItemSubTypes::town:
@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case newsItemSubTypes::station:
                 {
-                    auto station = StationManager::get(itemId);
+                    auto station = StationManager::get(StationId(itemId));
 
                     view.mapX = station->x;
                     view.mapY = station->y;
@@ -491,7 +491,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case newsItemSubTypes::station:
                 {
-                    auto station = StationManager::get(itemIndex);
+                    auto station = StationManager::get(StationId(itemIndex));
                     args.push(station->name);
                     args.push(station->town);
                     break;
