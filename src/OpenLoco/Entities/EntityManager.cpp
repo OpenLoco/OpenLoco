@@ -138,7 +138,18 @@ namespace OpenLoco::EntityManager
     // 0x0046FF54
     void resetSpatialIndex()
     {
-        call(0x0046FF54);
+        // Clear existing array
+        std::fill(std::begin(_entitySpatialIndex), std::end(_entitySpatialIndex), EntityId::null);
+
+        // Original filled an unreferenced array at 0x010A5A8E as well then overwrote part of it???
+
+        // Refill the index
+        for (auto& ent : entities())
+        {
+            const auto index = getSpatialIndexOffset(ent.position);
+            ent.nextQuadrantId = _entitySpatialIndex[index];
+            _entitySpatialIndex[index] = ent.id;
+        }
     }
 
     // 0x0046FC57
