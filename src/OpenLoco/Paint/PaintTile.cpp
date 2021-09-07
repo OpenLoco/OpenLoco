@@ -229,14 +229,63 @@ namespace OpenLoco::Paint
     static loco_global<uint8_t[8 * 44], 0x004F87BC> _4F87BC;
     static loco_global<int8_t[2 * 44], 0x004F86B4> _4F86B4;
 
-    static void paintSignalSide(PaintSession& session, const Map::SignalElement::Side& side, const bool isGhost, const uint8_t trackId, const uint8_t rotation, const coord_t height)
+    static uint8_t getTrackRotation(const bool isRight, const uint8_t trackId, const uint8_t rotation)
+    {
+        if (isRight)
+        {
+            return Map::TrackData::getUnkTrack((trackId << 3) | (rotation + 4)).rotationBegin;
+        }
+        else
+        {
+            return Map::TrackData::getUnkTrack((trackId << 3) | rotation).rotationBegin;
+        }
+    }
+
+    static uint8_t getSignalHeightOffset(const bool isRight, const uint8_t trackId)
+    {
+        if (isRight)
+        {
+            return _4F87BC[trackId * 8 + 3];
+        }
+        else
+        {
+            return _4F87BC[trackId * 8 + 2];
+        }
+    }
+
+    static int8_t getOneWayArrowHeightOffset(const bool isRight, const uint8_t trackId)
+    {
+        if (isRight)
+        {
+            return _4F86B4[trackId * 2];
+        }
+        else
+        {
+            return _4F86B4[trackId * 2 + 1];
+        }
+    }
+
+    static uint32_t getOneWayArrowImage(const bool isRight, const uint8_t trackId, const uint8_t rotation)
+    {
+        const auto& trackCoordinates = Map::TrackData::getUnkTrack((trackId << 3) | rotation);
+        if (isRight)
+        {
+            return _oneWayArrowRight[trackCoordinates.rotationBegin];
+        }
+        else
+        {
+            return _oneWayArrowLeft[trackCoordinates.rotationEnd];
+        }
+    }
+
+    static void paintSignalSide(PaintSession& session, const Map::SignalElement::Side& side, const bool isRight, const bool isGhost, const uint8_t trackId, const uint8_t rotation, const coord_t height)
     {
         if (side.hasSignal())
         {
             session.setItemType(InteractionItem::signal);
             session.setTrackModId(0);
             auto* signalObj = ObjectManager::get<TrainSignalObject>(side.signalObjectId());
-            const auto trackRotation = Map::TrackData::getUnkTrack((trackId << 3) | rotation).rotationBegin;
+            const auto trackRotation = getTrackRotation(isRight, trackId, rotation);
             const auto& offsetAndBBoffsetArr = (signalObj->flags & TrainSignalObjectFlags::isLeft) ? _4FE870 : _4FE830;
             const auto& offsetAndBBoffset = offsetAndBBoffsetArr[trackRotation];
             const auto imageRotationOffset = ((trackRotation & 0x3) << 1) | (trackRotation >= 12 ? 1 : 0);
@@ -248,7 +297,7 @@ namespace OpenLoco::Paint
                 session.setItemType(InteractionItem::noInteraction);
                 imageId = Gfx::applyGhostToImage(imageOffset);
             }
-            Map::Pos3 offset(offsetAndBBoffset.offset.x, offsetAndBBoffset.offset.y, _4F87BC[trackId * 8 + 3] + height);
+            Map::Pos3 offset(offsetAndBBoffset.offset.x, offsetAndBBoffset.offset.y, getSignalHeightOffset(isRight, trackId) + height);
             Map::Pos3 bbOffset(offsetAndBBoffset.boundingOffset.x, offsetAndBBoffset.boundingOffset.y, offset.z + 4);
             Map::Pos3 bbSize(1, 1, 14);
             session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
@@ -286,9 +335,8 @@ namespace OpenLoco::Paint
             if (session.getViewFlags() & (1 << 4) && session.getContext()->zoom_level == 0)
             {
                 session.setItemType(InteractionItem::noInteraction);
-                const auto trackRotation = Map::TrackData::getUnkTrack((trackId << 3) | rotation).rotationBegin;
-                const auto imageId = Gfx::recolour(_oneWayArrowRight[trackRotation], Colour::bright_green);
-                const Map::Pos3 offset(0, 0, height + _4F86B4[trackId * 2] + 2);
+                const auto imageId = Gfx::recolour(getOneWayArrowImage(!isRight, trackId, rotation), Colour::bright_green);
+                const Map::Pos3 offset(0, 0, height + getOneWayArrowHeightOffset(!isRight, trackId) + 2);
                 const Map::Pos3 bbOffset(15, 15, offset.z + 16);
                 const Map::Pos3 bbSize(1, 1, 0);
                 session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
@@ -328,16 +376,16 @@ namespace OpenLoco::Paint
         {
             auto& leftSignal = elSignal.getLeft();
             const bool leftIsGhost = elSignal.isGhost() || elSignal.isLeftGhost();
-            paintSignalSide(session, leftSignal, leftIsGhost, trackId, rotation, height);
+            paintSignalSide(session, leftSignal, false, leftIsGhost, trackId, rotation, height);
         }
-        if (!elTrack->hasSignal())
+        if (!elTrack->isFlag6())
         {
             return;
         }
 
         auto& rightSignal = elSignal.getRight();
         const bool rightIsGhost = elSignal.isGhost() || elSignal.isRightGhost();
-        paintSignalSide(session, rightSignal, rightIsGhost, trackId, rotation, height);
+        paintSignalSide(session, rightSignal, true, rightIsGhost, trackId, rotation, height);
     }
 
     // 0x0042C6C4
