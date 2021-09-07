@@ -573,7 +573,7 @@ namespace OpenLoco::Input
 
                         case InteractionItem::industry:
                         {
-                            Ui::Windows::Industry::open(interaction.value);
+                            Ui::Windows::Industry::open(IndustryId(interaction.value));
                             break;
                         }
 

@@ -189,8 +189,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             if (currentRow > self->var_83C)
                 return;
 
-            int16_t currentIndustry = self->row_info[currentRow];
-            if (currentIndustry == -1)
+            const auto currentIndustry = IndustryId(self->row_info[currentRow]);
+            if (currentIndustry == IndustryId::null)
                 return;
 
             Industry::open(currentIndustry);
@@ -293,14 +293,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457991
         static void updateIndustryList(Window* self)
         {
-            auto chosenIndustry = -1;
+            auto chosenIndustry = IndustryId::null;
 
             for (auto& industry : IndustryManager::industries())
             {
                 if ((industry.flags & IndustryFlags::sorted) != 0)
                     continue;
 
-                if (chosenIndustry == -1)
+                if (chosenIndustry == IndustryId::null)
                 {
                     chosenIndustry = industry.id();
                     continue;
@@ -312,16 +312,16 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 }
             }
 
-            if (chosenIndustry != -1)
+            if (chosenIndustry != IndustryId::null)
             {
                 bool shouldInvalidate = false;
 
                 IndustryManager::get(chosenIndustry)->flags |= IndustryFlags::sorted;
 
                 auto ebp = self->row_count;
-                if (chosenIndustry != self->row_info[ebp])
+                if (chosenIndustry != IndustryId(self->row_info[ebp]))
                 {
-                    self->row_info[ebp] = chosenIndustry;
+                    self->row_info[ebp] = enumValue(chosenIndustry);
                     shouldInvalidate = true;
                 }
 
@@ -386,7 +386,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
             {
-                IndustryId_t industryId = self.row_info[i];
+                IndustryId industryId = IndustryId(self.row_info[i]);
 
                 // Skip items outside of view, or irrelevant to the current filter.
                 if (yPos + rowHeight < context.y || yPos >= yPos + rowHeight + context.height || industryId == IndustryId::null)
@@ -398,7 +398,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 string_id text_colour_id = StringIds::black_stringid;
 
                 // Highlight selection.
-                if (industryId == self.row_hover)
+                if (industryId == IndustryId(self.row_hover))
                 {
                     Gfx::drawRect(context, 0, yPos, self.width, rowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;

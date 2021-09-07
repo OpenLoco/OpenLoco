@@ -195,7 +195,7 @@ namespace OpenLoco::Ui::WindowManager
             0x00456D2D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Windows::Industry::open(regs.dx);
+                Windows::Industry::open(IndustryId(regs.dl));
                 regs = backup;
 
                 return 0;

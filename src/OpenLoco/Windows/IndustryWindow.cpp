@@ -137,7 +137,7 @@ namespace OpenLoco::Ui::Windows::Industry
             Widget::drawViewportCentreButton(context, self, widx::centre_on_viewport);
 
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
-            auto industry = IndustryManager::get(self->number);
+            auto industry = IndustryManager::get(IndustryId(self->number));
             industry->getStatusString(const_cast<char*>(buffer));
 
             auto args = FormatArguments();
@@ -226,7 +226,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->callPrepareDraw();
 
             // Figure out the industry's position on the map.
-            auto industry = IndustryManager::get(self->number);
+            auto industry = IndustryManager::get(IndustryId(self->number));
             int16_t tileZ = TileManager::getHeight({ industry->x, industry->y }).landHeight;
 
             // Compute views.
@@ -288,15 +288,15 @@ namespace OpenLoco::Ui::Windows::Industry
     }
 
     // 0x00456D2D
-    Window* open(IndustryId_t industryId)
+    Window* open(IndustryId industryId)
     {
-        auto window = WindowManager::bringToFront(WindowType::industry, industryId);
+        auto window = WindowManager::bringToFront(WindowType::industry, enumValue(industryId));
         if (window != nullptr)
         {
             if (Input::isToolActive(window->type, window->number))
                 Input::toolCancel();
 
-            window = WindowManager::bringToFront(WindowType::industry, industryId);
+            window = WindowManager::bringToFront(WindowType::industry, enumValue(industryId));
         }
 
         if (window == nullptr)
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // 0x00456DBC start
             const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::industry, Industry::windowSize, newFlags, &Industry::events);
-            window->number = industryId;
+            window->number = enumValue(industryId);
             window->min_width = 192;
             window->min_height = 137;
             window->max_width = 600;
@@ -442,7 +442,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->draw(context);
             Common::drawTabs(self, context);
 
-            auto industry = IndustryManager::get(self->number);
+            auto industry = IndustryManager::get(IndustryId(self->number));
             auto industryObj = industry->object();
             int16_t xPos = self->x + 3;
             int16_t yPos = self->y + 45;
@@ -552,7 +552,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static void setDisabledWidgets(Window* self)
         {
-            auto industryObj = ObjectManager::get<IndustryObject>(IndustryManager::get(self->number)->object_id);
+            auto industryObj = ObjectManager::get<IndustryObject>(IndustryManager::get(IndustryId(self->number))->object_id);
             auto disabledWidgets = 0;
 
             if (industryObj->produced_cargo_type[0] == 0xFF)
@@ -571,7 +571,7 @@ namespace OpenLoco::Ui::Windows::Industry
             Common::drawTabs(self, context);
 
             // Draw Units of Cargo sub title
-            const auto industry = IndustryManager::get(self->number);
+            const auto industry = IndustryManager::get(IndustryId(self->number));
             const auto industryObj = ObjectManager::get<IndustryObject>(industry->object_id);
             const auto cargoObj = ObjectManager::get<CargoObject>(industryObj->produced_cargo_type[0]);
 
@@ -697,7 +697,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->activated_widgets |= (1ULL << widgetIndex);
 
             // Put industry name in place.
-            auto industry = IndustryManager::get(self->number);
+            auto industry = IndustryManager::get(IndustryId(self->number));
             auto args = FormatArguments();
             args.push(industry->name);
             args.push(industry->town);
@@ -727,9 +727,9 @@ namespace OpenLoco::Ui::Windows::Industry
             GameCommands::setErrorTitle(StringIds::error_cant_rename_industry);
 
             uint32_t* buffer = (uint32_t*)input;
-            GameCommands::do_79(self->number, 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_79(0, 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_79(0, 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::do_79(IndustryId(self->number), 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_79(IndustryId(0), 2, buffer[3], buffer[4], buffer[5]);
+            GameCommands::do_79(IndustryId(0), 0, buffer[6], buffer[7], buffer[8]);
         }
 
         static void update(Window* self)
@@ -742,7 +742,7 @@ namespace OpenLoco::Ui::Windows::Industry
         //0x00455D81
         static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
-            auto industry = IndustryManager::get(self->number);
+            auto industry = IndustryManager::get(IndustryId(self->number));
             if (!isEditorMode() && !isSandboxMode())
             {
                 if ((industry->flags & IndustryFlags::flag_04) == 0)
@@ -824,7 +824,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 InterfaceSkin::ImageIds::tab_production_frame7,
             };
 
-            auto industry = IndustryManager::get(self->number);
+            auto industry = IndustryManager::get(IndustryId(self->number));
             auto industryObj = ObjectManager::get<IndustryObject>(industry->object_id);
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
