@@ -8,7 +8,7 @@
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
 
-bool EntityBase::isEmpty() const
+bool EntityBase::empty() const
 {
     return base_type == EntityBaseType::null;
 }

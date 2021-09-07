@@ -1,5 +1,6 @@
 #include "EntityManager.h"
 #include "../Console.h"
+#include "../Core/LocoFixedVector.hpp"
 #include "../Entities/Misc.h"
 #include "../GameCommands/GameCommands.h"
 #include "../GameState.h"
@@ -19,6 +20,7 @@ namespace OpenLoco::EntityManager
     constexpr size_t _entitySpatialIndexNull = 0x40000;
 
     static auto& rawEntities() { return getGameState().entities; }
+    static auto entities() { return FixedVector(rawEntities()); }
     static auto& rawListHeads() { return getGameState().entityListHeads; }
     static auto& rawListCounts() { return getGameState().entityListCounts; }
 
@@ -26,16 +28,10 @@ namespace OpenLoco::EntityManager
     void reset()
     {
         // Reset all entities to 0
-        std::fill_n(rawEntities(), Limits::maxEntities, Entity{});
+        std::fill(std::begin(rawEntities()), std::end(rawEntities()), Entity{});
         // Reset all entity lists
-        for (auto& count : rawListCounts())
-        {
-            count = 0;
-        }
-        for (auto& head : rawListHeads())
-        {
-            head = EntityId::null;
-        }
+        std::fill(std::begin(rawListCounts()), std::end(rawListCounts()), 0);
+        std::fill(std::begin(rawListHeads()), std::end(rawListHeads()), EntityId::null);
 
         // Remake null entities (size maxNormalEntities)
         EntityBase* previous = nullptr;
@@ -148,12 +144,9 @@ namespace OpenLoco::EntityManager
     // 0x0046FC57
     void updateSpatialIndex()
     {
-        for (auto& ent : rawEntities())
+        for (auto& ent : entities())
         {
-            if (!ent.isEmpty())
-            {
-                ent.moveTo(ent.position);
-            }
+            ent.moveTo(ent.position);
         }
     }
 
