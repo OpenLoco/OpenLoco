@@ -47,6 +47,7 @@
 #include "Map/AnimationManager.h"
 #include "Map/TileManager.h"
 #include "Map/WaveManager.h"
+#include "MessageManager.h"
 #include "MultiPlayer.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
@@ -452,7 +453,7 @@ namespace OpenLoco
         Gfx::clear(Gfx::screenContext(), 0x0A0A0A0A);
     }
 
-    // 0x00428E47
+    // 0x00428E47 Message related
     static void sub_428E47()
     {
         call(0x00428E47);
@@ -974,7 +975,7 @@ namespace OpenLoco
                 StationManager::updateDaily();
                 call(0x004B94CF);
                 call(0x00453487);
-                call(0x004284DB);
+                MessageManager::updateDaily();
                 call(0x004969DA);
                 call(0x00439BA5);
 

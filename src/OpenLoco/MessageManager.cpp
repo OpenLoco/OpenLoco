@@ -33,4 +33,19 @@ namespace OpenLoco::MessageManager
         regs.dx = subjectIdC;
         call(0x004285BA, regs);
     }
+
+    // 0x004284DB
+    void updateDaily()
+    {
+        call(0x004284DB);
+    }
+
+    // 0x0042851C
+    void removeRelatedMessages(const EntityId_t id, const uint8_t type)
+    {
+        registers regs{};
+        regs.al = type;
+        regs.dx = id;
+        call(0x0042851C, regs);
+    }
 }

@@ -18,4 +18,8 @@ namespace OpenLoco::MessageManager
         uint16_t subjectIdA,
         uint16_t subjectIdB,
         uint16_t subjectIdC = 0xFFFF);
+
+    void updateDaily();
+
+    void removeRelatedMessages(const EntityId_t id, const uint8_t type);
 }
