@@ -276,6 +276,8 @@ if (MINGW)
 else ()
     if (MSVC)
         target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _NO_LOCO_WIN32_=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
+        # Disable common warnings in MSVC (TODO: Maybe move this up to g++ warning section)
+        target_compile_definitions(${PROJECT} PUBLIC /wd4068 /wd4091 /wd4100 /wd4132 /wd4200 /wd4201 /wd4204 /wd4206 /wd4221 /wd4244 /wd4245 /W4 /WX)
     endif ()
 endif()
 
