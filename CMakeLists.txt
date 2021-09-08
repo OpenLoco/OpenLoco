@@ -1,12 +1,14 @@
-cmake_minimum_required(VERSION 3.15)
-cmake_policy(VERSION 3.15)
+cmake_minimum_required(VERSION 3.16)
+cmake_policy(VERSION 3.16)
 
 set (PROJECT openloco)
 
 # Note: Searching for CCache must be before project() so project() can use CCache too
 # if it is available
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
+if (MSVC)
+    add_compile_options(/MP)
+endif ()
 find_package(CCache)
 
 if (CCache_FOUND)
