@@ -38,7 +38,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
             WindowType::title_logo,
             { 0, 0 },
             window_size,
-            WindowFlags::stick_to_front | WindowFlags::transparent,
+            WindowFlags::openQuietly | WindowFlags::transparent,
             &_events);
 
         window->widgets = _widgets;
