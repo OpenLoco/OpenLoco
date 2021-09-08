@@ -1472,7 +1472,7 @@ namespace OpenLoco::Ui
         }
     }
 
-    WidgetIndex_t Window::prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
+    WidgetIndex_t Window::firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
     {
         WidgetIndex_t activeIndex = -1;
         for (WidgetIndex_t i = minIndex; i <= maxIndex; i++)
@@ -1483,8 +1483,12 @@ namespace OpenLoco::Ui
                 break;
             }
         }
+        return activeIndex;
+    }
 
-        // We'll need to have something to work with. If not, bail out.
+    WidgetIndex_t Window::prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
+    {
+        WidgetIndex_t activeIndex = firstActivatedWidgetInRange(minIndex, maxIndex);
         if (activeIndex == -1)
             return activeIndex;
 
@@ -1511,17 +1515,7 @@ namespace OpenLoco::Ui
 
     WidgetIndex_t Window::nextAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
     {
-        WidgetIndex_t activeIndex = -1;
-        for (WidgetIndex_t i = minIndex; i <= maxIndex; i++)
-        {
-            if (this->isActivated(i))
-            {
-                activeIndex = i;
-                break;
-            }
-        }
-
-        // We'll need to have something to work with. If not, bail out.
+        WidgetIndex_t activeIndex = firstActivatedWidgetInRange(minIndex, maxIndex);
         if (activeIndex == -1)
             return activeIndex;
 

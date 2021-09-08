@@ -430,6 +430,7 @@ namespace OpenLoco::Ui
         void callDraw(Gfx::Context* context);                                                          // 27
         void callDrawScroll(Gfx::Context* context, uint32_t scrollIndex);                              // 28
 
+        WidgetIndex_t firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
         WidgetIndex_t prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
         WidgetIndex_t nextAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
     };
