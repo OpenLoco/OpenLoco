@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../Types.hpp"
 #include "Shortcut.h"
 #include <array>
