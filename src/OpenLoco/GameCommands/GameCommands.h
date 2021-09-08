@@ -536,6 +536,44 @@ namespace OpenLoco::GameCommands
         }
     };
 
+    struct TrackModsRemovalArgs
+    {
+        static constexpr auto command = GameCommand::removeTrackMod;
+
+        TrackModsRemovalArgs() = default;
+        explicit TrackModsRemovalArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , trackId(regs.dl & 0x3F)
+            , index(regs.dh & 0x3)
+            , type((regs.edi >> 16) & 0xF)
+            , trackObjType(regs.ebp & 0xFF)
+            , modSection((regs.ebp >> 16) & 0xFF)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t trackId;
+        uint8_t index;
+        uint8_t type;
+        uint8_t trackObjType;
+        uint8_t modSection;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.bh = rotation;
+            regs.dl = trackId;
+            regs.dh = index;
+            regs.edi = pos.z | (type << 16);
+            regs.ebp = trackObjType | (modSection << 16);
+            return regs;
+        }
+    };
+
     // Change company colour scheme
     inline void do_19(int8_t isPrimary, int8_t value, int8_t colourType, int8_t setColourMode, uint8_t companyId)
     {
@@ -939,6 +977,44 @@ namespace OpenLoco::GameCommands
         }
     };
 
+    struct RoadModsRemovalArgs
+    {
+        static constexpr auto command = GameCommand::removeRoadMod;
+
+        RoadModsRemovalArgs() = default;
+        explicit RoadModsRemovalArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , roadId(regs.dl & 0xF)
+            , index(regs.dh & 0x3)
+            , type((regs.edi >> 16) & 0xF)
+            , roadObjType(regs.ebp & 0xFF)
+            , modSection((regs.ebp >> 16) & 0xFF)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t roadId;
+        uint8_t index;
+        uint8_t type;
+        uint8_t roadObjType;
+        uint8_t modSection;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.bh = rotation;
+            regs.dl = roadId;
+            regs.dh = index;
+            regs.edi = pos.z | (type << 16);
+            regs.ebp = roadObjType | (modSection << 16);
+            return regs;
+        }
+    };
+
     struct RoadStationPlacementArgs
     {
         static constexpr auto command = GameCommand::createRoadStation;
@@ -1267,14 +1343,14 @@ namespace OpenLoco::GameCommands
 
         VehicleAirPlacementArgs() = default;
         explicit VehicleAirPlacementArgs(const registers& regs)
-            : stationId(regs.bp)
+            : stationId(StationId(regs.bp))
             , airportNode(regs.dl)
             , head(regs.di)
             , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
 
-        StationId_t stationId;
+        StationId stationId;
         uint8_t airportNode;
         EntityId_t head;
         bool convertGhost = false;
@@ -1282,7 +1358,7 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.bp = stationId;
+            regs.bp = enumValue(stationId);
             regs.di = head;
             regs.dl = airportNode;
             regs.ebx = convertGhost ? 0xFFFF0000 : 0;

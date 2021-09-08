@@ -9,6 +9,8 @@
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
+#include <SDL2/SDL.h>
+#include <unordered_map>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
@@ -45,7 +47,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static void draw(Ui::Window* self, Gfx::Context* context);
     static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex);
     static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
-    static void loc_4BE832(Window* self);
+    static void resetShortcuts(Window* self);
     static std::optional<FormatArguments> tooltip(Window*, WidgetIndex_t);
     static void getScrollSize(Ui::Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index);
@@ -84,7 +86,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         window->setColour(WindowColour::primary, skin->colour_0B);
         window->setColour(WindowColour::secondary, skin->colour_10);
 
-        window->row_count = static_cast<uint16_t>(ShortcutManager::count());
+        window->row_count = static_cast<uint16_t>(ShortcutManager::count);
         window->row_hover = -1;
 
         return window;
@@ -97,6 +99,58 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         self->draw(context);
     }
 
+    static void getBindingString(uint32_t keyCode, char* buffer, const size_t bufferLength)
+    {
+        static const std::unordered_map<uint32_t, string_id> keysToString = { {
+            { SDLK_BACKSPACE, StringIds::keyboard_backspace },
+            { SDLK_TAB, StringIds::keyboard_tab },
+            { SDLK_RETURN, StringIds::keyboard_return },
+            { SDLK_PAUSE, StringIds::keyboard_pause },
+            { SDLK_CAPSLOCK, StringIds::keyboard_caps },
+            { SDLK_ESCAPE, StringIds::keyboard_escape },
+            { SDLK_SPACE, StringIds::keyboard_spacebar },
+            { SDLK_PAGEUP, StringIds::keyboard_pageup },
+            { SDLK_PAGEDOWN, StringIds::keyboard_pagedown },
+            { SDLK_END, StringIds::keyboard_end },
+            { SDLK_HOME, StringIds::keyboard_home },
+            { SDLK_LEFT, StringIds::keyboard_left },
+            { SDLK_UP, StringIds::keyboard_up },
+            { SDLK_RIGHT, StringIds::keyboard_right },
+            { SDLK_DOWN, StringIds::keyboard_down },
+            { SDLK_INSERT, StringIds::keyboard_insert },
+            { SDLK_DELETE, StringIds::keyboard_delete },
+            { SDLK_KP_1, StringIds::keyboard_numpad_1 },
+            { SDLK_KP_2, StringIds::keyboard_numpad_2 },
+            { SDLK_KP_3, StringIds::keyboard_numpad_3 },
+            { SDLK_KP_4, StringIds::keyboard_numpad_4 },
+            { SDLK_KP_5, StringIds::keyboard_numpad_5 },
+            { SDLK_KP_6, StringIds::keyboard_numpad_6 },
+            { SDLK_KP_7, StringIds::keyboard_numpad_7 },
+            { SDLK_KP_8, StringIds::keyboard_numpad_8 },
+            { SDLK_KP_9, StringIds::keyboard_numpad_9 },
+            { SDLK_KP_0, StringIds::keyboard_numpad_0 },
+            { SDLK_KP_DIVIDE, StringIds::keyboard_numpad_divide },
+            { SDLK_KP_ENTER, StringIds::keyboard_numpad_enter },
+            { SDLK_KP_MINUS, StringIds::keyboard_numpad_minus },
+            { SDLK_KP_MULTIPLY, StringIds::keyboard_numpad_multiply },
+            { SDLK_KP_PERIOD, StringIds::keyboard_numpad_period },
+            { SDLK_KP_PLUS, StringIds::keyboard_numpad_plus },
+            { SDLK_NUMLOCKCLEAR, StringIds::keyboard_numlock },
+            { SDLK_SCROLLLOCK, StringIds::keyboard_scroll },
+        } };
+
+        auto match = keysToString.find(keyCode);
+        if (match != keysToString.end())
+        {
+            StringManager::formatString(buffer, match->second);
+        }
+        else
+        {
+            const char* sdlBuffer = SDL_GetKeyName(keyCode);
+            strncpy(buffer, sdlBuffer, bufferLength - 1);
+        }
+    }
+
     // 0x004BE72C
     static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
     {
@@ -104,6 +158,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         auto shade = Colour::getShade(colour, 4);
         Gfx::clearSingle(context, shade);
 
+        const auto& shortcuts = Config::getNew().shortcuts;
         auto yPos = 0;
         for (auto i = 0; i < self.row_count; i++)
         {
@@ -116,21 +171,17 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
             auto modifierStringId = StringIds::empty;
             auto baseStringId = StringIds::empty;
+            char buffer[128]{};
 
-            if (Config::get().keyboard_shortcuts[i].var_0 != 0xFF)
+            if (shortcuts[i].keyCode != 0xFFFFFFFF)
             {
-                if (Config::get().keyboard_shortcuts[i].var_1 != 0)
-                {
-                    if (Config::get().keyboard_shortcuts[i].var_1 != 1)
-                    {
-                        modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
-                    }
-                    else
-                    {
-                        modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
-                    }
-                }
-                baseStringId = StringIds::shortcut_key_base + Config::get().keyboard_shortcuts[i].var_0;
+                if (shortcuts[i].modifiers == 1)
+                    modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
+                else if (shortcuts[i].modifiers != 0)
+                    modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
+
+                baseStringId = StringIds::stringptr;
+                getBindingString(shortcuts[i].keyCode, buffer, std::size(buffer));
             }
 
             auto formatter = FormatArguments::common();
@@ -138,6 +189,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
             formatter.push(modifierStringId);
             formatter.push(baseStringId);
+            formatter.push(buffer);
 
             Gfx::drawString_494B3F(context, 0, yPos - 1, Colour::black, format, &formatter);
             yPos += rowHeight;
@@ -154,16 +206,15 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 return;
 
             case Widx::reset_keys_btn:
-                loc_4BE832(self);
+                resetShortcuts(self);
                 return;
         }
     }
 
     // 0x004BE832
-    static void loc_4BE832(Window* self)
+    static void resetShortcuts(Window* self)
     {
-        call(0x004BE3F3);
-        OpenLoco::Config::write();
+        Config::resetShortcuts();
         self->invalidate();
     }
 

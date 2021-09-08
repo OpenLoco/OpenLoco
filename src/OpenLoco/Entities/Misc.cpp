@@ -26,7 +26,7 @@ namespace OpenLoco
     // 0x0044080C
     Exhaust* Exhaust::create(Map::Pos3 loc, uint8_t type)
     {
-        if ((uint16_t)loc.x > 12287 || (uint16_t)loc.y > 12287)
+        if (!Map::validCoords(loc))
             return nullptr;
         auto surface = Map::TileManager::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
 

@@ -1,5 +1,6 @@
 #include "../../CompanyManager.h"
 #include "../../Date.h"
+#include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/Colour.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
@@ -369,7 +370,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _lastSelectedMods = 0;
         auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1ULL << 7));
-        if (roadObj->flags & Flags12::unk_03)
+        if (!(roadObj->flags & Flags12::unk_03))
         {
             _lastSelectedMods = copyElement->mods();
         }
@@ -548,8 +549,16 @@ namespace OpenLoco::Ui::Windows::Construction
     // 0x0049FEC7
     void removeConstructionGhosts()
     {
-        registers regs;
-        call(0x0049FEC7, regs);
+        if (_byte_522096 & (1 << 0))
+        {
+            Map::TileManager::mapInvalidateTileFull(Map::Pos2(_x, _y));
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_02);
+            _byte_522096 = _byte_522096 & ~(1 << 0);
+        }
+        Construction::removeTrackGhosts();
+        Signal::removeSignalGhost();
+        Station::removeStationGhost();
+        Overhead::removeTrackModsGhost();
     }
 
     namespace Common

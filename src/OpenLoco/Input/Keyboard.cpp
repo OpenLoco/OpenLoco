@@ -49,7 +49,7 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x00525384> _keyQueueReadIndex;
     static loco_global<uint32_t, 0x00525380> _keyQueueWriteIndex;
     static loco_global<uint8_t[256], 0x01140740> _keyboardState;
-    static loco_global<uint8_t, 0x011364A4> _11364A4;
+    static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
 
     static std::pair<std::string, std::function<void()>> cheats[] = {
         { "DRIVER", loc_4BECDE },
@@ -179,8 +179,8 @@ namespace OpenLoco::Input
 
     static bool tryShortcut(Shortcut sc, uint32_t keyCode, uint8_t modifiers)
     {
-        auto cfg = OpenLoco::Config::get();
-        if (cfg.keyboard_shortcuts[sc].var_0 == keyCode && cfg.keyboard_shortcuts[sc].var_1 == modifiers)
+        auto cfg = OpenLoco::Config::getNew();
+        if (cfg.shortcuts[sc].keyCode == keyCode && cfg.shortcuts[sc].modifiers == modifiers)
         {
             ShortcutManager::execute(sc);
             return true;
@@ -249,18 +249,21 @@ namespace OpenLoco::Input
         if (k->keyCode == SDLK_RGUI)
             return;
 
-        auto& cfg = Config::get();
+        auto& cfg = Config::getNew();
+
+        // Unbind any shortcuts that may be using the current keycode.
         for (int i = 0; i < 35; i++)
         {
-            if (cfg.keyboard_shortcuts[i].var_0 == k->keyCode && cfg.keyboard_shortcuts[i].var_1 == _keyModifier)
+            if (cfg.shortcuts[i].keyCode == k->keyCode && cfg.shortcuts[i].modifiers == _keyModifier)
             {
-                cfg.keyboard_shortcuts[i].var_0 = 0xFF;
-                cfg.keyboard_shortcuts[i].var_1 = 0xFF;
+                cfg.shortcuts[i].keyCode = 0xFFFFFFFF;
+                cfg.shortcuts[i].modifiers = 0xFF;
             }
         }
 
-        cfg.keyboard_shortcuts[_11364A4].var_0 = k->keyCode;
-        cfg.keyboard_shortcuts[_11364A4].var_1 = _keyModifier;
+        // Assign this keybinding to the shortcut we're currently rebinding.
+        cfg.shortcuts[_editingShortcutIndex].keyCode = k->keyCode;
+        cfg.shortcuts[_editingShortcutIndex].modifiers = _keyModifier;
 
         WindowManager::close(WindowType::editKeyboardShortcut);
         WindowManager::invalidate(WindowType::keyboardShortcuts);

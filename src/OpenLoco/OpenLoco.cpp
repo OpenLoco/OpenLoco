@@ -423,7 +423,6 @@ namespace OpenLoco
         Ui::ProgressBar::setProgress(30);
         startupChecks();
         Ui::ProgressBar::setProgress(40);
-        call(0x004BE5DE);
         Ui::ProgressBar::end();
         Config::read();
         ObjectManager::loadIndex();
@@ -610,10 +609,10 @@ namespace OpenLoco
                     });
 
                 initialise();
-                last_tick_time = platform::getTime();
+                last_tick_time = Platform::getTime();
             }
 
-            uint32_t time = platform::getTime();
+            uint32_t time = Platform::getTime();
             time_since_last_tick = (uint16_t)std::min(time - last_tick_time, 500U);
             last_tick_time = time;
 
@@ -1032,14 +1031,14 @@ namespace OpenLoco
         do
         {
             std::this_thread::yield();
-        } while (platform::getTime() - last_tick_time < 25);
+        } while (Platform::getTime() - last_tick_time < 25);
     }
 
     void promptTickLoop(std::function<bool()> tickAction)
     {
         while (true)
         {
-            last_tick_time = platform::getTime();
+            last_tick_time = Platform::getTime();
             time_since_last_tick = 31;
             if (!Ui::processMessages() || !tickAction())
             {
@@ -1154,7 +1153,7 @@ namespace OpenLoco
     // 0x00406D13
     void main()
     {
-        if (!OpenLoco::platform::isRunningInWine())
+        if (!OpenLoco::Platform::isRunningInWine())
         {
             _exHandler = crashInit();
         }

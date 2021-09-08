@@ -212,7 +212,7 @@ namespace OpenLoco
                 MessageManager::post(
                     MessageType::cargoNoLongerAccepted,
                     owner,
-                    id(),
+                    enumValue(id()),
                     cargoId);
             }
             else if (!acceptedBefore && acceptedNow)
@@ -220,7 +220,7 @@ namespace OpenLoco
                 MessageManager::post(
                     MessageType::cargoNowAccepted,
                     owner,
-                    id(),
+                    enumValue(id()),
                     cargoId);
             }
         }
@@ -529,7 +529,7 @@ namespace OpenLoco
     void Station::sub_48F7D1()
     {
         registers regs;
-        regs.ebx = id();
+        regs.ebx = enumValue(id());
         call(0x0048F7D1, regs);
     }
 
@@ -618,7 +618,7 @@ namespace OpenLoco
 
         updateCargoDistribution();
 
-        auto w = WindowManager::find(WindowType::station, id());
+        auto w = WindowManager::find(WindowType::station, enumValue(id()));
         if (w != nullptr && (w->current_tab == 2 || w->current_tab == 1 || quantityUpdated))
         {
             w->invalidate();
@@ -703,7 +703,7 @@ namespace OpenLoco
     // 0x004929DB
     void Station::updateCargoDistribution()
     {
-        WindowManager::invalidate(Ui::WindowType::station, id());
+        invalidateWindow();
         WindowManager::invalidate(Ui::WindowType::stationList);
         bool hasChanged = false;
         for (uint8_t i = 0; i < max_cargo_stats; ++i)
@@ -755,7 +755,7 @@ namespace OpenLoco
 
     void Station::invalidateWindow()
     {
-        WindowManager::invalidate(WindowType::station, id());
+        WindowManager::invalidate(WindowType::station, enumValue(id()));
     }
 
     // 0x0048F6D4

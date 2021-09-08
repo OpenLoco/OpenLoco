@@ -28,7 +28,7 @@ int main(int argc, const char** argv)
     return 0;
 }
 
-namespace OpenLoco::platform
+namespace OpenLoco::Platform
 {
     uint32_t getTime()
     {
@@ -43,13 +43,13 @@ namespace OpenLoco::platform
     }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-    static std::string GetEnvironmentVariable(const std::string& name)
+    static std::string getEnvironmentVariable(const std::string& name)
     {
         auto result = getenv(name.c_str());
         return result == nullptr ? std::string() : result;
     }
 
-    static fs::path get_home_directory()
+    static fs::path getHomeDirectory()
     {
         auto pw = getpwuid(getuid());
         if (pw != nullptr)
@@ -58,16 +58,16 @@ namespace OpenLoco::platform
         }
         else
         {
-            return GetEnvironmentVariable("HOME");
+            return getEnvironmentVariable("HOME");
         }
     }
 
     fs::path getUserDirectory()
     {
-        auto path = fs::path(GetEnvironmentVariable("XDG_CONFIG_HOME"));
+        auto path = fs::path(getEnvironmentVariable("XDG_CONFIG_HOME"));
         if (path.empty())
         {
-            path = get_home_directory();
+            path = getHomeDirectory();
             if (path.empty())
             {
                 path = "/";
@@ -82,7 +82,7 @@ namespace OpenLoco::platform
 #endif
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-    fs::path GetCurrentExecutablePath()
+    fs::path getCurrentExecutablePath()
     {
         char exePath[PATH_MAX] = { 0 };
 #ifdef __linux__

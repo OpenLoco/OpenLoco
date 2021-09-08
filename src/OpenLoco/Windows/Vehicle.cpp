@@ -205,7 +205,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
     static loco_global<int32_t, 0x01136264> _1136264;
     static loco_global<uint8_t, 0x01136264> _ghostAirportNode;
     static loco_global<Map::Pos3, 0x0113625E> _ghostVehiclePos;
-    static loco_global<StationId_t, 0x0113625A> _ghostAirportStationId;
+    static loco_global<StationId, 0x0113625A> _ghostAirportStationId;
     static loco_global<uint32_t, 0x0113625A> _ghostLandTrackAndDirection;
 
     namespace Main
@@ -1699,7 +1699,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // based on 0x004B40C7
-        static void drawCargoText(Gfx::Context& context, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, StationId_t stationId)
+        static void drawCargoText(Gfx::Context& context, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, StationId stationId)
         {
             if (cargoQty == 0)
             {
@@ -2704,7 +2704,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Ui::ViewportInteraction::InteractionItem::stationLabel:
                 {
                     Audio::playSound(Audio::SoundId::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
-                    StationId_t stationId = args.value;
+                    const auto stationId = StationId(args.value);
                     Vehicles::OrderStopAt station(stationId);
                     addNewOrder(&self, station);
                     break;
@@ -3399,7 +3399,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         // 0x00426D52
         // used to return NodeMovementFlags on ebx
-        static std::optional<Map::Pos3> getAirportMovementNodeLoc(const StationId_t stationId, uint8_t node)
+        static std::optional<Map::Pos3> getAirportMovementNodeLoc(const StationId stationId, uint8_t node)
         {
             auto* station = StationManager::get(stationId);
             auto tile = TileManager::get(Map::Pos2{ station->unk_tile_x, station->unk_tile_y });

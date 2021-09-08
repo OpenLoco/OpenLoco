@@ -187,6 +187,24 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         return res;
     }
 
+    // 0x0049FEF6
+    void removeSignalGhost()
+    {
+        if (_byte_522096 & (1 << 2))
+        {
+            GameCommands::SignalRemovalArgs args;
+            args.pos = _signalGhostPos;
+            args.rotation = _signalGhostRotation;
+            args.trackId = _signalGhostTrackId;
+            args.index = _signalGhostTileIndex;
+            args.flags = _signalGhostSides;
+            args.type = _signalGhostTrackObjId;
+            GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+
+            _byte_522096 = _byte_522096 & ~(1 << 2);
+        }
+    }
+
     // 0x0049E745
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {

@@ -132,7 +132,7 @@ static bool STDCALL fn_4054b9()
 FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_timeGetTime()
 {
-    return platform::getTime();
+    return Platform::getTime();
 }
 
 //typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);

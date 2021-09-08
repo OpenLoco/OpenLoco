@@ -160,6 +160,52 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         Common::onUpdate(self, (1 << 3));
     }
 
+    // 0x0049FF4B
+    void removeStationGhost()
+    {
+        if (_byte_522096 & (1 << 3))
+        {
+            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::catchmentArea))
+            {
+                Windows::Station::sub_491BC6();
+                Input::resetMapSelectionFlag(Input::MapSelectionFlags::catchmentArea);
+            }
+            if (_stationGhostType & (1 << 15))
+            {
+                GameCommands::AirportRemovalArgs args;
+                args.pos = _stationGhostPos;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            }
+            else if (_stationGhostType & (1 << 14))
+            {
+                GameCommands::PortRemovalArgs args;
+                args.pos = _stationGhostPos;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            }
+            else if (_stationGhostType & (1 << 7))
+            {
+                GameCommands::RoadStationRemovalArgs args;
+                args.pos = _stationGhostPos;
+                args.rotation = _stationGhostRotation;
+                args.roadId = _stationGhostTrackId;
+                args.index = _stationGhostTileIndex;
+                args.type = _stationGhostType & ~(1 << 7);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            }
+            else
+            {
+                GameCommands::TrackStationRemovalArgs args;
+                args.pos = _stationGhostPos;
+                args.rotation = _stationGhostRotation;
+                args.trackId = _stationGhostTrackId;
+                args.index = _stationGhostTileIndex;
+                args.type = _stationGhostType;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            }
+            _byte_522096 = _byte_522096 & ~(1 << 3);
+        }
+    }
+
     // 0x0049E421
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
@@ -653,13 +699,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto args = FormatArguments();
 
+        // Todo: change globals type to be StationId and make this StationId::null
         if (_constructingStationId == 0xFFFFFFFF)
         {
             args.push(StringIds::new_station);
         }
         else
         {
-            auto station = StationManager::get(_constructingStationId);
+            auto station = StationManager::get(StationId(*_constructingStationId));
             args.push(station->name);
             args.push(station->town);
         }

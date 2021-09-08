@@ -22,12 +22,10 @@
 #undef small
 #endif
 
-#ifndef _LOCO_WIN32_
 #include <SDL2/SDL.h>
 #pragma warning(disable : 4121) // alignment of a member was sensitive to packing
 #include <SDL2/SDL_syswm.h>
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing
-#endif
 
 #include "Config.h"
 #include "Console.h"
@@ -51,11 +49,6 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui
 {
-#ifdef _LOCO_WIN32_
-    constexpr auto WINDOW_CLASS_NAME = "Chris Sawyer's Locomotion";
-    constexpr auto WINDOW_TITLE = "OpenLoco";
-#endif // _WIN32
-
 #pragma pack(push, 1)
 
     struct palette_entry_t
@@ -159,21 +152,6 @@ namespace OpenLoco::Ui
     // 0x00405409
     void createWindow(const Config::Display& cfg)
     {
-#ifdef _LOCO_WIN32_
-        _hwnd = CreateWindowExA(
-            WS_EX_TOPMOST,
-            WINDOW_CLASS_NAME,
-            WINDOW_TITLE,
-            WS_POPUP | WS_VISIBLE | WS_SYSMENU | WS_CLIPCHILDREN | WS_MAXIMIZE | WS_CLIPSIBLINGS,
-            0,
-            0,
-            GetSystemMetrics(SM_CXSCREEN),
-            GetSystemMetrics(SM_CYSCREEN),
-            nullptr,
-            nullptr,
-            (HINSTANCE)hInstance(),
-            nullptr);
-#else
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
             throw std::runtime_error("Unable to initialise SDL2 video subsystem.");
@@ -205,7 +183,6 @@ namespace OpenLoco::Ui
         set_palette_callback = updatePalette;
 
         update(desc.width, desc.height);
-#endif
     }
 
     static void setWindowIcon()
@@ -230,9 +207,6 @@ namespace OpenLoco::Ui
     // 0x0045235D
     void initialise()
     {
-#ifdef _LOCO_WIN32_
-        call(0x0045235D);
-#endif
         SDL_RestoreWindow(window);
     }
 
@@ -373,9 +347,6 @@ namespace OpenLoco::Ui
     // 0x004524C1
     void update()
     {
-#ifdef _LOCO_WIN32_
-        call(0x004524C1);
-#endif
     }
 
     void update(int32_t width, int32_t height)
@@ -603,9 +574,6 @@ namespace OpenLoco::Ui
     // 0x004072EC
     bool processMessagesMini()
     {
-#ifdef _LOCO_WIN32_
-        return ((bool (*)())0x004072EC)();
-#else
         using namespace Input;
 
         SDL_Event e;
@@ -618,15 +586,11 @@ namespace OpenLoco::Ui
             }
         }
         return false;
-#endif
     }
 
     // 0x0040726D
     bool processMessages()
     {
-#ifdef _LOCO_WIN32_
-        return ((bool (*)())0x0040726D)();
-#else
         using namespace Input;
 
         SDL_Event e;
@@ -717,12 +681,6 @@ namespace OpenLoco::Ui
                     }
 #endif
 
-                    // Map keypad enter to normal enter
-                    if (keycode == SDLK_KP_ENTER)
-                    {
-                        keycode = SDLK_RETURN;
-                    }
-
                     enqueueKey(keycode);
                     break;
                 }
@@ -735,7 +693,6 @@ namespace OpenLoco::Ui
         }
         readKeyboardState();
         return true;
-#endif
     }
 
     void showMessageBox(const std::string& title, const std::string& message)

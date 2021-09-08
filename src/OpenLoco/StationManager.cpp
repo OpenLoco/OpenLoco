@@ -37,7 +37,7 @@ namespace OpenLoco::StationManager
         return FixedVector(rawStations());
     }
 
-    Station* get(StationId_t id)
+    Station* get(StationId id)
     {
         auto index = (size_t)id;
         if (index < Limits::maxStations)
@@ -52,7 +52,7 @@ namespace OpenLoco::StationManager
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
-            StationId_t id = scenarioTicks() & 0x3FF;
+            const auto id = StationId(scenarioTicks() & 0x3FF);
             auto station = get(id);
             if (station != nullptr && !station->empty())
             {
@@ -80,12 +80,12 @@ namespace OpenLoco::StationManager
         company->var_8BB0[arg1] = byte_4F9462[arg1];
     }
 
-    static void sub_49E1F1(StationId_t id)
+    static void sub_49E1F1(StationId id)
     {
         auto w = WindowManager::find(WindowType::construction);
         if (w != nullptr && w->current_tab == 1)
         {
-            if ((addr<0x00522096, uint8_t>() & 8) && addr<0x01135F70, int32_t>() == id)
+            if ((addr<0x00522096, uint8_t>() & 8) && StationId(addr<0x01135F70, int32_t>()) == id) // _constructingStationId
             {
                 addr<0x01135F70, int32_t>() = -1;
                 w->invalidate();
@@ -134,7 +134,7 @@ namespace OpenLoco::StationManager
     }
 
     // 0x048F988
-    string_id generateNewStationName(StationId_t stationId, TownId_t townId, Map::Pos3 position, uint8_t mode)
+    string_id generateNewStationName(StationId stationId, TownId_t townId, Map::Pos3 position, uint8_t mode)
     {
         enum StationName : uint8_t
         {
@@ -423,7 +423,7 @@ namespace OpenLoco::StationManager
         const auto initialLoc = TilePos2(pos) - TilePos2(4, 4);
         const auto catchmentSize = size + TilePos2(8, 8);
         // TODO: Use a fixed size array (max size 15)
-        std::vector<std::pair<StationId_t, uint8_t>> foundStations;
+        std::vector<std::pair<StationId, uint8_t>> foundStations;
         for (TilePos2 searchOffset{ 0, 0 }; searchOffset.y < catchmentSize.y; ++searchOffset.y)
         {
             for (; searchOffset.x < catchmentSize.x; ++searchOffset.x)
@@ -452,7 +452,7 @@ namespace OpenLoco::StationManager
                     {
                         break;
                     }
-                    auto res = std::find_if(foundStations.begin(), foundStations.end(), [stationId = elStation->stationId()](const std::pair<StationId_t, uint8_t>& item) { return item.first == stationId; });
+                    auto res = std::find_if(foundStations.begin(), foundStations.end(), [stationId = elStation->stationId()](const std::pair<StationId, uint8_t>& item) { return item.first == stationId; });
                     if (res != foundStations.end())
                     {
                         continue;
@@ -478,7 +478,7 @@ namespace OpenLoco::StationManager
             return 0;
         }
 
-        const auto ratingTotal = std::accumulate(foundStations.begin(), foundStations.end(), 0, [](const int32_t a, const std::pair<StationId_t, uint8_t>& b) { return a + b.second * b.second; });
+        const auto ratingTotal = std::accumulate(foundStations.begin(), foundStations.end(), 0, [](const int32_t a, const std::pair<StationId, uint8_t>& b) { return a + b.second * b.second; });
         if (ratingTotal == 0)
         {
             return 0;
@@ -520,14 +520,14 @@ namespace OpenLoco::StationManager
     }
 }
 
-OpenLoco::StationId_t OpenLoco::Station::id() const
+OpenLoco::StationId OpenLoco::Station::id() const
 {
     // TODO check if this is stored in station structure
     //      otherwise add it when possible
     auto index = (size_t)(this - &StationManager::rawStations()[0]);
     if (index > 1024)
     {
-        index = StationId::null;
+        return StationId::null;
     }
-    return (StationId_t)index;
+    return StationId(index);
 }

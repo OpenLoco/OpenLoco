@@ -1,22 +1,19 @@
-#include <fstream>
-
-#ifdef _WIN32
-#include <shlobj.h>
-#include <windows.h>
-#endif
-
 #include "Config.h"
 #include "ConfigConvert.hpp"
 #include "Core/FileSystem.hpp"
 #include "Environment.h"
+#include "Input/ShortcutManager.h"
 #include "Interop/Interop.hpp"
 #include "Utility/Yaml.hpp"
+#include <fstream>
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Config
 {
     static loco_global<LocoConfig, 0x0050AEB4> _config;
+    static loco_global<uint8_t, 0x0050AEAD> _50AEAD;
+    static loco_global<uint32_t, 0x0113E21C> _113E21C;
     static NewConfig _new_config;
     static YAML::Node _config_yaml;
 
@@ -30,17 +27,73 @@ namespace OpenLoco::Config
         return _new_config;
     }
 
+    constexpr uint8_t _defaultMaxVehicleSounds[3] = { 4, 8, 16 };
+    constexpr uint8_t _defaultMaxSoundInstances[3] = { 6, 8, 10 };
+    constexpr ObjectHeader _defaultPreferredCurrency = { 0x00000082u, { 'C', 'U', 'R', 'R', 'D', 'O', 'L', 'L' }, 0u };
+    constexpr uint32_t _legacyConfigMagicNumber = 0x62272;
+
+    static void setDefaultsLegacyConfig()
+    {
+        if (_113E21C > 0x4000000)
+        {
+            _config->sound_quality = 1;
+            _config->vehicles_min_scale = 1;
+        }
+        else if (_113E21C > 0x8000000)
+        {
+            _config->sound_quality = 2;
+            _config->vehicles_min_scale = 2;
+        }
+        else
+        {
+            _config->sound_quality = 0;
+            _config->vehicles_min_scale = 1;
+        }
+        _config->max_vehicle_sounds = _defaultMaxVehicleSounds[_config->sound_quality];
+        _config->max_sound_instances = _defaultMaxSoundInstances[_config->sound_quality];
+        _config->preferred_currency = _defaultPreferredCurrency;
+    }
+
     // 0x00441A6C
     LocoConfig& read()
     {
-        call(0x00441A6C);
+        std::ifstream stream;
+        stream.exceptions(std::ifstream::failbit);
+        stream.open(Environment::getPathNoWarning(Environment::path_id::gamecfg), std::ios::in | std::ios::binary);
+        if (stream.is_open())
+        {
+            uint32_t magicNumber{};
+            stream.read(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
+            if (magicNumber == _legacyConfigMagicNumber)
+            {
+                stream.read(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
+                return _config;
+            }
+        }
+
+        setDefaultsLegacyConfig();
+        _50AEAD = 1;
         return _config;
+    }
+
+    // 0x00441BB8
+    static void writeLocoConfig()
+    {
+        std::ofstream stream;
+        stream.exceptions(std::ifstream::failbit);
+        stream.open(Environment::getPathNoWarning(Environment::path_id::gamecfg), std::ios::out | std::ios::binary);
+        if (stream.is_open())
+        {
+            uint32_t magicNumber = _legacyConfigMagicNumber;
+            stream.write(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
+            stream.write(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
+        }
     }
 
     // 0x00441BB8
     void write()
     {
-        call(0x00441BB8);
+        writeLocoConfig();
         writeNewConfig();
     }
 
@@ -51,10 +104,14 @@ namespace OpenLoco::Config
         if (!fs::exists(configPath))
             return _new_config;
 
-        // WARNING: on Windows, YAML::LoadFile only supports ANSI paths
-        _config_yaml = YAML::LoadFile(configPath.string());
+        // On Windows, YAML::LoadFile only supports ANSI paths, so we pass an ifstream instead.
+        std::ifstream stream;
+        stream.exceptions(std::ifstream::failbit);
+        stream.open(configPath, std::ios::in | std::ios::binary);
+        _config_yaml = YAML::Load(stream);
 
         const auto& config = _config_yaml;
+
         auto& displayNode = config["display"];
         if (displayNode && displayNode.IsMap())
         {
@@ -98,6 +155,18 @@ namespace OpenLoco::Config
             _new_config.showFPS = config["showFPS"].as<bool>();
         if (config["uncapFPS"])
             _new_config.uncapFPS = config["uncapFPS"].as<bool>();
+
+        const auto& shortcutDefs = Input::ShortcutManager::getList();
+        auto& scNode = config["shortcuts"];
+        auto& shortcuts = _new_config.shortcuts;
+        for (size_t i = 0; i < std::size(shortcuts); i++)
+        {
+            auto& def = shortcutDefs[i];
+            if (scNode && scNode.IsMap() && scNode[def.configName])
+                shortcuts[i] = scNode[def.configName].as<KeyboardShortcut>();
+            else
+                shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
+        }
 
         return _new_config;
     }
@@ -150,10 +219,35 @@ namespace OpenLoco::Config
         node["showFPS"] = _new_config.showFPS;
         node["uncapFPS"] = _new_config.uncapFPS;
 
+        // Shortcuts
+        const auto& shortcuts = _new_config.shortcuts;
+        const auto& shortcutDefs = Input::ShortcutManager::getList();
+        auto scNode = node["shortcuts"];
+        for (size_t i = 0; i < std::size(shortcuts); i++)
+        {
+            auto& def = shortcutDefs[i];
+            scNode[def.configName] = shortcuts[i];
+        }
+        node["shortcuts"] = scNode;
+
         std::ofstream stream(configPath);
         if (stream.is_open())
         {
             stream << node << std::endl;
         }
+    }
+
+    // 0x004BE3F3
+    void resetShortcuts()
+    {
+        const auto& shortcutDefs = Input::ShortcutManager::getList();
+        auto& shortcuts = _new_config.shortcuts;
+        for (size_t i = 0; i < std::size(shortcuts); i++)
+        {
+            auto& def = shortcutDefs[i];
+            shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
+        }
+
+        writeNewConfig();
     }
 }

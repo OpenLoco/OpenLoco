@@ -13,23 +13,18 @@ namespace OpenLoco
 {
     using namespace OpenLoco::Map;
 
-    namespace StationId
-    {
-        constexpr StationId_t null = std::numeric_limits<StationId_t>::max();
-    }
-
 #pragma pack(push, 1)
     struct StationCargoStats
     {
-        uint16_t quantity{};                  // 0x2E
-        StationId_t origin = StationId::null; // 0x30
-        uint8_t flags{};                      // 0x32
-        uint8_t age{};                        // 0x33
-        uint8_t rating{};                     // 0x34
-        uint8_t enroute_age{};                // 0x35
-        Speed16 vehicleSpeed{ 0 };            // 0x36 max speed of vehicle that transported the cargo
-        uint8_t vehicleAge{};                 // 0x38 age of the vehicle (car) that transported the cargo
-        IndustryId_t industry_id{};           // 0x39
+        uint16_t quantity{};                // 0x2E
+        StationId origin = StationId::null; // 0x30
+        uint8_t flags{};                    // 0x32
+        uint8_t age{};                      // 0x33
+        uint8_t rating{};                   // 0x34
+        uint8_t enroute_age{};              // 0x35
+        Speed16 vehicleSpeed{ 0 };          // 0x36 max speed of vehicle that transported the cargo
+        uint8_t vehicleAge{};               // 0x38 age of the vehicle (car) that transported the cargo
+        IndustryId_t industry_id{};         // 0x39
         uint8_t var_40{};
 
         bool empty() const
@@ -100,7 +95,7 @@ namespace OpenLoco
         uint8_t pad_3BE[0x3D2 - 0x3BE]{};
 
         bool empty() const { return name == StringIds::null; }
-        StationId_t id() const;
+        StationId id() const;
         void update();
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState, const Pos2& location = { -1, -1 }, const uint32_t filter = 0);
         void sub_48F7D1();
