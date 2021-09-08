@@ -1,5 +1,6 @@
 #include "EntityManager.h"
 #include "../Console.h"
+#include "../Core/LocoFixedVector.hpp"
 #include "../Entities/Misc.h"
 #include "../GameCommands/GameCommands.h"
 #include "../GameState.h"
@@ -19,6 +20,7 @@ namespace OpenLoco::EntityManager
     constexpr size_t _entitySpatialIndexNull = 0x40000;
 
     static auto& rawEntities() { return getGameState().entities; }
+    static auto entities() { return FixedVector(rawEntities()); }
     static auto& rawListHeads() { return getGameState().entityListHeads; }
     static auto& rawListCounts() { return getGameState().entityListCounts; }
 
@@ -26,16 +28,10 @@ namespace OpenLoco::EntityManager
     void reset()
     {
         // Reset all entities to 0
-        std::fill_n(rawEntities(), Limits::maxEntities, Entity{});
+        std::fill(std::begin(rawEntities()), std::end(rawEntities()), Entity{});
         // Reset all entity lists
-        for (auto& count : rawListCounts())
-        {
-            count = 0;
-        }
-        for (auto& head : rawListHeads())
-        {
-            head = EntityId::null;
-        }
+        std::fill(std::begin(rawListCounts()), std::end(rawListCounts()), 0);
+        std::fill(std::begin(rawListHeads()), std::end(rawListHeads()), EntityId::null);
 
         // Remake null entities (size maxNormalEntities)
         EntityBase* previous = nullptr;
@@ -139,21 +135,85 @@ namespace OpenLoco::EntityManager
         return _entitySpatialIndex[index];
     }
 
+    static void insertToSpatialIndex(EntityBase& entity, const size_t newIndex)
+    {
+        entity.nextQuadrantId = _entitySpatialIndex[newIndex];
+        _entitySpatialIndex[newIndex] = entity.id;
+    }
+
+    static void insertToSpatialIndex(EntityBase& entity)
+    {
+        const auto index = getSpatialIndexOffset(entity.position);
+        insertToSpatialIndex(entity, index);
+    }
+
     // 0x0046FF54
     void resetSpatialIndex()
     {
-        call(0x0046FF54);
+        // Clear existing array
+        std::fill(std::begin(_entitySpatialIndex), std::end(_entitySpatialIndex), EntityId::null);
+
+        // Original filled an unreferenced array at 0x010A5A8E as well then overwrote part of it???
+
+        // Refill the index
+        for (auto& ent : entities())
+        {
+            insertToSpatialIndex(ent);
+        }
     }
 
     // 0x0046FC57
     void updateSpatialIndex()
     {
-        for (auto& ent : rawEntities())
+        for (auto& ent : entities())
         {
-            if (!ent.isEmpty())
+            ent.moveTo(ent.position);
+        }
+    }
+
+    static bool removeFromSpatialIndex(EntityBase& entity, const size_t index)
+    {
+        auto* quadId = &_entitySpatialIndex[index];
+        _entitySpatialCount = 0;
+        while (*quadId < Limits::maxEntities)
+        {
+            auto* quadEnt = get<EntityBase>(*quadId);
+            if (quadEnt == &entity)
             {
-                ent.moveTo(ent.position);
+                *quadId = entity.nextQuadrantId;
+                return true;
             }
+            _entitySpatialCount++;
+            if (_entitySpatialCount > Limits::maxEntities)
+            {
+                break;
+            }
+            quadId = &quadEnt->nextQuadrantId;
+        }
+        return false;
+    }
+
+    static bool removeFromSpatialIndex(EntityBase& entity)
+    {
+        const auto index = getSpatialIndexOffset(entity.position);
+        return removeFromSpatialIndex(entity, index);
+    }
+
+    void moveSpatialEntry(EntityBase& entity, const Map::Pos2& loc)
+    {
+        const auto newIndex = getSpatialIndexOffset(loc);
+        const auto oldIndex = getSpatialIndexOffset(entity.position);
+        if (newIndex != oldIndex)
+        {
+            if (!removeFromSpatialIndex(entity, oldIndex))
+            {
+                Console::log("Invalid quadrant ids... Reseting spatial index.");
+                resetSpatialIndex();
+                moveSpatialEntry(entity, loc);
+                return;
+            }
+            insertToSpatialIndex(entity, newIndex);
+            entity.position = loc;
         }
     }
 
@@ -168,10 +228,7 @@ namespace OpenLoco::EntityManager
         moveEntityToList(newEntity, list);
 
         newEntity->position = { Location::null, Location::null, 0 };
-        auto index = getSpatialIndexOffset(newEntity->position);
-        auto nextSpatialId = _entitySpatialIndex[index];
-        _entitySpatialIndex[index] = newEntity->id;
-        newEntity->nextQuadrantId = nextSpatialId;
+        insertToSpatialIndex(*newEntity);
 
         newEntity->name = StringIds::empty_pop;
         newEntity->var_14 = 16;
@@ -233,26 +290,11 @@ namespace OpenLoco::EntityManager
         StringManager::emptyUserString(entity->name);
         entity->base_type = EntityBaseType::null;
 
-        // Remove from spatial lists
-        auto* quadId = &_entitySpatialIndex[getSpatialIndexOffset(entity->position)];
-        _entitySpatialCount = 0;
-        while (*quadId < Limits::maxEntities)
+        if (!removeFromSpatialIndex(*entity))
         {
-            auto* quadEnt = get<EntityBase>(*quadId);
-            if (quadEnt == entity)
-            {
-                *quadId = entity->nextQuadrantId;
-                return;
-            }
-            _entitySpatialCount++;
-            if (_entitySpatialCount > Limits::maxEntities)
-            {
-                break;
-            }
-            quadId = &quadEnt->nextQuadrantId;
+            Console::log("Invalid quadrant ids... Reseting spatial index.");
+            resetSpatialIndex();
         }
-        Console::log("Invalid quadrant ids... Reseting spatial index.");
-        resetSpatialIndex();
     }
 
     // 0x004A8826
