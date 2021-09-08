@@ -75,21 +75,30 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
     OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
 
 # Set some compiler features
-set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter")
-
-if (STRICT)
-    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -Werror")
+if (MSVC)
+    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} /W4")
+else ()
+    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter")
 endif ()
 
-# Poke some holes in -Wall:
-set(COMMON_COMPILE_OPTIONS
+if (STRICT)
+    if (MSVC)
+        set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} /WX")
+    else ()
+        set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -Werror")
+    endif ()
+endif ()
+
+if (NOT MSVC)
+    # Poke some holes in -Wall:
+    set(COMMON_COMPILE_OPTIONS
     "${COMMON_COMPILE_OPTIONS} \
     -Wno-unknown-pragmas \
     -Wno-unused-private-field \
     ")
 
-# Set warnings common to supported compilers
-set(COMMON_COMPILE_OPTIONS
+    # Set warnings common to supported compilers
+    set(COMMON_COMPILE_OPTIONS
     "${COMMON_COMPILE_OPTIONS} \
     -Waddress \
     -Warray-bounds \
@@ -106,6 +115,34 @@ set(COMMON_COMPILE_OPTIONS
     -Wundef \
     -Wunreachable-code \
     ")
+else ()
+    # Disable the following warnings on MSVC
+    #   4068: unknown pragma
+    #   4091: 'keyword' : ignored on left of 'type' when no variable is declared
+    #   4100: 'identifier' : unreferenced formal parameter
+    #   4132: 'object' : const object should be initialized
+    #   4200: nonstandard extension used : zero-sized array in struct/union
+    #   4201: nonstandard extension used : nameless struct/union
+    #   4204: nonstandard extension used : non-constant aggregate initializer
+    #   4206: nonstandard extension used : translation unit is empty
+    #   4221: nonstandard extension used : 'identifier' : cannot be initialized using address of automatic variable
+    #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
+    #   4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
+    set(COMMON_COMPILE_OPTIONS
+    "${COMMON_COMPILE_OPTIONS} \
+    /wd4068 \
+    /wd4091 \
+    /wd4100 \
+    /wd4132 \
+    /wd4200 \
+    /wd4201 \
+    /wd4204 \
+    /wd4206 \
+    /wd4221 \
+    /wd4244 \
+    /wd4245 \
+    ")
+endif ()
 
 set(OBJ_FORMAT "elf32-i386")
 set(LINKER_SCRIPT "ld_script_i386.xc")
@@ -172,8 +209,10 @@ if (APPLE)
     set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif ()
 
-set(PIE_FLAG "-fno-pie")
-set(TARGET_M "-m32")
+if (NOT MSVC)
+    set(PIE_FLAG "-fno-pie")
+    set(TARGET_M "-m32")
+endif ()
 
 # Check if a flag exists and add it to the list of compiler (so, not linker) options
 function (ADD_CHECK_CXX_COMPILER_FLAG _CXXFLAGS _CACHE_VAR _FLAG)
@@ -219,10 +258,21 @@ find_package(PNG REQUIRED)
 
 find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
 include_directories(${YAML_CPP_INCLUDE_DIR})
+set(YAML_CPP_LIBRARIES yaml-cpp)
+
+# breakpad is also required
+if (MSVC)
+    find_package(unofficial-breakpad CONFIG REQUIRED)
+    set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
+endif ()
 
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
 # builds without need for -fno-omit-frame-pointer
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
+if (MSVC)
+    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "/Oy- /Od")
+else ()
+    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
+endif ()
 
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17)
@@ -232,20 +282,28 @@ if (MINGW)
     add_library(${PROJECT} ${OLOCO_SOURCES})
     target_link_libraries(${PROJECT} winmm)
 else ()
-    add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
-    set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
+    if (MSVC)
+        add_library(${PROJECT} SHARED ${OLOCO_SOURCES})
+    else ()
+        add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
+        set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
+    endif ()
 endif ()
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
-target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
+target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
 target_link_libraries(${PROJECT} ${PNG_LIBRARIES})
 
+if (WIN32)
+    target_link_libraries(${PROJECT} ${BREAKPAD_LIBRARIES})
+    target_link_libraries(${PROJECT} winmm SDL2::SDL2main)
+endif ()
 
-if (NOT MINGW)
+if (NOT WIN32)
     add_dependencies(${PROJECT} segfiles)
 endif()
 
-if (NOT APPLE)
+if (NOT APPLE AND NOT MSVC)
     target_link_libraries(${PROJECT} stdc++fs)
 endif()
 
@@ -253,7 +311,11 @@ if (MINGW)
     target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
     target_link_libraries(${PROJECT} imm32 winmm version)
 else ()
-    target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
+    if (MSVC)
+        target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
+    else ()
+        target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
+    endif ()
 endif()
 
 if (APPLE)

@@ -245,7 +245,7 @@ namespace OpenLoco::Ui::Windows::Construction
         const bool isCloserToNext = Common::isPointCloserToNextOrPreviousTile(Input::getDragLastLocation(), *viewport);
 
         const auto chosenLoc = isCloserToNext ? *_nextTile : *_previousTile;
-        const auto chosenRotation = isCloserToNext ? _nextTileRotation : _previousTileRotation;
+        const auto chosenRotation = isCloserToNext ? *_nextTileRotation : *_previousTileRotation;
         _x = chosenLoc.x;
         _y = chosenLoc.y;
         _constructionZ = chosenLoc.z;
@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::Construction
         const bool isCloserToNext = Common::isPointCloserToNextOrPreviousTile(Input::getDragLastLocation(), *viewport);
 
         const auto chosenLoc = isCloserToNext ? *_nextTile : *_previousTile;
-        const auto chosenRotation = isCloserToNext ? _nextTileRotation : _previousTileRotation;
+        const auto chosenRotation = isCloserToNext ? *_nextTileRotation : *_previousTileRotation;
         _x = chosenLoc.x;
         _y = chosenLoc.y;
         _constructionZ = chosenLoc.z;
