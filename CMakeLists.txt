@@ -75,12 +75,18 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
     OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
 
 # Set some compiler features
-if (NOT MSVC)
+if (MSVC)
+    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} /W4")
+else ()
     set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter")
 endif ()
 
-if (STRICT AND NOT MSVC)
-    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -Werror")
+if (STRICT)
+    if (MSVC)
+        set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} /WX")
+    else ()
+        set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -Werror")
+    endif ()
 endif ()
 
 if (NOT MSVC)
@@ -109,6 +115,9 @@ if (NOT MSVC)
     -Wundef \
     -Wunreachable-code \
     ")
+else ()
+    set(COMMON_COMPILE_OPTIONS
+    "${COMMON_COMPILE_OPTIONS} /wd4068 /wd4091 /wd4100 /wd4132 /wd4200 /wd4201 /wd4204 /wd4206 /wd4221 /wd4244 /wd4245")
 endif ()
 
 set(OBJ_FORMAT "elf32-i386")
@@ -245,7 +254,7 @@ if (MINGW)
     add_library(${PROJECT} ${OLOCO_SOURCES})
     target_link_libraries(${PROJECT} winmm)
 else ()
-    if (WIN32)
+    if (MSVC)
         add_library(${PROJECT} SHARED ${OLOCO_SOURCES})
     else ()
         add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
@@ -276,8 +285,6 @@ if (MINGW)
 else ()
     if (MSVC)
         target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _NO_LOCO_WIN32_=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
-        # Disable common warnings in MSVC (TODO: Maybe move this up to g++ warning section)
-        target_compile_definitions(${PROJECT} PUBLIC /wd4068 /wd4091 /wd4100 /wd4132 /wd4200 /wd4201 /wd4204 /wd4206 /wd4221 /wd4244 /wd4245 /W4 /WX)
     endif ()
 endif()
 
