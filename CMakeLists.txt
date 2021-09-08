@@ -20,6 +20,12 @@ endif (CCache_FOUND)
 
 project(${PROJECT} CXX)
 
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message(FATAL_ERROR "Cannot currently compile for 64-bit architectures")
+elseif (CMAKE_SIZEOF_VOID_P EQUAL 4)
+    # 32-bit compile, so it's fine
+endif ()
+
 if (APPLE)
     # Detection of this variable seems to fail with CMake.
     # Since we only support 32-bit builds at the moment, fix it this way.
