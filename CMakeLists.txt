@@ -75,15 +75,15 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
     OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
 
 # Set some compiler features
-if (NOT WIN32)
+if (NOT MSVC)
     set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter")
 endif ()
 
-if (STRICT AND NOT WIN32)
+if (STRICT AND NOT MSVC)
     set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -Werror")
 endif ()
 
-if (NOT WIN32)
+if (NOT MSVC)
     # Poke some holes in -Wall:
     set(COMMON_COMPILE_OPTIONS
     "${COMMON_COMPILE_OPTIONS} \
@@ -176,7 +176,7 @@ if (APPLE)
     set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif ()
 
-if (NOT WIN32)
+if (NOT MSVC)
     set(PIE_FLAG "-fno-pie")
     set(TARGET_M "-m32")
 endif ()
@@ -223,11 +223,12 @@ find_package(SDL2_mixer REQUIRED)
 
 find_package(PNG REQUIRED)
 
-find_package(yaml-cpp CONFIG REQUIRED)
+find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
+include_directories(${YAML_CPP_INCLUDE_DIR})
 set(YAML_CPP_LIBRARIES yaml-cpp)
 
 # breakpad is also required
-if (WIN32)
+if (MSVC)
     find_package(unofficial-breakpad CONFIG REQUIRED)
     set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
 endif ()
@@ -261,11 +262,11 @@ if (WIN32)
     target_link_libraries(${PROJECT} winmm SDL2::SDL2main)
 endif ()
 
-if (NOT MINGW AND NOT WIN32)
+if (NOT WIN32)
     add_dependencies(${PROJECT} segfiles)
 endif()
 
-if (NOT APPLE AND NOT WIN32)
+if (NOT APPLE AND NOT MSVC)
     target_link_libraries(${PROJECT} stdc++fs)
 endif()
 
@@ -273,7 +274,7 @@ if (MINGW)
     target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
     target_link_libraries(${PROJECT} imm32 winmm version)
 else ()
-    if (WIN32)
+    if (MSVC)
         target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _NO_LOCO_WIN32_=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
     endif ()
 endif()
