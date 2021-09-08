@@ -182,7 +182,7 @@ namespace OpenLoco::Paint
                 {
                     const auto lightOffset = side.hasRedLight2() ? TrainSignal::ImageIds::redLights2 : TrainSignal::ImageIds::redLights;
                     const auto lightImageOffset = imageRotationOffset + signalObj->image + lightOffset;
-                    imageId = imageOffset;
+                    imageId = lightImageOffset;
                     if (isGhost)
                     {
                         session.setItemType(InteractionItem::noInteraction);
@@ -194,7 +194,7 @@ namespace OpenLoco::Paint
                 {
                     const auto lightOffset = side.hasGreenLight2() ? TrainSignal::ImageIds::greenLights2 : TrainSignal::ImageIds::greenLights;
                     const auto lightImageOffset = imageRotationOffset + signalObj->image + lightOffset;
-                    imageId = imageOffset;
+                    imageId = lightImageOffset;
                     if (isGhost)
                     {
                         session.setItemType(InteractionItem::noInteraction);
