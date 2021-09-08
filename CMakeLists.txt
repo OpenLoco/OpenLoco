@@ -116,8 +116,32 @@ if (NOT MSVC)
     -Wunreachable-code \
     ")
 else ()
+    # Disable the following warnings on MSVC
+    #   4068: unknown pragma
+    #   4091: 'keyword' : ignored on left of 'type' when no variable is declared
+    #   4100: 'identifier' : unreferenced formal parameter
+    #   4132: 'object' : const object should be initialized
+    #   4200: nonstandard extension used : zero-sized array in struct/union
+    #   4201: nonstandard extension used : nameless struct/union
+    #   4204: nonstandard extension used : non-constant aggregate initializer
+    #   4206: nonstandard extension used : translation unit is empty
+    #   4221: nonstandard extension used : 'identifier' : cannot be initialized using address of automatic variable
+    #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
+    #   4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
     set(COMMON_COMPILE_OPTIONS
-    "${COMMON_COMPILE_OPTIONS} /wd4068 /wd4091 /wd4100 /wd4132 /wd4200 /wd4201 /wd4204 /wd4206 /wd4221 /wd4244 /wd4245")
+    "${COMMON_COMPILE_OPTIONS} \
+    /wd4068 \
+    /wd4091 \
+    /wd4100 \
+    /wd4132 \
+    /wd4200 \
+    /wd4201 \
+    /wd4204 \
+    /wd4206 \
+    /wd4221 \
+    /wd4244 \
+    /wd4245 \
+    ")
 endif ()
 
 set(OBJ_FORMAT "elf32-i386")
