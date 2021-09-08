@@ -104,7 +104,8 @@ Note: The game can currently only be built for 32-bit architectures
  To install dependencies, run `.\vcpkg.exe install sdl2:x86-windows sdl2-mixer:x86-windows zlib:x86-windows libpng:x86-windows yaml-cpp:x86-windows breakpad:x86-windows`
 1. Run `mkdir build`
 2. Run `cd build`
-3. Run `cmake .. -A Win32 "-DCMAKE_TOOLCHAIN_FILE=D:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake"`
+3. Run `cmake .. -A Win32 "-DCMAKE_TOOLCHAIN_FILE=<vcpkg_root>/scripts/buildsystems/vcpkg.cmake"`
+4. Run `cmake --build .`
 
 ### Linux / macOS:
 The standard CMake build procedure is to install the required libraries, then:
