@@ -135,6 +135,18 @@ namespace OpenLoco::EntityManager
         return _entitySpatialIndex[index];
     }
 
+    static void insertToSpatialIndex(EntityBase& entity, const size_t newIndex)
+    {
+        entity.nextQuadrantId = _entitySpatialIndex[newIndex];
+        _entitySpatialIndex[newIndex] = entity.id;
+    }
+
+    static void insertToSpatialIndex(EntityBase& entity)
+    {
+        const auto index = getSpatialIndexOffset(entity.position);
+        insertToSpatialIndex(entity, index);
+    }
+
     // 0x0046FF54
     void resetSpatialIndex()
     {
@@ -146,9 +158,7 @@ namespace OpenLoco::EntityManager
         // Refill the index
         for (auto& ent : entities())
         {
-            const auto index = getSpatialIndexOffset(ent.position);
-            ent.nextQuadrantId = _entitySpatialIndex[index];
-            _entitySpatialIndex[index] = ent.id;
+            insertToSpatialIndex(ent);
         }
     }
 
@@ -158,6 +168,52 @@ namespace OpenLoco::EntityManager
         for (auto& ent : entities())
         {
             ent.moveTo(ent.position);
+        }
+    }
+
+    static bool removeFromSpatialIndex(EntityBase& entity, const size_t index)
+    {
+        auto* quadId = &_entitySpatialIndex[index];
+        _entitySpatialCount = 0;
+        while (*quadId < Limits::maxEntities)
+        {
+            auto* quadEnt = get<EntityBase>(*quadId);
+            if (quadEnt == &entity)
+            {
+                *quadId = entity.nextQuadrantId;
+                return true;
+            }
+            _entitySpatialCount++;
+            if (_entitySpatialCount > Limits::maxEntities)
+            {
+                break;
+            }
+            quadId = &quadEnt->nextQuadrantId;
+        }
+        return false;
+    }
+
+    static bool removeFromSpatialIndex(EntityBase& entity)
+    {
+        const auto index = getSpatialIndexOffset(entity.position);
+        return removeFromSpatialIndex(entity, index);
+    }
+
+    void moveSpatialEntry(EntityBase& entity, const Map::Pos2& loc)
+    {
+        const auto newIndex = getSpatialIndexOffset(loc);
+        const auto oldIndex = getSpatialIndexOffset(entity.position);
+        if (newIndex != oldIndex)
+        {
+            if (!removeFromSpatialIndex(entity, oldIndex))
+            {
+                Console::log("Invalid quadrant ids... Reseting spatial index.");
+                resetSpatialIndex();
+                moveSpatialEntry(entity, loc);
+                return;
+            }
+            insertToSpatialIndex(entity, newIndex);
+            entity.position = loc;
         }
     }
 
@@ -172,10 +228,7 @@ namespace OpenLoco::EntityManager
         moveEntityToList(newEntity, list);
 
         newEntity->position = { Location::null, Location::null, 0 };
-        auto index = getSpatialIndexOffset(newEntity->position);
-        auto nextSpatialId = _entitySpatialIndex[index];
-        _entitySpatialIndex[index] = newEntity->id;
-        newEntity->nextQuadrantId = nextSpatialId;
+        insertToSpatialIndex(*newEntity);
 
         newEntity->name = StringIds::empty_pop;
         newEntity->var_14 = 16;
@@ -237,26 +290,11 @@ namespace OpenLoco::EntityManager
         StringManager::emptyUserString(entity->name);
         entity->base_type = EntityBaseType::null;
 
-        // Remove from spatial lists
-        auto* quadId = &_entitySpatialIndex[getSpatialIndexOffset(entity->position)];
-        _entitySpatialCount = 0;
-        while (*quadId < Limits::maxEntities)
+        if (!removeFromSpatialIndex(*entity))
         {
-            auto* quadEnt = get<EntityBase>(*quadId);
-            if (quadEnt == entity)
-            {
-                *quadId = entity->nextQuadrantId;
-                return;
-            }
-            _entitySpatialCount++;
-            if (_entitySpatialCount > Limits::maxEntities)
-            {
-                break;
-            }
-            quadId = &quadEnt->nextQuadrantId;
+            Console::log("Invalid quadrant ids... Reseting spatial index.");
+            resetSpatialIndex();
         }
-        Console::log("Invalid quadrant ids... Reseting spatial index.");
-        resetSpatialIndex();
     }
 
     // 0x004A8826
