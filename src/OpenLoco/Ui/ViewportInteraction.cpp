@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004CD7FB
-    static bool getTownArguments(const TownId_t id)
+    static bool getTownArguments(const TownId id)
     {
         auto town = TownManager::get(id);
 
@@ -337,7 +337,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 success = _road(interaction);
                 break;
             case InteractionItem::townLabel:
-                success = getTownArguments(static_cast<TownId_t>(interaction.value));
+                success = getTownArguments(static_cast<TownId>(interaction.value));
                 break;
             case InteractionItem::stationLabel:
                 success = getStationArguments(static_cast<StationId>(interaction.value));

@@ -491,7 +491,7 @@ namespace OpenLoco::Ui::Windows::StationList
             // First, draw the town name.
             _common_format_args[0] = StringIds::stringid_stringid;
             _common_format_args[1] = station->name;
-            _common_format_args[2] = station->town;
+            _common_format_args[2] = enumValue(station->town);
             _common_format_args[3] = getTransportIconsFromStationFlags(station->flags);
 
             Gfx::drawString_494BBF(context, 0, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);

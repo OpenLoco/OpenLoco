@@ -81,7 +81,7 @@ namespace OpenLoco
         CompanyId_t owner{};              // 0x28
         uint8_t var_29{};
         uint16_t flags{};                               // 0x2A
-        TownId_t town{};                                // 0x2C
+        TownId town{};                                  // 0x2C
         StationCargoStats cargo_stats[max_cargo_stats]; // 0x2E
         uint16_t stationTileSize{};                     // 0x1CE
         Pos3 stationTiles[80];                          // 0x1D0

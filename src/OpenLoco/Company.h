@@ -108,7 +108,7 @@ namespace OpenLoco
         uint16_t transportTypeCount[6];              // 0x8BA4
         uint8_t var_8BB0[9];
         ObservationStatus observationStatus; // 0x8BB9;
-        TownId_t observationTownId;          // 0x8BBA;
+        TownId observationTownId;            // 0x8BBA;
         EntityId_t observation_thing;        // 0x8BBC;
         int16_t observation_x;               // 0x8BBE;
         int16_t observation_y;               // 0x8BC0;

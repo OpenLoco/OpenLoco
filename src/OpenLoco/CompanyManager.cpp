@@ -248,7 +248,7 @@ namespace OpenLoco::CompanyManager
         };
 
         string_id statusString = observationStatusStrings[company->observationStatus];
-        if (company->observationStatus == ObservationStatus::empty || company->observationTownId == 0xFFFF)
+        if (company->observationStatus == ObservationStatus::empty || company->observationTownId == TownId::null)
             return StringIds::company_status_empty;
 
         switch (company->observationStatus)

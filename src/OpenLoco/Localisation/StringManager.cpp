@@ -577,15 +577,15 @@ namespace OpenLoco::StringManager
         else if (id < TOWN_NAMES_END)
         {
             id -= TOWN_NAMES_START;
-            uint16_t town_id = args.pop<uint16_t>();
-            auto town = TownManager::get(town_id);
+            const auto townId = TownId(args.pop<uint16_t>());
+            auto town = TownManager::get(townId);
             void* town_name = (void*)&town->name;
             return formatString(buffer, id, town_name);
         }
         else if (id == TOWN_NAMES_END)
         {
-            uint16_t town_id = args.pop<uint16_t>();
-            auto town = TownManager::get(town_id);
+            const auto townId = TownId(args.pop<uint16_t>());
+            auto town = TownManager::get(townId);
             return formatString(buffer, town->name, nullptr);
         }
         else

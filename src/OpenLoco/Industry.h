@@ -31,7 +31,7 @@ namespace OpenLoco
         uint16_t pad_12;
         uint8_t numTiles;        // 0x14
         Map::Pos3 tiles[32];     // 0x15
-        TownId_t town;           // 0xD5
+        TownId town;             // 0xD5
         Map::TileLoop tile_loop; // 0xD7
         int16_t var_DB;
         int16_t var_DD;

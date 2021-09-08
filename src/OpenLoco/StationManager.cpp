@@ -134,7 +134,7 @@ namespace OpenLoco::StationManager
     }
 
     // 0x048F988
-    string_id generateNewStationName(StationId stationId, TownId_t townId, Map::Pos3 position, uint8_t mode)
+    string_id generateNewStationName(StationId stationId, TownId townId, Map::Pos3 position, uint8_t mode)
     {
         enum StationName : uint8_t
         {
@@ -514,7 +514,7 @@ namespace OpenLoco::StationManager
             0x048F988,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto stationId = (reinterpret_cast<Station*>(regs.esi))->id();
-                regs.bx = generateNewStationName(stationId, regs.ebx, Map::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
+                regs.bx = generateNewStationName(stationId, TownId(regs.ebx), Map::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
                 return 0;
             });
     }

@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case newsItemSubTypes::town:
                 {
-                    auto town = TownManager::get(itemId);
+                    auto town = TownManager::get(TownId(itemId));
 
                     view.mapX = town->x;
                     view.mapY = town->y;
@@ -499,7 +499,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case newsItemSubTypes::town:
                 {
-                    auto town = TownManager::get(itemIndex);
+                    auto town = TownManager::get(TownId(itemIndex));
                     args.push(town->name);
                     break;
                 }
