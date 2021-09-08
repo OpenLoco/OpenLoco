@@ -10,11 +10,6 @@ namespace OpenLoco
 {
     struct IndustryObject;
 
-    namespace IndustryId
-    {
-        constexpr IndustryId_t null = std::numeric_limits<IndustryId_t>::max();
-    }
-
     namespace IndustryFlags
     {
         constexpr uint16_t flag_01 = 1 << 0;
@@ -56,7 +51,7 @@ namespace OpenLoco
         int32_t history_min_production[2];     // 0x38B
         uint8_t pad_393[0x453 - 0x393];
 
-        IndustryId_t id() const;
+        IndustryId id() const;
         IndustryObject* object() const;
         bool empty() const;
         bool canReceiveCargo() const;

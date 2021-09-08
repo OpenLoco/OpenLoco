@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace Industry
     {
-        Window* open(IndustryId_t id);
+        Window* open(IndustryId id);
     }
 
     namespace IndustryList

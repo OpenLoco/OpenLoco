@@ -10,7 +10,7 @@ namespace OpenLoco::IndustryManager
 {
     void reset();
     FixedVector<Industry, Limits::maxIndustries> industries();
-    Industry* get(IndustryId_t id);
+    Industry* get(IndustryId id);
     void update();
     void updateMonthly();
     void createAllMapAnimations();

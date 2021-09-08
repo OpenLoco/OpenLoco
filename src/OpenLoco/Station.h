@@ -24,7 +24,7 @@ namespace OpenLoco
         uint8_t enroute_age{};              // 0x35
         Speed16 vehicleSpeed{ 0 };          // 0x36 max speed of vehicle that transported the cargo
         uint8_t vehicleAge{};               // 0x38 age of the vehicle (car) that transported the cargo
-        IndustryId_t industry_id{};         // 0x39
+        IndustryId industry_id{};           // 0x39
         uint8_t var_40{};
 
         bool empty() const

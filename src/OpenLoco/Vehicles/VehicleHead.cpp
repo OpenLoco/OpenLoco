@@ -2338,7 +2338,7 @@ namespace OpenLoco::Vehicles
                     surface->setHighTypeFlag(false);
                     surface->setVar6SLR5(0);
                 }
-                surface->setIndustry(0);
+                surface->setIndustry(IndustryId(0));
                 surface->setType6Flag(true);
             }
         }
@@ -2628,7 +2628,7 @@ namespace OpenLoco::Vehicles
                 if (!(industry->history_min_production[0] & (1ULL << cargo.type)))
                 {
                     industry->history_min_production[0] |= 1ULL << cargo.type;
-                    MessageManager::post(MessageType::workersCelebrate, owner, id, cargoStats.industry_id, cargoStats.industry_id | (cargo.type << 8));
+                    MessageManager::post(MessageType::workersCelebrate, owner, id, enumValue(cargoStats.industry_id), enumValue(cargoStats.industry_id) | (cargo.type << 8));
                 }
 
                 auto* town = TownManager::get(industry->town);

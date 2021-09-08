@@ -20,19 +20,19 @@ namespace OpenLoco::GameCommands
      * The resulting industry name has a maximum length of 31 chars; the last bytes are not used.
      *
      * @param flags @<bl> - game command flags
-     * @param industryId @<cx> - industry id
+     * @param industryId @<cl> - industry id
      * @param index @<ax> - update index (in order of: 1, 2, 0)
      * @param buffer0 @<edx> - First part (4 chars) of the 12 update buffer
      * @param buffer1 @<dx> - Second part (4 chars) of the 12 update buffer
      * @param buffer2 @<bp> - Third part (4 chars) of the 12 update buffer
      * @return @<ebx> - returns 0 if rename is successful; otherwise GameCommands::FAILURE
      */
-    static uint32_t renameIndustry(const uint8_t flags, IndustryId_t industryId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
+    static uint32_t renameIndustry(const uint8_t flags, IndustryId industryId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
 
         // Keep track of the industry id over several calls.
-        static IndustryId_t _industryId{};
+        static IndustryId _industryId{};
         if (index == 1)
             _industryId = industryId;
 
@@ -92,6 +92,6 @@ namespace OpenLoco::GameCommands
 
     void renameIndustry(registers& regs)
     {
-        regs.ebx = renameIndustry(regs.bl, regs.cx, regs.ax, regs.edx, regs.ebp, regs.edi);
+        regs.ebx = renameIndustry(regs.bl, IndustryId(regs.cl), regs.ax, regs.edx, regs.ebp, regs.edi);
     }
 }

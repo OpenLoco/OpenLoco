@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (industryTile->isGhost())
             return false;
 
-        interaction.value = industryTile->industryId();
+        interaction.value = enumValue(industryTile->industryId());
         auto industry = industryTile->industry();
 
         char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));

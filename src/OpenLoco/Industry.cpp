@@ -222,7 +222,7 @@ namespace OpenLoco
         regs.ax = pos.x;
         regs.cx = pos.y;
         regs.dl = dl;
-        regs.dh = id();
+        regs.dh = enumValue(id());
         call(0x00454A43, regs);
     }
 

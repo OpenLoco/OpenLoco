@@ -150,10 +150,10 @@ namespace OpenLoco::Map
     struct SurfaceElement : public TileElementBase
     {
     private:
-        uint8_t _slope;    // 0x4
-        uint8_t _water;    // 0x5
-        uint8_t _terrain;  // 0x6
-        uint8_t _industry; // 0x7
+        uint8_t _slope;       // 0x4
+        uint8_t _water;       // 0x5
+        uint8_t _terrain;     // 0x6
+        IndustryId _industry; // 0x7
 
     public:
         bool isSlopeDoubleHeight() const { return _slope & SurfaceSlope::double_height; }
@@ -169,8 +169,8 @@ namespace OpenLoco::Map
             _terrain &= 0x1F;
             _terrain |= var6 << 5;
         }
-        uint8_t industryId() const { return _industry; }
-        void setIndustry(uint8_t industry) { _industry = industry; }
+        IndustryId industryId() const { return IndustryId(_industry); }
+        void setIndustry(const IndustryId industry) { _industry = industry; }
         void setType6Flag(bool state)
         {
             _type &= ~0x40;
@@ -335,12 +335,12 @@ namespace OpenLoco::Map
     struct IndustryElement : public TileElementBase
     {
     private:
-        IndustryId_t _industryId;
+        IndustryId _industryId;
         uint8_t _5;
         uint16_t _6;
 
     public:
-        OpenLoco::IndustryId_t industryId() const { return _industryId; }
+        OpenLoco::IndustryId industryId() const { return _industryId; }
         OpenLoco::Industry* industry() const;
         uint8_t var_6_1F() const;
         bool hasHighTypeFlag() const { return _type & 0x80; } // isConstructed?

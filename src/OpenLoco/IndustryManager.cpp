@@ -28,13 +28,13 @@ namespace OpenLoco::IndustryManager
         return FixedVector(rawIndustries());
     }
 
-    Industry* get(IndustryId_t id)
+    Industry* get(IndustryId id)
     {
-        if (id >= Limits::maxIndustries)
+        if (enumValue(id) >= Limits::maxIndustries)
         {
             return nullptr;
         }
-        return &rawIndustries()[id];
+        return &rawIndustries()[enumValue(id)];
     }
 
     // 0x00453234
@@ -86,8 +86,8 @@ namespace OpenLoco::IndustryManager
     }
 }
 
-OpenLoco::IndustryId_t OpenLoco::Industry::id() const
+OpenLoco::IndustryId OpenLoco::Industry::id() const
 {
     auto* first = &IndustryManager::rawIndustries()[0];
-    return IndustryId_t(this - first);
+    return IndustryId(this - first);
 }

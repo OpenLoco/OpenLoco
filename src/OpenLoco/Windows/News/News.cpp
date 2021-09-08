@@ -83,7 +83,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         switch (itemType)
                         {
                             case newsItemSubTypes::industry:
-                                Ui::Windows::Industry::open(itemId);
+                                Ui::Windows::Industry::open(IndustryId(itemId));
                                 break;
 
                             case newsItemSubTypes::station:
@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 case newsItemSubTypes::industry:
                 {
-                    auto industry = IndustryManager::get(itemId);
+                    auto industry = IndustryManager::get(IndustryId(itemId));
 
                     view.mapX = industry->x;
                     view.mapY = industry->y;
@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 case newsItemSubTypes::industry:
                 {
-                    auto industry = IndustryManager::get(itemIndex);
+                    auto industry = IndustryManager::get(IndustryId(itemIndex));
                     args.push(industry->name);
                     args.push(industry->town);
                     break;
