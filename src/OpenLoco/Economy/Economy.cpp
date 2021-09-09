@@ -1,5 +1,6 @@
 #include "Economy.h"
 #include "../CompanyManager.h"
+#include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "../Ui/WindowManager.h"
 #include "../Ui/WindowType.h"
@@ -43,13 +44,19 @@ namespace OpenLoco::Economy
         20,
     };
 
-    static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
 
+    static auto& currencyMultiplicationFactors()
+    {
+        return getGameState().currencyMultiplicationFactor;
+    }
     // NB: This is not used for anything due to a mistake in original inflation calculation
     // looks as if it was meant to be extra precesion for the currencyMultiplicationFactor
     // Always 0.
-    static loco_global<uint32_t[32], 0x00525EDE> _525EDE;
+    static auto& unusedCurrencyMultiplicationFactors()
+    {
+        return getGameState().unusedCurrencyMultiplicationFactor;
+    }
 
     // 0x004375F7
     void buildDeliveredCargoPaymentsTable()
@@ -73,9 +80,10 @@ namespace OpenLoco::Economy
     // NB: called in sub_46E2C0 below, as well in openloco::date_tick.
     void updateMonthly()
     {
+        auto& factors = currencyMultiplicationFactors();
         for (uint8_t i = 0; i < 32; i++)
         {
-            currencyMultiplicationFactor[i] += (static_cast<uint64_t>(_inflationFactors[i]) * currencyMultiplicationFactor[i]) >> 12;
+            factors[i] += (static_cast<uint64_t>(_inflationFactors[i]) * factors[i]) >> 12;
         }
 
         buildDeliveredCargoPaymentsTable();
@@ -89,10 +97,12 @@ namespace OpenLoco::Economy
     // 0x0046E2C0
     void sub_46E2C0(uint16_t year)
     {
+        auto& factors = currencyMultiplicationFactors();
+        auto& unusedFactors = unusedCurrencyMultiplicationFactors();
         for (uint8_t i = 0; i < 32; i++)
         {
-            currencyMultiplicationFactor[i] = 1024;
-            _525EDE[i] = 0;
+            factors[i] = 1024;
+            unusedFactors[i] = 0;
         }
 
         // OpenLoco allows 1800 as the minimum year, whereas Locomotion uses 1900.
@@ -107,6 +117,6 @@ namespace OpenLoco::Economy
 
     currency32_t getInflationAdjustedCost(uint16_t costFactor, uint8_t costIndex, uint8_t divisor)
     {
-        return costFactor * currencyMultiplicationFactor[costIndex] / (1 << divisor);
+        return costFactor * currencyMultiplicationFactors()[costIndex] / (1 << divisor);
     }
 }
