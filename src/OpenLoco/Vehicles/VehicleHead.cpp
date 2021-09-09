@@ -410,7 +410,7 @@ namespace OpenLoco::Vehicles
                 }
                 vehStatus.status1 = StringIds::vehicle_status_approaching;
                 auto station = StationManager::get(stationId);
-                vehStatus.status1Args = station->name | (station->town << 16);
+                vehStatus.status1Args = station->name | (enumValue(station->town) << 16);
                 getSecondStatus(vehStatus);
                 return vehStatus;
             }
@@ -422,7 +422,7 @@ namespace OpenLoco::Vehicles
                 }
                 vehStatus.status1 = StringIds::vehicle_status_unloading;
                 auto station = StationManager::get(stationId);
-                vehStatus.status1Args = station->name | (station->town << 16);
+                vehStatus.status1Args = station->name | (enumValue(station->town) << 16);
                 return vehStatus;
             }
             case Status::loading:
@@ -433,7 +433,7 @@ namespace OpenLoco::Vehicles
                 }
                 vehStatus.status1 = StringIds::vehicle_status_loading;
                 auto station = StationManager::get(stationId);
-                vehStatus.status1Args = station->name | (station->town << 16);
+                vehStatus.status1Args = station->name | (enumValue(station->town) << 16);
                 return vehStatus;
             }
             case Status::brokenDown:
@@ -453,7 +453,7 @@ namespace OpenLoco::Vehicles
                 }
                 vehStatus.status1 = StringIds::vehicle_status_landing;
                 auto station = StationManager::get(stationId);
-                vehStatus.status1Args = station->name | (station->town << 16);
+                vehStatus.status1Args = station->name | (enumValue(station->town) << 16);
                 getSecondStatus(vehStatus);
                 return vehStatus;
             }
@@ -466,7 +466,7 @@ namespace OpenLoco::Vehicles
                 }
                 vehStatus.status1 = StringIds::vehicle_status_taxiing;
                 auto station = StationManager::get(stationId);
-                vehStatus.status1Args = station->name | (station->town << 16);
+                vehStatus.status1Args = station->name | (enumValue(station->town) << 16);
                 getSecondStatus(vehStatus);
                 return vehStatus;
             }
@@ -478,7 +478,7 @@ namespace OpenLoco::Vehicles
                 }
                 vehStatus.status1 = StringIds::vehicle_status_taking_off;
                 auto station = StationManager::get(stationId);
-                vehStatus.status1Args = station->name | (station->town << 16);
+                vehStatus.status1Args = station->name | (enumValue(station->town) << 16);
                 getSecondStatus(vehStatus);
                 return vehStatus;
             }
@@ -512,7 +512,7 @@ namespace OpenLoco::Vehicles
                 stopFound = true;
                 auto* station = StationManager::get(stopOrder->getStation());
                 vehStatus.status1 = StringIds::vehicle_status_heading_for;
-                vehStatus.status1Args = (station->town << 16) | station->name;
+                vehStatus.status1Args = (enumValue(station->town) << 16) | station->name;
                 break;
             }
             if (!stopFound)
@@ -2640,7 +2640,7 @@ namespace OpenLoco::Vehicles
             if (!(town->var_1A8 & (1ULL << cargo.type)))
             {
                 town->var_1A8 |= 1ULL << cargo.type;
-                MessageManager::post(MessageType::citizensCelebrate, owner, id, station->town, station->town | (cargo.type << 8));
+                MessageManager::post(MessageType::citizensCelebrate, owner, id, enumValue(station->town), enumValue(station->town) | (cargo.type << 8));
             }
 
             if (cargoStats.isAccepted())

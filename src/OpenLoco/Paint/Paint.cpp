@@ -721,7 +721,7 @@ namespace OpenLoco::Paint
             }
 
             interaction.type = InteractionItem::townLabel;
-            interaction.value = town.id();
+            interaction.value = enumValue(town.id());
             interaction.pos.x = town.x;
             interaction.pos.y = town.y;
         }

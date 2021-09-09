@@ -150,10 +150,10 @@ namespace OpenLoco::Ui::Windows::TownList
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
             {
-                TownId_t townId = self.row_info[i];
+                const auto townId = TownId(self.row_info[i]);
 
                 // Skip items outside of view, or irrelevant to the current filter.
-                if (yPos + rowHeight < context.y || yPos >= yPos + rowHeight + context.height || townId == (uint16_t)-1)
+                if (yPos + rowHeight < context.y || yPos >= yPos + rowHeight + context.height || townId == TownId::null)
                 {
                     yPos += rowHeight;
                     continue;
@@ -162,13 +162,13 @@ namespace OpenLoco::Ui::Windows::TownList
                 string_id text_colour_id = StringIds::black_stringid;
 
                 // Highlight selection.
-                if (townId == self.row_hover)
+                if (townId == TownId(self.row_hover))
                 {
                     Gfx::drawRect(context, 0, yPos, self.width, rowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
-                if (townId == 0xFFFF)
+                if (townId == TownId::null)
                     continue;
                 auto town = TownManager::get(townId);
 
@@ -365,13 +365,13 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x00499E0B
         static void updateTownList(Window* self)
         {
-            auto chosenTown = -1;
+            TownId chosenTown = TownId::null;
             for (auto& town : TownManager::towns())
             {
                 if ((town.flags & TownFlags::sorted) != 0)
                     continue;
 
-                if (chosenTown == -1)
+                if (chosenTown == TownId::null)
                 {
                     chosenTown = town.id();
                     continue;
@@ -383,15 +383,15 @@ namespace OpenLoco::Ui::Windows::TownList
                 }
             }
 
-            if (chosenTown != -1)
+            if (chosenTown != TownId::null)
             {
                 bool shouldInvalidate = false;
 
                 TownManager::get(chosenTown)->flags |= TownFlags::sorted;
 
-                if (chosenTown != self->row_info[self->row_count])
+                if (chosenTown != TownId(self->row_info[self->row_count]))
                 {
-                    self->row_info[self->row_count] = chosenTown;
+                    self->row_info[self->row_count] = enumValue(chosenTown);
                     shouldInvalidate = true;
                 }
 

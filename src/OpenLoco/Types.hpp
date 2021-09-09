@@ -26,7 +26,10 @@ namespace OpenLoco
     using string_id = uint16_t;
     using EntityId_t = uint16_t;
     using tile_coord_t = int16_t;
-    using TownId_t = uint16_t;
+    enum class TownId : uint16_t
+    {
+        null = std::numeric_limits<uint16_t>::max(),
+    };
     using SoundObjectId_t = uint8_t;
     using MessageId_t = uint16_t;
 

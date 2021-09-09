@@ -27,13 +27,13 @@ namespace OpenLoco::TownManager
         return FixedVector(rawTowns());
     }
 
-    Town* get(TownId_t id)
+    Town* get(TownId id)
     {
-        if (id >= Limits::maxTowns)
+        if (enumValue(id) >= Limits::maxTowns)
         {
             return nullptr;
         }
-        return &rawTowns()[id];
+        return &rawTowns()[enumValue(id)];
     }
 
     // 0x00496B6D
@@ -44,7 +44,7 @@ namespace OpenLoco::TownManager
             auto ticks = scenarioTicks();
             if (ticks % 8 == 0)
             {
-                TownId_t id = (ticks / 8) % 0x7F;
+                const auto id = TownId((ticks / 8) % 0x7F);
                 auto town = get(id);
                 if (town != nullptr && !town->empty())
                 {
@@ -152,7 +152,7 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00497E52
-    std::optional<std::pair<TownId_t, uint8_t>> getClosestTownAndUnk(const Map::Pos2& loc)
+    std::optional<std::pair<TownId, uint8_t>> getClosestTownAndUnk(const Map::Pos2& loc)
     {
         int32_t closestDistance = std::numeric_limits<uint16_t>::max();
         auto closestTown = TownId::null; // ebx
@@ -184,14 +184,14 @@ namespace OpenLoco::TownManager
 
 }
 
-OpenLoco::TownId_t OpenLoco::Town::id() const
+OpenLoco::TownId OpenLoco::Town::id() const
 {
     // TODO check if this is stored in Town structure
     //      otherwise add it when possible
     auto index = static_cast<size_t>(this - &TownManager::rawTowns()[0]);
     if (index > Limits::maxTowns)
     {
-        index = TownId::null;
+        return OpenLoco::TownId::null;
     }
-    return static_cast<OpenLoco::TownId_t>(index);
+    return OpenLoco::TownId(index);
 }

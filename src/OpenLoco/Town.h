@@ -10,11 +10,6 @@ namespace OpenLoco
     constexpr int32_t min_company_rating = -1000;
     constexpr int32_t max_company_rating = 1000;
 
-    namespace TownId
-    {
-        constexpr TownId_t null = std::numeric_limits<TownId_t>::max();
-    }
-
     namespace TownFlags
     {
         constexpr uint16_t sorted = 1 << 0;
@@ -59,7 +54,7 @@ namespace OpenLoco
         uint8_t pad_1AC[0x270 - 0x1AC];
 
         bool empty() const;
-        TownId_t id() const;
+        TownId id() const;
         void update();
         void updateLabel();
         void adjustCompanyRating(CompanyId_t cid, int amount);
