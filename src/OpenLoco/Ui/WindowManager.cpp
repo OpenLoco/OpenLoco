@@ -1083,7 +1083,7 @@ namespace OpenLoco::Ui::WindowManager
         bool stickToBack = (flags & WindowFlags::stick_to_back) != 0;
         bool stickToFront = (flags & WindowFlags::stick_to_front) != 0;
         bool hasFlag12 = (flags & WindowFlags::flag_12) != 0;
-        bool hasFlag13 = (flags & WindowFlags::flag_13) != 0;
+        bool shouldOpenQuietly = (flags & WindowFlags::openQuietly) != 0;
 
         // Find right position to insert new window
         size_t dstIndex = 0;
@@ -1116,7 +1116,7 @@ namespace OpenLoco::Ui::WindowManager
         auto window = Ui::Window(origin, size);
         window.type = type;
         window.flags = flags;
-        if (hasFlag12 || (!stickToBack && !stickToFront && !hasFlag13))
+        if (hasFlag12 || (!stickToBack && !stickToFront && !shouldOpenQuietly))
         {
             window.flags |= WindowFlags::white_border_mask;
             Audio::playSound(Audio::SoundId::openWindow, origin.x + size.width / 2);

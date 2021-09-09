@@ -105,7 +105,7 @@ namespace OpenLoco::Ui
         constexpr uint32_t no_auto_close = 1 << 10;
         constexpr uint32_t flag_11 = 1 << 11;
         constexpr uint32_t flag_12 = 1 << 12;
-        constexpr uint32_t flag_13 = 1 << 13;
+        constexpr uint32_t openQuietly = 1 << 13;
         constexpr uint32_t not_scroll_view = 1 << 14;
         constexpr uint32_t flag_15 = 1 << 15;
         constexpr uint32_t flag_16 = 1 << 16;
