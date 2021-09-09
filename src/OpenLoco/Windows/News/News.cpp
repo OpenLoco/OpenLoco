@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     if (_activeMessageIndex != MessageId::null)
                     {
                         auto news = MessageManager::get(_activeMessageIndex);
-                        news->var_C8 = MessageId::null;
+                        news->var_C8 = 0xFFFF;
                         _activeMessageIndex = MessageId::null;
                     }
                     WindowManager::close(self);
@@ -285,7 +285,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             bool selectable = false;
 
-            if (_activeMessageIndex != 0xFFFF)
+            if (_activeMessageIndex != MessageId::null)
             {
                 if (_word_4F8BE4[news->type] & (1 << 2))
                 {
@@ -385,7 +385,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.thingId = 0xFFFF;
             selectable = false;
 
-            if (_activeMessageIndex != 0xFFFF)
+            if (_activeMessageIndex != MessageId::null)
             {
                 if (_word_4F8BE4[news->type] & (1 << 3))
                 {

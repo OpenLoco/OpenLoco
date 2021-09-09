@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<CompanyId_t, 0x00525E3C> _playerCompany;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
-    static loco_global<uint16_t, 0x005271D0> _activeMessageIndex;
+    static loco_global<MessageId, 0x005271D0> _activeMessageIndex;
 
     namespace Common
     {
@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (messageIndex >= _messageCount)
                 return;
 
-            if (_activeMessageIndex != 0xFFFF)
+            if (_activeMessageIndex != MessageId::null)
             {
                 auto message = MessageManager::get(_activeMessageIndex);
                 if (message->var_C8 != 0xFFFF)
@@ -160,13 +160,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 }
             }
 
-            _activeMessageIndex = 0xFFFF;
+            _activeMessageIndex = MessageId::null;
             WindowManager::close(WindowType::news, 0);
 
-            auto message = MessageManager::get(messageIndex);
+            auto message = MessageManager::get(MessageId(messageIndex));
             message->var_C8 = (1 << 15) | (1 << 0);
 
-            NewsWindow::open(messageIndex);
+            NewsWindow::open(MessageId(messageIndex));
 
             int32_t pan = self->width / 2 + self->x;
             Audio::playSound(Audio::SoundId::clickDown, pan);
@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     height += messageHeight;
                     continue;
                 }
-                auto message = MessageManager::get(i);
+                auto message = MessageManager::get(MessageId(i));
                 char* buffer = message->messageString;
                 auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
