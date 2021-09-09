@@ -318,6 +318,7 @@ namespace OpenLoco::Environment
             "save",
             "save/autosave",
             "1.TMP",
+            "ObjData",
         };
 
         size_t index = (size_t)id;

@@ -59,6 +59,7 @@ namespace OpenLoco::Environment
         save,
         autosave,
         _1tmp,
+        objects,
     };
 
     void autoCreateDirectory(const fs::path& path);

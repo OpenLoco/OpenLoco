@@ -162,7 +162,8 @@ namespace OpenLoco::StringIds
     constexpr string_id too_many_objects_in_game = 171;
     constexpr string_id menu_rotate_clockwise = 172;
     constexpr string_id menu_rotate_anti_clockwise = 173;
-
+    constexpr string_id starting_for_the_first_time = 174;
+    constexpr string_id checking_object_files = 175;
     constexpr string_id title_load_game = 176;
     constexpr string_id title_quit_game = 177;
     constexpr string_id title_quit_game_alt = 178;

@@ -1,5 +1,6 @@
 #include "ObjectManager.h"
 #include "../Core/FileSystem.hpp"
+#include "../Environment.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
@@ -9,6 +10,7 @@
 #include "../Ui.h"
 #include "../Ui/ProgressBar.h"
 #include "../Utility/Numeric.hpp"
+#include "../Utility/Stream.hpp"
 #include <iterator>
 #include <vector>
 
@@ -77,10 +79,307 @@ namespace OpenLoco::ObjectManager
 
     loco_global<uint32_t, 0x0050D154> _totalNumImages;
 
+    static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
+    static loco_global<std::byte*, 0x0050D158> _50D158;
+    static loco_global<std::byte[0x2002], 0x0112A17F> _112A17F;
+    static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
+    static loco_global<bool, 0x0112A17E> _customObjectsInIndex;
+    static loco_global<bool, 0x0050AEAD> _isFirstTime;
+    static loco_global<bool, 0x0050D161> _isPartialLoaded;
+    static loco_global<uint32_t, 0x009D9D52> _decodedSize;    // return of getScenarioText (badly named)
+    static loco_global<uint32_t, 0x0112A168> _numImages;      // return of getScenarioText (badly named)
+    static loco_global<uint8_t, 0x0112C211> _intelligence;    // return of getScenarioText (badly named)
+    static loco_global<uint8_t, 0x0112C212> _aggressiveness;  // return of getScenarioText (badly named)
+    static loco_global<uint8_t, 0x0112C213> _competitiveness; // return of getScenarioText (badly named)
+
+#pragma pack(push, 1)
+    struct ObjectFolderState
+    {
+        uint32_t numObjects = 0;
+        uint32_t totalFileSize = 0;
+        uint32_t dateHash = 0;
+        constexpr bool operator==(const ObjectFolderState& rhs) const
+        {
+            return (numObjects == rhs.numObjects) && (totalFileSize == rhs.totalFileSize) && (dateHash == rhs.dateHash);
+        }
+        constexpr bool operator!=(const ObjectFolderState& rhs) const
+        {
+            return !(*this == rhs);
+        }
+    };
+    static_assert(sizeof(ObjectFolderState) == 0xC);
+    struct IndexHeader
+    {
+        ObjectFolderState state;
+        uint32_t fileSize;
+        uint32_t numObjects; // duplicates ObjectFolderState.numObjects but without high 1 and includes corrupted .dat's
+    };
+    static_assert(sizeof(IndexHeader) == 0x14);
+#pragma pack(pop)
+    // 0x00470F3C
+    static ObjectFolderState getCurrentObjectFolderState()
+    {
+        ObjectFolderState currentState;
+        const auto objectPath = Environment::getPathNoWarning(Environment::path_id::objects);
+        for (const auto& file : fs::directory_iterator(objectPath, std::filesystem::directory_options::skip_permission_denied))
+        {
+            if (!file.is_regular_file())
+            {
+                continue;
+            }
+            const auto extension = file.path().extension().u8string();
+            if (!Utility::iequals(extension, ".DAT"))
+            {
+                continue;
+            }
+            currentState.numObjects++;
+            const auto lastWrite = file.last_write_time().time_since_epoch().count();
+            currentState.dateHash ^= ((lastWrite >> 32) ^ (lastWrite & 0xFFFFFFFF));
+            currentState.dateHash = Utility::ror(currentState.dateHash, 5);
+            currentState.totalFileSize += file.file_size();
+        }
+        currentState.numObjects |= (1 << 24);
+        return currentState;
+    }
+
+    // 0x00471712
+    static bool hasCustomObjectsInIndex()
+    {
+        auto ptr = (std::byte*)_installedObjectList;
+        for (uint32_t i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&ptr);
+            if (entry._header->isCustom())
+                return true;
+        }
+        return false;
+    }
+
+    // 0x0047118B
+    static void createIndex(const ObjectFolderState& currentState)
+    {
+        Ui::processMessagesMini();
+        const auto progressString = _isFirstTime ? StringIds::starting_for_the_first_time : StringIds::checking_object_files;
+        Ui::ProgressBar::begin(progressString);
+        // 0x00112A14C -> 160
+        IndexHeader header{};
+        // 0x0112A17C
+        uint8_t progress = 0;
+        reloadAll();
+        if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
+        {
+            free(*_installedObjectList);
+        }
+        size_t bufferSize = 0x4000;
+        _installedObjectList = static_cast<std::byte*>(malloc(bufferSize));
+        if (_installedObjectList == nullptr)
+        {
+            _installedObjectList = reinterpret_cast<std::byte*>(-1);
+            // Throw some error 0x47175E
+        }
+        size_t usedBufferSize = 0;
+        const auto objectPath = Environment::getPathNoWarning(Environment::path_id::objects);
+        for (const auto& file : fs::directory_iterator(objectPath, std::filesystem::directory_options::skip_permission_denied))
+        {
+            if (!file.is_regular_file())
+            {
+                continue;
+            }
+            const auto extension = file.path().extension().u8string();
+            if (!Utility::iequals(extension, ".DAT"))
+            {
+                continue;
+            }
+            Ui::processMessagesMini();
+            header.state.numObjects++;
+            const auto newProgress = (header.state.numObjects << 8) / ((currentState.numObjects & 0xFFFFFF) + 1);
+            if (progress != newProgress)
+            {
+                progress = newProgress;
+                Ui::ProgressBar::setProgress(newProgress);
+            }
+
+            const auto remainingBuffer = bufferSize - usedBufferSize;
+            if (remainingBuffer < 0x231E)
+            {
+                bufferSize *= 2;
+                _installedObjectList = static_cast<std::byte*>(realloc(*_installedObjectList, bufferSize));
+                if (_installedObjectList == nullptr)
+                {
+                    _installedObjectList = reinterpret_cast<std::byte*>(-1);
+                    // Throw some error 0x47175E
+                }
+            }
+
+            ObjectHeader objHeader{};
+            {
+                std::ifstream stream;
+                stream.open(file.path(), std::ios::in | std::ios::binary);
+                Utility::readData(stream, objHeader);
+                if (stream.gcount() != sizeof(objHeader))
+                {
+                    continue;
+                }
+                stream.close();
+            }
+            const auto curObjPos = usedBufferSize;
+            std::memcpy(&_installedObjectList[usedBufferSize], &objHeader, sizeof(objHeader));
+            usedBufferSize += sizeof(objHeader);
+            std::strcpy(reinterpret_cast<char*>(&_installedObjectList[usedBufferSize]), file.path().filename().u8string().c_str());
+            usedBufferSize += strlen(reinterpret_cast<char*>(&_installedObjectList[usedBufferSize])) + 1;
+            ObjectHeader2 objHeader2{};
+            objHeader2.var_00 = std::numeric_limits<uint32_t>::max();
+            std::memcpy(&_installedObjectList[usedBufferSize], &objHeader2, sizeof(objHeader2));
+            usedBufferSize += sizeof(objHeader2);
+            _installedObjectList[usedBufferSize] = std::byte(0);
+            usedBufferSize++;
+            ObjectHeader3 objHeader3{};
+            objHeader3.var_00 = 0;
+            std::memcpy(&_installedObjectList[usedBufferSize], &objHeader3, sizeof(objHeader3));
+            usedBufferSize += sizeof(objHeader3);
+            _installedObjectList[usedBufferSize] = std::byte(0);
+            usedBufferSize++;
+            _installedObjectList[usedBufferSize] = std::byte(0);
+            usedBufferSize++;
+            _installedObjectCount++;
+
+            _isPartialLoaded = true;
+            _50D158 = _112A17F;
+            getScenarioText(objHeader);
+            _50D158 = reinterpret_cast<std::byte*>(-1);
+            _isPartialLoaded = false;
+            if (_installedObjectList == 0)
+            {
+                continue;
+            }
+            _installedObjectCount--;
+
+            // Rewind as it is only a partial object loaded
+            usedBufferSize = curObjPos;
+
+            // Load full entry into temp buffer.
+            // 0x009D1CC8
+            std::byte newEntryBuffer[0x2000];
+            size_t newEntrySize = 0;
+            std::memcpy(&newEntryBuffer[newEntrySize], &objHeader, sizeof(objHeader));
+            newEntrySize += sizeof(objHeader);
+            std::strcpy(reinterpret_cast<char*>(&newEntryBuffer[newEntrySize]), file.path().filename().u8string().c_str());
+            newEntrySize += strlen(reinterpret_cast<char*>(&newEntryBuffer[newEntrySize])) + 1;
+            objHeader2.var_00 = _decodedSize;
+            std::memcpy(&newEntryBuffer[newEntrySize], &objHeader2, sizeof(objHeader2));
+            newEntrySize += sizeof(objHeader2);
+            char* newEntryName = reinterpret_cast<char*>(&newEntryBuffer[newEntrySize]);
+            strcpy(reinterpret_cast<char*>(&newEntryBuffer[newEntrySize]), StringManager::getString(0x2000));
+            newEntrySize += strlen(reinterpret_cast<char*>(&newEntryBuffer[newEntrySize])) + 1;
+            objHeader3.var_00 = _numImages;
+            objHeader3.intelligence = _intelligence;
+            objHeader3.aggressiveness = _aggressiveness;
+            objHeader3.competitiveness = _competitiveness;
+            std::memcpy(&newEntryBuffer[newEntrySize], &objHeader3, sizeof(objHeader3));
+            newEntrySize += sizeof(objHeader3);
+            auto* ptr = &_112A17F[0];
+            const uint8_t size1 = uint8_t(*ptr++);
+            newEntryBuffer[newEntrySize++] = std::byte(size1);
+            for (auto n = 0; n < size1; n++)
+            {
+                std::memcpy(&newEntryBuffer[newEntrySize], ptr, sizeof(ObjectHeader));
+                newEntrySize += sizeof(ObjectHeader);
+                ptr += sizeof(ObjectHeader);
+            }
+            const uint8_t size2 = uint8_t(*ptr++);
+            newEntryBuffer[newEntrySize++] = std::byte(size2);
+            for (auto n = 0; n < size2; n++)
+            {
+                std::memcpy(&newEntryBuffer[newEntrySize], ptr, sizeof(ObjectHeader));
+                newEntrySize += sizeof(ObjectHeader);
+                ptr += sizeof(ObjectHeader);
+            }
+
+            freeScenarioText();
+
+            auto* indexPtr = *_installedObjectList;
+            for (uint32_t i = 0; i < _installedObjectCount; i++)
+            {
+                auto entry = ObjectIndexEntry::read(&indexPtr);
+                if (strcmp(entry._name, newEntryName) < 0)
+                {
+                    break;
+                }
+            }
+
+            auto moveSize = usedBufferSize - (indexPtr - *_installedObjectList);
+            std::memmove(indexPtr + newEntrySize, indexPtr, moveSize);
+            std::memcpy(indexPtr, newEntryBuffer, newEntrySize);
+            usedBufferSize += newEntrySize;
+
+            _installedObjectCount++;
+        }
+        reloadAll();
+        header.fileSize = usedBufferSize;
+        header.numObjects = _installedObjectCount;
+        header.state = currentState;
+
+        std::ofstream stream;
+        const auto indexPath = Environment::getPathNoWarning(Environment::path_id::plugin1);
+        stream.open(indexPath, std::ios::out | std::ios::binary);
+        if (!stream.is_open())
+        {
+            return;
+        }
+        stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
+        stream.write(reinterpret_cast<const char*>(*_installedObjectList), usedBufferSize);
+
+        Ui::ProgressBar::end();
+        _customObjectsInIndex = hasCustomObjectsInIndex();
+    }
+
     // 0x00470F3C
     void loadIndex()
     {
-        call(0x00470F3C);
+        // 0x00112A138 -> 144
+        const auto currentState = getCurrentObjectFolderState();
+        const auto indexPath = Environment::getPathNoWarning(Environment::path_id::plugin1);
+        if (!fs::exists(indexPath))
+        {
+            createIndex(currentState);
+            return;
+        }
+        std::ifstream stream;
+        stream.open(indexPath, std::ios::in | std::ios::binary);
+        if (!stream.is_open())
+        {
+            createIndex(currentState);
+            return;
+        }
+        // 0x00112A14C -> 160
+        IndexHeader header{};
+        Utility::readData(stream, header);
+        if ((header.state != currentState) || (stream.gcount() != sizeof(header)))
+        {
+            createIndex(currentState);
+        }
+        else
+        {
+            if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
+            {
+                free(*_installedObjectList);
+            }
+            _installedObjectList = static_cast<std::byte*>(malloc(header.fileSize));
+            if (_installedObjectList == nullptr)
+            {
+                _installedObjectList = reinterpret_cast<std::byte*>(-1);
+                // Throw some error 0x47175E
+            }
+            Utility::readData(stream, *_installedObjectList, header.fileSize);
+            if (stream.gcount() != header.fileSize)
+            {
+                createIndex(currentState);
+                return;
+            }
+            _installedObjectCount = header.numObjects;
+            reloadAll();
+            _customObjectsInIndex = hasCustomObjectsInIndex();
+        }
     }
 
     ObjectHeader* getHeader(LoadedObjectIndex id)
@@ -383,9 +682,6 @@ namespace OpenLoco::ObjectManager
 
         return entry;
     }
-
-    static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
-    static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
 
     uint32_t getNumInstalledObjects()
     {
