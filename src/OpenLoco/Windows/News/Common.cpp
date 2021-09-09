@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     }
 
     // 0x00428F8B
-    void open(uint16_t messageIndex)
+    void open(MessageId messageIndex)
     {
         bool isOld = false;
         auto news = MessageManager::get(messageIndex);
@@ -217,7 +217,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     // 0x0042AC27
     void openLastMessage()
     {
-        if (_activeMessageIndex != 0xFFFF)
+        if (_activeMessageIndex != MessageId::null)
         {
             auto message = MessageManager::get(_activeMessageIndex);
             if (message->var_C8 != 0xFFFF)
@@ -227,15 +227,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        _activeMessageIndex = 0xFFFF;
+        _activeMessageIndex = MessageId::null;
         WindowManager::close(WindowType::news, 0);
 
         if (_messageCount != 0)
         {
-            auto message = MessageManager::get(_messageCount - 1);
+            auto message = MessageManager::get(MessageId(_messageCount - 1));
             message->var_C8 = (1 << 15) | (1 << 0);
 
-            NewsWindow::open(_messageCount - 1);
+            NewsWindow::open(MessageId(_messageCount - 1));
         }
     }
 

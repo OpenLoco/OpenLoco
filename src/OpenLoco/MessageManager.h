@@ -4,7 +4,7 @@
 
 namespace OpenLoco::MessageManager
 {
-    Message* get(MessageId_t id);
+    Message* get(MessageId id);
 
     // 0x004285BA
     // al: type

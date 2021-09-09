@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::WindowManager
             0x00428F8B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Ui::Windows::NewsWindow::open(regs.ax);
+                Ui::Windows::NewsWindow::open(MessageId(regs.ax));
                 regs = backup;
 
                 return 0;

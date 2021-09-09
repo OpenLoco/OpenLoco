@@ -24,14 +24,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         if (widgetIndex != 0)
             return;
 
-        if (_activeMessageIndex == 0xFFFF)
+        if (_activeMessageIndex == MessageId::null)
             return;
 
         auto news = MessageManager::get(_activeMessageIndex);
         news->var_C8 = 1;
 
         auto activeMessageIndex = _activeMessageIndex;
-        _activeMessageIndex = 0xFFFF;
+        _activeMessageIndex = MessageId::null;
 
         WindowManager::close(self);
         open(activeMessageIndex);
@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
             if (!(_word_525CE0 & 0x8007))
             {
-                if (_activeMessageIndex != 0xFFFF)
+                if (_activeMessageIndex != MessageId::null)
                 {
                     auto news = MessageManager::get(_activeMessageIndex);
                     auto cx = _word_525CE0 >> 2;
@@ -128,10 +128,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             }
         }
 
-        if (_activeMessageIndex != 0xFFFF)
+        if (_activeMessageIndex != MessageId::null)
             return;
 
-        _activeMessageIndex = 0xFFFF;
+        _activeMessageIndex = MessageId::null;
 
         WindowManager::close(self);
     }

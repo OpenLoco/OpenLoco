@@ -215,7 +215,7 @@ namespace OpenLoco::Ui::Windows
     }
     namespace NewsWindow
     {
-        void open(uint16_t messageIndex);
+        void open(MessageId messageIndex);
         void openLastMessage();
         void close(Ui::Window* window);
     }

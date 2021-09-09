@@ -9,13 +9,13 @@ namespace OpenLoco::MessageManager
 {
     static auto& rawMessages() { return getGameState().messages; }
 
-    Message* get(MessageId_t id)
+    Message* get(MessageId id)
     {
-        if (id >= Limits::maxMessages)
+        if (enumValue(id) >= Limits::maxMessages)
         {
             return nullptr;
         }
-        return &rawMessages()[id];
+        return &rawMessages()[enumValue(id)];
     }
 
     void post(

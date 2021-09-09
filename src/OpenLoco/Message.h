@@ -5,11 +5,6 @@
 
 namespace OpenLoco
 {
-    namespace MessageId
-    {
-        constexpr MessageId_t null = std::numeric_limits<MessageId_t>::max();
-    }
-
     enum class MessageType
     {
         cantWaitForFullLoad = 0,
