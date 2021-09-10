@@ -287,7 +287,7 @@ namespace OpenLoco::Ui
 
             viewport_pos centre;
 
-            if (config->viewport_target_sprite != 0xFFFF)
+            if (config->viewport_target_sprite != EntityId::null)
             {
                 auto entity = EntityManager::get<EntityBase>(config->viewport_target_sprite);
 
@@ -623,7 +623,7 @@ namespace OpenLoco::Ui
         vc->saved_view_y = dest.y + rebased_y + (offset_y / (1 << v->zoom));
     }
 
-    void Window::viewportFocusOnEntity(uint16_t targetEntity)
+    void Window::viewportFocusOnEntity(EntityId targetEntity)
     {
         if (viewports[0] == nullptr || saved_view.isEmpty())
             return;

@@ -14,7 +14,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<uint16_t, 0x0113621D> _113621D;
+    static loco_global<EntityId, 0x0113621D> _113621D;
 
     /**
      * 0x004B6572 
@@ -29,11 +29,11 @@ namespace OpenLoco::Vehicles
      * @param buffer2 @<bp> - Third group of 4 characters of a 12 character update buffer
      * @return @<ebx> - if rename is successful, return 0, if failed, return GameCommands::FAILURE
      */
-    static uint32_t rename(const uint8_t flags, EntityId_t headId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
+    static uint32_t rename(const uint8_t flags, EntityId headId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
     {
         GameCommands::setExpenditureType(ExpenditureType::TrainRunningCosts);
 
-        static loco_global<EntityId_t, 0x0113621D> _headId_113621D;
+        static loco_global<EntityId, 0x0113621D> _headId_113621D;
         if (index == 1)
         {
             _headId_113621D = headId;
@@ -55,7 +55,7 @@ namespace OpenLoco::Vehicles
             return 0;
         }
 
-        EntityId_t vehicleHeadId = _113621D;
+        EntityId vehicleHeadId = _113621D;
         Vehicles::VehicleHead* vehicleHead = EntityManager::get<Vehicles::VehicleHead>(vehicleHeadId);
 
         char renameStringBuffer[37] = "";
@@ -111,7 +111,7 @@ namespace OpenLoco::Vehicles
 
     void rename(registers& regs)
     {
-        regs.ebx = rename(regs.bl, regs.cx, regs.ax, regs.edx, regs.ebp, regs.edi);
+        regs.ebx = rename(regs.bl, EntityId(regs.cx), regs.ax, regs.edx, regs.ebp, regs.edi);
     }
 
 }

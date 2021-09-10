@@ -1784,7 +1784,7 @@ namespace OpenLoco::Vehicles
                     MessageManager::post(
                         MessageType::unableToLandAtAirport,
                         owner,
-                        id,
+                        enumValue(id),
                         enumValue(orderStationId));
                 }
 
@@ -2249,7 +2249,7 @@ namespace OpenLoco::Vehicles
 
         curOrder++;
         currentOrder = curOrder->getOffset() - orderTableOffset;
-        Ui::WindowManager::sub_4B93A5(id);
+        Ui::WindowManager::sub_4B93A5(enumValue(id));
     }
 
     // 0x004BACAF
@@ -2409,7 +2409,7 @@ namespace OpenLoco::Vehicles
                 if (point.x == (position.x & 0xFFE0) && point.y == (position.y & 0xFFE0))
                 {
                     currentOrder = (++curOrder)->getOffset() - orderTableOffset;
-                    Ui::WindowManager::sub_4B93A5(id);
+                    Ui::WindowManager::sub_4B93A5(enumValue(id));
                 }
             }
 
@@ -2628,7 +2628,7 @@ namespace OpenLoco::Vehicles
                 if (!(industry->history_min_production[0] & (1ULL << cargo.type)))
                 {
                     industry->history_min_production[0] |= 1ULL << cargo.type;
-                    MessageManager::post(MessageType::workersCelebrate, owner, id, enumValue(cargoStats.industry_id), enumValue(cargoStats.industry_id) | (cargo.type << 8));
+                    MessageManager::post(MessageType::workersCelebrate, owner, enumValue(id), enumValue(cargoStats.industry_id), enumValue(cargoStats.industry_id) | (cargo.type << 8));
                 }
 
                 auto* town = TownManager::get(industry->town);
@@ -2640,7 +2640,7 @@ namespace OpenLoco::Vehicles
             if (!(town->var_1A8 & (1ULL << cargo.type)))
             {
                 town->var_1A8 |= 1ULL << cargo.type;
-                MessageManager::post(MessageType::citizensCelebrate, owner, id, enumValue(station->town), enumValue(station->town) | (cargo.type << 8));
+                MessageManager::post(MessageType::citizensCelebrate, owner, enumValue(id), enumValue(station->town), enumValue(station->town) | (cargo.type << 8));
             }
 
             if (cargoStats.isAccepted())
@@ -2703,7 +2703,7 @@ namespace OpenLoco::Vehicles
         cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->var_4 * cargo.qty * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
         cargo.qty = 0;
         sub_4B7CC3();
-        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(id));
         return true;
     }
 
@@ -2954,7 +2954,7 @@ namespace OpenLoco::Vehicles
         auto* company = CompanyManager::get(owner);
         company->var_49C |= 1 << cargo.type;
         sub_4B7CC3();
-        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(id));
         return true;
     }
 
@@ -3009,7 +3009,7 @@ namespace OpenLoco::Vehicles
             if (!order.hasFlag(OrderFlags::HasCargo))
             {
                 currentOrder = order.getOffset() - orderTableOffset;
-                Ui::WindowManager::sub_4B93A5(id);
+                Ui::WindowManager::sub_4B93A5(enumValue(id));
                 break;
             }
             auto* waitFor = order.as<OrderWaitFor>();
@@ -3032,7 +3032,7 @@ namespace OpenLoco::Vehicles
                         }
                         if (owner == CompanyManager::getControllingId())
                         {
-                            MessageManager::post(MessageType::cantWaitForFullLoad, owner, id, enumValue(stationId));
+                            MessageManager::post(MessageType::cantWaitForFullLoad, owner, enumValue(id), enumValue(stationId));
                         }
                         cantWait = true;
                         break;
@@ -3046,7 +3046,7 @@ namespace OpenLoco::Vehicles
                         }
                         if (owner == CompanyManager::getControllingId())
                         {
-                            MessageManager::post(MessageType::cantWaitForFullLoad, owner, id, enumValue(stationId));
+                            MessageManager::post(MessageType::cantWaitForFullLoad, owner, enumValue(id), enumValue(stationId));
                         }
                         cantWait = true;
                         break;
@@ -3088,7 +3088,7 @@ namespace OpenLoco::Vehicles
                 if (newOrder != currentOrder)
                 {
                     currentOrder = newOrder;
-                    Ui::WindowManager::sub_4B93A5(id);
+                    Ui::WindowManager::sub_4B93A5(enumValue(id));
                 }
                 return;
             }
@@ -3422,7 +3422,7 @@ namespace OpenLoco::Vehicles
 
         if (veh1->lastIncome.addToStats(cargoType, cargoQty, cargoDist, cargoAge, profit))
         {
-            Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
+            Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(id));
         }
     }
 

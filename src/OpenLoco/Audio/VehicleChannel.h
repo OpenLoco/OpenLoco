@@ -17,7 +17,7 @@ namespace OpenLoco::Audio
     {
     private:
         Channel _channel;
-        EntityId_t _vehicle_id = EntityId::null;
+        EntityId _vehicle_id = EntityId::null;
         SoundId _sound_id{};
         ChannelAttributes _attributes;
 
@@ -30,7 +30,7 @@ namespace OpenLoco::Audio
 
         bool isFree() const { return _vehicle_id == EntityId::null; }
 
-        void begin(EntityId_t vid);
+        void begin(EntityId vid);
         void update();
         void stop();
     };

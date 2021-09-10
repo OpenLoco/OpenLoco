@@ -221,7 +221,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static loco_global<int16_t, 0x01136268> _numAvailableVehicles;
     static loco_global<uint16_t[ObjectManager::getMaxObjects(ObjectType::vehicle)], 0x0113626A> _availableVehicles;
-    static loco_global<uint16_t, 0x0113642A> _113642A;
+    static loco_global<EntityId, 0x0113642A> _113642A;
     static loco_global<int32_t, 0x011364E8> _buildTargetVehicle; // -1 for no target VehicleHead
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     // Array of types if 0xFF then no type, flag (1<<7) as well
@@ -280,7 +280,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             WidgetIndex_t tab = widx::tab_build_new_trains;
             if (!tabMode)
             {
-                auto veh = EntityManager::get<Vehicles::VehicleHead>(vehicle);
+                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicle));
                 tab += static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             if (!tabMode)
             {
                 _buildTargetVehicle = vehicle;
-                auto veh = EntityManager::get<Vehicles::VehicleHead>(vehicle);
+                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicle));
                 window->current_tab = static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -340,7 +340,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             return window;
         }
-        auto veh = EntityManager::get<Vehicles::VehicleBase>(_buildTargetVehicle);
+        auto veh = EntityManager::get<Vehicles::VehicleBase>(EntityId(*_buildTargetVehicle));
         if (veh == nullptr)
         {
             return window;
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             if (w->current_tab != 1)
                 continue;
 
-            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(w->number);
+            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(EntityId(w->number));
             if (vehicle->owner != CompanyManager::getControllingId())
                 continue;
 
@@ -544,7 +544,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         Vehicles::VehicleBase* veh = nullptr;
         if (_buildTargetVehicle != -1)
         {
-            veh = EntityManager::get<Vehicles::VehicleBase>(_buildTargetVehicle);
+            veh = EntityManager::get<Vehicles::VehicleBase>(EntityId(*_buildTargetVehicle));
         }
 
         generateBuildableVehiclesArray(vehicleType, trackType, veh);
@@ -754,13 +754,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         GameCommands::setErrorTitle(StringIds::cant_build_pop_5_string_id);
         if (_buildTargetVehicle != -1)
         {
-            auto vehicle = EntityManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
+            auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
             args.push(vehicle->name);
             args.push(vehicle->ordinalNumber);
             GameCommands::setErrorTitle(StringIds::cant_add_pop_5_string_id_string_id);
         }
 
-        if (GameCommands::do_5(item, _buildTargetVehicle) == GameCommands::FAILURE)
+        if (GameCommands::do_5(item, EntityId(*_buildTargetVehicle)) == GameCommands::FAILURE)
         {
             return;
         }
@@ -915,7 +915,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             FormatArguments args{};
             if (_buildTargetVehicle != -1)
             {
-                auto vehicle = EntityManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
+                auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
                 args.push(vehicle->name);
                 args.push(vehicle->ordinalNumber);
                 bottomLeftMessage = StringIds::select_vehicle_to_add_to_string_id;
@@ -1047,7 +1047,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     FormatArguments args{};
                     if (_buildTargetVehicle != -1)
                     {
-                        auto vehicle = EntityManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
+                        auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
                         defaultMessage = StringIds::no_compatible_vehicles_available;
                         args.push(vehicle->name);
                         args.push(vehicle->ordinalNumber);

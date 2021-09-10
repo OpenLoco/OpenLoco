@@ -10,7 +10,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Vehicles
 {
     // 0x0047071A
-    static uint32_t orderSkip(uint16_t headId, uint8_t flags)
+    static uint32_t orderSkip(EntityId headId, uint8_t flags)
     {
         auto* head = EntityManager::get<Vehicles::VehicleHead>(headId);
         if (head == nullptr)
@@ -24,7 +24,7 @@ namespace OpenLoco::Vehicles
             return 0;
         }
 
-        Ui::WindowManager::sub_4B93A5(head->id);
+        Ui::WindowManager::sub_4B93A5(enumValue(head->id));
 
         OrderRingView orders(head->orderTableOffset, head->currentOrder);
         auto nextOrder = ++orders.begin();
@@ -34,6 +34,6 @@ namespace OpenLoco::Vehicles
 
     void orderSkip(registers& regs)
     {
-        regs.ebx = orderSkip(regs.di, regs.bl);
+        regs.ebx = orderSkip(EntityId(regs.di), regs.bl);
     }
 }

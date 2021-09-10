@@ -174,7 +174,7 @@ namespace OpenLoco::Ui
         union
         {
             coord_t mapX;
-            EntityId_t thingId;
+            EntityId thingId;
         };
         union
         {
@@ -194,7 +194,7 @@ namespace OpenLoco::Ui
             , rotation(rotation)
             , surfaceZ(surfaceZ){};
 
-        SavedView(EntityId_t thingId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
+        SavedView(EntityId thingId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
             : thingId(thingId)
             , flags(flags)
             , zoomLevel(zoomLevel)
@@ -384,7 +384,7 @@ namespace OpenLoco::Ui
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const Map::Pos3& loc);
         void viewportCentreTileAroundCursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
-        void viewportFocusOnEntity(uint16_t targetEntity);
+        void viewportFocusOnEntity(EntityId targetEntity);
         bool viewportIsFocusedOnEntity() const;
         void viewportUnfocusFromEntity();
         void viewportZoomSet(int8_t zoomLevel, bool toCursor);

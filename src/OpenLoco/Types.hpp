@@ -24,7 +24,10 @@ namespace OpenLoco
         null = std::numeric_limits<uint8_t>::max(),
     };
     using string_id = uint16_t;
-    using EntityId_t = uint16_t;
+    enum class EntityId : uint16_t
+    {
+        null = std::numeric_limits<uint16_t>::max(),
+    };
     using tile_coord_t = int16_t;
     enum class TownId : uint16_t
     {

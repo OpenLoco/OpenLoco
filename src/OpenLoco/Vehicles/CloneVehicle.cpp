@@ -9,9 +9,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static uint32_t cloneVehicle(uint16_t head, uint8_t flags)
+    static uint32_t cloneVehicle(EntityId head, uint8_t flags)
     {
-        static loco_global<uint16_t, 0x0113642A> _113642A;
+        static loco_global<EntityId, 0x0113642A> _113642A;
         Vehicles::Vehicle existingTrain(head);
         Vehicles::VehicleHead* newHead = nullptr;
 
@@ -21,7 +21,7 @@ namespace OpenLoco::Vehicles
             uint32_t totalCost = 0;
             for (auto& car : existingTrain.cars)
             {
-                auto cost = GameCommands::queryDo_5(car.front->object_id, -1);
+                auto cost = GameCommands::queryDo_5(car.front->object_id);
                 if (cost == GameCommands::FAILURE)
                 {
                     totalCost = GameCommands::FAILURE;
@@ -46,7 +46,7 @@ namespace OpenLoco::Vehicles
             uint32_t cost = 0;
             if (newHead == nullptr)
             {
-                cost = GameCommands::do_5(car.front->object_id, -1);
+                cost = GameCommands::do_5(car.front->object_id);
                 auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVeh == nullptr)
                 {
@@ -97,6 +97,6 @@ namespace OpenLoco::Vehicles
 
     void cloneVehicle(registers& regs)
     {
-        regs.ebx = cloneVehicle(regs.ax, regs.bl);
+        regs.ebx = cloneVehicle(EntityId(regs.ax), regs.bl);
     }
 }

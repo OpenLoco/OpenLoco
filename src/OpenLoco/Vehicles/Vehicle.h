@@ -210,8 +210,8 @@ namespace OpenLoco::Vehicles
         uint8_t getFlags38() const;
         uint8_t getTrackType() const;
         uint16_t getVar36() const;
-        EntityId_t getHead() const;
-        void setNextCar(const EntityId_t newNextCar);
+        EntityId getHead() const;
+        void setNextCar(const EntityId newNextCar);
 
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
@@ -251,7 +251,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::head;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId_t head; // 0x26
+        EntityId head; // 0x26
         uint32_t var_28;
         TrackAndDirection var_2C;
         uint16_t var_2E;
@@ -262,7 +262,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles orderId * max_num_routing_steps
         uint8_t var_38;
         uint8_t pad_39;         // 0x39
-        EntityId_t next_car_id; // 0x3A
+        EntityId next_car_id; // 0x3A
         uint32_t var_3C;        // 0x3C
         uint8_t pad_40[0x2];    // 0x40
         TransportMode mode;     // 0x42 field same in all vehicles
@@ -394,7 +394,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_1;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId_t head; // 0x26
+        EntityId head; // 0x26
         uint32_t var_28;
         TrackAndDirection var_2C;
         uint16_t var_2E;
@@ -405,7 +405,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;         // 0x39
-        EntityId_t next_car_id; // 0x3A
+        EntityId next_car_id; // 0x3A
         uint32_t var_3C;        // 0x3C
         uint8_t pad_40[0x2];    // 0x40
         TransportMode mode;     // 0x42 field same in all vehicles
@@ -426,7 +426,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_2;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId_t head; // 0x26
+        EntityId head; // 0x26
         uint32_t var_28;
         TrackAndDirection var_2C;
         uint16_t var_2E;
@@ -437,7 +437,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;              // 0x39
-        EntityId_t next_car_id;      // 0x3A
+        EntityId next_car_id;      // 0x3A
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
@@ -472,7 +472,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::body_continued;
         ColourScheme colour_scheme; // 0x24
-        EntityId_t head;            // 0x26
+        EntityId head;            // 0x26
         uint8_t pad_28[0x2C - 0x28];
         TrackAndDirection var_2C;
         uint16_t var_2E;
@@ -483,7 +483,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
-        EntityId_t next_car_id;     // 0x3A
+        EntityId next_car_id;     // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
         uint16_t object_id; // 0x40
         TransportMode mode; // 0x42
@@ -527,7 +527,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::bogie;
         ColourScheme colour_scheme; // 0x24
-        EntityId_t head;            // 0x26
+        EntityId head;            // 0x26
         uint8_t pad_28[0x2C - 0x28];
         TrackAndDirection var_2C;
         uint16_t var_2E;
@@ -538,7 +538,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
-        EntityId_t next_car_id;     // 0x3A
+        EntityId next_car_id;     // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
         uint16_t object_id; // 0x40
         TransportMode mode; // 0x42 field same in all vehicles
@@ -570,7 +570,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::tail;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId_t head; // 0x26
+        EntityId head; // 0x26
         uint32_t var_28;
         TrackAndDirection var_2C;
         uint16_t var_2E;
@@ -581,7 +581,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;              // 0x39
-        EntityId_t next_car_id;      // 0x3A
+        EntityId next_car_id;      // 0x3A
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
@@ -810,6 +810,6 @@ namespace OpenLoco::Vehicles
             : Vehicle(_head->id)
         {
         }
-        Vehicle(uint16_t _head);
+        Vehicle(EntityId _head);
     };
 }
