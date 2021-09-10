@@ -278,8 +278,8 @@ namespace OpenLoco::ObjectManager
         }
 
         const auto curObjPos = usedBufferSize;
-        auto [partialNewEntry, partialNewEntrySize] = createPartialNewEntry(&_installedObjectList[usedBufferSize], objHeader, filepath.filename());
-        usedBufferSize += partialNewEntrySize;
+        const auto partialNewEntry = createPartialNewEntry(&_installedObjectList[usedBufferSize], objHeader, filepath.filename());
+        usedBufferSize += partialNewEntry.second;
         _installedObjectCount++;
 
         _isPartialLoaded = true;
@@ -299,7 +299,7 @@ namespace OpenLoco::ObjectManager
         // Load full entry into temp buffer.
         // 0x009D1CC8
         std::byte newEntryBuffer[0x2000];
-        auto [newEntry, newEntrySize] = createNewEntry(newEntryBuffer, objHeader, filepath.filename());
+        const auto [newEntry, newEntrySize] = createNewEntry(newEntryBuffer, objHeader, filepath.filename());
 
         freeScenarioText();
 
@@ -422,7 +422,7 @@ namespace OpenLoco::ObjectManager
                 return false;
             }
             Utility::readData(stream, *_installedObjectList, header.fileSize);
-            if (stream.gcount() != header.fileSize)
+            if (stream.gcount() != static_cast<int32_t>(header.fileSize))
             {
                 return false;
             }

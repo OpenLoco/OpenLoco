@@ -334,6 +334,7 @@ namespace OpenLoco
         regs.eax = eax;
         regs.ebx = ebx;
         call(0x004BE621, regs);
+        exitCleanly();
     }
 
     // 0x004BE5EB
@@ -344,6 +345,7 @@ namespace OpenLoco
         regs.eax = errorCode;
         regs.bx = message;
         call(0x004BE5EB, regs);
+        exitCleanly();
     }
 
     // 0x004BE65E
