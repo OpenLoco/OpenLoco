@@ -155,6 +155,178 @@ namespace OpenLoco::ObjectManager
         return false;
     }
 
+    static void saveIndex(const IndexHeader& header)
+    {
+        std::ofstream stream;
+        const auto indexPath = Environment::getPathNoWarning(Environment::path_id::plugin1);
+        stream.open(indexPath, std::ios::out | std::ios::binary);
+        if (!stream.is_open())
+        {
+            return;
+        }
+        stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
+        stream.write(reinterpret_cast<const char*>(*_installedObjectList), header.fileSize);
+    }
+
+    static std::pair<ObjectIndexEntry, size_t> createPartialNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename)
+    {
+        ObjectIndexEntry entry{};
+        size_t newEntrySize = 0;
+
+        // Header
+        std::memcpy(&entryBuffer[newEntrySize], &objHeader, sizeof(objHeader));
+        entry._header = reinterpret_cast<ObjectHeader*>(&entryBuffer[newEntrySize]);
+        newEntrySize += sizeof(objHeader);
+
+        // Filename
+        std::strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), filename.u8string().c_str());
+        entry._filename = reinterpret_cast<char*>(&entryBuffer[newEntrySize]);
+        newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
+
+        // Header2 NULL
+        ObjectHeader2 objHeader2;
+        objHeader2.var_00 = std::numeric_limits<uint32_t>::max();
+        std::memcpy(&entryBuffer[newEntrySize], &objHeader2, sizeof(objHeader2));
+        newEntrySize += sizeof(objHeader2);
+
+        // Name NULL
+        entryBuffer[newEntrySize] = std::byte(0);
+        entry._name = reinterpret_cast<char*>(&entryBuffer[newEntrySize]);
+        newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
+
+        // Header3 NULL
+        ObjectHeader3 objHeader3{};
+        std::memcpy(&entryBuffer[newEntrySize], &objHeader3, sizeof(objHeader3));
+        newEntrySize += sizeof(objHeader3);
+
+        // ObjectList1
+        const uint8_t size1 = 0;
+        entryBuffer[newEntrySize++] = std::byte(size1);
+
+        // ObjectList2
+        const uint8_t size2 = 0;
+        entryBuffer[newEntrySize++] = std::byte(size2);
+
+        return std::make_pair(entry, newEntrySize);
+    }
+
+    static std::pair<ObjectIndexEntry, size_t> createNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename)
+    {
+        ObjectIndexEntry entry{};
+        size_t newEntrySize = 0;
+
+        // Header
+        std::memcpy(&entryBuffer[newEntrySize], &objHeader, sizeof(objHeader));
+        entry._header = reinterpret_cast<ObjectHeader*>(&entryBuffer[newEntrySize]);
+        newEntrySize += sizeof(objHeader);
+
+        // Filename
+        std::strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), filename.u8string().c_str());
+        entry._filename = reinterpret_cast<char*>(&entryBuffer[newEntrySize]);
+        newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
+
+        // Header2
+        ObjectHeader2 objHeader2;
+        objHeader2.var_00 = _decodedSize;
+        std::memcpy(&entryBuffer[newEntrySize], &objHeader2, sizeof(objHeader2));
+        newEntrySize += sizeof(objHeader2);
+
+        // Name
+        strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), StringManager::getString(0x2000));
+        entry._name = reinterpret_cast<char*>(&entryBuffer[newEntrySize]);
+        newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
+
+        // Header3
+        ObjectHeader3 objHeader3{};
+        objHeader3.var_00 = _numImages;
+        objHeader3.intelligence = _intelligence;
+        objHeader3.aggressiveness = _aggressiveness;
+        objHeader3.competitiveness = _competitiveness;
+        std::memcpy(&entryBuffer[newEntrySize], &objHeader3, sizeof(objHeader3));
+        newEntrySize += sizeof(objHeader3);
+
+        auto* ptr = &_112A17F[0];
+
+        // ObjectList1
+        const uint8_t size1 = uint8_t(*ptr++);
+        entryBuffer[newEntrySize++] = std::byte(size1);
+        for (auto n = 0; n < size1; n++)
+        {
+            std::memcpy(&entryBuffer[newEntrySize], ptr, sizeof(ObjectHeader));
+            newEntrySize += sizeof(ObjectHeader);
+            ptr += sizeof(ObjectHeader);
+        }
+
+        // ObjectList2
+        const uint8_t size2 = uint8_t(*ptr++);
+        entryBuffer[newEntrySize++] = std::byte(size2);
+        for (auto n = 0; n < size2; n++)
+        {
+            std::memcpy(&entryBuffer[newEntrySize], ptr, sizeof(ObjectHeader));
+            newEntrySize += sizeof(ObjectHeader);
+            ptr += sizeof(ObjectHeader);
+        }
+
+        return std::make_pair(entry, newEntrySize);
+    }
+
+    static void addObjectToIndex(const fs::path filepath, size_t& usedBufferSize)
+    {
+        ObjectHeader objHeader{};
+        {
+            std::ifstream stream;
+            stream.open(filepath, std::ios::in | std::ios::binary);
+            Utility::readData(stream, objHeader);
+            if (stream.gcount() != sizeof(objHeader))
+            {
+                return;
+            }
+        }
+
+        const auto curObjPos = usedBufferSize;
+        auto [partialNewEntry, partialNewEntrySize] = createPartialNewEntry(&_installedObjectList[usedBufferSize], objHeader, filepath.filename());
+        usedBufferSize += partialNewEntrySize;
+        _installedObjectCount++;
+
+        _isPartialLoaded = true;
+        _50D158 = _112A17F;
+        getScenarioText(objHeader);
+        _50D158 = reinterpret_cast<std::byte*>(-1);
+        _isPartialLoaded = false;
+        if (_installedObjectCount == 0)
+        {
+            return;
+        }
+        _installedObjectCount--;
+
+        // Rewind as it is only a partial object loaded
+        usedBufferSize = curObjPos;
+
+        // Load full entry into temp buffer.
+        // 0x009D1CC8
+        std::byte newEntryBuffer[0x2000];
+        auto [newEntry, newEntrySize] = createNewEntry(newEntryBuffer, objHeader, filepath.filename());
+
+        freeScenarioText();
+
+        auto* indexPtr = *_installedObjectList;
+        for (uint32_t i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&indexPtr);
+            if (strcmp(entry._name, newEntry._name) < 0)
+            {
+                break;
+            }
+        }
+
+        auto moveSize = usedBufferSize - (indexPtr - *_installedObjectList);
+        std::memmove(indexPtr + newEntrySize, indexPtr, moveSize);
+        std::memcpy(indexPtr, newEntryBuffer, newEntrySize);
+        usedBufferSize += newEntrySize;
+
+        _installedObjectCount++;
+    }
+
     // 0x0047118B
     static void createIndex(const ObjectFolderState& currentState)
     {
@@ -163,7 +335,6 @@ namespace OpenLoco::ObjectManager
         Ui::ProgressBar::begin(progressString);
         // 0x00112A14C -> 160
         IndexHeader header{};
-        // 0x0112A17C
         uint8_t progress = 0;
         reloadAll();
         if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
@@ -211,152 +382,37 @@ namespace OpenLoco::ObjectManager
                 }
             }
 
-            ObjectHeader objHeader{};
-            {
-                std::ifstream stream;
-                stream.open(file.path(), std::ios::in | std::ios::binary);
-                Utility::readData(stream, objHeader);
-                if (stream.gcount() != sizeof(objHeader))
-                {
-                    continue;
-                }
-                stream.close();
-            }
-            const auto curObjPos = usedBufferSize;
-            std::memcpy(&_installedObjectList[usedBufferSize], &objHeader, sizeof(objHeader));
-            usedBufferSize += sizeof(objHeader);
-            std::strcpy(reinterpret_cast<char*>(&_installedObjectList[usedBufferSize]), file.path().filename().u8string().c_str());
-            usedBufferSize += strlen(reinterpret_cast<char*>(&_installedObjectList[usedBufferSize])) + 1;
-            ObjectHeader2 objHeader2{};
-            objHeader2.var_00 = std::numeric_limits<uint32_t>::max();
-            std::memcpy(&_installedObjectList[usedBufferSize], &objHeader2, sizeof(objHeader2));
-            usedBufferSize += sizeof(objHeader2);
-            _installedObjectList[usedBufferSize] = std::byte(0);
-            usedBufferSize++;
-            ObjectHeader3 objHeader3{};
-            objHeader3.var_00 = 0;
-            std::memcpy(&_installedObjectList[usedBufferSize], &objHeader3, sizeof(objHeader3));
-            usedBufferSize += sizeof(objHeader3);
-            _installedObjectList[usedBufferSize] = std::byte(0);
-            usedBufferSize++;
-            _installedObjectList[usedBufferSize] = std::byte(0);
-            usedBufferSize++;
-            _installedObjectCount++;
-
-            _isPartialLoaded = true;
-            _50D158 = _112A17F;
-            getScenarioText(objHeader);
-            _50D158 = reinterpret_cast<std::byte*>(-1);
-            _isPartialLoaded = false;
-            if (_installedObjectList == 0)
-            {
-                continue;
-            }
-            _installedObjectCount--;
-
-            // Rewind as it is only a partial object loaded
-            usedBufferSize = curObjPos;
-
-            // Load full entry into temp buffer.
-            // 0x009D1CC8
-            std::byte newEntryBuffer[0x2000];
-            size_t newEntrySize = 0;
-            std::memcpy(&newEntryBuffer[newEntrySize], &objHeader, sizeof(objHeader));
-            newEntrySize += sizeof(objHeader);
-            std::strcpy(reinterpret_cast<char*>(&newEntryBuffer[newEntrySize]), file.path().filename().u8string().c_str());
-            newEntrySize += strlen(reinterpret_cast<char*>(&newEntryBuffer[newEntrySize])) + 1;
-            objHeader2.var_00 = _decodedSize;
-            std::memcpy(&newEntryBuffer[newEntrySize], &objHeader2, sizeof(objHeader2));
-            newEntrySize += sizeof(objHeader2);
-            char* newEntryName = reinterpret_cast<char*>(&newEntryBuffer[newEntrySize]);
-            strcpy(reinterpret_cast<char*>(&newEntryBuffer[newEntrySize]), StringManager::getString(0x2000));
-            newEntrySize += strlen(reinterpret_cast<char*>(&newEntryBuffer[newEntrySize])) + 1;
-            objHeader3.var_00 = _numImages;
-            objHeader3.intelligence = _intelligence;
-            objHeader3.aggressiveness = _aggressiveness;
-            objHeader3.competitiveness = _competitiveness;
-            std::memcpy(&newEntryBuffer[newEntrySize], &objHeader3, sizeof(objHeader3));
-            newEntrySize += sizeof(objHeader3);
-            auto* ptr = &_112A17F[0];
-            const uint8_t size1 = uint8_t(*ptr++);
-            newEntryBuffer[newEntrySize++] = std::byte(size1);
-            for (auto n = 0; n < size1; n++)
-            {
-                std::memcpy(&newEntryBuffer[newEntrySize], ptr, sizeof(ObjectHeader));
-                newEntrySize += sizeof(ObjectHeader);
-                ptr += sizeof(ObjectHeader);
-            }
-            const uint8_t size2 = uint8_t(*ptr++);
-            newEntryBuffer[newEntrySize++] = std::byte(size2);
-            for (auto n = 0; n < size2; n++)
-            {
-                std::memcpy(&newEntryBuffer[newEntrySize], ptr, sizeof(ObjectHeader));
-                newEntrySize += sizeof(ObjectHeader);
-                ptr += sizeof(ObjectHeader);
-            }
-
-            freeScenarioText();
-
-            auto* indexPtr = *_installedObjectList;
-            for (uint32_t i = 0; i < _installedObjectCount; i++)
-            {
-                auto entry = ObjectIndexEntry::read(&indexPtr);
-                if (strcmp(entry._name, newEntryName) < 0)
-                {
-                    break;
-                }
-            }
-
-            auto moveSize = usedBufferSize - (indexPtr - *_installedObjectList);
-            std::memmove(indexPtr + newEntrySize, indexPtr, moveSize);
-            std::memcpy(indexPtr, newEntryBuffer, newEntrySize);
-            usedBufferSize += newEntrySize;
-
-            _installedObjectCount++;
+            addObjectToIndex(file.path(), usedBufferSize);
         }
         reloadAll();
         header.fileSize = usedBufferSize;
         header.numObjects = _installedObjectCount;
         header.state = currentState;
 
-        std::ofstream stream;
-        const auto indexPath = Environment::getPathNoWarning(Environment::path_id::plugin1);
-        stream.open(indexPath, std::ios::out | std::ios::binary);
-        if (!stream.is_open())
-        {
-            return;
-        }
-        stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
-        stream.write(reinterpret_cast<const char*>(*_installedObjectList), usedBufferSize);
+        saveIndex(header);
 
         Ui::ProgressBar::end();
-        _customObjectsInIndex = hasCustomObjectsInIndex();
     }
 
-    // 0x00470F3C
-    void loadIndex()
+    static bool tryLoadIndex(const ObjectFolderState& currentState)
     {
-        // 0x00112A138 -> 144
-        const auto currentState = getCurrentObjectFolderState();
         const auto indexPath = Environment::getPathNoWarning(Environment::path_id::plugin1);
         if (!fs::exists(indexPath))
         {
-            createIndex(currentState);
-            return;
+            return false;
         }
         std::ifstream stream;
         stream.open(indexPath, std::ios::in | std::ios::binary);
         if (!stream.is_open())
         {
-            createIndex(currentState);
-            return;
+            return false;
         }
         // 0x00112A14C -> 160
         IndexHeader header{};
         Utility::readData(stream, header);
         if ((header.state != currentState) || (stream.gcount() != sizeof(header)))
         {
-            createIndex(currentState);
+            return false;
         }
         else
         {
@@ -373,13 +429,26 @@ namespace OpenLoco::ObjectManager
             Utility::readData(stream, *_installedObjectList, header.fileSize);
             if (stream.gcount() != header.fileSize)
             {
-                createIndex(currentState);
-                return;
+                return false;
             }
             _installedObjectCount = header.numObjects;
             reloadAll();
-            _customObjectsInIndex = hasCustomObjectsInIndex();
         }
+        return true;
+    }
+
+    // 0x00470F3C
+    void loadIndex()
+    {
+        // 0x00112A138 -> 144
+        const auto currentState = getCurrentObjectFolderState();
+
+        if (!tryLoadIndex(currentState))
+        {
+            createIndex(currentState);
+        }
+
+        _customObjectsInIndex = hasCustomObjectsInIndex();
     }
 
     ObjectHeader* getHeader(LoadedObjectIndex id)
