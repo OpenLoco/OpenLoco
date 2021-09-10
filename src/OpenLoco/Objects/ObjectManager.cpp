@@ -121,7 +121,7 @@ namespace OpenLoco::ObjectManager
     {
         ObjectFolderState currentState;
         const auto objectPath = Environment::getPathNoWarning(Environment::path_id::objects);
-        for (const auto& file : fs::directory_iterator(objectPath, std::filesystem::directory_options::skip_permission_denied))
+        for (const auto& file : fs::directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
         {
             if (!file.is_regular_file())
             {
@@ -247,25 +247,19 @@ namespace OpenLoco::ObjectManager
 
         auto* ptr = &_112A17F[0];
 
-        // ObjectList1
+        // ObjectList1 (required objects)
         const uint8_t size1 = uint8_t(*ptr++);
         entryBuffer[newEntrySize++] = std::byte(size1);
-        for (auto n = 0; n < size1; n++)
-        {
-            std::memcpy(&entryBuffer[newEntrySize], ptr, sizeof(ObjectHeader));
-            newEntrySize += sizeof(ObjectHeader);
-            ptr += sizeof(ObjectHeader);
-        }
+        std::memcpy(&entryBuffer[newEntrySize], ptr, sizeof(ObjectHeader) * size1);
+        newEntrySize += sizeof(ObjectHeader) * size1;
+        ptr += sizeof(ObjectHeader) * size1;
 
-        // ObjectList2
+        // ObjectList2 (also loads objects {used for category selection})
         const uint8_t size2 = uint8_t(*ptr++);
         entryBuffer[newEntrySize++] = std::byte(size2);
-        for (auto n = 0; n < size2; n++)
-        {
-            std::memcpy(&entryBuffer[newEntrySize], ptr, sizeof(ObjectHeader));
-            newEntrySize += sizeof(ObjectHeader);
-            ptr += sizeof(ObjectHeader);
-        }
+        std::memcpy(&entryBuffer[newEntrySize], ptr, sizeof(ObjectHeader) * size2);
+        newEntrySize += sizeof(ObjectHeader) * size2;
+        ptr += sizeof(ObjectHeader) * size2;
 
         return std::make_pair(entry, newEntrySize);
     }
@@ -346,11 +340,12 @@ namespace OpenLoco::ObjectManager
         if (_installedObjectList == nullptr)
         {
             _installedObjectList = reinterpret_cast<std::byte*>(-1);
-            // Throw some error 0x47175E
+            exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
+            return;
         }
         size_t usedBufferSize = 0;
         const auto objectPath = Environment::getPathNoWarning(Environment::path_id::objects);
-        for (const auto& file : fs::directory_iterator(objectPath, std::filesystem::directory_options::skip_permission_denied))
+        for (const auto& file : fs::directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
         {
             if (!file.is_regular_file())
             {
@@ -377,8 +372,8 @@ namespace OpenLoco::ObjectManager
                 _installedObjectList = static_cast<std::byte*>(realloc(*_installedObjectList, bufferSize));
                 if (_installedObjectList == nullptr)
                 {
-                    _installedObjectList = reinterpret_cast<std::byte*>(-1);
-                    // Throw some error 0x47175E
+                    exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
+                    return;
                 }
             }
 
@@ -423,8 +418,8 @@ namespace OpenLoco::ObjectManager
             _installedObjectList = static_cast<std::byte*>(malloc(header.fileSize));
             if (_installedObjectList == nullptr)
             {
-                _installedObjectList = reinterpret_cast<std::byte*>(-1);
-                // Throw some error 0x47175E
+                exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
+                return false;
             }
             Utility::readData(stream, *_installedObjectList, header.fileSize);
             if (stream.gcount() != header.fileSize)

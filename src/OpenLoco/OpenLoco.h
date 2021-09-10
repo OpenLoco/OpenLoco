@@ -66,5 +66,6 @@ namespace OpenLoco
     void main();
     void promptTickLoop(std::function<bool()> tickAction);
     [[noreturn]] void exitCleanly();
-    void exitWithError(OpenLoco::string_id message, uint32_t errorCode);
+    [[noreturn]] void exitWithError(OpenLoco::string_id message, uint32_t errorCode);
+    [[noreturn]] void exitWithError(string_id eax, string_id ebx);
 }

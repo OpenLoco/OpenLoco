@@ -60,6 +60,7 @@ namespace OpenLoco::StringIds
     constexpr string_id month_short_november = 51;
     constexpr string_id month_short_december = 52;
 
+    constexpr string_id unable_to_allocate_enough_memory = 55;
     constexpr string_id close_window_cross = 56;
     constexpr string_id chosen_name_in_use = 57;
     constexpr string_id too_many_names_in_use = 58;
