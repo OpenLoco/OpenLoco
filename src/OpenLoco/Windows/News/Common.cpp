@@ -63,55 +63,56 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         if (!isOld)
         {
-            NewsItemSubType messageSubTypes[31] = {
-                NewsItemSubType::advice,
-                NewsItemSubType::general,
-                NewsItemSubType::advice,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::advice,
-                NewsItemSubType::advice,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::advice,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::general,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::general,
-                NewsItemSubType::general,
-                NewsItemSubType::general,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompetitor,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompetitor,
+            // 0x004F8C22
+            NewsItemCriticality messageCriticalities[31] = {
+                NewsItemCriticality::advice,
+                NewsItemCriticality::general,
+                NewsItemCriticality::advice,
+                NewsItemCriticality::minorCompany,
+                NewsItemCriticality::minorCompany,
+                NewsItemCriticality::minorCompany,
+                NewsItemCriticality::minorCompany,
+                NewsItemCriticality::minorCompany,
+                NewsItemCriticality::minorCompany,
+                NewsItemCriticality::advice,
+                NewsItemCriticality::advice,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::advice,
+                NewsItemCriticality::minorCompany,
+                NewsItemCriticality::minorCompany,
+                NewsItemCriticality::general,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::general,
+                NewsItemCriticality::general,
+                NewsItemCriticality::general,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::majorCompetitor,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::majorCompany,
+                NewsItemCriticality::majorCompetitor,
             };
 
-            auto messageSubType = messageSubTypes[activeMessage];
+            auto messageSubType = messageCriticalities[enumValue(activeMessage)];
 
-            if (messageSubType == NewsItemSubType::majorCompany)
+            if (messageSubType == NewsItemCriticality::majorCompany)
             {
                 if (news->companyId != _playerCompany)
                 {
-                    messageSubType = NewsItemSubType::majorCompetitor;
+                    messageSubType = NewsItemCriticality::majorCompetitor;
                 }
             }
 
-            if (messageSubType == NewsItemSubType::minorCompany)
+            if (messageSubType == NewsItemCriticality::minorCompany)
             {
                 if (news->companyId != _playerCompany)
                 {
-                    messageSubType = NewsItemSubType::minorCompetitor;
+                    messageSubType = NewsItemCriticality::minorCompetitor;
                 }
             }
 
@@ -155,6 +156,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (news->companyId == CompanyId::null || news->companyId == _playerCompany)
             {
+                // 0x004F8C41
                 Audio::SoundId messageSounds[31] = {
                     Audio::SoundId::notification,
                     Audio::SoundId::newsAwww,
@@ -189,7 +191,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     Audio::SoundId::newsOooh
                 };
 
-                soundId = messageSounds[activeMessage];
+                soundId = messageSounds[enumValue(activeMessage)];
             }
 
             if (soundId != Audio::SoundId::null)
@@ -199,7 +201,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        if (_word_4F8BE4[activeMessage] & (1 << 1))
+        if (hasMessageTypeFlag(activeMessage, MessageTypeFlags::unk1))
         {
             uint32_t flags = WindowFlags::stick_to_front | WindowFlags::viewport_no_scrolling | WindowFlags::transparent | WindowFlags::no_background;
 

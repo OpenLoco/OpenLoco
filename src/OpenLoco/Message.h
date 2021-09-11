@@ -5,7 +5,7 @@
 
 namespace OpenLoco
 {
-    enum class MessageType
+    enum class MessageType : uint8_t
     {
         cantWaitForFullLoad = 0,
         industryClosingDown = 1,
@@ -26,7 +26,7 @@ namespace OpenLoco
         newSpeedRecord = 29,
     };
 
-    enum class NewsItemSubType : uint8_t
+    enum class NewsItemCriticality : uint8_t
     {
         majorCompany,
         majorCompetitor,
@@ -36,10 +36,40 @@ namespace OpenLoco
         advice,
     };
 
+    enum class NewsItemSubTypes : uint8_t
+    {
+        industry,
+        station,
+        town,
+        vehicle,
+        company,
+        unk5,
+        unk6,
+        vehicleTab = 7,
+        null = std::numeric_limits<uint8_t>::max()
+    };
+
+    namespace MessageTypeFlags
+    {
+        constexpr uint16_t unk0 = 1 << 0;
+        constexpr uint16_t unk1 = 1 << 1;
+        constexpr uint16_t unk2 = 1 << 2;
+        constexpr uint16_t unk3 = 1 << 3;
+        constexpr uint16_t unk5 = 1 << 5; // Never set
+    }
+
+    struct MessageItemType
+    {
+        NewsItemSubTypes type[3]; // 0x00
+    };
+
+    bool hasMessageTypeFlag(const MessageType type, const uint16_t flag);
+    const MessageItemType& getMessageCategories(const MessageType type);
+
 #pragma pack(push, 1)
     struct Message
     {
-        uint8_t type;            // 0x00
+        MessageType type;        // 0x00
         char messageString[198]; // 0x01
         uint8_t companyId;       // 0xC7
         uint16_t var_C8;

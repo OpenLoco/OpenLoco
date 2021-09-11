@@ -73,6 +73,7 @@
     <ClCompile Include="Map\WaveManager.cpp" />
     <ClCompile Include="Math\Trigonometry.cpp" />
     <ClCompile Include="Math\Vector.cpp" />
+    <ClCompile Include="Message.cpp" />
     <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="MultiPlayer.cpp" />
     <ClCompile Include="Objects\AirportObject.cpp" />
