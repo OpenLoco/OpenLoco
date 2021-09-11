@@ -63,56 +63,21 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         if (!isOld)
         {
-            // 0x004F8C22
-            NewsItemCriticality messageCriticalities[31] = {
-                NewsItemCriticality::advice,
-                NewsItemCriticality::general,
-                NewsItemCriticality::advice,
-                NewsItemCriticality::minorCompany,
-                NewsItemCriticality::minorCompany,
-                NewsItemCriticality::minorCompany,
-                NewsItemCriticality::minorCompany,
-                NewsItemCriticality::minorCompany,
-                NewsItemCriticality::minorCompany,
-                NewsItemCriticality::advice,
-                NewsItemCriticality::advice,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::advice,
-                NewsItemCriticality::minorCompany,
-                NewsItemCriticality::minorCompany,
-                NewsItemCriticality::general,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::general,
-                NewsItemCriticality::general,
-                NewsItemCriticality::general,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::majorCompetitor,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::majorCompany,
-                NewsItemCriticality::majorCompetitor,
-            };
+            auto messageSubType = getMessageCriticality(activeMessage);
 
-            auto messageSubType = messageCriticalities[enumValue(activeMessage)];
-
-            if (messageSubType == NewsItemCriticality::majorCompany)
+            if (messageSubType == MessageCriticality::majorCompany)
             {
                 if (news->companyId != _playerCompany)
                 {
-                    messageSubType = NewsItemCriticality::majorCompetitor;
+                    messageSubType = MessageCriticality::majorCompetitor;
                 }
             }
 
-            if (messageSubType == NewsItemCriticality::minorCompany)
+            if (messageSubType == MessageCriticality::minorCompany)
             {
                 if (news->companyId != _playerCompany)
                 {
-                    messageSubType = NewsItemCriticality::minorCompetitor;
+                    messageSubType = MessageCriticality::minorCompetitor;
                 }
             }
 
@@ -156,42 +121,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (news->companyId == CompanyId::null || news->companyId == _playerCompany)
             {
-                // 0x004F8C41
-                Audio::SoundId messageSounds[31] = {
-                    Audio::SoundId::notification,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::newsOooh,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::newsOooh,
-                    Audio::SoundId::newsOooh,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::newsOooh
-                };
-
-                soundId = messageSounds[enumValue(activeMessage)];
+                soundId = getMessageSound(activeMessage);
             }
 
             if (soundId != Audio::SoundId::null)

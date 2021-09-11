@@ -3,6 +3,11 @@
 #include "Types.hpp"
 #include <limits>
 
+namespace OpenLoco::Audio
+{
+    enum class SoundId : uint8_t;
+}
+
 namespace OpenLoco
 {
     enum class MessageType : uint8_t
@@ -26,7 +31,7 @@ namespace OpenLoco
         newSpeedRecord = 29,
     };
 
-    enum class NewsItemCriticality : uint8_t
+    enum class MessageCriticality : uint8_t
     {
         majorCompany,
         majorCompetitor,
@@ -36,7 +41,7 @@ namespace OpenLoco
         advice,
     };
 
-    enum class NewsItemSubTypes : uint8_t
+    enum class MessageItemArgumentType : uint8_t
     {
         industry,
         station,
@@ -60,11 +65,13 @@ namespace OpenLoco
 
     struct MessageItemType
     {
-        NewsItemSubTypes type[3]; // 0x00
+        MessageItemArgumentType type[3]; // 0x00
     };
 
     bool hasMessageTypeFlag(const MessageType type, const uint16_t flag);
-    const MessageItemType& getMessageCategories(const MessageType type);
+    const MessageItemType& getMessageItemArgumentType(const MessageType type);
+    MessageCriticality getMessageCriticality(const MessageType type);
+    Audio::SoundId getMessageSound(const MessageType type);
 
 #pragma pack(push, 1)
     struct Message

@@ -67,34 +67,34 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                                 break;
                         }
 
-                        NewsItemSubTypes itemType;
+                        MessageItemArgumentType itemType;
                         uint16_t itemId;
                         if (widgetIndex == Common::widx::viewport1Button)
                         {
-                            itemType = getMessageCategories(news->type).type[0];
+                            itemType = getMessageItemArgumentType(news->type).type[0];
                             itemId = news->item_id_1;
                         }
                         else
                         {
-                            itemType = getMessageCategories(news->type).type[1];
+                            itemType = getMessageItemArgumentType(news->type).type[1];
                             itemId = news->item_id_2;
                         }
 
                         switch (itemType)
                         {
-                            case NewsItemSubTypes::industry:
+                            case MessageItemArgumentType::industry:
                                 Ui::Windows::Industry::open(IndustryId(itemId));
                                 break;
 
-                            case NewsItemSubTypes::station:
+                            case MessageItemArgumentType::station:
                                 Ui::Windows::Station::open(StationId(itemId));
                                 break;
 
-                            case NewsItemSubTypes::town:
+                            case MessageItemArgumentType::town:
                                 Ui::Windows::Town::open(itemId);
                                 break;
 
-                            case NewsItemSubTypes::vehicle:
+                            case MessageItemArgumentType::vehicle:
                             {
                                 auto vehicle = EntityManager::get<Vehicles::VehicleBase>(EntityId(itemId));
 
@@ -102,15 +102,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                                 break;
                             }
 
-                            case NewsItemSubTypes::company:
+                            case MessageItemArgumentType::company:
                                 Ui::Windows::CompanyWindow::open(itemId);
                                 break;
 
-                            case NewsItemSubTypes::unk5:
-                            case NewsItemSubTypes::unk6:
+                            case MessageItemArgumentType::unk5:
+                            case MessageItemArgumentType::unk6:
                                 break;
 
-                            case NewsItemSubTypes::vehicleTab:
+                            case MessageItemArgumentType::vehicleTab:
                                 auto vehicleObj = ObjectManager::get<VehicleObject>(itemId);
                                 auto window = Ui::Windows::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1 << 31));
                                 window->row_hover = itemId;
@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        static SavedView getView(Window* self, Message* news, uint16_t itemId, NewsItemSubTypes itemType, bool* selectable)
+        static SavedView getView(Window* self, Message* news, uint16_t itemId, MessageItemArgumentType itemType, bool* selectable)
         {
             SavedView view;
             view.mapX = -1;
@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.thingId = EntityId::null;
             switch (itemType)
             {
-                case NewsItemSubTypes::industry:
+                case MessageItemArgumentType::industry:
                 {
                     auto industry = IndustryManager::get(IndustryId(itemId));
 
@@ -198,7 +198,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     break;
                 }
 
-                case NewsItemSubTypes::station:
+                case MessageItemArgumentType::station:
                 {
                     auto station = StationManager::get(StationId(itemId));
 
@@ -211,7 +211,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     break;
                 }
 
-                case NewsItemSubTypes::town:
+                case MessageItemArgumentType::town:
                 {
                     auto town = TownManager::get(TownId(itemId));
 
@@ -224,7 +224,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     break;
                 }
 
-                case NewsItemSubTypes::vehicle:
+                case MessageItemArgumentType::vehicle:
                 {
                     Vehicles::Vehicle train(EntityId{ itemId });
                     if (train.head->tile_x == -1)
@@ -244,13 +244,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     break;
                 }
 
-                case NewsItemSubTypes::company:
+                case MessageItemArgumentType::company:
                     view.zoomLevel = (ZoomLevel)-2;
                     self->invalidate();
                     *selectable = true;
                     break;
 
-                case NewsItemSubTypes::unk5:
+                case MessageItemArgumentType::unk5:
                     view.mapX = news->item_id_1; // possible union?
                     view.mapY = news->item_id_2;
                     view.surfaceZ = TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
@@ -259,10 +259,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     *selectable = true;
                     break;
 
-                case NewsItemSubTypes::unk6:
+                case MessageItemArgumentType::unk6:
                     break;
 
-                case NewsItemSubTypes::vehicleTab:
+                case MessageItemArgumentType::vehicleTab:
                     view.zoomLevel = (ZoomLevel)-3;
                     self->invalidate();
                     *selectable = true;
@@ -289,7 +289,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 if (hasMessageTypeFlag(news->type, MessageTypeFlags::unk2))
                 {
-                    auto itemType = getMessageCategories(news->type).type[0];
+                    auto itemType = getMessageItemArgumentType(news->type).type[0];
 
                     if (news->item_id_1 != 0xFFFF)
                     {
@@ -389,7 +389,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 if (hasMessageTypeFlag(news->type, MessageTypeFlags::unk3))
                 {
-                    auto itemType = getMessageCategories(news->type).type[1];
+                    auto itemType = getMessageItemArgumentType(news->type).type[1];
 
                     if (news->item_id_2 != 0xFFFF)
                     {
@@ -475,13 +475,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x0042A036
-        static void drawViewportString(Gfx::Context* context, uint16_t x, uint16_t y, uint16_t width, NewsItemSubTypes itemType, uint16_t itemIndex)
+        static void drawViewportString(Gfx::Context* context, uint16_t x, uint16_t y, uint16_t width, MessageItemArgumentType itemType, uint16_t itemIndex)
         {
             auto args = FormatArguments();
 
             switch (itemType)
             {
-                case NewsItemSubTypes::industry:
+                case MessageItemArgumentType::industry:
                 {
                     auto industry = IndustryManager::get(IndustryId(itemIndex));
                     args.push(industry->name);
@@ -489,7 +489,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     break;
                 }
 
-                case NewsItemSubTypes::station:
+                case MessageItemArgumentType::station:
                 {
                     auto station = StationManager::get(StationId(itemIndex));
                     args.push(station->name);
@@ -497,14 +497,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     break;
                 }
 
-                case NewsItemSubTypes::town:
+                case MessageItemArgumentType::town:
                 {
                     auto town = TownManager::get(TownId(itemIndex));
                     args.push(town->name);
                     break;
                 }
 
-                case NewsItemSubTypes::vehicle:
+                case MessageItemArgumentType::vehicle:
                 {
                     auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(itemIndex));
                     auto company = CompanyManager::get(vehicle->owner);
@@ -523,18 +523,18 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     break;
                 }
 
-                case NewsItemSubTypes::company:
+                case MessageItemArgumentType::company:
                 {
                     auto company = CompanyManager::get(itemIndex);
                     args.push(company->name);
                     break;
                 }
 
-                case NewsItemSubTypes::unk5:
-                case NewsItemSubTypes::unk6:
+                case MessageItemArgumentType::unk5:
+                case MessageItemArgumentType::unk6:
                     break;
 
-                case NewsItemSubTypes::vehicleTab:
+                case MessageItemArgumentType::vehicleTab:
                 {
                     auto vehicleObj = ObjectManager::get<VehicleObject>(itemIndex);
                     args.push(vehicleObj->name);
@@ -544,19 +544,19 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             switch (itemType)
             {
-                case NewsItemSubTypes::industry:
-                case NewsItemSubTypes::station:
-                case NewsItemSubTypes::town:
-                case NewsItemSubTypes::vehicle:
-                case NewsItemSubTypes::company:
-                case NewsItemSubTypes::vehicleTab:
+                case MessageItemArgumentType::industry:
+                case MessageItemArgumentType::station:
+                case MessageItemArgumentType::town:
+                case MessageItemArgumentType::vehicle:
+                case MessageItemArgumentType::company:
+                case MessageItemArgumentType::vehicleTab:
                 {
                     Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::black_tiny_font, &args);
                     break;
                 }
 
-                case NewsItemSubTypes::unk5:
-                case NewsItemSubTypes::unk6:
+                case MessageItemArgumentType::unk5:
+                case MessageItemArgumentType::unk6:
                     break;
             }
         }
@@ -783,7 +783,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     auto y = self->widgets[Common::widx::viewport1Button].bottom - 7 + self->y;
                     auto width = self->widgets[Common::widx::viewport1Button].width() - 1;
 
-                    drawViewportString(context, x, y, width, getMessageCategories(news->type).type[0], news->item_id_1);
+                    drawViewportString(context, x, y, width, getMessageItemArgumentType(news->type).type[0], news->item_id_1);
                 }
             }
             if (hasMessageTypeFlag(news->type, MessageTypeFlags::unk3))
@@ -795,7 +795,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     auto y = self->widgets[Common::widx::viewport2Button].bottom - 7 + self->y;
                     auto width = self->widgets[Common::widx::viewport2Button].width() - 1;
 
-                    drawViewportString(context, x, y, width, getMessageCategories(news->type).type[1], news->item_id_2);
+                    drawViewportString(context, x, y, width, getMessageItemArgumentType(news->type).type[1], news->item_id_2);
                 }
             }
         }
