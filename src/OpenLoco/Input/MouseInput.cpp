@@ -602,7 +602,9 @@ namespace OpenLoco::Input
         {
             unkFlags = 1 << 14; // left
         }
-        if (!Input::isToolActive(WindowType::construction, 11 /* Ui::Windows::Construction::Signal::widx::signal_direction */))
+
+        // If in construction mode with both directions selection (actually does not single direction but this is what is implied)
+        if (!Input::isToolActive(WindowType::construction, 0, 11 /* Ui::Windows::Construction::Signal::widx::signal_direction */))
         {
             if (signal->hasLeftSignal() && signal->hasRightSignal())
             {
