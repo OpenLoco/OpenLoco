@@ -3028,7 +3028,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     void buildAtCurrentPos(Window* self)
     {
-        if (self->current_tab == Common::widx::tab_construction - Common::widx::tab_construction)
+        if (self->current_tab != Common::widx::tab_construction - Common::widx::tab_construction)
+            return;
+
+        if (_constructionHover == 0)
             self->callOnMouseUp(widx::construct);
     }
 
