@@ -56,14 +56,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     if (_activeMessageIndex != MessageId::null)
                     {
                         auto news = MessageManager::get(_activeMessageIndex);
+                        const auto& mtd = getMessageTypeDescriptor(news->type);
                         if (widgetIndex == Common::widx::viewport1Button)
                         {
-                            if (!hasMessageTypeFlag(news->type, MessageTypeFlags::hasFirstItem))
+                            if (!mtd.hasFlag(MessageTypeFlags::hasFirstItem))
                                 break;
                         }
                         else
                         {
-                            if (!hasMessageTypeFlag(news->type, MessageTypeFlags::hasSecondItem))
+                            if (!mtd.hasFlag(MessageTypeFlags::hasSecondItem))
                                 break;
                         }
 
@@ -71,12 +72,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         uint16_t itemId;
                         if (widgetIndex == Common::widx::viewport1Button)
                         {
-                            itemType = getMessageItemArgumentType(news->type).type[0];
+                            itemType = mtd.argumentType.type[0];
                             itemId = news->item_id_1;
                         }
                         else
                         {
-                            itemType = getMessageItemArgumentType(news->type).type[1];
+                            itemType = mtd.argumentType.type[1];
                             itemId = news->item_id_2;
                         }
 
@@ -284,14 +285,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.zoomLevel = (ZoomLevel)-1;
             view.thingId = EntityId::null;
             auto news = MessageManager::get(_activeMessageIndex);
+            const auto& mtd = getMessageTypeDescriptor(news->type);
 
             bool selectable = false;
 
             if (_activeMessageIndex != MessageId::null)
             {
-                if (hasMessageTypeFlag(news->type, MessageTypeFlags::hasFirstItem))
+                if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
                 {
-                    auto itemType = getMessageItemArgumentType(news->type).type[0];
+                    auto itemType = mtd.argumentType.type[0];
 
                     if (news->item_id_1 != 0xFFFF)
                     {
@@ -338,7 +340,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 self->widgets[Common::widx::viewport1Button].left = 4;
                 self->widgets[Common::widx::viewport1Button].right = 355;
 
-                if (hasMessageTypeFlag(news->type, MessageTypeFlags::hasSecondItem))
+                if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
                 {
                     self->widgets[Common::widx::viewport1].left = 6;
                     self->widgets[Common::widx::viewport1].right = 173;
@@ -356,7 +358,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     uint16_t viewportHeight = 62;
                     Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
-                    if (hasMessageTypeFlag(news->type, MessageTypeFlags::unk1))
+                    if (mtd.hasFlag(MessageTypeFlags::unk1))
                     {
                         x = self->widgets[Common::widx::viewport1].left + self->x;
                         y = self->widgets[Common::widx::viewport1].top + self->y;
@@ -389,9 +391,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (_activeMessageIndex != MessageId::null)
             {
-                if (hasMessageTypeFlag(news->type, MessageTypeFlags::hasSecondItem))
+                if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
                 {
-                    auto itemType = getMessageItemArgumentType(news->type).type[1];
+                    auto itemType = mtd.argumentType.type[1];
 
                     if (news->item_id_2 != 0xFFFF)
                     {
@@ -448,7 +450,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     uint16_t viewportHeight = 62;
                     Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
-                    if (hasMessageTypeFlag(news->type, MessageTypeFlags::unk1))
+                    if (mtd.hasFlag(MessageTypeFlags::unk1))
                     {
                         x = self->widgets[Common::widx::viewport2].left + self->x;
                         y = self->widgets[Common::widx::viewport2].top + self->y;
@@ -576,8 +578,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             char* newsString = news->messageString;
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            const auto& mtd = getMessageTypeDescriptor(news->type);
 
-            if (!hasMessageTypeFlag(news->type, MessageTypeFlags::unk5))
+            if (!mtd.hasFlag(MessageTypeFlags::unk5))
             {
                 *buffer = ControlCodes::font_large;
                 buffer++;
@@ -608,9 +611,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429934
         static void drawMiddleNews(Window* self, Gfx::Context* context, Message* news)
         {
-            if (hasMessageTypeFlag(news->type, MessageTypeFlags::hasFirstItem))
+            const auto& mtd = getMessageTypeDescriptor(news->type);
+            if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
             {
-                if (hasMessageTypeFlag(news->type, MessageTypeFlags::unk1))
+                if (mtd.hasFlag(MessageTypeFlags::unk1))
                 {
                     if (news->item_id_1 != 0xFFFF)
                     {
@@ -624,9 +628,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            if (hasMessageTypeFlag(news->type, MessageTypeFlags::hasSecondItem))
+            if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
             {
-                if (hasMessageTypeFlag(news->type, MessageTypeFlags::unk1))
+                if (mtd.hasFlag(MessageTypeFlags::unk1))
                 {
                     if (news->item_id_2 != 0xFFFF)
                     {
@@ -656,8 +660,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             char* newsString = news->messageString;
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            const auto& mtd = getMessageTypeDescriptor(news->type);
 
-            if (!hasMessageTypeFlag(news->type, MessageTypeFlags::unk5))
+            if (!mtd.hasFlag(MessageTypeFlags::unk5))
             {
                 *buffer = ControlCodes::font_large;
                 buffer++;
@@ -718,10 +723,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             Gfx::drawStringCentredWrapped(*context, origin, 338, Colour::black, StringIds::buffer_2039);
 
             self->drawViewports(context);
-
-            if (hasMessageTypeFlag(news->type, MessageTypeFlags::hasFirstItem))
+            const auto& mtd = getMessageTypeDescriptor(news->type);
+            if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
             {
-                if (hasMessageTypeFlag(news->type, MessageTypeFlags::unk1))
+                if (mtd.hasFlag(MessageTypeFlags::unk1))
                 {
                     if (news->item_id_1 != 0xFFFF)
                     {
@@ -735,9 +740,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            if (hasMessageTypeFlag(news->type, MessageTypeFlags::hasSecondItem))
+            if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
             {
-                if (hasMessageTypeFlag(news->type, MessageTypeFlags::unk1))
+                if (mtd.hasFlag(MessageTypeFlags::unk1))
                 {
                     if (news->item_id_2 != 0xFFFF)
                     {
@@ -756,8 +761,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         static void draw(Ui::Window* self, Gfx::Context* context)
         {
             auto news = MessageManager::get(_activeMessageIndex);
+            const auto& mtd = getMessageTypeDescriptor(news->type);
 
-            if (hasMessageTypeFlag(news->type, MessageTypeFlags::unk1))
+            if (mtd.hasFlag(MessageTypeFlags::unk1))
             {
                 if (calcDate(news->date).year >= 1945)
                 {
@@ -778,7 +784,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 drawStationNews(self, context, news);
             }
 
-            if (hasMessageTypeFlag(news->type, MessageTypeFlags::hasFirstItem))
+            if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
             {
                 if (news->item_id_1 != 0xFFFF)
                 {
@@ -787,10 +793,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     auto y = self->widgets[Common::widx::viewport1Button].bottom - 7 + self->y;
                     auto width = self->widgets[Common::widx::viewport1Button].width() - 1;
 
-                    drawViewportString(context, x, y, width, getMessageItemArgumentType(news->type).type[0], news->item_id_1);
+                    drawViewportString(context, x, y, width, mtd.argumentType.type[0], news->item_id_1);
                 }
             }
-            if (hasMessageTypeFlag(news->type, MessageTypeFlags::hasSecondItem))
+            if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
             {
                 if (news->item_id_2 != 0xFFFF)
                 {
@@ -799,7 +805,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     auto y = self->widgets[Common::widx::viewport2Button].bottom - 7 + self->y;
                     auto width = self->widgets[Common::widx::viewport2Button].width() - 1;
 
-                    drawViewportString(context, x, y, width, getMessageItemArgumentType(news->type).type[1], news->item_id_2);
+                    drawViewportString(context, x, y, width, mtd.argumentType.type[1], news->item_id_2);
                 }
             }
         }

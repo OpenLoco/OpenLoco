@@ -59,11 +59,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         _activeMessageIndex = messageIndex;
 
-        auto activeMessage = news->type;
+        const auto& mtd = getMessageTypeDescriptor(news->type);
 
         if (!isOld)
         {
-            auto messageSubType = getMessageCriticality(activeMessage);
+            auto messageSubType = mtd.criticality;
 
             if (messageSubType == MessageCriticality::majorCompany)
             {
@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (news->companyId == CompanyId::null || news->companyId == _playerCompany)
             {
-                soundId = getMessageSound(activeMessage);
+                soundId = mtd.sound;
             }
 
             if (soundId != Audio::SoundId::null)
@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        if (hasMessageTypeFlag(activeMessage, MessageTypeFlags::unk1))
+        if (mtd.hasFlag(MessageTypeFlags::unk1))
         {
             uint32_t flags = WindowFlags::stick_to_front | WindowFlags::viewport_no_scrolling | WindowFlags::transparent | WindowFlags::no_background;
 

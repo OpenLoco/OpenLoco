@@ -68,10 +68,16 @@ namespace OpenLoco
         MessageItemArgumentType type[3]; // 0x00
     };
 
-    bool hasMessageTypeFlag(const MessageType type, const uint16_t flag);
-    const MessageItemType& getMessageItemArgumentType(const MessageType type);
-    MessageCriticality getMessageCriticality(const MessageType type);
-    Audio::SoundId getMessageSound(const MessageType type);
+    struct MessageTypeDescriptor
+    {
+        MessageCriticality criticality;
+        Audio::SoundId sound;
+        uint16_t flags;
+        MessageItemType argumentType;
+        constexpr bool hasFlag(uint16_t flag) const { return flags & flag; }
+    };
+
+    const MessageTypeDescriptor& getMessageTypeDescriptor(const MessageType type);
 
 #pragma pack(push, 1)
     struct Message
