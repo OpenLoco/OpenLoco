@@ -213,8 +213,8 @@ namespace OpenLoco::EntityManager
                 return;
             }
             insertToSpatialIndex(entity, newIndex);
-            entity.position = loc;
         }
+        entity.position = loc;
     }
 
     static EntityBase* createEntity(EntityId id, EntityListType list)
