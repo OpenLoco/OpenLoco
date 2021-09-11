@@ -63,17 +63,12 @@ namespace OpenLoco
         constexpr uint16_t unk5 = 1 << 5; // Never set
     }
 
-    struct MessageItemType
-    {
-        MessageItemArgumentType type[3]; // 0x00
-    };
-
     struct MessageTypeDescriptor
     {
         MessageCriticality criticality;
         Audio::SoundId sound;
         uint16_t flags;
-        MessageItemType argumentType;
+        MessageItemArgumentType argumentTypes[3];
         constexpr bool hasFlag(uint16_t flag) const { return flags & flag; }
     };
 

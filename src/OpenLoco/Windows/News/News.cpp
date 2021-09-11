@@ -72,12 +72,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         uint16_t itemId;
                         if (widgetIndex == Common::widx::viewport1Button)
                         {
-                            itemType = mtd.argumentType.type[0];
+                            itemType = mtd.argumentTypes[0];
                             itemId = news->item_id_1;
                         }
                         else
                         {
-                            itemType = mtd.argumentType.type[1];
+                            itemType = mtd.argumentTypes[1];
                             itemId = news->item_id_2;
                         }
 
@@ -293,7 +293,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
                 {
-                    auto itemType = mtd.argumentType.type[0];
+                    auto itemType = mtd.argumentTypes[0];
 
                     if (news->item_id_1 != 0xFFFF)
                     {
@@ -393,7 +393,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
                 {
-                    auto itemType = mtd.argumentType.type[1];
+                    auto itemType = mtd.argumentTypes[1];
 
                     if (news->item_id_2 != 0xFFFF)
                     {
@@ -793,7 +793,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     auto y = self->widgets[Common::widx::viewport1Button].bottom - 7 + self->y;
                     auto width = self->widgets[Common::widx::viewport1Button].width() - 1;
 
-                    drawViewportString(context, x, y, width, mtd.argumentType.type[0], news->item_id_1);
+                    drawViewportString(context, x, y, width, mtd.argumentTypes[0], news->item_id_1);
                 }
             }
             if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
@@ -805,7 +805,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     auto y = self->widgets[Common::widx::viewport2Button].bottom - 7 + self->y;
                     auto width = self->widgets[Common::widx::viewport2Button].width() - 1;
 
-                    drawViewportString(context, x, y, width, mtd.argumentType.type[1], news->item_id_2);
+                    drawViewportString(context, x, y, width, mtd.argumentTypes[1], news->item_id_2);
                 }
             }
         }
