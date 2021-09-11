@@ -11,7 +11,7 @@ namespace OpenLoco::Vehicles
     struct VehicleCommon : VehicleBase
     {
         uint8_t pad_24[0x24 - 0x22];
-        EntityId head; // 0x26
+        EntityId head;   // 0x26
         uint16_t var_28; // 0x28
         uint8_t pad_2A[0x2C - 0x2A];
         uint16_t var_2C;     // 0x2C

@@ -325,10 +325,10 @@ namespace OpenLoco::GameCommands
         registers regs;
         regs.bl = Flags::apply;
         regs.cx = enumValue(head); // vehicle head id
-        regs.ax = i;    // [ 0, 1, 2]
-        regs.edx = edx; // part of name buffer
-        regs.ebp = ebp; // part of name buffer
-        regs.edi = edi; // part of name buffer
+        regs.ax = i;               // [ 0, 1, 2]
+        regs.edx = edx;            // part of name buffer
+        regs.ebp = ebp;            // part of name buffer
+        regs.edi = edi;            // part of name buffer
         doCommand(GameCommand::vehicleRename, regs);
     }
 

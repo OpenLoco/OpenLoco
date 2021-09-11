@@ -35,7 +35,7 @@ namespace OpenLoco::Vehicles
     constexpr auto num_vehicle_components_in_base = 4;          // head unk_1 unk_2 tail
     constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
     constexpr uint16_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
-    constexpr uint16_t routingNull = -1; // Indicates that this array is allocated to a vehicle but no station has been set.
+    constexpr uint16_t routingNull = -1;                        // Indicates that this array is allocated to a vehicle but no station has been set.
 
     static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
@@ -50,9 +50,9 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136258> _backupZ;
     static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;                                  // total used length of _987C5C
+    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;                                // total used length of _987C5C
     static loco_global<uint16_t[max_num_vehicles][max_num_routing_steps], 0x0096885C> _96885C; // Likely routing related
-    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;                                 // ?orders? ?routing related?
+    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;                               // ?orders? ?routing related?
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()

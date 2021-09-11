@@ -49,10 +49,10 @@ namespace OpenLoco
     private:
         uint8_t type; // Use type specific getters/setters as this depends on base_type
     public:
-        EntityId nextQuadrantId; // 0x02
-        EntityId next_thing_id;  // 0x04
-        EntityId llPreviousId;   // 0x06
-        uint8_t linkedListOffset;  // 0x8
+        EntityId nextQuadrantId;  // 0x02
+        EntityId next_thing_id;   // 0x04
+        EntityId llPreviousId;    // 0x06
+        uint8_t linkedListOffset; // 0x8
         uint8_t var_09;
         EntityId id; // 0xA
         uint16_t var_0C;
