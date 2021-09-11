@@ -1,7 +1,9 @@
 21.09+ (???)
 ------------------------------------------------------------------------
 - Fix: [#1161] Stuttering vehicle movement due to incorrect vehicle positions.
-- Fix: [#1162] Incorrect signal side placement and cursor hot points.
+- Fix: [#1162] Signal side placement is inverted.
+- Fix: [#1162] Single side signal removal incorrectly removing both signals.
+- Fix: [#1162] Cursor hot spots are incorrect for some cursors.
 
 21.09 (2021-09-11)
 ------------------------------------------------------------------------
