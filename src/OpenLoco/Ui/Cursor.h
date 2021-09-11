@@ -113,9 +113,5 @@ namespace OpenLoco::Ui
                 curPixel++;
             }
         }
-
-        // Set the final bytes.
-        this->data[curPixel] = dataByte;
-        this->mask[curPixel] = maskByte;
     }
 }
