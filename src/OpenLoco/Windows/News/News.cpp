@@ -108,6 +108,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                             case MessageItemArgumentType::location:
                             case MessageItemArgumentType::unk6:
+                            case MessageItemArgumentType::null:
                                 break;
 
                             case MessageItemArgumentType::vehicleTab:
@@ -260,6 +261,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     break;
 
                 case MessageItemArgumentType::unk6:
+                case MessageItemArgumentType::null:
                     break;
 
                 case MessageItemArgumentType::vehicleTab:
@@ -532,6 +534,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case MessageItemArgumentType::location:
                 case MessageItemArgumentType::unk6:
+                case MessageItemArgumentType::null:
                     break;
 
                 case MessageItemArgumentType::vehicleTab:
@@ -557,6 +560,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case MessageItemArgumentType::location:
                 case MessageItemArgumentType::unk6:
+                case MessageItemArgumentType::null:
                     break;
             }
         }
