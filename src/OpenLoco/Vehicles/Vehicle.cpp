@@ -11,7 +11,7 @@ namespace OpenLoco::Vehicles
     struct VehicleCommon : VehicleBase
     {
         uint8_t pad_24[0x24 - 0x22];
-        EntityId_t head; // 0x26
+        EntityId head;   // 0x26
         uint16_t var_28; // 0x28
         uint8_t pad_2A[0x2C - 0x2A];
         uint16_t var_2C;     // 0x2C
@@ -23,7 +23,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;      // 0x38
         uint8_t pad_39;
-        EntityId_t next_car_id; // 0x3A
+        EntityId next_car_id; // 0x3A
         uint8_t pad_3C[0x42 - 0x3C];
         TransportMode mode; // 0x42 field same in all vehicles
     };
@@ -65,13 +65,13 @@ namespace OpenLoco::Vehicles
         return veh->var_36;
     }
 
-    EntityId_t VehicleBase::getHead() const
+    EntityId VehicleBase::getHead() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->head;
     }
 
-    void VehicleBase::setNextCar(const EntityId_t newNextCar)
+    void VehicleBase::setNextCar(const EntityId newNextCar)
     {
         auto* veh = reinterpret_cast<VehicleCommon*>(this);
         veh->next_car_id = newNextCar;
@@ -124,7 +124,7 @@ namespace OpenLoco::Vehicles
         component = body->nextVehicleComponent();
     }
 
-    Vehicle::Vehicle(uint16_t _head)
+    Vehicle::Vehicle(EntityId _head)
     {
         auto component = EntityManager::get<VehicleBase>(_head);
         if (component == nullptr)

@@ -24,23 +24,23 @@ namespace OpenLoco::EntityManager
     void reset();
 
     template<typename T>
-    T* get(EntityId_t id);
+    T* get(EntityId id);
 
     template<>
-    EntityBase* get(EntityId_t id);
+    EntityBase* get(EntityId id);
 
     template<typename T>
-    T* get(EntityId_t id)
+    T* get(EntityId id)
     {
         return static_cast<T*>(get<EntityBase>(id));
     }
 
-    EntityId_t firstId(EntityListType list);
+    EntityId firstId(EntityListType list);
 
     template<typename T>
     T* first();
 
-    EntityId_t firstQuadrantId(const Map::Pos2& loc);
+    EntityId firstQuadrantId(const Map::Pos2& loc);
     void resetSpatialIndex();
     void updateSpatialIndex();
     void moveSpatialEntry(EntityBase& entity, const Map::Pos2& loc);
@@ -58,15 +58,15 @@ namespace OpenLoco::EntityManager
     bool checkNumFreeEntities(const size_t numNewEntities);
     void zeroUnused();
 
-    template<typename TEntityType, EntityId_t EntityBase::*nextList>
+    template<typename TEntityType, EntityId EntityBase::*nextList>
     class ListIterator
     {
     private:
         TEntityType* entity = nullptr;
-        EntityId_t nextEntityId = EntityId::null;
+        EntityId nextEntityId = EntityId::null;
 
     public:
-        ListIterator(const uint16_t _headId)
+        ListIterator(const EntityId _headId)
             : nextEntityId(_headId)
         {
             ++(*this);
@@ -116,7 +116,7 @@ namespace OpenLoco::EntityManager
     class EntityList
     {
     private:
-        uint16_t firstId = EntityId::null;
+        EntityId firstId = EntityId::null;
 
     public:
         EntityList()
@@ -139,7 +139,7 @@ namespace OpenLoco::EntityManager
     class EntityTileList
     {
     private:
-        uint16_t firstId = EntityId::null;
+        EntityId firstId = EntityId::null;
         using Iterator = ListIterator<EntityBase, &EntityBase::nextQuadrantId>;
 
     public:

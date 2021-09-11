@@ -15,7 +15,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::EntityManager
 {
-    loco_global<EntityId_t[0x40001], 0x01025A8C> _entitySpatialIndex;
+    loco_global<EntityId[0x40001], 0x01025A8C> _entitySpatialIndex;
     loco_global<uint32_t, 0x01025A88> _entitySpatialCount;
     constexpr size_t _entitySpatialIndexNull = 0x40000;
 
@@ -35,23 +35,23 @@ namespace OpenLoco::EntityManager
 
         // Remake null entities (size maxNormalEntities)
         EntityBase* previous = nullptr;
-        EntityId_t id = 0;
+        uint16_t id = 0;
         for (; id < Limits::maxNormalEntities; ++id)
         {
             auto& ent = rawEntities()[id];
             ent.base_type = EntityBaseType::null;
-            ent.id = id;
+            ent.id = EntityId(id);
             ent.next_thing_id = EntityId::null;
             ent.linkedListOffset = static_cast<uint8_t>(EntityListType::null) * 2;
             if (previous == nullptr)
             {
                 ent.llPreviousId = EntityId::null;
-                rawListHeads()[static_cast<uint8_t>(EntityListType::null)] = id;
+                rawListHeads()[static_cast<uint8_t>(EntityListType::null)] = EntityId(id);
             }
             else
             {
                 ent.llPreviousId = previous->id;
-                previous->next_thing_id = id;
+                previous->next_thing_id = EntityId(id);
             }
             previous = &ent;
         }
@@ -63,18 +63,18 @@ namespace OpenLoco::EntityManager
         {
             auto& ent = rawEntities()[id];
             ent.base_type = EntityBaseType::null;
-            ent.id = id;
+            ent.id = EntityId(id);
             ent.next_thing_id = EntityId::null;
             ent.linkedListOffset = static_cast<uint8_t>(EntityListType::nullMoney) * 2;
             if (previous == nullptr)
             {
                 ent.llPreviousId = EntityId::null;
-                rawListHeads()[static_cast<uint8_t>(EntityListType::nullMoney)] = id;
+                rawListHeads()[static_cast<uint8_t>(EntityListType::nullMoney)] = EntityId(id);
             }
             else
             {
                 ent.llPreviousId = previous->id;
-                previous->next_thing_id = id;
+                previous->next_thing_id = EntityId(id);
             }
             previous = &ent;
         }
@@ -84,7 +84,7 @@ namespace OpenLoco::EntityManager
         EntityTweener::get().reset();
     }
 
-    EntityId_t firstId(EntityListType list)
+    EntityId firstId(EntityListType list)
     {
         return rawListHeads()[(size_t)list];
     }
@@ -101,12 +101,12 @@ namespace OpenLoco::EntityManager
     }
 
     template<>
-    EntityBase* get(EntityId_t id)
+    EntityBase* get(EntityId id)
     {
         EntityBase* result = nullptr;
-        if (id < Limits::maxEntities)
+        if (enumValue(id) < Limits::maxEntities)
         {
-            return &rawEntities()[id];
+            return &rawEntities()[enumValue(id)];
         }
         return result;
     }
@@ -129,7 +129,7 @@ namespace OpenLoco::EntityManager
         return index;
     }
 
-    EntityId_t firstQuadrantId(const Map::Pos2& loc)
+    EntityId firstQuadrantId(const Map::Pos2& loc)
     {
         auto index = getSpatialIndexOffset(loc);
         return _entitySpatialIndex[index];
@@ -175,7 +175,7 @@ namespace OpenLoco::EntityManager
     {
         auto* quadId = &_entitySpatialIndex[index];
         _entitySpatialCount = 0;
-        while (*quadId < Limits::maxEntities)
+        while (enumValue(*quadId) < Limits::maxEntities)
         {
             auto* quadEnt = get<EntityBase>(*quadId);
             if (quadEnt == &entity)
@@ -217,7 +217,7 @@ namespace OpenLoco::EntityManager
         }
     }
 
-    static EntityBase* createEntity(EntityId_t id, EntityListType list)
+    static EntityBase* createEntity(EntityId id, EntityListType list)
     {
         auto* newEntity = get<EntityBase>(id);
         if (newEntity == nullptr)
@@ -285,7 +285,7 @@ namespace OpenLoco::EntityManager
     {
         EntityTweener::get().removeEntity(entity);
 
-        auto list = entity->id < 19800 ? EntityListType::null : EntityListType::nullMoney;
+        auto list = enumValue(entity->id) < 19800 ? EntityListType::null : EntityListType::nullMoney;
         moveEntityToList(entity, list);
         StringManager::emptyUserString(entity->name);
         entity->base_type = EntityBaseType::null;

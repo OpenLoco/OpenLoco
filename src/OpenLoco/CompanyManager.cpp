@@ -319,7 +319,7 @@ namespace OpenLoco::CompanyManager
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(w->number);
+            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(EntityId(w->number));
             if (vehicle->position.x == Location::null)
                 continue;
 

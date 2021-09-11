@@ -34,7 +34,8 @@ namespace OpenLoco::Vehicles
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
     constexpr auto num_vehicle_components_in_base = 4;          // head unk_1 unk_2 tail
     constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
-    constexpr EntityId_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
+    constexpr uint16_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
+    constexpr uint16_t routingNull = -1;                        // Indicates that this array is allocated to a vehicle but no station has been set.
 
     static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
@@ -47,11 +48,11 @@ namespace OpenLoco::Vehicles
     static loco_global<int16_t, 0x01136250> _backupX;
     static loco_global<int16_t, 0x01136254> _backupY;
     static loco_global<uint8_t, 0x01136258> _backupZ;
-    static loco_global<uint16_t, 0x0113642A> _113642A; // used by build window and others
+    static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;                                  // total used length of _987C5C
-    static loco_global<EntityId_t[max_num_vehicles][max_num_routing_steps], 0x0096885C> _96885C; // Likely routing related
-    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;                                 // ?orders? ?routing related?
+    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;                                // total used length of _987C5C
+    static loco_global<uint16_t[max_num_vehicles][max_num_routing_steps], 0x0096885C> _96885C; // Likely routing related
+    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;                               // ?orders? ?routing related?
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
@@ -88,7 +89,7 @@ namespace OpenLoco::Vehicles
         for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
-            if (id == EntityId::null)
+            if (id == routingNull)
             {
                 return true;
             }
@@ -127,7 +128,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE8F1, 0x004AEA9E
-    static VehicleBogie* createBogie(const EntityId_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createBogie(const EntityId head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createVehicleThing<VehicleBogie>();
         newBogie->owner = _updating_company_id;
@@ -166,7 +167,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x4AE8F1
-    static VehicleBogie* createFirstBogie(const EntityId_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createFirstBogie(const EntityId head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         if (newBogie == nullptr) // Can never happen
@@ -225,7 +226,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AEA9E
-    static VehicleBogie* createSecondBogie(const EntityId_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createSecondBogie(const EntityId head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         if (newBogie == nullptr) // Can never happen
@@ -244,7 +245,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AEA9E
-    static VehicleBody* createBody(const EntityId_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBody* createBody(const EntityId head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBody = createVehicleThing<VehicleBody>();
         // TODO: move this into the create function somehow
@@ -407,7 +408,7 @@ namespace OpenLoco::Vehicles
         for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
-            if (id == EntityId::null)
+            if (id == routingNull)
             {
                 for (auto j = 0; j < max_num_routing_steps; ++j)
                 {
@@ -494,7 +495,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE40E
-    static Vehicle1* createVehicle1(const EntityId_t head, VehicleBase* const lastVeh)
+    static Vehicle1* createVehicle1(const EntityId head, VehicleBase* const lastVeh)
     {
         auto* const newVeh1 = createVehicleThing<Vehicle1>();
         newVeh1->owner = _updating_company_id;
@@ -525,7 +526,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE4A0
-    static Vehicle2* createVehicle2(const EntityId_t head, VehicleBase* const lastVeh)
+    static Vehicle2* createVehicle2(const EntityId head, VehicleBase* const lastVeh)
     {
         auto* const newVeh2 = createVehicleThing<Vehicle2>();
         newVeh2->owner = _updating_company_id;
@@ -562,7 +563,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE54E
-    static VehicleTail* createVehicleTail(const EntityId_t head, VehicleBase* const lastVeh)
+    static VehicleTail* createVehicleTail(const EntityId head, VehicleBase* const lastVeh)
     {
         auto* const newTail = createVehicleThing<VehicleTail>();
         newTail->owner = _updating_company_id;
@@ -659,7 +660,7 @@ namespace OpenLoco::Vehicles
         uint16_t baseOrderId = (orderId & ~(0x3F)) / max_num_routing_steps;
         for (auto i = 0; i < max_num_routing_steps; ++i)
         {
-            _96885C[baseOrderId][i] = EntityId::null;
+            _96885C[baseOrderId][i] = routingNull;
         }
     }
 
@@ -687,11 +688,11 @@ namespace OpenLoco::Vehicles
 
     // 0x0042851C
     // Delete related news items??
-    static void sub_42851C(const EntityId_t id, const uint8_t type)
+    static void sub_42851C(const EntityId id, const uint8_t type)
     {
         registers regs{};
         regs.al = type;
-        regs.dx = id;
+        regs.dx = enumValue(id);
         call(0x0042851C, regs);
     }
 
@@ -773,7 +774,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE5FF
-    static uint32_t addCarToVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
+    static uint32_t addCarToVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId vehicleThingId)
     {
         Vehicle train(vehicleThingId);
         GameCommands::setPosition(train.veh2->position);
@@ -840,11 +841,11 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE5E4
-    static uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
+    static uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId vehicleThingId)
     {
         GameCommands::setExpenditureType(ExpenditureType::VehiclePurchases);
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
-        if (vehicleThingId == (uint16_t)-1)
+        if (vehicleThingId == EntityId::null)
         {
             return createNewVehicle(flags, vehicleTypeId);
         }
@@ -856,6 +857,6 @@ namespace OpenLoco::Vehicles
 
     void create(registers& regs)
     {
-        regs.ebx = create(regs.bl, regs.dx, regs.di);
+        regs.ebx = create(regs.bl, regs.dx, EntityId(regs.di));
     }
 }

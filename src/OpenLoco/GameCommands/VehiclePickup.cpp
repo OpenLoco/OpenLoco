@@ -20,7 +20,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004B0826
-    static uint32_t vehiclePickup(const uint8_t flags, EntityId_t headId)
+    static uint32_t vehiclePickup(const uint8_t flags, EntityId headId)
     {
         GameCommands::setExpenditureType(ExpenditureType::TrainRunningCosts);
 
@@ -67,6 +67,6 @@ namespace OpenLoco::GameCommands
 
     void vehiclePickup(registers& regs)
     {
-        regs.ebx = vehiclePickup(regs.bl, regs.di);
+        regs.ebx = vehiclePickup(regs.bl, EntityId(regs.di));
     }
 }

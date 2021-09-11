@@ -264,7 +264,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1D92
     static void updateVehicleList(Window* self)
     {
-        int16_t insertId = -1;
+        EntityId insertId = EntityId::null;
 
         for (auto vehicle : EntityManager::VehicleList())
         {
@@ -283,7 +283,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
                 continue;
 
-            if (insertId == -1)
+            if (insertId == EntityId::null)
             {
                 insertId = vehicle->id;
                 continue;
@@ -297,13 +297,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
         }
 
-        if (insertId != -1)
+        if (insertId != EntityId::null)
         {
             auto vehicle = EntityManager::get<VehicleHead>(insertId);
             vehicle->var_0C |= Vehicles::Flags0C::sorted;
 
-            if (vehicle->id != self->row_info[self->row_count])
-                self->row_info[self->row_count] = vehicle->id;
+            if (vehicle->id != EntityId(self->row_info[self->row_count]))
+                self->row_info[self->row_count] = enumValue(vehicle->id);
 
             self->row_count++;
 
@@ -710,10 +710,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto yPos = 0;
         for (auto i = 0; i < self.var_83C; i++)
         {
-            auto vehicleId = self.row_info[i];
+            const auto vehicleId = EntityId(self.row_info[i]);
 
             // Item not in rendering context, or no vehicle available for this slot?
-            if (yPos + self.row_height < context.y || yPos >= context.y + context.height + self.row_height || vehicleId == -1)
+            if (yPos + self.row_height < context.y || yPos >= context.y + context.height + self.row_height || vehicleId == EntityId::null)
             {
                 yPos += self.row_height;
                 continue;
@@ -722,7 +722,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto head = EntityManager::get<VehicleHead>(vehicleId);
 
             // Highlight selection.
-            if (head->id == self.row_hover)
+            if (head->id == EntityId(self.row_hover))
                 Gfx::drawRect(context, 0, yPos, self.width, self.row_height, Colour::getShade(self.getColour(WindowColour::secondary), 0));
 
             // Draw vehicle at the bottom of the row.
@@ -1057,7 +1057,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         char* buffer = StringManager::formatString(tooltipBuffer, StringIds::vehicle_list_tooltip_load);
 
         // Append load to buffer.
-        auto head = EntityManager::get<VehicleHead>(self->var_85C);
+        auto head = EntityManager::get<VehicleHead>(EntityId(self->var_85C));
         buffer = head->generateCargoTotalString(buffer);
 
         // Figure out what stations the vehicle stops at.
@@ -1090,8 +1090,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (currentRow >= self->var_83C)
             return;
 
-        int16_t currentVehicleId = self->row_info[currentRow];
-        if (currentVehicleId == -1)
+        EntityId currentVehicleId = EntityId(self->row_info[currentRow]);
+        if (currentVehicleId == EntityId::null)
             return;
 
         auto head = EntityManager::get<VehicleHead>(currentVehicleId);

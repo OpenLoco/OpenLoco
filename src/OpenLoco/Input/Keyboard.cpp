@@ -85,14 +85,14 @@ namespace OpenLoco::Input
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto t = EntityManager::get<Vehicles::VehicleBase>(w->number);
+            auto t = EntityManager::get<Vehicles::VehicleBase>(EntityId(w->number));
             if (t->owner != CompanyManager::getControllingId())
                 continue;
 
             if (t->getTransportMode() != TransportMode::rail)
                 continue;
 
-            GameCommands::do_77(w->number);
+            GameCommands::do_77(EntityId(w->number));
             Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
 
             return;

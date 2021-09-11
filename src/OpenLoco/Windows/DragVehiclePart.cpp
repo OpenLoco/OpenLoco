@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
 
     // TODO: make vehicles versions of these call into this global, ?make thing_id instead?
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
-    static loco_global<EntityId_t, 0x01136156> _dragVehicleHead;
+    static loco_global<EntityId, 0x01136156> _dragVehicleHead;
 
     static void initEvents();
 
@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         WindowManager::close(WindowType::dragVehiclePart);
         _dragCarComponent = car.front;
         _dragVehicleHead = car.front->head;
-        WindowManager::invalidate(WindowType::vehicle, car.front->head);
+        WindowManager::invalidate(WindowType::vehicle, enumValue(car.front->head));
 
         initEvents();
         uint16_t width = Vehicle::Common::sub_4B743B(1, 0, 0, 0, car.front, nullptr);
@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         Vehicle::Details::scrollDragEnd(Input::getScrollLastLocation());
         WindowManager::close(&self);
         _dragCarComponent = nullptr;
-        WindowManager::invalidate(WindowType::vehicle, _dragVehicleHead);
+        WindowManager::invalidate(WindowType::vehicle, enumValue(*_dragVehicleHead));
     }
 
     static void draw(Ui::Window* const self, Gfx::Context* const context)

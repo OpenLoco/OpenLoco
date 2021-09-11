@@ -64,7 +64,7 @@ namespace OpenLoco::Ui::ViewportManager
         return vp;
     }
 
-    static void focusViewportOn(Window* w, int index, EntityId_t dx)
+    static void focusViewportOn(Window* w, int index, EntityId dx)
     {
         assert(index >= 0 && index < viewportsPerWindow);
         Viewport* viewport = w->viewports[index];
@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::ViewportManager
         assert(index >= 0 && index < viewportsPerWindow);
         Viewport* viewport = w->viewports[index];
 
-        w->viewport_configurations[index].viewport_target_sprite = 0xFFFF;
+        w->viewport_configurations[index].viewport_target_sprite = EntityId::null;
 
         const auto dest = viewport->centre2dCoordinates(tile);
         w->viewport_configurations[index].saved_view_x = dest.x;
@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::ViewportManager
 
         if (regs.edx & (1 << 31))
         {
-            EntityId_t id = regs.dx;
+            EntityId id = EntityId(regs.dx);
             return create(window, index, { x, y }, { width, height }, zoom, id);
         }
         else
@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::ViewportManager
      * 2.
      * dx : thing_id
      */
-    Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, EntityId_t thing_id)
+    Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, EntityId thing_id)
     {
         Viewport* viewport = initViewport(origin, size, zoom);
 

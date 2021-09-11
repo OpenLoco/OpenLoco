@@ -138,12 +138,12 @@ namespace OpenLoco::GameCommands
         return doCommand(T::command, regs);
     }
 
-    inline void do_0(EntityId_t source, EntityId_t dest)
+    inline void do_0(EntityId source, EntityId dest)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.dx = source;
-        regs.di = dest;
+        regs.dx = enumValue(source);
+        regs.di = enumValue(dest);
         doCommand(GameCommand::vehicleRearrange, regs);
     }
 
@@ -156,7 +156,7 @@ namespace OpenLoco::GameCommands
             : pos(regs.ax, regs.cx, regs.dx * 4)
             , trackAndDirection(regs.bp)
             , trackProgress(regs.ebx >> 16)
-            , head(regs.di)
+            , head(EntityId(regs.di))
             , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
@@ -164,14 +164,14 @@ namespace OpenLoco::GameCommands
         Map::Pos3 pos;
         uint16_t trackAndDirection;
         uint16_t trackProgress;
-        EntityId_t head;
+        EntityId head;
         bool convertGhost = false;
 
         explicit operator registers() const
         {
             registers regs;
             regs.ebp = trackAndDirection;
-            regs.di = head;
+            regs.di = enumValue(head);
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.dx = pos.z / 4;
@@ -180,20 +180,20 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_2(EntityId_t head)
+    inline bool do_2(EntityId head)
     {
         registers regs;
         regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
-        regs.di = head;
+        regs.di = enumValue(head);
         return doCommand(GameCommand::vehiclePickup, regs) != FAILURE;
     }
 
     // Reverse (vehicle)
-    inline void do_3(EntityId_t vehicleHead, Vehicles::VehicleHead* const head)
+    inline void do_3(EntityId vehicleHead, Vehicles::VehicleHead* const head)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.dx = vehicleHead;
+        regs.dx = enumValue(vehicleHead);
         // Bug in game command 3 requires to set edi to a vehicle prior to calling
         regs.edi = X86Pointer(head);
 
@@ -201,42 +201,42 @@ namespace OpenLoco::GameCommands
     }
 
     // Pass signal (vehicle)
-    inline void do_4(EntityId_t vehicleHead)
+    inline void do_4(EntityId vehicleHead)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.di = vehicleHead;
+        regs.di = enumValue(vehicleHead);
 
         doCommand(GameCommand::vehiclePassSignal, regs);
     }
 
     // Build vehicle
-    inline uint32_t do_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
+    inline uint32_t do_5(uint16_t vehicle_type, EntityId vehicle_id = EntityId::null)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.di = vehicle_id;
+        regs.di = enumValue(vehicle_id);
         regs.edx = vehicle_type;
 
         return doCommand(GameCommand::vehicleCreate, regs);
     }
 
     // Build vehicle
-    inline uint32_t queryDo_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
+    inline uint32_t queryDo_5(uint16_t vehicle_type, EntityId vehicle_id = EntityId::null)
     {
         registers regs;
         regs.bl = 0;
-        regs.di = vehicle_id;
+        regs.di = enumValue(vehicle_id);
         regs.edx = vehicle_type;
 
         return doCommand(GameCommand::vehicleCreate, regs);
     }
 
-    inline void do_6(EntityId_t car)
+    inline void do_6(EntityId car)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.dx = car;
+        regs.dx = enumValue(car);
         doCommand(GameCommand::vehicleSell, regs);
     }
 
@@ -320,15 +320,15 @@ namespace OpenLoco::GameCommands
     }
 
     // Change vehicle name
-    inline void do_10(EntityId_t head, uint16_t i, uint32_t edx, uint32_t ebp, uint32_t edi)
+    inline void do_10(EntityId head, uint16_t i, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.cx = head; // vehicle head id
-        regs.ax = i;    // [ 0, 1, 2]
-        regs.edx = edx; // part of name buffer
-        regs.ebp = ebp; // part of name buffer
-        regs.edi = edi; // part of name buffer
+        regs.cx = enumValue(head); // vehicle head id
+        regs.ax = i;               // [ 0, 1, 2]
+        regs.edx = edx;            // part of name buffer
+        regs.ebp = ebp;            // part of name buffer
+        regs.edi = edi;            // part of name buffer
         doCommand(GameCommand::vehicleRename, regs);
     }
 
@@ -345,12 +345,12 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::changeStationName, regs);
     }
 
-    inline void do12(EntityId_t head, uint8_t bh)
+    inline void do12(EntityId head, uint8_t bh)
     {
         registers regs;
         regs.bl = Flags::apply;
         regs.bh = bh;
-        regs.dx = head;
+        regs.dx = enumValue(head);
         doCommand(GameCommand::vehicleLocalExpress, regs);
     }
 
@@ -843,31 +843,31 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_35(EntityId_t head, uint64_t rawOrder, uint32_t orderOffset)
+    inline bool do_35(EntityId head, uint64_t rawOrder, uint32_t orderOffset)
     {
         registers regs;
         regs.bl = Flags::apply;
         regs.eax = rawOrder & 0xFFFFFFFF;
         regs.cx = rawOrder >> 32;
-        regs.di = head;
+        regs.di = enumValue(head);
         regs.edx = orderOffset;
         return doCommand(GameCommand::vehicleOrderInsert, regs);
     }
 
-    inline bool do_36(EntityId_t head, uint32_t orderOffset)
+    inline bool do_36(EntityId head, uint32_t orderOffset)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.di = head;
+        regs.di = enumValue(head);
         regs.edx = orderOffset;
         return doCommand(GameCommand::vehicleOrderDelete, regs);
     }
 
-    inline bool do_37(EntityId_t head)
+    inline bool do_37(EntityId head)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.di = head;
+        regs.di = enumValue(head);
         return doCommand(GameCommand::vehicleOrderSkip, regs);
     }
 
@@ -1345,32 +1345,32 @@ namespace OpenLoco::GameCommands
         explicit VehicleAirPlacementArgs(const registers& regs)
             : stationId(StationId(regs.bp))
             , airportNode(regs.dl)
-            , head(regs.di)
+            , head(EntityId(regs.di))
             , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
 
         StationId stationId;
         uint8_t airportNode;
-        EntityId_t head;
+        EntityId head;
         bool convertGhost = false;
 
         explicit operator registers() const
         {
             registers regs;
             regs.bp = enumValue(stationId);
-            regs.di = head;
+            regs.di = enumValue(head);
             regs.dl = airportNode;
             regs.ebx = convertGhost ? 0xFFFF0000 : 0;
             return regs;
         }
     };
 
-    inline bool do_59(EntityId_t head)
+    inline bool do_59(EntityId head)
     {
         registers regs;
         regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
-        regs.di = head;
+        regs.di = enumValue(head);
         return doCommand(GameCommand::vehiclePickupAir, regs) != FAILURE;
     }
 
@@ -1431,13 +1431,13 @@ namespace OpenLoco::GameCommands
         VehicleWaterPlacementArgs() = default;
         explicit VehicleWaterPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.dx)
-            , head(regs.di)
+            , head(EntityId(regs.di))
             , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
 
         Map::Pos3 pos;
-        EntityId_t head;
+        EntityId head;
         bool convertGhost = false;
 
         explicit operator registers() const
@@ -1446,26 +1446,26 @@ namespace OpenLoco::GameCommands
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.dx = pos.z;
-            regs.di = head;
+            regs.di = enumValue(head);
             regs.ebx = convertGhost ? 0xFFFF0000 : 0;
             return regs;
         }
     };
 
-    inline bool do_63(EntityId_t head)
+    inline bool do_63(EntityId head)
     {
         registers regs;
         regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
-        regs.di = head;
+        regs.di = enumValue(head);
         return doCommand(GameCommand::vehiclePickupWater, regs) != FAILURE;
     }
 
     // Refit vehicle
-    inline void do_64(EntityId_t vehicleHead, uint16_t option)
+    inline void do_64(EntityId vehicleHead, uint16_t option)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.di = vehicleHead;
+        regs.di = enumValue(vehicleHead);
         regs.dx = option;
         doCommand(GameCommand::vehicleRefit, regs);
     }
@@ -1543,12 +1543,12 @@ namespace OpenLoco::GameCommands
     }
 
     // Update owner status
-    inline void do_73(EntityId_t id)
+    inline void do_73(EntityId id)
     {
         registers regs;
         regs.bl = Flags::apply;
         regs.ax = -2;
-        regs.cx = id;
+        regs.cx = enumValue(id);
         doCommand(GameCommand::updateOwnerStatus, regs);
     }
 
@@ -1562,38 +1562,38 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::updateOwnerStatus, regs);
     }
 
-    inline uint32_t do_74(EntityId_t head, int16_t speed)
+    inline uint32_t do_74(EntityId head, int16_t speed)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.cx = head;
+        regs.cx = enumValue(head);
         regs.dx = speed;
         return doCommand(GameCommand::vehicleSpeedControl, regs);
     }
 
-    inline uint32_t do_75(EntityId_t head, uint32_t orderOffset)
+    inline uint32_t do_75(EntityId head, uint32_t orderOffset)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.di = head;
+        regs.di = enumValue(head);
         regs.edx = orderOffset;
         return doCommand(GameCommand::vehicleOrderUp, regs);
     }
 
-    inline uint32_t do_76(EntityId_t head, uint32_t orderOffset)
+    inline uint32_t do_76(EntityId head, uint32_t orderOffset)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.di = head;
+        regs.di = enumValue(head);
         regs.edx = orderOffset;
         return doCommand(GameCommand::vehicleOrderDown, regs);
     }
 
-    inline void do_77(EntityId_t head)
+    inline void do_77(EntityId head)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.cx = head;
+        regs.cx = enumValue(head);
         doCommand(GameCommand::vehicleApplyShuntCheat, regs);
     }
 
@@ -1617,11 +1617,11 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::renameIndustry, regs);
     }
 
-    inline bool do_80(uint16_t head)
+    inline bool do_80(EntityId head)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.ax = head;
+        regs.ax = enumValue(head);
         return GameCommands::doCommand(GameCommand::vehicleClone, regs) != FAILURE;
     }
 

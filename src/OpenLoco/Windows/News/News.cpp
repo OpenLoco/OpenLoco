@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                             case newsItemSubTypes::vehicle:
                             {
-                                auto vehicle = EntityManager::get<Vehicles::VehicleBase>(itemId);
+                                auto vehicle = EntityManager::get<Vehicles::VehicleBase>(EntityId(itemId));
 
                                 Ui::Windows::Vehicle::Main::open(vehicle);
                                 break;
@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.surfaceZ = -1;
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)-1;
-            view.thingId = 0xFFFF;
+            view.thingId = EntityId::null;
             switch (itemType)
             {
                 case newsItemSubTypes::industry:
@@ -226,7 +226,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    Vehicles::Vehicle train(itemId);
+                    Vehicles::Vehicle train(EntityId{ itemId });
                     if (train.head->tile_x == -1)
                         break;
 
@@ -280,7 +280,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.surfaceZ = -1;
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)-1;
-            view.thingId = 0xFFFF;
+            view.thingId = EntityId::null;
             auto news = MessageManager::get(_activeMessageIndex);
 
             bool selectable = false;
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             if (!view.isEmpty() && view.isThingView())
             {
                 ecx = view.rotation << 8 | (uint8_t)view.zoomLevel;
-                edx = view.thingId | view.flags << 16;
+                edx = enumValue(view.thingId) | view.flags << 16;
             }
 
             if (_dword_525CD0 != ecx || _dword_525CD4 != edx)
@@ -382,7 +382,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.surfaceZ = -1;
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)-1;
-            view.thingId = 0xFFFF;
+            view.thingId = EntityId::null;
             selectable = false;
 
             if (_activeMessageIndex != MessageId::null)
@@ -417,7 +417,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             if (!view.isEmpty() && view.isThingView())
             {
                 ecx = view.rotation << 8 | (uint8_t)view.zoomLevel;
-                edx = view.thingId | view.flags << 16;
+                edx = enumValue(view.thingId) | view.flags << 16;
             }
 
             if (_dword_525CD8 != ecx || _dword_525CDC != edx)
@@ -506,7 +506,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    auto vehicle = EntityManager::get<Vehicles::VehicleHead>(itemIndex);
+                    auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(itemIndex));
                     auto company = CompanyManager::get(vehicle->owner);
                     if (CompanyManager::isPlayerCompany(vehicle->owner))
                     {
