@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
+#include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -11,6 +12,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct SoundObject
     {
+        static constexpr auto _objectType = ObjectType::sound;
+
         string_id name;
         void* data;
         uint8_t var_06;

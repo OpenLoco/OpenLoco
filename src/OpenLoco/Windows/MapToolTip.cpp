@@ -6,6 +6,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/InterfaceSkinObject.h"
+#include "../Objects/ObjectManager.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"

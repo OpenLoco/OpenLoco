@@ -193,7 +193,7 @@ namespace OpenLoco::S5
                 ObjectManager::unload(*index);
 
                 auto encodingType = getBestEncodingForObjectType(header.getType());
-                auto obj = ObjectManager::get<Object>(*index);
+                auto* obj = ObjectManager::getAny(*index);
                 auto objSize = ObjectManager::getByteLength(*index);
 
                 fs.write(header);

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
+#include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -12,6 +13,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct ScaffoldingObject
     {
+        static constexpr auto _objectType = ObjectType::scaffolding;
+
         string_id name;
         uint32_t image; // 0x02
         uint8_t pad_06[0x12 - 0x06];

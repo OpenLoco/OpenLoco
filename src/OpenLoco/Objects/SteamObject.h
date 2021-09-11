@@ -1,12 +1,15 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
+#include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
 #pragma pack(push, 1)
     struct SteamObject
     {
+        static constexpr auto _objectType = ObjectType::steam;
+
         string_id name; // 0x00 probably not confirmed
         uint8_t pad_02[0x5 - 0x2];
         uint8_t var_05;

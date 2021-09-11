@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
+#include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -12,6 +13,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct LevelCrossingObject
     {
+        static constexpr auto _objectType = ObjectType::levelCrossing;
+
         string_id name;
         int16_t costFactor;          // 0x02
         uint8_t pad_04[0x06 - 0x04]; // 0x04

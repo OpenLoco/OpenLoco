@@ -2,6 +2,7 @@
 #include "../Entities/EntityManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
+#include "../Objects/ObjectManager.h"
 
 using namespace OpenLoco::Interop;
 

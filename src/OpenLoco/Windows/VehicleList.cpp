@@ -10,6 +10,7 @@
 #include "../Objects/CargoObject.h"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/InterfaceSkinObject.h"
+#include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../StationManager.h"
 #include "../Ui/Dropdown.h"

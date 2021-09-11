@@ -291,6 +291,7 @@
     <ClInclude Include="Objects\BridgeObject.h" />
     <ClInclude Include="Objects\BuildingObject.h" />
     <ClInclude Include="Objects\CargoObject.h" />
+    <ClInclude Include="Objects\ClimateObject.h" />
     <ClInclude Include="Objects\CompetitorObject.h" />
     <ClInclude Include="Objects\CurrencyObject.h" />
     <ClInclude Include="Objects\DockObject.h" />
@@ -299,6 +300,7 @@
     <ClInclude Include="Objects\InterfaceSkinObject.h" />
     <ClInclude Include="Objects\LandObject.h" />
     <ClInclude Include="Objects\LevelCrossingObject.h" />
+    <ClInclude Include="Objects\Object.h" />
     <ClInclude Include="Objects\ObjectManager.h" />
     <ClInclude Include="Objects\RegionObject.h" />
     <ClInclude Include="Objects\RoadExtraObject.h" />
@@ -311,6 +313,7 @@
     <ClInclude Include="Objects\SoundObject.h" />
     <ClInclude Include="Objects\SteamObject.h" />
     <ClInclude Include="Objects\StreetLightObject.h" />
+    <ClInclude Include="Objects\TownNamesObject.h" />
     <ClInclude Include="Objects\TrackExtraObject.h" />
     <ClInclude Include="Objects\TrackObject.h" />
     <ClInclude Include="Objects\TrainSignalObject.h" />

@@ -1,5 +1,7 @@
 #pragma once
+
 #include "../Types.hpp"
+#include "Object.h"
 #include <array>
 
 namespace OpenLoco
@@ -12,6 +14,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct CompetitorObject
     {
+        static constexpr auto _objectType = ObjectType::competitor;
+
         string_id var_00;        // 0x00
         string_id var_02;        // 0x02
         uint32_t var_04;         // 0x04

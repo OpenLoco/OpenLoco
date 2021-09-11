@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -12,6 +13,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct WallObject
     {
+        static constexpr auto _objectType = ObjectType::wall;
+
         string_id name;
         uint32_t sprite; // 0x02
         uint8_t var_06;
