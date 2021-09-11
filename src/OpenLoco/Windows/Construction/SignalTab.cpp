@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         }
         else
         {
-            args.sides = getSide(args.pos, { x, y }, *elTrack, *viewport) ? 0x8000 : 0x4000;
+            args.sides = getSide(args.pos, { x, y }, *elTrack, *viewport) ? 0x4000 : 0x8000;
         }
         return { args };
     }
