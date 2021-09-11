@@ -1,7 +1,7 @@
 #include "OpenLoco.h"
 
 #define NAME "OpenLoco"
-#define VERSION "21.08"
+#define VERSION "21.09"
 
 namespace OpenLoco
 {
