@@ -5,7 +5,7 @@
 
 namespace OpenLoco::Audio
 {
-    enum class SoundId : uint8_t;
+    enum class SoundId : uint16_t;
 }
 
 namespace OpenLoco
@@ -48,7 +48,7 @@ namespace OpenLoco
         town,
         vehicle,
         company,
-        unk5,
+        location,
         unk6,
         vehicleTab = 7,
         null = std::numeric_limits<uint8_t>::max()
@@ -58,8 +58,8 @@ namespace OpenLoco
     {
         constexpr uint16_t unk0 = 1 << 0;
         constexpr uint16_t unk1 = 1 << 1;
-        constexpr uint16_t unk2 = 1 << 2;
-        constexpr uint16_t unk3 = 1 << 3;
+        constexpr uint16_t hasFirstItem = 1 << 2;
+        constexpr uint16_t hasSecondItem = 1 << 3;
         constexpr uint16_t unk5 = 1 << 5; // Never set
     }
 
