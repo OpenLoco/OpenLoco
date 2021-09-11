@@ -1471,4 +1471,72 @@ namespace OpenLoco::Ui
                 0x10);
         }
     }
+
+    WidgetIndex_t Window::firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
+    {
+        WidgetIndex_t activeIndex = -1;
+        for (WidgetIndex_t i = minIndex; i <= maxIndex; i++)
+        {
+            if (this->isActivated(i))
+            {
+                activeIndex = i;
+                break;
+            }
+        }
+        return activeIndex;
+    }
+
+    WidgetIndex_t Window::prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
+    {
+        WidgetIndex_t activeIndex = firstActivatedWidgetInRange(minIndex, maxIndex);
+        if (activeIndex == -1)
+            return activeIndex;
+
+        // Offset, wrapping around if needed.
+        activeIndex -= 1;
+        if (activeIndex < minIndex)
+            activeIndex = maxIndex;
+
+        for (WidgetIndex_t i = activeIndex; i >= minIndex; i--)
+        {
+            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::none)
+            {
+                // Wrap around (while compensating for next iteration)
+                if (i == minIndex)
+                    i = maxIndex + 1;
+                continue;
+            }
+
+            return i;
+        }
+
+        return -1;
+    }
+
+    WidgetIndex_t Window::nextAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex)
+    {
+        WidgetIndex_t activeIndex = firstActivatedWidgetInRange(minIndex, maxIndex);
+        if (activeIndex == -1)
+            return activeIndex;
+
+        // Offset, wrapping around if needed.
+        activeIndex += 1;
+        if (activeIndex > maxIndex)
+            activeIndex = minIndex;
+
+        for (WidgetIndex_t i = activeIndex; i <= maxIndex; i++)
+        {
+            if (this->isDisabled(i) || this->widgets[i].type == WidgetType::none)
+            {
+                // Wrap around (while compensating for next iteration)
+                if (i == maxIndex)
+                    i = minIndex - 1;
+                continue;
+            }
+
+            return i;
+        }
+
+        return -1;
+    }
 }

@@ -1743,4 +1743,13 @@ namespace OpenLoco::StringIds
     constexpr string_id no_cargo_selected = 2215;
     constexpr string_id tooltip_open_station_window_to_filter = 2216;
     constexpr string_id tooltip_select_cargo_type = 2217;
+    constexpr string_id shortcut_construction_previous_tab = 2218;
+    constexpr string_id shortcut_construction_next_tab = 2219;
+    constexpr string_id shortcut_construction_previous_track_piece = 2220;
+    constexpr string_id shortcut_construction_next_track_piece = 2221;
+    constexpr string_id shortcut_construction_previous_slope = 2222;
+    constexpr string_id shortcut_construction_next_slope = 2223;
+    constexpr string_id shortcut_construction_build_at_current_pos = 2224;
+    constexpr string_id shortcut_construction_remove_at_current_pos = 2225;
+    constexpr string_id shortcut_construction_select_position = 2226;
 }

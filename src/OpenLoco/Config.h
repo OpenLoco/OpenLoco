@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Input/ShortcutManager.h"
 #include "Objects/ObjectManager.h"
 #include <cstddef>
 #include <cstdint>
@@ -170,7 +171,7 @@ namespace OpenLoco::Config
         int32_t autosave_amount = 12;
         bool showFPS = false;
         bool uncapFPS = false;
-        KeyboardShortcut shortcuts[35];
+        KeyboardShortcut shortcuts[Input::ShortcutManager::count];
     };
 
     LocoConfig& get();

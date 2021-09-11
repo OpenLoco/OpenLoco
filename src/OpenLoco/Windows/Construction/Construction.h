@@ -151,6 +151,8 @@ namespace OpenLoco::Ui::Windows::Construction
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const Map::Pos2& pos);
         void setNextAndPreviousRoadTile(const RoadElement& elRoad, const Map::Pos2& pos);
         bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport);
+        void previousTab(Window* self);
+        void nextTab(Window* self);
     }
 
     namespace Construction
@@ -228,6 +230,13 @@ namespace OpenLoco::Ui::Windows::Construction
         void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
         void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
         void removeTrackGhosts();
+        void previousTrackPiece(Window* self);
+        void nextTrackPiece(Window* self);
+        void previousSlope(Window* self);
+        void nextSlope(Window* self);
+        void buildAtCurrentPos(Window* self);
+        void removeAtCurrentPos(Window* self);
+        void selectPosition(Window* self);
     }
 
     namespace Station

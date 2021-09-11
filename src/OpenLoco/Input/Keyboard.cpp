@@ -252,7 +252,7 @@ namespace OpenLoco::Input
         auto& cfg = Config::getNew();
 
         // Unbind any shortcuts that may be using the current keycode.
-        for (int i = 0; i < 35; i++)
+        for (size_t i = 0; i < ShortcutManager::count; i++)
         {
             if (cfg.shortcuts[i].keyCode == k->keyCode && cfg.shortcuts[i].modifiers == _keyModifier)
             {
@@ -351,7 +351,7 @@ namespace OpenLoco::Input
 
             if (!isTitleMode())
             {
-                for (int i = 0; i < 35; i++)
+                for (size_t i = 0; i < ShortcutManager::count; i++)
                 {
                     if (tryShortcut((Shortcut)i, nextKey->keyCode, _keyModifier))
                         break;

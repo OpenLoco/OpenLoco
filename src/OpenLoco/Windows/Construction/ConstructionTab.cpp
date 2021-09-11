@@ -2997,4 +2997,56 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         events.prepare_draw = prepareDraw;
         events.draw = draw;
     }
+
+    void previousTrackPiece(Window* self)
+    {
+        WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
+        if (prev != -1)
+            self->callOnMouseDown(prev);
+    }
+
+    void nextTrackPiece(Window* self)
+    {
+        WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
+        if (next != -1)
+            self->callOnMouseDown(next);
+    }
+
+    void previousSlope(Window* self)
+    {
+        WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::steep_slope_down, widx::steep_slope_up);
+        if (prev != -1)
+            self->callOnMouseDown(prev);
+    }
+
+    void nextSlope(Window* self)
+    {
+        WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::steep_slope_down, widx::steep_slope_up);
+        if (next != -1)
+            self->callOnMouseDown(next);
+    }
+
+    void buildAtCurrentPos(Window* self)
+    {
+        if (self->current_tab != Common::widx::tab_construction - Common::widx::tab_construction)
+            return;
+
+        if (_constructionHover == 0)
+            self->callOnMouseUp(widx::construct);
+    }
+
+    void removeAtCurrentPos(Window* self)
+    {
+        if (self->current_tab == Common::widx::tab_construction - Common::widx::tab_construction)
+            self->callOnMouseUp(widx::remove);
+    }
+
+    void selectPosition(Window* self)
+    {
+        if (self->current_tab != Common::widx::tab_construction - Common::widx::tab_construction)
+            return;
+
+        if (_constructionHover == 0)
+            self->callOnMouseUp(widx::rotate_90);
+    }
 }

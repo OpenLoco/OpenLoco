@@ -1513,6 +1513,20 @@ namespace OpenLoco::Ui::Windows::Construction
 
             sortList(signalList);
         }
+
+        void previousTab(Window* self)
+        {
+            WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::tab_construction, widx::tab_overhead);
+            if (prev != -1)
+                self->callOnMouseUp(prev);
+        }
+
+        void nextTab(Window* self)
+        {
+            WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::tab_construction, widx::tab_overhead);
+            if (next != -1)
+                self->callOnMouseUp(next);
+        }
     }
 
     bool rotate(Window* self)

@@ -8,6 +8,7 @@
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
+#include "../Windows/Construction/Construction.h"
 #include <array>
 #include <unordered_map>
 
@@ -51,44 +52,62 @@ namespace OpenLoco::Input::ShortcutManager
     static void makeScreenshot();
     static void toggleLastAnnouncement();
     static void sendMessage();
+    static void constructionPreviousTab();
+    static void constructionNextTab();
+    static void constructionPreviousTrackPiece();
+    static void constructionNextTrackPiece();
+    static void constructionPreviousSlope();
+    static void constructionNextSlope();
+    static void constructionBuildAtCurrentPos();
+    static void constructionRemoveAtCurrentPos();
+    static void constructionSelectPosition();
 
     // clang-format off
     static constexpr std::array<const KeyboardShortcut, count> _shortcuts = { {
-        { closeTopmostWindow,          StringIds::shortcut_close_topmost_window,           "closeTopmostWindow",          "Backspace" },
-        { closeAllFloatingWindows,     StringIds::shortcut_close_all_floating_windows,     "closeAllFloatingWindows",     "Left Shift+Backspace" },
-        { cancelConstructionMode,      StringIds::shortcut_cancel_construction_mode,       "cancelConstructionMode",      "Escape" },
-        { pauseUnpauseGame,            StringIds::shortcut_pause_unpause_game,             "pauseUnpauseGame",            "Pause" },
-        { zoomViewOut,                 StringIds::shortcut_zoom_view_out,                  "zoomViewOut",                 "PageUp" },
-        { zoomViewIn,                  StringIds::shortcut_zoom_view_in,                   "zoomViewIn",                  "PageDown" },
-        { rotateView,                  StringIds::shortcut_rotate_view,                    "rotateView",                  "Return" },
-        { rotateConstructionObject,    StringIds::shortcut_rotate_construction_object,     "rotateConstructionObject",    "Z" },
-        { toggleUndergroundView,       StringIds::shortcut_toggle_underground_view,        "toggleUndergroundView",       "1" },
-        { toggleHideForegroundTracks,  StringIds::shortcut_toggle_hide_foreground_tracks,  "toggleHideForegroundTracks",  "2" },
-        { toggleHideForegroundScenery, StringIds::shortcut_toggle_hide_foreground_scenery, "toggleHideForegroundScenery", "3" },
-        { toggleHeightMarksOnLand,     StringIds::shortcut_toggle_height_marks_on_land,    "toggleHeightMarksOnLand",     "4" },
-        { toggleHeightMarksOnTracks,   StringIds::shortcut_toggle_height_marks_on_tracks,  "toggleHeightMarksOnTracks",   "5" },
-        { toggleDirArrowsOnTracks,     StringIds::shortcut_toggle_dir_arrows_on_tracks,    "toggleDirArrowsOnTracks",     "6" },
-        { adjustLand,                  StringIds::shortcut_adjust_land,                    "adjustLand",                  "L" },
-        { adjustWater,                 StringIds::shortcut_adjust_water,                   "adjustWater",                 "W" },
-        { plantTrees,                  StringIds::shortcut_plant_trees,                    "plantTrees",                  "P" },
-        { bulldozeArea,                StringIds::shortcut_bulldoze_area,                  "bulldozeArea",                "X" },
-        { buildTracks,                 StringIds::shortcut_build_tracks,                   "buildTracks",                 "T" },
-        { buildRoads,                  StringIds::shortcut_build_roads,                    "buildRoads",                  "R" },
-        { buildAirports,               StringIds::shortcut_build_airports,                 "buildAirports",               "A" },
-        { buildShipPorts,              StringIds::shortcut_build_ship_ports,               "buildShipPorts",              "D" },
-        { buildNewVehicles,            StringIds::shortcut_build_new_vehicles,             "buildNewVehicles",            "N" },
-        { showVehiclesList,            StringIds::shortcut_show_vehicles_list,             "showVehiclesList",            "V" },
-        { showStationsList,            StringIds::shortcut_show_stations_list,             "showStationsList",            "S" },
-        { showTownsList,               StringIds::shortcut_show_towns_list,                "showTownsList",               "U" },
-        { showIndustriesList,          StringIds::shortcut_show_industries_list,           "showIndustriesList",          "I" },
-        { showMap,                     StringIds::shortcut_show_map,                       "showMap",                     "M" },
-        { showCompaniesList,           StringIds::shortcut_show_companies_list,            "showCompaniesList",           "C" },
-        { showCompanyInformation,      StringIds::shortcut_show_company_information,       "showCompanyInformation",      "Q" },
-        { showFinances,                StringIds::shortcut_show_finances,                  "showFinances",                "F" },
-        { showAnnouncementsList,       StringIds::shortcut_show_announcements_list,        "showAnnouncementsList",       "Tab" },
-        { makeScreenshot,              StringIds::shortcut_screenshot,                     "makeScreenshot",              "Left Ctrl+S" },
-        { toggleLastAnnouncement,      StringIds::shortcut_toggle_last_announcement,       "toggleLastAnnouncement",      "Space" },
-        { sendMessage,                 StringIds::shortcut_send_message,                   "sendMessage",                 "F1" },
+        { closeTopmostWindow,             StringIds::shortcut_close_topmost_window,               "closeTopmostWindow",             "Backspace" },
+        { closeAllFloatingWindows,        StringIds::shortcut_close_all_floating_windows,         "closeAllFloatingWindows",        "Left Shift+Backspace" },
+        { cancelConstructionMode,         StringIds::shortcut_cancel_construction_mode,           "cancelConstructionMode",         "Escape" },
+        { pauseUnpauseGame,               StringIds::shortcut_pause_unpause_game,                 "pauseUnpauseGame",               "Pause" },
+        { zoomViewOut,                    StringIds::shortcut_zoom_view_out,                      "zoomViewOut",                    "PageUp" },
+        { zoomViewIn,                     StringIds::shortcut_zoom_view_in,                       "zoomViewIn",                     "PageDown" },
+        { rotateView,                     StringIds::shortcut_rotate_view,                        "rotateView",                     "Return" },
+        { rotateConstructionObject,       StringIds::shortcut_rotate_construction_object,         "rotateConstructionObject",       "Z" },
+        { toggleUndergroundView,          StringIds::shortcut_toggle_underground_view,            "toggleUndergroundView",          "1" },
+        { toggleHideForegroundTracks,     StringIds::shortcut_toggle_hide_foreground_tracks,      "toggleHideForegroundTracks",     "2" },
+        { toggleHideForegroundScenery,    StringIds::shortcut_toggle_hide_foreground_scenery,     "toggleHideForegroundScenery",    "3" },
+        { toggleHeightMarksOnLand,        StringIds::shortcut_toggle_height_marks_on_land,        "toggleHeightMarksOnLand",        "4" },
+        { toggleHeightMarksOnTracks,      StringIds::shortcut_toggle_height_marks_on_tracks,      "toggleHeightMarksOnTracks",      "5" },
+        { toggleDirArrowsOnTracks,        StringIds::shortcut_toggle_dir_arrows_on_tracks,        "toggleDirArrowsOnTracks",        "6" },
+        { adjustLand,                     StringIds::shortcut_adjust_land,                        "adjustLand",                     "L" },
+        { adjustWater,                    StringIds::shortcut_adjust_water,                       "adjustWater",                    "W" },
+        { plantTrees,                     StringIds::shortcut_plant_trees,                        "plantTrees",                     "P" },
+        { bulldozeArea,                   StringIds::shortcut_bulldoze_area,                      "bulldozeArea",                   "X" },
+        { buildTracks,                    StringIds::shortcut_build_tracks,                       "buildTracks",                    "T" },
+        { buildRoads,                     StringIds::shortcut_build_roads,                        "buildRoads",                     "R" },
+        { buildAirports,                  StringIds::shortcut_build_airports,                     "buildAirports",                  "A" },
+        { buildShipPorts,                 StringIds::shortcut_build_ship_ports,                   "buildShipPorts",                 "D" },
+        { buildNewVehicles,               StringIds::shortcut_build_new_vehicles,                 "buildNewVehicles",               "N" },
+        { showVehiclesList,               StringIds::shortcut_show_vehicles_list,                 "showVehiclesList",               "V" },
+        { showStationsList,               StringIds::shortcut_show_stations_list,                 "showStationsList",               "S" },
+        { showTownsList,                  StringIds::shortcut_show_towns_list,                    "showTownsList",                  "U" },
+        { showIndustriesList,             StringIds::shortcut_show_industries_list,               "showIndustriesList",             "I" },
+        { showMap,                        StringIds::shortcut_show_map,                           "showMap",                        "M" },
+        { showCompaniesList,              StringIds::shortcut_show_companies_list,                "showCompaniesList",              "C" },
+        { showCompanyInformation,         StringIds::shortcut_show_company_information,           "showCompanyInformation",         "Q" },
+        { showFinances,                   StringIds::shortcut_show_finances,                      "showFinances",                   "F" },
+        { showAnnouncementsList,          StringIds::shortcut_show_announcements_list,            "showAnnouncementsList",          "Tab" },
+        { makeScreenshot,                 StringIds::shortcut_screenshot,                         "makeScreenshot",                 "Left Ctrl+S" },
+        { toggleLastAnnouncement,         StringIds::shortcut_toggle_last_announcement,           "toggleLastAnnouncement",         "Space" },
+        { sendMessage,                    StringIds::shortcut_send_message,                       "sendMessage",                    "F1" },
+        { constructionPreviousTab,        StringIds::shortcut_construction_previous_tab,          "constructionPreviousTab",        "" },
+        { constructionNextTab,            StringIds::shortcut_construction_next_tab,              "constructionNextTab",            "" },
+        { constructionPreviousTrackPiece, StringIds::shortcut_construction_previous_track_piece,  "constructionPreviousTrackPiece", "" },
+        { constructionNextTrackPiece,     StringIds::shortcut_construction_next_track_piece,      "constructionNextTrackPiece",     "" },
+        { constructionPreviousSlope,      StringIds::shortcut_construction_previous_slope,        "constructionPreviousSlope",      "" },
+        { constructionNextSlope,          StringIds::shortcut_construction_next_slope,            "constructionNextSlope",          "" },
+        { constructionBuildAtCurrentPos,  StringIds::shortcut_construction_build_at_current_pos,  "constructionBuildAtCurrentPos",  "" },
+        { constructionRemoveAtCurrentPos, StringIds::shortcut_construction_remove_at_current_pos, "constructionRemoveAtCurrentPos", "" },
+        { constructionSelectPosition,     StringIds::shortcut_construction_select_position,       "constructionSelectPosition",     "" },
     } };
     // clang-format on
 
@@ -482,5 +501,68 @@ namespace OpenLoco::Input::ShortcutManager
     static void sendMessage()
     {
         call(0x004BF3DC);
+    }
+
+    static void constructionPreviousTab()
+    {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Common::previousTab(window);
+    }
+
+    static void constructionNextTab()
+    {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Common::nextTab(window);
+    }
+
+    static void constructionPreviousTrackPiece()
+    {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::previousTrackPiece(window);
+    }
+
+    static void constructionNextTrackPiece()
+    {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::nextTrackPiece(window);
+    }
+
+    static void constructionPreviousSlope()
+    {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::previousSlope(window);
+    }
+
+    static void constructionNextSlope()
+    {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::nextSlope(window);
+    }
+
+    static void constructionBuildAtCurrentPos()
+    {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::buildAtCurrentPos(window);
+    }
+
+    static void constructionRemoveAtCurrentPos()
+    {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::removeAtCurrentPos(window);
+    }
+
+    static void constructionSelectPosition()
+    {
+        auto window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+            Ui::Windows::Construction::Construction::selectPosition(window);
     }
 }
