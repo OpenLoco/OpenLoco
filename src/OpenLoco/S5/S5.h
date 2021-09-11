@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Core/FileSystem.hpp"
-#include "../Objects/ObjectManager.h"
+#include "../Objects/Object.h"
 #include "Limits.h"
 #include <cstdint>
 #include <memory>

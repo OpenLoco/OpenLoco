@@ -13,6 +13,7 @@
 #include "Map/WaveManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ClimateObject.h"
+#include "Objects/ObjectManager.h"
 #include "S5/S5.h"
 #include "StationManager.h"
 #include "Title.h"

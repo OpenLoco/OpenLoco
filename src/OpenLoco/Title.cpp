@@ -7,6 +7,7 @@
 #include "Interop/Interop.hpp"
 #include "Intro.h"
 #include "Map/TileManager.h"
+#include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "Scenario.h"
