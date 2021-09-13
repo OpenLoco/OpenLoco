@@ -1883,7 +1883,7 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 enableCheatsToolbarButton = 10,
                 disable_vehicle_breakdowns,
-                trains_reverse_at_signals,
+                trainsReverseAtSignals,
                 disableAICompanies,
                 use_preferred_owner_name,
                 change_btn,
@@ -1896,13 +1896,13 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Misc::Widx::enableCheatsToolbarButton) | (1 << Misc::Widx::disable_vehicle_breakdowns) | (1 << Widx::trains_reverse_at_signals) | (1 << Widx::disableAICompanies) | (1 << Misc::Widx::use_preferred_owner_name) | (1 << Misc::Widx::change_btn) | (1 << Misc::Widx::export_plugin_objects) | (1 << Misc::Widx::autosave_frequency_btn) | (1 << Misc::Widx::autosave_amount) | (1 << Misc::Widx::autosave_amount_down_btn) | (1 << Misc::Widx::autosave_amount_up_btn);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Misc::Widx::enableCheatsToolbarButton) | (1 << Misc::Widx::disable_vehicle_breakdowns) | (1 << Widx::trainsReverseAtSignals) | (1 << Widx::disableAICompanies) | (1 << Misc::Widx::use_preferred_owner_name) | (1 << Misc::Widx::change_btn) | (1 << Misc::Widx::export_plugin_objects) | (1 << Misc::Widx::autosave_frequency_btn) | (1 << Misc::Widx::autosave_amount) | (1 << Misc::Widx::autosave_amount_down_btn) | (1 << Misc::Widx::autosave_amount_up_btn);
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_miscellaneous),
             makeWidget({ 10, 49 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_cheat_menu_enable, StringIds::tooltip_option_cheat_menu_enable),
             makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
-            makeWidget({ 10, 79 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::trains_reverse_at_signals),
+            makeWidget({ 10, 79 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::trainsReverseAtSignals),
             makeWidget({ 10, 94 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
             makeWidget({ 10, 109 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
             makeWidget({ 335, 124 }, { 75, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::change),
@@ -1953,10 +1953,10 @@ namespace OpenLoco::Ui::Windows::Options
             else
                 w->activated_widgets &= ~(1 << Widx::disable_vehicle_breakdowns);
 
-            if (Config::getNew().trains_reverse_at_signals)
-                w->activated_widgets |= (1 << Widx::trains_reverse_at_signals);
+            if (Config::getNew().trainsReverseAtSignals)
+                w->activated_widgets |= (1 << Widx::trainsReverseAtSignals);
             else
-                w->activated_widgets &= ~(1 << Widx::trains_reverse_at_signals);
+                w->activated_widgets &= ~(1 << Widx::trainsReverseAtSignals);
 
             if (Config::getNew().companyAIDisabled)
                 w->activated_widgets |= (1 << Widx::disableAICompanies);
@@ -2146,7 +2146,7 @@ namespace OpenLoco::Ui::Windows::Options
                     disableVehicleBreakdownsMouseUp(w);
                     break;
 
-                case Widx::trains_reverse_at_signals:
+                case Widx::trainsReverseAtSignals:
                     trainsReverseAtSignalsMouseUp(w);
                     break;
 
@@ -2277,7 +2277,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void trainsReverseAtSignalsMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::getNew();
-            cfg.trains_reverse_at_signals = !cfg.trains_reverse_at_signals;
+            cfg.trainsReverseAtSignals = !cfg.trainsReverseAtSignals;
             Config::write();
             w->invalidate();
         }

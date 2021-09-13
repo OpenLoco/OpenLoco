@@ -1754,5 +1754,5 @@ namespace OpenLoco::StringIds
     constexpr string_id shortcut_construction_build_at_current_pos = 2224;
     constexpr string_id shortcut_construction_remove_at_current_pos = 2225;
     constexpr string_id shortcut_construction_select_position = 2226;
-    constexpr string_id trains_reverse_at_signals = 2227;
+    constexpr string_id trainsReverseAtSignals = 2227;
 }

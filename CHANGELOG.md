@@ -1,5 +1,6 @@
 21.09.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1170] Add option to disable train reversing at signals.
 - Fix: [#1176] Headquarters ghost destroys buildings.
 - Fix: [#1178] Game does not start when no legacy config file is present.
 - Fix: [#1179] Default shortcut keys are not assigned when no config file is present.
@@ -7,7 +8,6 @@
 
 21.09.1 (2021-09-14)
 ------------------------------------------------------------------------
-- Feature: Add option to disable train reversing at signals
 - Fix: [#1161] Stuttering vehicle movement due to incorrect vehicle positions.
 - Fix: [#1162] Signal side placement is inverted.
 - Fix: [#1162] Single side signal removal incorrectly removing both signals.
