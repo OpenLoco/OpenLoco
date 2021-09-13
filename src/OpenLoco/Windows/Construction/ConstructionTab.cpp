@@ -342,11 +342,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x00478895
     static void getRoadConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId_t company, const uint8_t roadObjectId, const uint16_t trackAndDirection)
     {
-        const auto nextTrackPos = pos + TrackData::getUnkTrack(trackAndDirection).pos;
+        const auto nextTrackPos = pos + TrackData::getUnkRoad(trackAndDirection).pos;
         _1135FAE = StationId::null; // stationId
 
         uint8_t baseZ = nextTrackPos.z / 4;
-        uint8_t nextRotation = TrackData::getUnkTrack(trackAndDirection).rotationEnd;
+        uint8_t nextRotation = TrackData::getUnkRoad(trackAndDirection).rotationEnd;
         _112C2EE = nextRotation;
 
         const auto tile = Map::TileManager::get(nextTrackPos);
