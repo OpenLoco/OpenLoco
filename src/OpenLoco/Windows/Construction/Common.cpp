@@ -642,7 +642,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         void setNextAndPreviousRoadTile(const RoadElement& elRoad, const Map::Pos2& pos)
         {
-            const auto& piece = TrackData::getTrackPiece(elRoad.roadId())[elRoad.sequenceIndex()];
+            const auto& piece = TrackData::getRoadPiece(elRoad.roadId())[elRoad.sequenceIndex()];
             const auto firstTileOffset = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elRoad.unkDirection());
             const auto firstTile = Map::Pos3(pos.x, pos.y, elRoad.baseZ() * 4) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
 

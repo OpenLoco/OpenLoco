@@ -4,6 +4,7 @@
 - Fix: [#1162] Signal side placement is inverted.
 - Fix: [#1162] Single side signal removal incorrectly removing both signals.
 - Fix: [#1162] Cursor hot spots are incorrect for some cursors.
+- Fix: [#1167] Incorrect right click interact with some road pieces.
 
 21.09 (2021-09-11)
 ------------------------------------------------------------------------
