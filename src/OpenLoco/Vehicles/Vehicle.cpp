@@ -84,6 +84,28 @@ namespace OpenLoco::Vehicles
         call(0x004AA464, regs);
     }
 
+    // 0x004B15FF
+    uint32_t VehicleBase::sub_4B15FF(uint32_t unk1)
+    {
+        registers regs;
+        regs.eax = unk1;
+        regs.esi = X86Pointer(this);
+        call(0x004B15FF, regs);
+        return regs.eax;
+    }
+
+    // 0x0047D959
+    void VehicleBase::sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection)
+    {
+        registers regs;
+        regs.ax = loc.x;
+        regs.cx = loc.y;
+        regs.dl = loc.z / 4;
+        regs.bp = trackAndDirection._data;
+        regs.esi = X86Pointer(this);
+        call(0x0047D959, regs);
+    }
+
     bool VehicleBase::updateComponent()
     {
         int32_t result = 0;
@@ -107,7 +129,7 @@ namespace OpenLoco::Vehicles
                 result = asVehicleBody()->update();
                 break;
             case VehicleThingType::tail:
-                result = call(0x004AA24A, regs);
+                return !asVehicleTail()->update();
                 break;
             default:
                 break;

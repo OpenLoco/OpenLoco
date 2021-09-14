@@ -149,6 +149,7 @@
     <ClCompile Include="Vehicles\VehicleBody.cpp" />
     <ClCompile Include="Vehicles\VehicleHead.cpp" />
     <ClCompile Include="Vehicles\VehicleManager.cpp" />
+    <ClCompile Include="Vehicles\VehicleTail.cpp" />
     <ClCompile Include="Version.cpp">
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(OPENLOCO_BRANCH)'!=''">OPENLOCO_BRANCH="$(OPENLOCO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>

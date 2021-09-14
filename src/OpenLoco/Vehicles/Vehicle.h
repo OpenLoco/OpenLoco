@@ -112,6 +112,11 @@ namespace OpenLoco::Vehicles
             constexpr uint8_t id() const { return (_data >> 3) & 0x3F; }
             constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
             constexpr bool isReversed() const { return _data & (1 << 2); }
+            constexpr void setReversed(bool state)
+            {
+                _data &= ~(1 << 2);
+                _data |= state ? (1 << 2) : 0;
+            }
             constexpr bool operator==(const _TrackAndDirection other) const { return _data == other._data; }
             constexpr bool operator!=(const _TrackAndDirection other) const { return !(_data == other._data); }
         };
@@ -218,6 +223,8 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicleComponent();
         bool updateComponent();
         void sub_4AA464();
+        void sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection);
+        uint32_t sub_4B15FF(uint32_t unk1);
     };
 
     struct Vehicle2or6 : VehicleBase
@@ -594,6 +601,8 @@ namespace OpenLoco::Vehicles
         Ui::WindowNumber_t sound_window_number; // 0x4C common with veh_2
         Ui::WindowType sound_window_type;       // 0x4E common with veh_2
         uint16_t trainDanglingTimeout;          // 0x4F counts up when no cars on train
+
+        bool update();
     };
     static_assert(sizeof(VehicleTail) == 0x51); // Can't use offset_of change this to last field if more found
 
