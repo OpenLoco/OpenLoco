@@ -1,4 +1,4 @@
-21.09+ (???)
+21.09.1 (2021-09-14)
 ------------------------------------------------------------------------
 - Fix: [#1161] Stuttering vehicle movement due to incorrect vehicle positions.
 - Fix: [#1162] Signal side placement is inverted.
