@@ -5,6 +5,7 @@
 - Fix: [#1162] Single side signal removal incorrectly removing both signals.
 - Fix: [#1162] Cursor hot spots are incorrect for some cursors.
 - Fix: [#1167] Incorrect right click interact with some road pieces.
+- Fix: [#1171] Vehicles incorrectly placed underground on load.
 
 21.09 (2021-09-11)
 ------------------------------------------------------------------------
