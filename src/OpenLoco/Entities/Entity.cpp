@@ -19,11 +19,8 @@ bool EntityBase::empty() const
 void EntityBase::moveTo(const Map::Pos3& loc)
 {
     EntityManager::moveSpatialEntry(*this, loc);
-    // x and y were already updated in moveSpatialEntry
-    position.z = loc.z;
 
     // Update sprite boundaries
-
     if (position.x == Location::null)
     {
         sprite_left = Location::null;

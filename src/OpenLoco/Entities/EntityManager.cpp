@@ -199,7 +199,7 @@ namespace OpenLoco::EntityManager
         return removeFromSpatialIndex(entity, index);
     }
 
-    void moveSpatialEntry(EntityBase& entity, const Map::Pos2& loc)
+    void moveSpatialEntry(EntityBase& entity, const Map::Pos3& loc)
     {
         const auto newIndex = getSpatialIndexOffset(loc);
         const auto oldIndex = getSpatialIndexOffset(entity.position);
