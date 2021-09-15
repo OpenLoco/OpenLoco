@@ -27,7 +27,6 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Vehicles
 {
     constexpr uint32_t max_orders = 256000;
-    constexpr auto max_num_vehicles = 1000;
     constexpr auto max_ai_vehicles = 500;
     constexpr auto max_num_car_components_in_car = 4;           // TODO: Move to VehicleObject
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
@@ -49,9 +48,9 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136258> _backupZ;
     static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;                                // total used length of _987C5C
-    static loco_global<uint16_t[max_num_vehicles][max_num_routing_steps], 0x0096885C> _96885C; // Likely routing related
-    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;                               // ?orders? ?routing related?
+    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;                                           // total used length of _987C5C
+    static loco_global<uint16_t[Limits::maxVehicles][Limits::maxRoutingsPerVehicle], 0x0096885C> _96885C; // Likely routing related
+    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;                                          // ?orders? ?routing related?
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
@@ -77,6 +76,20 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
+    // TODO: Move to routing manager
+    static bool isEmptyRoutingSlotAvailable()
+    {
+        for (auto i = 0; i < Limits::maxVehicles; i++)
+        {
+            auto id = _96885C[i][0];
+            if (id == routingNull)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // 0x004B1E44
     static bool isEmptyVehicleSlotAvailable()
     {
@@ -85,13 +98,9 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        for (auto i = 0; i < max_num_vehicles; i++)
+        if (isEmptyRoutingSlotAvailable())
         {
-            auto id = _96885C[i][0];
-            if (id == routingNull)
-            {
-                return true;
-            }
+            return true;
         }
         GameCommands::setErrorText(StringIds::too_many_vehicles);
         return false;
@@ -396,7 +405,9 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
-    static std::optional<uint16_t> sub_4B1E00()
+    // 0x004B1E00
+    // TODO: Move to routing manager
+    static std::optional<RoutingHandle> getAndAllocateFreeRoutingHandle()
     {
         if (!aiIsBelowVehicleLimit())
         {
@@ -404,20 +415,17 @@ namespace OpenLoco::Vehicles
         }
 
         // ?Routing? related. Max 64 routing stops.
-        for (auto i = 0; i < max_num_vehicles; i++)
+        for (auto i = 0; i < Limits::maxVehicles; i++)
         {
             auto id = _96885C[i][0];
             if (id == routingNull)
             {
-                for (auto j = 0; j < max_num_routing_steps; ++j)
-                {
-                    _96885C[i][j] = allocated_but_free_routing_station;
-                }
-                return { i };
+                std::fill(std::begin(_96885C[i]), std::end(_96885C[i]), allocated_but_free_routing_station);
+                return { RoutingHandle(i, 0) };
             }
         }
         GameCommands::setErrorText(StringIds::too_many_vehicles);
-        return {};
+        return std::nullopt;
     }
 
     static void sub_470312(VehicleHead* const newHead)
@@ -432,7 +440,7 @@ namespace OpenLoco::Vehicles
     // 0x004B64F9
     static uint16_t createUniqueTypeNumber(const VehicleType type)
     {
-        std::array<bool, max_num_vehicles> _unkArr{};
+        std::array<bool, Limits::maxVehicles> _unkArr{};
         for (auto v : EntityManager::VehicleList())
         {
             if (v->owner == _updating_company_id && v->vehicleType == type)
@@ -454,7 +462,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE34B
-    static VehicleHead* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
+    static VehicleHead* createHead(const uint8_t trackType, const TransportMode mode, const RoutingHandle routingHandle, const VehicleType vehicleType)
     {
         auto* const newHead = createVehicleThing<VehicleHead>();
         EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicleHead);
@@ -469,7 +477,7 @@ namespace OpenLoco::Vehicles
         newHead->remainingDistance = 0;
         newHead->subPosition = 0;
         newHead->var_2C = TrackAndDirection(0, 0);
-        newHead->routingHandle = RoutingHandle(orderId, 0);
+        newHead->routingHandle = routingHandle;
         newHead->var_14 = 0;
         newHead->var_09 = 0;
         newHead->var_15 = 0;
@@ -601,13 +609,13 @@ namespace OpenLoco::Vehicles
             return {};
         }
 
-        auto orderId = sub_4B1E00();
-        if (!orderId)
+        auto routingHandle = getAndAllocateFreeRoutingHandle();
+        if (!routingHandle)
         {
             return {};
         }
 
-        auto* head = createHead(trackType, mode, *orderId, type);
+        auto* head = createHead(trackType, mode, *routingHandle, type);
         VehicleBase* lastVeh = head;
         if (lastVeh == nullptr) // Can never happen
         {
@@ -653,14 +661,11 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B1E77
-    // Free orderId?
-    static void sub_4B1E77(const RoutingHandle routing)
+    // TODO: Move to routing manager
+    static void freeRoutingHandle(const RoutingHandle routing)
     {
-        const uint16_t baseOrderId = routing.getVehicleRef();
-        for (auto i = 0; i < max_num_routing_steps; ++i)
-        {
-            _96885C[baseOrderId][i] = routingNull;
-        }
+        const uint16_t vehicleRef = routing.getVehicleRef();
+        std::fill(std::begin(_96885C[vehicleRef]), std::end(_96885C[vehicleRef]), routingNull);
     }
 
     static void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
@@ -744,7 +749,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 // Cleanup and delete base vehicle before exit.
-                sub_4B1E77(_head->routingHandle);
+                freeRoutingHandle(_head->routingHandle);
                 sub_470334(_head);
                 sub_42851C(_head->id, 3);
                 auto veh1 = _head->nextVehicleComponent();

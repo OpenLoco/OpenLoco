@@ -1,24 +1,23 @@
 #pragma once
-#include <cstdint>
+#include "../Limits.h"
 
 namespace OpenLoco::Vehicles
 {
-    constexpr auto max_num_routing_steps = 64;
 #pragma pack(push, 1)
     struct RoutingHandle
     {
         uint16_t _data;
         constexpr RoutingHandle(const uint16_t vehicleRef, const uint8_t index)
-            : _data((vehicleRef * max_num_routing_steps) | index)
+            : _data((vehicleRef * Limits::maxRoutingsPerVehicle) | index)
         {
         }
 
-        constexpr uint16_t getVehicleRef() const { return _data / max_num_routing_steps; }
-        constexpr uint8_t getIndex() const { return _data % max_num_routing_steps; }
+        constexpr uint16_t getVehicleRef() const { return _data / Limits::maxRoutingsPerVehicle; }
+        constexpr uint8_t getIndex() const { return _data % Limits::maxRoutingsPerVehicle; }
         constexpr void setIndex(uint8_t newIndex)
         {
-            _data &= ~(max_num_routing_steps - 1);
-            _data |= newIndex & (max_num_routing_steps - 1);
+            _data &= ~(Limits::maxRoutingsPerVehicle - 1);
+            _data |= newIndex & (Limits::maxRoutingsPerVehicle - 1);
         }
 
         bool operator==(const RoutingHandle other) { return _data == other._data; }
