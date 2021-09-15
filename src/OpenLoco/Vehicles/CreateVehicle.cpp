@@ -28,7 +28,6 @@ namespace OpenLoco::Vehicles
 {
     constexpr uint32_t max_orders = 256000;
     constexpr auto max_num_vehicles = 1000;
-    constexpr auto max_num_routing_steps = 64;
     constexpr auto max_ai_vehicles = 500;
     constexpr auto max_num_car_components_in_car = 4;           // TODO: Move to VehicleObject
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
@@ -139,9 +138,9 @@ namespace OpenLoco::Vehicles
         newBogie->tile_x = -1;
         newBogie->tile_y = 0;
         newBogie->tile_base_z = 0;
-        newBogie->var_2E = 0;
+        newBogie->subPosition = 0;
         newBogie->var_2C = TrackAndDirection(0, 0);
-        newBogie->var_36 = lastVeh->getVar36();
+        newBogie->routingHandle = lastVeh->getRoutingHandle();
         newBogie->object_id = vehicleTypeId;
 
         auto& prng = gPrng();
@@ -258,9 +257,9 @@ namespace OpenLoco::Vehicles
         newBody->tile_x = -1;
         newBody->tile_y = 0;
         newBody->tile_base_z = 0;
-        newBody->var_2E = 0;
+        newBody->subPosition = 0;
         newBody->var_2C = TrackAndDirection(0, 0);
-        newBody->var_36 = lastVeh->getVar36();
+        newBody->routingHandle = lastVeh->getRoutingHandle();
         newBody->var_38 = Flags38::unk_0; // different to create bogie
         newBody->object_id = vehicleTypeId;
 
@@ -467,10 +466,10 @@ namespace OpenLoco::Vehicles
         newHead->tile_x = -1;
         newHead->tile_y = 0;
         newHead->tile_base_z = 0;
-        newHead->var_28 = 0;
-        newHead->var_2E = 0;
+        newHead->remainingDistance = 0;
+        newHead->subPosition = 0;
         newHead->var_2C = TrackAndDirection(0, 0);
-        newHead->var_36 = orderId * max_num_routing_steps;
+        newHead->routingHandle = RoutingHandle(orderId, 0);
         newHead->var_14 = 0;
         newHead->var_09 = 0;
         newHead->var_15 = 0;
@@ -505,10 +504,10 @@ namespace OpenLoco::Vehicles
         newVeh1->tile_x = -1;
         newVeh1->tile_y = 0;
         newVeh1->tile_base_z = 0;
-        newVeh1->var_28 = 0;
-        newVeh1->var_2E = 0;
+        newVeh1->remainingDistance = 0;
+        newVeh1->subPosition = 0;
         newVeh1->var_2C = TrackAndDirection(0, 0);
-        newVeh1->var_36 = lastVeh->getVar36();
+        newVeh1->routingHandle = lastVeh->getRoutingHandle();
         newVeh1->var_14 = 0;
         newVeh1->var_09 = 0;
         newVeh1->var_15 = 0;
@@ -536,10 +535,10 @@ namespace OpenLoco::Vehicles
         newVeh2->tile_x = -1;
         newVeh2->tile_y = 0;
         newVeh2->tile_base_z = 0;
-        newVeh2->var_28 = 0;
-        newVeh2->var_2E = 0;
+        newVeh2->remainingDistance = 0;
+        newVeh2->subPosition = 0;
         newVeh2->var_2C = TrackAndDirection(0, 0);
-        newVeh2->var_36 = lastVeh->getVar36();
+        newVeh2->routingHandle = lastVeh->getRoutingHandle();
         newVeh2->var_14 = 0;
         newVeh2->var_09 = 0;
         newVeh2->var_15 = 0;
@@ -573,10 +572,10 @@ namespace OpenLoco::Vehicles
         newTail->tile_x = -1;
         newTail->tile_y = 0;
         newTail->tile_base_z = 0;
-        newTail->var_28 = 0;
-        newTail->var_2E = 0;
+        newTail->remainingDistance = 0;
+        newTail->subPosition = 0;
         newTail->var_2C = TrackAndDirection(0, 0);
-        newTail->var_36 = lastVeh->getVar36();
+        newTail->routingHandle = lastVeh->getRoutingHandle();
         newTail->var_14 = 0;
         newTail->var_09 = 0;
         newTail->var_15 = 0;
@@ -655,9 +654,9 @@ namespace OpenLoco::Vehicles
 
     // 0x004B1E77
     // Free orderId?
-    static void sub_4B1E77(const uint16_t orderId)
+    static void sub_4B1E77(const RoutingHandle routing)
     {
-        uint16_t baseOrderId = (orderId & ~(0x3F)) / max_num_routing_steps;
+        const uint16_t baseOrderId = routing.getVehicleRef();
         for (auto i = 0; i < max_num_routing_steps; ++i)
         {
             _96885C[baseOrderId][i] = routingNull;
@@ -745,7 +744,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 // Cleanup and delete base vehicle before exit.
-                sub_4B1E77(_head->var_36);
+                sub_4B1E77(_head->routingHandle);
                 sub_470334(_head);
                 sub_42851C(_head->id, 3);
                 auto veh1 = _head->nextVehicleComponent();
@@ -807,7 +806,7 @@ namespace OpenLoco::Vehicles
                 _backupY = train.head->tile_y;
                 _backupZ = train.head->tile_base_z;
                 _backup2C = train.head->var_2C;
-                _backup2E = train.head->var_2E;
+                _backup2E = train.head->subPosition;
                 _backupVeh0 = train.head;
                 train.head->liftUpVehicle();
             }
