@@ -17,6 +17,7 @@
 #include "../Types.hpp"
 #include "../Ui/WindowManager.h"
 #include "Vehicle.h"
+#include "VehicleManager.h"
 #include <numeric>
 #include <utility>
 
@@ -32,9 +33,6 @@ namespace OpenLoco::Vehicles
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
     constexpr auto num_vehicle_components_in_base = 4;          // head unk_1 unk_2 tail
     constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
-    constexpr uint16_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
-    constexpr uint16_t routingNull = -1;                        // Indicates that this array is allocated to a vehicle but no station has been set.
-
     static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<Map::TileElement*, 0x009C68D0> _9C68D0;
@@ -48,9 +46,8 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136258> _backupZ;
     static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;                                           // total used length of _987C5C
-    static loco_global<uint16_t[Limits::maxVehicles][Limits::maxRoutingsPerVehicle], 0x0096885C> _96885C; // Likely routing related
-    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;                                          // ?orders? ?routing related?
+    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;  // total used length of _987C5C
+    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
@@ -76,20 +73,6 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
-    // TODO: Move to routing manager
-    static bool isEmptyRoutingSlotAvailable()
-    {
-        for (size_t i = 0; i < Limits::maxVehicles; i++)
-        {
-            auto id = _96885C[i][0];
-            if (id == routingNull)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     // 0x004B1E44
     static bool isEmptyVehicleSlotAvailable()
     {
@@ -98,7 +81,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        if (isEmptyRoutingSlotAvailable())
+        if (RoutingManager::isEmptyRoutingSlotAvailable())
         {
             return true;
         }
@@ -405,29 +388,6 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
-    // 0x004B1E00
-    // TODO: Move to routing manager
-    static std::optional<RoutingHandle> getAndAllocateFreeRoutingHandle()
-    {
-        if (!aiIsBelowVehicleLimit())
-        {
-            return {};
-        }
-
-        // ?Routing? related. Max 64 routing stops.
-        for (size_t i = 0; i < Limits::maxVehicles; i++)
-        {
-            auto id = _96885C[i][0];
-            if (id == routingNull)
-            {
-                std::fill(std::begin(_96885C[i]), std::end(_96885C[i]), allocated_but_free_routing_station);
-                return { RoutingHandle(static_cast<uint16_t>(i), 0) };
-            }
-        }
-        GameCommands::setErrorText(StringIds::too_many_vehicles);
-        return std::nullopt;
-    }
-
     static void sub_470312(VehicleHead* const newHead)
     {
         _987C5C[_orderTableLength] = 0;
@@ -595,6 +555,23 @@ namespace OpenLoco::Vehicles
         newTail->next_car_id = EntityId::null;
         return newTail;
     }
+
+    static std::optional<RoutingHandle> getAndAllocateFreeRoutingHandle()
+    {
+        if (!aiIsBelowVehicleLimit())
+        {
+            return std::nullopt;
+        }
+        auto res = RoutingManager::getAndAllocateFreeRoutingHandle();
+        if (res.has_value())
+        {
+            return res;
+        }
+
+        GameCommands::setErrorText(StringIds::too_many_vehicles);
+        return std::nullopt;
+    }
+
     // 0x004AE318
     static std::optional<VehicleHead*> createBaseVehicle(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
@@ -658,14 +635,6 @@ namespace OpenLoco::Vehicles
         regs.dl = baseZ;
         regs.ebp = unk1.track._data;
         call(0x004B05E4, regs);
-    }
-
-    // 0x004B1E77
-    // TODO: Move to routing manager
-    static void freeRoutingHandle(const RoutingHandle routing)
-    {
-        const uint16_t vehicleRef = routing.getVehicleRef();
-        std::fill(std::begin(_96885C[vehicleRef]), std::end(_96885C[vehicleRef]), routingNull);
     }
 
     static void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
@@ -749,7 +718,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 // Cleanup and delete base vehicle before exit.
-                freeRoutingHandle(_head->routingHandle);
+                RoutingManager::freeRoutingHandle(_head->routingHandle);
                 sub_470334(_head);
                 sub_42851C(_head->id, 3);
                 auto veh1 = _head->nextVehicleComponent();
