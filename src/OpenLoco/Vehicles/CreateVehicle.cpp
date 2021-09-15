@@ -79,7 +79,7 @@ namespace OpenLoco::Vehicles
     // TODO: Move to routing manager
     static bool isEmptyRoutingSlotAvailable()
     {
-        for (auto i = 0; i < Limits::maxVehicles; i++)
+        for (size_t i = 0; i < Limits::maxVehicles; i++)
         {
             auto id = _96885C[i][0];
             if (id == routingNull)
@@ -415,7 +415,7 @@ namespace OpenLoco::Vehicles
         }
 
         // ?Routing? related. Max 64 routing stops.
-        for (auto i = 0; i < Limits::maxVehicles; i++)
+        for (size_t i = 0; i < Limits::maxVehicles; i++)
         {
             auto id = _96885C[i][0];
             if (id == routingNull)
