@@ -2115,6 +2115,27 @@ namespace OpenLoco::Input
         return MouseButton(regs.eax);
     }
 
+    // 0x004C70F1
+    static MouseButton loc_4C70F1(uint32_t* x, int16_t* y)
+    {
+        sub_407231();
+        Ui::setCursor(CursorId(*_52336C));
+
+        if (Tutorial::state() == Tutorial::State::playing)
+        {
+            *y = Tutorial::nextInput();
+            *x = Tutorial::nextInput();
+        }
+        else
+        {
+            *x = addr<0x05233AE, int32_t>();
+            *y = addr<0x05233B2, int32_t>();
+        }
+
+        _cursorX2 = 0x80000000;
+        return MouseButton::rightReleased;
+    }
+
     // 0x004C6EE6
     MouseButton gameGetNextInput(uint32_t* x, int16_t* y)
     {
@@ -2156,13 +2177,26 @@ namespace OpenLoco::Input
         }
         else
         {
-            registers regs;
-            call(0x004C7014, regs);
+            if (Tutorial::state() == Tutorial::State::playing)
+            {
+                auto button = MouseButton(Tutorial::nextInput());
+                if (button == MouseButton::released)
+                    return loc_4C70F1(x, y);
 
-            *x = regs.eax;
-            *y = regs.bx;
+                // 0x004C704E
+                auto next = Tutorial::nextInput();
+                if (next & 0x80)
+                    return loc_4C70F1(x, y);
 
-            return MouseButton(regs.cx);
+                // 0x004C7085, 0x004C708E
+                *y = Tutorial::nextInput();
+                *x = Tutorial::nextInput();
+            }
+
+            // 0x004C709F, 0x004C70D8
+            addr<0x05233AE, int32_t>() = 0;
+            addr<0x05233B2, int32_t>() = 0;
+            return MouseButton::released;
         }
     }
 }
