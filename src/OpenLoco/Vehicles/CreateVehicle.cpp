@@ -421,7 +421,7 @@ namespace OpenLoco::Vehicles
             if (id == routingNull)
             {
                 std::fill(std::begin(_96885C[i]), std::end(_96885C[i]), allocated_but_free_routing_station);
-                return { RoutingHandle(i, 0) };
+                return { RoutingHandle(static_cast<uint16_t>(i), 0) };
             }
         }
         GameCommands::setErrorText(StringIds::too_many_vehicles);
