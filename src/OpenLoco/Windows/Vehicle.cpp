@@ -3601,7 +3601,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             // Get the movement info for this specific road id
             uint16_t trackAndDirection = roadElement.unkDirection() | (roadElement.roadId() << 3);
-            const auto moveInfoArr = Map::TrackData::getRoadSubPositon(trackAndDirection);
+            const auto moveInfoArr = Map::TrackData::getRoadPlacementSubPositon(trackAndDirection);
 
             // This iterates the movement info trying to find the distance along the road that is as close as possible
             // to the cursors location.
@@ -3665,7 +3665,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             placementArgs->head = head.id;
-            const auto moveInfoArr = Map::TrackData::getRoadSubPositon(placementArgs->trackAndDirection);
+            const auto moveInfoArr = Map::TrackData::getRoadPlacementSubPositon(placementArgs->trackAndDirection);
             const auto& moveInfo = moveInfoArr[placementArgs->trackProgress];
             // TODO: modify getTrackAtCursor to return the viewport then use its rotation
             static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;

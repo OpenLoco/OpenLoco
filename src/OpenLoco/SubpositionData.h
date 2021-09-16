@@ -21,6 +21,7 @@ namespace OpenLoco::Map::TrackData
 #pragma pack(pop)
     static_assert(sizeof(MoveInfo) == 0x8);
 
-    const std::vector<MoveInfo> getTrackSubPositon(uint16_t trackAndDirection);
-    const std::vector<MoveInfo> getRoadSubPositon(uint16_t trackAndDirection);
+    const std::vector<MoveInfo> getTrackSubPositon(const uint16_t trackAndDirection);
+    const std::vector<MoveInfo> getRoadSubPositon(const uint16_t trackAndDirection);
+    const std::vector<MoveInfo> getRoadPlacementSubPositon(const uint16_t trackAndDirection);
 }
