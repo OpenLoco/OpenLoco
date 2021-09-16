@@ -17,6 +17,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 
 ## Bugfixes
 * seifer7
+* Ryan D. (rctdude2)
 
 ## Translations
 * Dutch - Michael Steenbeek (Gymnasiast)

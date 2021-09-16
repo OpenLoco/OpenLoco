@@ -910,7 +910,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void placeHeadquarterGhost(const GameCommands::HeadquarterPlacementArgs& args)
         {
             removeHeadquarterGhost();
-            auto flags = GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6;
+            auto flags = GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6;
             if (GameCommands::doCommand(args, flags) != GameCommands::FAILURE)
             {
                 _headquarterGhostPlaced = true;
