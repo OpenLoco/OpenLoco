@@ -46,8 +46,8 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
     static loco_global<int16_t, 0x01136168> vehicleUpdate_targetZ;
-    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237; // var_28 related?
-    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238; // var_28 related?
+    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237; // remainingDistance related?
+    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238; // remainingDistance related?
     static loco_global<Status, 0x0113646C> vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> vehicleUpdate_helicopterTargetYaw;
     static loco_global<uint32_t, 0x00525BB0> vehicleUpdate_var_525BB0;
@@ -921,7 +921,7 @@ namespace OpenLoco::Vehicles
     uint8_t VehicleHead::sub_4AA36A()
     {
         Vehicle train(this);
-        if (train.veh2->var_36 != train.veh1->var_36 || train.veh2->var_2E != train.veh1->var_2E)
+        if (train.veh2->routingHandle != train.veh1->routingHandle || train.veh2->subPosition != train.veh1->subPosition)
         {
             train.veh1->timeAtSignal = 0;
             return 0;
@@ -1011,7 +1011,7 @@ namespace OpenLoco::Vehicles
 
         Vehicle train(this);
         auto* vehType2 = train.veh2;
-        if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
+        if (vehType2->routingHandle != routingHandle || vehType2->subPosition != subPosition)
         {
             return true;
         }
@@ -1055,7 +1055,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::landTryBeginUnloading()
     {
         Vehicle train(this);
-        if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
+        if (routingHandle != train.veh2->routingHandle || train.veh2->subPosition != subPosition)
         {
             return true;
         }
@@ -1136,7 +1136,7 @@ namespace OpenLoco::Vehicles
         else if (al == 2)
         {
             Vehicle train(this);
-            if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
+            if (routingHandle != train.veh2->routingHandle || train.veh2->subPosition != subPosition)
             {
                 return true;
             }
@@ -1160,7 +1160,7 @@ namespace OpenLoco::Vehicles
         }
         else if (al == 3)
         {
-            if (train.veh2->var_36 != var_36 || train.veh2->var_2E != var_2E)
+            if (train.veh2->routingHandle != routingHandle || train.veh2->subPosition != subPosition)
             {
                 return true;
             }
@@ -1236,7 +1236,7 @@ namespace OpenLoco::Vehicles
                 if (var_0C & Flags0C::manualControl)
                 {
                     auto* vehType2 = train.veh2;
-                    if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
+                    if (vehType2->routingHandle != routingHandle || vehType2->subPosition != subPosition)
                     {
                         return landReverseFromSignal();
                     }
@@ -1261,7 +1261,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(this);
         train.veh1->timeAtSignal = 0;
 
-        if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
+        if (routingHandle != train.veh2->routingHandle || train.veh2->subPosition != subPosition)
         {
             return true;
         }

@@ -22,8 +22,8 @@ namespace OpenLoco::Vehicles
     static loco_global<VehicleBogie*, 0x01136124> vehicleUpdate_frontBogie;
     static loco_global<VehicleBogie*, 0x01136128> vehicleUpdate_backBogie;
     static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
-    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // var_28 related?
-    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // var_28 related?
+    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // remainingDistance related?
+    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // remainingDistance related?
     static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C;     // var_2C related?
     static loco_global<bool[44], 0x004F8A7C> trackIdToSparkDirection;  // bools true for right false for left
     static loco_global<bool, 0x00525FAE> trafficHandedness;            // boolean true for right false for left
@@ -168,7 +168,7 @@ namespace OpenLoco::Vehicles
                 ah = vehicle_arr_4F865C[frontBogie->var_2C.track._data >> 2];
                 if ((frontBogie->var_2C.track.id() == 12) || (frontBogie->var_2C.track.id() == 13))
                 {
-                    if (frontBogie->var_2E >= 48)
+                    if (frontBogie->subPosition >= 48)
                     {
                         ah = -ah;
                     }

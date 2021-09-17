@@ -359,6 +359,7 @@
     <ClInclude Include="Utility\String.hpp" />
     <ClInclude Include="Utility\Yaml.hpp" />
     <ClInclude Include="Vehicles\Orders.h" />
+    <ClInclude Include="Vehicles\Routing.h" />
     <ClInclude Include="Vehicles\Vehicle.h" />
     <ClInclude Include="Vehicles\VehicleManager.h" />
     <ClInclude Include="Viewport.hpp" />

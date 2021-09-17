@@ -11,17 +11,16 @@ namespace OpenLoco::Vehicles
     struct VehicleCommon : VehicleBase
     {
         uint8_t pad_24[0x24 - 0x22];
-        EntityId head;   // 0x26
-        uint16_t var_28; // 0x28
-        uint8_t pad_2A[0x2C - 0x2A];
-        uint16_t var_2C;     // 0x2C
-        uint16_t var_2E;     // 0x2E
-        int16_t tile_x;      // 0x30
-        int16_t tile_y;      // 0x32
-        uint8_t tile_base_z; // 0x34
-        uint8_t track_type;  // 0x35 field same in all vehicles
-        uint16_t var_36;     // 0x36 field same in all vehicles
-        uint8_t var_38;      // 0x38
+        EntityId head;               // 0x26
+        uint32_t remainingDistance;  // 0x28
+        TrackAndDirection var_2C;    // 0x2C
+        uint16_t subPosition;        // 0x2E
+        int16_t tile_x;              // 0x30
+        int16_t tile_y;              // 0x32
+        uint8_t tile_base_z;         // 0x34
+        uint8_t track_type;          // 0x35 field same in all vehicles
+        RoutingHandle routingHandle; // 0x36 field same in all vehicles
+        uint8_t var_38;              // 0x38
         uint8_t pad_39;
         EntityId next_car_id; // 0x3A
         uint8_t pad_3C[0x42 - 0x3C];
@@ -59,10 +58,10 @@ namespace OpenLoco::Vehicles
         return veh->track_type;
     }
 
-    uint16_t VehicleBase::getVar36() const
+    RoutingHandle VehicleBase::getRoutingHandle() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->var_36;
+        return veh->routingHandle;
     }
 
     EntityId VehicleBase::getHead() const
