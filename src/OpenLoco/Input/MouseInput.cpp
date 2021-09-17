@@ -2149,7 +2149,7 @@ namespace OpenLoco::Input
         if (!hasFlag(Flags::flag5))
         {
             QueuedMouseInput* input = dequeueMouseInput();
-            MouseButton button = MouseButton::released;
+            MouseButton button{};
             if (Tutorial::state() == Tutorial::State::playing)
             {
                 if (input == nullptr)
@@ -2164,6 +2164,7 @@ namespace OpenLoco::Input
                 // 0x004C6FCE
                 *x = _cursorX2;
                 *y = _cursorY2;
+                button = MouseButton::released;
 
                 if (*x == 0x80000000)
                     return button;
@@ -2180,15 +2181,28 @@ namespace OpenLoco::Input
                 else
                 {
                     // 0x004C6F87
+                    switch (input->button)
+                    {
+                        case 1:
+                            button = MouseButton::leftPressed;
+                            break;
+                        case 2:
+                            button = MouseButton::rightPressed;
+                            break;
+                        case 3:
+                            button = MouseButton::leftReleased;
+                            break;
+                        default:
+                            button = MouseButton::rightReleased;
+                    }
                     *x = input->x;
                     *y = input->y;
-                    button = MouseButton(input->button);
                 }
             }
 
             // 0x004C6FE4
             *x = std::clamp<uint16_t>(*x, 0, Ui::width() - 1);
-            *y = std::clamp<uint16_t>(*x, 0, Ui::height() - 1);
+            *y = std::clamp<uint16_t>(*y, 0, Ui::height() - 1);
             return button;
         }
         else
