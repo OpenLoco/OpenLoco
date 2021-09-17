@@ -2109,8 +2109,8 @@ namespace OpenLoco::Input
 
     struct QueuedMouseInput
     {
-        uint32_t y;
         uint32_t x;
+        uint32_t y;
         uint32_t button;
     };
 
@@ -2130,8 +2130,8 @@ namespace OpenLoco::Input
 
         if (Tutorial::state() == Tutorial::State::playing)
         {
-            *y = Tutorial::nextInput();
             *x = Tutorial::nextInput();
+            *y = Tutorial::nextInput();
         }
         else
         {
@@ -2175,8 +2175,8 @@ namespace OpenLoco::Input
                 {
                     // 0x004C6F6C
                     button = MouseButton(Tutorial::nextInput());
-                    *y = Tutorial::nextInput();
                     *x = Tutorial::nextInput();
+                    *y = Tutorial::nextInput();
                 }
                 else
                 {
@@ -2219,8 +2219,8 @@ namespace OpenLoco::Input
                     return loc_4C70F1(x, y);
 
                 // 0x004C7085, 0x004C708E
-                *y = Tutorial::nextInput();
                 *x = Tutorial::nextInput();
+                *y = Tutorial::nextInput();
             }
 
             // 0x004C709F, 0x004C70D8
