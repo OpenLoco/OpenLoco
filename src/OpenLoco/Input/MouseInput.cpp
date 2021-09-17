@@ -2135,8 +2135,8 @@ namespace OpenLoco::Input
         }
         else
         {
-            *x = addr<0x05233AE, int32_t>();
-            *y = addr<0x05233B2, int32_t>();
+            *x = _5233AE;
+            *y = _5233B2;
         }
 
         _cursorX2 = 0x80000000;
@@ -2224,8 +2224,8 @@ namespace OpenLoco::Input
             }
 
             // 0x004C709F, 0x004C70D8
-            addr<0x05233AE, int32_t>() = 0;
-            addr<0x05233B2, int32_t>() = 0;
+            _5233AE = 0;
+            _5233B2 = 0;
             return MouseButton::released;
         }
     }
