@@ -57,9 +57,19 @@ namespace OpenLoco::Config
     // 0x00441A6C
     LocoConfig& read()
     {
+        auto configPath = Environment::getPathNoWarning(Environment::path_id::gamecfg);
+
+        // No config file? Use defaults.
+        if (!fs::exists(configPath))
+        {
+            setDefaultsLegacyConfig();
+            _50AEAD = 1;
+            return _config;
+        }
+
         std::ifstream stream;
         stream.exceptions(std::ifstream::failbit);
-        stream.open(Environment::getPathNoWarning(Environment::path_id::gamecfg), std::ios::in | std::ios::binary);
+        stream.open(configPath, std::ios::in | std::ios::binary);
         if (stream.is_open())
         {
             uint32_t magicNumber{};
@@ -71,6 +81,7 @@ namespace OpenLoco::Config
             }
         }
 
+        // A valid config file could not be read. Use defaults.
         setDefaultsLegacyConfig();
         _50AEAD = 1;
         return _config;
