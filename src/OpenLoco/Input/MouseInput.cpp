@@ -2107,12 +2107,19 @@ namespace OpenLoco::Input
         ((void (*)(int))0x00406FEC)(button);
     }
 
+    struct QueuedMouseInput
+    {
+        uint32_t y;
+        uint32_t x;
+        uint32_t button;
+    };
+
     // 0x00407247
-    static MouseButton dequeueMouseInput()
+    static QueuedMouseInput* dequeueMouseInput()
     {
         registers regs;
         call(0x00407247, regs);
-        return MouseButton(regs.eax);
+        return (QueuedMouseInput*)regs.eax;
     }
 
     // 0x004C70F1
@@ -2141,22 +2148,24 @@ namespace OpenLoco::Input
     {
         if (!hasFlag(Flags::flag5))
         {
-            auto button = dequeueMouseInput();
+            QueuedMouseInput* input = dequeueMouseInput();
+            MouseButton button = MouseButton::released;
             if (Tutorial::state() == Tutorial::State::playing)
             {
-                if (button == MouseButton::released)
+                if (input == nullptr)
                     button = MouseButton(Tutorial::nextInput());
                 else
                     Tutorial::stop();
             }
 
-            if (button == MouseButton::released)
+            // 0x004C6F5F
+            if (input == nullptr)
             {
                 // 0x004C6FCE
                 *x = _cursorX2;
                 *y = _cursorY2;
 
-                if (*x != 0x80000000)
+                if (*x == 0x80000000)
                     return button;
             }
             else
@@ -2167,6 +2176,13 @@ namespace OpenLoco::Input
                     button = MouseButton(Tutorial::nextInput());
                     *y = Tutorial::nextInput();
                     *x = Tutorial::nextInput();
+                }
+                else
+                {
+                    // 0x004C6F87
+                    *x = input->x;
+                    *y = input->y;
+                    button = MouseButton(input->button);
                 }
             }
 
