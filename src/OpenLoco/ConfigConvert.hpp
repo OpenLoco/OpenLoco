@@ -60,7 +60,7 @@ namespace YAML
         static Node encode(const KeyboardShortcut& rhs)
         {
             std::string keyName = "";
-            if (!rhs.keyCode)
+            if (rhs.keyCode == 0xFFFFFFFF)
                 return Node(keyName);
 
             if (rhs.modifiers & KeyModifier::shift)
