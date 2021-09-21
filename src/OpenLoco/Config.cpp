@@ -57,20 +57,27 @@ namespace OpenLoco::Config
     // 0x00441A6C
     LocoConfig& read()
     {
-        std::ifstream stream;
-        stream.exceptions(std::ifstream::failbit);
-        stream.open(Environment::getPathNoWarning(Environment::path_id::gamecfg), std::ios::in | std::ios::binary);
-        if (stream.is_open())
+        auto configPath = Environment::getPathNoWarning(Environment::path_id::gamecfg);
+
+        // Read config file if present.
+        if (fs::exists(configPath))
         {
-            uint32_t magicNumber{};
-            stream.read(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
-            if (magicNumber == _legacyConfigMagicNumber)
+            std::ifstream stream;
+            stream.exceptions(std::ifstream::failbit);
+            stream.open(configPath, std::ios::in | std::ios::binary);
+            if (stream.is_open())
             {
-                stream.read(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
-                return _config;
+                uint32_t magicNumber{};
+                stream.read(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
+                if (magicNumber == _legacyConfigMagicNumber)
+                {
+                    stream.read(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
+                    return _config;
+                }
             }
         }
 
+        // A valid config file could not be read. Use defaults.
         setDefaultsLegacyConfig();
         _50AEAD = 1;
         return _config;
@@ -97,12 +104,30 @@ namespace OpenLoco::Config
         writeNewConfig();
     }
 
+    static void readShortcutConfig(YAML::Node scNode)
+    {
+        const auto& shortcutDefs = Input::ShortcutManager::getList();
+        auto& shortcuts = _new_config.shortcuts;
+        for (size_t i = 0; i < std::size(shortcuts); i++)
+        {
+            auto& def = shortcutDefs[i];
+            if (scNode && scNode.IsMap() && scNode[def.configName])
+                shortcuts[i] = scNode[def.configName].as<KeyboardShortcut>();
+            else
+                shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
+        }
+    }
+
     NewConfig& readNewConfig()
     {
         auto configPath = Environment::getPathNoWarning(Environment::path_id::openloco_yml);
 
+        // No config file? Use defaults.
         if (!fs::exists(configPath))
+        {
+            readShortcutConfig(YAML::Node());
             return _new_config;
+        }
 
         // On Windows, YAML::LoadFile only supports ANSI paths, so we pass an ifstream instead.
         std::ifstream stream;
@@ -156,17 +181,8 @@ namespace OpenLoco::Config
         if (config["uncapFPS"])
             _new_config.uncapFPS = config["uncapFPS"].as<bool>();
 
-        const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto& scNode = config["shortcuts"];
-        auto& shortcuts = _new_config.shortcuts;
-        for (size_t i = 0; i < std::size(shortcuts); i++)
-        {
-            auto& def = shortcutDefs[i];
-            if (scNode && scNode.IsMap() && scNode[def.configName])
-                shortcuts[i] = scNode[def.configName].as<KeyboardShortcut>();
-            else
-                shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
-        }
+        readShortcutConfig(scNode);
 
         return _new_config;
     }
