@@ -59,25 +59,21 @@ namespace OpenLoco::Config
     {
         auto configPath = Environment::getPathNoWarning(Environment::path_id::gamecfg);
 
-        // No config file? Use defaults.
-        if (!fs::exists(configPath))
+        // Read config file if present.
+        if (fs::exists(configPath))
         {
-            setDefaultsLegacyConfig();
-            _50AEAD = 1;
-            return _config;
-        }
-
-        std::ifstream stream;
-        stream.exceptions(std::ifstream::failbit);
-        stream.open(configPath, std::ios::in | std::ios::binary);
-        if (stream.is_open())
-        {
-            uint32_t magicNumber{};
-            stream.read(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
-            if (magicNumber == _legacyConfigMagicNumber)
+            std::ifstream stream;
+            stream.exceptions(std::ifstream::failbit);
+            stream.open(configPath, std::ios::in | std::ios::binary);
+            if (stream.is_open())
             {
-                stream.read(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
-                return _config;
+                uint32_t magicNumber{};
+                stream.read(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
+                if (magicNumber == _legacyConfigMagicNumber)
+                {
+                    stream.read(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
+                    return _config;
+                }
             }
         }
 
