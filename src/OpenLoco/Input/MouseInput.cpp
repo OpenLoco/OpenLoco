@@ -2240,15 +2240,14 @@ namespace OpenLoco::Input
                 if (button == MouseButton::released)
                     return loc_4C70F1(x, y);
             }
-
-            if (isRightMouseButtonDown())
+            else if (isRightMouseButtonDown())
                 return loc_4C70F1(x, y);
 
             // 0x004C704E
             if (Tutorial::state() == Tutorial::State::playing)
             {
                 auto next = Tutorial::nextInput();
-                if (next & 0x80)
+                if (!(next & 0x80))
                     return loc_4C70F1(x, y);
             }
             else if (!(addr<0x01140845, uint8_t>() & 0x80))
