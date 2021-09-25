@@ -2166,7 +2166,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004C6EE6
-    MouseButton gameGetNextInput(uint32_t& x, int16_t& y)
+    MouseButton nextMouseInput(uint32_t& x, int16_t& y)
     {
         if (!hasFlag(Flags::flag5))
         {

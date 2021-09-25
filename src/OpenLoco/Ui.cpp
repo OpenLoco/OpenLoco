@@ -974,7 +974,7 @@ namespace OpenLoco::Ui
             uint32_t x;
             int16_t y;
             Input::MouseButton state;
-            while ((state = Input::gameGetNextInput(x, y)) != Input::MouseButton::released)
+            while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
             {
                 if (isTitleMode() && Intro::isActive() && state == Input::MouseButton::leftPressed)
                 {
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui
         uint32_t x;
         int16_t y;
         Input::MouseButton state;
-        while ((state = Input::gameGetNextInput(x, y)) != Input::MouseButton::released)
+        while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
         {
             Input::handleMouse(x, y, state);
         }

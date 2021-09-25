@@ -126,5 +126,5 @@ namespace OpenLoco::Input
     void setRightMouseButtonDown(bool status);
 
     void enqueueMouseButton(int32_t button);
-    MouseButton gameGetNextInput(uint32_t& x, int16_t& y);
+    MouseButton nextMouseInput(uint32_t& x, int16_t& y);
 }
