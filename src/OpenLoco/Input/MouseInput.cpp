@@ -2135,15 +2135,15 @@ namespace OpenLoco::Input
     }
 
     // 0x004C6FCE
-    static MouseButton loc_4C6FCE(uint32_t* x, int16_t* y)
+    static MouseButton loc_4C6FCE(uint32_t& x, int16_t& y)
     {
-        *x = _cursorX2;
-        *y = _cursorY2;
+        x = _cursorX2;
+        y = _cursorY2;
         return MouseButton::released;
     }
 
     // 0x004C70F1
-    static MouseButton loc_4C70F1(uint32_t* x, int16_t* y)
+    static MouseButton loc_4C70F1(uint32_t& x, int16_t& y)
     {
         sub_407231();
         resetFlag(Flags::flag5);
@@ -2151,13 +2151,13 @@ namespace OpenLoco::Input
 
         if (Tutorial::state() == Tutorial::State::playing)
         {
-            *x = Tutorial::nextInput();
-            *y = Tutorial::nextInput();
+            x = Tutorial::nextInput();
+            y = Tutorial::nextInput();
         }
         else
         {
-            *x = _5233AE;
-            *y = _5233B2;
+            x = _5233AE;
+            y = _5233B2;
         }
 
         // 0x004C7136, 0x004C7165
@@ -2166,7 +2166,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004C6EE6
-    MouseButton gameGetNextInput(uint32_t* x, int16_t* y)
+    MouseButton gameGetNextInput(uint32_t& x, int16_t& y)
     {
         if (!hasFlag(Flags::flag5))
         {
@@ -2187,13 +2187,13 @@ namespace OpenLoco::Input
                 if (button != MouseButton::released)
                 {
                     button = MouseButton(Tutorial::nextInput());
-                    *x = Tutorial::nextInput();
-                    *y = Tutorial::nextInput();
+                    x = Tutorial::nextInput();
+                    y = Tutorial::nextInput();
                 }
                 else
                 {
                     button = loc_4C6FCE(x, y);
-                    if (*x == 0x80000000)
+                    if (x == 0x80000000)
                         return button;
                 }
             }
@@ -2202,7 +2202,7 @@ namespace OpenLoco::Input
             else if (input == nullptr)
             {
                 button = loc_4C6FCE(x, y);
-                if (*x == 0x80000000)
+                if (x == 0x80000000)
                     return button;
             }
 
@@ -2223,13 +2223,13 @@ namespace OpenLoco::Input
                     default:
                         button = MouseButton::rightReleased;
                 }
-                *x = input->x;
-                *y = input->y;
+                x = input->x;
+                y = input->y;
             }
 
             // 0x004C6FE4
-            *x = std::clamp<uint16_t>(*x, 0, Ui::width() - 1);
-            *y = std::clamp<uint16_t>(*y, 0, Ui::height() - 1);
+            x = std::clamp<uint16_t>(x, 0, Ui::width() - 1);
+            y = std::clamp<uint16_t>(y, 0, Ui::height() - 1);
             return button;
         }
         else
@@ -2258,13 +2258,13 @@ namespace OpenLoco::Input
             // 0x004C7085
             if (Tutorial::state() == Tutorial::State::playing)
             {
-                *x = Tutorial::nextInput();
-                *y = Tutorial::nextInput();
+                x = Tutorial::nextInput();
+                y = Tutorial::nextInput();
             }
             else
             {
-                *x = _5233AE;
-                *y = _5233B2;
+                x = _5233AE;
+                y = _5233B2;
             }
 
             // 0x004C709F, 0x004C70D8
