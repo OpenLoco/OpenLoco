@@ -2251,7 +2251,7 @@ namespace OpenLoco::Input
                 if (next & 0x80)
                     return loc_4C70F1(x, y);
             }
-            else if (addr<0x01140845, uint8_t>() == 0x80)
+            else if (!(addr<0x01140845, uint8_t>() & 0x80))
             {
                 return loc_4C70F1(x, y);
             }
