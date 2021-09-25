@@ -2239,18 +2239,30 @@ namespace OpenLoco::Input
                 auto button = MouseButton(Tutorial::nextInput());
                 if (button == MouseButton::released)
                     return loc_4C70F1(x, y);
+            }
 
-                // 0x004C704E
+            if (isRightMouseButtonDown())
+                return loc_4C70F1(x, y);
+
+            // 0x004C704E
+            if (Tutorial::state() == Tutorial::State::playing)
+            {
                 auto next = Tutorial::nextInput();
                 if (next & 0x80)
                     return loc_4C70F1(x, y);
+            }
 
-                // 0x004C7085, 0x004C708E
+            // 0x004C7085
+            if (Tutorial::state() == Tutorial::State::playing)
+            {
                 *x = Tutorial::nextInput();
                 *y = Tutorial::nextInput();
             }
-            else if (isRightMouseButtonDown())
-                return loc_4C70F1(x, y);
+            else
+            {
+                *x = _5233AE;
+                *y = _5233B2;
+            }
 
             // 0x004C709F, 0x004C70D8
             _5233AE = 0;
