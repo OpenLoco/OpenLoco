@@ -97,6 +97,8 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x005233B2> _5233B2;
     static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
 
+    static loco_global<uint32_t, 0x005251C8> _rightMouseButtonStatus;
+
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
@@ -2101,6 +2103,16 @@ namespace OpenLoco::Input
         _clickRepeatTicks = ticks;
     }
 
+    bool isRightMouseButtonDown()
+    {
+        return _rightMouseButtonStatus == 0;
+    }
+
+    void setRightMouseButtonDown(bool status)
+    {
+        _rightMouseButtonStatus = status;
+    }
+
     // 0x00406FEC
     void enqueueMouseButton(int32_t button)
     {
@@ -2134,6 +2146,7 @@ namespace OpenLoco::Input
     static MouseButton loc_4C70F1(uint32_t* x, int16_t* y)
     {
         sub_407231();
+        resetFlag(Flags::flag5);
         Ui::setCursor(CursorId(*_52336C));
 
         if (Tutorial::state() == Tutorial::State::playing)
@@ -2147,6 +2160,7 @@ namespace OpenLoco::Input
             *y = _5233B2;
         }
 
+        // 0x004C7136, 0x004C7165
         _cursorX2 = 0x80000000;
         return MouseButton::rightReleased;
     }
@@ -2235,6 +2249,8 @@ namespace OpenLoco::Input
                 *x = Tutorial::nextInput();
                 *y = Tutorial::nextInput();
             }
+            else if (isRightMouseButtonDown())
+                return loc_4C70F1(x, y);
 
             // 0x004C709F, 0x004C70D8
             _5233AE = 0;

@@ -122,6 +122,9 @@ namespace OpenLoco::Input
 
     void setClickRepeatTicks(uint16_t ticks);
 
+    bool isRightMouseButtonDown();
+    void setRightMouseButtonDown(bool status);
+
     void enqueueMouseButton(int32_t button);
     MouseButton gameGetNextInput(uint32_t* x, int16_t* y);
 }

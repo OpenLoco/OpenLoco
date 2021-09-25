@@ -639,7 +639,7 @@ namespace OpenLoco::Ui
                         case SDL_BUTTON_RIGHT:
                             Input::enqueueMouseButton(2);
                             addr<0x0113E0C0, int32_t>() = 1;
-                            addr<0x005251C8, int32_t>() = 1;
+                            setRightMouseButtonDown(true);
                             addr<0x01140845, uint8_t>() = 0x80;
                             break;
                     }
@@ -660,7 +660,7 @@ namespace OpenLoco::Ui
                         case SDL_BUTTON_RIGHT:
                             Input::enqueueMouseButton(4);
                             addr<0x0113E0C0, int32_t>() = 0;
-                            addr<0x005251C8, int32_t>() = 0;
+                            setRightMouseButtonDown(false);
                             addr<0x01140845, uint8_t>() = 0;
                             break;
                     }
