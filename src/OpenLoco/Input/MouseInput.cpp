@@ -2122,6 +2122,14 @@ namespace OpenLoco::Input
         return (QueuedMouseInput*)regs.eax;
     }
 
+    // 0x004C6FCE
+    static MouseButton loc_4C6FCE(uint32_t* x, int16_t* y)
+    {
+        *x = _cursorX2;
+        *y = _cursorY2;
+        return MouseButton::released;
+    }
+
     // 0x004C70F1
     static MouseButton loc_4C70F1(uint32_t* x, int16_t* y)
     {
@@ -2148,56 +2156,61 @@ namespace OpenLoco::Input
     {
         if (!hasFlag(Flags::flag5))
         {
+            // Interrupt tutorial on mouse button input.
             QueuedMouseInput* input = dequeueMouseInput();
+            if (Tutorial::state() == Tutorial::State::playing && input != nullptr)
+            {
+                Tutorial::stop();
+            }
+
+            // If tutorial is playing, follow the recorded mouse coordinates.
             MouseButton button{};
             if (Tutorial::state() == Tutorial::State::playing)
             {
-                if (input == nullptr)
-                    button = MouseButton(Tutorial::nextInput());
-                else
-                    Tutorial::stop();
-            }
+                button = MouseButton(Tutorial::nextInput());
 
-            // 0x004C6F5F
-            if (input == nullptr)
-            {
-                // 0x004C6FCE
-                *x = _cursorX2;
-                *y = _cursorY2;
-                button = MouseButton::released;
-
-                if (*x == 0x80000000)
-                    return button;
-            }
-            else
-            {
-                if (Tutorial::state() == Tutorial::State::playing)
+                // 0x004C6F6C
+                if (button != MouseButton::released)
                 {
-                    // 0x004C6F6C
                     button = MouseButton(Tutorial::nextInput());
                     *x = Tutorial::nextInput();
                     *y = Tutorial::nextInput();
                 }
                 else
                 {
-                    // 0x004C6F87
-                    switch (input->button)
-                    {
-                        case 1:
-                            button = MouseButton::leftPressed;
-                            break;
-                        case 2:
-                            button = MouseButton::rightPressed;
-                            break;
-                        case 3:
-                            button = MouseButton::leftReleased;
-                            break;
-                        default:
-                            button = MouseButton::rightReleased;
-                    }
-                    *x = input->x;
-                    *y = input->y;
+                    button = loc_4C6FCE(x, y);
+                    if (*x == 0x80000000)
+                        return button;
                 }
+            }
+
+            // 0x004C6F5F
+            else if (input == nullptr)
+            {
+                button = loc_4C6FCE(x, y);
+                if (*x == 0x80000000)
+                    return button;
+            }
+
+            else if (input)
+            {
+                // 0x004C6F87
+                switch (input->button)
+                {
+                    case 1:
+                        button = MouseButton::leftPressed;
+                        break;
+                    case 2:
+                        button = MouseButton::rightPressed;
+                        break;
+                    case 3:
+                        button = MouseButton::leftReleased;
+                        break;
+                    default:
+                        button = MouseButton::rightReleased;
+                }
+                *x = input->x;
+                *y = input->y;
             }
 
             // 0x004C6FE4
