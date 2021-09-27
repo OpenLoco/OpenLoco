@@ -2113,18 +2113,20 @@ namespace OpenLoco::Input
         _rightMouseButtonStatus = status;
     }
 
-    // 0x00406FEC
-    void enqueueMouseButton(int32_t button)
-    {
-        ((void (*)(int))0x00406FEC)(button);
-    }
-
+#pragma pack(push, 1)
     struct QueuedMouseInput
     {
         uint32_t x;
         uint32_t y;
         uint32_t button;
     };
+#pragma pack(pop)
+
+    // 0x00406FEC
+    void enqueueMouseButton(int32_t button)
+    {
+        ((void (*)(int))0x00406FEC)(button);
+    }
 
     // 0x00407247
     static QueuedMouseInput* dequeueMouseInput()
@@ -2197,7 +2199,6 @@ namespace OpenLoco::Input
                         return button;
                 }
             }
-
             // 0x004C6F5F
             else if (input == nullptr)
             {
@@ -2205,7 +2206,6 @@ namespace OpenLoco::Input
                 if (x == 0x80000000)
                     return button;
             }
-
             else if (input)
             {
                 // 0x004C6F87
