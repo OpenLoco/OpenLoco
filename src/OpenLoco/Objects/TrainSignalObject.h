@@ -10,11 +10,24 @@ namespace OpenLoco
         struct Context;
     }
 
+    namespace TrainSignalObjectFlags
+    {
+        constexpr uint16_t isLeft = 1 << 0;
+        constexpr uint16_t hasLights = 1 << 1;
+    }
+
+    namespace TrainSignal::ImageIds
+    {
+        constexpr uint32_t redLights = 80;
+        constexpr uint32_t redLights2 = 88;
+        constexpr uint32_t greenLights = 96;
+        constexpr uint32_t greenLights2 = 104;
+    }
 #pragma pack(push, 1)
     struct TrainSignalObject
     {
         string_id name;
-        uint16_t track_side;       // 0x02
+        uint16_t flags;            // 0x02
         uint8_t animationSpeed;    // 0x04
         uint8_t num_frames;        // 0x05
         uint16_t cost_factor;      // 0x06

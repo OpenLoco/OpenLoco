@@ -6,6 +6,7 @@
 #include "../Station.h"
 #include "../Ui.h"
 #include "Paint.h"
+#include "PaintSignal.h"
 #include "PaintTree.h"
 
 using namespace OpenLoco::Interop;
@@ -136,16 +137,6 @@ namespace OpenLoco::Paint
         regs.ecx = (session.getRotation() + elStation.rotation()) & 0x3;
         regs.dx = elStation.baseZ() * 4;
         call(0x0048B313, regs);
-    }
-
-    // 0x0048864C
-    static void paintSignal(PaintSession& session, Map::SignalElement& elSignal)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elSignal);
-        regs.ecx = (session.getRotation() + (elSignal.data()[0] & 0x3)) & 0x3;
-        regs.dx = elSignal.baseZ() * 4;
-        call(0x0048864C, regs);
     }
 
     // 0x0042C6C4

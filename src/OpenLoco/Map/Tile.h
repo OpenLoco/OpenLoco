@@ -294,17 +294,33 @@ namespace OpenLoco::Map
 
     struct SignalElement : public TileElementBase
     {
+        struct Side
+        {
+        private:
+            uint8_t _4;
+            uint8_t _5;
+
+        public:
+            bool hasSignal() const { return _4 & 0x80; }
+            uint8_t signalObjectId() const { return _4 & 0xF; } // _4l
+            uint8_t frame() const { return _5 & 0xF; }          // _5l
+            bool hasRedLight() const { return _5 & 0x40; }      // TBC colours
+            bool hasRedLight2() const { return _5 & 0x10; }     // TBC colours
+            bool hasGreenLight() const { return _5 & 0x80; }    // TBC colours
+            bool hasGreenLight2() const { return _5 & 0x20; }   // TBC colours
+        };
+
     private:
-        uint8_t _4;
-        uint8_t _5;
-        uint8_t _6;
-        uint8_t _7;
+        Side sides[2];
 
     public:
-        bool hasLeftSignal() const { return _4 & 0x80; }
-        uint8_t leftSignalObjectId() const { return _4 & 0xF; } // _4l
-        bool hasRightSignal() const { return _6 & 0x80; }
-        uint8_t rightSignalObjectId() const { return _6 & 0xF; } // _6l
+        uint8_t rotation() const { return _type & 0x3; }
+        bool isLeftGhost() const { return _type & 0x80; }
+        bool isRightGhost() const { return _type & 0x40; }
+        Side& getLeft() { return sides[0]; }
+        Side& getRight() { return sides[1]; }
+        const Side& getLeft() const { return sides[0]; }
+        const Side& getRight() const { return sides[1]; }
     };
 
     struct RoadElement : public TileElementBase

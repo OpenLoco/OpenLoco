@@ -108,6 +108,7 @@
     <ClCompile Include="Paint\Paint.cpp" />
     <ClCompile Include="Paint\PaintEntity.cpp" />
     <ClCompile Include="Paint\PaintMiscEntity.cpp" />
+    <ClCompile Include="Paint\PaintSignal.cpp" />
     <ClCompile Include="Paint\PaintTile.cpp" />
     <ClCompile Include="Paint\PaintTree.cpp" />
     <ClCompile Include="Paint\PaintVehicle.cpp" />
@@ -320,6 +321,7 @@
     <ClInclude Include="Paint\Paint.h" />
     <ClInclude Include="Paint\PaintEntity.h" />
     <ClInclude Include="Paint\PaintMiscEntity.h" />
+    <ClInclude Include="Paint\PaintSignal.h" />
     <ClInclude Include="Paint\PaintTile.h" />
     <ClInclude Include="Paint\PaintTree.h" />
     <ClInclude Include="Paint\PaintVehicle.h" />
