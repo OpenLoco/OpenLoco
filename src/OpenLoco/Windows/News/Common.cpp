@@ -59,59 +59,25 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         _activeMessageIndex = messageIndex;
 
-        auto activeMessage = news->type;
+        const auto& mtd = getMessageTypeDescriptor(news->type);
 
         if (!isOld)
         {
-            NewsItemSubType messageSubTypes[31] = {
-                NewsItemSubType::advice,
-                NewsItemSubType::general,
-                NewsItemSubType::advice,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::advice,
-                NewsItemSubType::advice,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::advice,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::minorCompany,
-                NewsItemSubType::general,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::general,
-                NewsItemSubType::general,
-                NewsItemSubType::general,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompetitor,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompany,
-                NewsItemSubType::majorCompetitor,
-            };
+            auto messageSubType = mtd.criticality;
 
-            auto messageSubType = messageSubTypes[activeMessage];
-
-            if (messageSubType == NewsItemSubType::majorCompany)
+            if (messageSubType == MessageCriticality::majorCompany)
             {
                 if (news->companyId != _playerCompany)
                 {
-                    messageSubType = NewsItemSubType::majorCompetitor;
+                    messageSubType = MessageCriticality::majorCompetitor;
                 }
             }
 
-            if (messageSubType == NewsItemSubType::minorCompany)
+            if (messageSubType == MessageCriticality::minorCompany)
             {
                 if (news->companyId != _playerCompany)
                 {
-                    messageSubType = NewsItemSubType::minorCompetitor;
+                    messageSubType = MessageCriticality::minorCompetitor;
                 }
             }
 
@@ -155,41 +121,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (news->companyId == CompanyId::null || news->companyId == _playerCompany)
             {
-                Audio::SoundId messageSounds[31] = {
-                    Audio::SoundId::notification,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::newsOooh,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::newsOooh,
-                    Audio::SoundId::newsOooh,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::notification,
-                    Audio::SoundId::newsAwww,
-                    Audio::SoundId::applause2,
-                    Audio::SoundId::newsOooh
-                };
-
-                soundId = messageSounds[activeMessage];
+                soundId = mtd.sound;
             }
 
             if (soundId != Audio::SoundId::null)
@@ -199,7 +131,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        if (_word_4F8BE4[activeMessage] & (1 << 1))
+        if (mtd.hasFlag(MessageTypeFlags::unk1))
         {
             uint32_t flags = WindowFlags::stick_to_front | WindowFlags::viewport_no_scrolling | WindowFlags::transparent | WindowFlags::no_background;
 

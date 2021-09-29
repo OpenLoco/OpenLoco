@@ -36,7 +36,7 @@ namespace OpenLoco::Config
         newsWindow,
     };
 
-    constexpr auto newsItemSubTypeCount = 6;
+    constexpr auto messageCriticalityCount = 6;
 
     enum class ScreenMode
     {
@@ -61,39 +61,39 @@ namespace OpenLoco::Config
             uint8_t var_1;
         };
 
-        uint32_t flags;                               // 0x50AEB4, 0x00
-        int16_t resolution_width;                     // 0x50AEB8, 0x04
-        int16_t resolution_height;                    // 0x50AEBA, 0x06
-        uint16_t backup_resolution_width;             // 0x50AEBC, 0x08
-        uint16_t backup_resolution_height;            // 0x50AEBE, 0x10
-        uint8_t countdown;                            // 0x50AEC0, 0x0C
-        bool var_0D;                                  // 0x0D
-        uint8_t audio_device_guid[16];                // 0x0E
-        uint8_t var_1E;                               // 0x1E
-        uint32_t force_software_audio_mixer;          // 0x1F
-        uint8_t music_playing;                        // 0x23
-        uint8_t construction_marker;                  // 0x50AED8, 0x24
-        uint8_t max_vehicle_sounds;                   // 0x25
-        uint8_t max_sound_instances;                  // 0x26
-        uint8_t sound_quality;                        // 0x27
-        MeasurementFormat measurement_format;         // 0x50AEDC, 0x28
-        uint8_t pad_29;                               // 0x29
-        KeyboardShortcut keyboard_shortcuts[35];      // 0x2A
-        uint8_t edge_scrolling;                       // 0x70
-        uint8_t vehicles_min_scale;                   // 0x50AF25, 0x71
-        uint8_t var_72;                               // 0x50AF26, 0x72
-        MusicPlaylistType music_playlist;             // 0x50AF27, 0x73
-        uint16_t height_marker_offset;                // 0x50AF28, 0x74
-        NewsType news_settings[newsItemSubTypeCount]; // 0x50AF2A, 0x76
-        ObjectHeader preferred_currency;              // 0x7C
-        uint8_t enabled_music[29];                    // 0x50AF40, 0x8C
-        uint8_t pad_A9[0xCC - 0xA9];                  // 0xA9
-        int32_t volume;                               // 0x50AF80, 0xCC
-        uint32_t connection_timeout;                  // 0xD0
-        char last_host[64];                           // 0xD4
-        uint8_t station_names_min_scale;              // 0x114
-        uint8_t scenario_selected_tab;                // 0x115
-        char preferred_name[256];                     // 0x116
+        uint32_t flags;                                  // 0x50AEB4, 0x00
+        int16_t resolution_width;                        // 0x50AEB8, 0x04
+        int16_t resolution_height;                       // 0x50AEBA, 0x06
+        uint16_t backup_resolution_width;                // 0x50AEBC, 0x08
+        uint16_t backup_resolution_height;               // 0x50AEBE, 0x10
+        uint8_t countdown;                               // 0x50AEC0, 0x0C
+        bool var_0D;                                     // 0x0D
+        uint8_t audio_device_guid[16];                   // 0x0E
+        uint8_t var_1E;                                  // 0x1E
+        uint32_t force_software_audio_mixer;             // 0x1F
+        uint8_t music_playing;                           // 0x23
+        uint8_t construction_marker;                     // 0x50AED8, 0x24
+        uint8_t max_vehicle_sounds;                      // 0x25
+        uint8_t max_sound_instances;                     // 0x26
+        uint8_t sound_quality;                           // 0x27
+        MeasurementFormat measurement_format;            // 0x50AEDC, 0x28
+        uint8_t pad_29;                                  // 0x29
+        KeyboardShortcut keyboard_shortcuts[35];         // 0x2A
+        uint8_t edge_scrolling;                          // 0x70
+        uint8_t vehicles_min_scale;                      // 0x50AF25, 0x71
+        uint8_t var_72;                                  // 0x50AF26, 0x72
+        MusicPlaylistType music_playlist;                // 0x50AF27, 0x73
+        uint16_t height_marker_offset;                   // 0x50AF28, 0x74
+        NewsType news_settings[messageCriticalityCount]; // 0x50AF2A, 0x76
+        ObjectHeader preferred_currency;                 // 0x7C
+        uint8_t enabled_music[29];                       // 0x50AF40, 0x8C
+        uint8_t pad_A9[0xCC - 0xA9];                     // 0xA9
+        int32_t volume;                                  // 0x50AF80, 0xCC
+        uint32_t connection_timeout;                     // 0xD0
+        char last_host[64];                              // 0xD4
+        uint8_t station_names_min_scale;                 // 0x114
+        uint8_t scenario_selected_tab;                   // 0x115
+        char preferred_name[256];                        // 0x116
     };
     static_assert(offsetof(LocoConfig, keyboard_shortcuts) == 0x2A);
     static_assert(offsetof(LocoConfig, preferred_name) == 0x116);

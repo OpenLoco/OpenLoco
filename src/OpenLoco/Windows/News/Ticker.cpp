@@ -171,8 +171,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             return;
 
         auto colour = Colour::getShade(Colour::white, 5);
+        const auto& mtd = getMessageTypeDescriptor(news->type);
 
-        if (!(_word_4F8BE4[news->type] & (1 << 1)))
+        if (!mtd.hasFlag(MessageTypeFlags::unk1))
         {
             colour = Colour::getShade(Colour::salmon_pink, 5);
         }

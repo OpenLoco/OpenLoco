@@ -8,19 +8,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-#pragma pack(push, 1)
-    struct messageItemType
-    {
-        uint8_t type;      // 0x00
-        uint8_t pad_01[3]; // 0x01
-    };
-#pragma pack(pop)
-
-    static loco_global<messageItemType[31], 0x004F8B08> _byte_4F8B08;
-    static loco_global<messageItemType[31], 0x004F8B09> _byte_4F8B09;
-    static loco_global<uint16_t[31], 0x004F8BE4> _word_4F8BE4;
-    static loco_global<uint8_t[31], 0x004F8C22> _messageTypes;
-    static loco_global<uint8_t[31], 0x004F8C41> _messageSounds;
     static loco_global<uint8_t[3], 0x005215B5> _unk_5215B5;
     static loco_global<uint32_t, 0x00523338> _cursorX2;
     static loco_global<uint32_t, 0x0052333C> _cursorY2;
@@ -70,16 +57,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         extern Widget widgets[7];
 
         extern WindowEventList events;
-
-        enum newsItemSubTypes
-        {
-            industry,
-            station,
-            town,
-            vehicle,
-            company,
-            vehicleTab = 7,
-        };
 
         void initEvents();
         void initViewport(Window* self);
