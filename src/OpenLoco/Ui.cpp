@@ -27,6 +27,7 @@
 #include <SDL2/SDL_syswm.h>
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing
 
+#include "CompanyManager.h"
 #include "Config.h"
 #include "Console.h"
 #include "Drawing/FPSCounter.h"
@@ -925,17 +926,17 @@ namespace OpenLoco::Ui
             Windows::CompanyWindow::openAndSetName();
         }
 
-        bool set = _525E28 & (1 << 2);
-        *_525E28 &= ~(1 << 2);
-        if (set)
+        bool needToSetPreferredName = _525E28 & (1 << 2);
+        if (needToSetPreferredName)
         {
             if (!isTitleMode() && !isEditorMode())
             {
                 if (Tutorial::state() == Tutorial::State::none)
                 {
-                    call(0x4C95A6);
+                    CompanyManager::setPreferredName();
                 }
             }
+            *_525E28 &= ~(1 << 2);
         }
 
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_5))
