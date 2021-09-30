@@ -896,7 +896,8 @@ namespace OpenLoco::Ui::WindowManager
         uint32_t flags,
         WindowEventList* events)
     {
-        origin.x = std::clamp<decltype(origin.x)>(origin.x, 0, Ui::width() - size.width);
+        origin.x = std::clamp<decltype(origin.x)>(origin.x, 0, std::max(0, Ui::width() - size.width));
+        origin.y = std::clamp<decltype(origin.y)>(origin.y, 28, std::max(28, Ui::height() - size.height));
 
         return createWindow(type, origin, size, flags, events);
     }

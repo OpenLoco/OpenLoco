@@ -1471,6 +1471,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (_lastMapWindowFlags != 0)
         {
             size = _lastMapWindowSize;
+            size.width = std::clamp<uint16_t>(size.width, 350, Ui::width());
+            size.height = std::clamp<uint16_t>(size.height, 272, Ui::height() - 56);
         }
 
         window = WindowManager::createWindow(WindowType::map, size, 0, &events);
