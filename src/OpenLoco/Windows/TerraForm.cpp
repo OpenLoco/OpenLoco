@@ -125,6 +125,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour) | (1 << plant_cluster_selected) | (1 << plant_cluster_random);
+        const uint64_t holdableWidgets = 0;
 
         Widget widgets[] = {
             commonWidgets(634, 162, StringIds::title_plant_trees),
@@ -1034,6 +1035,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
+        const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::clear_area),
@@ -1224,6 +1226,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material);
+        const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
@@ -1645,6 +1648,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
+        const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_water),
@@ -1927,6 +1931,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
+        const uint64_t holdableWidgets = 0;
 
         Widget widgets[] = {
             commonWidgets(418, 108, StringIds::title_build_walls),
@@ -2390,14 +2395,15 @@ namespace OpenLoco::Ui::Windows::Terraform
             const widx widgetIndex;
             WindowEventList* events;
             const uint64_t enabledWidgets;
+            const uint64_t holdableWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { ClearArea::widgets, widx::tab_clear_area, &ClearArea::events, ClearArea::enabledWidgets },
-            { AdjustLand::widgets, widx::tab_adjust_land, &AdjustLand::events, AdjustLand::enabledWidgets },
-            { AdjustWater::widgets, widx::tab_adjust_water, &AdjustWater::events, AdjustWater::enabledWidgets },
-            { PlantTrees::widgets, widx::tab_plant_trees, &PlantTrees::events, PlantTrees::enabledWidgets },
-            { BuildWalls::widgets, widx::tab_build_walls, &BuildWalls::events, BuildWalls::enabledWidgets },
+            { ClearArea::widgets, widx::tab_clear_area, &ClearArea::events, ClearArea::enabledWidgets, ClearArea::holdableWidgets },
+            { AdjustLand::widgets, widx::tab_adjust_land, &AdjustLand::events, AdjustLand::enabledWidgets, AdjustLand::holdableWidgets },
+            { AdjustWater::widgets, widx::tab_adjust_water, &AdjustWater::events, AdjustWater::enabledWidgets, AdjustWater::holdableWidgets },
+            { PlantTrees::widgets, widx::tab_plant_trees, &PlantTrees::events, PlantTrees::enabledWidgets, PlantTrees::holdableWidgets },
+            { BuildWalls::widgets, widx::tab_build_walls, &BuildWalls::events, BuildWalls::enabledWidgets, BuildWalls::holdableWidgets },
         };
 
         static void onResize(Window* self, uint8_t height)
@@ -2552,7 +2558,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_clear_area];
 
             self->enabled_widgets = tabInfo.enabledWidgets;
-            self->holdable_widgets = 0;
+            self->holdable_widgets = tabInfo.holdableWidgets;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
             self->widgets = tabInfo.widgets;
