@@ -1650,6 +1650,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/RemoveTree.cpp
     void removeTree(registers& regs);
 
+    // Defined in GameCommands/RemoveWall.cpp
+    void removeWall(registers& regs);
+
     // Defined in GameCommands/RenameIndustry.cpp
     void renameIndustry(registers& regs);
 
