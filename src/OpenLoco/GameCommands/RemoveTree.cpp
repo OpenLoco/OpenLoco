@@ -13,7 +13,9 @@ namespace OpenLoco::GameCommands
 {
     /**
      * 0x004BB392
-     * Remove tree?
+     * Remove tree
+     *
+     * This is called when you activate the Plant Trees from the construction (first) menu and you move the cursor over the terrain.
      *
      * @param pos_x @<ax>
      * @param pos_y @<cx>
@@ -21,7 +23,7 @@ namespace OpenLoco::GameCommands
      * @param type @<dh>
      * @param elementType @<bh>
      * @param flags @<bl>
-     * @return @<ebx> - returns 0 if successful; otherwise GameCommands::FAILURE
+     * @return @<ebx> - returns the remove cost if successful; otherwise GameCommands::FAILURE (in the assembly code we never get into failure path)
      */
     static uint32_t removeTree(const Map::Pos3& pos, const uint8_t type, const uint8_t elementType, const uint8_t flags)
     {
