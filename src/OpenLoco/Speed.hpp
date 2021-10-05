@@ -106,7 +106,7 @@ namespace OpenLoco
     // Truncates only use if safe to lose information
     constexpr Speed16 toSpeed16(Speed32 speed)
     {
-        return Speed16(speed.getRaw() / 65535);
+        return Speed16(speed.getRaw() / 65536);
     }
 
     namespace Literals
