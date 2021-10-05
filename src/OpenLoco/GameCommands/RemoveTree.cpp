@@ -11,7 +11,18 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-    // 0x004BB392
+    /**
+     * 0x004BB392
+     * Remove tree?
+     *
+     * @param pos_x @<ax>
+     * @param pos_y @<cx>
+     * @param pos_z @<dl> * 4
+     * @param type @<dh>
+     * @param elementType @<bh>
+     * @param flags @<bl>
+     * @return @<ebx> - returns 0 if successful; otherwise GameCommands::FAILURE
+     */
     static uint32_t removeTree(const Map::Pos3& pos, const uint8_t type, const uint8_t elementType, const uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
