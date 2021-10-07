@@ -264,6 +264,7 @@ namespace OpenLoco::ObjectManager
         return std::make_pair(entry, newEntrySize);
     }
 
+    // Adds a new object to the index by: 1. creating a partial index, 2. validating, 3. creating a full index entry
     static void addObjectToIndex(const fs::path filepath, size_t& usedBufferSize)
     {
         ObjectHeader objHeader{};
@@ -327,14 +328,15 @@ namespace OpenLoco::ObjectManager
         Ui::processMessagesMini();
         const auto progressString = _isFirstTime ? StringIds::starting_for_the_first_time : StringIds::checking_object_files;
         Ui::ProgressBar::begin(progressString);
-        // 0x00112A14C -> 160
-        IndexHeader header{};
-        uint8_t progress = 0;
+
+        // Reset
         reloadAll();
         if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
         {
             free(*_installedObjectList);
         }
+
+        // Prepare initial object list buffer (we will grow this as required)
         size_t bufferSize = 0x4000;
         _installedObjectList = static_cast<std::byte*>(malloc(bufferSize));
         if (_installedObjectList == nullptr)
@@ -343,7 +345,11 @@ namespace OpenLoco::ObjectManager
             exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
             return;
         }
-        size_t usedBufferSize = 0;
+
+        // Create new index by iterating all DAT files and processing
+        IndexHeader header{};
+        uint8_t progress = 0; // Progress is used for the ProgressBar Ui element
+        size_t usedBufferSize = 0; // Keep track of used space to allow for growth and for final sizing
         const auto objectPath = Environment::getPathNoWarning(Environment::path_id::objects);
         for (const auto& file : fs::directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
         {
@@ -358,6 +364,8 @@ namespace OpenLoco::ObjectManager
             }
             Ui::processMessagesMini();
             header.state.numObjects++;
+
+            // Cheap calculation of (curObjectCount / totalObjectCount) * 256
             const auto newProgress = (header.state.numObjects << 8) / ((currentState.numObjects & 0xFFFFFF) + 1);
             if (progress != newProgress)
             {
@@ -365,9 +373,11 @@ namespace OpenLoco::ObjectManager
                 Ui::ProgressBar::setProgress(newProgress);
             }
 
+            // Grow object list buffer if near limit
             const auto remainingBuffer = bufferSize - usedBufferSize;
             if (remainingBuffer < 0x231E)
             {
+                // Original grew buffer at slower rate. Memory is cheap though
                 bufferSize *= 2;
                 _installedObjectList = static_cast<std::byte*>(realloc(*_installedObjectList, bufferSize));
                 if (_installedObjectList == nullptr)
@@ -379,11 +389,12 @@ namespace OpenLoco::ObjectManager
 
             addObjectToIndex(file.path(), usedBufferSize);
         }
+
+        // New index creation completed. Reset and save result.
         reloadAll();
         header.fileSize = usedBufferSize;
         header.numObjects = _installedObjectCount;
         header.state = currentState;
-
         saveIndex(header);
 
         Ui::ProgressBar::end();
