@@ -276,14 +276,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary));
                     Gfx::drawImage(context, xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::saturated_green);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedGreen1);
                     Gfx::drawImage(context, xPos, yPos, image);
                 }
                 else
                 {
                     Gfx::drawImage(context, xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::saturated_green);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedGreen1);
                     Gfx::drawImage(context, xPos, yPos, image);
 
                     image = Gfx::recolourTranslucent(ImageIds::tab, 51);

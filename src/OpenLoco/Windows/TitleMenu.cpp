@@ -168,8 +168,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         window->initScrollWidgets();
 
-        window->setColour(WindowColour::primary, Colour::translucent(Colour::saturated_green));
-        window->setColour(WindowColour::secondary, Colour::translucent(Colour::saturated_green));
+        window->setColour(WindowColour::primary, Colour::translucent(Colour::mutedGreen1));
+        window->setColour(WindowColour::secondary, Colour::translucent(Colour::mutedGreen1));
         window->var_846 = 0;
 
         return window;

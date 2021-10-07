@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         if (!mtd.hasFlag(MessageTypeFlags::unk1))
         {
-            colour = Colour::getShade(Colour::salmon_pink, 5);
+            colour = Colour::getShade(Colour::mutedDarkRed, 5);
         }
 
         Gfx::clearSingle(*clipped, colour);

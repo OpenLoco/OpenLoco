@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         else
         {
             uint32_t flags = WindowFlags::stick_to_front | WindowFlags::viewport_no_scrolling | WindowFlags::transparent;
-            auto colour = Colour::translucent(Colour::salmon_pink);
+            auto colour = Colour::translucent(Colour::mutedDarkRed);
 
             createNewsWindow(News1::windowSize, News1::widgets, colour, isOld, flags);
         }

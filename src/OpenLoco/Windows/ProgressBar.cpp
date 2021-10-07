@@ -117,7 +117,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
             };
 
             auto currentFrame = (_progressBarValue / 4) % std::size(style0Frames);
-            trainImage = Gfx::recolour2(style0Frames.at(currentFrame), Colour::saturated_green, Colour::salmon_pink);
+            trainImage = Gfx::recolour2(style0Frames.at(currentFrame), Colour::mutedGreen1, Colour::mutedDarkRed);
         }
         else
         {
@@ -129,7 +129,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
             };
 
             auto currentFrame = (_progressBarValue / 4) % std::size(style1Frames);
-            trainImage = Gfx::recolour2(style1Frames.at(currentFrame), Colour::black, Colour::dark_green);
+            trainImage = Gfx::recolour2(style1Frames.at(currentFrame), Colour::black, Colour::mutedGreen2);
         }
 
         // Draw the train image from the right of the window,
