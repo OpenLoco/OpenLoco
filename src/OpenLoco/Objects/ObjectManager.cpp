@@ -305,18 +305,22 @@ namespace OpenLoco::ObjectManager
         freeScenarioText();
 
         auto* indexPtr = *_installedObjectList;
+        // This ptr will be pointing at where in the object list to install the new entry
+        auto* installPtr = indexPtr;
         for (uint32_t i = 0; i < _installedObjectCount; i++)
         {
             auto entry = ObjectIndexEntry::read(&indexPtr);
-            if (strcmp(entry._name, newEntry._name) < 0)
+            if (strcmp(newEntry._name, entry._name) < 0)
             {
                 break;
             }
+            // If cmp < 0 then we will want to install at the previous indexPtr location
+            installPtr = indexPtr;
         }
 
-        auto moveSize = usedBufferSize - (indexPtr - *_installedObjectList);
-        std::memmove(indexPtr + newEntrySize, indexPtr, moveSize);
-        std::memcpy(indexPtr, newEntryBuffer, newEntrySize);
+        auto moveSize = usedBufferSize - (installPtr - *_installedObjectList);
+        std::memmove(installPtr + newEntrySize, installPtr, moveSize);
+        std::memcpy(installPtr, newEntryBuffer, newEntrySize);
         usedBufferSize += newEntrySize;
 
         _installedObjectCount++;
@@ -348,7 +352,7 @@ namespace OpenLoco::ObjectManager
 
         // Create new index by iterating all DAT files and processing
         IndexHeader header{};
-        uint8_t progress = 0; // Progress is used for the ProgressBar Ui element
+        uint8_t progress = 0;      // Progress is used for the ProgressBar Ui element
         size_t usedBufferSize = 0; // Keep track of used space to allow for growth and for final sizing
         const auto objectPath = Environment::getPathNoWarning(Environment::path_id::objects);
         for (const auto& file : fs::directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
