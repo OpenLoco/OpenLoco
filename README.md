@@ -52,7 +52,7 @@ It can be bought at e.g. [Steam](https://store.steampowered.com/app/356430/) or 
 # 3 Contributing
 
 We warmly welcome any contributions to the project, e.g. for C++ code (game implementation, bug fixes, features) or localisation (new translations).
-Please have a look at our [issues for newcomers](https://github.com/OpenLoco/OpenLoco/labels/good%20first%20issue).
+Please have a look at our [issues for newcomers](https://github.com/OpenLoco/OpenLoco/issues?q=is%3Aopen+label%3A%22good+first+issue%22%2C%22hacktoberfest%22).
 
 For code contributions, please stick to our [code style](https://github.com/OpenLoco/OpenLoco/wiki/Coding-Style).
 You can use `clang-format` to apply these guidelines automatically.
@@ -96,8 +96,8 @@ Regardless of platform, the following libraries/dependencies are required:
 2. Open a new Developer Command Prompt for VS 2019, then navigate to the repository (e.g. `cd C:\GitHub\OpenLoco`).
 3. Run `msbuild openloco.sln /t:restore;build`
 4. Run `mklink /D bin\data ..\data` or `xcopy data bin\data /EIY`
-5. Run `mklink openloco.exe bin\` or `copy openloco.exe bin\`
-6. Run the game, `bin\openloco`
+5. Run `mklink bin\openloco.exe ..\loco.exe` or `copy loco.exe bin\openloco.exe`
+6. Run the game, `bin\openloco.exe`
 
 ### Alternatively, building using cmake:
 
