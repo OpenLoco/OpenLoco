@@ -145,7 +145,7 @@ namespace OpenLoco::ObjectManager
     // 0x00471712
     static bool hasCustomObjectsInIndex()
     {
-        auto ptr = (std::byte*)_installedObjectList;
+        auto* ptr = *_installedObjectList;
         for (uint32_t i = 0; i < _installedObjectCount; i++)
         {
             auto entry = ObjectIndexEntry::read(&ptr);
@@ -299,7 +299,7 @@ namespace OpenLoco::ObjectManager
 
         // Load full entry into temp buffer.
         // 0x009D1CC8
-        std::byte newEntryBuffer[0x2000];
+        std::byte newEntryBuffer[0x2000] = {};
         const auto [newEntry, newEntrySize] = createNewEntry(newEntryBuffer, objHeader, filepath.filename());
 
         freeScenarioText();
