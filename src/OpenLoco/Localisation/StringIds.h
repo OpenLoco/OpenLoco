@@ -60,6 +60,7 @@ namespace OpenLoco::StringIds
     constexpr string_id month_short_november = 51;
     constexpr string_id month_short_december = 52;
 
+    constexpr string_id unable_to_allocate_enough_memory = 55;
     constexpr string_id close_window_cross = 56;
     constexpr string_id chosen_name_in_use = 57;
     constexpr string_id too_many_names_in_use = 58;
@@ -162,7 +163,8 @@ namespace OpenLoco::StringIds
     constexpr string_id too_many_objects_in_game = 171;
     constexpr string_id menu_rotate_clockwise = 172;
     constexpr string_id menu_rotate_anti_clockwise = 173;
-
+    constexpr string_id starting_for_the_first_time = 174;
+    constexpr string_id checking_object_files = 175;
     constexpr string_id title_load_game = 176;
     constexpr string_id title_quit_game = 177;
     constexpr string_id title_quit_game_alt = 178;

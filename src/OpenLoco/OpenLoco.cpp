@@ -328,22 +328,24 @@ namespace OpenLoco
     }
 
     // 0x004BE621
-    static void exitWithError(string_id eax, string_id ebx)
+    [[noreturn]] void exitWithError(string_id eax, string_id ebx)
     {
         registers regs;
         regs.eax = eax;
         regs.ebx = ebx;
         call(0x004BE621, regs);
+        exitCleanly();
     }
 
     // 0x004BE5EB
-    void exitWithError(string_id message, uint32_t errorCode)
+    [[noreturn]] void exitWithError(string_id message, uint32_t errorCode)
     {
         // Saves the error code for later writing to error log 1.TMP.
         registers regs;
         regs.eax = errorCode;
         regs.bx = message;
         call(0x004BE5EB, regs);
+        exitCleanly();
     }
 
     // 0x004BE65E

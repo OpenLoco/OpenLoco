@@ -258,13 +258,16 @@ namespace OpenLoco::ObjectManager
 #pragma pack(push, 1)
     struct ObjectHeader2
     {
-        uint8_t pad_00[0x04 - 0x00];
+        uint32_t var_00;
     };
 
     struct ObjectHeader3
     {
-        uint32_t var_00;      // image count?
-        uint8_t pad_04[0x08]; // competitor stats?
+        uint32_t var_00;         // image count?
+        uint8_t intelligence;    // 0x4 competitor stats
+        uint8_t aggressiveness;  // 0x5
+        uint8_t competitiveness; // 0x6
+        uint8_t pad_07[0x5];
     };
 
     struct ObjectIndexEntry
