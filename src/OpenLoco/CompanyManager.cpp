@@ -422,6 +422,46 @@ namespace OpenLoco::CompanyManager
         _company_colours[CompanyId::neutral] = 1;
     }
 
+    // 0x004C95A6
+    void setPreferredName()
+    {
+        if (!(Config::get().flags & Config::Flags::usePreferredOwnerName))
+            return;
+
+        // First, set the owner name.
+        GameCommands::setErrorTitle(StringIds::cannot_change_owner_name);
+        {
+            const uint32_t* buffer = reinterpret_cast<uint32_t*>(Config::get().preferred_name);
+            GameCommands::do_31(_updating_company_id, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_31(0, 2, buffer[3], buffer[4], buffer[5]);
+            if (GameCommands::do_31(0, 0, buffer[6], buffer[7], buffer[8]))
+                Ui::Windows::TextInput::cancel();
+        }
+
+        // Only continue if we've not set a custom company name yet.
+        auto* company = get(_updating_company_id);
+        if (company == nullptr || company->name != StringIds::new_company)
+            return;
+
+        // Temporarily store the preferred name in buffer string 2039.
+        char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+        strncpy(buffer_2039, Config::get().preferred_name, 256);
+
+        // Prepare '{NAME} Transport' in a buffer.
+        {
+            char companyName[256] = { 0 };
+            auto args = FormatArguments::common(StringIds::buffer_2039);
+            StringManager::formatString(companyName, StringIds::company_owner_name_transport, &args);
+
+            // Now, set the company name.
+            const uint32_t* buffer = reinterpret_cast<uint32_t*>(companyName);
+            GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
+            GameCommands::do_30(_updating_company_id, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_30(0, 2, buffer[3], buffer[4], buffer[5]);
+            GameCommands::do_30(0, 0, buffer[6], buffer[7], buffer[8]);
+        }
+    }
+
     uint32_t competingColourMask(CompanyId_t companyId)
     {
         const uint32_t similarColourMask[] = {
