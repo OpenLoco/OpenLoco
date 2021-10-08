@@ -39,6 +39,7 @@
     <ClCompile Include="GameCommands\GameCommands.cpp" />
     <ClCompile Include="GameCommands\LoadSaveQuit.cpp" />
     <ClCompile Include="GameCommands\RemoveTree.cpp" />
+    <ClCompile Include="GameCommands\RemoveWall.cpp" />
     <ClCompile Include="GameCommands\RenameIndustry.cpp" />
     <ClCompile Include="GameCommands\RenameStation.cpp" />
     <ClCompile Include="GameCommands\RenameTown.cpp" />

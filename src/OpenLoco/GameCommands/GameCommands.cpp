@@ -79,7 +79,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::changeCompanyName,            nullptr,                   0x00434914, false },
         { GameCommand::changeCompanyOwnerName,       nullptr,                   0x00434A58, false },
         { GameCommand::createWall,                   nullptr,                   0x004C436C, true  },
-        { GameCommand::removeWall,                   nullptr,                   0x004C466C, true  },
+        { GameCommand::removeWall,                   removeWall,                0x004C466C, true  },
         { GameCommand::gc_unk_34,                    nullptr,                   0x004C4717, false },
         { GameCommand::vehicleOrderInsert,           nullptr,                   0x0047036E, false },
         { GameCommand::vehicleOrderDelete,           nullptr,                   0x0047057A, false },
