@@ -1,18 +1,14 @@
 #include "../TrackData.h"
 #include "Vehicle.h"
+#include "VehicleManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    constexpr auto max_num_vehicles = 1000;
-    constexpr auto max_num_routing_steps = 64;
-    constexpr uint16_t allocated_but_free_routing_station = -2;        // Indicates that this array is allocated to a vehicle but no station has been set.
-    constexpr uint16_t routingNull = -1;                               // Indicates that this array is allocated to a vehicle but no station has been set.
     static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
     static loco_global<uint32_t, 0x01136114> vehicleUpdate_var_1136114;
-    static loco_global<uint16_t[max_num_vehicles][max_num_routing_steps], 0x0096885C> _96885C; // Likely routing related
     static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
 
     // 0x0048963F
@@ -86,11 +82,9 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        const auto ref = _96885C[_oldRoutingHandle.getVehicleRef()][_oldRoutingHandle.getIndex()];
+        const auto ref = RoutingManager::getRouting(_oldRoutingHandle);
         TrackAndDirection trackAndDirection((ref & 0x1F8) >> 3, ref & 0x7);
-        const auto vehId = _oldRoutingHandle.getVehicleRef();
-        const auto routeId = _oldRoutingHandle.getIndex();
-        _96885C[vehId][routeId] = allocated_but_free_routing_station;
+        RoutingManager::freeRouting(_oldRoutingHandle);
 
         if (mode == TransportMode::road)
         {
