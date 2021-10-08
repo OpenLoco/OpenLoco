@@ -439,12 +439,13 @@ namespace OpenLoco::CompanyManager
         }
 
         // Only continue if we've not set a custom company name yet.
-        if (get(_updating_company_id)->name != StringIds::new_company)
+        auto* company = get(_updating_company_id);
+        if (company == nullptr || company->name != StringIds::new_company)
             return;
 
         // Temporarily store the preferred name in buffer string 2039.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(buffer_2039, Config::get().preferred_name, 255);
+        strncpy(buffer_2039, Config::get().preferred_name, 256);
 
         // Prepare '{NAME} Transport' in a buffer.
         {
