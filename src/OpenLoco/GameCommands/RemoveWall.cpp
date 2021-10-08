@@ -32,37 +32,37 @@ namespace OpenLoco::GameCommands
      */
     static uint32_t removeWall(const WallRemovalArgs& args, const uint8_t flags)
     {
-        GameCommands::setExpenditureType(ExpenditureType::Construction); // 0x004C466C
+        GameCommands::setExpenditureType(ExpenditureType::Construction);
 
-        GameCommands::setPosition(Map::Pos3(args.pos.x + Map::tile_size / 2, args.pos.y + Map::tile_size / 2, args.pos.z)); // 0x004C4674-0x004C4698
+        GameCommands::setPosition(Map::Pos3(args.pos.x + Map::tile_size / 2, args.pos.y + Map::tile_size / 2, args.pos.z));
 
-        auto tile = Map::TileManager::get(args.pos); // 0x004C46A1-0x004C46B0
+        auto tile = Map::TileManager::get(args.pos);
         for (auto& tileElement : tile)
         {
             auto wallElement = tileElement.asWall();
             if (wallElement == nullptr)
                 continue;
 
-            if (wallElement->baseZ() != args.pos.z / 4) // 0x004C46C0-0x004C46C3
+            if (wallElement->baseZ() != args.pos.z / 4)
                 continue;
 
-            if (wallElement->rotation() != args.rotation) // 0x004C46C5-0x004C46CC
+            if (wallElement->rotation() != args.rotation)
                 continue;
 
-            if ((flags & Flags::flag_6) == 0 && wallElement->isGhost()) // 0x004C46D9-0x004C46E2
+            if ((flags & Flags::flag_6) == 0 && wallElement->isGhost())
                 continue;
 
-            if ((flags & Flags::apply) == 0) // 0x004C46E4-004C46E7
+            if ((flags & Flags::apply) == 0)
             {
                 return 0;
             }
 
-            Ui::ViewportManager::invalidate(args.pos, wallElement->baseZ() * 4, wallElement->baseZ() * 4 + 48, ZoomLevel::half); // 0x004C46E9-0x004C4701
+            Ui::ViewportManager::invalidate(args.pos, wallElement->baseZ() * 4, wallElement->baseZ() * 4 + 48, ZoomLevel::half);
 
-            sub_461760(tileElement); // 0x004C4702
+            sub_461760(tileElement);
 
             auto& options = S5::getOptions();
-            options.madeAnyChanges = 1; // 0x004C4707
+            options.madeAnyChanges = 1;
 
             return 0;
         }
