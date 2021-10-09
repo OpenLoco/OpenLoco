@@ -96,12 +96,6 @@ namespace OpenLoco::Map
             auto array = reinterpret_cast<std::array<uint8_t, 8>*>(this);
             return *array;
         }
-    };
-
-    struct TileElement : public TileElementBase
-    {
-    private:
-        uint8_t pad[4];
 
         template<typename TType>
         const TType* as() const
@@ -128,26 +122,32 @@ namespace OpenLoco::Map
             assert(type() == TType::kElementType);
             return *reinterpret_cast<TType*>(this);
         }
+    };
+
+    struct TileElement : public TileElementBase
+    {
+    private:
+        uint8_t pad[4];
 
     public:
-        const SurfaceElement* asSurface() const { return as<SurfaceElement>(); }
-        SurfaceElement* asSurface() { return as<SurfaceElement>(); }
-        const TrackElement* asTrack() const { return as<TrackElement>(); }
-        TrackElement* asTrack() { return as<TrackElement>(); }
-        const StationElement* asStation() const { return as<StationElement>(); }
-        StationElement* asStation() { return as<StationElement>(); }
-        const SignalElement* asSignal() const { return as<SignalElement>(); }
-        SignalElement* asSignal() { return as<SignalElement>(); }
-        const BuildingElement* asBuilding() const { return as<BuildingElement>(); }
-        BuildingElement* asBuilding() { return as<BuildingElement>(); }
-        const TreeElement* asTree() const { return as<TreeElement>(); }
-        TreeElement* asTree() { return as<TreeElement>(); }
-        const WallElement* asWall() const { return as<WallElement>(); }
-        WallElement* asWall() { return as<WallElement>(); }
-        const RoadElement* asRoad() const { return as<RoadElement>(); }
-        RoadElement* asRoad() { return as<RoadElement>(); }
-        const IndustryElement* asIndustry() const { return as<IndustryElement>(); }
-        IndustryElement* asIndustry() { return as<IndustryElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] const SurfaceElement* asSurface() const { return as<SurfaceElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] SurfaceElement* asSurface() { return as<SurfaceElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] const TrackElement* asTrack() const { return as<TrackElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] TrackElement* asTrack() { return as<TrackElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] const StationElement* asStation() const { return as<StationElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] StationElement* asStation() { return as<StationElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] const SignalElement* asSignal() const { return as<SignalElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] SignalElement* asSignal() { return as<SignalElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] const BuildingElement* asBuilding() const { return as<BuildingElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] BuildingElement* asBuilding() { return as<BuildingElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] const TreeElement* asTree() const { return as<TreeElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] TreeElement* asTree() { return as<TreeElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] const WallElement* asWall() const { return as<WallElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] WallElement* asWall() { return as<WallElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] const RoadElement* asRoad() const { return as<RoadElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] RoadElement* asRoad() { return as<RoadElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] const IndustryElement* asIndustry() const { return as<IndustryElement>(); }
+        [[deprecated("Use as<T> or get<T>")]] IndustryElement* asIndustry() { return as<IndustryElement>(); }
     };
     static_assert(sizeof(TileElement) == 8);
 
