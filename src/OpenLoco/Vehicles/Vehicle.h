@@ -223,7 +223,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicleComponent();
         bool updateComponent();
         void sub_4AA464();
-        void sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection);
+        void sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
         uint32_t sub_4B15FF(uint32_t unk1);
     };
 

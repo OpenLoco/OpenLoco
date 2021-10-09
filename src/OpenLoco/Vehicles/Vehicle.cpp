@@ -95,13 +95,13 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047D959
-    void VehicleBase::sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection)
+    void VehicleBase::sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied)
     {
         registers regs;
         regs.ax = loc.x;
         regs.cx = loc.y;
         regs.dl = loc.z / 4;
-        regs.bp = trackAndDirection._data;
+        regs.ebp = trackAndDirection._data | (setOccupied ? 1 << 31 : 0);
         regs.esi = X86Pointer(this);
         call(0x0047D959, regs);
     }

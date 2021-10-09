@@ -88,7 +88,7 @@ namespace OpenLoco::Vehicles
 
         if (mode == TransportMode::road)
         {
-            sub_47D959(_oldTilePos, trackAndDirection.road);
+            sub_47D959(_oldTilePos, trackAndDirection.road, false);
         }
         else
         {
