@@ -79,7 +79,7 @@ namespace OpenLoco
     {
         MessageType type;        // 0x00
         char messageString[198]; // 0x01
-        uint8_t companyId;       // 0xC7
+        CompanyId companyId;     // 0xC7
         uint16_t var_C8;
         uint16_t item_id_1; // 0xCA
         uint16_t item_id_2; // 0xCC

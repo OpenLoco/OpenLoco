@@ -14,7 +14,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::MapToolTip
 {
-    static loco_global<CompanyId_t, 0x0050A040> _mapTooltipOwner;
+    static loco_global<CompanyId, 0x0050A040> _mapTooltipOwner;
     static loco_global<uint16_t, 0x00523348> _mapTooltipTimeout;
 
     static WindowEventList events;
@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         }
     }
 
-    void setOwner(CompanyId_t company)
+    void setOwner(CompanyId company)
     {
         _mapTooltipOwner = company;
     }

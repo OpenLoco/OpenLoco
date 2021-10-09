@@ -57,7 +57,7 @@ namespace OpenLoco
         TownId id() const;
         void update();
         void updateLabel();
-        void adjustCompanyRating(CompanyId_t cid, int amount);
+        void adjustCompanyRating(CompanyId cid, int amount);
         string_id getTownSizeString() const;
     };
     static_assert(sizeof(Town) == 0x270);

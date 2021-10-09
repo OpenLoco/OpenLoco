@@ -75,7 +75,7 @@ namespace OpenLoco::Ui::Dropdown
     void showColour(const Window* window, const Widget* widget, uint32_t availableColours, Colour_t selectedColour, Colour_t dropdownColour);
 
     void populateCompanySelect(Window* window, Widget* widget);
-    CompanyId_t getCompanyIdFromSelection(int16_t itemIndex);
+    CompanyId getCompanyIdFromSelection(int16_t itemIndex);
     uint16_t getItemArgument(const uint8_t index, const uint8_t argument);
     uint16_t getItemsPerRow(uint8_t itemCount);
 }

@@ -63,7 +63,7 @@ namespace OpenLoco::Map
                 return true;
         }
 
-        CompanyId_t backup = CompanyManager::updatingCompanyId();
+        CompanyId backup = CompanyManager::updatingCompanyId();
         CompanyManager::updatingCompanyId(owner());
 
         GameCommands::RoadRemovalArgs args;

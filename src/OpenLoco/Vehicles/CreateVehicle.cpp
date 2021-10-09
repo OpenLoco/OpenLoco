@@ -33,7 +33,7 @@ namespace OpenLoco::Vehicles
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
     constexpr auto num_vehicle_components_in_base = 4;          // head unk_1 unk_2 tail
     constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
-    static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
+    static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<Map::TileElement*, 0x009C68D0> _9C68D0;
     static loco_global<ColourScheme, 0x01136140> _1136140; // primary colour
@@ -681,7 +681,7 @@ namespace OpenLoco::Vehicles
             placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
         }
 
-        Ui::WindowManager::invalidate(Ui::WindowType::vehicleList, head->owner);
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicleList, enumValue(head->owner));
     }
 
     // 0x004AE74E

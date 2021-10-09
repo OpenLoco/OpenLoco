@@ -42,11 +42,11 @@ namespace OpenLoco
         {
             if (v->owner == companyId)
             {
-                transportTypeCount[static_cast<uint8_t>(v->vehicleType)]++;
+                transportTypeCount[enumValue(v->vehicleType)]++;
             }
         }
 
-        Ui::WindowManager::invalidate(Ui::WindowType::company, companyId);
+        Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(companyId));
     }
 
     // Converts performance index to rating

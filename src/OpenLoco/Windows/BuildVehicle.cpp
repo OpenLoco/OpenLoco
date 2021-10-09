@@ -242,20 +242,20 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void resetTrackTypeTabSelection(Ui::Window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
     static void setTransportTypeTabs(Ui::Window* window);
-    static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Ui::Point offset);
-    static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Ui::Point loc);
+    static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset);
+    static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId company, Ui::Point loc);
     static void drawTransportTypeTabs(Ui::Window* window, Gfx::Context* context);
     static void drawTrackTypeTabs(Ui::Window* window, Gfx::Context* context);
 
     static void initEvents();
 
     // 0x4C1C64
-    static Window* create(CompanyId_t company)
+    static Window* create(CompanyId company)
     {
         initEvents();
         auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, WindowFlags::flag_11, &_events);
         window->widgets = _widgets;
-        window->number = company;
+        window->number = enumValue(company);
         window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
         window->owner = CompanyManager::getControllingId();
         window->frame_no = 0;
@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
      */
     Window* open(uint32_t vehicle, uint32_t flags)
     {
-        auto window = WindowManager::bringToFront(WindowType::buildVehicle, CompanyManager::getControllingId());
+        auto window = WindowManager::bringToFront(WindowType::buildVehicle, enumValue(CompanyManager::getControllingId()));
         bool tabMode = flags & (1 << 31);
         if (window)
         {
@@ -1140,7 +1140,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C28D2
     static void setDisabledTransportTabs(Ui::Window* window)
     {
-        auto availableVehicles = CompanyManager::get(window->number)->available_vehicles;
+        auto availableVehicles = CompanyManager::get(static_cast<CompanyId>(window->number))->available_vehicles;
         // By shifting by 4 the available_vehicles flags align with the tabs flags
         auto disabledTabs = (availableVehicles << 4) ^ ((1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships));
         window->disabled_widgets = disabledTabs;
@@ -1308,7 +1308,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void drawTransportTypeTabs(Ui::Window* window, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        auto companyColour = CompanyManager::getCompanyColour(window->number);
+        auto companyColour = CompanyManager::getCompanyColour(static_cast<CompanyId>(window->number));
 
         for (auto tab : _transportTypeTabInformation)
         {
@@ -1326,7 +1326,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void drawTrackTypeTabs(Ui::Window* window, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        auto companyColour = CompanyManager::getCompanyColour(window->number);
+        auto companyColour = CompanyManager::getCompanyColour(static_cast<CompanyId>(window->number));
 
         auto left = window->x;
         auto top = window->y + 69;
@@ -1393,26 +1393,26 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4B7741
-    static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Ui::Point offset)
+    static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset)
     {
         registers regs;
         regs.cx = offset.x;
         regs.dx = offset.y;
         regs.eax = eax;
         regs.esi = esi;
-        regs.ebx = company;
+        regs.ebx = enumValue(company);
         regs.ebp = vehicleTypeIdx;
         regs.edi = X86Pointer(context);
         call(0x4B7741, regs);
     }
 
     // 0x4B7711
-    static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Ui::Point loc)
+    static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId company, Ui::Point loc)
     {
         registers regs;
 
         regs.al = unk_1;
-        regs.ebx = company;
+        regs.ebx = enumValue(company);
         regs.cx = loc.x;
         regs.dx = loc.y;
         regs.edi = X86Pointer(context);

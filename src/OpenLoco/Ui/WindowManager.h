@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace CompanyFaceSelection
     {
-        void open(CompanyId_t id);
+        void open(CompanyId id);
     }
 
     namespace CompanyList
@@ -120,10 +120,10 @@ namespace OpenLoco::Ui::Windows
 
     namespace CompanyWindow
     {
-        Window* open(CompanyId_t companyId);
+        Window* open(CompanyId companyId);
         Window* openAndSetName();
-        Window* openChallenge(CompanyId_t companyId);
-        Window* openFinances(CompanyId_t companyId);
+        Window* openChallenge(CompanyId companyId);
+        Window* openFinances(CompanyId companyId);
     }
 
     namespace Construction
@@ -155,7 +155,7 @@ namespace OpenLoco::Ui::Windows
     namespace Error
     {
         void open(string_id title, string_id message);
-        void openWithCompetitor(string_id title, string_id message, uint8_t competitorId);
+        void openWithCompetitor(string_id title, string_id message, CompanyId competitorId);
         void registerHooks();
     }
 
@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows
     namespace MapToolTip
     {
         void open();
-        void setOwner(CompanyId_t company);
+        void setOwner(CompanyId company);
         uint16_t getTooltipTimeout();
         void reset();
     }
@@ -287,8 +287,8 @@ namespace OpenLoco::Ui::Windows
 
     namespace StationList
     {
-        Window* open(CompanyId_t companyId);
-        Window* open(CompanyId_t companyId, uint8_t type);
+        Window* open(CompanyId companyId);
+        Window* open(CompanyId companyId, uint8_t type);
     }
 
     namespace Terraform
@@ -413,6 +413,6 @@ namespace OpenLoco::Ui::Windows
 
     namespace VehicleList
     {
-        Window* open(CompanyId_t companyId, VehicleType type);
+        Window* open(CompanyId companyId, VehicleType type);
     }
 }

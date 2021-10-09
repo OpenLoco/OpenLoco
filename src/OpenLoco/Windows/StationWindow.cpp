@@ -1011,7 +1011,7 @@ namespace OpenLoco::Ui::Windows::Station
         static void enableRenameByCaption(Window* self)
         {
             auto station = StationManager::get(StationId(self->number));
-            if (station->owner != 255)
+            if (station->owner != CompanyId::null)
             {
                 if (CompanyManager::isPlayerCompany(station->owner))
                 {

@@ -2593,7 +2593,7 @@ namespace OpenLoco::Vehicles
             auto sourceLoc = Map::Pos2{ sourceStation->x, sourceStation->y };
             auto tilesDistance = Math::Vector::distance(stationLoc, sourceLoc) / 32;
 
-            Ui::WindowManager::invalidate(Ui::WindowType::company, owner);
+            Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(owner));
             auto* company = CompanyManager::get(owner);
             company->cargoUnitsTotalDelivered += cargo.qty;
 

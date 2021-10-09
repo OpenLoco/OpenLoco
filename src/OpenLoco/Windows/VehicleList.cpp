@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (vehicle->vehicleType != static_cast<VehicleType>(self->current_tab))
                 continue;
 
-            if (vehicle->owner != self->number)
+            if (vehicle->owner != static_cast<CompanyId>(self->number))
                 continue;
 
             if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))
@@ -271,7 +271,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (vehicle->vehicleType != static_cast<VehicleType>(self->current_tab))
                 continue;
 
-            if (vehicle->owner != self->number)
+            if (vehicle->owner != static_cast<CompanyId>(self->number))
                 continue;
 
             if (vehicle->var_0C & Vehicles::Flags0C::sorted)
@@ -323,7 +323,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void drawTabs(Window* self, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        auto companyColour = CompanyManager::getCompanyColour(self->number);
+        auto companyColour = CompanyManager::getCompanyColour(static_cast<CompanyId>(self->number));
 
         static std::pair<WidgetIndex_t, std::array<uint32_t, 8>> tabAnimations[] = {
             { Widx::tab_trains, {
@@ -405,14 +405,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void disableUnavailableVehicleTypes(Window* self)
     {
         // The original game looks at all companies here. We only look at the current company instead.
-        auto company = CompanyManager::get(self->number);
+        auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
 
         // Disable the tabs for the vehicles that are _not_ available for this company.
         self->disabled_widgets = (company->available_vehicles ^ 0x3F) << Widx::tab_trains;
     }
 
     // 0x004C1AA2
-    static Window* create(CompanyId_t companyId)
+    static Window* create(CompanyId companyId)
     {
         Window* self = WindowManager::createWindow(
             WindowType::vehicleList,
@@ -422,7 +422,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         self->widgets = _widgets;
         self->enabled_widgets = _enabledWidgets;
-        self->number = companyId;
+        self->number = enumValue(companyId);
         self->owner = companyId;
         self->frame_no = 0;
 
@@ -435,9 +435,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C19DC
-    Window* open(CompanyId_t companyId, VehicleType type)
+    Window* open(CompanyId companyId, VehicleType type)
     {
-        Window* self = WindowManager::bringToFront(WindowType::vehicleList, companyId);
+        Window* self = WindowManager::bringToFront(WindowType::vehicleList, enumValue(companyId));
         if (self != nullptr)
         {
             self->callOnMouseUp(VehicleList::getTabFromType(type));
@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->activated_widgets &= ~_tabWidgets;
         self->activated_widgets |= 1ULL << (self->current_tab + Widx::tab_trains);
 
-        auto company = CompanyManager::get(self->number);
+        auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
         [[maybe_unused]] auto args = FormatArguments::common(company->name);
 
         static constexpr string_id typeToCaption[] = {
@@ -606,7 +606,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         drawTabs(self, context);
 
         // Draw company owner image.
-        auto company = CompanyManager::get(self->number);
+        auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
         auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
         uint32_t image = Gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
         uint16_t x = self->x + self->widgets[Widx::company_select].left + 1;
@@ -798,7 +798,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->row_height = row_heights[tabIndex];
         self->frame_no = 0;
 
-        if (CompanyManager::getControllingId() == self->number && _lastVehiclesOption != type)
+        if (CompanyManager::getControllingId() == static_cast<CompanyId>(self->number) && _lastVehiclesOption != type)
         {
             *_lastVehiclesOption = type;
             WindowManager::invalidate(WindowType::topToolbar);
@@ -916,10 +916,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (itemIndex == -1)
             return;
 
-        CompanyId_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
+        CompanyId companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
         // Try to find an open vehicle list for this company.
-        auto companyWindow = WindowManager::bringToFront(WindowType::vehicleList, companyId);
+        auto companyWindow = WindowManager::bringToFront(WindowType::vehicleList, enumValue(companyId));
         if (companyWindow != nullptr)
             return;
 
@@ -928,7 +928,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (company->name == StringIds::empty)
             return;
 
-        self->number = companyId;
+        self->number = enumValue(companyId);
         self->owner = companyId;
 
         disableUnavailableVehicleTypes(self);

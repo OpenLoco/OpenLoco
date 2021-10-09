@@ -9,13 +9,6 @@
 
 namespace OpenLoco
 {
-
-    namespace CompanyId
-    {
-        constexpr CompanyId_t neutral = 15;
-        constexpr CompanyId_t null = std::numeric_limits<CompanyId_t>::max();
-    }
-
     namespace CompanyFlags
     {
         constexpr uint32_t sorted = (1 << 3);                    // 0x08
@@ -122,7 +115,7 @@ namespace OpenLoco
         uint16_t jail_status;                       // 0x8E34
         uint8_t pad_8E36[0x8FA8 - 0x8E36];
 
-        CompanyId_t id() const;
+        CompanyId id() const;
         bool empty() const;
         void aiThink();
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;

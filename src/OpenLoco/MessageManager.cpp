@@ -20,14 +20,14 @@ namespace OpenLoco::MessageManager
 
     void post(
         MessageType type,
-        CompanyId_t companyId,
+        CompanyId companyId,
         uint16_t subjectIdA,
         uint16_t subjectIdB,
         uint16_t subjectIdC)
     {
         registers regs;
         regs.al = (uint8_t)type;
-        regs.ah = companyId;
+        regs.ah = enumValue(companyId);
         regs.bx = subjectIdA;
         regs.cx = subjectIdB;
         regs.dx = subjectIdC;

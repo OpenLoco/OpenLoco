@@ -128,7 +128,7 @@ namespace OpenLoco::GameCommands
 
     void registerHooks();
     uint32_t doCommand(GameCommand command, const registers& registers);
-    bool sub_431E6A(const CompanyId_t company, Map::TileElement* const tile = nullptr);
+    bool sub_431E6A(const CompanyId company, Map::TileElement* const tile = nullptr);
 
     template<typename T>
     uint32_t doCommand(const T& args, uint8_t flags)
@@ -575,13 +575,13 @@ namespace OpenLoco::GameCommands
     };
 
     // Change company colour scheme
-    inline void do_19(int8_t isPrimary, int8_t value, int8_t colourType, int8_t setColourMode, uint8_t companyId)
+    inline void do_19(int8_t isPrimary, int8_t value, int8_t colourType, int8_t setColourMode, CompanyId companyId)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.cl = colourType;    // vehicle type or main
-        regs.dh = setColourMode; // [ 0, 1 ] -- 0 = set colour, 1 = toggle enabled/disabled;
-        regs.dl = companyId;     // company id
+        regs.cl = colourType;           // vehicle type or main
+        regs.dh = setColourMode;        // [ 0, 1 ] -- 0 = set colour, 1 = toggle enabled/disabled;
+        regs.dl = enumValue(companyId); // company id
 
         if (setColourMode == 0)
         {
@@ -757,28 +757,28 @@ namespace OpenLoco::GameCommands
     }
 
     // Change company name
-    inline bool do_30(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    inline bool do_30(CompanyId cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.cx = cx;   // company id
-        regs.ax = ax;   // [ 0, 1, 2]
-        regs.edx = edx; // part of name buffer
-        regs.ebp = ebp; // part of name buffer
-        regs.edi = edi; // part of name buffer
+        regs.cx = enumValue(cx); // company id
+        regs.ax = ax;            // [ 0, 1, 2]
+        regs.edx = edx;          // part of name buffer
+        regs.ebp = ebp;          // part of name buffer
+        regs.edi = edi;          // part of name buffer
         return doCommand(GameCommand::changeCompanyName, regs) != FAILURE;
     }
 
     // Change company owner name
-    inline bool do_31(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    inline bool do_31(CompanyId cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.cx = cx;   // company id
-        regs.ax = ax;   // [ 0, 1, 2]
-        regs.edx = edx; // part of name buffer
-        regs.ebp = ebp; // part of name buffer
-        regs.edi = edi; // part of name buffer
+        regs.cx = enumValue(cx); // company id
+        regs.ax = ax;            // [ 0, 1, 2]
+        regs.edx = edx;          // part of name buffer
+        regs.ebp = ebp;          // part of name buffer
+        regs.edi = edi;          // part of name buffer
         return doCommand(GameCommand::changeCompanyOwnerName, regs) != FAILURE;
     }
 
@@ -1471,7 +1471,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Change company face
-    inline bool do_65(const ObjectHeader& object, uint8_t company)
+    inline bool do_65(const ObjectHeader& object, CompanyId company)
     {
         auto objPtr = reinterpret_cast<const int32_t*>(&object);
         registers regs;
@@ -1480,7 +1480,7 @@ namespace OpenLoco::GameCommands
         regs.ecx = *objPtr++;
         regs.edx = *objPtr++;
         regs.edi = *objPtr;
-        regs.bh = company;
+        regs.bh = enumValue(company);
         return doCommand(GameCommand::changeCompanyFace, regs) != FAILURE;
     }
 

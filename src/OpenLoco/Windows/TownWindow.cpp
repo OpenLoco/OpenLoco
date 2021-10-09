@@ -533,7 +533,7 @@ namespace OpenLoco::Ui::Windows::Town
             xPos += 4;
             yPos += 14;
             auto town = TownManager::get(TownId(self->number));
-            for (CompanyId_t i = 0; i < std::size(town->company_ratings); i++)
+            for (uint8_t i = 0; i < std::size(town->company_ratings); i++)
             {
                 if ((town->companies_with_rating & (1 << i)) == 0)
                     continue;
@@ -552,7 +552,7 @@ namespace OpenLoco::Ui::Windows::Town
                     rank = StringIds::town_rating_appalling;
 
                 auto args = FormatArguments();
-                args.push(CompanyManager::get(i)->name);
+                args.push(CompanyManager::get(static_cast<CompanyId>(i))->name);
                 args.push<int16_t>(0);
                 args.push(rating);
                 args.push(rank);

@@ -120,15 +120,15 @@ namespace OpenLoco::Title
             clearScreenFlag(ScreenFlags::networked);
             S5::load(titlePath, S5::LoadFlags::titleSequence);
 
-            CompanyManager::setControllingId(0);
-            CompanyManager::setSecondaryPlayerId(255);
+            CompanyManager::setControllingId(static_cast<CompanyId>(0));
+            CompanyManager::setSecondaryPlayerId(CompanyId::null);
             if (!isNetworked())
             {
-                CompanyManager::setSecondaryPlayerId(1);
+                CompanyManager::setSecondaryPlayerId(static_cast<CompanyId>(1));
                 if (!isNetworkHost())
                 {
-                    CompanyManager::setControllingId(1);
-                    CompanyManager::setSecondaryPlayerId(0);
+                    CompanyManager::setControllingId(static_cast<CompanyId>(1));
+                    CompanyManager::setSecondaryPlayerId(static_cast<CompanyId>(0));
                 }
             }
 

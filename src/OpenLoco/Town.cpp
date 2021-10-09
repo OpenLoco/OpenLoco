@@ -29,11 +29,11 @@ namespace OpenLoco
         call(0x00497616, regs);
     }
 
-    void Town::adjustCompanyRating(CompanyId_t cid, int amount)
+    void Town::adjustCompanyRating(CompanyId cid, int amount)
     {
-        companies_with_rating |= (1 << cid);
-        company_ratings[cid] = std::clamp(
-            company_ratings[cid] + amount,
+        companies_with_rating |= (1 << enumValue(cid));
+        company_ratings[enumValue(cid)] = std::clamp(
+            company_ratings[enumValue(cid)] + amount,
             min_company_rating,
             max_company_rating);
     }

@@ -14,7 +14,12 @@ namespace OpenLoco
     }
 
     using coord_t = int16_t;
-    using CompanyId_t = uint8_t;
+    using tile_coord_t = int16_t;
+    enum class CompanyId : uint8_t
+    {
+        neutral = 15,
+        null = std::numeric_limits<uint8_t>::max(),
+    };
     enum class StationId : uint16_t
     {
         null = std::numeric_limits<uint16_t>::max(),
@@ -23,21 +28,20 @@ namespace OpenLoco
     {
         null = std::numeric_limits<uint8_t>::max(),
     };
-    using string_id = uint16_t;
     enum class EntityId : uint16_t
     {
         null = std::numeric_limits<uint16_t>::max(),
     };
-    using tile_coord_t = int16_t;
     enum class TownId : uint16_t
     {
         null = std::numeric_limits<uint16_t>::max(),
     };
-    using SoundObjectId_t = uint8_t;
     enum class MessageId : uint16_t
     {
         null = std::numeric_limits<uint16_t>::max(),
     };
+    using string_id = uint16_t;
+    using SoundObjectId_t = uint8_t;
 
     class FormatArguments;
 

@@ -12,7 +12,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
     // 0x0043483D
-    static uint32_t changeCompanyColour(uint8_t flags, uint8_t type, bool toggleMode, CompanyId_t companyId, bool isSecondary, uint8_t value)
+    static uint32_t changeCompanyColour(uint8_t flags, uint8_t type, bool toggleMode, CompanyId companyId, bool isSecondary, uint8_t value)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
         GameCommands::setPosition({ static_cast<int16_t>(0x8000), 0, 0 });
@@ -72,6 +72,6 @@ namespace OpenLoco::GameCommands
 
     void changeCompanyColour(registers& regs)
     {
-        regs.ebx = changeCompanyColour(regs.bl, regs.cl, regs.dh, regs.dl, regs.ah, regs.al);
+        regs.ebx = changeCompanyColour(regs.bl, regs.cl, regs.dh, static_cast<CompanyId>(regs.dl), regs.ah, regs.al);
     }
 }

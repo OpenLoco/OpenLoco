@@ -16,7 +16,7 @@ namespace OpenLoco::GameCommands
 {
     namespace Cheats
     {
-        static uint32_t acquireAssets(CompanyId_t targetCompanyId)
+        static uint32_t acquireAssets(CompanyId targetCompanyId)
         {
             auto ourCompanyId = CompanyManager::updatingCompanyId();
 
@@ -94,7 +94,7 @@ namespace OpenLoco::GameCommands
             for (auto& town : TownManager::towns())
             {
                 // Does this town have a rating for our company?
-                if (!(town.companies_with_rating &= (1 << companyId)))
+                if (!(town.companies_with_rating &= (1 << enumValue(companyId))))
                     continue;
 
                 int16_t newRanking{};
@@ -104,19 +104,19 @@ namespace OpenLoco::GameCommands
                 }
                 else
                 {
-                    newRanking = town.company_ratings[companyId] + max_company_rating;
+                    newRanking = town.company_ratings[enumValue(companyId)] + max_company_rating;
                     newRanking *= 1.0f + (1.0f / value);
                     newRanking -= max_company_rating;
                 }
 
                 // Set the new rating.
-                town.company_ratings[companyId] = std::clamp<int16_t>(newRanking, min_company_rating, max_company_rating);
+                town.company_ratings[enumValue(companyId)] = std::clamp<int16_t>(newRanking, min_company_rating, max_company_rating);
             }
 
             return 0;
         }
 
-        static uint32_t switchCompany(CompanyId_t targetCompanyId)
+        static uint32_t switchCompany(CompanyId targetCompanyId)
         {
             auto ourId = CompanyManager::getControllingId();
             auto otherId = CompanyManager::getSecondaryPlayerId();
@@ -138,14 +138,14 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        static uint32_t toggleBankruptcy(CompanyId_t targetCompanyId)
+        static uint32_t toggleBankruptcy(CompanyId targetCompanyId)
         {
             auto company = CompanyManager::get(targetCompanyId);
             company->challenge_flags ^= CompanyFlags::bankrupt;
             return 0;
         }
 
-        static uint32_t toggleJail(CompanyId_t targetCompanyId)
+        static uint32_t toggleJail(CompanyId targetCompanyId)
         {
             auto company = CompanyManager::get(targetCompanyId);
             company->jail_status = 30;
@@ -176,7 +176,7 @@ namespace OpenLoco::GameCommands
         switch (command)
         {
             case CheatCommand::acquireAssets:
-                return Cheats::acquireAssets(param1);
+                return Cheats::acquireAssets(static_cast<CompanyId>(param1));
 
             case CheatCommand::addCash:
                 return Cheats::addCash(param1);
@@ -188,13 +188,13 @@ namespace OpenLoco::GameCommands
                 return Cheats::companyRatings(param1, param2);
 
             case CheatCommand::switchCompany:
-                return Cheats::switchCompany(param1);
+                return Cheats::switchCompany(static_cast<CompanyId>(param1));
 
             case CheatCommand::toggleBankruptcy:
-                return Cheats::toggleBankruptcy(param1);
+                return Cheats::toggleBankruptcy(static_cast<CompanyId>(param1));
 
             case CheatCommand::toggleJail:
-                return Cheats::toggleJail(param1);
+                return Cheats::toggleJail(static_cast<CompanyId>(param1));
 
             case CheatCommand::vehicleReliability:
                 return Cheats::vehicleReliability(param1);

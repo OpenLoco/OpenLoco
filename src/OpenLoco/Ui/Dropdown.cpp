@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Dropdown
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
     static loco_global<std::byte[40][bytes_per_item], 0x0113D8A0> _dropdownItemArgs;
     static loco_global<std::byte[40][bytes_per_item], 0x0113D9E0> _dropdownItemArgs2;
-    static loco_global<uint8_t[40], 0x00113DB20> _menuOptions;
+    static loco_global<CompanyId[40], 0x00113DB20> _menuOptions;
 
     void add(size_t index, string_id title)
     {
@@ -834,7 +834,7 @@ namespace OpenLoco::Ui::Dropdown
     {
         std::array<bool, 16> companyOrdered = {};
 
-        CompanyId_t companyId = CompanyId::null;
+        CompanyId companyId = CompanyId::null;
 
         size_t index = 0;
         for (; index < Limits::maxCompanies; index++)
@@ -842,7 +842,7 @@ namespace OpenLoco::Ui::Dropdown
             int16_t maxPerformanceIndex = -1;
             for (const auto& company : CompanyManager::companies())
             {
-                if (companyOrdered[company.id()] & 1)
+                if (companyOrdered[enumValue(company.id())] & 1)
                     continue;
 
                 if (maxPerformanceIndex < company.performance_index)
@@ -855,7 +855,7 @@ namespace OpenLoco::Ui::Dropdown
             if (maxPerformanceIndex == -1)
                 break;
 
-            companyOrdered[companyId] |= 1;
+            companyOrdered[enumValue(companyId)] |= 1;
             _dropdownItemFormats[index] = StringIds::dropdown_company_select;
             _menuOptions[index] = companyId;
 
@@ -891,7 +891,7 @@ namespace OpenLoco::Ui::Dropdown
     }
 
     // 0x004CF284
-    CompanyId_t getCompanyIdFromSelection(int16_t itemIndex)
+    CompanyId getCompanyIdFromSelection(int16_t itemIndex)
     {
         if (itemIndex == -1)
         {
