@@ -1,11 +1,15 @@
 #include "Vehicle.h"
 #include "../Entities/EntityManager.h"
 #include "../Interop/Interop.hpp"
+#include "../Map/TileManager.h"
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
+    static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
+    static loco_global<uint32_t, 0x00525FBC> _525FBC;     // RoadObjectId bits
+
 #pragma pack(push, 1)
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
     struct VehicleCommon : VehicleBase
@@ -95,15 +99,68 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047D959
-    void VehicleBase::sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied)
+    // ax : loc.x
+    // cx : loc.y
+    // dl : loc.z / 4
+    // bp : trackAndDirection
+    // ebp : bp | (setOccupied << 31)
+    // returns dh : trackType
+    uint8_t VehicleBase::sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied)
     {
-        registers regs;
-        regs.ax = loc.x;
-        regs.cx = loc.y;
-        regs.dl = loc.z / 4;
-        regs.ebp = trackAndDirection._data | (setOccupied ? 1 << 31 : 0);
-        regs.esi = X86Pointer(this);
-        call(0x0047D959, regs);
+        auto trackType = getTrackType();
+        auto tile = Map::TileManager::get(loc);
+        for (auto& el : tile)
+        {
+            auto* elRoad = el.asRoad();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+
+            const auto heightDiff = std::abs(loc.z / 4 - elRoad->baseZ());
+            if (heightDiff > 4)
+            {
+                continue;
+            }
+
+            if (elRoad->unkDirection() != trackAndDirection.cardinalDirection())
+            {
+                continue;
+            }
+
+            if (elRoad->roadId() != trackAndDirection.id())
+            {
+                continue;
+            }
+
+            if (elRoad->isFlag5())
+            {
+                continue;
+            }
+
+            const auto newUnk4u = _4F7358[trackAndDirection._data >> 2] >> 4;
+            if (setOccupied)
+            {
+                elRoad->setUnk4u(elRoad->unk4u() | newUnk4u);
+            }
+            else
+            {
+                elRoad->setUnk4u(elRoad->unk4u() ^ newUnk4u);
+            }
+
+            if (getTrackType() == 0xFF)
+            {
+                if (*_525FBC & (1 << elRoad->roadObjectId()))
+                {
+                    elRoad->setUnk7_40(true);
+                }
+            }
+            else
+            {
+                trackType = getTrackType();
+            }
+        }
+        return trackType;
     }
 
     bool VehicleBase::updateComponent()
