@@ -594,7 +594,7 @@ namespace OpenLoco::Input
     // 0x004A5AA1 TODO: Move to a better file
     static void signalInteract(Map::SignalElement* signal, const bool isLeftSignal, const Map::Pos2 pos)
     {
-        auto* track = (signal - 1)->as<Map::TrackElement>();
+        auto* track = signal->prev()->as<Map::TrackElement>();
         if (track == nullptr)
         {
             return;
@@ -639,7 +639,7 @@ namespace OpenLoco::Input
     // 0x004A5B66 TODO: Move to a better file
     static void trackStationInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
-        auto* track = (station - 1)->as<Map::TrackElement>();
+        auto* track = station->prev()->as<Map::TrackElement>();
         if (track == nullptr)
         {
             return;
@@ -661,7 +661,7 @@ namespace OpenLoco::Input
     // 0x004A5BDF TODO: Move to a better file
     static void roadStationInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
-        auto* road = (station - 1)->as<RoadElement>();
+        auto* road = station->prev()->as<RoadElement>();
         if (road == nullptr)
         {
             return;

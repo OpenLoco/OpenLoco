@@ -473,7 +473,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     {
         auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
         auto* signal = tileElement->as<SignalElement>();
-        auto* track = (tileElement - 1)->as<TrackElement>();
+        auto* track = tileElement->prev()->as<TrackElement>();
         if (signal == nullptr || track == nullptr)
         {
             return false;
@@ -502,7 +502,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     {
         auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
         auto* elStation = tileElement->as<StationElement>();
-        auto* track = (tileElement - 1)->as<TrackElement>();
+        auto* track = tileElement->prev()->as<TrackElement>();
         if (elStation == nullptr || track == nullptr)
         {
             return false;
@@ -594,7 +594,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     {
         auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
         auto* elStation = tileElement->as<StationElement>();
-        auto* road = (tileElement - 1)->as<RoadElement>();
+        auto* road = tileElement->prev()->as<RoadElement>();
         if (elStation == nullptr || road == nullptr)
         {
             return false;
