@@ -65,6 +65,9 @@ namespace OpenLoco::Map
     struct IndustryElement;
 
 #pragma pack(push, 1)
+    struct TileElement;
+    static constexpr size_t TileElementSize = 8;
+
     struct TileElementBase
     {
     protected:
@@ -123,6 +126,26 @@ namespace OpenLoco::Map
             assert(type() == TType::kElementType);
             return *reinterpret_cast<TType*>(this);
         }
+
+        const TileElement* prev() const
+        {
+            return reinterpret_cast<const TileElement*>(reinterpret_cast<const uint8_t*>(this) - TileElementSize);
+        }
+
+        TileElement* prev()
+        {
+            return reinterpret_cast<TileElement*>(reinterpret_cast<uint8_t*>(this) - TileElementSize);
+        }
+
+        const TileElement* next() const
+        {
+            return reinterpret_cast<const TileElement*>(reinterpret_cast<const uint8_t*>(this) + TileElementSize);
+        }
+
+        TileElement* next()
+        {
+            return reinterpret_cast<TileElement*>(reinterpret_cast<uint8_t*>(this) + TileElementSize);
+        }
     };
 
     struct TileElement : public TileElementBase
@@ -130,7 +153,7 @@ namespace OpenLoco::Map
     private:
         uint8_t pad[4];
     };
-    static_assert(sizeof(TileElement) == 8);
+    static_assert(sizeof(TileElement) == TileElementSize);
 
     namespace SurfaceSlope
     {
@@ -195,6 +218,7 @@ namespace OpenLoco::Map
             _type |= state ? 0x80 : 0;
         }
     };
+    static_assert(sizeof(SurfaceElement) == TileElementSize);
 
     struct StationElement : public TileElementBase
     {
@@ -213,6 +237,7 @@ namespace OpenLoco::Map
         uint8_t multiTileIndex() const { return (_type >> 6) & 3; }
         StationId stationId() const { return StationId(_station_id & 0x3FF); }
     };
+    static_assert(sizeof(StationElement) == TileElementSize);
 
     struct BuildingElement : public TileElementBase
     {
@@ -251,6 +276,7 @@ namespace OpenLoco::Map
         }
         bool update(const Map::Pos2& loc);
     };
+    static_assert(sizeof(BuildingElement) == TileElementSize);
 
     struct TreeElement : public TileElementBase
     {
@@ -272,6 +298,7 @@ namespace OpenLoco::Map
         uint8_t unk7l() const { return _7 & 0x7; }
         uint8_t season() const { return (_7 >> 3) & 0x7; } // unsure of &0x7
     };
+    static_assert(sizeof(TreeElement) == TileElementSize);
 
     struct WallElement : public TileElementBase
     {
@@ -287,6 +314,7 @@ namespace OpenLoco::Map
         uint8_t wallObjectId() const { return _4; }      // _4
         uint8_t rotation() const { return _type & 0x3; } // _0
     };
+    static_assert(sizeof(WallElement) == TileElementSize);
 
     struct TrackElement : public TileElementBase
     {
@@ -313,6 +341,7 @@ namespace OpenLoco::Map
         bool hasMod(uint8_t mod) const { return _7 & (1 << (4 + mod)); } // _7u
         uint8_t mods() const { return _7 >> 4; }                         // _7u
     };
+    static_assert(sizeof(TrackElement) == TileElementSize);
 
     struct SignalElement : public TileElementBase
     {
@@ -346,6 +375,7 @@ namespace OpenLoco::Map
         const Side& getLeft() const { return sides[0]; }
         const Side& getRight() const { return sides[1]; }
     };
+    static_assert(sizeof(SignalElement) == TileElementSize);
 
     struct RoadElement : public TileElementBase
     {
@@ -384,6 +414,7 @@ namespace OpenLoco::Map
         void setOwner(CompanyId newOwner) { _7 = (_7 & 0xF0) | (enumValue(newOwner) & 0xF); }
         bool update(const Map::Pos2& loc);
     };
+    static_assert(sizeof(RoadElement) == TileElementSize);
 
     struct IndustryElement : public TileElementBase
     {
@@ -400,6 +431,7 @@ namespace OpenLoco::Map
         uint8_t var_6_1F() const;
         bool hasHighTypeFlag() const { return _type & 0x80; } // isConstructed?
     };
+    static_assert(sizeof(IndustryElement) == TileElementSize);
 #pragma pack(pop)
 
     struct Tile
