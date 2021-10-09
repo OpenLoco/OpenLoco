@@ -155,7 +155,7 @@ namespace OpenLoco
             if (element.baseZ() != zPos)
                 continue;
 
-            auto building = element.asBuilding();
+            auto* building = element.as<Map::BuildingElement>();
             if (building == nullptr)
                 continue;
 

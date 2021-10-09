@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             return std::nullopt;
         }
 
-        auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->asTrack();
+        auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->as<TrackElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;

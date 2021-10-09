@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 {
                     if (surfaceFound)
                     {
-                        const auto* elIndustry = el.asIndustry();
+                        const auto* elIndustry = el.as<IndustryElement>();
                         if (elIndustry == nullptr)
                         {
                             continue;
@@ -357,7 +357,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
                         directionOfIndustry = side;
                     }
-                    const auto* surface = el.asSurface();
+                    const auto* surface = el.as<SurfaceElement>();
                     if (surface == nullptr)
                     {
                         continue;
@@ -448,7 +448,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
-        auto* elRoad = reinterpret_cast<const TileElement*>(interaction.object)->asRoad();
+        auto* elRoad = reinterpret_cast<const TileElement*>(interaction.object)->as<RoadElement>();
         if (elRoad == nullptr)
         {
             return std::nullopt;
@@ -497,7 +497,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
-        auto* elTrack = reinterpret_cast<const TileElement*>(interaction.object)->asTrack();
+        auto* elTrack = reinterpret_cast<const TileElement*>(interaction.object)->as<TrackElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;

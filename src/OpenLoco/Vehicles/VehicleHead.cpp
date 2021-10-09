@@ -1537,7 +1537,7 @@ namespace OpenLoco::Vehicles
         auto tile = Map::TileManager::get(loc);
         for (auto& el : tile)
         {
-            auto elStation = el.asStation();
+            auto* elStation = el.as<Map::StationElement>();
             if (elStation == nullptr)
                 continue;
 
@@ -1766,7 +1766,7 @@ namespace OpenLoco::Vehicles
             auto tile = Map::TileManager::get(loc);
             for (auto& el : tile)
             {
-                auto elStation = el.asStation();
+                auto* elStation = el.as<Map::StationElement>();
                 if (elStation == nullptr)
                     continue;
 
@@ -2009,7 +2009,7 @@ namespace OpenLoco::Vehicles
 
         for (auto& el : tile)
         {
-            auto elStation = el.asStation();
+            auto* elStation = el.as<StationElement>();
             if (elStation == nullptr)
                 continue;
 
@@ -2152,7 +2152,7 @@ namespace OpenLoco::Vehicles
 
         for (auto& el : tile)
         {
-            auto elStation = el.asStation();
+            auto* elStation = el.as<StationElement>();
             if (elStation == nullptr)
                 continue;
 
@@ -2429,7 +2429,7 @@ namespace OpenLoco::Vehicles
                 StationElement* station = nullptr;
                 for (auto& el : targetTile)
                 {
-                    station = el.asStation();
+                    station = el.as<StationElement>();
                     if (station == nullptr)
                     {
                         continue;
@@ -2460,7 +2460,7 @@ namespace OpenLoco::Vehicles
                 StationElement* station = nullptr;
                 for (auto& el : targetTile)
                 {
-                    station = el.asStation();
+                    station = el.as<StationElement>();
                     if (station == nullptr)
                     {
                         continue;
@@ -3326,7 +3326,7 @@ namespace OpenLoco::Vehicles
         {
             for (auto& el : tile)
             {
-                auto elRoad = el.asRoad();
+                auto* elRoad = el.as<RoadElement>();
                 if (elRoad == nullptr)
                     continue;
 
@@ -3348,7 +3348,7 @@ namespace OpenLoco::Vehicles
         {
             for (auto& el : tile)
             {
-                auto elTrack = el.asTrack();
+                auto* elTrack = el.as<TrackElement>();
                 if (elTrack == nullptr)
                     continue;
 

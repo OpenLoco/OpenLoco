@@ -974,7 +974,7 @@ namespace OpenLoco::Vehicles
                 {
                     stationFound = false;
                 }
-                auto track = el.asTrack();
+                auto* track = el.as<Map::TrackElement>();
                 if (track == nullptr)
                     continue;
                 if (track->baseZ() != frontBogie->tile_base_z)

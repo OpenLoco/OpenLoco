@@ -340,11 +340,9 @@ namespace OpenLoco::GameCommands
             {
                 case ElementType::track: // 4
                 {
-                    auto trackElement = tile->asTrack();
-                    if (trackElement == nullptr)
-                        break; // throw exception?
+                    auto& trackElement = tile->get<TrackElement>();
 
-                    TrackObject* pObject = ObjectManager::get<TrackObject>(trackElement->trackObjectId());
+                    TrackObject* pObject = ObjectManager::get<TrackObject>(trackElement.trackObjectId());
                     if (pObject == nullptr)
                         break;
 
@@ -357,11 +355,9 @@ namespace OpenLoco::GameCommands
 
                 case ElementType::road: //0x1C
                 {
-                    auto roadElement = tile->asRoad();
-                    if (roadElement == nullptr)
-                        break; // throw exception?
+                    auto& roadElement = tile->get<RoadElement>();
 
-                    RoadObject* pObject = ObjectManager::get<RoadObject>(roadElement->roadObjectId());
+                    RoadObject* pObject = ObjectManager::get<RoadObject>(roadElement.roadObjectId());
                     if (pObject == nullptr)
                         break;
 
@@ -374,11 +370,9 @@ namespace OpenLoco::GameCommands
 
                 case ElementType::station: // 8
                 {
-                    auto stationElement = tile->asStation();
-                    if (stationElement == nullptr)
-                        break; // throw exception?
+                    auto& stationElement = tile->get<StationElement>();
 
-                    Station* pStation = StationManager::get(stationElement->stationId());
+                    Station* pStation = StationManager::get(stationElement.stationId());
                     if (pStation == nullptr)
                         break;
 

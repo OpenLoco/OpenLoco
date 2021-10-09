@@ -550,7 +550,8 @@ namespace OpenLoco::Input
 
                         case InteractionItem::headquarterBuilding:
                         {
-                            auto building = ((Map::TileElement*)interaction.object)->asBuilding();
+                            const auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+                            const auto* building = tileElement->as<Map::BuildingElement>();
                             if (building != nullptr)
                             {
                                 auto index = building->multiTileIndex();
@@ -593,7 +594,7 @@ namespace OpenLoco::Input
     // 0x004A5AA1 TODO: Move to a better file
     static void signalInteract(Map::SignalElement* signal, const bool isLeftSignal, const Map::Pos2 pos)
     {
-        auto* track = reinterpret_cast<Map::TileElement*>(signal - 1)->asTrack();
+        auto* track = (signal - 1)->as<Map::TrackElement>();
         if (track == nullptr)
         {
             return;
@@ -638,7 +639,7 @@ namespace OpenLoco::Input
     // 0x004A5B66 TODO: Move to a better file
     static void trackStationInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
-        auto* track = reinterpret_cast<Map::TileElement*>(station - 1)->asTrack();
+        auto* track = (station - 1)->as<Map::TrackElement>();
         if (track == nullptr)
         {
             return;
@@ -660,7 +661,7 @@ namespace OpenLoco::Input
     // 0x004A5BDF TODO: Move to a better file
     static void roadStationInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
-        auto* road = reinterpret_cast<Map::TileElement*>(station - 1)->asRoad();
+        auto* road = (station - 1)->as<RoadElement>();
         if (road == nullptr)
         {
             return;
@@ -824,6 +825,8 @@ namespace OpenLoco::Input
                 Input::state(State::reset);
                 auto interaction = ViewportInteraction::rightOver(_dragLastX, _dragLastY);
 
+                auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+
                 switch (interaction.type)
                 {
                     case InteractionItem::noInteraction:
@@ -864,7 +867,7 @@ namespace OpenLoco::Input
 
                     case InteractionItem::track:
                     {
-                        auto track = ((Map::TileElement*)interaction.object)->asTrack();
+                        auto* track = tileElement->as<TrackElement>();
                         if (track != nullptr)
                         {
                             if (track->owner() == CompanyManager::getControllingId())
@@ -880,10 +883,9 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::road:
                     {
-                        auto road = reinterpret_cast<Map::TileElement*>(interaction.object)->asRoad();
+                        auto* road = tileElement->as<RoadElement>();
                         if (road != nullptr)
                         {
-
                             auto owner = road->owner();
 
                             auto roadObject = ObjectManager::get<RoadObject>(road->roadObjectId());
@@ -900,7 +902,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::trackExtra:
                     {
-                        auto track = ((Map::TileElement*)interaction.object)->asTrack();
+                        auto* track = tileElement->as<TrackElement>();
                         if (track != nullptr)
                         {
                             Ui::Windows::Construction::setToTrackExtra(window, track, interaction.unkBh, interaction.pos);
@@ -909,7 +911,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::roadExtra:
                     {
-                        auto road = ((Map::TileElement*)interaction.object)->asRoad();
+                        auto* road = tileElement->as<RoadElement>();
                         if (road != nullptr)
                         {
                             Ui::Windows::Construction::setToRoadExtra(window, road, interaction.unkBh, interaction.pos);
@@ -918,7 +920,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::signal:
                     {
-                        auto signal = ((Map::TileElement*)interaction.object)->asSignal();
+                        auto* signal = tileElement->as<SignalElement>();
                         if (signal != nullptr)
                         {
                             signalInteract(signal, interaction.unkBh != 0, interaction.pos);
@@ -927,7 +929,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::trackStation:
                     {
-                        auto station = ((Map::TileElement*)interaction.object)->asStation();
+                        auto* station = tileElement->as<StationElement>();
                         if (station != nullptr)
                         {
                             trackStationInteract(station, interaction.pos);
@@ -936,7 +938,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::roadStation:
                     {
-                        auto station = ((Map::TileElement*)interaction.object)->asStation();
+                        auto* station = tileElement->as<StationElement>();
                         if (station != nullptr)
                         {
                             roadStationInteract(station, interaction.pos);
@@ -945,7 +947,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::airport:
                     {
-                        auto station = ((Map::TileElement*)interaction.object)->asStation();
+                        auto* station = tileElement->as<StationElement>();
                         if (station != nullptr)
                         {
                             airportInteract(station, interaction.pos);
@@ -954,7 +956,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::dock:
                     {
-                        auto station = ((Map::TileElement*)interaction.object)->asStation();
+                        auto* station = tileElement->as<StationElement>();
                         if (station != nullptr)
                         {
                             dockInteract(station, interaction.pos);
@@ -963,7 +965,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::tree:
                     {
-                        auto tree = ((Map::TileElement*)interaction.object)->asTree();
+                        auto* tree = tileElement->as<TreeElement>();
                         if (tree != nullptr)
                         {
                             treeInteract(tree, interaction.pos);
@@ -972,7 +974,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::building:
                     {
-                        auto building = ((Map::TileElement*)interaction.object)->asBuilding();
+                        auto* building = tileElement->as<BuildingElement>();
                         if (building != nullptr)
                         {
                             buildingInteract(building, interaction.pos);
@@ -981,7 +983,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::wall:
                     {
-                        auto wall = ((Map::TileElement*)interaction.object)->asWall();
+                        auto* wall = tileElement->as<WallElement>();
                         if (wall != nullptr)
                         {
                             wallInteract(wall, interaction.pos);
@@ -990,7 +992,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::headquarterBuilding:
                     {
-                        auto building = ((Map::TileElement*)interaction.object)->asBuilding();
+                        auto* building = tileElement->as<BuildingElement>();
                         if (building != nullptr)
                         {
                             headquarterInteract(building, interaction.pos);

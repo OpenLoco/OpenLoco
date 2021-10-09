@@ -3,6 +3,7 @@
 #include "../Types.hpp"
 #include "../Viewport.hpp"
 #include "Map.hpp"
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <limits>

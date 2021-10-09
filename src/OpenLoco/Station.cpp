@@ -309,8 +309,8 @@ namespace OpenLoco
                         {
                             case ElementType::industry:
                             {
-                                auto industryEl = el.asIndustry();
-                                auto industry = industryEl->industry();
+                                auto& industryEl = el.get<IndustryElement>();
+                                auto* industry = industryEl.industry();
 
                                 if (industry == nullptr || industry->under_construction != 0xFF)
                                 {
@@ -344,14 +344,14 @@ namespace OpenLoco
                             }
                             case ElementType::building:
                             {
-                                auto buildingEl = el.asBuilding();
+                                auto& buildingEl = el.get<BuildingElement>();
 
-                                if (buildingEl == nullptr || buildingEl->has_40() || !buildingEl->isConstructed())
+                                if (buildingEl.has_40() || !buildingEl.isConstructed())
                                 {
                                     break;
                                 }
 
-                                auto obj = buildingEl->object();
+                                auto* obj = buildingEl.object();
 
                                 if (obj == nullptr)
                                 {
@@ -382,7 +382,7 @@ namespace OpenLoco
                                 // Multi tile buildings should only be counted once so remove the other tiles from the search
                                 if (obj->flags & BuildingObjectFlags::large_tile)
                                 {
-                                    auto index = buildingEl->multiTileIndex();
+                                    auto index = buildingEl.multiTileIndex();
                                     tile_coord_t xPos = (pos.x - Map::offsets[index].x) / tile_size;
                                     tile_coord_t yPos = (pos.y - Map::offsets[index].y) / tile_size;
 
@@ -766,7 +766,7 @@ namespace OpenLoco
 
         for (auto& element : tile)
         {
-            auto stationElement = element.asStation();
+            auto* stationElement = element.as<StationElement>();
 
             if (stationElement == nullptr)
             {
