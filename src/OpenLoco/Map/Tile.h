@@ -115,6 +115,20 @@ namespace OpenLoco::Map
             return type() == TType::kElementType ? reinterpret_cast<TType*>(this) : nullptr;
         }
 
+        template<typename TType>
+        const TType& get() const
+        {
+            assert(type() == TType::kElementType);
+            return *reinterpret_cast<const TType*>(this);
+        }
+
+        template<typename TType>
+        TType& get()
+        {
+            assert(type() == TType::kElementType);
+            return *reinterpret_cast<TType*>(this);
+        }
+
     public:
         const SurfaceElement* asSurface() const { return as<SurfaceElement>(); }
         SurfaceElement* asSurface() { return as<SurfaceElement>(); }
