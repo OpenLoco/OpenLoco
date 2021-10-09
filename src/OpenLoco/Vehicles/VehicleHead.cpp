@@ -1167,12 +1167,13 @@ namespace OpenLoco::Vehicles
 
             status = Status::waitingAtSignal;
 
-            auto& newConfig = Config::getNew();
-            auto* vehType1 = train.veh1;
-            if (newConfig.trainsReverseAtSignals)
+            if (!Config::getNew().trainsReverseAtSignals)
             {
-                vehType1->timeAtSignal++;
+                return true;
             }
+
+            auto* vehType1 = train.veh1;
+            vehType1->timeAtSignal++;
 
             if (var_0C & Flags0C::manualControl)
             {
