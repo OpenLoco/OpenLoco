@@ -532,7 +532,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                         if (elTrack->hasStationElement())
                         {
-                            auto* elStation = (reinterpret_cast<TileElement*>(elTrack) + 1)->asStation();
+                            auto* elStation = (reinterpret_cast<const TileElement*>(elTrack) + 1)->asStation();
                             if (elStation == nullptr)
                             {
                                 continue;
@@ -551,7 +551,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                         if (elTrack->hasSignal())
                         {
-                            auto* elSignal = (reinterpret_cast<TileElement*>(elTrack) + 1)->asSignal();
+                            auto* elSignal = (reinterpret_cast<const TileElement*>(elTrack) + 1)->asSignal();
                             if (elSignal == nullptr)
                             {
                                 continue;
@@ -597,7 +597,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (elTrack->hasStationElement())
             {
-                auto* elStation = (reinterpret_cast<TileElement*>(elTrack) + 1)->asStation();
+                auto* elStation = (reinterpret_cast<const TileElement*>(elTrack) + 1)->asStation();
                 if (elStation == nullptr)
                 {
                     continue;
@@ -616,7 +616,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (elTrack->hasSignal())
             {
-                auto* elSignal = (reinterpret_cast<TileElement*>(elTrack) + 1)->asSignal();
+                auto* elSignal = (reinterpret_cast<const TileElement*>(elTrack) + 1)->asSignal();
                 if (elSignal == nullptr)
                 {
                     continue;

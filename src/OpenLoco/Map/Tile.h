@@ -104,21 +104,36 @@ namespace OpenLoco::Map
         uint8_t pad[4];
 
         template<typename TType>
-        TType* as() const
+        const TType* as() const
         {
-            return type() == TType::kElementType ? (TType*)this : nullptr;
+            return type() == TType::kElementType ? reinterpret_cast<const TType*>(this) : nullptr;
+        }
+
+        template<typename TType>
+        TType* as()
+        {
+            return type() == TType::kElementType ? reinterpret_cast<TType*>(this) : nullptr;
         }
 
     public:
-        SurfaceElement* asSurface() const { return as<SurfaceElement>(); }
-        TrackElement* asTrack() const { return as<TrackElement>(); }
-        StationElement* asStation() const { return as<StationElement>(); }
-        SignalElement* asSignal() const { return as<SignalElement>(); }
-        BuildingElement* asBuilding() const { return as<BuildingElement>(); }
-        TreeElement* asTree() const { return as<TreeElement>(); }
-        WallElement* asWall() const { return as<WallElement>(); }
-        RoadElement* asRoad() const { return as<RoadElement>(); }
-        IndustryElement* asIndustry() const { return as<IndustryElement>(); }
+        const SurfaceElement* asSurface() const { return as<SurfaceElement>(); }
+        SurfaceElement* asSurface() { return as<SurfaceElement>(); }
+        const TrackElement* asTrack() const { return as<TrackElement>(); }
+        TrackElement* asTrack() { return as<TrackElement>(); }
+        const StationElement* asStation() const { return as<StationElement>(); }
+        StationElement* asStation() { return as<StationElement>(); }
+        const SignalElement* asSignal() const { return as<SignalElement>(); }
+        SignalElement* asSignal() { return as<SignalElement>(); }
+        const BuildingElement* asBuilding() const { return as<BuildingElement>(); }
+        BuildingElement* asBuilding() { return as<BuildingElement>(); }
+        const TreeElement* asTree() const { return as<TreeElement>(); }
+        TreeElement* asTree() { return as<TreeElement>(); }
+        const WallElement* asWall() const { return as<WallElement>(); }
+        WallElement* asWall() { return as<WallElement>(); }
+        const RoadElement* asRoad() const { return as<RoadElement>(); }
+        RoadElement* asRoad() { return as<RoadElement>(); }
+        const IndustryElement* asIndustry() const { return as<IndustryElement>(); }
+        IndustryElement* asIndustry() { return as<IndustryElement>(); }
     };
     static_assert(sizeof(TileElement) == 8);
 
