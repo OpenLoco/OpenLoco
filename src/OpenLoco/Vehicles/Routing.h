@@ -21,8 +21,8 @@ namespace OpenLoco::Vehicles
             _data |= newIndex & (Limits::maxRoutingsPerVehicle - 1);
         }
 
-        bool operator==(const RoutingHandle other) { return _data == other._data; }
-        bool operator!=(const RoutingHandle other) { return !(*this == other); }
+        bool operator==(const RoutingHandle other) const { return _data == other._data; }
+        bool operator!=(const RoutingHandle other) const { return !(*this == other); }
     };
     static_assert(sizeof(RoutingHandle) == 2);
 #pragma pack(pop)
