@@ -129,26 +129,6 @@ namespace OpenLoco::Map
     {
     private:
         uint8_t pad[4];
-
-    public:
-        [[deprecated("Use as<T> or get<T>")]] const SurfaceElement* asSurface() const { return as<SurfaceElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] SurfaceElement* asSurface() { return as<SurfaceElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] const TrackElement* asTrack() const { return as<TrackElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] TrackElement* asTrack() { return as<TrackElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] const StationElement* asStation() const { return as<StationElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] StationElement* asStation() { return as<StationElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] const SignalElement* asSignal() const { return as<SignalElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] SignalElement* asSignal() { return as<SignalElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] const BuildingElement* asBuilding() const { return as<BuildingElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] BuildingElement* asBuilding() { return as<BuildingElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] const TreeElement* asTree() const { return as<TreeElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] TreeElement* asTree() { return as<TreeElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] const WallElement* asWall() const { return as<WallElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] WallElement* asWall() { return as<WallElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] const RoadElement* asRoad() const { return as<RoadElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] RoadElement* asRoad() { return as<RoadElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] const IndustryElement* asIndustry() const { return as<IndustryElement>(); }
-        [[deprecated("Use as<T> or get<T>")]] IndustryElement* asIndustry() { return as<IndustryElement>(); }
     };
     static_assert(sizeof(TileElement) == 8);
 
