@@ -103,22 +103,22 @@ namespace OpenLoco::Map
     private:
         uint8_t pad[4];
 
-        template<typename TType, ElementType TClass>
+        template<typename TType>
         TType* as() const
         {
-            return type() == TClass ? (TType*)this : nullptr;
+            return type() == TType::kElementType ? (TType*)this : nullptr;
         }
 
     public:
-        SurfaceElement* asSurface() const { return as<SurfaceElement, ElementType::surface>(); }
-        TrackElement* asTrack() const { return as<TrackElement, ElementType::track>(); }
-        StationElement* asStation() const { return as<StationElement, ElementType::station>(); }
-        SignalElement* asSignal() const { return as<SignalElement, ElementType::signal>(); }
-        BuildingElement* asBuilding() const { return as<BuildingElement, ElementType::building>(); }
-        TreeElement* asTree() const { return as<TreeElement, ElementType::tree>(); }
-        WallElement* asWall() const { return as<WallElement, ElementType::wall>(); }
-        RoadElement* asRoad() const { return as<RoadElement, ElementType::road>(); }
-        IndustryElement* asIndustry() const { return as<IndustryElement, ElementType::industry>(); }
+        SurfaceElement* asSurface() const { return as<SurfaceElement>(); }
+        TrackElement* asTrack() const { return as<TrackElement>(); }
+        StationElement* asStation() const { return as<StationElement>(); }
+        SignalElement* asSignal() const { return as<SignalElement>(); }
+        BuildingElement* asBuilding() const { return as<BuildingElement>(); }
+        TreeElement* asTree() const { return as<TreeElement>(); }
+        WallElement* asWall() const { return as<WallElement>(); }
+        RoadElement* asRoad() const { return as<RoadElement>(); }
+        IndustryElement* asIndustry() const { return as<IndustryElement>(); }
     };
     static_assert(sizeof(TileElement) == 8);
 
@@ -149,6 +149,8 @@ namespace OpenLoco::Map
 
     struct SurfaceElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::surface;
+
     private:
         uint8_t _slope;       // 0x4
         uint8_t _water;       // 0x5
@@ -186,6 +188,8 @@ namespace OpenLoco::Map
 
     struct StationElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::station;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -202,6 +206,8 @@ namespace OpenLoco::Map
 
     struct BuildingElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::building;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -238,6 +244,8 @@ namespace OpenLoco::Map
 
     struct TreeElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::tree;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -257,6 +265,8 @@ namespace OpenLoco::Map
 
     struct WallElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::wall;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -270,6 +280,8 @@ namespace OpenLoco::Map
 
     struct TrackElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::track;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -294,6 +306,8 @@ namespace OpenLoco::Map
 
     struct SignalElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::signal;
+
         struct Side
         {
         private:
@@ -325,6 +339,8 @@ namespace OpenLoco::Map
 
     struct RoadElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::road;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -361,6 +377,8 @@ namespace OpenLoco::Map
 
     struct IndustryElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::industry;
+
     private:
         IndustryId _industryId;
         uint8_t _5;
