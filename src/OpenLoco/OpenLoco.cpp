@@ -969,7 +969,7 @@ namespace OpenLoco
     // 0x004968C7
     static void dateTick()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
+        if ((getGameState().flags & (1u << 0)) != 0u && !isEditorMode())
         {
             if (updateDayCounter())
             {

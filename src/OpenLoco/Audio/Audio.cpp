@@ -4,6 +4,7 @@
 #include "../Date.h"
 #include "../Entities/EntityManager.h"
 #include "../Environment.h"
+#include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
@@ -219,14 +220,14 @@ namespace OpenLoco::Audio
         {
             auto numSounds = readValue<uint32_t>(fs);
 
-            std::vector<uint32_t> offsets(numSounds, 0);
-            readData(fs, offsets.data(), numSounds);
+            std::vector<uint32_t> soundOffsets(numSounds, 0);
+            readData(fs, soundOffsets.data(), numSounds);
 
             std::vector<std::byte> pcm;
             for (uint32_t i = 0; i < numSounds; i++)
             {
                 // Navigate to beginning of wave data
-                fs.seekg(offsets[i]);
+                fs.seekg(soundOffsets[i]);
 
                 // Read length of wave data and load it into the pcm buffer
                 auto pcmLen = readValue<uint32_t>(fs);
@@ -922,7 +923,7 @@ namespace OpenLoco::Audio
     // 0x48A73B
     void updateVehicleNoise()
     {
-        if (addr<0x00525E28, uint32_t>() & 1)
+        if (getGameState().flags & (1u << 0))
         {
             if (!_audioIsPaused && _audioIsEnabled)
             {

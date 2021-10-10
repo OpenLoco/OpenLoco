@@ -50,7 +50,7 @@ namespace OpenLoco::StationManager
     // 0x0048B1FA
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
+        if ((getGameState().flags & (1u << 0)) != 0u && !isEditorMode())
         {
             const auto id = StationId(scenarioTicks() & 0x3FF);
             auto station = get(id);

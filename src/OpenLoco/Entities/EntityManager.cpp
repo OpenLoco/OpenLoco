@@ -301,7 +301,7 @@ namespace OpenLoco::EntityManager
     // 0x004A8826
     void updateVehicles()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
+        if ((getGameState().flags & 1u) != 0u && !isEditorMode())
         {
             for (auto v : VehicleList())
             {
@@ -313,7 +313,7 @@ namespace OpenLoco::EntityManager
     // 0x004402F4
     void updateMiscEntities()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1))
+        if (getGameState().flags & (1u << 0))
         {
             for (auto* misc : EntityList<EntityListIterator<MiscBase>, EntityListType::misc>())
             {

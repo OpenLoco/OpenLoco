@@ -40,7 +40,7 @@ namespace OpenLoco::IndustryManager
     // 0x00453234
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
+        if ((getGameState().flags & (1u << 0)) != 0u && !isEditorMode())
         {
             CompanyManager::updatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
@@ -59,7 +59,7 @@ namespace OpenLoco::IndustryManager
     // 0x00459D2D
     void createAllMapAnimations()
     {
-        if (!(addr<0x00525E28, uint32_t>() & (1 << 0)))
+        if ((getGameState().flags & (1u << 0)) == 0u)
             return;
 
         for (auto& industry : industries())

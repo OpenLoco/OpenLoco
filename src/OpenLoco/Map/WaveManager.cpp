@@ -76,7 +76,7 @@ namespace OpenLoco::Map::WaveManager
     // 0x004C56F6
     void update()
     {
-        if (!(addr<0x00525E28, uint32_t>() & 1) || (scenarioTicks() & 0x3))
+        if ((getGameState().flags & (1u << 0)) == 0u || (scenarioTicks() & 0x3))
         {
             return;
         }

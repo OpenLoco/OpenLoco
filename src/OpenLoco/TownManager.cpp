@@ -39,7 +39,7 @@ namespace OpenLoco::TownManager
     // 0x00496B6D
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
+        if ((getGameState().flags & (1u << 0)) != 0u && !isEditorMode())
         {
             auto ticks = scenarioTicks();
             if (ticks % 8 == 0)
