@@ -640,7 +640,7 @@ namespace OpenLoco::Ui
                         case SDL_BUTTON_RIGHT:
                             Input::enqueueMouseButton(2);
                             addr<0x0113E0C0, int32_t>() = 1;
-                            addr<0x005251C8, int32_t>() = 1;
+                            setRightMouseButtonDown(true);
                             addr<0x01140845, uint8_t>() = 0x80;
                             break;
                     }
@@ -661,7 +661,7 @@ namespace OpenLoco::Ui
                         case SDL_BUTTON_RIGHT:
                             Input::enqueueMouseButton(4);
                             addr<0x0113E0C0, int32_t>() = 0;
-                            addr<0x005251C8, int32_t>() = 0;
+                            setRightMouseButtonDown(false);
                             addr<0x01140845, uint8_t>() = 0;
                             break;
                     }
@@ -887,18 +887,6 @@ namespace OpenLoco::Ui
     }
 #endif
 
-    // 0x004C6EE6
-    static Input::MouseButton gameGetNextInput(uint32_t* x, int16_t* y)
-    {
-        registers regs;
-        call(0x004c6ee6, regs);
-
-        *x = regs.eax;
-        *y = regs.bx;
-
-        return (Input::MouseButton)regs.cx;
-    }
-
     // 0x004CD422
     static void processMouseTool(int16_t x, int16_t y)
     {
@@ -987,7 +975,7 @@ namespace OpenLoco::Ui
             uint32_t x;
             int16_t y;
             Input::MouseButton state;
-            while ((state = gameGetNextInput(&x, &y)) != Input::MouseButton::released)
+            while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
             {
                 if (isTitleMode() && Intro::isActive() && state == Input::MouseButton::leftPressed)
                 {
@@ -1033,7 +1021,7 @@ namespace OpenLoco::Ui
         uint32_t x;
         int16_t y;
         Input::MouseButton state;
-        while ((state = gameGetNextInput(&x, &y)) != Input::MouseButton::released)
+        while ((state = Input::nextMouseInput(x, y)) != Input::MouseButton::released)
         {
             Input::handleMouse(x, y, state);
         }

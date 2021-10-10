@@ -97,6 +97,8 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x005233B2> _5233B2;
     static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
 
+    static loco_global<uint32_t, 0x005251C8> _rightMouseButtonStatus;
+
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
@@ -2099,5 +2101,176 @@ namespace OpenLoco::Input
     void setClickRepeatTicks(uint16_t ticks)
     {
         _clickRepeatTicks = ticks;
+    }
+
+    bool isRightMouseButtonDown()
+    {
+        return _rightMouseButtonStatus == 0;
+    }
+
+    void setRightMouseButtonDown(bool status)
+    {
+        _rightMouseButtonStatus = status;
+    }
+
+#pragma pack(push, 1)
+    struct QueuedMouseInput
+    {
+        uint32_t x;
+        uint32_t y;
+        uint32_t button;
+    };
+#pragma pack(pop)
+
+    // 0x00406FEC
+    void enqueueMouseButton(int32_t button)
+    {
+        ((void (*)(int))0x00406FEC)(button);
+    }
+
+    // 0x00407247
+    static QueuedMouseInput* dequeueMouseInput()
+    {
+        registers regs;
+        call(0x00407247, regs);
+        return (QueuedMouseInput*)regs.eax;
+    }
+
+    // 0x004C6FCE
+    static MouseButton loc_4C6FCE(uint32_t& x, int16_t& y)
+    {
+        x = _cursorX2;
+        y = _cursorY2;
+        return MouseButton::released;
+    }
+
+    // 0x004C70F1
+    static MouseButton loc_4C70F1(uint32_t& x, int16_t& y)
+    {
+        sub_407231();
+        resetFlag(Flags::flag5);
+        Ui::setCursor(CursorId(*_52336C));
+
+        if (Tutorial::state() == Tutorial::State::playing)
+        {
+            x = Tutorial::nextInput();
+            y = Tutorial::nextInput();
+        }
+        else
+        {
+            x = _5233AE;
+            y = _5233B2;
+        }
+
+        // 0x004C7136, 0x004C7165
+        _cursorX2 = 0x80000000;
+        return MouseButton::rightReleased;
+    }
+
+    // 0x004C6EE6
+    MouseButton nextMouseInput(uint32_t& x, int16_t& y)
+    {
+        if (!hasFlag(Flags::flag5))
+        {
+            // Interrupt tutorial on mouse button input.
+            QueuedMouseInput* input = dequeueMouseInput();
+            if (Tutorial::state() == Tutorial::State::playing && input != nullptr)
+            {
+                Tutorial::stop();
+            }
+
+            // If tutorial is playing, follow the recorded mouse coordinates.
+            MouseButton button{};
+            if (Tutorial::state() == Tutorial::State::playing)
+            {
+                button = MouseButton(Tutorial::nextInput());
+
+                // 0x004C6F6C
+                if (button != MouseButton::released)
+                {
+                    button = MouseButton(Tutorial::nextInput());
+                    x = Tutorial::nextInput();
+                    y = Tutorial::nextInput();
+                }
+                else
+                {
+                    button = loc_4C6FCE(x, y);
+                    if (x == 0x80000000)
+                        return button;
+                }
+            }
+            // 0x004C6F5F
+            else if (input == nullptr)
+            {
+                button = loc_4C6FCE(x, y);
+                if (x == 0x80000000)
+                    return button;
+            }
+            else if (input)
+            {
+                // 0x004C6F87
+                switch (input->button)
+                {
+                    case 1:
+                        button = MouseButton::leftPressed;
+                        break;
+                    case 2:
+                        button = MouseButton::rightPressed;
+                        break;
+                    case 3:
+                        button = MouseButton::leftReleased;
+                        break;
+                    default:
+                        button = MouseButton::rightReleased;
+                }
+                x = input->x;
+                y = input->y;
+            }
+
+            // 0x004C6FE4
+            x = std::clamp<uint16_t>(x, 0, Ui::width() - 1);
+            y = std::clamp<uint16_t>(y, 0, Ui::height() - 1);
+            return button;
+        }
+        else
+        {
+            if (Tutorial::state() == Tutorial::State::playing)
+            {
+                auto button = MouseButton(Tutorial::nextInput());
+                if (button == MouseButton::released)
+                    return loc_4C70F1(x, y);
+            }
+            else if (isRightMouseButtonDown())
+                return loc_4C70F1(x, y);
+
+            // 0x004C704E
+            if (Tutorial::state() == Tutorial::State::playing)
+            {
+                auto next = Tutorial::nextInput();
+                if (!(next & 0x80))
+                    return loc_4C70F1(x, y);
+            }
+            else if (!(addr<0x01140845, uint8_t>() & 0x80))
+            {
+                return loc_4C70F1(x, y);
+            }
+
+            // 0x004C7085
+            if (Tutorial::state() == Tutorial::State::playing)
+            {
+                x = Tutorial::nextInput();
+                y = Tutorial::nextInput();
+            }
+            else
+            {
+                x = _5233AE;
+                y = _5233B2;
+            }
+
+            // 0x004C709F, 0x004C70D8
+            _5233AE = 0;
+            _5233B2 = 0;
+            return MouseButton::released;
+        }
     }
 }

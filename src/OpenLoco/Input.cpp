@@ -48,12 +48,6 @@ namespace OpenLoco::Input
         _state = state;
     }
 
-    // 0x00406FEC
-    void enqueueMouseButton(int32_t button)
-    {
-        ((void (*)(int))0x00406FEC)(button);
-    }
-
     void sub_407218()
     {
         if (_cursor_drag_state == 0)
