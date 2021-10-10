@@ -54,16 +54,6 @@ namespace OpenLoco::Map
         constexpr uint8_t last = 1 << 7;
     }
 
-    struct SurfaceElement;
-    struct TrackElement;
-    struct StationElement;
-    struct SignalElement;
-    struct BuildingElement;
-    struct TreeElement;
-    struct WallElement;
-    struct RoadElement;
-    struct IndustryElement;
-
 #pragma pack(push, 1)
     struct TileElement;
     static constexpr size_t TileElementSize = 8;
