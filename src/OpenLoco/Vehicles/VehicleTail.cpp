@@ -102,7 +102,7 @@ namespace OpenLoco::Vehicles
             auto nextTile = _oldTilePos + trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                nextTile -= _503C6C[trackSize.rotationEnd];
+                nextTile -= Map::Pos3{ _503C6C[trackSize.rotationEnd] };
             }
             auto trackAndDirection2 = trackAndDirection;
             trackAndDirection2.track.setReversed(!trackAndDirection2.track.isReversed());

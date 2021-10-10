@@ -635,7 +635,7 @@ namespace OpenLoco::Ui::Windows::Construction
             _previousTileRotation = unk;
             if (unk < 12)
             {
-                previousTile += _503C6C[unk];
+                previousTile += Map::Pos3{ _503C6C[unk] };
             }
             _previousTile = previousTile;
         }
@@ -659,7 +659,7 @@ namespace OpenLoco::Ui::Windows::Construction
             _previousTileRotation = unk;
             if (unk < 12)
             {
-                previousTile += _503C6C[unk];
+                previousTile += Map::Pos3{ _503C6C[unk] };
             }
             _previousTile = previousTile;
         }
