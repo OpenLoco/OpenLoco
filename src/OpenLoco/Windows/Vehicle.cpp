@@ -3683,7 +3683,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 placementArgs->pos += unkItem.pos;
                 if (unkItem.rotationEnd < 12)
                 {
-                    placementArgs->pos -= _503C6C[unkItem.rotationEnd];
+                    placementArgs->pos -= Map::Pos3{ _503C6C[unkItem.rotationEnd] };
                 }
                 placementArgs->trackProgress = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->trackProgress, 0);
                 if (placementArgs->trackProgress >= moveInfoArr.size())
@@ -3789,7 +3789,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 placementArgs->pos += unkItem.pos;
                 if (unkItem.rotationEnd < 12)
                 {
-                    placementArgs->pos -= _503C6C[unkItem.rotationEnd];
+                    placementArgs->pos -= Map::Pos3{ _503C6C[unkItem.rotationEnd] };
                 }
                 placementArgs->trackProgress = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->trackProgress, 0);
                 if (placementArgs->trackProgress >= moveInfoArr.size())
