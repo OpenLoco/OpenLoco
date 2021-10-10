@@ -318,7 +318,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         uint16_t data[16];
         void push_back(uint16_t value)
         {
-            if (size < (sizeof(data) / sizeof(*data)) - 1)
+            if (size + 1 < std::size(data))
             {
                 data[size++] = value;
                 data[size] = 0xFFFF;
