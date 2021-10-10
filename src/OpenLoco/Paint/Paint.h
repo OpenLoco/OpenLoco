@@ -85,9 +85,9 @@ namespace OpenLoco::Paint
 
     namespace QuadrantFlags
     {
-        constexpr uint8_t identical = (1 << 0);
-        constexpr uint8_t bigger = (1 << 7);
-        constexpr uint8_t next = (1 << 1);
+        constexpr uint8_t pendingVisit = (1 << 0);
+        constexpr uint8_t outsideQuadrant = (1 << 7);
+        constexpr uint8_t neighbour = (1 << 1);
     };
 
     struct PaintStruct

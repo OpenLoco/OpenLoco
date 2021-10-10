@@ -414,6 +414,8 @@ namespace OpenLoco::Paint
     static PaintStruct* arrangeStructsHelperRotation(PaintStruct* psNext, const uint16_t quadrantIndex, const uint8_t flag)
     {
         PaintStruct* ps = nullptr;
+
+        // Get the first node in the specified quadrant.
         do
         {
             ps = psNext;
@@ -422,8 +424,12 @@ namespace OpenLoco::Paint
                 return ps;
         } while (quadrantIndex > psNext->quadrantIndex);
 
-        // Cache the last visited node so we don't have to walk the whole list again
-        auto* psCache = ps;
+        // We keep track of the first node in the quadrant so the next call with a higher quadrant index
+        // can use this node to skip some iterations.
+        auto* psQuadrantEntry = ps;
+
+        // Visit all nodes in the linked quadrant list and determine their current
+        // sorting relevancy.
         auto* psTemp = ps;
         do
         {
@@ -433,47 +439,63 @@ namespace OpenLoco::Paint
 
             if (ps->quadrantIndex > quadrantIndex + 1)
             {
-                ps->quadrantFlags = QuadrantFlags::bigger;
+                // Outside of the range.
+                ps->quadrantFlags = QuadrantFlags::outsideQuadrant;
             }
             else if (ps->quadrantIndex == quadrantIndex + 1)
             {
-                ps->quadrantFlags = QuadrantFlags::next | QuadrantFlags::identical;
+                // Is neighbour and requires a visit.
+                ps->quadrantFlags = QuadrantFlags::neighbour | QuadrantFlags::pendingVisit;
             }
             else if (ps->quadrantIndex == quadrantIndex)
             {
-                ps->quadrantFlags = flag | QuadrantFlags::identical;
+                // In specified quadrant, requires visit.
+                ps->quadrantFlags = flag | QuadrantFlags::pendingVisit;
             }
         } while (ps->quadrantIndex <= quadrantIndex + 1);
         ps = psTemp;
 
+        // Iterate all nodes in the current list and re-order them based on
+        // the current rotation and their bounding box.
         while (true)
         {
+            // Get the first pending node in the quadrant list
             while (true)
             {
                 psNext = ps->nextQuadrantPS;
                 if (psNext == nullptr)
-                    return psCache;
-                if (psNext->quadrantFlags & QuadrantFlags::bigger)
-                    return psCache;
-                if (psNext->quadrantFlags & QuadrantFlags::identical)
+                {
+                    // End of the current list.
+                    return psQuadrantEntry;
+                }
+                if (psNext->quadrantFlags & QuadrantFlags::outsideQuadrant)
+                {
+                    // Reached point outside of specified quadrant.
+                    return psQuadrantEntry;
+                }
+                if (psNext->quadrantFlags & QuadrantFlags::pendingVisit)
+                {
+                    // Found node to check on.
                     break;
+                }
                 ps = psNext;
             }
 
-            psNext->quadrantFlags &= ~QuadrantFlags::identical;
+            // Mark visited.
+            psNext->quadrantFlags &= ~QuadrantFlags::pendingVisit;
             psTemp = ps;
 
+            // Compare current node against the remaining children.
             const PaintStructBoundBox& initialBBox = psNext->bounds;
-
             while (true)
             {
                 ps = psNext;
                 psNext = psNext->nextQuadrantPS;
                 if (psNext == nullptr)
                     break;
-                if (psNext->quadrantFlags & QuadrantFlags::bigger)
+                if (psNext->quadrantFlags & QuadrantFlags::outsideQuadrant)
                     break;
-                if (!(psNext->quadrantFlags & QuadrantFlags::next))
+                if (!(psNext->quadrantFlags & QuadrantFlags::neighbour))
                     continue;
 
                 const PaintStructBoundBox& currentBBox = psNext->bounds;
@@ -482,6 +504,7 @@ namespace OpenLoco::Paint
 
                 if (compareResult)
                 {
+                    // Child node intersects with current node, move behind.
                     ps->nextQuadrantPS = psNext->nextQuadrantPS;
                     PaintStruct* ps_temp2 = psTemp->nextQuadrantPS;
                     psTemp->nextQuadrantPS = psNext;
@@ -541,7 +564,7 @@ namespace OpenLoco::Paint
         } while (++quadrantIndex <= _quadrantFrontIndex);
 
         PaintStruct* psCache = arrangeStructsHelper(
-            &(*_paintHead)->basic, _quadrantBackIndex & 0xFFFF, QuadrantFlags::next, currentRotation);
+            &(*_paintHead)->basic, _quadrantBackIndex & 0xFFFF, QuadrantFlags::neighbour, currentRotation);
 
         quadrantIndex = _quadrantBackIndex;
         while (++quadrantIndex < _quadrantFrontIndex)
