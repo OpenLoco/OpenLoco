@@ -51,17 +51,17 @@ namespace OpenLoco::CompanyManager
         // Reset player companies depending on network mode.
         if (isNetworkHost())
         {
-            rawPlayerCompanies()[0] = static_cast<CompanyId>(1);
-            rawPlayerCompanies()[1] = static_cast<CompanyId>(0);
+            rawPlayerCompanies()[0] = CompanyId(1);
+            rawPlayerCompanies()[1] = CompanyId(0);
         }
         else if (isNetworked())
         {
-            rawPlayerCompanies()[0] = static_cast<CompanyId>(0);
-            rawPlayerCompanies()[1] = static_cast<CompanyId>(1);
+            rawPlayerCompanies()[0] = CompanyId(0);
+            rawPlayerCompanies()[1] = CompanyId(1);
         }
         else
         {
-            rawPlayerCompanies()[0] = static_cast<CompanyId>(0);
+            rawPlayerCompanies()[0] = CompanyId(0);
             rawPlayerCompanies()[1] = CompanyId::null;
         }
 
@@ -144,7 +144,7 @@ namespace OpenLoco::CompanyManager
     {
         if (!isEditorMode() && !Config::getNew().companyAIDisabled)
         {
-            CompanyId id = static_cast<CompanyId>(scenarioTicks() & 0x0F);
+            CompanyId id = CompanyId(scenarioTicks() & 0x0F);
             auto company = get(id);
             if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {
@@ -433,8 +433,8 @@ namespace OpenLoco::CompanyManager
         {
             const uint32_t* buffer = reinterpret_cast<uint32_t*>(Config::get().preferred_name);
             GameCommands::do_31(_updating_company_id, 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_31(static_cast<CompanyId>(0), 2, buffer[3], buffer[4], buffer[5]);
-            if (GameCommands::do_31(static_cast<CompanyId>(0), 0, buffer[6], buffer[7], buffer[8]))
+            GameCommands::do_31(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
+            if (GameCommands::do_31(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]))
                 Ui::Windows::TextInput::cancel();
         }
 
@@ -457,8 +457,8 @@ namespace OpenLoco::CompanyManager
             const uint32_t* buffer = reinterpret_cast<uint32_t*>(companyName);
             GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
             GameCommands::do_30(_updating_company_id, 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_30(static_cast<CompanyId>(0), 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_30(static_cast<CompanyId>(0), 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::do_30(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
+            GameCommands::do_30(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]);
         }
     }
 
@@ -521,6 +521,6 @@ namespace OpenLoco
     CompanyId Company::id() const
     {
         auto* first = &CompanyManager::rawCompanies()[0];
-        return static_cast<CompanyId>(this - first);
+        return CompanyId(this - first);
     }
 }

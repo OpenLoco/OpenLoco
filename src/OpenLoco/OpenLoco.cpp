@@ -536,8 +536,8 @@ namespace OpenLoco
             if (!isTitleMode())
             {
                 auto edx = gPrng().srand_0();
-                edx ^= CompanyManager::get(static_cast<CompanyId>(0))->cash.var_00;
-                edx ^= CompanyManager::get(static_cast<CompanyId>(1))->cash.var_00;
+                edx ^= CompanyManager::get(CompanyId(0))->cash.var_00;
+                edx ^= CompanyManager::get(CompanyId(1))->cash.var_00;
                 if (edx != eax)
                 {
                     // disconnect?

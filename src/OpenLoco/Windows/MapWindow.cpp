@@ -309,7 +309,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                                 }
                                 else if (self->current_tab == (widx::tabOwnership - widx::tabOverall))
                                 {
-                                    auto company = CompanyManager::get(static_cast<CompanyId>(i));
+                                    auto company = CompanyManager::get(CompanyId(i));
 
                                     if (company->empty())
                                         continue;

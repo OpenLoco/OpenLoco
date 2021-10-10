@@ -133,7 +133,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         for (auto& station : StationManager::stations())
         {
-            if (station.owner == static_cast<CompanyId>(window->number))
+            if (station.owner == CompanyId(window->number))
             {
                 station.flags &= ~StationFlags::flag_4;
             }
@@ -224,7 +224,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         for (auto& station : StationManager::stations())
         {
-            if (station.owner != static_cast<CompanyId>(window->number))
+            if (station.owner != CompanyId(window->number))
                 continue;
 
             if ((station.flags & StationFlags::flag_5) != 0)
@@ -399,7 +399,7 @@ namespace OpenLoco::Ui::Windows::StationList
         window->activated_widgets |= (1ULL << tabInformationByType[window->current_tab].widgetIndex);
 
         // Set company name.
-        auto company = CompanyManager::get(static_cast<CompanyId>(window->number));
+        auto company = CompanyManager::get(CompanyId(window->number));
         *_common_format_args = company->name;
 
         // Set window title.
@@ -540,7 +540,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static void drawTabs(Ui::Window* window, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        auto companyColour = CompanyManager::getCompanyColour(static_cast<CompanyId>(window->number));
+        auto companyColour = CompanyManager::getCompanyColour(CompanyId(window->number));
 
         for (const auto& tab : tabInformationByType)
         {
@@ -557,7 +557,7 @@ namespace OpenLoco::Ui::Windows::StationList
         drawTabs(window, context);
 
         // Draw company owner image.
-        auto company = CompanyManager::get(static_cast<CompanyId>(window->number));
+        auto company = CompanyManager::get(CompanyId(window->number));
         auto competitor = ObjectManager::get<CompetitorObject>(company->competitor_id);
         uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
         uint16_t x = window->x + window->widgets[widx::company_select].left + 1;

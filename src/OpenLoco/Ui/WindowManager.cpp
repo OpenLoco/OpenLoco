@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::WindowManager
             0x0043454F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Windows::CompanyWindow::open(static_cast<CompanyId>(regs.ax));
+                Windows::CompanyWindow::open(CompanyId(regs.ax));
                 regs = backup;
 
                 return 0;
@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004345EE,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Windows::CompanyWindow::openFinances(static_cast<CompanyId>(regs.ax));
+                Windows::CompanyWindow::openFinances(CompanyId(regs.ax));
                 regs = backup;
 
                 return 0;
@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::WindowManager
             0x00434731,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Windows::CompanyWindow::openChallenge(static_cast<CompanyId>(regs.ax));
+                Windows::CompanyWindow::openChallenge(CompanyId(regs.ax));
                 regs = backup;
 
                 return 0;

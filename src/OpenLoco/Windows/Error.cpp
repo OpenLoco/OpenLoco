@@ -197,7 +197,7 @@ namespace OpenLoco::Ui::Windows::Error
         registerHook(
             0x00431908,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::Windows::Error::openWithCompetitor(regs.bx, regs.dx, static_cast<CompanyId>(regs.al));
+                Ui::Windows::Error::openWithCompetitor(regs.bx, regs.dx, CompanyId(regs.al));
                 return 0;
             });
     }

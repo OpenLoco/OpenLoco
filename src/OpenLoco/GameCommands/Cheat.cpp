@@ -176,7 +176,7 @@ namespace OpenLoco::GameCommands
         switch (command)
         {
             case CheatCommand::acquireAssets:
-                return Cheats::acquireAssets(static_cast<CompanyId>(param1));
+                return Cheats::acquireAssets(CompanyId(param1));
 
             case CheatCommand::addCash:
                 return Cheats::addCash(param1);
@@ -188,13 +188,13 @@ namespace OpenLoco::GameCommands
                 return Cheats::companyRatings(param1, param2);
 
             case CheatCommand::switchCompany:
-                return Cheats::switchCompany(static_cast<CompanyId>(param1));
+                return Cheats::switchCompany(CompanyId(param1));
 
             case CheatCommand::toggleBankruptcy:
-                return Cheats::toggleBankruptcy(static_cast<CompanyId>(param1));
+                return Cheats::toggleBankruptcy(CompanyId(param1));
 
             case CheatCommand::toggleJail:
-                return Cheats::toggleJail(static_cast<CompanyId>(param1));
+                return Cheats::toggleJail(CompanyId(param1));
 
             case CheatCommand::vehicleReliability:
                 return Cheats::vehicleReliability(param1);

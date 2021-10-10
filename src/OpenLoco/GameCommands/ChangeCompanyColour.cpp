@@ -72,6 +72,6 @@ namespace OpenLoco::GameCommands
 
     void changeCompanyColour(registers& regs)
     {
-        regs.ebx = changeCompanyColour(regs.bl, regs.cl, regs.dh, static_cast<CompanyId>(regs.dl), regs.ah, regs.al);
+        regs.ebx = changeCompanyColour(regs.bl, regs.cl, regs.dh, CompanyId(regs.dl), regs.ah, regs.al);
     }
 }

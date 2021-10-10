@@ -552,7 +552,7 @@ namespace OpenLoco::Ui::Windows::Town
                     rank = StringIds::town_rating_appalling;
 
                 auto args = FormatArguments();
-                args.push(CompanyManager::get(static_cast<CompanyId>(i))->name);
+                args.push(CompanyManager::get(CompanyId(i))->name);
                 args.push<int16_t>(0);
                 args.push(rating);
                 args.push(rank);

@@ -66,14 +66,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void disableChallengeTab(Window* self)
         {
             self->disabled_widgets = 0;
-            if (static_cast<CompanyId>(self->number) != CompanyManager::getControllingId())
+            if (CompanyId(self->number) != CompanyManager::getControllingId())
                 self->disabled_widgets |= (1 << widx::tab_challenge);
         }
 
         // 0x00431E9B
         static void enableRenameByCaption(Window* self)
         {
-            if (isEditorMode() || static_cast<CompanyId>(self->number) == CompanyManager::getControllingId())
+            if (isEditorMode() || CompanyId(self->number) == CompanyManager::getControllingId())
             {
                 self->enabled_widgets |= (1 << caption);
             }
@@ -128,7 +128,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::switchTabWidgets(self);
 
             // Set company name in title.
-            auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            auto company = CompanyManager::get(CompanyId(self->number));
             FormatArguments args{};
             args.push(company->name);
 
@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 self->disabled_widgets |= (1 << widx::centre_on_viewport);
 
             // No changing other player's faces, unless we're editing a scenario.
-            if (static_cast<CompanyId>(self->number) != CompanyManager::getControllingId() && !isEditorMode())
+            if (CompanyId(self->number) != CompanyManager::getControllingId() && !isEditorMode())
                 self->disabled_widgets |= (1 << widx::face);
 
             self->widgets[Common::widx::frame].right = self->width - 1;
@@ -169,7 +169,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[Common::widx::company_select].right = self->width - 3;
             self->widgets[Common::widx::company_select].left = self->width - 28;
 
-            if (static_cast<CompanyId>(self->number) == CompanyManager::getControllingId())
+            if (CompanyId(self->number) == CompanyManager::getControllingId())
                 self->widgets[widx::change_owner_name].type = WidgetType::wt_9;
             else
                 self->widgets[widx::change_owner_name].type = WidgetType::none;
@@ -188,7 +188,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->draw(context);
             Common::drawTabs(self, context);
             Common::drawCompanySelect(self, context);
-            const auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            const auto company = CompanyManager::get(CompanyId(self->number));
             const auto competitor = ObjectManager::get<CompetitorObject>(company->competitor_id);
 
             // Draw 'owner' label
@@ -239,11 +239,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // TODO: df fix this
                 // Until format arguments can allow pushing to the front we will have to call twice once for the status
                 FormatArguments args{};
-                string_id status = CompanyManager::getOwnerStatus(static_cast<CompanyId>(self->number), args);
+                string_id status = CompanyManager::getOwnerStatus(CompanyId(self->number), args);
                 args = FormatArguments{};
                 args.push(status);
                 // and once for the args
-                CompanyManager::getOwnerStatus(static_cast<CompanyId>(self->number), args);
+                CompanyManager::getOwnerStatus(CompanyId(self->number), args);
 
                 auto& widget = self->widgets[widx::unk_11];
                 Gfx::drawString_494BBF(
@@ -290,12 +290,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
 
                 case widx::face:
-                    CompanyFaceSelection::open(static_cast<CompanyId>(self->number));
+                    CompanyFaceSelection::open(CompanyId(self->number));
                     break;
 
                 case widx::change_owner_name:
                 {
-                    auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+                    auto company = CompanyManager::get(CompanyId(self->number));
                     TextInput::openTextInput(self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
                     break;
                 }
@@ -327,9 +327,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             bool success = false;
             {
                 uint32_t* buffer = (uint32_t*)input;
-                GameCommands::do_31(static_cast<CompanyId>(self->number), 1, buffer[0], buffer[1], buffer[2]);
-                GameCommands::do_31(static_cast<CompanyId>(0), 2, buffer[3], buffer[4], buffer[5]);
-                success = GameCommands::do_31(static_cast<CompanyId>(0), 0, buffer[6], buffer[7], buffer[8]);
+                GameCommands::do_31(CompanyId(self->number), 1, buffer[0], buffer[1], buffer[2]);
+                GameCommands::do_31(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
+                success = GameCommands::do_31(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]);
             }
 
             // No need to propate the name if it could not be set.
@@ -337,7 +337,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
 
             // Only name company after owner if this is a new company.
-            const auto& company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            const auto& company = CompanyManager::get(CompanyId(self->number));
             if (company->name != StringIds::new_company)
                 return;
 
@@ -459,7 +459,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self->callPrepareDraw();
 
-            const auto& company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            const auto& company = CompanyManager::get(CompanyId(self->number));
 
             if (company->observation_thing == EntityId::null)
             {
@@ -670,10 +670,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::switchTabWidgets(self);
 
             // Set company name.
-            auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            auto company = CompanyManager::get(CompanyId(self->number));
             FormatArguments args{};
             args.push(company->name);
-            auto companyColour = CompanyManager::getCompanyColour(static_cast<CompanyId>(self->number));
+            auto companyColour = CompanyManager::getCompanyColour(CompanyId(self->number));
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             uint32_t image = skin->img + InterfaceSkin::ImageIds::build_headquarters;
             self->widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | (1 << 30);
@@ -701,7 +701,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[Common::widx::company_select].right = self->width - 3;
             self->widgets[Common::widx::company_select].left = self->width - 28;
 
-            if (static_cast<CompanyId>(self->number) == CompanyManager::getControllingId())
+            if (CompanyId(self->number) == CompanyManager::getControllingId())
                 self->widgets[widx::build_hq].type = WidgetType::wt_9;
             else
                 self->widgets[widx::build_hq].type = WidgetType::none;
@@ -758,7 +758,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::drawTabs(self, context);
             Common::drawCompanySelect(self, context);
 
-            auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            auto company = CompanyManager::get(CompanyId(self->number));
             auto x = self->x + 3;
             auto y = self->y + 48;
             {
@@ -790,7 +790,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y += 10;
             }
 
-            if (!CompanyManager::isPlayerCompany(static_cast<CompanyId>(self->number)))
+            if (!CompanyManager::isPlayerCompany(CompanyId(self->number)))
             {
                 drawAIdetails(*context, x + 5, y, *company);
             }
@@ -1084,7 +1084,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
 
             self->callPrepareDraw();
-            auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            auto company = CompanyManager::get(CompanyId(self->number));
             if (company->headquarters_x == -1)
             {
                 // If headquarters not placed destroy the viewport
@@ -1282,7 +1282,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::switchTabWidgets(self);
 
             // Set company name.
-            auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            auto company = CompanyManager::get(CompanyId(self->number));
             FormatArguments args{};
             args.push(company->name);
 
@@ -1353,7 +1353,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 }
             }
 
-            if (static_cast<CompanyId>(self->number) == CompanyManager::getControllingId())
+            if (CompanyId(self->number) == CompanyManager::getControllingId())
                 self->enabled_widgets |= allColourChecks | allMainColours | allSecondaryColours;
             else
                 self->enabled_widgets &= ~(allColourChecks | allMainColours | allSecondaryColours);
@@ -1422,12 +1422,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::check_ships:
                     // customVehicleColoursSet reserves first bit for main colour scheme even though it can't be changed, so skip it.
                     const auto vehicleType = widgetIndex - widx::check_steam_locomotives + 1;
-                    const auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+                    const auto company = CompanyManager::get(CompanyId(self->number));
                     const auto newMode = (company->customVehicleColoursSet & (1 << vehicleType)) == 0 ? 1 : 0;
 
                     GameCommands::setErrorTitle(StringIds::error_cant_change_colour_scheme);
 
-                    GameCommands::do_19(0, newMode, vehicleType, 1, static_cast<CompanyId>(self->number));
+                    GameCommands::do_19(0, newMode, vehicleType, 1, CompanyId(self->number));
 
                     break;
             }
@@ -1454,7 +1454,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case main_colour_aircraft:
                 case main_colour_ships:
                 {
-                    auto* company = CompanyManager::get(static_cast<CompanyId>(self->number));
+                    auto* company = CompanyManager::get(CompanyId(self->number));
                     Colour_t selectedColour;
                     if (widgetIndex != main_colour_scheme)
                     {
@@ -1464,7 +1464,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     else
                         selectedColour = company->mainColours.primary;
 
-                    auto availableColours = 0x7FFFFFFF & ~(CompanyManager::competingColourMask(static_cast<CompanyId>(self->number)));
+                    auto availableColours = 0x7FFFFFFF & ~(CompanyManager::competingColourMask(CompanyId(self->number)));
                     Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary));
                     break;
                 }
@@ -1481,7 +1481,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case secondary_colour_aircraft:
                 case secondary_colour_ships:
                 {
-                    auto* company = CompanyManager::get(static_cast<CompanyId>(self->number));
+                    auto* company = CompanyManager::get(CompanyId(self->number));
                     Colour_t selectedColour;
                     if (widgetIndex != secondary_colour_scheme)
                     {
@@ -1536,7 +1536,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::main_colour_scheme;
 
-                    GameCommands::do_19(0, colour, vehicleType, 0, static_cast<CompanyId>(self->number));
+                    GameCommands::do_19(0, colour, vehicleType, 0, CompanyId(self->number));
                     break;
                 }
 
@@ -1560,7 +1560,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
 
-                    GameCommands::do_19(1, colour, vehicleType, 0, static_cast<CompanyId>(self->number));
+                    GameCommands::do_19(1, colour, vehicleType, 0, CompanyId(self->number));
                     break;
                 }
             }
@@ -1627,7 +1627,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::switchTabWidgets(self);
 
             // Set company name.
-            auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            auto company = CompanyManager::get(CompanyId(self->number));
             FormatArguments args{};
             args.push(company->name);
             args.push<uint32_t>(0);
@@ -1649,7 +1649,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[Common::widx::company_select].right = self->width - 3;
             self->widgets[Common::widx::company_select].left = self->width - 28;
 
-            if (static_cast<CompanyId>(self->number) == CompanyManager::getControllingId())
+            if (CompanyId(self->number) == CompanyManager::getControllingId())
             {
                 self->widgets[widx::current_loan].type = WidgetType::wt_17;
                 self->widgets[widx::loan_decrease].type = WidgetType::wt_11;
@@ -1672,7 +1672,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::drawTabs(self, context);
             Common::drawCompanySelect(self, context);
 
-            const auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            const auto company = CompanyManager::get(CompanyId(self->number));
 
             // Draw 'expenditure/income' label
             {
@@ -1880,7 +1880,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y += 10;
             }
 
-            const auto company = CompanyManager::get(static_cast<CompanyId>(self.number));
+            const auto company = CompanyManager::get(CompanyId(self.number));
 
             uint32_t curYear = getCurrentYear();
             uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureMonths, expenditureHistoryCapacity);
@@ -1938,7 +1938,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::loan_decrease:
                 {
-                    auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+                    auto company = CompanyManager::get(CompanyId(self->number));
                     if (company->current_loan == 0)
                         return;
 
@@ -1967,7 +1967,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     else if (*_clickRepeatTicks >= 200)
                         stepSize = 100000;
 
-                    currency32_t newLoan = CompanyManager::get(static_cast<CompanyId>(self->number))->current_loan + stepSize;
+                    currency32_t newLoan = CompanyManager::get(CompanyId(self->number))->current_loan + stepSize;
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::do_9(newLoan);
                     break;
@@ -2023,7 +2023,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043386F
         static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            const auto& company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            const auto& company = CompanyManager::get(CompanyId(self->number));
             *scrollWidth = company->numExpenditureMonths * expenditureColumnWidth;
         }
 
@@ -2125,7 +2125,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::switchTabWidgets(self);
 
             // Set company name.
-            auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            auto company = CompanyManager::get(CompanyId(self->number));
             FormatArguments args{};
             args.push(company->name);
 
@@ -2162,7 +2162,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             y += 10;
 
             uint8_t numPrinted = 0;
-            const auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            const auto company = CompanyManager::get(CompanyId(self->number));
             for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(company->cargoDelivered)); i++)
             {
                 auto cargo = ObjectManager::get<CargoObject>(i);
@@ -2262,7 +2262,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::enableRenameByCaption(self);
 
             uint16_t cargoHeight = 0;
-            const auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            const auto company = CompanyManager::get(CompanyId(self->number));
             for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(company->cargoDelivered)); i++)
             {
                 auto cargo = ObjectManager::get<CargoObject>(i);
@@ -2314,7 +2314,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::switchTabWidgets(self);
 
             // Set company name.
-            auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            auto company = CompanyManager::get(CompanyId(self->number));
             FormatArguments args{};
             args.push(company->name);
 
@@ -2638,7 +2638,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043252E
         static void renameCompanyPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
-            auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            auto company = CompanyManager::get(CompanyId(self->number));
             TextInput::openTextInput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
         }
 
@@ -2651,14 +2651,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
 
             uint32_t* buffer = (uint32_t*)input;
-            GameCommands::do_30(static_cast<CompanyId>(self->number), 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_30(static_cast<CompanyId>(0), 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_30(static_cast<CompanyId>(0), 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::do_30(CompanyId(self->number), 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_30(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
+            GameCommands::do_30(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]);
         }
 
         static void drawCompanySelect(const Window* const self, Gfx::Context* const context)
         {
-            const auto company = CompanyManager::get(static_cast<CompanyId>(self->number));
+            const auto company = CompanyManager::get(CompanyId(self->number));
             const auto competitor = ObjectManager::get<CompetitorObject>(company->competitor_id);
 
             // Draw company owner face.

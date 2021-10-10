@@ -279,7 +279,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 CompanyManager::get(chosenCompany)->challenge_flags |= CompanyFlags::sorted;
 
-                if (chosenCompany != static_cast<CompanyId>(self->row_info[self->row_count]))
+                if (chosenCompany != CompanyId(self->row_info[self->row_count]))
                 {
                     self->row_info[self->row_count] = enumValue(chosenCompany);
                     shouldInvalidate = true;
@@ -357,7 +357,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             if (currentRow > self->var_83C)
                 return;
 
-            CompanyId currentCompany = static_cast<CompanyId>(self->row_info[currentRow]);
+            CompanyId currentCompany = CompanyId(self->row_info[currentRow]);
             if (currentCompany == CompanyId::null)
                 return;
 
@@ -482,7 +482,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     stringId = StringIds::wcolour2_stringid;
                 }
 
-                auto company = CompanyManager::get(static_cast<CompanyId>(rowItem));
+                auto company = CompanyManager::get(CompanyId(rowItem));
                 auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
                 auto imageId = Gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
 
