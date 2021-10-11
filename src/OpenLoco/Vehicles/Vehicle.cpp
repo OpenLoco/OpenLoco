@@ -145,7 +145,7 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                elRoad->setUnk4u(elRoad->unk4u() ^ newUnk4u);
+                elRoad->setUnk4u(elRoad->unk4u() & (~newUnk4u));
             }
 
             if (getTrackType() == 0xFF)
@@ -153,6 +153,7 @@ namespace OpenLoco::Vehicles
                 if (*_525FBC & (1 << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_40(true);
+                    trackType = elRoad->roadObjectId();
                 }
             }
             else
