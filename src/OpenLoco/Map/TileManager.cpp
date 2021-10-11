@@ -1,6 +1,6 @@
 #include "TileManager.h"
 #include "../CompanyManager.h"
-#include "../GameState.h"
+#include "../Game.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
@@ -622,7 +622,7 @@ namespace OpenLoco::Map::TileManager
     // 0x00463ABA
     void update()
     {
-        if ((getGameState().flags & (1u << 0)) == 0u)
+        if (!Game::hasFlags(1u << 0))
         {
             return;
         }

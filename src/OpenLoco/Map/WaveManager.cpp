@@ -1,5 +1,6 @@
 #include "WaveManager.h"
 #include "../Core/LocoFixedVector.hpp"
+#include "../Game.h"
 #include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "../Limits.h"
@@ -76,7 +77,7 @@ namespace OpenLoco::Map::WaveManager
     // 0x004C56F6
     void update()
     {
-        if ((getGameState().flags & (1u << 0)) == 0u || (scenarioTicks() & 0x3))
+        if (!Game::hasFlags(1u << 0) || (scenarioTicks() & 0x3))
         {
             return;
         }

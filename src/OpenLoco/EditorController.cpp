@@ -1,5 +1,5 @@
 #include "EditorController.h"
-#include "GameState.h"
+#include "Game.h"
 #include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
@@ -63,7 +63,7 @@ namespace OpenLoco::EditorController
 
             case Step::landscapeEditor:
                 // Scenario/landscape loaded?
-                if ((getGameState().flags & (1u << 0)) != 0)
+                if (Game::hasFlags(1u << 0))
                     return;
 
                 if (WindowManager::find(WindowType::landscapeGeneration) == nullptr)

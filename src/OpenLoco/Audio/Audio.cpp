@@ -4,7 +4,7 @@
 #include "../Date.h"
 #include "../Entities/EntityManager.h"
 #include "../Environment.h"
-#include "../GameState.h"
+#include "../Game.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
@@ -923,7 +923,7 @@ namespace OpenLoco::Audio
     // 0x48A73B
     void updateVehicleNoise()
     {
-        if (getGameState().flags & (1u << 0))
+        if (Game::hasFlags(1u << 0))
         {
             if (!_audioIsPaused && _audioIsEnabled)
             {

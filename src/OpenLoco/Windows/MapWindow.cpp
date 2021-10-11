@@ -1,7 +1,7 @@
 #include "../CompanyManager.h"
 #include "../Entities/Entity.h"
 #include "../Entities/EntityManager.h"
-#include "../GameState.h"
+#include "../Game.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -1388,7 +1388,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B806
     static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        if ((getGameState().flags & (1u << 0)) == 0u)
+        if (!Game::hasFlags(1u << 0))
             return;
 
         Gfx::clearSingle(context, PaletteIndex::index_0A);

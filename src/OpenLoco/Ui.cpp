@@ -31,8 +31,8 @@
 #include "Config.h"
 #include "Console.h"
 #include "Drawing/FPSCounter.h"
+#include "Game.h"
 #include "GameCommands/GameCommands.h"
-#include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "Input.h"
@@ -914,8 +914,7 @@ namespace OpenLoco::Ui
             Windows::CompanyWindow::openAndSetName();
         }
 
-        bool needToSetPreferredName = (getGameState().flags & (1u << 2)) != 0u;
-        if (needToSetPreferredName)
+        if (Game::hasFlags(1u << 2))
         {
             if (!isTitleMode() && !isEditorMode())
             {
@@ -924,7 +923,7 @@ namespace OpenLoco::Ui
                     CompanyManager::setPreferredName();
                 }
             }
-            getGameState().flags &= ~(1u << 2);
+            Game::removeFlags(1u << 2);
         }
 
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_5))

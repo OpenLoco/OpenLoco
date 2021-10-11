@@ -1,5 +1,5 @@
+#include "../Game.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameState.h"
 #include "../Objects/BuildingObject.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
@@ -198,7 +198,7 @@ namespace OpenLoco::Map
                 }
 
                 auto producedAmount = randArr[i] / 4 + 1;
-                if ((getGameState().flags & (1u << 1)) != 0u)
+                if (Game::hasFlags(1u << 1))
                 {
                     producedAmount = (producedAmount + 1) / 2;
                 }

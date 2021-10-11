@@ -1,5 +1,5 @@
 #include "Paint.h"
-#include "../GameState.h"
+#include "../Game.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
@@ -339,7 +339,7 @@ namespace OpenLoco::Paint
     // 0x004622A2
     void PaintSession::generate()
     {
-        if ((getGameState().flags & (1u << 0)) == 0u)
+        if (!Game::hasFlags(1u << 0))
             return;
 
         viewFlags = addr<0x00E3F0BC, uint16_t>();
