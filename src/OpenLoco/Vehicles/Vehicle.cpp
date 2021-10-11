@@ -126,7 +126,7 @@ namespace OpenLoco::Vehicles
                 break;
             case VehicleThingType::body_start:
             case VehicleThingType::body_continued:
-                result = asVehicleBody()->update();
+                return !asVehicleBody()->update();
                 break;
             case VehicleThingType::tail:
                 return !asVehicleTail()->update();
