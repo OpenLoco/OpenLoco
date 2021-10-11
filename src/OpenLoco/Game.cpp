@@ -100,7 +100,7 @@ namespace OpenLoco::Game
     bool saveLandscapeOpen()
     {
         *_scenarioFlags &= ~(1 << 0);
-        if (getGameState().flags & (1u << 0))
+        if (hasFlags(1u << 0))
         {
             *_scenarioFlags |= (1 << 0);
             sub_46DB4C();
@@ -317,4 +317,25 @@ namespace OpenLoco::Game
         // 0x0043C411
         Gfx::invalidateScreen();
     }
+
+    uint32_t getFlags()
+    {
+        return getGameState().flags;
+    }
+
+    void setFlags(uint32_t flags)
+    {
+        getGameState().flags = flags;
+    }
+
+    bool hasFlags(uint32_t flags)
+    {
+        return (getFlags() & flags) != 0;
+    }
+
+    void removeFlags(uint32_t flags)
+    {
+        setFlags(getFlags() & ~flags);
+    }
+
 }
