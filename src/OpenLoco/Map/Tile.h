@@ -345,12 +345,29 @@ namespace OpenLoco::Map
 
         public:
             bool hasSignal() const { return _4 & 0x80; }
+            bool hasUnk4_40() const { return _4 & (1 << 6); }
+            void setUnk4_40(bool newState)
+            {
+                _4 &= ~(1 << 6);
+                _4 |= newState ? (1 << 6) : 0;
+            }
+            void setUnk4(uint8_t newUnk4)
+            {
+                _4 &= ~0x30;
+                _4 |= (newUnk4 & 0x3) << 4;
+            }
             uint8_t signalObjectId() const { return _4 & 0xF; } // _4l
             uint8_t frame() const { return _5 & 0xF; }          // _5l
-            bool hasRedLight() const { return _5 & 0x40; }      // TBC colours
-            bool hasRedLight2() const { return _5 & 0x10; }     // TBC colours
-            bool hasGreenLight() const { return _5 & 0x80; }    // TBC colours
-            bool hasGreenLight2() const { return _5 & 0x20; }   // TBC colours
+            uint8_t allLights() const { return _5 >> 4; }       // _5u
+            void setAllLights(uint8_t newLights)
+            {
+                _5 &= ~(0xF0);
+                _5 |= newLights << 4;
+            }
+            bool hasRedLight() const { return _5 & 0x40; }    // TBC colours
+            bool hasRedLight2() const { return _5 & 0x10; }   // TBC colours
+            bool hasGreenLight() const { return _5 & 0x80; }  // TBC colours
+            bool hasGreenLight2() const { return _5 & 0x20; } // TBC colours
         };
 
     private:
