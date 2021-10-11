@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t[3], 0x0052624E> _word_52624E;
-    static loco_global<CompanyId_t[3], 0x00526254> _byte_526254;
+    static loco_global<CompanyId[3], 0x00526254> _byte_526254;
     static loco_global<uint32_t[3], 0x00526258> _dword_526258;
     static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
     static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
@@ -254,14 +254,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437AE2
         static void updateCompanyList(Window* self)
         {
-            auto chosenCompany = -1;
+            CompanyId chosenCompany = CompanyId::null;
 
             for (auto& company : CompanyManager::companies())
             {
                 if ((company.challenge_flags & CompanyFlags::sorted) != 0)
                     continue;
 
-                if (chosenCompany == -1)
+                if (chosenCompany == CompanyId::null)
                 {
                     chosenCompany = company.id();
                     continue;
@@ -273,15 +273,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 }
             }
 
-            if (chosenCompany != -1)
+            if (chosenCompany != CompanyId::null)
             {
                 bool shouldInvalidate = false;
 
                 CompanyManager::get(chosenCompany)->challenge_flags |= CompanyFlags::sorted;
 
-                if (chosenCompany != self->row_info[self->row_count])
+                if (chosenCompany != CompanyId(self->row_info[self->row_count]))
                 {
-                    self->row_info[self->row_count] = chosenCompany;
+                    self->row_info[self->row_count] = enumValue(chosenCompany);
                     shouldInvalidate = true;
                 }
 
@@ -357,8 +357,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             if (currentRow > self->var_83C)
                 return;
 
-            int16_t currentCompany = self->row_info[currentRow];
-            if (currentCompany == -1)
+            CompanyId currentCompany = CompanyId(self->row_info[currentRow]);
+            if (currentCompany == CompanyId::null)
                 return;
 
             CompanyWindow::open(currentCompany);
@@ -482,7 +482,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     stringId = StringIds::wcolour2_stringid;
                 }
 
-                auto company = CompanyManager::get(rowItem);
+                auto company = CompanyManager::get(CompanyId(rowItem));
                 auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
                 auto imageId = Gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
 
@@ -684,7 +684,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.performance_index_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
                 _graphLineColour[count] = Colour::getShade(companyColour, 6);
-                _graphItemId[count] = companyId;
+                _graphItemId[count] = enumValue(companyId);
                 count++;
             }
 
@@ -775,7 +775,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_delivered_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
                 _graphLineColour[count] = Colour::getShade(companyColour, 6);
-                _graphItemId[count] = companyId;
+                _graphItemId[count] = enumValue(companyId);
                 count++;
             }
 
@@ -866,7 +866,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_distance_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
                 _graphLineColour[count] = Colour::getShade(companyColour, 6);
-                _graphItemId[count] = companyId;
+                _graphItemId[count] = enumValue(companyId);
                 count++;
             }
 
@@ -957,7 +957,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.companyValueHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
                 _graphLineColour[count] = Colour::getShade(companyColour, 6);
-                _graphItemId[count] = companyId;
+                _graphItemId[count] = enumValue(companyId);
                 count++;
             }
 
@@ -1344,7 +1344,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                         listY -= 10;
                         if (listY <= 0)
                         {
-                            selectedCompany = 1ULL << company.id();
+                            selectedCompany = 1ULL << enumValue(company.id());
                             break;
                         }
                     }

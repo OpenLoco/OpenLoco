@@ -340,7 +340,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
 
     // 0x00478895
-    static void getRoadConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId_t company, const uint8_t roadObjectId, const uint16_t trackAndDirection)
+    static void getRoadConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId, const uint16_t trackAndDirection)
     {
         const auto nextTrackPos = pos + TrackData::getUnkRoad(trackAndDirection).pos;
         _1135FAE = StationId::null; // stationId
@@ -473,7 +473,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A2604
-    static void getTrackConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId_t company, const uint8_t trackObjectId, const uint16_t trackAndDirection)
+    static void getTrackConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId company, const uint8_t trackObjectId, const uint16_t trackAndDirection)
     {
         const auto nextTrackPos = pos + TrackData::getUnkTrack(trackAndDirection).pos;
         _1135FAE = StationId::null; // stationId

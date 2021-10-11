@@ -99,11 +99,11 @@ namespace OpenLoco
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-    static loco_global<CompanyId_t[2], 0x00525E3C> _playerCompanies;
+    static loco_global<CompanyId[2], 0x00525E3C> _playerCompanies;
     loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
     static loco_global<int16_t, 0x00525F62> _525F62;
 
-    static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
+    static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
 
     static loco_global<char[256], 0x011367A0> _11367A0;
     static loco_global<char[256], 0x011368A0> _11368A0;
@@ -536,8 +536,8 @@ namespace OpenLoco
             if (!isTitleMode())
             {
                 auto edx = gPrng().srand_0();
-                edx ^= CompanyManager::get(0)->cash.var_00;
-                edx ^= CompanyManager::get(1)->cash.var_00;
+                edx ^= CompanyManager::get(CompanyId(0))->cash.var_00;
+                edx ^= CompanyManager::get(CompanyId(1))->cash.var_00;
                 if (edx != eax)
                 {
                     // disconnect?

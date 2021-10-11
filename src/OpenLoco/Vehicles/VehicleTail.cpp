@@ -12,13 +12,13 @@ namespace OpenLoco::Vehicles
     static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
 
     // 0x0048963F
-    static uint8_t sub_48963F(const Map::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId_t company, const uint8_t trackType, const uint32_t flags)
+    static uint8_t sub_48963F(const Map::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, const uint32_t flags)
     {
         registers regs;
         regs.ax = loc.x;
         regs.cx = loc.y;
         regs.dx = loc.z;
-        regs.bl = company;
+        regs.bl = enumValue(company);
         regs.bh = trackType;
         regs.ebp = trackAndDirection.track._data;
         regs.edi = flags;
@@ -27,14 +27,14 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2AD7
-    static void sub_4A2AD7(const Map::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId_t company, const uint8_t trackType)
+    static void sub_4A2AD7(const Map::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         addr<0x001135F88, uint16_t>() = 0;
         registers regs;
         regs.ax = loc.x;
         regs.cx = loc.y;
         regs.dx = loc.z;
-        regs.bl = company;
+        regs.bl = enumValue(company);
         regs.bh = trackType;
         regs.ebp = trackAndDirection.track._data;
         regs.esi = 0x004A2AF0;
@@ -43,13 +43,13 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004794BC
-    static uint8_t sub_4794BC(const Map::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId_t company, const uint8_t trackType, const uint16_t unk)
+    static uint8_t sub_4794BC(const Map::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, const uint16_t unk)
     {
         registers regs;
         regs.ax = loc.x;
         regs.cx = loc.y;
         regs.dx = loc.z;
-        regs.bl = company;
+        regs.bl = enumValue(company);
         regs.bh = trackType;
         regs.ebp = trackAndDirection.track._data;
         regs.di = unk;

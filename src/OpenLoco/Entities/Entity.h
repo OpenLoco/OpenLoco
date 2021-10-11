@@ -66,8 +66,8 @@ namespace OpenLoco
         uint8_t sprite_yaw;    // 0x1E
         Pitch sprite_pitch;    // 0x1F
         uint8_t pad_20;
-        CompanyId_t owner; // 0x21
-        string_id name;    // 0x22, combined with ordinalNumber on vehicles
+        CompanyId owner; // 0x21
+        string_id name;  // 0x22, combined with ordinalNumber on vehicles
 
         void moveTo(const Map::Pos3& loc);
         void invalidateSprite();

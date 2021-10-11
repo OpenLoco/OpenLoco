@@ -18,9 +18,9 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
+    static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
     static loco_global<uint8_t, 0x00508F08> game_command_nest_level;
-    static loco_global<CompanyId_t[2], 0x00525E3C> _player_company;
+    static loco_global<CompanyId[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00508F17> paused_state;
 
     static uint16_t _gameCommandFlags;
@@ -31,7 +31,7 @@ namespace OpenLoco::GameCommands
     static loco_global<string_id, 0x009C68E6> _gGameCommandErrorText;
     static loco_global<string_id, 0x009C68E8> _gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x009C68EA> _gGameCommandExpenditureType; // premultiplied by 4
-    static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
+    static loco_global<CompanyId, 0x009C68EE> _errorCompanyId;
     static loco_global<string_id[8], 0x112C826> _commonFormatArgs;
 
     using GameCommandFunc = void (*)(registers& regs);
@@ -413,7 +413,7 @@ namespace OpenLoco::GameCommands
     // 0x00431E6A
     // al  : company
     // esi : tile
-    bool sub_431E6A(const CompanyId_t company, Map::TileElement* const tile /*= nullptr*/)
+    bool sub_431E6A(const CompanyId company, Map::TileElement* const tile /*= nullptr*/)
     {
         if (company == CompanyId::neutral)
         {

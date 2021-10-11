@@ -19,7 +19,7 @@ namespace OpenLoco::Ui::Windows::Error
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<char[512], 0x009C64B3> _byte_9C64B3;
     static loco_global<uint16_t, 0x009C66B3> _word_9C66B3;
-    static loco_global<uint8_t, 0x009C68EC> _errorCompetitorId;
+    static loco_global<CompanyId, 0x009C68EC> _errorCompetitorId;
     static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
     static loco_global<int32_t, 0x0113E72C> _cursorX;
     static loco_global<int32_t, 0x0113E730> _cursorY;
@@ -117,7 +117,7 @@ namespace OpenLoco::Ui::Windows::Error
             uint16_t width = frameWidth;
             uint16_t height = frameHeight;
 
-            if (_errorCompetitorId != 0xFF)
+            if (_errorCompetitorId != CompanyId::null)
             {
                 width = 250;
                 height = 70;
@@ -148,7 +148,7 @@ namespace OpenLoco::Ui::Windows::Error
 
             Common::initEvents();
 
-            if (_errorCompetitorId != 0xFF)
+            if (_errorCompetitorId != CompanyId::null)
             {
                 error->widgets = ErrorCompetitor::widgets;
             }
@@ -172,13 +172,13 @@ namespace OpenLoco::Ui::Windows::Error
     // 0x00431A8A
     void open(string_id title, string_id message)
     {
-        _errorCompetitorId = 0xFF;
+        _errorCompetitorId = CompanyId::null;
 
         createErrorWindow(title, message);
     }
 
     // 0x00431908
-    void openWithCompetitor(string_id title, string_id message, uint8_t competitorId)
+    void openWithCompetitor(string_id title, string_id message, CompanyId competitorId)
     {
         _errorCompetitorId = competitorId;
 
@@ -197,7 +197,7 @@ namespace OpenLoco::Ui::Windows::Error
         registerHook(
             0x00431908,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::Windows::Error::openWithCompetitor(regs.bx, regs.dx, regs.al);
+                Ui::Windows::Error::openWithCompetitor(regs.bx, regs.dx, CompanyId(regs.al));
                 return 0;
             });
     }
@@ -226,7 +226,7 @@ namespace OpenLoco::Ui::Windows::Error
             Gfx::drawRect(*context, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
             Gfx::drawRect(*context, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
-            if (_errorCompetitorId == 0xFF)
+            if (_errorCompetitorId == CompanyId::null)
             {
                 Gfx::drawStringCentredRaw(*context, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
             }
@@ -236,7 +236,7 @@ namespace OpenLoco::Ui::Windows::Error
                 auto yPos = self->widgets[ErrorCompetitor::widx::innerFrame].top + self->y;
 
                 auto company = CompanyManager::get(_errorCompetitorId);
-                auto companyObj = ObjectManager::get<CompetitorObject>(company->id());
+                auto companyObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
 
                 auto imageId = companyObj->images[company->owner_emotion];
                 imageId = Gfx::recolour(imageId, company->mainColours.primary);

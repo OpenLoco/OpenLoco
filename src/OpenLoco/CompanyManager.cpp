@@ -28,7 +28,7 @@ namespace OpenLoco::CompanyManager
     static loco_global<uint8_t, 0x00526214> _company_competition_delay;
     static loco_global<uint8_t, 0x00525FB7> _company_max_competing;
     static loco_global<uint8_t[Limits::maxCompanies + 1], 0x009C645C> _company_colours;
-    static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
+    static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
 
     static void produceCompanies();
 
@@ -51,17 +51,17 @@ namespace OpenLoco::CompanyManager
         // Reset player companies depending on network mode.
         if (isNetworkHost())
         {
-            rawPlayerCompanies()[0] = 1;
-            rawPlayerCompanies()[1] = 0;
+            rawPlayerCompanies()[0] = CompanyId(1);
+            rawPlayerCompanies()[1] = CompanyId(0);
         }
         else if (isNetworked())
         {
-            rawPlayerCompanies()[0] = 0;
-            rawPlayerCompanies()[1] = 1;
+            rawPlayerCompanies()[0] = CompanyId(0);
+            rawPlayerCompanies()[1] = CompanyId(1);
         }
         else
         {
-            rawPlayerCompanies()[0] = 0;
+            rawPlayerCompanies()[0] = CompanyId(0);
             rawPlayerCompanies()[1] = CompanyId::null;
         }
 
@@ -70,12 +70,12 @@ namespace OpenLoco::CompanyManager
         updateColours();
     }
 
-    CompanyId_t updatingCompanyId()
+    CompanyId updatingCompanyId()
     {
         return _updating_company_id;
     }
 
-    void updatingCompanyId(CompanyId_t id)
+    void updatingCompanyId(CompanyId id)
     {
         _updating_company_id = id;
     }
@@ -85,9 +85,9 @@ namespace OpenLoco::CompanyManager
         return FixedVector(rawCompanies());
     }
 
-    Company* get(CompanyId_t id)
+    Company* get(CompanyId id)
     {
-        auto index = id;
+        auto index = enumValue(id);
         if (index < Limits::maxCompanies)
         {
             return &rawCompanies()[index];
@@ -95,22 +95,22 @@ namespace OpenLoco::CompanyManager
         return nullptr;
     }
 
-    CompanyId_t getControllingId()
+    CompanyId getControllingId()
     {
         return rawPlayerCompanies()[0];
     }
 
-    CompanyId_t getSecondaryPlayerId()
+    CompanyId getSecondaryPlayerId()
     {
         return rawPlayerCompanies()[1];
     }
 
-    void setControllingId(CompanyId_t id)
+    void setControllingId(CompanyId id)
     {
         rawPlayerCompanies()[0] = id;
     }
 
-    void setSecondaryPlayerId(CompanyId_t id)
+    void setSecondaryPlayerId(CompanyId id)
     {
         rawPlayerCompanies()[1] = id;
     }
@@ -120,17 +120,17 @@ namespace OpenLoco::CompanyManager
         return get(rawPlayerCompanies()[0]);
     }
 
-    uint8_t getCompanyColour(CompanyId_t id)
+    uint8_t getCompanyColour(CompanyId id)
     {
-        return _company_colours[id];
+        return _company_colours[enumValue(id)];
     }
 
     uint8_t getPlayerCompanyColour()
     {
-        return _company_colours[rawPlayerCompanies()[0]];
+        return _company_colours[enumValue(rawPlayerCompanies()[0])];
     }
 
-    bool isPlayerCompany(CompanyId_t id)
+    bool isPlayerCompany(CompanyId id)
     {
         auto findResult = std::find(
             std::begin(rawPlayerCompanies()),
@@ -144,7 +144,7 @@ namespace OpenLoco::CompanyManager
     {
         if (!isEditorMode() && !Config::getNew().companyAIDisabled)
         {
-            CompanyId_t id = scenarioTicks() & 0x0F;
+            CompanyId id = CompanyId(scenarioTicks() & 0x0F);
             auto company = get(id);
             if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {
@@ -227,7 +227,7 @@ namespace OpenLoco::CompanyManager
 
     // 0x00438047
     // Returns a string between 1810 and 1816 with up to two arguments.
-    string_id getOwnerStatus(CompanyId_t id, FormatArguments& args)
+    string_id getOwnerStatus(CompanyId id, FormatArguments& args)
     {
         auto* company = get(id);
         if (company == nullptr)
@@ -360,7 +360,7 @@ namespace OpenLoco::CompanyManager
     // loc : gGameCommandMapX/Y/Z global
     // company : updatingCompanyId global
     // amount : ebx
-    void spendMoneyEffect(const Map::Pos3& loc, const CompanyId_t company, const currency32_t amount)
+    void spendMoneyEffect(const Map::Pos3& loc, const CompanyId company, const currency32_t amount)
     {
         if (isEditorMode())
         {
@@ -392,13 +392,13 @@ namespace OpenLoco::CompanyManager
     // id : updatingCompanyId global var
     // payment : ebx (subtracted from company balance)
     // type : gGameCommandExpenditureType global var
-    void applyPaymentToCompany(const CompanyId_t id, const currency32_t payment, const ExpenditureType type)
+    void applyPaymentToCompany(const CompanyId id, const currency32_t payment, const ExpenditureType type)
     {
         auto* company = get(id);
         if (company == nullptr || OpenLoco::isEditorMode())
             return;
 
-        WindowManager::invalidate(WindowType::company, id);
+        WindowManager::invalidate(WindowType::company, enumValue(id));
 
         // Invalidate the company balance if this is the player company
         if (getControllingId() == id)
@@ -419,7 +419,7 @@ namespace OpenLoco::CompanyManager
             _company_colours[index] = company.mainColours.primary;
             index++;
         }
-        _company_colours[CompanyId::neutral] = 1;
+        _company_colours[enumValue(CompanyId::neutral)] = 1;
     }
 
     // 0x004C95A6
@@ -433,8 +433,8 @@ namespace OpenLoco::CompanyManager
         {
             const uint32_t* buffer = reinterpret_cast<uint32_t*>(Config::get().preferred_name);
             GameCommands::do_31(_updating_company_id, 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_31(0, 2, buffer[3], buffer[4], buffer[5]);
-            if (GameCommands::do_31(0, 0, buffer[6], buffer[7], buffer[8]))
+            GameCommands::do_31(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
+            if (GameCommands::do_31(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]))
                 Ui::Windows::TextInput::cancel();
         }
 
@@ -457,12 +457,12 @@ namespace OpenLoco::CompanyManager
             const uint32_t* buffer = reinterpret_cast<uint32_t*>(companyName);
             GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
             GameCommands::do_30(_updating_company_id, 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_30(0, 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_30(0, 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::do_30(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
+            GameCommands::do_30(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]);
         }
     }
 
-    uint32_t competingColourMask(CompanyId_t companyId)
+    uint32_t competingColourMask(CompanyId companyId)
     {
         const uint32_t similarColourMask[] = {
             0b11,
@@ -518,9 +518,9 @@ namespace OpenLoco::CompanyManager
 
 namespace OpenLoco
 {
-    CompanyId_t Company::id() const
+    CompanyId Company::id() const
     {
         auto* first = &CompanyManager::rawCompanies()[0];
-        return (CompanyId_t)(this - first);
+        return CompanyId(this - first);
     }
 }

@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                             }
 
                             case MessageItemArgumentType::company:
-                                Ui::Windows::CompanyWindow::open(itemId);
+                                Ui::Windows::CompanyWindow::open(CompanyId(itemId));
                                 break;
 
                             case MessageItemArgumentType::location:
@@ -529,7 +529,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case MessageItemArgumentType::company:
                 {
-                    auto company = CompanyManager::get(itemIndex);
+                    auto company = CompanyManager::get(CompanyId(itemIndex));
                     args.push(company->name);
                     break;
                 }

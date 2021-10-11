@@ -167,7 +167,7 @@ namespace OpenLoco::Scenario
     {
         WindowManager::closeConstructionWindows();
 
-        CompanyManager::updatingCompanyId(0x0F);
+        CompanyManager::updatingCompanyId(CompanyId::neutral);
         WindowManager::setCurrentRotation(0);
 
         CompanyManager::reset();

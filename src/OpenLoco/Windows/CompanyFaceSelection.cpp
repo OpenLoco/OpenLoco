@@ -19,7 +19,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
-    static loco_global<CompanyId_t, 0x9C68F2> _9C68F2; // Use in a game command??
+    static loco_global<CompanyId, 0x9C68F2> _9C68F2; // Use in a game command??
     static loco_global<uint16_t, 0x112C1C1> _numberCompetitorObjects;
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<CompetitorObject*, 0x0050D15C> _loadedObject; // This could be any type of object
@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static std::vector<uint32_t> _inUseCompetitors;
 
     // 0x004353F4
-    static void findAllInUseCompetitors(const CompanyId_t id)
+    static void findAllInUseCompetitors(const CompanyId id)
     {
         std::vector<uint8_t> takenCompetitorIds;
         for (const auto& c : CompanyManager::companies())
@@ -82,7 +82,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00434F52
-    void open(const CompanyId_t id)
+    void open(const CompanyId id)
     {
         auto* self = WindowManager::bringToFront(WindowType::companyFaceSelection, 0);
 

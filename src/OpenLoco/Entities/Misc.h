@@ -77,13 +77,13 @@ namespace OpenLoco
         uint8_t pad_24[0x26 - 0x24];
         uint16_t var_26;
         uint16_t var_28;
-        int32_t amount; // 0x2A - currency amount in British pounds - different currencies are probably getting recalculated
-        int8_t var_2E;  // company colour?
+        int32_t amount;   // 0x2A - currency amount in British pounds - different currencies are probably getting recalculated
+        CompanyId var_2E; // company colour?
         uint8_t pad_2F[0x44 - 0x2F];
         int16_t offsetX; // 0x44
         uint16_t wiggle; // 0x46
 
-        static MoneyEffect* create(const Map::Pos3& loc, const CompanyId_t company, const currency32_t amount);
+        static MoneyEffect* create(const Map::Pos3& loc, const CompanyId company, const currency32_t amount);
     };
     static_assert(sizeof(MoneyEffect) == 0x48);
 

@@ -70,7 +70,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
     static loco_global<uint32_t, 0x00525E28> _dword_525E28;
-    static loco_global<CompanyId_t, 0x00525E3C> _playerCompanyId;
+    static loco_global<CompanyId, 0x00525E3C> _playerCompanyId;
     static loco_global<uint8_t[Limits::maxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
@@ -309,7 +309,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                                 }
                                 else if (self->current_tab == (widx::tabOwnership - widx::tabOverall))
                                 {
-                                    auto company = CompanyManager::get(i);
+                                    auto company = CompanyManager::get(CompanyId(i));
 
                                     if (company->empty())
                                         continue;
@@ -782,7 +782,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto index = company.id();
             auto colour = Colour::getShade(company.mainColours.primary, 6);
 
-            if (!(self->var_854 & (1 << index)) || !(mapFrameNumber & (1 << 2)))
+            if (!(self->var_854 & (1 << enumValue(index))) || !(mapFrameNumber & (1 << 2)))
             {
                 Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
@@ -792,7 +792,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             auto stringId = StringIds::small_black_string;
 
-            if (self->var_854 & (1 << index))
+            if (self->var_854 & (1 << enumValue(index)))
             {
                 stringId = StringIds::small_white_string;
             }
@@ -1105,12 +1105,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         if (widgetIndex == widx::tabOwnership || widgetIndex == widx::tabVehicles)
         {
-            uint8_t index = car.front->owner;
+            uint8_t index = enumValue(car.front->owner);
             colour = Colour::getShade(_companyColours[index], 7);
 
             if (widgetIndex == widx::tabVehicles)
             {
-                index = static_cast<uint8_t>(train.head->vehicleType);
+                index = enumValue(train.head->vehicleType);
                 colour = vehicleTypeColours[index];
             }
 

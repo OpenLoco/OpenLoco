@@ -133,7 +133,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         for (auto& station : StationManager::stations())
         {
-            if (station.owner == window->number)
+            if (station.owner == CompanyId(window->number))
             {
                 station.flags &= ~StationFlags::flag_4;
             }
@@ -224,7 +224,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         for (auto& station : StationManager::stations())
         {
-            if (station.owner != window->number)
+            if (station.owner != CompanyId(window->number))
                 continue;
 
             if ((station.flags & StationFlags::flag_5) != 0)
@@ -287,16 +287,16 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00490F6C
-    Window* open(CompanyId_t companyId)
+    Window* open(CompanyId companyId)
     {
-        Window* window = WindowManager::bringToFront(WindowType::stationList, companyId);
+        Window* window = WindowManager::bringToFront(WindowType::stationList, enumValue(companyId));
         if (window != nullptr)
         {
             if (Input::isToolActive(window->type, window->number))
                 Input::toolCancel();
 
             // Still active?
-            window = WindowManager::bringToFront(WindowType::stationList, companyId);
+            window = WindowManager::bringToFront(WindowType::stationList, enumValue(companyId));
         }
 
         if (window == nullptr)
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 WindowFlags::flag_11,
                 &_events);
 
-            window->number = companyId;
+            window->number = enumValue(companyId);
             window->owner = companyId;
             window->current_tab = 0;
             window->frame_no = 0;
@@ -347,7 +347,7 @@ namespace OpenLoco::Ui::Windows::StationList
         return window;
     }
 
-    Window* open(CompanyId_t companyId, uint8_t type)
+    Window* open(CompanyId companyId, uint8_t type)
     {
         if (type > 4)
             throw std::domain_error("Unexpected station type");
@@ -399,7 +399,7 @@ namespace OpenLoco::Ui::Windows::StationList
         window->activated_widgets |= (1ULL << tabInformationByType[window->current_tab].widgetIndex);
 
         // Set company name.
-        auto company = CompanyManager::get(window->number);
+        auto company = CompanyManager::get(CompanyId(window->number));
         *_common_format_args = company->name;
 
         // Set window title.
@@ -540,7 +540,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static void drawTabs(Ui::Window* window, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        auto companyColour = CompanyManager::getCompanyColour(window->number);
+        auto companyColour = CompanyManager::getCompanyColour(CompanyId(window->number));
 
         for (const auto& tab : tabInformationByType)
         {
@@ -557,7 +557,7 @@ namespace OpenLoco::Ui::Windows::StationList
         drawTabs(window, context);
 
         // Draw company owner image.
-        auto company = CompanyManager::get(window->number);
+        auto company = CompanyManager::get(CompanyId(window->number));
         auto competitor = ObjectManager::get<CompetitorObject>(company->competitor_id);
         uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
         uint16_t x = window->x + window->widgets[widx::company_select].left + 1;
@@ -582,10 +582,10 @@ namespace OpenLoco::Ui::Windows::StationList
         if (itemIndex == -1)
             return;
 
-        CompanyId_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
+        CompanyId companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
         // Try to find an open station list for this company.
-        auto companyWindow = WindowManager::bringToFront(WindowType::stationList, companyId);
+        auto companyWindow = WindowManager::bringToFront(WindowType::stationList, enumValue(companyId));
         if (companyWindow != nullptr)
             return;
 
@@ -594,7 +594,7 @@ namespace OpenLoco::Ui::Windows::StationList
         if (company->name == StringIds::empty)
             return;
 
-        window->number = companyId;
+        window->number = enumValue(companyId);
         window->owner = companyId;
         window->sort_mode = 0;
         window->row_count = 0;
