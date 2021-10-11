@@ -1,5 +1,6 @@
 21.09.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1170] Add option to disable train reversing at signals.
 - Fix: [#1176] Headquarters ghost destroys buildings.
 - Fix: [#1178] Game does not start when no legacy config file is present.
 - Fix: [#1179] Default shortcut keys are not assigned when no config file is present.

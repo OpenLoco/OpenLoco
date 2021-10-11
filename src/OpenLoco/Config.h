@@ -164,6 +164,7 @@ namespace OpenLoco::Config
         std::string language = "en-GB";
         bool cheats_menu_enabled = false;
         bool breakdowns_disabled = false;
+        bool trainsReverseAtSignals = true;
         bool companyAIDisabled = false;
         float scale_factor = 1.0f;
         bool zoom_to_cursor = true;
