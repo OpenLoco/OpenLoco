@@ -509,7 +509,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_5F;
 
         VehicleObject* object() const;
-        int32_t update();
+        bool update();
         void secondaryAnimationUpdate();
         void sub_4AAB0B();
         void updateCargoSprite();

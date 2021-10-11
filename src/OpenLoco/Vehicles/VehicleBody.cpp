@@ -48,15 +48,12 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AA1D0
-    int32_t VehicleBody::update()
+    bool VehicleBody::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-
         if (mode == TransportMode::air || mode == TransportMode::water)
         {
             animationUpdate();
-            return 0;
+            return true;
         }
 
         if (vehicle_var_1136237 | vehicle_var_1136238)
@@ -79,7 +76,7 @@ namespace OpenLoco::Vehicles
         animationUpdate();
         sub_4AAB0B();
         vehicleUpdate_var_1136130 = backup1136130;
-        return 0;
+        return true;
     }
 
     // 0x004AAC4E
