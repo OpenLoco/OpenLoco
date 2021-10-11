@@ -1,4 +1,7 @@
+#include "../Map/AnimationManager.h"
+#include "../Map/TileManager.h"
 #include "../Map/Track/TrackData.h"
+#include "../ViewportManager.h"
 #include "Vehicle.h"
 #include "VehicleManager.h"
 
@@ -43,18 +46,51 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004794BC
-    static uint8_t sub_4794BC(const Map::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, const uint16_t unk)
+    static void leaveLevelCrossing(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk)
     {
-        registers regs;
-        regs.ax = loc.x;
-        regs.cx = loc.y;
-        regs.dx = loc.z;
-        regs.bl = enumValue(company);
-        regs.bh = trackType;
-        regs.ebp = trackAndDirection.track._data;
-        regs.di = unk;
-        call(0x004794BC, regs);
-        return regs.al;
+        auto levelCrossingLoc = loc;
+        if (trackAndDirection.isReversed())
+        {
+            auto& trackSize = Map::TrackData::getUnkTrack(trackAndDirection._data);
+            levelCrossingLoc += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                levelCrossingLoc -= Map::Pos3{ _503C6C[trackSize.rotationEnd] };
+            }
+        }
+
+        auto& trackPiece = Map::TrackData::getTrackPiece(trackAndDirection.id());
+        levelCrossingLoc += Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece[0].x, trackPiece[0].y }, trackAndDirection.cardinalDirection()) };
+        levelCrossingLoc.z += trackPiece[0].z;
+        auto tile = Map::TileManager::get(levelCrossingLoc);
+        for (auto& el : tile)
+        {
+            if (el.baseZ() != levelCrossingLoc.z / 4)
+            {
+                continue;
+            }
+
+            auto* road = el.as<RoadElement>();
+            if (road == nullptr)
+            {
+                continue;
+            }
+
+            if (road->roadId() != 0)
+            {
+                continue;
+            }
+
+            road->setUnk7_10(false);
+            if (unk != 8)
+            {
+                continue;
+            }
+
+            Map::AnimationManager::createAnimation(1, levelCrossingLoc, levelCrossingLoc.z / 4);
+        }
+
+        Ui::ViewportManager::invalidate(levelCrossingLoc, levelCrossingLoc.z, levelCrossingLoc.z + 32, ZoomLevel::full);
     }
 
     // 0x004AA24A
@@ -107,8 +143,7 @@ namespace OpenLoco::Vehicles
             auto trackAndDirection2 = trackAndDirection;
             trackAndDirection2.track.setReversed(!trackAndDirection2.track.isReversed());
             sub_4A2AD7(nextTile, trackAndDirection2, owner, track_type);
-            // Update level crossing
-            sub_4794BC(_oldTilePos, trackAndDirection, owner, track_type, 9);
+            leaveLevelCrossing(_oldTilePos, trackAndDirection.track, 9);
         }
         return true;
     }
