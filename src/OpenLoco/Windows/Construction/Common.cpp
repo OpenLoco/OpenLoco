@@ -746,7 +746,6 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto imageId = roadObj->image;
                 if (self->current_tab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 32;
-                Gfx::recolour(imageId, companyColour);
 
                 Widget::drawTab(self, context, imageId, widx::tab_construction);
             }
@@ -821,7 +820,6 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto imageId = trackObj->image;
                 if (self->current_tab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 15;
-                Gfx::recolour(imageId, companyColour);
 
                 Widget::drawTab(self, context, imageId, widx::tab_construction);
             }
