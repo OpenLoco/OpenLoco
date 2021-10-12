@@ -35,6 +35,7 @@ namespace OpenLoco::Vehicles
     {
         constexpr uint8_t unk_0 = 1 << 0;
         constexpr uint8_t isReversed = 1 << 1;
+        constexpr uint8_t unk_2 = 1 << 2;
         constexpr uint8_t unk_3 = 1 << 3;
         constexpr uint8_t isGhost = 1 << 4;
     }
@@ -219,6 +220,8 @@ namespace OpenLoco::Vehicles
         TransportMode getTransportMode() const;
         uint8_t getFlags38() const;
         uint8_t getTrackType() const;
+        Map::Pos3 getTrackLoc() const;
+        TrackAndDirection getVar2C() const;
         RoutingHandle getRoutingHandle() const;
         EntityId getHead() const;
         void setNextCar(const EntityId newNextCar);
