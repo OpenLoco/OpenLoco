@@ -1,6 +1,7 @@
 #include "../CompanyManager.h"
 #include "../Entities/Entity.h"
 #include "../Entities/EntityManager.h"
+#include "../Game.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -69,7 +70,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<uint8_t[16], 0x00F253CE> _byte_F253CE;
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
-    static loco_global<uint32_t, 0x00525E28> _dword_525E28;
     static loco_global<CompanyId, 0x00525E3C> _playerCompanyId;
     static loco_global<uint8_t[Limits::maxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
@@ -1388,7 +1388,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B806
     static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        if (!(_dword_525E28 & (1 << 0)))
+        if (!Game::hasFlags(1u << 0))
             return;
 
         Gfx::clearSingle(context, PaletteIndex::index_0A);

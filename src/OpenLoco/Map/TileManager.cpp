@@ -1,5 +1,6 @@
 #include "TileManager.h"
 #include "../CompanyManager.h"
+#include "../Game.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
@@ -612,7 +613,7 @@ namespace OpenLoco::Map::TileManager
     // 0x00463ABA
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) == 0)
+        if (!Game::hasFlags(1u << 0))
         {
             return;
         }

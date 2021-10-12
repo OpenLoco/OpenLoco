@@ -1,5 +1,6 @@
 #include "IndustryManager.h"
 #include "CompanyManager.h"
+#include "Game.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
 #include "Math/Vector.hpp"
@@ -40,7 +41,7 @@ namespace OpenLoco::IndustryManager
     // 0x00453234
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
+        if (Game::hasFlags(1u << 0) && !isEditorMode())
         {
             CompanyManager::updatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
@@ -59,7 +60,7 @@ namespace OpenLoco::IndustryManager
     // 0x00459D2D
     void createAllMapAnimations()
     {
-        if (!(addr<0x00525E28, uint32_t>() & (1 << 0)))
+        if (!Game::hasFlags(1u << 0))
             return;
 
         for (auto& industry : industries())

@@ -3,6 +3,7 @@
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
+#include "Game.h"
 #include "Graphics/Gfx.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
@@ -49,7 +50,7 @@ namespace OpenLoco::Scenario
     // 0x0046115C
     void sub_46115C()
     {
-        addr<0x00525E28, uint32_t>() = 0;
+        Game::setFlags(0u);
         AnimationManager::reset();
         addr<0x0052624C, uint16_t>() = S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1;
     }

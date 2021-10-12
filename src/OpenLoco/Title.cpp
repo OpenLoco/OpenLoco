@@ -2,6 +2,7 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Core/Variant.hpp"
+#include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "Gui.h"
 #include "Interop/Interop.hpp"
@@ -214,7 +215,7 @@ namespace OpenLoco::Title
                                 reload();
                             },
                             [](MoveStep step) {
-                                if (addr<0x00525E28, uint32_t>() & 1)
+                                if (Game::hasFlags(1u << 0))
                                 {
                                     auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
                                     auto height = Map::TileManager::getHeight(pos);
@@ -229,7 +230,7 @@ namespace OpenLoco::Title
                                 }
                             },
                             [](RotateStep step) {
-                                if (addr<0x00525E28, uint32_t>() & 1)
+                                if (Game::hasFlags(1u << 0))
                                 {
                                     auto main = Ui::WindowManager::getMainWindow();
                                     if (main != nullptr)

@@ -31,6 +31,7 @@
 #include "Config.h"
 #include "Console.h"
 #include "Drawing/FPSCounter.h"
+#include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
@@ -79,7 +80,6 @@ namespace OpenLoco::Ui
     static loco_global<Ui::CursorId, 0x00523393> _currentToolCursor;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
     loco_global<set_palette_func, 0x0052524C> set_palette_callback;
-    static loco_global<uint32_t, 0x00525E28> _525E28;
     loco_global<uint8_t[256], 0x01140740> _keyboard_state;
 
     bool _resolutionsAllowAnyAspectRatio = false;
@@ -914,8 +914,7 @@ namespace OpenLoco::Ui
             Windows::CompanyWindow::openAndSetName();
         }
 
-        bool needToSetPreferredName = _525E28 & (1 << 2);
-        if (needToSetPreferredName)
+        if (Game::hasFlags(1u << 2))
         {
             if (!isTitleMode() && !isEditorMode())
             {
@@ -924,7 +923,7 @@ namespace OpenLoco::Ui
                     CompanyManager::setPreferredName();
                 }
             }
-            *_525E28 &= ~(1 << 2);
+            Game::removeFlags(1u << 2);
         }
 
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_5))

@@ -4,6 +4,7 @@
 #include "Config.h"
 #include "GameCommands/GameCommands.h"
 #include "GameException.hpp"
+#include "GameState.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
@@ -27,8 +28,6 @@ namespace OpenLoco::Game
     static loco_global<char[257], 0x0050B518> _path_landscapes;
 
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
-
-    static loco_global<uint32_t, 0x00525E28> _525E28;
 
     static loco_global<uint16_t, 0x009C871A> _scenarioFlags;
     static loco_global<char[64], 0x009C873E> _scenarioTitle;
@@ -102,7 +101,7 @@ namespace OpenLoco::Game
     bool saveLandscapeOpen()
     {
         *_scenarioFlags &= ~(1 << 0);
-        if (_525E28 & (1 << 0))
+        if (hasFlags(1u << 0))
         {
             *_scenarioFlags |= (1 << 0);
             sub_46DB4C();
@@ -319,4 +318,25 @@ namespace OpenLoco::Game
         // 0x0043C411
         Gfx::invalidateScreen();
     }
+
+    uint32_t getFlags()
+    {
+        return getGameState().flags;
+    }
+
+    void setFlags(uint32_t flags)
+    {
+        getGameState().flags = flags;
+    }
+
+    bool hasFlags(uint32_t flags)
+    {
+        return (getFlags() & flags) != 0;
+    }
+
+    void removeFlags(uint32_t flags)
+    {
+        setFlags(getFlags() & ~flags);
+    }
+
 }

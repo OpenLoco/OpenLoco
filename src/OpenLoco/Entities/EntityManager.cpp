@@ -2,6 +2,7 @@
 #include "../Console.h"
 #include "../Core/LocoFixedVector.hpp"
 #include "../Entities/Misc.h"
+#include "../Game.h"
 #include "../GameCommands/GameCommands.h"
 #include "../GameState.h"
 #include "../Interop/Interop.hpp"
@@ -301,7 +302,7 @@ namespace OpenLoco::EntityManager
     // 0x004A8826
     void updateVehicles()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
+        if (Game::hasFlags(1u << 0) && !isEditorMode())
         {
             for (auto v : VehicleList())
             {
@@ -313,7 +314,7 @@ namespace OpenLoco::EntityManager
     // 0x004402F4
     void updateMiscEntities()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1))
+        if (getGameState().flags & (1u << 0))
         {
             for (auto* misc : EntityList<EntityListIterator<MiscBase>, EntityListType::misc>())
             {

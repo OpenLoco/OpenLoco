@@ -1,5 +1,6 @@
 #include "TownManager.h"
 #include "CompanyManager.h"
+#include "Game.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
 #include "OpenLoco.h"
@@ -39,7 +40,7 @@ namespace OpenLoco::TownManager
     // 0x00496B6D
     void update()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
+        if (Game::hasFlags(1u << 0) && !isEditorMode())
         {
             auto ticks = scenarioTicks();
             if (ticks % 8 == 0)
