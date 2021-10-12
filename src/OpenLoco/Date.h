@@ -27,7 +27,7 @@ namespace OpenLoco
         int32_t year = 0;
 
         // 0x0112C810 originally used as a return argument in calcDate
-        int32_t day_of_olympiad = 0;
+        int32_t dayOfOlympiad = 0;
 
         Date() = default;
         Date(int32_t y, MonthId m, int32_t d)

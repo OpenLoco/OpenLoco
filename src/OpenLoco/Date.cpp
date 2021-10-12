@@ -1,4 +1,5 @@
 #include "Date.h"
+#include "GameState.h"
 #include "Interop/Interop.hpp"
 #include <limits>
 #include <utility>
@@ -7,12 +8,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    static loco_global<uint32_t, 0x00525E2C> _current_day;
-    static loco_global<uint16_t, 0x00525E30> _day_progression;
-    static loco_global<int16_t, 0x00525E32> _current_year;
-    static loco_global<MonthId, 0x00525E34> _current_month;
-    static loco_global<int8_t, 0x00525E35> _current_day_of_month;
-    static loco_global<int32_t, 0x0112C810> _current_day_in_olympiad;
+    static loco_global<int32_t, 0x0112C810> _currentDayInOlympiad;
 
     static std::pair<MonthId, uint8_t> getMonthDay(int32_t dayOfYear);
 
@@ -23,64 +19,79 @@ namespace OpenLoco
 
     uint32_t getCurrentDay()
     {
-        return _current_day;
+        return getGameState().currentDay;
     }
 
     void setCurrentDay(const uint32_t day)
     {
-        _current_day = day;
+        getGameState().currentDay = day;
     }
 
     MonthId getCurrentMonth()
     {
-        return *_current_month;
+        return MonthId(getGameState().currentMonth);
+    }
+
+    static void setCurrentMonth(const MonthId month)
+    {
+        getGameState().currentMonth = enumValue(month);
     }
 
     uint16_t getCurrentYear()
     {
-        return _current_year;
+        return getGameState().currentYear;
     }
 
     void setCurrentYear(const int16_t year)
     {
-        _current_year = year;
+        getGameState().currentYear = year;
+    }
+
+    static int8_t getCurrentDayOfMonth()
+    {
+        return getGameState().currentDayOfMonth;
+    }
+
+    static void setCurrentDayOfMonth(const int8_t day)
+    {
+        getGameState().currentDayOfMonth = day;
     }
 
     Date getCurrentDate()
     {
-        return Date(_current_year, *_current_month, _current_day_of_month + 1);
+        return Date(getCurrentYear(), getCurrentMonth(), getCurrentDayOfMonth() + 1);
     }
 
     void setDate(const Date& date)
     {
-        _current_day_of_month = date.day - 1;
-        _current_month = date.month;
-        _current_year = date.year;
+        setCurrentDayOfMonth(date.day - 1);
+        setCurrentMonth(date.month);
+        setCurrentYear(date.year);
     }
 
     uint16_t getDayProgression()
     {
-        return _day_progression;
+        return getGameState().dayCounter;
     }
 
     void setDayProgression(const uint16_t progression)
     {
-        _day_progression = progression;
+        getGameState().dayCounter = progression;
     }
 
     bool updateDayCounter()
     {
         bool result = false;
-        constexpr uint16_t increment = 682; // ~17s
+        constexpr uint16_t kIncrement = 682; // ~17s
 
         // Check if counter is going to wrap
-        if (_day_progression + increment > std::numeric_limits<uint16_t>::max())
+        if (getGameState().dayCounter + kIncrement > std::numeric_limits<uint16_t>::max())
         {
-            _current_day++;
+            getGameState().currentDay++;
             result = true;
         }
 
-        _day_progression += increment;
+        getGameState().dayCounter += kIncrement;
         return result;
     }
 
@@ -90,40 +101,40 @@ namespace OpenLoco
     //    eax: year
     //    ebx: month
     //    edx: day
-    Date calcDate(uint32_t totalDays)
+    Date calcDate(const uint32_t totalDays)
     {
-        constexpr auto base_year = 1800;
-        constexpr auto days_in_year = 365;
-        constexpr auto days_in_olympiad = (365 * 4) + 1;
-        constexpr auto feb_29 = 31 + 28;
+        constexpr auto kBaseYear = 1800;
+        constexpr auto kDaysInYear = 365;
+        constexpr auto kDaysInOlympiad = (365 * 4) + 1;
+        constexpr auto kFeb29 = 31 + 28;
 
-        int32_t years = ((totalDays / days_in_olympiad) & 0xFFFF) * 4;
-        int32_t day = totalDays % days_in_olympiad;
+        int32_t years = ((totalDays / kDaysInOlympiad) & 0xFFFF) * 4;
+        int32_t day = totalDays % kDaysInOlympiad;
 
         // Count the years and add an extra day for when there isn't leap year
-        if (day > days_in_year)
+        if (day > kDaysInYear)
         {
-            day -= days_in_year;
+            day -= kDaysInYear;
             day -= 1;
             do
             {
                 years++;
-                day -= days_in_year;
+                day -= kDaysInYear;
             } while (day >= 0);
-            day += days_in_year;
-            if (day >= feb_29)
+            day += kDaysInYear;
+            if (day >= kFeb29)
             {
                 day++;
             }
         }
 
-        _current_day_in_olympiad = day;
+        _currentDayInOlympiad = day;
 
-        auto year = base_year + years;
-        auto monthDay = getMonthDay(day);
+        const auto year = kBaseYear + years;
+        const auto monthDay = getMonthDay(day);
 
         auto result = Date(year, monthDay.first, monthDay.second);
-        result.day_of_olympiad = day;
+        result.dayOfOlympiad = day;
         return result;
     }
 
