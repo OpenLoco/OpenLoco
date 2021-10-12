@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Map/Map.hpp"
-#include "Types.hpp"
+#include "../../Types.hpp"
+#include "../Map.hpp"
 #include <cstddef>
 #include <cstdlib>
 #include <vector>
