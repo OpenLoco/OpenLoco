@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         auto* viewport = main->viewports[0];
         _backupTileElement = *reinterpret_cast<TileElement*>(track);
-        auto* copyElement = (*_backupTileElement).asTrack();
+        auto* copyElement = (*_backupTileElement).as<TrackElement>();
         if (copyElement == nullptr)
         {
             return nullptr;
@@ -302,7 +302,7 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         auto* viewport = main->viewports[0];
         _backupTileElement = *reinterpret_cast<TileElement*>(road);
-        auto* copyElement = (*_backupTileElement).asRoad();
+        auto* copyElement = (*_backupTileElement).as<RoadElement>();
         if (copyElement == nullptr)
         {
             return nullptr;

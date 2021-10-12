@@ -437,7 +437,7 @@ namespace OpenLoco::StationManager
                 const auto tile = TileManager::get(searchLoc);
                 for (const auto& el : tile)
                 {
-                    auto* elStation = el.asStation();
+                    auto* elStation = el.as<StationElement>();
                     if (elStation == nullptr)
                     {
                         continue;

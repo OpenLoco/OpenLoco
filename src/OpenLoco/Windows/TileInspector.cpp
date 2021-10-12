@@ -186,115 +186,84 @@ namespace OpenLoco::Ui::Windows::TileInspector
         {
             case ElementType::surface:
             {
-                auto surface = element.asSurface();
-                if (surface != nullptr)
-                {
-                    auto terrainId = surface->terrain();
-                    auto object = ObjectManager::get<LandObject>(terrainId);
-                    return object->name;
-                }
-                break;
+                auto& surface = element.get<SurfaceElement>();
+                auto terrainId = surface.terrain();
+                auto object = ObjectManager::get<LandObject>(terrainId);
+                return object->name;
             }
             case ElementType::track:
             {
-                auto track = element.asTrack();
-                if (track != nullptr)
-                {
-                    auto objectId = track->trackObjectId();
-                    auto object = ObjectManager::get<TrackObject>(objectId);
-                    return object->name;
-                }
-                break;
+                auto& track = element.get<TrackElement>();
+                auto objectId = track.trackObjectId();
+                auto object = ObjectManager::get<TrackObject>(objectId);
+                return object->name;
             }
             case ElementType::station:
             {
-                auto station = element.asStation();
-                if (station != nullptr)
+                auto& station = element.get<StationElement>();
+                auto objectId = station.objectId();
+                auto stationType = station.stationType();
+                switch (stationType)
                 {
-                    auto objectId = station->objectId();
-                    auto stationType = station->stationType();
-                    switch (stationType)
-                    {
-                        case StationType::trainStation:
-                            return ObjectManager::get<TrainStationObject>(objectId)->name;
-                        case StationType::roadStation:
-                            return ObjectManager::get<RoadStationObject>(objectId)->name;
-                        case StationType::airport:
-                            return ObjectManager::get<AirportObject>(objectId)->name;
-                        case StationType::docks:
-                            return ObjectManager::get<DockObject>(objectId)->name;
-                    }
+                    case StationType::trainStation:
+                        return ObjectManager::get<TrainStationObject>(objectId)->name;
+                    case StationType::roadStation:
+                        return ObjectManager::get<RoadStationObject>(objectId)->name;
+                    case StationType::airport:
+                        return ObjectManager::get<AirportObject>(objectId)->name;
+                    case StationType::docks:
+                        return ObjectManager::get<DockObject>(objectId)->name;
                 }
                 break;
             }
             case ElementType::signal:
             {
-                auto signal = element.asSignal();
-                if (signal != nullptr)
-                {
-                    TrainSignalObject* object = nullptr;
-                    if (signal->getLeft().hasSignal())
-                        object = ObjectManager::get<TrainSignalObject>(signal->getLeft().signalObjectId());
-                    else if (signal->getRight().hasSignal())
-                        object = ObjectManager::get<TrainSignalObject>(signal->getRight().signalObjectId());
+                auto& signal = element.get<SignalElement>();
 
-                    if (object != nullptr)
-                        return object->name;
-                }
+                TrainSignalObject* object = nullptr;
+                if (signal.getLeft().hasSignal())
+                    object = ObjectManager::get<TrainSignalObject>(signal.getLeft().signalObjectId());
+                else if (signal.getRight().hasSignal())
+                    object = ObjectManager::get<TrainSignalObject>(signal.getRight().signalObjectId());
+
+                if (object != nullptr)
+                    return object->name;
+
                 break;
             }
             case ElementType::building:
             {
-                auto building = element.asBuilding();
-                if (building != nullptr)
-                {
-                    auto objectId = building->objectId();
-                    auto object = ObjectManager::get<BuildingObject>(objectId);
-                    return object->name;
-                }
-                break;
+                auto& building = element.get<BuildingElement>();
+                auto objectId = building.objectId();
+                auto object = ObjectManager::get<BuildingObject>(objectId);
+                return object->name;
             }
             case ElementType::tree:
             {
-                auto tree = element.asTree();
-                if (tree != nullptr)
-                {
-                    auto objectId = tree->treeObjectId();
-                    auto object = ObjectManager::get<TreeObject>(objectId);
-                    return object->name;
-                }
-                break;
+                auto& tree = element.get<TreeElement>();
+                auto objectId = tree.treeObjectId();
+                auto object = ObjectManager::get<TreeObject>(objectId);
+                return object->name;
             }
             case ElementType::wall:
             {
-                auto wall = element.asWall();
-                if (wall != nullptr)
-                {
-                    auto objectId = wall->wallObjectId();
-                    auto object = ObjectManager::get<WallObject>(objectId);
-                    return object->name;
-                }
-                break;
+                auto wall = element.get<WallElement>();
+                auto objectId = wall.wallObjectId();
+                auto object = ObjectManager::get<WallObject>(objectId);
+                return object->name;
             }
             case ElementType::road:
             {
-                auto road = element.asRoad();
-                if (road != nullptr)
-                {
-                    auto objectId = road->roadObjectId();
-                    auto object = ObjectManager::get<RoadObject>(objectId);
-                    return object->name;
-                }
-                break;
+                auto& road = element.get<RoadElement>();
+                auto objectId = road.roadObjectId();
+                auto object = ObjectManager::get<RoadObject>(objectId);
+                return object->name;
             }
             case ElementType::industry:
             {
-                auto industry = element.asIndustry();
-                if (industry != nullptr)
-                {
-                    auto object = ObjectManager::get<IndustryObject>(industry->industry()->object_id);
-                    return object->name;
-                }
+                auto& industry = element.get<IndustryElement>();
+                auto object = ObjectManager::get<IndustryObject>(industry.industry()->object_id);
+                return object->name;
             }
         }
         return StringIds::empty;
@@ -304,28 +273,22 @@ namespace OpenLoco::Ui::Windows::TileInspector
     {
         if (element.type() == ElementType::road)
         {
-            auto road = element.asRoad();
-            if (road != nullptr)
+            auto& road = element.get<RoadElement>();
+            auto ownerId = road.owner();
+            if (ownerId != CompanyId::neutral)
             {
-                auto ownerId = road->owner();
-                if (ownerId != CompanyId::neutral)
-                {
-                    auto company = CompanyManager::get(ownerId);
-                    return company->name;
-                }
+                auto company = CompanyManager::get(ownerId);
+                return company->name;
             }
         }
         else if (element.type() == ElementType::track)
         {
-            auto track = element.asTrack();
-            if (track != nullptr)
+            auto& track = element.get<TrackElement>();
+            auto ownerId = track.owner();
+            if (ownerId != CompanyId::neutral)
             {
-                auto ownerId = track->owner();
-                if (ownerId != CompanyId::neutral)
-                {
-                    auto company = CompanyManager::get(ownerId);
-                    return company->name;
-                }
+                auto company = CompanyManager::get(ownerId);
+                return company->name;
             }
         }
         return StringIds::empty;

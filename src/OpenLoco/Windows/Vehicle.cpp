@@ -2665,7 +2665,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     // 0x004B5160
                     auto tileElement = static_cast<TileElement*>(args.object);
-                    auto trackElement = tileElement->asTrack();
+                    auto trackElement = tileElement->as<TrackElement>();
                     if (trackElement == nullptr)
                         break;
                     auto height = trackElement->baseZ() * 4;
@@ -2712,8 +2712,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Ui::ViewportInteraction::InteractionItem::road:
                 {
                     // 0x004B5223
-                    auto tileElement = static_cast<TileElement*>(args.object);
-                    auto roadElement = tileElement->asRoad();
+                    auto* tileElement = static_cast<TileElement*>(args.object);
+                    auto* roadElement = tileElement->as<RoadElement>();
                     if (roadElement == nullptr)
                         break;
                     auto height = roadElement->baseZ() * 4;
@@ -3322,7 +3322,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     auto tile = Map::TileManager::get(loc);
                     for (auto& el : tile)
                     {
-                        auto* elStation = el.asStation();
+                        auto* elStation = el.as<StationElement>();
                         if (elStation == nullptr)
                         {
                             continue;
@@ -3406,7 +3406,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Map::StationElement* elStation = nullptr;
             for (auto& el : tile)
             {
-                elStation = el.asStation();
+                elStation = el.as<StationElement>();
                 if (elStation == nullptr)
                 {
                     continue;
@@ -3484,7 +3484,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     auto tile = TileManager::get(Map::Pos2{ station.unk_tile_x, station.unk_tile_y });
                     for (auto& el : tile)
                     {
-                        elStation = el.asStation();
+                        elStation = el.as<StationElement>();
                         if (elStation == nullptr)
                         {
                             continue;

@@ -37,7 +37,7 @@ namespace OpenLoco::Map
         auto tile = TileManager::get(loc);
         for (auto& el : tile)
         {
-            auto* roadEl = el.asRoad();
+            auto* roadEl = el.as<RoadElement>();
             if (roadEl == nullptr)
                 continue;
 

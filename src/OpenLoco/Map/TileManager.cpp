@@ -557,7 +557,7 @@ namespace OpenLoco::Map::TileManager
                 {
                     // NB: vanilla was checking for trees above the surface element.
                     // This has been omitted from our implementation.
-                    auto* tree = element.asTree();
+                    auto* tree = element.as<TreeElement>();
                     if (tree == nullptr)
                         continue;
 
@@ -587,25 +587,16 @@ namespace OpenLoco::Map::TileManager
                 break;
             case ElementType::building:
             {
-                auto* elBuilding = el.asBuilding();
-
-                if (elBuilding == nullptr) // Can never happen
-                {
-                    return false;
-                }
-                return elBuilding->update(loc);
+                auto& elBuilding = el.get<BuildingElement>();
+                return elBuilding.update(loc);
             }
             case ElementType::tree:
                 call(0x004BD52B, regs);
                 break;
             case ElementType::road:
             {
-                auto* elRoad = el.asRoad();
-                if (elRoad != nullptr)
-                    return elRoad->update(loc);
-                else
-                    return false;
-                break;
+                auto& elRoad = el.get<RoadElement>();
+                return elRoad.update(loc);
             }
             case ElementType::industry:
                 call(0x00456FF7, regs);

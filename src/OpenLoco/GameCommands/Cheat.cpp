@@ -23,14 +23,14 @@ namespace OpenLoco::GameCommands
             // First phase: change ownership of all tile elements that currently belong to the target company.
             for (auto& element : TileManager::getElements())
             {
-                auto roadElement = element.asRoad();
+                auto* roadElement = element.as<RoadElement>();
                 if (roadElement != nullptr)
                 {
                     roadElement->setOwner(ourCompanyId);
                     continue;
                 }
 
-                auto trackElement = element.asTrack();
+                auto* trackElement = element.as<TrackElement>();
                 if (trackElement != nullptr)
                 {
                     trackElement->setOwner(ourCompanyId);

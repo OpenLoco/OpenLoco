@@ -42,7 +42,7 @@ namespace OpenLoco::GameCommands
             if (element.baseZ() * 4 != pos.z)
                 continue;
 
-            auto treeElement = element.asTree();
+            auto* treeElement = element.as<Map::TreeElement>();
             if (treeElement == nullptr)
                 continue;
 

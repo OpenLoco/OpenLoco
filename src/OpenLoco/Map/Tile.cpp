@@ -96,16 +96,13 @@ size_t Tile::indexOf(const TileElementBase* element) const
 
 SurfaceElement* Tile::surface() const
 {
-    SurfaceElement* result = nullptr;
     for (auto& tile : *this)
     {
-        result = tile.asSurface();
+        auto* result = tile.as<SurfaceElement>();
         if (result != nullptr)
-        {
-            break;
-        }
+            return result;
     }
-    return result;
+    return nullptr;
 }
 
 StationElement* Tile::trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const
@@ -116,13 +113,13 @@ StationElement* Tile::trackStation(uint8_t trackId, uint8_t direction, uint8_t b
     {
         if (trackFound)
         {
-            result = tile.asStation();
+            result = tile.as<StationElement>();
             if (result != nullptr)
             {
                 break;
             }
         }
-        auto* elTrack = tile.asTrack();
+        auto* elTrack = tile.as<TrackElement>();
         if (elTrack == nullptr)
             continue;
         trackFound = false;
@@ -147,13 +144,13 @@ StationElement* Tile::roadStation(uint8_t roadId, uint8_t direction, uint8_t bas
     {
         if (trackFound)
         {
-            result = tile.asStation();
+            result = tile.as<StationElement>();
             if (result != nullptr)
             {
                 break;
             }
         }
-        auto* elRoad = tile.asRoad();
+        auto* elRoad = tile.as<RoadElement>();
         if (elRoad == nullptr)
             continue;
         trackFound = false;

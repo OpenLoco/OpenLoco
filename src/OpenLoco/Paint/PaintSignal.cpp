@@ -226,7 +226,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        auto* elTrack = (reinterpret_cast<const Map::TileElement*>(&elSignal) - 1)->asTrack();
+        auto* elTrack = elSignal.prev()->as<Map::TrackElement>();
         if (elTrack == nullptr)
         {
             return;

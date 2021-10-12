@@ -75,7 +75,7 @@ namespace OpenLoco::Map
                             auto tile = TileManager::get(pos);
                             for (auto& el : tile)
                             {
-                                auto* elBuilding2 = el.asBuilding();
+                                auto* elBuilding2 = el.as<BuildingElement>();
                                 if (elBuilding2 == nullptr)
                                 {
                                     continue;
@@ -110,7 +110,7 @@ namespace OpenLoco::Map
                     auto tile = TileManager::get(pos);
                     for (auto& el : tile)
                     {
-                        auto* elBuilding2 = el.asBuilding();
+                        auto* elBuilding2 = el.as<BuildingElement>();
                         if (elBuilding2 == nullptr)
                         {
                             continue;
@@ -156,7 +156,7 @@ namespace OpenLoco::Map
                         auto tile = TileManager::get(pos);
                         for (auto& el : tile)
                         {
-                            auto* elBuilding2 = el.asBuilding();
+                            auto* elBuilding2 = el.as<BuildingElement>();
                             if (elBuilding2 == nullptr)
                             {
                                 continue;

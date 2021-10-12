@@ -280,83 +280,57 @@ namespace OpenLoco::Paint
             {
                 case Map::ElementType::surface:
                 {
-                    auto* elSurface = el.asSurface();
-                    if (elSurface != nullptr)
-                    {
-                        paintSurface(session, *elSurface);
-                    }
+                    auto& elSurface = el.get<Map::SurfaceElement>();
+                    paintSurface(session, elSurface);
                     break;
                 }
                 case Map::ElementType::track:
                 {
-                    auto* elTrack = el.asTrack();
-                    if (elTrack != nullptr)
-                    {
-                        paintTrack(session, *elTrack);
-                    }
+                    auto& elTrack = el.get<Map::TrackElement>();
+                    paintTrack(session, elTrack);
                     break;
                 }
                 case Map::ElementType::station:
                 {
-                    auto* elStation = el.asStation();
-                    if (elStation != nullptr)
-                    {
-                        paintStation(session, *elStation);
-                    }
+                    auto& elStation = el.get<Map::StationElement>();
+                    paintStation(session, elStation);
                     break;
                 }
                 case Map::ElementType::signal:
                 {
-                    auto* elSignal = el.asSignal();
-                    if (elSignal != nullptr)
-                    {
-                        paintSignal(session, *elSignal);
-                    }
+                    auto& elSignal = el.get<Map::SignalElement>();
+                    paintSignal(session, elSignal);
                     break;
                 }
                 case Map::ElementType::building:
                 {
-                    auto* elBuilding = el.asBuilding();
-                    if (elBuilding != nullptr)
-                    {
-                        paintBuilding(session, *elBuilding);
-                    }
+                    auto& elBuilding = el.get<Map::BuildingElement>();
+                    paintBuilding(session, elBuilding);
+
                     break;
                 }
                 case Map::ElementType::tree:
                 {
-                    auto* elTree = el.asTree();
-                    if (elTree != nullptr)
-                    {
-                        paintTree(session, *elTree);
-                    }
+                    auto& elTree = el.get<Map::TreeElement>();
+                    paintTree(session, elTree);
                     break;
                 }
                 case Map::ElementType::wall:
                 {
-                    auto* elWall = el.asWall();
-                    if (elWall != nullptr)
-                    {
-                        paintWall(session, *elWall);
-                    }
+                    auto& elWall = el.get<Map::WallElement>();
+                    paintWall(session, elWall);
                     break;
                 }
                 case Map::ElementType::road:
                 {
-                    auto* elRoad = el.asRoad();
-                    if (elRoad != nullptr)
-                    {
-                        paintRoad(session, *elRoad);
-                    }
+                    auto& elRoad = el.get<Map::RoadElement>();
+                    paintRoad(session, elRoad);
                     break;
                 }
                 case Map::ElementType::industry:
                 {
-                    auto* elIndustry = el.asIndustry();
-                    if (elIndustry != nullptr)
-                    {
-                        paintIndustry(session, *elIndustry);
-                    }
+                    auto& elIndustry = el.get<Map::IndustryElement>();
+                    paintIndustry(session, elIndustry);
                     break;
                 }
             }
@@ -394,48 +368,36 @@ namespace OpenLoco::Paint
 
                 case Map::ElementType::station:
                 {
-                    auto* elStation = el.asStation();
-                    if (elStation != nullptr)
+                    auto& elStation = el.get<StationElement>();
+                    switch (elStation.stationType())
                     {
-                        switch (elStation->stationType())
-                        {
-                            case StationType::airport:
-                            case StationType::docks:
-                                paintStation(session, *elStation);
-                                break;
-                            default:
-                            case StationType::roadStation:
-                            case StationType::trainStation:
-                                continue;
-                        }
+                        case StationType::airport:
+                        case StationType::docks:
+                            paintStation(session, elStation);
+                            break;
+                        default:
+                        case StationType::roadStation:
+                        case StationType::trainStation:
+                            continue;
                     }
                     break;
                 }
                 case Map::ElementType::building:
                 {
-                    auto* elBuilding = el.asBuilding();
-                    if (elBuilding != nullptr)
-                    {
-                        paintBuilding(session, *elBuilding);
-                    }
+                    auto& elBuilding = el.get<BuildingElement>();
+                    paintBuilding(session, elBuilding);
                     break;
                 }
                 case Map::ElementType::tree:
                 {
-                    auto* elTree = el.asTree();
-                    if (elTree != nullptr)
-                    {
-                        paintTree(session, *elTree);
-                    }
+                    auto& elTree = el.get<TreeElement>();
+                    paintTree(session, elTree);
                     break;
                 }
                 case Map::ElementType::industry:
                 {
-                    auto* elIndustry = el.asIndustry();
-                    if (elIndustry != nullptr)
-                    {
-                        paintIndustry(session, *elIndustry);
-                    }
+                    auto& elIndustry = el.get<IndustryElement>();
+                    paintIndustry(session, elIndustry);
                     break;
                 }
             }

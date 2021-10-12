@@ -61,7 +61,7 @@ namespace OpenLoco::Paint
         for (const auto& el : tile)
         {
             maxClearZ = std::max(maxClearZ, el.clearZ());
-            const auto* surface = el.asSurface();
+            const auto* surface = el.as<Map::SurfaceElement>();
             if (!surface)
             {
                 continue;

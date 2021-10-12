@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             return std::nullopt;
         }
 
-        auto* elRoad = reinterpret_cast<Map::TileElement*>(interaction.object)->asRoad();
+        auto* elRoad = reinterpret_cast<Map::TileElement*>(interaction.object)->as<RoadElement>();
         if (elRoad == nullptr)
         {
             return std::nullopt;
@@ -170,7 +170,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             return std::nullopt;
         }
 
-        auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->asTrack();
+        auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->as<TrackElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;

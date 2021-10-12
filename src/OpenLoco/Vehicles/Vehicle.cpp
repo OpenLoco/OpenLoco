@@ -111,7 +111,7 @@ namespace OpenLoco::Vehicles
         auto tile = Map::TileManager::get(loc);
         for (auto& el : tile)
         {
-            auto* elRoad = el.asRoad();
+            auto* elRoad = el.as<Map::RoadElement>();
             if (elRoad == nullptr)
             {
                 continue;

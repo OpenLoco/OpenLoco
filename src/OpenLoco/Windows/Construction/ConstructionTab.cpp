@@ -352,7 +352,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto tile = Map::TileManager::get(nextTrackPos);
         for (const auto& el : tile)
         {
-            auto* elRoad = el.asRoad();
+            auto* elRoad = el.as<RoadElement>();
             if (elRoad == nullptr)
             {
                 continue;
@@ -485,7 +485,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto tile = Map::TileManager::get(nextTrackPos);
         for (const auto& el : tile)
         {
-            auto* elTrack = el.asTrack();
+            auto* elTrack = el.as<TrackElement>();
             if (elTrack == nullptr)
             {
                 continue;
@@ -532,7 +532,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                         if (elTrack->hasStationElement())
                         {
-                            auto* elStation = (reinterpret_cast<TileElement*>(elTrack) + 1)->asStation();
+                            auto* elStation = elTrack->next()->as<StationElement>();
                             if (elStation == nullptr)
                             {
                                 continue;
@@ -551,7 +551,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                         if (elTrack->hasSignal())
                         {
-                            auto* elSignal = (reinterpret_cast<TileElement*>(elTrack) + 1)->asSignal();
+                            auto* elSignal = elTrack->next()->as<SignalElement>();
                             if (elSignal == nullptr)
                             {
                                 continue;
@@ -597,7 +597,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (elTrack->hasStationElement())
             {
-                auto* elStation = (reinterpret_cast<TileElement*>(elTrack) + 1)->asStation();
+                auto* elStation = elTrack->next()->as<StationElement>();
                 if (elStation == nullptr)
                 {
                     continue;
@@ -616,7 +616,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (elTrack->hasSignal())
             {
-                auto* elSignal = (reinterpret_cast<TileElement*>(elTrack) + 1)->asSignal();
+                auto* elSignal = elTrack->next()->as<SignalElement>();
                 if (elSignal == nullptr)
                 {
                     continue;

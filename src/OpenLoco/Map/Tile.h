@@ -3,6 +3,7 @@
 #include "../Types.hpp"
 #include "../Viewport.hpp"
 #include "Map.hpp"
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -53,17 +54,10 @@ namespace OpenLoco::Map
         constexpr uint8_t last = 1 << 7;
     }
 
-    struct SurfaceElement;
-    struct TrackElement;
-    struct StationElement;
-    struct SignalElement;
-    struct BuildingElement;
-    struct TreeElement;
-    struct WallElement;
-    struct RoadElement;
-    struct IndustryElement;
-
 #pragma pack(push, 1)
+    struct TileElement;
+    static constexpr size_t TileElementSize = 8;
+
     struct TileElementBase
     {
     protected:
@@ -96,31 +90,60 @@ namespace OpenLoco::Map
             auto array = reinterpret_cast<std::array<uint8_t, 8>*>(this);
             return *array;
         }
+
+        template<typename TType>
+        const TType* as() const
+        {
+            return type() == TType::kElementType ? reinterpret_cast<const TType*>(this) : nullptr;
+        }
+
+        template<typename TType>
+        TType* as()
+        {
+            return type() == TType::kElementType ? reinterpret_cast<TType*>(this) : nullptr;
+        }
+
+        template<typename TType>
+        const TType& get() const
+        {
+            assert(type() == TType::kElementType);
+            return *reinterpret_cast<const TType*>(this);
+        }
+
+        template<typename TType>
+        TType& get()
+        {
+            assert(type() == TType::kElementType);
+            return *reinterpret_cast<TType*>(this);
+        }
+
+        const TileElement* prev() const
+        {
+            return reinterpret_cast<const TileElement*>(reinterpret_cast<const uint8_t*>(this) - TileElementSize);
+        }
+
+        TileElement* prev()
+        {
+            return reinterpret_cast<TileElement*>(reinterpret_cast<uint8_t*>(this) - TileElementSize);
+        }
+
+        const TileElement* next() const
+        {
+            return reinterpret_cast<const TileElement*>(reinterpret_cast<const uint8_t*>(this) + TileElementSize);
+        }
+
+        TileElement* next()
+        {
+            return reinterpret_cast<TileElement*>(reinterpret_cast<uint8_t*>(this) + TileElementSize);
+        }
     };
 
     struct TileElement : public TileElementBase
     {
     private:
         uint8_t pad[4];
-
-        template<typename TType, ElementType TClass>
-        TType* as() const
-        {
-            return type() == TClass ? (TType*)this : nullptr;
-        }
-
-    public:
-        SurfaceElement* asSurface() const { return as<SurfaceElement, ElementType::surface>(); }
-        TrackElement* asTrack() const { return as<TrackElement, ElementType::track>(); }
-        StationElement* asStation() const { return as<StationElement, ElementType::station>(); }
-        SignalElement* asSignal() const { return as<SignalElement, ElementType::signal>(); }
-        BuildingElement* asBuilding() const { return as<BuildingElement, ElementType::building>(); }
-        TreeElement* asTree() const { return as<TreeElement, ElementType::tree>(); }
-        WallElement* asWall() const { return as<WallElement, ElementType::wall>(); }
-        RoadElement* asRoad() const { return as<RoadElement, ElementType::road>(); }
-        IndustryElement* asIndustry() const { return as<IndustryElement, ElementType::industry>(); }
     };
-    static_assert(sizeof(TileElement) == 8);
+    static_assert(sizeof(TileElement) == TileElementSize);
 
     namespace SurfaceSlope
     {
@@ -149,6 +172,8 @@ namespace OpenLoco::Map
 
     struct SurfaceElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::surface;
+
     private:
         uint8_t _slope;       // 0x4
         uint8_t _water;       // 0x5
@@ -183,9 +208,12 @@ namespace OpenLoco::Map
             _type |= state ? 0x80 : 0;
         }
     };
+    static_assert(sizeof(SurfaceElement) == TileElementSize);
 
     struct StationElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::station;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -199,9 +227,12 @@ namespace OpenLoco::Map
         uint8_t multiTileIndex() const { return (_type >> 6) & 3; }
         StationId stationId() const { return StationId(_station_id & 0x3FF); }
     };
+    static_assert(sizeof(StationElement) == TileElementSize);
 
     struct BuildingElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::building;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -235,9 +266,12 @@ namespace OpenLoco::Map
         }
         bool update(const Map::Pos2& loc);
     };
+    static_assert(sizeof(BuildingElement) == TileElementSize);
 
     struct TreeElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::tree;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -254,9 +288,12 @@ namespace OpenLoco::Map
         uint8_t unk7l() const { return _7 & 0x7; }
         uint8_t season() const { return (_7 >> 3) & 0x7; } // unsure of &0x7
     };
+    static_assert(sizeof(TreeElement) == TileElementSize);
 
     struct WallElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::wall;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -267,9 +304,12 @@ namespace OpenLoco::Map
         uint8_t wallObjectId() const { return _4; }      // _4
         uint8_t rotation() const { return _type & 0x3; } // _0
     };
+    static_assert(sizeof(WallElement) == TileElementSize);
 
     struct TrackElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::track;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -291,9 +331,12 @@ namespace OpenLoco::Map
         bool hasMod(uint8_t mod) const { return _7 & (1 << (4 + mod)); } // _7u
         uint8_t mods() const { return _7 >> 4; }                         // _7u
     };
+    static_assert(sizeof(TrackElement) == TileElementSize);
 
     struct SignalElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::signal;
+
         struct Side
         {
         private:
@@ -322,9 +365,12 @@ namespace OpenLoco::Map
         const Side& getLeft() const { return sides[0]; }
         const Side& getRight() const { return sides[1]; }
     };
+    static_assert(sizeof(SignalElement) == TileElementSize);
 
     struct RoadElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::road;
+
     private:
         uint8_t _4;
         uint8_t _5;
@@ -358,9 +404,12 @@ namespace OpenLoco::Map
         void setOwner(CompanyId newOwner) { _7 = (_7 & 0xF0) | (enumValue(newOwner) & 0xF); }
         bool update(const Map::Pos2& loc);
     };
+    static_assert(sizeof(RoadElement) == TileElementSize);
 
     struct IndustryElement : public TileElementBase
     {
+        static constexpr ElementType kElementType = ElementType::industry;
+
     private:
         IndustryId _industryId;
         uint8_t _5;
@@ -372,6 +421,7 @@ namespace OpenLoco::Map
         uint8_t var_6_1F() const;
         bool hasHighTypeFlag() const { return _type & 0x80; } // isConstructed?
     };
+    static_assert(sizeof(IndustryElement) == TileElementSize);
 #pragma pack(pop)
 
     struct Tile

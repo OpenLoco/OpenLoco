@@ -39,7 +39,7 @@ namespace OpenLoco::GameCommands
         auto tile = Map::TileManager::get(args.pos);
         for (auto& tileElement : tile)
         {
-            auto wallElement = tileElement.asWall();
+            auto* wallElement = tileElement.as<WallElement>();
             if (wallElement == nullptr)
                 continue;
 

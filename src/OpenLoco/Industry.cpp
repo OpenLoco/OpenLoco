@@ -237,7 +237,7 @@ namespace OpenLoco
 
             for (auto& el : tile)
             {
-                auto industryEl = el.asIndustry();
+                auto* industryEl = el.as<IndustryElement>();
                 if (industryEl == nullptr)
                     continue;
 
