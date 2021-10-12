@@ -57,8 +57,6 @@ namespace OpenLoco
     struct CompetitorObject;
     struct ScenarioTextObject;
 
-#pragma pack(push, 1)
-
     /**
      * Represents an index into the entire loaded object array. Not an index for
      * a specific object type. DO NOT USE
@@ -68,13 +66,14 @@ namespace OpenLoco
     /**
      * Represents an index / ID of a specific object type.
      */
-    using LoadedObjectId = size_t;
-#pragma pack(pop)
+    using LoadedObjectId = uint16_t;
+
     struct LoadedObjectHandle
     {
         ObjectType type;
         LoadedObjectId id;
     };
+    static_assert(sizeof(LoadedObjectHandle) == 4);
 }
 
 namespace OpenLoco::ObjectManager
@@ -182,7 +181,7 @@ namespace OpenLoco::ObjectManager
     template<typename T>
     T* get(size_t id);
 
-    Object* getAny(const LoadedObjectHandle& handle);
+    Object* getAny(const LoadedObjectHandle handle);
 
     template<>
     InterfaceSkinObject* get();
@@ -284,9 +283,9 @@ namespace OpenLoco::ObjectManager
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();
-    void unload(const LoadedObjectHandle& handle);
+    void unload(const LoadedObjectHandle handle);
 
-    size_t getByteLength(const LoadedObjectHandle& handle);
+    size_t getByteLength(const LoadedObjectHandle handle);
 
     void drawGenericDescription(Gfx::Context& context, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete);
 }
