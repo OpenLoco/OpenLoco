@@ -232,7 +232,7 @@ namespace OpenLoco::Scenario
                 dayCount += 1;
         }
 
-        setDate(date(year, month_id::january, 1));
+        setDate(Date(year, MonthId::january, 1));
         setCurrentDay(dayCount);
         setDayProgression(0);
 
