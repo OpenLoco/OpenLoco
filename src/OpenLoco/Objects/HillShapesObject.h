@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
-
+#include "../Types.hpp"
+#include "Object.h"
 namespace OpenLoco
 {
     namespace Gfx
@@ -12,6 +12,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct HillShapesObject
     {
+        static constexpr auto kObjectType = ObjectType::hillShapes;
+
         string_id name;
         uint8_t hillHeightMapCount;     // 0x02
         uint8_t mountainHeightMapCount; // 0x03

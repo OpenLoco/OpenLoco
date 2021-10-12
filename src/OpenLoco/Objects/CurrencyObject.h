@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
+#include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -12,6 +13,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct CurrencyObject
     {
+        static constexpr auto kObjectType = ObjectType::currency;
+
         string_id name;          // 0x00
         string_id prefix_symbol; // 0x02
         string_id suffix_symbol; // 0x04

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
+#include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -21,6 +22,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct IndustryObject
     {
+        static constexpr auto kObjectType = ObjectType::industry;
+
         string_id name;
         uint8_t pad_02[0x0A - 0x02];
         uint16_t nameSingular; // 0x0A

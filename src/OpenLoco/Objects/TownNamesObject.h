@@ -6,12 +6,11 @@
 namespace OpenLoco
 {
 #pragma pack(push, 1)
-    struct ScenarioTextObject
+    struct TownNamesObject
     {
-        static constexpr auto kObjectType = ObjectType::scenarioText;
+        static constexpr auto kObjectType = ObjectType::townNames;
 
         string_id name;
-        string_id details;
     };
 #pragma pack(pop)
 }

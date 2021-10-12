@@ -11,6 +11,40 @@
 #include "../Ui/ProgressBar.h"
 #include "../Utility/Numeric.hpp"
 #include "../Utility/Stream.hpp"
+#include "AirportObject.h"
+#include "BridgeObject.h"
+#include "BuildingObject.h"
+#include "CargoObject.h"
+#include "ClimateObject.h"
+#include "CompetitorObject.h"
+#include "CurrencyObject.h"
+#include "DockObject.h"
+#include "HillShapesObject.h"
+#include "IndustryObject.h"
+#include "InterfaceSkinObject.h"
+#include "LandObject.h"
+#include "LevelCrossingObject.h"
+#include "RegionObject.h"
+#include "RoadExtraObject.h"
+#include "RoadObject.h"
+#include "RoadStationObject.h"
+#include "RockObject.h"
+#include "ScaffoldingObject.h"
+#include "ScenarioTextObject.h"
+#include "SnowObject.h"
+#include "SoundObject.h"
+#include "SteamObject.h"
+#include "StreetLightObject.h"
+#include "TownNamesObject.h"
+#include "TrackExtraObject.h"
+#include "TrackObject.h"
+#include "TrainSignalObject.h"
+#include "TrainStationObject.h"
+#include "TreeObject.h"
+#include "TunnelObject.h"
+#include "VehicleObject.h"
+#include "WallObject.h"
+#include "WaterObject.h"
 #include <iterator>
 #include <vector>
 
@@ -471,10 +505,9 @@ namespace OpenLoco::ObjectManager
         return object_repository[static_cast<uint8_t>(type)];
     }
 
-    template<>
-    Object* get(size_t id)
+    Object* getAny(const LoadedObjectHandle& handle)
     {
-        auto obj = _allObjects[id];
+        auto obj = _allObjects[getTypeOffset(handle.type) + handle.id];
         if (obj == (void*)-1)
         {
             obj = nullptr;
@@ -707,6 +740,69 @@ namespace OpenLoco::ObjectManager
         else
             return nullptr;
     }
+
+    template<>
+    TownNamesObject* get()
+    {
+        if (_townNamesObjects[0] != reinterpret_cast<TownNamesObject*>(-1))
+            return _townNamesObjects[0];
+        else
+            return nullptr;
+    }
+
+    template<>
+    LevelCrossingObject* get(size_t id)
+    {
+        if (_levelCrossingObjects[id] != reinterpret_cast<LevelCrossingObject*>(-1))
+            return _levelCrossingObjects[id];
+        else
+            return nullptr;
+    }
+
+    template<>
+    StreetLightObject* get()
+    {
+        if (_streetLightObjects[0] != reinterpret_cast<StreetLightObject*>(-1))
+            return _streetLightObjects[0];
+        else
+            return nullptr;
+    }
+
+    template<>
+    TunnelObject* get(size_t id)
+    {
+        if (_tunnelObjects[id] != reinterpret_cast<TunnelObject*>(-1))
+            return _tunnelObjects[id];
+        else
+            return nullptr;
+    }
+
+    template<>
+    SnowObject* get()
+    {
+        if (_snowObjects[0] != reinterpret_cast<SnowObject*>(-1))
+            return _snowObjects[0];
+        else
+            return nullptr;
+    }
+
+    template<>
+    HillShapesObject* get()
+    {
+        if (_hillShapeObjects[0] != reinterpret_cast<HillShapesObject*>(-1))
+            return _hillShapeObjects[0];
+        else
+            return nullptr;
+    }
+
+    template<>
+    ScaffoldingObject* get()
+    {
+        if (_scaffoldingObjects[0] != reinterpret_cast<ScaffoldingObject*>(-1))
+            return _scaffoldingObjects[0];
+        else
+            return nullptr;
+    }
     /*
     static void printHeader(header data)
     {
@@ -796,22 +892,9 @@ namespace OpenLoco::ObjectManager
         call(0x0047176D, regs);
     }
 
-    static LoadedObjectIndex getLoadedObjectIndex(ObjectType objectType, size_t index)
-    {
-        auto baseIndex = 0;
-        size_t type = 0;
-        while (type != static_cast<size_t>(objectType))
-        {
-            auto maxObjectsForType = getMaxObjects(static_cast<ObjectType>(type));
-            baseIndex += maxObjectsForType;
-            type++;
-        }
-        return baseIndex + index;
-    }
-
     // 0x004720EB
     // Returns std::nullopt if not loaded
-    std::optional<LoadedObjectIndex> findIndex(const ObjectHeader& header)
+    std::optional<LoadedObjectHandle> findIndex(const ObjectHeader& header)
     {
         if ((header.flags & 0xFF) != 0xFF)
         {
@@ -828,25 +911,25 @@ namespace OpenLoco::ObjectManager
                     {
                         if (header == objHeader)
                         {
-                            return getLoadedObjectIndex(objectType, i);
+                            return { LoadedObjectHandle{ objectType, i } };
                         }
                     }
                     else
                     {
                         if (header.getType() == objHeader.getType() && header.getName() == objHeader.getName())
                         {
-                            return getLoadedObjectIndex(objectType, i);
+                            return { LoadedObjectHandle{ objectType, i } };
                         }
                     }
                 }
             }
         }
-        return {};
+        return std::nullopt;
     }
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
-    std::optional<LoadedObjectIndex> findIndex(const ObjectIndexEntry& object)
+    std::optional<LoadedObjectHandle> findIndex(const ObjectIndexEntry& object)
     {
         return findIndex(*object._header);
     }
@@ -865,11 +948,10 @@ namespace OpenLoco::ObjectManager
         drawPreview,
     };
 
-    static bool callObjectFunction(const ObjectHeader& header, Object& obj, const ObjectProcedure proc)
+    static bool callObjectFunction(const ObjectType type, Object& obj, const ObjectProcedure proc)
     {
-        auto objectType = header.getType();
         auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-        auto objectProc = objectProcTable[static_cast<size_t>(objectType)];
+        auto objectProc = objectProcTable[static_cast<size_t>(type)];
 
         registers regs;
         regs.al = static_cast<uint8_t>(proc);
@@ -877,17 +959,14 @@ namespace OpenLoco::ObjectManager
         return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
     }
 
-    static bool callObjectFunction(LoadedObjectIndex index, ObjectProcedure proc)
+    static bool callObjectFunction(const LoadedObjectHandle& handle, ObjectProcedure proc)
     {
-        auto objectHeader = getHeader(index);
-        if (objectHeader != nullptr)
+        auto* obj = getAny(handle);
+        if (obj != nullptr)
         {
-            auto obj = get<Object>(index);
-            if (obj != nullptr)
-            {
-                return callObjectFunction(*objectHeader, *obj, proc);
-            }
+            return callObjectFunction(handle.type, *obj, proc);
         }
+
         throw std::runtime_error("Object not loaded at this index");
     }
 
@@ -1025,7 +1104,7 @@ namespace OpenLoco::ObjectManager
                 ObjectManager::unload(*index);
 
                 auto encodingType = getBestEncodingForObjectType(header.getType());
-                auto obj = ObjectManager::get<Object>(*index);
+                auto obj = ObjectManager::getAny(*index);
                 auto objSize = ObjectManager::getByteLength(*index);
 
                 fs.write(header);
@@ -1156,7 +1235,7 @@ namespace OpenLoco::ObjectManager
         std::copy(std::begin(data), std::end(data), objectData);
 
         auto* obj = reinterpret_cast<Object*>(objectData);
-        if (!callObjectFunction(objectHeader, *obj, ObjectProcedure::validate))
+        if (!callObjectFunction(objectHeader.getType(), *obj, ObjectProcedure::validate))
         {
             return false;
         }
@@ -1191,14 +1270,46 @@ namespace OpenLoco::ObjectManager
         call(0x00472031);
     }
 
-    void unload(LoadedObjectIndex index)
+    void unload(const LoadedObjectHandle& handle)
     {
-        callObjectFunction(index, ObjectProcedure::unload);
+        callObjectFunction(handle, ObjectProcedure::unload);
     }
 
-    size_t getByteLength(LoadedObjectIndex id)
+    size_t getByteLength(const LoadedObjectHandle& handle)
     {
-        return objectEntries[id].dataSize;
+        return objectEntries[getTypeOffset(handle.type) + handle.id].dataSize;
+    }
+
+    template<typename TObject>
+    static void addAllInUseHeadersOfType(std::vector<ObjectHeader>& entries)
+    {
+        if constexpr (getMaxObjects(TObject::kObjectType) == 1)
+        {
+            auto* obj = ObjectManager::get<TObject>();
+            if (obj != nullptr)
+            {
+                auto entry = getHeader(getTypeOffset(TObject::kObjectType));
+                entries.push_back(*entry);
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < getMaxObjects(TObject::kObjectType); ++i)
+            {
+                auto* obj = ObjectManager::get<TObject>(i);
+                if (obj != nullptr)
+                {
+                    auto entry = getHeader(i + getTypeOffset(TObject::kObjectType));
+                    entries.push_back(*entry);
+                }
+            }
+        }
+    }
+
+    template<typename... TObject>
+    static void addAllInUseHeadersOfTypes(std::vector<ObjectHeader>& entries)
+    {
+        (addAllInUseHeadersOfType<TObject>(entries), ...);
     }
 
     std::vector<ObjectHeader> getHeaders()
@@ -1206,19 +1317,7 @@ namespace OpenLoco::ObjectManager
         std::vector<ObjectHeader> entries;
         entries.reserve(ObjectManager::maxObjects);
 
-        for (size_t i = 0; i < ObjectManager::maxObjects; i++)
-        {
-            auto obj = ObjectManager::get<Object>(i);
-            if (obj != nullptr)
-            {
-                auto entry = getHeader(i);
-                entries.push_back(*entry);
-            }
-            else
-            {
-                entries.emplace_back();
-            }
-        }
+        addAllInUseHeadersOfTypes<InterfaceSkinObject, SoundObject, CurrencyObject, SteamObject, RockObject, WaterObject, LandObject, TownNamesObject, CargoObject, WallObject, TrainSignalObject, LevelCrossingObject, StreetLightObject, TunnelObject, BridgeObject, TrainStationObject, TrackExtraObject, TrackObject, RoadStationObject, RoadExtraObject, RoadObject, AirportObject, DockObject, VehicleObject, TreeObject, SnowObject, ClimateObject, HillShapesObject, BuildingObject, ScaffoldingObject, IndustryObject, RegionObject, CompetitorObject, ScenarioTextObject>(entries);
 
         return entries;
     }

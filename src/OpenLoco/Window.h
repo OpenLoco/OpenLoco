@@ -5,7 +5,7 @@
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
-#include "Objects/ObjectManager.h"
+#include "Objects/Object.h"
 #include "Types.hpp"
 #include "Ui.h"
 #include "Ui/WindowType.h"

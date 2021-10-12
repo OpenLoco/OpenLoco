@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
+#include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -12,6 +13,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct InterfaceSkinObject
     {
+        static constexpr auto kObjectType = ObjectType::interfaceSkin;
+
         string_id name; // 0x00
         uint32_t img;   // 0x02
         uint8_t colour_06;

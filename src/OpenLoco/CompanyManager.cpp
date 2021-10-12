@@ -11,6 +11,7 @@
 #include "Map/TileManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/DockObject.h"
+#include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "OpenLoco.h"

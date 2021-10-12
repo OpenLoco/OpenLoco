@@ -3,6 +3,7 @@
 #include "../Core/Optional.hpp"
 #include "../Core/Span.hpp"
 #include "../Ui/Types.hpp"
+#include "Object.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -18,44 +19,6 @@ namespace OpenLoco
     {
         struct Context;
     }
-
-    enum class ObjectType
-    {
-        interfaceSkin,
-        sound,
-        currency,
-        steam,
-        rock,
-        water,
-        land,
-        townNames,
-        cargo,
-        wall,
-        trackSignal,
-        levelCrossing,
-        streetLight,
-        tunnel,
-        bridge,
-        trackStation,
-        trackExtra,
-        track,
-        roadStation,
-        roadExtra,
-        road,
-        airport,
-        dock,
-        vehicle,
-        tree,
-        snow,
-        climate,
-        hillShapes,
-        building,
-        scaffolding,
-        industry,
-        region,
-        competitor,
-        scenarioText,
-    };
 
     struct Object;
     struct ObjectEntryExtended;
@@ -95,52 +58,10 @@ namespace OpenLoco
     struct ScenarioTextObject;
 
 #pragma pack(push, 1)
-    struct ObjectHeader
-    {
-    private:
-        static constexpr char cFF = static_cast<char>(0xFF);
-
-    public:
-        uint32_t flags = 0xFFFFFFFF;
-        char name[8] = { cFF, cFF, cFF, cFF, cFF, cFF, cFF, cFF };
-        uint32_t checksum = 0xFFFFFFFF;
-
-        std::string_view getName() const
-        {
-            return std::string_view(name, sizeof(name));
-        }
-
-        constexpr uint8_t getSourceGame() const
-        {
-            return (flags >> 6) & 0x3;
-        }
-
-        constexpr ObjectType getType() const
-        {
-            return static_cast<ObjectType>(flags & 0x3F);
-        }
-
-        constexpr bool isCustom() const
-        {
-            return getSourceGame() == 0;
-        }
-
-        bool isEmpty() const
-        {
-            auto ab = reinterpret_cast<const int64_t*>(this);
-            return ab[0] == -1 && ab[1] == -1;
-        }
-
-        bool operator==(const ObjectHeader& rhs) const
-        {
-            return std::memcmp(this, &rhs, sizeof(ObjectHeader)) == 0;
-        }
-    };
-    static_assert(sizeof(ObjectHeader) == 0x10);
 
     /**
      * Represents an index into the entire loaded object array. Not an index for
-     * a specific object type.
+     * a specific object type. DO NOT USE
      */
     using LoadedObjectIndex = size_t;
 
@@ -149,6 +70,11 @@ namespace OpenLoco
      */
     using LoadedObjectId = size_t;
 #pragma pack(pop)
+    struct LoadedObjectHandle
+    {
+        ObjectType type;
+        LoadedObjectId id;
+    };
 }
 
 namespace OpenLoco::ObjectManager
@@ -200,14 +126,64 @@ namespace OpenLoco::ObjectManager
     constexpr size_t maxObjects = 859;
     constexpr size_t maxObjectTypes = 34;
 
+    constexpr size_t getTypeOffsetSlow(const ObjectType type)
+    {
+        size_t offset = 0;
+        for (size_t i = 0; i < static_cast<size_t>(type); ++i)
+        {
+            offset += getMaxObjects(static_cast<ObjectType>(i));
+        }
+        return offset;
+    }
+    constexpr size_t getTypeOffset(const ObjectType type)
+    {
+        constexpr size_t _offsets[] = {
+            getTypeOffsetSlow(ObjectType::interfaceSkin),
+            getTypeOffsetSlow(ObjectType::sound),
+            getTypeOffsetSlow(ObjectType::currency),
+            getTypeOffsetSlow(ObjectType::steam),
+            getTypeOffsetSlow(ObjectType::rock),
+            getTypeOffsetSlow(ObjectType::water),
+            getTypeOffsetSlow(ObjectType::land),
+            getTypeOffsetSlow(ObjectType::townNames),
+            getTypeOffsetSlow(ObjectType::cargo),
+            getTypeOffsetSlow(ObjectType::wall),
+            getTypeOffsetSlow(ObjectType::trackSignal),
+            getTypeOffsetSlow(ObjectType::levelCrossing),
+            getTypeOffsetSlow(ObjectType::streetLight),
+            getTypeOffsetSlow(ObjectType::tunnel),
+            getTypeOffsetSlow(ObjectType::bridge),
+            getTypeOffsetSlow(ObjectType::trackStation),
+            getTypeOffsetSlow(ObjectType::trackExtra),
+            getTypeOffsetSlow(ObjectType::track),
+            getTypeOffsetSlow(ObjectType::roadStation),
+            getTypeOffsetSlow(ObjectType::roadExtra),
+            getTypeOffsetSlow(ObjectType::road),
+            getTypeOffsetSlow(ObjectType::airport),
+            getTypeOffsetSlow(ObjectType::dock),
+            getTypeOffsetSlow(ObjectType::vehicle),
+            getTypeOffsetSlow(ObjectType::tree),
+            getTypeOffsetSlow(ObjectType::snow),
+            getTypeOffsetSlow(ObjectType::climate),
+            getTypeOffsetSlow(ObjectType::hillShapes),
+            getTypeOffsetSlow(ObjectType::building),
+            getTypeOffsetSlow(ObjectType::scaffolding),
+            getTypeOffsetSlow(ObjectType::industry),
+            getTypeOffsetSlow(ObjectType::region),
+            getTypeOffsetSlow(ObjectType::competitor),
+            getTypeOffsetSlow(ObjectType::scenarioText),
+        };
+        return _offsets[static_cast<size_t>(type)];
+    }
+
     template<typename T>
     T* get();
 
     template<typename T>
     T* get(size_t id);
 
-    template<>
-    Object* get(size_t id);
+    Object* getAny(const LoadedObjectHandle& handle);
+
     template<>
     InterfaceSkinObject* get();
     template<>
@@ -296,8 +272,8 @@ namespace OpenLoco::ObjectManager
     std::vector<std::pair<uint32_t, ObjectIndexEntry>> getAvailableObjects(ObjectType type);
     void freeScenarioText();
     void getScenarioText(ObjectHeader& object);
-    std::optional<LoadedObjectIndex> findIndex(const ObjectHeader& header);
-    std::optional<LoadedObjectIndex> findIndex(const ObjectIndexEntry& object);
+    std::optional<LoadedObjectHandle> findIndex(const ObjectHeader& header);
+    std::optional<LoadedObjectHandle> findIndex(const ObjectIndexEntry& object);
     void reloadAll();
     ObjIndexPair getActiveObject(ObjectType objectType, uint8_t* edi);
     ObjectHeader* getHeader(LoadedObjectIndex id);
@@ -308,9 +284,9 @@ namespace OpenLoco::ObjectManager
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();
-    void unload(LoadedObjectIndex index);
+    void unload(const LoadedObjectHandle& handle);
 
-    size_t getByteLength(LoadedObjectIndex id);
+    size_t getByteLength(const LoadedObjectHandle& handle);
 
     void drawGenericDescription(Gfx::Context& context, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete);
 }

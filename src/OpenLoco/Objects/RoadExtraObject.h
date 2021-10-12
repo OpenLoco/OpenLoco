@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -12,6 +13,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct RoadExtraObject
     {
+        static constexpr auto kObjectType = ObjectType::roadExtra;
+
         string_id name;
         uint16_t road_pieces;       // 0x02
         uint8_t is_overhead;        // 0x04

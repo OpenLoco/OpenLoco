@@ -1,6 +1,7 @@
 #pragma once
 #include "../Localisation/StringIds.h"
 #include "../Speed.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -190,6 +191,8 @@ namespace OpenLoco
 
     struct VehicleObject
     {
+        static constexpr auto kObjectType = ObjectType::vehicle;
+
         string_id name;     // 0x00
         TransportMode mode; // 0x02
         VehicleType type;   // 0x03

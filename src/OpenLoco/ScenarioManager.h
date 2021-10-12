@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Objects/ObjectManager.h"
+#include "Objects/Object.h"
 
 #include <cstddef>
 #include <cstdint>

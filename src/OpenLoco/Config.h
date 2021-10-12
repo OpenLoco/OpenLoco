@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Input/ShortcutManager.h"
-#include "Objects/ObjectManager.h"
+#include "Objects/Object.h"
 #include <cstddef>
 #include <cstdint>
 #include <string>

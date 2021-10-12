@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -25,6 +26,8 @@ namespace OpenLoco
 
     struct AirportObject
     {
+        static constexpr auto kObjectType = ObjectType::airport;
+
         struct MovementNode
         {
             int16_t x;      // 0x00

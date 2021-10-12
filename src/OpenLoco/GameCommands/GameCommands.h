@@ -4,7 +4,7 @@
 #include "../Entities/Entity.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
-#include "../Objects/ObjectManager.h"
+#include "../Objects/Object.h"
 
 using namespace OpenLoco::Interop;
 

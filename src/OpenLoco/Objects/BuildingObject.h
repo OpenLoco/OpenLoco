@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../Graphics/Colour.h"
-#include "../Localisation/StringManager.h"
+#include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -21,6 +22,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct BuildingObject
     {
+        static constexpr auto kObjectType = ObjectType::building;
+
         string_id name;
         uint8_t pad_02[0x07 - 0x02];
         uint8_t numVariations;    //0x7

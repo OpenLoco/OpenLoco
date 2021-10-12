@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -12,6 +13,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct BridgeObject
     {
+        static constexpr auto kObjectType = ObjectType::bridge;
+
         string_id name;
         uint8_t no_roof; // 0x02
         uint8_t pad_03[0x08 - 0x03];

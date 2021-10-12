@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
+#include "../Types.hpp"
+#include "Object.h"
 
 namespace OpenLoco
 {
@@ -12,6 +13,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct StreetLightObject
     {
+        static constexpr auto kObjectType = ObjectType::streetLight;
+
         string_id name;
         uint16_t designedYear[3]; // 0x02
         uint32_t image;           // 0x08

@@ -8,6 +8,7 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
+#include "Objects/ObjectManager.h"
 #include "S5/S5.h"
 #include "Title.h"
 #include "Ui/ProgressBar.h"
