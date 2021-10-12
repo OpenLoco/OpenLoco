@@ -746,9 +746,8 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto imageId = roadObj->image;
                 if (self->current_tab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 32;
-                Gfx::recolour(imageId, companyColour);
 
-                Widget::drawTab(self, context, imageId, widx::tab_construction);
+                Widget::drawTab(self, context, Gfx::recolour(imageId, companyColour), widx::tab_construction);
             }
             // Station Tab
             {
@@ -821,9 +820,8 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto imageId = trackObj->image;
                 if (self->current_tab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 15;
-                Gfx::recolour(imageId, companyColour);
 
-                Widget::drawTab(self, context, imageId, widx::tab_construction);
+                Widget::drawTab(self, context, Gfx::recolour(imageId, companyColour), widx::tab_construction);
             }
             // Station Tab
             {
