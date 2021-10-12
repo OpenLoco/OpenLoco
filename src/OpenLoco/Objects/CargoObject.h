@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct CargoObject
     {
-        static constexpr auto _objectType = ObjectType::cargo;
+        static constexpr auto kObjectType = ObjectType::cargo;
 
         string_id name; // 0x0
         uint16_t var_2;

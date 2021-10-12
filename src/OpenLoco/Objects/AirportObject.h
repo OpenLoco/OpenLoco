@@ -26,7 +26,7 @@ namespace OpenLoco
 
     struct AirportObject
     {
-        static constexpr auto _objectType = ObjectType::airport;
+        static constexpr auto kObjectType = ObjectType::airport;
 
         struct MovementNode
         {

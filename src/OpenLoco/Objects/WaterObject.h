@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct WaterObject
     {
-        static constexpr auto _objectType = ObjectType::water;
+        static constexpr auto kObjectType = ObjectType::water;
 
         string_id name;
         uint8_t cost_index; // 0x02

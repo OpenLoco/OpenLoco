@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct StreetLightObject
     {
-        static constexpr auto _objectType = ObjectType::streetLight;
+        static constexpr auto kObjectType = ObjectType::streetLight;
 
         string_id name;
         uint16_t designedYear[3]; // 0x02

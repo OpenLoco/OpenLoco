@@ -8,7 +8,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct TownNamesObject
     {
-        static constexpr auto _objectType = ObjectType::townNames;
+        static constexpr auto kObjectType = ObjectType::townNames;
 
         string_id name;
     };

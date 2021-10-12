@@ -12,7 +12,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct HillShapesObject
     {
-        static constexpr auto _objectType = ObjectType::hillShapes;
+        static constexpr auto kObjectType = ObjectType::hillShapes;
 
         string_id name;
         uint8_t hillHeightMapCount;     // 0x02

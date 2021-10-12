@@ -14,7 +14,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct CompetitorObject
     {
-        static constexpr auto _objectType = ObjectType::competitor;
+        static constexpr auto kObjectType = ObjectType::competitor;
 
         string_id var_00;        // 0x00
         string_id var_02;        // 0x02

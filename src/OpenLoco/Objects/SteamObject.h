@@ -8,7 +8,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct SteamObject
     {
-        static constexpr auto _objectType = ObjectType::steam;
+        static constexpr auto kObjectType = ObjectType::steam;
 
         string_id name; // 0x00 probably not confirmed
         uint8_t pad_02[0x5 - 0x2];

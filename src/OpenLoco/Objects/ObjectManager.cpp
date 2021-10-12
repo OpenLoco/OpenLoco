@@ -1283,23 +1283,23 @@ namespace OpenLoco::ObjectManager
     template<typename TObject>
     static void addAllInUseHeadersOfType(std::vector<ObjectHeader>& entries)
     {
-        if constexpr (getMaxObjects(TObject::_objectType) == 1)
+        if constexpr (getMaxObjects(TObject::kObjectType) == 1)
         {
             auto* obj = ObjectManager::get<TObject>();
             if (obj != nullptr)
             {
-                auto entry = getHeader(getTypeOffset(TObject::_objectType));
+                auto entry = getHeader(getTypeOffset(TObject::kObjectType));
                 entries.push_back(*entry);
             }
         }
         else
         {
-            for (size_t i = 0; i < getMaxObjects(TObject::_objectType); ++i)
+            for (size_t i = 0; i < getMaxObjects(TObject::kObjectType); ++i)
             {
                 auto* obj = ObjectManager::get<TObject>(i);
                 if (obj != nullptr)
                 {
-                    auto entry = getHeader(i + getTypeOffset(TObject::_objectType));
+                    auto entry = getHeader(i + getTypeOffset(TObject::kObjectType));
                     entries.push_back(*entry);
                 }
             }

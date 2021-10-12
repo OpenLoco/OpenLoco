@@ -22,7 +22,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct BuildingObject
     {
-        static constexpr auto _objectType = ObjectType::building;
+        static constexpr auto kObjectType = ObjectType::building;
 
         string_id name;
         uint8_t pad_02[0x07 - 0x02];

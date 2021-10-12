@@ -21,7 +21,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct LandObject
     {
-        static constexpr auto _objectType = ObjectType::land;
+        static constexpr auto kObjectType = ObjectType::land;
 
         string_id name;
         uint8_t cost_index; // 0x02

@@ -32,7 +32,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct RoadObject
     {
-        static constexpr auto _objectType = ObjectType::road;
+        static constexpr auto kObjectType = ObjectType::road;
 
         string_id name;
         uint16_t road_pieces;        // 0x02

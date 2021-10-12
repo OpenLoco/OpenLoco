@@ -14,7 +14,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct DockObject
     {
-        static constexpr auto _objectType = ObjectType::dock;
+        static constexpr auto kObjectType = ObjectType::dock;
 
         string_id name;
         uint16_t build_cost_factor; // 0x02

@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct TrackExtraObject
     {
-        static constexpr auto _objectType = ObjectType::trackExtra;
+        static constexpr auto kObjectType = ObjectType::trackExtra;
 
         string_id name;
         uint16_t track_pieces;      // 0x02

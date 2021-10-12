@@ -26,7 +26,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct TreeObject
     {
-        static constexpr auto _objectType = ObjectType::tree;
+        static constexpr auto kObjectType = ObjectType::tree;
 
         string_id name;
         uint8_t var_02;

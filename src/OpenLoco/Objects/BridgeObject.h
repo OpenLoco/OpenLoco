@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct BridgeObject
     {
-        static constexpr auto _objectType = ObjectType::bridge;
+        static constexpr auto kObjectType = ObjectType::bridge;
 
         string_id name;
         uint8_t no_roof; // 0x02

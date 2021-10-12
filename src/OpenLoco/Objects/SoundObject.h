@@ -12,7 +12,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct SoundObject
     {
-        static constexpr auto _objectType = ObjectType::sound;
+        static constexpr auto kObjectType = ObjectType::sound;
 
         string_id name;
         void* data;

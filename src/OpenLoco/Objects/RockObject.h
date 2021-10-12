@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct RockObject
     {
-        static constexpr auto _objectType = ObjectType::rock;
+        static constexpr auto kObjectType = ObjectType::rock;
 
         string_id name;
         uint32_t image; // 0x02

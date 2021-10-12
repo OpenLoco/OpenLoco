@@ -22,7 +22,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct IndustryObject
     {
-        static constexpr auto _objectType = ObjectType::industry;
+        static constexpr auto kObjectType = ObjectType::industry;
 
         string_id name;
         uint8_t pad_02[0x0A - 0x02];

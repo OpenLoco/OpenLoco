@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct RegionObject
     {
-        static constexpr auto _objectType = ObjectType::region;
+        static constexpr auto kObjectType = ObjectType::region;
 
         string_id name;
         uint32_t image; // 0x02

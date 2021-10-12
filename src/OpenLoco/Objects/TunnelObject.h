@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct TunnelObject
     {
-        static constexpr auto _objectType = ObjectType::tunnel;
+        static constexpr auto kObjectType = ObjectType::tunnel;
 
         string_id name;
         uint32_t image; // 0x02

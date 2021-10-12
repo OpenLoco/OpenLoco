@@ -21,7 +21,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct RoadStationObject
     {
-        static constexpr auto _objectType = ObjectType::roadStation;
+        static constexpr auto kObjectType = ObjectType::roadStation;
 
         string_id name;
         uint8_t pad_02[0x04 - 0x02];

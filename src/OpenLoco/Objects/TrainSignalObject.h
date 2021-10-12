@@ -27,7 +27,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct TrainSignalObject
     {
-        static constexpr auto _objectType = ObjectType::trackSignal;
+        static constexpr auto kObjectType = ObjectType::trackSignal;
 
         string_id name;
         uint16_t flags;            // 0x02

@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct InterfaceSkinObject
     {
-        static constexpr auto _objectType = ObjectType::interfaceSkin;
+        static constexpr auto kObjectType = ObjectType::interfaceSkin;
 
         string_id name; // 0x00
         uint32_t img;   // 0x02

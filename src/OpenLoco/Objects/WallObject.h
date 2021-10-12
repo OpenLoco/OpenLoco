@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct WallObject
     {
-        static constexpr auto _objectType = ObjectType::wall;
+        static constexpr auto kObjectType = ObjectType::wall;
 
         string_id name;
         uint32_t sprite; // 0x02

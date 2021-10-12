@@ -191,7 +191,7 @@ namespace OpenLoco
 
     struct VehicleObject
     {
-        static constexpr auto _objectType = ObjectType::vehicle;
+        static constexpr auto kObjectType = ObjectType::vehicle;
 
         string_id name;     // 0x00
         TransportMode mode; // 0x02

@@ -8,7 +8,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct ClimateObject
     {
-        static constexpr auto _objectType = ObjectType::climate;
+        static constexpr auto kObjectType = ObjectType::climate;
 
         string_id name;          // 0x00
         uint8_t firstSeason;     // 0x02

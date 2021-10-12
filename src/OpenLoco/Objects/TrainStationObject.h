@@ -18,7 +18,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct TrainStationObject
     {
-        static constexpr auto _objectType = ObjectType::trackStation;
+        static constexpr auto kObjectType = ObjectType::trackStation;
 
         string_id name;
         uint8_t var_02;

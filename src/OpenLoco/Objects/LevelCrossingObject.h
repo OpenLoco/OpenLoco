@@ -13,7 +13,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct LevelCrossingObject
     {
-        static constexpr auto _objectType = ObjectType::levelCrossing;
+        static constexpr auto kObjectType = ObjectType::levelCrossing;
 
         string_id name;
         int16_t costFactor;          // 0x02

@@ -8,7 +8,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct ScenarioTextObject
     {
-        static constexpr auto _objectType = ObjectType::scenarioText;
+        static constexpr auto kObjectType = ObjectType::scenarioText;
 
         string_id name;
         string_id details;
