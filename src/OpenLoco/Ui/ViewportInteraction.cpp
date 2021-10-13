@@ -1065,7 +1065,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             int16_t z = waterHeight;
             if (info.type != InteractionItem::water)
             {
-                z = TileManager::getHeight(mapPos);
+                z = TileManager::getHeight(mapPos).landHeight;
             }
             mapPos = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, viewport->getRotation());
             mapPos.x = std::clamp(mapPos.x, minPosition.x, maxPosition.x);
@@ -1096,7 +1096,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         for (int32_t i = 0; i < 5; i++)
         {
             const auto z = TileManager::getHeight(mapPos);
-            mapPos = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, viewport->getRotation());
+            mapPos = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z.landHeight, viewport->getRotation());
             mapPos.x = std::clamp(mapPos.x, minPosition.x, maxPosition.x);
             mapPos.y = std::clamp(mapPos.y, minPosition.y, maxPosition.y);
         }
