@@ -41,7 +41,7 @@ namespace OpenLoco::Input
         std::string fileName = std::string(scenarioName) + ".png";
         fs::path path;
         int16_t suffix;
-        for (suffix = 1; suffix <= std::numeric_limits<int16_t>().max(); suffix++)
+        for (suffix = 1; suffix < std::numeric_limits<int16_t>().max(); suffix++)
         {
             if (!fs::exists(basePath / fileName))
             {

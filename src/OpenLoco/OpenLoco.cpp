@@ -242,7 +242,7 @@ namespace OpenLoco
 
     void setGameSpeed(uint8_t speed)
     {
-        assert(speed >= 0 && speed <= 3);
+        assert(speed <= 3);
         _gameSpeed = speed;
     }
 
