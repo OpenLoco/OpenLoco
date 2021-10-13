@@ -90,7 +90,7 @@ namespace OpenLoco::Ui
         for (auto i = 0; i < 6; i++)
         {
             const auto z = Map::TileManager::getHeight(result);
-            result = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, rotation);
+            result = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z.landHeight, rotation);
         }
 
         return result;

@@ -22,7 +22,7 @@ namespace OpenLoco::Map
         coord_t landHeight;
         coord_t waterHeight;
 
-        operator coord_t() const
+        explicit operator coord_t() const
         {
             return waterHeight == 0 ? landHeight : waterHeight;
         }
