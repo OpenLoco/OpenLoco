@@ -33,6 +33,7 @@ endif()
 
 INCLUDE(FindPkgConfig)
 include(CheckCXXCompilerFlag)
+include(GNUInstallDirs)
 
 option(STRICT "Build with warnings as errors" YES)
 
@@ -362,7 +363,7 @@ if (APPLE)
     endif ()
 
     list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md)
-    list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CONTRIBUTORS.MD)
+    list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CONTRIBUTORS.md)
     set_target_properties(${PROJECT} PROPERTIES RESOURCE "${BUNDLE_RESOURCES}")
     target_sources(${PROJECT} PUBLIC ${BUNDLE_RESOURCES})
 
@@ -388,6 +389,13 @@ else ()
     add_custom_target(${PROJECT}-headers-check)
 endif ()
 
+install(TARGETS "openloco"
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    BUNDLE DESTINATION "${CMAKE_INSTALL_BINDIR}")
+install(FILES "CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+install(FILES "CONTRIBUTORS.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+install(FILES "LICENSE" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+install(FILES "README.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
 install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
 install(FILES "resources/logo/icon_x16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "openloco.png")
 install(FILES "resources/logo/icon_x32.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps" RENAME "openloco.png")
