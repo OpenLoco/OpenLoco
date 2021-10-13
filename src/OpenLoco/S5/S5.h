@@ -5,6 +5,7 @@
 #include "Limits.h"
 #include <cstdint>
 #include <memory>
+#include <vector>
 
 namespace OpenLoco::S5
 {
