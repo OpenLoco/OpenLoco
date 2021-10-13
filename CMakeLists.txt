@@ -78,7 +78,7 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
 if (MSVC)
     set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} /W4")
 else ()
-    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter")
+    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter -Wtype-limits")
 endif ()
 
 if (STRICT)
