@@ -182,22 +182,34 @@ namespace OpenLoco::CompanyManager
     currency32_t calculateDeliveredCargoPayment(uint8_t cargoItem, int32_t numUnits, int32_t distance, uint16_t numDays)
     {
         const auto* cargoObj = ObjectManager::get<CargoObject>(cargoItem);
-        auto costFactor = cargoObj->var_1B;
-        auto costFactorPercent = costFactor << 16;
-        auto adjustedDays = numDays - cargoObj->var_15;
-        if (adjustedDays > 0)
+        // Shift payment factor by 16 for integer maths
+        auto paymentFactorPercent = cargoObj->paymentFactor << 16;
+
+        // Integer maths for updating payment factor percentage
+        // the percentage is 0 - 65535
+        // Ultimate identical to floating point paymentfactor * (1-(percentage/65535))
+        const auto updatePaymentFactorPercent = [&](int32_t percentage) {
+            paymentFactorPercent = std::max(0, paymentFactorPercent - cargoObj->paymentFactor * percentage);
+        };
+
+        // Payment is split into 3 categories
+        // Premium : Full Payment
+        // NonPremium : Reduced Payment rate based on num days passed premium
+        // Penalty : Further reduced payment rate based on num days passed max non premium (capped at 255)
+        auto nonPremiumDays = numDays - cargoObj->premiumDays;
+        if (nonPremiumDays > 0)
         {
-            costFactorPercent = std::min(0, costFactorPercent - cargoObj->var_17 * costFactor * std::max<int32_t>(adjustedDays, cargoObj->var_16));
-            auto adjustedDays2 = adjustedDays - cargoObj->var_16;
-            if (adjustedDays2 > 0)
+            updatePaymentFactorPercent(cargoObj->nonPremiumRate * std::min<int32_t>(nonPremiumDays, cargoObj->maxNonPremiumDays));
+            auto penaltyDays = std::min(255, nonPremiumDays - cargoObj->maxNonPremiumDays);
+            if (penaltyDays > 0)
             {
-                adjustedDays2 = std::max(255, adjustedDays2);
-                costFactorPercent = std::min(0, costFactorPercent - cargoObj->var_19 * costFactor * adjustedDays2);
+                updatePaymentFactorPercent(cargoObj->penaltyRate * penaltyDays);
             }
         }
-        costFactorPercent >>= 16;
-        const auto unitDistancePayment = Economy::getInflationAdjustedCost(costFactorPercent, cargoObj->var_1D, 8);
-        const auto payment = (numUnits * distance * unitDistancePayment) / 4096;
+        paymentFactorPercent >>= 16;
+        // Promote to 64bit for second part of payment calc.
+        const auto unitDistancePayment = static_cast<int64_t>(Economy::getInflationAdjustedCost(paymentFactorPercent, cargoObj->paymentIndex, 8));
+        const auto payment = (unitDistancePayment * numUnits * distance) / 4096;
         registers regs;
         regs.eax = cargoItem;
         regs.ebx = numUnits;
