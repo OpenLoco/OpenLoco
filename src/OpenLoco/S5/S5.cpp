@@ -24,6 +24,7 @@
 #include "../ViewportManager.h"
 #include "SawyerStream.h"
 #include <fstream>
+#include <iomanip>
 #include <sstream>
 
 using namespace OpenLoco::Interop;
