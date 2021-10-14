@@ -4,6 +4,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
+#include "../ViewportManager.h"
 #include "EntityManager.h"
 
 using namespace OpenLoco::Interop;
@@ -95,9 +96,15 @@ namespace OpenLoco
     // 0x004407A1
     void Smoke::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004407A1, regs);
+        Ui::ViewportManager::invalidate(this, ZoomLevel::half);
+        moveTo(position + Map::Pos3(0, 0, 1));
+        Ui::ViewportManager::invalidate(this, ZoomLevel::half);
+
+        frame += 0x55;
+        if (frame >= 0xC00)
+        {
+            EntityManager::freeEntity(this);
+        }
     }
 
     // 0x00440BEB
@@ -181,32 +188,44 @@ namespace OpenLoco
     // 0x004407CC
     void ExplosionCloud::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004407CC, regs);
+        invalidateSprite();
+        frame += 0x80;
+        if (frame >= 0x1200)
+        {
+            EntityManager::freeEntity(this);
+        }
     }
 
     // 0x004407E0
     void Splash::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004407E0, regs);
+        invalidateSprite();
+        frame += 0x55;
+        if (frame >= 0x1C00)
+        {
+            EntityManager::freeEntity(this);
+        }
     }
 
     // 0x004407F3
     void Fireball::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004407F3, regs);
+        invalidateSprite();
+        frame += 0x40;
+        if (frame >= 0x1F00)
+        {
+            EntityManager::freeEntity(this);
+        }
     }
 
     // 0x00440078D
     void ExplosionSmoke::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x00440078D, regs);
+        invalidateSprite();
+        frame += 0x80;
+        if (frame >= 0xA00)
+        {
+            EntityManager::freeEntity(this);
+        }
     }
 }
