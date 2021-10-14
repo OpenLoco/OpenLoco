@@ -67,6 +67,7 @@ namespace OpenLoco
         uint8_t object_id; // 0x49
 
         SteamObject* object() const;
+        void update();
 
         static Exhaust* create(Map::Pos3 loc, uint8_t type);
     };
@@ -83,6 +84,8 @@ namespace OpenLoco
         int16_t offsetX; // 0x44
         uint16_t wiggle; // 0x46
 
+        void update();
+
         static MoneyEffect* create(const Map::Pos3& loc, const CompanyId company, const currency32_t amount);
     };
     static_assert(sizeof(MoneyEffect) == 0x48);
@@ -94,6 +97,8 @@ namespace OpenLoco
         uint8_t pad_2A[0x2E - 0x2A];
         ColourScheme colourScheme;  // 0x2E
         uint16_t crashedSpriteBase; // 0x30 crashed_sprite_base
+
+        void update();
     };
     static_assert(sizeof(VehicleCrashParticle) == 0x32);
 
@@ -101,6 +106,8 @@ namespace OpenLoco
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
+
+        void update();
     };
     static_assert(sizeof(ExplosionCloud) == 0x2A);
 
@@ -108,6 +115,8 @@ namespace OpenLoco
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
+
+        void update();
     };
     static_assert(sizeof(Splash) == 0x2A);
 
@@ -115,6 +124,8 @@ namespace OpenLoco
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
+
+        void update();
     };
     static_assert(sizeof(Fireball) == 0x2A);
 
@@ -122,6 +133,8 @@ namespace OpenLoco
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
+
+        void update();
     };
     static_assert(sizeof(ExplosionSmoke) == 0x2A);
 
@@ -129,6 +142,8 @@ namespace OpenLoco
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
+
+        void update();
 
         static Smoke* create(Map::Pos3 loc);
     };

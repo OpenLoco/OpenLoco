@@ -13,14 +13,49 @@ namespace OpenLoco
     // 0x004405CD
     void MiscBase::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004405CD, regs);
+        switch (getSubType())
+        {
+            case MiscEntityType::exhaust:
+                asExhaust()->update();
+                break;
+            case MiscEntityType::redGreenCurrency:
+                asRedGreenCurrency()->update();
+                break;
+            case MiscEntityType::windowCurrency:
+                asWindowCurrency()->update();
+                break;
+            case MiscEntityType::vehicleCrashParticle:
+                asVehicleCrashParticle()->update();
+                break;
+            case MiscEntityType::explosionCloud:
+                asExplosionCloud()->update();
+                break;
+            case MiscEntityType::splash:
+                asSplash()->update();
+                break;
+            case MiscEntityType::fireball:
+                asFireball()->update();
+                break;
+            case MiscEntityType::explosionSmoke:
+                asExplosionSmoke()->update();
+                break;
+            case MiscEntityType::smoke:
+                asSmoke()->update();
+                break;
+        }
     }
 
     SteamObject* Exhaust::object() const
     {
         return ObjectManager::get<SteamObject>(object_id & 0x7F);
+    }
+
+    // 0x004408C2
+    void Exhaust::update()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004408C2, regs);
     }
 
     // 0x0044080C
@@ -57,6 +92,14 @@ namespace OpenLoco
         return _exhaust;
     }
 
+    // 0x004407A1
+    void Smoke::update()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004407A1, regs);
+    }
+
     // 0x00440BEB
     Smoke* Smoke::create(Map::Pos3 loc)
     {
@@ -75,6 +118,21 @@ namespace OpenLoco
     }
 
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
+
+    // 0x0044063E
+    void MoneyEffect::update()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        if (getSubType() == MiscEntityType::windowCurrency)
+        {
+            call(0x0044063E, regs);
+        }
+        else
+        {
+            call(0x004405D8, regs);
+        }
+    }
 
     // 0x00440A74
     // company : updatingCompanyId global
@@ -110,5 +168,45 @@ namespace OpenLoco
             m->wiggle = 0;
         }
         return m;
+    }
+
+    // 0x004406A0
+    void VehicleCrashParticle::update()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004406A0, regs);
+    }
+
+    // 0x004407CC
+    void ExplosionCloud::update()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004407CC, regs);
+    }
+
+    // 0x004407E0
+    void Splash::update()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004407E0, regs);
+    }
+
+    // 0x004407F3
+    void Fireball::update()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004407F3, regs);
+    }
+
+    // 0x00440078D
+    void ExplosionSmoke::update()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x00440078D, regs);
     }
 }
