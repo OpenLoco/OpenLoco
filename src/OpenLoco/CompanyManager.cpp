@@ -1,5 +1,6 @@
 #include "CompanyManager.h"
 #include "Config.h"
+#include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
 #include "Entities/Misc.h"
 #include "GameCommands/GameCommands.h"
@@ -10,6 +11,7 @@
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Objects/AirportObject.h"
+#include "Objects/CargoObject.h"
 #include "Objects/DockObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
@@ -179,13 +181,34 @@ namespace OpenLoco::CompanyManager
     // 0x0042F23C
     currency32_t calculateDeliveredCargoPayment(uint8_t cargoItem, int32_t numUnits, int32_t distance, uint16_t numDays)
     {
+        const auto* cargoObj = ObjectManager::get<CargoObject>(cargoItem);
+        auto costFactor = cargoObj->var_1B;
+        auto costFactorPercent = costFactor << 16;
+        auto adjustedDays = numDays - cargoObj->var_15;
+        if (adjustedDays > 0)
+        {
+            costFactorPercent = std::min(0, costFactorPercent - cargoObj->var_17 * costFactor * std::max<int32_t>(adjustedDays, cargoObj->var_16));
+            auto adjustedDays2 = adjustedDays - cargoObj->var_16;
+            if (adjustedDays2 > 0)
+            {
+                adjustedDays2 = std::max(255, adjustedDays2);
+                costFactorPercent = std::min(0, costFactorPercent - cargoObj->var_19 * costFactor * adjustedDays2);
+            }
+        }
+        costFactorPercent >>= 16;
+        const auto unitDistancePayment = Economy::getInflationAdjustedCost(costFactorPercent, cargoObj->var_1D, 8);
+        const auto payment = (numUnits * distance * unitDistancePayment) / 4096;
         registers regs;
         regs.eax = cargoItem;
         regs.ebx = numUnits;
         regs.ecx = distance;
         regs.edx = numDays;
         call(0x0042F23C, regs);
-        return regs.eax;
+        if (regs.eax != payment)
+        {
+            assert(false);
+        }
+        return payment;
     }
 
     // 0x0042FDE2
