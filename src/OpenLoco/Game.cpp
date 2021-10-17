@@ -90,11 +90,11 @@ namespace OpenLoco::Game
     // 0x004418DB
     bool saveScenarioOpen()
     {
-        strncpy(&_savePath[0], &_path_landscapes[0], std::size(_savePath));
-        strncat(&_savePath[0], &_scenarioTitle[0], std::size(_savePath));
+        auto path = fs::u8path(&_path_scenarios[0]).parent_path() / &_scenarioTitle[0];
+        strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
-        return openBrowsePrompt(StringIds::title_prompt_save_game, browse_type::save, S5::filterSC5);
+        return openBrowsePrompt(StringIds::title_prompt_save_scenario, browse_type::save, S5::filterSC5);
     }
 
     // 0x00441993
@@ -107,8 +107,8 @@ namespace OpenLoco::Game
             sub_46DB4C();
         }
 
-        strncpy(&_savePath[0], &_path_landscapes[0], std::size(_savePath));
-        strncat(&_savePath[0], &_scenarioTitle[0], std::size(_savePath));
+        auto path = fs::u8path(&_path_landscapes[0]).parent_path() / &_scenarioTitle[0];
+        strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
         return openBrowsePrompt(StringIds::title_prompt_save_landscape, browse_type::save, S5::filterSC5);
@@ -339,4 +339,14 @@ namespace OpenLoco::Game
         setFlags(getFlags() & ~flags);
     }
 
+    void registerHooks()
+    {
+        // Can be removed after https://github.com/OpenLoco/OpenLoco/pull/781
+        registerHook(
+            0x004418DB,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                regs.eax = saveScenarioOpen();
+                return 0;
+            });
+    }
 }
