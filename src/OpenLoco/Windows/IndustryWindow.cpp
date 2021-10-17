@@ -600,7 +600,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 yTick += 1000;
             }
 
-            month_id month = getCurrentMonth();
+            MonthId month = getCurrentMonth();
             int16_t year = getCurrentYear();
             int8_t yearSkip = 0;
             // This is either 0 or 1 depending on selected tab
@@ -613,7 +613,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 const uint16_t yPos = self->y + 56;
 
                 // Draw horizontal year and vertical grid lines.
-                if (month == month_id::january)
+                if (month == MonthId::january)
                 {
                     if (yearSkip == 0)
                     {
@@ -643,9 +643,9 @@ namespace OpenLoco::Ui::Windows::Industry
                     }
                 }
 
-                if (month == month_id::january)
+                if (month == MonthId::january)
                 {
-                    month = month_id::december;
+                    month = MonthId::december;
                     year--;
 
                     yearSkip++;
@@ -654,7 +654,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 }
                 else
                 {
-                    month = month_id(static_cast<int8_t>(month) - 1);
+                    month = MonthId(static_cast<int8_t>(month) - 1);
                 }
             }
         }

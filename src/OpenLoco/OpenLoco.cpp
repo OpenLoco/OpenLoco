@@ -983,7 +983,7 @@ namespace OpenLoco
                 auto yesterday = calcDate(getCurrentDay() - 1);
                 auto today = calcDate(getCurrentDay());
                 setDate(today);
-                Scenario::updateSnowLine(today.day_of_olympiad);
+                Scenario::updateSnowLine(today.dayOfOlympiad);
                 if (today.month != yesterday.month)
                 {
                     // End of every month
@@ -1001,10 +1001,10 @@ namespace OpenLoco
                     }
 
                     // clang-format off
-                    if (today.month == month_id::january ||
-                        today.month == month_id::april ||
-                        today.month == month_id::july ||
-                        today.month == month_id::october)
+                    if (today.month == MonthId::january ||
+                        today.month == MonthId::april ||
+                        today.month == MonthId::july ||
+                        today.month == MonthId::october)
                     // clang-format on
                     {
                         CompanyManager::updateQuarterly();

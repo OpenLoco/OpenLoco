@@ -4,7 +4,7 @@
 
 namespace OpenLoco
 {
-    enum class month_id : uint8_t
+    enum class MonthId : uint8_t
     {
         january,
         february,
@@ -20,17 +20,17 @@ namespace OpenLoco
         december
     };
 
-    struct date
+    struct Date
     {
         int32_t day = 0;
-        month_id month;
+        MonthId month;
         int32_t year = 0;
 
         // 0x0112C810 originally used as a return argument in calcDate
-        int32_t day_of_olympiad = 0;
+        int32_t dayOfOlympiad = 0;
 
-        date() = default;
-        date(int32_t y, month_id m, int32_t d)
+        Date() = default;
+        Date(int32_t y, MonthId m, int32_t d)
             : day(d)
             , month(m)
             , year(y)
@@ -42,12 +42,12 @@ namespace OpenLoco
 
     uint32_t getCurrentDay();
     void setCurrentDay(const uint32_t day);
-    month_id getCurrentMonth();
+    MonthId getCurrentMonth();
     uint16_t getCurrentYear();
     void setCurrentYear(const int16_t year);
 
-    date getCurrentDate();
-    void setDate(const date& date);
+    Date getCurrentDate();
+    void setDate(const Date& date);
 
     uint16_t getDayProgression();
     void setDayProgression(const uint16_t progression);
@@ -57,5 +57,5 @@ namespace OpenLoco
      * @returns true if the counter wraps indicating a new day.
      */
     bool updateDayCounter();
-    date calcDate(uint32_t totalDays);
+    Date calcDate(uint32_t totalDays);
 }
