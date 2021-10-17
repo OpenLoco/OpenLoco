@@ -4,6 +4,7 @@
 #include "../../Graphics/Colour.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
+#include "../../Map/Track/TrackData.h"
 #include "../../Objects/AirportObject.h"
 #include "../../Objects/BridgeObject.h"
 #include "../../Objects/DockObject.h"
@@ -17,7 +18,6 @@
 #include "../../Objects/TrainSignalObject.h"
 #include "../../Objects/TrainStationObject.h"
 #include "../../StationManager.h"
-#include "../../TrackData.h"
 #include "../../Widget.h"
 #include "Construction.h"
 

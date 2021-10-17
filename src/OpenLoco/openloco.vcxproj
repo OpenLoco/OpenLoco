@@ -71,6 +71,9 @@
     <ClCompile Include="Map\SurfaceTile.cpp" />
     <ClCompile Include="Map\Tile.cpp" />
     <ClCompile Include="Map\TileManager.cpp" />
+    <ClCompile Include="Map\Track\SubpositionData.cpp" />
+    <ClCompile Include="Map\Track\Track.cpp" />
+    <ClCompile Include="Map\Track\TrackData.cpp" />
     <ClCompile Include="Map\WaveManager.cpp" />
     <ClCompile Include="Math\Trigonometry.cpp" />
     <ClCompile Include="Math\Vector.cpp" />
@@ -123,11 +126,9 @@
     <ClCompile Include="ScenarioManager.cpp" />
     <ClCompile Include="Station.cpp" />
     <ClCompile Include="StationManager.cpp" />
-    <ClCompile Include="SubpositionData.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Town.cpp" />
     <ClCompile Include="TownManager.cpp" />
-    <ClCompile Include="TrackData.cpp" />
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="Ui.cpp" />
     <ClCompile Include="Ui\Cursor.cpp" />
@@ -280,6 +281,9 @@
     <ClInclude Include="Map\Tile.h" />
     <ClInclude Include="Map\TileLoop.hpp" />
     <ClInclude Include="Map\TileManager.h" />
+    <ClInclude Include="Map\Track\SubpositionData.h" />
+    <ClInclude Include="Map\Track\Track.h" />
+    <ClInclude Include="Map\Track\TrackData.h" />
     <ClInclude Include="Map\Wave.h" />
     <ClInclude Include="Map\WaveManager.h" />
     <ClInclude Include="Math\Bound.hpp" />
@@ -342,11 +346,9 @@
     <ClInclude Include="Speed.hpp" />
     <ClInclude Include="Station.h" />
     <ClInclude Include="StationManager.h" />
-    <ClInclude Include="SubpositionData.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Town.h" />
     <ClInclude Include="TownManager.h" />
-    <ClInclude Include="TrackData.h" />
     <ClInclude Include="Tutorial.h" />
     <ClInclude Include="Types.hpp" />
     <ClInclude Include="Ui.h" />

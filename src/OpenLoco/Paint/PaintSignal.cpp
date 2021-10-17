@@ -5,9 +5,9 @@
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
 #include "../Map/Tile.h"
+#include "../Map/Track/TrackData.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/TrainSignalObject.h"
-#include "../TrackData.h"
 #include "../Ui.h"
 #include "Paint.h"
 
