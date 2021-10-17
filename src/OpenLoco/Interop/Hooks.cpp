@@ -11,6 +11,7 @@
 #include "../Core/FileSystem.hpp"
 #include "../Entities/EntityManager.h"
 #include "../Environment.h"
+#include "../Game.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
@@ -774,6 +775,7 @@ void OpenLoco::Interop::registerHooks()
     Ui::Windows::Construction::registerHooks();
     Ui::WindowManager::registerHooks();
     Ui::ViewportManager::registerHooks();
+    Game::registerHooks();
     GameCommands::registerHooks();
     Scenario::registerHooks();
     StationManager::registerHooks();

@@ -17,4 +17,5 @@ namespace OpenLoco::Game
     void setFlags(uint32_t flags);
     bool hasFlags(uint32_t flags);
     void removeFlags(uint32_t flags);
+    void registerHooks();
 }

@@ -339,4 +339,14 @@ namespace OpenLoco::Game
         setFlags(getFlags() & ~flags);
     }
 
+    void registerHooks()
+    {
+        // Can be removed after https://github.com/OpenLoco/OpenLoco/pull/781
+        registerHook(
+            0x004418DB,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                regs.eax = saveScenarioOpen();
+                return 0;
+            });
+    }
 }
