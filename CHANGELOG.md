@@ -1,4 +1,4 @@
-21.09.1+ (???)
+21.10 (2021-10-17)
 ------------------------------------------------------------------------
 - Feature: [#1170] Add option to disable train reversing at signals.
 - Fix: [#788] Opening windows larger than the game window might cause a crash.
