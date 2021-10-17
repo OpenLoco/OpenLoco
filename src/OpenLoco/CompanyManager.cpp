@@ -66,7 +66,7 @@ namespace OpenLoco::CompanyManager
         }
 
         // Reset primary company colours.
-        rawCompanies()[0].mainColours.primary = Colour::mutedGreen1;
+        rawCompanies()[0].mainColours.primary = Colour::mutedSeaGreen;
         updateColours();
     }
 

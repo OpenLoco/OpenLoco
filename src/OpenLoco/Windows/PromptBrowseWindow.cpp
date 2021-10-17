@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             inputSession.calculateTextOffset(widget.width());
 
             window->setColour(WindowColour::primary, Colour::black);
-            window->setColour(WindowColour::secondary, Colour::mutedGreen1);
+            window->setColour(WindowColour::secondary, Colour::mutedSeaGreen);
 
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
             promptTickLoop(

@@ -209,7 +209,7 @@ namespace OpenLoco::Paint
             if (session.getViewFlags() & (1 << 4) && session.getContext()->zoom_level == 0)
             {
                 session.setItemType(InteractionItem::noInteraction);
-                const auto imageId = Gfx::recolour(getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedGreen3);
+                const auto imageId = Gfx::recolour(getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedAvocadoGreen);
                 const Map::Pos3 offset(0, 0, height + getOneWayArrowHeightOffset(!isRight, trackId) + 2);
                 const Map::Pos3 bbOffset(15, 15, offset.z + 16);
                 const Map::Pos3 bbSize(1, 1, 0);

@@ -114,7 +114,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         self->initScrollWidgets();
 
         self->setColour(WindowColour::primary, Colour::black);
-        self->setColour(WindowColour::secondary, Colour::mutedGreen1);
+        self->setColour(WindowColour::secondary, Colour::mutedSeaGreen);
 
         self->var_846 = 0xFFFF;
         self->var_85A = static_cast<int32_t>(0xFFFFFFFF);

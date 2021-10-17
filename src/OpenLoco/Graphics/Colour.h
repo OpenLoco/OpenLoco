@@ -24,11 +24,11 @@ namespace OpenLoco
         constexpr Colour_t mutedDarkTeal = 8;
         constexpr Colour_t mutedTeal = 9;
         constexpr Colour_t darkGreen = 10;
-        constexpr Colour_t mutedGreen1 = 11;
-        constexpr Colour_t mutedGreen2 = 12;
+        constexpr Colour_t mutedSeaGreen = 11;
+        constexpr Colour_t mutedGrassGreen = 12;
         constexpr Colour_t green = 13;
-        constexpr Colour_t mutedGreen3 = 14;
-        constexpr Colour_t mutedGreen4 = 15;
+        constexpr Colour_t mutedAvocadoGreen = 14;
+        constexpr Colour_t mutedOliveGreen = 15;
         constexpr Colour_t yellow = 16;
         constexpr Colour_t darkYellow = 17;
         constexpr Colour_t orange = 18;
