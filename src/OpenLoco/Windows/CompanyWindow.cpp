@@ -872,7 +872,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::build_hq:
                     Input::toolSet(self, widgetIndex, CursorId::placeHQ);
-                    Input::setFlag(Input::Flags::flag5);
+                    Input::setFlag(Input::Flags::flag6);
                     break;
             }
         }
