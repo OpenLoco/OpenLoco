@@ -94,7 +94,7 @@ namespace OpenLoco::Game
         strncat(&_savePath[0], &_scenarioTitle[0], std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
-        return openBrowsePrompt(StringIds::title_prompt_save_game, browse_type::save, S5::filterSC5);
+        return openBrowsePrompt(StringIds::title_prompt_save_scenario, browse_type::save, S5::filterSC5);
     }
 
     // 0x00441993
