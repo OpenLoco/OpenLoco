@@ -90,7 +90,7 @@ namespace OpenLoco::Game
     // 0x004418DB
     bool saveScenarioOpen()
     {
-        strncpy(&_savePath[0], &_path_landscapes[0], std::size(_savePath));
+        strncpy(&_savePath[0], &_path_scenarios[0], std::size(_savePath));
         strncat(&_savePath[0], &_scenarioTitle[0], std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
