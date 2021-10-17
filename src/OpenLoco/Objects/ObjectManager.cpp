@@ -529,13 +529,21 @@ namespace OpenLoco::ObjectManager
     template<>
     SoundObject* get(size_t id)
     {
-        return _soundObjects[id];
+        if (_soundObjects[id] != reinterpret_cast<SoundObject*>(-1))
+        {
+            return _soundObjects[id];
+        }
+        return nullptr;
     }
 
     template<>
     SteamObject* get(size_t id)
     {
-        return _steamObjects[id];
+        if (_steamObjects[id] != reinterpret_cast<SteamObject*>(-1))
+        {
+            return _steamObjects[id];
+        }
+        return nullptr;
     }
 
     template<>
@@ -622,7 +630,11 @@ namespace OpenLoco::ObjectManager
     template<>
     CurrencyObject* get()
     {
-        return _currencyObjects[0];
+        if (_currencyObjects[0] != reinterpret_cast<CurrencyObject*>(-1))
+        {
+            return _currencyObjects[0];
+        }
+        return nullptr;
     }
 
     template<>
@@ -646,7 +658,11 @@ namespace OpenLoco::ObjectManager
     template<>
     TrackExtraObject* get(size_t id)
     {
-        return _trackExtraObjects[id];
+        if (_trackExtraObjects[id] != reinterpret_cast<TrackExtraObject*>(-1))
+        {
+            return _trackExtraObjects[id];
+        }
+        return nullptr;
     }
 
     template<>
@@ -661,7 +677,11 @@ namespace OpenLoco::ObjectManager
     template<>
     RoadExtraObject* get(size_t id)
     {
-        return _roadExtraObjects[id];
+        if (_roadExtraObjects[id] != reinterpret_cast<RoadExtraObject*>(-1))
+        {
+            return _roadExtraObjects[id];
+        }
+        return nullptr;
     }
 
     template<>
@@ -703,13 +723,21 @@ namespace OpenLoco::ObjectManager
     template<>
     WaterObject* get()
     {
-        return _waterObjects[0];
+        if (_waterObjects[0] != reinterpret_cast<WaterObject*>(-1))
+        {
+            return _waterObjects[0];
+        }
+        return nullptr;
     }
 
     template<>
     CompetitorObject* get(size_t id)
     {
-        return _competitorObjects[id];
+        if (_competitorObjects[id] != reinterpret_cast<CompetitorObject*>(-1))
+        {
+            return _competitorObjects[id];
+        }
+        return nullptr;
     }
 
     template<>
@@ -1291,6 +1319,12 @@ namespace OpenLoco::ObjectManager
                 auto entry = getHeader(getTypeOffset(TObject::kObjectType));
                 entries.push_back(*entry);
             }
+            else
+            {
+                // Insert empty headers for any unused objects (required for save compatibility)
+                // TODO: Move this into the S5 code.
+                entries.emplace_back();
+            }
         }
         else
         {
@@ -1301,6 +1335,12 @@ namespace OpenLoco::ObjectManager
                 {
                     auto entry = getHeader(i + getTypeOffset(TObject::kObjectType));
                     entries.push_back(*entry);
+                }
+                else
+                {
+                    // Insert empty headers for any unused objects (required for save compatibility)
+                    // TODO: Move this into the S5 code.
+                    entries.emplace_back();
                 }
             }
         }
