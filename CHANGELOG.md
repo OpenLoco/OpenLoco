@@ -7,6 +7,7 @@
 - Fix: [#1178] Game does not start when no legacy config file is present.
 - Fix: [#1179] Default shortcut keys are not assigned when no config file is present.
 - Fix: [#1190] Terraform window's area increase/decrease buttons are not holdable.
+- Fix: [#1222] Unable to right click interact with road stations built on neutral or ai created road.
 
 21.09.1 (2021-09-14)
 ------------------------------------------------------------------------
