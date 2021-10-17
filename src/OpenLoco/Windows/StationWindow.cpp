@@ -690,13 +690,13 @@ namespace OpenLoco::Ui::Windows::Station
                 Gfx::drawString_494BBF(context, 1, y, 98, 0, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
-                auto colour = Colour::moss_green;
+                auto colour = Colour::green;
                 if (rating < 100)
                 {
-                    colour = Colour::dark_olive_green;
+                    colour = Colour::yellow;
                     if (rating < 50)
                     {
-                        colour = Colour::saturated_red;
+                        colour = Colour::red;
                     }
                 }
 
@@ -987,12 +987,12 @@ namespace OpenLoco::Ui::Windows::Station
                     {
                         Gfx::fillRect(*context, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
 
-                        auto ratingColour = Colour::moss_green;
+                        auto ratingColour = Colour::green;
                         if (cargo.rating < 100)
                         {
-                            ratingColour = Colour::dark_olive_green;
+                            ratingColour = Colour::yellow;
                             if (cargo.rating < 50)
-                                ratingColour = Colour::saturated_red;
+                                ratingColour = Colour::red;
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;

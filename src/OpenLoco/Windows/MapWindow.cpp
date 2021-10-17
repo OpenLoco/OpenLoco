@@ -1381,7 +1381,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             townPos.y -= 3;
 
             _currentFontSpriteBase = Font::small;
-            Gfx::drawString(*context, townPos.x, townPos.y, Colour::outline(Colour::bright_purple), _stringFormatBuffer);
+            Gfx::drawString(*context, townPos.x, townPos.y, Colour::outline(Colour::purple), _stringFormatBuffer);
         }
     }
 

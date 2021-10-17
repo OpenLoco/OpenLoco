@@ -22,7 +22,7 @@ namespace OpenLoco
         regs.dx = offset.y;
         regs.eax = eax;
         regs.esi = esi;
-        regs.bl = Colour::saturated_green;
+        regs.bl = Colour::mutedSeaGreen;
         regs.bh = 2;
         regs.ebp = X86Pointer(vehicleObject);
         regs.edi = X86Pointer(context);

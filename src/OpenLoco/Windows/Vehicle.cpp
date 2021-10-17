@@ -3104,7 +3104,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto strFormat = StringIds::black_stringid;
                 if (self.var_842 == rowNum)
                 {
-                    Gfx::fillRect(context, 0, y, self.width, y + 9, Colour::aquamarine);
+                    Gfx::fillRect(context, 0, y, self.width, y + 9, Colour::darkGreen);
                     strFormat = StringIds::white_stringid;
                 }
                 if (self.row_hover == rowNum)
@@ -3152,7 +3152,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto strFormat = StringIds::black_stringid;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(context, 0, loc.y, self.width, loc.y + lineHeight, Colour::aquamarine);
+                Gfx::fillRect(context, 0, loc.y, self.width, loc.y + lineHeight, Colour::darkGreen);
                 strFormat = StringIds::white_stringid;
             }
             if (self.row_hover == rowNum)

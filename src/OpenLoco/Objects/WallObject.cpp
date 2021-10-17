@@ -8,7 +8,7 @@ namespace OpenLoco
     void WallObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
         auto image = sprite;
-        image = Gfx::recolour(image, Colour::salmon_pink);
+        image = Gfx::recolour(image, Colour::mutedDarkRed);
         if (flags & (1 << 6))
         {
             image |= (1 << 31) | (1 << 28);
