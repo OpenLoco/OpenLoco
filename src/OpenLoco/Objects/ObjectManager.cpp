@@ -1291,6 +1291,12 @@ namespace OpenLoco::ObjectManager
                 auto entry = getHeader(getTypeOffset(TObject::kObjectType));
                 entries.push_back(*entry);
             }
+            else
+            {
+                // Insert empty headers for any unused objects (required for save compatibility)
+                // TODO: Move this into the S5 code.
+                entries.emplace_back();
+            }
         }
         else
         {
@@ -1301,6 +1307,12 @@ namespace OpenLoco::ObjectManager
                 {
                     auto entry = getHeader(i + getTypeOffset(TObject::kObjectType));
                     entries.push_back(*entry);
+                }
+                else
+                {
+                    // Insert empty headers for any unused objects (required for save compatibility)
+                    // TODO: Move this into the S5 code.
+                    entries.emplace_back();
                 }
             }
         }
