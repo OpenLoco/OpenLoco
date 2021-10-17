@@ -609,13 +609,17 @@ namespace OpenLoco::Ui::ViewportInteraction
             interaction.object = road;
             return rightOverRoad(interaction);
         }
-
-        if (road->owner() != CompanyManager::getControllingId())
+        auto* station = StationManager::get(elStation->stationId());
+        if (station == nullptr)
         {
             return false;
         }
 
-        auto* station = StationManager::get(elStation->stationId());
+        if (station->owner != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+
         FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::string_station_building_bus_stop, station->name, station->town);
         return true;
     }
