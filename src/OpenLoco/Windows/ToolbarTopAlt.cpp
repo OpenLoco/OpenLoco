@@ -3,6 +3,7 @@
 #include "../Config.h"
 #include "../EditorController.h"
 #include "../Entities/EntityManager.h"
+#include "../Game.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
@@ -137,9 +138,18 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 break;
 
             case 1:
+            {
+                if (S5::getOptions().editorStep == 0)
+                    ObjectSelectionWindow::closeWindow();
+
+                WindowManager::closeAllFloatingWindows();
+                Input::toolCancel();
+
                 // Save Landscape
-                call(0x0043D705);
+                if (OpenLoco::Game::saveLandscapeOpen())
+                    Gfx::invalidateScreen();
                 break;
+            }
 
             case 3:
                 About::open();

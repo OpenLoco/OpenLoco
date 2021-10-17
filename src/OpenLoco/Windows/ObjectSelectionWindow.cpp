@@ -644,7 +644,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473A13
-    static void closeWindow()
+    void closeWindow()
     {
         call(0x00473A13);
     }
