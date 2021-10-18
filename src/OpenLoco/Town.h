@@ -58,6 +58,8 @@ namespace OpenLoco
         void update();
         void updateLabel();
         void adjustCompanyRating(CompanyId cid, int amount);
+        void recalculateSize();
+        void grow(int32_t growFlags);
         string_id getTownSizeString() const;
     };
     static_assert(sizeof(Town) == 0x270);

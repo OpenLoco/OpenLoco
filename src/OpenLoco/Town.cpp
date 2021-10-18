@@ -13,26 +13,27 @@ namespace OpenLoco
         return name == StringIds::null;
     }
 
-    // 0x0049742F
+    /**
+     * 0x0049742F
+     * Update town
+     *
+     * @param this @<esi>
+     */
     void Town::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004975E0, regs); // 0049742F
+        recalculateSize(); // 0049742F
 
-        static const std::array<uint8_t, 12> buildSpeedTable = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 }; // byte_4FF728
-        int32_t buildSpeed = static_cast<int32_t>(buildSpeedTable[this->build_speed]);                    // 00497434-0049743B
-        if (buildSpeed == 0 || (buildSpeed == 1 && (gPrng().randNext() & 7) == 0))                        // 00497442-0049746E
+        static const std::array<uint8_t, 12> buildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 }; // byte_4FF728
+        auto buildSpeed = buildSpeedToGrowthPerTick[this->build_speed];                                             // 00497434-0049743B
+        if (buildSpeed == 0 || (buildSpeed == 1 && (gPrng().randNext() & 7) == 0))                                  // 00497442-0049746E
         {
-            regs.eax = 7;           // 00497481
-            call(0x00498116, regs); // 00497486
+            grow(0x07); // 00497481-00497486
         }
         else
         {
             for (int32_t counter = 0; counter < buildSpeed; ++counter) // 0049747C-0049747D
             {
-                regs.eax = 0x3F;        // 00497471
-                call(0x00498116, regs); // 00497476
+                grow(0x3F); // 00497471-00497476
             }
         }
     }
@@ -52,6 +53,34 @@ namespace OpenLoco
             company_ratings[enumValue(cid)] + amount,
             min_company_rating,
             max_company_rating);
+    }
+
+    /**
+     * 0x004975E0
+     * Recalculate size
+     *
+     * @param this @<esi>
+     */
+    void Town::recalculateSize()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004975E0, regs);
+    }
+
+    /**
+     * 0x00498116
+     * Grow
+     *
+     * @param this @<esi>
+     * @param growFlags @<eax>
+     */
+    void Town::grow(int32_t growFlags)
+    {
+        registers regs;
+        regs.eax = growFlags;
+        regs.esi = X86Pointer(this);
+        call(0x00498116, regs);
     }
 
     string_id Town::getTownSizeString() const
