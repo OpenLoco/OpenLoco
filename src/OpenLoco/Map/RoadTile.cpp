@@ -23,7 +23,7 @@ namespace OpenLoco::Map
         if (sequenceIndex())
             return true;
 
-        if (hasUnkBit4() || hasLevelCrossing() || mods())
+        if (hasUnk7_10() || hasLevelCrossing() || mods())
             return true;
 
         if (isGhost() || isFlag5())
@@ -53,7 +53,7 @@ namespace OpenLoco::Map
             if (roadEl->sequenceIndex())
                 return true;
 
-            if (hasUnkBit4() || hasLevelCrossing() || mods())
+            if (hasUnk7_10() || hasLevelCrossing() || mods())
                 return true;
 
             if (roadEl->isGhost() || roadEl->isFlag5())

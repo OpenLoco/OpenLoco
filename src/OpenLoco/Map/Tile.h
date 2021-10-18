@@ -391,7 +391,12 @@ namespace OpenLoco::Map
         uint8_t sequenceIndex() const { return _5 & 0x3; } // _5l
         uint8_t bridge() const { return _6 >> 5; }         // _6u
         bool hasStationElement() const { return (_type & 0x80) != 0; }
-        bool hasUnkBit4() const { return _7 & (1 << 4); }
+        bool hasUnk7_10() const { return _7 & (1 << 4); } // _7u (bit 4) level crossing related
+        void setUnk7_10(bool newState)                    // _7u (bit 4) level crossing related
+        {
+            _7 &= ~(1 << 4);
+            _7 |= newState ? (1 << 4) : 0;
+        }
         bool hasLevelCrossing() const { return _7 & (1 << 5); }
         void setUnk7_40(bool newState) // NOTE: This is the same field as mods!
         {
