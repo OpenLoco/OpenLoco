@@ -505,7 +505,7 @@ namespace OpenLoco::ObjectManager
         return object_repository[static_cast<uint8_t>(type)];
     }
 
-    Object* getAny(const LoadedObjectHandle& handle)
+    Object* getAny(const LoadedObjectHandle handle)
     {
         auto obj = _allObjects[getTypeOffset(handle.type) + handle.id];
         if (obj == (void*)-1)
@@ -858,20 +858,20 @@ namespace OpenLoco::ObjectManager
         *ptr += strlen(entry._filename) + 1;
 
         // decoded_chunk_size
-        //ObjectHeader2* h2 = (ObjectHeader2*)ptr;
+        // ObjectHeader2* h2 = (ObjectHeader2*)ptr;
         *ptr += sizeof(ObjectHeader2);
 
         entry._name = (char*)*ptr;
         *ptr += strlen(entry._name) + 1;
 
-        //ObjectHeader3* h3 = (ObjectHeader3*)ptr;
+        // ObjectHeader3* h3 = (ObjectHeader3*)ptr;
         *ptr += sizeof(ObjectHeader3);
 
         uint8_t* countA = (uint8_t*)*ptr;
         *ptr += sizeof(uint8_t);
         for (int n = 0; n < *countA; n++)
         {
-            //header* subh = (header*)ptr;
+            // header* subh = (header*)ptr;
             *ptr += sizeof(ObjectHeader);
         }
 
@@ -879,7 +879,7 @@ namespace OpenLoco::ObjectManager
         *ptr += sizeof(uint8_t);
         for (int n = 0; n < *countB; n++)
         {
-            //header* subh = (header*)ptr;
+            // header* subh = (header*)ptr;
             *ptr += sizeof(ObjectHeader);
         }
 
@@ -929,7 +929,7 @@ namespace OpenLoco::ObjectManager
             auto objectType = header.getType();
             const auto& typedObjectList = getRepositoryItem(objectType);
             auto maxObjectsForType = getMaxObjects(objectType);
-            for (size_t i = 0; i < maxObjectsForType; i++)
+            for (LoadedObjectId i = 0; i < maxObjectsForType; i++)
             {
                 auto obj = typedObjectList.objects[i];
                 if (obj != nullptr && obj != reinterpret_cast<Object*>(-1))
@@ -987,7 +987,7 @@ namespace OpenLoco::ObjectManager
         return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
     }
 
-    static bool callObjectFunction(const LoadedObjectHandle& handle, ObjectProcedure proc)
+    static bool callObjectFunction(const LoadedObjectHandle handle, ObjectProcedure proc)
     {
         auto* obj = getAny(handle);
         if (obj != nullptr)
@@ -1298,12 +1298,12 @@ namespace OpenLoco::ObjectManager
         call(0x00472031);
     }
 
-    void unload(const LoadedObjectHandle& handle)
+    void unload(const LoadedObjectHandle handle)
     {
         callObjectFunction(handle, ObjectProcedure::unload);
     }
 
-    size_t getByteLength(const LoadedObjectHandle& handle)
+    size_t getByteLength(const LoadedObjectHandle handle)
     {
         return objectEntries[getTypeOffset(handle.type) + handle.id].dataSize;
     }
