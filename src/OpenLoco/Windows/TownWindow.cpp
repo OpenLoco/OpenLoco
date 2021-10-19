@@ -187,12 +187,8 @@ namespace OpenLoco::Ui::Windows::Town
                     {
                         for (uint32_t j = ebx; j > 0; j--)
                         {
-                            registers regs;
-                            regs.esi = X86Pointer(town);
-                            regs.eax = 0xFF;
-
-                            call(0x00498116, regs);
-                            call(0x004975E0, regs);
+                            town->grow(0xFF);
+                            town->recalculateSize();
                         }
 
                         tempYear += 7;
