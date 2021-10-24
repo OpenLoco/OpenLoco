@@ -186,7 +186,7 @@ namespace OpenLoco
         const auto thinkFunc1 = _funcs_430786[var_4A4];
         thinkFunc1(this);
 
-        if (name == StringIds::empty)
+        if (empty())
             return;
 
         const auto thinkFunc2 = _funcs_43079E[var_4A6];
@@ -207,44 +207,36 @@ namespace OpenLoco
             Map::Pos2 pos;
             if ((_dword4FE720[entry.var_00] & 2) != 0)
             {
-                auto* industry = IndustryManager::get((IndustryId)entry.var_01);
+                auto* industry = IndustryManager::get(static_cast<IndustryId>(entry.var_01));
                 pos = { industry->x, industry->y };
             }
             else
             {
-                auto* town = TownManager::get((TownId)entry.var_01);
+                auto* town = TownManager::get(static_cast<TownId>(entry.var_01));
                 pos = { town->x, town->y };
             }
 
             auto& prng = gPrng();
-            auto randPick = prng.randNext();
-
-            auto x2 = (randPick & 0x3E0) - 512 + pos.x;
-            auto y2 = (Utility::ror<uint32_t>(randPick, 5) & 0x3E0) - 512 + pos.y;
+            const auto randPick = prng.randNext();
+            const coord_t x2 = (randPick & 0x3E0) - 512 + pos.x;
+            const coord_t y2 = (Utility::ror<uint32_t>(randPick, 5) & 0x3E0) - 512 + pos.y;
             if (x2 <= 0x2FFFu && y2 <= 0x2FFFu)
             {
-                // 00430886 - 00430895
                 auto tile = Map::TileManager::get(x2, y2);
-
-                // 0043089B - 004308AA
                 auto* surface = tile.surface();
 
-                // 004308AA - 004308AF
-                auto z = surface->baseZ() << 2;
-
+                coord_t z = surface->baseZ() << 2;
                 if (surface->slope() != 0)
                     z += 16;
 
-                auto edx = 0; // Ui::Windows::CompanyWindow::Details::getHeadquarterBuildingType();
+                const auto rot = Utility::ror<uint32_t>(randPick, 5) & 3;
+                const auto buildingType = CompanyManager::getHeadquarterBuildingType();
 
-                const auto rot = randPick & 3;
-
-                registers regs{};
-                regs.bl = 1;
-                regs.bh = rot;
-                regs.edx = edx;
-                regs.edi = z;
-                GameCommands::doCommand(GameCommands::GameCommand::buildCompanyHeadquarters, regs);
+                GameCommands::HeadquarterPlacementArgs args;
+                args.pos = { x2, y2, z };
+                args.rotation = rot;
+                args.type = buildingType;
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
             }
         }
     }
