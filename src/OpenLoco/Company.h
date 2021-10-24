@@ -55,7 +55,8 @@ namespace OpenLoco
         struct unk4A8
         {
             uint8_t var_00;
-            uint8_t pad_01[0x44 - 0x01];
+            uint8_t var_01;
+            uint8_t pad_02[0x42];
             uint8_t var_44; // 0x4EC size of var_66
             uint8_t pad_45[0x66 - 0x45];
             EntityId var_66[11]; // 0x50E unsure on size
@@ -86,7 +87,10 @@ namespace OpenLoco
         uint32_t startedDate;                                                          // 0x0498
         uint32_t var_49C;
         uint32_t var_4A0;
-        uint8_t pad_4A4[0x4A8 - 0x4A4];
+        uint8_t var_4A4;
+        uint8_t var_4A5;
+        uint8_t var_4A6;
+        uint8_t var_4A7;
         unk4A8 var_4A8[60];
         uint8_t pad_2578;
         uint8_t headquarters_z; // 0x2579
