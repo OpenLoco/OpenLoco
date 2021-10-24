@@ -2,21 +2,15 @@
 #include "CompanyManager.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
-<<<<<<< HEAD
 #include "GameState.h"
-=======
->>>>>>> 9b974d22... Implement Company::aiThink
 #include "Graphics/Gfx.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
-<<<<<<< HEAD
 #include "Math/Bound.hpp"
-=======
 #include "TownManager.h"
->>>>>>> 9b974d22... Implement Company::aiThink
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
 #include "Vehicles/Vehicle.h"

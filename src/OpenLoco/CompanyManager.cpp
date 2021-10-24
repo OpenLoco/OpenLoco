@@ -11,6 +11,7 @@
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Objects/AirportObject.h"
+#include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/DockObject.h"
 #include "Objects/ObjectManager.h"
@@ -587,6 +588,25 @@ namespace OpenLoco::CompanyManager
     uint32_t competingColourMask()
     {
         return competingColourMask(_updating_company_id);
+    }
+
+    // 0x00434F2D
+    uint8_t getHeadquarterBuildingType()
+    {
+        for (size_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::building); ++i)
+        {
+            auto* buildingObj = ObjectManager::get<BuildingObject>(i);
+            if (buildingObj == nullptr)
+            {
+                continue;
+            }
+
+            if (buildingObj->flags & BuildingObjectFlags::is_headquarters)
+            {
+                return static_cast<uint8_t>(i);
+            }
+        }
+        return 0;
     }
 
 }
