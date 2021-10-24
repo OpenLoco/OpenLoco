@@ -2,14 +2,23 @@
 #include "CompanyManager.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+<<<<<<< HEAD
 #include "GameState.h"
+=======
+>>>>>>> 9b974d22... Implement Company::aiThink
 #include "Graphics/Gfx.h"
+#include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
+<<<<<<< HEAD
 #include "Math/Bound.hpp"
+=======
+#include "TownManager.h"
+>>>>>>> 9b974d22... Implement Company::aiThink
 #include "Ui/WindowManager.h"
+#include "Utility/Numeric.hpp"
 #include "Vehicles/Vehicle.h"
 #include <algorithm>
 #include <array>
@@ -19,6 +28,151 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    static void sub_4308D4(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x004308D4, regs);
+    }
+
+    static void sub_430971(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x00430971, regs);
+    }
+
+    static void sub_4309FD(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x004309FD, regs);
+    }
+
+    static void sub_430DB6(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x00430DB6, regs);
+    }
+
+    static void sub_431035(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x00431035, regs);
+    }
+
+    static void nullsub_3(Company* company)
+    {
+    }
+
+    static void sub_431104(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x00431104, regs);
+    }
+
+    static void sub_431193(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x00431193, regs);
+    }
+
+    static void sub_4311E7(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x004311E7, regs);
+    }
+
+    static void nullsub_4(Company* company)
+    {
+    }
+
+    static void sub_431287(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x00431287, regs);
+    }
+
+    using UnknownThinkFunction = void (*)(Company*);
+
+    static constexpr UnknownThinkFunction _funcs_430786[] = {
+        sub_4308D4,
+        sub_430971,
+        sub_4309FD,
+        sub_430DB6,
+        sub_431035,
+        nullsub_3,
+        sub_431104,
+        sub_431193,
+        sub_4311E7,
+        nullsub_4,
+        sub_431287,
+    };
+
+    static void sub_431295(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x00431295, regs);
+    }
+
+    static void sub_43129D(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x0043129D, regs);
+    }
+
+    static void sub_4312AF(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x004312AF, regs);
+    }
+
+    static void sub_4312BF(Company* company)
+    {
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x004312BF, regs);
+    }
+
+    static constexpr UnknownThinkFunction _funcs_43079E[] = {
+        sub_431295,
+        sub_43129D,
+        sub_4312AF,
+        sub_4312BF,
+    };
+
+    static constexpr uint32_t _dword4FE720[] = {
+        0x849,
+        0x4011,
+        0x4051,
+        0x808,
+        0x20808,
+        0x1421,
+        0x1120,
+        0x98E,
+        0x2098E,
+        0x98A,
+        0x2098A,
+        0x21A6,
+        0x21A2,
+        0x8000,
+        0x8082,
+        0x10000,
+        0x10086,
+        0x10082,
+        0x80A,
+        0x2080A
+    };
+
     bool Company::empty() const
     {
         return name == StringIds::empty;
@@ -27,9 +181,78 @@ namespace OpenLoco
     // 0x00430762
     void Company::aiThink()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x00430762, regs);
+        const auto updatingCompanyId = CompanyManager::updatingCompanyId();
+
+        if (updatingCompanyId != CompanyManager::getControllingId())
+            return;
+
+        if (updatingCompanyId != CompanyManager::getSecondaryPlayerId())
+            return;
+
+        const auto thinkFunc1 = _funcs_430786[var_4A4];
+        thinkFunc1(this);
+
+        if (name == StringIds::empty)
+            return;
+
+        const auto thinkFunc2 = _funcs_43079E[var_4A6];
+        thinkFunc2(this);
+
+        if (headquarters_x == -1 && (challenge_flags & CompanyFlags::bankrupt) == 0 && (challenge_flags & 0x1) != 0)
+        {
+            // Look for an entry with either town or industry assigned.
+            auto index = std::size(var_4A8);
+            while (var_4A8[--index].var_00 == 0xFF)
+            {
+                if (index == 0)
+                    return;
+            }
+
+            auto& entry = var_4A8[index];
+
+            Map::Pos2 pos;
+            if ((_dword4FE720[entry.var_00] & 2) != 0)
+            {
+                auto* industry = IndustryManager::get((IndustryId)entry.var_01);
+                pos = { industry->x, industry->y };
+            }
+            else
+            {
+                auto* town = TownManager::get((TownId)entry.var_01);
+                pos = { town->x, town->y };
+            }
+
+            auto& prng = gPrng();
+            auto randPick = prng.randNext();
+
+            auto x2 = (randPick & 0x3E0) - 512 + pos.x;
+            auto y2 = (Utility::ror<uint32_t>(randPick, 5) & 0x3E0) - 512 + pos.y;
+            if (x2 <= 0x2FFFu && y2 <= 0x2FFFu)
+            {
+                // 00430886 - 00430895
+                auto tile = Map::TileManager::get(x2, y2);
+
+                // 0043089B - 004308AA
+                auto* surface = tile.surface();
+
+                // 004308AA - 004308AF
+                auto z = surface->baseZ() << 2;
+
+                if (surface->slope() != 0)
+                    z += 16;
+
+                auto edx = 0; // Ui::Windows::CompanyWindow::Details::getHeadquarterBuildingType();
+
+                const auto rot = randPick & 3;
+
+                registers regs{};
+                regs.bl = 1;
+                regs.bh = rot;
+                regs.edx = edx;
+                regs.edi = z;
+                GameCommands::doCommand(GameCommands::GameCommand::buildCompanyHeadquarters, regs);
+            }
+        }
     }
 
     // 0x00437ED0
