@@ -21,19 +21,19 @@ namespace OpenLoco
      */
     void Town::update()
     {
-        recalculateSize(); // 0049742F
+        recalculateSize();
 
-        static const std::array<uint8_t, 12> buildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 }; // byte_4FF728
-        auto buildSpeed = buildSpeedToGrowthPerTick[this->build_speed];                                             // 00497434-0049743B
-        if (buildSpeed == 0 || (buildSpeed == 1 && (gPrng().randNext() & 7) == 0))                                  // 00497442-0049746E
+        static const std::array<uint8_t, 12> buildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 };
+        auto buildSpeed = buildSpeedToGrowthPerTick[this->build_speed];
+        if (buildSpeed == 0 || (buildSpeed == 1 && (gPrng().randNext() & 7) == 0))
         {
-            grow(0x07); // 00497481-00497486
+            grow(0x07);
         }
         else
         {
-            for (int32_t counter = 0; counter < buildSpeed; ++counter) // 0049747C-0049747D
+            for (int32_t counter = 0; counter < buildSpeed; ++counter)
             {
-                grow(0x3F); // 00497471-00497476
+                grow(0x3F);
             }
         }
     }
