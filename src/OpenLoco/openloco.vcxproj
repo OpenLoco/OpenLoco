@@ -236,6 +236,7 @@
     <ClInclude Include="Core\LocoFixedVector.hpp" />
     <ClInclude Include="Core\Optional.hpp" />
     <ClInclude Include="Core\Span.hpp" />
+    <ClInclude Include="Core\Variant.hpp" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="Drawing\FPSCounter.h" />
     <ClInclude Include="Drawing\SoftwareDrawingEngine.h" />
@@ -251,6 +252,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCommands\Cheat.h" />
     <ClInclude Include="GameCommands\GameCommands.h" />
+    <ClInclude Include="GameException.hpp" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Graphics\Colour.h" />
     <ClInclude Include="Graphics\Gfx.h" />
@@ -337,7 +339,6 @@
     <ClInclude Include="Paint\PaintVehicle.h" />
     <ClInclude Include="Platform/Crash.h" />
     <ClInclude Include="Platform\Platform.h" />
-    <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="S5\Limits.h" />
     <ClInclude Include="S5\S5.h" />
     <ClInclude Include="S5\SawyerStream.h" />
@@ -363,6 +364,7 @@
     <ClInclude Include="Ui\WindowManager.h" />
     <ClInclude Include="Ui\WindowType.h" />
     <ClInclude Include="Utility\Collection.hpp" />
+    <ClInclude Include="Utility\Exception.hpp" />
     <ClInclude Include="Utility\Numeric.hpp" />
     <ClInclude Include="Utility\Prng.hpp" />
     <ClInclude Include="Utility\Stream.hpp" />
@@ -375,7 +377,6 @@
     <ClInclude Include="Viewport.hpp" />
     <ClInclude Include="ViewportManager.h" />
     <ClInclude Include="Widget.h" />
-    <ClInclude Include="Win32.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Windows\Construction\Construction.h" />
     <ClInclude Include="Message.h" />
