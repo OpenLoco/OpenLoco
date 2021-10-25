@@ -344,7 +344,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         else
         {
             trackAndDirection = 1 << 3;
-            loc += Map::Pos3{ _503C6C[_constructionRotation] };
+            loc += Map::Pos3{ _503C6C[_constructionRotation], 0 };
         }
         trackAndDirection |= (1 << 2) | (_constructionRotation & 0x3);
         _113601A[0] = 0;
