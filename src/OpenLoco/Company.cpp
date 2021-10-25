@@ -218,22 +218,25 @@ namespace OpenLoco
 
             auto& prng = gPrng();
             const auto randPick = prng.randNext();
-            const coord_t x2 = (randPick & 0x3E0) - 512 + pos.x;
-            const coord_t y2 = (Utility::ror<uint32_t>(randPick, 5) & 0x3E0) - 512 + pos.y;
-            if (x2 <= 0x2FFFu && y2 <= 0x2FFFu)
+            const auto randPos = Map::Pos2{
+                static_cast<coord_t>(randPick & 0x3E0),
+                static_cast<coord_t>(Utility::ror<uint32_t>(randPick, 5) & 0x3E0)
+            };
+            const auto selectedPos = randPos - Map::Pos2{ 512, 512 } + pos;
+            if (selectedPos.x <= 0x2FFF && selectedPos.y <= 0x2FFF)
             {
-                auto tile = Map::TileManager::get(x2, y2);
+                auto tile = Map::TileManager::get(selectedPos);
                 auto* surface = tile.surface();
 
                 coord_t z = surface->baseZ() << 2;
                 if (surface->slope() != 0)
                     z += 16;
 
-                const auto rot = Utility::ror<uint32_t>(randPick, 5) & 3;
+                const auto rot = randPos.y & 3;
                 const auto buildingType = CompanyManager::getHeadquarterBuildingType();
 
                 GameCommands::HeadquarterPlacementArgs args;
-                args.pos = { x2, y2, z };
+                args.pos = Map::Pos3(selectedPos, z);
                 args.rotation = rot;
                 args.type = buildingType;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
