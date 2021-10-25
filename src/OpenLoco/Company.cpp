@@ -177,10 +177,8 @@ namespace OpenLoco
     {
         const auto updatingCompanyId = CompanyManager::updatingCompanyId();
 
-        if (updatingCompanyId != CompanyManager::getControllingId())
-            return;
-
-        if (updatingCompanyId != CompanyManager::getSecondaryPlayerId())
+        // Ensure this is only used for Non-Player controlled companies.
+        if (CompanyManager::isPlayerCompany(updatingCompanyId))
             return;
 
         const auto thinkFunc1 = _funcs_430786[var_4A4];
