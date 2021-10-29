@@ -96,7 +96,7 @@ namespace OpenLoco
                             cargoUnitName = cargoObj->unit_name_singular;
                         }
                         args.push(cargoUnitName);
-                        args.push<uint16_t>(max_primary_cargo);
+                        args.push<uint32_t>(max_primary_cargo);
                         buffer = StringManager::formatString(buffer, StringIds::stats_capacity, &args);
                     }
                     cargoType = Utility::bitScanForward(cargoTypes);
@@ -145,7 +145,7 @@ namespace OpenLoco
                             cargoUnitName = cargoObj->unit_name_singular;
                         }
                         args.push(cargoUnitName);
-                        args.push<uint16_t>(max_secondary_cargo);
+                        args.push<uint32_t>(max_secondary_cargo);
                         buffer = StringManager::formatString(buffer, StringIds::stats_plus_string, &args);
                     }
 
