@@ -44,6 +44,11 @@ namespace OpenLoco::Ui::Dropdown
     static loco_global<std::byte[40][bytes_per_item], 0x0113D9E0> _dropdownItemArgs2;
     static loco_global<CompanyId[40], 0x00113DB20> _menuOptions;
 
+    void addSeparator(size_t index)
+    {
+        add(index, 0);
+    }
+
     void add(size_t index, string_id title)
     {
         assert(index < std::numeric_limits<uint8_t>::max());

@@ -54,6 +54,7 @@ namespace OpenLoco
 
 namespace OpenLoco::Ui::Dropdown
 {
+    void addSeparator(size_t index);
     void add(size_t index, string_id title);
     void add(size_t index, string_id title, std::initializer_list<format_arg> l);
     void add(size_t index, string_id title, format_arg l);

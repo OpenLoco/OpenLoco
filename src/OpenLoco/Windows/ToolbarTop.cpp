@@ -72,6 +72,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         widgetEnd(),
     };
 
+    namespace LoadSaveDropdownIndex
+    {
+        constexpr size_t loadGame = 0;
+        constexpr size_t saveGame = 1;
+        constexpr size_t separator1 = 2;
+        constexpr size_t about = 3;
+        constexpr size_t options = 4;
+        constexpr size_t screenshot = 5;
+        constexpr size_t separator2 = 6;
+        constexpr size_t quitToMenu = 7;
+        constexpr size_t quitToDesktop = 8;
+    };
+
     static WindowEventList _events;
 
     static void onMouseDown(Window* window, WidgetIndex_t widgetIndex);
@@ -117,15 +130,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x0043B0F7
     static void loadsaveMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
-        Dropdown::add(0, StringIds::menu_load_game);
-        Dropdown::add(1, StringIds::menu_save_game);
-        Dropdown::add(2, 0);
-        Dropdown::add(3, StringIds::menu_about);
-        Dropdown::add(4, StringIds::options);
-        Dropdown::add(5, StringIds::menu_screenshot);
-        Dropdown::add(6, 0);
-        Dropdown::add(7, StringIds::menu_quit_to_menu);
-        Dropdown::add(8, StringIds::menu_exit_openloco);
+        Dropdown::add(LoadSaveDropdownIndex::loadGame, StringIds::menu_load_game);
+        Dropdown::add(LoadSaveDropdownIndex::saveGame, StringIds::menu_save_game);
+        Dropdown::addSeparator(LoadSaveDropdownIndex::separator1);
+        Dropdown::add(LoadSaveDropdownIndex::about, StringIds::menu_about);
+        Dropdown::add(LoadSaveDropdownIndex::options, StringIds::options);
+        Dropdown::add(LoadSaveDropdownIndex::screenshot, StringIds::menu_screenshot);
+        Dropdown::addSeparator(LoadSaveDropdownIndex::separator2);
+        Dropdown::add(LoadSaveDropdownIndex::quitToMenu, StringIds::menu_quit_to_menu);
+        Dropdown::add(LoadSaveDropdownIndex::quitToDesktop, StringIds::menu_exit_openloco);
         Dropdown::showBelow(window, widgetIndex, 9, 0);
         Dropdown::setHighlightedItem(1);
     }
@@ -167,6 +180,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             Error::open(StringIds::error_game_save_failed, StringIds::null);
     }
 
+    static void takeScreenshot()
+    {
+        loco_global<uint8_t, 0x00508F16> screenshot_countdown;
+        screenshot_countdown = 10;
+    }
+
     // 0x0043B154
     static void loadsaveMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
@@ -175,37 +194,34 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         switch (itemIndex)
         {
-            case 0:
+            case LoadSaveDropdownIndex::loadGame:
                 // Load game
                 GameCommands::do_21(0, 0);
                 break;
 
-            case 1:
+            case LoadSaveDropdownIndex::saveGame:
                 // Save game
                 prepareSaveGame();
                 break;
 
-            case 3:
+            case LoadSaveDropdownIndex::about:
                 About::open();
                 break;
 
-            case 4:
+            case LoadSaveDropdownIndex::options:
                 Options::open();
                 break;
 
-            case 5:
-            {
-                loco_global<uint8_t, 0x00508F16> screenshot_countdown;
-                screenshot_countdown = 10;
+            case LoadSaveDropdownIndex::screenshot:
+                takeScreenshot();
                 break;
-            }
 
-            case 7:
+            case LoadSaveDropdownIndex::quitToMenu:
                 // Return to title screen
                 GameCommands::do_21(0, 1);
                 break;
 
-            case 8:
+            case LoadSaveDropdownIndex::quitToDesktop:
                 // Exit to desktop
                 GameCommands::do_21(0, 2);
                 break;
