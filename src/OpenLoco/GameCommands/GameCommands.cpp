@@ -209,9 +209,9 @@ namespace OpenLoco::GameCommands
 
         if (_updatingCompanyId == CompanyManager::getControllingId() && isNetworked())
         {
-            assert(false);
-            registers fnRegs = regs;
-            call(0x0046E34A, fnRegs); // some network stuff. Untested
+            // assert(false);
+            // registers fnRegs = regs;
+            // call(0x0046E34A, fnRegs); // some network stuff. Untested
         }
 
         return loc_4313C6(esi, regs);

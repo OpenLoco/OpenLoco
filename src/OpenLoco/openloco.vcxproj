@@ -90,6 +90,8 @@
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="MultiPlayer.cpp" />
+    <ClCompile Include="Network\Network.cpp" />
+    <ClCompile Include="Network\Socket.cpp" />
     <ClCompile Include="Objects\AirportObject.cpp" />
     <ClCompile Include="Objects\BridgeObject.cpp" />
     <ClCompile Include="Objects\BuildingObject.cpp" />
@@ -324,6 +326,8 @@
     <ClInclude Include="Math\Vector.hpp" />
     <ClInclude Include="MessageManager.h" />
     <ClInclude Include="MultiPlayer.h" />
+    <ClInclude Include="Network\Socket.h" />
+    <ClInclude Include="Network\Network.h" />
     <ClInclude Include="Objects\AirportObject.h" />
     <ClInclude Include="Objects\BridgeObject.h" />
     <ClInclude Include="Objects\BuildingObject.h" />

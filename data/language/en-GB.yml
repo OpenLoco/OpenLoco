@@ -2307,3 +2307,6 @@ strings:
   2252: "{SMALLFONT}{COLOUR BLACK}When enabled, panning the main game view will have inverted movement"
   2253: "Show cash popups"
   2254: "{SMALLFONT}{COLOUR BLACK}Toggle visibility of cash popups from construction and vehicles on/off"
+  2255: "Start Server"
+  2256: "Close Server"
+  2257: "Disconnect"

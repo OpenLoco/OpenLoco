@@ -12,6 +12,7 @@
 #include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
 #include "../MultiPlayer.h"
+#include "../Network/Network.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
@@ -81,8 +82,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         constexpr size_t options = 4;
         constexpr size_t screenshot = 5;
         constexpr size_t separator2 = 6;
-        constexpr size_t quitToMenu = 7;
-        constexpr size_t quitToDesktop = 8;
+        constexpr size_t server = 7;
+        constexpr size_t separator3 = 8;
+        constexpr size_t quitToMenu = 9;
+        constexpr size_t quitToDesktop = 10;
     };
 
     static WindowEventList _events;
@@ -136,11 +139,29 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::add(LoadSaveDropdownIndex::about, StringIds::menu_about);
         Dropdown::add(LoadSaveDropdownIndex::options, StringIds::options);
         Dropdown::add(LoadSaveDropdownIndex::screenshot, StringIds::menu_screenshot);
+
         Dropdown::addSeparator(LoadSaveDropdownIndex::separator2);
+        if (isNetworked())
+        {
+            if (isNetworkHost())
+            {
+                Dropdown::add(LoadSaveDropdownIndex::server, StringIds::closeServer);
+            }
+            else
+            {
+                Dropdown::add(LoadSaveDropdownIndex::server, StringIds::disconnect);
+            }
+        }
+        else
+        {
+            Dropdown::add(LoadSaveDropdownIndex::server, StringIds::startServer);
+        }
+        Dropdown::addSeparator(LoadSaveDropdownIndex::separator3);
+
         Dropdown::add(LoadSaveDropdownIndex::quitToMenu, StringIds::menu_quit_to_menu);
         Dropdown::add(LoadSaveDropdownIndex::quitToDesktop, StringIds::menu_exit_openloco);
-        Dropdown::showBelow(window, widgetIndex, 9, 0);
-        Dropdown::setHighlightedItem(1);
+        Dropdown::showBelow(window, widgetIndex, 11, 0);
+        Dropdown::setHighlightedItem(LoadSaveDropdownIndex::saveGame);
     }
 
     // 0x0043B1C4
@@ -186,6 +207,25 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         screenshot_countdown = 10;
     }
 
+    static void startOrCloseServer()
+    {
+        if (isNetworked())
+        {
+            if (isNetworkHost())
+            {
+                Network::closeServer();
+            }
+            else
+            {
+                Network::disconnect();
+            }
+        }
+        else
+        {
+            Network::openServer();
+        }
+    }
+
     // 0x0043B154
     static void loadsaveMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
@@ -214,6 +254,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             case LoadSaveDropdownIndex::screenshot:
                 takeScreenshot();
+                break;
+
+            case LoadSaveDropdownIndex::server:
+                startOrCloseServer();
                 break;
 
             case LoadSaveDropdownIndex::quitToMenu:
