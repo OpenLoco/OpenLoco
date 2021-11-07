@@ -15,6 +15,7 @@ namespace OpenLoco::Network
 #pragma pack(push, 1)
     enum class PacketKind : uint16_t
     {
+        ack = 0,
         connect = 1,
         connectResponse,
         requestState,

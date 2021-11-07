@@ -34,6 +34,7 @@ namespace OpenLoco::Network
         }
 
         virtual std::string GetHostname() const = 0;
+        virtual std::unique_ptr<INetworkEndpoint> clone() const = 0;
         virtual bool equals(const INetworkEndpoint& other) const = 0;
     };
 

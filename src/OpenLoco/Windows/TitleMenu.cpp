@@ -390,6 +390,10 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
     static void multiplayerConnect(std::string_view host)
     {
+        auto& cfg = Config::get();
+        auto szHost = std::string(host);
+        Utility::strcpy_safe(cfg.last_host, szHost.c_str());
+
         Network::joinServer(host);
     }
 

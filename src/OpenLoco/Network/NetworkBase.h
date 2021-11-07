@@ -4,8 +4,8 @@
 #include "Socket.h"
 #include <cstdint>
 #include <memory>
-#include <queue>
 #include <mutex>
+#include <queue>
 #include <thread>
 
 namespace OpenLoco::Network
@@ -13,21 +13,35 @@ namespace OpenLoco::Network
     class NetworkBase
     {
     private:
+        struct SentPacket
+        {
+            uint32_t timestamp;
+            std::unique_ptr<INetworkEndpoint> endpoint;
+            Packet packet;
+        };
+
         struct ReceivedPacket
         {
             std::unique_ptr<INetworkEndpoint> endpoint;
             Packet packet;
         };
 
+        std::mutex _sentPacketsSync;
         std::mutex _receivedPacketsSync;
+        std::vector<SentPacket> _sentPackets;
         std::queue<ReceivedPacket> _receivedPackets;
+        uint16_t _sendSequence{};
         std::thread _recievePacketThread;
         bool _endRecievePacketLoop{};
         bool _isClosed{};
 
+        void acknowledgePacket(uint16_t sequence);
+        void resendUndeliveredPackets();
         void recievePacketLoop();
         void recievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
         void processReceivePackets();
+        void sendAcknowledgePacket(const INetworkEndpoint& endpoint, uint16_t sequence);
+        void logPacket(const Packet& packet, bool sent, bool resend);
 
     protected:
         std::unique_ptr<IUdpSocket> _socket;
@@ -39,14 +53,14 @@ namespace OpenLoco::Network
 
             Packet packet;
             packet.header.kind = TKind;
-            packet.header.sequence = 0;
+            packet.header.sequence = _sendSequence++;
             packet.header.dataSize = sizeof(packetData);
             std::memcpy(packet.data, &packetData, packet.header.dataSize);
 
-            size_t packetSize = sizeof(PacketHeader) + packet.header.dataSize;
-            _socket->SendData(endpoint, &packet, packetSize);
+            sendPacket(endpoint, packet);
         }
 
+        void sendPacket(const INetworkEndpoint& endpoint, const Packet& packet);
         void beginRecievePacketLoop();
         void endRecievePacketLoop();
 

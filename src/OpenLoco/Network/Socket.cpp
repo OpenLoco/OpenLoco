@@ -171,6 +171,11 @@ namespace OpenLoco::Network
             return {};
         }
 
+        std::unique_ptr<INetworkEndpoint> clone() const override
+        {
+            return std::make_unique<NetworkEndpoint>(*this);
+        }
+
         bool equals(const INetworkEndpoint& other) const override
         {
             auto& other2 = *static_cast<const NetworkEndpoint*>(&other);
