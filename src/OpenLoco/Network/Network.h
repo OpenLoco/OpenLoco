@@ -12,10 +12,14 @@ namespace OpenLoco::Network
     constexpr uint16_t maxPacketSize = 4096;
     constexpr uint16_t networkVersion = 1;
 
+#pragma pack(push, 1)
     enum class PacketKind : uint16_t
     {
         connect = 1,
-        connectResponse = 2,
+        connectResponse,
+        requestState,
+        requestStateResponse,
+        requestStateResponseChunk,
     };
 
     struct PacketHeader
@@ -32,12 +36,18 @@ namespace OpenLoco::Network
         PacketHeader header;
         uint8_t data[maxPacketDataSize]{};
 
+        template<typename T>
+        const T* Cast() const
+        {
+            return reinterpret_cast<const T*>(data);
+        }
+
         template<PacketKind TKind, typename T>
         const T* As() const
         {
             if (header.kind == TKind && header.dataSize >= sizeof(T))
             {
-                return reinterpret_cast<const T*>(data);
+                return Cast<T>();
             }
             return nullptr;
         }
@@ -60,6 +70,29 @@ namespace OpenLoco::Network
         ConnectionResult result;
         char message[256]{};
     };
+
+    struct RequestStatePacket
+    {
+        uint32_t cookie{};
+    };
+
+    struct RequestStateResponse
+    {
+        uint32_t cookie{};
+        uint32_t totalSize{};
+        uint16_t numChunks{};
+    };
+
+    struct RequestStateResponseChunk
+    {
+        uint32_t cookie{};
+        uint16_t index{};
+        uint32_t offset{};
+        uint32_t size{};
+        uint8_t data[maxPacketDataSize - 14]{};
+    };
+    static_assert(sizeof(RequestStateResponseChunk) == maxPacketDataSize);
+#pragma pack(pop)
 
     void openServer();
     void joinServer(std::string_view host);

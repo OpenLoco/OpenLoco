@@ -51,6 +51,10 @@ void NetworkClient::onUpdate()
             }
             break;
         case NetworkClientStatus::connectedSuccessfully:
+            sendRequestStatePacket();
+            _status = NetworkClientStatus::waitingForState;
+            break;
+        case NetworkClientStatus::waitingForState:
             break;
     }
 }
@@ -77,8 +81,41 @@ void NetworkClient::onCancel()
 
 void NetworkClient::onRecievePacketFromServer(const Packet& packet)
 {
-    auto connectResponsePacket = packet.As<PacketKind::connectResponse, ConnectResponsePacket>();
-    if (connectResponsePacket->result == ConnectionResult::success)
+    switch (packet.header.kind)
+    {
+        case PacketKind::connectResponse:
+            recieveConnectionResponsePacket(*reinterpret_cast<const ConnectResponsePacket*>(packet.data));
+            break;
+        case PacketKind::requestStateResponse:
+            recieveRequestStateResponsePacket(*reinterpret_cast<const RequestStateResponse*>(packet.data));
+            break;
+        case PacketKind::requestStateResponseChunk:
+            recieveRequestStateResponseChunkPacket(*reinterpret_cast<const RequestStateResponseChunk*>(packet.data));
+            break;
+    }
+}
+
+void NetworkClient::sendConnectPacket()
+{
+    ConnectPacket packet;
+    std::strncpy(packet.name, "Ted", sizeof(packet.name));
+    packet.version = networkVersion;
+    sendPacket<PacketKind::connect>(packet);
+}
+
+void NetworkClient::sendRequestStatePacket()
+{
+    _requestStateCookie = (std::rand() << 16) | std::rand();
+    _requestStateChunksReceived.clear();
+
+    RequestStatePacket packet;
+    packet.cookie = _requestStateCookie;
+    sendPacket<PacketKind::requestState>(packet);
+}
+
+void NetworkClient::recieveConnectionResponsePacket(const ConnectResponsePacket& response)
+{
+    if (response.result == ConnectionResult::success)
     {
         _status = NetworkClientStatus::connectedSuccessfully;
         setStatus("Connected to server successfully");
@@ -90,12 +127,48 @@ void NetworkClient::onRecievePacketFromServer(const Packet& packet)
     }
 }
 
-void NetworkClient::sendConnectPacket()
+void NetworkClient::recieveRequestStateResponsePacket(const RequestStateResponse& response)
 {
-    ConnectPacket packet;
-    std::strncpy(packet.name, "Ted", sizeof(packet.name));
-    packet.version = networkVersion;
-    sendPacket<PacketKind::connect>(packet);
+    if (response.cookie == _requestStateCookie)
+    {
+        _requestStateNumChunks = response.numChunks;
+        _requestStateTotalSize = response.totalSize;
+        _requestStateReceivedChunks = 0;
+    }
+}
+
+void NetworkClient::recieveRequestStateResponseChunkPacket(const RequestStateResponseChunk& responseChunk)
+{
+    if (responseChunk.cookie == _requestStateCookie)
+    {
+        if (_requestStateChunksReceived.size() <= responseChunk.index)
+        {
+            _requestStateChunksReceived.resize(responseChunk.index + 1);
+        }
+
+        auto& rchunk = _requestStateChunksReceived[responseChunk.index];
+        if (rchunk.data.size() == 0)
+        {
+            rchunk.offset = responseChunk.offset;
+            rchunk.data.assign(responseChunk.data, responseChunk.data + responseChunk.size);
+            _requestStateReceivedChunks++;
+
+            _requestStateReceivedBytes += responseChunk.size;
+            setStatus("Receiving state: " + std::to_string(_requestStateReceivedBytes) + " / " + std::to_string(_requestStateTotalSize));
+        }
+
+        if (_requestStateReceivedChunks >= _requestStateNumChunks)
+        {
+            // Construct full data
+            std::vector<uint8_t> fullData;
+            for (size_t i = 0; i < _requestStateChunksReceived.size(); i++)
+            {
+                fullData.insert(fullData.end(), _requestStateChunksReceived[i].data.begin(), _requestStateChunksReceived[i].data.end());
+            }
+
+            setStatus("Receiving state complete");
+        }
+    }
 }
 
 void NetworkClient::initStatus(std::string_view text)

@@ -4,6 +4,8 @@
 #include "Socket.h"
 #include <cstdint>
 #include <memory>
+#include <queue>
+#include <mutex>
 #include <thread>
 
 namespace OpenLoco::Network
@@ -11,11 +13,21 @@ namespace OpenLoco::Network
     class NetworkBase
     {
     private:
+        struct ReceivedPacket
+        {
+            std::unique_ptr<INetworkEndpoint> endpoint;
+            Packet packet;
+        };
+
+        std::mutex _receivedPacketsSync;
+        std::queue<ReceivedPacket> _receivedPackets;
         std::thread _recievePacketThread;
         bool _endRecievePacketLoop{};
         bool _isClosed{};
 
         void recievePacketLoop();
+        void recievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
+        void processReceivePackets();
 
     protected:
         std::unique_ptr<IUdpSocket> _socket;

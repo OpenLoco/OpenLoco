@@ -21,7 +21,14 @@ namespace OpenLoco::Network
         std::vector<std::unique_ptr<Client>> _clients;
         client_id_t _nextClientId = 1;
 
+        template<PacketKind TKind, typename T>
+        void sendPacket(Client& client, const T& packet)
+        {
+            NetworkBase::sendPacket<TKind, T>(*client.endpoint, packet);
+        }
+
         void onRecievePacketFromClient(Client& client, const Packet& packet);
+        void onReceiveStateRequestPacket(Client& client, const RequestStatePacket& packet);
 
     protected:
         void onClose();

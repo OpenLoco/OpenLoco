@@ -31,7 +31,7 @@ void NetworkBase::recievePacketLoop()
             // Validate packet
             if (packet.header.dataSize <= packetSize - sizeof(PacketHeader))
             {
-                onRecievePacket(std::move(endpoint), packet);
+                recievePacket(std::move(endpoint), packet);
             }
         }
         else
@@ -57,8 +57,27 @@ void NetworkBase::endRecievePacketLoop()
     _recievePacketThread = {};
 }
 
+void NetworkBase::recievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
+{
+    std::unique_lock<std::mutex> lk(_receivedPacketsSync);
+    _receivedPackets.push({ std::move(endpoint),
+                            packet });
+}
+
+void NetworkBase::processReceivePackets()
+{
+    std::unique_lock<std::mutex> lk(_receivedPacketsSync);
+    while (!_receivedPackets.empty())
+    {
+        auto& p = _receivedPackets.front();
+        onRecievePacket(std::move(p.endpoint), p.packet);
+        _receivedPackets.pop();
+    }
+}
+
 void NetworkBase::update()
 {
+    processReceivePackets();
     onUpdate();
 }
 
