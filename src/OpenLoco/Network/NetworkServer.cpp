@@ -1,7 +1,10 @@
 #include "NetworkServer.h"
 #include "../Console.h"
+#include "../Core/Span.hpp"
 #include "../OpenLoco.h"
+#include "../S5/S5.h"
 #include "../Utility/String.hpp"
+#include <sstream>
 
 using namespace OpenLoco::Network;
 
@@ -78,10 +81,15 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
 {
     constexpr uint16_t chunkSize = 4000;
 
+    std::stringstream ss;
+    S5::save(ss, S5::SaveFlags::noWindowClose);
+    auto final = ss.str();
+    auto saveData = stdx::span(reinterpret_cast<const uint8_t*>(final.data()), final.size());
+
     RequestStateResponse response;
     response.cookie = request.cookie;
-    response.totalSize = 41302;
-    response.numChunks = (41302 + (chunkSize - 1)) / chunkSize;
+    response.totalSize = saveData.size();
+    response.numChunks = static_cast<uint16_t>((saveData.size() + (chunkSize - 1)) / chunkSize);
     sendPacket<PacketKind::requestStateResponse>(client, response);
 
     uint32_t offset = 0;
