@@ -390,7 +390,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
     static void multiplayerConnect(std::string_view host)
     {
-        Network::connect(host);
+        Network::joinServer(host);
     }
 
     // 0x0043CB9F

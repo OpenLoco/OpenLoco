@@ -224,10 +224,11 @@ namespace OpenLoco::Ui::Windows
 
     namespace NetworkStatus
     {
-        using CloseCallback = void (*)();
+        using CloseCallback = std::function<void()>;
 
         Window* open(std::string_view text, CloseCallback cbClose);
         void setText(std::string_view text);
+        void setText(std::string_view text, CloseCallback cbClose);
         void close();
     }
 

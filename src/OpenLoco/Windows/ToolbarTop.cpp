@@ -211,14 +211,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         if (isNetworked())
         {
-            if (isNetworkHost())
-            {
-                Network::closeServer();
-            }
-            else
-            {
-                Network::disconnect();
-            }
+            Network::close();
         }
         else
         {

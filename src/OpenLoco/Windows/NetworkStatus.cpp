@@ -66,6 +66,13 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         WindowManager::invalidate(WindowType::networkStatus);
     }
 
+    void setText(std::string_view text, CloseCallback cbClose)
+    {
+        _text = text;
+        _cbClose = cbClose;
+        WindowManager::invalidate(WindowType::networkStatus);
+    }
+
     void close()
     {
         WindowManager::close(WindowType::networkStatus);
@@ -74,7 +81,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
     static void onClose(Ui::Window* window)
     {
-        if (_cbClose != nullptr)
+        if (_cbClose)
         {
             _cbClose();
         }
