@@ -210,6 +210,7 @@
     <ClCompile Include="Windows\MapWindow.cpp" />
     <ClCompile Include="Windows\MessageWindow.cpp" />
     <ClCompile Include="Windows\MusicSelection.cpp" />
+    <ClCompile Include="Windows\NetworkStatus.cpp" />
     <ClCompile Include="Windows\News\Common.cpp" />
     <ClCompile Include="Windows\News\News.cpp" />
     <ClCompile Include="Windows\News\Ticker.cpp" />

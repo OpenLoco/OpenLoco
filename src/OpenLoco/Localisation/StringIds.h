@@ -1121,6 +1121,9 @@ namespace OpenLoco::StringIds
 
     constexpr string_id tooltip_select_company = 1465;
 
+    constexpr string_id enter_host_address = 1483;
+    constexpr string_id enter_host_address_description = 1484;
+
     constexpr string_id display_options = 1486;
     constexpr string_id sound_options = 1487;
     constexpr string_id music_options = 1488;

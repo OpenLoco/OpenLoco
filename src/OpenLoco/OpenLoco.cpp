@@ -50,6 +50,7 @@
 #include "Map/WaveManager.h"
 #include "MessageManager.h"
 #include "MultiPlayer.h"
+#include "Network/Network.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Platform/Crash.h"
@@ -344,7 +345,7 @@ namespace OpenLoco
     {
         if (isAlreadyRunning("Locomotion"))
         {
-            exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
+            // exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
         }
 
         // Originally the game would check that all the game
@@ -698,6 +699,8 @@ namespace OpenLoco
 
                 Input::handleKeyboard();
                 Audio::updateSounds();
+
+                Network::update();
 
                 addr<0x0050C1AE, int32_t>()++;
                 if (Intro::isActive())

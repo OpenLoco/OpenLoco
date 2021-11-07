@@ -1,6 +1,8 @@
 #include "Network.h"
 #include "../Console.h"
 #include "../OpenLoco.h"
+#include "../Platform/Platform.h"
+#include "../Ui/WindowManager.h"
 #include "../Utility/String.hpp"
 #include "Socket.h"
 #include <cassert>
@@ -14,6 +16,14 @@ namespace OpenLoco::Network
     constexpr uint16_t networkVersion = 1;
 
     typedef uint32_t client_id_t;
+
+    enum class NetworkStatus
+    {
+        none,
+        connecting,
+        connectedSuccessfully,
+        hosting,
+    };
 
     enum class NetworkMode
     {
@@ -32,6 +42,7 @@ namespace OpenLoco::Network
     enum class PacketKind : uint16_t
     {
         connect = 1,
+        connectResponse = 2,
     };
 
     struct PacketHeader
@@ -49,11 +60,11 @@ namespace OpenLoco::Network
         uint8_t data[maxPacketDataSize]{};
 
         template<PacketKind TKind, typename T>
-        const T* As()
+        const T* As() const
         {
             if (header.kind == TKind && header.dataSize >= sizeof(T))
             {
-                return reinterpret_cast<T*>(data);
+                return reinterpret_cast<const T*>(data);
             }
             return nullptr;
         }
@@ -83,7 +94,11 @@ namespace OpenLoco::Network
     static std::thread _recievePacketThread;
     static bool _endRecievePacketLoop;
     static NetworkMode _mode;
+    static NetworkStatus _status;
+    static uint32_t _timeout;
     static client_id_t _nextClientId = 1;
+
+    static void setStatus(std::string_view text);
 
     static Client* findClient(const INetworkEndpoint& endpoint)
     {
@@ -118,32 +133,62 @@ namespace OpenLoco::Network
         sendPacket<TKind, T>(*_serverEndpoint, packetData);
     }
 
+    static void onRecievePacketFromServer(const Packet& packet)
+    {
+        auto connectResponsePacket = packet.As<PacketKind::connectResponse, ConnectResponsePacket>();
+        if (connectResponsePacket->result == ConnectionResult::success)
+        {
+            _status = NetworkStatus::connectedSuccessfully;
+            setStatus("Connected to server successfully");
+        }
+        else
+        {
+            disconnect();
+        }
+    }
+
     static void onRecievePacketFromClient(Client& client, const Packet& packet)
     {
     }
 
-    static void onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, Packet& packet)
+    static void onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
     {
-        auto client = findClient(*endpoint);
-        if (client == nullptr)
+        if (_mode == NetworkMode::server)
         {
-            auto connectPacket = packet.As<PacketKind::connect, ConnectPacket>();
-            if (connectPacket != nullptr)
+            auto client = findClient(*endpoint);
+            if (client == nullptr)
             {
-                auto newClient = std::make_unique<Client>();
-                newClient->id = _nextClientId++;
-                newClient->endpoint = std::move(endpoint);
-                newClient->name = Utility::nullTerminatedView(connectPacket->name);
-                _clients.push_back(std::move(newClient));
+                auto connectPacket = packet.As<PacketKind::connect, ConnectPacket>();
+                if (connectPacket != nullptr)
+                {
+                    auto newClient = std::make_unique<Client>();
+                    newClient->id = _nextClientId++;
+                    newClient->endpoint = std::move(endpoint);
+                    newClient->name = Utility::nullTerminatedView(connectPacket->name);
+                    _clients.push_back(std::move(newClient));
 
-                ConnectResponsePacket response;
-                response.result = ConnectionResult::success;
-                sendPacket<PacketKind::connect>(*newClient->endpoint, response);
+                    auto& newClientPtr = *_clients.back();
+
+                    ConnectResponsePacket response;
+                    response.result = ConnectionResult::success;
+                    sendPacket<PacketKind::connectResponse>(*newClientPtr.endpoint, response);
+
+                    Console::log("Accepted new client: %s", newClientPtr.name.c_str());
+                }
+            }
+            else
+            {
+                onRecievePacketFromClient(*client, packet);
             }
         }
-        else
+        else if (_mode == NetworkMode::client)
         {
-            onRecievePacketFromClient(*client, packet);
+            // TODO do we really need the check, it is possible but unlikely
+            //      for something else to hijack the UDP client port
+            if (endpoint->equals(*_serverEndpoint))
+            {
+                onRecievePacketFromServer(packet);
+            }
         }
     }
 
@@ -191,25 +236,64 @@ namespace OpenLoco::Network
     {
         assert(_mode == NetworkMode::none);
 
-        Console::log("Server opened");
-        Console::log("Listening for incoming connections...");
+        _socket = Socket::createUdp();
+        _socket->Listen(defaultPort);
+
+        _mode = NetworkMode::server;
+
         setScreenFlag(ScreenFlags::networked);
         setScreenFlag(ScreenFlags::networkHost);
 
-        _socket = Socket::createUdp();
+        Console::log("Server opened");
+        Console::log("Listening for incoming connections...");
+
+        beginRecievePacketLoop();
+    }
+
+    void close()
+    {
+        _status = NetworkStatus::none;
+        endRecievePacketLoop();
+        _socket = nullptr;
+        _serverEndpoint = nullptr;
+
+        clearScreenFlag(ScreenFlags::networked);
+        clearScreenFlag(ScreenFlags::networkHost);
     }
 
     void closeServer()
     {
         assert(_mode == NetworkMode::server);
-
-        endRecievePacketLoop();
-        _socket = nullptr;
-
-        clearScreenFlag(ScreenFlags::networked);
-        clearScreenFlag(ScreenFlags::networkHost);
-
+        close();
         Console::log("Server closed");
+    }
+
+    static void onCancel()
+    {
+        switch (_status)
+        {
+            case NetworkStatus::connecting:
+                close();
+                break;
+        }
+    }
+
+    static void initStatus(std::string_view text)
+    {
+        Ui::Windows::NetworkStatus::open(text, onCancel);
+    }
+
+    static void setStatus(std::string_view text)
+    {
+        Ui::Windows::NetworkStatus::setText(text);
+    }
+
+    static void sendConnectPacket()
+    {
+        ConnectPacket packet;
+        std::strncpy(packet.name, "Ted", sizeof(packet.name));
+        packet.version = networkVersion;
+        sendPacket<PacketKind::connect>(packet);
     }
 
     void connect(std::string_view host)
@@ -227,16 +311,17 @@ namespace OpenLoco::Network
             _socket = Socket::createUdp();
             _serverEndpoint = Socket::resolve(szHost, port);
 
-            setScreenFlag(ScreenFlags::networked);
-
             Console::log("Resolved endpoint for %s:%d", szHost.c_str(), defaultPort);
 
             beginRecievePacketLoop();
 
-            ConnectPacket packet;
-            std::strncpy(packet.name, "Ted", sizeof(packet.name));
-            packet.version = networkVersion;
-            sendPacket<PacketKind::connect>(packet);
+            _mode = NetworkMode::client;
+            _status = NetworkStatus::connecting;
+            _timeout = Platform::getTime() + 5000;
+
+            sendConnectPacket();
+
+            initStatus("Connecting to " + szHost);
         }
         catch (...)
         {
@@ -248,14 +333,24 @@ namespace OpenLoco::Network
     void disconnect()
     {
         assert(_mode == NetworkMode::client);
-
-        endRecievePacketLoop();
-        _socket = nullptr;
-        _serverEndpoint = nullptr;
-
-        clearScreenFlag(ScreenFlags::networked);
-        clearScreenFlag(ScreenFlags::networkHost);
-
+        close();
         Console::log("Disconnected from server");
+    }
+
+    void update()
+    {
+        switch (_status)
+        {
+            case NetworkStatus::connecting:
+                if (Platform::getTime() >= _timeout)
+                {
+                    close();
+                    Console::log("Failed to connect to server");
+                    setStatus("Failed to connect to server");
+                }
+                break;
+            case NetworkStatus::connectedSuccessfully:
+                break;
+        }
     }
 }

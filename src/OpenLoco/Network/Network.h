@@ -12,4 +12,6 @@ namespace OpenLoco::Network
     void connect(std::string_view host);
     void connect(std::string_view host, port_t port);
     void disconnect();
+
+    void update();
 }
