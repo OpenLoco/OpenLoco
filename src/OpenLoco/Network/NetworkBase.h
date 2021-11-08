@@ -35,7 +35,7 @@ namespace OpenLoco::Network
         bool _endRecievePacketLoop{};
         bool _isClosed{};
 
-        void acknowledgePacket(uint16_t sequence);
+        void receiveAcknowledgePacket(uint16_t sequence);
         void resendUndeliveredPackets();
         void recievePacketLoop();
         void recievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);

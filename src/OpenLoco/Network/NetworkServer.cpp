@@ -4,6 +4,7 @@
 #include "../OpenLoco.h"
 #include "../S5/S5.h"
 #include "../Utility/String.hpp"
+#include "NetworkConnection.h"
 #include <sstream>
 
 using namespace OpenLoco::Network;
@@ -48,7 +49,8 @@ void NetworkServer::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, 
         {
             auto newClient = std::make_unique<Client>();
             newClient->id = _nextClientId++;
-            newClient->endpoint = std::move(endpoint);
+            newClient->endpoint = endpoint->clone();
+            newClient->connection = std::make_unique<NetworkConnection>(_socket.get(), std::move(endpoint));
             newClient->name = Utility::nullTerminatedView(connectPacket->name);
             _clients.push_back(std::move(newClient));
 
@@ -56,7 +58,7 @@ void NetworkServer::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, 
 
             ConnectResponsePacket response;
             response.result = ConnectionResult::success;
-            sendPacket<PacketKind::connectResponse>(newClientPtr, response);
+            newClientPtr.connection->sendPacket(response);
 
             Console::log("Accepted new client: %s", newClientPtr.name.c_str());
         }
@@ -90,7 +92,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
     response.cookie = request.cookie;
     response.totalSize = saveData.size();
     response.numChunks = static_cast<uint16_t>((saveData.size() + (chunkSize - 1)) / chunkSize);
-    sendPacket<PacketKind::requestStateResponse>(client, response);
+    client.connection->sendPacket(response);
 
     uint32_t offset = 0;
     uint32_t remaining = response.totalSize;
@@ -103,7 +105,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
         chunk.offset = offset;
         chunk.size = std::min<uint32_t>(chunkSize, remaining - offset);
 
-        sendPacket<PacketKind::requestStateResponseChunk>(client, chunk);
+        client.connection->sendPacket(chunk);
 
         offset += chunk.size;
         index++;

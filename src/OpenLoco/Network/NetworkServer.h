@@ -6,12 +6,15 @@
 
 namespace OpenLoco::Network
 {
+    class NetworkConnection;
+
     typedef uint32_t client_id_t;
 
     struct Client
     {
         client_id_t id{};
         std::unique_ptr<INetworkEndpoint> endpoint;
+        std::unique_ptr<NetworkConnection> connection;
         std::string name;
     };
 

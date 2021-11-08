@@ -74,7 +74,7 @@ void NetworkBase::sendPacket(const INetworkEndpoint& endpoint, const Packet& pac
     logPacket(packet, true, false);
 }
 
-void NetworkBase::acknowledgePacket(uint16_t sequence)
+void NetworkBase::receiveAcknowledgePacket(uint16_t sequence)
 {
     std::unique_lock<std::mutex> lk(_sentPacketsSync);
     for (size_t i = 0; i < _sentPackets.size(); i++)
@@ -121,7 +121,7 @@ void NetworkBase::recievePacket(std::unique_ptr<INetworkEndpoint> endpoint, cons
     logPacket(packet, false, false);
     if (packet.header.kind == PacketKind::ack)
     {
-        acknowledgePacket(packet.header.sequence);
+        receiveAcknowledgePacket(packet.header.sequence);
     }
     else
     {

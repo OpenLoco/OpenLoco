@@ -8,6 +8,8 @@
 
 namespace OpenLoco::Network
 {
+    class NetworkConnection;
+
     enum class NetworkClientStatus
     {
         none,
@@ -22,6 +24,7 @@ namespace OpenLoco::Network
     private:
         std::unique_ptr<IUdpSocket> _socket;
         std::unique_ptr<INetworkEndpoint> _serverEndpoint;
+        std::unique_ptr<NetworkConnection> _serverConnection;
         NetworkClientStatus _status{};
         uint32_t _timeout{};
 

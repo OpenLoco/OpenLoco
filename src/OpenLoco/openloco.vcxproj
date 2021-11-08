@@ -93,6 +93,7 @@
     <ClCompile Include="Network\Network.cpp" />
     <ClCompile Include="Network\NetworkBase.cpp" />
     <ClCompile Include="Network\NetworkClient.cpp" />
+    <ClCompile Include="Network\NetworkConnection.cpp" />
     <ClCompile Include="Network\NetworkServer.cpp" />
     <ClCompile Include="Network\Socket.cpp" />
     <ClCompile Include="Objects\AirportObject.cpp" />
@@ -332,6 +333,7 @@
     <ClInclude Include="MultiPlayer.h" />
     <ClInclude Include="Network\NetworkBase.h" />
     <ClInclude Include="Network\NetworkClient.h" />
+    <ClInclude Include="Network\NetworkConnection.h" />
     <ClInclude Include="Network\NetworkServer.h" />
     <ClInclude Include="Network\Socket.h" />
     <ClInclude Include="Network\Network.h" />

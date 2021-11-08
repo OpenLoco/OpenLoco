@@ -2,6 +2,7 @@
 #include "../Console.h"
 #include "../Platform/Platform.h"
 #include "../Ui/WindowManager.h"
+#include "NetworkConnection.h"
 
 using namespace OpenLoco::Network;
 
@@ -10,6 +11,7 @@ void NetworkClient::connect(std::string_view host, port_t port)
     auto szHost = std::string(host);
 
     _serverEndpoint = Socket::resolve(szHost, port);
+    _serverConnection = std::make_unique<NetworkConnection>(_socket.get(), _serverEndpoint->clone());
 
     Console::log("Resolved endpoint for %s:%d", szHost.c_str(), defaultPort);
 
@@ -40,6 +42,12 @@ void NetworkClient::onClose()
 
 void NetworkClient::onUpdate()
 {
+    if (_serverConnection != nullptr)
+    {
+        auto packet = _serverConnection->takeNextPacket();
+        onRecievePacketFromServer(packet);
+    }
+
     switch (_status)
     {
         case NetworkClientStatus::connecting:
@@ -65,7 +73,7 @@ void NetworkClient::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, 
     //      for something else to hijack the UDP client port
     if (_serverEndpoint != nullptr && endpoint->equals(*_serverEndpoint))
     {
-        onRecievePacketFromServer(packet);
+        _serverConnection->recievePacket(packet);
     }
 }
 
@@ -100,7 +108,7 @@ void NetworkClient::sendConnectPacket()
     ConnectPacket packet;
     std::strncpy(packet.name, "Ted", sizeof(packet.name));
     packet.version = networkVersion;
-    sendPacket<PacketKind::connect>(packet);
+    _serverConnection->sendPacket(packet);
 }
 
 void NetworkClient::sendRequestStatePacket()
@@ -110,7 +118,7 @@ void NetworkClient::sendRequestStatePacket()
 
     RequestStatePacket packet;
     packet.cookie = _requestStateCookie;
-    sendPacket<PacketKind::requestState>(packet);
+    _serverConnection->sendPacket(packet);
 }
 
 void NetworkClient::recieveConnectionResponsePacket(const ConnectResponsePacket& response)
