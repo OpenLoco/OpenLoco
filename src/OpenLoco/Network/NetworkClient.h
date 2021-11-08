@@ -43,7 +43,7 @@ namespace OpenLoco::Network
         void onCancel();
         void processReceivedPackets();
         bool hasTimedOut() const;
-        void onRecievePacketFromServer(const Packet& packet);
+        void onReceivePacketFromServer(const Packet& packet);
 
         void initStatus(std::string_view text);
         void setStatus(std::string_view text);
@@ -53,9 +53,9 @@ namespace OpenLoco::Network
         void sendConnectPacket();
         void sendRequestStatePacket();
 
-        void recieveConnectionResponsePacket(const ConnectResponsePacket& response);
-        void recieveRequestStateResponsePacket(const RequestStateResponse& response);
-        void recieveRequestStateResponseChunkPacket(const RequestStateResponseChunk &responseChunk);
+        void receiveConnectionResponsePacket(const ConnectResponsePacket& response);
+        void receiveRequestStateResponsePacket(const RequestStateResponse& response);
+        void receiveRequestStateResponseChunkPacket(const RequestStateResponseChunk &responseChunk);
 
         template<PacketKind TKind, typename T>
         void sendPacket(const T& packetData)
@@ -66,7 +66,7 @@ namespace OpenLoco::Network
     protected:
         void onClose() override;
         void onUpdate() override;
-        void onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet) override;
+        void onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet) override;
 
     public:
         void connect(std::string_view host, port_t port);

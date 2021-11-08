@@ -47,11 +47,17 @@ bool NetworkConnection::checkOrRecordReceivedSequence(sequence_t sequence)
             return true;
         }
     }
+
+    while (_receivedSequences.size() >= 1024)
+    {
+        _receivedSequences.pop_back();
+    }
+
     _receivedSequences.push_back(sequence);
     return false;
 }
 
-void NetworkConnection::recievePacket(const Packet& packet)
+void NetworkConnection::receivePacket(const Packet& packet)
 {
     _timeOfLastReceivedPacket = Platform::getTime();
 

@@ -13,7 +13,7 @@ using namespace OpenLoco::Network;
 void NetworkServer::listen(port_t port)
 {
     _socket->Listen(defaultPort);
-    beginRecievePacketLoop();
+    beginReceivePacketLoop();
 
     setScreenFlag(ScreenFlags::networked);
     setScreenFlag(ScreenFlags::networkHost);
@@ -57,7 +57,7 @@ void NetworkServer::createNewClient(std::unique_ptr<NetworkConnection> conn, con
     Console::log("Accepted new client: %s", newClientPtr.name.c_str());
 }
 
-void NetworkServer::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
+void NetworkServer::onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
 {
     auto client = findClient(*endpoint);
     if (client == nullptr)
@@ -66,7 +66,7 @@ void NetworkServer::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, 
         if (connectPacket != nullptr)
         {
             auto conn = std::make_unique<NetworkConnection>(_socket.get(), std::move(endpoint));
-            conn->recievePacket(packet);
+            conn->receivePacket(packet);
 
             std::unique_lock<std::mutex> lk(_incomingConnectionsSync);
             _incomingConnections.push_back(std::move(conn));
@@ -74,11 +74,11 @@ void NetworkServer::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, 
     }
     else
     {
-        client->connection->recievePacket(packet);
+        client->connection->receivePacket(packet);
     }
 }
 
-void NetworkServer::onRecievePacketFromClient(Client& client, const Packet& packet)
+void NetworkServer::onReceivePacketFromClient(Client& client, const Packet& packet)
 {
     switch (packet.header.kind)
     {
@@ -181,7 +181,7 @@ void NetworkServer::processPackets()
     {
         while (auto packet = client->connection->takeNextPacket())
         {
-            onRecievePacketFromClient(*client, *packet);
+            onReceivePacketFromClient(*client, *packet);
         }
     }
 }

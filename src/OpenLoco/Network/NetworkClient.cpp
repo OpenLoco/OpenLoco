@@ -15,7 +15,7 @@ void NetworkClient::connect(std::string_view host, port_t port)
 
     Console::log("Resolved endpoint for %s:%d", szHost.c_str(), defaultPort);
 
-    beginRecievePacketLoop();
+    beginReceivePacketLoop();
 
     _status = NetworkClientStatus::connecting;
     _timeout = Platform::getTime() + 5000;
@@ -77,7 +77,7 @@ void NetworkClient::processReceivedPackets()
     {
         while (auto packet = _serverConnection->takeNextPacket())
         {
-            onRecievePacketFromServer(*packet);
+            onReceivePacketFromServer(*packet);
         }
         _serverConnection->update();
     }
@@ -92,13 +92,13 @@ bool NetworkClient::hasTimedOut() const
     return false;
 }
 
-void NetworkClient::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
+void NetworkClient::onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
 {
     // TODO do we really need the check, it is possible but unlikely
     //      for something else to hijack the UDP client port
     if (_serverEndpoint != nullptr && endpoint->equals(*_serverEndpoint))
     {
-        _serverConnection->recievePacket(packet);
+        _serverConnection->receivePacket(packet);
     }
 }
 
@@ -112,18 +112,18 @@ void NetworkClient::onCancel()
     }
 }
 
-void NetworkClient::onRecievePacketFromServer(const Packet& packet)
+void NetworkClient::onReceivePacketFromServer(const Packet& packet)
 {
     switch (packet.header.kind)
     {
         case PacketKind::connectResponse:
-            recieveConnectionResponsePacket(*reinterpret_cast<const ConnectResponsePacket*>(packet.data));
+            receiveConnectionResponsePacket(*reinterpret_cast<const ConnectResponsePacket*>(packet.data));
             break;
         case PacketKind::requestStateResponse:
-            recieveRequestStateResponsePacket(*reinterpret_cast<const RequestStateResponse*>(packet.data));
+            receiveRequestStateResponsePacket(*reinterpret_cast<const RequestStateResponse*>(packet.data));
             break;
         case PacketKind::requestStateResponseChunk:
-            recieveRequestStateResponseChunkPacket(*reinterpret_cast<const RequestStateResponseChunk*>(packet.data));
+            receiveRequestStateResponseChunkPacket(*reinterpret_cast<const RequestStateResponseChunk*>(packet.data));
             break;
     }
 }
@@ -146,7 +146,7 @@ void NetworkClient::sendRequestStatePacket()
     _serverConnection->sendPacket(packet);
 }
 
-void NetworkClient::recieveConnectionResponsePacket(const ConnectResponsePacket& response)
+void NetworkClient::receiveConnectionResponsePacket(const ConnectResponsePacket& response)
 {
     if (response.result == ConnectionResult::success)
     {
@@ -160,7 +160,7 @@ void NetworkClient::recieveConnectionResponsePacket(const ConnectResponsePacket&
     }
 }
 
-void NetworkClient::recieveRequestStateResponsePacket(const RequestStateResponse& response)
+void NetworkClient::receiveRequestStateResponsePacket(const RequestStateResponse& response)
 {
     if (response.cookie == _requestStateCookie)
     {
@@ -170,7 +170,7 @@ void NetworkClient::recieveRequestStateResponsePacket(const RequestStateResponse
     }
 }
 
-void NetworkClient::recieveRequestStateResponseChunkPacket(const RequestStateResponseChunk& responseChunk)
+void NetworkClient::receiveRequestStateResponseChunkPacket(const RequestStateResponseChunk& responseChunk)
 {
     if (responseChunk.cookie == _requestStateCookie)
     {

@@ -4,6 +4,7 @@
 #include "Network.h"
 #include "Socket.h"
 #include <cstdint>
+#include <deque>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -26,7 +27,7 @@ namespace OpenLoco::Network
         std::mutex _receivedPacketsSync;
         std::vector<SentPacket> _sentPackets;
         std::queue<Packet> _receivedPackets;
-        std::vector<sequence_t> _receivedSequences;
+        std::deque<sequence_t> _receivedSequences;
         uint16_t _sendSequence{};
         uint32_t _timeOfLastReceivedPacket{};
 
@@ -43,7 +44,7 @@ namespace OpenLoco::Network
         const INetworkEndpoint& getEndpoint() const;
         bool hasTimedOut() const;
         void update();
-        void recievePacket(const Packet& packet);
+        void receivePacket(const Packet& packet);
         void sendPacket(const Packet& packet);
         std::optional<Packet> takeNextPacket();
 

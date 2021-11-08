@@ -30,7 +30,7 @@ namespace OpenLoco::Network
 
         Client* findClient(const INetworkEndpoint& endpoint);
         void createNewClient(std::unique_ptr<NetworkConnection> conn, const ConnectPacket& packet);
-        void onRecievePacketFromClient(Client& client, const Packet& packet);
+        void onReceivePacketFromClient(Client& client, const Packet& packet);
         void onReceiveStateRequestPacket(Client& client, const RequestStatePacket& packet);
         void removedTimedOutClients();
         void sendPings();
@@ -40,7 +40,7 @@ namespace OpenLoco::Network
 
     protected:
         void onClose();
-        void onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
+        void onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
         void onUpdate();
 
     public:

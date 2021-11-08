@@ -11,21 +11,21 @@ namespace OpenLoco::Network
     class NetworkBase
     {
     private:
-        std::thread _recievePacketThread;
-        bool _endRecievePacketLoop{};
+        std::thread _receivePacketThread;
+        bool _endReceivePacketLoop{};
         bool _isClosed{};
 
-        void recievePacketLoop();
+        void receivePacketLoop();
 
     protected:
         std::unique_ptr<IUdpSocket> _socket;
 
-        void beginRecievePacketLoop();
-        void endRecievePacketLoop();
+        void beginReceivePacketLoop();
+        void endReceivePacketLoop();
 
         virtual void onClose();
         virtual void onUpdate();
-        virtual void onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
+        virtual void onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
 
     public:
         NetworkBase();

@@ -20,9 +20,9 @@ bool NetworkBase::isClosed() const
     return _isClosed;
 };
 
-void NetworkBase::recievePacketLoop()
+void NetworkBase::receivePacketLoop()
 {
-    while (!_endRecievePacketLoop)
+    while (!_endReceivePacketLoop)
     {
         Packet packet;
         size_t packetSize{};
@@ -34,7 +34,7 @@ void NetworkBase::recievePacketLoop()
             // Validate packet
             if (packet.header.dataSize <= packetSize - sizeof(PacketHeader))
             {
-                onRecievePacket(std::move(endpoint), packet);
+                onReceivePacket(std::move(endpoint), packet);
             }
         }
         else
@@ -44,20 +44,20 @@ void NetworkBase::recievePacketLoop()
     }
 }
 
-void NetworkBase::beginRecievePacketLoop()
+void NetworkBase::beginReceivePacketLoop()
 {
-    _endRecievePacketLoop = false;
-    _recievePacketThread = std::thread([this] { recievePacketLoop(); });
+    _endReceivePacketLoop = false;
+    _receivePacketThread = std::thread([this] { receivePacketLoop(); });
 }
 
-void NetworkBase::endRecievePacketLoop()
+void NetworkBase::endReceivePacketLoop()
 {
-    _endRecievePacketLoop = true;
-    if (_recievePacketThread.joinable())
+    _endReceivePacketLoop = true;
+    if (_receivePacketThread.joinable())
     {
-        _recievePacketThread.join();
+        _receivePacketThread.join();
     }
-    _recievePacketThread = {};
+    _receivePacketThread = {};
 }
 
 void NetworkBase::update()
@@ -73,7 +73,7 @@ void NetworkBase::onUpdate()
 {
 }
 
-void NetworkBase::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
+void NetworkBase::onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
 {
 }
 
@@ -82,7 +82,7 @@ void NetworkBase::close()
     if (_isClosed)
         return;
 
-    endRecievePacketLoop();
+    endReceivePacketLoop();
 
     onClose();
 
