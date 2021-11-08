@@ -22,7 +22,6 @@ namespace OpenLoco::Network
     class NetworkClient : public NetworkBase
     {
     private:
-        std::unique_ptr<IUdpSocket> _socket;
         std::unique_ptr<INetworkEndpoint> _serverEndpoint;
         std::unique_ptr<NetworkConnection> _serverConnection;
         NetworkClientStatus _status{};
@@ -42,6 +41,8 @@ namespace OpenLoco::Network
         uint32_t _requestStateReceivedChunks{};
 
         void onCancel();
+        void processReceivedPackets();
+        bool hasTimedOut() const;
         void onRecievePacketFromServer(const Packet& packet);
 
         void initStatus(std::string_view text);

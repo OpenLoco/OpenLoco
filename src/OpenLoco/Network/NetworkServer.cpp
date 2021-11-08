@@ -2,6 +2,7 @@
 #include "../Console.h"
 #include "../Core/Span.hpp"
 #include "../OpenLoco.h"
+#include "../Platform/Platform.h"
 #include "../S5/S5.h"
 #include "../Utility/String.hpp"
 #include "NetworkConnection.h"
@@ -31,12 +32,29 @@ Client* NetworkServer::findClient(const INetworkEndpoint& endpoint)
 {
     for (auto& client : _clients)
     {
-        if (client->endpoint->equals(endpoint))
+        if (client->connection->getEndpoint().equals(endpoint))
         {
             return client.get();
         }
     }
     return nullptr;
+}
+
+void NetworkServer::createNewClient(std::unique_ptr<NetworkConnection> conn, const ConnectPacket& packet)
+{
+    auto newClient = std::make_unique<Client>();
+    newClient->id = _nextClientId++;
+    newClient->connection = std::move(conn);
+    newClient->name = Utility::nullTerminatedView(packet.name);
+    _clients.push_back(std::move(newClient));
+
+    auto& newClientPtr = *_clients.back();
+
+    ConnectResponsePacket response;
+    response.result = ConnectionResult::success;
+    newClientPtr.connection->sendPacket(response);
+
+    Console::log("Accepted new client: %s", newClientPtr.name.c_str());
 }
 
 void NetworkServer::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
@@ -47,25 +65,16 @@ void NetworkServer::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, 
         auto connectPacket = packet.As<PacketKind::connect, ConnectPacket>();
         if (connectPacket != nullptr)
         {
-            auto newClient = std::make_unique<Client>();
-            newClient->id = _nextClientId++;
-            newClient->endpoint = endpoint->clone();
-            newClient->connection = std::make_unique<NetworkConnection>(_socket.get(), std::move(endpoint));
-            newClient->name = Utility::nullTerminatedView(connectPacket->name);
-            _clients.push_back(std::move(newClient));
+            auto conn = std::make_unique<NetworkConnection>(_socket.get(), std::move(endpoint));
+            conn->recievePacket(packet);
 
-            auto& newClientPtr = *_clients.back();
-
-            ConnectResponsePacket response;
-            response.result = ConnectionResult::success;
-            newClientPtr.connection->sendPacket(response);
-
-            Console::log("Accepted new client: %s", newClientPtr.name.c_str());
+            std::unique_lock<std::mutex> lk(_incomingConnectionsSync);
+            _incomingConnections.push_back(std::move(conn));
         }
     }
     else
     {
-        onRecievePacketFromClient(*client, packet);
+        client->connection->recievePacket(packet);
     }
 }
 
@@ -109,5 +118,87 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
 
         offset += chunk.size;
         index++;
+    }
+}
+
+void NetworkServer::removedTimedOutClients()
+{
+    for (auto it = _clients.begin(); it != _clients.end();)
+    {
+        auto& client = *it;
+        if (client->connection->hasTimedOut())
+        {
+            Console::log("Client timed out: %s", client->name.c_str());
+            it = _clients.erase(it);
+        }
+        else
+        {
+            it++;
+        }
+    }
+
+    _clients.erase(
+        std::remove_if(_clients.begin(), _clients.end(), [](const std::unique_ptr<Client>& client) { return client->connection->hasTimedOut(); }), _clients.end());
+}
+
+void NetworkServer::sendPings()
+{
+    auto now = Platform::getTime();
+    if (now - _lastPing > 2500)
+    {
+        _lastPing = now;
+
+        PingPacket packet;
+        for (auto& client : _clients)
+        {
+            client->connection->sendPacket(packet);
+        }
+    }
+}
+
+void NetworkServer::processIncomingConnections()
+{
+    std::unique_lock<std::mutex> lk(_incomingConnectionsSync);
+    for (auto& conn : _incomingConnections)
+    {
+        // The connect packet should be the first one
+        while (auto packet = conn->takeNextPacket())
+        {
+            if (auto connectPacket = packet->As<PacketKind::connect, ConnectPacket>())
+            {
+                createNewClient(std::move(conn), *connectPacket);
+                break;
+            }
+        }
+    }
+
+    _incomingConnections.clear();
+}
+
+void NetworkServer::processPackets()
+{
+    for (auto& client : _clients)
+    {
+        while (auto packet = client->connection->takeNextPacket())
+        {
+            onRecievePacketFromClient(*client, *packet);
+        }
+    }
+}
+
+void NetworkServer::onUpdate()
+{
+    processIncomingConnections();
+    processPackets();
+    updateClients();
+    sendPings();
+    removedTimedOutClients();
+}
+
+void NetworkServer::updateClients()
+{
+    for (auto& client : _clients)
+    {
+        client->connection->update();
     }
 }

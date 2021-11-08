@@ -5,11 +5,32 @@
 using namespace OpenLoco::Network;
 
 constexpr uint32_t redeliverTimeout = 3500;
+constexpr uint32_t connectionTimeout = 15000;
 
 NetworkConnection::NetworkConnection(IUdpSocket* socket, std::unique_ptr<INetworkEndpoint> endpoint)
     : _socket(socket)
     , _endpoint(std::move(endpoint))
 {
+}
+
+const INetworkEndpoint& NetworkConnection::getEndpoint() const
+{
+    return *_endpoint;
+}
+
+uint32_t NetworkConnection::getTime()
+{
+    return Platform::getTime();
+}
+
+bool NetworkConnection::hasTimedOut() const
+{
+    auto durationSinceLastPacket = getTime() - _timeOfLastReceivedPacket;
+    if (durationSinceLastPacket > connectionTimeout)
+    {
+        return true;
+    }
+    return false;
 }
 
 void NetworkConnection::update()
@@ -32,6 +53,8 @@ bool NetworkConnection::checkOrRecordReceivedSequence(sequence_t sequence)
 
 void NetworkConnection::recievePacket(const Packet& packet)
 {
+    _timeOfLastReceivedPacket = Platform::getTime();
+
     logPacket(packet, false, false);
     if (packet.header.kind == PacketKind::ack)
     {
@@ -44,7 +67,7 @@ void NetworkConnection::recievePacket(const Packet& packet)
         sendAcknowledgePacket(packet.header.sequence);
 
         // Only store the packet, if this is the first time we received it
-        if (checkOrRecordReceivedSequence(packet.header.sequence))
+        if (!checkOrRecordReceivedSequence(packet.header.sequence))
         {
             std::unique_lock<std::mutex> lk(_receivedPacketsSync);
             _receivedPackets.push(packet);
@@ -57,7 +80,7 @@ void NetworkConnection::sendPacket(const Packet& packet)
     if (packet.header.kind != PacketKind::ack)
     {
         std::unique_lock<std::mutex> lk(_sentPacketsSync);
-        auto timestamp = Platform::getTime();
+        auto timestamp = getTime();
         _sentPackets.push_back({ timestamp, packet });
     }
 
@@ -91,7 +114,7 @@ void NetworkConnection::sendAcknowledgePacket(sequence_t sequence)
 void NetworkConnection::resendUndeliveredPackets()
 {
     std::unique_lock<std::mutex> lk(_sentPacketsSync);
-    auto now = Platform::getTime();
+    auto now = getTime();
     auto timestamp = now - redeliverTimeout;
 
     for (size_t i = 0; i < _sentPackets.size(); i++)
@@ -108,16 +131,16 @@ void NetworkConnection::resendUndeliveredPackets()
     }
 }
 
-Packet NetworkConnection::takeNextPacket()
+std::optional<Packet> NetworkConnection::takeNextPacket()
 {
-    Packet packet;
     std::unique_lock<std::mutex> lk(_receivedPacketsSync);
     if (!_receivedPackets.empty())
     {
-        packet = _receivedPackets.front();
+        auto packet = _receivedPackets.front();
         _receivedPackets.pop();
+        return packet;
     }
-    return packet;
+    return std::nullopt;
 }
 
 static const char* getPacketKindString(PacketKind kind)
@@ -125,6 +148,7 @@ static const char* getPacketKindString(PacketKind kind)
     switch (kind)
     {
         case PacketKind::ack: return "ACK";
+        case PacketKind::ping: return "PING";
         case PacketKind::connect: return "CONNECT";
         case PacketKind::connectResponse: return "CONNECT RESPONSE";
         case PacketKind::requestState: return "REQUEST STATE";

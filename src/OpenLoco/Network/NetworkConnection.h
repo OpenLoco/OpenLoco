@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Optional.hpp"
 #include "Network.h"
 #include "Socket.h"
 #include <cstdint>
@@ -27,7 +28,9 @@ namespace OpenLoco::Network
         std::queue<Packet> _receivedPackets;
         std::vector<sequence_t> _receivedSequences;
         uint16_t _sendSequence{};
+        uint32_t _timeOfLastReceivedPacket{};
 
+        static uint32_t getTime();
         bool checkOrRecordReceivedSequence(sequence_t sequence);
         void receiveAcknowledgePacket(sequence_t sequence);
         void sendAcknowledgePacket(sequence_t sequence);
@@ -37,10 +40,12 @@ namespace OpenLoco::Network
     public:
         NetworkConnection(IUdpSocket* socket, std::unique_ptr<INetworkEndpoint> endpoint);
 
+        const INetworkEndpoint& getEndpoint() const;
+        bool hasTimedOut() const;
         void update();
         void recievePacket(const Packet& packet);
         void sendPacket(const Packet& packet);
-        Packet takeNextPacket();
+        std::optional<Packet> takeNextPacket();
 
         template<typename T>
         void sendPacket(const T& packetData)

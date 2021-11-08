@@ -2,7 +2,9 @@
 
 #include "Network.h"
 #include "NetworkBase.h"
+#include "NetworkConnection.h"
 #include "Socket.h"
+#include <mutex>
 
 namespace OpenLoco::Network
 {
@@ -13,7 +15,6 @@ namespace OpenLoco::Network
     struct Client
     {
         client_id_t id{};
-        std::unique_ptr<INetworkEndpoint> endpoint;
         std::unique_ptr<NetworkConnection> connection;
         std::string name;
     };
@@ -21,24 +22,26 @@ namespace OpenLoco::Network
     class NetworkServer : public NetworkBase
     {
     private:
+        std::mutex _incomingConnectionsSync;
+        std::vector<std::unique_ptr<NetworkConnection>> _incomingConnections;
         std::vector<std::unique_ptr<Client>> _clients;
         client_id_t _nextClientId = 1;
+        uint32_t _lastPing{};
 
-        template<PacketKind TKind, typename T>
-        void sendPacket(Client& client, const T& packet)
-        {
-            NetworkBase::sendPacket<TKind, T>(*client.endpoint, packet);
-        }
-
+        Client* findClient(const INetworkEndpoint& endpoint);
+        void createNewClient(std::unique_ptr<NetworkConnection> conn, const ConnectPacket& packet);
         void onRecievePacketFromClient(Client& client, const Packet& packet);
         void onReceiveStateRequestPacket(Client& client, const RequestStatePacket& packet);
+        void removedTimedOutClients();
+        void sendPings();
+        void processIncomingConnections();
+        void processPackets();
+        void updateClients();
 
     protected:
         void onClose();
         void onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
-
-    private:
-        Client* findClient(const INetworkEndpoint& endpoint);
+        void onUpdate();
 
     public:
         void listen(port_t port);

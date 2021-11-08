@@ -27,6 +27,7 @@ void NetworkClient::connect(std::string_view host, port_t port)
 
 void NetworkClient::onClose()
 {
+    _serverConnection = nullptr;
     if (_status != NetworkClientStatus::none && _status != NetworkClientStatus::connecting)
     {
         _status = NetworkClientStatus::closed;
@@ -42,10 +43,13 @@ void NetworkClient::onClose()
 
 void NetworkClient::onUpdate()
 {
-    if (_serverConnection != nullptr)
+    processReceivedPackets();
+
+    if (hasTimedOut())
     {
-        auto packet = _serverConnection->takeNextPacket();
-        onRecievePacketFromServer(packet);
+        Console::log("Connection with server timed out");
+        close();
+        return;
     }
 
     switch (_status)
@@ -65,6 +69,27 @@ void NetworkClient::onUpdate()
         case NetworkClientStatus::waitingForState:
             break;
     }
+}
+
+void NetworkClient::processReceivedPackets()
+{
+    if (_serverConnection != nullptr)
+    {
+        while (auto packet = _serverConnection->takeNextPacket())
+        {
+            onRecievePacketFromServer(*packet);
+        }
+        _serverConnection->update();
+    }
+}
+
+bool NetworkClient::hasTimedOut() const
+{
+    if (_serverConnection != nullptr)
+    {
+        return _serverConnection->hasTimedOut();
+    }
+    return false;
 }
 
 void NetworkClient::onRecievePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)

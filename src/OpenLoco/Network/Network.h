@@ -18,6 +18,7 @@ namespace OpenLoco::Network
     {
         unknown,
         ack,
+        ping,
         connect,
         connectResponse,
         requestState,
@@ -54,6 +55,11 @@ namespace OpenLoco::Network
             }
             return nullptr;
         }
+    };
+
+    struct PingPacket
+    {
+        static constexpr PacketKind kind = PacketKind::ping;
     };
 
     struct ConnectPacket
