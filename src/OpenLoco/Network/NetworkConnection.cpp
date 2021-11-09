@@ -160,6 +160,8 @@ static const char* getPacketKindString(PacketKind kind)
         case PacketKind::requestState: return "REQUEST STATE";
         case PacketKind::requestStateResponse: return "REQUEST STATE RESPONSE";
         case PacketKind::requestStateResponseChunk: return "REQUEST STATE RESPONSE CHUNK";
+        case PacketKind::sendChatMessage: return "SEND CHAT";
+        case PacketKind::receiveChatMessage: return "RECEIVE CHAT";
         default: return "UNKNOWN";
     }
 }

@@ -56,6 +56,7 @@ namespace OpenLoco::Network
         void receiveConnectionResponsePacket(const ConnectResponsePacket& response);
         void receiveRequestStateResponsePacket(const RequestStateResponse& response);
         void receiveRequestStateResponseChunkPacket(const RequestStateResponseChunk &responseChunk);
+        void receiveChatMessagePacket(const ReceiveChatMessage &packet);
 
         template<PacketKind TKind, typename T>
         void sendPacket(const T& packetData)
@@ -70,5 +71,6 @@ namespace OpenLoco::Network
 
     public:
         void connect(std::string_view host, port_t port);
+        void sendChatMessage(std::string_view message) override;
     };
 }

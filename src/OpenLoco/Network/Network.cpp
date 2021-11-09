@@ -1,4 +1,6 @@
 #include "Network.h"
+#include "../Console.h"
+#include "../Graphics/Gfx.h"
 #include "../OpenLoco.h"
 #include "NetworkClient.h"
 #include "NetworkServer.h"
@@ -44,6 +46,7 @@ namespace OpenLoco::Network
             _mode = NetworkMode::server;
             setScreenFlag(ScreenFlags::networked);
             setScreenFlag(ScreenFlags::networkHost);
+            Gfx::invalidateScreen();
         }
         catch (...)
         {
@@ -92,5 +95,20 @@ namespace OpenLoco::Network
                 close();
             }
         }
+    }
+
+    void sendChatMessage(std::string_view message)
+    {
+        auto serverOrClient = getServerOrClient();
+        if (serverOrClient != nullptr)
+        {
+            serverOrClient->sendChatMessage(message);
+        }
+    }
+
+    void receiveChatMessage(client_id_t client, std::string_view message)
+    {
+        std::string szMessage(message);
+        Console::log("Player #%d: %s", static_cast<int>(client), szMessage.c_str());
     }
 }

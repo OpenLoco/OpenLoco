@@ -132,6 +132,9 @@ void NetworkClient::onReceivePacketFromServer(const Packet& packet)
         case PacketKind::requestStateResponseChunk:
             receiveRequestStateResponseChunkPacket(*reinterpret_cast<const RequestStateResponseChunk*>(packet.data));
             break;
+        case PacketKind::receiveChatMessage:
+            receiveChatMessagePacket(*reinterpret_cast<const ReceiveChatMessage*>(packet.data));
+            break;
     }
 }
 
@@ -190,10 +193,10 @@ void NetworkClient::receiveRequestStateResponseChunkPacket(const RequestStateRes
         if (rchunk.data.size() == 0)
         {
             rchunk.offset = responseChunk.offset;
-            rchunk.data.assign(responseChunk.data, responseChunk.data + responseChunk.size);
+            rchunk.data.assign(responseChunk.data, responseChunk.data + responseChunk.dataSize);
             _requestStateReceivedChunks++;
 
-            _requestStateReceivedBytes += responseChunk.size;
+            _requestStateReceivedBytes += responseChunk.dataSize;
             setStatus("Receiving state: " + std::to_string(_requestStateReceivedBytes) + " / " + std::to_string(_requestStateTotalSize));
         }
 
@@ -211,6 +214,22 @@ void NetworkClient::receiveRequestStateResponseChunkPacket(const RequestStateRes
             BinaryStream bs(fullData.data(), fullData.size());
             S5::load(bs, 0);
         }
+    }
+}
+
+void NetworkClient::receiveChatMessagePacket(const ReceiveChatMessage& packet)
+{
+    Network::receiveChatMessage(packet.sender, packet.getText());
+}
+
+void NetworkClient::sendChatMessage(std::string_view message)
+{
+    if (_serverConnection != nullptr)
+    {
+        SendChatMessage packet;
+        packet.length = static_cast<uint16_t>(message.size() + 1);
+        std::memcpy(packet.text, message.data(), message.size());
+        _serverConnection->sendPacket(packet);
     }
 }
 

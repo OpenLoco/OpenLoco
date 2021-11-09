@@ -34,5 +34,7 @@ namespace OpenLoco::Network
         bool isClosed() const;
         void close();
         void update();
+
+        virtual void sendChatMessage(std::string_view message) = 0;
     };
 }

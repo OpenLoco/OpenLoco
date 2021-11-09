@@ -9,6 +9,7 @@
 #include "../Intro.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Network/Network.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
@@ -40,7 +41,9 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     static void formatChallenge(FormatArguments& args);
-    static void processChatMessage(const char* str);
+    static void sendChatMessage(const char* str);
+    static void togglePaused();
+    static void changeGameSpeed(Window* w, uint8_t speed);
 
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                                   // 0,
@@ -241,6 +244,12 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
     }
 
+    static void beginSendChatMessage(Window* self)
+    {
+        _common_format_args[4] = StringIds::empty;
+        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, &*_common_format_args);
+    }
+
     // 0x0043A72F
     static void mapDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
@@ -252,12 +261,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
             switch (itemIndex)
             {
                 case 0:
-                {
-                    auto opponent = CompanyManager::getOpponent();
-                    _common_format_args[4] = opponent->ownerName;
-                    TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widgetIndex, &*_common_format_args);
+                    beginSendChatMessage(self);
                     break;
-                }
                 case 1:
                     MapWindow::open();
                     break;
@@ -368,20 +373,14 @@ namespace OpenLoco::Ui::Windows::TimePanel
         switch (widgetIndex)
         {
             case Widx::map_chat_menu:
-                processChatMessage(str);
+                sendChatMessage(str);
                 break;
         }
     }
 
-    // 0x00439A1C
-    static void processChatMessage(const char* string)
+    static void sendChatMessage(const char* string)
     {
-        GameCommands::setErrorTitle(StringIds::empty);
-
-        for (uint8_t i = 0; i < 32; i++)
-        {
-            GameCommands::do_71(i, &string[i * 16]);
-        }
+        Network::sendChatMessage(string);
     }
 
     void invalidateFrame()

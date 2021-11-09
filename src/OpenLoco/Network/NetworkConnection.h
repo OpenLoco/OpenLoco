@@ -3,6 +3,7 @@
 #include "../Core/Optional.hpp"
 #include "Network.h"
 #include "Socket.h"
+#include <cassert>
 #include <cstdint>
 #include <deque>
 #include <memory>
@@ -51,12 +52,13 @@ namespace OpenLoco::Network
         template<typename T>
         void sendPacket(const T& packetData)
         {
-            static_assert(sizeof(packetData) <= maxPacketDataSize, "Packet too large.");
+            auto dataSize = packetData.size();
+            assert(dataSize <= maxPacketDataSize);
 
             Packet packet;
             packet.header.kind = T::kind;
             packet.header.sequence = _sendSequence++;
-            packet.header.dataSize = sizeof(packetData);
+            packet.header.dataSize = static_cast<uint16_t>(dataSize);
             std::memcpy(packet.data, &packetData, packet.header.dataSize);
 
             sendPacket(packet);

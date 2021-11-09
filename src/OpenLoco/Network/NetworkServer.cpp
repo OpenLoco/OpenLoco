@@ -86,6 +86,9 @@ void NetworkServer::onReceivePacketFromClient(Client& client, const Packet& pack
         case PacketKind::requestState:
             onReceiveStateRequestPacket(client, *packet.Cast<RequestStatePacket>());
             break;
+        case PacketKind::sendChatMessage:
+            onReceiveSendChatMessagePacket(client, *packet.Cast<SendChatMessage>());
+            break;
     }
 }
 
@@ -112,14 +115,20 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
         chunk.cookie = request.cookie;
         chunk.index = index;
         chunk.offset = offset;
-        chunk.size = std::min<uint32_t>(chunkSize, remaining - offset);
-        std::memcpy(chunk.data, saveData.data() + offset, chunk.size);
+        chunk.dataSize = std::min<uint32_t>(chunkSize, remaining - offset);
+        std::memcpy(chunk.data, saveData.data() + offset, chunk.dataSize);
 
         client.connection->sendPacket(chunk);
 
-        offset += chunk.size;
+        offset += chunk.dataSize;
         index++;
     }
+}
+
+void NetworkServer::onReceiveSendChatMessagePacket(Client& client, const SendChatMessage& packet)
+{
+    std::unique_lock<std::mutex> lk(_chatMessageQueueSync);
+    _chatMessageQueue.push({ client.id, std::string(packet.getText()) });
 }
 
 void NetworkServer::removedTimedOutClients()
@@ -154,6 +163,25 @@ void NetworkServer::sendPings()
         {
             client->connection->sendPacket(packet);
         }
+    }
+}
+
+void NetworkServer::sendChatMessages()
+{
+    std::unique_lock<std::mutex> lk(_chatMessageQueueSync);
+    while (!_chatMessageQueue.empty())
+    {
+        const auto& message = _chatMessageQueue.front();
+
+        Network::receiveChatMessage(message.sender, message.message);
+
+        ReceiveChatMessage packet;
+        packet.sender = message.sender;
+        packet.length = static_cast<uint16_t>(message.message.size() + 1);
+        std::memcpy(packet.text, message.message.data(), message.message.size());
+        sendPacketToAll(packet);
+
+        _chatMessageQueue.pop();
     }
 }
 
@@ -192,6 +220,7 @@ void NetworkServer::onUpdate()
     processIncomingConnections();
     processPackets();
     updateClients();
+    sendChatMessages();
     sendPings();
     removedTimedOutClients();
 }
@@ -202,4 +231,10 @@ void NetworkServer::updateClients()
     {
         client->connection->update();
     }
+}
+
+void NetworkServer::sendChatMessage(std::string_view message)
+{
+    std::unique_lock<std::mutex> lk(_chatMessageQueueSync);
+    _chatMessageQueue.push({ 0, std::string(message) });
 }
