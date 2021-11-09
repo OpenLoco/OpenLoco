@@ -4,10 +4,11 @@
 #include "../OpenLoco.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
+#include "../Utility/Stream.hpp"
 #include "../Utility/String.hpp"
 #include "NetworkConnection.h"
-#include <sstream>
 
+using namespace OpenLoco;
 using namespace OpenLoco::Network;
 
 void NetworkServer::listen(port_t port)
@@ -92,10 +93,9 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
 {
     constexpr uint16_t chunkSize = 4000;
 
-    std::stringstream ss;
-    S5::save(ss, S5::SaveFlags::noWindowClose);
-    auto final = ss.str();
-    auto saveData = stdx::span(reinterpret_cast<const uint8_t*>(final.data()), final.size());
+    MemoryStream ms;
+    S5::save(ms, S5::SaveFlags::noWindowClose);
+    auto saveData = stdx::span<uint8_t const>(ms.data(), ms.getLength());
 
     RequestStateResponse response;
     response.cookie = request.cookie;
@@ -113,6 +113,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
         chunk.index = index;
         chunk.offset = offset;
         chunk.size = std::min<uint32_t>(chunkSize, remaining - offset);
+        std::memcpy(chunk.data, saveData.data() + offset, chunk.size);
 
         client.connection->sendPacket(chunk);
 

@@ -1,9 +1,12 @@
 #include "NetworkClient.h"
 #include "../Console.h"
 #include "../Platform/Platform.h"
+#include "../S5/S5.h"
 #include "../Ui/WindowManager.h"
+#include "../Utility/Stream.hpp"
 #include "NetworkConnection.h"
 
+using namespace OpenLoco;
 using namespace OpenLoco::Network;
 
 void NetworkClient::connect(std::string_view host, port_t port)
@@ -37,37 +40,40 @@ void NetworkClient::onClose()
     else if (_status == NetworkClientStatus::connecting)
     {
         _status = NetworkClientStatus::closed;
-        Console::log("Connecting to server cancelled");
     }
 }
 
 void NetworkClient::onUpdate()
 {
     processReceivedPackets();
-
-    if (hasTimedOut())
+    if (_status == NetworkClientStatus::connecting)
     {
-        Console::log("Connection with server timed out");
-        close();
-        return;
+        if (Platform::getTime() >= _timeout)
+        {
+            close();
+            Console::log("Failed to connect to server");
+            endStatus("Failed to connect to server");
+        }
     }
-
-    switch (_status)
+    else
     {
-        case NetworkClientStatus::connecting:
-            if (Platform::getTime() >= _timeout)
+        if (hasTimedOut())
+        {
+            Console::log("Connection with server timed out");
+            close();
+        }
+        else
+        {
+            switch (_status)
             {
-                close();
-                Console::log("Failed to connect to server");
-                endStatus("Failed to connect to server");
+                case NetworkClientStatus::connectedSuccessfully:
+                    sendRequestStatePacket();
+                    _status = NetworkClientStatus::waitingForState;
+                    break;
+                case NetworkClientStatus::waitingForState:
+                    break;
             }
-            break;
-        case NetworkClientStatus::connectedSuccessfully:
-            sendRequestStatePacket();
-            _status = NetworkClientStatus::waitingForState;
-            break;
-        case NetworkClientStatus::waitingForState:
-            break;
+        }
     }
 }
 
@@ -107,6 +113,7 @@ void NetworkClient::onCancel()
     switch (_status)
     {
         case NetworkClientStatus::connecting:
+            Console::log("Connecting to server cancelled");
             close();
             break;
     }
@@ -199,7 +206,10 @@ void NetworkClient::receiveRequestStateResponseChunkPacket(const RequestStateRes
                 fullData.insert(fullData.end(), _requestStateChunksReceived[i].data.begin(), _requestStateChunksReceived[i].data.end());
             }
 
-            setStatus("Receiving state complete");
+            clearStatus();
+
+            BinaryStream bs(fullData.data(), fullData.size());
+            S5::load(bs, 0);
         }
     }
 }

@@ -4,7 +4,7 @@
 
 using namespace OpenLoco::Network;
 
-constexpr uint32_t redeliverTimeout = 3500;
+constexpr uint32_t redeliverTimeout = 1000;
 constexpr uint32_t connectionTimeout = 15000;
 
 NetworkConnection::NetworkConnection(IUdpSocket* socket, std::unique_ptr<INetworkEndpoint> endpoint)
