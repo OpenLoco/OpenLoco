@@ -135,6 +135,9 @@ void NetworkClient::onReceivePacketFromServer(const Packet& packet)
         case PacketKind::receiveChatMessage:
             receiveChatMessagePacket(*reinterpret_cast<const ReceiveChatMessage*>(packet.data));
             break;
+        case PacketKind::gameCommand:
+            receiveGameCommandPacket(*reinterpret_cast<const GameCommandPacket*>(packet.data));
+            break;
     }
 }
 
@@ -211,6 +214,8 @@ void NetworkClient::receiveRequestStateResponseChunkPacket(const RequestStateRes
 
             clearStatus();
 
+            _status = NetworkClientStatus::connected;
+
             BinaryStream bs(fullData.data(), fullData.size());
             S5::load(bs, 0);
         }
@@ -222,6 +227,11 @@ void NetworkClient::receiveChatMessagePacket(const ReceiveChatMessage& packet)
     Network::receiveChatMessage(packet.sender, packet.getText());
 }
 
+void NetworkClient::receiveGameCommandPacket(const GameCommandPacket& packet)
+{
+    Network::receiveGameCommand(packet.tick, packet.regs);
+}
+
 void NetworkClient::sendChatMessage(std::string_view message)
 {
     if (_serverConnection != nullptr)
@@ -229,6 +239,16 @@ void NetworkClient::sendChatMessage(std::string_view message)
         SendChatMessage packet;
         packet.length = static_cast<uint16_t>(message.size() + 1);
         std::memcpy(packet.text, message.data(), message.size());
+        _serverConnection->sendPacket(packet);
+    }
+}
+
+void NetworkClient::sendGameCommand(OpenLoco::Interop::registers regs)
+{
+    if (_serverConnection != nullptr && _status == NetworkClientStatus::connected)
+    {
+        GameCommandPacket packet;
+        packet.regs = regs;
         _serverConnection->sendPacket(packet);
     }
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Interop/Interop.hpp"
 #include <cstdint>
 #include <memory>
 #include <string_view>
@@ -27,6 +28,7 @@ namespace OpenLoco::Network
         requestStateResponseChunk,
         sendChatMessage,
         receiveChatMessage,
+        gameCommand,
     };
 
     struct PacketHeader
@@ -151,6 +153,15 @@ namespace OpenLoco::Network
         }
     };
     static_assert(sizeof(SendChatMessage) <= maxPacketDataSize);
+
+    struct GameCommandPacket
+    {
+        static constexpr PacketKind kind = PacketKind::gameCommand;
+        size_t size() const { return sizeof(GameCommandPacket); }
+
+        uint32_t tick{};
+        OpenLoco::Interop::registers regs;
+    };
 #pragma pack(pop)
 
     void openServer();
@@ -161,4 +172,8 @@ namespace OpenLoco::Network
 
     void sendChatMessage(std::string_view message);
     void receiveChatMessage(client_id_t client, std::string_view message);
+
+    void queueGameCommand(OpenLoco::Interop::registers regs);
+    void receiveGameCommand(uint32_t tick, OpenLoco::Interop::registers regs);
+    void processGameCommands();
 }

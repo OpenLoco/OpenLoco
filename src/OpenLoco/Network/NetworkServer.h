@@ -40,6 +40,7 @@ namespace OpenLoco::Network
         void onReceivePacketFromClient(Client& client, const Packet& packet);
         void onReceiveStateRequestPacket(Client& client, const RequestStatePacket& packet);
         void onReceiveSendChatMessagePacket(Client& client, const SendChatMessage& packet);
+        void onReceiveGameCommandPacket(Client& client, const GameCommandPacket& packet);
         void removedTimedOutClients();
         void sendPings();
         void sendChatMessages();
@@ -64,5 +65,6 @@ namespace OpenLoco::Network
     public:
         void listen(port_t port);
         void sendChatMessage(std::string_view message) override;
+        void sendGameCommand(uint32_t tick, OpenLoco::Interop::registers regs);
     };
 }

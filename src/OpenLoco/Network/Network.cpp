@@ -1,5 +1,7 @@
 #include "Network.h"
 #include "../Console.h"
+#include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../Graphics/Gfx.h"
 #include "../OpenLoco.h"
 #include "NetworkClient.h"
@@ -17,9 +19,16 @@ namespace OpenLoco::Network
         client
     };
 
+    struct QueuedGameCommand
+    {
+        uint32_t tick{};
+        OpenLoco::Interop::registers regs;
+    };
+
     static NetworkMode _mode;
     static std::unique_ptr<NetworkServer> _server;
     static std::unique_ptr<NetworkClient> _client;
+    static std::vector<QueuedGameCommand> _gameCommands;
 
     static NetworkBase* getServerOrClient()
     {
@@ -110,5 +119,56 @@ namespace OpenLoco::Network
     {
         std::string szMessage(message);
         Console::log("Player #%d: %s", static_cast<int>(client), szMessage.c_str());
+    }
+
+    void queueGameCommand(OpenLoco::Interop::registers regs)
+    {
+        auto& gameState = getGameState();
+        auto targetTick = gameState.scenarioTicks + 1;
+
+        if (_mode == NetworkMode::server)
+        {
+            _gameCommands.push_back({ targetTick, regs });
+            _server->sendGameCommand(targetTick, regs);
+        }
+        else
+        {
+            _client->sendGameCommand(regs);
+        }
+    }
+
+    void receiveGameCommand(uint32_t tick, OpenLoco::Interop::registers regs)
+    {
+        auto& gameState = getGameState();
+        auto targetTick = gameState.scenarioTicks + 1;
+        _gameCommands.push_back({ targetTick, regs });
+
+        if (_mode == NetworkMode::server)
+        {
+            _server->sendGameCommand(targetTick, regs);
+        }
+    }
+
+    void processGameCommands()
+    {
+        if (_mode == NetworkMode::none)
+            return;
+
+        auto& gameState = getGameState();
+        auto currentTick = gameState.scenarioTicks;
+
+        for (auto it = _gameCommands.begin(); it != _gameCommands.end();)
+        {
+            const auto& gc = *it;
+            if (gc.tick == currentTick)
+            {
+                GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(gc.regs.esi), gc.regs);
+                it = _gameCommands.erase(it);
+            }
+            else
+            {
+                it++;
+            }
+        }
     }
 }

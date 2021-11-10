@@ -149,7 +149,7 @@ std::optional<Packet> NetworkConnection::takeNextPacket()
     return std::nullopt;
 }
 
-static const char* getPacketKindString(PacketKind kind)
+[[maybe_unused]] static const char* getPacketKindString(PacketKind kind)
 {
     switch (kind)
     {
@@ -162,6 +162,7 @@ static const char* getPacketKindString(PacketKind kind)
         case PacketKind::requestStateResponseChunk: return "REQUEST STATE RESPONSE CHUNK";
         case PacketKind::sendChatMessage: return "SEND CHAT";
         case PacketKind::receiveChatMessage: return "RECEIVE CHAT";
+        case PacketKind::gameCommand: return "GAME COMMAND";
         default: return "UNKNOWN";
     }
 }

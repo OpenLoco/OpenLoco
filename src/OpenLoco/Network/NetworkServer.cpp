@@ -89,6 +89,9 @@ void NetworkServer::onReceivePacketFromClient(Client& client, const Packet& pack
         case PacketKind::sendChatMessage:
             onReceiveSendChatMessagePacket(client, *packet.Cast<SendChatMessage>());
             break;
+        case PacketKind::gameCommand:
+            onReceiveGameCommandPacket(client, *packet.Cast<GameCommandPacket>());
+            break;
     }
 }
 
@@ -129,6 +132,11 @@ void NetworkServer::onReceiveSendChatMessagePacket(Client& client, const SendCha
 {
     std::unique_lock<std::mutex> lk(_chatMessageQueueSync);
     _chatMessageQueue.push({ client.id, std::string(packet.getText()) });
+}
+
+void NetworkServer::onReceiveGameCommandPacket(Client& client, const GameCommandPacket& packet)
+{
+    Network::receiveGameCommand(packet.tick, packet.regs);
 }
 
 void NetworkServer::removedTimedOutClients()
@@ -237,4 +245,12 @@ void NetworkServer::sendChatMessage(std::string_view message)
 {
     std::unique_lock<std::mutex> lk(_chatMessageQueueSync);
     _chatMessageQueue.push({ 0, std::string(message) });
+}
+
+void NetworkServer::sendGameCommand(uint32_t tick, OpenLoco::Interop::registers regs)
+{
+    GameCommandPacket packet;
+    packet.tick = tick;
+    packet.regs = regs;
+    sendPacketToAll(packet);
 }

@@ -16,6 +16,7 @@ namespace OpenLoco::Network
         connecting,
         connectedSuccessfully,
         waitingForState,
+        connected,
         closed,
     };
 
@@ -57,6 +58,7 @@ namespace OpenLoco::Network
         void receiveRequestStateResponsePacket(const RequestStateResponse& response);
         void receiveRequestStateResponseChunkPacket(const RequestStateResponseChunk &responseChunk);
         void receiveChatMessagePacket(const ReceiveChatMessage &packet);
+        void receiveGameCommandPacket(const GameCommandPacket &packet);
 
         template<PacketKind TKind, typename T>
         void sendPacket(const T& packetData)
@@ -72,5 +74,6 @@ namespace OpenLoco::Network
     public:
         void connect(std::string_view host, port_t port);
         void sendChatMessage(std::string_view message) override;
+        void sendGameCommand(OpenLoco::Interop::registers regs);
     };
 }

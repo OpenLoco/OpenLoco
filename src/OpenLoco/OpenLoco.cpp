@@ -854,6 +854,7 @@ namespace OpenLoco
     {
         ScenarioManager::setScenarioTicks(ScenarioManager::getScenarioTicks() + 1);
         ScenarioManager::setScenarioTicks2(ScenarioManager::getScenarioTicks2() + 1);
+        Network::processGameCommands();
 
         addr<0x00525FCC, uint32_t>() = gPrng().srand_0();
         addr<0x00525FD0, uint32_t>() = gPrng().srand_1();
