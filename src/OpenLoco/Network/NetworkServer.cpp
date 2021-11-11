@@ -13,7 +13,7 @@ using namespace OpenLoco::Network;
 
 void NetworkServer::listen(port_t port)
 {
-    _socket->Listen(defaultPort);
+    _socket->listen(defaultPort);
     beginReceivePacketLoop();
 
     setScreenFlag(ScreenFlags::networked);

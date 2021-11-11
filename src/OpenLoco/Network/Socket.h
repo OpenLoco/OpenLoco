@@ -8,20 +8,20 @@ namespace OpenLoco::Network
 {
     enum class SocketStatus
     {
-        Closed,
-        Waiting,
-        Resolving,
-        Connecting,
-        Connected,
-        Listening,
+        closed,
+        waiting,
+        resolving,
+        connecting,
+        connected,
+        listening,
     };
 
     enum class NetworkReadPacket : int32_t
     {
-        Success,
-        NoData,
-        MoreData,
-        Disconnected
+        success,
+        noData,
+        moreData,
+        disconnected
     };
 
     /**
@@ -33,7 +33,7 @@ namespace OpenLoco::Network
         {
         }
 
-        virtual std::string GetHostname() const = 0;
+        virtual std::string getHostname() const = 0;
         virtual std::unique_ptr<INetworkEndpoint> clone() const = 0;
         virtual bool equals(const INetworkEndpoint& other) const = 0;
     };
@@ -46,20 +46,20 @@ namespace OpenLoco::Network
     public:
         virtual ~IUdpSocket() = default;
 
-        virtual SocketStatus GetStatus() const = 0;
-        virtual const char* GetError() const = 0;
-        virtual const char* GetHostName() const = 0;
+        virtual SocketStatus getStatus() const = 0;
+        virtual const char* getError() const = 0;
+        virtual const char* getHostName() const = 0;
 
-        virtual void Listen(uint16_t port) = 0;
-        virtual void Listen(const std::string& address, uint16_t port) = 0;
+        virtual void listen(uint16_t port) = 0;
+        virtual void listen(const std::string& address, uint16_t port) = 0;
 
-        virtual size_t SendData(const std::string& address, uint16_t port, const void* buffer, size_t size) = 0;
-        virtual size_t SendData(const INetworkEndpoint& destination, const void* buffer, size_t size) = 0;
-        virtual NetworkReadPacket ReceiveData(
+        virtual size_t sendData(const std::string& address, uint16_t port, const void* buffer, size_t size) = 0;
+        virtual size_t sendData(const INetworkEndpoint& destination, const void* buffer, size_t size) = 0;
+        virtual NetworkReadPacket receiveData(
             void* buffer, size_t size, size_t* sizeReceived, std::unique_ptr<INetworkEndpoint>* sender)
             = 0;
 
-        virtual void Close() = 0;
+        virtual void close() = 0;
     };
 
     namespace Socket

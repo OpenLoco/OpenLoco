@@ -70,18 +70,18 @@ namespace OpenLoco::Network
         bool _isInitialised{};
 
     public:
-        bool IsInitialised() const
+        bool isInitialised() const
         {
             return _isInitialised;
         }
 
-        bool Initialise()
+        bool initialise()
         {
             if (!_isInitialised)
             {
                 Console::logVerbose("WSAStartup()");
-                WSADATA wsa_data;
-                if (WSAStartup(MAKEWORD(2, 2), &wsa_data) != 0)
+                WSADATA wsaData;
+                if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
                 {
                     Console::error("Unable to initialise winsock.");
                     return false;
@@ -105,7 +105,7 @@ namespace OpenLoco::Network
     static bool InitialiseWSA()
     {
         static WSA wsa;
-        return wsa.Initialise();
+        return wsa.initialise();
     }
 #else
     static bool InitialiseWSA()
@@ -140,17 +140,17 @@ namespace OpenLoco::Network
             _addressLen = addressLen;
         }
 
-        const sockaddr& GetAddress() const
+        const sockaddr& getAddress() const
         {
             return _address;
         }
 
-        socklen_t GetAddressLen() const
+        socklen_t getAddressLen() const
         {
             return _addressLen;
         }
 
-        int32_t GetPort() const
+        int32_t getPort() const
         {
             if (_address.sa_family == AF_INET)
             {
@@ -160,7 +160,7 @@ namespace OpenLoco::Network
             return reinterpret_cast<const sockaddr_in6*>(&_address)->sin6_port;
         }
 
-        std::string GetHostname() const override
+        std::string getHostname() const override
         {
             char hostname[256]{};
             int res = getnameinfo(&_address, _addressLen, hostname, sizeof(hostname), nullptr, 0, NI_NUMERICHOST);
@@ -219,18 +219,18 @@ namespace OpenLoco::Network
     class BaseSocket
     {
     public:
-        static bool ResolveAddress(const std::string& address, uint16_t port, sockaddr_storage* ss, socklen_t* ss_len)
+        static bool resolveAddress(const std::string& address, uint16_t port, sockaddr_storage* ss, socklen_t* ss_len)
         {
-            return ResolveAddress(AF_UNSPEC, address, port, ss, ss_len);
+            return resolveAddress(AF_UNSPEC, address, port, ss, ss_len);
         }
 
         static bool ResolveAddressIPv4(const std::string& address, uint16_t port, sockaddr_storage* ss, socklen_t* ss_len)
         {
-            return ResolveAddress(AF_INET, address, port, ss, ss_len);
+            return resolveAddress(AF_INET, address, port, ss, ss_len);
         }
 
     protected:
-        static bool SetNonBlocking(SOCKET socket, bool on)
+        static bool setNonBlocking(SOCKET socket, bool on)
         {
 #ifdef _WIN32
             u_long nonBlocking = on;
@@ -241,14 +241,14 @@ namespace OpenLoco::Network
 #endif
         }
 
-        static bool SetOption(SOCKET socket, int32_t a, int32_t b, bool value)
+        static bool setOption(SOCKET socket, int32_t a, int32_t b, bool value)
         {
             int32_t ivalue = value ? 1 : 0;
             return setsockopt(socket, a, b, reinterpret_cast<const char*>(&ivalue), sizeof(ivalue)) == 0;
         }
 
     private:
-        static bool ResolveAddress(
+        static bool resolveAddress(
             int32_t family, const std::string& address, uint16_t port, sockaddr_storage* ss, socklen_t* ss_len)
         {
             std::string serviceName = std::to_string(port);
@@ -284,7 +284,7 @@ namespace OpenLoco::Network
     class UdpSocket final : public IUdpSocket, protected BaseSocket
     {
     private:
-        SocketStatus _status = SocketStatus::Closed;
+        SocketStatus _status = SocketStatus::closed;
         uint16_t _listeningPort = 0;
         SOCKET _socket = INVALID_SOCKET;
         NetworkEndpoint _endpoint;
@@ -297,27 +297,27 @@ namespace OpenLoco::Network
 
         ~UdpSocket() override
         {
-            CloseSocket();
+            closeSocket();
         }
 
-        SocketStatus GetStatus() const override
+        SocketStatus getStatus() const override
         {
             return _status;
         }
 
-        const char* GetError() const override
+        const char* getError() const override
         {
             return _error.empty() ? nullptr : _error.c_str();
         }
 
-        void Listen(uint16_t port) override
+        void listen(uint16_t port) override
         {
-            Listen("", port);
+            listen("", port);
         }
 
-        void Listen(const std::string& address, uint16_t port) override
+        void listen(const std::string& address, uint16_t port) override
         {
-            if (_status != SocketStatus::Closed)
+            if (_status != SocketStatus::closed)
             {
                 throw std::runtime_error("Socket not closed.");
             }
@@ -330,7 +330,7 @@ namespace OpenLoco::Network
             }
 
             // Create the listening socket
-            _socket = CreateSocket();
+            _socket = createSocket();
             try
             {
                 // Bind to address:port and listen
@@ -341,15 +341,15 @@ namespace OpenLoco::Network
             }
             catch (const std::exception&)
             {
-                CloseSocket();
+                closeSocket();
                 throw;
             }
 
             _listeningPort = port;
-            _status = SocketStatus::Listening;
+            _status = SocketStatus::listening;
         }
 
-        size_t SendData(const std::string& address, uint16_t port, const void* buffer, size_t size) override
+        size_t sendData(const std::string& address, uint16_t port, const void* buffer, size_t size) override
         {
             sockaddr_storage ss{};
             socklen_t ss_len;
@@ -358,14 +358,14 @@ namespace OpenLoco::Network
                 throw SocketException("Unable to resolve address.");
             }
             NetworkEndpoint endpoint(reinterpret_cast<const sockaddr*>(&ss), ss_len);
-            return SendData(endpoint, buffer, size);
+            return sendData(endpoint, buffer, size);
         }
 
-        size_t SendData(const INetworkEndpoint& destination, const void* buffer, size_t size) override
+        size_t sendData(const INetworkEndpoint& destination, const void* buffer, size_t size) override
         {
             if (_socket == INVALID_SOCKET)
             {
-                _socket = CreateSocket();
+                _socket = createSocket();
             }
 
             const auto& dest = dynamic_cast<const NetworkEndpoint*>(&destination);
@@ -373,10 +373,10 @@ namespace OpenLoco::Network
             {
                 throw std::invalid_argument("destination is not compatible.");
             }
-            auto ss = &dest->GetAddress();
-            auto ss_len = dest->GetAddressLen();
+            auto ss = &dest->getAddress();
+            auto ss_len = dest->getAddressLen();
 
-            if (_status != SocketStatus::Listening)
+            if (_status != SocketStatus::listening)
             {
                 _endpoint = *dest;
             }
@@ -397,22 +397,22 @@ namespace OpenLoco::Network
             return totalSent;
         }
 
-        NetworkReadPacket ReceiveData(
+        NetworkReadPacket receiveData(
             void* buffer, size_t size, size_t* sizeReceived, std::unique_ptr<INetworkEndpoint>* sender) override
         {
             sockaddr_in senderAddr{};
             socklen_t senderAddrLen = sizeof(sockaddr_in);
-            if (_status != SocketStatus::Listening)
+            if (_status != SocketStatus::listening)
             {
-                senderAddrLen = _endpoint.GetAddressLen();
-                std::memcpy(&senderAddr, &_endpoint.GetAddress(), senderAddrLen);
+                senderAddrLen = _endpoint.getAddressLen();
+                std::memcpy(&senderAddr, &_endpoint.getAddress(), senderAddrLen);
             }
             auto readBytes = recvfrom(
                 _socket, static_cast<char*>(buffer), static_cast<int32_t>(size), 0, reinterpret_cast<sockaddr*>(&senderAddr), &senderAddrLen);
             if (readBytes <= 0)
             {
                 *sizeReceived = 0;
-                return NetworkReadPacket::NoData;
+                return NetworkReadPacket::noData;
             }
 
             *sizeReceived = readBytes;
@@ -420,28 +420,28 @@ namespace OpenLoco::Network
             {
                 *sender = std::make_unique<NetworkEndpoint>(reinterpret_cast<sockaddr*>(&senderAddr), senderAddrLen);
             }
-            return NetworkReadPacket::Success;
+            return NetworkReadPacket::success;
         }
 
-        void Close() override
+        void close() override
         {
-            CloseSocket();
+            closeSocket();
         }
 
-        const char* GetHostName() const override
+        const char* getHostName() const override
         {
             return _hostName.empty() ? nullptr : _hostName.c_str();
         }
 
     private:
         explicit UdpSocket(SOCKET socket, const std::string& hostName)
-            : _status(SocketStatus::Connected)
+            : _status(SocketStatus::connected)
             , _socket(socket)
             , _hostName(hostName)
         {
         }
 
-        SOCKET CreateSocket()
+        SOCKET createSocket()
         {
             auto sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
             if (sock == INVALID_SOCKET)
@@ -450,23 +450,23 @@ namespace OpenLoco::Network
             }
 
             // Enable send and receiving of broadcast messages
-            if (!SetOption(sock, SOL_SOCKET, SO_BROADCAST, true))
+            if (!setOption(sock, SOL_SOCKET, SO_BROADCAST, true))
             {
                 Console::logVerbose("setsockopt(socket, SO_BROADCAST) failed: %d", LAST_SOCKET_ERROR());
             }
 
             // Turn off IPV6_V6ONLY so we can accept both v4 and v6 connections
-            if (!SetOption(sock, IPPROTO_IPV6, IPV6_V6ONLY, false))
+            if (!setOption(sock, IPPROTO_IPV6, IPV6_V6ONLY, false))
             {
                 Console::logVerbose("setsockopt(socket, IPV6_V6ONLY) failed: %d", LAST_SOCKET_ERROR());
             }
 
-            if (!SetOption(sock, SOL_SOCKET, SO_REUSEADDR, true))
+            if (!setOption(sock, SOL_SOCKET, SO_REUSEADDR, true))
             {
                 Console::logVerbose("setsockopt(socket, SO_REUSEADDR) failed: %d", LAST_SOCKET_ERROR());
             }
 
-            if (!SetNonBlocking(sock, true))
+            if (!setNonBlocking(sock, true))
             {
                 throw SocketException("Failed to set non-blocking mode.");
             }
@@ -474,14 +474,14 @@ namespace OpenLoco::Network
             return sock;
         }
 
-        void CloseSocket()
+        void closeSocket()
         {
             if (_socket != INVALID_SOCKET)
             {
                 closesocket(_socket);
                 _socket = INVALID_SOCKET;
             }
-            _status = SocketStatus::Closed;
+            _status = SocketStatus::closed;
         }
     };
 

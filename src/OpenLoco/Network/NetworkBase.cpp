@@ -28,8 +28,8 @@ void NetworkBase::receivePacketLoop()
         size_t packetSize{};
 
         std::unique_ptr<INetworkEndpoint> endpoint;
-        auto result = _socket->ReceiveData(&packet, sizeof(Packet), &packetSize, &endpoint);
-        if (result == NetworkReadPacket::Success)
+        auto result = _socket->receiveData(&packet, sizeof(Packet), &packetSize, &endpoint);
+        if (result == NetworkReadPacket::success)
         {
             // Validate packet
             if (packet.header.dataSize <= packetSize - sizeof(PacketHeader))

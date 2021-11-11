@@ -91,7 +91,7 @@ void NetworkConnection::sendPacket(const Packet& packet)
     }
 
     size_t packetSize = sizeof(PacketHeader) + packet.header.dataSize;
-    _socket->SendData(*_endpoint, &packet, packetSize);
+    _socket->sendData(*_endpoint, &packet, packetSize);
     logPacket(packet, true, false);
 }
 
@@ -129,7 +129,7 @@ void NetworkConnection::resendUndeliveredPackets()
         if (sentPacket.timestamp < timestamp)
         {
             size_t packetSize = sizeof(PacketHeader) + sentPacket.packet.header.dataSize;
-            _socket->SendData(*_endpoint, &sentPacket.packet, packetSize);
+            _socket->sendData(*_endpoint, &sentPacket.packet, packetSize);
             logPacket(sentPacket.packet, true, true);
 
             sentPacket.timestamp = now;
