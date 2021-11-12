@@ -173,7 +173,7 @@ void NetworkConnection::logPacket(const Packet& packet, bool sent, bool resend)
     auto szDirection = sent ? "SENT" : "RECV";
     auto seq = static_cast<int32_t>(packet.header.sequence);
     auto bytes = static_cast<int32_t>(packet.header.dataSize);
-    if (packet.header.kind == PacketKind::ack)
+    if (packet.header.kind == PacketKind::ack || packet.header.kind == PacketKind::ping || resend)
     {
 #ifdef LOG_ACK_PACKETS
         Console::log("[%s] #%4d | ACK", szDirection, seq);
@@ -182,6 +182,12 @@ void NetworkConnection::logPacket(const Packet& packet, bool sent, bool resend)
     else if (resend)
     {
         Console::log("[%s] #%4d | RESEND", szDirection, seq);
+    }
+    else if (packet.header.kind == PacketKind::gameCommand)
+    {
+        auto kind = getPacketKindString(packet.header.kind);
+        const auto& gc = packet.Cast<GameCommandPacket>();
+        Console::log("[%s] #%4d | %s (Index = %d Tick = %d Command = %d)", szDirection, seq, kind, gc->index, gc->tick, gc->regs.esi);
     }
     else
     {

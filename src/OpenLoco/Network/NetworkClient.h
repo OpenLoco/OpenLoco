@@ -1,9 +1,11 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "Network.h"
 #include "NetworkBase.h"
 #include "Socket.h"
 #include <cstdint>
+#include <list>
 #include <vector>
 
 namespace OpenLoco::Network
@@ -27,6 +29,11 @@ namespace OpenLoco::Network
         std::unique_ptr<NetworkConnection> _serverConnection;
         NetworkClientStatus _status{};
         uint32_t _timeout{};
+        uint32_t _localGameCommandIndex;
+        uint32_t _serverGameCommandIndex;
+        uint32_t _localTick;
+        uint32_t _serverTick;
+        std::list<GameCommandPacket> _receivedGameCommands;
 
         struct ReceivedChunk
         {
@@ -45,6 +52,8 @@ namespace OpenLoco::Network
         void processReceivedPackets();
         bool hasTimedOut() const;
         void onReceivePacketFromServer(const Packet& packet);
+        void processFullState(stdx::span<uint8_t const> data);
+        void updateLocalTick();
 
         void initStatus(std::string_view text);
         void setStatus(std::string_view text);
@@ -56,9 +65,10 @@ namespace OpenLoco::Network
 
         void receiveConnectionResponsePacket(const ConnectResponsePacket& response);
         void receiveRequestStateResponsePacket(const RequestStateResponse& response);
-        void receiveRequestStateResponseChunkPacket(const RequestStateResponseChunk &responseChunk);
-        void receiveChatMessagePacket(const ReceiveChatMessage &packet);
-        void receiveGameCommandPacket(const GameCommandPacket &packet);
+        void receiveRequestStateResponseChunkPacket(const RequestStateResponseChunk& responseChunk);
+        void receiveChatMessagePacket(const ReceiveChatMessage& packet);
+        void receivePingPacket(const PingPacket& packet);
+        void receiveGameCommandPacket(const GameCommandPacket& packet);
 
         template<PacketKind TKind, typename T>
         void sendPacket(const T& packetData)
@@ -72,8 +82,13 @@ namespace OpenLoco::Network
         void onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet) override;
 
     public:
+        NetworkClientStatus getStatus() const;
+
         void connect(std::string_view host, port_t port);
         void sendChatMessage(std::string_view message) override;
         void sendGameCommand(OpenLoco::Interop::registers regs);
+
+        bool shouldProcessTick(uint32_t tick) const;
+        void runGameCommandsForTick(uint32_t tick);
     };
 }

@@ -34,6 +34,8 @@ namespace OpenLoco::Network
         std::queue<ChatMessage> _chatMessageQueue;
         client_id_t _nextClientId = 1;
         uint32_t _lastPing{};
+        uint32_t _gameCommandIndex{};
+        std::queue<GameCommandPacket> _gameCommands;
 
         Client* findClient(const INetworkEndpoint& endpoint);
         void createNewClient(std::unique_ptr<NetworkConnection> conn, const ConnectPacket& packet);
@@ -65,6 +67,9 @@ namespace OpenLoco::Network
     public:
         void listen(port_t port);
         void sendChatMessage(std::string_view message) override;
-        void sendGameCommand(uint32_t tick, OpenLoco::Interop::registers regs);
+        void sendGameCommand(uint32_t index, uint32_t tick, OpenLoco::Interop::registers regs);
+
+        void queueGameCommand(const OpenLoco::Interop::registers& regs);
+        void runGameCommands();
     };
 }

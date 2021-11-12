@@ -1,5 +1,6 @@
 #include "NetworkClient.h"
 #include "../Console.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
 #include "../Ui/WindowManager.h"
@@ -8,6 +9,11 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Network;
+
+NetworkClientStatus NetworkClient::getStatus() const
+{
+    return _status;
+}
 
 void NetworkClient::connect(std::string_view host, port_t port)
 {
@@ -135,6 +141,9 @@ void NetworkClient::onReceivePacketFromServer(const Packet& packet)
         case PacketKind::receiveChatMessage:
             receiveChatMessagePacket(*reinterpret_cast<const ReceiveChatMessage*>(packet.data));
             break;
+        case PacketKind::ping:
+            receivePingPacket(*reinterpret_cast<const PingPacket*>(packet.data));
+            break;
         case PacketKind::gameCommand:
             receiveGameCommandPacket(*reinterpret_cast<const GameCommandPacket*>(packet.data));
             break;
@@ -213,13 +222,22 @@ void NetworkClient::receiveRequestStateResponseChunkPacket(const RequestStateRes
             }
 
             clearStatus();
-
             _status = NetworkClientStatus::connected;
 
-            BinaryStream bs(fullData.data(), fullData.size());
-            S5::load(bs, 0);
+            processFullState(fullData);
         }
     }
+}
+
+void NetworkClient::processFullState(stdx::span<uint8_t const> fullData)
+{
+    auto* extra = reinterpret_cast<const ExtraState*>(fullData.data() + fullData.size() - sizeof(ExtraState));
+    _localGameCommandIndex = extra->gameCommandIndex;
+    _localTick = extra->tick;
+    updateLocalTick();
+
+    BinaryStream bs(fullData.data(), fullData.size() - sizeof(ExtraState));
+    S5::load(bs, 0);
 }
 
 void NetworkClient::receiveChatMessagePacket(const ReceiveChatMessage& packet)
@@ -227,9 +245,48 @@ void NetworkClient::receiveChatMessagePacket(const ReceiveChatMessage& packet)
     Network::receiveChatMessage(packet.sender, packet.getText());
 }
 
+void NetworkClient::receivePingPacket(const PingPacket& packet)
+{
+    if (_status != NetworkClientStatus::connected)
+        return;
+
+    // Update the latest knowledge of server state
+    _serverTick = std::max(_serverTick, packet.tick);
+    _serverGameCommandIndex = std::max(_serverGameCommandIndex, packet.gameCommandIndex);
+
+    if (_localGameCommandIndex == _serverGameCommandIndex)
+    {
+        // No pending game commands, we can update to this tick
+        _localTick = packet.tick;
+    }
+}
+
 void NetworkClient::receiveGameCommandPacket(const GameCommandPacket& packet)
 {
-    Network::receiveGameCommand(packet.tick, packet.regs);
+    // Update the latest knowledge of server state
+    _serverTick = std::max(_serverTick, packet.tick);
+    _serverGameCommandIndex = std::max(_serverGameCommandIndex, packet.index);
+
+    // Catch old or repeated game command index
+    assert(packet.index > _localGameCommandIndex);
+
+    // Insert into ordered game command queue
+    for (auto it = _receivedGameCommands.begin(); it != _receivedGameCommands.end(); it++)
+    {
+        auto& p = *it;
+
+        // Catch duplicate game command index
+        assert(packet.index != p.index);
+
+        if (packet.index <= p.index)
+        {
+            _receivedGameCommands.insert(it, packet);
+            return;
+        }
+    }
+    _receivedGameCommands.push_back(packet);
+
+    updateLocalTick();
 }
 
 void NetworkClient::sendChatMessage(std::string_view message)
@@ -251,6 +308,52 @@ void NetworkClient::sendGameCommand(OpenLoco::Interop::registers regs)
         packet.regs = regs;
         _serverConnection->sendPacket(packet);
     }
+}
+
+void NetworkClient::updateLocalTick()
+{
+    // If we have the next game command, we can set local tick to the tick for that command
+    if (!_receivedGameCommands.empty())
+    {
+        auto& nextGameCommand = _receivedGameCommands.front();
+        if (nextGameCommand.index == _localGameCommandIndex + 1)
+        {
+            // We already have the next game command, so we can update to the tick for that command
+            _localTick = nextGameCommand.tick;
+        }
+    }
+}
+
+bool NetworkClient::shouldProcessTick(uint32_t tick) const
+{
+    if (_status != NetworkClientStatus::connected)
+        return true;
+
+    return _localTick >= tick;
+}
+
+void NetworkClient::runGameCommandsForTick(uint32_t tick)
+{
+    if (_status != NetworkClientStatus::connected)
+        return;
+
+    // Execute all following commands if previously received
+    while (!_receivedGameCommands.empty())
+    {
+        auto& nextPacket = _receivedGameCommands.front();
+        if (nextPacket.index == _localGameCommandIndex + 1 && nextPacket.tick == tick)
+        {
+            _localGameCommandIndex++;
+            GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(nextPacket.regs.esi), nextPacket.regs);
+            _receivedGameCommands.pop_front();
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    updateLocalTick();
 }
 
 void NetworkClient::initStatus(std::string_view text)

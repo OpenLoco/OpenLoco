@@ -195,8 +195,13 @@ namespace OpenLoco::CompanyManager
             auto company = get(id);
             if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {
-                setUpdatingCompanyId(id);
-                company->aiThink();
+                // Only the host should update AI, AI will run game commands
+                // which will be sent to all the clients
+                if (!isNetworked() || isNetworkHost())
+                {
+                    setUpdatingCompanyId(id);
+                    company->aiThink();
+                }
             }
 
             _byte_525FCB++;

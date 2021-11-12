@@ -19,16 +19,9 @@ namespace OpenLoco::Network
         client
     };
 
-    struct QueuedGameCommand
-    {
-        uint32_t tick{};
-        OpenLoco::Interop::registers regs;
-    };
-
     static NetworkMode _mode;
     static std::unique_ptr<NetworkServer> _server;
     static std::unique_ptr<NetworkClient> _client;
-    static std::vector<QueuedGameCommand> _gameCommands;
 
     static NetworkBase* getServerOrClient()
     {
@@ -123,13 +116,9 @@ namespace OpenLoco::Network
 
     void queueGameCommand(OpenLoco::Interop::registers regs)
     {
-        auto& gameState = getGameState();
-        auto targetTick = gameState.scenarioTicks + 1;
-
         if (_mode == NetworkMode::server)
         {
-            _gameCommands.push_back({ targetTick, regs });
-            _server->sendGameCommand(targetTick, regs);
+            _server->queueGameCommand(regs);
         }
         else
         {
@@ -137,38 +126,44 @@ namespace OpenLoco::Network
         }
     }
 
-    void receiveGameCommand(uint32_t tick, OpenLoco::Interop::registers regs)
+    bool shouldProcessTick(uint32_t tick)
     {
-        auto& gameState = getGameState();
-        auto targetTick = gameState.scenarioTicks + 1;
-        _gameCommands.push_back({ targetTick, regs });
-
-        if (_mode == NetworkMode::server)
+        if (_mode == NetworkMode::client)
         {
-            _server->sendGameCommand(targetTick, regs);
+            return _client->shouldProcessTick(tick);
+        }
+        else
+        {
+            return true;
         }
     }
 
-    void processGameCommands()
+    void processGameCommands(uint32_t tick)
     {
-        if (_mode == NetworkMode::none)
-            return;
-
-        auto& gameState = getGameState();
-        auto currentTick = gameState.scenarioTicks;
-
-        for (auto it = _gameCommands.begin(); it != _gameCommands.end();)
+        switch (_mode)
         {
-            const auto& gc = *it;
-            if (gc.tick == currentTick)
-            {
-                GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(gc.regs.esi), gc.regs);
-                it = _gameCommands.erase(it);
-            }
-            else
-            {
-                it++;
-            }
+            case NetworkMode::none:
+                break;
+            case NetworkMode::server:
+                _server->runGameCommands();
+                break;
+            case NetworkMode::client:
+                _client->runGameCommandsForTick(tick);
+                break;
+        }
+    }
+
+    bool isConnected()
+    {
+        switch (_mode)
+        {
+            default:
+            case NetworkMode::none:
+                return false;
+            case NetworkMode::server:
+                return true;
+            case NetworkMode::client:
+                return _client->getStatus() == NetworkClientStatus::connected;
         }
     }
 }

@@ -1,6 +1,8 @@
 #include "NetworkServer.h"
 #include "../Console.h"
 #include "../Core/Span.hpp"
+#include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../OpenLoco.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
@@ -10,6 +12,8 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Network;
+
+constexpr uint32_t pingInterval = 30;
 
 void NetworkServer::listen(port_t port)
 {
@@ -99,14 +103,22 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
 {
     constexpr uint16_t chunkSize = 4000;
 
+    // Dump S5 data to stream
     MemoryStream ms;
     S5::save(ms, S5::SaveFlags::noWindowClose);
-    auto saveData = stdx::span<uint8_t const>(ms.data(), ms.getLength());
+
+    // Append extra state
+    ExtraState extra;
+    extra.gameCommandIndex = _gameCommandIndex;
+    extra.tick = scenarioTicks();
+    ms.write(&extra, sizeof(extra));
+
+    auto allData = stdx::span<uint8_t const>(ms.data(), ms.getLength());
 
     RequestStateResponse response;
     response.cookie = request.cookie;
-    response.totalSize = saveData.size();
-    response.numChunks = static_cast<uint16_t>((saveData.size() + (chunkSize - 1)) / chunkSize);
+    response.totalSize = allData.size();
+    response.numChunks = static_cast<uint16_t>((allData.size() + (chunkSize - 1)) / chunkSize);
     client.connection->sendPacket(response);
 
     uint32_t offset = 0;
@@ -119,7 +131,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
         chunk.index = index;
         chunk.offset = offset;
         chunk.dataSize = std::min<uint32_t>(chunkSize, remaining - offset);
-        std::memcpy(chunk.data, saveData.data() + offset, chunk.dataSize);
+        std::memcpy(chunk.data, allData.data() + offset, chunk.dataSize);
 
         client.connection->sendPacket(chunk);
 
@@ -136,7 +148,7 @@ void NetworkServer::onReceiveSendChatMessagePacket(Client& client, const SendCha
 
 void NetworkServer::onReceiveGameCommandPacket(Client& client, const GameCommandPacket& packet)
 {
-    Network::receiveGameCommand(packet.tick, packet.regs);
+    queueGameCommand(packet.regs);
 }
 
 void NetworkServer::removedTimedOutClients()
@@ -162,11 +174,17 @@ void NetworkServer::removedTimedOutClients()
 void NetworkServer::sendPings()
 {
     auto now = Platform::getTime();
-    if (now - _lastPing > 2500)
+    if (now - _lastPing > pingInterval)
     {
         _lastPing = now;
 
+        auto& gameState = getGameState();
+
         PingPacket packet;
+        packet.gameCommandIndex = _gameCommandIndex;
+        packet.tick = gameState.scenarioTicks;
+        packet.srand0 = gameState.rng.srand_0();
+        packet.srand1 = gameState.rng.srand_1();
         for (auto& client : _clients)
         {
             client->connection->sendPacket(packet);
@@ -247,10 +265,43 @@ void NetworkServer::sendChatMessage(std::string_view message)
     _chatMessageQueue.push({ 0, std::string(message) });
 }
 
-void NetworkServer::sendGameCommand(uint32_t tick, OpenLoco::Interop::registers regs)
+void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, OpenLoco::Interop::registers regs)
 {
     GameCommandPacket packet;
+    packet.index = index;
     packet.tick = tick;
     packet.regs = regs;
     sendPacketToAll(packet);
+}
+
+void NetworkServer::queueGameCommand(const OpenLoco::Interop::registers& regs)
+{
+    GameCommandPacket newPacket;
+    newPacket.index = ++_gameCommandIndex;
+    newPacket.tick = 0;
+    newPacket.regs = regs;
+    _gameCommands.push(newPacket);
+}
+
+void NetworkServer::runGameCommands()
+{
+    auto& gameState = getGameState();
+    auto tick = gameState.scenarioTicks;
+
+    // Execute all following commands if previously received
+    while (!_gameCommands.empty())
+    {
+        auto& gc = _gameCommands.front();
+
+        [[maybe_unused]] auto result = GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(gc.regs.esi), gc.regs);
+
+        // TODO We can't do this, we have to send a dummy command to the clients
+        //      otherwise we skip a game command index
+        // if (result != 0x80000000)
+        // {
+        sendGameCommand(gc.index, tick, gc.regs);
+        // }
+
+        _gameCommands.pop();
+    }
 }

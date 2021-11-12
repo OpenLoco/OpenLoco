@@ -852,9 +852,12 @@ namespace OpenLoco
     // 0x0046ABCB
     static void tickLogic()
     {
+        if (!Network::shouldProcessTick(ScenarioManager::getScenarioTicks() + 1))
+            return;
+
         ScenarioManager::setScenarioTicks(ScenarioManager::getScenarioTicks() + 1);
         ScenarioManager::setScenarioTicks2(ScenarioManager::getScenarioTicks2() + 1);
-        Network::processGameCommands();
+        Network::processGameCommands(ScenarioManager::getScenarioTicks());
 
         addr<0x00525FCC, uint32_t>() = gPrng().srand_0();
         addr<0x00525FD0, uint32_t>() = gPrng().srand_1();

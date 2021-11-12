@@ -186,7 +186,7 @@ namespace OpenLoco::GameCommands
         }
 
         auto isGhost = (flags & Flags::flag_6) != 0;
-        if (!isGhost && isNetworked())
+        if (!isGhost && Network::isConnected())
         {
             // For network games, we need to delay the command apply processing
             // Just return the result without applying for now

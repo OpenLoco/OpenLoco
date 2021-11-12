@@ -65,7 +65,12 @@ namespace OpenLoco::Network
     struct PingPacket
     {
         static constexpr PacketKind kind = PacketKind::ping;
-        size_t size() const { return 0; }
+        size_t size() const { return sizeof(PingPacket); }
+
+        uint32_t gameCommandIndex{};
+        uint32_t tick{};
+        uint32_t srand0{};
+        uint32_t srand1{};
     };
 
     struct ConnectPacket
@@ -123,6 +128,15 @@ namespace OpenLoco::Network
     };
     static_assert(sizeof(RequestStateResponseChunk) == maxPacketDataSize);
 
+    /**
+     * Extra state on top of S5 that we want to send over network
+     */
+    struct ExtraState
+    {
+        uint32_t gameCommandIndex{};
+        uint32_t tick;
+    };
+
     struct SendChatMessage
     {
         static constexpr PacketKind kind = PacketKind::sendChatMessage;
@@ -159,6 +173,7 @@ namespace OpenLoco::Network
         static constexpr PacketKind kind = PacketKind::gameCommand;
         size_t size() const { return sizeof(GameCommandPacket); }
 
+        uint32_t index{};
         uint32_t tick{};
         OpenLoco::Interop::registers regs;
     };
@@ -174,6 +189,12 @@ namespace OpenLoco::Network
     void receiveChatMessage(client_id_t client, std::string_view message);
 
     void queueGameCommand(OpenLoco::Interop::registers regs);
-    void receiveGameCommand(uint32_t tick, OpenLoco::Interop::registers regs);
-    void processGameCommands();
+    bool shouldProcessTick(uint32_t tick);
+    void processGameCommands(uint32_t tick);
+
+    /**
+     * Whether the game state is networked.
+     * This will return false if the client is still receiving the map from the server.
+     */
+    bool isConnected();
 }
