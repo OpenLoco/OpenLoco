@@ -15,6 +15,11 @@ NetworkClientStatus NetworkClient::getStatus() const
     return _status;
 }
 
+uint32_t NetworkClient::getLocalTick() const
+{
+    return _localTick;
+}
+
 void NetworkClient::connect(std::string_view host, port_t port)
 {
     auto szHost = std::string(host);

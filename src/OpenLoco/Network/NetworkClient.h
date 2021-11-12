@@ -83,6 +83,7 @@ namespace OpenLoco::Network
 
     public:
         NetworkClientStatus getStatus() const;
+        uint32_t getLocalTick() const;
 
         void connect(std::string_view host, port_t port);
         void sendChatMessage(std::string_view message) override;

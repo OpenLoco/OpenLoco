@@ -166,4 +166,13 @@ namespace OpenLoco::Network
                 return _client->getStatus() == NetworkClientStatus::connected;
         }
     }
+
+    uint32_t getServerTick()
+    {
+        if (_mode == NetworkMode::client)
+        {
+            return _client->getLocalTick();
+        }
+        return scenarioTicks();
+    }
 }

@@ -197,4 +197,9 @@ namespace OpenLoco::Network
      * This will return false if the client is still receiving the map from the server.
      */
     bool isConnected();
+
+    /**
+     * Gets the current tick the server is on.
+     */
+    uint32_t getServerTick();
 }

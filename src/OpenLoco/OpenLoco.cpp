@@ -769,6 +769,13 @@ namespace OpenLoco
 
                     sub_46FFCA();
 
+                    // Catch up to server (usually after we have just joined the game)
+                    auto numTicksBehind = Network::getServerTick() - _scenario_ticks;
+                    if (numTicksBehind > 4)
+                    {
+                        numUpdates = 4;
+                    }
+
                     tickLogic(numUpdates);
 
                     _525F62++;
