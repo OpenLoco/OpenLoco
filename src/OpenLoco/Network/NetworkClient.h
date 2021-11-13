@@ -87,7 +87,7 @@ namespace OpenLoco::Network
 
         void connect(std::string_view host, port_t port);
         void sendChatMessage(std::string_view message) override;
-        void sendGameCommand(OpenLoco::Interop::registers regs);
+        void sendGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs);
 
         bool shouldProcessTick(uint32_t tick) const;
         void runGameCommandsForTick(uint32_t tick);

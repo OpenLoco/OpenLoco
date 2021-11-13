@@ -305,11 +305,12 @@ void NetworkClient::sendChatMessage(std::string_view message)
     }
 }
 
-void NetworkClient::sendGameCommand(OpenLoco::Interop::registers regs)
+void NetworkClient::sendGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)
 {
     if (_serverConnection != nullptr && _status == NetworkClientStatus::connected)
     {
         GameCommandPacket packet;
+        packet.company = company;
         packet.regs = regs;
         _serverConnection->sendPacket(packet);
     }
@@ -349,7 +350,7 @@ void NetworkClient::runGameCommandsForTick(uint32_t tick)
         if (nextPacket.index == _localGameCommandIndex + 1 && nextPacket.tick == tick)
         {
             _localGameCommandIndex++;
-            GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(nextPacket.regs.esi), nextPacket.regs);
+            GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(nextPacket.regs.esi), nextPacket.company, nextPacket.regs);
             _receivedGameCommands.pop_front();
         }
         else

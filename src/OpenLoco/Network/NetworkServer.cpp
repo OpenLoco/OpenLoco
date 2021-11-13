@@ -148,7 +148,7 @@ void NetworkServer::onReceiveSendChatMessagePacket(Client& client, const SendCha
 
 void NetworkServer::onReceiveGameCommandPacket(Client& client, const GameCommandPacket& packet)
 {
-    queueGameCommand(packet.regs);
+    queueGameCommand(packet.company, packet.regs);
 }
 
 void NetworkServer::removedTimedOutClients()
@@ -265,20 +265,22 @@ void NetworkServer::sendChatMessage(std::string_view message)
     _chatMessageQueue.push({ 0, std::string(message) });
 }
 
-void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, OpenLoco::Interop::registers regs)
+void NetworkServer::sendGameCommand(uint32_t index, uint32_t tick, CompanyId company, const OpenLoco::Interop::registers& regs)
 {
     GameCommandPacket packet;
     packet.index = index;
     packet.tick = tick;
+    packet.company = company;
     packet.regs = regs;
     sendPacketToAll(packet);
 }
 
-void NetworkServer::queueGameCommand(const OpenLoco::Interop::registers& regs)
+void NetworkServer::queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)
 {
     GameCommandPacket newPacket;
     newPacket.index = ++_gameCommandIndex;
     newPacket.tick = 0;
+    newPacket.company = company;
     newPacket.regs = regs;
     _gameCommands.push(newPacket);
 }
@@ -293,13 +295,13 @@ void NetworkServer::runGameCommands()
     {
         auto& gc = _gameCommands.front();
 
-        [[maybe_unused]] auto result = GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(gc.regs.esi), gc.regs);
+        [[maybe_unused]] auto result = GameCommands::doCommandForReal(static_cast<GameCommands::GameCommand>(gc.regs.esi), gc.company, gc.regs);
 
         // TODO We can't do this, we have to send a dummy command to the clients
         //      otherwise we skip a game command index
         // if (result != 0x80000000)
         // {
-        sendGameCommand(gc.index, tick, gc.regs);
+        sendGameCommand(gc.index, tick, gc.company, gc.regs);
         // }
 
         _gameCommands.pop();

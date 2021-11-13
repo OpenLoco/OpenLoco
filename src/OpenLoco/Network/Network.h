@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Interop/Interop.hpp"
+#include "../Types.hpp"
 #include <cstdint>
 #include <memory>
 #include <string_view>
@@ -175,6 +176,7 @@ namespace OpenLoco::Network
 
         uint32_t index{};
         uint32_t tick{};
+        CompanyId company{};
         OpenLoco::Interop::registers regs;
     };
 #pragma pack(pop)
@@ -188,7 +190,7 @@ namespace OpenLoco::Network
     void sendChatMessage(std::string_view message);
     void receiveChatMessage(client_id_t client, std::string_view message);
 
-    void queueGameCommand(OpenLoco::Interop::registers regs);
+    void queueGameCommand(CompanyId company, OpenLoco::Interop::registers regs);
     bool shouldProcessTick(uint32_t tick);
     void processGameCommands(uint32_t tick);
 

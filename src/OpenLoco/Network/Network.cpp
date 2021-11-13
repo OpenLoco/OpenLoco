@@ -114,15 +114,19 @@ namespace OpenLoco::Network
         Console::log("Player #%d: %s", static_cast<int>(client), szMessage.c_str());
     }
 
-    void queueGameCommand(OpenLoco::Interop::registers regs)
+    void queueGameCommand(CompanyId company, OpenLoco::Interop::registers regs)
     {
+        // TEMP debug code
+        if (regs.esi == 73)
+            return;
+
         if (_mode == NetworkMode::server)
         {
-            _server->queueGameCommand(regs);
+            _server->queueGameCommand(company, regs);
         }
         else
         {
-            _client->sendGameCommand(regs);
+            _client->sendGameCommand(company, regs);
         }
     }
 
