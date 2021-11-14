@@ -15,6 +15,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "OpenLoco.h"
+#include "Scenario.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -171,9 +172,48 @@ namespace OpenLoco::CompanyManager
         }
     }
 
-    static void sub_42F9AC()
+    // 0x0042F9CB
+    static uint8_t sub_42F9CB(int32_t ebp)
     {
-        call(0x0042F9AC);
+        registers regs;
+        regs.ebp = ebp;
+        call(0x0042F9CB, regs);
+        return regs.al;
+    }
+
+    static CompanyId sub_42FE06(uint8_t dl, uint8_t dh)
+    {
+        registers regs;
+        regs.dl = dl;
+        regs.dh = dh;
+        call(0x0042FE06, regs);
+        return static_cast<CompanyId>(regs.al);
+    }
+
+    static void sub_4A6DA9()
+    {
+        call(0x004A6DA9);
+    }
+
+    // 0x0042F863
+    void sub_42F863()
+    {
+        // Original network logic removed
+        auto& gameState = getGameState();
+        gameState.flags |= Scenario::flags::preferred_owner_name;
+        auto al = sub_42F9CB(-1);
+        gameState.playerCompanies[0] = sub_42FE06(al, 1);
+        gameState.playerCompanies[1] = CompanyId::null;
+        sub_4A6DA9();
+    }
+
+    static void createAiCompany()
+    {
+        auto al = sub_42F9CB(-1);
+        if (al != 0xFF)
+        {
+            sub_42FE06(al, 0);
+        }
     }
 
     // 0x0042F23C
@@ -214,8 +254,7 @@ namespace OpenLoco::CompanyManager
             {
                 if (prng.randNext(_company_max_competing) + 1 > companies_active)
                 {
-                    // Creates new company.
-                    sub_42F9AC();
+                    createAiCompany();
                 }
             }
         }

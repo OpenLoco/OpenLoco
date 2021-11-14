@@ -1,6 +1,7 @@
 #include "Tutorial.h"
 #include "Config.h"
 #include "Environment.h"
+#include "GameState.h"
 #include "Gui.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
@@ -47,8 +48,6 @@ namespace OpenLoco::Tutorial
             });
     }
 
-    static void getTutorialScenarioFilename();
-
     static std::vector<uint16_t> readTutorialFile(fs::path filename)
     {
         std::ifstream file(filename, std::ios::in | std::ios::binary);
@@ -85,66 +84,63 @@ namespace OpenLoco::Tutorial
         // NB: only used by tutorial widget drawing after.
         _tutorialNumber = tutorialNumber;
 
-        // All destructors must be called prior to calling scenario::start due to the interaction of longjmp.
-        // This can be removed when scenerio::start has been implemented.
+        // Figure out what dimensions to use for the tutorial, and whether we can continue using scaling.
+        const auto& config = Config::getNew();
+        Config::Resolution newResolution = tutorialResolution;
+        if (config.scale_factor > 1.0)
         {
-            // Figure out what dimensions to use for the tutorial, and whether we can continue using scaling.
-            const auto& config = Config::getNew();
-            Config::Resolution newResolution = tutorialResolution;
-            if (config.scale_factor > 1.0)
+            newResolution *= config.scale_factor;
+            Config::Resolution desktopResolution = Ui::getDesktopResolution();
+
+            // Don't scale if it means the new window won't fit the desktop.
+            if (newResolution > desktopResolution)
             {
-                newResolution *= config.scale_factor;
-                Config::Resolution desktopResolution = Ui::getDesktopResolution();
-
-                // Don't scale if it means the new window won't fit the desktop.
-                if (newResolution > desktopResolution)
-                {
-                    Ui::setWindowScaling(1.0);
-                    newResolution = tutorialResolution;
-                }
+                Ui::setWindowScaling(1.0);
+                newResolution = tutorialResolution;
             }
-
-            // Ensure that we're in windowed mode, using dimensions 1024x768.
-            auto currentResolution = Ui::getResolution();
-            if (config.display.mode != Config::ScreenMode::window || currentResolution != newResolution)
-            {
-                if (!Ui::setDisplayMode(Config::ScreenMode::window, newResolution))
-                    return;
-            }
-
-            // Get the environment file for this tutorial.
-            static constexpr Environment::path_id tutorialFileIds[] = {
-                Environment::path_id::tut1024_1,
-                Environment::path_id::tut1024_2,
-                Environment::path_id::tut1024_3,
-            };
-
-            auto fileId = tutorialFileIds[tutorialNumber];
-
-            auto tutPath = Environment::getPath(fileId);
-            _tutorialData = readTutorialFile(tutPath);
-            _tutorialIt = _tutorialData.cbegin();
-
-            // Set the first string to show.
-            static constexpr string_id openingStringIds[] = {
-                StringIds::tutorial_1_string_1,
-                StringIds::tutorial_2_string_1,
-                StringIds::tutorial_3_string_1,
-            };
-
-            *_state = State::playing;
-            *_tutorialString = openingStringIds[*_tutorialNumber];
-
-            // Set up the scenario.
-            getTutorialScenarioFilename();
-            addr<0x0050AE83, uint32_t>() = 0x12345678;
-            addr<0x0050AE87, uint32_t>() = 0x9ABCDEF0;
         }
 
-        Scenario::start();
+        // Ensure that we're in windowed mode, using dimensions 1024x768.
+        auto currentResolution = Ui::getResolution();
+        if (config.display.mode != Config::ScreenMode::window || currentResolution != newResolution)
+        {
+            if (!Ui::setDisplayMode(Config::ScreenMode::window, newResolution))
+                return;
+        }
 
-        // Unreachable?
-        stop();
+        // Get the environment file for this tutorial.
+        static constexpr Environment::path_id tutorialFileIds[] = {
+            Environment::path_id::tut1024_1,
+            Environment::path_id::tut1024_2,
+            Environment::path_id::tut1024_3,
+        };
+
+        auto fileId = tutorialFileIds[tutorialNumber];
+
+        auto tutPath = Environment::getPath(fileId);
+        _tutorialData = readTutorialFile(tutPath);
+        _tutorialIt = _tutorialData.cbegin();
+
+        // Set the first string to show.
+        static constexpr string_id openingStringIds[] = {
+            StringIds::tutorial_1_string_1,
+            StringIds::tutorial_2_string_1,
+            StringIds::tutorial_3_string_1,
+        };
+
+        *_state = State::playing;
+        *_tutorialString = openingStringIds[*_tutorialNumber];
+
+        // Load the scenario
+        auto scPath = Environment::getPath(Environment::path_id::boulder_breakers);
+        Scenario::load(scPath);
+
+        // Set fixed rng seed
+        auto& gameState = getGameState();
+        gameState.rng = Utility::prng(0x12345678, 0x9ABCDEF0);
+
+        // Start the scenario
+        Scenario::start();
     }
 
     // 0x0043C70E
@@ -180,14 +176,5 @@ namespace OpenLoco::Tutorial
     uint8_t getTutorialNumber()
     {
         return _tutorialNumber;
-    }
-
-    // 0x00445A30
-    static void getTutorialScenarioFilename()
-    {
-        static loco_global<char[512], 0x00112CE04> scenarioFilename;
-        auto bbPath = Environment::getPath(Environment::path_id::boulder_breakers);
-
-        strncpy(&*scenarioFilename, bbPath.make_preferred().u8string().c_str(), 512);
     }
 }

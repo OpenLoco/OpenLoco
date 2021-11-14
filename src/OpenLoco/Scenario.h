@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/FileSystem.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include <cstdint>
 
@@ -9,6 +10,7 @@ namespace OpenLoco::Scenario
     {
         landscape_generation_done = (1 << 0),
         hills_edge_of_map = (1 << 1),
+        preferred_owner_name = (1 << 2),
     };
 
     enum industry_flags
@@ -108,7 +110,22 @@ namespace OpenLoco::Scenario
     void eraseLandscape();
     void generateLandscape();
     void initialiseDate(uint16_t year);
-    void start(const char* filename = nullptr);
+
+    /**
+     * Loads the given scenario file, but does not initialise any game state.
+     */
+    bool load(const fs::path& path);
+
+    /**
+     * Loads the given scenario file and resets the game state for starting a new scenario.
+     */
+    bool loadAndStart(const fs::path& path);
+
+    /**
+     * Resets the game state (e.g. companies, year, money etc.) for starting a new scenario.
+     */
+    [[noreturn]] void start();
+
     void registerHooks();
     void formatChallengeArguments(FormatArguments& args);
     void sub_46115C();

@@ -469,7 +469,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         }
         else
         {
-            Scenario::start(scenarioInfo->filename);
+            Scenario::loadAndStart(scenarioInfo->filename);
         }
     }
 
