@@ -25,7 +25,7 @@ namespace OpenLoco
 
         static const std::array<uint8_t, 12> buildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 };
         auto buildSpeed = buildSpeedToGrowthPerTick[this->build_speed];
-        if (buildSpeed == 0 || (buildSpeed == 1 && (gPrng().randNext() & 7) == 0))
+        if (buildSpeed == 0 || (buildSpeed == 1 && (gPrng().randNext() & 7)))
         {
             grow(0x07);
         }
