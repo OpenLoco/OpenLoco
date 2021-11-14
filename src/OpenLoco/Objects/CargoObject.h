@@ -26,8 +26,13 @@ namespace OpenLoco
         uint8_t flags; // 0x12
         std::uint8_t pad_13;
         uint8_t var_14;
-        uint8_t pad_15[0x1E - 0x15];
-        uint8_t unitSize; // 0x1E
+        uint8_t premiumDays;       // 0x15
+        uint8_t maxNonPremiumDays; // 0x16
+        uint16_t nonPremiumRate;   // 0x17
+        uint16_t penaltyRate;      // 0x19
+        uint16_t paymentFactor;    // 0x1B
+        uint8_t paymentIndex;      // 0x1D
+        uint8_t unitSize;          // 0x1E
     };
 #pragma pack(pop)
 
