@@ -210,16 +210,6 @@ namespace OpenLoco::CompanyManager
         // Promote to 64bit for second part of payment calc.
         const auto unitDistancePayment = static_cast<int64_t>(Economy::getInflationAdjustedCost(paymentFactorPercent, cargoObj->paymentIndex, 8));
         const auto payment = (unitDistancePayment * numUnits * distance) / 4096;
-        registers regs;
-        regs.eax = cargoItem;
-        regs.ebx = numUnits;
-        regs.ecx = distance;
-        regs.edx = numDays;
-        call(0x0042F23C, regs);
-        if (regs.eax != payment)
-        {
-            assert(false);
-        }
         return payment;
     }
 
