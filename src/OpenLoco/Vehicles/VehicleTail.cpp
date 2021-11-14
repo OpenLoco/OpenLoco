@@ -15,18 +15,200 @@ namespace OpenLoco::Vehicles
     static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
 
     // 0x0048963F
-    static uint8_t sub_48963F(const Map::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, const uint32_t flags)
+    static uint8_t sub_48963F(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
     {
-        registers regs;
-        regs.ax = loc.x;
-        regs.cx = loc.y;
-        regs.dx = loc.z;
-        regs.bl = enumValue(company);
-        regs.bh = trackType;
-        regs.ebp = trackAndDirection.track._data;
-        regs.edi = flags;
-        call(0x0048963F, regs);
-        return regs.al;
+        const auto unk1 = flags & 0xFFFF;
+        auto trackStart = loc;
+        if (trackAndDirection.isReversed())
+        {
+            auto& trackSize = Map::TrackData::getUnkTrack(trackAndDirection._data);
+            trackStart += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                trackStart -= Map::Pos3{ _503C6C[trackSize.rotationEnd] };
+            }
+            flags ^= (1ULL << 31);
+        }
+
+        auto& trackPieces = Map::TrackData::getTrackPiece(trackAndDirection.id());
+        for (auto& trackPiece : trackPieces)
+        {
+            auto signalLoc = trackStart + Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()) };
+            signalLoc.z += trackPiece.z;
+            auto tile = Map::TileManager::get(signalLoc);
+            Map::TrackElement* foundTrack = nullptr;
+            for (auto& el : tile)
+            {
+                if (el.baseZ() != signalLoc.z / 4)
+                {
+                    continue;
+                }
+
+                auto* elTrack = el.as<TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+
+                if (!elTrack->hasSignal())
+                {
+                    continue;
+                }
+
+                if (elTrack->unkDirection() != trackAndDirection.cardinalDirection())
+                {
+                    continue;
+                }
+
+                if (elTrack->sequenceIndex() != trackPiece.index)
+                {
+                    continue;
+                }
+
+                if (elTrack->trackObjectId() != trackType)
+                {
+                    continue;
+                }
+
+                if (elTrack->trackId() != trackAndDirection.id())
+                {
+                    continue;
+                }
+                foundTrack = elTrack;
+                break;
+            }
+
+            if (foundTrack == nullptr)
+            {
+                if (unk1 == 10)
+                {
+                    return 0;
+                }
+                return loc.x; // Odd???
+            }
+
+            auto* elSignal = foundTrack->next()->as<SignalElement>();
+            if (elSignal == nullptr)
+            {
+                continue;
+            }
+            // edx
+            auto& signalSide = (flags & (1ULL << 31)) ? elSignal->getRight() : elSignal->getLeft();
+            if (unk1 == 16)
+            {
+                uint8_t lightStates = 0;
+                if (flags & (1ULL << 30))
+                {
+                    lightStates |= 1 << 2;
+                    if (flags & (1ULL << 28))
+                    {
+                        lightStates |= 1 << 0;
+                    }
+                }
+                if (flags & (1ULL << 29))
+                {
+                    lightStates |= 1 << 3;
+                    if (flags & (1ULL << 27))
+                    {
+                        lightStates |= 1 << 1;
+                    }
+                }
+
+                if (signalSide.allLights() != lightStates)
+                {
+                    bool shouldInvalidate = false;
+                    signalSide.setAllLights(lightStates);
+                    if (flags & (1ULL << 31))
+                    {
+                        shouldInvalidate = foundTrack->sequenceIndex() == 0;
+                    }
+                    else
+                    {
+                        shouldInvalidate = foundTrack->isFlag6();
+                    }
+
+                    if (shouldInvalidate)
+                    {
+                        Ui::ViewportManager::invalidate(signalLoc, signalLoc.z, signalLoc.z + 24, ZoomLevel::half);
+                    }
+                }
+            }
+            else if (unk1 == 10)
+            {
+                uint8_t ret = 0;
+                if (signalSide.hasUnk4_40())
+                {
+                    ret |= (1 << 0);
+                }
+                if (signalSide.hasSignal())
+                {
+                    ret |= (1 << 1);
+                }
+                if (flags & (1ULL << 31))
+                {
+                    if (!elSignal->getLeft().hasSignal() || elSignal->isLeftGhost())
+                    {
+                        ret |= (1 << 2);
+                    }
+
+                    if (elSignal->isRightGhost() && elSignal->getLeft().hasSignal())
+                    {
+                        ret |= (1 << 1);
+                    }
+                }
+                else
+                {
+                    if (!elSignal->getRight().hasSignal() || elSignal->isRightGhost())
+                    {
+                        ret |= (1 << 2);
+                    }
+
+                    if (elSignal->isLeftGhost() && elSignal->getRight().hasSignal())
+                    {
+                        ret |= (1 << 1);
+                    }
+                }
+                return ret;
+            }
+            else if (unk1 == 8)
+            {
+                signalSide.setUnk4_40(true);
+            }
+            else if (unk1 > 8)
+            {
+                signalSide.setUnk4_40(false);
+            }
+            else
+            {
+                signalSide.setUnk4(unk1 & 0x3);
+                if ((unk1 & 0x3) == 0)
+                {
+                    // Clear lights 0b1100_0000
+                    signalSide.setAllLights(signalSide.allLights() & 0xC);
+                }
+                bool animate = false;
+                if (flags & (1ULL << 31))
+                {
+                    if (foundTrack->isFlag6())
+                    {
+                        animate = true;
+                    }
+                }
+                else
+                {
+                    if (foundTrack->sequenceIndex() == 0)
+                    {
+                        animate = true;
+                    }
+                }
+                if (animate)
+                {
+                    Map::AnimationManager::createAnimation(0, signalLoc, signalLoc.z / 4);
+                    Ui::ViewportManager::invalidate(signalLoc, signalLoc.z, signalLoc.z + 24, ZoomLevel::half);
+                }
+            }
+        }
+        return loc.x; // Odd???
     }
 
     // 0x004A2AD7
@@ -131,7 +313,7 @@ namespace OpenLoco::Vehicles
             if (ref & (1 << 15))
             {
                 // Update signal state?
-                sub_48963F(_oldTilePos, trackAndDirection, owner, track_type, 0);
+                sub_48963F(_oldTilePos, trackAndDirection.track, track_type, 0);
             }
 
             const auto& trackSize = Map::TrackData::getUnkTrack(ref & 0x1FF);
