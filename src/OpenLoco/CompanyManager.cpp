@@ -173,19 +173,19 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x0042F9CB
-    static uint8_t sub_42F9CB(int32_t ebp)
+    static LoadedObjectId selectNewCompetitor(int32_t ebp)
     {
         registers regs;
         regs.ebp = ebp;
         call(0x0042F9CB, regs);
-        return regs.al;
+        return static_cast<LoadedObjectId>(regs.al);
     }
 
-    static CompanyId sub_42FE06(uint8_t dl, uint8_t dh)
+    static CompanyId createCompany(LoadedObjectId competitorId, bool isPlayer)
     {
         registers regs;
-        regs.dl = dl;
-        regs.dh = dh;
+        regs.dl = competitorId;
+        regs.dh = isPlayer ? 1 : 0;
         call(0x0042FE06, regs);
         return static_cast<CompanyId>(regs.al);
     }
@@ -196,23 +196,24 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x0042F863
-    void sub_42F863()
+    void createPlayerCompany()
     {
         // Original network logic removed
         auto& gameState = getGameState();
         gameState.flags |= Scenario::flags::preferred_owner_name;
-        auto al = sub_42F9CB(-1);
-        gameState.playerCompanies[0] = sub_42FE06(al, 1);
+        auto competitorId = selectNewCompetitor(-1);
+        gameState.playerCompanies[0] = createCompany(competitorId, true);
         gameState.playerCompanies[1] = CompanyId::null;
         sub_4A6DA9();
     }
 
+    // 0x0042F9AC
     static void createAiCompany()
     {
-        auto al = sub_42F9CB(-1);
-        if (al != 0xFF)
+        auto competitorId = selectNewCompetitor(-1);
+        if (competitorId != NullObjectId)
         {
-            sub_42FE06(al, 0);
+            createCompany(competitorId, false);
         }
     }
 

@@ -364,7 +364,7 @@ namespace OpenLoco::Scenario
         call(0x004C159C);
         call(0x0046E07B); // load currency gfx
         CompanyManager::reset();
-        CompanyManager::sub_42F863();
+        CompanyManager::createPlayerCompany();
         initialiseDate(_activeOptions->scenarioStartYear);
         initialiseSnowLine();
         sub_4748D4();
@@ -376,7 +376,7 @@ namespace OpenLoco::Scenario
 
         TownManager::updateLabels();
         StationManager::updateLabels();
-        call(0x004523F4);
+        Gfx::loadPalette();
         Gfx::invalidateScreen();
         resetScreenAge();
         _50C19A = 62000;

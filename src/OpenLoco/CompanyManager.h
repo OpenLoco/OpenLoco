@@ -40,5 +40,5 @@ namespace OpenLoco::CompanyManager
     uint32_t competingColourMask(CompanyId companyId);
     uint32_t competingColourMask();
 
-    void sub_42F863();
+    void createPlayerCompany();
 }

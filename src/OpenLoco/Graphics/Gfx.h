@@ -249,4 +249,5 @@ namespace OpenLoco::Gfx
     G1Element* getG1Element(uint32_t id);
 
     void setCurrentFontSpriteBase(int16_t value);
+    void loadPalette();
 }
