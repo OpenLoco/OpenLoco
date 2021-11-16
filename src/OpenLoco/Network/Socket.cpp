@@ -40,18 +40,19 @@
     #include <netinet/tcp.h>
     #include <sys/ioctl.h>
     #include <sys/socket.h>
-    #include "../common.h"
+    #include <unistd.h>
     using SOCKET = int32_t;
     #define SOCKET_ERROR -1
     #define INVALID_SOCKET -1
     #define LAST_SOCKET_ERROR() errno
-    #define closesocket close
+    #define closesocket ::close
     #define ioctlsocket ioctl
     #if defined(__linux__)
         #define FLAG_NO_PIPE MSG_NOSIGNAL
     #else
         #define FLAG_NO_PIPE 0
     #endif // defined(__linux__)
+
 #endif // _WIN32
 // clang-format on
 

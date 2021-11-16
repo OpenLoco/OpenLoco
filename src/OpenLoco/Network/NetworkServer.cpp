@@ -96,6 +96,8 @@ void NetworkServer::onReceivePacketFromClient(Client& client, const Packet& pack
         case PacketKind::gameCommand:
             onReceiveGameCommandPacket(client, *packet.Cast<GameCommandPacket>());
             break;
+        default:
+            break;
     }
 }
 

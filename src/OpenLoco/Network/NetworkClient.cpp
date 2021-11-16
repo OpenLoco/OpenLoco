@@ -83,6 +83,8 @@ void NetworkClient::onUpdate()
                     break;
                 case NetworkClientStatus::waitingForState:
                     break;
+                default:
+                    break;
             }
         }
     }
@@ -127,6 +129,8 @@ void NetworkClient::onCancel()
             Console::log("Connecting to server cancelled");
             close();
             break;
+        default:
+            break;
     }
 }
 
@@ -151,6 +155,8 @@ void NetworkClient::onReceivePacketFromServer(const Packet& packet)
             break;
         case PacketKind::gameCommand:
             receiveGameCommandPacket(*reinterpret_cast<const GameCommandPacket*>(packet.data));
+            break;
+        default:
             break;
     }
 }

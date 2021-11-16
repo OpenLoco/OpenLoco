@@ -244,6 +244,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS}")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 find_package(SDL2 REQUIRED)
 if (NOT SDL2_LIBRARIES)
 	if (TARGET SDL2::SDL2-static)
@@ -295,6 +298,7 @@ else ()
 endif ()
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
+target_link_libraries(${PROJECT} Threads::Threads)
 target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
 target_link_libraries(${PROJECT} ${PNG_LIBRARIES})
 target_link_libraries(${PROJECT} ${OPENAL_LIBRARIES})

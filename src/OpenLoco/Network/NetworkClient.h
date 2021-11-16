@@ -70,12 +70,6 @@ namespace OpenLoco::Network
         void receivePingPacket(const PingPacket& packet);
         void receiveGameCommandPacket(const GameCommandPacket& packet);
 
-        template<PacketKind TKind, typename T>
-        void sendPacket(const T& packetData)
-        {
-            NetworkBase::sendPacket<TKind, T>(*_serverEndpoint, packetData);
-        }
-
     protected:
         void onClose() override;
         void onUpdate() override;
