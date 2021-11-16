@@ -1950,10 +1950,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     else if (*_clickRepeatTicks >= 200)
                         stepSize = 100000;
 
-                    auto newLoan = std::max<currency32_t>(0, company->current_loan - stepSize);
+                    GameCommands::ChangeLoanArgs args{};
+                    args.newLoan = std::max<currency32_t>(0, company->current_loan - stepSize);
 
                     GameCommands::setErrorTitle(StringIds::cant_pay_back_loan);
-                    GameCommands::do_9(newLoan);
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
                 }
 
@@ -1967,9 +1968,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     else if (*_clickRepeatTicks >= 200)
                         stepSize = 100000;
 
-                    currency32_t newLoan = CompanyManager::get(CompanyId(self->number))->current_loan + stepSize;
+                    GameCommands::ChangeLoanArgs args{};
+                    args.newLoan = CompanyManager::get(CompanyId(self->number))->current_loan + stepSize;
+
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
-                    GameCommands::do_9(newLoan);
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
                 }
             }

@@ -555,7 +555,7 @@ namespace OpenLoco::StringIds
     constexpr string_id landscape_smoothing_tip = 664;
     constexpr string_id gridlines_on_landscape = 665;
     constexpr string_id gridlines_on_landscape_tip = 666;
-
+    constexpr string_id bank_refuses_to_increase_loan = 667;
     constexpr string_id tooltip_clear_area = 668;
     constexpr string_id tooltip_decrease_clear_area = 669;
     constexpr string_id tooltip_increase_clear_area = 670;

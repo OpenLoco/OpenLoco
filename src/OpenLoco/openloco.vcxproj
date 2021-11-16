@@ -34,6 +34,7 @@
     <ClCompile Include="Entities\Misc.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameCommands\ChangeLoan.cpp" />
     <ClCompile Include="GameCommands\Cheat.cpp" />
     <ClCompile Include="GameCommands\ChangeCompanyColour.cpp" />
     <ClCompile Include="GameCommands\GameCommands.cpp" />

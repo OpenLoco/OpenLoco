@@ -310,14 +310,24 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Change loan
-    inline void do_9(currency32_t newLoan)
+    struct ChangeLoanArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.edx = newLoan;
-        doCommand(GameCommand::changeLoan, regs);
-    }
+        static constexpr auto command = GameCommand::changeLoan;
+        ChangeLoanArgs() = default;
+        explicit ChangeLoanArgs(const registers& regs)
+            : newLoan(regs.edx)
+        {
+        }
+
+        currency32_t newLoan;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.edx = newLoan;
+            return regs;
+        }
+    };
 
     // Change vehicle name
     inline void do_10(EntityId head, uint16_t i, uint32_t edx, uint32_t ebp, uint32_t edi)
@@ -1640,6 +1650,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/ChangeCompanyColour.cpp
     void changeCompanyColour(registers& regs);
+
+    // Defined in GameCommands/ChangeLoan.cpp
+    void changeLoan(registers& regs);
 
     // Defined in GameCommands/Cheat.cpp
     void cheat(registers& regs);
