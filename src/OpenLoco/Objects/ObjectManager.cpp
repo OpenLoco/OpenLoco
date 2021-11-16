@@ -1020,7 +1020,7 @@ namespace OpenLoco::ObjectManager
             index -= count;
             objectType++;
         }
-        return std::numeric_limits<LoadedObjectId>::max();
+        return NullObjectId;
     }
 
     LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects)

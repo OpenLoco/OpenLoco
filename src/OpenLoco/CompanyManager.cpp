@@ -17,6 +17,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "OpenLoco.h"
+#include "Scenario.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -173,9 +174,49 @@ namespace OpenLoco::CompanyManager
         }
     }
 
-    static void sub_42F9AC()
+    // 0x0042F9CB
+    static LoadedObjectId selectNewCompetitor(int32_t ebp)
     {
-        call(0x0042F9AC);
+        registers regs;
+        regs.ebp = ebp;
+        call(0x0042F9CB, regs);
+        return static_cast<LoadedObjectId>(regs.al);
+    }
+
+    static CompanyId createCompany(LoadedObjectId competitorId, bool isPlayer)
+    {
+        registers regs;
+        regs.dl = competitorId;
+        regs.dh = isPlayer ? 1 : 0;
+        call(0x0042FE06, regs);
+        return static_cast<CompanyId>(regs.al);
+    }
+
+    static void sub_4A6DA9()
+    {
+        call(0x004A6DA9);
+    }
+
+    // 0x0042F863
+    void createPlayerCompany()
+    {
+        // Original network logic removed
+        auto& gameState = getGameState();
+        gameState.flags |= Scenario::flags::preferred_owner_name;
+        auto competitorId = selectNewCompetitor(-1);
+        gameState.playerCompanies[0] = createCompany(competitorId, true);
+        gameState.playerCompanies[1] = CompanyId::null;
+        sub_4A6DA9();
+    }
+
+    // 0x0042F9AC
+    static void createAiCompany()
+    {
+        auto competitorId = selectNewCompetitor(-1);
+        if (competitorId != NullObjectId)
+        {
+            createCompany(competitorId, false);
+        }
     }
 
     // 0x0042F23C
@@ -239,8 +280,7 @@ namespace OpenLoco::CompanyManager
             {
                 if (prng.randNext(_company_max_competing) + 1 > companies_active)
                 {
-                    // Creates new company.
-                    sub_42F9AC();
+                    createAiCompany();
                 }
             }
         }

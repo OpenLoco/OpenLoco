@@ -14,10 +14,9 @@ namespace OpenLoco::MultiPlayer
 
     bool setFlag(flags flag)
     {
-        bool val = (_flags & (1 << flag)) != 0;
-
-        *_flags |= ~(1 << flag);
-        return val;
+        auto result = hasFlag(flag);
+        *_flags |= (1 << flag);
+        return result;
     }
 
     bool resetFlag(flags flag)

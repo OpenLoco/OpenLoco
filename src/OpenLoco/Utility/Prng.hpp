@@ -9,12 +9,22 @@ namespace OpenLoco::Utility
     struct prng
     {
     private:
-        uint32_t _srand_0;
-        uint32_t _srand_1;
+        uint32_t _srand_0{};
+        uint32_t _srand_1{};
 
     public:
         uint32_t srand_0() { return _srand_0; }
         uint32_t srand_1() { return _srand_1; }
+
+        prng()
+        {
+        }
+
+        prng(uint32_t s0, uint32_t s1)
+            : _srand_0(s0)
+            , _srand_1(s1)
+        {
+        }
 
         uint32_t randNext()
         {

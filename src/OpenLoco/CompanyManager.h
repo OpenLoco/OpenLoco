@@ -39,4 +39,6 @@ namespace OpenLoco::CompanyManager
     void applyPaymentToCompany(const CompanyId id, const currency32_t payment, const ExpenditureType type);
     uint32_t competingColourMask(CompanyId companyId);
     uint32_t competingColourMask();
+
+    void createPlayerCompany();
 }

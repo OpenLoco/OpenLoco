@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <limits>
 #include <string_view>
 #include <vector>
 
@@ -67,6 +68,11 @@ namespace OpenLoco
      * Represents an index / ID of a specific object type.
      */
     using LoadedObjectId = uint16_t;
+
+    /**
+     * Represents an undefined index / ID for a specific object type.
+     */
+    static constexpr LoadedObjectId NullObjectId = std::numeric_limits<LoadedObjectId>::max();
 
     struct LoadedObjectHandle
     {

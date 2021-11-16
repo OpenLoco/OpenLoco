@@ -1,10 +1,15 @@
 #include "Scenario.h"
+#include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
+#include "Environment.h"
 #include "Game.h"
+#include "GameException.hpp"
+#include "GameState.h"
 #include "Graphics/Gfx.h"
+#include "Gui.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
@@ -12,9 +17,12 @@
 #include "Map/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Map/WaveManager.h"
+#include "MultiPlayer.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ClimateObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/ScenarioTextObject.h"
+#include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "StationManager.h"
 #include "Title.h"
@@ -46,6 +54,12 @@ namespace OpenLoco::Scenario
     static loco_global<uint32_t, 0x0052623C> objectiveDeliveredCargoAmount;
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
     static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
+
+    static loco_global<S5::Options, 0x009C8714> _activeOptions;
+
+    static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
+    static loco_global<char[64], 0x009C873E> _scenarioTitle;
+    static loco_global<uint16_t, 0x0050C19A> _50C19A;
 
     // 0x0046115C
     void sub_46115C()
@@ -276,15 +290,113 @@ namespace OpenLoco::Scenario
             });
     }
 
-    // 0x0044400C
-    void start(const char* filename)
+    // 0x00442837
+    bool load(const fs::path& path)
     {
-        if (filename == nullptr)
-            filename = reinterpret_cast<const char*>(-1);
+        WindowManager::closeConstructionWindows();
+        WindowManager::closeAllFloatingWindows();
 
-        registers regs;
-        regs.ebx = X86Pointer(filename);
-        call(0x0044400C, regs);
+        // Resolve filenames to base game scenario directory
+        fs::path fullPath = path;
+        if (!fullPath.has_root_path())
+        {
+            auto scenarioPath = Environment::getPath(Environment::path_id::scenarios);
+            fullPath = scenarioPath / path;
+        }
+
+        static loco_global<char[512], 0x00112CE04> scenarioFilename;
+        std::strncpy(&*scenarioFilename, fullPath.u8string().c_str(), std::size(scenarioFilename));
+        auto flags = call(0x00442837);
+        return (flags & Interop::X86_FLAG_CARRY) == 0;
+    }
+
+    void start()
+    {
+        WindowManager::closeConstructionWindows();
+        WindowManager::closeAllFloatingWindows();
+
+        clearScreenFlag(ScreenFlags::title);
+        initialiseViewports();
+        Gui::init();
+        Audio::resetMusic();
+
+        auto& gameState = getGameState();
+        if (gameState.flags & flags::landscape_generation_done)
+        {
+            auto mainWindow = WindowManager::getMainWindow();
+            if (mainWindow != nullptr)
+            {
+                SavedViewSimple savedView;
+                savedView.viewX = gameState.savedViewX;
+                savedView.viewY = gameState.savedViewY;
+                savedView.zoomLevel = static_cast<ZoomLevel>(gameState.savedViewZoom);
+                savedView.rotation = gameState.savedViewRotation;
+                mainWindow->viewportFromSavedView(savedView);
+                mainWindow->invalidate();
+            }
+        }
+        else
+        {
+            generateLandscape();
+            WindowManager::setCurrentRotation(0);
+        }
+
+        EntityManager::updateSpatialIndex();
+        addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
+        sub_4BAEC4();
+        Title::sub_4284C8();
+
+        std::memcpy(gameState.scenarioDetails, _activeOptions->scenarioDetails, sizeof(gameState.scenarioDetails));
+        std::memcpy(gameState.scenarioName, _activeOptions->scenarioName, sizeof(gameState.scenarioName));
+
+        const auto* stexObj = ObjectManager::get<ScenarioTextObject>();
+        if (stexObj != nullptr)
+        {
+            char buffer[256];
+            StringManager::formatString(buffer, sizeof(buffer), stexObj->details);
+            std::strncpy(gameState.scenarioDetails, buffer, sizeof(gameState.scenarioDetails));
+        }
+
+        auto savePath = Environment::getPath(Environment::path_id::save);
+        savePath /= std::string(_scenarioTitle) + S5::extensionSV5;
+        std::strcat(_currentScenarioFilename, savePath.u8string().c_str());
+
+        call(0x004C159C);
+        call(0x0046E07B); // load currency gfx
+        CompanyManager::reset();
+        CompanyManager::createPlayerCompany();
+        initialiseDate(_activeOptions->scenarioStartYear);
+        initialiseSnowLine();
+        sub_4748D4();
+        std::memset(gameState.recordType, 0, sizeof(gameState.recordType));
+        gameState.objectiveTimeLimitUntilYear = gameState.objectiveTimeLimitYears - 1 + gameState.currentYear;
+        gameState.objectiveMonthsInChallenge = 0;
+        call(0x0049B546);
+        gameState.lastMapWindowFlags = 0;
+
+        TownManager::updateLabels();
+        StationManager::updateLabels();
+        Gfx::loadPalette();
+        Gfx::invalidateScreen();
+        resetScreenAge();
+        _50C19A = 62000;
+        MultiPlayer::setFlag(MultiPlayer::flags::flag_10);
+        throw GameException::Interrupt;
+    }
+
+    // 0x0044400C
+    bool loadAndStart(const fs::path& path)
+    {
+        // Set new rng seed based on current rng and current time
+        // TODO do we really need to use the current rng? seems unnecessary, keeping with vanilla logic for now
+        auto& gameState = getGameState();
+        auto oldRng = gameState.rng;
+
+        if (!load(path))
+            return false;
+
+        gameState.rng = Utility::prng(Platform::getTime() ^ oldRng.srand_0(), oldRng.srand_1());
+        start();
     }
 
     // this will prepare _commonFormatArgs array before drawing the StringIds::challenge_value

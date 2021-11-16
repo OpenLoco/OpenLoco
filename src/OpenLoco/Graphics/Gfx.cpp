@@ -1456,4 +1456,10 @@ namespace OpenLoco::Gfx
     {
         _currentFontSpriteBase = value;
     }
+
+    // 0x004523F4
+    void loadPalette()
+    {
+        call(0x004523F4);
+    }
 }
