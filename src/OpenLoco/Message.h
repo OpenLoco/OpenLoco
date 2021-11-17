@@ -28,6 +28,7 @@ namespace OpenLoco
         bankruptcyWarning3Months,
         bankruptcyDeclared,
         vehicleCrashed = 27,
+        companyCheated,
         newSpeedRecord = 29,
     };
 
