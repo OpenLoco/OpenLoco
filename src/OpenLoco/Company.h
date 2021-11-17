@@ -69,7 +69,7 @@ namespace OpenLoco
         string_id owner_name;
         uint32_t challenge_flags;         // 0x04
         currency48_t cash;                // 0x08
-        uint32_t current_loan;            // 0x0E
+        currency32_t current_loan;        // 0x0E
         uint32_t update_counter;          // 0x12
         int16_t performance_index;        // 0x16
         uint8_t competitor_id;            // 0x18

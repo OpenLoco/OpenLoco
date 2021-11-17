@@ -55,7 +55,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleSell,                  nullptr,                   0x004AED34, true  },
         { GameCommand::createTrack,                  nullptr,                   0x0049BB98, true  },
         { GameCommand::removeTrack,                  nullptr,                   0x0049C7F2, true  },
-        { GameCommand::changeLoan,                   nullptr,                   0x0046DE88, false },
+        { GameCommand::changeLoan,                   changeLoan,                0x0046DE88, false },
         { GameCommand::vehicleRename,                Vehicles::rename,          0x004B6572, false },
         { GameCommand::changeStationName,            renameStation,             0x00490756, false },
         { GameCommand::vehicleLocalExpress,          nullptr,                   0x004B694B, true  },

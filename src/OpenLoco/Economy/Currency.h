@@ -38,45 +38,45 @@ namespace OpenLoco
             return !(var_00 == rhs.var_00 && var_04 == rhs.var_04);
         }
 
-        currency48_t operator+(currency32_t& rhs)
+        currency48_t operator+(const currency32_t& rhs)
         {
             return currency48_t(asInt64() + rhs);
         }
 
-        currency48_t operator+(currency48_t& rhs)
+        currency48_t operator+(const currency48_t& rhs)
         {
             return currency48_t(asInt64() + rhs.asInt64());
         }
 
-        currency48_t& operator+=(currency32_t& rhs)
+        currency48_t& operator+=(const currency32_t& rhs)
         {
             auto sum = currency48_t(asInt64() + rhs);
             return *this = sum;
         }
 
-        currency48_t& operator+=(currency48_t& rhs)
+        currency48_t& operator+=(const currency48_t& rhs)
         {
             auto sum = currency48_t(asInt64() + rhs.asInt64());
             return *this = sum;
         }
 
-        currency48_t operator-(currency32_t& rhs)
+        currency48_t operator-(const currency32_t& rhs)
         {
             return currency48_t(asInt64() - rhs);
         }
 
-        currency48_t operator-(currency48_t& rhs)
+        currency48_t operator-(const currency48_t& rhs)
         {
             return currency48_t(asInt64() - rhs.asInt64());
         }
 
-        currency48_t& operator-=(currency32_t& rhs)
+        currency48_t& operator-=(const currency32_t& rhs)
         {
             auto sum = currency48_t(asInt64() - rhs);
             return *this = sum;
         }
 
-        currency48_t& operator-=(currency48_t& rhs)
+        currency48_t& operator-=(const currency48_t& rhs)
         {
             auto sum = currency48_t(asInt64() - rhs.asInt64());
             return *this = sum;
