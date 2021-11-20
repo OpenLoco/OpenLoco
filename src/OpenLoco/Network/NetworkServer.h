@@ -65,7 +65,9 @@ namespace OpenLoco::Network
         void onUpdate();
 
     public:
-        void listen(port_t port);
+        ~NetworkServer() override;
+
+        void listen(const std::string& bind, port_t port);
         void sendChatMessage(std::string_view message) override;
         void sendGameCommand(uint32_t index, uint32_t tick, CompanyId company, const OpenLoco::Interop::registers& regs);
 

@@ -15,16 +15,34 @@ using namespace OpenLoco::Network;
 
 constexpr uint32_t pingInterval = 30;
 
-void NetworkServer::listen(port_t port)
+NetworkServer::~NetworkServer()
 {
-    _socket->listen(defaultPort);
+    close();
+}
+
+void NetworkServer::listen(const std::string& bind, port_t port)
+{
+    try
+    {
+        _socket->listen(Protocol::ipv6, bind, port);
+    }
+    catch (...)
+    {
+        _socket->listen(Protocol::ipv4, bind, port);
+    }
     beginReceivePacketLoop();
 
     setScreenFlag(ScreenFlags::networked);
     setScreenFlag(ScreenFlags::networkHost);
 
     Console::log("Server opened");
-    Console::log("Listening for incoming connections...");
+
+    auto ipAddress = _socket->getIpAddress();
+    if (_socket->getProtocol() == Protocol::ipv6)
+    {
+        ipAddress = '[' + ipAddress + ']';
+    }
+    Console::log("Listening for incoming connections on %s:%d...", ipAddress.c_str(), defaultPort);
 }
 
 void NetworkServer::onClose()

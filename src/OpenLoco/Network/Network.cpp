@@ -1,4 +1,5 @@
 #include "Network.h"
+#include "../CommandLine.h"
 #include "../Console.h"
 #include "../GameCommands/GameCommands.h"
 #include "../GameState.h"
@@ -42,8 +43,12 @@ namespace OpenLoco::Network
 
         try
         {
+            auto& cmdlineOptions = getCommandLineOptions();
+            auto& bind = cmdlineOptions.bind;
+            auto port = cmdlineOptions.port.value_or(defaultPort);
+
             _server = std::make_unique<NetworkServer>();
-            _server->listen(defaultPort);
+            _server->listen(bind, port);
 
             _mode = NetworkMode::server;
             setScreenFlag(ScreenFlags::networked);

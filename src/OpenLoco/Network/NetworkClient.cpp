@@ -24,10 +24,11 @@ void NetworkClient::connect(std::string_view host, port_t port)
 {
     auto szHost = std::string(host);
 
-    _serverEndpoint = Socket::resolve(szHost, port);
+    _serverEndpoint = Socket::resolve(Protocol::any, szHost, port);
     _serverConnection = std::make_unique<NetworkConnection>(_socket.get(), _serverEndpoint->clone());
 
-    Console::log("Resolved endpoint for %s:%d", szHost.c_str(), defaultPort);
+    auto szHostIpAddress = _serverEndpoint->getIpAddress();
+    Console::log("Resolved endpoint for %s:%d", szHostIpAddress.c_str(), defaultPort);
 
     beginReceivePacketLoop();
 
