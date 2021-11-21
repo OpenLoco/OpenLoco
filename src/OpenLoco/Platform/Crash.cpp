@@ -6,7 +6,7 @@
 #include <ShlObj.h>
 #include <client/windows/handler/exception_handler.h>
 
-static bool onCrash(
+[[maybe_unused]] static bool onCrash(
     const wchar_t* dumpPath, const wchar_t* miniDumpId, void* context, EXCEPTION_POINTERS* exinfo,
     MDRawAssertionInfo* assertion, bool succeeded)
 {
@@ -69,7 +69,7 @@ static bool onCrash(
     return succeeded;
 }
 
-static std::wstring getDumpDirectory()
+[[maybe_unused]] static std::wstring getDumpDirectory()
 {
     auto user_dir = OpenLoco::Platform::getUserDirectory();
     auto result = OpenLoco::Utility::toUtf16(user_dir.string());
@@ -82,7 +82,7 @@ constexpr const wchar_t* PipeName = L"openloco-bpad";
 
 CExceptionHandler crashInit()
 {
-#if defined(USE_BREAKPAD)
+#if defined(USE_BREAKPAD) && !defined(DEBUG)
     // Path must exist and be RW!
     auto exHandler = new google_breakpad::ExceptionHandler(
         getDumpDirectory(), 0, onCrash, 0, google_breakpad::ExceptionHandler::HANDLER_ALL, MiniDumpWithDataSegs, PipeName, 0);
