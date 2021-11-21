@@ -23,9 +23,7 @@
 int main(int argc, const char** argv)
 {
     OpenLoco::Interop::loadSections();
-    OpenLoco::lpCmdLine((char*)argv[0]);
-    OpenLoco::main();
-    return 0;
+    return OpenLoco::main(argc, argv);
 }
 
 namespace OpenLoco::Platform

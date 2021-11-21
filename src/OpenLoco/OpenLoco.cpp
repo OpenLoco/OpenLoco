@@ -1,3 +1,4 @@
+#include "CommandLine.h"
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -80,13 +81,6 @@ namespace OpenLoco
     static Timepoint _lastUpdate = Clock::now();
     static CExceptionHandler _exHandler = nullptr;
 
-#ifdef _WIN32
-    loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
-    loco_global<LPSTR, 0x00525348> glpCmdLine;
-#else
-    loco_global<char*, 0x00525348> glpCmdLine;
-#endif
-
     loco_global<char[256], 0x005060D0> gCDKey;
 
     loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
@@ -120,25 +114,6 @@ namespace OpenLoco
     {
         return version;
     }
-
-#ifdef _WIN32
-    void* hInstance()
-    {
-        return ghInstance;
-    }
-#endif
-
-    const char* lpCmdLine()
-    {
-        return glpCmdLine;
-    }
-
-#ifndef _WIN32
-    void lpCmdLine(const char* path)
-    {
-        glpCmdLine = strdup(path);
-    }
-#endif
 
     void resetScreenAge()
     {
@@ -375,7 +350,7 @@ namespace OpenLoco
     {
         if (isAlreadyRunning("Locomotion"))
         {
-            exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
+            // exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
         }
 
         // Originally the game would check that all the game
@@ -444,14 +419,44 @@ namespace OpenLoco
         call(0x004969DA);
         Scenario::reset();
         setScreenFlag(ScreenFlags::initialised);
-#ifdef _SHOW_INTRO_
-        Intro::state(Intro::State::begin);
-#else
         Intro::state(Intro::State::end);
-#endif
         Title::start();
         Gui::init();
         Gfx::clear(Gfx::screenContext(), 0x0A0A0A0A);
+    }
+
+    static void loadFile(const fs::path& path)
+    {
+        auto extension = path.extension().u8string();
+        if (Utility::iequals(extension, S5::extensionSC5))
+        {
+            Scenario::loadAndStart(path);
+        }
+        else
+        {
+            S5::load(path, 0);
+        }
+    }
+
+    static void loadFile(const std::string& path)
+    {
+        loadFile(fs::u8path(path));
+    }
+
+    static void launchGame()
+    {
+        const auto& cmdLineOptions = getCommandLineOptions();
+        if (!cmdLineOptions.path.empty())
+        {
+            loadFile(cmdLineOptions.path);
+        }
+        else
+        {
+#ifdef _SHOW_INTRO_
+            Intro::state(Intro::State::begin);
+#endif
+            Title::start();
+        }
     }
 
     // 0x00428E47
@@ -482,6 +487,21 @@ namespace OpenLoco
     }
 
     void sub_431695(uint16_t var_F253A0)
+    {
+        _updating_company_id = CompanyManager::getControllingId();
+        for (auto i = 0; i < var_F253A0; i++)
+        {
+            sub_428E47();
+            WindowManager::dispatchUpdateAll();
+        }
+
+        Input::processKeyboardInput();
+        WindowManager::update();
+        Ui::handleInput();
+        CompanyManager::updateOwnerStatus();
+    }
+
+    [[maybe_unused]] static void old_sub_431695(uint16_t var_F253A0)
     {
         if (!isNetworked())
         {
@@ -689,6 +709,10 @@ namespace OpenLoco
                 if (Intro::isActive())
                 {
                     Intro::update();
+                    if (!Intro::isActive())
+                    {
+                        launchGame();
+                    }
                 }
                 else
                 {
@@ -745,6 +769,7 @@ namespace OpenLoco
                     }
 
                     sub_46FFCA();
+
                     tickLogic(numUpdates);
 
                     _525F62++;
@@ -829,6 +854,7 @@ namespace OpenLoco
     static void tickLogic()
     {
         _scenario_ticks++;
+
         addr<0x00525F64, int32_t>()++;
         addr<0x00525FCC, uint32_t>() = gPrng().srand_0();
         addr<0x00525FD0, uint32_t>() = gPrng().srand_1();
@@ -1152,9 +1178,46 @@ namespace OpenLoco
 #endif
     }
 
-    // 0x00406D13
-    void main()
+    /**
+     * We do our own command line logic, but we still execute routines that try to read lpCmdLine,
+     * so make sure it is initialised to a pointer to an empty string. Remove this when no more
+     * original code is called that uses lpCmdLine (e.g. 0x00440DEC)
+     */
+    static void resetCmdline()
     {
+        loco_global<const char*, 0x00525348> glpCmdLine;
+        glpCmdLine = "";
+    }
+
+    void simulateGame(const fs::path& path, int32_t ticks)
+    {
+        Config::readNewConfig();
+        Environment::resolvePaths();
+        resetCmdline();
+        registerHooks();
+
+        try
+        {
+            initialise();
+            loadFile(path);
+        }
+        catch (...)
+        {
+        }
+        tickLogic(ticks);
+    }
+
+    // 0x00406D13
+    static int main(const CommandLineOptions& options)
+    {
+        auto ret = runCommandLineOnlyCommand(options);
+        if (ret)
+        {
+            return *ret;
+        }
+
+        setCommandLineOptions(options);
+
         if (!OpenLoco::Platform::isRunningInWine())
         {
             _exHandler = crashInit();
@@ -1163,6 +1226,7 @@ namespace OpenLoco
         {
             Console::log("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
         }
+
         auto versionInfo = OpenLoco::getVersionInfo();
         std::cout << versionInfo << std::endl;
         try
@@ -1170,6 +1234,7 @@ namespace OpenLoco
             const auto& cfg = Config::readNewConfig();
             Environment::resolvePaths();
 
+            resetCmdline();
             registerHooks();
             if (sub_4054B9())
             {
@@ -1183,11 +1248,39 @@ namespace OpenLoco
 
                 // TODO extra clean up code
             }
+            return 0;
         }
         catch (const std::exception& e)
         {
             std::cerr << e.what() << std::endl;
             Ui::showMessageBox("Exception", e.what());
+            return 2;
+        }
+    }
+
+    int main(int argc, const char** argv)
+    {
+        auto options = parseCommandLine(argc, argv);
+        if (options)
+        {
+            return main(*options);
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
+    int main(const char* args)
+    {
+        auto options = parseCommandLine(args);
+        if (options)
+        {
+            return main(*options);
+        }
+        else
+        {
+            return 1;
         }
     }
 }
@@ -1203,10 +1296,7 @@ extern "C" {
 __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
 __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    OpenLoco::glpCmdLine = lpCmdLine;
-    OpenLoco::ghInstance = hInstance;
-    OpenLoco::main();
-    return 0;
+    return OpenLoco::main(lpCmdLine);
 }
 #endif
 }

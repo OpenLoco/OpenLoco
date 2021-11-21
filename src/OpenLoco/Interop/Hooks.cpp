@@ -120,7 +120,10 @@ static Interop::loco_global<set_palette_func, 0x0052524C> set_palette_callback;
 FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_4054a3(const palette_entry_t* palette, int32_t index, int32_t count)
 {
-    (*set_palette_callback)(palette, index, count);
+    if (set_palette_callback != nullptr)
+    {
+        (*set_palette_callback)(palette, index, count);
+    }
 }
 
 FORCE_ALIGN_ARG_POINTER

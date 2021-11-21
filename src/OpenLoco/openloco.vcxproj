@@ -19,6 +19,7 @@
     <ClCompile Include="Audio\Channel.cpp" />
     <ClCompile Include="Audio\MusicChannel.cpp" />
     <ClCompile Include="Audio\VehicleChannel.cpp" />
+    <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Company.cpp" />
     <ClCompile Include="CompanyManager.cpp" />
     <ClCompile Include="Config.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="Audio\Channel.h" />
     <ClInclude Include="Audio\MusicChannel.h" />
     <ClInclude Include="Audio\VehicleChannel.h" />
+    <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Company.h" />
     <ClInclude Include="CompanyManager.h" />
     <ClInclude Include="ConfigConvert.hpp" />
