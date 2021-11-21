@@ -23,9 +23,11 @@ uint32_t NetworkClient::getLocalTick() const
 void NetworkClient::connect(std::string_view host, port_t port)
 {
     auto szHost = std::string(host);
-
     _serverEndpoint = Socket::resolve(Protocol::any, szHost, port);
-    _serverConnection = std::make_unique<NetworkConnection>(_socket.get(), _serverEndpoint->clone());
+
+    _sockets.push_back(std::move(Socket::createUdp()));
+    auto& socket = _sockets.back();
+    _serverConnection = std::make_unique<NetworkConnection>(socket.get(), _serverEndpoint->clone());
 
     auto szHostIpAddress = _serverEndpoint->getIpAddress();
     Console::log("Resolved endpoint for %s:%d", szHostIpAddress.c_str(), defaultPort);
@@ -112,7 +114,7 @@ bool NetworkClient::hasTimedOut() const
     return false;
 }
 
-void NetworkClient::onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
+void NetworkClient::onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
 {
     // TODO do we really need the check, it is possible but unlikely
     //      for something else to hijack the UDP client port

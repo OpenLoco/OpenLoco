@@ -18,14 +18,14 @@ namespace OpenLoco::Network
         void receivePacketLoop();
 
     protected:
-        std::unique_ptr<IUdpSocket> _socket;
+        std::vector<std::unique_ptr<IUdpSocket>> _sockets;
 
         void beginReceivePacketLoop();
         void endReceivePacketLoop();
 
         virtual void onClose();
         virtual void onUpdate();
-        virtual void onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
+        virtual void onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
 
     public:
         NetworkBase();

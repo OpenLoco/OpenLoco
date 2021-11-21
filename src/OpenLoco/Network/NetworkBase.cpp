@@ -7,7 +7,6 @@ using namespace OpenLoco::Network;
 
 NetworkBase::NetworkBase()
 {
-    _socket = Socket::createUdp();
 }
 
 NetworkBase::~NetworkBase()
@@ -24,20 +23,25 @@ void NetworkBase::receivePacketLoop()
 {
     while (!_endReceivePacketLoop)
     {
-        Packet packet;
-        size_t packetSize{};
-
-        std::unique_ptr<INetworkEndpoint> endpoint;
-        auto result = _socket->receiveData(&packet, sizeof(Packet), &packetSize, &endpoint);
-        if (result == NetworkReadPacket::success)
+        bool receivedPacket{};
+        for (auto& socket : _sockets)
         {
-            // Validate packet
-            if (packet.header.dataSize <= packetSize - sizeof(PacketHeader))
+            Packet packet;
+            size_t packetSize{};
+
+            std::unique_ptr<INetworkEndpoint> endpoint;
+            auto result = socket->receiveData(&packet, sizeof(Packet), &packetSize, &endpoint);
+            if (result == NetworkReadPacket::success)
             {
-                onReceivePacket(std::move(endpoint), packet);
+                // Validate packet
+                if (packet.header.dataSize <= packetSize - sizeof(PacketHeader))
+                {
+                    onReceivePacket(*socket, std::move(endpoint), packet);
+                }
+                receivedPacket = true;
             }
         }
-        else
+        if (!receivedPacket)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
@@ -73,7 +77,7 @@ void NetworkBase::onUpdate()
 {
 }
 
-void NetworkBase::onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
+void NetworkBase::onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
 {
 }
 
@@ -86,6 +90,6 @@ void NetworkBase::close()
 
     onClose();
 
-    _socket = nullptr;
+    _sockets.clear();
     _isClosed = true;
 }

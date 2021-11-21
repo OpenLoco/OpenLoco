@@ -22,27 +22,48 @@ NetworkServer::~NetworkServer()
 
 void NetworkServer::listen(const std::string& bind, port_t port)
 {
+    // IPv4
     try
     {
-        _socket->listen(Protocol::ipv6, bind, port);
+        auto socket4 = Socket::createUdp();
+        socket4->listen(Protocol::ipv4, bind, port);
+        _sockets.push_back(std::move(socket4));
     }
     catch (...)
     {
-        _socket->listen(Protocol::ipv4, bind, port);
     }
+
+    // IPv6
+    try
+    {
+        auto socket6 = Socket::createUdp();
+        socket6->listen(Protocol::ipv6, bind, port);
+        _sockets.push_back(std::move(socket6));
+    }
+    catch (...)
+    {
+    }
+
+    if (_sockets.empty())
+    {
+        throw std::runtime_error("Unable to listen on " + bind + ", port " + std::to_string(port));
+    }
+
     beginReceivePacketLoop();
 
     setScreenFlag(ScreenFlags::networked);
     setScreenFlag(ScreenFlags::networkHost);
 
     Console::log("Server opened");
-
-    auto ipAddress = _socket->getIpAddress();
-    if (_socket->getProtocol() == Protocol::ipv6)
+    for (const auto& socket : _sockets)
     {
-        ipAddress = '[' + ipAddress + ']';
+        auto ipAddress = socket->getIpAddress();
+        if (socket->getProtocol() == Protocol::ipv6)
+        {
+            ipAddress = '[' + ipAddress + ']';
+        }
+        Console::log("Listening for incoming connections on %s:%d...", ipAddress.c_str(), defaultPort);
     }
-    Console::log("Listening for incoming connections on %s:%d...", ipAddress.c_str(), defaultPort);
 }
 
 void NetworkServer::onClose()
@@ -80,7 +101,7 @@ void NetworkServer::createNewClient(std::unique_ptr<NetworkConnection> conn, con
     Console::log("Accepted new client: %s", newClientPtr.name.c_str());
 }
 
-void NetworkServer::onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
+void NetworkServer::onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
 {
     auto client = findClient(*endpoint);
     if (client == nullptr)
@@ -88,7 +109,7 @@ void NetworkServer::onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, 
         auto connectPacket = packet.As<PacketKind::connect, ConnectPacket>();
         if (connectPacket != nullptr)
         {
-            auto conn = std::make_unique<NetworkConnection>(_socket.get(), std::move(endpoint));
+            auto conn = std::make_unique<NetworkConnection>(&socket, std::move(endpoint));
             conn->receivePacket(packet);
 
             std::unique_lock<std::mutex> lk(_incomingConnectionsSync);

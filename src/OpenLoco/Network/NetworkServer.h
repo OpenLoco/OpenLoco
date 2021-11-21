@@ -60,9 +60,9 @@ namespace OpenLoco::Network
         }
 
     protected:
-        void onClose();
-        void onReceivePacket(std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet);
-        void onUpdate();
+        void onClose() override;
+        void onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet) override;
+        void onUpdate() override;
 
     public:
         ~NetworkServer() override;
