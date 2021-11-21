@@ -2,8 +2,9 @@
 
 #include "../Core/FileSystem.hpp"
 #include "../Core/Span.hpp"
+#include "../Utility/Stream.hpp"
 #include <cstdint>
-#include <fstream>
+#include <memory>
 
 namespace OpenLoco
 {
@@ -51,7 +52,8 @@ namespace OpenLoco
     class SawyerStreamReader
     {
     private:
-        std::ifstream _stream;
+        Stream* _stream;
+        std::unique_ptr<FileStream> _fstream;
         FastBuffer _decodeBuffer;
         FastBuffer _decodeBuffer2;
 
@@ -61,6 +63,7 @@ namespace OpenLoco
         static void decodeRotate(FastBuffer& buffer, stdx::span<uint8_t const> data);
 
     public:
+        SawyerStreamReader(Stream& stream);
         SawyerStreamReader(const fs::path& path);
 
         stdx::span<uint8_t const> readChunk();
@@ -73,17 +76,20 @@ namespace OpenLoco
     class SawyerStreamWriter
     {
     private:
-        std::ofstream _stream;
+        Stream* _stream;
+        std::unique_ptr<FileStream> _fstream;
         uint32_t _checksum{};
         FastBuffer _encodeBuffer;
         FastBuffer _encodeBuffer2;
 
+        void writeStream(const void* data, size_t dataLen);
         stdx::span<uint8_t const> encode(SawyerEncoding encoding, stdx::span<uint8_t const> data);
         static void encodeRunLengthSingle(FastBuffer& buffer, stdx::span<uint8_t const> data);
         static void encodeRunLengthMulti(FastBuffer& buffer, stdx::span<uint8_t const> data);
         static void encodeRotate(FastBuffer& buffer, stdx::span<uint8_t const> data);
 
     public:
+        SawyerStreamWriter(Stream& stream);
         SawyerStreamWriter(const fs::path& path);
 
         void writeChunk(SawyerEncoding chunkType, const void* data, size_t dataLen);

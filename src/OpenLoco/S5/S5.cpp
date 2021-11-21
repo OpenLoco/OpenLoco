@@ -17,10 +17,10 @@
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Exception.hpp"
+#include "../Utility/Stream.hpp"
 #include "../Vehicles/Orders.h"
 #include "../ViewportManager.h"
 #include "SawyerStream.h"
-#include <fstream>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
@@ -40,7 +40,7 @@ namespace OpenLoco::S5
     static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
     static loco_global<string_id, 0x0050C198> _loadErrorMessage;
 
-    static bool save(const fs::path& path, const S5File& file, const std::vector<ObjectHeader>& packedObjects);
+    static bool save(Stream& stream, const S5File& file, const std::vector<ObjectHeader>& packedObjects);
 
     Options& getOptions()
     {
@@ -276,6 +276,12 @@ namespace OpenLoco::S5
     // 0x00441C26
     bool save(const fs::path& path, SaveFlags flags)
     {
+        FileStream fs(path, StreamFlags::write);
+        return save(fs, flags);
+    }
+
+    bool save(Stream& stream, SaveFlags flags)
+    {
         if (!(flags & SaveFlags::noWindowClose) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
         {
             WindowManager::closeConstructionWindows();
@@ -302,7 +308,7 @@ namespace OpenLoco::S5
             }
 
             auto file = prepareSaveFile(flags, requiredObjects, packedObjects);
-            saveResult = save(path, *file, packedObjects);
+            saveResult = save(stream, *file, packedObjects);
         }
 
         if (!(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
@@ -324,11 +330,11 @@ namespace OpenLoco::S5
         return false;
     }
 
-    static bool save(const fs::path& path, const S5File& file, const std::vector<ObjectHeader>& packedObjects)
+    static bool save(Stream& stream, const S5File& file, const std::vector<ObjectHeader>& packedObjects)
     {
         try
         {
-            SawyerStreamWriter fs(path);
+            SawyerStreamWriter fs(stream);
             fs.writeChunk(SawyerEncoding::rotate, file.header);
             if (file.header.type == S5Type::scenario || file.header.type == S5Type::landscape)
             {
@@ -414,9 +420,9 @@ namespace OpenLoco::S5
     }
 
     // 0x00441FC9
-    static std::unique_ptr<S5File> load(const fs::path& path)
+    static std::unique_ptr<S5File> load(Stream& stream)
     {
-        SawyerStreamReader fs(path);
+        SawyerStreamReader fs(stream);
         if (!fs.validateChecksum())
         {
             throw std::runtime_error("Invalid checksum");
@@ -529,6 +535,12 @@ namespace OpenLoco::S5
     // 0x00441FA7
     bool load(const fs::path& path, uint32_t flags)
     {
+        FileStream fs(path, StreamFlags::read);
+        return load(fs, flags);
+    }
+
+    bool load(Stream& stream, uint32_t flags)
+    {
         _gameSpeed = 0;
         if (!(flags & LoadFlags::titleSequence) && !(flags & LoadFlags::twoPlayer))
         {
@@ -538,7 +550,7 @@ namespace OpenLoco::S5
 
         try
         {
-            auto file = load(path);
+            auto file = load(stream);
 
             if (file->header.version != currentVersion)
             {
