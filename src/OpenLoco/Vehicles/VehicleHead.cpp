@@ -2677,9 +2677,16 @@ namespace OpenLoco::Vehicles
 
                 break;
             }
+
+            bool stationHadPreviousCargo = cargoStats.quantity != 0;
             cargoStats.quantity = Math::Bound::add(cargoStats.quantity, cargo.qty);
             station->updateCargoDistribution();
-            cargoStats.enrouteAge = std::max(cargoStats.enrouteAge, cargo.numDays);
+            cargoStats.enrouteAge += cargo.numDays;
+            if (stationHadPreviousCargo)
+            {
+                cargoStats.enrouteAge *= 1 - static_cast<float>(cargo.qty) / cargoStats.quantity;
+            }
+
             bool setOrigin = true;
             if (cargoStats.origin != StationId::null)
             {
