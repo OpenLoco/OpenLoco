@@ -2678,13 +2678,15 @@ namespace OpenLoco::Vehicles
                 break;
             }
 
-            bool stationHadPreviousCargo = cargoStats.quantity != 0;
+            const bool stationHadPreviousCargo = cargoStats.quantity != 0;
             cargoStats.quantity = Math::Bound::add(cargoStats.quantity, cargo.qty);
             station->updateCargoDistribution();
             cargoStats.enrouteAge = Math::Bound::add(cargoStats.enrouteAge, cargo.numDays);
             if (stationHadPreviousCargo)
             {
-                cargoStats.enrouteAge *= 1 - static_cast<float>(cargo.qty) / cargoStats.quantity;
+                // enrouteAge = enrouteAge * (1 - addedQuantity / summedQuantity)
+                const auto multiplier = (1 << 16) - (cargo.qty << 16) / cargoStats.quantity;
+                cargoStats.enrouteAge = (cargoStats.enrouteAge * multiplier) >> 16;
             }
 
             bool setOrigin = true;
