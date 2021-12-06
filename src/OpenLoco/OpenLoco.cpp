@@ -350,7 +350,7 @@ namespace OpenLoco
     {
         if (isAlreadyRunning("Locomotion"))
         {
-            // exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
+            exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
         }
 
         // Originally the game would check that all the game
@@ -1201,8 +1201,9 @@ namespace OpenLoco
             initialise();
             loadFile(path);
         }
-        catch (...)
+        catch (const std::exception& e)
         {
+            Console::error("Unable to simulate park: %s", e.what());
         }
         tickLogic(ticks);
     }

@@ -2,6 +2,7 @@
 
 #include "../Core/FileSystem.hpp"
 #include "../Core/Span.hpp"
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <fstream>
@@ -9,33 +10,36 @@
 #include <stdexcept>
 #include <vector>
 
-namespace OpenLoco::Utility
-{
-    template<typename T1, typename T2, typename T3>
-    std::basic_istream<T1, T2>& readData(std::basic_istream<T1, T2>& stream, T3* dst, size_t count)
-    {
-        return stream.read((char*)dst, static_cast<uint64_t>(count) * sizeof(T3));
-    }
-
-    template<typename T1, typename T2, typename T3>
-    std::basic_istream<T1, T2>& readData(std::basic_istream<T1, T2>& stream, T3& dst)
-    {
-        return readData(stream, &dst, 1);
-    }
-
-    template<typename T3, typename T1, typename T2>
-    T3 readValue(std::basic_istream<T1, T2>& stream)
-    {
-        T3 result{};
-        readData(stream, result);
-        return result;
-    }
-}
-
 namespace OpenLoco
 {
+    namespace Utility
+    {
+        // Obsolete methods, use new Stream APIs
+
+        template<typename T1, typename T2, typename T3>
+        std::basic_istream<T1, T2>& readData(std::basic_istream<T1, T2>& stream, T3* dst, size_t count)
+        {
+            return stream.read((char*)dst, static_cast<uint64_t>(count) * sizeof(T3));
+        }
+
+        template<typename T1, typename T2, typename T3>
+        std::basic_istream<T1, T2>& readData(std::basic_istream<T1, T2>& stream, T3& dst)
+        {
+            return readData(stream, &dst, 1);
+        }
+
+        template<typename T3, typename T1, typename T2>
+        T3 readValue(std::basic_istream<T1, T2>& stream)
+        {
+            T3 result{};
+            readData(stream, result);
+            return result;
+        }
+    }
+
+    // Obsolete class, use new Stream APIs
     template<typename CharT, typename TraitsT = std::char_traits<CharT>>
-    class SpanStream : public std::istream
+    class SpanStream final : public std::istream
     {
     private:
         class SpanStreamBuffer : public std::streambuf
@@ -61,10 +65,7 @@ namespace OpenLoco
         {
         }
     };
-}
 
-namespace OpenLoco
-{
     namespace StreamFlags
     {
         constexpr uint8_t read = 1;
@@ -90,7 +91,7 @@ namespace OpenLoco
         [[noreturn]] static void throwInvalidOperation() { throw std::runtime_error("Invalid operation"); }
     };
 
-    class BinaryStream : public Stream
+    class BinaryStream final : public Stream
     {
     private:
         const void* _data{};
@@ -131,10 +132,10 @@ namespace OpenLoco
         }
     };
 
-    class MemoryStream : public Stream
+    class MemoryStream final : public Stream
     {
     private:
-        std::vector<uint8_t> _data{};
+        std::vector<std::byte> _data{};
         size_t _index{};
 
         void ensureLength(size_t len)
@@ -146,12 +147,12 @@ namespace OpenLoco
         }
 
     public:
-        const uint8_t* data() const
+        const void* data() const
         {
             return _data.data();
         }
 
-        uint8_t* data()
+        void* data()
         {
             return _data.data();
         }
@@ -191,7 +192,7 @@ namespace OpenLoco
         }
     };
 
-    class FileStream : public Stream
+    class FileStream final : public Stream
     {
     private:
         std::fstream _fstream;
