@@ -722,7 +722,6 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
     }
 
-
     static void initEvents();
 
     Window* open()
