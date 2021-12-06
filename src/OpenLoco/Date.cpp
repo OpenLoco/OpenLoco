@@ -79,6 +79,11 @@ namespace OpenLoco
         getGameState().dayCounter = progression;
     }
 
+    void modifyYear(const int32_t offset)
+    {
+         setCurrentDay(getCurrentDay() + (offset * 365));
+    }
+
     bool updateDayCounter()
     {
         bool result = false;

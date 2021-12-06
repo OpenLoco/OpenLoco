@@ -52,6 +52,8 @@ namespace OpenLoco
     uint16_t getDayProgression();
     void setDayProgression(const uint16_t progression);
 
+    void modifyYear(const int32_t offset);
+
     /**
      * Updates the current day counter.
      * @returns true if the counter wraps indicating a new day.

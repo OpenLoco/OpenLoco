@@ -30,6 +30,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 tab_companies,
                 tab_vehicles,
                 tab_towns,
+                tab_time,
             };
         }
 
@@ -41,9 +42,10 @@ namespace OpenLoco::Ui::Windows::Cheats
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab),                                                 \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab),                                                \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab),                                                \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab)
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab),                                                \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab)
 
-        constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns);
+        constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns) | (1 << Widx::tab_time);
 
         static void drawTabs(Ui::Window* const self, Gfx::Context* const context)
         {
@@ -117,6 +119,12 @@ namespace OpenLoco::Ui::Windows::Cheats
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
                 Widget::drawTab(self, context, imageId, Widx::tab_towns);
             }
+
+            // Time tab
+            {
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_wrench_frame0;
+                Widget::drawTab(self, context, imageId, Widx::tab_time);
+            }
         }
 
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -132,7 +140,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             enum
             {
-                cash_step_group = 8,
+                cash_step_group = 9,
                 cash_step_value,
                 cash_step_decrease,
                 cash_step_increase,
@@ -228,6 +236,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
+                case Common::Widx::tab_time:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -296,7 +305,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             enum
             {
-                target_company_group = 8,
+                target_company_group = 9,
                 target_company_dropdown,
                 target_company_dropdown_btn,
                 select_cheat_group,
@@ -367,6 +376,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
+                case Common::Widx::tab_time:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -446,7 +456,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             enum
             {
-                reliability_group = 8,
+                reliability_group = 9,
                 reliablity_all_to_zero,
                 reliablity_all_to_hundred,
             };
@@ -486,6 +496,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
+                case Common::Widx::tab_time:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -533,7 +544,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             enum
             {
-                ratings_group = 8,
+                ratings_group = 9,
                 ratings_all_min_10pct,
                 ratings_all_plus_10pct,
                 ratings_all_to_min,
@@ -577,6 +588,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
+                case Common::Widx::tab_time:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -626,6 +638,91 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
     }
 
+    namespace Time
+    {
+        constexpr Ui::Size windowSize = { 250, 103 };
+
+        static WindowEventList _events;
+
+        namespace Widx
+        {
+            enum
+            {
+                misc_group = 9,
+                year_add_1,
+                year_minus_1,
+            };
+        }
+
+        static Widget _widgets[] = {
+            commonWidgets(windowSize.width, windowSize.height, StringIds::time_cheats),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_year),
+            makeWidget({ 10, 62 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_year_add_one),
+            makeWidget({ 10, 78 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_year_subtract_one),
+            widgetEnd(),
+        };
+
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::year_add_1) | (1 << Widx::year_minus_1);
+
+        static void prepareDraw(Window* self)
+        {
+            self->activated_widgets = (1 << Common::Widx::tab_time);
+        }
+
+        static void draw(Ui::Window* const self, Gfx::Context* const context)
+        {
+            // Draw widgets and tabs.
+            self->draw(context);
+            Common::drawTabs(self, context);
+        }
+
+        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case Common::Widx::close_button:
+                    WindowManager::close(self->type);
+                    break;
+
+                case Common::Widx::tab_finances:
+                case Common::Widx::tab_companies:
+                case Common::Widx::tab_vehicles:
+                case Common::Widx::tab_towns:
+                case Common::Widx::tab_time:
+                    Common::switchTab(self, widgetIndex);
+                    break;
+
+                case Widx::year_add_1:
+                {
+                    GameCommands::do_81(CheatCommand::modifyYear, 0, 1);
+                    return;
+                }
+
+                case Widx::year_minus_1:
+                {
+                    GameCommands::do_81(CheatCommand::modifyYear, 0, -1);
+                    return;
+                }
+            }
+        }
+
+        static void onUpdate(Window* const self)
+        {
+            self->frame_no += 1;
+            self->callPrepareDraw();
+            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_time);
+        }
+
+        static void initEvents()
+        {
+            _events.draw = draw;
+            _events.on_mouse_up = onMouseUp;
+            _events.on_update = onUpdate;
+            _events.prepare_draw = prepareDraw;
+        }
+    }
+
+
     static void initEvents();
 
     Window* open()
@@ -673,6 +770,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             { Companies::_widgets, Widx::tab_companies, &Companies::_events, &Companies::enabledWidgets, nullptr,                    Companies::windowSize },
             { Vehicles::_widgets,  Widx::tab_vehicles,  &Vehicles::_events,  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::windowSize  },
             { Towns::_widgets,     Widx::tab_towns,     &Towns::_events,     &Towns::enabledWidgets,     nullptr,                    Towns::windowSize     },
+            { Time::_widgets,      Widx::tab_time,      &Time::_events,      &Time::enabledWidgets,      nullptr,                    Time::windowSize      },
         };
         // clang-format on
 
@@ -707,5 +805,6 @@ namespace OpenLoco::Ui::Windows::Cheats
         Companies::initEvents();
         Vehicles::initEvents();
         Towns::initEvents();
+        Time::initEvents();
     }
 }

@@ -11,6 +11,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "GameCommands.h"
+#include <OpenLoco/Date.h>
 
 using namespace OpenLoco::Interop;
 
@@ -173,6 +174,12 @@ namespace OpenLoco::GameCommands
             }
             return 0;
         }
+
+        static uint32_t modifyYearCheat(int32_t broken, int32_t offset)
+        {
+            modifyYear(offset);
+            return 0;
+        }
     }
 
     static uint32_t cheat(CheatCommand command, int32_t param1, int32_t param2, int32_t param3)
@@ -202,6 +209,9 @@ namespace OpenLoco::GameCommands
 
             case CheatCommand::vehicleReliability:
                 return Cheats::vehicleReliability(param1);
+
+            case CheatCommand::modifyYear:
+                return Cheats::modifyYearCheat(param1, param2);
 
             default:
                 break;
