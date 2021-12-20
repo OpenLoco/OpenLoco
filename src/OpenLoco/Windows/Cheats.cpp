@@ -34,6 +34,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 tab_vehicles,
                 tab_towns,
             };
+            // this should be 1 more than the number of widgets defined above in commonWidgets
             constexpr uint32_t nextWidx = 8;
         }
 
@@ -46,8 +47,6 @@ namespace OpenLoco::Ui::Windows::Cheats
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab),                                                \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab),                                                \
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab)
-
-        // this should be 1 more than the number of widgets defined above in commonWidgets
 
         constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns);
 
