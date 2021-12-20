@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 tab_vehicles,
                 tab_towns,
             };
-            constexpr uint32_t nextWidx = 9;
+            constexpr uint32_t nextWidx = 8;
         }
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                           \
@@ -146,6 +146,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 loan_group,
                 loan_value,
                 loan_clear,
+                time_group,
                 year_step_value,
                 year_step_decrease,
                 year_step_increase,
