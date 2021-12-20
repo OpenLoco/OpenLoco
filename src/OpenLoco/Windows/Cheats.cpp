@@ -33,7 +33,6 @@ namespace OpenLoco::Ui::Windows::Cheats
                 tab_companies,
                 tab_vehicles,
                 tab_towns,
-                tab_time,
             };
             constexpr uint32_t nextWidx = 9;
         }
@@ -46,12 +45,11 @@ namespace OpenLoco::Ui::Windows::Cheats
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab),                                                 \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab),                                                \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab),                                                \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab),                                                \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab)
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab)
 
         // this should be 1 more than the number of widgets defined above in commonWidgets
 
-        constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns) | (1 << Widx::tab_time);
+        constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns);
 
         static void drawTabs(Ui::Window* const self, Gfx::Context* const context)
         {
@@ -127,10 +125,10 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
 
             // Time tab
-            {
+            /*{
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_wrench_frame0;
                 Widget::drawTab(self, context, imageId, Widx::tab_time);
-            }
+            }*/
         }
 
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -138,7 +136,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Finances
     {
-        constexpr Ui::Size windowSize = { 250, 124 };
+        constexpr Ui::Size windowSize = { 250, 210 };
 
         static WindowEventList _events;
 
@@ -154,25 +152,65 @@ namespace OpenLoco::Ui::Windows::Cheats
                 loan_group,
                 loan_value,
                 loan_clear,
+                year_step_value,
+                year_step_decrease,
+                year_step_increase,
+                month_step_value,
+                month_step_decrease,
+                month_step_increase,
+                day_step_value,
+                day_step_decrease,
+                day_step_increase,
+                date_change_apply,
             };
         }
 
         static Widget _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::financial_cheats),
+            // money
             makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_increase_funds),
             makeStepperWidgets({ 80, 62 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
             makeWidget({ 180, 62 }, { 60, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_add),
+            // loan
             makeWidget({ 4, 86 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_clear_loan),
             makeWidget({ 80, 100 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary),
             makeWidget({ 180, 100 }, { 60, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_clear),
+            // date/time
+            makeWidget({ 4, 124 }, { windowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_date_change_apply),
+            makeStepperWidgets({ 80, 138 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 80, 154 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 80, 170 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 10, 186 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_date_change_apply),
             widgetEnd(),
         };
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::loan_clear) | (1 << Widx::cash_step_decrease) | (1 << Widx::cash_step_increase) | (1 << Widx::cash_step_apply);
+        static uint64_t enabledWidgets
+            = Common::enabledWidgets
+            | (1 << Widx::loan_clear)
+            | (1 << Widx::cash_step_decrease)
+            | (1 << Widx::cash_step_increase)
+            | (1 << Widx::cash_step_apply)
+            | (1 << Widx::year_step_decrease)
+            | (1 << Widx::year_step_increase)
+            | (1 << Widx::month_step_decrease)
+            | (1 << Widx::month_step_increase)
+            | (1 << Widx::day_step_decrease)
+            | (1 << Widx::day_step_increase)
+            | (1 << Widx::date_change_apply);
 
-        const uint64_t holdableWidgets = (1 << Widx::cash_step_decrease) | (1 << Widx::cash_step_increase);
+        const uint64_t holdableWidgets
+            = (1 << Widx::cash_step_decrease)
+            | (1 << Widx::cash_step_increase)
+            | (1 << Widx::year_step_decrease)
+            | (1 << Widx::year_step_increase)
+            | (1 << Widx::month_step_decrease)
+            | (1 << Widx::month_step_increase)
+            | (1 << Widx::day_step_decrease)
+            | (1 << Widx::day_step_increase);
 
         static currency32_t _cashIncreaseStep = 10'000;
+        static uint32_t _dateIncreaseStep = 1;
+        static Date _date;
 
         static void prepareDraw(Window* self)
         {
@@ -228,6 +266,69 @@ namespace OpenLoco::Ui::Windows::Cheats
                     StringIds::cheat_loan_value,
                     &args);
             }
+
+            // Add year label and value
+            {
+                auto& widget = self->widgets[Widx::year_step_value];
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + 10,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_year);
+
+                auto args = FormatArguments::common();
+                args.push(_date.year);
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + widget.left + 1,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_year_value,
+                    &args);
+            }
+
+            // Add month label and value
+            {
+                auto& widget = self->widgets[Widx::month_step_value];
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + 10,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_month);
+
+                auto args = FormatArguments::common();
+                args.push((string_id)OpenLoco::StringManager::monthToString(_date.month).second);
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + widget.left + 1,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::black_stringid,
+                    &args);
+            }
+
+            // Add day label and value
+            {
+                auto& widget = self->widgets[Widx::day_step_value];
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + 10,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_day);
+
+                auto args = FormatArguments::common();
+                args.push(_date.day + 1);
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + widget.left + 1,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_day_value,
+                    &args);
+            }
         }
 
         static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
@@ -242,7 +343,6 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                case Common::Widx::tab_time:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -255,6 +355,13 @@ namespace OpenLoco::Ui::Windows::Cheats
                     GameCommands::do_81(CheatCommand::clearLoan);
                     WindowManager::invalidateWidget(self->type, self->number, Widx::loan_value);
                     break;
+
+                case Widx::date_change_apply:
+                {
+                    GameCommands::do_81(CheatCommand::modifyDate, _date.year, (int32_t)_date.month, _date.day);
+                    Windows::TimePanel::invalidateFrame();
+                    break;
+                }
             }
         }
 
@@ -262,26 +369,68 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
-            currency32_t stepSize{};
+            currency32_t cashStepSize{};
+            int32_t timeStepSize{};
+
             if (*_clickRepeatTicks < 100)
-                stepSize = 1000;
+            {
+                cashStepSize = 1'000;
+                timeStepSize = 1;
+            }
             else if (*_clickRepeatTicks < 200)
-                stepSize = 10000;
+            {
+                cashStepSize = 10'000;
+                timeStepSize = 10;
+            }
+            else if (*_clickRepeatTicks < 300)
+            {
+                cashStepSize = 100'000;
+                timeStepSize = 100;
+            }
             else
-                stepSize = 100000;
+            {
+                cashStepSize = 1'000'000;
+                timeStepSize = 1'000;
+            }
 
             switch (widgetIndex)
             {
                 case Widx::cash_step_decrease:
-                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep - stepSize, 0);
+                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep - cashStepSize, 0);
                     WindowManager::invalidateWidget(self->type, self->number, Widx::cash_step_value);
                     break;
 
                 case Widx::cash_step_increase:
-                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep + stepSize, 0);
+                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep + cashStepSize, 0);
                     WindowManager::invalidateWidget(self->type, self->number, Widx::cash_step_value);
                     break;
+
+                case Widx::year_step_decrease:
+                    _date.year = std::max<int32_t>(OpenLoco::Scenario::min_year, _date.year - timeStepSize);
+                    break;
+
+                case Widx::year_step_increase:
+                    _date.year = std::min<int32_t>(std::numeric_limits<int32_t>().max(), _date.year + timeStepSize);
+                    break;
+
+                case Widx::month_step_decrease:
+                    _date.month = (MonthId)(std::max<int8_t>(0, ((int8_t)_date.month - timeStepSize)));
+                    break;
+
+                case Widx::month_step_increase:
+                    _date.month = (MonthId)(std::min<int8_t>(11, ((int8_t)_date.month + timeStepSize)));
+                    break;
+
+                case Widx::day_step_decrease:
+                    _date.day = std::max<int32_t>(0, _date.day - timeStepSize);
+                    break;
+
+                case Widx::day_step_increase:
+                    _date.day = std::min<int32_t>(getMonthTotalDay(_date.year, _date.month) - 1, _date.day + timeStepSize);
+                    break;
             }
+
+             WindowManager::invalidate(WindowType::cheats);
         }
 
         static void onUpdate(Window* const self)
@@ -293,6 +442,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void initEvents()
         {
+            _date = getCurrentDate();
             _events.draw = draw;
             _events.on_mouse_up = onMouseUp;
             _events.on_mouse_down = onMouseDown;
@@ -382,7 +532,6 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                case Common::Widx::tab_time:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -502,7 +651,6 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                case Common::Widx::tab_time:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -594,7 +742,6 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                case Common::Widx::tab_time:
                     Common::switchTab(self, widgetIndex);
                     break;
 
@@ -639,222 +786,6 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             _events.draw = draw;
             _events.on_mouse_up = onMouseUp;
-            _events.on_update = onUpdate;
-            _events.prepare_draw = prepareDraw;
-        }
-    }
-
-    namespace Time
-    {
-        constexpr Ui::Size windowSize = { 250, 132 };
-
-        static WindowEventList _events;
-
-        namespace Widx
-        {
-            enum
-            {
-                misc_group = Common::Widx::nextWidx,
-                year_step_value,
-                year_step_decrease,
-                year_step_increase,
-                month_step_value,
-                month_step_decrease,
-                month_step_increase,
-                day_step_value,
-                day_step_decrease,
-                day_step_increase,
-                date_change_apply,
-            };
-        }
-
-        static Widget _widgets[] = {
-            commonWidgets(windowSize.width, windowSize.height, StringIds::time_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_date_change_apply),
-            makeStepperWidgets({ 80, 62 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 80, 78 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 80, 94 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 10, 110 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_date_change_apply),
-            widgetEnd(),
-        };
-
-        static uint64_t enabledWidgets
-            = (1 << Widx::year_step_decrease)
-            | (1 << Widx::year_step_increase)
-            | (1 << Widx::month_step_decrease)
-            | (1 << Widx::month_step_increase)
-            | (1 << Widx::day_step_decrease)
-            | (1 << Widx::day_step_increase)
-            | (1 << Widx::date_change_apply);
-
-        const uint64_t holdableWidgets
-            = (1 << Widx::year_step_decrease)
-            | (1 << Widx::year_step_increase)
-            | (1 << Widx::month_step_decrease)
-            | (1 << Widx::month_step_increase)
-            | (1 << Widx::day_step_decrease)
-            | (1 << Widx::day_step_increase);
-
-        static uint32_t _dateIncreaseStep = 1;
-        static Date _date;
-
-        static void prepareDraw(Window* self)
-        {
-            self->activated_widgets = (1 << Common::Widx::tab_time);
-        }
-
-        static void draw(Ui::Window* const self, Gfx::Context* const context)
-        {
-            // Draw widgets and tabs.
-            self->draw(context);
-            Common::drawTabs(self, context);
-
-            // Add year label and value
-            {
-                auto& widget = self->widgets[Widx::year_step_value];
-                Gfx::drawString_494B3F(
-                    *context,
-                    self->x + 10,
-                    self->y + widget.top,
-                    Colour::black,
-                    StringIds::cheat_year);
-
-                auto args = FormatArguments::common();
-                args.push(_date.year);
-                Gfx::drawString_494B3F(
-                    *context,
-                    self->x + widget.left + 1,
-                    self->y + widget.top,
-                    Colour::black,
-                    StringIds::cheat_year_value,
-                    &args);
-            }
-
-            // Add month label and value
-            {
-                auto& widget = self->widgets[Widx::month_step_value];
-                Gfx::drawString_494B3F(
-                    *context,
-                    self->x + 10,
-                    self->y + widget.top,
-                    Colour::black,
-                    StringIds::cheat_month);
-
-                auto args = FormatArguments::common();
-                args.push((string_id)OpenLoco::StringManager::monthToString(_date.month).second);
-                Gfx::drawString_494B3F(
-                    *context,
-                    self->x + widget.left + 1,
-                    self->y + widget.top,
-                    Colour::black,
-                    StringIds::black_stringid,
-                    &args);
-            }
-
-            // Add day label and value
-            {
-                auto& widget = self->widgets[Widx::day_step_value];
-                Gfx::drawString_494B3F(
-                    *context,
-                    self->x + 10,
-                    self->y + widget.top,
-                    Colour::black,
-                    StringIds::cheat_day);
-
-                auto args = FormatArguments::common();
-                args.push(_date.day + 1);
-                Gfx::drawString_494B3F(
-                    *context,
-                    self->x + widget.left + 1,
-                    self->y + widget.top,
-                    Colour::black,
-                    StringIds::cheat_day_value,
-                    &args);
-            }
-        }
-
-        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
-        {
-            switch (widgetIndex)
-            {
-                case Common::Widx::close_button:
-                    WindowManager::close(self->type);
-                    break;
-
-                case Common::Widx::tab_finances:
-                case Common::Widx::tab_companies:
-                case Common::Widx::tab_vehicles:
-                case Common::Widx::tab_towns:
-                case Common::Widx::tab_time:
-                    Common::switchTab(self, widgetIndex);
-                    break;
-
-                case Widx::date_change_apply:
-                {
-                    GameCommands::do_81(CheatCommand::modifyDate, _date.year, (int32_t)_date.month, _date.day);
-                    Windows::TimePanel::invalidateFrame();
-                    break;
-                }
-            }
-        }
-
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
-        {
-            static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
-
-            int32_t stepSize{};
-            if (*_clickRepeatTicks < 100)
-                stepSize = 1;
-            else if (*_clickRepeatTicks < 200)
-                stepSize = 10;
-            else if (*_clickRepeatTicks < 300)
-                stepSize = 100;
-            else
-                stepSize = 1000;
-
-            switch (widgetIndex)
-            {
-                case Widx::year_step_decrease:
-                    _date.year = std::max<int32_t>(OpenLoco::Scenario::min_year, _date.year - stepSize);
-                    break;
-
-                case Widx::year_step_increase:
-                    _date.year = std::min<int32_t>(std::numeric_limits<int32_t>().max(), _date.year + stepSize);
-                    break;
-
-                case Widx::month_step_decrease:
-                    _date.month = (MonthId)(std::max<int8_t>(0, ((int8_t)_date.month - stepSize)));
-                    break;
-
-                case Widx::month_step_increase:
-                    _date.month = (MonthId)(std::min<int8_t>(11, ((int8_t)_date.month + stepSize)));
-                    break;
-
-                case Widx::day_step_decrease:
-                    _date.day = std::max<int32_t>(0, _date.day - stepSize);
-                    break;
-
-                case Widx::day_step_increase:
-                    _date.day = std::min<int32_t>(getMonthTotalDay(_date.year, _date.month) - 1, _date.day + stepSize);
-                    break;
-            }
-
-            WindowManager::invalidate(WindowType::cheats);
-        }
-
-        static void onUpdate(Window* const self)
-        {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_time);
-        }
-
-        static void initEvents()
-        {
-            _date = getCurrentDate();
-            _events.draw = draw;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_mouse_down = onMouseDown;
             _events.on_update = onUpdate;
             _events.prepare_draw = prepareDraw;
         }
@@ -907,7 +838,6 @@ namespace OpenLoco::Ui::Windows::Cheats
             { Companies::_widgets, Widx::tab_companies, &Companies::_events, &Companies::enabledWidgets, nullptr,                    Companies::windowSize },
             { Vehicles::_widgets,  Widx::tab_vehicles,  &Vehicles::_events,  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::windowSize  },
             { Towns::_widgets,     Widx::tab_towns,     &Towns::_events,     &Towns::enabledWidgets,     nullptr,                    Towns::windowSize     },
-            { Time::_widgets,      Widx::tab_time,      &Time::_events,      &Time::enabledWidgets,      &Time::holdableWidgets,     Time::windowSize      },
         };
         // clang-format on
 
@@ -942,6 +872,5 @@ namespace OpenLoco::Ui::Windows::Cheats
         Companies::initEvents();
         Vehicles::initEvents();
         Towns::initEvents();
-        Time::initEvents();
     }
 }
