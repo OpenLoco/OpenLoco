@@ -13,7 +13,6 @@
 #include "../Vehicles/Vehicle.h"
 #include "../Scenario.h"
 #include "GameCommands.h"
-#include <OpenLoco/Date.h>
 
 using namespace OpenLoco::Interop;
 
