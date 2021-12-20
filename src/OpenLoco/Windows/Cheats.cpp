@@ -123,12 +123,6 @@ namespace OpenLoco::Ui::Windows::Cheats
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
                 Widget::drawTab(self, context, imageId, Widx::tab_towns);
             }
-
-            // Time tab
-            /*{
-                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_wrench_frame0;
-                Widget::drawTab(self, context, imageId, Widx::tab_time);
-            }*/
         }
 
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
