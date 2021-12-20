@@ -3522,6 +3522,8 @@ namespace OpenLoco::Vehicles
     {
         currency32_t totalRunCost = 0;
         const Vehicle train(this);
+        if (train.veh1 == nullptr)
+            return 0;
         for (const auto& car : train.cars)
         {
             auto* vehObj = ObjectManager::get<VehicleObject>(car.front->object_id);

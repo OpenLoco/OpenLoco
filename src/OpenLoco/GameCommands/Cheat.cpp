@@ -1,5 +1,6 @@
 #include "Cheat.h"
 #include "../CompanyManager.h"
+#include "../Console.h"
 #include "../Economy/Currency.h"
 #include "../Entities/EntityManager.h"
 #include "../Interop/Interop.hpp"
@@ -10,6 +11,7 @@
 #include "../Types.hpp"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
+#include "../Scenario.h"
 #include "GameCommands.h"
 #include <OpenLoco/Date.h>
 
@@ -175,9 +177,23 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        static uint32_t modifyYearCheat(int32_t broken, int32_t offset)
+        static uint32_t modifyDateCheat(int32_t year, int32_t month, int32_t day)
         {
-            modifyYear(offset);
+            // this is in Date.cpp::calcDate()
+            // auto kBaseYear = getCurrentYear();
+            //auto currDay = getCurrentDay();
+            Console::log("DayProgression=%u CurrentDayOfMonth=%u Day=%u Month=%u Year=%u", getDayProgression(), getCurrentDayOfMonth(), getCurrentDay(), (uint8_t)(getCurrentMonth()) + 1, getCurrentYear());
+            Console::log("Setting date to: Day=%u Month=%u Year=%u", day, month, year);
+
+            OpenLoco::Scenario::initialiseDate((uint16_t)year, (MonthId)month, (uint8_t)day);
+
+            auto date = getCurrentDate();
+            Console::log("Date set to: Day=%u Month=%u Year=%u", date.day, date.month, date.year);
+            //setCurrentDay(((year - kBaseYear) * 365) + (month * 30) + day);
+            //auto diff = getCurrentDay() - currDay;
+
+            //return diff - diff;
+
             return 0;
         }
     }
@@ -210,8 +226,8 @@ namespace OpenLoco::GameCommands
             case CheatCommand::vehicleReliability:
                 return Cheats::vehicleReliability(param1);
 
-            case CheatCommand::modifyYear:
-                return Cheats::modifyYearCheat(param1, param2);
+            case CheatCommand::modifyDate:
+                return Cheats::modifyDateCheat(param1, param2, param3);
 
             default:
                 break;

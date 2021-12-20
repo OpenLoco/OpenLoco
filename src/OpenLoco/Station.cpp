@@ -570,7 +570,7 @@ namespace OpenLoco
         var_3B0 = std::min(var_3B0 + 1, 255);
         var_3B1 = std::min(var_3B1 + 1, 255);
 
-        auto& rng = gPrng();
+        //auto& rng = gPrng();
         for (uint32_t i = 0; i < max_cargo_stats; i++)
         {
             auto& cargo = cargo_stats[i];
@@ -587,32 +587,32 @@ namespace OpenLoco
                 auto ratingDelta = std::clamp(targetRating - cargo.rating, -2, 2);
                 cargo.rating += ratingDelta;
 
-                if (cargo.rating <= 50)
-                {
-                    // Rating < 25%, decrease cargo
-                    if (cargo.quantity >= 400)
-                    {
-                        cargo.quantity -= rng.randNext(1, 32);
-                        quantityUpdated = true;
-                    }
-                    else if (cargo.quantity >= 200)
-                    {
-                        cargo.quantity -= rng.randNext(1, 8);
-                        quantityUpdated = true;
-                    }
-                }
+                //if (cargo.rating <= 50)
+                //{
+                //    // Rating < 25%, decrease cargo
+                //    if (cargo.quantity >= 400)
+                //    {
+                //        cargo.quantity -= rng.randNext(1, 32);
+                //        quantityUpdated = true;
+                //    }
+                //    else if (cargo.quantity >= 200)
+                //    {
+                //        cargo.quantity -= rng.randNext(1, 8);
+                //        quantityUpdated = true;
+                //    }
+                //}
                 if (cargo.rating >= 100)
                 {
                     atLeastOneGoodRating = true;
                 }
-                if (cargo.rating <= 100 && cargo.quantity != 0)
+                /*if (cargo.rating <= 100 && cargo.quantity != 0)
                 {
                     if (cargo.rating <= rng.randNext(0, 127))
                     {
                         cargo.quantity = std::max(0, cargo.quantity - rng.randNext(1, 4));
                         quantityUpdated = true;
                     }
-                }
+                }*/
             }
         }
 

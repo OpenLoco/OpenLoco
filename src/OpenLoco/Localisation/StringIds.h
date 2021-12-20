@@ -1758,7 +1758,11 @@ namespace OpenLoco::StringIds
 	constexpr string_id loan_autopay = 2228;
 	constexpr string_id tooltip_loan_autopay = 2229;
 	constexpr string_id time_cheats = 2230;
-	constexpr string_id cheat_year_add_one = 2231;
-	constexpr string_id cheat_year_subtract_one = 2232;
-	constexpr string_id cheat_year = 2233;
+	constexpr string_id cheat_year = 2231;
+	constexpr string_id cheat_month = 2232;
+	constexpr string_id cheat_day = 2233;
+	constexpr string_id cheat_date_change_apply = 2234;
+	constexpr string_id cheat_year_value = 2235;
+	constexpr string_id cheat_month_value = 2236;
+	constexpr string_id cheat_day_value = 2237;
 }

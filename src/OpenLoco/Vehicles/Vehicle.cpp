@@ -213,6 +213,9 @@ namespace OpenLoco::Vehicles
         }
         head = component->asVehicleHead();
         veh1 = head->nextVehicleComponent()->asVehicle1();
+        if (veh1 == nullptr)
+            return;
+
         veh2 = veh1->nextVehicleComponent()->asVehicle2();
         component = veh2->nextVehicleComponent();
         if (component->getSubType() != VehicleThingType::tail)

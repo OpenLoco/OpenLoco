@@ -52,7 +52,7 @@ namespace OpenLoco
     uint16_t getDayProgression();
     void setDayProgression(const uint16_t progression);
 
-    void modifyYear(const int32_t offset);
+    int8_t getCurrentDayOfMonth();
 
     /**
      * Updates the current day counter.
@@ -60,4 +60,7 @@ namespace OpenLoco
      */
     bool updateDayCounter();
     Date calcDate(uint32_t totalDays);
+    uint32_t calcDay(Date date);
+
+    uint8_t getMonthTotalDay(uint16_t year, MonthId month);
 }
