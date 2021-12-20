@@ -359,7 +359,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Widx::date_change_apply:
                 {
                     GameCommands::do_81(CheatCommand::modifyDate, _date.year, (int32_t)_date.month, _date.day);
-                    Windows::TimePanel::invalidateFrame();
+                    WindowManager::invalidate(WindowType::timeToolbar);
                     break;
                 }
             }
