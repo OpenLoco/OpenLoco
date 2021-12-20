@@ -238,7 +238,7 @@ namespace OpenLoco::Scenario
     // 0x0049685C
     void initialiseDate(uint16_t year)
     {
-        initialiseDate(year, (MonthId)0, 1);
+        initialiseDate(year, MonthId::january, 1);
     }
 
     void initialiseDate(uint16_t year, MonthId month, uint8_t day)
