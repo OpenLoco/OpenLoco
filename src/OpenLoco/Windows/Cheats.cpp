@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Time
     {
-        constexpr Ui::Size windowSize = { 250, 172 };
+        constexpr Ui::Size windowSize = { 250, 132 };
 
         static WindowEventList _events;
 
@@ -670,7 +670,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static Widget _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::time_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 121 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_date_change_apply),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_date_change_apply),
             makeStepperWidgets({ 80, 62 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
             makeStepperWidgets({ 80, 78 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
             makeStepperWidgets({ 80, 94 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),

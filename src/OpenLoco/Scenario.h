@@ -116,8 +116,6 @@ namespace OpenLoco::Scenario
     void generateLandscape();
     void initialiseDate(uint16_t year);
 
-
-
     void initialiseDate(uint16_t year, OpenLoco::MonthId month, uint8_t day);
 
     /**
