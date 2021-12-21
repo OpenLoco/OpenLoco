@@ -154,12 +154,10 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
     extra.tick = scenarioTicks();
     ms.write(&extra, sizeof(extra));
 
-    auto allData = stdx::span<uint8_t const>(ms.data(), ms.getLength());
-
     RequestStateResponse response;
     response.cookie = request.cookie;
-    response.totalSize = allData.size();
-    response.numChunks = static_cast<uint16_t>((allData.size() + (chunkSize - 1)) / chunkSize);
+    response.totalSize = ms.getLength();
+    response.numChunks = static_cast<uint16_t>((ms.getLength() + (chunkSize - 1)) / chunkSize);
     client.connection->sendPacket(response);
 
     uint32_t offset = 0;
@@ -172,7 +170,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
         chunk.index = index;
         chunk.offset = offset;
         chunk.dataSize = std::min<uint32_t>(chunkSize, remaining - offset);
-        std::memcpy(chunk.data, allData.data() + offset, chunk.dataSize);
+        std::memcpy(chunk.data, reinterpret_cast<const uint8_t*>(ms.data()) + offset, chunk.dataSize);
 
         client.connection->sendPacket(chunk);
 

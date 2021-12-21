@@ -450,7 +450,24 @@ namespace OpenLoco
     static void launchGame()
     {
         const auto& cmdLineOptions = getCommandLineOptions();
-        if (!cmdLineOptions.path.empty())
+        if (cmdLineOptions.action == CommandLineAction::host)
+        {
+            Network::openServer();
+            loadFile(cmdLineOptions.path);
+        }
+        else if (cmdLineOptions.action == CommandLineAction::join)
+        {
+            Title::start();
+            if (cmdLineOptions.port)
+            {
+                Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
+            }
+            else
+            {
+                Network::joinServer(cmdLineOptions.address);
+            }
+        }
+        else if (!cmdLineOptions.path.empty())
         {
             loadFile(cmdLineOptions.path);
         }

@@ -321,6 +321,8 @@ namespace OpenLoco
     std::optional<CommandLineOptions> parseCommandLine(int argc, const char** argv)
     {
         auto parser = CommandLineParser(argc, argv)
+                          .registerOption("--bind", 1)
+                          .registerOption("--port", "-p", 1)
                           .registerOption("-o", 1)
                           .registerOption("--help", "-h")
                           .registerOption("--version")
@@ -348,7 +350,17 @@ namespace OpenLoco
         else
         {
             auto firstArg = parser.getArg(0);
-            if (firstArg == "uncompress")
+            if (firstArg == "host")
+            {
+                options.action = CommandLineAction::host;
+                options.path = parser.getArg(1);
+            }
+            else if (firstArg == "join")
+            {
+                options.action = CommandLineAction::join;
+                options.address = parser.getArg(1);
+            }
+            else if (firstArg == "uncompress")
             {
                 options.action = CommandLineAction::uncompress;
                 options.path = parser.getArg(1);
@@ -365,6 +377,10 @@ namespace OpenLoco
             }
         }
 
+        options.bind = parser.getArg("--bind");
+        options.port = parser.getArg<int32_t>("--port");
+        if (!options.port)
+            options.port = parser.getArg<int32_t>("-p");
         options.outputPath = parser.getArg("-o");
 
         return options;
@@ -390,10 +406,14 @@ namespace OpenLoco
     void printHelp()
     {
         std::cout << "usage: openloco [options] [path]" << std::endl;
+        std::cout << "                host [options] <path>" << std::endl;
+        std::cout << "                join [options] <address>" << std::endl;
         std::cout << "                uncompress [options] <path>" << std::endl;
         std::cout << "                simulate [options] <path> <ticks>" << std::endl;
         std::cout << std::endl;
         std::cout << "options:" << std::endl;
+        std::cout << "--bind            Address to bind to when hosting a server" << std::endl;
+        std::cout << "--port     -p     Port number for the server" << std::endl;
         std::cout << "           -o     Output path" << std::endl;
         std::cout << "--help     -h     Print help" << std::endl;
         std::cout << "--version         Print version" << std::endl;
