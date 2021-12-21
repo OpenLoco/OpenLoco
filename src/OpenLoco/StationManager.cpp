@@ -74,7 +74,7 @@ namespace OpenLoco::StationManager
     // 0x00437F29
     // arg0: ah
     // arg1: al
-    static void sub_437F29(CompanyId cid, uint8_t arg1)
+    void sub_437F29(CompanyId cid, uint8_t arg1)
     {
         constexpr uint8_t byte_4F9462[] = { 0, 31, 10, 7, 31, 10, 31, 31, 11 };
         auto company = CompanyManager::get(cid);

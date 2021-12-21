@@ -25,6 +25,7 @@ namespace OpenLoco::Vehicles
         constexpr uint8_t sorted = 1 << 3;      // vehicle list
         constexpr uint8_t unk_5 = 1 << 5;
         constexpr uint8_t manualControl = 1 << 6;
+        constexpr uint8_t shuntCheat = 1 << 7;
     }
 
     namespace Flags38

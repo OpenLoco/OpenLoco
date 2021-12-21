@@ -92,7 +92,9 @@ namespace OpenLoco::Input
             if (t->getTransportMode() != TransportMode::rail)
                 continue;
 
-            GameCommands::do_77(EntityId(w->number));
+            GameCommands::VehicleApplyShuntCheatArgs args;
+            args.head = EntityId(w->number);
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
             Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
 
             return;
@@ -101,7 +103,7 @@ namespace OpenLoco::Input
 
     static void loc_4BED79()
     {
-        GameCommands::do_78();
+        GameCommands::doCommand(GameCommands::ApplyFreeCashCheatArgs(), GameCommands::Flags::apply);
 
         Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
     }

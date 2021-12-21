@@ -1599,20 +1599,40 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicleOrderDown, regs);
     }
 
-    inline void do_77(EntityId head)
+    struct VehicleApplyShuntCheatArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.cx = enumValue(head);
-        doCommand(GameCommand::vehicleApplyShuntCheat, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleApplyShuntCheat;
 
-    inline void do_78()
+        VehicleApplyShuntCheatArgs() = default;
+        explicit VehicleApplyShuntCheatArgs(const registers& regs)
+            : head(EntityId(regs.cx))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cx = enumValue(head);
+            return regs;
+        }
+    };
+
+    struct ApplyFreeCashCheatArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        GameCommands::doCommand(GameCommand::applyFreeCashCheat, regs);
-    }
+        static constexpr auto command = GameCommand::applyFreeCashCheat;
+
+        ApplyFreeCashCheatArgs() = default;
+        explicit ApplyFreeCashCheatArgs(const registers& regs)
+        {
+        }
+
+        explicit operator registers() const
+        {
+            return registers();
+        }
+    };
 
     // Rename industry
     inline void do_79(IndustryId cl, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
@@ -1656,6 +1676,8 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/Cheat.cpp
     void cheat(registers& regs);
+    void vehicleShuntCheat(registers& regs);
+    void freeCashCheat(registers& regs);
 
     // Defined in GameCommands/LoadSaveQuit.cpp
     void loadSaveQuit(registers& regs);
