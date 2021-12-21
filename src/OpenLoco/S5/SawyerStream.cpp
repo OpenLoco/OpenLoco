@@ -15,8 +15,9 @@
 #endif
 
 using namespace OpenLoco;
-using namespace OpenLoco::Utility;
 
+constexpr const char* exceptionReadError = "Failed to read data from stream";
+constexpr const char* exceptionWriteError = "Failed to write data to stream";
 constexpr const char* exceptionInvalidRLE = "Invalid RLE run";
 constexpr const char* exceptionUnknownEncoding = "Unknown encoding";
 
@@ -124,10 +125,15 @@ stdx::span<uint8_t const> FastBuffer::getSpan() const
     return stdx::span<uint8_t const>(_data, _len);
 }
 
+SawyerStreamReader::SawyerStreamReader(Stream& stream)
+{
+    _stream = &stream;
+}
+
 SawyerStreamReader::SawyerStreamReader(const fs::path& path)
 {
-    _stream.exceptions(std::ifstream::failbit);
-    _stream.open(path, std::ios::in | std::ios::binary);
+    _fstream = std::make_unique<FileStream>(path, StreamFlags::read);
+    _stream = _fstream.get();
 }
 
 stdx::span<uint8_t const> SawyerStreamReader::readChunk()
@@ -153,31 +159,36 @@ size_t SawyerStreamReader::readChunk(void* data, size_t maxDataLen)
 
 void SawyerStreamReader::read(void* data, size_t dataLen)
 {
-    _stream.read(reinterpret_cast<char*>(data), dataLen);
+    try
+    {
+        _stream->read(data, dataLen);
+    }
+    catch (...)
+    {
+        throw std::runtime_error(exceptionReadError);
+    }
 }
 
 bool SawyerStreamReader::validateChecksum()
 {
     auto valid = false;
-    auto backupPos = _stream.tellg();
-
-    _stream.seekg(0, std::ios::end);
-    auto fileLength = static_cast<uint32_t>(_stream.tellg());
+    auto backupPos = _stream->getPosition();
+    auto fileLength = static_cast<uint32_t>(_stream->getLength());
     if (fileLength >= 4)
     {
         // Read checksum
         uint32_t checksum;
-        _stream.seekg(fileLength - 4);
-        _stream.read(reinterpret_cast<char*>(&checksum), sizeof(checksum));
+        _stream->seek(fileLength - 4);
+        _stream->read(&checksum, sizeof(checksum));
 
         // Calculate checksum
         uint32_t actualChecksum = 0;
-        _stream.seekg(0);
+        _stream->setPosition(0);
         uint8_t buffer[2048];
         for (uint32_t i = 0; i < fileLength - 4; i += sizeof(buffer))
         {
             auto readLength = std::min<size_t>(sizeof(buffer), fileLength - 4 - i);
-            _stream.read(reinterpret_cast<char*>(buffer), readLength);
+            _stream->read(buffer, readLength);
             for (size_t j = 0; j < readLength; j++)
             {
                 actualChecksum += buffer[j];
@@ -188,14 +199,15 @@ bool SawyerStreamReader::validateChecksum()
     }
 
     // Restore position
-    _stream.seekg(backupPos);
+    _stream->setPosition(backupPos);
 
     return valid;
 }
 
 void SawyerStreamReader::close()
 {
-    _stream.close();
+    _fstream = {};
+    _stream = nullptr;
 }
 
 stdx::span<uint8_t const> SawyerStreamReader::decode(SawyerEncoding encoding, stdx::span<uint8_t const> data)
@@ -298,15 +310,20 @@ void SawyerStreamReader::decodeRotate(FastBuffer& buffer, stdx::span<uint8_t con
     uint8_t code = 1;
     for (size_t i = 0; i < data.size(); i++)
     {
-        buffer.push_back(ror(data[i], code));
+        buffer.push_back(OpenLoco::Utility::ror(data[i], code));
         code = (code + 2) & 7;
     }
 }
 
+SawyerStreamWriter::SawyerStreamWriter(Stream& stream)
+{
+    _stream = &stream;
+}
+
 SawyerStreamWriter::SawyerStreamWriter(const fs::path& path)
 {
-    _stream.exceptions(std::ifstream::failbit);
-    _stream.open(path, std::ios::out | std::ios::binary);
+    _fstream = std::make_unique<FileStream>(path, StreamFlags::write);
+    _stream = _fstream.get();
 }
 
 void SawyerStreamWriter::writeChunk(SawyerEncoding chunkType, const void* data, size_t dataLen)
@@ -319,7 +336,7 @@ void SawyerStreamWriter::writeChunk(SawyerEncoding chunkType, const void* data, 
 
 void SawyerStreamWriter::write(const void* data, size_t dataLen)
 {
-    _stream.write(reinterpret_cast<const char*>(data), dataLen);
+    writeStream(data, dataLen);
     auto data8 = reinterpret_cast<const uint8_t*>(data);
     for (size_t i = 0; i < dataLen; i++)
     {
@@ -329,12 +346,25 @@ void SawyerStreamWriter::write(const void* data, size_t dataLen)
 
 void SawyerStreamWriter::writeChecksum()
 {
-    _stream.write(reinterpret_cast<const char*>(&_checksum), sizeof(_checksum));
+    writeStream(&_checksum, sizeof(_checksum));
+}
+
+void SawyerStreamWriter::writeStream(const void* data, size_t dataLen)
+{
+    try
+    {
+        _stream->write(data, dataLen);
+    }
+    catch (...)
+    {
+        throw std::runtime_error(exceptionWriteError);
+    }
 }
 
 void SawyerStreamWriter::close()
 {
-    _stream.close();
+    _fstream = {};
+    _stream = nullptr;
 }
 
 stdx::span<uint8_t const> SawyerStreamWriter::encode(SawyerEncoding encoding, stdx::span<uint8_t const> data)
@@ -482,7 +512,7 @@ void SawyerStreamWriter::encodeRotate(FastBuffer& buffer, stdx::span<uint8_t con
     uint8_t code = 1;
     for (size_t i = 0; i < data.size(); i++)
     {
-        buffer.push_back(rol(data[i], code));
+        buffer.push_back(Utility::rol(data[i], code));
         code = (code + 2) & 7;
     }
 }

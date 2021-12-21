@@ -23,9 +23,7 @@
 int main(int argc, const char** argv)
 {
     OpenLoco::Interop::loadSections();
-    OpenLoco::lpCmdLine((char*)argv[0]);
-    OpenLoco::main();
-    return 0;
+    return OpenLoco::main(argc, argv);
 }
 
 namespace OpenLoco::Platform
@@ -34,7 +32,7 @@ namespace OpenLoco::Platform
     {
         struct timespec spec;
         clock_gettime(CLOCK_REALTIME, &spec);
-        return spec.tv_nsec / 1000000;
+        return (spec.tv_sec * 1000) + spec.tv_nsec / 1000000;
     }
 
     std::vector<fs::path> getDrives()

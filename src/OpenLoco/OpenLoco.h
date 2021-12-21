@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/FileSystem.hpp"
 #include "Utility/Prng.hpp"
 #include <cstdint>
 #include <functional>
@@ -35,8 +36,6 @@ namespace OpenLoco
     std::string getVersionInfo();
 
     void* hInstance();
-    const char* lpCmdLine();
-    void lpCmdLine(const char* path);
     void resetScreenAge();
     uint16_t getScreenAge();
     uint16_t getScreenFlags();
@@ -61,9 +60,11 @@ namespace OpenLoco
     uint32_t scenarioTicks();
     Utility::prng& gPrng();
     void initialiseViewports();
+    void simulateGame(const fs::path& path, int32_t ticks);
 
     void sub_431695(uint16_t var_F253A0);
-    void main();
+    int main(int argc, const char** argv);
+    int main(const char* args);
     void promptTickLoop(std::function<bool()> tickAction);
     [[noreturn]] void exitCleanly();
     [[noreturn]] void exitWithError(OpenLoco::string_id message, uint32_t errorCode);

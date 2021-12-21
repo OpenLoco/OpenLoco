@@ -7,6 +7,11 @@
 #include <memory>
 #include <vector>
 
+namespace OpenLoco
+{
+    class Stream;
+}
+
 namespace OpenLoco::S5
 {
     enum class S5Type : uint8_t
@@ -390,6 +395,7 @@ namespace OpenLoco::S5
 
     enum SaveFlags : uint32_t
     {
+        none = 0,
         packCustomObjects = 1 << 0,
         scenario = 1 << 1,
         landscape = 1 << 2,
@@ -407,7 +413,9 @@ namespace OpenLoco::S5
     Options& getOptions();
     Options& getPreviewOptions();
     bool save(const fs::path& path, SaveFlags flags);
+    bool save(Stream& stream, SaveFlags flags);
     void registerHooks();
 
     bool load(const fs::path& path, uint32_t flags);
+    bool load(Stream& stream, uint32_t flags);
 }
