@@ -1604,6 +1604,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             current_loan,
             loan_decrease,
             loan_increase,
+            loan_autopay,
         };
 
         constexpr uint16_t expenditureColumnWidth = 128;
@@ -1612,10 +1613,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             commonWidgets(636, 319, StringIds::title_company_finances),
             makeWidget({ 133, 45 }, { 499, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal),
             makeStepperWidgets({ 87, 264 }, { 100, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::company_current_loan_value),
+            makeWidget({ 320, 264 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_select_main_colour), // loan_autopay
             widgetEnd(),
         };
 
-        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::loan_decrease) | (1 << widx::loan_increase);
+        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::loan_decrease) | (1 << widx::loan_increase) | (1 << widx::loan_autopay);
 
         const uint64_t holdableWidgets = (1 << widx::loan_decrease) | (1 << widx::loan_increase);
 
@@ -1654,12 +1656,23 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 self->widgets[widx::current_loan].type = WidgetType::wt_17;
                 self->widgets[widx::loan_decrease].type = WidgetType::wt_11;
                 self->widgets[widx::loan_increase].type = WidgetType::wt_11;
+                self->widgets[widx::loan_autopay].type = WidgetType::checkbox;
+
+                if (getGameStateExtensions().autopayLoan)
+                {
+                    self->activated_widgets |= (1ULL << Finances::widx::loan_autopay);
+                }
+                else
+                {
+                    self->activated_widgets &= ~(1ULL << Finances::widx::loan_autopay);
+                }
             }
             else
             {
                 self->widgets[widx::current_loan].type = WidgetType::none;
                 self->widgets[widx::loan_decrease].type = WidgetType::none;
                 self->widgets[widx::loan_increase].type = WidgetType::none;
+                self->widgets[widx::loan_autopay].type = WidgetType::none;
             }
 
             Common::repositionTabs(self);
@@ -1921,6 +1934,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
                     Common::switchTab(self, widgetIndex);
+                    break;
+
+                case widx::loan_autopay:
+                    getGameStateExtensions().autopayLoan = !getGameStateExtensions().autopayLoan;
                     break;
             }
         }

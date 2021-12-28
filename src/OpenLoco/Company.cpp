@@ -1,6 +1,7 @@
 #include "Company.h"
 #include "CompanyManager.h"
 #include "Entities/EntityManager.h"
+#include "GameCommands/GameCommands.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
@@ -12,11 +13,14 @@
 #include <algorithm>
 #include <array>
 #include <map>
+#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
+
     bool Company::empty() const
     {
         return name == StringIds::empty;
@@ -160,6 +164,20 @@ namespace OpenLoco
                 totalRunCost += vehHead->calculateRunningCost();
             }
             unk.var_7C = totalRunCost;
+        }
+    }
+
+    void Company::updateDaily()
+    {
+        // autopay loan
+        if (current_loan > 0 && cash > 0 && getGameStateExtensions().autopayLoan)
+        {
+            GameCommands::ChangeLoanArgs args{};
+            auto amountToPay = cash - (int64_t)current_loan;
+            args.newLoan = current_loan - std::max<currency32_t>(0, std::min<currency32_t>(current_loan, cash.asInt64()));
+
+            OpenLoco::_updating_company_id = id();
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
     }
 
