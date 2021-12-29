@@ -171,7 +171,6 @@ namespace OpenLoco
         if (current_loan > 0 && cash > 0 && getGameStateExtensions().autopayLoan)
         {
             GameCommands::ChangeLoanArgs args{};
-            auto amountToPay = cash - (int64_t)current_loan;
             args.newLoan = current_loan - std::max<currency32_t>(0, std::min<currency32_t>(current_loan, cash.asInt64()));
 
             GameCommands::setUpdatingCompanyId(id());
