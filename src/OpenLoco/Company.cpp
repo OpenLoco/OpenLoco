@@ -19,8 +19,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
-
     bool Company::empty() const
     {
         return name == StringIds::empty;
@@ -176,7 +174,7 @@ namespace OpenLoco
             auto amountToPay = cash - (int64_t)current_loan;
             args.newLoan = current_loan - std::max<currency32_t>(0, std::min<currency32_t>(current_loan, cash.asInt64()));
 
-            OpenLoco::_updating_company_id = id();
+            GameCommands::setUpdatingCompanyId(id());
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
     }
