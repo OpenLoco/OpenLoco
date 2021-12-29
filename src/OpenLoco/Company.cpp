@@ -10,10 +10,10 @@
 #include "Math/Bound.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/GameState.h>
 #include <algorithm>
 #include <array>
 #include <map>
-#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 
