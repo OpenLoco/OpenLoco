@@ -1613,7 +1613,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             commonWidgets(636, 319, StringIds::title_company_finances),
             makeWidget({ 133, 45 }, { 499, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal),
             makeStepperWidgets({ 87, 264 }, { 100, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::company_current_loan_value),
-            makeWidget({ 320, 264 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_select_main_colour), // loan_autopay
+            makeWidget({ 320, 264 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::loan_autopay, StringIds::tooltip_loan_autopay), // loan_autopay
             widgetEnd(),
         };
 

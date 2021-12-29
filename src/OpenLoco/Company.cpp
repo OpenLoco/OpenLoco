@@ -2,6 +2,7 @@
 #include "CompanyManager.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
@@ -10,7 +11,6 @@
 #include "Math/Bound.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/GameState.h>
 #include <algorithm>
 #include <array>
 #include <map>

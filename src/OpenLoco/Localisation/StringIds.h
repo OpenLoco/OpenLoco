@@ -1756,4 +1756,5 @@ namespace OpenLoco::StringIds
     constexpr string_id shortcut_construction_select_position = 2226;
     constexpr string_id trainsReverseAtSignals = 2227;
     constexpr string_id loan_autopay = 2228;
+    constexpr string_id tooltip_loan_autopay = 2229;
 }
