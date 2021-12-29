@@ -1,4 +1,5 @@
 #include "../CompanyManager.h"
+#include "../Date.h"
 #include "../GameCommands/Cheat.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
@@ -6,14 +7,13 @@
 #include "../Graphics/ImageIds.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Localisation/StringManager.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Scenario.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
-#include "../Date.h"
-#include "../Scenario.h"
-#include "../Localisation/StringManager.h"
 
 using OpenLoco::GameCommands::CheatCommand;
 
@@ -424,7 +424,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
             }
 
-             WindowManager::invalidate(WindowType::cheats);
+            WindowManager::invalidate(WindowType::cheats);
         }
 
         static void onUpdate(Window* const self)
