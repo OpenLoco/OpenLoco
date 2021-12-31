@@ -203,7 +203,6 @@ namespace OpenLoco::Ui::Windows::Cheats
             | (1 << Widx::day_step_increase);
 
         static currency32_t _cashIncreaseStep = 10'000;
-        static uint32_t _dateIncreaseStep = 1;
         static Date _date;
 
         static void prepareDraw(Window* self)
