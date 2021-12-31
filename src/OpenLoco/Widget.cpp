@@ -105,11 +105,11 @@ namespace OpenLoco::Ui
                 drawTab(context, window, widgetFlags, wndColour, enabled, disabled, activated);
                 break;
 
-            case WidgetType::tooltip:
+            case WidgetType::button_with_image:
                 drawTooltip(context, window, widgetFlags, wndColour, enabled, disabled, activated, hovered);
                 break;
 
-            case WidgetType::colour_picker:
+            case WidgetType::button_with_colour:
                 drawColourPicker(context, window, widgetFlags, wndColour, enabled, disabled, activated, hovered);
                 break;
 

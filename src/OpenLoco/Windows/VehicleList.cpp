@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 550, 213 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 548, 13 }, WidgetType::caption_24, WindowColour::primary),
-        makeWidget({ 535, 2 }, { 13, 13 }, WidgetType::tooltip, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 535, 2 }, { 13, 13 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 41 }, { 550, 172 }, WidgetType::panel, WindowColour::secondary),
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trains),
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_buses),
@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trams),
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_aircraft),
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_ships),
-        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::tooltip, WindowColour::primary, StringIds::null, StringIds::tooltip_select_company),
+        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::button_with_image, WindowColour::primary, StringIds::null, StringIds::tooltip_select_company),
         makeWidget({ 4, 43 }, { 310, 12 }, WidgetType::button_grid_sort, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_name),
         makeWidget({ 314, 43 }, { 100, 12 }, WidgetType::button_grid_sort, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_profit),
         makeWidget({ 414, 43 }, { 65, 12 }, WidgetType::button_grid_sort, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_age),

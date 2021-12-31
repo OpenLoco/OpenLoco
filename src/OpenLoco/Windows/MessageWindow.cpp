@@ -46,12 +46,12 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_messages) | (1 << widx::tab_settings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                              \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                             \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                        \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::tooltip, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),                                                                     \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),                 \
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                       \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                                  \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),                                                                               \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),                           \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_message_options)
 
         static WindowEventList _events;

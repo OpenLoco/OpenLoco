@@ -43,17 +43,17 @@ namespace OpenLoco::Ui::Windows::TimePanel
 	static void togglePaused();
 	static void changeGameSpeed(Window* w, uint8_t speed);
 
-	static Widget _widgets[] = {
-		makeWidget({ 0, 0 }, { 145, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                        // 0,
-		makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),                                                                                        // 1,
-		makeWidget({ 118, 1 }, { 26, 26 }, WidgetType::tooltip, WindowColour::primary),                                                                                       // 2,
-		makeWidget({ 2, 2 }, { 116, 12 }, WidgetType::tooltip, WindowColour::primary, ImageIds::null, StringIds::tooltip_daymonthyear_challenge),                             // 3,
-		makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::tooltip, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                           // 4,
-		makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::tooltip, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
-		makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::tooltip, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
-		makeRemapWidget({ 78, 15 }, { 20, 12 }, WidgetType::tooltip, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward), // 7,
-		widgetEnd(),
-	};
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                                     // 0,
+        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),                                                                                                     // 1,
+        makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::button_with_image, WindowColour::primary),                                                                                       // 2,
+        makeWidget({ 2, 2 }, { 111, 12 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::null, StringIds::tooltip_daymonthyear_challenge),                             // 3,
+        makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                           // 4,
+        makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
+        makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
+        makeRemapWidget({ 78, 15 }, { 20, 12 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward), // 7,
+        widgetEnd(),
+    };
 
 	static WindowEventList _events;
 
@@ -141,15 +141,15 @@ namespace OpenLoco::Ui::Windows::TimePanel
 			_widgets[Widx::fast_forward_btn].type = WidgetType::none;
 			_widgets[Widx::extra_fast_forward_btn].type = WidgetType::none;
 
-			_widgets[Widx::pause_btn].left = 38;
-			_widgets[Widx::pause_btn].right = 57;
-			_widgets[Widx::normal_speed_btn].left = 58;
-			_widgets[Widx::normal_speed_btn].right = 77;
-		}
-		else
-		{
-			_widgets[Widx::fast_forward_btn].type = WidgetType::tooltip;
-			_widgets[Widx::extra_fast_forward_btn].type = WidgetType::tooltip;
+            _widgets[Widx::pause_btn].left = 38;
+            _widgets[Widx::pause_btn].right = 57;
+            _widgets[Widx::normal_speed_btn].left = 58;
+            _widgets[Widx::normal_speed_btn].right = 77;
+        }
+        else
+        {
+            _widgets[Widx::fast_forward_btn].type = WidgetType::button_with_image;
+            _widgets[Widx::extra_fast_forward_btn].type = WidgetType::button_with_image;
 
 			_widgets[Widx::pause_btn].left = 18;
 			_widgets[Widx::pause_btn].right = 37;

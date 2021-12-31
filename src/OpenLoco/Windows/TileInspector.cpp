@@ -59,11 +59,11 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::tooltip, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, windowSize.height - 15 }, WidgetType::panel, WindowColour::secondary),
         makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::textbox, WindowColour::secondary),
         makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::textbox, WindowColour::secondary),
-        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, WidgetType::tooltip, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
+        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
         makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
         makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
         widgetEnd(),

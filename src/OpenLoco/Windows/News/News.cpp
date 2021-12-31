@@ -312,7 +312,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (selectable)
             {
-                self->widgets[Common::widx::viewport1Button].type = WidgetType::tooltip;
+                self->widgets[Common::widx::viewport1Button].type = WidgetType::button_with_image;
             }
 
             uint32_t ecx = view.surfaceZ << 16 | view.rotation << 8 | (uint8_t)view.zoomLevel;
@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (selectable)
             {
-                self->widgets[Common::widx::viewport2Button].type = WidgetType::tooltip;
+                self->widgets[Common::widx::viewport2Button].type = WidgetType::button_with_image;
             }
 
             ecx = view.surfaceZ << 16 | view.rotation << 8 | (uint8_t)view.zoomLevel;

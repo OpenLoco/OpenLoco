@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 #define common_options_widgets(frame_height, window_caption_id)                                                                                            \
     makeWidget({ 0, 0 }, { 366, frame_height }, WidgetType::frame, WindowColour::primary),                                                                 \
         makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, WindowColour::primary, window_caption_id),                                               \
-        makeWidget({ 351, 2 }, { 13, 13 }, WidgetType::tooltip, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),           \
+        makeWidget({ 351, 2 }, { 13, 13 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
         makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),                                                                   \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_options),  \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_land),    \

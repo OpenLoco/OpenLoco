@@ -42,14 +42,14 @@ namespace OpenLoco::Ui::Windows::Industry
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_2) | (1 << widx::tab_transported);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                              \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                             \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                        \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::tooltip, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 95 }, WidgetType::panel, WindowColour::secondary),                                                               \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industry),                        \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),               \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),               \
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                       \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                  \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 95 }, WidgetType::panel, WindowColour::secondary),                                                                         \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industry),                                  \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),                         \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),                         \
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics)
 
         // Defined at the bottom of this file.
@@ -86,8 +86,8 @@ namespace OpenLoco::Ui::Windows::Industry
             commonWidgets(223, 137, StringIds::title_town),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, 0xFFFFFFFE),
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::tooltip, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
-            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::tooltip, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry),
             widgetEnd(),
         };
 
@@ -112,7 +112,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             if (isEditorMode() || isSandboxMode())
             {
-                self->widgets[widx::demolish_industry].type = WidgetType::tooltip;
+                self->widgets[widx::demolish_industry].type = WidgetType::button_with_image;
             }
             else
             {

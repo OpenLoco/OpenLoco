@@ -49,18 +49,18 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
 		constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_status) | (1 << widx::tab_details) | (1 << widx::tab_colour_scheme) | (1 << widx::tab_finances) | (1 << widx::tab_cargo_delivered) | (1 << widx::tab_challenge);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                               \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                          \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::tooltip, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),   \
-        makeWidget({ 0, 41 }, { frameWidth, 120 }, WidgetType::panel, WindowColour::secondary),                                                                \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_owner_and_status),          \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_headquarters_and_details), \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_colour_scheme),            \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_finances),                 \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_cargo_delivered),                 \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_challenge_for_this_game), \
-        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::tooltip, WindowColour::primary, ImageIds::null, StringIds::tooltip_select_company)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                       \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                                  \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 120 }, WidgetType::panel, WindowColour::secondary),                                                                        \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_owner_and_status),                  \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_headquarters_and_details),         \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_colour_scheme),                    \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_finances),                         \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_cargo_delivered),                         \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_challenge_for_this_game),         \
+        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::null, StringIds::tooltip_select_company)
 
 		// 0x004343FC
 		static void disableChallengeTab(Window* self)
@@ -112,9 +112,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 			commonWidgets(270, 182, StringIds::title_company),
 			makeWidget({ 3, 160 }, { 242, 21 }, WidgetType::wt_13, WindowColour::secondary),
 			makeWidget({ 3, 44 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, -2),
-			makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::tooltip, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
-			makeWidget({ 178, 57 }, { 66, 66 }, WidgetType::tooltip, WindowColour::secondary, ImageIds::null),
-			makeWidget({ 154, 124 }, { 112, 22 }, WidgetType::tooltip, WindowColour::secondary, ImageIds::null, StringIds::tooltip_change_owner_name),
+			makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
+			makeWidget({ 178, 57 }, { 66, 66 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::null),
+			makeWidget({ 154, 124 }, { 112, 22 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::null, StringIds::tooltip_change_owner_name),
 			widgetEnd(),
 		};
 
@@ -169,10 +169,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 			self->widgets[Common::widx::company_select].right = self->width - 3;
 			self->widgets[Common::widx::company_select].left = self->width - 28;
 
-			if (CompanyId(self->number) == CompanyManager::getControllingId())
-				self->widgets[widx::change_owner_name].type = WidgetType::tooltip;
-			else
-				self->widgets[widx::change_owner_name].type = WidgetType::none;
+            if (CompanyId(self->number) == CompanyManager::getControllingId())
+                self->widgets[widx::change_owner_name].type = WidgetType::button_with_image;
+            else
+                self->widgets[widx::change_owner_name].type = WidgetType::none;
 
 			self->widgets[widx::centre_on_viewport].right = self->widgets[widx::viewport].right - 1;
 			self->widgets[widx::centre_on_viewport].bottom = self->widgets[widx::viewport].bottom - 1;
@@ -652,13 +652,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 			centre_on_viewport,
 		};
 
-		static Widget widgets[] = {
-			commonWidgets(340, 194, StringIds::title_company_details),
-			makeWidget({ 219, 54 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, -2),
-			makeWidget({ 315, 92 }, { 24, 24 }, WidgetType::tooltip, WindowColour::secondary, ImageIds::null, StringIds::tooltip_build_or_move_headquarters),
-			makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::tooltip, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
-			widgetEnd(),
-		};
+        static Widget widgets[] = {
+            commonWidgets(340, 194, StringIds::title_company_details),
+            makeWidget({ 219, 54 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, -2),
+            makeWidget({ 315, 92 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::null, StringIds::tooltip_build_or_move_headquarters),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
+            widgetEnd(),
+        };
 
 		constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
 
@@ -701,10 +701,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 			self->widgets[Common::widx::company_select].right = self->width - 3;
 			self->widgets[Common::widx::company_select].left = self->width - 28;
 
-			if (CompanyId(self->number) == CompanyManager::getControllingId())
-				self->widgets[widx::build_hq].type = WidgetType::tooltip;
-			else
-				self->widgets[widx::build_hq].type = WidgetType::none;
+            if (CompanyId(self->number) == CompanyManager::getControllingId())
+                self->widgets[widx::build_hq].type = WidgetType::button_with_image;
+            else
+                self->widgets[widx::build_hq].type = WidgetType::none;
 
 			self->widgets[widx::centre_on_viewport].right = self->widgets[widx::viewport].right - 1;
 			self->widgets[widx::centre_on_viewport].bottom = self->widgets[widx::viewport].bottom - 1;
