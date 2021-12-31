@@ -962,7 +962,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     continue;
                 }
 
-                self->widgets[i].type = WidgetType::wt_8;
+                self->widgets[i].type = WidgetType::tab;
                 self->widgets[i].left = xPos;
                 self->widgets[i].right = xPos + tabWidth;
                 xPos = self->widgets[i].right + 1;

@@ -28,10 +28,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 {
     Widget widgets[] = {
         commonWidgets(138, 190, StringIds::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::wt_18, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_station_type),
-        makeWidget({ 123, 46 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_select_station_type),
+        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::dropdown, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_station_type),
+        makeWidget({ 123, 46 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_select_station_type),
         makeWidget({ 35, 60 }, { 68, 68 }, WidgetType::wt_3, WindowColour::secondary),
-        makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
+        makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::tooltip, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
         widgetEnd(),
     };
 
@@ -580,7 +580,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if (_byte_1136063 & (1 << 7))
         {
-            self->widgets[widx::rotate].type = WidgetType::wt_9;
+            self->widgets[widx::rotate].type = WidgetType::tooltip;
 
             auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
 

@@ -27,8 +27,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         makeWidget({ 3, 69 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
         makeWidget({ 3, 81 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
         makeWidget({ 35, 110 }, { 66, 66 }, WidgetType::wt_3, WindowColour::secondary),
-        makeWidget({ 3, 95 }, { 132, 12 }, WidgetType::wt_18, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_track_to_upgrade),
-        makeWidget({ 123, 96 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_select_track_to_upgrade),
+        makeWidget({ 3, 95 }, { 132, 12 }, WidgetType::dropdown, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_track_to_upgrade),
+        makeWidget({ 123, 96 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_select_track_to_upgrade),
         widgetEnd(),
     };
 
@@ -449,8 +449,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         if (_lastSelectedMods & 0xF)
         {
             self->widgets[widx::image].type = WidgetType::wt_3;
-            self->widgets[widx::track].type = WidgetType::wt_18;
-            self->widgets[widx::track_dropdown].type = WidgetType::wt_11;
+            self->widgets[widx::track].type = WidgetType::dropdown;
+            self->widgets[widx::track_dropdown].type = WidgetType::button;
 
             self->widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
 

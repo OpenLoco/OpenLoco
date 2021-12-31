@@ -38,13 +38,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         constexpr uint64_t enabledWidgets = (1 << close_button) | (1 << viewport1Button) | (1 << viewport2Button);
 
-#define commonWidgets(frameWidth, frameHeight, frameType)                                                                                                 \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, frameType, WindowColour::primary),                                                                  \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 2, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, WindowColour::primary, 0xFFFFFFFE),                                        \
-        makeWidget({ 180, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, WindowColour::primary, 0xFFFFFFFE),                                      \
-        makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::wt_9, WindowColour::primary),                                                        \
-        makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::wt_9, WindowColour::primary)
+#define commonWidgets(frameWidth, frameHeight, frameType)                                                                                                    \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, frameType, WindowColour::primary),                                                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::tooltip, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 2, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, WindowColour::primary, 0xFFFFFFFE),                                           \
+        makeWidget({ 180, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, WindowColour::primary, 0xFFFFFFFE),                                         \
+        makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::tooltip, WindowColour::primary),                                                        \
+        makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::tooltip, WindowColour::primary)
 
         void initEvents();
     }

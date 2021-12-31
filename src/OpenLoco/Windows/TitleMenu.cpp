@@ -113,11 +113,11 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, WindowColour::secondary, StringIds::null, StringIds::title_menu_new_game),
-        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, WindowColour::secondary, StringIds::null, StringIds::title_menu_load_game),
-        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, WindowColour::secondary, StringIds::null, StringIds::title_menu_show_tutorial),
-        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, WindowColour::secondary, StringIds::null, StringIds::title_menu_scenario_editor),
-        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, WidgetType::wt_9, WindowColour::secondary, StringIds::null, StringIds::title_menu_chat_tooltip),
+        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, WidgetType::tooltip, WindowColour::secondary, StringIds::null, StringIds::title_menu_new_game),
+        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, WidgetType::tooltip, WindowColour::secondary, StringIds::null, StringIds::title_menu_load_game),
+        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, WidgetType::tooltip, WindowColour::secondary, StringIds::null, StringIds::title_menu_show_tutorial),
+        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, WidgetType::tooltip, WindowColour::secondary, StringIds::null, StringIds::title_menu_scenario_editor),
+        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, WidgetType::tooltip, WindowColour::secondary, StringIds::null, StringIds::title_menu_chat_tooltip),
         makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, WidgetType::none, WindowColour::secondary, StringIds::null, StringIds::title_multiplayer_toggle_tooltip),
         widgetEnd(),
     };
@@ -179,8 +179,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void prepareDraw(Ui::Window* window)
     {
         window->disabled_widgets = 0;
-        window->widgets[Widx::tutorial_btn].type = Ui::WidgetType::wt_9;
-        window->widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::wt_9;
+        window->widgets[Widx::tutorial_btn].type = Ui::WidgetType::tooltip;
+        window->widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::tooltip;
 
         // TODO: add widget::set_origin()
         window->widgets[Widx::scenario_list_btn].left = 0;
@@ -203,7 +203,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             window->widgets[Widx::load_game_btn].left = btn_main_size * 2;
             window->widgets[Widx::load_game_btn].right = btn_main_size * 3 - 1;
 
-            window->widgets[Widx::chat_btn].type = Ui::WidgetType::wt_9;
+            window->widgets[Widx::chat_btn].type = Ui::WidgetType::tooltip;
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
             window->widgets[Widx::chat_btn].image = skin->img + InterfaceSkin::ImageIds::phone;
         }

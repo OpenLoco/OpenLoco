@@ -897,7 +897,7 @@ namespace OpenLoco::Ui
             return -1;
         }
 
-        if (this->widgets[activeWidget].type == WidgetType ::wt_18)
+        if (this->widgets[activeWidget].type == WidgetType ::dropdown)
         {
             activeWidget++;
         }

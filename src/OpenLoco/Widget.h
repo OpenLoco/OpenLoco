@@ -42,9 +42,9 @@ namespace OpenLoco::Ui
         void drawFrame(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
 
         void draw_3(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
-        void draw_5(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
-        void draw_9(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered);
-        void draw_10(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered);
+        void drawTab(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
+        void drawTooltip(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered);
+        void drawColourPicker(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered);
         void draw_11_a(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
         void draw_13(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
         void draw_15(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool disabled);
@@ -99,7 +99,7 @@ namespace OpenLoco::Ui
         const uint16_t width = 11;
         const uint16_t height = 10;
 
-        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::wt_11, colour, StringIds::dropdown);
+        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::dropdown);
     }
 
 #define makeStepperWidgets(...)                 \
@@ -114,7 +114,7 @@ namespace OpenLoco::Ui
         const uint16_t width = 13;
         const uint16_t height = size.height - 2;
 
-        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::wt_11, colour, StringIds::stepper_minus);
+        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::stepper_minus);
     }
 
     [[maybe_unused]] static constexpr Widget makeStepperIncreaseWidget(Ui::Point origin, Ui::Size size, [[maybe_unused]] WidgetType type, WindowColour colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = StringIds::null)
@@ -124,7 +124,7 @@ namespace OpenLoco::Ui
         const uint16_t width = 12;
         const uint16_t height = size.height - 2;
 
-        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::wt_11, colour, StringIds::stepper_plus);
+        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::stepper_plus);
     }
 
     constexpr Widget makeTextWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, string_id content, string_id tooltip = StringIds::null)

@@ -20,10 +20,10 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 {
     Widget widgets[] = {
         commonWidgets(138, 167, StringIds::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::wt_18, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_signal_type),
-        makeWidget({ 123, 46 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_select_signal_type),
-        makeWidget({ 27, 110 }, { 40, 40 }, WidgetType::wt_9, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_signal_both_directions),
-        makeWidget({ 71, 110 }, { 40, 40 }, WidgetType::wt_9, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_signal_single_direction),
+        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::dropdown, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_signal_type),
+        makeWidget({ 123, 46 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_select_signal_type),
+        makeWidget({ 27, 110 }, { 40, 40 }, WidgetType::tooltip, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_signal_both_directions),
+        makeWidget({ 71, 110 }, { 40, 40 }, WidgetType::tooltip, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_signal_single_direction),
         widgetEnd(),
     };
 

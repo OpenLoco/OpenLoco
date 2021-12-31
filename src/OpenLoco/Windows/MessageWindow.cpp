@@ -46,13 +46,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_messages) | (1 << widx::tab_settings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                           \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),                                                                  \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),             \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_message_options)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                              \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                             \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                        \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::tooltip, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),                                                                     \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),                 \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_message_options)
 
         static WindowEventList _events;
 
@@ -399,18 +399,18 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         Widget widgets[] = {
             commonWidgets(366, 217, StringIds::title_messages),
-            makeWidget({ 236, 47 }, { 124, 12 }, WidgetType::wt_18, WindowColour::secondary),
-            makeWidget({ 348, 48 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 236, 62 }, { 124, 12 }, WidgetType::wt_18, WindowColour::secondary),
-            makeWidget({ 348, 63 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 236, 77 }, { 124, 12 }, WidgetType::wt_18, WindowColour::secondary),
-            makeWidget({ 348, 78 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 236, 92 }, { 124, 12 }, WidgetType::wt_18, WindowColour::secondary),
-            makeWidget({ 348, 93 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 236, 107 }, { 124, 12 }, WidgetType::wt_18, WindowColour::secondary),
-            makeWidget({ 348, 108 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 236, 122 }, { 124, 12 }, WidgetType::wt_18, WindowColour::secondary),
-            makeWidget({ 348, 123 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 236, 47 }, { 124, 12 }, WidgetType::dropdown, WindowColour::secondary),
+            makeWidget({ 348, 48 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 236, 62 }, { 124, 12 }, WidgetType::dropdown, WindowColour::secondary),
+            makeWidget({ 348, 63 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 236, 77 }, { 124, 12 }, WidgetType::dropdown, WindowColour::secondary),
+            makeWidget({ 348, 78 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 236, 92 }, { 124, 12 }, WidgetType::dropdown, WindowColour::secondary),
+            makeWidget({ 348, 93 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 236, 107 }, { 124, 12 }, WidgetType::dropdown, WindowColour::secondary),
+            makeWidget({ 348, 108 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 236, 122 }, { 124, 12 }, WidgetType::dropdown, WindowColour::secondary),
+            makeWidget({ 348, 123 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
             widgetEnd(),
         };
 
