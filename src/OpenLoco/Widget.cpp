@@ -106,11 +106,11 @@ namespace OpenLoco::Ui
                 break;
 
             case WidgetType::button_with_image:
-                drawTooltip(context, window, widgetFlags, wndColour, enabled, disabled, activated, hovered);
+                drawButtonWithImage(context, window, widgetFlags, wndColour, enabled, disabled, activated, hovered);
                 break;
 
             case WidgetType::button_with_colour:
-                drawColourPicker(context, window, widgetFlags, wndColour, enabled, disabled, activated, hovered);
+                drawButtonWithColour(context, window, widgetFlags, wndColour, enabled, disabled, activated, hovered);
                 break;
 
             case WidgetType::button:
@@ -406,7 +406,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CACD4
-    void Widget::drawTooltip(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered)
+    void Widget::drawButtonWithImage(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered)
     {
         if (!disabled && hovered)
         {
@@ -445,7 +445,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CAC5F
-    void Widget::drawColourPicker(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered)
+    void Widget::drawButtonWithColour(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered)
     {
         if (content == -1)
         {
