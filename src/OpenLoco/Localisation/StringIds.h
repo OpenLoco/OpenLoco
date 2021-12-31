@@ -1755,4 +1755,5 @@ namespace OpenLoco::StringIds
     constexpr string_id shortcut_construction_remove_at_current_pos = 2225;
     constexpr string_id shortcut_construction_select_position = 2226;
     constexpr string_id trainsReverseAtSignals = 2227;
+    constexpr string_id tile_inspector_delete_selected_element_btn_tooltip = 2228;
 }

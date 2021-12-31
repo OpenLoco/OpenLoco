@@ -51,6 +51,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             yPosDecrease,
             yPosIncrease,
             select,
+            delete_selected_element,
             scrollview,
             detailsGroup,
         };
@@ -64,6 +65,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::wt_17, WindowColour::secondary),
         makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::wt_17, WindowColour::secondary),
         makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
+        makeWidget({ windowSize.width - 52, 18 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tile_inspector_delete_selected_element_btn_tooltip),
         makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
         makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
         widgetEnd(),
@@ -77,6 +79,23 @@ namespace OpenLoco::Ui::Windows::TileInspector
     {
         Input::toolSet(self, widx::panel, CursorId::crosshair);
         Input::setFlag(Input::Flags::flag6);
+    }
+
+    static void deleteSelectedElement(Window* const self)
+    {
+        // var_842 is the index of the selected element in the list view
+        if (self->var_842 != -1)
+        {
+            //auto tile = TileManager::get(_currentPosition);
+            auto tileElement = TileManager::get(_currentPosition)[self->var_842];
+            if (tileElement != nullptr)
+            {
+                TileManager::removeElement(*tileElement);
+                self->var_842 = -1;
+                self->invalidate();
+                WindowManager::getMainWindow()->invalidate();
+            }
+        }
     }
 
     Window* open()
@@ -94,7 +113,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);
+        window->enabled_widgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::delete_selected_element) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);
         window->row_count = 0;
         window->row_height = 10;
         window->var_842 = -1;
@@ -112,9 +131,23 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static void prepareDraw(Window* self)
     {
         if (Input::isToolActive(WindowType::tileInspector))
+        {
             self->activated_widgets |= (1 << widx::select);
+        }
         else
+        {
             self->activated_widgets &= ~(1 << widx::select);
+        }
+
+        // delete element button
+        if (self->var_842 != -1)
+        {
+            self->enabled_widgets |= (1 << widx::delete_selected_element);
+        }
+        else
+        {
+            self->enabled_widgets &= ~(1 << widx::delete_selected_element);
+        }
     }
 
     static void draw(Ui::Window* const self, Gfx::Context* const context)
@@ -384,6 +417,10 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
             case widx::select:
                 activateMapSelectionTool(self);
+                break;
+
+            case widx::delete_selected_element:
+                deleteSelectedElement(self);
                 break;
 
             case widx::xPosDecrease:
