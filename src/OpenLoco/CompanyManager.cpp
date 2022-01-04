@@ -165,6 +165,15 @@ namespace OpenLoco::CompanyManager
         }
     }
 
+    // 0x00437FB8
+    void updateDaily()
+    {
+        for (auto& company : companies())
+        {
+            company.updateDaily();
+        }
+    }
+
     // 0x00487FC1
     void updateQuarterly()
     {

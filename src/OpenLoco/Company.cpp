@@ -1,10 +1,12 @@
 #include "Company.h"
+#include "CompanyManager.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
+#include "Math/Bound.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include <algorithm>
@@ -47,6 +49,43 @@ namespace OpenLoco
         }
 
         Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(companyId));
+    }
+
+    // 0x00437FC5
+    void Company::updateDaily()
+    {
+        updateOwnerEmotion();
+        for (auto& unk : var_8BB0)
+        {
+            unk = Math::Bound::sub(unk, 1u);
+        }
+        updateDailyLogic();
+        var_8BC4 = Math::Bound::sub(var_8BC4, 1u);
+        if (jail_status != 0)
+        {
+
+            jail_status = Math::Bound::sub(jail_status, 1u);
+            if (jail_status == 0)
+            {
+                Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id()));
+                Ui::WindowManager::invalidate(Ui::WindowType::news);
+                Ui::WindowManager::invalidate(Ui::WindowType(0x2E));
+
+                if (CompanyManager::isPlayerCompany(id()))
+                {
+                    updateLeaveJail();
+                }
+            }
+        }
+    }
+
+    // 0x004383C9
+    void Company::updateDailyLogic()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        regs.bl = enumValue(id());
+        call(0x004383C9, regs);
     }
 
     // Converts performance index to rating
@@ -176,5 +215,23 @@ namespace OpenLoco
         updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 0), headquarters_z, colour);
         updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 1), headquarters_z, colour);
         updateHeadquartersColourAtTile(hqPos + Map::TilePos2(0, 1), headquarters_z, colour);
+    }
+
+    // 0x00437F47
+    void Company::updateOwnerEmotion()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        regs.bl = enumValue(id());
+        call(0x00437F47, regs);
+    }
+
+    // 0x004387D0
+    void Company::updateLeaveJail()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        regs.bl = enumValue(id());
+        call(0x004387D0, regs);
     }
 }
