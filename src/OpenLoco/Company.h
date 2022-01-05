@@ -123,11 +123,11 @@ namespace OpenLoco
         void recalculateTransportCounts();
         void updateDaily();
         void updateDailyLogic();
+        void updateDailyPlayer();
         void updateQuarterly();
         void updateVehicleColours();
         void updateHeadquartersColour();
         void updateOwnerEmotion();
-        void updateLeaveJail();
     };
 #pragma pack(pop)
 

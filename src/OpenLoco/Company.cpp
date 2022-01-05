@@ -63,29 +63,36 @@ namespace OpenLoco
         var_8BC4 = Math::Bound::sub(var_8BC4, 1u);
         if (jail_status != 0)
         {
-
             jail_status = Math::Bound::sub(jail_status, 1u);
             if (jail_status == 0)
             {
                 Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id()));
                 Ui::WindowManager::invalidate(Ui::WindowType::news);
                 Ui::WindowManager::invalidate(Ui::WindowType(0x2E));
-
-                if (CompanyManager::isPlayerCompany(id()))
-                {
-                    updateLeaveJail();
-                }
             }
+        }
+        if (CompanyManager::isPlayerCompany(id()))
+        {
+            updateDailyPlayer();
         }
     }
 
-    // 0x004383C9
+    // 0x00438205
     void Company::updateDailyLogic()
     {
         registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        regs.bl = enumValue(id());
-        call(0x004383C9, regs);
+        regs.esi = X86Pointer(this);
+        regs.ebx = enumValue(id());
+        call(0x00438205, regs);
+    }
+
+    // 0x004387D0
+    void Company::updateDailyPlayer()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        regs.ebx = enumValue(id());
+        call(0x004387D0, regs);
     }
 
     // Converts performance index to rating
@@ -221,17 +228,8 @@ namespace OpenLoco
     void Company::updateOwnerEmotion()
     {
         registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        regs.bl = enumValue(id());
+        regs.esi = X86Pointer(this);
+        regs.ebx = enumValue(id());
         call(0x00437F47, regs);
-    }
-
-    // 0x004387D0
-    void Company::updateLeaveJail()
-    {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        regs.bl = enumValue(id());
-        call(0x004387D0, regs);
     }
 }
