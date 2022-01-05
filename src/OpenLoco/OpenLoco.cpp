@@ -1048,7 +1048,7 @@ namespace OpenLoco
                     autosaveCheck();
                 }
 
-                call(0x00437FB8);
+                CompanyManager::updateDaily();
             }
         }
     }

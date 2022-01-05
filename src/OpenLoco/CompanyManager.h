@@ -25,6 +25,7 @@ namespace OpenLoco::CompanyManager
     uint8_t getPlayerCompanyColour();
     bool isPlayerCompany(CompanyId id);
     void update();
+    void updateDaily();
     void updateQuarterly();
     void determineAvailableVehicles();
     currency32_t calculateDeliveredCargoPayment(uint8_t cargoItem, int32_t numUnits, int32_t distance, uint16_t numDays);

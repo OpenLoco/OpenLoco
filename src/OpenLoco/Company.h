@@ -106,7 +106,8 @@ namespace OpenLoco
         int16_t observation_x;               // 0x8BBE;
         int16_t observation_y;               // 0x8BC0;
         uint16_t observationObject;          // 0x8BC2;
-        uint8_t pad_8BC4[0x8BCE - 0x8BC4];
+        uint16_t var_8BC4;
+        uint8_t pad_8BC6[0x8BCE - 0x8BC6];
         uint32_t cargoDelivered[32]; // 0x8BCE;
         uint8_t challengeProgress;   // 0x8C4E - percent completed on challenge
         uint8_t pad_8C4F;
@@ -120,9 +121,13 @@ namespace OpenLoco
         void aiThink();
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
         void recalculateTransportCounts();
+        void updateDaily();
+        void updateDailyLogic();
+        void updateDailyPlayer();
         void updateQuarterly();
         void updateVehicleColours();
         void updateHeadquartersColour();
+        void updateOwnerEmotion();
     };
 #pragma pack(pop)
 
