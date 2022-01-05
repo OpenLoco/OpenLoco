@@ -241,7 +241,7 @@ namespace OpenLoco::S5
     static std::unique_ptr<S5File> prepareSaveFile(SaveFlags flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
     {
         auto mainWindow = WindowManager::getMainWindow();
-        auto savedView = mainWindow != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple();
+        auto savedView = mainWindow != nullptr && mainWindow->viewports[0] != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple{ 0, 0, 0, 0 };
 
         auto file = std::make_unique<S5File>();
         file->header = prepareHeader(flags, packedObjects.size());

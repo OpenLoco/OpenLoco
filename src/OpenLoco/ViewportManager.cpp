@@ -170,6 +170,11 @@ namespace OpenLoco::Ui::ViewportManager
      */
     Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, Map::Pos3 tile)
     {
+        // Viewports of 0 width are automatically removed
+        if (size.width == 0)
+        {
+            return nullptr;
+        }
         Viewport* viewport = initViewport(origin, size, zoom);
 
         if (viewport == nullptr)
