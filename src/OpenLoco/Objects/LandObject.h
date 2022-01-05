@@ -35,6 +35,8 @@ namespace OpenLoco
         uint8_t var_0E;
         uint8_t pad_0F[0x16 - 0x0F];
         uint32_t var_16;
+        uint8_t var_1B;
+        uint8_t var_1C;
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
     };

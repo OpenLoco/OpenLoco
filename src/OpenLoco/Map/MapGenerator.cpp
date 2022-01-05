@@ -1,6 +1,8 @@
 #include "MapGenerator.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Objects/LandObject.h"
+#include "../Objects/ObjectManager.h"
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Ui/ProgressBar.h"
@@ -22,6 +24,7 @@ using namespace OpenLoco::Map::MapGenerator;
 namespace OpenLoco::Map::MapGenerator
 {
     static loco_global<uint8_t*, 0x00F00160> _heightMap;
+    static loco_global<uint8_t, 0x00525FB6> _primaryLandObjectIndex;
 
     struct Point
     {
@@ -427,10 +430,49 @@ namespace OpenLoco::Map::MapGenerator
         }
     }
 
+    static std::optional<uint16_t> getSurfaceStlye()
+    {
+        for (uint16_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
+        {
+            auto* landObj = ObjectManager::get<LandObject>(landObjectIdx);
+            if (landObj == nullptr)
+            {
+                continue;
+            }
+            if (S5::getOptions().landDistributionPatterns[landObjectIdx] == 0)
+            {
+                return landObjectIdx;
+            }
+        }
+        if (*_primaryLandObjectIndex != -1)
+        {
+            return *_primaryLandObjectIndex;
+        }
+        return std::nullopt;
+    }
+
     // 0x0046A021
     static void generateTerrain(HeightMap& heightMap)
     {
         _heightMap = heightMap.data();
+        const auto style = getSurfaceStlye();
+        if (!style.has_value())
+        {
+            return;
+        }
+
+        TilePosLoop tileLoop{ { 1, 1 }, { map_columns - 1, map_rows - 1 } };
+        for (auto& tilePos : tileLoop)
+        {
+            auto* surface = Map::TileManager::get(tilePos).surface();
+            if (surface == nullptr)
+            {
+                continue;
+            }
+            surface->setTerrain(style.value());
+            surface->setVar6SLR5(0);
+            // 0x0046A079
+        }
         call(0x0046A021);
         _heightMap = nullptr;
     }
