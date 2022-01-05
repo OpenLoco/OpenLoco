@@ -1205,6 +1205,17 @@ namespace OpenLoco
         {
             Console::error("Unable to simulate park: %s", e.what());
         }
+        catch (const GameException i)
+        {
+            if (i != GameException::Interrupt)
+            {
+                Console::error("Unable to simulate park!");
+            }
+            else
+            {
+                Console::log("File loaded. Starting simulation.");
+            }
+        }
         tickLogic(ticks);
     }
 
