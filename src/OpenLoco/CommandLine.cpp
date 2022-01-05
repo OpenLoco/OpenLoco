@@ -452,6 +452,10 @@ namespace OpenLoco
             // Packed objects
             for (auto i = 0; i < header.numPackedObjects; i++)
             {
+                ObjectHeader object;
+                reader.read(&object, sizeof(ObjectHeader));
+                writer.write(&object, sizeof(ObjectHeader));
+
                 auto chunk = reader.readChunk();
                 writer.writeChunk(SawyerEncoding::uncompressed, chunk.data(), chunk.size());
             }
