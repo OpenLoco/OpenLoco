@@ -430,7 +430,7 @@ namespace OpenLoco::Map::MapGenerator
         }
     }
 
-    static std::optional<uint16_t> getSurfaceStlye()
+    static std::optional<uint16_t> getSurfaceStyle()
     {
         for (uint16_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
         {
@@ -451,11 +451,37 @@ namespace OpenLoco::Map::MapGenerator
         return std::nullopt;
     }
 
+    // 0x00469FC8
+    static std::optional<uint8_t> getTerrainVariation(const SurfaceElement& surface)
+    {
+        if (surface.water())
+        {
+            return std::nullopt;
+        }
+        if (surface.hasHighTypeFlag())
+        {
+            return std::nullopt;
+        }
+
+        auto* landObj = ObjectManager::get<LandObject>(surface.terrain());
+        if (landObj == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        if (landObj->var_1B == 0 || surface.slope())
+        {
+            return 0;
+        }
+
+        gPrng;
+    }
+
     // 0x0046A021
     static void generateTerrain(HeightMap& heightMap)
     {
         _heightMap = heightMap.data();
-        const auto style = getSurfaceStlye();
+        const auto style = getSurfaceStyle();
         if (!style.has_value())
         {
             return;
