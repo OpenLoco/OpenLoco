@@ -124,6 +124,8 @@ namespace OpenLoco
         void updateDaily();
         void updateDailyLogic();
         void updateDailyPlayer();
+        void updateDailyControllingPlayer();
+        void updateLoan();
         void updateQuarterly();
         void updateVehicleColours();
         void updateHeadquartersColour();

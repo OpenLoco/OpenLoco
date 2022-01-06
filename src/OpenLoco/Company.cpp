@@ -77,6 +77,10 @@ namespace OpenLoco
         {
             updateDailyPlayer();
         }
+        if (CompanyManager::getControllingId() == id())
+        {
+            updateDailyControllingPlayer();
+        }
     }
 
     // 0x00438205
@@ -165,7 +169,12 @@ namespace OpenLoco
         }
     }
 
-    void Company::updateDaily()
+    void Company::updateDailyControllingPlayer()
+    {
+        updateLoan();
+    }
+
+    void Company::updateLoan()
     {
         // autopay loan
         if (current_loan > 0 && cash > 0 && getGameStateExtensions().autopayLoan)
