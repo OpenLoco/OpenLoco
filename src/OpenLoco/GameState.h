@@ -150,10 +150,4 @@ namespace OpenLoco
 
     GameState& getGameState();
 
-    struct GameStateExtensions
-    {
-        bool autopayLoan = false;
-    };
-    GameStateExtensions& getGameStateExtensions();
-
 }

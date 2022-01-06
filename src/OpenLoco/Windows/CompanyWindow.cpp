@@ -1651,14 +1651,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[Common::widx::company_select].right = self->width - 3;
             self->widgets[Common::widx::company_select].left = self->width - 28;
 
-            if (CompanyId(self->number) == CompanyManager::getControllingId())
+            if (company->id() == CompanyManager::getControllingId())
             {
                 self->widgets[widx::current_loan].type = WidgetType::wt_17;
                 self->widgets[widx::loan_decrease].type = WidgetType::wt_11;
                 self->widgets[widx::loan_increase].type = WidgetType::wt_11;
                 self->widgets[widx::loan_autopay].type = WidgetType::checkbox;
 
-                if (getGameStateExtensions().autopayLoan)
+                if ((company->challenge_flags & CompanyFlags::autopayLoan) != 0)
                 {
                     self->activated_widgets |= (1ULL << Finances::widx::loan_autopay);
                 }
@@ -1937,7 +1937,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
 
                 case widx::loan_autopay:
-                    getGameStateExtensions().autopayLoan = !getGameStateExtensions().autopayLoan;
+                    auto company = CompanyManager::get(CompanyId(self->number));
+                    company->challenge_flags ^= CompanyFlags::autopayLoan;
                     break;
             }
         }
