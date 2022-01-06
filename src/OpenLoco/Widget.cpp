@@ -100,22 +100,22 @@ namespace OpenLoco::Ui
 
             case WidgetType::wt_5:
             case WidgetType::wt_6:
-            case WidgetType::toolbar_tab:
+            case WidgetType::toolbartab:
             case WidgetType::tab:
                 drawTab(context, window, widgetFlags, wndColour, enabled, disabled, activated);
                 break;
 
-            case WidgetType::button_with_image:
+            case WidgetType::buttonwithimage:
                 drawButtonWithImage(context, window, widgetFlags, wndColour, enabled, disabled, activated, hovered);
                 break;
 
-            case WidgetType::button_with_colour:
+            case WidgetType::buttonwithcolour:
                 drawButtonWithColour(context, window, widgetFlags, wndColour, enabled, disabled, activated, hovered);
                 break;
 
             case WidgetType::button:
             case WidgetType::wt_12:
-            case WidgetType::button_grid_sort:
+            case WidgetType::buttongridsort:
                 if (type == WidgetType::wt_12)
                 {
                     assert(false); // Unused
@@ -229,7 +229,7 @@ namespace OpenLoco::Ui
         int16_t xPlaceForImage = left + window->x;
         int16_t yPlaceForImage = top + window->y;
         uint32_t imageId = image;
-        if (type == WidgetType::wt_6 || type == WidgetType::toolbar_tab || type == WidgetType::tab || type == WidgetType::wt_4)
+        if (type == WidgetType::wt_6 || type == WidgetType::toolbartab || type == WidgetType::tab || type == WidgetType::wt_4)
         {
             if (activated)
             {
@@ -384,7 +384,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        if (type != WidgetType::toolbar_tab)
+        if (type != WidgetType::toolbartab)
         {
             sub_4CADE8(context, window, colour, enabled, disabled, activated);
             return;
@@ -520,7 +520,7 @@ namespace OpenLoco::Ui
             }
         }
 
-        if (type == WidgetType::button_grid_sort)
+        if (type == WidgetType::buttongridsort)
         {
             draw_14(context, this, colour, disabled, x, y, string);
         }

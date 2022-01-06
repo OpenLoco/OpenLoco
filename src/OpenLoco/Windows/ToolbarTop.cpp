@@ -54,23 +54,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::primary),
-        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::primary),
-        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::primary),
+        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::primary),
+        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::primary),
+        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::primary),
 
-        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::secondary),
-        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::secondary),
-        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::secondary),
+        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::secondary),
+        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::secondary),
+        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::secondary),
 
-        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::tertiary),
-        makeWidget({ 387, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::tertiary),
-        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::tertiary),
-        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::tertiary),
-        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::tertiary),
+        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::tertiary),
+        makeWidget({ 387, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::tertiary),
+        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::tertiary),
+        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::tertiary),
+        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::tertiary),
 
-        makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::quaternary),
-        makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::quaternary),
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbar_tab, WindowColour::quaternary),
+        makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::quaternary),
+        makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::quaternary),
+        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::toolbartab, WindowColour::quaternary),
         widgetEnd(),
     };
 
@@ -793,7 +793,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         if (Config::getNew().cheats_menu_enabled)
         {
-            window->widgets[Widx::cheats_menu].type = WidgetType::toolbar_tab;
+            window->widgets[Widx::cheats_menu].type = WidgetType::toolbartab;
             auto& baseWidget = window->widgets[Widx::cheats_menu];
             window->widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
             window->widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
@@ -837,17 +837,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports, 0);
 
         if (last_road_option != 0xFF)
-            window->widgets[Common::Widx::road_menu].type = WidgetType::toolbar_tab;
+            window->widgets[Common::Widx::road_menu].type = WidgetType::toolbartab;
         else
             window->widgets[Common::Widx::road_menu].type = WidgetType::none;
 
         if (last_railroad_option != 0xFF)
-            window->widgets[Common::Widx::railroad_menu].type = WidgetType::toolbar_tab;
+            window->widgets[Common::Widx::railroad_menu].type = WidgetType::toolbartab;
         else
             window->widgets[Common::Widx::railroad_menu].type = WidgetType::none;
 
         if (addr<0x00525FAC, int8_t>() != -1 || addr<0x00525FAD, int8_t>() != -1)
-            window->widgets[Common::Widx::port_menu].type = WidgetType::toolbar_tab;
+            window->widgets[Common::Widx::port_menu].type = WidgetType::toolbartab;
         else
             window->widgets[Common::Widx::port_menu].type = WidgetType::none;
 

@@ -86,12 +86,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     Widget widgets[] = {
         makeWidget({ 0, 0 }, { 600, 398 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_object_selection),
-        makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::buttonwithimage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 65 }, { 600, 333 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_5, WindowColour::secondary),
         makeWidget({ 470, 20 }, { 122, 12 }, WidgetType::button, WindowColour::primary, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
         makeWidget({ 4, 68 }, { 288, 317 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::button_with_image, WindowColour::secondary),
+        makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonwithimage, WindowColour::secondary),
         widgetEnd(),
     };
 
@@ -232,7 +232,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void prepareDraw(Ui::Window* self)
     {
         self->activated_widgets |= (1 << widx::objectImage);
-        widgets[widx::closeButton].type = WidgetType::button_with_image;
+        widgets[widx::closeButton].type = WidgetType::buttonwithimage;
 
         if (isEditorMode())
         {

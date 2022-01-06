@@ -51,15 +51,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
             tabRoute = 8,
         };
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                        \
-    makeWidget({ 0, 0 }, { (frameWidth), (frameHeight) }, WidgetType::frame, WindowColour::primary),                                                                   \
-        makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                                  \
-        makeWidget({ (frameWidth)-15, 2 }, { 13, 13 }, WidgetType::button_with_image, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { 265, 136 }, WidgetType::panel, WindowColour::secondary),                                                                               \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_main),       \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_details),   \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_cargo),     \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_finance),   \
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
+    makeWidget({ 0, 0 }, { (frameWidth), (frameHeight) }, WidgetType::frame, WindowColour::primary),                                                                 \
+        makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                                \
+        makeWidget({ (frameWidth)-15, 2 }, { 13, 13 }, WidgetType::buttonwithimage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 265, 136 }, WidgetType::panel, WindowColour::secondary),                                                                             \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_main),     \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_details), \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_cargo),   \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_finance), \
         makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_route)
 
         constexpr uint64_t enabledWidgets = (1 << closeButton) | (1 << tabMain) | (1 << tabDetails) | (1 << tabCargo) | (1 << tabFinances) | (1 << tabRoute);
@@ -109,9 +109,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static Widget widgets[] = {
             commonWidgets(265, 177, StringIds::title_vehicle_details),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, -1, StringIds::tooltip_build_new_vehicle_for),
-            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, -1, StringIds::tooltip_remove_from_track),
-            makeWidget({ 240, 96 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, -1, StringIds::tooltip_build_new_vehicle_for),
+            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, -1, StringIds::tooltip_remove_from_track),
+            makeWidget({ 240, 96 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
             makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd()
         };
@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static Widget widgets[] = {
             commonWidgets(265, 177, StringIds::title_vehicle_cargo),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
             makeWidget({ 3, 44 }, { 259, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd()
         };
@@ -188,12 +188,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             makeWidget({ 3, 44 }, { 118, 12 }, WidgetType::button, WindowColour::secondary, StringIds::local_mode_button),
             makeWidget({ 121, 44 }, { 119, 12 }, WidgetType::button, WindowColour::secondary, StringIds::express_mode_button),
             makeWidget({ 3, 58 }, { 237, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_route_scrollview),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
-            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
-            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
-            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
-            makeWidget({ 240, 140 }, { 24, 12 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
-            makeWidget({ 240, 152 }, { 24, 12 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
+            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
+            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
+            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
+            makeWidget({ 240, 140 }, { 24, 12 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
+            makeWidget({ 240, 152 }, { 24, 12 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
             widgetEnd(),
         };
     }
@@ -231,11 +231,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             makeWidget({ 3, 44 }, { 237, 120 }, WidgetType::viewport, WindowColour::secondary),
             makeWidget({ 3, 155 }, { 237, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 240, 46 }, { 24, 115 }, WidgetType::wt_5, WindowColour::secondary),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
-            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::null, StringIds::tooltip_remove_from_track),
-            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
-            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::tooltip_change_direction),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::button_with_image, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
+            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::null, StringIds::tooltip_remove_from_track),
+            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
+            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::tooltip_change_direction),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
             widgetEnd()
         };
 
@@ -714,10 +714,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto head = Common::getVehicle(self);
             Vehicles::Vehicle train(head);
 
-            self->widgets[widx::stopStart].type = WidgetType::button_with_image;
-            self->widgets[widx::pickup].type = WidgetType::button_with_image;
-            self->widgets[widx::passSignal].type = WidgetType::button_with_image;
-            self->widgets[widx::changeDirection].type = WidgetType::button_with_image;
+            self->widgets[widx::stopStart].type = WidgetType::buttonwithimage;
+            self->widgets[widx::pickup].type = WidgetType::buttonwithimage;
+            self->widgets[widx::passSignal].type = WidgetType::buttonwithimage;
+            self->widgets[widx::changeDirection].type = WidgetType::buttonwithimage;
 
             if (head->mode != TransportMode::rail)
             {
@@ -1354,9 +1354,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets[widx::remove].right = self->width - 2;
             self->widgets[widx::remove].left = self->width - 25;
 
-            self->widgets[widx::buildNew].type = WidgetType::button_with_image;
-            self->widgets[widx::pickup].type = WidgetType::button_with_image;
-            self->widgets[widx::remove].type = WidgetType::button_with_image;
+            self->widgets[widx::buildNew].type = WidgetType::buttonwithimage;
+            self->widgets[widx::pickup].type = WidgetType::buttonwithimage;
+            self->widgets[widx::remove].type = WidgetType::buttonwithimage;
             // Differs to main tab! Unsure why.
             if (head->isPlaced())
             {
@@ -1672,7 +1672,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             widgets[widx::cargoList].bottom = self->height - 14;
             widgets[widx::refit].right = self->width - 2;
             widgets[widx::refit].left = self->width - 25;
-            widgets[widx::refit].type = WidgetType::button_with_image;
+            widgets[widx::refit].type = WidgetType::buttonwithimage;
             if (!canRefit(headVehicle))
             {
                 widgets[widx::refit].type = WidgetType::none;
@@ -2943,7 +2943,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             else
                 self->activated_widgets |= (1 << widx::localMode);
 
-            WidgetType type = head->owner == CompanyManager::getControllingId() ? WidgetType::button_with_image : WidgetType::none;
+            WidgetType type = head->owner == CompanyManager::getControllingId() ? WidgetType::buttonwithimage : WidgetType::none;
             self->widgets[widx::orderForceUnload].type = type;
             self->widgets[widx::orderWait].type = type;
             self->widgets[widx::orderSkip].type = type;
