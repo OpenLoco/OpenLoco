@@ -58,47 +58,60 @@ namespace OpenLoco::S5
         Improved,
     };
 
+    enum class LandDistribuitionPattern : uint8_t
+    {
+        everywhere,
+        nowhere,
+        farFromWater,
+        nearWater,
+        onMountains,
+        farFromMountains,
+        inSmallRandomAreas,
+        inLargeRandomAreas,
+        aroundCliffs,
+    };
+
 #pragma pack(push, 1)
     struct Options
     {
-        uint8_t editorStep;                     // 0x00
-        uint8_t difficulty;                     // 0x01
-        uint16_t scenarioStartYear;             // 0x02
-        uint8_t pad_4[2];                       // 0x04
-        uint16_t scenarioFlags;                 // 0x06
-        uint8_t madeAnyChanges;                 // 0x08
-        uint8_t pad_9[1];                       // 0x09
-        uint8_t landDistributionPatterns[32];   // 0x0A
-        char scenarioName[64];                  // 0x2A
-        char scenarioDetails[256];              // 0x6A
-        ObjectHeader scenarioText;              // 0x16A
-        uint16_t numberOfForests;               // 0x17a
-        uint8_t minForestRadius;                // 0x17C
-        uint8_t maxForestRadius;                // 0x17D
-        uint8_t minForestDensity;               // 0x17E
-        uint8_t maxForestDensity;               // 0x17F
-        uint16_t numberRandomTrees;             // 0x180
-        uint8_t minAltitudeForTrees;            // 0x182
-        uint8_t maxAltitudeForTrees;            // 0x183
-        uint8_t minLandHeight;                  // 0x184
-        TopographyStyle topographyStyle;        // 0x185
-        uint8_t hillDensity;                    // 0x186
-        uint8_t numberOfTowns;                  // 0x187
-        uint8_t maxTownSize;                    // 0x188
-        uint8_t numberOfIndustries;             // 0x189
-        uint8_t preview[128][128];              // 0x18A
-        uint8_t maxCompetingCompanies;          // 0x418A
-        uint8_t competitorStartDelay;           // 0x418B
-        uint8_t objectiveType;                  // 0x418C
-        uint8_t objectiveFlags;                 // 0x418D
-        uint32_t objectiveCompanyValue;         // 0x418E
-        uint32_t objectiveMonthlyVehicleProfit; // 0x4192
-        uint8_t objectivePerformanceIndex;      // 0x4196
-        uint8_t objectiveDeliveredCargoType;    // 0x4197
-        uint32_t objectiveDeliveredCargoAmount; // 0x4198
-        uint8_t objectiveTimeLimitYears;        // 0x419C
-        ObjectHeader objectiveDeliveredCargo;   // 0x419D
-        ObjectHeader currency;                  // 0x41AD
+        uint8_t editorStep;                                    // 0x00
+        uint8_t difficulty;                                    // 0x01
+        uint16_t scenarioStartYear;                            // 0x02
+        uint8_t pad_4[2];                                      // 0x04
+        uint16_t scenarioFlags;                                // 0x06
+        uint8_t madeAnyChanges;                                // 0x08
+        uint8_t pad_9[1];                                      // 0x09
+        LandDistribuitionPattern landDistributionPatterns[32]; // 0x0A
+        char scenarioName[64];                                 // 0x2A
+        char scenarioDetails[256];                             // 0x6A
+        ObjectHeader scenarioText;                             // 0x16A
+        uint16_t numberOfForests;                              // 0x17a
+        uint8_t minForestRadius;                               // 0x17C
+        uint8_t maxForestRadius;                               // 0x17D
+        uint8_t minForestDensity;                              // 0x17E
+        uint8_t maxForestDensity;                              // 0x17F
+        uint16_t numberRandomTrees;                            // 0x180
+        uint8_t minAltitudeForTrees;                           // 0x182
+        uint8_t maxAltitudeForTrees;                           // 0x183
+        uint8_t minLandHeight;                                 // 0x184
+        TopographyStyle topographyStyle;                       // 0x185
+        uint8_t hillDensity;                                   // 0x186
+        uint8_t numberOfTowns;                                 // 0x187
+        uint8_t maxTownSize;                                   // 0x188
+        uint8_t numberOfIndustries;                            // 0x189
+        uint8_t preview[128][128];                             // 0x18A
+        uint8_t maxCompetingCompanies;                         // 0x418A
+        uint8_t competitorStartDelay;                          // 0x418B
+        uint8_t objectiveType;                                 // 0x418C
+        uint8_t objectiveFlags;                                // 0x418D
+        uint32_t objectiveCompanyValue;                        // 0x418E
+        uint32_t objectiveMonthlyVehicleProfit;                // 0x4192
+        uint8_t objectivePerformanceIndex;                     // 0x4196
+        uint8_t objectiveDeliveredCargoType;                   // 0x4197
+        uint32_t objectiveDeliveredCargoAmount;                // 0x4198
+        uint8_t objectiveTimeLimitYears;                       // 0x419C
+        ObjectHeader objectiveDeliveredCargo;                  // 0x419D
+        ObjectHeader currency;                                 // 0x41AD
 
         // new fields:
         LandGeneratorType generator;

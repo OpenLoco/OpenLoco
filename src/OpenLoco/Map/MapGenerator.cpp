@@ -430,7 +430,7 @@ namespace OpenLoco::Map::MapGenerator
         }
     }
 
-    static std::optional<uint8_t> getSurfaceStyle()
+    static std::optional<uint8_t> getEverywhereSurfaceStyle()
     {
         for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
         {
@@ -439,30 +439,17 @@ namespace OpenLoco::Map::MapGenerator
             {
                 continue;
             }
-            if (S5::getOptions().landDistributionPatterns[landObjectIdx] == 0)
+            if (S5::getOptions().landDistributionPatterns[landObjectIdx] == LandDistribuitionPattern::everywhere)
             {
                 return landObjectIdx;
             }
         }
-        if (*_primaryLandObjectIndex != -1)
+        if (*_primaryLandObjectIndex != 0xFF)
         {
             return *_primaryLandObjectIndex;
         }
         return std::nullopt;
     }
-
-    enum class LandDistribuitionPattern : uint8_t
-    {
-        everywhere,
-        nowhere,
-        farFromWater,
-        nearWater,
-        onMountains,
-        farFromMountains,
-        inSmallRandomAreas,
-        inLargeRandomAreas,
-        aroundCliffs,
-    };
 
     // 0x00469FC8
     std::optional<uint8_t> getRandomTerrainVariation(const SurfaceElement& surface)
@@ -584,7 +571,7 @@ namespace OpenLoco::Map::MapGenerator
     // 0x0046A021
     static void generateTerrain(HeightMap& heightMap)
     {
-        const auto style = getSurfaceStyle();
+        const auto style = getEverywhereSurfaceStyle();
         if (!style.has_value())
         {
             return;
@@ -626,7 +613,7 @@ namespace OpenLoco::Map::MapGenerator
                 {
                     continue;
                 }
-                const LandDistribuitionPattern typePattern = static_cast<LandDistribuitionPattern>(S5::getOptions().landDistributionPatterns[landObjectIdx]);
+                const auto typePattern = S5::getOptions().landDistributionPatterns[landObjectIdx];
                 if (typePattern != pattern)
                 {
                     continue;
