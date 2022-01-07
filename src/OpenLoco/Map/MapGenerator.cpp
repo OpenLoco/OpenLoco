@@ -572,9 +572,8 @@ namespace OpenLoco::Map::MapGenerator
     static const GenerateTerrainFunc _generateFuncs[] = {
         generateTerrainNull,
         generateTerrainNull,
+        generateTerrainFarFromWater,
         generateTerrainNearWater,
-        generateTerrainFarFromWater,
-        generateTerrainFarFromWater,
         generateTerrainOnMountains,
         generateTerrainFarFromMountains,
         generateTerrainInSmallRandomAreas,
