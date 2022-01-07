@@ -430,9 +430,9 @@ namespace OpenLoco::Map::MapGenerator
         }
     }
 
-    static std::optional<uint16_t> getSurfaceStyle()
+    static std::optional<uint8_t> getSurfaceStyle()
     {
-        for (uint16_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
+        for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
         {
             auto* landObj = ObjectManager::get<LandObject>(landObjectIdx);
             if (landObj == nullptr)
@@ -450,6 +450,19 @@ namespace OpenLoco::Map::MapGenerator
         }
         return std::nullopt;
     }
+
+    enum class LandDistribuitionPattern : uint8_t
+    {
+        everywhere,
+        nowhere,
+        farFromWater,
+        nearWater,
+        onMountains,
+        farFromMountains,
+        inSmallRandomAreas,
+        inLargeRandomAreas,
+        aroundCliffs,
+    };
 
     // 0x00469FC8
     static std::optional<uint8_t> getTerrainVariation(const SurfaceElement& surface)
@@ -474,13 +487,104 @@ namespace OpenLoco::Map::MapGenerator
             return 0;
         }
 
-        gPrng;
+        // TODO: split into two randNext calls
+        uint16_t randVal = gPrng().randNext();
+        if (landObj->var_1C <= (randVal >> 8))
+        {
+            return 0;
+        }
+        return ((randVal & 0xFF) * landObj->var_1B) >> 8;
     }
+
+    // 0x0046A379
+    static void generateTerrainFarFromWater(HeightMap& heightMap, uint8_t surfaceStyle)
+    {
+        _heightMap = heightMap.data();
+        registers regs;
+        regs.ebx = surfaceStyle;
+        call(0x0046A379, regs);
+        _heightMap = nullptr;
+    }
+
+    // 0x0046A439
+    static void generateTerrainNearWater(HeightMap& heightMap, uint8_t surfaceStyle)
+    {
+        _heightMap = heightMap.data();
+        registers regs;
+        regs.ebx = surfaceStyle;
+        call(0x0046A439, regs);
+        _heightMap = nullptr;
+    }
+
+    // 0x0046A5B3
+    static void generateTerrainOnMountains(HeightMap& heightMap, uint8_t surfaceStyle)
+    {
+        _heightMap = heightMap.data();
+        registers regs;
+        regs.ebx = surfaceStyle;
+        call(0x0046A5B3, regs);
+        _heightMap = nullptr;
+    }
+
+    // 0x0046A4F9
+    static void generateTerrainFarFromMountains(HeightMap& heightMap, uint8_t surfaceStyle)
+    {
+        _heightMap = heightMap.data();
+        registers regs;
+        regs.ebx = surfaceStyle;
+        call(0x0046A4F9, regs);
+        _heightMap = nullptr;
+    }
+
+    // 0x0046A0D8
+    static void generateTerrainInSmallRandomAreas(HeightMap& heightMap, uint8_t surfaceStyle)
+    {
+        _heightMap = heightMap.data();
+        registers regs;
+        regs.ebx = surfaceStyle;
+        call(0x0046A0D8, regs);
+        _heightMap = nullptr;
+    }
+
+    // 0x0046A227
+    static void generateTerrainInLargeRandomAreas(HeightMap& heightMap, uint8_t surfaceStyle)
+    {
+        _heightMap = heightMap.data();
+        registers regs;
+        regs.ebx = surfaceStyle;
+        call(0x0046A227, regs);
+        _heightMap = nullptr;
+    }
+
+    // 0x0046A66D
+    static void generateTerrainAroundCliffs(HeightMap& heightMap, uint8_t surfaceStyle)
+    {
+        _heightMap = heightMap.data();
+        registers regs;
+        regs.ebx = surfaceStyle;
+        call(0x0046A66D, regs);
+        _heightMap = nullptr;
+    }
+
+    static void generateTerrainNull(HeightMap& heightMap, uint8_t surfaceStyle) {}
+
+    using GenerateTerrainFunc = void (*)(HeightMap&, uint8_t);
+    static const GenerateTerrainFunc _generateFuncs[] = {
+        generateTerrainNull,
+        generateTerrainNull,
+        generateTerrainNearWater,
+        generateTerrainFarFromWater,
+        generateTerrainFarFromWater,
+        generateTerrainOnMountains,
+        generateTerrainFarFromMountains,
+        generateTerrainInSmallRandomAreas,
+        generateTerrainInLargeRandomAreas,
+        generateTerrainAroundCliffs
+    };
 
     // 0x0046A021
     static void generateTerrain(HeightMap& heightMap)
     {
-        _heightMap = heightMap.data();
         const auto style = getSurfaceStyle();
         if (!style.has_value())
         {
@@ -497,10 +601,40 @@ namespace OpenLoco::Map::MapGenerator
             }
             surface->setTerrain(style.value());
             surface->setVar6SLR5(0);
-            // 0x0046A079
+
+            const auto variation = getTerrainVariation(*surface);
+            if (variation.has_value())
+            {
+                surface->setVariation(variation.value());
+            }
         }
-        call(0x0046A021);
-        _heightMap = nullptr;
+
+        for (const auto pattern : {
+                 LandDistribuitionPattern::nowhere,
+                 LandDistribuitionPattern::farFromWater,
+                 LandDistribuitionPattern::nearWater,
+                 LandDistribuitionPattern::onMountains,
+                 LandDistribuitionPattern::farFromMountains,
+                 LandDistribuitionPattern::inSmallRandomAreas,
+                 LandDistribuitionPattern::inLargeRandomAreas,
+                 LandDistribuitionPattern::aroundCliffs,
+             })
+        {
+            for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
+            {
+                auto* landObj = ObjectManager::get<LandObject>(landObjectIdx);
+                if (landObj == nullptr)
+                {
+                    continue;
+                }
+                const LandDistribuitionPattern typePattern = static_cast<LandDistribuitionPattern>(S5::getOptions().landDistributionPatterns[landObjectIdx]);
+                if (typePattern != pattern)
+                {
+                    continue;
+                }
+                _generateFuncs[enumValue(pattern)](heightMap, landObjectIdx);
+            }
+        }
     }
 
     // 0x004BDA49
