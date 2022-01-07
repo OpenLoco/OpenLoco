@@ -1764,4 +1764,5 @@ namespace OpenLoco::StringIds
     constexpr string_id cheat_year_value = 2234;
     constexpr string_id cheat_month_value = 2235;
     constexpr string_id cheat_day_value = 2236;
+    constexpr string_id date_daymonthyear = 2237;
 }

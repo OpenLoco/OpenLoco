@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#1278] Added a cheat to change the in-game date.
 - Feature: [#1284] Added automatic loan repayment option in company finances window.
+- Feature: [#1291] Modified the time panel date format to display day.
 - Fix: [#1236] Incorrect cargo capacity displayed for vehicle objects.
 
 21.10 (2021-10-17)

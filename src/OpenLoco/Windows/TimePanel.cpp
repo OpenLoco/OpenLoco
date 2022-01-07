@@ -21,7 +21,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TimePanel
 {
-    static const Ui::Size window_size = { 140, 27 };
+    static const Ui::Size window_size = { 145, 27 };
 
     namespace Widx
     {
@@ -44,10 +44,10 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void changeGameSpeed(Window* w, uint8_t speed);
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                        // 0,
+        makeWidget({ 0, 0 }, { 145, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                        // 0,
         makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),                                                                                        // 1,
-        makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::wt_9, WindowColour::primary),                                                                                       // 2,
-        makeWidget({ 2, 2 }, { 111, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::null, StringIds::tooltip_daymonthyear_challenge),                             // 3,
+        makeWidget({ 118, 1 }, { 26, 26 }, WidgetType::wt_9, WindowColour::primary),                                                                                       // 2,
+        makeWidget({ 2, 2 }, { 116, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::null, StringIds::tooltip_daymonthyear_challenge),                             // 3,
         makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                           // 4,
         makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
         makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
@@ -183,7 +183,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Gfx::drawRectInset(*context, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->getColour(WindowColour::secondary), 0x30);
 
         *(uint32_t*)&_common_format_args[0] = getCurrentDay();
-        string_id format = StringIds::date_monthyear;
+        string_id format = StringIds::date_daymonthyear;
 
         if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
         {
