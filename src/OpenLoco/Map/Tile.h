@@ -208,7 +208,7 @@ namespace OpenLoco::Map
         IndustryId industryId() const { return IndustryId(_7); }
         uint8_t variation() const { return _7; }
         void setIndustry(const IndustryId industry) { _7 = enumValue(industry); }
-        void setVariation(const uint8_t variation) { _7 = enumValue(variation); }
+        void setVariation(const uint8_t variation) { _7 = variation; }
         void setType6Flag(bool state)
         {
             _type &= ~0x40;
