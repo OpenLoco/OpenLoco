@@ -465,7 +465,7 @@ namespace OpenLoco::Map::MapGenerator
     };
 
     // 0x00469FC8
-    static std::optional<uint8_t> getTerrainVariation(const SurfaceElement& surface)
+    std::optional<uint8_t> getRandomTerrainVariation(const SurfaceElement& surface)
     {
         if (surface.water())
         {
@@ -601,7 +601,7 @@ namespace OpenLoco::Map::MapGenerator
             surface->setTerrain(style.value());
             surface->setVar6SLR5(0);
 
-            const auto variation = getTerrainVariation(*surface);
+            const auto variation = getRandomTerrainVariation(*surface);
             if (variation.has_value())
             {
                 surface->setVariation(variation.value());
