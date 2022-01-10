@@ -1922,7 +1922,7 @@ namespace OpenLoco::Input
             oldWindow->callPrepareDraw();
 
             Ui::Widget* oldWidget = &oldWindow->widgets[widgetIdx];
-            if (oldWidget->type == Ui::WidgetType::buttonwithcolour || oldWidget->type == Ui::WidgetType::buttonwithimage)
+            if (oldWidget->type == Ui::WidgetType::buttonWithColour || oldWidget->type == Ui::WidgetType::buttonWithImage)
             {
                 WindowManager::invalidateWidget(windowType, windowNumber, widgetIdx);
             }

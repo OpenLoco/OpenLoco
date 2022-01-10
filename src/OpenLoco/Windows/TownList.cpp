@@ -57,7 +57,7 @@ namespace OpenLoco::Ui::Windows::TownList
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                     \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonwithimage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
         makeWidget({ 0, 41 }, { frameWidth, 155 }, WidgetType::panel, WindowColour::secondary),                                                                      \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_list),                               \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_town),                             \
@@ -94,10 +94,10 @@ namespace OpenLoco::Ui::Windows::TownList
 
         Widget widgets[] = {
             commonWidgets(600, 197, StringIds::title_towns),
-            makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_by_name),
-            makeWidget({ 204, 43 }, { 80, 12 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_town_type),
-            makeWidget({ 284, 43 }, { 70, 12 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_population),
-            makeWidget({ 354, 43 }, { 70, 12 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_stations),
+            makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_by_name),
+            makeWidget({ 204, 43 }, { 80, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_town_type),
+            makeWidget({ 284, 43 }, { 70, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_population),
+            makeWidget({ 354, 43 }, { 70, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_stations),
             makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, 2),
             widgetEnd(),
         };
@@ -807,8 +807,8 @@ namespace OpenLoco::Ui::Windows::TownList
         Widget widgets[] = {
             commonWidgets(640, 172, StringIds::title_build_new_buildings),
             makeWidget({ 2, 45 }, { 573, 112 }, WidgetType::scrollview, WindowColour::secondary, 2),
-            makeWidget({ 575, 46 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
-            makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonwithcolour, WindowColour::secondary, ImageIds::null, StringIds::tooltip_object_colour),
+            makeWidget({ 575, 46 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
+            makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, ImageIds::null, StringIds::tooltip_object_colour),
             widgetEnd(),
         };
 
@@ -824,7 +824,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 auto buildingObj = ObjectManager::get<BuildingObject>(self->row_hover);
                 if (buildingObj->colours != 0)
-                    self->widgets[widx::object_colour].type = WidgetType::buttonwithcolour;
+                    self->widgets[widx::object_colour].type = WidgetType::buttonWithColour;
             }
 
             Common::prepareDraw(self);

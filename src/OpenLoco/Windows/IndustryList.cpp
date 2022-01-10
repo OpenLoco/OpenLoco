@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                     \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonwithimage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
         makeWidget({ 0, 41 }, { frameWidth, 154 }, WidgetType::panel, WindowColour::secondary),                                                                      \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industries_list),                         \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_fund_new_industries)
@@ -87,9 +87,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         Widget widgets[] = {
             commonWidgets(600, 197, StringIds::title_industries),
-            makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_name),
-            makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_status),
-            makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_production_transported),
+            makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_name),
+            makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_status),
+            makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_production_transported),
             makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };

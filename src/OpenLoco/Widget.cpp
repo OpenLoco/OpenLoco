@@ -100,27 +100,27 @@ namespace OpenLoco::Ui
 
             case WidgetType::wt_5:
             case WidgetType::wt_6:
-            case WidgetType::toolbartab:
+            case WidgetType::toolbarTab:
             case WidgetType::tab:
                 drawTab(context, window, widgetFlags, wndColour, enabled, disabled, activated);
                 break;
 
-            case WidgetType::buttonwithimage:
+            case WidgetType::buttonWithImage:
                 drawButtonWithImage(context, window, widgetFlags, wndColour, enabled, disabled, activated, hovered);
                 break;
 
-            case WidgetType::buttonwithcolour:
+            case WidgetType::buttonWithColour:
                 drawButtonWithColour(context, window, widgetFlags, wndColour, enabled, disabled, activated, hovered);
                 break;
 
             case WidgetType::button:
             case WidgetType::wt_12:
-            case WidgetType::buttongridsort:
+            case WidgetType::buttonGridSort:
                 if (type == WidgetType::wt_12)
                 {
                     assert(false); // Unused
                 }
-                draw_11_a(context, window, widgetFlags, wndColour, enabled, disabled, activated);
+                drawButton(context, window, widgetFlags, wndColour, enabled, disabled, activated);
                 draw_13(context, window, widgetFlags, wndColour, enabled, disabled, activated);
                 break;
 
@@ -140,7 +140,7 @@ namespace OpenLoco::Ui
             case WidgetType::textbox:
             case WidgetType::dropdown:
             case WidgetType::viewport:
-                draw_17(context, window, widgetFlags, wndColour);
+                drawTextBox(context, window, widgetFlags, wndColour);
                 draw_15(context, window, widgetFlags, wndColour, disabled);
                 break;
 
@@ -229,7 +229,7 @@ namespace OpenLoco::Ui
         int16_t xPlaceForImage = left + window->x;
         int16_t yPlaceForImage = top + window->y;
         uint32_t imageId = image;
-        if (type == WidgetType::wt_6 || type == WidgetType::toolbartab || type == WidgetType::tab || type == WidgetType::wt_4)
+        if (type == WidgetType::wt_6 || type == WidgetType::toolbarTab || type == WidgetType::tab || type == WidgetType::wt_4)
         {
             if (activated)
             {
@@ -384,7 +384,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        if (type != WidgetType::toolbartab)
+        if (type != WidgetType::toolbarTab)
         {
             sub_4CADE8(context, window, colour, enabled, disabled, activated);
             return;
@@ -483,7 +483,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CB164
-    void Widget::draw_11_a(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
+    void Widget::drawButton(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
     {
         int l = window->x + left;
         int r = window->x + right;
@@ -520,7 +520,7 @@ namespace OpenLoco::Ui
             }
         }
 
-        if (type == WidgetType::buttongridsort)
+        if (type == WidgetType::buttonGridSort)
         {
             draw_14(context, this, colour, disabled, x, y, string);
         }
@@ -577,7 +577,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x4CB29C
-    void Widget::draw_17(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour)
+    void Widget::drawTextBox(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour)
     {
         Gfx::fillRectInset(*context, window->x + left, window->y + top, window->x + right, window->y + bottom, colour, flags | 0x60);
     }

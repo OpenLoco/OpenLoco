@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                     \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                                \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonwithimage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
         makeWidget({ 0, 41 }, { frameWidth, 231 }, WidgetType::panel, WindowColour::secondary),                                                                      \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_compare_companies),                           \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_performance),                        \
@@ -119,10 +119,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         Widget widgets[] = {
             commonWidgets(640, 272, StringIds::title_company_list),
-            makeWidget({ 4, 43 }, { 175, 12 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
-            makeWidget({ 179, 43 }, { 210, 12 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
-            makeWidget({ 389, 43 }, { 145, 12 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
-            makeWidget({ 534, 43 }, { 100, 12 }, WidgetType::buttongridsort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
+            makeWidget({ 4, 43 }, { 175, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
+            makeWidget({ 179, 43 }, { 210, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
+            makeWidget({ 389, 43 }, { 145, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
+            makeWidget({ 534, 43 }, { 100, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
             makeWidget({ 3, 56 }, { 634, 201 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };

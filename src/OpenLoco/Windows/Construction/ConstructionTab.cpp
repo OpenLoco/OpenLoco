@@ -77,29 +77,29 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     Widget widgets[] = {
         commonWidgets(138, 276, StringIds::stringid_2),
-        makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_left_hand_curve_very_small, StringIds::tooltip_left_hand_curve_very_small),
-        makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_left_hand_curve_small, StringIds::tooltip_left_hand_curve_small),
-        makeWidget({ 25, 45 }, { 22, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_left_hand_curve, StringIds::tooltip_left_hand_curve),
-        makeWidget({ 47, 45 }, { 22, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_left_hand_curve_large, StringIds::tooltip_left_hand_curve_large),
-        makeWidget({ 69, 45 }, { 22, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_right_hand_curve_large, StringIds::tooltip_right_hand_curve_large),
-        makeWidget({ 91, 45 }, { 22, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_right_hand_curve, StringIds::tooltip_right_hand_curve),
-        makeWidget({ 113, 45 }, { 22, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_right_hand_curve_small, StringIds::tooltip_right_hand_curve_small),
-        makeWidget({ 113, 45 }, { 22, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_right_hand_curve_very_small, StringIds::tooltip_right_hand_curve_very_small),
-        makeWidget({ 9, 69 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_left, StringIds::tooltip_s_bend_left_dual_track),
-        makeWidget({ 33, 69 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_s_bend_left, StringIds::tooltip_s_bend_left),
-        makeWidget({ 57, 69 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_straight, StringIds::tooltip_straight),
-        makeWidget({ 81, 69 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_s_bend_right, StringIds::tooltip_s_bend_right),
-        makeWidget({ 105, 69 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_right, StringIds::tooltip_s_bend_right_dual_track),
-        makeWidget({ 9, 96 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_steep_slope_down, StringIds::tooltip_steep_slope_down),
-        makeWidget({ 33, 96 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_slope_down, StringIds::tooltip_slope_down),
-        makeWidget({ 57, 96 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_level, StringIds::tooltip_level),
-        makeWidget({ 81, 96 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::tooltip_slope_up),
-        makeWidget({ 105, 96 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_steep_slope_up, StringIds::tooltip_steep_slope_up),
+        makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_very_small, StringIds::tooltip_left_hand_curve_very_small),
+        makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_small, StringIds::tooltip_left_hand_curve_small),
+        makeWidget({ 25, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve, StringIds::tooltip_left_hand_curve),
+        makeWidget({ 47, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_large, StringIds::tooltip_left_hand_curve_large),
+        makeWidget({ 69, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve_large, StringIds::tooltip_right_hand_curve_large),
+        makeWidget({ 91, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve, StringIds::tooltip_right_hand_curve),
+        makeWidget({ 113, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve_small, StringIds::tooltip_right_hand_curve_small),
+        makeWidget({ 113, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve_very_small, StringIds::tooltip_right_hand_curve_very_small),
+        makeWidget({ 9, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_left, StringIds::tooltip_s_bend_left_dual_track),
+        makeWidget({ 33, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_left, StringIds::tooltip_s_bend_left),
+        makeWidget({ 57, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_straight, StringIds::tooltip_straight),
+        makeWidget({ 81, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_right, StringIds::tooltip_s_bend_right),
+        makeWidget({ 105, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_right, StringIds::tooltip_s_bend_right_dual_track),
+        makeWidget({ 9, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_steep_slope_down, StringIds::tooltip_steep_slope_down),
+        makeWidget({ 33, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_down, StringIds::tooltip_slope_down),
+        makeWidget({ 57, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_level, StringIds::tooltip_level),
+        makeWidget({ 81, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::tooltip_slope_up),
+        makeWidget({ 105, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_steep_slope_up, StringIds::tooltip_steep_slope_up),
         makeWidget({ 40, 123 }, { 58, 20 }, WidgetType::dropdown, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
         makeWidget({ 86, 124 }, { 11, 18 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_bridge_stats),
         makeWidget({ 3, 145 }, { 132, 100 }, WidgetType::wt_5, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_construct),
-        makeWidget({ 6, 248 }, { 46, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
-        makeWidget({ 57, 248 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
+        makeWidget({ 6, 248 }, { 46, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
+        makeWidget({ 57, 248 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
         widgetEnd(),
     };
 
@@ -707,14 +707,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::right_hand_curve].left = 69;
             window->widgets[widx::right_hand_curve].right = 90;
 
-            window->widgets[widx::left_hand_curve_very_small].type = WidgetType::buttonwithimage;
-            window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonwithimage;
+            window->widgets[widx::left_hand_curve_very_small].type = WidgetType::buttonWithImage;
+            window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonWithImage;
         }
 
         if (roadObj->road_pieces & RoadPieceFlags::one_way)
         {
-            window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonwithimage;
-            window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonwithimage;
+            window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonWithImage;
+            window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonWithImage;
         }
 
         window->widgets[widx::s_bend_dual_track_left].type = WidgetType::none;
@@ -722,7 +722,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (roadObj->road_pieces & RoadPieceFlags::one_sided)
         {
-            window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonwithimage;
+            window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonWithImage;
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
             window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
 
@@ -737,14 +737,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (roadObj->road_pieces & RoadPieceFlags::slope)
         {
-            window->widgets[widx::slope_down].type = WidgetType::buttonwithimage;
-            window->widgets[widx::slope_up].type = WidgetType::buttonwithimage;
+            window->widgets[widx::slope_down].type = WidgetType::buttonWithImage;
+            window->widgets[widx::slope_up].type = WidgetType::buttonWithImage;
         }
 
         if (roadObj->road_pieces & RoadPieceFlags::steep_slope)
         {
-            window->widgets[widx::steep_slope_down].type = WidgetType::buttonwithimage;
-            window->widgets[widx::steep_slope_up].type = WidgetType::buttonwithimage;
+            window->widgets[widx::steep_slope_down].type = WidgetType::buttonWithImage;
+            window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
         }
 
         window->widgets[widx::bridge].type = WidgetType::dropdown;
@@ -760,7 +760,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         activatedWidgets &= ~(Construction::allTrack);
 
         window->widgets[widx::construct].type = WidgetType::none;
-        window->widgets[widx::remove].type = WidgetType::buttonwithimage;
+        window->widgets[widx::remove].type = WidgetType::buttonWithImage;
         window->widgets[widx::rotate_90].type = WidgetType::none;
 
         if (_constructionHover == 1)
@@ -768,7 +768,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::construct].type = WidgetType::wt_5;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
             window->widgets[widx::remove].type = WidgetType::none;
-            window->widgets[widx::rotate_90].type = WidgetType::buttonwithimage;
+            window->widgets[widx::rotate_90].type = WidgetType::buttonWithImage;
             window->widgets[widx::rotate_90].image = ImageIds::rotate_object;
             window->widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
         }
@@ -776,7 +776,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             window->widgets[widx::construct].type = WidgetType::wt_3;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
-            window->widgets[widx::rotate_90].type = WidgetType::buttonwithimage;
+            window->widgets[widx::rotate_90].type = WidgetType::buttonWithImage;
             window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
             window->widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
         }
@@ -850,8 +850,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
-        window->widgets[widx::s_bend_left].type = WidgetType::buttonwithimage;
-        window->widgets[widx::s_bend_right].type = WidgetType::buttonwithimage;
+        window->widgets[widx::s_bend_left].type = WidgetType::buttonWithImage;
+        window->widgets[widx::s_bend_right].type = WidgetType::buttonWithImage;
         window->widgets[widx::left_hand_curve_large].type = WidgetType::none;
         window->widgets[widx::right_hand_curve_large].type = WidgetType::none;
         window->widgets[widx::left_hand_curve].type = WidgetType::none;
@@ -881,26 +881,26 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::right_hand_curve].left = 69;
             window->widgets[widx::right_hand_curve].right = 90;
 
-            window->widgets[widx::left_hand_curve_very_small].type = WidgetType::buttonwithimage;
-            window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonwithimage;
+            window->widgets[widx::left_hand_curve_very_small].type = WidgetType::buttonWithImage;
+            window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonWithImage;
         }
 
         if (trackObj->track_pieces & TrackPieceFlags::large_curve)
         {
-            window->widgets[widx::left_hand_curve_large].type = WidgetType::buttonwithimage;
-            window->widgets[widx::right_hand_curve_large].type = WidgetType::buttonwithimage;
+            window->widgets[widx::left_hand_curve_large].type = WidgetType::buttonWithImage;
+            window->widgets[widx::right_hand_curve_large].type = WidgetType::buttonWithImage;
         }
 
         if (trackObj->track_pieces & TrackPieceFlags::normal_curve)
         {
-            window->widgets[widx::left_hand_curve].type = WidgetType::buttonwithimage;
-            window->widgets[widx::right_hand_curve].type = WidgetType::buttonwithimage;
+            window->widgets[widx::left_hand_curve].type = WidgetType::buttonWithImage;
+            window->widgets[widx::right_hand_curve].type = WidgetType::buttonWithImage;
         }
 
         if (trackObj->track_pieces & TrackPieceFlags::small_curve)
         {
-            window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonwithimage;
-            window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonwithimage;
+            window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonWithImage;
+            window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonWithImage;
         }
 
         window->widgets[widx::s_bend_dual_track_left].type = WidgetType::none;
@@ -908,8 +908,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (trackObj->track_pieces & TrackPieceFlags::one_sided)
         {
-            window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonwithimage;
-            window->widgets[widx::s_bend_dual_track_right].type = WidgetType::buttonwithimage;
+            window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonWithImage;
+            window->widgets[widx::s_bend_dual_track_right].type = WidgetType::buttonWithImage;
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_s_bend_dual_track_left;
             window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_dual_track_right;
             window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_left_dual_track;
@@ -944,14 +944,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (trackObj->track_pieces & TrackPieceFlags::slope)
         {
-            window->widgets[widx::slope_down].type = WidgetType::buttonwithimage;
-            window->widgets[widx::slope_up].type = WidgetType::buttonwithimage;
+            window->widgets[widx::slope_down].type = WidgetType::buttonWithImage;
+            window->widgets[widx::slope_up].type = WidgetType::buttonWithImage;
         }
 
         if (trackObj->track_pieces & TrackPieceFlags::steep_slope)
         {
-            window->widgets[widx::steep_slope_down].type = WidgetType::buttonwithimage;
-            window->widgets[widx::steep_slope_up].type = WidgetType::buttonwithimage;
+            window->widgets[widx::steep_slope_down].type = WidgetType::buttonWithImage;
+            window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
         }
 
         window->widgets[widx::bridge].type = WidgetType::dropdown;
@@ -967,7 +967,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         activatedWidgets &= ~(Construction::allTrack);
 
         window->widgets[widx::construct].type = WidgetType::none;
-        window->widgets[widx::remove].type = WidgetType::buttonwithimage;
+        window->widgets[widx::remove].type = WidgetType::buttonWithImage;
         window->widgets[widx::rotate_90].type = WidgetType::none;
 
         if (_constructionHover == 1)
@@ -975,7 +975,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::construct].type = WidgetType::wt_5;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
             window->widgets[widx::remove].type = WidgetType::none;
-            window->widgets[widx::rotate_90].type = WidgetType::buttonwithimage;
+            window->widgets[widx::rotate_90].type = WidgetType::buttonWithImage;
             window->widgets[widx::rotate_90].image = ImageIds::rotate_object;
             window->widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
         }
@@ -983,7 +983,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             window->widgets[widx::construct].type = WidgetType::wt_3;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
-            window->widgets[widx::rotate_90].type = WidgetType::buttonwithimage;
+            window->widgets[widx::rotate_90].type = WidgetType::buttonWithImage;
             window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
             window->widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
         }

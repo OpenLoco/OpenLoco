@@ -22,9 +22,9 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 2, 2 }, { 196, 30 }, WidgetType::buttonwithimage, WindowColour::primary),
+        makeWidget({ 2, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
         makeWidget({ 440, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::buttonwithimage, WindowColour::primary),
+        makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
         widgetEnd(),
     };
 
@@ -40,12 +40,12 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     // 0x0043CE21
     static void prepareDraw(Window* self)
     {
-        self->widgets[widx::next_button].type = WidgetType::buttonwithimage;
+        self->widgets[widx::next_button].type = WidgetType::buttonWithImage;
         self->widgets[widx::next_frame].type = WidgetType::wt_3;
 
         if (EditorController::canGoBack())
         {
-            self->widgets[widx::previous_button].type = WidgetType::buttonwithimage;
+            self->widgets[widx::previous_button].type = WidgetType::buttonWithImage;
             self->widgets[widx::previous_frame].type = WidgetType::wt_3;
         }
         else

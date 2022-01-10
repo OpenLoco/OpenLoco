@@ -49,9 +49,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static Widget widgets[] = {
         makeWidget({ 0, 0 }, { 500, 380 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 498, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::empty),
-        makeWidget({ 485, 2 }, { 13, 13 }, WidgetType::buttonwithimage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 485, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 500, 365 }, WidgetType::panel, WindowColour::secondary),
-        makeWidget({ 473, 18 }, { 24, 24 }, WidgetType::buttonwithimage, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
+        makeWidget({ 473, 18 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
         makeWidget({ 88, 348 }, { 408, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 426, 364 }, { 70, 12 }, WidgetType::button, WindowColour::secondary, StringIds::label_button_ok),
         makeWidget({ 3, 45 }, { 494, 323 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),

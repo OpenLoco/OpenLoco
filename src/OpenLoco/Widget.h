@@ -45,10 +45,10 @@ namespace OpenLoco::Ui
         void drawTab(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
         void drawButtonWithImage(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered);
         void drawButtonWithColour(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered);
-        void draw_11_a(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
+        void drawButton(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
         void draw_13(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
         void draw_15(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool disabled);
-        void draw_17(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
+        void drawTextBox(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
         void draw_22_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
         void draw_23_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
         void draw_24_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);

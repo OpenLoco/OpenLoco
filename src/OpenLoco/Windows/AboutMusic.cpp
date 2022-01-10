@@ -32,7 +32,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::music_acknowledgements_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonwithimage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, 297 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
         widgetEnd(),

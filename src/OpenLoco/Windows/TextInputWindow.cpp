@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 330, 90 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 328, 13 }, WidgetType::caption_25, WindowColour::primary),
-        makeWidget({ 315, 2 }, { 13, 13 }, WidgetType::buttonwithimage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 315, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 330, 75 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 58 }, { 322, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeTextWidget({ 256, 74 }, { 70, 12 }, WidgetType::button, WindowColour::secondary, StringIds::label_button_ok),
