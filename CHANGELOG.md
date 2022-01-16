@@ -1,5 +1,6 @@
 21.10+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1284] Added automatic loan repayment option in company finances window.
 - Fix: [#1236] Incorrect cargo capacity displayed for vehicle objects.
 
 21.10 (2021-10-17)
