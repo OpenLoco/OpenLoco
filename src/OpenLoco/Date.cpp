@@ -138,7 +138,7 @@ namespace OpenLoco
         return result;
     }
 
-    uint32_t calcDay(Date date)
+    uint32_t calcDays(Date date)
     {
         constexpr auto kBaseYear = 1800;
         constexpr auto kDaysInYear = 365;

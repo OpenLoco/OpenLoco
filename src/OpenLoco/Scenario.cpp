@@ -245,7 +245,7 @@ namespace OpenLoco::Scenario
     {
         // NB: this base value was already 1800 in Locomotion.
         auto date = Date(year, month, day);
-        uint32_t dayCount = calcDay(date);
+        uint32_t dayCount = calcDays(date);
 
         setCurrentDay(dayCount);
         setDate(date);

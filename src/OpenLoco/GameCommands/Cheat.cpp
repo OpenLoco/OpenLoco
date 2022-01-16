@@ -176,13 +176,13 @@ namespace OpenLoco::GameCommands
 			return 0;
 		}
 
-		static uint32_t modifyDateCheat(int32_t year, int32_t month, int32_t day)
-		{
-			OpenLoco::Scenario::initialiseDate((uint16_t)year, (MonthId)month, (uint8_t)day);
-			Console::log("Date set to: Day=%u Month=%u Year=%u", day, month, year);
-			return 0;
-		}
-	}
+        static uint32_t modifyDateCheat(int32_t year, int32_t month, int32_t day)
+        {
+            OpenLoco::Scenario::initialiseDate(static_cast<uint16_t>(year), static_cast<MonthId>(month), static_cast<uint8_t>(day));
+            Console::log("Date set to: Day=%u Month=%u Year=%u", day, month, year);
+            return 0;
+        }
+    }
 
 	static uint32_t cheat(CheatCommand command, int32_t param1, int32_t param2, int32_t param3)
 	{

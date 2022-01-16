@@ -8,6 +8,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
+#include "../Math/Bound.hpp"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Scenario.h"
@@ -403,7 +404,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
 
                 case Widx::year_step_increase:
-                    _date.year = std::min<int32_t>(std::numeric_limits<int32_t>().max(), _date.year + timeStepSize);
+                    _date.year = Math::Bound::add(_date.year, timeStepSize);
                     break;
 
                 case Widx::month_step_decrease:

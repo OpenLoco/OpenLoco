@@ -60,7 +60,7 @@ namespace OpenLoco
      */
     bool updateDayCounter();
     Date calcDate(uint32_t totalDays);
-    uint32_t calcDay(Date date);
+    uint32_t calcDays(Date date);
 
     uint8_t getMonthTotalDay(uint16_t year, MonthId month);
 }
