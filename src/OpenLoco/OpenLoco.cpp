@@ -1006,9 +1006,6 @@ namespace OpenLoco
                 call(0x004969DA);
                 call(0x00439BA5);
 
-                auto company = CompanyManager::get(CompanyManager::getControllingId());
-                company->updateDaily();
-
                 auto yesterday = calcDate(getCurrentDay() - 1);
                 auto today = calcDate(getCurrentDay());
                 setDate(today);

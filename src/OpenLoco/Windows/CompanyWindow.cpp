@@ -1937,9 +1937,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
 
                 case widx::loan_autopay:
+                {
                     auto company = CompanyManager::get(CompanyId(self->number));
                     company->challenge_flags ^= CompanyFlags::autopayLoan;
                     break;
+                }
             }
         }
 

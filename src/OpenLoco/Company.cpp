@@ -176,8 +176,7 @@ namespace OpenLoco
 
     void Company::updateLoanAutorepay()
     {
-        auto company = CompanyManager::get(id());
-        if (current_loan > 0 && cash > 0 && ((company->challenge_flags & CompanyFlags::autopayLoan) != 0))
+        if (current_loan > 0 && cash > 0 && ((challenge_flags & CompanyFlags::autopayLoan) != 0))
         {
             GameCommands::ChangeLoanArgs args{};
             args.newLoan = current_loan - std::max<currency32_t>(0, std::min<currency32_t>(current_loan, cash.asInt64()));
