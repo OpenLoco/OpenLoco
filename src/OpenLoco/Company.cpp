@@ -1,6 +1,8 @@
 #include "Company.h"
 #include "CompanyManager.h"
 #include "Entities/EntityManager.h"
+#include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
@@ -74,6 +76,10 @@ namespace OpenLoco
         if (CompanyManager::isPlayerCompany(id()))
         {
             updateDailyPlayer();
+        }
+        if (CompanyManager::getControllingId() == id())
+        {
+            updateDailyControllingPlayer();
         }
     }
 
@@ -160,6 +166,23 @@ namespace OpenLoco
                 totalRunCost += vehHead->calculateRunningCost();
             }
             unk.var_7C = totalRunCost;
+        }
+    }
+
+    void Company::updateDailyControllingPlayer()
+    {
+        updateLoanAutorepay();
+    }
+
+    void Company::updateLoanAutorepay()
+    {
+        if (current_loan > 0 && cash > 0 && ((challenge_flags & CompanyFlags::autopayLoan) != 0))
+        {
+            GameCommands::ChangeLoanArgs args{};
+            args.newLoan = current_loan - std::max<currency32_t>(0, std::min<currency32_t>(current_loan, cash.asInt64()));
+
+            GameCommands::setUpdatingCompanyId(id());
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
     }
 

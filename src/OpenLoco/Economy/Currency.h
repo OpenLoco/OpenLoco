@@ -91,6 +91,16 @@ namespace OpenLoco
         {
             return asInt64() < rhs;
         }
+
+        bool operator>(const currency48_t& rhs) const
+        {
+            return asInt64() > rhs.asInt64();
+        }
+
+        bool operator>(const int64_t rhs) const
+        {
+            return asInt64() > rhs;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(currency48_t) == 6);

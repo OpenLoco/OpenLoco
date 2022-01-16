@@ -457,4 +457,14 @@ namespace OpenLoco::GameCommands
     {
         _gGameCommandExpenditureType = static_cast<uint8_t>(type) * 4;
     }
+
+    CompanyId getUpdatingCompanyId()
+    {
+        return _updating_company_id;
+    }
+
+    void setUpdatingCompanyId(const CompanyId companyId)
+    {
+        _updating_company_id = companyId;
+    }
 }

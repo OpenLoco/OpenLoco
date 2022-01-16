@@ -18,6 +18,7 @@ namespace OpenLoco
         constexpr uint32_t challengeFailed = (1 << 7);           // 0x80
         constexpr uint32_t challengeBeatenByOpponent = (1 << 8); // 0x100
         constexpr uint32_t bankrupt = (1 << 9);                  // 0x200
+        constexpr uint32_t autopayLoan = (1 << 31);              // 0x80000000 new for OpenLoco
     }
 
     enum class CorporateRating
@@ -124,6 +125,8 @@ namespace OpenLoco
         void updateDaily();
         void updateDailyLogic();
         void updateDailyPlayer();
+        void updateDailyControllingPlayer();
+        void updateLoanAutorepay();
         void updateQuarterly();
         void updateVehicleColours();
         void updateHeadquartersColour();

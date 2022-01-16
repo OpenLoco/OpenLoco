@@ -149,4 +149,5 @@ namespace OpenLoco
     static_assert(sizeof(GameState) == 0x4A0644);
 
     GameState& getGameState();
+
 }

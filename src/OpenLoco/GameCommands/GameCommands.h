@@ -1711,4 +1711,6 @@ namespace OpenLoco::GameCommands
     void setErrorTitle(const string_id title);
     ExpenditureType getExpenditureType();
     void setExpenditureType(const ExpenditureType type);
+    CompanyId getUpdatingCompanyId();
+    void setUpdatingCompanyId(CompanyId companyId);
 }
