@@ -148,9 +148,9 @@ namespace OpenLoco
         uint32_t dayCount = (yearDiff * kDaysInYear) + (yearDiff / 4);
 
         // add months
-        for (int m = 0; m < (uint8_t)date.month; ++m)
+        for (int month = 0; month < static_cast<uint8_t>(date.month); ++month)
         {
-            dayCount += getMonthTotalDay(date.year, (MonthId)m);
+            dayCount += getMonthTotalDay(date.year, static_cast<MonthId>(month));
         }
 
         // add days

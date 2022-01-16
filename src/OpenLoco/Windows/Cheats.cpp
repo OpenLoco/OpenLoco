@@ -314,7 +314,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     StringIds::cheat_day);
 
                 auto args = FormatArguments::common();
-                args.push(_date.day + 1);
+                args.push(_date.day + 1); // +1 since days in game are 0-based, but IRL they are 1-based
                 Gfx::drawString_494B3F(
                     *context,
                     self->x + widget.left + 1,
@@ -352,7 +352,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 case Widx::date_change_apply:
                 {
-                    GameCommands::do_81(CheatCommand::modifyDate, _date.year, (int32_t)_date.month, _date.day);
+                    GameCommands::do_81(CheatCommand::modifyDate, _date.year, static_cast<int32_t>(_date.month), _date.day + 1); // +1 days again
                     WindowManager::invalidate(WindowType::timeToolbar);
                     break;
                 }
