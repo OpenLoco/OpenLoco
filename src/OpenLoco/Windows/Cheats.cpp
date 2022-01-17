@@ -359,6 +359,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
+        static int32_t clampDayToMonth(const Date& date)
+        {
+            return std::max<int32_t>(0, std::min<int32_t>(getMonthTotalDay(date.year, date.month) - 1, date.day));
+        }
+
         static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
             static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
@@ -424,6 +429,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
             }
 
+            _date.day = clampDayToMonth(_date);
             WindowManager::invalidate(WindowType::cheats);
         }
 
