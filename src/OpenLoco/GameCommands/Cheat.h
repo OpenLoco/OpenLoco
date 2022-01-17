@@ -12,5 +12,6 @@ namespace OpenLoco::GameCommands
         toggleBankruptcy,
         toggleJail,
         vehicleReliability,
+        modifyDate
     };
 }

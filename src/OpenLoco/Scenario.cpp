@@ -238,17 +238,18 @@ namespace OpenLoco::Scenario
     // 0x0049685C
     void initialiseDate(uint16_t year)
     {
-        // NB: this base value was already 1800 in Locomotion.
-        uint32_t dayCount = 0;
-        for (int y = 1800; y < year; y++)
-        {
-            dayCount += 365;
-            if (isLeapYear(y))
-                dayCount += 1;
-        }
+        initialiseDate(year, MonthId::january, 1);
+    }
 
-        setDate(Date(year, MonthId::january, 1));
+    void initialiseDate(uint16_t year, MonthId month, uint8_t day)
+    {
+        // NB: this base value was already 1800 in Locomotion.
+        auto date = Date(year, month, day);
+        uint32_t dayCount = calcDays(date);
+
         setCurrentDay(dayCount);
+        setDate(date);
+
         setDayProgression(0);
 
         _scenario_ticks = 0;

@@ -47,7 +47,7 @@ namespace OpenLoco
         getGameState().currentYear = year;
     }
 
-    static int8_t getCurrentDayOfMonth()
+    int8_t getCurrentDayOfMonth()
     {
         return getGameState().currentDayOfMonth;
     }
@@ -136,6 +136,27 @@ namespace OpenLoco
         auto result = Date(year, monthDay.first, monthDay.second);
         result.dayOfOlympiad = day;
         return result;
+    }
+
+    uint32_t calcDays(Date date)
+    {
+        constexpr auto kBaseYear = 1800;
+        constexpr auto kDaysInYear = 365;
+
+        // adds years (365 for each year + 1 for leap years)
+        auto yearDiff = date.year - kBaseYear;
+        uint32_t dayCount = (yearDiff * kDaysInYear) + (yearDiff / 4);
+
+        // add months
+        for (int month = 0; month < static_cast<uint8_t>(date.month); ++month)
+        {
+            dayCount += getMonthTotalDay(date.year, static_cast<MonthId>(month));
+        }
+
+        // add days
+        dayCount += date.day;
+
+        return dayCount;
     }
 
     static std::pair<MonthId, uint8_t> getMonthDay(int32_t dayOfYear)
@@ -509,5 +530,25 @@ namespace OpenLoco
             { MonthId::december, 31 },
         };
         return month_table[dayOfYear];
+    }
+
+    uint8_t getMonthTotalDay(uint16_t year, MonthId month)
+    {
+        static constexpr std::pair<MonthId, uint8_t> month_table[] = {
+            { MonthId::january, 31 },
+            { MonthId::february, 28 },
+            { MonthId::march, 31 },
+            { MonthId::april, 30 },
+            { MonthId::may, 31 },
+            { MonthId::june, 30 },
+            { MonthId::july, 31 },
+            { MonthId::august, 31 },
+            { MonthId::september, 30 },
+            { MonthId::october, 31 },
+            { MonthId::november, 30 },
+            { MonthId::december, 31 },
+        };
+        bool extraDay = month == MonthId::february && isLeapYear(year);
+        return month_table[(uint8_t)month].second + extraDay;
     }
 }

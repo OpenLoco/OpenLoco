@@ -1,10 +1,12 @@
 #include "Cheat.h"
 #include "../CompanyManager.h"
+#include "../Console.h"
 #include "../Economy/Currency.h"
 #include "../Entities/EntityManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
 #include "../MessageManager.h"
+#include "../Scenario.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Types.hpp"
@@ -173,6 +175,13 @@ namespace OpenLoco::GameCommands
             }
             return 0;
         }
+
+        static uint32_t modifyDateCheat(int32_t year, int32_t month, int32_t day)
+        {
+            OpenLoco::Scenario::initialiseDate(static_cast<uint16_t>(year), static_cast<MonthId>(month), static_cast<uint8_t>(day));
+            Console::log("Date set to: Day=%u Month=%u Year=%u", day, month, year);
+            return 0;
+        }
     }
 
     static uint32_t cheat(CheatCommand command, int32_t param1, int32_t param2, int32_t param3)
@@ -202,6 +211,9 @@ namespace OpenLoco::GameCommands
 
             case CheatCommand::vehicleReliability:
                 return Cheats::vehicleReliability(param1);
+
+            case CheatCommand::modifyDate:
+                return Cheats::modifyDateCheat(param1, param2, param3);
 
             default:
                 break;

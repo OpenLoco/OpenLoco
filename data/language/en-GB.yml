@@ -2280,5 +2280,12 @@ strings:
   2225: "Construction: Remove at current position"
   2226: "Construction: Select position"
   2227: "Trains reverse at signals"
-  2228: "Autopay"
-  2229: "Once per day, any current funds you have will be used to pay off your loan, if you have one.
+  2228: Autopay
+  2229: "Once per day, any current funds you have will be used to pay off your loan, if you have one."
+  2230: "{COLOUR WINDOW_2}Year:"
+  2231: "{COLOUR WINDOW_2}Month:"
+  2232: "{COLOUR WINDOW_2}Day:"
+  2233: Set date
+  2234: "{COLOUR BLACK}{INT32}"
+  2235: "{COLOUR BLACK}{INT32}"
+  2236: "{COLOUR BLACK}{INT32}"

@@ -81,6 +81,11 @@ namespace OpenLoco::StringManager
         { MonthId::december, { StringIds::month_short_december, StringIds::month_long_december } },
     };
 
+    std::pair<string_id, string_id> monthToString(MonthId month)
+    {
+        return month_to_string[month];
+    }
+
     // 0x0049650E
     void reset()
     {

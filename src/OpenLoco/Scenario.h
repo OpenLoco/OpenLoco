@@ -4,6 +4,11 @@
 #include "Localisation/FormatArguments.hpp"
 #include <cstdint>
 
+namespace OpenLoco
+{
+    enum class MonthId : uint8_t;
+}
+
 namespace OpenLoco::Scenario
 {
     enum flags
@@ -110,6 +115,8 @@ namespace OpenLoco::Scenario
     void eraseLandscape();
     void generateLandscape();
     void initialiseDate(uint16_t year);
+
+    void initialiseDate(uint16_t year, OpenLoco::MonthId month, uint8_t day);
 
     /**
      * Loads the given scenario file, but does not initialise any game state.

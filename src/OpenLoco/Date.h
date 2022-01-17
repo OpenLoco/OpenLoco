@@ -52,10 +52,15 @@ namespace OpenLoco
     uint16_t getDayProgression();
     void setDayProgression(const uint16_t progression);
 
+    int8_t getCurrentDayOfMonth();
+
     /**
      * Updates the current day counter.
      * @returns true if the counter wraps indicating a new day.
      */
     bool updateDayCounter();
     Date calcDate(uint32_t totalDays);
+    uint32_t calcDays(Date date);
+
+    uint8_t getMonthTotalDay(uint16_t year, MonthId month);
 }

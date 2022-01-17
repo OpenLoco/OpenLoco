@@ -1,4 +1,5 @@
 #include "../CompanyManager.h"
+#include "../Date.h"
 #include "../GameCommands/Cheat.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
@@ -6,8 +7,11 @@
 #include "../Graphics/ImageIds.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Localisation/StringManager.h"
+#include "../Math/Bound.hpp"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Scenario.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
@@ -31,6 +35,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                 tab_vehicles,
                 tab_towns,
             };
+            // this should be 1 more than the number of widgets defined above in commonWidgets
+            constexpr uint32_t nextWidx = 8;
         }
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                           \
@@ -124,7 +130,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Finances
     {
-        constexpr Ui::Size windowSize = { 250, 124 };
+        constexpr Ui::Size windowSize = { 250, 210 };
 
         static WindowEventList _events;
 
@@ -132,7 +138,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             enum
             {
-                cash_step_group = 8,
+                cash_step_group = Common::Widx::nextWidx,
                 cash_step_value,
                 cash_step_decrease,
                 cash_step_increase,
@@ -140,25 +146,65 @@ namespace OpenLoco::Ui::Windows::Cheats
                 loan_group,
                 loan_value,
                 loan_clear,
+                time_group,
+                year_step_value,
+                year_step_decrease,
+                year_step_increase,
+                month_step_value,
+                month_step_decrease,
+                month_step_increase,
+                day_step_value,
+                day_step_decrease,
+                day_step_increase,
+                date_change_apply,
             };
         }
 
         static Widget _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::financial_cheats),
+            // money
             makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_increase_funds),
             makeStepperWidgets({ 80, 62 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
             makeWidget({ 180, 62 }, { 60, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_add),
+            // loan
             makeWidget({ 4, 86 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_clear_loan),
             makeWidget({ 80, 100 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary),
             makeWidget({ 180, 100 }, { 60, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_clear),
+            // date/time
+            makeWidget({ 4, 124 }, { windowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_date_change_apply),
+            makeStepperWidgets({ 80, 138 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 80, 154 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 80, 170 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 10, 186 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_date_change_apply),
             widgetEnd(),
         };
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::loan_clear) | (1 << Widx::cash_step_decrease) | (1 << Widx::cash_step_increase) | (1 << Widx::cash_step_apply);
+        static uint64_t enabledWidgets
+            = Common::enabledWidgets
+            | (1 << Widx::loan_clear)
+            | (1 << Widx::cash_step_decrease)
+            | (1 << Widx::cash_step_increase)
+            | (1 << Widx::cash_step_apply)
+            | (1 << Widx::year_step_decrease)
+            | (1 << Widx::year_step_increase)
+            | (1 << Widx::month_step_decrease)
+            | (1 << Widx::month_step_increase)
+            | (1 << Widx::day_step_decrease)
+            | (1 << Widx::day_step_increase)
+            | (1 << Widx::date_change_apply);
 
-        const uint64_t holdableWidgets = (1 << Widx::cash_step_decrease) | (1 << Widx::cash_step_increase);
+        const uint64_t holdableWidgets
+            = (1 << Widx::cash_step_decrease)
+            | (1 << Widx::cash_step_increase)
+            | (1 << Widx::year_step_decrease)
+            | (1 << Widx::year_step_increase)
+            | (1 << Widx::month_step_decrease)
+            | (1 << Widx::month_step_increase)
+            | (1 << Widx::day_step_decrease)
+            | (1 << Widx::day_step_increase);
 
         static currency32_t _cashIncreaseStep = 10'000;
+        static Date _date;
 
         static void prepareDraw(Window* self)
         {
@@ -214,6 +260,69 @@ namespace OpenLoco::Ui::Windows::Cheats
                     StringIds::cheat_loan_value,
                     &args);
             }
+
+            // Add year label and value
+            {
+                auto& widget = self->widgets[Widx::year_step_value];
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + 10,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_year);
+
+                auto args = FormatArguments::common();
+                args.push(_date.year);
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + widget.left + 1,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_year_value,
+                    &args);
+            }
+
+            // Add month label and value
+            {
+                auto& widget = self->widgets[Widx::month_step_value];
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + 10,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_month);
+
+                auto args = FormatArguments::common();
+                args.push((string_id)OpenLoco::StringManager::monthToString(_date.month).second);
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + widget.left + 1,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::black_stringid,
+                    &args);
+            }
+
+            // Add day label and value
+            {
+                auto& widget = self->widgets[Widx::day_step_value];
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + 10,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_day);
+
+                auto args = FormatArguments::common();
+                args.push(_date.day + 1); // +1 since days in game are 0-based, but IRL they are 1-based
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + widget.left + 1,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_day_value,
+                    &args);
+            }
         }
 
         static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
@@ -240,33 +349,88 @@ namespace OpenLoco::Ui::Windows::Cheats
                     GameCommands::do_81(CheatCommand::clearLoan);
                     WindowManager::invalidateWidget(self->type, self->number, Widx::loan_value);
                     break;
+
+                case Widx::date_change_apply:
+                {
+                    GameCommands::do_81(CheatCommand::modifyDate, _date.year, static_cast<int32_t>(_date.month), _date.day + 1); // +1 days again
+                    WindowManager::invalidate(WindowType::timeToolbar);
+                    break;
+                }
             }
+        }
+
+        static int32_t clampDayToMonth(const Date& date)
+        {
+            return std::max<int32_t>(0, std::min<int32_t>(getMonthTotalDay(date.year, date.month) - 1, date.day));
         }
 
         static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
             static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
-            currency32_t stepSize{};
+            currency32_t cashStepSize{};
+            int32_t timeStepSize{};
+
             if (*_clickRepeatTicks < 100)
-                stepSize = 1000;
+            {
+                cashStepSize = 1'000;
+                timeStepSize = 1;
+            }
             else if (*_clickRepeatTicks < 200)
-                stepSize = 10000;
+            {
+                cashStepSize = 10'000;
+                timeStepSize = 10;
+            }
+            else if (*_clickRepeatTicks < 300)
+            {
+                cashStepSize = 100'000;
+                timeStepSize = 100;
+            }
             else
-                stepSize = 100000;
+            {
+                cashStepSize = 1'000'000;
+                timeStepSize = 1'000;
+            }
 
             switch (widgetIndex)
             {
                 case Widx::cash_step_decrease:
-                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep - stepSize, 0);
+                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep - cashStepSize, 0);
                     WindowManager::invalidateWidget(self->type, self->number, Widx::cash_step_value);
                     break;
 
                 case Widx::cash_step_increase:
-                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep + stepSize, 0);
+                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep + cashStepSize, 0);
                     WindowManager::invalidateWidget(self->type, self->number, Widx::cash_step_value);
                     break;
+
+                case Widx::year_step_decrease:
+                    _date.year = std::max<int32_t>(OpenLoco::Scenario::min_year, _date.year - timeStepSize);
+                    break;
+
+                case Widx::year_step_increase:
+                    _date.year = Math::Bound::add(_date.year, timeStepSize);
+                    break;
+
+                case Widx::month_step_decrease:
+                    _date.month = static_cast<MonthId>(std::max<int8_t>(0, (static_cast<int8_t>(_date.month) - timeStepSize)));
+                    break;
+
+                case Widx::month_step_increase:
+                    _date.month = static_cast<MonthId>(std::min<int8_t>(11, (static_cast<int8_t>(_date.month) + timeStepSize)));
+                    break;
+
+                case Widx::day_step_decrease:
+                    _date.day = std::max<int32_t>(0, _date.day - timeStepSize);
+                    break;
+
+                case Widx::day_step_increase:
+                    _date.day = std::min<int32_t>(getMonthTotalDay(_date.year, _date.month) - 1, _date.day + timeStepSize);
+                    break;
             }
+
+            _date.day = clampDayToMonth(_date);
+            WindowManager::invalidate(WindowType::cheats);
         }
 
         static void onUpdate(Window* const self)
@@ -278,6 +442,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void initEvents()
         {
+            _date = getCurrentDate();
             _events.draw = draw;
             _events.on_mouse_up = onMouseUp;
             _events.on_mouse_down = onMouseDown;
@@ -296,7 +461,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             enum
             {
-                target_company_group = 8,
+                target_company_group = Common::Widx::nextWidx,
                 target_company_dropdown,
                 target_company_dropdown_btn,
                 select_cheat_group,
@@ -446,7 +611,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             enum
             {
-                reliability_group = 8,
+                reliability_group = Common::Widx::nextWidx,
                 reliablity_all_to_zero,
                 reliablity_all_to_hundred,
             };
@@ -533,7 +698,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             enum
             {
-                ratings_group = 8,
+                ratings_group = Common::Widx::nextWidx,
                 ratings_all_min_10pct,
                 ratings_all_plus_10pct,
                 ratings_all_to_min,

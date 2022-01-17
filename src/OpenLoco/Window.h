@@ -38,13 +38,13 @@ namespace OpenLoco::Ui
         wt_8,
         wt_9,
         wt_10,
-        wt_11,
+        wt_11, // button
         wt_12,
         wt_13,
         wt_14,
         wt_15,
         groupbox,
-        wt_17,
+        wt_17, // textbox
         wt_18,
         viewport = 19,
         wt_20,
