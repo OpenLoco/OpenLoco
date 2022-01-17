@@ -1010,10 +1010,11 @@ namespace OpenLoco
                 auto today = calcDate(getCurrentDay());
                 setDate(today);
                 Scenario::updateSnowLine(today.dayOfOlympiad);
+                Ui::Windows::TimePanel::invalidateFrame();
+
                 if (today.month != yesterday.month)
                 {
                     // End of every month
-                    Ui::Windows::TimePanel::invalidateFrame();
                     addr<0x00526243, uint16_t>()++;
                     TownManager::updateMonthly();
                     IndustryManager::updateMonthly();
