@@ -57,6 +57,7 @@ namespace OpenLoco
         TownId id() const;
         void update();
         void updateLabel();
+        void updateMonthly();
         void adjustCompanyRating(CompanyId cid, int amount);
         void recalculateSize();
         void grow(int32_t growFlags);
