@@ -1,5 +1,5 @@
 #pragma once
-#include <optional>
+#include "../Core/Optional.hpp"
 
 namespace OpenLoco::S5
 {
