@@ -13,12 +13,29 @@ namespace OpenLoco
         return name == StringIds::null;
     }
 
-    // 0x0049742F
+    /**
+     * 0x0049742F
+     * Update town
+     *
+     * @param this @<esi>
+     */
     void Town::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x0049742F, regs);
+        recalculateSize();
+
+        static const std::array<uint8_t, 12> buildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 };
+        auto buildSpeed = buildSpeedToGrowthPerTick[this->build_speed];
+        if (buildSpeed == 0 || (buildSpeed == 1 && (gPrng().randNext() & 7)))
+        {
+            grow(0x07);
+        }
+        else
+        {
+            for (int32_t counter = 0; counter < buildSpeed; ++counter)
+            {
+                grow(0x3F);
+            }
+        }
     }
 
     // 0x00497616
@@ -36,6 +53,34 @@ namespace OpenLoco
             company_ratings[enumValue(cid)] + amount,
             min_company_rating,
             max_company_rating);
+    }
+
+    /**
+     * 0x004975E0
+     * Recalculate size
+     *
+     * @param this @<esi>
+     */
+    void Town::recalculateSize()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004975E0, regs);
+    }
+
+    /**
+     * 0x00498116
+     * Grow
+     *
+     * @param this @<esi>
+     * @param growFlags @<eax>
+     */
+    void Town::grow(int32_t growFlags)
+    {
+        registers regs;
+        regs.eax = growFlags;
+        regs.esi = X86Pointer(this);
+        call(0x00498116, regs);
     }
 
     string_id Town::getTownSizeString() const
