@@ -126,18 +126,229 @@ namespace OpenLoco
 
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
 
+    // 0x004FADD0
+    constexpr Map::Pos2 _wiggleAmounts[] = {
+        { 1, -1 },
+        { 1, 1 },
+        { -1, 1 },
+        { -1, -1 },
+    };
+
+    // 0x004FAD21
+    constexpr int8_t _wiggleZAmounts[] = {
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+    };
+
     // 0x0044063E
     void MoneyEffect::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
         if (getSubType() == MiscEntityType::windowCurrency)
         {
-            call(0x0044063E, regs);
+            invalidateSprite();
+            if (wiggle == 0)
+            {
+                wiggle = 21;
+            }
+            else
+            {
+                wiggle--;
+            }
+
+            if (var_26 > 160)
+            {
+                EntityManager::freeEntity(this);
+                return;
+            }
+            const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()] * (var_26 & 1);
+            const auto nudgeZ = _wiggleZAmounts[var_26];
+            moveTo(position + Map::Pos3{ nudge.x, nudge.y, nudgeZ });
+            var_26++;
         }
         else
         {
-            call(0x004405D8, regs);
+            invalidateSprite();
+            if (wiggle == 21)
+            {
+                wiggle = 0;
+            }
+            else
+            {
+                wiggle++;
+            }
+            var_26++;
+            if (var_26 < 2)
+            {
+                return;
+            }
+            var_26 = 0;
+
+            const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()];
+            moveTo(position + Map::Pos3{ nudge.x, nudge.y, position.z });
+            var_28++;
+            if (var_28 >= 55)
+            {
+                EntityManager::freeEntity(this);
+            }
         }
     }
 
