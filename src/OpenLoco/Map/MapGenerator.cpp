@@ -585,13 +585,13 @@ namespace OpenLoco::Map::MapGenerator
             {
                 continue;
             }
-            surface->setTerrain(style.value());
+            surface->setTerrain(*style);
             surface->setVar6SLR5(0);
 
             const auto variation = getRandomTerrainVariation(*surface);
             if (variation.has_value())
             {
-                surface->setVariation(variation.value());
+                surface->setVariation(*variation);
             }
         }
 
