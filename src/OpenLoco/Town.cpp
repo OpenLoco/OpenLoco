@@ -2,6 +2,7 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "TownManager.h"
+#include "Ui/WindowManager.h"
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -55,6 +56,9 @@ namespace OpenLoco
             kMaxCompanyRating);
     }
 
+    // 0x004FF714
+    constexpr uint32_t _populations[]{ 0, 150, 500, 2500, 8000 };
+
     /**
      * 0x004975E0
      * Recalculate size
@@ -63,9 +67,22 @@ namespace OpenLoco
      */
     void Town::recalculateSize()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004975E0, regs);
+        auto newSize = enumValue(size);
+        if (size < TownSize::metropolis
+            && var_34 >= _populations[enumValue(size) + 1])
+        {
+            newSize++;
+        }
+        else if (size != TownSize::hamlet && var_34 + 100 < _populations[enumValue(size)])
+        {
+            newSize--;
+        }
+
+        if (static_cast<TownSize>(newSize) != size)
+        {
+            size = static_cast<TownSize>(newSize);
+            Ui::WindowManager::invalidate(Ui::WindowType::townList);
+        }
     }
 
     /**
