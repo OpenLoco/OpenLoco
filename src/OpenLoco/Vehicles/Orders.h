@@ -45,7 +45,7 @@ namespace OpenLoco::Vehicles
         bool hasFlag(const uint8_t flag) const;
 
         template<typename T>
-        constexpr bool is() const { return getType() == T::TYPE; }
+        constexpr bool is() const { return getType() == T::kType; }
 
         template<typename T>
         T* as() { return is<T>() ? reinterpret_cast<T*>(this) : nullptr; }
@@ -56,7 +56,7 @@ namespace OpenLoco::Vehicles
 
     struct OrderEnd : Order
     {
-        static constexpr OrderType TYPE = OrderType::End;
+        static constexpr OrderType kType = OrderType::End;
     };
 
     struct OrderStation : Order
@@ -78,20 +78,20 @@ namespace OpenLoco::Vehicles
 
     struct OrderStopAt : OrderStation
     {
-        static constexpr OrderType TYPE = OrderType::StopAt;
+        static constexpr OrderType kType = OrderType::StopAt;
         OrderStopAt(const StationId station)
         {
-            setType(TYPE);
+            setType(kType);
             setStation(station);
         }
     };
 
     struct OrderRouteThrough : OrderStation
     {
-        static constexpr OrderType TYPE = OrderType::RouteThrough;
+        static constexpr OrderType kType = OrderType::RouteThrough;
         OrderRouteThrough(const StationId station)
         {
-            setType(TYPE);
+            setType(kType);
             setStation(station);
         }
     };
@@ -108,12 +108,12 @@ namespace OpenLoco::Vehicles
 
     struct OrderRouteWaypoint : Order
     {
-        static constexpr OrderType TYPE = OrderType::RouteWaypoint;
+        static constexpr OrderType kType = OrderType::RouteWaypoint;
         uint8_t _data[5] = { 0 }; // 0x1 - 0x6
 
         OrderRouteWaypoint(const Map::TilePos2& pos, const uint8_t baseZ, const uint8_t direction, const uint8_t trackId)
         {
-            setType(TYPE);
+            setType(kType);
             setWaypoint(pos, baseZ);
             setDirection(direction);
             setTrackId(trackId);
@@ -139,19 +139,19 @@ namespace OpenLoco::Vehicles
 
     struct OrderUnloadAll : OrderCargo
     {
-        static constexpr OrderType TYPE = OrderType::UnloadAll;
+        static constexpr OrderType kType = OrderType::UnloadAll;
         OrderUnloadAll(const uint8_t cargo)
         {
-            setType(TYPE);
+            setType(kType);
             setCargo(cargo);
         }
     };
     struct OrderWaitFor : OrderCargo
     {
-        static constexpr OrderType TYPE = OrderType::WaitFor;
+        static constexpr OrderType kType = OrderType::WaitFor;
         OrderWaitFor(const uint8_t cargo)
         {
-            setType(TYPE);
+            setType(kType);
             setCargo(cargo);
         }
     };

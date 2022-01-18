@@ -27,12 +27,11 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    constexpr uint32_t max_orders = 256000;
-    constexpr auto max_ai_vehicles = 500;
-    constexpr auto max_num_car_components_in_car = 4;           // TODO: Move to VehicleObject
-    constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
-    constexpr auto num_vehicle_components_in_base = 4;          // head unk_1 unk_2 tail
-    constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
+    constexpr auto kMaxAiVehicles = 500;
+    constexpr auto kMaxNumCarComponentsInCar = 4;           // TODO: Move to VehicleObject
+    constexpr auto kNumVehicleComponentsInCarComponent = 3; // Bogie bogie body
+    constexpr auto kNumVehicleComponentsInBase = 4;         // head unk_1 unk_2 tail
+    constexpr auto kMaxNumVehicleComponentsInCar = kNumVehicleComponentsInCarComponent * kMaxNumCarComponentsInCar;
     static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<Map::TileElement*, 0x009C68D0> _9C68D0;
@@ -46,8 +45,8 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136258> _backupZ;
     static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;  // total used length of _987C5C
-    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
+    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;         // total used length of _987C5C
+    static loco_global<uint8_t[Limits::maxOrders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
@@ -64,7 +63,7 @@ namespace OpenLoco::Vehicles
             return total + std::accumulate(std::begin(company.transportTypeCount), std::end(company.transportTypeCount), 0);
         });
 
-        if (totalAiVehicles > max_ai_vehicles)
+        if (totalAiVehicles > kMaxAiVehicles)
         {
             GameCommands::setErrorText(StringIds::too_many_vehicles);
             return false;
@@ -95,7 +94,7 @@ namespace OpenLoco::Vehicles
         auto* const base = EntityManager::createEntityVehicle();
         base->base_type = EntityBaseType::vehicle;
         auto* const vehicleBase = base->asVehicle();
-        vehicleBase->setSubType(T::vehicleThingType);
+        vehicleBase->setSubType(T::kVehicleThingType);
         return static_cast<T*>(vehicleBase);
     }
 
@@ -327,7 +326,7 @@ namespace OpenLoco::Vehicles
     // 0x004AE86D
     static bool createCar(VehicleHead* head, const uint16_t vehicleTypeId)
     {
-        if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car))
+        if (!EntityManager::checkNumFreeEntities(kMaxNumVehicleComponentsInCar))
         {
             return false;
         }
@@ -575,12 +574,12 @@ namespace OpenLoco::Vehicles
     // 0x004AE318
     static std::optional<VehicleHead*> createBaseVehicle(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
-        if (!EntityManager::checkNumFreeEntities(num_vehicle_components_in_base))
+        if (!EntityManager::checkNumFreeEntities(kNumVehicleComponentsInBase))
         {
             return {};
         }
 
-        if (_orderTableLength >= max_orders)
+        if (_orderTableLength >= Limits::maxOrders)
         {
             GameCommands::setErrorText(StringIds::no_space_for_more_vehicle_orders);
             return {};
@@ -688,7 +687,7 @@ namespace OpenLoco::Vehicles
     static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
     {
         GameCommands::setPosition({ Location::null, 0, 0 });
-        if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
+        if (!EntityManager::checkNumFreeEntities(kMaxNumVehicleComponentsInCar + kNumVehicleComponentsInBase))
         {
             return FAILURE;
         }
@@ -767,7 +766,7 @@ namespace OpenLoco::Vehicles
             return FAILURE;
         }
 
-        if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car))
+        if (!EntityManager::checkNumFreeEntities(kMaxNumVehicleComponentsInCar))
         {
             return FAILURE;
         }

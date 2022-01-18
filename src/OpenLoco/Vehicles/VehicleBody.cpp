@@ -29,7 +29,7 @@ namespace OpenLoco::Vehicles
     static loco_global<bool, 0x00525FAE> trafficHandedness;            // boolean true for right false for left
 
     // 0x00503E5C
-    static constexpr Pitch vehicleBodyIndexToPitch[] = {
+    static constexpr Pitch kVehicleBodyIndexToPitch[] = {
         Pitch::flat,
         Pitch::up6deg,
         Pitch::up12deg,
@@ -320,7 +320,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        return vehicleBodyIndexToPitch[i];
+        return kVehicleBodyIndexToPitch[i];
     }
 
     // 0x004BF49D
@@ -349,7 +349,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        return vehicleBodyIndexToPitch[i];
+        return kVehicleBodyIndexToPitch[i];
     }
 
     // 0x004BF52B For yaw of 3 bits
@@ -381,7 +381,7 @@ namespace OpenLoco::Vehicles
         }
 
         // 0x00503E66
-        constexpr uint8_t indexToYaw[] = {
+        constexpr uint8_t kIndexToYaw[] = {
             16,
             32,
             16,
@@ -391,7 +391,7 @@ namespace OpenLoco::Vehicles
             48,
             0
         };
-        return indexToYaw[i];
+        return kIndexToYaw[i];
     }
 
     // 0x004BF56B For yaw of 3 bits (special plane version)
@@ -426,7 +426,7 @@ namespace OpenLoco::Vehicles
             }
         }
         // 0x00503E6E
-        constexpr uint8_t indexToYaw[] = {
+        constexpr uint8_t kIndexToYaw[] = {
             16,
             24,
             32,
@@ -440,7 +440,7 @@ namespace OpenLoco::Vehicles
             56,
             0
         };
-        return indexToYaw[i];
+        return kIndexToYaw[i];
     }
 
     // 0x004BF5B3 For yaw of 4 bits
@@ -476,7 +476,7 @@ namespace OpenLoco::Vehicles
         }
 
         // 0x00503E6E
-        constexpr uint8_t indexToYaw[] = {
+        constexpr uint8_t kIndexToYaw[] = {
             16,
             24,
             32,
@@ -490,7 +490,7 @@ namespace OpenLoco::Vehicles
             56,
             0
         };
-        return indexToYaw[i];
+        return kIndexToYaw[i];
     }
 
     // 0x004BF5FB For yaw of 5 bits
@@ -537,7 +537,7 @@ namespace OpenLoco::Vehicles
         }
 
         // 0x00503E7A
-        constexpr uint8_t indexToYaw[] = {
+        constexpr uint8_t kIndexToYaw[] = {
             16,
             20,
             24,
@@ -559,7 +559,7 @@ namespace OpenLoco::Vehicles
             60,
             0
         };
-        return indexToYaw[i];
+        return kIndexToYaw[i];
     }
 
     // 0x004BF657 For yaw of 6 bits
@@ -631,7 +631,7 @@ namespace OpenLoco::Vehicles
         }
 
         // 0x00503E8E
-        constexpr uint8_t indexToYaw[] = {
+        constexpr uint8_t kIndexToYaw[] = {
             16,
             18,
             20,
@@ -669,7 +669,7 @@ namespace OpenLoco::Vehicles
             62,
             0
         };
-        return indexToYaw[i];
+        return kIndexToYaw[i];
     }
 
     // 0x004BF6DF For yaw of 7 bits
@@ -782,7 +782,7 @@ namespace OpenLoco::Vehicles
         }
 
         // 0x00503EB2
-        constexpr uint8_t indexToYaw[] = {
+        constexpr uint8_t kIndexToYaw[] = {
             16,
             17,
             18,
@@ -852,7 +852,7 @@ namespace OpenLoco::Vehicles
             63,
             0
         };
-        return indexToYaw[i];
+        return kIndexToYaw[i];
     }
 
     // 0x004AB655

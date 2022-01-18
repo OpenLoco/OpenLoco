@@ -10,11 +10,10 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    constexpr uint32_t max_orders = 256000;
-    static loco_global<Order[max_orders], 0x00987C5C> _orderTable;
+    static loco_global<Order[Limits::maxOrders], 0x00987C5C> _orderTable;
 
     // 0x004FE070
-    static constexpr uint8_t _orderSizes[] = {
+    static constexpr uint8_t kOrderSizes[] = {
         sizeof(OrderEnd),
         sizeof(OrderStopAt),
         sizeof(OrderRouteThrough),
@@ -23,8 +22,8 @@ namespace OpenLoco::Vehicles
         sizeof(OrderWaitFor),
     };
 
-    // 0x004FE088
-    static constexpr uint8_t _orderFlags[] = {
+    // 0x004FE088 TODO: Rework into class
+    static constexpr uint8_t kOrderFlags[] = {
         0,
         OrderFlags::IsRoutable | OrderFlags::HasNumber | OrderFlags::HasStation,
         OrderFlags::IsRoutable | OrderFlags::HasNumber | OrderFlags::HasStation,
@@ -35,7 +34,7 @@ namespace OpenLoco::Vehicles
 
     bool Order::hasFlag(const uint8_t flag) const
     {
-        return _orderFlags[static_cast<uint8_t>(getType())] & flag;
+        return kOrderFlags[static_cast<uint8_t>(getType())] & flag;
     }
 
     template<typename T>
@@ -187,7 +186,7 @@ namespace OpenLoco::Vehicles
 
     OrderRingView::Iterator& OrderRingView::Iterator::operator++()
     {
-        auto* newOrders = reinterpret_cast<uint8_t*>(_currentOrder) + _orderSizes[static_cast<uint8_t>(_currentOrder->getType())];
+        auto* newOrders = reinterpret_cast<uint8_t*>(_currentOrder) + kOrderSizes[static_cast<uint8_t>(_currentOrder->getType())];
         _currentOrder = reinterpret_cast<Order*>(newOrders);
         if (_currentOrder->getType() == OrderType::End)
         {
