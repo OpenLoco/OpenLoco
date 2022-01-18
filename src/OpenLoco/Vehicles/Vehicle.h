@@ -12,7 +12,7 @@
 
 namespace OpenLoco::Vehicles
 {
-    constexpr auto max_vehicle_length = 176; // TODO: Units?
+    constexpr auto kMaxVehicleLength = 176; // TODO: Units?
 
     void create(OpenLoco::Interop::registers& regs);
     void orderSkip(OpenLoco::Interop::registers& regs);
