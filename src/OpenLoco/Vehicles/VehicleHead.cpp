@@ -51,10 +51,10 @@ namespace OpenLoco::Vehicles
     static loco_global<Status, 0x0113646C> vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> vehicleUpdate_helicopterTargetYaw;
     static loco_global<uint32_t, 0x00525BB0> vehicleUpdate_var_525BB0;
-    static constexpr uint16_t trainOneWaySignalTimeout = 1920;
-    static constexpr uint16_t trainTwoWaySignalTimeout = 640;
-    static constexpr uint16_t busSignalTimeout = 960;   // Time to wait before turning around at barriers
-    static constexpr uint16_t tramSignalTimeout = 2880; // Time to wait before turning around at barriers
+    static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
+    static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
+    static constexpr uint16_t kBusSignalTimeout = 960;   // Time to wait before turning around at barriers
+    static constexpr uint16_t kTramSignalTimeout = 2880; // Time to wait before turning around at barriers
 
     void VehicleHead::updateVehicle()
     {
@@ -928,7 +928,7 @@ namespace OpenLoco::Vehicles
         }
 
         auto param1 = 160;
-        auto turnaroundAtSignalTimeout = busSignalTimeout;
+        auto turnaroundAtSignalTimeout = kBusSignalTimeout;
 
         if (track_type == 0xFF || ObjectManager::get<RoadObject>(track_type)->flags & Flags12::isRoad)
         {
@@ -941,7 +941,7 @@ namespace OpenLoco::Vehicles
         else
         {
             // Tram
-            turnaroundAtSignalTimeout = tramSignalTimeout;
+            turnaroundAtSignalTimeout = kTramSignalTimeout;
             if (train.veh1->var_2C.road.isBackToFront())
             {
                 param1 = 64;
@@ -1185,7 +1185,7 @@ namespace OpenLoco::Vehicles
             // if one-way or two-way signal??
             if (flags & (1 << 1))
             {
-                if (vehType1->timeAtSignal >= trainOneWaySignalTimeout)
+                if (vehType1->timeAtSignal >= kTrainOneWaySignalTimeout)
                 {
                     if (flags & (1 << 7))
                     {
@@ -1224,7 +1224,7 @@ namespace OpenLoco::Vehicles
                     }
                 }
 
-                if (vehType1->timeAtSignal >= trainTwoWaySignalTimeout)
+                if (vehType1->timeAtSignal >= kTrainTwoWaySignalTimeout)
                 {
                     return landReverseFromSignal();
                 }
