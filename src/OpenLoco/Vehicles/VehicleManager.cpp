@@ -19,7 +19,7 @@ namespace OpenLoco::VehicleManager
 namespace OpenLoco::Vehicles::RoutingManager
 {
     constexpr uint16_t kAllocatedButFreeRoutingStation = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
-    constexpr uint16_t kRoutingNull = -1;                        // Indicates that this array is allocated to a vehicle but no station has been set.
+    constexpr uint16_t kRoutingNull = -1;                    // Indicates that this array is allocated to a vehicle but no station has been set.
 
     static auto& routings() { return getGameState().routings; }
 

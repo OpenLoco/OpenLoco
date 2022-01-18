@@ -10,8 +10,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    constexpr uint32_t kMaxOrders = 256000;
-    static loco_global<Order[kMaxOrders], 0x00987C5C> _orderTable;
+    static loco_global<Order[Limits::maxOrders], 0x00987C5C> _orderTable;
 
     // 0x004FE070
     static constexpr uint8_t kOrderSizes[] = {
