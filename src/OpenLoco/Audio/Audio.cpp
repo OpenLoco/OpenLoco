@@ -606,14 +606,12 @@ namespace OpenLoco::Audio
     // pan is in UI pixels or known constant
     void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency)
     {
-        loco_global<int32_t, 0x00e3f0b8> current_rotation;
-
         if (_audioIsEnabled)
         {
             volume += getVolumeForSoundId(id);
             if (pan == play_at_location)
             {
-                auto vpos = Map::gameToScreen(loc, current_rotation);
+                auto vpos = Map::gameToScreen(loc, WindowManager::getCurrentRotation());
                 auto viewport = findBestViewportForSound(vpos);
                 if (viewport == nullptr)
                 {

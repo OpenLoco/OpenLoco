@@ -7,6 +7,7 @@
 #include "Map/TileManager.h"
 #include "Station.h"
 #include "Ui.h"
+#include "Ui/WindowManager.h"
 #include "Window.h"
 #include <algorithm>
 #include <cassert>
@@ -18,8 +19,6 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::ViewportManager
 {
     static std::vector<std::unique_ptr<Viewport>> _viewports;
-
-    static loco_global<int32_t, 0x00E3F0B8> currentRotation;
 
     static Viewport* create(registers regs, int index);
 
@@ -319,10 +318,10 @@ namespace OpenLoco::Ui::ViewportManager
 
     void invalidate(const Map::Pos2 pos, coord_t zMin, coord_t zMax, ZoomLevel zoom, int radius)
     {
-        auto axbx = Map::gameToScreen(Map::Pos3(pos.x + 16, pos.y + 16, zMax), currentRotation);
+        auto axbx = Map::gameToScreen(Map::Pos3(pos.x + 16, pos.y + 16, zMax), WindowManager::getCurrentRotation());
         axbx.x -= radius;
         axbx.y -= radius;
-        auto dxbp = Map::gameToScreen(Map::Pos3(pos.x + 16, pos.y + 16, zMin), currentRotation);
+        auto dxbp = Map::gameToScreen(Map::Pos3(pos.x + 16, pos.y + 16, zMin), WindowManager::getCurrentRotation());
         dxbp.x += radius;
         dxbp.y += radius;
 

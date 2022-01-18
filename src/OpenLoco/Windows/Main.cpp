@@ -9,8 +9,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::Main
 {
-    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
-
     namespace widx
     {
         enum
@@ -45,7 +43,7 @@ namespace OpenLoco::Ui::Windows::Main
             Ui::WindowFlags::stick_to_back,
             &_events);
         window->widgets = _widgets;
-        gCurrentRotation = 0;
+        WindowManager::setCurrentRotation(0);
         ViewportManager::create(
             window,
             0,

@@ -3,6 +3,7 @@
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
+#include "Ui/WindowManager.h"
 #include "Window.h"
 
 using namespace OpenLoco::Interop;
@@ -10,16 +11,14 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco::Ui
 {
-    static loco_global<uint32_t, 0x00E3F0B8> _rotation;
-
     int Viewport::getRotation() const
     {
-        return _rotation;
+        return WindowManager::getCurrentRotation(); // Eventually this should become a variable of the viewport
     }
 
     void Viewport::setRotation(int32_t value)
     {
-        _rotation = value;
+        WindowManager::setCurrentRotation(value); // Eventually this should become a variable of the viewport
     }
 
     // 0x0045A0E7

@@ -33,7 +33,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<Map::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
 
-    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
     static loco_global<uint8_t[18], 0x0050A006> available_objects;   // toptoolbar
 
@@ -2596,7 +2595,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 pos3D.y += 0x2010;
                 pos3D.z += 0x1CC;
 
-                auto pos2D = gameToScreen(pos3D, gCurrentRotation);
+                auto pos2D = gameToScreen(pos3D, WindowManager::getCurrentRotation());
 
                 Point pos = { pos2D.x, pos2D.y };
                 drawRoadCost(self, &*clipped, context, pos, width, height);
@@ -2646,7 +2645,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 pos3D.y += 0x2010;
                 pos3D.z += 0x1CC;
 
-                auto pos2D = gameToScreen(pos3D, gCurrentRotation);
+                auto pos2D = gameToScreen(pos3D, WindowManager::getCurrentRotation());
 
                 Point pos = { pos2D.x, pos2D.y };
                 drawTrackCost(self, &*clipped, context, pos, width, height);

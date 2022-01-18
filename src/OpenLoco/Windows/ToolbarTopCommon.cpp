@@ -94,8 +94,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             InterfaceSkin::ImageIds::toolbar_menu_map_east,
         };
 
-        loco_global<int32_t, 0x00e3f0b8> current_rotation;
-        uint32_t map_sprite = map_sprites_by_rotation[current_rotation];
+        uint32_t map_sprite = map_sprites_by_rotation[WindowManager::getCurrentRotation()];
 
         Dropdown::add(2, StringIds::menu_sprite_stringid, { interface->img + map_sprite, StringIds::menu_map });
         Dropdown::showBelow(window, widgetIndex, 3, 25, (1 << 6));

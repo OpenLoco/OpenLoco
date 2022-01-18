@@ -54,7 +54,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<Ui::Size, 0x00526288> _lastMapWindowSize;
     static loco_global<uint16_t, 0x0052628C> _lastMapWindowVar88A;
     static loco_global<uint16_t, 0x0052628E> _lastMapWindowVar88C;
-    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
     static loco_global<uint32_t, 0x00F253A4> _dword_F253A4;
     static loco_global<uint8_t*, 0x00F253A8> _dword_F253A8;
     static std::array<uint16_t, 6> _vehicleTypeCounts = {

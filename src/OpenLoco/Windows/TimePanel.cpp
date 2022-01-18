@@ -69,7 +69,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
-    static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
 
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
     static loco_global<uint16_t, 0x00526243> objectiveMonthsInChallenge;
@@ -201,7 +200,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         Gfx::drawStringCentred(*context, self->x + _widgets[Widx::date_btn].mid_x(), self->y + _widgets[Widx::date_btn].top + 1, c, format, &*_common_format_args);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        Gfx::drawImage(context, self->x + _widgets[Widx::map_chat_menu].left - 2, self->y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[gCurrentRotation]);
+        Gfx::drawImage(context, self->x + _widgets[Widx::map_chat_menu].left - 2, self->y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
     }
 
     // 0x004398FB
@@ -235,13 +234,13 @@ namespace OpenLoco::Ui::Windows::TimePanel
         if (isNetworked())
         {
             Dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + InterfaceSkin::ImageIds::phone, StringIds::chat_send_message });
-            Dropdown::add(1, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], StringIds::menu_map });
+            Dropdown::add(1, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()], StringIds::menu_map });
             Dropdown::showBelow(self, widgetIndex, 2, 25, (1 << 6));
             Dropdown::setHighlightedItem(1);
         }
         else
         {
-            Dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], StringIds::menu_map });
+            Dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()], StringIds::menu_map });
             Dropdown::showBelow(self, widgetIndex, 1, 25, (1 << 6));
             Dropdown::setHighlightedItem(0);
         }

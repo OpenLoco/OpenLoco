@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     view.mapX = industry->x;
                     view.mapY = industry->y;
                     view.surfaceZ = TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
-                    view.rotation = gCurrentRotation;
+                    view.rotation = WindowManager::getCurrentRotation();
                     view.zoomLevel = ZoomLevel::half;
                     *selectable = true;
                     break;
@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     view.mapX = station->x;
                     view.mapY = station->y;
                     view.surfaceZ = station->z;
-                    view.rotation = gCurrentRotation;
+                    view.rotation = WindowManager::getCurrentRotation();
                     view.zoomLevel = ZoomLevel::full;
                     *selectable = true;
                     break;
@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     view.mapX = town->x;
                     view.mapY = town->y;
                     view.surfaceZ = TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
-                    view.rotation = gCurrentRotation;
+                    view.rotation = WindowManager::getCurrentRotation();
                     view.zoomLevel = ZoomLevel::half;
                     *selectable = true;
                     break;
@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     view.flags = (1 << 15);
                     view.zoomLevel = ZoomLevel::full;
-                    view.rotation = gCurrentRotation;
+                    view.rotation = WindowManager::getCurrentRotation();
                     *selectable = true;
                     break;
                 }
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     view.mapY = news->item_id_2;
                     view.surfaceZ = TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
                     view.zoomLevel = ZoomLevel::full;
-                    view.rotation = gCurrentRotation;
+                    view.rotation = WindowManager::getCurrentRotation();
                     *selectable = true;
                     break;
 
