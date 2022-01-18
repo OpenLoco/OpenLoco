@@ -3667,9 +3667,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             placementArgs->head = head.id;
             const auto moveInfoArr = Map::TrackData::getRoadPlacementSubPositon(placementArgs->trackAndDirection);
             const auto& moveInfo = moveInfoArr[placementArgs->trackProgress];
-            // TODO: modify getTrackAtCursor to return the viewport then use its rotation
-            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
-            uint8_t unkYaw = moveInfo.yaw + (gCurrentRotation << 4);
+
+            uint8_t unkYaw = moveInfo.yaw + (WindowManager::getCurrentRotation() << 4);
             unkYaw -= 0x37;
             if (_pickupDirection != 0)
             {
@@ -3773,9 +3772,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             placementArgs->head = head.id;
             const auto moveInfoArr = Map::TrackData::getTrackSubPositon(placementArgs->trackAndDirection);
             const auto& moveInfo = moveInfoArr[placementArgs->trackProgress];
-            // TODO: modify getTrackAtCursor to return the viewport then use its rotation
-            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
-            uint8_t unkYaw = moveInfo.yaw + (gCurrentRotation << 4);
+
+            uint8_t unkYaw = moveInfo.yaw + (WindowManager::getCurrentRotation() << 4);
             unkYaw -= 0x37;
             if (_pickupDirection != 0)
             {

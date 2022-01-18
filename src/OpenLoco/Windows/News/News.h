@@ -19,7 +19,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     static loco_global<CompanyId, 0x00525E3C> _playerCompany;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
     static loco_global<MessageId, 0x005271D0> _activeMessageIndex;
-    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> byte_112CC04;
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;

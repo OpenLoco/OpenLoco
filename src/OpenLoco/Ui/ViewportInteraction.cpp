@@ -1045,6 +1045,8 @@ namespace OpenLoco::Ui::ViewportInteraction
     // regs.ecx = closestEdge (unsure if ever used)
     std::optional<Pos2> getSurfaceOrWaterLocFromUi(const Point& screenCoords)
     {
+        // TODO: modify getSurfaceOrWaterLocFromUi to return the viewport then can use viewports rotation
+
         auto [info, viewport] = getMapCoordinatesFromPos(screenCoords.x, screenCoords.y, ~(InteractionItemFlags::surface | InteractionItemFlags::water));
 
         if (info.type == InteractionItem::noInteraction)

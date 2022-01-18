@@ -955,12 +955,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 return {};
             }
-            // TODO: modify getSurfaceOrWaterLocFromUi to return the viewport then use its rotation
-            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
             GameCommands::HeadquarterPlacementArgs args;
             args.type = getHeadquarterBuildingType();
-            args.rotation = (gCurrentRotation + 2) & 3;
+            args.rotation = (WindowManager::getCurrentRotation() + 2) & 3;
 
             auto tile = Map::TileManager::get(*pos);
             const auto* surface = tile.surface();

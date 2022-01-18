@@ -20,8 +20,6 @@ using namespace OpenLoco::Map::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Overhead
 {
-    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
-
     Widget widgets[] = {
         commonWidgets(138, 192, StringIds::stringid_2),
         makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
@@ -491,7 +489,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 coord_t x = 0x2010;
                 coord_t y = 0x2010;
 
-                auto rotCoord = Math::Vector::rotate(Pos2{ x, y }, gCurrentRotation);
+                auto rotCoord = Math::Vector::rotate(Pos2{ x, y }, WindowManager::getCurrentRotation());
                 Ui::Point screenPos = { static_cast<int16_t>(rotCoord.y - rotCoord.x), static_cast<int16_t>(((rotCoord.x + rotCoord.y) >> 1) - 460) };
 
                 screenPos.x -= (self->widgets[widx::image].width() / 2);
@@ -511,11 +509,11 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 if (_trackType & (1 << 7))
                 {
                     uint8_t trackType = _trackType & ~(1 << 7);
-                    Construction::drawRoad(x, y, _lastSelectedMods, 0x1D0, trackType, 0, companyColour, gCurrentRotation);
+                    Construction::drawRoad(x, y, _lastSelectedMods, 0x1D0, trackType, 0, companyColour, WindowManager::getCurrentRotation());
                 }
                 else
                 {
-                    Construction::drawTrack(x, y, _lastSelectedMods, 0x1D0, _trackType, 0, companyColour, gCurrentRotation);
+                    Construction::drawTrack(x, y, _lastSelectedMods, 0x1D0, _trackType, 0, companyColour, WindowManager::getCurrentRotation());
                 }
                 _byte_522095 = _byte_522095 & ~(1 << 0);
                 _dword_E0C3E0 = nullptr;

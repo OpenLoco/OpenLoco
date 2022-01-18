@@ -460,8 +460,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 return {};
             }
-            // TODO: modify getSurfaceOrWaterLocFromUi to return the viewport then use its rotation
-            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
             GameCommands::TreePlacementArgs args;
             // 0 for Z value means game command finds first available height
@@ -469,7 +467,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             args.type = self->row_hover;
             args.quadrant = ViewportInteraction::getQuadrantFromPos(res->first) ^ (1 << 1);
             args.colour = _treeColour;
-            args.rotation = (_treeRotation - gCurrentRotation) & 0x3;
+            args.rotation = (_treeRotation - WindowManager::getCurrentRotation()) & 0x3;
             if (isEditorMode())
             {
                 args.buildImmediately = true;
