@@ -3,6 +3,7 @@
 #include "../Console.h"
 #include "../Date.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "../Objects/CurrencyObject.h"
 #include "../Objects/ObjectManager.h"
@@ -20,17 +21,17 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::StringManager
 {
-    const uint16_t NUM_USER_STRINGS = 2048;
-    const uint8_t USER_STRING_SIZE = 32;
-    const uint16_t USER_STRINGS_START = 0x8000;
-    const uint16_t USER_STRINGS_END = USER_STRINGS_START + NUM_USER_STRINGS;
+    const uint8_t kUserStringSize = 32;
+    const uint16_t kUserStringsStart = 0x8000;
+    const uint16_t kUserStringsEnd = kUserStringsStart + Limits::maxUserStrings;
 
-    const uint16_t NUM_TOWN_NAMES = 345;
-    const uint16_t TOWN_NAMES_START = 0x9EE7;
-    const uint16_t TOWN_NAMES_END = TOWN_NAMES_START + NUM_TOWN_NAMES;
+    const uint16_t kMaxTownNames = 345;
+    const uint16_t kTownNamesStart = 0x9EE7;
+    const uint16_t kTownNamesEnd = kTownNamesStart + kMaxTownNames;
 
     static loco_global<char* [0xFFFF], 0x005183FC> _strings;
-    static loco_global<char[NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
+
+    static auto& rawUserStrings() { return getGameState().userStrings; }
 
     static std::map<int32_t, string_id> day_to_string = {
         { 1, StringIds::day_1st },
@@ -89,7 +90,7 @@ namespace OpenLoco::StringManager
     // 0x0049650E
     void reset()
     {
-        for (auto* str : _userStrings)
+        for (auto* str : rawUserStrings())
         {
             *str = '\0';
         }
@@ -551,7 +552,7 @@ namespace OpenLoco::StringManager
     // 0x004958C6
     static char* formatString(char* buffer, string_id id, ArgsWrapper& args)
     {
-        if (id < USER_STRINGS_START)
+        if (id < kUserStringsStart)
         {
             const char* sourceStr = getString(id);
             if (sourceStr == nullptr)
@@ -566,28 +567,28 @@ namespace OpenLoco::StringManager
             assert(*buffer == '\0');
             return buffer;
         }
-        else if (id < USER_STRINGS_END)
+        else if (id < kUserStringsEnd)
         {
-            id -= USER_STRINGS_START;
+            id -= kUserStringsStart;
             args.skip<uint16_t>();
-            const char* sourceStr = _userStrings[id];
+            const char* sourceStr = rawUserStrings()[id];
 
             // !!! TODO: original code is prone to buffer overflow.
-            buffer = strncpy(buffer, sourceStr, USER_STRING_SIZE);
+            buffer = strncpy(buffer, sourceStr, kUserStringSize);
             buffer += strlen(sourceStr);
             *buffer = '\0';
 
             return buffer;
         }
-        else if (id < TOWN_NAMES_END)
+        else if (id < kTownNamesEnd)
         {
-            id -= TOWN_NAMES_START;
+            id -= kTownNamesStart;
             const auto townId = TownId(args.pop<uint16_t>());
             auto town = TownManager::get(townId);
             void* town_name = (void*)&town->name;
             return formatString(buffer, id, town_name);
         }
-        else if (id == TOWN_NAMES_END)
+        else if (id == kTownNamesEnd)
         {
             const auto townId = TownId(args.pop<uint16_t>());
             auto town = TownManager::get(townId);
@@ -617,9 +618,9 @@ namespace OpenLoco::StringManager
     string_id userStringAllocate(char* str /* edi */, uint8_t cl)
     {
         auto bestSlot = -1;
-        for (auto i = 0; i < NUM_USER_STRINGS; ++i)
+        for (auto i = 0u; i < Limits::maxUserStrings; ++i)
         {
-            char* userStr = _userStrings[i];
+            char* userStr = rawUserStrings()[i];
             if (*userStr == '\0')
             {
                 bestSlot = i;
@@ -640,37 +641,37 @@ namespace OpenLoco::StringManager
             return StringIds::empty;
         }
 
-        char* userStr = _userStrings[bestSlot];
-        strncpy(userStr, str, USER_STRING_SIZE);
-        userStr[USER_STRING_SIZE - 1] = '\0';
-        return bestSlot + USER_STRINGS_START;
+        char* userStr = rawUserStrings()[bestSlot];
+        strncpy(userStr, str, kUserStringSize);
+        userStr[kUserStringSize - 1] = '\0';
+        return bestSlot + kUserStringsStart;
     }
 
     // 0x004965A6
     void emptyUserString(string_id stringId)
     {
-        if (stringId < USER_STRINGS_START || stringId >= USER_STRINGS_END)
+        if (stringId < kUserStringsStart || stringId >= kUserStringsEnd)
         {
             return;
         }
 
-        *_userStrings[stringId - USER_STRINGS_START] = '\0';
+        *rawUserStrings()[stringId - kUserStringsStart] = '\0';
     }
 
     string_id isTownName(string_id stringId)
     {
-        return stringId >= TOWN_NAMES_START && stringId < TOWN_NAMES_END;
+        return stringId >= kTownNamesStart && stringId < kTownNamesEnd;
     }
 
     string_id toTownName(string_id stringId)
     {
-        assert(stringId < TOWN_NAMES_START && stringId + TOWN_NAMES_START < TOWN_NAMES_END);
-        return string_id(TOWN_NAMES_START + stringId);
+        assert(stringId < kTownNamesStart && stringId + kTownNamesStart < kTownNamesEnd);
+        return string_id(kTownNamesStart + stringId);
     }
 
     string_id fromTownName(string_id stringId)
     {
         assert(isTownName(stringId));
-        return string_id(stringId - TOWN_NAMES_START);
+        return string_id(stringId - kTownNamesStart);
     }
 }

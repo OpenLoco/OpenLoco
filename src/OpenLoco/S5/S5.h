@@ -370,7 +370,7 @@ namespace OpenLoco::S5
         Entity entities[S5::Limits::maxEntities];                                      // 0x1B58C4 (0x006DB6DC)
         Animation animations[S5::Limits::maxAnimations];                               // 0x4268C4 (0x0094C6DC)
         Wave waves[S5::Limits::maxWaves];                                              // 0x4328C4 (0x009586DC)
-        uint8_t userStrings[S5::Limits::maxUserStrings][32];                           // 0x432A44 (0x0095885C)
+        char userStrings[S5::Limits::maxUserStrings][32];                              // 0x432A44 (0x0095885C)
         uint16_t routings[S5::Limits::maxVehicles][S5::Limits::maxRoutingsPerVehicle]; // 0x442A44 (0x0096885C)
         uint8_t orders[S5::Limits::maxOrders];                                         // 0x461E44 (0x00987C5C)
     };

@@ -141,7 +141,7 @@ namespace OpenLoco
         Entity entities[Limits::maxEntities];                                  // 0x1B58C4 (0x006DB6DC)
         Map::Animation animations[Limits::maxAnimations];                      // 0x4268C4 (0x0094C6DC)
         Map::Wave waves[Limits::maxWaves];                                     // 0x4328C4 (0x009586DC)
-        uint8_t userStrings[Limits::maxUserStrings][32];                       // 0x432A44 (0x0095885C)
+        char userStrings[Limits::maxUserStrings][32];                          // 0x432A44 (0x0095885C)
         uint16_t routings[Limits::maxVehicles][Limits::maxRoutingsPerVehicle]; // 0x442A44 (0x0096885C)
         uint8_t orders[Limits::maxOrders];                                     // 0x461E44 (0x00987C5C)
     };
