@@ -27,7 +27,7 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    constexpr uint32_t max_orders = 256000;
+    constexpr uint32_t kMaxOrders = 256000;
     constexpr auto max_ai_vehicles = 500;
     constexpr auto max_num_car_components_in_car = 4;           // TODO: Move to VehicleObject
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
@@ -47,7 +47,7 @@ namespace OpenLoco::Vehicles
     static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint32_t, 0x00525FB8> _orderTableLength;  // total used length of _987C5C
-    static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
+    static loco_global<uint8_t[kMaxOrders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
@@ -580,7 +580,7 @@ namespace OpenLoco::Vehicles
             return {};
         }
 
-        if (_orderTableLength >= max_orders)
+        if (_orderTableLength >= kMaxOrders)
         {
             GameCommands::setErrorText(StringIds::no_space_for_more_vehicle_orders);
             return {};
