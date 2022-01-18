@@ -177,7 +177,7 @@ namespace OpenLoco::Vehicles
         template<typename TType>
         TType* as() const
         {
-            return as<TType, TType::vehicleThingType>();
+            return as<TType, TType::kVehicleThingType>();
         }
 
     public:
@@ -258,7 +258,7 @@ namespace OpenLoco::Vehicles
 
     struct VehicleHead : VehicleBase
     {
-        static constexpr auto vehicleThingType = VehicleThingType::head;
+        static constexpr auto kVehicleThingType = VehicleThingType::head;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;              // 0x26
         uint32_t remainingDistance; // 0x28
@@ -401,7 +401,7 @@ namespace OpenLoco::Vehicles
 
     struct Vehicle1 : VehicleBase
     {
-        static constexpr auto vehicleThingType = VehicleThingType::vehicle_1;
+        static constexpr auto kVehicleThingType = VehicleThingType::vehicle_1;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;              // 0x26
         uint32_t remainingDistance; // 0x28
@@ -433,7 +433,7 @@ namespace OpenLoco::Vehicles
 
     struct Vehicle2 : VehicleBase
     {
-        static constexpr auto vehicleThingType = VehicleThingType::vehicle_2;
+        static constexpr auto kVehicleThingType = VehicleThingType::vehicle_2;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;              // 0x26
         uint32_t remainingDistance; // 0x28
@@ -479,7 +479,7 @@ namespace OpenLoco::Vehicles
 
     struct VehicleBody : VehicleBase
     {
-        static constexpr auto vehicleThingType = VehicleThingType::body_continued;
+        static constexpr auto kVehicleThingType = VehicleThingType::body_continued;
         ColourScheme colour_scheme; // 0x24
         EntityId head;              // 0x26
         uint32_t remainingDistance; // 0x28
@@ -534,7 +534,7 @@ namespace OpenLoco::Vehicles
 
     struct VehicleBogie : VehicleBase
     {
-        static constexpr auto vehicleThingType = VehicleThingType::bogie;
+        static constexpr auto kVehicleThingType = VehicleThingType::bogie;
         ColourScheme colour_scheme; // 0x24
         EntityId head;              // 0x26
         uint32_t remainingDistance; // 0x28
@@ -577,7 +577,7 @@ namespace OpenLoco::Vehicles
 
     struct VehicleTail : VehicleBase
     {
-        static constexpr auto vehicleThingType = VehicleThingType::tail;
+        static constexpr auto kVehicleThingType = VehicleThingType::tail;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;              // 0x26
         uint32_t remainingDistance; // 0x28
