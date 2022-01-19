@@ -7,7 +7,7 @@
 
 namespace OpenLoco::Input::ShortcutManager
 {
-    static constexpr size_t count = 44;
+    static constexpr size_t kCount = 44;
 
     void execute(Shortcut s);
     string_id getName(Shortcut s);
@@ -20,5 +20,5 @@ namespace OpenLoco::Input::ShortcutManager
         const char* defaultBinding;
     };
 
-    const std::array<const KeyboardShortcut, count>& getList();
+    const std::array<const KeyboardShortcut, kCount>& getList();
 }

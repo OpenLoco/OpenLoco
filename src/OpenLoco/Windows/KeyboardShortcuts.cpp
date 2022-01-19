@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         window->setColour(WindowColour::primary, skin->colour_0B);
         window->setColour(WindowColour::secondary, skin->colour_10);
 
-        window->row_count = static_cast<uint16_t>(ShortcutManager::count);
+        window->row_count = static_cast<uint16_t>(ShortcutManager::kCount);
         window->row_hover = -1;
 
         return window;

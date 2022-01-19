@@ -117,7 +117,7 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
-    static std::map<Ui::ScrollView::ScrollPart, string_id> scroll_widget_tooltips = {
+    static const std::map<Ui::ScrollView::ScrollPart, string_id> kScrollWidgetTooltips = {
         { Ui::ScrollView::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
         { Ui::ScrollView::ScrollPart::hscrollbarButtonRight, StringIds::tooltip_scroll_right },
         { Ui::ScrollView::ScrollPart::hscrollbarTrackLeft, StringIds::tooltip_scroll_left_fast },
@@ -1607,7 +1607,7 @@ namespace OpenLoco::Input
                 }
                 else
                 {
-                    tooltipStringId = scroll_widget_tooltips[scrollArea];
+                    tooltipStringId = kScrollWidgetTooltips.at(scrollArea);
                     if (*_tooltipWindowType != Ui::WindowType::undefined)
                     {
                         if (tooltipStringId != _currentTooltipStringId)

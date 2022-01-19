@@ -17,8 +17,8 @@ namespace OpenLoco::Interop
 {
     static void* _hookTableAddress;
     static int32_t _hookTableOffset;
-    static int32_t _maxHooks = 1000;
-    constexpr auto HOOK_BYTE_COUNT = 140;
+    constexpr int32_t kMaxHooks = 1000;
+    constexpr auto kHookByteCount = 140;
 
     static registers _hookRegisters;
     static uintptr_t _lastHook;
@@ -34,7 +34,7 @@ namespace OpenLoco::Interop
     static bool hookFunc(uintptr_t address, uintptr_t hookAddress, int32_t stacksize)
     {
         int32_t i = 0;
-        uint8_t data[HOOK_BYTE_COUNT] = { 0 };
+        uint8_t data[kHookByteCount] = { 0 };
 
         uintptr_t registerAddress = (uintptr_t)&_hookRegisters;
 
@@ -169,7 +169,7 @@ namespace OpenLoco::Interop
     {
         if (!_hookTableAddress)
         {
-            size_t size = _maxHooks * HOOK_BYTE_COUNT;
+            size_t size = kMaxHooks * kHookByteCount;
 #ifdef _WIN32
             _hookTableAddress = VirtualAllocEx(GetCurrentProcess(), NULL, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 #else
@@ -181,7 +181,7 @@ namespace OpenLoco::Interop
             }
 #endif // _WIN32
         }
-        if (_hookTableOffset > _maxHooks)
+        if (_hookTableOffset > kMaxHooks)
         {
             Console::error("Failed registering hook for 0x%08x. Ran out of hook table space", address);
             return;
@@ -192,7 +192,7 @@ namespace OpenLoco::Interop
         int retries = 10;
         while (!done && retries > 0)
         {
-            uint32_t hookaddress = (uint32_t)_hookTableAddress + (_hookTableOffset * HOOK_BYTE_COUNT);
+            uint32_t hookaddress = (uint32_t)_hookTableAddress + (_hookTableOffset * kHookByteCount);
             uint8_t data[9];
             int32_t i = 0;
             data[i++] = 0xE9; // jmp

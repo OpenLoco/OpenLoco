@@ -19,7 +19,7 @@
 #define FORCE_ALIGN_ARG_POINTER
 #endif
 
-constexpr int32_t DEFAULT_REG_VAL = 0xCCCCCCCC;
+constexpr int32_t kDefaultRegValue = 0xCCCCCCCC;
 
 namespace OpenLoco::Interop
 {
@@ -59,7 +59,7 @@ namespace OpenLoco::Interop
     {
         union
         {
-            int32_t eax{ DEFAULT_REG_VAL };
+            int32_t eax{ kDefaultRegValue };
             int16_t ax;
             struct
             {
@@ -69,7 +69,7 @@ namespace OpenLoco::Interop
         };
         union
         {
-            int32_t ebx{ DEFAULT_REG_VAL };
+            int32_t ebx{ kDefaultRegValue };
             int16_t bx;
             struct
             {
@@ -79,7 +79,7 @@ namespace OpenLoco::Interop
         };
         union
         {
-            int32_t ecx{ DEFAULT_REG_VAL };
+            int32_t ecx{ kDefaultRegValue };
             int16_t cx;
             struct
             {
@@ -89,7 +89,7 @@ namespace OpenLoco::Interop
         };
         union
         {
-            int32_t edx{ DEFAULT_REG_VAL };
+            int32_t edx{ kDefaultRegValue };
             int16_t dx;
             struct
             {
@@ -99,17 +99,17 @@ namespace OpenLoco::Interop
         };
         union
         {
-            int32_t esi{ DEFAULT_REG_VAL };
+            int32_t esi{ kDefaultRegValue };
             int16_t si;
         };
         union
         {
-            int32_t edi{ DEFAULT_REG_VAL };
+            int32_t edi{ kDefaultRegValue };
             int16_t di;
         };
         union
         {
-            int32_t ebp{ DEFAULT_REG_VAL };
+            int32_t ebp{ kDefaultRegValue };
             int16_t bp;
         };
     };
@@ -117,12 +117,12 @@ namespace OpenLoco::Interop
 #pragma pack(pop)
 
 #ifndef USE_MMAP
-    constexpr uintptr_t GOOD_PLACE_FOR_DATA_SEGMENT = 0x008A4000;
+    constexpr uintptr_t kGoodPlaceForDataSegment = 0x008A4000;
 #else
 #if defined(PLATFORM_32BIT)
-    constexpr uintptr_t GOOD_PLACE_FOR_DATA_SEGMENT = 0x09000000;
+    constexpr uintptr_t kGoodPlaceForDataSegment = 0x09000000;
 #elif defined(PLATFORM_64BIT)
-    constexpr uintptr_t GOOD_PLACE_FOR_DATA_SEGMENT = 0x200000000;
+    constexpr uintptr_t kGoodPlaceForDataSegment = 0x200000000;
 #else
 #error "Unknown platform"
 #endif
@@ -130,7 +130,7 @@ namespace OpenLoco::Interop
 
     constexpr uintptr_t remapAddress(uintptr_t locoAddress)
     {
-        return GOOD_PLACE_FOR_DATA_SEGMENT - 0x008A4000 + locoAddress;
+        return kGoodPlaceForDataSegment - 0x008A4000 + locoAddress;
     }
 
     template<uint32_t TAddress, typename T>

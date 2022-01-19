@@ -25,13 +25,13 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Gfx
 {
-    namespace g1_expected_count
+    namespace G1ExpectedCount
     {
-        constexpr uint32_t disc = 0x101A; // And GOG
-        constexpr uint32_t steam = 0x0F38;
+        constexpr uint32_t kDisc = 0x101A; // And GOG
+        constexpr uint32_t kSteam = 0x0F38;
     }
 
-    namespace text_draw_flags
+    namespace TextDrawFlags
     {
         constexpr uint8_t inset = (1ULL << 0);
         constexpr uint8_t outline = (1ULL << 1);
@@ -39,12 +39,12 @@ namespace OpenLoco::Gfx
         constexpr uint8_t extra_dark = (1ULL << 3);
     }
 
-    constexpr uint32_t g1_count_objects = 0x40000;
-    constexpr uint32_t g1_count_temporary = 0x1000;
+    constexpr uint32_t kG1CountObjects = 0x40000;
+    constexpr uint32_t kG1CountTemporary = 0x1000;
 
     static loco_global<Context, 0x0050B884> _screenContext;
 
-    static loco_global<G1Element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
+    static loco_global<G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + kG1CountObjects], 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
     static loco_global<uint16_t[147], 0x050B8C8> _paletteToG1Offset;
@@ -196,11 +196,11 @@ namespace OpenLoco::Gfx
             throw std::runtime_error("Reading g1 file header failed.");
         }
 
-        if (header.num_entries != g1_expected_count::disc)
+        if (header.num_entries != G1ExpectedCount::kDisc)
         {
             std::cout << "G1 element count doesn't match expected value: ";
-            std::cout << "Expected " << g1_expected_count::disc << "; Got " << header.num_entries << std::endl;
-            if (header.num_entries == g1_expected_count::steam)
+            std::cout << "Expected " << G1ExpectedCount::kDisc << "; Got " << header.num_entries << std::endl;
+            if (header.num_entries == G1ExpectedCount::kSteam)
             {
                 std::cout << "Got Steam G1.DAT variant, will fix elements automatically." << std::endl;
             }
@@ -224,9 +224,9 @@ namespace OpenLoco::Gfx
 
         // The steam G1.DAT is missing two localised tutorial icons, and a smaller font variant
         // This code copies the closest variants into their place, and moves other elements accordingly
-        if (header.num_entries == g1_expected_count::steam)
+        if (header.num_entries == G1ExpectedCount::kSteam)
         {
-            elements.resize(g1_expected_count::disc);
+            elements.resize(G1ExpectedCount::kDisc);
 
             // Extra two tutorial images
             std::copy_n(&elements[3549], header.num_entries - 3549, &elements[3551]);
@@ -552,13 +552,13 @@ namespace OpenLoco::Gfx
 
     static void setTextColours(PaletteIndex_t pal1, PaletteIndex_t pal2, PaletteIndex_t pal3)
     {
-        if ((_currentFontFlags & text_draw_flags::inset) != 0)
+        if ((_currentFontFlags & TextDrawFlags::inset) != 0)
             return;
 
         _textColours[1] = pal1;
         _textColours[2] = PaletteIndex::transparent;
         _textColours[3] = PaletteIndex::transparent;
-        if ((_currentFontFlags & text_draw_flags::outline) != 0)
+        if ((_currentFontFlags & TextDrawFlags::outline) != 0)
         {
             _textColours[2] = pal2;
             _textColours[3] = pal3;
@@ -668,10 +668,10 @@ namespace OpenLoco::Gfx
                     _currentFontSpriteBase = Font::medium_bold;
                     break;
                 case ControlCodes::outline:
-                    _currentFontFlags = _currentFontFlags | text_draw_flags::outline;
+                    _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
                     break;
                 case ControlCodes::outline_off:
-                    _currentFontFlags = _currentFontFlags & ~text_draw_flags::outline;
+                    _currentFontFlags = _currentFontFlags & ~TextDrawFlags::outline;
                     break;
                 case ControlCodes::window_colour_1:
                 {
@@ -704,7 +704,7 @@ namespace OpenLoco::Gfx
                     uint32_t imageId = image & 0x7FFFF;
                     str += 4;
 
-                    if ((_currentFontFlags & text_draw_flags::inset) != 0)
+                    if ((_currentFontFlags & TextDrawFlags::inset) != 0)
                     {
                         Gfx::drawImageSolid(context, pos.x, pos.y, imageId, _textColours[3]);
                         Gfx::drawImageSolid(context, pos.x + 1, pos.y + 1, imageId, _textColours[1]);
@@ -843,13 +843,13 @@ namespace OpenLoco::Gfx
         if (_currentFontSpriteBase == Font::m1)
         {
             _currentFontSpriteBase = Font::medium_bold;
-            _currentFontFlags = _currentFontFlags | text_draw_flags::dark;
+            _currentFontFlags = _currentFontFlags | TextDrawFlags::dark;
         }
         else if (_currentFontSpriteBase == Font::m2)
         {
             _currentFontSpriteBase = Font::medium_bold;
-            _currentFontFlags = _currentFontFlags | text_draw_flags::dark;
-            _currentFontFlags = _currentFontFlags | text_draw_flags::extra_dark;
+            _currentFontFlags = _currentFontFlags | TextDrawFlags::dark;
+            _currentFontFlags = _currentFontFlags | TextDrawFlags::extra_dark;
         }
 
         _textColours[0] = PaletteIndex::transparent;
@@ -860,24 +860,24 @@ namespace OpenLoco::Gfx
         if (colour & FormatFlags::textflag_5)
         {
             colour &= ~FormatFlags::textflag_5;
-            _currentFontFlags = _currentFontFlags | text_draw_flags::outline;
+            _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
         }
 
         if (colour & FormatFlags::textflag_6)
         {
             colour &= ~FormatFlags::textflag_6;
-            _currentFontFlags = _currentFontFlags | text_draw_flags::inset;
+            _currentFontFlags = _currentFontFlags | TextDrawFlags::inset;
         }
 
-        if ((_currentFontFlags & text_draw_flags::inset) != 0)
+        if ((_currentFontFlags & TextDrawFlags::inset) != 0)
         {
-            if ((_currentFontFlags & text_draw_flags::dark) != 0 && (_currentFontFlags & text_draw_flags::extra_dark) != 0)
+            if ((_currentFontFlags & TextDrawFlags::dark) != 0 && (_currentFontFlags & TextDrawFlags::extra_dark) != 0)
             {
                 _textColours[1] = Colour::getShade(colour, 2);
                 _textColours[2] = PaletteIndex::transparent;
                 _textColours[3] = Colour::getShade(colour, 4);
             }
-            else if ((_currentFontFlags & text_draw_flags::dark) != 0)
+            else if ((_currentFontFlags & TextDrawFlags::dark) != 0)
             {
                 _textColours[1] = Colour::getShade(colour, 3);
                 _textColours[2] = PaletteIndex::transparent;

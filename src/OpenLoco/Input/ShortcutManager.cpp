@@ -63,7 +63,7 @@ namespace OpenLoco::Input::ShortcutManager
     static void constructionSelectPosition();
 
     // clang-format off
-    static constexpr std::array<const KeyboardShortcut, count> _shortcuts = { {
+    static constexpr std::array<const KeyboardShortcut, kCount> kShortcuts = { {
         { closeTopmostWindow,             StringIds::shortcut_close_topmost_window,               "closeTopmostWindow",             "Backspace" },
         { closeAllFloatingWindows,        StringIds::shortcut_close_all_floating_windows,         "closeAllFloatingWindows",        "Left Shift+Backspace" },
         { cancelConstructionMode,         StringIds::shortcut_cancel_construction_mode,           "cancelConstructionMode",         "Escape" },
@@ -113,17 +113,17 @@ namespace OpenLoco::Input::ShortcutManager
 
     void execute(Shortcut s)
     {
-        _shortcuts[s].function();
+        kShortcuts[s].function();
     }
 
     string_id getName(Shortcut s)
     {
-        return _shortcuts[s].displayName;
+        return kShortcuts[s].displayName;
     }
 
-    const std::array<const KeyboardShortcut, count>& getList()
+    const std::array<const KeyboardShortcut, kCount>& getList()
     {
-        return _shortcuts;
+        return kShortcuts;
     }
 
     // 0x004BF089
