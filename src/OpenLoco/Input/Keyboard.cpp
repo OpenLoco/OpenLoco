@@ -51,7 +51,7 @@ namespace OpenLoco::Input
     static loco_global<uint8_t[256], 0x01140740> _keyboardState;
     static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
 
-    static std::pair<std::string, std::function<void()>> cheats[] = {
+    static const std::pair<std::string, std::function<void()>> kCheats[] = {
         { "DRIVER", loc_4BECDE },
         { "SHUNT", loc_4BED04 },
         { "FREECASH", loc_4BED79 }
@@ -224,7 +224,7 @@ namespace OpenLoco::Input
         if (isTitleMode())
             return;
 
-        for (auto cheat : cheats)
+        for (const auto& cheat : kCheats)
         {
             if (strcmp(_cheatBuffer.c_str(), cheat.first.c_str()) == 0)
             {
@@ -254,7 +254,7 @@ namespace OpenLoco::Input
         auto& cfg = Config::getNew();
 
         // Unbind any shortcuts that may be using the current keycode.
-        for (size_t i = 0; i < ShortcutManager::count; i++)
+        for (size_t i = 0; i < ShortcutManager::kCount; i++)
         {
             if (cfg.shortcuts[i].keyCode == k->keyCode && cfg.shortcuts[i].modifiers == _keyModifier)
             {
@@ -353,7 +353,7 @@ namespace OpenLoco::Input
 
             if (!isTitleMode())
             {
-                for (size_t i = 0; i < ShortcutManager::count; i++)
+                for (size_t i = 0; i < ShortcutManager::kCount; i++)
                 {
                     if (tryShortcut((Shortcut)i, nextKey->keyCode, _keyModifier))
                         break;
