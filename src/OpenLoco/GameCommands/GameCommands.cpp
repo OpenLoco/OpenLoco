@@ -45,7 +45,7 @@ namespace OpenLoco::GameCommands
     };
 
     // clang-format off
-    static constexpr GameCommandInfo _gameCommandDefinitions[82] = {
+    static constexpr GameCommandInfo kGameCommandDefinitions[82] = {
         { GameCommand::vehicleRearrange,             nullptr,                   0x004AF1DF, true  },
         { GameCommand::vehiclePlace,                 nullptr,                   0x004B01B6, true  },
         { GameCommand::vehiclePickup,                vehiclePickup,             0x004B0826, true  },
@@ -153,7 +153,7 @@ namespace OpenLoco::GameCommands
         if ((flags & (Flags::flag_4 | Flags::flag_6)) != 0)
             return false;
 
-        auto& gameCommand = _gameCommandDefinitions[static_cast<uint32_t>(command)];
+        auto& gameCommand = kGameCommandDefinitions[static_cast<uint32_t>(command)];
         if (!gameCommand.unpausesGame || isPauseOverrideEnabled())
             return false;
 
@@ -210,7 +210,7 @@ namespace OpenLoco::GameCommands
 
     static void callGameCommandFunction(uint32_t command, registers& regs)
     {
-        auto& gameCommand = _gameCommandDefinitions[command];
+        auto& gameCommand = kGameCommandDefinitions[command];
         if (gameCommand.implementation != nullptr)
         {
             gameCommand.implementation(regs);

@@ -71,7 +71,7 @@ namespace OpenLoco::Audio
         title,
         vehicle_0, // * 10
     };
-    constexpr int32_t num_reserved_channels = 4 + 10;
+    constexpr int32_t kNumReservedChannels = 4 + 10;
 
     using MusicId = uint8_t;
 
@@ -129,7 +129,7 @@ namespace OpenLoco::Audio
     bool isAudioEnabled();
 
     const MusicInfo* getMusicInfo(MusicId track);
-    constexpr int32_t num_music_tracks = 29;
+    constexpr int32_t kNumMusicTracks = 29;
 
     /**
      * Converts a Locomotion volume range to SDL2.
