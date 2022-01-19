@@ -84,7 +84,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window->setColour(WindowColour::primary, interface->colour_0B);
         window->setColour(WindowColour::secondary, interface->colour_10);
 
-        window->row_count = Audio::num_music_tracks;
+        window->row_count = Audio::kNumMusicTracks;
         window->row_hover = -1;
 
         return window;
@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C176C
     static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = rowHeight * Audio::num_music_tracks;
+        *scrollHeight = rowHeight * Audio::kNumMusicTracks;
     }
 
     // 0x004C1757
@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
         // Are any tracks enabled?
         uint8_t anyEnabled = 0;
-        for (uint8_t i = 0; i < Audio::num_music_tracks; i++)
+        for (uint8_t i = 0; i < Audio::kNumMusicTracks; i++)
             anyEnabled |= config.enabled_music[i];
 
         // Ensure at least this track is enabled.

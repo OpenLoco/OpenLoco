@@ -12,7 +12,7 @@ Channel::Channel(int32_t cid)
 }
 
 Channel::Channel(Channel&& c)
-    : _id(std::exchange(c._id, undefined_id))
+    : _id(std::exchange(c._id, kUndefinedId))
     , _chunk(std::exchange(c._chunk, nullptr))
     , _chunk_owner(std::exchange(c._chunk_owner, {}))
 {

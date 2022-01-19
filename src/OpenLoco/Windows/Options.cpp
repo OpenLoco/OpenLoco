@@ -1146,7 +1146,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::get().music_playlist == Config::MusicPlaylistType::currentEra)
             {
                 uint16_t year = getCurrentYear();
-                for (int i = 0; i < Audio::num_music_tracks; i++)
+                for (int i = 0; i < Audio::kNumMusicTracks; i++)
                 {
                     auto info = Audio::getMusicInfo(i);
                     if (year >= info->start_year && year <= info->end_year)
@@ -1157,14 +1157,14 @@ namespace OpenLoco::Ui::Windows::Options
             }
             else if (Config::get().music_playlist == Config::MusicPlaylistType::all)
             {
-                for (int i = 0; i < Audio::num_music_tracks; i++)
+                for (int i = 0; i < Audio::kNumMusicTracks; i++)
                 {
                     vector.push_back(i);
                 }
             }
             else if (Config::get().music_playlist == Config::MusicPlaylistType::custom)
             {
-                for (int i = 0; i < Audio::num_music_tracks; i++)
+                for (int i = 0; i < Audio::kNumMusicTracks; i++)
                 {
                     if (Config::get().enabled_music[i] & 1)
                     {
@@ -1174,7 +1174,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 if (vector.size() == 0)
                 {
-                    for (int i = 0; i < Audio::num_music_tracks; i++)
+                    for (int i = 0; i < Audio::kNumMusicTracks; i++)
                     {
                         vector.push_back(i);
                     }

@@ -11,10 +11,10 @@ namespace OpenLoco::Audio
     class Channel
     {
     public:
-        static constexpr int32_t undefined_id = -1;
+        static constexpr int32_t kUndefinedId = -1;
 
     private:
-        int32_t _id = undefined_id;
+        int32_t _id = kUndefinedId;
         Mix_Chunk* _chunk{};
         bool _chunk_owner{};
 
@@ -33,7 +33,7 @@ namespace OpenLoco::Audio
         void setPan(int32_t pan);
         void setFrequency(int32_t freq);
         bool isPlaying() const;
-        bool isUndefined() const { return _id == undefined_id; }
+        bool isUndefined() const { return _id == kUndefinedId; }
         int32_t id() { return _id; }
 
     private:

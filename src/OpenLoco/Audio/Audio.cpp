@@ -67,11 +67,11 @@ namespace OpenLoco::Audio
         int32_t channels{};
     };
 
-    [[maybe_unused]] constexpr int32_t play_at_centre = 0x8000;
-    [[maybe_unused]] constexpr int32_t play_at_location = 0x8001;
-    [[maybe_unused]] constexpr int32_t num_sound_channels = 16;
+    [[maybe_unused]] constexpr int32_t kPlayAtCentre = 0x8000;
+    [[maybe_unused]] constexpr int32_t kPlayAtLocation = 0x8001;
+    [[maybe_unused]] constexpr int32_t kNumSoundChannels = 16;
 
-    static constexpr uint8_t no_song = 0xFF;
+    static constexpr uint8_t kNoSong = 0xFF;
 
     static loco_global<uint32_t, 0x0050D1EC> _audio_initialised;
     static loco_global<uint8_t, 0x0050D434> _currentSong;
@@ -94,7 +94,7 @@ namespace OpenLoco::Audio
     static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq);
 
     // 0x004FE910
-    static const MusicInfo _musicInfo[] = {
+    static const MusicInfo kMusicInfo[] = {
         { path_id::music_20s1, StringIds::music_chuggin_along, 1925, 1933 },
         { path_id::music_20s2, StringIds::music_long_dusty_road, 1927, 1935 },
         { path_id::music_20s4, StringIds::music_flying_high, 1932, 1940 },
@@ -326,8 +326,8 @@ namespace OpenLoco::Audio
             Console::error("Mix_OpenAudio failed: %s", Mix_GetError());
             return;
         }
-        Mix_AllocateChannels(num_reserved_channels + num_sound_channels);
-        Mix_ReserveChannels(num_reserved_channels);
+        Mix_AllocateChannels(kNumReservedChannels + kNumSoundChannels);
+        Mix_ReserveChannels(kNumReservedChannels);
 
         for (size_t i = 0; i < _channels.size(); i++)
         {
@@ -542,7 +542,7 @@ namespace OpenLoco::Audio
 
     void playSound(SoundId id, const Map::Pos3& loc)
     {
-        playSound(id, loc, play_at_location);
+        playSound(id, loc, kPlayAtLocation);
     }
 
     void playSound(SoundId id, int32_t pan)
@@ -593,7 +593,7 @@ namespace OpenLoco::Audio
     // 0x00489F1B
     void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t frequency)
     {
-        playSound(id, loc, volume, play_at_location, frequency);
+        playSound(id, loc, volume, kPlayAtLocation, frequency);
     }
 
     // 0x00489CB5
@@ -609,7 +609,7 @@ namespace OpenLoco::Audio
         if (_audioIsEnabled)
         {
             volume += getVolumeForSoundId(id);
-            if (pan == play_at_location)
+            if (pan == kPlayAtLocation)
             {
                 auto vpos = Map::gameToScreen(loc, WindowManager::getCurrentRotation());
                 auto viewport = findBestViewportForSound(vpos);
@@ -625,7 +625,7 @@ namespace OpenLoco::Audio
                     return;
                 }
             }
-            else if (pan == play_at_centre)
+            else if (pan == kPlayAtCentre)
             {
                 pan = 0;
             }
@@ -972,7 +972,7 @@ namespace OpenLoco::Audio
         using MusicPlaylistType = Config::MusicPlaylistType;
         auto cfg = Config::get();
 
-        if (_currentSong == no_song)
+        if (_currentSong == kNoSong)
             return;
 
         bool trackStillApplies = true;
@@ -981,7 +981,7 @@ namespace OpenLoco::Audio
             case MusicPlaylistType::currentEra:
             {
                 auto currentYear = getCurrentYear();
-                auto info = _musicInfo[_currentSong];
+                auto info = kMusicInfo[_currentSong];
                 if (currentYear < info.start_year || currentYear > info.end_year)
                     trackStillApplies = false;
                 break;
@@ -999,8 +999,8 @@ namespace OpenLoco::Audio
         if (!trackStillApplies)
         {
             stopBackgroundMusic();
-            _currentSong = no_song;
-            _lastSong = no_song;
+            _currentSong = kNoSong;
+            _lastSong = kNoSong;
         }
     }
 
@@ -1017,9 +1017,9 @@ namespace OpenLoco::Audio
             case MusicPlaylistType::currentEra:
             {
                 auto currentYear = getCurrentYear();
-                for (auto i = 0; i < num_music_tracks; i++)
+                for (auto i = 0; i < kNumMusicTracks; i++)
                 {
-                    const auto& mi = _musicInfo[i];
+                    const auto& mi = kMusicInfo[i];
                     if (currentYear >= mi.start_year && currentYear <= mi.end_year)
                     {
                         if (i != excludeTrack)
@@ -1031,7 +1031,7 @@ namespace OpenLoco::Audio
                 break;
             }
             case MusicPlaylistType::all:
-                for (auto i = 0; i < num_music_tracks; i++)
+                for (auto i = 0; i < kNumMusicTracks; i++)
                 {
                     if (i != excludeTrack)
                     {
@@ -1040,7 +1040,7 @@ namespace OpenLoco::Audio
                 }
                 break;
             case MusicPlaylistType::custom:
-                for (auto i = 0; i < num_music_tracks; i++)
+                for (auto i = 0; i < kNumMusicTracks; i++)
                 {
                     if (i != excludeTrack && (cfg.enabled_music[i] & 1))
                     {
@@ -1052,9 +1052,9 @@ namespace OpenLoco::Audio
 
         if (playlist.size() == 0)
         {
-            if (excludeTrack == no_song)
+            if (excludeTrack == kNoSong)
             {
-                for (auto i = 0; i < num_music_tracks; i++)
+                for (auto i = 0; i < kNumMusicTracks; i++)
                 {
                     if (i != excludeTrack)
                     {
@@ -1064,7 +1064,7 @@ namespace OpenLoco::Audio
             }
             else
             {
-                const auto& mi = _musicInfo[excludeTrack];
+                const auto& mi = kMusicInfo[excludeTrack];
                 auto currentYear = getCurrentYear();
                 if (currentYear >= mi.start_year && currentYear <= mi.end_year)
                 {
@@ -1095,10 +1095,10 @@ namespace OpenLoco::Audio
         if (!_music_channel.isPlaying())
         {
             // Not playing, but the 'current song' is last song? It's been requested manually!
-            bool requestedSong = _lastSong != no_song && _lastSong == _currentSong;
+            bool requestedSong = _lastSong != kNoSong && _lastSong == _currentSong;
 
             // Choose a track to play, unless we have requested one track in particular.
-            if (_currentSong == no_song || !requestedSong)
+            if (_currentSong == kNoSong || !requestedSong)
             {
                 auto trackToExclude = _lastSong;
                 _lastSong = _currentSong;
@@ -1107,11 +1107,11 @@ namespace OpenLoco::Audio
             else
             {
                 // We're choosing this one, but the next one should be decided automatically again.
-                _lastSong = no_song;
+                _lastSong = kNoSong;
             }
 
             // Load info on the song to play.
-            const auto& mi = _musicInfo[_currentSong];
+            const auto& mi = kMusicInfo[_currentSong];
             auto path = Environment::getPath((path_id)mi.path_id);
             if (_music_channel.load(path))
             {
@@ -1134,8 +1134,8 @@ namespace OpenLoco::Audio
     void resetMusic()
     {
         stopBackgroundMusic();
-        _currentSong = no_song;
-        _lastSong = no_song;
+        _currentSong = kNoSong;
+        _lastSong = kNoSong;
     }
 
     // 0x0048AAE8
@@ -1186,7 +1186,7 @@ namespace OpenLoco::Audio
 
     const MusicInfo* getMusicInfo(MusicId track)
     {
-        return &_musicInfo[track];
+        return &kMusicInfo[track];
     }
 
     // 0x0048AA67
@@ -1201,7 +1201,7 @@ namespace OpenLoco::Audio
         cfg.volume = volume;
         Config::write();
 
-        if (_audio_initialised && _currentSong != no_song && isChannelPlaying(ChannelId::bgm))
+        if (_audio_initialised && _currentSong != kNoSong && isChannelPlaying(ChannelId::bgm))
         {
             setChannelVolume(ChannelId::bgm, volume);
         }

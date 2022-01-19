@@ -16,13 +16,13 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::EntityManager
 {
-    constexpr size_t _spatialEntityMapSize = (Map::map_pitch * Map::map_pitch) + 1;
-    constexpr size_t _entitySpatialIndexNull = _spatialEntityMapSize - 1;
+    constexpr size_t kSpatialEntityMapSize = (Map::map_pitch * Map::map_pitch) + 1;
+    constexpr size_t kEntitySpatialIndexNull = kSpatialEntityMapSize - 1;
 
-    static_assert(_spatialEntityMapSize == 0x40001);
-    static_assert(_entitySpatialIndexNull == 0x40000);
+    static_assert(kSpatialEntityMapSize == 0x40001);
+    static_assert(kEntitySpatialIndexNull == 0x40000);
 
-    loco_global<EntityId[_spatialEntityMapSize], 0x01025A8C> _entitySpatialIndex;
+    loco_global<EntityId[kSpatialEntityMapSize], 0x01025A8C> _entitySpatialIndex;
     loco_global<uint32_t, 0x01025A88> _entitySpatialCount;
 
     static auto& rawEntities() { return getGameState().entities; }
@@ -120,13 +120,13 @@ namespace OpenLoco::EntityManager
     constexpr size_t getSpatialIndexOffset(const Map::Pos2& loc)
     {
         if (loc.x == Location::null)
-            return _entitySpatialIndexNull;
+            return kEntitySpatialIndexNull;
 
         const auto tileX = std::abs(loc.x) / Map::tile_size;
         const auto tileY = std::abs(loc.y) / Map::tile_size;
 
         if (tileX >= Map::map_pitch || tileY >= Map::map_pitch)
-            return _entitySpatialIndexNull;
+            return kEntitySpatialIndexNull;
 
         return (Map::map_pitch * tileX) + tileY;
     }
