@@ -25,7 +25,7 @@ namespace OpenLoco::Vehicles
             trackStart += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                trackStart -= Map::Pos3{ _503C6C[trackSize.rotationEnd] };
+                trackStart -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
             }
             flags ^= (1ULL << 31);
         }
@@ -33,7 +33,7 @@ namespace OpenLoco::Vehicles
         auto& trackPieces = Map::TrackData::getTrackPiece(trackAndDirection.id());
         for (auto& trackPiece : trackPieces)
         {
-            auto signalLoc = trackStart + Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()) };
+            auto signalLoc = trackStart + Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()), 0 };
             signalLoc.z += trackPiece.z;
             auto tile = Map::TileManager::get(signalLoc);
             Map::TrackElement* foundTrack = nullptr;
