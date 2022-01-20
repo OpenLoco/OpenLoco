@@ -143,8 +143,8 @@ namespace OpenLoco::Math::Vector
         }
 
         template<T TResolution2>
-        explicit constexpr TVector3(const TVector2<T, TResolution2>& other)
-            : TVector3(other.x, other.y, 0)
+        explicit constexpr TVector3(const TVector2<T, TResolution2>& other, T _z)
+            : TVector3(other.x, other.y, _z)
         {
             if constexpr (TResolution < TVector2<T, TResolution2>::Resolution)
             {

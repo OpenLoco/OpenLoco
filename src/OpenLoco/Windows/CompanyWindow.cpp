@@ -920,24 +920,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        // 0x00434F2D
-        static uint8_t getHeadquarterBuildingType()
-        {
-            for (size_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::building); ++i)
-            {
-                auto* buildingObj = ObjectManager::get<BuildingObject>(i);
-                if (buildingObj == nullptr)
-                {
-                    continue;
-                }
-
-                if (buildingObj->flags & BuildingObjectFlags::is_headquarters)
-                {
-                    return static_cast<uint8_t>(i);
-                }
-            }
-            return 0;
-        }
         // 0x00434EC7
         // input:
         // regs.ax = mouseX;
@@ -957,7 +939,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             GameCommands::HeadquarterPlacementArgs args;
-            args.type = getHeadquarterBuildingType();
+            args.type = CompanyManager::getHeadquarterBuildingType();
             args.rotation = (WindowManager::getCurrentRotation() + 2) & 3;
 
             auto tile = Map::TileManager::get(*pos);
@@ -967,7 +949,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return {};
             }
 
-            auto z = surface->baseZ() * 4; //di
+            auto z = surface->baseZ() * 4; // di
             if (surface->slope())
             {
                 z += 16;
@@ -975,7 +957,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             args.pos = Map::Pos3(pos->x, pos->y, z);
             if (isEditorMode())
             {
-                args.buildImmediately = true; //bh
+                args.buildImmediately = true; // bh
             }
             return { args };
         }

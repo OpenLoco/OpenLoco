@@ -42,4 +42,5 @@ namespace OpenLoco::CompanyManager
     uint32_t competingColourMask();
 
     void createPlayerCompany();
+    uint8_t getHeadquarterBuildingType();
 }

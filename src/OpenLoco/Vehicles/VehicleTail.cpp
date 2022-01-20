@@ -25,7 +25,7 @@ namespace OpenLoco::Vehicles
             trackStart += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                trackStart -= Map::Pos3{ _503C6C[trackSize.rotationEnd] };
+                trackStart -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
             }
             flags ^= (1ULL << 31);
         }
@@ -33,7 +33,7 @@ namespace OpenLoco::Vehicles
         auto& trackPieces = Map::TrackData::getTrackPiece(trackAndDirection.id());
         for (auto& trackPiece : trackPieces)
         {
-            auto signalLoc = trackStart + Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()) };
+            auto signalLoc = trackStart + Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()), 0 };
             signalLoc.z += trackPiece.z;
             auto tile = Map::TileManager::get(signalLoc);
             Map::TrackElement* foundTrack = nullptr;
@@ -237,12 +237,12 @@ namespace OpenLoco::Vehicles
             levelCrossingLoc += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                levelCrossingLoc -= Map::Pos3{ _503C6C[trackSize.rotationEnd] };
+                levelCrossingLoc -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
             }
         }
 
         auto& trackPiece = Map::TrackData::getTrackPiece(trackAndDirection.id());
-        levelCrossingLoc += Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece[0].x, trackPiece[0].y }, trackAndDirection.cardinalDirection()) };
+        levelCrossingLoc += Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece[0].x, trackPiece[0].y }, trackAndDirection.cardinalDirection()), 0 };
         levelCrossingLoc.z += trackPiece[0].z;
         auto tile = Map::TileManager::get(levelCrossingLoc);
         for (auto& el : tile)
@@ -320,7 +320,7 @@ namespace OpenLoco::Vehicles
             auto nextTile = _oldTilePos + trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                nextTile -= Map::Pos3{ _503C6C[trackSize.rotationEnd] };
+                nextTile -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
             }
             auto trackAndDirection2 = trackAndDirection;
             trackAndDirection2.track.setReversed(!trackAndDirection2.track.isReversed());

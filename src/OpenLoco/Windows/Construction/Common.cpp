@@ -635,7 +635,7 @@ namespace OpenLoco::Ui::Windows::Construction
             _previousTileRotation = unk;
             if (unk < 12)
             {
-                previousTile += Map::Pos3{ _503C6C[unk] };
+                previousTile += Map::Pos3{ _503C6C[unk], 0 };
             }
             _previousTile = previousTile;
         }
@@ -659,7 +659,7 @@ namespace OpenLoco::Ui::Windows::Construction
             _previousTileRotation = unk;
             if (unk < 12)
             {
-                previousTile += Map::Pos3{ _503C6C[unk] };
+                previousTile += Map::Pos3{ _503C6C[unk], 0 };
             }
             _previousTile = previousTile;
         }
@@ -1562,13 +1562,13 @@ namespace OpenLoco::Ui::Windows::Construction
                 return 0;
             });
 
-        //registerHook(
-        //    0x0049DC97,
-        //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //        registers backup = regs;
-        //        construction::on_tool_down(*((Ui::window*)regs.esi), regs.dx, regs.ax, regs.cx);
-        //        regs = backup;
-        //        return 0;
-        //    });
+        // registerHook(
+        //     0x0049DC97,
+        //     [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        //         registers backup = regs;
+        //         construction::on_tool_down(*((Ui::window*)regs.esi), regs.dx, regs.ax, regs.cx);
+        //         regs = backup;
+        //         return 0;
+        //     });
     }
 }
