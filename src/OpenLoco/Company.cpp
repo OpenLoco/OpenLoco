@@ -190,55 +190,59 @@ namespace OpenLoco
         const auto thinkFunc2 = _funcs_43079E[var_4A6];
         thinkFunc2(this);
 
-        if (headquarters_x == -1 && (challenge_flags & CompanyFlags::bankrupt) == 0 && (challenge_flags & 0x1) != 0)
+        if (headquarters_x != -1 || (challenge_flags & CompanyFlags::bankrupt) || ((challenge_flags & CompanyFlags::unk0) == 0))
         {
-            // Look for an entry with either town or industry assigned.
-            auto index = std::size(var_4A8);
-            while (var_4A8[--index].var_00 == 0xFF)
-            {
-                if (index == 0)
-                    return;
-            }
+            return;
+        }
 
-            auto& entry = var_4A8[index];
+        // Look for an entry with either town or industry assigned.
+        auto index = std::size(var_4A8);
+        while (var_4A8[--index].var_00 == 0xFF)
+        {
+            if (index == 0)
+                return;
+        }
 
-            Map::Pos2 pos;
-            if ((_dword4FE720[entry.var_00] & 2) != 0)
-            {
-                auto* industry = IndustryManager::get(static_cast<IndustryId>(entry.var_01));
-                pos = { industry->x, industry->y };
-            }
-            else
-            {
-                auto* town = TownManager::get(static_cast<TownId>(entry.var_01));
-                pos = { town->x, town->y };
-            }
+        auto& entry = var_4A8[index];
 
-            auto& prng = gPrng();
-            const auto randPick = prng.randNext();
-            const auto randPos = Map::Pos2{
-                static_cast<coord_t>(randPick & 0x3E0),
-                static_cast<coord_t>(Utility::ror<uint32_t>(randPick, 5) & 0x3E0)
-            };
-            const auto selectedPos = randPos - Map::Pos2{ 512, 512 } + pos;
-            if (selectedPos.x <= 0x2FFF && selectedPos.y <= 0x2FFF)
-            {
-                auto tile = Map::TileManager::get(selectedPos);
-                auto* surface = tile.surface();
+        Map::Pos2 pos;
+        if ((_dword4FE720[entry.var_00] & 2) != 0)
+        {
+            auto* industry = IndustryManager::get(static_cast<IndustryId>(entry.var_01));
+            pos = { industry->x, industry->y };
+        }
+        else
+        {
+            auto* town = TownManager::get(static_cast<TownId>(entry.var_01));
+            pos = { town->x, town->y };
+        }
 
-                coord_t z = surface->baseZ() << 2;
-                if (surface->slope() != 0)
-                    z += 16;
+        auto& prng = gPrng();
+        const auto randPick = prng.randNext();
+        // Random tile position 32x32 tiles centered on 0,0 i.e. +-16 tiles
+        const auto randPos = Map::Pos2{
+            static_cast<coord_t>(randPick & 0x3E0),
+            static_cast<coord_t>(Utility::ror<uint32_t>(randPick, 5) & 0x3E0)
+        } - Map::TilePos2{ 16, 16 };
 
-                const auto rot = randPos.y & 3;
-                const auto buildingType = CompanyManager::getHeadquarterBuildingType();
+        const auto selectedPos = randPos + pos;
+        if (Map::validCoords(selectedPos))
+        {
+            auto tile = Map::TileManager::get(selectedPos);
+            auto* surface = tile.surface();
 
-                GameCommands::HeadquarterPlacementArgs args;
-                args.pos = Map::Pos3(selectedPos, z);
-                args.rotation = rot;
-                args.type = buildingType;
-                GameCommands::doCommand(args, GameCommands::Flags::apply);
-            }
+            coord_t z = surface->baseZ() * 4;
+            if (surface->slope() != 0)
+                z += 16;
+
+            const auto rot = (Utility::ror<uint32_t>(randPick, 10)) & 0x3;
+            const auto buildingType = CompanyManager::getHeadquarterBuildingType();
+
+            GameCommands::HeadquarterPlacementArgs args;
+            args.pos = Map::Pos3(selectedPos, z);
+            args.rotation = rot;
+            args.type = buildingType;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
     }
 
