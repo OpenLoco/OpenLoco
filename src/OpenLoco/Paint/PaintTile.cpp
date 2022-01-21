@@ -17,14 +17,14 @@ namespace OpenLoco::Paint
     // 0x004621FF
     static void paintVoid(PaintSession& session, const Map::Pos2& loc)
     {
-        constexpr Map::Pos2 unkOffsets[4] = {
+        constexpr Map::Pos2 kUnkOffsets[4] = {
             { 0, 0 },
             { 32, 0 },
             { 32, 32 },
             { 0, 32 },
         };
 
-        const auto loc2 = loc + unkOffsets[session.getRotation()];
+        const auto loc2 = loc + kUnkOffsets[session.getRotation()];
         const auto vpPos = Map::gameToScreen(Map::Pos3(loc2.x, loc2.y, 16), session.getRotation());
         if (vpPos.y + 32 <= session.getContext()->y)
         {
@@ -55,7 +55,7 @@ namespace OpenLoco::Paint
         }
         session.setEntityPosition(loc);
         const auto dirIndex = (_constructionArrowDirection & 0xFC) | (((_constructionArrowDirection & 0x3) + session.getRotation()) & 0x3);
-        constexpr std::array<uint32_t, 16> constructionArrowImages = {
+        constexpr std::array<uint32_t, 16> kConstructionArrowImages = {
             ImageIds::construction_arrow_north,
             ImageIds::construction_arrow_east,
             ImageIds::construction_arrow_south,
@@ -73,7 +73,7 @@ namespace OpenLoco::Paint
             ImageIds::construction_arrow_south_west,
             ImageIds::construction_arrow_north_west,
         };
-        const auto imageId = Gfx::recolour(constructionArrowImages[dirIndex], Colour::yellow);
+        const auto imageId = Gfx::recolour(kConstructionArrowImages[dirIndex], Colour::yellow);
         session.setItemType(InteractionItem::noInteraction);
         session.addToPlotListAsParent(imageId, { 0, 0, _constructionArrowLocation->z }, Map::Pos3(0, 0, _constructionArrowLocation->z + 10), { 32, 32, 255 });
     }
@@ -190,14 +190,14 @@ namespace OpenLoco::Paint
 
         session.setMaxHeight(loc);
 
-        constexpr Map::Pos2 unkOffsets[4] = {
+        constexpr Map::Pos2 kUnkOffsets[4] = {
             { 0, 0 },
             { 32, 0 },
             { 32, 32 },
             { 0, 32 },
         };
 
-        const auto loc2 = loc + unkOffsets[session.getRotation()];
+        const auto loc2 = loc + kUnkOffsets[session.getRotation()];
         const auto vpPos = Map::gameToScreen(Map::Pos3(loc2.x, loc2.y, 0), session.getRotation());
         paintConstructionArrow(session, loc2);
 

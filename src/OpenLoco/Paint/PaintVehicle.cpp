@@ -13,7 +13,7 @@ using namespace OpenLoco::Vehicles;
 namespace OpenLoco::Paint
 {
     // 0x00500160
-    const Pitch _reversePitch[13]{
+    constexpr Pitch kReversePitch[13]{
         Pitch::flat,
         Pitch::down6deg,
         Pitch::down12deg,
@@ -51,7 +51,7 @@ namespace OpenLoco::Paint
         {
             // Flip the highest bit to reverse the yaw
             yaw ^= (1 << 5);
-            pitch = _reversePitch[static_cast<uint8_t>(bogie->sprite_pitch)];
+            pitch = kReversePitch[static_cast<uint8_t>(bogie->sprite_pitch)];
         }
         auto yawIndex = (yaw >> 1) & 0x1F;
 
@@ -343,7 +343,7 @@ namespace OpenLoco::Paint
         if (body->getFlags38() & Flags38::isReversed)
         {
             yaw ^= (1 << 5);
-            pitch = _reversePitch[static_cast<uint8_t>(body->sprite_pitch)];
+            pitch = kReversePitch[static_cast<uint8_t>(body->sprite_pitch)];
         }
 
         uint32_t pitchImageId;
