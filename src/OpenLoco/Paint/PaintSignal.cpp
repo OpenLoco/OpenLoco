@@ -62,7 +62,7 @@ namespace OpenLoco::Paint
     // clang-format on
 
     // 0x004FE8B0
-    static constexpr std::array<uint32_t, 16> _oneWayArrowLeft = {
+    static constexpr std::array<uint32_t, 16> kOneWayArrowLeft = {
         ImageIds::one_way_direction_arrow_north,
         ImageIds::one_way_direction_arrow_east,
         ImageIds::one_way_direction_arrow_south,
@@ -81,7 +81,7 @@ namespace OpenLoco::Paint
         ImageIds::one_way_direction_arrow_north_west,
     };
     // 0x004FE8B0
-    static constexpr std::array<uint32_t, 16> _oneWayArrowRight = {
+    static constexpr std::array<uint32_t, 16> kOneWayArrowRight = {
         ImageIds::one_way_direction_arrow_south,
         ImageIds::one_way_direction_arrow_west,
         ImageIds::one_way_direction_arrow_north,
@@ -144,11 +144,11 @@ namespace OpenLoco::Paint
         const auto& trackCoordinates = Map::TrackData::getUnkTrack((trackId << 3) | rotation);
         if (isRight)
         {
-            return _oneWayArrowRight[trackCoordinates.rotationBegin];
+            return kOneWayArrowRight[trackCoordinates.rotationBegin];
         }
         else
         {
-            return _oneWayArrowLeft[trackCoordinates.rotationEnd];
+            return kOneWayArrowLeft[trackCoordinates.rotationEnd];
         }
     }
 

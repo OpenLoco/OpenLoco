@@ -16,7 +16,7 @@ namespace OpenLoco::Paint
     // 004FAAC8
     // This is an array of 22 signed int8 elements which are repeating 20 times, can be optimized after C++ implementation of 0x004FD120 - addToStringPlotList
     // clang-format off
-    static const int8_t wiggleYOffsets[440] = {
+    static const int8_t kWiggleYOffsets[440] = {
         0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
         0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
         0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
@@ -74,7 +74,7 @@ namespace OpenLoco::Paint
         }
         const string_id stringId = moneyEffect->amount >= 0 ? StringIds::format_currency_income_green : StringIds::format_currency_expense_red_negative;
         uint32_t currencyAmount = abs(moneyEffect->amount);
-        const int8_t* yOffsets = &wiggleYOffsets[moneyEffect->wiggle];
+        const int8_t* yOffsets = &kWiggleYOffsets[moneyEffect->wiggle];
 
         session.addToStringPlotList(currencyAmount, stringId, moneyEffect->position.y, moneyEffect->position.z, yOffsets, moneyEffect->offsetX);
     }
@@ -89,7 +89,7 @@ namespace OpenLoco::Paint
         }
         const string_id stringId = moneyEffect->amount >= 0 ? StringIds::format_currency_income_in_company_colour : StringIds::format_currency_expense_in_company_colour_negative;
         uint32_t currencyAmount = abs(moneyEffect->amount);
-        const int8_t* yOffsets = &wiggleYOffsets[moneyEffect->wiggle];
+        const int8_t* yOffsets = &kWiggleYOffsets[moneyEffect->wiggle];
         uint16_t companyColour = CompanyManager::getCompanyColour(moneyEffect->var_2E);
 
         session.addToStringPlotList(currencyAmount, stringId, moneyEffect->position.y, moneyEffect->position.z, yOffsets, moneyEffect->offsetX, companyColour);
@@ -104,7 +104,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::unordered_map<int, const std::array<uint32_t, 12>> vehicleCrashParticleImageIds = {
+        static const std::unordered_map<int, const std::array<uint32_t, 12>> kVehicleCrashParticleImageIds = {
             { 0, { ImageIds::vehicle_crash_0_00, ImageIds::vehicle_crash_0_01, ImageIds::vehicle_crash_0_02, ImageIds::vehicle_crash_0_03, ImageIds::vehicle_crash_0_04, ImageIds::vehicle_crash_0_05, ImageIds::vehicle_crash_0_06, ImageIds::vehicle_crash_0_07, ImageIds::vehicle_crash_0_08, ImageIds::vehicle_crash_0_09, ImageIds::vehicle_crash_0_10, ImageIds::vehicle_crash_0_11 } },
             { 1, { ImageIds::vehicle_crash_1_00, ImageIds::vehicle_crash_1_01, ImageIds::vehicle_crash_1_02, ImageIds::vehicle_crash_1_03, ImageIds::vehicle_crash_1_04, ImageIds::vehicle_crash_1_05, ImageIds::vehicle_crash_1_06, ImageIds::vehicle_crash_1_07, ImageIds::vehicle_crash_1_08, ImageIds::vehicle_crash_1_09, ImageIds::vehicle_crash_1_10, ImageIds::vehicle_crash_1_11 } },
             { 2, { ImageIds::vehicle_crash_2_00, ImageIds::vehicle_crash_2_01, ImageIds::vehicle_crash_2_02, ImageIds::vehicle_crash_2_03, ImageIds::vehicle_crash_2_04, ImageIds::vehicle_crash_2_05, ImageIds::vehicle_crash_2_06, ImageIds::vehicle_crash_2_07, ImageIds::vehicle_crash_2_08, ImageIds::vehicle_crash_2_09, ImageIds::vehicle_crash_2_10, ImageIds::vehicle_crash_2_11 } },
@@ -114,7 +114,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < 12);
         assert((particle->crashedSpriteBase) < 5);
-        uint32_t imageId = vehicleCrashParticleImageIds.at(particle->crashedSpriteBase).at(particle->frame / 256);
+        uint32_t imageId = kVehicleCrashParticleImageIds.at(particle->crashedSpriteBase).at(particle->frame / 256);
         imageId = Gfx::recolour2(imageId, particle->colourScheme);
 
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
@@ -129,7 +129,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 18> explosionCloudImageIds = {
+        static const std::array<uint32_t, 18> kExplosionCloudImageIds = {
             ImageIds::explosion_cloud_00,
             ImageIds::explosion_cloud_01,
             ImageIds::explosion_cloud_02,
@@ -150,8 +150,8 @@ namespace OpenLoco::Paint
             ImageIds::explosion_cloud_17
         };
 
-        assert(static_cast<size_t>(particle->frame / 256) < explosionCloudImageIds.size());
-        uint32_t imageId = explosionCloudImageIds.at(particle->frame / 256);
+        assert(static_cast<size_t>(particle->frame / 256) < kExplosionCloudImageIds.size());
+        uint32_t imageId = kExplosionCloudImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
@@ -164,7 +164,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 28> splashImageIds = {
+        static const std::array<uint32_t, 28> kSplashImageIds = {
             ImageIds::splash_00,
             ImageIds::splash_01,
             ImageIds::splash_02,
@@ -195,8 +195,8 @@ namespace OpenLoco::Paint
             ImageIds::splash_27
         };
 
-        assert(static_cast<size_t>(particle->frame / 256) < splashImageIds.size());
-        uint32_t imageId = splashImageIds.at(particle->frame / 256);
+        assert(static_cast<size_t>(particle->frame / 256) < kSplashImageIds.size());
+        uint32_t imageId = kSplashImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
@@ -209,7 +209,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 31> fireballImageIds = {
+        static const std::array<uint32_t, 31> kFireballImageIds = {
             ImageIds::fireball_00,
             ImageIds::fireball_01,
             ImageIds::fireball_02,
@@ -243,8 +243,8 @@ namespace OpenLoco::Paint
             ImageIds::fireball_30
         };
 
-        assert(static_cast<size_t>(particle->frame / 256) < fireballImageIds.size());
-        uint32_t imageId = fireballImageIds.at(particle->frame / 256);
+        assert(static_cast<size_t>(particle->frame / 256) < kFireballImageIds.size());
+        uint32_t imageId = kFireballImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
@@ -257,7 +257,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 10> explosionSmokeImageIds = {
+        static const std::array<uint32_t, 10> kExplosionSmokeImageIds = {
             ImageIds::explosion_smoke_00,
             ImageIds::explosion_smoke_01,
             ImageIds::explosion_smoke_02,
@@ -270,8 +270,8 @@ namespace OpenLoco::Paint
             ImageIds::explosion_smoke_09
         };
 
-        assert(static_cast<size_t>(particle->frame / 256) < explosionSmokeImageIds.size());
-        uint32_t imageId = explosionSmokeImageIds.at(particle->frame / 256);
+        assert(static_cast<size_t>(particle->frame / 256) < kExplosionSmokeImageIds.size());
+        uint32_t imageId = kExplosionSmokeImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
@@ -284,7 +284,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 12> smokeImageIds = {
+        static const std::array<uint32_t, 12> kSmokeImageIds = {
             ImageIds::smoke_00,
             ImageIds::smoke_01,
             ImageIds::smoke_02,
@@ -299,8 +299,8 @@ namespace OpenLoco::Paint
             ImageIds::smoke_11
         };
 
-        assert(static_cast<size_t>(particle->frame / 256) < smokeImageIds.size());
-        uint32_t imageId = smokeImageIds.at(particle->frame / 256);
+        assert(static_cast<size_t>(particle->frame / 256) < kSmokeImageIds.size());
+        uint32_t imageId = kSmokeImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 

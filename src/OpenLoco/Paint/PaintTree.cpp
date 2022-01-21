@@ -14,7 +14,7 @@ namespace OpenLoco::Paint
 {
     constexpr std::array<uint8_t, 6> _50076A = { 3, 0, 1, 2, 1, 4 };
     constexpr std::array<bool, 5> _500770 = { true, true, false, false, true };
-    constexpr std::array<Map::Pos2, 4> _treeQuadrantOffset = {
+    constexpr std::array<Map::Pos2, 4> kTreeQuadrantOffset = {
         Map::Pos2{ 7, 7 },
         Map::Pos2{ 7, 23 },
         Map::Pos2{ 23, 23 },
@@ -64,7 +64,7 @@ namespace OpenLoco::Paint
         }
 
         const uint8_t quadrant = (elTree.quadrant() + session.getRotation()) % 4;
-        const auto imageOffset = Map::Pos3(_treeQuadrantOffset[quadrant].x, _treeQuadrantOffset[quadrant].y, elTree.baseZ() * 4);
+        const auto imageOffset = Map::Pos3(kTreeQuadrantOffset[quadrant].x, kTreeQuadrantOffset[quadrant].y, elTree.baseZ() * 4);
 
         const int16_t boundBoxSizeZ = std::min(elTree.clearZ() - elTree.baseZ(), 32) * 4 - 3;
 
