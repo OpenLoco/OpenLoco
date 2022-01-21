@@ -897,7 +897,7 @@ namespace OpenLoco::Ui
             return -1;
         }
 
-        if (this->widgets[activeWidget].type == WidgetType ::combobox)
+        if (this->widgets[activeWidget].type == WidgetType::combobox)
         {
             activeWidget++;
         }

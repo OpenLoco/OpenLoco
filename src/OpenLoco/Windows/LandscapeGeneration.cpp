@@ -455,7 +455,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Gfx::fillRectInset(context, 329, yPos + 6, 339, yPos + 15, window.getColour(WindowColour::secondary), flags);
 
                 // Draw triangle (knob).
-                Gfx::drawString_494B3F(context, 330, yPos + 6, Colour::black, StringIds::combobox, nullptr);
+                Gfx::drawString_494B3F(context, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
 
                 yPos += rowHeight;
             }
@@ -682,8 +682,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::update(window);
 
-            auto combobox = WindowManager::find(WindowType::dropdown, 0);
-            if (combobox == nullptr && window->row_hover != -1)
+            auto dropdown = WindowManager::find(WindowType::dropdown, 0);
+            if (dropdown == nullptr && window->row_hover != -1)
             {
                 window->row_hover = -1;
                 window->invalidate();
@@ -986,7 +986,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             common_options_widgets(217, StringIds::title_landscape_generation_towns),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::number_of_towns_value),
             makeWidget({ 176, 67 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
+            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
             widgetEnd()
         };
 
@@ -1126,7 +1126,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_industries),
             makeWidget({ 176, 52 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 344, 53 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
+            makeWidget({ 344, 53 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
             makeWidget({ 10, 68 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
             makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game),
             widgetEnd()

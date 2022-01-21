@@ -874,8 +874,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         else if (widgetIndex == Widx::filter_type_btn)
         {
-            Widget combobox = self->widgets[Widx::filter_type];
-            Dropdown::show(self->x + combobox.left, self->y + combobox.top, combobox.width() - 4, combobox.height(), self->getColour(WindowColour::secondary), 3, 0x80);
+            Widget dropdown = self->widgets[Widx::filter_type];
+            Dropdown::show(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::stopping_at_station);
@@ -904,8 +904,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 index++;
             }
 
-            Widget combobox = self->widgets[Widx::cargo_type];
-            Dropdown::showText(self->x + combobox.left, self->y + combobox.top, combobox.width() - 4, combobox.height(), self->getColour(WindowColour::secondary), index, 0);
+            Widget dropdown = self->widgets[Widx::cargo_type];
+            Dropdown::showText(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary), index, 0);
             if (selectedIndex != -1)
                 Dropdown::setItemSelected(selectedIndex);
         }
