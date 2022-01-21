@@ -1268,7 +1268,7 @@ namespace OpenLoco::Input
         if (window == nullptr)
             return;
 
-        WindowManager::close(Ui::WindowType::combobox, 0);
+        WindowManager::close(Ui::WindowType::dropdown, 0);
         window = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
 
         bool flagSet = hasFlag(Flags::widgetPressed);
@@ -1370,9 +1370,9 @@ namespace OpenLoco::Input
             {
                 if (widgetIndex == -1 || *_pressedWindowType != window->type || _pressedWindowNumber != window->number || _pressedWidgetIndex != widgetIndex)
                 {
-                    if (widgetIndex == -1 || window->type != Ui::WindowType::combobox)
+                    if (widgetIndex == -1 || window->type != Ui::WindowType::dropdown)
                     {
-                        WindowManager::close(Ui::WindowType::combobox, 0);
+                        WindowManager::close(Ui::WindowType::dropdown, 0);
 
                         if (*_pressedWindowType != Ui::WindowType::undefined)
                         {
@@ -1463,7 +1463,7 @@ namespace OpenLoco::Input
             {
                 if (window != nullptr)
                 {
-                    if (window->type == Ui::WindowType::combobox)
+                    if (window->type == Ui::WindowType::dropdown)
                     {
                         auto item = dropdownIndexFromPoint(window, x, y);
                         if (item != DROPDOWN_ITEM_UNDEFINED)
@@ -1491,7 +1491,7 @@ namespace OpenLoco::Input
                 }
 
                 // 0x4C7DA0
-                WindowManager::close(Ui::WindowType::combobox, 0);
+                WindowManager::close(Ui::WindowType::dropdown, 0);
                 window = WindowManager::find(_pressedWindowType, _pressedWindowNumber);
             }
 
@@ -1527,13 +1527,13 @@ namespace OpenLoco::Input
 
         if (Input::state() == State::dropdownActive)
         {
-            if (window != nullptr && window->type == Ui::WindowType::combobox)
+            if (window != nullptr && window->type == Ui::WindowType::dropdown)
             {
                 auto item = dropdownIndexFromPoint(window, x, y);
                 if (item != DROPDOWN_ITEM_UNDEFINED)
                 {
                     _dropdownHighlightedIndex = item;
-                    WindowManager::invalidate(Ui::WindowType::combobox, 0);
+                    WindowManager::invalidate(Ui::WindowType::dropdown, 0);
                 }
             }
         }

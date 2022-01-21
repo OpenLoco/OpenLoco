@@ -682,7 +682,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::update(window);
 
-            auto combobox = WindowManager::find(WindowType::combobox, 0);
+            auto combobox = WindowManager::find(WindowType::dropdown, 0);
             if (combobox == nullptr && window->row_hover != -1)
             {
                 window->row_hover = -1;

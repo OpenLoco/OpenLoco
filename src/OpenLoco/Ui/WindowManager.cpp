@@ -1413,7 +1413,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004BF089
     void closeTopmost()
     {
-        close(WindowType::combobox, 0);
+        close(WindowType::dropdown, 0);
 
         for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
         {
@@ -1977,7 +1977,7 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004CF456
     void closeAllFloatingWindows()
     {
-        close(WindowType::combobox, 0);
+        close(WindowType::dropdown, 0);
 
         bool changed = true;
         while (changed)
