@@ -1173,46 +1173,46 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         // clang-format off
-		constexpr uint64_t allMainColours = {
-			(1ULL << widx::main_colour_scheme) |
-			(1ULL << widx::main_colour_steam_locomotives) |
-			(1ULL << widx::main_colour_diesel_locomotives) |
-			(1ULL << widx::main_colour_electric_locomotives) |
-			(1ULL << widx::main_colour_multiple_units) |
-			(1ULL << widx::main_colour_passenger_vehicles) |
-			(1ULL << widx::main_colour_freight_vehicles) |
-			(1ULL << widx::main_colour_buses) |
-			(1ULL << widx::main_colour_trucks) |
-			(1ULL << widx::main_colour_aircraft) |
-			(1ULL << widx::main_colour_ships)
-		};
+        constexpr uint64_t allMainColours = {
+            (1ULL << widx::main_colour_scheme) |
+            (1ULL << widx::main_colour_steam_locomotives) |
+            (1ULL << widx::main_colour_diesel_locomotives) |
+            (1ULL << widx::main_colour_electric_locomotives) |
+            (1ULL << widx::main_colour_multiple_units) |
+            (1ULL << widx::main_colour_passenger_vehicles) |
+            (1ULL << widx::main_colour_freight_vehicles) |
+            (1ULL << widx::main_colour_buses) |
+            (1ULL << widx::main_colour_trucks) |
+            (1ULL << widx::main_colour_aircraft) |
+            (1ULL << widx::main_colour_ships)
+        };
 
-		constexpr uint64_t allSecondaryColours = {
-			(1ULL << widx::secondary_colour_scheme) |
-			(1ULL << widx::secondary_colour_steam_locomotives) |
-			(1ULL << widx::secondary_colour_diesel_locomotives) |
-			(1ULL << widx::secondary_colour_electric_locomotives) |
-			(1ULL << widx::secondary_colour_multiple_units) |
-			(1ULL << widx::secondary_colour_passenger_vehicles) |
-			(1ULL << widx::secondary_colour_freight_vehicles) |
-			(1ULL << widx::secondary_colour_buses) |
-			(1ULL << widx::secondary_colour_trucks) |
-			(1ULL << widx::secondary_colour_aircraft) |
-			(1ULL << widx::secondary_colour_ships)
-		};
+        constexpr uint64_t allSecondaryColours = {
+            (1ULL << widx::secondary_colour_scheme) |
+            (1ULL << widx::secondary_colour_steam_locomotives) |
+            (1ULL << widx::secondary_colour_diesel_locomotives) |
+            (1ULL << widx::secondary_colour_electric_locomotives) |
+            (1ULL << widx::secondary_colour_multiple_units) |
+            (1ULL << widx::secondary_colour_passenger_vehicles) |
+            (1ULL << widx::secondary_colour_freight_vehicles) |
+            (1ULL << widx::secondary_colour_buses) |
+            (1ULL << widx::secondary_colour_trucks) |
+            (1ULL << widx::secondary_colour_aircraft) |
+            (1ULL << widx::secondary_colour_ships)
+        };
 
-		constexpr uint64_t allColourChecks = {
-			(1ULL << widx::check_steam_locomotives) |
-			(1ULL << widx::check_diesel_locomotives) |
-			(1ULL << widx::check_electric_locomotives) |
-			(1ULL << widx::check_multiple_units) |
-			(1ULL << widx::check_passenger_vehicles) |
-			(1ULL << widx::check_freight_vehicles) |
-			(1ULL << widx::check_buses) |
-			(1ULL << widx::check_trucks) |
-			(1ULL << widx::check_aircraft) |
-			(1ULL << widx::check_ships)
-		};
+        constexpr uint64_t allColourChecks = {
+            (1ULL << widx::check_steam_locomotives) |
+            (1ULL << widx::check_diesel_locomotives) |
+            (1ULL << widx::check_electric_locomotives) |
+            (1ULL << widx::check_multiple_units) |
+            (1ULL << widx::check_passenger_vehicles) |
+            (1ULL << widx::check_freight_vehicles) |
+            (1ULL << widx::check_buses) |
+            (1ULL << widx::check_trucks) |
+            (1ULL << widx::check_aircraft) |
+            (1ULL << widx::check_ships)
+        };
         // clang-format on
 
         static Widget widgets[] = {
@@ -1296,19 +1296,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             };
 
             // clang-format off
-			static const ColourSchemeTuple tuples[] =
-			{
-				{ widx::check_steam_locomotives,     widx::main_colour_steam_locomotives,     widx::secondary_colour_steam_locomotives },
-				{ widx::check_diesel_locomotives,    widx::main_colour_diesel_locomotives,    widx::secondary_colour_diesel_locomotives },
-				{ widx::check_electric_locomotives,  widx::main_colour_electric_locomotives,  widx::secondary_colour_electric_locomotives },
-				{ widx::check_multiple_units,        widx::main_colour_multiple_units,        widx::secondary_colour_multiple_units },
-				{ widx::check_passenger_vehicles,    widx::main_colour_passenger_vehicles,    widx::secondary_colour_passenger_vehicles },
-				{ widx::check_freight_vehicles,      widx::main_colour_freight_vehicles,      widx::secondary_colour_freight_vehicles },
-				{ widx::check_buses,                 widx::main_colour_buses,                 widx::secondary_colour_buses },
-				{ widx::check_trucks,                widx::main_colour_trucks,                widx::secondary_colour_trucks },
-				{ widx::check_aircraft,              widx::main_colour_aircraft,              widx::secondary_colour_aircraft },
-				{ widx::check_ships,                 widx::main_colour_ships,                 widx::secondary_colour_ships },
-			};
+            static const ColourSchemeTuple tuples[] =
+            {
+                { widx::check_steam_locomotives,     widx::main_colour_steam_locomotives,     widx::secondary_colour_steam_locomotives },
+                { widx::check_diesel_locomotives,    widx::main_colour_diesel_locomotives,    widx::secondary_colour_diesel_locomotives },
+                { widx::check_electric_locomotives,  widx::main_colour_electric_locomotives,  widx::secondary_colour_electric_locomotives },
+                { widx::check_multiple_units,        widx::main_colour_multiple_units,        widx::secondary_colour_multiple_units },
+                { widx::check_passenger_vehicles,    widx::main_colour_passenger_vehicles,    widx::secondary_colour_passenger_vehicles },
+                { widx::check_freight_vehicles,      widx::main_colour_freight_vehicles,      widx::secondary_colour_freight_vehicles },
+                { widx::check_buses,                 widx::main_colour_buses,                 widx::secondary_colour_buses },
+                { widx::check_trucks,                widx::main_colour_trucks,                widx::secondary_colour_trucks },
+                { widx::check_aircraft,              widx::main_colour_aircraft,              widx::secondary_colour_aircraft },
+                { widx::check_ships,                 widx::main_colour_ships,                 widx::secondary_colour_ships },
+            };
             // clang-format on
 
             for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(tuples)); i++)
