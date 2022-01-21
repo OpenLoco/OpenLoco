@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <vector>
 
 namespace OpenLoco
 {
@@ -136,6 +137,7 @@ namespace OpenLoco
         void updateVehicleColours();
         void updateHeadquartersColour();
         void updateOwnerEmotion();
+        std::vector<uint8_t> getAvailableRailTracks();
     };
 #pragma pack(pop)
 

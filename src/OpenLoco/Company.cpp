@@ -10,6 +10,9 @@
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
 #include "Math/Bound.hpp"
+#include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
+#include "Objects/TrackObject.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
@@ -468,5 +471,80 @@ namespace OpenLoco
         regs.esi = X86Pointer(this);
         regs.ebx = enumValue(id());
         call(0x00437F47, regs);
+    }
+
+    // 0x004A6841
+    std::vector<uint8_t> Company::getAvailableRailTracks()
+    {
+        std::vector<uint8_t> result;
+
+        uint32_t tracks = 0;
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::rail)
+            {
+                tracks |= 1 << vehObj->track_type;
+            }
+        }
+
+        for (auto i = Utility::bitScanForward(tracks); i != -1; i = Utility::bitScanForward(tracks))
+        {
+            tracks &= ~(1 << i);
+            auto* trackObj = ObjectManager::get<TrackObject>(i);
+            if (trackObj->flags & Flags22::unk_02)
+            {
+                continue;
+            }
+            result.push_back(i);
+        }
+
+        auto roads = 0;
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::road)
+            {
+                if (vehObj->track_type != 0xFF)
+                {
+                    roads |= 1 << vehObj->track_type;
+                }
+            }
+        }
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::road); ++i)
+        {
+            auto* roadObj = ObjectManager::get<RoadObject>(i);
+            if (roadObj == nullptr)
+            {
+                continue;
+            }
+
+            if (roadObj->flags & Flags12::unk_03)
+            {
+                roads |= 1 << i;
+            }
+        }
+
+        for (auto i = Utility::bitScanForward(roads); i != -1; i = Utility::bitScanForward(roads))
+        {
+            roads &= ~(1 << i);
+            auto* roadObj = ObjectManager::get<RoadObject>(i);
+            if (roadObj->flags & Flags12::unk_01)
+            {
+                continue;
+            }
+            result.push_back(i | (1 << 7));
+        }
+        return result;
     }
 }
