@@ -99,7 +99,7 @@ namespace OpenLoco::StringIds
     constexpr string_id arg16_stringid = 93;
     constexpr string_id arg18_stringid = 94;
     constexpr string_id arg20_stringid = 95;
-    constexpr string_id dropdown = 96;
+    constexpr string_id combobox = 96;
 
     constexpr string_id error_cant_lower_land_here = 100;
     constexpr string_id error_cant_raise_land_here = 101;

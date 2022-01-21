@@ -197,16 +197,16 @@ namespace OpenLoco::Ui::Windows::Options
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_display),
             makeWidget({ 4, 49 }, { 392, 97 }, WidgetType::groupbox, WindowColour::secondary, StringIds::frame_hardware),
-            makeDropdownWidgets({ 235, 63 }, { 154, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::empty),
-            makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::display_resolution_label_format),
+            makeDropdownWidgets({ 235, 63 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+            makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::display_resolution_label_format),
             makeStepperWidgets({ 235, 95 }, { 154, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 111 }, { 174, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
             makeWidget({ 10, 127 }, { 174, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
 
             makeWidget({ 4, 150 }, { 392, 96 }, WidgetType::groupbox, WindowColour::secondary, StringIds::frame_map_rendering),
-            makeDropdownWidgets({ 235, 164 }, { 154, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
-            makeDropdownWidgets({ 235, 180 }, { 154, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
-            makeDropdownWidgets({ 235, 196 }, { 154, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::empty),
+            makeDropdownWidgets({ 235, 164 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
+            makeDropdownWidgets({ 235, 180 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
+            makeDropdownWidgets({ 235, 196 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 211 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
             makeWidget({ 10, 227 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
             widgetEnd(),
@@ -303,8 +303,8 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFE2E
         static void constructionMarkerMouseDown(Window* w, WidgetIndex_t wi)
         {
-            Widget dropdown = w->widgets[Widx::construction_marker];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 2, 0x80);
+            Widget combobox = w->widgets[Widx::construction_marker];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
@@ -331,8 +331,8 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFEBE
         static void vehicleZoomMouseDown(Window* w, WidgetIndex_t wi)
         {
-            Widget dropdown = w->widgets[Widx::vehicles_min_scale];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 4, 0x80);
+            Widget combobox = w->widgets[Widx::vehicles_min_scale];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
@@ -361,8 +361,8 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFF72
         static void stationNamesScaleMouseDown(Window* w, WidgetIndex_t wi)
         {
-            Widget dropdown = w->widgets[Widx::station_names_min_scale];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 4, 0x80);
+            Widget combobox = w->widgets[Widx::station_names_min_scale];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
@@ -404,8 +404,8 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void screenModeMouseDown(Window* w, WidgetIndex_t wi)
         {
-            Widget dropdown = w->widgets[Widx::screen_mode];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
+            Widget combobox = w->widgets[Widx::screen_mode];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen);
@@ -429,15 +429,15 @@ namespace OpenLoco::Ui::Windows::Options
 #endif
         }
 
-#pragma mark - Resolution dropdown (Widget 11)
+#pragma mark - Resolution combobox (Widget 11)
 
         // 0x004C0026
         static void resolutionMouseDown(Window* w, WidgetIndex_t wi)
         {
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
-            Widget dropdown = w->widgets[Widx::display_resolution];
-            Dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->getColour(WindowColour::secondary), resolutions.size(), 0x80);
+            Widget combobox = w->widgets[Widx::display_resolution];
+            Dropdown::showText2(w->x + combobox.left, w->y + combobox.top, combobox.width(), combobox.height(), w->getColour(WindowColour::secondary), resolutions.size(), 0x80);
 
             auto& cfg = Config::getNew();
             for (size_t i = 0; i < resolutions.size(); i++)
@@ -694,8 +694,8 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_sound),
-            makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::stringid),
-            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
+            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
             makeWidget({ 10, 65 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::play_title_music),
             widgetEnd(),
         };
@@ -802,8 +802,8 @@ namespace OpenLoco::Ui::Windows::Options
             const auto& devices = Audio::getDevices();
             if (devices.size() != 0)
             {
-                Widget dropdown = w->widgets[Widx::audio_device];
-                Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), devices.size(), 0x80);
+                Widget combobox = w->widgets[Widx::audio_device];
+                Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), devices.size(), 0x80);
                 for (size_t i = 0; i < devices.size(); i++)
                 {
                     auto name = devices[i].c_str();
@@ -885,14 +885,14 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_music),
-            makeWidget({ 160, 49 }, { 196, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::stringid),
-            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 160, 49 }, { 196, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
+            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
             makeWidget({ 10, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
             makeWidget({ 34, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
             makeWidget({ 58, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
             makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::wt_5, WindowColour::secondary, -1, StringIds::set_volume_tip),
-            makeWidget({ 10, 93 }, { 346, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::arg2_stringid),
-            makeWidget({ 344, 94 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 10, 93 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg2_stringid),
+            makeWidget({ 344, 94 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
             makeWidget({ 183, 108 }, { 173, 12 }, WidgetType::button, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip),
             widgetEnd(),
         };
@@ -1110,8 +1110,8 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C07E4
         static void musicPlaylistMouseDown(Window* w)
         {
-            Widget dropdown = w->widgets[Widx::music_playlist];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
+            Widget combobox = w->widgets[Widx::music_playlist];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
@@ -1189,8 +1189,8 @@ namespace OpenLoco::Ui::Windows::Options
         {
             auto tracks = get_available_tracks();
 
-            Widget dropdown = w->widgets[Widx::currently_playing];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), tracks.size(), 0x80);
+            Widget combobox = w->widgets[Widx::currently_playing];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), tracks.size(), 0x80);
 
             int index = -1;
             for (auto track : tracks)
@@ -1271,16 +1271,16 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_regional),
-            makeWidget({ 183, 49 }, { 173, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::stringptr),
-            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 183, 69 }, { 173, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::arg12_stringid),
-            makeWidget({ 344, 70 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 183, 84 }, { 173, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::arg6_stringid),
-            makeWidget({ 344, 85 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 183, 104 }, { 173, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::arg10_stringid, StringIds::current_game_currency_tip),
-            makeWidget({ 344, 105 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown, StringIds::current_game_currency_tip),
-            makeWidget({ 183, 119 }, { 173, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
-            makeWidget({ 344, 120 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown, StringIds::new_game_currency_tip),
+            makeWidget({ 183, 49 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringptr),
+            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
+            makeWidget({ 183, 69 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg12_stringid),
+            makeWidget({ 344, 70 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
+            makeWidget({ 183, 84 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg6_stringid),
+            makeWidget({ 344, 85 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
+            makeWidget({ 183, 104 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg10_stringid, StringIds::current_game_currency_tip),
+            makeWidget({ 344, 105 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox, StringIds::current_game_currency_tip),
+            makeWidget({ 183, 119 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
+            makeWidget({ 344, 120 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox, StringIds::new_game_currency_tip),
             makeWidget({ 10, 134 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
             makeWidget({ 10, 148 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip),
             widgetEnd(),
@@ -1463,8 +1463,8 @@ namespace OpenLoco::Ui::Windows::Options
             auto& lds = Localisation::getLanguageDescriptors();
             uint8_t num_languages = static_cast<uint8_t>(lds.size());
 
-            Widget dropdown = w->widgets[Widx::language];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), num_languages - 1, 0x80);
+            Widget combobox = w->widgets[Widx::language];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), num_languages - 1, 0x80);
 
             std::string& current_language = Config::getNew().language;
 
@@ -1499,8 +1499,8 @@ namespace OpenLoco::Ui::Windows::Options
         {
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
-            Widget dropdown = w->widgets[Widx::currency];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
+            Widget combobox = w->widgets[Widx::currency];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
             int index = -1;
             for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
@@ -1558,8 +1558,8 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0DCF
         static void preferredCurrencyMouseDown(Window* w)
         {
-            Widget dropdown = w->widgets[Widx::preferred_currency];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
+            Widget combobox = w->widgets[Widx::preferred_currency];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
 
             int index = -1;
             for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
@@ -1642,8 +1642,8 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0F49
         static void distanceSpeedMouseDown(Window* w)
         {
-            Widget dropdown = w->widgets[Widx::distance_speed];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 2, 0x80);
+            Widget combobox = w->widgets[Widx::distance_speed];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::metric);
@@ -1673,8 +1673,8 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0FFA
         static void heightsLabelsMouseDown(Window* w)
         {
-            Widget dropdown = w->widgets[Widx::heights];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 2, 0x80);
+            Widget combobox = w->widgets[Widx::heights];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::height_units);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::height_real_values);
@@ -1907,8 +1907,8 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 109 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
             makeWidget({ 335, 124 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
             makeWidget({ 10, 139 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
-            makeWidget({ 250, 154 }, { 156, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 394, 155 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 250, 154 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 394, 155 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
             makeStepperWidgets({ 250, 169 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
             widgetEnd(),
         };
@@ -2061,8 +2061,8 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void showAutosaveFrequencyDropdown(Window* w, WidgetIndex_t wi)
         {
-            auto dropdown = w->widgets[wi];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 5, 0x80);
+            auto combobox = w->widgets[wi];
+            Dropdown::show(w->x + combobox.left, w->y + combobox.top, combobox.width() - 4, combobox.height(), w->getColour(WindowColour::secondary), 5, 0x80);
 
             // Add pre-defined entries
             Dropdown::add(0, StringIds::dropdown_stringid, { StringIds::autosave_never });

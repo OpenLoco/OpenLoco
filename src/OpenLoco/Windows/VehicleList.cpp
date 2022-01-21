@@ -75,8 +75,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         makeWidget({ 414, 43 }, { 65, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_age),
         makeWidget({ 479, 43 }, { 67, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_reliability),
         makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeDropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::empty),
-        makeDropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::empty),
+        makeDropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+        makeDropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
         widgetEnd()
     };
 
@@ -874,8 +874,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         else if (widgetIndex == Widx::filter_type_btn)
         {
-            Widget dropdown = self->widgets[Widx::filter_type];
-            Dropdown::show(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary), 3, 0x80);
+            Widget combobox = self->widgets[Widx::filter_type];
+            Dropdown::show(self->x + combobox.left, self->y + combobox.top, combobox.width() - 4, combobox.height(), self->getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::stopping_at_station);
@@ -904,8 +904,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 index++;
             }
 
-            Widget dropdown = self->widgets[Widx::cargo_type];
-            Dropdown::showText(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary), index, 0);
+            Widget combobox = self->widgets[Widx::cargo_type];
+            Dropdown::showText(self->x + combobox.left, self->y + combobox.top, combobox.width() - 4, combobox.height(), self->getColour(WindowColour::secondary), index, 0);
             if (selectedIndex != -1)
                 Dropdown::setItemSelected(selectedIndex);
         }

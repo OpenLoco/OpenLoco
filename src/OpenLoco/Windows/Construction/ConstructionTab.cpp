@@ -95,8 +95,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         makeWidget({ 57, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_level, StringIds::tooltip_level),
         makeWidget({ 81, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::tooltip_slope_up),
         makeWidget({ 105, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_steep_slope_up, StringIds::tooltip_steep_slope_up),
-        makeWidget({ 40, 123 }, { 58, 20 }, WidgetType::dropdown, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
-        makeWidget({ 86, 124 }, { 11, 18 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_bridge_stats),
+        makeWidget({ 40, 123 }, { 58, 20 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
+        makeWidget({ 86, 124 }, { 11, 18 }, WidgetType::button, WindowColour::secondary, StringIds::combobox, StringIds::tooltip_bridge_stats),
         makeWidget({ 3, 145 }, { 132, 100 }, WidgetType::wt_5, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_construct),
         makeWidget({ 6, 248 }, { 46, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
         makeWidget({ 57, 248 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
@@ -747,7 +747,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
         }
 
-        window->widgets[widx::bridge].type = WidgetType::dropdown;
+        window->widgets[widx::bridge].type = WidgetType::combobox;
         window->widgets[widx::bridge_dropdown].type = WidgetType::button;
 
         if (_lastSelectedBridge == 0xFF || (_constructionHover != 1 && !(_byte_1136076 & 1)))
@@ -954,7 +954,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
         }
 
-        window->widgets[widx::bridge].type = WidgetType::dropdown;
+        window->widgets[widx::bridge].type = WidgetType::combobox;
         window->widgets[widx::bridge_dropdown].type = WidgetType::button;
 
         if (_lastSelectedBridge == 0xFF || (_constructionHover != 1 && !(_byte_1136076 & 1)))

@@ -138,7 +138,7 @@ namespace OpenLoco::Ui
                 break;
 
             case WidgetType::textbox:
-            case WidgetType::dropdown:
+            case WidgetType::combobox:
             case WidgetType::viewport:
                 drawTextBox(context, window, widgetFlags, wndColour);
                 draw_15(context, window, widgetFlags, wndColour, disabled);

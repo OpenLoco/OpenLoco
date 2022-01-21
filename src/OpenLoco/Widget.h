@@ -99,7 +99,7 @@ namespace OpenLoco::Ui
         const uint16_t width = 11;
         const uint16_t height = 10;
 
-        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::dropdown);
+        return makeWidget({ xPos, yPos }, { width, height }, WidgetType::button, colour, StringIds::combobox);
     }
 
 #define makeStepperWidgets(...)                 \

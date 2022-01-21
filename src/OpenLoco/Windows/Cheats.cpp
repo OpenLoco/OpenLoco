@@ -164,18 +164,18 @@ namespace OpenLoco::Ui::Windows::Cheats
             commonWidgets(windowSize.width, windowSize.height, StringIds::financial_cheats),
             // money
             makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_increase_funds),
-            makeStepperWidgets({ 80, 62 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 180, 62 }, { 60, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_add),
+            makeStepperWidgets({ 80, 62 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 180, 62 }, { 60, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_add),
             // loan
             makeWidget({ 4, 86 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_clear_loan),
-            makeWidget({ 80, 100 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary),
-            makeWidget({ 180, 100 }, { 60, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_clear),
+            makeWidget({ 80, 100 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary),
+            makeWidget({ 180, 100 }, { 60, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_clear),
             // date/time
             makeWidget({ 4, 124 }, { windowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_date_change_apply),
-            makeStepperWidgets({ 80, 138 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 80, 154 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 80, 170 }, { 95, 12 }, WidgetType::wt_17, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 10, 186 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::cheat_date_change_apply),
+            makeStepperWidgets({ 80, 138 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 80, 154 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 80, 170 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 10, 186 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_date_change_apply),
             widgetEnd(),
         };
 

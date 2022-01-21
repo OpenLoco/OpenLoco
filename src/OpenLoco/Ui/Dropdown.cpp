@@ -297,7 +297,7 @@ namespace OpenLoco::Ui::Dropdown
         // 0x004CCF1E
         static void open(Ui::Point origin, Ui::Size size, Colour_t colour)
         {
-            auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, WindowFlags::stick_to_front, &common::events);
+            auto window = WindowManager::createWindow(WindowType::combobox, origin, size, WindowFlags::stick_to_front, &common::events);
 
             window->widgets = common::widgets;
 
@@ -445,7 +445,7 @@ namespace OpenLoco::Ui::Dropdown
 
         common::setColourAndInputFlags(colour, flags);
 
-        WindowManager::close(WindowType::dropdown, 0);
+        WindowManager::close(WindowType::combobox, 0);
         _word_113DC78 = 0;
 
         _dropdownColumnCount = 1;
@@ -551,10 +551,10 @@ namespace OpenLoco::Ui::Dropdown
 
         common::setColourAndInputFlags(colour, flags);
 
-        WindowManager::close(WindowType::dropdown, 0);
+        WindowManager::close(WindowType::combobox, 0);
         _word_113DC78 = 0;
 
-        WindowManager::close(WindowType::dropdown, 0);
+        WindowManager::close(WindowType::combobox, 0);
         _word_113DC78 = 0;
         _dropdownItemHeight = height;
         _dropdownItemWidth = width;
@@ -619,7 +619,7 @@ namespace OpenLoco::Ui::Dropdown
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
-        WindowManager::close(WindowType::dropdown, 0);
+        WindowManager::close(WindowType::combobox, 0);
         _word_113DC78 = 0;
 
         if (Input::state() != Input::State::widgetPressed || Input::hasFlag(Input::Flags::widgetPressed))
@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Dropdown
 
         common::setColourAndInputFlags(colour, flags);
 
-        WindowManager::close(WindowType::dropdown, 0);
+        WindowManager::close(WindowType::combobox, 0);
         _word_113DC78 = 0;
 
         common::showText(x, y, width, height, itemHeight, colour, count, flags);
@@ -715,7 +715,7 @@ namespace OpenLoco::Ui::Dropdown
 
         common::setColourAndInputFlags(colour, flags);
 
-        WindowManager::close(WindowType::dropdown, 0);
+        WindowManager::close(WindowType::combobox, 0);
         _word_113DC78 = 0;
 
         _dropdownColumnCount = 1;

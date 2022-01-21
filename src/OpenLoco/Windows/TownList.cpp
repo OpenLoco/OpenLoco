@@ -603,8 +603,8 @@ namespace OpenLoco::Ui::Windows::TownList
 
         Widget widgets[] = {
             commonWidgets(220, 87, StringIds::title_build_new_towns),
-            makeWidget({ 100, 45 }, { 117, 12 }, WidgetType::dropdown, WindowColour::secondary, ImageIds::null, StringIds::tooltip_select_town_size),
-            makeWidget({ 205, 46 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 100, 45 }, { 117, 12 }, WidgetType::combobox, WindowColour::secondary, ImageIds::null, StringIds::tooltip_select_town_size),
+            makeWidget({ 205, 46 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
             widgetEnd(),
         };
 

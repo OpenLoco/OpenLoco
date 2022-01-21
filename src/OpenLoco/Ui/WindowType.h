@@ -13,7 +13,7 @@ namespace OpenLoco::Ui
         editorToolbar = 4,
 
         tooltip = 6,
-        dropdown = 7,
+        combobox = 7,
 
         about = 9,
         // The Atari credits window is no longer used

@@ -197,11 +197,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static Widget widgets[] = {
             commonWidgets(197, StringIds::title_scenario_challenge),
-            makeWidget({ 10, 52 }, { 346, 12 }, WidgetType::dropdown, WindowColour::secondary),
-            makeWidget({ 344, 53 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 10, 52 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeWidget({ 344, 53 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
             makeStepperWidgets({ 10, 67 }, { 163, 12 }, WidgetType::textbox, WindowColour::secondary),
-            makeWidget({ 193, 67 }, { 163, 12 }, WidgetType::dropdown, WindowColour::secondary),
-            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 193, 67 }, { 163, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
             makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::and_be_the_top_company),
             makeWidget({ 10, 98 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::and_be_within_the_top_companies),
             makeWidget({ 10, 113 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::with_a_time_limit),
@@ -463,7 +463,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                     auto cargo = ObjectManager::get<CargoObject>(*objectiveDeliveredCargoType);
                     widgets[widx::objective_cargo].text = cargo->name;
-                    widgets[widx::objective_cargo].type = WidgetType::dropdown;
+                    widgets[widx::objective_cargo].type = WidgetType::combobox;
                     widgets[widx::objective_cargo_btn].type = WidgetType::button;
                     break;
             }
@@ -584,12 +584,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             commonWidgets(327, StringIds::title_company_options),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_competing_companies_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
-            makeWidget({ 246, 102 }, { 110, 12 }, WidgetType::dropdown, WindowColour::secondary),
-            makeWidget({ 344, 103 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 246, 117 }, { 110, 12 }, WidgetType::dropdown, WindowColour::secondary),
-            makeWidget({ 344, 118 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 246, 132 }, { 110, 12 }, WidgetType::dropdown, WindowColour::secondary),
-            makeWidget({ 344, 133 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 246, 102 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeWidget({ 344, 103 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
+            makeWidget({ 246, 117 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeWidget({ 344, 118 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
+            makeWidget({ 246, 132 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeWidget({ 344, 133 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
             makeWidget({ 15, 160 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
             makeWidget({ 15, 172 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
             makeWidget({ 15, 184 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
@@ -983,8 +983,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static Widget widgets[] = {
             commonWidgets(217, StringIds::title_scenario_options),
             makeWidget({ 281, 52 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
-            makeWidget({ 196, 67 }, { 160, 12 }, WidgetType::dropdown, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 196, 67 }, { 160, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::combobox),
             makeWidget({ 281, 82 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
             widgetEnd(),
         };
