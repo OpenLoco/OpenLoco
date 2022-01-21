@@ -1636,6 +1636,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 self->widgets[widx::current_loan].type = WidgetType::textbox;
                 self->widgets[widx::loan_decrease].type = WidgetType::button;
                 self->widgets[widx::loan_increase].type = WidgetType::button;
+                self->widgets[widx::loan_autopay].type = WidgetType::checkbox;
+
+                if ((company->challenge_flags & CompanyFlags::autopayLoan) != 0)
+                {
+                    self->activated_widgets |= (1ULL << Finances::widx::loan_autopay);
+                }
+                else
+                {
+                    self->activated_widgets &= ~(1ULL << Finances::widx::loan_autopay);
+                }
             }
             else
             {
