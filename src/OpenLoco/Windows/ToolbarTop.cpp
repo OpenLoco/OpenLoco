@@ -44,6 +44,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static loco_global<uint8_t, 0x009C870D> last_port_option;
 
     static loco_global<uint8_t[18], 0x0050A006> available_objects;
+    // Replaces 0x0050A006
+    std::vector<uint8_t> availableTracks;
 
     namespace Widx
     {
@@ -329,27 +331,28 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void railroadMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         // Load dropdown objects removing any that are not unlocked.
-        registers regs;
-        regs.edi = X86Pointer(&available_objects[0]);
-        call(0x004A6841, regs);
+        // Note: This is not using player company id! This looks odd.
+        availableTracks = CompanyManager::get(GameCommands::getUpdatingCompanyId())->getAvailableRailTracks();
 
-        // Sanity check: any objects available?
-        uint32_t i = 0;
-        while (available_objects[i] != 0xFF && i < std::size(available_objects))
-            i++;
-        if (i == 0)
+        assert(std::size(available_objects) >= std::size(availableTracks));
+        // Legacy copy to available_objects remove when all users of 0x0050A006 accounted for
+        std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(available_objects));
+        available_objects[availableTracks.size()] = 0xFF;
+
+        if (availableTracks.size() == 0)
             return;
 
         auto company_colour = CompanyManager::getPlayerCompanyColour();
 
         // Add available objects to Dropdown.
         uint16_t highlighted_item = 0;
-        for (i = 0; available_objects[i] != 0xFF && i < std::size(available_objects); i++)
+        auto i = 0u;
+        for (; i < std::size(availableTracks); i++)
         {
             uint32_t obj_image;
             string_id obj_string_id;
 
-            auto objIndex = available_objects[i];
+            auto objIndex = availableTracks[i];
             if ((objIndex & (1 << 7)) != 0)
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
@@ -382,7 +385,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (itemIndex == -1)
             return;
 
-        uint8_t objIndex = available_objects[itemIndex];
+        uint8_t objIndex = availableTracks[itemIndex];
         Construction::openWithFlags(objIndex);
     }
 

@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <array>
 #include <map>
+#include <unordered_set>
 
 using namespace OpenLoco::Interop;
 
@@ -473,12 +474,15 @@ namespace OpenLoco
         call(0x00437F47, regs);
     }
 
-    // 0x004A6841
+    /* 0x004A6841
+     * Creates a vector of all the available rail track (trains and trams) for a company
+     * Tram track is marked with a (1<<7) flag within the uint8_t
+     */
     std::vector<uint8_t> Company::getAvailableRailTracks()
     {
         std::vector<uint8_t> result;
 
-        uint32_t tracks = 0;
+        std::unordered_set<uint8_t> tracks;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
             auto* vehObj = ObjectManager::get<VehicleObject>(i);
@@ -489,22 +493,16 @@ namespace OpenLoco
 
             if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::rail)
             {
-                tracks |= 1 << vehObj->track_type;
+                tracks.insert(vehObj->track_type);
             }
         }
 
-        for (auto i = Utility::bitScanForward(tracks); i != -1; i = Utility::bitScanForward(tracks))
-        {
-            tracks &= ~(1 << i);
-            auto* trackObj = ObjectManager::get<TrackObject>(i);
-            if (trackObj->flags & Flags22::unk_02)
-            {
-                continue;
-            }
-            result.push_back(i);
-        }
+        std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
+            auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
+            return (trackObj->flags & Flags22::unk_02) == 0;
+        });
 
-        auto roads = 0;
+        std::unordered_set<uint8_t> roads;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
             auto* vehObj = ObjectManager::get<VehicleObject>(i);
@@ -517,7 +515,7 @@ namespace OpenLoco
             {
                 if (vehObj->track_type != 0xFF)
                 {
-                    roads |= 1 << vehObj->track_type;
+                    roads.insert(vehObj->track_type | (1 << 7));
                 }
             }
         }
@@ -531,20 +529,15 @@ namespace OpenLoco
 
             if (roadObj->flags & Flags12::unk_03)
             {
-                roads |= 1 << i;
+                roads.insert(i | (1 << 7));
             }
         }
 
-        for (auto i = Utility::bitScanForward(roads); i != -1; i = Utility::bitScanForward(roads))
-        {
-            roads &= ~(1 << i);
-            auto* roadObj = ObjectManager::get<RoadObject>(i);
-            if (roadObj->flags & Flags12::unk_01)
-            {
-                continue;
-            }
-            result.push_back(i | (1 << 7));
-        }
+        std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t trackIdx) {
+            auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
+            return (trackObj->flags & Flags12::unk_01) != 0;
+        });
+
         return result;
     }
 }
