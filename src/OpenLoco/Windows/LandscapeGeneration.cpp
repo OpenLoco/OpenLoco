@@ -985,8 +985,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_towns),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::number_of_towns_value),
-            makeWidget({ 176, 67 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeDropdownWidgets({ 176, 67 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
             widgetEnd()
         };
 
@@ -1125,8 +1124,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_industries),
-            makeWidget({ 176, 52 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 344, 53 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeWidget({ 10, 68 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
             makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game),
             widgetEnd()
