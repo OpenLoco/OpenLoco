@@ -399,18 +399,12 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         Widget widgets[] = {
             commonWidgets(366, 217, StringIds::title_messages),
-            makeWidget({ 236, 47 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 348, 48 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 236, 62 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 348, 63 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 236, 77 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 348, 78 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 236, 92 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 348, 93 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 236, 107 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 348, 108 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 236, 122 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 348, 123 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeDropdownWidgets({ 236, 47 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidgets({ 236, 62 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidgets({ 236, 77 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidgets({ 236, 92 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidgets({ 236, 107 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidgets({ 236, 122 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             widgetEnd(),
         };
 

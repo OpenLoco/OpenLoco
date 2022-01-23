@@ -27,8 +27,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         makeWidget({ 3, 69 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
         makeWidget({ 3, 81 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
         makeWidget({ 35, 110 }, { 66, 66 }, WidgetType::wt_3, WindowColour::secondary),
-        makeWidget({ 3, 95 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_track_to_upgrade),
-        makeWidget({ 123, 96 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_select_track_to_upgrade),
+        makeDropdownWidgets({ 3, 95 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_track_to_upgrade),
         widgetEnd(),
     };
 

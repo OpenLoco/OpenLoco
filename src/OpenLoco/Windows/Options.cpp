@@ -694,8 +694,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_sound),
-            makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
-            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeDropdownWidgets({ 10, 49 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 10, 65 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::play_title_music),
             widgetEnd(),
         };
@@ -885,14 +884,12 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_music),
-            makeWidget({ 160, 49 }, { 196, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
-            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 10, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
             makeWidget({ 34, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
             makeWidget({ 58, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
             makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::wt_5, WindowColour::secondary, -1, StringIds::set_volume_tip),
-            makeWidget({ 10, 93 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg2_stringid),
-            makeWidget({ 344, 94 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg2_stringid),
             makeWidget({ 183, 108 }, { 173, 12 }, WidgetType::button, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip),
             widgetEnd(),
         };
@@ -1271,16 +1268,11 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_regional),
-            makeWidget({ 183, 49 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringptr),
-            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 183, 69 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg12_stringid),
-            makeWidget({ 344, 70 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 183, 84 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg6_stringid),
-            makeWidget({ 344, 85 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
-            makeWidget({ 183, 104 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg10_stringid, StringIds::current_game_currency_tip),
-            makeWidget({ 344, 105 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown, StringIds::current_game_currency_tip),
-            makeWidget({ 183, 119 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
-            makeWidget({ 344, 120 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown, StringIds::new_game_currency_tip),
+            makeDropdownWidgets({ 183, 49 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringptr),
+            makeDropdownWidgets({ 183, 69 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg12_stringid),
+            makeDropdownWidgets({ 183, 84 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg6_stringid),
+            makeDropdownWidgets({ 183, 104 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg10_stringid, StringIds::current_game_currency_tip),
+            makeDropdownWidgets({ 183, 119 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
             makeWidget({ 10, 134 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
             makeWidget({ 10, 148 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip),
             widgetEnd(),
@@ -1907,8 +1899,7 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 109 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
             makeWidget({ 335, 124 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
             makeWidget({ 10, 139 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
-            makeWidget({ 250, 154 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 394, 155 }, { 11, 10 }, WidgetType::button, WindowColour::secondary, StringIds::dropdown),
+            makeDropdownWidgets({ 250, 154 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
             makeStepperWidgets({ 250, 169 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
             widgetEnd(),
         };
