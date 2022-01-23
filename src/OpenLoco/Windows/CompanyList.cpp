@@ -119,10 +119,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         Widget widgets[] = {
             commonWidgets(640, 272, StringIds::title_company_list),
-            makeWidget({ 4, 43 }, { 175, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
-            makeWidget({ 179, 43 }, { 210, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
-            makeWidget({ 389, 43 }, { 145, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
-            makeWidget({ 534, 43 }, { 100, 12 }, WidgetType::buttonGridSort, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
+            makeWidget({ 4, 43 }, { 175, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
+            makeWidget({ 179, 43 }, { 210, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
+            makeWidget({ 389, 43 }, { 145, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
+            makeWidget({ 534, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
             makeWidget({ 3, 56 }, { 634, 201 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };

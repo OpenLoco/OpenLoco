@@ -115,7 +115,7 @@ namespace OpenLoco::Ui
 
             case WidgetType::button:
             case WidgetType::wt_12:
-            case WidgetType::buttonGridSort:
+            case WidgetType::buttonTableHeader:
                 if (type == WidgetType::wt_12)
                 {
                     assert(false); // Unused
@@ -520,7 +520,7 @@ namespace OpenLoco::Ui
             }
         }
 
-        if (type == WidgetType::buttonGridSort)
+        if (type == WidgetType::buttonTableHeader)
         {
             draw_14(context, this, colour, disabled, x, y, string);
         }

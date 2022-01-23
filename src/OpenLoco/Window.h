@@ -41,7 +41,7 @@ namespace OpenLoco::Ui
         button = 11,
         wt_12,
         wt_13,
-        buttonGridSort = 14,
+        buttonTableHeader = 14,
         wt_15,
         groupbox = 16,
         textbox = 17,
