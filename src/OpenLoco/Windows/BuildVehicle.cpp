@@ -193,22 +193,22 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 380, 233 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 378, 13 }, WidgetType::caption_24, WindowColour::primary),
-        makeWidget({ 365, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 365, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 41 }, { 380, 192 }, WidgetType::panel, WindowColour::secondary),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trucks),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trams),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_ships),
-        makeRemapWidget({ 5, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 36, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 67, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 98, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 129, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 160, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 191, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 222, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trucks),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trams),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_ships),
+        makeRemapWidget({ 5, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 36, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 67, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 98, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 129, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 160, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 191, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 222, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
         makeWidget({ 3, 72 }, { 374, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         makeWidget({ 250, 44 }, { 180, 66 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::none),
         widgetEnd(),
@@ -1174,7 +1174,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 // Reset the tabs
                 _TrackTypesForTab[0] = -1;
-                window->widgets[tab_track_type_0].type = WidgetType::wt_8;
+                window->widgets[tab_track_type_0].type = WidgetType::tab;
                 for (WidgetIndex_t j = tab_track_type_1; j <= tab_track_type_7; ++j)
                 {
                     window->widgets[j].type = WidgetType::none;
@@ -1188,7 +1188,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         for (trackType = Utility::bitScanForward(railTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Utility::bitScanForward(railTrackTypes))
         {
             railTrackTypes &= ~(1 << trackType);
-            window->widgets[trackTypeTab].type = WidgetType::wt_8;
+            window->widgets[trackTypeTab].type = WidgetType::tab;
             _TrackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType;
             trackTypeTab++;
         }
@@ -1198,7 +1198,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             for (trackType = Utility::bitScanForward(roadTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Utility::bitScanForward(roadTrackTypes))
             {
                 roadTrackTypes &= ~(1 << trackType);
-                window->widgets[trackTypeTab].type = WidgetType::wt_8;
+                window->widgets[trackTypeTab].type = WidgetType::tab;
                 _TrackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType | (1 << 7);
                 trackTypeTab++;
             }
@@ -1296,7 +1296,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
             else
             {
-                widget->type = WidgetType::wt_8;
+                widget->type = WidgetType::tab;
                 widget->left = tabX;
                 widget->right = tabX + tabWidth;
                 tabX += tabWidth + 1;

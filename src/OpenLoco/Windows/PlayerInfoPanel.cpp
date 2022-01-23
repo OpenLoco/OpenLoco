@@ -47,9 +47,9 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 26, 26 }, WidgetType::wt_9, WindowColour::primary),
-        makeWidget({ 27, 2 }, { 111, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::null, StringIds::tooltip_company_value),
-        makeWidget({ 27, 14 }, { 111, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::null, StringIds::tooltip_performance_index),
+        makeWidget({ 1, 1 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary),
+        makeWidget({ 27, 2 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::null, StringIds::tooltip_company_value),
+        makeWidget({ 27, 14 }, { 111, 12 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::null, StringIds::tooltip_performance_index),
         widgetEnd(),
     };
 
