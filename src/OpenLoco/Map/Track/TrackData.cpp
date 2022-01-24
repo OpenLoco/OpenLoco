@@ -318,40 +318,42 @@ namespace OpenLoco::Map::TrackData
         return _4F6F8C[trackAndDirection];
     }
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece0 = {
+    using ConnectionsByRotation = std::array<uint8_t, 4>;
+
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece0 = {
         { 0xFF, 0xFF, 0xFF, 0xFF },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece1 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece1 = {
         { 0x07, 0x1C, 0x70, 0xC1 },
         { 0x80, 0x02, 0x08, 0x20 },
         { 0x08, 0x20, 0x80, 0x02 },
         { 0x70, 0xC1, 0x07, 0x1C },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece2 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece2 = {
         { 0xF8, 0xE3, 0x8F, 0x3E },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece3 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece3 = {
         { 0x3E, 0xF8, 0xE3, 0x8F },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece4 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece4 = {
         { 0xF8, 0xE3, 0x8F, 0x3E },
         { 0x02, 0x08, 0x20, 0x80 },
         { 0x70, 0xC1, 0x07, 0x1C },
         { 0xF8, 0xE3, 0x8F, 0x3E },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece5 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece5 = {
         { 0x3E, 0xF8, 0xE3, 0x8F },
         { 0x80, 0x02, 0x08, 0x20 },
         { 0x1C, 0x70, 0xC1, 0x07 },
         { 0x3E, 0xF8, 0xE3, 0x8F },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece6 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece6 = {
         { 0xFF, 0xFF, 0xFF, 0xFF },
         { 0xF8, 0xE3, 0x8F, 0x3E },
         { 0x8F, 0x3E, 0xF8, 0xE3 },
@@ -359,7 +361,7 @@ namespace OpenLoco::Map::TrackData
         { 0xFF, 0xFF, 0xFF, 0xFF },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece7 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece7 = {
         { 0xFF, 0xFF, 0xFF, 0xFF },
         { 0x3E, 0xF8, 0xE3, 0x8F },
         { 0xE3, 0x8F, 0x3E, 0xF8 },
@@ -367,7 +369,7 @@ namespace OpenLoco::Map::TrackData
         { 0xFF, 0xFF, 0xFF, 0xFF },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece8 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece8 = {
         { 0xFF, 0xFF, 0xFF, 0xFF },
         { 0xF8, 0xE3, 0x8F, 0x3E },
         { 0x02, 0x08, 0x20, 0x80 },
@@ -375,7 +377,7 @@ namespace OpenLoco::Map::TrackData
         { 0x1C, 0x70, 0xC1, 0x07 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece9 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece9 = {
         { 0xFF, 0xFF, 0xFF, 0xFF },
         { 0x3E, 0xF8, 0xE3, 0x8F },
         { 0x80, 0x02, 0x08, 0x20 },
@@ -383,7 +385,7 @@ namespace OpenLoco::Map::TrackData
         { 0x70, 0xC1, 0x07, 0x1C },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece10 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece10 = {
         { 0x07, 0x1C, 0x70, 0xC1 },
         { 0x08, 0x20, 0x80, 0x02 },
         { 0x80, 0x02, 0x08, 0x20 },
@@ -391,7 +393,7 @@ namespace OpenLoco::Map::TrackData
         { 0xFF, 0xFF, 0xFF, 0xFF },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece11 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece11 = {
         { 0x07, 0x1C, 0x70, 0xC1 },
         { 0x80, 0x02, 0x08, 0x20 },
         { 0x08, 0x20, 0x80, 0x02 },
@@ -399,168 +401,168 @@ namespace OpenLoco::Map::TrackData
         { 0xFF, 0xFF, 0xFF, 0xFF },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece12 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece12 = {
         { 0xF9, 0xE7, 0x9F, 0x7E },
         { 0x60, 0x81, 0x06, 0x18 },
         { 0x06, 0x18, 0x60, 0x81 },
         { 0x9F, 0x7E, 0xF9, 0xE7 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece13 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece13 = {
         { 0x3F, 0xFC, 0xF3, 0xCF },
         { 0x0C, 0x30, 0xC0, 0x03 },
         { 0xC0, 0x03, 0x0C, 0x30 },
         { 0xF3, 0xCF, 0x3F, 0xFC },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece14 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece14 = {
         { 0xFF, 0xFF, 0xFF, 0xFF },
         { 0xFF, 0xFF, 0xFF, 0xFF },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece15 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece15 = {
         { 0xFF, 0xFF, 0xFF, 0xFF },
         { 0xFF, 0xFF, 0xFF, 0xFF },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece16 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece16 = {
         { 0xFF, 0xFF, 0xFF, 0xFF },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece17 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece17 = {
         { 0xFF, 0xFF, 0xFF, 0xFF },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece18 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece18 = {
         { 0xF8, 0xE3, 0x8F, 0x3E },
         { 0x02, 0x08, 0x20, 0x80 },
         { 0x70, 0xC1, 0x07, 0x1C },
         { 0xF8, 0xE3, 0x8F, 0x3E },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece19 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece19 = {
         { 0x3E, 0xF8, 0xE3, 0x8F },
         { 0x80, 0x02, 0x08, 0x20 },
         { 0x1C, 0x70, 0xC1, 0x7 },
         { 0x3E, 0xF8, 0xE3, 0x8F },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece20 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece20 = {
         { 0xF8, 0xE3, 0x8F, 0x3E },
         { 0x02, 0x08, 0x20, 0x80 },
         { 0x70, 0xC1, 0x07, 0x1C },
         { 0xF8, 0xE3, 0x8F, 0x3E },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece21 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece21 = {
         { 0x3E, 0xF8, 0xE3, 0x8F },
         { 0x80, 0x02, 0x08, 0x20 },
         { 0x1C, 0x70, 0xC1, 0x07 },
         { 0x3E, 0xF8, 0xE3, 0x8F },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece22 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece22 = {
         { 0xF8, 0xE3, 0x8F, 0x3E },
         { 0x02, 0x08, 0x20, 0x80 },
         { 0x70, 0xC1, 0x07, 0x1C },
         { 0xF8, 0xE3, 0x8F, 0x3E },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece23 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece23 = {
         { 0x3E, 0xF8, 0xE3, 0x8F },
         { 0x80, 0x02, 0x08, 0x20 },
         { 0x1C, 0x70, 0xC1, 0x07 },
         { 0x3E, 0xF8, 0xE3, 0x8F },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece24 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece24 = {
         { 0xF8, 0xE3, 0x8F, 0x3E },
         { 0x02, 0x08, 0x20, 0x80 },
         { 0x70, 0xC1, 0x07, 0x1C },
         { 0xF8, 0xE3, 0x8F, 0x3E },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece25 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece25 = {
         { 0x3E, 0xF8, 0xE3, 0x8F },
         { 0x80, 0x02, 0x08, 0x20 },
         { 0x1C, 0x70, 0xC1, 0x7 },
         { 0x3E, 0xF8, 0xE3, 0x8F },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece26 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece26 = {
         { 0xE0, 0x83, 0x0E, 0x38 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece27 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece27 = {
         { 0x0E, 0x38, 0xE0, 0x83 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece28 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece28 = {
         { 0x20, 0x80, 0x02, 0x08 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece29 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece29 = {
         { 0x8D, 0x36, 0xD8, 0x63 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece30 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece30 = {
         { 0x63, 0x8D, 0x36, 0xD8 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece31 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece31 = {
         { 0x8, 0x20, 0x80, 0x02 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece32 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece32 = {
         { 0x77, 0xDD, 0x77, 0xDD },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece33 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece33 = {
         { 0xDD, 0x77, 0xDD, 0x77 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece34 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece34 = {
         { 0xE0, 0x83, 0x0E, 0x38 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece35 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece35 = {
         { 0x0E, 0x38, 0xE0, 0x83 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece36 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece36 = {
         { 0xE0, 0x83, 0x0E, 0x38 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece37 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece37 = {
         { 0x0E, 0x38, 0xE0, 0x83 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece38 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece38 = {
         { 0xFD, 0xF7, 0xDF, 0x7F },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece39 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece39 = {
         { 0x7F, 0xFD, 0xF7, 0xDF },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece40 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece40 = {
         { 0xF7, 0xDF, 0x7F, 0xFD },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece41 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece41 = {
         { 0xDF, 0x7F, 0xFD, 0xF7 },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece42 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece42 = {
         { 0x38, 0xE0, 0x83, 0x0E },
     };
 
-    const std::vector<std::array<uint8_t, 4>> kUnkFlagTrackPiece43 = {
+    const std::vector<ConnectionsByRotation> kUnkFlagTrackPiece43 = {
         { 0x38, 0xE0, 0x83, 0x0E },
     };
 
     // 0x004F78F8
-    const std::array<std::vector<std::array<uint8_t, 4>>, 44> kUnkFlagTrackPieces = { {
+    const std::array<std::vector<ConnectionsByRotation>, 44> kUnkFlagTrackPieces = { {
         kUnkFlagTrackPiece0,
         kUnkFlagTrackPiece1,
         kUnkFlagTrackPiece2,
