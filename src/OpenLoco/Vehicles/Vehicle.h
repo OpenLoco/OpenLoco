@@ -312,6 +312,8 @@ namespace OpenLoco::Vehicles
         OrderRingView getCurrentOrders() const;
         bool isPlaced() const { return tile_x != -1 && !(var_38 & Flags38::isGhost); }
         char* generateCargoTotalString(char* buffer);
+        char* generateCargoCapacityString(char* buffer);
+        char* cargoLUTToString(uint32_t cargoTotals[32], char* buffer);
         bool canBeModified() const;
         void liftUpVehicle();
         void sub_4B7CC3();
