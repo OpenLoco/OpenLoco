@@ -284,7 +284,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                             *objectiveMonthlyVehicleProfit = std::max<uint32_t>(*objectiveMonthlyVehicleProfit - 1000, Scenario::min_objective_monthly_profit_from_vehicles);
                             break;
 
-                        case Scenario::objective_type::performance_index:
+                        case Scenario::objective_type::performanceIndex:
                             *objectivePerformanceIndex = std::max<uint8_t>(*objectivePerformanceIndex - 5, Scenario::min_objective_performance_index);
                             break;
 
@@ -323,7 +323,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                             *objectiveMonthlyVehicleProfit = std::min<uint32_t>(*objectiveMonthlyVehicleProfit + 1000, Scenario::max_objective_monthly_profit_from_vehicles);
                             break;
 
-                        case Scenario::objective_type::performance_index:
+                        case Scenario::objective_type::performanceIndex:
                             *objectivePerformanceIndex = std::min<uint8_t>(*objectivePerformanceIndex + 5, Scenario::max_objective_performance_index);
                             break;
 
@@ -450,7 +450,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
-                case Scenario::objective_type::performance_index:
+                case Scenario::objective_type::performanceIndex:
                     *(int16_t*)&*commonFormatArgs = *objectivePerformanceIndex * 10;
                     widgets[widx::objective_value].text = StringIds::challenge_performance_index;
                     break;

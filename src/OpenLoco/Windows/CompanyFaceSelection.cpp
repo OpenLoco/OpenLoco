@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         {
             if (c.id() != id)
             {
-                takenCompetitorIds.push_back(c.competitor_id);
+                takenCompetitorIds.push_back(c.competitorId);
             }
         }
 

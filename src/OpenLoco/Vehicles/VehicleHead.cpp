@@ -2589,7 +2589,7 @@ namespace OpenLoco::Vehicles
         }
 
         auto* station = StationManager::get(stationId);
-        auto& cargoStats = station->cargo_stats[cargo.type];
+        auto& cargoStats = station->cargoStats[cargo.type];
         if (cargoStats.isAccepted())
         {
             station->deliverCargoToTown(cargo.type, cargo.qty);
@@ -2614,9 +2614,9 @@ namespace OpenLoco::Vehicles
             station->var_3B1 = 0;
             station->flags |= StationFlags::flag_8;
 
-            if (cargoStats.industry_id != IndustryId::null)
+            if (cargoStats.industryId != IndustryId::null)
             {
-                auto* industry = IndustryManager::get(cargoStats.industry_id);
+                auto* industry = IndustryManager::get(cargoStats.industryId);
                 auto* industryObj = industry->object();
 
                 for (auto i = 0; i < 3; ++i)
@@ -2633,7 +2633,7 @@ namespace OpenLoco::Vehicles
                 if (!(industry->history_min_production[0] & (1ULL << cargo.type)))
                 {
                     industry->history_min_production[0] |= 1ULL << cargo.type;
-                    MessageManager::post(MessageType::workersCelebrate, owner, enumValue(id), enumValue(cargoStats.industry_id), enumValue(cargoStats.industry_id) | (cargo.type << 8));
+                    MessageManager::post(MessageType::workersCelebrate, owner, enumValue(id), enumValue(cargoStats.industryId), enumValue(cargoStats.industryId) | (cargo.type << 8));
                 }
 
                 auto* town = TownManager::get(industry->town);
@@ -2678,7 +2678,7 @@ namespace OpenLoco::Vehicles
             }
             cargoStats.quantity = Math::Bound::add(cargoStats.quantity, cargo.qty);
             station->updateCargoDistribution();
-            cargoStats.enroute_age = std::max(cargoStats.enroute_age, cargo.numDays);
+            cargoStats.enrouteAge = std::max(cargoStats.enrouteAge, cargo.numDays);
             bool setOrigin = true;
             if (cargoStats.origin != StationId::null)
             {
@@ -2863,9 +2863,9 @@ namespace OpenLoco::Vehicles
                 }
                 else
                 {
-                    if (highestQty < station->cargo_stats[possibleCargo].quantity)
+                    if (highestQty < station->cargoStats[possibleCargo].quantity)
                     {
-                        highestQty = station->cargo_stats[possibleCargo].quantity;
+                        highestQty = station->cargoStats[possibleCargo].quantity;
                         chosenCargo = possibleCargo;
                     }
                 }
@@ -2901,7 +2901,7 @@ namespace OpenLoco::Vehicles
         }
 
         auto* cargoObj = ObjectManager::get<CargoObject>(cargo.type);
-        auto& stationCargo = station->cargo_stats[cargo.type];
+        auto& stationCargo = station->cargoStats[cargo.type];
         auto qtyTransferred = std::min<uint16_t>(cargo.maxQty - cargo.qty, stationCargo.quantity);
         cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->var_4 * qtyTransferred * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
 
@@ -2910,11 +2910,11 @@ namespace OpenLoco::Vehicles
             if (cargo.qty == 0)
             {
                 cargo.townFrom = stationCargo.origin;
-                cargo.numDays = stationCargo.enroute_age;
+                cargo.numDays = stationCargo.enrouteAge;
             }
             else
             {
-                cargo.numDays = std::max(cargo.numDays, stationCargo.enroute_age);
+                cargo.numDays = std::max(cargo.numDays, stationCargo.enrouteAge);
 
                 auto* cargoSourceStation = StationManager::get(stationCargo.origin);
                 auto stationLoc = Map::Pos2{ station->x, station->y };

@@ -156,13 +156,13 @@ namespace OpenLoco::Ui::Windows::StationList
     static bool orderByQuantity(const OpenLoco::Station& lhs, const OpenLoco::Station& rhs)
     {
         uint32_t lhsSum = 0;
-        for (const auto& cargo : lhs.cargo_stats)
+        for (const auto& cargo : lhs.cargoStats)
         {
             lhsSum += cargo.quantity;
         }
 
         uint32_t rhsSum = 0;
-        for (const auto& cargo : rhs.cargo_stats)
+        for (const auto& cargo : rhs.cargoStats)
         {
             rhsSum += cargo.quantity;
         }
@@ -177,9 +177,9 @@ namespace OpenLoco::Ui::Windows::StationList
 
         char lhsString[256] = { 0 };
         ptr = &lhsString[0];
-        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
         {
-            if (lhs.cargo_stats[cargoId].isAccepted())
+            if (lhs.cargoStats[cargoId].isAccepted())
             {
                 ptr = StringManager::formatString(ptr, ObjectManager::get<CargoObject>(cargoId)->name);
             }
@@ -187,9 +187,9 @@ namespace OpenLoco::Ui::Windows::StationList
 
         char rhsString[256] = { 0 };
         ptr = &rhsString[0];
-        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
         {
-            if (rhs.cargo_stats[cargoId].isAccepted())
+            if (rhs.cargoStats[cargoId].isAccepted())
             {
                 ptr = StringManager::formatString(ptr, ObjectManager::get<CargoObject>(cargoId)->name);
             }
@@ -505,7 +505,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
             // Total units waiting.
             uint16_t totalUnits = 0;
-            for (const auto& stats : station->cargo_stats)
+            for (const auto& stats : station->cargoStats)
                 totalUnits += stats.quantity;
 
             _common_format_args[0] = StringIds::num_units;
@@ -516,9 +516,9 @@ namespace OpenLoco::Ui::Windows::StationList
             char* ptr = buffer;
             *ptr = '\0';
 
-            for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+            for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
             {
-                auto& stats = station->cargo_stats[cargoId];
+                auto& stats = station->cargoStats[cargoId];
 
                 if (!stats.isAccepted())
                     continue;
@@ -558,8 +558,8 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Draw company owner image.
         auto company = CompanyManager::get(CompanyId(window->number));
-        auto competitor = ObjectManager::get<CompetitorObject>(company->competitor_id);
-        uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
+        auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
+        uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
         uint16_t x = window->x + window->widgets[widx::company_select].left + 1;
         uint16_t y = window->y + window->widgets[widx::company_select].top + 1;
         Gfx::drawImage(context, x, y, image);

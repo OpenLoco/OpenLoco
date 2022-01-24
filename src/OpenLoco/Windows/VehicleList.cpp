@@ -409,7 +409,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto company = CompanyManager::get(CompanyId(self->number));
 
         // Disable the tabs for the vehicles that are _not_ available for this company.
-        self->disabled_widgets = (company->available_vehicles ^ 0x3F) << Widx::tab_trains;
+        self->disabled_widgets = (company->availableVehicles ^ 0x3F) << Widx::tab_trains;
     }
 
     // 0x004C1AA2
@@ -608,8 +608,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         // Draw company owner image.
         auto company = CompanyManager::get(CompanyId(self->number));
-        auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
-        uint32_t image = Gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
+        auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
+        uint32_t image = Gfx::recolour(competitorObj->images[company->ownerEmotion], company->mainColours.primary);
         uint16_t x = self->x + self->widgets[Widx::company_select].left + 1;
         uint16_t y = self->y + self->widgets[Widx::company_select].top + 1;
         Gfx::drawImage(context, x, y, image);

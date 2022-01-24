@@ -845,9 +845,9 @@ namespace OpenLoco::Ui::Dropdown
                 if (companyOrdered[enumValue(company.id())] & 1)
                     continue;
 
-                if (maxPerformanceIndex < company.performance_index)
+                if (maxPerformanceIndex < company.performanceIndex)
                 {
-                    maxPerformanceIndex = company.performance_index;
+                    maxPerformanceIndex = company.performanceIndex;
                     companyId = company.id();
                 }
             }
@@ -860,8 +860,8 @@ namespace OpenLoco::Ui::Dropdown
             _menuOptions[index] = companyId;
 
             auto company = CompanyManager::get(companyId);
-            auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
-            auto ownerEmotion = company->owner_emotion;
+            auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
+            auto ownerEmotion = company->ownerEmotion;
             auto imageId = competitorObj->images[ownerEmotion];
             imageId = Gfx::recolour(imageId, company->mainColours.primary);
 

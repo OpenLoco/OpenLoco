@@ -459,7 +459,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void buildVehiclesMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto company = CompanyManager::get(CompanyManager::getControllingId());
-        uint16_t available_vehicles = company->available_vehicles;
+        uint16_t availableVehicles = company->availableVehicles;
 
         auto company_colour = CompanyManager::getPlayerCompanyColour();
         auto interface = ObjectManager::get<InterfaceSkinObject>();
@@ -467,7 +467,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         uint8_t ddIndex = 0;
         for (uint8_t vehicleType = 0; vehicleType < vehicleTypeCount; vehicleType++)
         {
-            if ((available_vehicles & (1 << vehicleType)) == 0)
+            if ((availableVehicles & (1 << vehicleType)) == 0)
                 continue;
 
             auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
@@ -503,7 +503,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         auto player_company_id = CompanyManager::getControllingId();
         auto company = CompanyManager::get(player_company_id);
-        uint16_t available_vehicles = company->available_vehicles;
+        uint16_t availableVehicles = company->availableVehicles;
 
         auto company_colour = CompanyManager::getPlayerCompanyColour();
         auto interface = ObjectManager::get<InterfaceSkinObject>();
@@ -523,7 +523,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         uint8_t ddIndex = 0;
         for (uint16_t vehicleType = 0; vehicleType < vehicleTypeCount; vehicleType++)
         {
-            if ((available_vehicles & (1 << vehicleType)) == 0)
+            if ((availableVehicles & (1 << vehicleType)) == 0)
                 continue;
 
             auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));

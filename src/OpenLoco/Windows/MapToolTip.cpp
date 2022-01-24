@@ -141,8 +141,8 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             Gfx::fillRect(*context, left, top, right, bottom, Colour::darkGreen);
 
             auto* company = CompanyManager::get(_mapTooltipOwner);
-            auto* competitor = ObjectManager::get<CompetitorObject>(company->competitor_id);
-            auto imageId = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
+            auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
+            auto imageId = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
 
             Gfx::drawImage(context, left + 1, top + 1, imageId);
         }

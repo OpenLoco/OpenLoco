@@ -236,15 +236,15 @@ namespace OpenLoco::Ui::Windows::Error
                 auto yPos = self->widgets[ErrorCompetitor::widx::innerFrame].top + self->y;
 
                 auto company = CompanyManager::get(_errorCompetitorId);
-                auto companyObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
+                auto companyObj = ObjectManager::get<CompetitorObject>(company->competitorId);
 
-                auto imageId = companyObj->images[company->owner_emotion];
+                auto imageId = companyObj->images[company->ownerEmotion];
                 imageId = Gfx::recolour(imageId, company->mainColours.primary);
                 imageId++;
 
                 Gfx::drawImage(context, xPos, yPos, imageId);
 
-                if (company->jail_status != 0)
+                if (company->jailStatus != 0)
                 {
                     Gfx::drawImage(context, xPos, yPos, ImageIds::owner_jailed);
                 }

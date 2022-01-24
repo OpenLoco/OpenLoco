@@ -217,9 +217,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437C53
         static bool orderByPerformance(const OpenLoco::Company& lhs, const OpenLoco::Company& rhs)
         {
-            auto lhsPerformance = lhs.performance_index;
+            auto lhsPerformance = lhs.performanceIndex;
 
-            auto rhsPerformance = rhs.performance_index;
+            auto rhsPerformance = rhs.performanceIndex;
 
             return rhsPerformance < lhsPerformance;
         }
@@ -258,7 +258,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if ((company.challenge_flags & CompanyFlags::sorted) != 0)
+                if ((company.challengeFlags & CompanyFlags::sorted) != 0)
                     continue;
 
                 if (chosenCompany == CompanyId::null)
@@ -277,7 +277,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             {
                 bool shouldInvalidate = false;
 
-                CompanyManager::get(chosenCompany)->challenge_flags |= CompanyFlags::sorted;
+                CompanyManager::get(chosenCompany)->challengeFlags |= CompanyFlags::sorted;
 
                 if (chosenCompany != CompanyId(self->row_info[self->row_count]))
                 {
@@ -483,8 +483,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 }
 
                 auto company = CompanyManager::get(CompanyId(rowItem));
-                auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
-                auto imageId = Gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
+                auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
+                auto imageId = Gfx::recolour(competitorObj->images[company->ownerEmotion], company->mainColours.primary);
 
                 {
                     auto args = FormatArguments();
@@ -507,11 +507,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 auto performanceStringId = StringIds::performance_index;
 
-                if ((company->challenge_flags & CompanyFlags::increasedPerformance) && (company->challenge_flags & CompanyFlags::decreasedPerformance))
+                if ((company->challengeFlags & CompanyFlags::increasedPerformance) && (company->challengeFlags & CompanyFlags::decreasedPerformance))
                 {
                     performanceStringId = StringIds::performance_index_decrease;
 
-                    if (company->challenge_flags & CompanyFlags::increasedPerformance)
+                    if (company->challengeFlags & CompanyFlags::increasedPerformance)
                     {
                         performanceStringId = StringIds::performance_index_increase;
                     }
@@ -521,7 +521,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto args = FormatArguments();
 
                     args.push(performanceStringId);
-                    formatPerformanceIndex(company->performance_index, args);
+                    formatPerformanceIndex(company->performanceIndex, args);
 
                     Gfx::drawString_494BBF(context, 385, yBottom - 1, 143, Colour::black, stringId, &args);
                 }
@@ -670,8 +670,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (maxHistorySize < company.history_size)
-                    maxHistorySize = company.history_size;
+                if (maxHistorySize < company.historySize)
+                    maxHistorySize = company.historySize;
             }
 
             uint8_t count = 0;
@@ -681,8 +681,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphYData[count] = reinterpret_cast<uint32_t>(&company.performance_index_history[0]);
-                _graphDataStart[count] = maxHistorySize - company.history_size;
+                _graphYData[count] = reinterpret_cast<uint32_t>(&company.performanceIndexHistory[0]);
+                _graphDataStart[count] = maxHistorySize - company.historySize;
                 _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
@@ -761,8 +761,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (maxHistorySize < company.history_size)
-                    maxHistorySize = company.history_size;
+                if (maxHistorySize < company.historySize)
+                    maxHistorySize = company.historySize;
             }
 
             uint8_t count = 0;
@@ -772,8 +772,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_delivered_history[0]);
-                _graphDataStart[count] = maxHistorySize - company.history_size;
+                _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargoUnitsDeliveredHistory[0]);
+                _graphDataStart[count] = maxHistorySize - company.historySize;
                 _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
@@ -852,8 +852,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (maxHistorySize < company.history_size)
-                    maxHistorySize = company.history_size;
+                if (maxHistorySize < company.historySize)
+                    maxHistorySize = company.historySize;
             }
 
             uint8_t count = 0;
@@ -863,8 +863,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_distance_history[0]);
-                _graphDataStart[count] = maxHistorySize - company.history_size;
+                _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargoUnitsDistanceHistory[0]);
+                _graphDataStart[count] = maxHistorySize - company.historySize;
                 _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
@@ -943,8 +943,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (maxHistorySize < company.history_size)
-                    maxHistorySize = company.history_size;
+                if (maxHistorySize < company.historySize)
+                    maxHistorySize = company.historySize;
             }
 
             uint8_t count = 0;
@@ -955,7 +955,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.companyValueHistory[0]);
-                _graphDataStart[count] = maxHistorySize - company.history_size;
+                _graphDataStart[count] = maxHistorySize - company.historySize;
                 _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
@@ -1251,9 +1251,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (companyId != CompanyId::null)
                 {
                     auto company = CompanyManager::get(companyId);
-                    auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
+                    auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
 
-                    auto imageId = competitorObj->images[company->owner_emotion];
+                    auto imageId = competitorObj->images[company->ownerEmotion];
                     imageId = Gfx::recolour(imageId, company->mainColours.primary);
 
                     auto x = self->x + 4;
@@ -1621,7 +1621,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                company.challenge_flags &= ~CompanyFlags::sorted;
+                company.challengeFlags &= ~CompanyFlags::sorted;
             }
         }
 

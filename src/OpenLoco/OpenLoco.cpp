@@ -97,7 +97,7 @@ namespace OpenLoco
     loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
     static loco_global<int16_t, 0x00525F62> _525F62;
 
-    static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
+    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
     static loco_global<char[256], 0x011367A0> _11367A0;
     static loco_global<char[256], 0x011368A0> _11368A0;
@@ -488,7 +488,7 @@ namespace OpenLoco
 
     void sub_431695(uint16_t var_F253A0)
     {
-        _updating_company_id = CompanyManager::getControllingId();
+        _updatingCompanyId = CompanyManager::getControllingId();
         for (auto i = 0; i < var_F253A0; i++)
         {
             sub_428E47();
@@ -505,7 +505,7 @@ namespace OpenLoco
     {
         if (!isNetworked())
         {
-            _updating_company_id = CompanyManager::getControllingId();
+            _updatingCompanyId = CompanyManager::getControllingId();
             for (auto i = 0; i < var_F253A0; i++)
             {
                 sub_428E47();
@@ -528,7 +528,7 @@ namespace OpenLoco
         // Host/client?
         if (isNetworkHost())
         {
-            _updating_company_id = CompanyManager::getControllingId();
+            _updatingCompanyId = CompanyManager::getControllingId();
 
             // run twice as often as var_F253A0
             for (auto i = 0; i < var_F253A0 * 2; i++)
@@ -544,15 +544,15 @@ namespace OpenLoco
             CompanyManager::updateOwnerStatus();
             sub_46E388();
 
-            _updating_company_id = _playerCompanies[1];
+            _updatingCompanyId = _playerCompanies[1];
             sub_4317BD();
         }
         else
         {
-            _updating_company_id = _playerCompanies[1];
+            _updatingCompanyId = _playerCompanies[1];
             auto eax = sub_4317BD();
 
-            _updating_company_id = _playerCompanies[0];
+            _updatingCompanyId = _playerCompanies[0];
             if (!isTitleMode())
             {
                 auto edx = gPrng().srand_0();

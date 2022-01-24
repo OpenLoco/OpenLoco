@@ -45,7 +45,7 @@ namespace OpenLoco
         uint8_t pad_19F[0x1A3 - 0x19F];
         uint16_t produced_cargo_max[2];        // 0x1A3 (produced_cargo_quantity / 8)
         uint8_t produced_cargo_transported[2]; // 0x1A7 (%)
-        uint8_t history_size[2];               // 0x1A9 (<= 20 * 12)
+        uint8_t historySize[2];                // 0x1A9 (<= 20 * 12)
         uint8_t history_1[20 * 12];            // 0x1AB (20 years, 12 months)
         uint8_t history_2[20 * 12];            // 0x29B
         int32_t history_min_production[2];     // 0x38B

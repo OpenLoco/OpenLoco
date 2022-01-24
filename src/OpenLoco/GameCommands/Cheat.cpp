@@ -89,7 +89,7 @@ namespace OpenLoco::GameCommands
         static uint32_t clearLoan()
         {
             auto company = CompanyManager::getPlayerCompany();
-            company->current_loan = 0;
+            company->currentLoan = 0;
             return 0;
         }
 
@@ -147,14 +147,14 @@ namespace OpenLoco::GameCommands
         static uint32_t toggleBankruptcy(CompanyId targetCompanyId)
         {
             auto company = CompanyManager::get(targetCompanyId);
-            company->challenge_flags ^= CompanyFlags::bankrupt;
+            company->challengeFlags ^= CompanyFlags::bankrupt;
             return 0;
         }
 
         static uint32_t toggleJail(CompanyId targetCompanyId)
         {
             auto company = CompanyManager::get(targetCompanyId);
-            company->jail_status = 30;
+            company->jailStatus = 30;
             return 0;
         }
 
@@ -249,7 +249,7 @@ namespace OpenLoco::GameCommands
         if (flags & Flags::apply)
         {
             auto* company = CompanyManager::get(_updatingCompanyId);
-            company->jail_status = 30;
+            company->jailStatus = 30;
             Ui::WindowManager::invalidate(Ui::WindowType::company, static_cast<Ui::WindowNumber_t>(*_updatingCompanyId));
             Ui::WindowManager::invalidate(Ui::WindowType::news);
             Ui::WindowManager::invalidate(static_cast<Ui::WindowType>(0x2E));

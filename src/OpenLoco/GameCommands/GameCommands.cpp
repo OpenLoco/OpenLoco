@@ -18,7 +18,7 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
+    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
     static loco_global<uint8_t, 0x00508F08> game_command_nest_level;
     static loco_global<CompanyId[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00508F17> paused_state;
@@ -175,7 +175,7 @@ namespace OpenLoco::GameCommands
             return loc_4313C6(esi, regs);
         }
 
-        if (commandRequiresUnpausingGame(command, flags) && _updating_company_id == _player_company[0])
+        if (commandRequiresUnpausingGame(command, flags) && _updatingCompanyId == _player_company[0])
         {
             if (getPauseFlags() & 1)
             {
@@ -198,7 +198,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (_updating_company_id == _player_company[0] && isNetworked())
+        if (_updatingCompanyId == _player_company[0] && isNetworked())
         {
             assert(false);
             registers fnRegs = regs;
@@ -304,10 +304,10 @@ namespace OpenLoco::GameCommands
         // Apply to company money
         CompanyManager::applyPaymentToCompany(CompanyManager::updatingCompanyId(), ebx, getExpenditureType());
 
-        if (ebx != 0 && _updating_company_id == _player_company[0])
+        if (ebx != 0 && _updatingCompanyId == _player_company[0])
         {
             // Add flying cost text
-            CompanyManager::spendMoneyEffect(getPosition() + Map::Pos3{ 0, 0, 24 }, _updating_company_id, ebx);
+            CompanyManager::spendMoneyEffect(getPosition() + Map::Pos3{ 0, 0, 24 }, _updatingCompanyId, ebx);
         }
 
         return ebx;
@@ -319,7 +319,7 @@ namespace OpenLoco::GameCommands
         if (game_command_nest_level != 0)
             return 0x80000000;
 
-        if (_updating_company_id != _player_company[0])
+        if (_updatingCompanyId != _player_company[0])
             return 0x80000000;
 
         if (_gameCommandFlags & Flags::flag_3)
@@ -413,7 +413,7 @@ namespace OpenLoco::GameCommands
         {
             return true;
         }
-        if (_updating_company_id == company || _updating_company_id == CompanyId::neutral)
+        if (_updatingCompanyId == company || _updatingCompanyId == CompanyId::neutral)
         {
             return true;
         }
@@ -460,11 +460,11 @@ namespace OpenLoco::GameCommands
 
     CompanyId getUpdatingCompanyId()
     {
-        return _updating_company_id;
+        return _updatingCompanyId;
     }
 
     void setUpdatingCompanyId(const CompanyId companyId)
     {
-        _updating_company_id = companyId;
+        _updatingCompanyId = companyId;
     }
 }

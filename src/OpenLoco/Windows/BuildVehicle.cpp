@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
 
             // Is vehicle type unlocked
-            if (!(CompanyManager::get(companyId)->unlocked_vehicles[vehicleObjIndex >> 5] & (1 << (vehicleObjIndex & 0x1F))))
+            if (!(CompanyManager::get(companyId)->unlockedVehicles[vehicleObjIndex >> 5] & (1 << (vehicleObjIndex & 0x1F))))
             {
                 continue;
             }
@@ -1140,7 +1140,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C28D2
     static void setDisabledTransportTabs(Ui::Window* window)
     {
-        auto availableVehicles = CompanyManager::get(CompanyId(window->number))->available_vehicles;
+        auto availableVehicles = CompanyManager::get(CompanyId(window->number))->availableVehicles;
         // By shifting by 4 the available_vehicles flags align with the tabs flags
         auto disabledTabs = (availableVehicles << 4) ^ ((1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships));
         window->disabled_widgets = disabledTabs;

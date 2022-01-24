@@ -71,13 +71,13 @@ namespace OpenLoco::TownManager
         for (Town& currTown : towns())
         {
             // Scroll history
-            if (currTown.history_size == std::size(currTown.history))
+            if (currTown.historySize == std::size(currTown.history))
             {
                 for (size_t i = 0; i < std::size(currTown.history) - 1; i++)
                     currTown.history[i] = currTown.history[i + 1];
             }
             else
-                currTown.history_size++;
+                currTown.historySize++;
 
             // Compute population growth.
             uint32_t popSteps = std::max<int32_t>(currTown.population - currTown.history_min_population, 0) / 50;
@@ -94,7 +94,7 @@ namespace OpenLoco::TownManager
                 currTown.history_min_population += popGrowth;
 
                 uint8_t offset = (popGrowth / 50) & 0xFF;
-                for (uint8_t i = 0; i < currTown.history_size; i++)
+                for (uint8_t i = 0; i < currTown.historySize; i++)
                 {
                     int16_t newHistory = currTown.history[i] - offset;
                     currTown.history[i] = newHistory >= 0 ? static_cast<uint8_t>(newHistory) : 0;
@@ -102,12 +102,12 @@ namespace OpenLoco::TownManager
             }
 
             // Write new history point.
-            auto histIndex = std::clamp<int32_t>(currTown.history_size - 1, 0, std::size(currTown.history));
+            auto histIndex = std::clamp<int32_t>(currTown.historySize - 1, 0, std::size(currTown.history));
             currTown.history[histIndex] = popSteps & 0xFF;
 
             // Find historical maximum population.
             uint8_t maxPopulation = 0;
-            for (int i = 0; i < currTown.history_size; i++)
+            for (int i = 0; i < currTown.historySize; i++)
                 maxPopulation = std::max(maxPopulation, currTown.history[i]);
 
             int32_t popOffset = currTown.history_min_population;
@@ -124,7 +124,7 @@ namespace OpenLoco::TownManager
                 currTown.history_min_population -= popOffset;
                 popOffset /= 50;
 
-                for (int i = 0; i < currTown.history_size; i++)
+                for (int i = 0; i < currTown.historySize; i++)
                     currTown.history[i] += popOffset;
             }
 

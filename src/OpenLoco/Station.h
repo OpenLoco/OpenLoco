@@ -21,10 +21,10 @@ namespace OpenLoco
         uint8_t flags{};                    // 0x32
         uint8_t age{};                      // 0x33
         uint8_t rating{};                   // 0x34
-        uint8_t enroute_age{};              // 0x35
+        uint8_t enrouteAge{};              // 0x35
         Speed16 vehicleSpeed{ 0 };          // 0x36 max speed of vehicle that transported the cargo
         uint8_t vehicleAge{};               // 0x38 age of the vehicle (car) that transported the cargo
-        IndustryId industry_id{};           // 0x39
+        IndustryId industryId{};           // 0x39
         uint8_t var_40{};
 
         bool empty() const
@@ -43,7 +43,7 @@ namespace OpenLoco
         }
     };
 
-    constexpr size_t max_cargo_stats = 32;
+    constexpr size_t kMaxCargoStats = 32;
 
     enum class StationType : uint8_t
     {
@@ -82,7 +82,7 @@ namespace OpenLoco
         uint8_t var_29{};
         uint16_t flags{};                               // 0x2A
         TownId town{};                                  // 0x2C
-        StationCargoStats cargo_stats[max_cargo_stats]; // 0x2E
+        StationCargoStats cargoStats[kMaxCargoStats]; // 0x2E
         uint16_t stationTileSize{};                     // 0x1CE
         Pos3 stationTiles[80];                          // 0x1D0
         uint8_t var_3B0{};

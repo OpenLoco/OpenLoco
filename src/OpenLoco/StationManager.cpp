@@ -53,8 +53,8 @@ namespace OpenLoco::StationManager
     {
         if (Game::hasFlags(1u << 0) && !isEditorMode())
         {
-            const auto id = StationId(scenarioTicks() & 0x3FF);
-            auto station = get(id);
+            const auto kId = StationId(scenarioTicks() & 0x3FF);
+            auto station = get(kId);
             if (station != nullptr && !station->empty())
             {
                 station->update();
@@ -463,12 +463,12 @@ namespace OpenLoco::StationManager
                     {
                         continue;
                     }
-                    if (!(station->cargo_stats[cargoType].flags & (1 << 1)))
+                    if (!(station->cargoStats[cargoType].flags & (1 << 1)))
                     {
                         continue;
                     }
 
-                    foundStations.push_back(std::make_pair(elStation->stationId(), station->cargo_stats[cargoType].rating));
+                    foundStations.push_back(std::make_pair(elStation->stationId(), station->cargoStats[cargoType].rating));
                 }
             }
             searchOffset.x = 0;

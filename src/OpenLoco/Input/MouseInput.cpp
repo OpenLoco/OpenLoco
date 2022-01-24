@@ -562,9 +562,9 @@ namespace OpenLoco::Input
 
                                 for (auto& company : CompanyManager::companies())
                                 {
-                                    if (company.headquarters_x == pos.x
-                                        && company.headquarters_y == pos.y
-                                        && company.headquarters_z == pos.z)
+                                    if (company.headquartersX == pos.x
+                                        && company.headquartersY == pos.y
+                                        && company.headquartersZ == pos.z)
                                     {
                                         Ui::Windows::CompanyWindow::open(company.id());
                                         break;
