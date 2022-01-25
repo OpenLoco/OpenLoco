@@ -18,8 +18,8 @@ namespace OpenLoco::Map::TrackData
         int16_t z;     // 0x05
         uint8_t var_07;
         uint8_t var_08;
-        uint8_t flags; // 0x09
-        ConnectionsByRotation connectFlags; // From 0x004F78F8
+        uint8_t flags;                      // 0x09
+        ConnectionsByRotation connectFlags; // From 0x004F78F8 & 0x004F6F1C
     };
 
     namespace PreviewTrackFlags

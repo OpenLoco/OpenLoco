@@ -263,45 +263,45 @@ namespace OpenLoco::Map::TrackData
     } };
 
     const std::vector<PreviewTrack> roadPiece0 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, 15, 0 },
+        PreviewTrack{ 0, 0, 0, 0, 0, 15, 0, generateConnections(0xFF) },
     };
     const std::vector<PreviewTrack> roadPiece1 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, 15, 0 },
+        PreviewTrack{ 0, 0, 0, 0, 0, 15, 0, generateConnections(0xF8) },
     };
     const std::vector<PreviewTrack> roadPiece2 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, 15, 0 },
+        PreviewTrack{ 0, 0, 0, 0, 0, 15, 0, generateConnections(0x3E) },
     };
     const std::vector<PreviewTrack> roadPiece3 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, 7, 0 },
-        PreviewTrack{ 1, 0, -32, 0, 0, 8, PreviewTrackFlags::diagonal },
-        PreviewTrack{ 2, -32, 0, 0, 0, 2, 0 },
-        PreviewTrack{ 3, -32, -32, 0, 0, 7, 0 },
+        PreviewTrack{ 0, 0, 0, 0, 0, 7, 0, generateConnections(0xF8) },
+        PreviewTrack{ 1, 0, -32, 0, 0, 8, PreviewTrackFlags::diagonal, generateConnections(0x02) },
+        PreviewTrack{ 2, -32, 0, 0, 0, 2, 0, generateConnections(0x70) },
+        PreviewTrack{ 3, -32, -32, 0, 0, 7, 0, generateConnections(0xF8) },
     };
     const std::vector<PreviewTrack> roadPiece4 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, 11, 0 },
-        PreviewTrack{ 1, 0, 32, 0, 0, 4, PreviewTrackFlags::diagonal },
-        PreviewTrack{ 2, -32, 0, 0, 0, 1, 0 },
-        PreviewTrack{ 3, -32, 32, 0, 0, 11, 0 },
+        PreviewTrack{ 0, 0, 0, 0, 0, 11, 0, generateConnections(0x3E) },
+        PreviewTrack{ 1, 0, 32, 0, 0, 4, PreviewTrackFlags::diagonal, generateConnections(0x80) },
+        PreviewTrack{ 2, -32, 0, 0, 0, 1, 0, generateConnections(0x1C) },
+        PreviewTrack{ 3, -32, 32, 0, 0, 11, 0, generateConnections(0x3E) },
     };
     const std::vector<PreviewTrack> roadPiece5 = {
-        PreviewTrack{ 0, 0, 0, 0, 16, 15, PreviewTrackFlags::unk4 },
-        PreviewTrack{ 1, -32, 0, 0, 16, 207, PreviewTrackFlags::unk4 },
+        PreviewTrack{ 0, 0, 0, 0, 16, 15, PreviewTrackFlags::unk4, generateConnections(0xFF) },
+        PreviewTrack{ 1, -32, 0, 0, 16, 207, PreviewTrackFlags::unk4, generateConnections(0xFF) },
     };
     const std::vector<PreviewTrack> roadPiece6 = {
-        PreviewTrack{ 0, 0, 0, -16, 16, 63, PreviewTrackFlags::unk4 },
-        PreviewTrack{ 1, -32, 0, -16, 16, 15, PreviewTrackFlags::unk4 },
+        PreviewTrack{ 0, 0, 0, -16, 16, 63, PreviewTrackFlags::unk4, generateConnections(0xFF) },
+        PreviewTrack{ 1, -32, 0, -16, 16, 15, PreviewTrackFlags::unk4, generateConnections(0xFF) },
     };
     const std::vector<PreviewTrack> roadPiece7 = {
-        PreviewTrack{ 0, 0, 0, 0, 16, 207, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk2 },
+        PreviewTrack{ 0, 0, 0, 0, 16, 207, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk2, generateConnections(0xFF) },
     };
     const std::vector<PreviewTrack> roadPiece8 = {
-        PreviewTrack{ 0, 0, 0, -16, 16, 63, PreviewTrackFlags::unk1 | PreviewTrackFlags::unk0 },
+        PreviewTrack{ 0, 0, 0, -16, 16, 63, PreviewTrackFlags::unk1 | PreviewTrackFlags::unk0, generateConnections(0xFF) },
     };
     const std::vector<PreviewTrack> roadPiece9 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, 3, 0 },
+        PreviewTrack{ 0, 0, 0, 0, 0, 3, 0, generateConnections(0x38) },
     };
 
-    // 0x004F6D1C
+    // 0x004F6D1C, 0x004F6F1C
     const std::array<std::vector<PreviewTrack>, 10> roadPieces = { { roadPiece0, roadPiece1, roadPiece2, roadPiece3, roadPiece4, roadPiece5, roadPiece6, roadPiece7, roadPiece8, roadPiece9 } };
 
     const std::vector<PreviewTrack>& getTrackPiece(size_t trackId)
