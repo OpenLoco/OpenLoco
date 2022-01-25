@@ -2,6 +2,7 @@
 
 #include "../../Types.hpp"
 #include "../Map.hpp"
+#include <array>
 #include <cstddef>
 #include <cstdlib>
 #include <vector>
