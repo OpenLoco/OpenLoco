@@ -538,10 +538,10 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C6118
     void update()
     {
-        _tooltipNotShownTicks = _tooltipNotShownTicks + timeSinceLastTick;
+        _tooltipNotShownTicks = _tooltipNotShownTicks + _timeSinceLastTick;
 
         // 1000 tick update
-        _thousandthTickCounter = _thousandthTickCounter + timeSinceLastTick;
+        _thousandthTickCounter = _thousandthTickCounter + _timeSinceLastTick;
         if (_thousandthTickCounter >= 1000)
         {
             _thousandthTickCounter = 0;
