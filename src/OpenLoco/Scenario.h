@@ -37,7 +37,7 @@ namespace OpenLoco::Scenario
     {
         company_value,
         vehicle_profit,
-        performance_index,
+        performanceIndex,
         cargo_delivery,
     };
 

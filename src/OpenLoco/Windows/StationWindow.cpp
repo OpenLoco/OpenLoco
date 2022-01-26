@@ -370,9 +370,9 @@ namespace OpenLoco::Ui::Windows::Station
             auto station = StationManager::get(StationId(self->number));
             uint8_t cargoTypeCount = 0;
 
-            for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+            for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
             {
-                auto& stats = station->cargo_stats[cargoId];
+                auto& stats = station->cargoStats[cargoId];
 
                 if (!stats.isAccepted())
                     continue;
@@ -444,7 +444,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             auto station = StationManager::get(StationId(self->number));
             *scrollHeight = 0;
-            for (const auto& cargoStats : station->cargo_stats)
+            for (const auto& cargoStats : station->cargoStats)
             {
                 if (cargoStats.quantity != 0)
                 {
@@ -471,7 +471,7 @@ namespace OpenLoco::Ui::Windows::Station
             const auto station = StationManager::get(StationId(self.number));
             int16_t y = 1;
             auto cargoId = 0;
-            for (const auto& cargoStats : station->cargo_stats)
+            for (const auto& cargoStats : station->cargoStats)
             {
                 // auto& cargo = station->cargo_stats[i];
                 auto& cargo = cargoStats;
@@ -530,7 +530,7 @@ namespace OpenLoco::Ui::Windows::Station
             }
 
             uint16_t totalUnits = 0;
-            for (const auto& stats : station->cargo_stats)
+            for (const auto& stats : station->cargoStats)
                 totalUnits += stats.quantity;
 
             if (totalUnits == 0)
@@ -644,7 +644,7 @@ namespace OpenLoco::Ui::Windows::Station
             *scrollHeight = 0;
             for (uint8_t i = 0; i < 32; i++)
             {
-                if (station->cargo_stats[i].origin != StationId::null)
+                if (station->cargoStats[i].origin != StationId::null)
                     *scrollHeight += 10;
             }
         }
@@ -677,7 +677,7 @@ namespace OpenLoco::Ui::Windows::Station
             const auto station = StationManager::get(StationId(self.number));
             int16_t y = 0;
             auto cargoId = 0;
-            for (const auto& cargoStats : station->cargo_stats)
+            for (const auto& cargoStats : station->cargoStats)
             {
                 auto& cargo = cargoStats;
                 if (cargo.empty())
@@ -980,7 +980,7 @@ namespace OpenLoco::Ui::Windows::Station
                 auto xOffset = widget.left + self->x + 4;
                 auto totalRatingBars = 0;
 
-                for (const auto& cargoStats : station->cargo_stats)
+                for (const auto& cargoStats : station->cargoStats)
                 {
                     auto& cargo = cargoStats;
                     if (!cargo.empty())

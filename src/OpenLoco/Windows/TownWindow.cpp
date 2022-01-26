@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                     // Set new history entry.
                     uint8_t historyEntry = std::min<uint8_t>(town->population / 50, 255);
-                    town->history[town->history_size - 1] = historyEntry;
+                    town->history[town->historySize - 1] = historyEntry;
 
                     // Play construction sound at the town centre.
                     int16_t tileZ = TileManager::getHeight({ town->x, town->y }).landHeight;
@@ -421,7 +421,7 @@ namespace OpenLoco::Ui::Windows::Town
             int16_t year = getCurrentYear();
             int8_t yearSkip = 0;
 
-            for (uint8_t i = town->history_size - 1; i > 0; i--)
+            for (uint8_t i = town->historySize - 1; i > 0; i--)
             {
                 const uint16_t xPos = 41 + i;
                 const uint16_t yPos = 2;
@@ -445,7 +445,7 @@ namespace OpenLoco::Ui::Windows::Town
                 uint16_t yPos2 = -town->history[i + 1] + (self->height - 57);
 
                 // Do not draw current segment yet; it may be zeroed.
-                if (i < town->history_size - 1)
+                if (i < town->historySize - 1)
                     Gfx::drawLine(*clipped, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->getColour(WindowColour::secondary), 7));
 
                 month--;

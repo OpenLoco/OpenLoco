@@ -463,12 +463,12 @@ namespace OpenLoco::StationManager
                     {
                         continue;
                     }
-                    if (!(station->cargo_stats[cargoType].flags & (1 << 1)))
+                    if (!(station->cargoStats[cargoType].flags & (1 << 1)))
                     {
                         continue;
                     }
 
-                    foundStations.push_back(std::make_pair(elStation->stationId(), station->cargo_stats[cargoType].rating));
+                    foundStations.push_back(std::make_pair(elStation->stationId(), station->cargoStats[cargoType].rating));
                 }
             }
             searchOffset.x = 0;

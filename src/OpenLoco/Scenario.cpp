@@ -419,7 +419,7 @@ namespace OpenLoco::Scenario
                 args.push(*objectiveMonthlyVehicleProfit);
                 break;
 
-            case Scenario::objective_type::performance_index:
+            case Scenario::objective_type::performanceIndex:
             {
                 args.push(StringIds::achieve_a_performance_index_of);
                 int16_t performanceIndex = objectivePerformanceIndex * 10;

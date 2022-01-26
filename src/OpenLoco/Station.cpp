@@ -26,8 +26,8 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco
 {
-    constexpr uint8_t min_cargo_rating = 0;
-    constexpr uint8_t max_cargo_rating = 200;
+    constexpr uint8_t kMinCargoRating = 0;
+    constexpr uint8_t kMaxCargoRating = 200;
     constexpr uint8_t catchmentSize = 4;
 
     struct CargoSearchState
@@ -35,9 +35,9 @@ namespace OpenLoco
     private:
         inline static loco_global<uint8_t[map_size], 0x00F00484> _map;
         inline static loco_global<uint32_t, 0x0112C68C> _filter;
-        inline static loco_global<uint32_t[max_cargo_stats], 0x0112C690> _score;
+        inline static loco_global<uint32_t[kMaxCargoStats], 0x0112C690> _score;
         inline static loco_global<uint32_t, 0x0112C710> _producedCargoTypes;
-        inline static loco_global<IndustryId[max_cargo_stats], 0x0112C7D2> _industry;
+        inline static loco_global<IndustryId[kMaxCargoStats], 0x0112C7D2> _industry;
         inline static loco_global<uint8_t, 0x0112C7F2> _byte_112C7F2;
 
     public:
@@ -113,7 +113,7 @@ namespace OpenLoco
 
         void resetScores()
         {
-            std::fill_n(_score.get(), max_cargo_stats, 0);
+            std::fill_n(_score.get(), kMaxCargoStats, 0);
         }
 
         uint32_t score(const uint8_t cargo)
@@ -148,7 +148,7 @@ namespace OpenLoco
 
         void resetIndustryMap()
         {
-            std::fill_n(_industry.get(), max_cargo_stats, IndustryId::null);
+            std::fill_n(_industry.get(), kMaxCargoStats, IndustryId::null);
         }
 
         IndustryId getIndustry(const uint8_t cargo) const
@@ -177,17 +177,17 @@ namespace OpenLoco
         CargoSearchState cargoSearchState;
         uint32_t currentAcceptedCargo = calcAcceptedCargo(cargoSearchState);
         uint32_t originallyAcceptedCargo = 0;
-        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
         {
-            auto& cs = cargo_stats[cargoId];
-            cs.industry_id = cargoSearchState.getIndustry(cargoId);
-            if (cs.isAccepted())
+            auto& stationCargoStats = cargoStats[cargoId];
+            stationCargoStats.industryId = cargoSearchState.getIndustry(cargoId);
+            if (stationCargoStats.isAccepted())
             {
                 originallyAcceptedCargo |= (1 << cargoId);
             }
 
             bool isNowAccepted = (currentAcceptedCargo & (1 << cargoId)) != 0;
-            cs.isAccepted(isNowAccepted);
+            stationCargoStats.isAccepted(isNowAccepted);
         }
 
         if (originallyAcceptedCargo != currentAcceptedCargo)
@@ -203,7 +203,7 @@ namespace OpenLoco
     // 0x00492683
     void Station::alertCargoAcceptanceChange(uint32_t oldCargoAcc, uint32_t newCargoAcc)
     {
-        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
         {
             bool acceptedBefore = (oldCargoAcc & (1 << cargoId)) != 0;
             bool acceptedNow = (newCargoAcc & (1 << cargoId)) != 0;
@@ -404,7 +404,7 @@ namespace OpenLoco
 
         uint32_t acceptedCargos = 0;
 
-        for (uint8_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        for (uint8_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
         {
             if (cargoSearchState.score(cargoId) >= 8)
             {
@@ -518,10 +518,10 @@ namespace OpenLoco
     // 0x0042F489
     void Station::deliverCargoToStation(const uint8_t cargoType, const uint8_t cargoQuantity)
     {
-        auto& cargoStats = cargo_stats[cargoType];
-        cargoStats.quantity = Math::Bound::add(cargoStats.quantity, cargoQuantity);
-        cargoStats.enroute_age = 0;
-        cargoStats.origin = id();
+        auto& stationCargoStat = cargoStats[cargoType];
+        stationCargoStat.quantity = Math::Bound::add(stationCargoStat.quantity, cargoQuantity);
+        stationCargoStat.enrouteAge = 0;
+        stationCargoStat.origin = id();
         updateCargoDistribution();
     }
 
@@ -539,21 +539,21 @@ namespace OpenLoco
         char* ptr = buffer;
         *ptr = '\0';
 
-        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
         {
-            auto& stats = cargo_stats[cargoId];
+            auto& stationCargoStat = cargoStats[cargoId];
 
-            if (stats.quantity == 0)
+            if (stationCargoStat.quantity == 0)
                 continue;
 
             if (*buffer != '\0')
                 ptr = StringManager::formatString(ptr, StringIds::waiting_cargo_separator);
 
             loco_global<uint32_t, 0x112C826> _common_format_args;
-            *_common_format_args = stats.quantity;
+            *_common_format_args = stationCargoStat.quantity;
 
             auto cargo = ObjectManager::get<CargoObject>(cargoId);
-            string_id unit_name = stats.quantity == 1 ? cargo->unit_name_singular : cargo->unit_name_plural;
+            string_id unit_name = stationCargoStat.quantity == 1 ? cargo->unit_name_singular : cargo->unit_name_plural;
             ptr = StringManager::formatString(ptr, unit_name, &*_common_format_args);
         }
 
@@ -571,45 +571,45 @@ namespace OpenLoco
         var_3B1 = std::min(var_3B1 + 1, 255);
 
         auto& rng = gPrng();
-        for (uint32_t i = 0; i < max_cargo_stats; i++)
+        for (uint32_t i = 0; i < kMaxCargoStats; i++)
         {
-            auto& cargo = cargo_stats[i];
-            if (!cargo.empty())
+            auto& stationCargo = cargoStats[i];
+            if (!stationCargo.empty())
             {
-                if (cargo.quantity != 0 && cargo.origin != id())
+                if (stationCargo.quantity != 0 && stationCargo.origin != id())
                 {
-                    cargo.enroute_age = std::min(cargo.enroute_age + 1, 255);
+                    stationCargo.enrouteAge = std::min(stationCargo.enrouteAge + 1, 255);
                 }
-                cargo.age = std::min(cargo.age + 1, 255);
+                stationCargo.age = std::min(stationCargo.age + 1, 255);
 
-                auto targetRating = calculateCargoRating(cargo);
+                auto targetRating = calculateCargoRating(stationCargo);
                 // Limit to +/- 2 minimum change
-                auto ratingDelta = std::clamp(targetRating - cargo.rating, -2, 2);
-                cargo.rating += ratingDelta;
+                auto ratingDelta = std::clamp(targetRating - stationCargo.rating, -2, 2);
+                stationCargo.rating += ratingDelta;
 
-                if (cargo.rating <= 50)
+                if (stationCargo.rating <= 50)
                 {
                     // Rating < 25%, decrease cargo
-                    if (cargo.quantity >= 400)
+                    if (stationCargo.quantity >= 400)
                     {
-                        cargo.quantity -= rng.randNext(1, 32);
+                        stationCargo.quantity -= rng.randNext(1, 32);
                         quantityUpdated = true;
                     }
-                    else if (cargo.quantity >= 200)
+                    else if (stationCargo.quantity >= 200)
                     {
-                        cargo.quantity -= rng.randNext(1, 8);
+                        stationCargo.quantity -= rng.randNext(1, 8);
                         quantityUpdated = true;
                     }
                 }
-                if (cargo.rating >= 100)
+                if (stationCargo.rating >= 100)
                 {
                     atLeastOneGoodRating = true;
                 }
-                if (cargo.rating <= 100 && cargo.quantity != 0)
+                if (stationCargo.rating <= 100 && stationCargo.quantity != 0)
                 {
-                    if (cargo.rating <= rng.randNext(0, 127))
+                    if (stationCargo.rating <= rng.randNext(0, 127))
                     {
-                        cargo.quantity = std::max(0, cargo.quantity - rng.randNext(1, 4));
+                        stationCargo.quantity = std::max(0, stationCargo.quantity - rng.randNext(1, 4));
                         quantityUpdated = true;
                     }
                 }
@@ -697,7 +697,7 @@ namespace OpenLoco
             }
         }
 
-        return std::clamp<int32_t>(rating, min_cargo_rating, max_cargo_rating);
+        return std::clamp<int32_t>(rating, kMinCargoRating, kMaxCargoRating);
     }
 
     // 0x004929DB
@@ -706,15 +706,15 @@ namespace OpenLoco
         invalidateWindow();
         WindowManager::invalidate(Ui::WindowType::stationList);
         bool hasChanged = false;
-        for (uint8_t i = 0; i < max_cargo_stats; ++i)
+        for (uint8_t i = 0; i < kMaxCargoStats; ++i)
         {
-            auto& cargoStat = cargo_stats[i];
+            auto& stationCargo = cargoStats[i];
             auto newAmount = 0;
-            if (cargoStat.quantity != 0)
+            if (stationCargo.quantity != 0)
             {
                 if (stationTileSize != 0)
                 {
-                    newAmount = cargoStat.quantity / stationTileSize;
+                    newAmount = stationCargo.quantity / stationTileSize;
                     auto* cargoObj = ObjectManager::get<CargoObject>(i);
                     newAmount += (1 << cargoObj->var_14) - 1;
                     newAmount >>= cargoObj->var_14;
@@ -722,9 +722,9 @@ namespace OpenLoco
                     newAmount = std::min(newAmount, 15);
                 }
             }
-            if (cargoStat.var_40 != newAmount)
+            if (stationCargo.var_40 != newAmount)
             {
-                cargoStat.var_40 = newAmount;
+                stationCargo.var_40 = newAmount;
                 hasChanged = true;
             }
         }

@@ -40,7 +40,7 @@ namespace OpenLoco
         int16_t company_ratings[15];    // 0x3A
         uint16_t companies_with_rating; // 0x58
         TownSize size;                  // 0x5A
-        uint8_t history_size;           // 0x5B (<= 20 * 12)
+        uint8_t historySize;            // 0x5B (<= 20 * 12)
         uint8_t history[20 * 12];       // 0x5C (20 years, 12 months)
         int32_t history_min_population; // 0x14C
         uint8_t pad_150[0x158 - 0x150];

@@ -472,7 +472,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::window_browse_date, &saveInfo.date);
 
         // Challenge progress
-        auto flags = saveInfo.challenge_flags;
+        auto flags = saveInfo.challengeFlags;
         if (!(flags & CompanyFlags::challengeBeatenByOpponent))
         {
             auto stringId = StringIds::window_browse_challenge_completed;

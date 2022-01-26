@@ -134,9 +134,9 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         buffer = StringManager::formatString(buffer, StringIds::station_accepts);
         bool seperator = false; // First cargo item does not need a seperator
-        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
+        for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
         {
-            auto& stats = station->cargo_stats[cargoId];
+            auto& stats = station->cargoStats[cargoId];
 
             if (!stats.isAccepted())
             {
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         for (auto& company : CompanyManager::companies())
         {
-            if (company.headquarters_x != pos.x || company.headquarters_y != pos.y || company.headquarters_z != pos.z)
+            if (company.headquartersX != pos.x || company.headquartersY != pos.y || company.headquartersZ != pos.z)
             {
                 continue;
             }
@@ -765,7 +765,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto height = building->baseZ();
         for (auto& company : CompanyManager::companies())
         {
-            if (company.headquarters_x == firstTile.x && company.headquarters_y == firstTile.y && company.headquarters_z == height)
+            if (company.headquartersX == firstTile.x && company.headquartersY == firstTile.y && company.headquartersZ == height)
             {
                 FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::stringid_headquarters, company.name);
                 return true;

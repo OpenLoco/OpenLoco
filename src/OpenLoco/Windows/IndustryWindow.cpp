@@ -607,7 +607,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // used to select the correct history
             const uint8_t productionTabWidx = self->current_tab + widx::tab_industry;
             const uint8_t productionNum = productionTabWidx - widx::tab_production;
-            for (uint8_t i = industry->history_size[productionNum] - 1; i > 0; i--)
+            for (uint8_t i = industry->historySize[productionNum] - 1; i > 0; i--)
             {
                 const uint16_t xPos = self->x + 41 + i;
                 const uint16_t yPos = self->y + 56;
@@ -632,7 +632,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 const uint16_t yPos2 = graphBottom - history[i + 1];
 
                 // Do not draw current segment yet; it may be zeroed.
-                if (i < industry->history_size[productionNum] - 1)
+                if (i < industry->historySize[productionNum] - 1)
                 {
                     if (yPos1 <= graphBottom)
                     {

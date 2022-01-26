@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 auto company = CompanyManager::getPlayerCompany();
                 auto args = FormatArguments::common();
-                args.push(company->current_loan);
+                args.push(company->currentLoan);
 
                 Gfx::drawString_494B3F(
                     *context,

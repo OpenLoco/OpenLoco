@@ -190,7 +190,7 @@ namespace OpenLoco
         const auto thinkFunc2 = _funcs_43079E[var_4A6];
         thinkFunc2(this);
 
-        if (headquarters_x != -1 || (challenge_flags & CompanyFlags::bankrupt) || ((challenge_flags & CompanyFlags::unk0) == 0))
+        if (headquartersX != -1 || (challengeFlags & CompanyFlags::bankrupt) || ((challengeFlags & CompanyFlags::unk0) == 0))
         {
             return;
         }
@@ -277,10 +277,10 @@ namespace OpenLoco
         }
         updateDailyLogic();
         var_8BC4 = Math::Bound::sub(var_8BC4, 1u);
-        if (jail_status != 0)
+        if (jailStatus != 0)
         {
-            jail_status = Math::Bound::sub(jail_status, 1u);
-            if (jail_status == 0)
+            jailStatus = Math::Bound::sub(jailStatus, 1u);
+            if (jailStatus == 0)
             {
                 Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id()));
                 Ui::WindowManager::invalidate(Ui::WindowType::news);
@@ -359,7 +359,7 @@ namespace OpenLoco
     {
         auto vehicleTypeIndex = vehicleIndex >> 5;
 
-        return (unlocked_vehicles[vehicleTypeIndex] & (1 << (vehicleIndex & 0x1F))) != 0;
+        return (unlockedVehicles[vehicleTypeIndex] & (1 << (vehicleIndex & 0x1F))) != 0;
     }
 
     // 0x00487FCC
@@ -390,10 +390,10 @@ namespace OpenLoco
 
     void Company::updateLoanAutorepay()
     {
-        if (current_loan > 0 && cash > 0 && ((challenge_flags & CompanyFlags::autopayLoan) != 0))
+        if (currentLoan > 0 && cash > 0 && ((challengeFlags & CompanyFlags::autopayLoan) != 0))
         {
             GameCommands::ChangeLoanArgs args{};
-            args.newLoan = current_loan - std::max<currency32_t>(0, std::min<currency32_t>(current_loan, cash.asInt64()));
+            args.newLoan = currentLoan - std::max<currency32_t>(0, std::min<currency32_t>(currentLoan, cash.asInt64()));
 
             GameCommands::setUpdatingCompanyId(id());
             GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -450,15 +450,15 @@ namespace OpenLoco
     // 0x0042F07B
     void Company::updateHeadquartersColour()
     {
-        if (headquarters_x == -1)
+        if (headquartersX == -1)
             return;
 
         Colour_t colour = mainColours.primary;
-        auto hqPos = Map::TilePos2(Map::Pos2(headquarters_x, headquarters_y));
-        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(0, 0), headquarters_z, colour);
-        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 0), headquarters_z, colour);
-        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 1), headquarters_z, colour);
-        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(0, 1), headquarters_z, colour);
+        auto hqPos = Map::TilePos2(Map::Pos2(headquartersX, headquartersY));
+        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(0, 0), headquartersZ, colour);
+        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 0), headquartersZ, colour);
+        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 1), headquartersZ, colour);
+        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(0, 1), headquartersZ, colour);
     }
 
     // 0x00437F47

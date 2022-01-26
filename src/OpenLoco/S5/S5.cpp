@@ -152,9 +152,9 @@ namespace OpenLoco::S5
         StringManager::formatString(saveDetails->company, sizeof(saveDetails->company), playerCompany.name);
         StringManager::formatString(saveDetails->owner, sizeof(saveDetails->owner), playerCompany.ownerName);
         saveDetails->date = gameState.currentDay;
-        saveDetails->performance_index = playerCompany.performanceIndex;
+        saveDetails->performanceIndex = playerCompany.performanceIndex;
         saveDetails->challenge_progress = playerCompany.challengeProgress;
-        saveDetails->challenge_flags = playerCompany.challengeFlags;
+        saveDetails->challengeFlags = playerCompany.challengeFlags;
         std::strncpy(saveDetails->scenario, gameState.scenarioName, sizeof(saveDetails->scenario));
         drawPreviewImage(saveDetails->image, { 250, 200 });
         return saveDetails;

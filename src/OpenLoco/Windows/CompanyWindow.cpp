@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::drawTabs(self, context);
             Common::drawCompanySelect(self, context);
             const auto company = CompanyManager::get(CompanyId(self->number));
-            const auto competitor = ObjectManager::get<CompetitorObject>(company->competitor_id);
+            const auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
 
             // Draw 'owner' label
             {
@@ -205,14 +205,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw company owner image.
             {
-                const uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary) + 1;
+                const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary) + 1;
                 const uint16_t x = self->x + self->widgets[widx::face].left + 1;
                 const uint16_t y = self->y + self->widgets[widx::face].top + 1;
                 Gfx::drawImage(context, x, y, image);
             }
 
             // If the owner's been naughty, draw some jail bars over them.
-            if (company->jail_status != 0)
+            if (company->jailStatus != 0)
             {
                 const uint32_t image = ImageIds::owner_jailed;
                 const uint16_t x = self->x + self->widgets[widx::face].left + 1;
@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw owner name
             {
-                auto args = FormatArguments::common(company->owner_name);
+                auto args = FormatArguments::common(company->ownerName);
                 auto& widget = self->widgets[widx::change_owner_name];
                 auto origin = Ui::Point(self->x + (widget.left + widget.right) / 2, self->y + widget.top + 5);
                 Gfx::drawStringCentredWrapped(
@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::change_owner_name:
                 {
                     auto company = CompanyManager::get(CompanyId(self->number));
-                    TextInput::openTextInput(self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
+                    TextInput::openTextInput(self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->ownerName, widgetIndex, nullptr);
                     break;
                 }
             }
@@ -461,12 +461,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             const auto& company = CompanyManager::get(CompanyId(self->number));
 
-            if (company->observation_thing == EntityId::null)
+            if (company->observationThing == EntityId::null)
             {
                 // Observing a certain location?
-                if (company->observation_x != -1)
+                if (company->observationX != -1)
                 {
-                    auto tileZAndWater = TileManager::getHeight({ company->observation_x, company->observation_y });
+                    auto tileZAndWater = TileManager::getHeight({ company->observationX, company->observationY });
                     coord_t tileZ = tileZAndWater.landHeight;
                     coord_t waterZ = tileZAndWater.waterHeight;
                     if (waterZ != 0)
@@ -477,8 +477,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     // loc_43410A
                     int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                     SavedView view(
-                        company->observation_x,
-                        company->observation_y,
+                        company->observationX,
+                        company->observationY,
                         ZoomLevel::half,
                         rotation,
                         static_cast<int16_t>(tileZ + 16));
@@ -513,7 +513,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             else
             {
                 // loc_434170
-                auto thing = EntityManager::get<OpenLoco::EntityBase>(company->observation_thing);
+                auto thing = EntityManager::get<OpenLoco::EntityBase>(company->observationThing);
                 auto* vehicle = thing->asVehicle();
                 if (vehicle == nullptr)
                 {
@@ -679,7 +679,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | (1 << 30);
 
             self->disabled_widgets &= ~(1 << widx::centre_on_viewport);
-            if (company->headquarters_x == -1)
+            if (company->headquartersX == -1)
             {
                 self->disabled_widgets |= (1 << widx::centre_on_viewport);
             }
@@ -716,7 +716,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void drawAIdetails(Gfx::Context& context, const int32_t x, int32_t& y, const OpenLoco::Company& company)
         {
-            const auto competitor = ObjectManager::get<CompetitorObject>(company.competitor_id);
+            const auto competitor = ObjectManager::get<CompetitorObject>(company.competitorId);
             {
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->intelligence);
@@ -769,14 +769,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             {
                 FormatArguments args{};
-                formatPerformanceIndex(company->performance_index, args);
+                formatPerformanceIndex(company->performanceIndex, args);
 
                 string_id formatId = StringIds::company_details_performance;
-                if (company->challenge_flags & CompanyFlags::decreasedPerformance)
+                if (company->challengeFlags & CompanyFlags::decreasedPerformance)
                 {
                     formatId = StringIds::company_details_performance_decreasing;
                 }
-                else if (company->challenge_flags & CompanyFlags::increasedPerformance)
+                else if (company->challengeFlags & CompanyFlags::increasedPerformance)
                 {
                     formatId = StringIds::company_details_performance_increasing;
                 }
@@ -785,7 +785,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             {
-                auto args = FormatArguments::common(company->owner_name);
+                auto args = FormatArguments::common(company->ownerName);
                 Gfx::drawString_494BBF(*context, x, y, 213, Colour::black, StringIds::owner_label, &args);
                 y += 10;
             }
@@ -815,7 +815,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 Gfx::drawStringCentred(*context, x, y, Colour::black, StringIds::wcolour2_headquarters);
             }
 
-            if (company->headquarters_x == -1)
+            if (company->headquartersX == -1)
             {
                 auto width = self->widgets[widx::viewport].width();
                 Ui::Point loc = {
@@ -1065,7 +1065,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self->callPrepareDraw();
             auto company = CompanyManager::get(CompanyId(self->number));
-            if (company->headquarters_x == -1)
+            if (company->headquartersX == -1)
             {
                 // If headquarters not placed destroy the viewport
                 self->viewportRemove(0);
@@ -1074,9 +1074,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
             int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
             Map::Pos3 loc = {
-                static_cast<coord_t>(company->headquarters_x + 32),
-                static_cast<coord_t>(company->headquarters_y + 32),
-                static_cast<coord_t>((company->headquarters_z + 8) * 4)
+                static_cast<coord_t>(company->headquartersX + 32),
+                static_cast<coord_t>(company->headquartersY + 32),
+                static_cast<coord_t>((company->headquartersZ + 8) * 4)
             };
             SavedView view{
                 loc.x,
@@ -1581,7 +1581,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         enum widx
         {
             scrollview = 11,
-            current_loan,
+            currentLoan,
             loan_decrease,
             loan_increase,
             loan_autopay,
@@ -1615,7 +1615,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             args.push<uint32_t>(0);
             args.push<uint16_t>(0);
             // Used for the loan stepper current value at offset 4
-            args.push(company->current_loan);
+            args.push(company->currentLoan);
 
             self->widgets[Common::widx::frame].right = self->width - 1;
             self->widgets[Common::widx::frame].bottom = self->height - 1;
@@ -1633,12 +1633,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if (company->id() == CompanyManager::getControllingId())
             {
-                self->widgets[widx::current_loan].type = WidgetType::textbox;
+                self->widgets[widx::currentLoan].type = WidgetType::textbox;
                 self->widgets[widx::loan_decrease].type = WidgetType::button;
                 self->widgets[widx::loan_increase].type = WidgetType::button;
                 self->widgets[widx::loan_autopay].type = WidgetType::checkbox;
 
-                if ((company->challenge_flags & CompanyFlags::autopayLoan) != 0)
+                if ((company->challengeFlags & CompanyFlags::autopayLoan) != 0)
                 {
                     self->activated_widgets |= (1ULL << Finances::widx::loan_autopay);
                 }
@@ -1649,7 +1649,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
             else
             {
-                self->widgets[widx::current_loan].type = WidgetType::none;
+                self->widgets[widx::currentLoan].type = WidgetType::none;
                 self->widgets[widx::loan_decrease].type = WidgetType::none;
                 self->widgets[widx::loan_increase].type = WidgetType::none;
                 self->widgets[widx::loan_autopay].type = WidgetType::none;
@@ -1725,7 +1725,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 Gfx::drawString_494B3F(
                     *context,
                     self->x + 7,
-                    self->y + self->widgets[widx::current_loan].top,
+                    self->y + self->widgets[widx::currentLoan].top,
                     Colour::black,
                     StringIds::company_current_loan);
             }
@@ -1737,8 +1737,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push<uint16_t>(loanInterestRate);
                 Gfx::drawString_494B3F(
                     *context,
-                    self->x + self->widgets[widx::current_loan].right + 3,
-                    self->y + self->widgets[widx::current_loan].top + 1,
+                    self->x + self->widgets[widx::currentLoan].right + 3,
+                    self->y + self->widgets[widx::currentLoan].top + 1,
                     Colour::black,
                     StringIds::interest_per_year,
                     &args);
@@ -1750,7 +1750,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 auto args = FormatArguments::common(company->cash);
 
                 string_id cash_format = StringIds::cash_positive;
-                if ((company->challenge_flags & CompanyFlags::bankrupt) != 0)
+                if ((company->challengeFlags & CompanyFlags::bankrupt) != 0)
                     cash_format = StringIds::cash_bankrupt;
                 if (company->cash.var_04 < 0)
                     cash_format = StringIds::cash_negative;
@@ -1758,7 +1758,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 Gfx::drawString_494B3F(
                     *context,
                     self->x + 7,
-                    self->y + self->widgets[widx::current_loan].top + 13,
+                    self->y + self->widgets[widx::currentLoan].top + 13,
                     Colour::black,
                     cash_format,
                     &args);
@@ -1772,7 +1772,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 Gfx::drawString_494B3F(
                     *context,
                     self->x + 7,
-                    self->y + self->widgets[widx::current_loan].top + 26,
+                    self->y + self->widgets[widx::currentLoan].top + 26,
                     Colour::black,
                     StringIds::company_value,
                     &args);
@@ -1786,7 +1786,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 Gfx::drawString_494B3F(
                     *context,
                     self->x + 7,
-                    self->y + self->widgets[widx::current_loan].top + 39,
+                    self->y + self->widgets[widx::currentLoan].top + 39,
                     Colour::black,
                     StringIds::profit_from_vehicles,
                     &args);
@@ -1919,7 +1919,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::loan_autopay:
                 {
                     auto company = CompanyManager::get(CompanyId(self->number));
-                    company->challenge_flags ^= CompanyFlags::autopayLoan;
+                    company->challengeFlags ^= CompanyFlags::autopayLoan;
                     break;
                 }
             }
@@ -1939,7 +1939,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::loan_decrease:
                 {
                     auto company = CompanyManager::get(CompanyId(self->number));
-                    if (company->current_loan == 0)
+                    if (company->currentLoan == 0)
                         return;
 
                     currency32_t stepSize{};
@@ -1951,7 +1951,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         stepSize = 100000;
 
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = std::max<currency32_t>(0, company->current_loan - stepSize);
+                    args.newLoan = std::max<currency32_t>(0, company->currentLoan - stepSize);
 
                     GameCommands::setErrorTitle(StringIds::cant_pay_back_loan);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -1969,7 +1969,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         stepSize = 100000;
 
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = CompanyManager::get(CompanyId(self->number))->current_loan + stepSize;
+                    args.newLoan = CompanyManager::get(CompanyId(self->number))->currentLoan + stepSize;
 
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -2366,7 +2366,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             Company* playerCompany = CompanyManager::getPlayerCompany();
 
-            if ((playerCompany->challenge_flags & CompanyFlags::challengeCompleted) != 0)
+            if ((playerCompany->challengeFlags & CompanyFlags::challengeCompleted) != 0)
             {
                 uint16_t years = objectiveCompletedChallengeInMonths / 12;
                 uint16_t months = objectiveCompletedChallengeInMonths % 12;
@@ -2376,19 +2376,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            if ((playerCompany->challenge_flags & CompanyFlags::challengeFailed) != 0)
+            if ((playerCompany->challengeFlags & CompanyFlags::challengeFailed) != 0)
             {
                 Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::failed_you_failed_to_complete_the_challenge);
                 return;
             }
 
-            if ((playerCompany->challenge_flags & CompanyFlags::challengeBeatenByOpponent) != 0)
+            if ((playerCompany->challengeFlags & CompanyFlags::challengeBeatenByOpponent) != 0)
             {
                 uint16_t years = objectiveCompletedChallengeInMonths / 12;
                 uint16_t months = objectiveCompletedChallengeInMonths % 12;
 
                 FormatArguments args{};
-                args.push(CompanyManager::getOpponent()->owner_name);
+                args.push(CompanyManager::getOpponent()->ownerName);
                 args.skip(2);
                 args.push(years);
                 args.push(months);
@@ -2662,10 +2662,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void drawCompanySelect(const Window* const self, Gfx::Context* const context)
         {
             const auto company = CompanyManager::get(CompanyId(self->number));
-            const auto competitor = ObjectManager::get<CompetitorObject>(company->competitor_id);
+            const auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
 
             // Draw company owner face.
-            const uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
+            const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
             const uint16_t x = self->x + self->widgets[Common::widx::company_select].left + 1;
             const uint16_t y = self->y + self->widgets[Common::widx::company_select].top + 1;
             Gfx::drawImage(context, x, y, image);

@@ -35,7 +35,7 @@ namespace OpenLoco::Ui::WindowManager
 
     constexpr size_t max_windows = 12;
 
-    static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
+    static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
     static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
     static loco_global<WindowType, 0x00523364> _callingWindowType;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
@@ -47,9 +47,8 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<uint8_t, 0x005233B6> _currentModalType;
     static loco_global<uint32_t, 0x00523508> _523508;
     static loco_global<int32_t, 0x00525330> _cursorWheel;
-    static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
     static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
-    static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+    static loco_global<int32_t, 0x00E3F0B8> _gCurrentRotation;
     static loco_global<Window[max_windows], 0x011370AC> _windows;
     static loco_global<Window*, 0x0113D754> _windowsEnd;
 
@@ -539,10 +538,10 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C6118
     void update()
     {
-        _tooltipNotShownTicks = _tooltipNotShownTicks + time_since_last_tick;
+        _tooltipNotShownTicks = _tooltipNotShownTicks + _timeSinceLastTick;
 
         // 1000 tick update
-        _thousandthTickCounter = _thousandthTickCounter + time_since_last_tick;
+        _thousandthTickCounter = _thousandthTickCounter + _timeSinceLastTick;
         if (_thousandthTickCounter >= 1000)
         {
             _thousandthTickCounter = 0;
@@ -2002,12 +2001,12 @@ namespace OpenLoco::Ui::WindowManager
 
     int32_t getCurrentRotation()
     {
-        return gCurrentRotation;
+        return _gCurrentRotation;
     }
 
     void setCurrentRotation(int32_t value)
     {
-        gCurrentRotation = value;
+        _gCurrentRotation = value;
     }
 }
 

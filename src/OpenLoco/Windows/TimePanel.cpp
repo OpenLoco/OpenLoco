@@ -259,7 +259,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
                 case 0:
                 {
                     auto opponent = CompanyManager::getOpponent();
-                    _common_format_args[4] = opponent->owner_name;
+                    _common_format_args[4] = opponent->ownerName;
                     TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widgetIndex, &*_common_format_args);
                     break;
                 }
@@ -334,15 +334,15 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
 
-        if ((playerCompany->challenge_flags & CompanyFlags::challengeCompleted) != 0)
+        if ((playerCompany->challengeFlags & CompanyFlags::challengeCompleted) != 0)
         {
             args.push(StringIds::challenge_completed);
         }
-        else if ((playerCompany->challenge_flags & CompanyFlags::challengeFailed) != 0)
+        else if ((playerCompany->challengeFlags & CompanyFlags::challengeFailed) != 0)
         {
             args.push(StringIds::challenge_failed);
         }
-        else if ((playerCompany->challenge_flags & CompanyFlags::challengeBeatenByOpponent) != 0)
+        else if ((playerCompany->challengeFlags & CompanyFlags::challengeBeatenByOpponent) != 0)
         {
             args.push(StringIds::empty);
         }

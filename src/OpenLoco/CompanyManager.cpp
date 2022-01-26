@@ -30,10 +30,10 @@ using namespace OpenLoco::Ui;
 namespace OpenLoco::CompanyManager
 {
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
-    static loco_global<uint8_t, 0x00526214> _company_competition_delay;
-    static loco_global<uint8_t, 0x00525FB7> _company_max_competing;
-    static loco_global<uint8_t[Limits::maxCompanies + 1], 0x009C645C> _company_colours;
-    static loco_global<CompanyId, 0x009C68EB> _updating_company_id;
+    static loco_global<uint8_t, 0x00526214> _companyCompetitionDelay;
+    static loco_global<uint8_t, 0x00525FB7> _companyMaxCompeting;
+    static loco_global<uint8_t[Limits::maxCompanies + 1], 0x009C645C> _companyColours;
+    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
     static void produceCompanies();
 
@@ -42,7 +42,10 @@ namespace OpenLoco::CompanyManager
         return getGameState().companies;
     }
 
-    static auto& rawPlayerCompanies() { return getGameState().playerCompanies; }
+    static auto& rawPlayerCompanies()
+    {
+        return getGameState().playerCompanies;
+    }
 
     // 0x0042F7F8
     void reset()
@@ -77,12 +80,12 @@ namespace OpenLoco::CompanyManager
 
     CompanyId updatingCompanyId()
     {
-        return _updating_company_id;
+        return _updatingCompanyId;
     }
 
     void updatingCompanyId(CompanyId id)
     {
-        _updating_company_id = id;
+        _updatingCompanyId = id;
     }
 
     FixedVector<Company, Limits::maxCompanies> companies()
@@ -127,12 +130,12 @@ namespace OpenLoco::CompanyManager
 
     uint8_t getCompanyColour(CompanyId id)
     {
-        return _company_colours[enumValue(id)];
+        return _companyColours[enumValue(id)];
     }
 
     uint8_t getPlayerCompanyColour()
     {
-        return _company_colours[enumValue(rawPlayerCompanies()[0])];
+        return _companyColours[enumValue(rawPlayerCompanies()[0])];
     }
 
     bool isPlayerCompany(CompanyId id)
@@ -276,7 +279,7 @@ namespace OpenLoco::CompanyManager
     // 0x004306D1
     static void produceCompanies()
     {
-        if (_company_competition_delay == 0 && _company_max_competing != 0)
+        if (_companyCompetitionDelay == 0 && _companyMaxCompeting != 0)
         {
             int32_t companies_active = 0;
             for (const auto& company : companies())
@@ -288,7 +291,7 @@ namespace OpenLoco::CompanyManager
             auto& prng = gPrng();
             if (prng.randNext(16) == 0)
             {
-                if (prng.randNext(_company_max_competing) + 1 > companies_active)
+                if (prng.randNext(_companyMaxCompeting) + 1 > companies_active)
                 {
                     createAiCompany();
                 }
@@ -311,7 +314,7 @@ namespace OpenLoco::CompanyManager
             return StringIds::company_status_empty;
         }
 
-        if (company->challenge_flags & CompanyFlags::bankrupt)
+        if (company->challengeFlags & CompanyFlags::bankrupt)
             return StringIds::company_status_bankrupt;
 
         const string_id observationStatusStrings[] = {
@@ -378,14 +381,14 @@ namespace OpenLoco::CompanyManager
             return;
         }
 
-        auto company = CompanyManager::get(_updating_company_id);
+        auto company = CompanyManager::get(_updatingCompanyId);
         if (company == nullptr)
         {
             return;
         }
 
-        company->update_counter += 1;
-        if ((company->update_counter % 128) != 0)
+        company->updateCounter += 1;
+        if ((company->updateCounter % 128) != 0)
             return;
 
         for (size_t i = 0; i < WindowManager::count(); i++)
@@ -399,7 +402,7 @@ namespace OpenLoco::CompanyManager
             if (vehicle->position.x == Location::null)
                 continue;
 
-            if (vehicle->owner != _updating_company_id)
+            if (vehicle->owner != _updatingCompanyId)
                 continue;
 
             GameCommands::do_73(vehicle->id);
@@ -492,10 +495,10 @@ namespace OpenLoco::CompanyManager
         size_t index = 0;
         for (auto& company : rawCompanies())
         {
-            _company_colours[index] = company.mainColours.primary;
+            _companyColours[index] = company.mainColours.primary;
             index++;
         }
-        _company_colours[enumValue(CompanyId::neutral)] = 1;
+        _companyColours[enumValue(CompanyId::neutral)] = 1;
     }
 
     // 0x004C95A6
@@ -508,14 +511,14 @@ namespace OpenLoco::CompanyManager
         GameCommands::setErrorTitle(StringIds::cannot_change_owner_name);
         {
             const uint32_t* buffer = reinterpret_cast<uint32_t*>(Config::get().preferred_name);
-            GameCommands::do_31(_updating_company_id, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_31(_updatingCompanyId, 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_31(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
             if (GameCommands::do_31(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]))
                 Ui::Windows::TextInput::cancel();
         }
 
         // Only continue if we've not set a custom company name yet.
-        auto* company = get(_updating_company_id);
+        auto* company = get(_updatingCompanyId);
         if (company == nullptr || company->name != StringIds::new_company)
             return;
 
@@ -532,7 +535,7 @@ namespace OpenLoco::CompanyManager
             // Now, set the company name.
             const uint32_t* buffer = reinterpret_cast<uint32_t*>(companyName);
             GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
-            GameCommands::do_30(_updating_company_id, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_30(_updatingCompanyId, 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_30(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
             GameCommands::do_30(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]);
         }
@@ -587,7 +590,7 @@ namespace OpenLoco::CompanyManager
 
     uint32_t competingColourMask()
     {
-        return competingColourMask(_updating_company_id);
+        return competingColourMask(_updatingCompanyId);
     }
 
     // 0x00434F2D
