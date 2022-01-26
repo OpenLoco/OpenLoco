@@ -1698,7 +1698,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             // draw cargo capacity
             buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-            //auto head = Common::getVehicle(self);
             head->generateCargoCapacityString(buffer);
             args = {};
             args.push<string_id>(StringIds::buffer_1250);
