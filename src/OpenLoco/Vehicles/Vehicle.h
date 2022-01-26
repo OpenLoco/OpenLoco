@@ -13,6 +13,8 @@
 
 namespace OpenLoco::Vehicles
 {
+    using CargoTotalArray = std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)>;
+
     constexpr auto kMaxVehicleLength = 176; // TODO: Units?
 
     void create(OpenLoco::Interop::registers& regs);
@@ -314,7 +316,7 @@ namespace OpenLoco::Vehicles
         bool isPlaced() const { return tile_x != -1 && !(var_38 & Flags38::isGhost); }
         char* generateCargoTotalString(char* buffer);
         char* generateCargoCapacityString(char* buffer);
-        char* cargoLUTToString(std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)>& cargoTotals, char* buffer);
+        char* cargoLUTToString(CargoTotalArray& cargoTotals, char* buffer);
         bool canBeModified() const;
         void liftUpVehicle();
         void sub_4B7CC3();

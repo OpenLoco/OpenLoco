@@ -3229,7 +3229,7 @@ namespace OpenLoco::Vehicles
     // 0x004B6669
     char* VehicleHead::generateCargoTotalString(char* buffer)
     {
-        std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)> cargoTotals{};
+        CargoTotalArray cargoTotals{};
         Vehicles::Vehicle train(this);
         for (auto& car : train.cars)
         {
@@ -3251,7 +3251,7 @@ namespace OpenLoco::Vehicles
 
     char* VehicleHead::generateCargoCapacityString(char* buffer)
     {
-        std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)> cargoTotals{};
+        CargoTotalArray cargoTotals{};
         Vehicles::Vehicle train(this);
         for (auto& car : train.cars)
         {
@@ -3271,7 +3271,7 @@ namespace OpenLoco::Vehicles
         return cargoLUTToString(cargoTotals, buffer);
     }
 
-    char* VehicleHead::cargoLUTToString(std::array<uint32_t, 32>& cargoTotals, char* buffer)
+    char* VehicleHead::cargoLUTToString(CargoTotalArray& cargoTotals, char* buffer)
     {
         bool hasCargo = false;
         for (size_t cargoType = 0; cargoType < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoType)
