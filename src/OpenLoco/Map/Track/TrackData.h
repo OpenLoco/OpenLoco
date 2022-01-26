@@ -2,14 +2,15 @@
 
 #include "../../Types.hpp"
 #include "../Map.hpp"
+#include <array>
 #include <cstddef>
 #include <cstdlib>
 #include <vector>
 
 namespace OpenLoco::Map::TrackData
 {
+    using ConnectionsByRotation = std::array<uint8_t, 4>;
 
-#pragma pack(push, 1)
     struct PreviewTrack
     {
         uint8_t index; // 0x00
@@ -18,9 +19,9 @@ namespace OpenLoco::Map::TrackData
         int16_t z;     // 0x05
         uint8_t var_07;
         uint8_t var_08;
-        uint8_t flags; // 0x09
+        uint8_t flags;                      // 0x09
+        ConnectionsByRotation connectFlags; // From 0x004F78F8 & 0x004F6F1C
     };
-#pragma pack(pop)
 
     namespace PreviewTrackFlags
     {
