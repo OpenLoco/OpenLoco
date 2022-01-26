@@ -3,6 +3,7 @@
 #include "../Audio/Audio.h"
 #include "../Company.h"
 #include "../Entities/Entity.h"
+#include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
 #include "../Speed.hpp"
 #include "../Types.hpp"
@@ -313,7 +314,7 @@ namespace OpenLoco::Vehicles
         bool isPlaced() const { return tile_x != -1 && !(var_38 & Flags38::isGhost); }
         char* generateCargoTotalString(char* buffer);
         char* generateCargoCapacityString(char* buffer);
-        char* cargoLUTToString(uint32_t cargoTotals[32], char* buffer);
+        char* cargoLUTToString(std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)>& cargoTotals, char* buffer);
         bool canBeModified() const;
         void liftUpVehicle();
         void sub_4B7CC3();
