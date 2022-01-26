@@ -3231,7 +3231,7 @@ namespace OpenLoco::Vehicles
     {
         CargoTotalArray cargoTotals{};
         Vehicles::Vehicle train(this);
-        for (auto& car : train.cars)
+        for (const auto& car : train.cars)
         {
             auto front = car.front;
             auto body = car.body;
@@ -3253,7 +3253,7 @@ namespace OpenLoco::Vehicles
     {
         CargoTotalArray cargoTotals{};
         Vehicles::Vehicle train(this);
-        for (auto& car : train.cars)
+        for (const auto& car : train.cars)
         {
             auto front = car.front;
             auto body = car.body;
