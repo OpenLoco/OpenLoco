@@ -1,5 +1,6 @@
 21.10+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1271] Vehicles display their total capacity in the cargo window.
 - Feature: [#1278] Added a cheat to change the in-game date.
 - Feature: [#1284] Added automatic loan repayment option in company finances window.
 - Feature: [#1291] Modified the time panel date format to display day.

@@ -1669,7 +1669,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             widgets[Common::widx::closeButton].left = self->width - 15;
             widgets[Common::widx::closeButton].right = self->width - 3;
             widgets[widx::cargoList].right = self->width - 26;
-            widgets[widx::cargoList].bottom = self->height - 14;
+            widgets[widx::cargoList].bottom = self->height - 26;
             widgets[widx::refit].right = self->width - 2;
             widgets[widx::refit].left = self->width - 25;
             widgets[widx::refit].type = WidgetType::buttonWithImage;
@@ -1688,14 +1688,20 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->draw(context);
             Common::drawTabs(self, context);
 
+            // draw total cargo
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             auto head = Common::getVehicle(self);
             head->generateCargoTotalString(buffer);
-
             FormatArguments args = {};
             args.push<string_id>(StringIds::buffer_1250);
+            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 25, self->width - 15, Colour::black, StringIds::total_stringid, &args);
 
-            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 15, Colour::black, StringIds::total_stringid, &args);
+            // draw cargo capacity
+            buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            head->generateCargoCapacityString(buffer);
+            args = {};
+            args.push<string_id>(StringIds::buffer_1250);
+            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 15, Colour::black, StringIds::object_selection_capacity, &args);
         }
 
         // based on 0x004B40C7
