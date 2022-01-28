@@ -20,14 +20,14 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance;  // 0x28
         TrackAndDirection var_2C;    // 0x2C
         uint16_t subPosition;        // 0x2E
-        int16_t tile_x;              // 0x30
-        int16_t tile_y;              // 0x32
-        uint8_t tile_base_z;         // 0x34
-        uint8_t track_type;          // 0x35 field same in all vehicles
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        uint8_t tileBaseZ;           // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
         RoutingHandle routingHandle; // 0x36 field same in all vehicles
         uint8_t var_38;              // 0x38
         uint8_t pad_39;
-        EntityId next_car_id; // 0x3A
+        EntityId nextCarId; // 0x3A
         uint8_t pad_3C[0x42 - 0x3C];
         TransportMode mode; // 0x42 field same in all vehicles
     };
@@ -42,7 +42,7 @@ namespace OpenLoco::Vehicles
     VehicleBase* VehicleBase::nextVehicleComponent()
     {
         auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        return EntityManager::get<VehicleBase>(veh->next_car_id);
+        return EntityManager::get<VehicleBase>(veh->nextCarId);
     }
 
     TransportMode VehicleBase::getTransportMode() const
@@ -60,7 +60,7 @@ namespace OpenLoco::Vehicles
     uint8_t VehicleBase::getTrackType() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->track_type;
+        return veh->trackType;
     }
 
     RoutingHandle VehicleBase::getRoutingHandle() const
@@ -78,7 +78,7 @@ namespace OpenLoco::Vehicles
     void VehicleBase::setNextCar(const EntityId newNextCar)
     {
         auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        veh->next_car_id = newNextCar;
+        veh->nextCarId = newNextCar;
     }
 
     // 0x004AA464
@@ -229,7 +229,7 @@ namespace OpenLoco::Vehicles
     // 0x00426790
     uint16_t VehicleBogie::getPlaneType()
     {
-        auto* vehObj = ObjectManager::get<VehicleObject>(object_id);
+        auto* vehObj = ObjectManager::get<VehicleObject>(objectId);
         if (vehObj->flags & FlagsE0::isHelicopter)
         {
             return 1 << 4;
