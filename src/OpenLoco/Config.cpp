@@ -153,7 +153,7 @@ namespace OpenLoco::Config
             auto& audioConfig = _new_config.audio;
             audioConfig.device = audioNode["device"].as<std::string>("");
             if (audioNode["play_title_music"])
-                audioConfig.play_title_music = audioNode["play_title_music"].as<bool>();
+                audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>();
         }
 
         if (config["loco_install_path"])
@@ -221,7 +221,7 @@ namespace OpenLoco::Config
         {
             audioNode.remove("device");
         }
-        audioNode["play_title_music"] = audioConfig.play_title_music;
+        audioNode["play_title_music"] = audioConfig.playTitleMusic;
         node["audio"] = audioNode;
 
         node["loco_install_path"] = _new_config.loco_install_path;
