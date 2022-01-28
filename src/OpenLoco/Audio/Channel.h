@@ -16,7 +16,7 @@ namespace OpenLoco::Audio
     private:
         int32_t _id = kUndefinedId;
         Mix_Chunk* _chunk{};
-        bool _chunk_owner{};
+        bool _chunkOwner{};
 
     public:
         Channel() = default;

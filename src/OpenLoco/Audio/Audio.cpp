@@ -982,7 +982,7 @@ namespace OpenLoco::Audio
             {
                 auto currentYear = getCurrentYear();
                 auto info = kMusicInfo[_currentSong];
-                if (currentYear < info.start_year || currentYear > info.end_year)
+                if (currentYear < info.startYear || currentYear > info.endYear)
                     trackStillApplies = false;
                 break;
             }
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Audio
                 for (auto i = 0; i < kNumMusicTracks; i++)
                 {
                     const auto& mi = kMusicInfo[i];
-                    if (currentYear >= mi.start_year && currentYear <= mi.end_year)
+                    if (currentYear >= mi.startYear && currentYear <= mi.endYear)
                     {
                         if (i != excludeTrack)
                         {
@@ -1066,7 +1066,7 @@ namespace OpenLoco::Audio
             {
                 const auto& mi = kMusicInfo[excludeTrack];
                 auto currentYear = getCurrentYear();
-                if (currentYear >= mi.start_year && currentYear <= mi.end_year)
+                if (currentYear >= mi.startYear && currentYear <= mi.endYear)
                 {
                     playlist.push_back(excludeTrack);
                 }
@@ -1112,7 +1112,7 @@ namespace OpenLoco::Audio
 
             // Load info on the song to play.
             const auto& mi = kMusicInfo[_currentSong];
-            auto path = Environment::getPath((path_id)mi.path_id);
+            auto path = Environment::getPath((path_id)mi.pathId);
             if (_music_channel.load(path))
             {
                 _music_current_channel = ChannelId::bgm;

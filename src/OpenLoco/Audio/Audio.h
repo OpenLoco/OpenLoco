@@ -77,10 +77,10 @@ namespace OpenLoco::Audio
 
     struct MusicInfo
     {
-        Environment::path_id path_id;
-        string_id title_id;
-        uint16_t start_year;
-        uint16_t end_year;
+        Environment::path_id pathId;
+        string_id titleId;
+        uint16_t startYear;
+        uint16_t endYear;
     };
 
     void initialiseDSound();
@@ -140,12 +140,12 @@ namespace OpenLoco::Audio
 
     constexpr bool isObjectSoundId(SoundId id)
     {
-        return ((int32_t)id & 0x8000);
+        return static_cast<int32_t>(id) & 0x8000;
     }
 
     constexpr SoundId makeObjectSoundId(SoundObjectId_t id)
     {
-        return (SoundId)((int32_t)id | 0x8000);
+        return static_cast<SoundId>((static_cast<int32_t>(id) | 0x8000));
     }
 
     /**
@@ -153,20 +153,22 @@ namespace OpenLoco::Audio
      */
     constexpr std::pair<int32_t, int32_t> panLocoToSDL(int32_t pan)
     {
-        constexpr auto range = 2048.0f;
+        constexpr auto kRange = 2048.0f;
+        constexpr auto kMaxPan = std::numeric_limits<uint8_t>::max();
+
         if (pan == 0)
         {
             return { 0, 0 };
         }
         else if (pan < 0)
         {
-            auto r = (int32_t)(255 - ((pan / -range) * 255));
-            return { 255, r };
+            auto r = static_cast<int32_t>(kMaxPan - ((pan / -kRange) * kMaxPan));
+            return { kMaxPan, r };
         }
         else
         {
-            auto r = (int32_t)(255 - ((pan / range) * 255));
-            return { r, 255 };
+            auto r = static_cast<int32_t>(kMaxPan - ((pan / kRange) * kMaxPan));
+            return { r, kMaxPan };
         }
     }
 }

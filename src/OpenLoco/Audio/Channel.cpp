@@ -14,7 +14,7 @@ Channel::Channel(int32_t cid)
 Channel::Channel(Channel&& c)
     : _id(std::exchange(c._id, kUndefinedId))
     , _chunk(std::exchange(c._chunk, nullptr))
-    , _chunk_owner(std::exchange(c._chunk_owner, {}))
+    , _chunkOwner(std::exchange(c._chunkOwner, {}))
 {
 }
 
@@ -22,7 +22,7 @@ Channel& Channel::operator=(Channel&& other)
 {
     std::swap(_id, other._id);
     std::swap(_chunk, other._chunk);
-    std::swap(_chunk_owner, other._chunk_owner);
+    std::swap(_chunkOwner, other._chunkOwner);
     return *this;
 }
 
@@ -42,7 +42,7 @@ bool Channel::load(const fs::path& path)
 {
     disposeChunk();
     _chunk = Mix_LoadWAV(path.u8string().c_str());
-    _chunk_owner = true;
+    _chunkOwner = true;
     return _chunk != nullptr;
 }
 
@@ -98,10 +98,10 @@ bool Channel::isPlaying() const
 
 void Channel::disposeChunk()
 {
-    if (_chunk_owner)
+    if (_chunkOwner)
     {
         Mix_FreeChunk(_chunk);
     }
     _chunk = nullptr;
-    _chunk_owner = false;
+    _chunkOwner = false;
 }

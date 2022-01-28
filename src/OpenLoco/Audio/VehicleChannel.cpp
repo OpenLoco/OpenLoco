@@ -22,8 +22,8 @@ VehicleChannel::VehicleChannel(Channel&& c)
 
 VehicleChannel::VehicleChannel(VehicleChannel&& vc)
     : _channel(std::exchange(vc._channel, {}))
-    , _vehicle_id(std::exchange(vc._vehicle_id, EntityId::null))
-    , _sound_id(std::exchange(vc._sound_id, {}))
+    , _vehicleId(std::exchange(vc._vehicleId, EntityId::null))
+    , _soundId(std::exchange(vc._soundId, {}))
     , _attributes(std::exchange(vc._attributes, {}))
 {
 }
@@ -31,8 +31,8 @@ VehicleChannel::VehicleChannel(VehicleChannel&& vc)
 VehicleChannel& VehicleChannel::operator=(VehicleChannel&& other)
 {
     std::swap(_channel, other._channel);
-    std::swap(_vehicle_id, other._vehicle_id);
-    std::swap(_sound_id, other._sound_id);
+    std::swap(_vehicleId, other._vehicleId);
+    std::swap(_soundId, other._soundId);
     std::swap(_attributes, other._attributes);
     return *this;
 }
@@ -50,8 +50,8 @@ void VehicleChannel::begin(EntityId vid)
             auto sample = Audio::getSoundSample(sid);
             if (sample != nullptr)
             {
-                _vehicle_id = vid;
-                _sound_id = sid;
+                _vehicleId = vid;
+                _soundId = sid;
                 _attributes = sa;
 
                 _channel.load(*sample);
@@ -68,14 +68,14 @@ void VehicleChannel::update()
 {
     if (!isFree())
     {
-        auto v = EntityManager::get<Vehicles::VehicleBase>(_vehicle_id);
+        auto v = EntityManager::get<Vehicles::VehicleBase>(_vehicleId);
         if (v != nullptr && v->isVehicle2Or6())
         {
             auto* veh26 = v->asVehicle2Or6();
             if (veh26 != nullptr && (veh26->var_4A & 1))
             {
                 auto [sid, sa] = sub_48A590(veh26);
-                if (_sound_id == sid)
+                if (_soundId == sid)
                 {
                     veh26->var_4A &= ~1;
                     if (_attributes.volume != sa.volume)
@@ -102,5 +102,5 @@ void VehicleChannel::update()
 void VehicleChannel::stop()
 {
     _channel.stop();
-    _vehicle_id = EntityId::null;
+    _vehicleId = EntityId::null;
 }

@@ -924,7 +924,7 @@ namespace OpenLoco::Ui::Windows::Options
             string_id songName = StringIds::music_none;
             if (_currentSong != -1)
             {
-                songName = Audio::getMusicInfo(_currentSong)->title_id;
+                songName = Audio::getMusicInfo(_currentSong)->titleId;
             }
 
             FormatArguments args = {};
@@ -1146,7 +1146,7 @@ namespace OpenLoco::Ui::Windows::Options
                 for (int i = 0; i < Audio::kNumMusicTracks; i++)
                 {
                     auto info = Audio::getMusicInfo(i);
-                    if (year >= info->start_year && year <= info->end_year)
+                    if (year >= info->startYear && year <= info->endYear)
                     {
                         vector.push_back(i);
                     }
@@ -1193,7 +1193,7 @@ namespace OpenLoco::Ui::Windows::Options
             for (auto track : tracks)
             {
                 index++;
-                Dropdown::add(index, StringIds::dropdown_stringid, Audio::getMusicInfo(track)->title_id);
+                Dropdown::add(index, StringIds::dropdown_stringid, Audio::getMusicInfo(track)->titleId);
                 if (track == _currentSong)
                 {
                     Dropdown::setItemSelected(index);
