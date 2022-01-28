@@ -67,7 +67,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window->flags |= Ui::WindowFlags::transparent;
 
             setPauseFlag(1 << 1);
-            Audio::pauseSound();
+            Audio::pauseAllGameAudio();
             WindowManager::invalidate(WindowType::timeToolbar);
         }
 

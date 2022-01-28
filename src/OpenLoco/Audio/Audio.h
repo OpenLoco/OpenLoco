@@ -96,7 +96,8 @@ namespace OpenLoco::Audio
     bool shouldSoundLoop(SoundId id);
 
     void toggleSound();
-    void pauseSound();
+    void pauseAllGameAudio();
+    void stopSound();
     void unpauseSound();
     void playSound(Vehicles::Vehicle2or6* t);
     void playSound(SoundId id, const Map::Pos3& loc);

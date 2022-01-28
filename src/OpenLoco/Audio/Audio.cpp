@@ -451,14 +451,20 @@ namespace OpenLoco::Audio
     }
 
     // 0x00489C34
-    void pauseSound()
+    void pauseAllGameAudio()
     {
         if (_audioIsPaused)
             return;
 
         _audioIsPaused = true;
-        stopVehicleNoise();
+
+        stopSound();
         stopBackgroundMusic();
+    }
+
+    void stopSound()
+    {
+        stopVehicleNoise();
         stopAmbientNoise();
     }
 

@@ -44,7 +44,7 @@ namespace OpenLoco::Game
 
     static bool openBrowsePrompt(string_id titleId, browse_type type, const char* filter)
     {
-        Audio::pauseSound();
+        Audio::pauseAllGameAudio();
         setPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Gfx::render();
@@ -209,7 +209,7 @@ namespace OpenLoco::Game
                 Ui::WindowManager::close(Ui::WindowType::objectSelection);
 
                 clearScreenFlag(ScreenFlags::editor);
-                Audio::pauseSound();
+                Audio::pauseAllGameAudio();
                 Audio::unpauseSound();
 
                 if (Input::hasFlag(Input::Flags::flag5))
@@ -244,7 +244,7 @@ namespace OpenLoco::Game
         Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
 
         clearScreenFlag(ScreenFlags::editor);
-        Audio::pauseSound();
+        Audio::pauseAllGameAudio();
         Audio::unpauseSound();
 
         if (Input::hasFlag(Input::Flags::flag5))
