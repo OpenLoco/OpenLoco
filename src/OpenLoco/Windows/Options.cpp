@@ -733,7 +733,7 @@ namespace OpenLoco::Ui::Windows::Options
             else
                 args.push(StringIds::audio_device_none);
 
-            if (Config::getNew().audio.play_title_music)
+            if (Config::getNew().audio.playTitleMusic)
                 w->activated_widgets |= (1 << Widx::play_title_music);
             else
                 w->activated_widgets &= ~(1 << Widx::play_title_music);
@@ -832,7 +832,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void playTitleMusicOnMouseUp(Window* w)
         {
             auto& cfg = Config::getNew();
-            cfg.audio.play_title_music = !cfg.audio.play_title_music;
+            cfg.audio.playTitleMusic = !cfg.audio.playTitleMusic;
             Config::write();
 
             Audio::playTitleScreenMusic();
