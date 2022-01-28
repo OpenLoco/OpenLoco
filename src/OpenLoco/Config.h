@@ -146,7 +146,7 @@ namespace OpenLoco::Config
     struct Audio
     {
         std::string device;
-        bool play_title_music = true;
+        bool playTitleMusic = true;
     };
 
     struct KeyboardShortcut

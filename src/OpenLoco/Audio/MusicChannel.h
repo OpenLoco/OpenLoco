@@ -13,8 +13,8 @@ namespace OpenLoco::Audio
     class MusicChannel
     {
     private:
-        Mix_Music* _music_track;
-        int32_t _current_music = -1;
+        Mix_Music* _musicTrack;
+        int32_t _currentMusic = -1;
 
     public:
         MusicChannel() = default;

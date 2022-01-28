@@ -125,7 +125,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 Gfx::drawString_494B3F(context, 2, y, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
 
             // Draw track name.
-            string_id music_title_id = Audio::getMusicInfo(i)->title_id;
+            string_id music_title_id = Audio::getMusicInfo(i)->titleId;
             Gfx::drawString_494B3F(context, 15, y, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
 
             y += rowHeight;

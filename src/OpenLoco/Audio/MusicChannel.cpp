@@ -20,7 +20,7 @@ bool MusicChannel::load(const fs::path& path)
     if (music != nullptr)
     {
         disposeMusic();
-        _music_track = music;
+        _musicTrack = music;
         return true;
     }
     return false;
@@ -28,10 +28,10 @@ bool MusicChannel::load(const fs::path& path)
 
 bool MusicChannel::play(bool loop)
 {
-    if (_music_track != nullptr)
+    if (_musicTrack != nullptr)
     {
         auto loops = loop ? -1 : 1;
-        if (Mix_PlayMusic(_music_track, loops) == 0)
+        if (Mix_PlayMusic(_musicTrack, loops) == 0)
         {
             return true;
         }
@@ -51,7 +51,7 @@ void MusicChannel::setVolume(int32_t volume)
 
 void MusicChannel::disposeMusic()
 {
-    Mix_FreeMusic(_music_track);
-    _music_track = nullptr;
-    _current_music = -1;
+    Mix_FreeMusic(_musicTrack);
+    _musicTrack = nullptr;
+    _currentMusic = -1;
 }
