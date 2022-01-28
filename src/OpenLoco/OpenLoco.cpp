@@ -218,7 +218,12 @@ namespace OpenLoco
     void setGameSpeed(uint8_t speed)
     {
         assert(speed <= 3);
-        _gameSpeed = speed;
+
+        if (_gameSpeed != speed)
+        {
+            _gameSpeed = speed;
+            WindowManager::invalidate(WindowType::timeToolbar);
+        }
     }
 
     uint32_t scenarioTicks()

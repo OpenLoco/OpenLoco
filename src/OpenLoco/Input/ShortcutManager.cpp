@@ -61,6 +61,9 @@ namespace OpenLoco::Input::ShortcutManager
     static void constructionBuildAtCurrentPos();
     static void constructionRemoveAtCurrentPos();
     static void constructionSelectPosition();
+    static void gameSpeedNormal();
+    static void gameSpeedFastForward();
+    static void gameSpeedExtraFastForward();
 
     // clang-format off
     static constexpr std::array<const KeyboardShortcut, kCount> kShortcuts = { {
@@ -108,6 +111,9 @@ namespace OpenLoco::Input::ShortcutManager
         { constructionBuildAtCurrentPos,  StringIds::shortcut_construction_build_at_current_pos,  "constructionBuildAtCurrentPos",  "" },
         { constructionRemoveAtCurrentPos, StringIds::shortcut_construction_remove_at_current_pos, "constructionRemoveAtCurrentPos", "" },
         { constructionSelectPosition,     StringIds::shortcut_construction_select_position,       "constructionSelectPosition",     "" },
+        { gameSpeedNormal,                StringIds::shortcut_game_speed_normal,                  "gameSpeedNormal",                "" },
+        { gameSpeedFastForward,           StringIds::shortcut_game_speed_fast_forward,            "gameSpeedFastForward",           "" },
+        { gameSpeedExtraFastForward,      StringIds::shortcut_game_speed_extra_fast_forward,      "gameSpeedExtraFastForward",      "" },
     } };
     // clang-format on
 
@@ -564,5 +570,20 @@ namespace OpenLoco::Input::ShortcutManager
         auto window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
             Ui::Windows::Construction::Construction::selectPosition(window);
+    }
+
+    static void gameSpeedNormal()
+    {
+        GameCommands::do_82(0);
+    }
+
+    static void gameSpeedFastForward()
+    {
+        GameCommands::do_82(1);
+    }
+
+    static void gameSpeedExtraFastForward()
+    {
+        GameCommands::do_82(2);
     }
 }
