@@ -118,12 +118,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                                 window->row_hover = itemId;
                                 if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
                                 {
-                                    if (vehicleObj->track_type != 0xFF)
+                                    if (vehicleObj->trackType != 0xFF)
                                     {
                                         uint8_t i = 0;
                                         while (i < _numTrackTypeTabs)
                                         {
-                                            if (vehicleObj->track_type == _trackTypesForTab[i])
+                                            if (vehicleObj->trackType == _trackTypesForTab[i])
                                             {
                                                 window->current_secondary_tab = i;
                                                 break;
@@ -229,7 +229,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::vehicle:
                 {
                     Vehicles::Vehicle train(EntityId{ itemId });
-                    if (train.head->tile_x == -1)
+                    if (train.head->tileX == -1)
                         break;
 
                     view.thingId = train.veh2->id;

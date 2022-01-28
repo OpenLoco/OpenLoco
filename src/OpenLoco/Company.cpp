@@ -420,9 +420,9 @@ namespace OpenLoco
                 }
                 for (auto& carComponent : car)
                 {
-                    carComponent.front->colour_scheme = colour;
-                    carComponent.back->colour_scheme = colour;
-                    carComponent.body->colour_scheme = colour;
+                    carComponent.front->colourScheme = colour;
+                    carComponent.back->colourScheme = colour;
+                    carComponent.body->colourScheme = colour;
                 }
             }
         }

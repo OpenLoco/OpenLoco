@@ -284,7 +284,7 @@ namespace OpenLoco::Vehicles
         }
 
         const auto _oldRoutingHandle = routingHandle;
-        const Map::Pos3 _oldTilePos = Map::Pos3(tile_x, tile_y, tile_base_z * 4);
+        const Map::Pos3 _oldTilePos = Map::Pos3(tileX, tileY, tileBaseZ * 4);
 
         vehicleUpdate_var_1136114 = 0;
         sub_4B15FF(*vehicleUpdate_var_113612C);
@@ -313,7 +313,7 @@ namespace OpenLoco::Vehicles
             if (ref & (1 << 15))
             {
                 // Update signal state?
-                sub_48963F(_oldTilePos, trackAndDirection.track, track_type, 0);
+                sub_48963F(_oldTilePos, trackAndDirection.track, trackType, 0);
             }
 
             const auto& trackSize = Map::TrackData::getUnkTrack(ref & 0x1FF);
@@ -324,7 +324,7 @@ namespace OpenLoco::Vehicles
             }
             auto trackAndDirection2 = trackAndDirection;
             trackAndDirection2.track.setReversed(!trackAndDirection2.track.isReversed());
-            sub_4A2AD7(nextTile, trackAndDirection2, owner, track_type);
+            sub_4A2AD7(nextTile, trackAndDirection2, owner, trackType);
             leaveLevelCrossing(_oldTilePos, trackAndDirection.track, 9);
         }
         return true;

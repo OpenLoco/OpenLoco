@@ -475,7 +475,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     }
                 }
 
-                if (sanitisedTrackType != vehicleObj->track_type)
+                if (sanitisedTrackType != vehicleObj->trackType)
                 {
                     continue;
                 }
@@ -959,14 +959,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             auto trackName = StringIds::road;
             if (vehicleObj->mode == TransportMode::road)
             {
-                if (vehicleObj->track_type != 0xFF)
+                if (vehicleObj->trackType != 0xFF)
                 {
-                    trackName = ObjectManager::get<RoadObject>(vehicleObj->track_type)->name;
+                    trackName = ObjectManager::get<RoadObject>(vehicleObj->trackType)->name;
                 }
             }
             else
             {
-                trackName = ObjectManager::get<TrackObject>(vehicleObj->track_type)->name;
+                trackName = ObjectManager::get<TrackObject>(vehicleObj->trackType)->name;
             }
 
             buffer = StringManager::formatString(buffer, trackName);
@@ -1159,11 +1159,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             auto vehicleObj = ObjectManager::get<VehicleObject>(_availableVehicles[i]);
             if (vehicleObj && vehicleObj->mode == TransportMode::rail)
             {
-                railTrackTypes |= (1 << vehicleObj->track_type);
+                railTrackTypes |= (1 << vehicleObj->trackType);
             }
             else if (vehicleObj && vehicleObj->mode == TransportMode::road)
             {
-                auto trackType = vehicleObj->track_type;
+                auto trackType = vehicleObj->trackType;
                 if (trackType == 0xFF)
                 {
                     trackType = _525FC5;

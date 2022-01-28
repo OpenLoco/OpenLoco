@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Vehicles::Vehicle train(vehHead);
 
             // If picked up no need for viewport drawn
-            if (vehHead->tile_x == -1)
+            if (vehHead->tileX == -1)
             {
                 self->viewportRemove(0);
                 self->invalidate();
@@ -744,13 +744,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (head->mode == TransportMode::air || head->mode == TransportMode::water)
             {
-                if (head->status != Vehicles::Status::stopped && head->status != Vehicles::Status::loading && head->tile_x != -1)
+                if (head->status != Vehicles::Status::stopped && head->status != Vehicles::Status::loading && head->tileX != -1)
                 {
                     self->disabled_widgets |= (1 << widx::pickup);
                 }
             }
 
-            if (head->tile_x == -1)
+            if (head->tileX == -1)
             {
                 self->disabled_widgets |= (1 << widx::stopStart) | (1 << widx::passSignal) | (1 << widx::changeDirection) | (1 << widx::centreViewport);
                 if (Input::isToolActive(WindowType::vehicle, self->number))
@@ -1222,7 +1222,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             ToolTip::set_52336E(true);
 
-            auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->object_id);
+            auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->objectId);
             {
                 FormatArguments args{};
                 args.push(vehicleObj->name);
@@ -1231,7 +1231,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             {
                 FormatArguments args{};
-                args.push(car->front->creation_day);
+                args.push(car->front->creationDay);
                 buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_built, &args);
             }
 
@@ -1265,7 +1265,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             {
                 FormatArguments args{};
-                args.push(car->front->refund_cost);
+                args.push(car->front->refundCost);
                 buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_value, &args);
             }
 
@@ -1471,7 +1471,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 auto x = Common::sub_4B743B(al, ah, 0, y, car.front, &context);
 
-                auto vehicleObj = ObjectManager::get<VehicleObject>(car.front->object_id);
+                auto vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
                 FormatArguments args{};
                 args.push(vehicleObj->name);
                 x += 2;
@@ -1641,7 +1641,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return false;
             }
 
-            auto object = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
+            auto object = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             return (object->flags & FlagsE0::refittable);
         }
 
@@ -1831,7 +1831,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void onRefitButton(Window* const self, const WidgetIndex_t wi)
         {
             Vehicles::Vehicle train(Common::getVehicle(self));
-            auto vehicleObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
+            auto vehicleObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             auto maxPrimaryCargo = vehicleObject->max_primary_cargo;
             auto primaryCargoId = Utility::bitScanForward(vehicleObject->primary_cargo_types);
 
@@ -1968,7 +1968,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             ToolTip::set_52336E(true);
 
             {
-                auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->object_id);
+                auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->objectId);
                 FormatArguments args{};
                 args.push(vehicleObj->name);
                 buffer = StringManager::formatString(buffer, StringIds::cargo_capacity_tooltip, &args);
@@ -3232,14 +3232,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 case TransportMode::rail:
                 {
-                    auto trackObj = ObjectManager::get<TrackObject>(head.track_type);
+                    auto trackObj = ObjectManager::get<TrackObject>(head.trackType);
                     image = trackObj->image + (isPlaced ? 16 : 17);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
                     break;
                 }
                 case TransportMode::road:
                 {
-                    auto roadObjId = head.track_type == 0xFF ? _525FC5 : head.track_type;
+                    auto roadObjId = head.trackType == 0xFF ? _525FC5 : head.trackType;
                     auto roadObj = ObjectManager::get<RoadObject>(roadObjId);
                     image = roadObj->image + (isPlaced ? 32 : 33);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
@@ -3373,7 +3373,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // Note: dont use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
-            if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
             {
                 GameCommands::do_63(head.id);
             }
@@ -3565,7 +3565,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // Note: dont use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
-            if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
             {
                 GameCommands::do_59(head.id);
             }
@@ -3809,7 +3809,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // Note: dont use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
-            if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
             {
                 GameCommands::do_2(head.id);
             }
@@ -3886,7 +3886,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (*_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
             {
-                if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
                 {
                     // Will convert inplace vehicle into non ghost
                     placementArgs->convertGhost = true;
@@ -3920,7 +3920,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
             {
-                if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
                 {
                     // Will convert inplace vehicle into non ghost
                     placementArgs->convertGhost = true;
@@ -3955,7 +3955,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (*_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
             {
-                if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
                 {
                     // Will convert inplace vehicle into non ghost
                     placementArgs->convertGhost = true;
@@ -4003,7 +4003,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // TODO: refactor to use removeAirplaneGhost family of functions
             auto head = getVehicle(&self);
-            if (head->tile_x == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
+            if (head->tileX == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
             {
                 self.invalidate();
                 return;
