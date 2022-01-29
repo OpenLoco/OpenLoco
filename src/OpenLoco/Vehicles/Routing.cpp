@@ -454,6 +454,25 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x004A2D4C
+    static bool sub_4A2D4C(const LocationOfInterest& interest)
+    {
+        if (!(interest.trackAndDirection & (1 << 15)))
+        {
+            return false;
+        }
+
+        if (sub_48963F(interest.loc, interest.tad(), interest.trackType, (1ULL << 31) | (0xA)) & (1 << 0))
+        {
+            addr<0x001135F88, uint16_t>() |= (1 << 1);
+        }
+        else
+        {
+            addr<0x001135F88, uint16_t>() |= (1 << 2);
+        }
+        return true;
+    }
+
     static void findAllUsableTrackInBlock(const LocationOfInterest& initialInterest, const FilterFunction filterFunction, LocationOfInterestHashMap& hashMap);
 
     // 0x004A313B
@@ -649,4 +668,11 @@ namespace OpenLoco::Vehicles
         findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, findSignalsAndOccupation, setSignalsOccupiedState);
     }
 
+    uint8_t sub_4A2A58(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    {
+        addr<0x001135F88, uint16_t>() = 0;
+        findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, sub_4A2D4C, reinterpret_cast<TransformFunction>(0xFFFFFFFF));
+
+        return addr<0x001135F88, uint16_t>();
+    }
 }
