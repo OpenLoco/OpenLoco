@@ -158,6 +158,10 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(TrackAndDirection) == 2);
 
+    // TODO move to a different header
+    uint8_t sub_48963F(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
+    void sub_4A2AD7(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+
     struct VehicleBase : EntityBase
     {
     private:

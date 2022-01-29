@@ -149,6 +149,7 @@
     <ClCompile Include="Vehicles\Orders.cpp" />
     <ClCompile Include="Vehicles\RenameVehicle.cpp" />
     <ClCompile Include="Vehicles\OrderSkip.cpp" />
+    <ClCompile Include="Vehicles\Routing.cpp" />
     <ClCompile Include="Vehicles\Vehicle.cpp" />
     <ClCompile Include="Vehicles\VehicleBody.cpp" />
     <ClCompile Include="Vehicles\VehicleHead.cpp" />
