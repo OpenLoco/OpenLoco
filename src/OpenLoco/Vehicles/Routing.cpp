@@ -22,11 +22,6 @@ namespace OpenLoco::Vehicles
         CompanyId company;
         uint8_t trackType;
 
-        uint16_t hash() const
-        {
-            return ((((loc.x ^ loc.z) / 32) ^ loc.y) ^ trackAndDirection) & 0x3FF;
-        }
-
         bool operator==(const LocationOfInterest& rhs)
         {
             return (loc == rhs.loc) && (trackAndDirection == rhs.trackAndDirection) && (company == rhs.company) && (trackType == rhs.trackType);
@@ -45,7 +40,12 @@ namespace OpenLoco::Vehicles
 
     struct LocationOfInterestHashMap
     {
+        static constexpr auto kMapSize = 0x400;
+        static constexpr auto kMapSizeMask = kMapSize - 1;
+        static constexpr auto kMaxEntries = 0x39C;
+
     private:
+#pragma pack(push, 1)
         struct ZAndTD
         {
             coord_t z;
@@ -57,6 +57,7 @@ namespace OpenLoco::Vehicles
             uint8_t trackType;
             uint8_t pad[0x2];
         };
+#pragma pack(pop)
 
         class Iterator
         {
@@ -73,7 +74,7 @@ namespace OpenLoco::Vehicles
 
             void findAllocatedEntry()
             {
-                while (_index < 0x400 && _map.locs[_index] == Map::Pos2{ -1, -1 })
+                while (_index < kMapSize && _map.locs[_index] == Map::Pos2{ -1, -1 })
                 {
                     _index++;
                 }
@@ -115,11 +116,12 @@ namespace OpenLoco::Vehicles
         };
 
     public:
-        Map::Pos2 locs[0x400];
-        ZAndTD zAndTDs[0x400];
-        CAndT cAndTs[0x400];
-
-        size_t count;
+#pragma pack(push, 1)
+        Map::Pos2 locs[kMapSize];
+        ZAndTD zAndTDs[kMapSize];
+        CAndT cAndTs[kMapSize];
+#pragma pack(pop)
+        size_t count; // count does not need to be tightly packed as this is only accessed via a pointer to first 3 members
 
         LocationOfInterestHashMap()
             : zAndTDs{}
@@ -134,18 +136,23 @@ namespace OpenLoco::Vehicles
             return LocationOfInterest{ Map::Pos3(locs[index].x, locs[index].y, zAndTDs[index].z), zAndTDs[index].trackAndDirection, cAndTs[index].company, cAndTs[index].trackType };
         }
 
+        constexpr uint16_t hash(const LocationOfInterest& interest) const
+        {
+            return ((((interest.loc.x ^ interest.loc.z) / 32) ^ interest.loc.y) ^ interest.trackAndDirection) & kMapSizeMask;
+        }
+
         // 0x004A38DE
         bool tryAdd(LocationOfInterest& interest)
         {
-            auto index = interest.hash();
-            for (; locs[index] != Map::Pos2{ -1, -1 }; ++index, index &= 0x3FF)
+            auto index = hash(interest);
+            for (; locs[index] != Map::Pos2{ -1, -1 }; ++index, index &= kMapSizeMask)
             {
                 if (get(index) == interest)
                 {
                     return false;
                 }
             }
-            if (count >= 924)
+            if (count >= kMaxEntries)
             {
                 return false;
             }
@@ -162,7 +169,7 @@ namespace OpenLoco::Vehicles
         }
         Iterator end() const
         {
-            return Iterator(0x400, *this);
+            return Iterator(kMapSize, *this);
         }
     };
 
@@ -179,6 +186,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136085> _1136085;
     static loco_global<LocationOfInterestHashMap*, 0x01135F06> _1135F06;
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
+    static loco_global<uint16_t, 0x001135F88> _routingTransformData;
 
     // 0x0048963F
     uint8_t sub_48963F(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
@@ -378,7 +386,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2AF0
-    // Passes occupied state via 0x001135F88
+    // Passes occupied state via _routingTransformData
     // Returns true for signals
     static bool findSignalsAndOccupation(const LocationOfInterest& interest)
     {
@@ -415,13 +423,13 @@ namespace OpenLoco::Vehicles
 
                 if (vehicle->getTrackLoc() == interest.loc && vehicle->getVar2C().track == tad)
                 {
-                    addr<0x001135F88, uint16_t>() = 1;
+                    _routingTransformData = 1;
                     break;
                 }
 
                 if (vehicle->getTrackLoc() == nextLoc && vehicle->getVar2C().track == backwardTaD)
                 {
-                    addr<0x001135F88, uint16_t>() = 1;
+                    _routingTransformData = 1;
                     break;
                 }
             }
@@ -430,7 +438,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2CE7
-    // Passes occupied state via 0x001135F88
+    // Passes occupied state via _routingTransformData
     static void setSignalsOccupiedState(const LocationOfInterestHashMap& hashMap)
     {
         for (const auto& interest : hashMap)
@@ -440,7 +448,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            bool isOccupied = addr<0x001135F88, uint16_t>() & 1;
+            bool isOccupied = _routingTransformData & 1;
             uint32_t flags = (1ULL << 31) | (isOccupied ? 8ULL : 9ULL);
             sub_48963F(interest.loc, interest.tad(), interest.trackType, flags);
         }
@@ -637,7 +645,7 @@ namespace OpenLoco::Vehicles
     // 0x004A2AD7
     void sub_4A2AD7(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
-        addr<0x001135F88, uint16_t>() = 0;
+        _routingTransformData = 0;
         findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, findSignalsAndOccupation, setSignalsOccupiedState);
     }
 

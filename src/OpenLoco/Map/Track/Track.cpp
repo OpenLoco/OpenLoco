@@ -152,10 +152,9 @@ namespace OpenLoco::Map::Track
     // For 0x004A2604 call this followed by getTrackConnections
     std::pair<Map::Pos3, uint8_t> getTrackConnectionEnd(const Map::Pos3& pos, const uint16_t trackAndDirection)
     {
-        const auto nextTrackPos = pos + TrackData::getUnkTrack(trackAndDirection).pos;
-        const auto nextRotation = TrackData::getUnkTrack(trackAndDirection).rotationEnd;
+        const auto& trackData = TrackData::getUnkTrack(trackAndDirection);
 
-        return std::make_pair(nextTrackPos, nextRotation);
+        return std::make_pair(pos + trackData.pos, trackData.rotationEnd);
     }
 
     // 0x004A2638, 0x004A2601
