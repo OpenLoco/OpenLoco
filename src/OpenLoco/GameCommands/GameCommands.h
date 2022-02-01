@@ -339,6 +339,11 @@ namespace OpenLoco::GameCommands
         {
         }
 
+        explicit SetGameSpeedArgs(const uint8_t speed)
+        {
+            newSpeed = speed;
+        }
+
         uint8_t newSpeed;
 
         explicit operator registers() const
@@ -1686,14 +1691,6 @@ namespace OpenLoco::GameCommands
         regs.ecx = param2;
         regs.edx = param3;
         return GameCommands::doCommand(GameCommand::cheat, regs) != FAILURE;
-    }
-
-    inline void do_82(uint8_t speed)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.edi = speed;
-        doCommand(GameCommand::setGameSpeed, regs);
     }
 
     // Defined in GameCommands/ChangeCompanyColour.cpp
