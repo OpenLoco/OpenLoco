@@ -25,6 +25,7 @@
 #include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
+#include <cmath>
 
 using namespace OpenLoco::Interop;
 
@@ -1942,9 +1943,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     if (company->currentLoan == 0)
                         return;
 
-                    currency32_t stepSize = 1000 * pow(10, (*_clickRepeatTicks / 100));
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = std::max<currency32_t>(0, company->currentLoan - stepSize);
+                    args.newLoan = std::max<currency32_t>(0, company->currentLoan - calculateStepSize(*_clickRepeatTicks));
 
                     GameCommands::setErrorTitle(StringIds::cant_pay_back_loan);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -1953,15 +1953,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::loan_increase:
                 {
-                    currency32_t stepSize = 1000 * pow(10, (*_clickRepeatTicks / 100));
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = CompanyManager::get(CompanyId(self->number))->currentLoan + stepSize;
+                    args.newLoan = CompanyManager::get(CompanyId(self->number))->currentLoan + calculateStepSize(*_clickRepeatTicks);
 
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
                 }
             }
+        }
+
+        static inline currency32_t calculateStepSize(uint16_t repeatTicks)
+        {
+            return 1000 * std::pow(10, repeatTicks / 100);
         }
 
         // 0x0043385D
