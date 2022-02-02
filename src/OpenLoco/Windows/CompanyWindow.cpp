@@ -1926,6 +1926,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
+        static inline currency32_t calculateStepSize(uint16_t repeatTicks)
+        {
+            return 1000 * std::pow(10, repeatTicks / 100);
+        }
+
         // 0x0043383E
         static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
@@ -1961,11 +1966,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
                 }
             }
-        }
-
-        static inline currency32_t calculateStepSize(uint16_t repeatTicks)
-        {
-            return 1000 * std::pow(10, repeatTicks / 100);
         }
 
         // 0x0043385D
