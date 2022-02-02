@@ -194,7 +194,7 @@ namespace OpenLoco::GameCommands
             if (isPaused())
             {
                 _gGameCommandErrorText = StringIds::empty;
-                return 0x80000000;
+                return GameCommands::FAILURE;
             }
         }
 
@@ -235,7 +235,7 @@ namespace OpenLoco::GameCommands
         int32_t ebx = fnRegs1.ebx;
         _gameCommandFlags = flagsBackup;
 
-        if (ebx != static_cast<int32_t>(0x80000000))
+        if (ebx != static_cast<int32_t>(GameCommands::FAILURE))
         {
             if (isEditorMode())
                 ebx = 0;
@@ -254,7 +254,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (ebx == static_cast<int32_t>(0x80000000))
+        if (ebx == static_cast<int32_t>(GameCommands::FAILURE))
         {
             if (flags & Flags::apply)
             {
@@ -279,7 +279,7 @@ namespace OpenLoco::GameCommands
         int32_t ebx2 = fnRegs2.ebx;
         _gameCommandFlags = flagsBackup2;
 
-        if (ebx2 == static_cast<int32_t>(0x80000000))
+        if (ebx2 == static_cast<int32_t>(GameCommands::FAILURE))
         {
             return loc_4314EA();
         }
@@ -317,18 +317,18 @@ namespace OpenLoco::GameCommands
     {
         game_command_nest_level--;
         if (game_command_nest_level != 0)
-            return 0x80000000;
+            return GameCommands::FAILURE;
 
         if (_updatingCompanyId != _player_company[0])
-            return 0x80000000;
+            return GameCommands::FAILURE;
 
         if (_gameCommandFlags & Flags::flag_3)
-            return 0x80000000;
+            return GameCommands::FAILURE;
 
         if (_gGameCommandErrorText != 0xFFFE)
         {
             Windows::showError(_gGameCommandErrorTitle, _gGameCommandErrorText);
-            return 0x80000000;
+            return GameCommands::FAILURE;
         }
 
         // advanced errors
@@ -350,7 +350,7 @@ namespace OpenLoco::GameCommands
                     formatter.push(pObject->name);
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
-                    return 0x80000000;
+                    return GameCommands::FAILURE;
                 }
 
                 case ElementType::road: //0x1C
@@ -365,7 +365,7 @@ namespace OpenLoco::GameCommands
                     formatter.push(pObject->name);
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
-                    return 0x80000000;
+                    return GameCommands::FAILURE;
                 }
 
                 case ElementType::station: // 8
@@ -381,7 +381,7 @@ namespace OpenLoco::GameCommands
                     formatter.push(pStation->town);
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
-                    return 0x80000000;
+                    return GameCommands::FAILURE;
                 }
 
                 case ElementType::signal: // 0x0C
@@ -389,7 +389,7 @@ namespace OpenLoco::GameCommands
                     auto formatter = FormatArguments::common();
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_signal_belongs_to, _errorCompanyId);
-                    return 0x80000000;
+                    return GameCommands::FAILURE;
                 }
 
                 default:
@@ -401,7 +401,7 @@ namespace OpenLoco::GameCommands
         auto formatter = FormatArguments::common();
         formatter.push(CompanyManager::get(_errorCompanyId)->name);
         Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
-        return 0x80000000;
+        return GameCommands::FAILURE;
     }
 
     // 0x00431E6A
