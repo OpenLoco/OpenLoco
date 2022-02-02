@@ -1942,14 +1942,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     if (company->currentLoan == 0)
                         return;
 
-                    currency32_t stepSize{};
-                    if (*_clickRepeatTicks < 100)
-                        stepSize = 1000;
-                    else if (*_clickRepeatTicks >= 100)
-                        stepSize = 10000;
-                    else if (*_clickRepeatTicks >= 200)
-                        stepSize = 100000;
-
+                    currency32_t stepSize = 100 * pow(10, (*_clickRepeatTicks / 100));
                     GameCommands::ChangeLoanArgs args{};
                     args.newLoan = std::max<currency32_t>(0, company->currentLoan - stepSize);
 
@@ -1960,14 +1953,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::loan_increase:
                 {
-                    currency32_t stepSize{};
-                    if (*_clickRepeatTicks < 100)
-                        stepSize = 1000;
-                    else if (*_clickRepeatTicks >= 100)
-                        stepSize = 10000;
-                    else if (*_clickRepeatTicks >= 200)
-                        stepSize = 100000;
-
+                    currency32_t stepSize = 100 * pow(10, (*_clickRepeatTicks / 100));
                     GameCommands::ChangeLoanArgs args{};
                     args.newLoan = CompanyManager::get(CompanyId(self->number))->currentLoan + stepSize;
 
