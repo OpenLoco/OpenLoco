@@ -77,8 +77,8 @@ namespace OpenLoco::Vehicles
     namespace Flags5F
     {
         constexpr uint8_t unk_0 = 1 << 0;
-        constexpr uint8_t breakdown_pending = 1 << 1;
-        constexpr uint8_t broken_down = 1 << 2;
+        constexpr uint8_t breakdownPending = 1 << 1;
+        constexpr uint8_t brokenDown = 1 << 2;
         constexpr uint8_t unk_3 = 1 << 3;
     }
 
@@ -234,13 +234,13 @@ namespace OpenLoco::Vehicles
     struct Vehicle2or6 : VehicleBase
     {
         uint8_t pad_24[0x44 - 0x24];
-        SoundObjectId_t drivingSoundId;         // 0x44
-        uint8_t drivingSoundVolume;             // 0x45 channel attribute volume related
-        uint16_t drivingSoundFrequency;         // 0x46 channel attribute frequency
-        uint16_t objectId;                      // 0x48 vehicle object (used for sound)
-        uint16_t var_4A;                        // sound-related flag(s)
-        Ui::WindowNumber_t sound_window_number; // 0x4C
-        Ui::WindowType sound_window_type;       // 0x4E
+        SoundObjectId_t drivingSoundId;       // 0x44
+        uint8_t drivingSoundVolume;           // 0x45 channel attribute volume related
+        uint16_t drivingSoundFrequency;       // 0x46 channel attribute frequency
+        uint16_t objectId;                    // 0x48 vehicle object (used for sound)
+        uint16_t var_4A;                      // sound-related flag(s)
+        Ui::WindowNumber_t soundWindowNumber; // 0x4C
+        Ui::WindowType soundWindowType;       // 0x4E
         uint8_t pad_4F[0x56 - 0x4F];
         uint32_t var_56;
         uint8_t pad_5A[0x73 - 0x5A];
@@ -267,17 +267,17 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance; // 0x28
         TrackAndDirection var_2C;
         uint16_t subPosition;        // 0x2E
-        int16_t tile_x;              // 0x30
-        int16_t tile_y;              // 0x32
-        uint8_t tile_base_z;         // 0x34
-        uint8_t track_type;          // 0x35 field same in all vehicles
-        RoutingHandle routingHandle; // 0x36 field same in all vehicles orderId * max_num_routing_steps
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        uint8_t tileBaseZ;           // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
+        RoutingHandle routingHandle; // 0x36 field same in all vehicles orderId * maxNumRoutingSteps
         uint8_t var_38;
-        uint8_t pad_39;       // 0x39
-        EntityId next_car_id; // 0x3A
-        uint32_t var_3C;      // 0x3C
-        uint8_t pad_40[0x2];  // 0x40
-        TransportMode mode;   // 0x42 field same in all vehicles
+        uint8_t pad_39;      // 0x39
+        EntityId nextCarId;  // 0x3A
+        uint32_t var_3C;     // 0x3C
+        uint8_t pad_40[0x2]; // 0x40
+        TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;
         int16_t ordinalNumber;     // 0x44
         uint32_t orderTableOffset; // 0x46 offset into Order Table
@@ -313,7 +313,7 @@ namespace OpenLoco::Vehicles
         bool update();
         VehicleStatus getStatus() const;
         OrderRingView getCurrentOrders() const;
-        bool isPlaced() const { return tile_x != -1 && !(var_38 & Flags38::isGhost); }
+        bool isPlaced() const { return tileX != -1 && !(var_38 & Flags38::isGhost); }
         char* generateCargoTotalString(char* buffer);
         char* generateCargoCapacityString(char* buffer);
         char* cargoLUTToString(CargoTotalArray& cargoTotals, char* buffer);
@@ -412,17 +412,17 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance; // 0x28
         TrackAndDirection var_2C;
         uint16_t subPosition;        // 0x2E
-        int16_t tile_x;              // 0x30
-        int16_t tile_y;              // 0x32
-        uint8_t tile_base_z;         // 0x34
-        uint8_t track_type;          // 0x35 field same in all vehicles
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        uint8_t tileBaseZ;           // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
         RoutingHandle routingHandle; // 0x36 field same in all vehicles
         uint8_t var_38;
-        uint8_t pad_39;       // 0x39
-        EntityId next_car_id; // 0x3A
-        uint32_t var_3C;      // 0x3C
-        uint8_t pad_40[0x2];  // 0x40
-        TransportMode mode;   // 0x42 field same in all vehicles
+        uint8_t pad_39;      // 0x39
+        EntityId nextCarId;  // 0x3A
+        uint32_t var_3C;     // 0x3C
+        uint8_t pad_40[0x2]; // 0x40
+        TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;
         Speed16 var_44;
         uint16_t timeAtSignal; // 0x46
@@ -444,24 +444,24 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance; // 0x28
         TrackAndDirection var_2C;
         uint16_t subPosition;        // 0x2E
-        int16_t tile_x;              // 0x30
-        int16_t tile_y;              // 0x32
-        uint8_t tile_base_z;         // 0x34
-        uint8_t track_type;          // 0x35 field same in all vehicles
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        uint8_t tileBaseZ;           // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
         RoutingHandle routingHandle; // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;              // 0x39
-        EntityId next_car_id;        // 0x3A
+        EntityId nextCarId;          // 0x3A
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        SoundObjectId_t drivingSoundId;         // 0x44
-        uint8_t drivingSoundVolume;             // 0x45 channel attribute volume related
-        uint16_t drivingSoundFrequency;         // 0x46 channel attribute frequency
-        uint16_t objectId;                      // 0x48 vehicle object (used for sound)
-        uint16_t var_4A;                        // sound-related flag(s) common with tail
-        Ui::WindowNumber_t sound_window_number; // 0x4C common with tail
-        Ui::WindowType sound_window_type;       // 0x4E common with tail
+        SoundObjectId_t drivingSoundId;       // 0x44
+        uint8_t drivingSoundVolume;           // 0x45 channel attribute volume related
+        uint16_t drivingSoundFrequency;       // 0x46 channel attribute frequency
+        uint16_t objectId;                    // 0x48 vehicle object (used for sound)
+        uint16_t var_4A;                      // sound-related flag(s) common with tail
+        Ui::WindowNumber_t soundWindowNumber; // 0x4C common with tail
+        Ui::WindowType soundWindowType;       // 0x4E common with tail
         uint8_t pad_4F;
         uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
         uint16_t totalWeight; // 0x52
@@ -485,21 +485,21 @@ namespace OpenLoco::Vehicles
     struct VehicleBody : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleThingType::body_continued;
-        ColourScheme colour_scheme; // 0x24
+        ColourScheme colourScheme;  // 0x24
         EntityId head;              // 0x26
         uint32_t remainingDistance; // 0x28
         TrackAndDirection var_2C;
         uint16_t subPosition;        // 0x2E
-        int16_t tile_x;              // 0x30
-        int16_t tile_y;              // 0x32
-        uint8_t tile_base_z;         // 0x34
-        uint8_t track_type;          // 0x35 field same in all vehicles
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        uint8_t tileBaseZ;           // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
         RoutingHandle routingHandle; // 0x36 field same in all vehicles
         uint8_t var_38;
-        uint8_t object_sprite_type; // 0x39
-        EntityId next_car_id;       // 0x3A
+        uint8_t objectSpriteType; // 0x39
+        EntityId nextCarId;       // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
-        uint16_t object_id; // 0x40
+        uint16_t objectId;  // 0x40
         TransportMode mode; // 0x42
         uint8_t pad_43;
         int16_t var_44;
@@ -507,9 +507,9 @@ namespace OpenLoco::Vehicles
         uint8_t var_47;            // 0x47 cargo sprite index
         VehicleCargo primaryCargo; // 0x48
         uint8_t pad_52[0x54 - 0x52];
-        uint8_t body_index; // 0x54
+        uint8_t bodyIndex; // 0x54
         int8_t var_55;
-        uint32_t creation_day; // 0x56
+        uint32_t creationDay; // 0x56
         uint8_t pad_5A[0x5E - 0x5A];
         uint8_t var_5E;
         uint8_t var_5F;
@@ -522,39 +522,39 @@ namespace OpenLoco::Vehicles
 
     private:
         void animationUpdate();
-        void sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie);
+        void sub_4AC255(VehicleBogie* backBogie, VehicleBogie* frontBogie);
         void steamPuffsAnimationUpdate(uint8_t num, int32_t var_05);
         void dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05);
         void dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05);
         void electricSpark1AnimationUpdate(uint8_t num, int32_t var_05);
         void electricSpark2AnimationUpdate(uint8_t num, int32_t var_05);
         void shipWakeAnimationUpdate(uint8_t num, int32_t var_05);
-        Pitch updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset);
-        Pitch updateSpritePitch(uint16_t xy_offset, int16_t z_offset);
+        Pitch updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset);
+        Pitch updateSpritePitch(uint16_t xyOffset, int16_t zOffset);
     };
     static_assert(sizeof(VehicleBody) == 0x60); // Can't use offset_of change this to last field if more found
 
     uint8_t calculateYaw1FromVectorPlane(int16_t xDiff, int16_t yDiff);
-    uint8_t calculateYaw4FromVector(int16_t x_offset, int16_t y_offset);
+    uint8_t calculateYaw4FromVector(int16_t xOffset, int16_t yOffset);
 
     struct VehicleBogie : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleThingType::bogie;
-        ColourScheme colour_scheme; // 0x24
+        ColourScheme colourScheme;  // 0x24
         EntityId head;              // 0x26
         uint32_t remainingDistance; // 0x28
         TrackAndDirection var_2C;
         uint16_t subPosition;        // 0x2E
-        int16_t tile_x;              // 0x30
-        int16_t tile_y;              // 0x32
-        uint8_t tile_base_z;         // 0x34
-        uint8_t track_type;          // 0x35 field same in all vehicles
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        uint8_t tileBaseZ;           // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
         RoutingHandle routingHandle; // 0x36 field same in all vehicles
         uint8_t var_38;
-        uint8_t object_sprite_type; // 0x39
-        EntityId next_car_id;       // 0x3A
+        uint8_t objectSpriteType; // 0x39
+        EntityId nextCarId;       // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
-        uint16_t object_id; // 0x40
+        uint16_t objectId;  // 0x40
         TransportMode mode; // 0x42 field same in all vehicles
         uint8_t pad_43;
         uint16_t var_44;
@@ -562,15 +562,15 @@ namespace OpenLoco::Vehicles
         uint8_t var_47;
         VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
         uint8_t pad_52[0x54 - 0x52];
-        uint8_t body_index; // 0x54
+        uint8_t bodyIndex; // 0x54
         uint8_t pad_55;
-        uint32_t creation_day; // 0x56
+        uint32_t creationDay; // 0x56
         uint8_t pad_5A[0x5E - 0x5A];
         uint8_t var_5E;
         uint8_t var_5F;
         uint8_t var_60;
         uint8_t var_61;
-        uint32_t refund_cost; // 0x62 front bogies only
+        uint32_t refundCost;  // 0x62 front bogies only
         uint16_t reliability; // 0x66 front bogies only
         uint16_t var_68;
         uint8_t var_6A;
@@ -588,25 +588,25 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance; // 0x28
         TrackAndDirection var_2C;
         uint16_t subPosition;        // 0x2E
-        int16_t tile_x;              // 0x30
-        int16_t tile_y;              // 0x32
-        uint8_t tile_base_z;         // 0x34
-        uint8_t track_type;          // 0x35 field same in all vehicles
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        uint8_t tileBaseZ;           // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
         RoutingHandle routingHandle; // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;              // 0x39
-        EntityId next_car_id;        // 0x3A
+        EntityId nextCarId;          // 0x3A
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        SoundObjectId_t drivingSoundId;         // 0x44
-        uint8_t drivingSoundVolume;             // 0x45 channel attribute volume related
-        uint16_t drivingSoundFrequency;         // 0x46 channel attribute frequency
-        uint16_t objectId;                      // 0x48 vehicle object (used for sound)
-        uint16_t var_4A;                        // sound-related flag(s) common with veh_2
-        Ui::WindowNumber_t sound_window_number; // 0x4C common with veh_2
-        Ui::WindowType sound_window_type;       // 0x4E common with veh_2
-        uint16_t trainDanglingTimeout;          // 0x4F counts up when no cars on train
+        SoundObjectId_t drivingSoundId;       // 0x44
+        uint8_t drivingSoundVolume;           // 0x45 channel attribute volume related
+        uint16_t drivingSoundFrequency;       // 0x46 channel attribute frequency
+        uint16_t objectId;                    // 0x48 vehicle object (used for sound)
+        uint16_t var_4A;                      // sound-related flag(s) common with veh_2
+        Ui::WindowNumber_t soundWindowNumber; // 0x4C common with veh_2
+        Ui::WindowType soundWindowType;       // 0x4E common with veh_2
+        uint16_t trainDanglingTimeout;        // 0x4F counts up when no cars on train
 
         bool update();
     };

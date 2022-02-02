@@ -50,7 +50,7 @@ namespace OpenLoco::Paint
         }
         SteamObject* steamObject = exhaustEntity->object();
 
-        uint8_t* edi = (exhaustEntity->object_id & 0x80) == 0 ? steamObject->var_16 : steamObject->var_1A;
+        uint8_t* edi = (exhaustEntity->objectId & 0x80) == 0 ? steamObject->var_16 : steamObject->var_1A;
         uint32_t imageId = edi[2 * exhaustEntity->var_26];
         imageId = imageId + steamObject->baseImageId + steamObject->var_0A;
 

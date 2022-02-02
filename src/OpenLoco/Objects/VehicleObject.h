@@ -88,7 +88,7 @@ namespace OpenLoco
 
     struct simple_animation
     {
-        uint8_t object_id;          // 0x00 (object loader fills this in)
+        uint8_t objectId;           // 0x00 (object loader fills this in)
         uint8_t height;             // 0x01
         simple_animation_type type; // 0x02
     };
@@ -197,7 +197,7 @@ namespace OpenLoco
         TransportMode mode; // 0x02
         VehicleType type;   // 0x03
         uint8_t var_04;
-        uint8_t track_type;               // 0x05
+        uint8_t trackType;                // 0x05
         uint8_t num_mods;                 // 0x06
         uint8_t cost_index;               // 0x07
         int16_t cost_factor;              // 0x08

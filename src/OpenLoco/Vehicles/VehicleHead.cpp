@@ -93,7 +93,7 @@ namespace OpenLoco::Vehicles
             var_5C--;
         }
 
-        if (tile_x == -1)
+        if (tileX == -1)
         {
             if (!train.cars.empty())
             {
@@ -155,7 +155,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(this);
         for (auto& car : train.cars)
         {
-            if (car.front->var_5F & Flags5F::broken_down)
+            if (car.front->var_5F & Flags5F::brokenDown)
             {
                 if ((scenarioTicks() & 3) == 0)
                 {
@@ -165,13 +165,13 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if ((car.front->var_5F & Flags5F::breakdown_pending) && !isTitleMode())
+            if ((car.front->var_5F & Flags5F::breakdownPending) && !isTitleMode())
             {
                 auto newConfig = Config::getNew();
                 if (!newConfig.breakdowns_disabled)
                 {
-                    car.front->var_5F &= ~Flags5F::breakdown_pending;
-                    car.front->var_5F |= Flags5F::broken_down;
+                    car.front->var_5F &= ~Flags5F::breakdownPending;
+                    car.front->var_5F |= Flags5F::brokenDown;
                     car.front->var_6A = 5;
                     applyBreakdownToTrain();
 
@@ -191,7 +191,7 @@ namespace OpenLoco::Vehicles
         // Check only the first bogie on each car for breakdown flags
         for (const auto& car : train.cars)
         {
-            auto* vehObj = ObjectManager::get<VehicleObject>(car.front->object_id);
+            auto* vehObj = ObjectManager::get<VehicleObject>(car.front->objectId);
             if (vehObj == nullptr)
             {
                 continue;
@@ -201,7 +201,7 @@ namespace OpenLoco::Vehicles
             {
                 continue;
             }
-            if (car.front->var_5F & Flags5F::broken_down)
+            if (car.front->var_5F & Flags5F::brokenDown)
             {
                 isBrokenDown = true;
             }
@@ -302,7 +302,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(this);
         for (const auto& car : train.cars)
         {
-            totalLength += getVehicleTypeLength(car.body->object_id);
+            totalLength += getVehicleTypeLength(car.body->objectId);
         }
         return totalLength;
     }
@@ -324,7 +324,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if (newObject->track_type != track_type)
+            if (newObject->trackType != trackType)
             {
                 GameCommands::setErrorText(StringIds::incompatible_vehicle);
                 return false;
@@ -347,8 +347,8 @@ namespace OpenLoco::Vehicles
             Vehicle train(this);
             for (const auto& car : train.cars)
             {
-                // The object_id is the same for all vehicle components and car components of a car
-                if (!sub_4B90F0(vehicleTypeId, car.front->object_id))
+                // The objectId is the same for all vehicle components and car components of a car
+                if (!sub_4B90F0(vehicleTypeId, car.front->objectId))
                 {
                     return false;
                 }
@@ -359,7 +359,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        if (track_type != 0xFF)
+        if (trackType != 0xFF)
         {
             return true;
         }
@@ -379,7 +379,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleStatus vehStatus = {};
         vehStatus.status2 = StringIds::null;
-        if (tile_x == -1)
+        if (tileX == -1)
         {
             vehStatus.status1 = StringIds::vehicle_status_no_position;
             return vehStatus;
@@ -549,7 +549,7 @@ namespace OpenLoco::Vehicles
     // 0x004A88A6
     void VehicleHead::updateDrivingSound(Vehicle2or6* vehType2or6)
     {
-        if (tile_x == -1 || status == Status::crashed || status == Status::stuck || (var_38 & Flags38::isGhost) || vehType2or6->objectId == 0xFFFF)
+        if (tileX == -1 || status == Status::crashed || status == Status::stuck || (var_38 & Flags38::isGhost) || vehType2or6->objectId == 0xFFFF)
         {
             updateDrivingSoundNone(vehType2or6);
             return;
@@ -613,7 +613,7 @@ namespace OpenLoco::Vehicles
                 {
                     assert(false);
                 }
-                if (train.cars.firstCar.front->var_5F & Flags5F::broken_down)
+                if (train.cars.firstCar.front->var_5F & Flags5F::brokenDown)
                 {
                     updateDrivingSoundNone(vehType2or6);
                     return;
@@ -706,7 +706,7 @@ namespace OpenLoco::Vehicles
                 {
                     assert(false);
                 }
-                if (train.cars.firstCar.front->var_5F & Flags5F::broken_down)
+                if (train.cars.firstCar.front->var_5F & Flags5F::brokenDown)
                 {
                     updateDrivingSoundNone(vehType2or6);
                     return;
@@ -930,7 +930,7 @@ namespace OpenLoco::Vehicles
         auto param1 = 160;
         auto turnaroundAtSignalTimeout = kBusSignalTimeout;
 
-        if (track_type == 0xFF || ObjectManager::get<RoadObject>(track_type)->flags & Flags12::isRoad)
+        if (trackType == 0xFF || ObjectManager::get<RoadObject>(trackType)->flags & Flags12::isRoad)
         {
             if (train.veh1->var_2C.road.isBackToFront())
             {
@@ -1396,7 +1396,7 @@ namespace OpenLoco::Vehicles
         Pitch targetPitch = Pitch::flat;
         if (vehType2->currentSpeed < 50.0_mph)
         {
-            auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
+            auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             targetPitch = Pitch::up12deg;
             // Slope sprites for taxiing planes??
             if (!(vehObject->flags & FlagsE0::unk_08))
@@ -1417,7 +1417,7 @@ namespace OpenLoco::Vehicles
         {
             if (vehType2->currentSpeed <= 180.0_mph)
             {
-                auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
+                auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
 
                 // looks wrong??
                 if (vehObject->flags & FlagsE0::can_couple)
@@ -2057,7 +2057,7 @@ namespace OpenLoco::Vehicles
                 }
                 // 0x4272A5
                 Vehicle train(this);
-                auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
+                auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
                 if (vehObject->flags & FlagsE0::isHelicopter)
                 {
                     for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
@@ -2290,13 +2290,13 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(this);
         moveTo({ newLoc.x, newLoc.y, newLoc.z });
-        tile_x = 0;
+        tileX = 0;
 
         train.veh1->moveTo({ newLoc.x, newLoc.y, newLoc.z });
-        train.veh1->tile_x = 0;
+        train.veh1->tileX = 0;
 
         train.veh2->moveTo({ newLoc.x, newLoc.y, newLoc.z });
-        train.veh2->tile_x = 0;
+        train.veh2->tileX = 0;
 
         // The first bogie of the plane is the shadow of the plane
         auto* shadow = train.cars.firstCar.front;
@@ -2305,7 +2305,7 @@ namespace OpenLoco::Vehicles
         shadow->moveTo({ newLoc.x, newLoc.y, height });
         shadow->sprite_yaw = newYaw;
         shadow->sprite_pitch = Pitch::flat;
-        shadow->tile_x = 0;
+        shadow->tileX = 0;
         shadow->invalidateSprite();
 
         auto* body = train.cars.firstCar.body;
@@ -2313,7 +2313,7 @@ namespace OpenLoco::Vehicles
         body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
         body->sprite_yaw = newYaw;
         body->sprite_pitch = newPitch;
-        body->tile_x = 0;
+        body->tileX = 0;
         body->invalidateSprite();
     }
 
@@ -2425,7 +2425,7 @@ namespace OpenLoco::Vehicles
 
             if (stationId != StationId::null)
             {
-                auto targetTile = TileManager::get(Map::Pos2{ tile_x, tile_y });
+                auto targetTile = TileManager::get(Map::Pos2{ tileX, tileY });
                 StationElement* station = nullptr;
                 for (auto& el : targetTile)
                 {
@@ -2438,7 +2438,7 @@ namespace OpenLoco::Vehicles
                     {
                         continue;
                     }
-                    if (station->baseZ() == tile_base_z)
+                    if (station->baseZ() == tileBaseZ)
                     {
                         station->setFlag6(false);
                         stationId = StationId::null;
@@ -2452,11 +2452,11 @@ namespace OpenLoco::Vehicles
             if (newStationId != StationId::null)
             {
                 stationId = newStationId;
-                tile_x = stationTarget.x;
-                tile_y = stationTarget.y;
-                tile_base_z = stationTarget.z / 4;
+                tileX = stationTarget.x;
+                tileY = stationTarget.y;
+                tileBaseZ = stationTarget.z / 4;
 
-                auto targetTile = TileManager::get(Map::Pos2{ tile_x, tile_y });
+                auto targetTile = TileManager::get(Map::Pos2{ tileX, tileY });
                 StationElement* station = nullptr;
                 for (auto& el : targetTile)
                 {
@@ -2469,7 +2469,7 @@ namespace OpenLoco::Vehicles
                     {
                         continue;
                     }
-                    if (station->baseZ() == tile_base_z)
+                    if (station->baseZ() == tileBaseZ)
                     {
                         station->setFlag6(true);
                         break;
@@ -2509,14 +2509,14 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(this);
         train.veh1->moveTo({ newLoc.x, newLoc.y, newLoc.z });
-        train.veh1->tile_x = 0;
+        train.veh1->tileX = 0;
         train.veh2->moveTo({ newLoc.x, newLoc.y, newLoc.z });
-        train.veh2->tile_x = 0;
+        train.veh2->tileX = 0;
         train.cars.firstCar.body->invalidateSprite();
         train.cars.firstCar.body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
         train.cars.firstCar.body->sprite_yaw = yaw;
         train.cars.firstCar.body->sprite_pitch = pitch;
-        train.cars.firstCar.body->tile_x = 0;
+        train.cars.firstCar.body->tileX = 0;
         train.cars.firstCar.body->invalidateSprite();
     }
 
@@ -2530,11 +2530,11 @@ namespace OpenLoco::Vehicles
                 return 1;
             case TransportMode::rail:
             {
-                auto tile = Map::TileManager::get(Pos2{ bogie->tile_x, bogie->tile_y });
+                auto tile = Map::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
                 auto direction = bogie->var_2C.track.cardinalDirection();
                 auto trackId = bogie->var_2C.track.id();
                 auto loadingModifier = 12;
-                auto* elStation = tile.trackStation(trackId, direction, bogie->tile_base_z);
+                auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
                 {
                     if (elStation->isFlag5() || elStation->isGhost())
@@ -2549,11 +2549,11 @@ namespace OpenLoco::Vehicles
             }
             case TransportMode::road:
             {
-                auto tile = Map::TileManager::get(Pos2{ bogie->tile_x, bogie->tile_y });
+                auto tile = Map::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
                 auto direction = bogie->var_2C.road.cardinalDirection();
                 auto roadId = bogie->var_2C.road.id();
                 auto loadingModifier = 2;
-                auto* elStation = tile.roadStation(roadId, direction, bogie->tile_base_z);
+                auto* elStation = tile.roadStation(roadId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
                 {
                     if (elStation->isFlag5() || elStation->isGhost())
@@ -2942,7 +2942,7 @@ namespace OpenLoco::Vehicles
         station->flags |= StationFlags::flag_7;
         Vehicle train(this);
         auto vehMaxSpeed = train.veh2->maxSpeed;
-        auto carAgeFactor = static_cast<uint8_t>(std::min<uint32_t>(0xFF, (getCurrentDay() - bogie->creation_day) / 256));
+        auto carAgeFactor = static_cast<uint8_t>(std::min<uint32_t>(0xFF, (getCurrentDay() - bogie->creationDay) / 256));
 
         if (stationCargo.flags & (1 << 2))
         {
@@ -3212,8 +3212,8 @@ namespace OpenLoco::Vehicles
         auto direction = bogie->var_2C.track.cardinalDirection();
         auto trackId = bogie->var_2C.track.id();
 
-        auto tile = TileManager::get(Map::Pos2{ bogie->tile_x, bogie->tile_y });
-        auto* elStation = tile.trackStation(trackId, direction, bogie->tile_base_z);
+        auto tile = TileManager::get(Map::Pos2{ bogie->tileX, bogie->tileY });
+        auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
         if (elStation == nullptr)
         {
             return StationId::null;
@@ -3344,10 +3344,10 @@ namespace OpenLoco::Vehicles
         Vehicle train(this);
         Vehicle2* veh = train.veh2;
         Pos2 loc = {
-            veh->tile_x,
-            veh->tile_y
+            veh->tileX,
+            veh->tileY
         };
-        auto baseZ = veh->tile_base_z;
+        auto baseZ = veh->tileBaseZ;
 
         auto tile = TileManager::get(loc);
         if (veh->mode == TransportMode::road)
@@ -3497,7 +3497,7 @@ namespace OpenLoco::Vehicles
                         return false;
                     }
 
-                    if (this->tile_x == -1)
+                    if (this->tileX == -1)
                     {
                         return true;
                     }
@@ -3517,7 +3517,7 @@ namespace OpenLoco::Vehicles
                 }
                 else
                 {
-                    if (this->tile_x == -1)
+                    if (this->tileX == -1)
                     {
                         return true;
                     }
@@ -3552,7 +3552,7 @@ namespace OpenLoco::Vehicles
         const Vehicle train(this);
         for (const auto& car : train.cars)
         {
-            auto* vehObj = ObjectManager::get<VehicleObject>(car.front->object_id);
+            auto* vehObj = ObjectManager::get<VehicleObject>(car.front->objectId);
             currency32_t runCost = Economy::getInflationAdjustedCost(vehObj->run_cost_factor, vehObj->run_cost_index, 10);
             totalRunCost += runCost;
         }

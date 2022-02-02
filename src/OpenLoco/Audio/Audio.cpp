@@ -844,8 +844,8 @@ namespace OpenLoco::Audio
                 // jump + return
                 _numActiveVehicleSounds += 1;
                 v->var_4A |= 1;
-                v->sound_window_type = main->type;
-                v->sound_window_number = main->number;
+                v->soundWindowType = main->type;
+                v->soundWindowNumber = main->number;
                 return;
             }
         }
@@ -871,8 +871,8 @@ namespace OpenLoco::Audio
             {
                 _numActiveVehicleSounds += 1;
                 v->var_4A |= 1;
-                v->sound_window_type = w->type;
-                v->sound_window_number = w->number;
+                v->soundWindowType = w->type;
+                v->soundWindowNumber = w->number;
                 return;
             }
         }

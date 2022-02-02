@@ -1380,7 +1380,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (vehicleObj->mode != transportMode)
                     continue;
 
-                if (trackType != vehicleObj->track_type)
+                if (trackType != vehicleObj->trackType)
                     continue;
 
                 auto company = CompanyManager::get(companyId);
