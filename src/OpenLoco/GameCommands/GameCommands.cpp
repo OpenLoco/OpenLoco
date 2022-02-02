@@ -186,10 +186,10 @@ namespace OpenLoco::GameCommands
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
             }
 
-            if (getGameSpeed() != 0)
+            if (getGameSpeed() != GameSpeed::Normal)
             {
                 // calling the command setGameSpeed will cause infinite recursion here, so just call the real function
-                OpenLoco::setGameSpeed(0);
+                OpenLoco::setGameSpeed(GameSpeed::Normal);
             }
 
             if (isPaused())

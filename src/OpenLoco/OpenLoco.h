@@ -33,6 +33,14 @@ namespace OpenLoco
 
     extern const char version[];
 
+    namespace GameSpeed
+    {
+        constexpr uint8_t Normal = 0;
+        constexpr uint8_t FastForward = 1;
+        constexpr uint8_t ExtraFastForward = 2;
+        constexpr uint8_t MAX = ExtraFastForward;
+    }
+
     std::string getVersionInfo();
 
     void* hInstance();

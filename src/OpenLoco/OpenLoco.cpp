@@ -217,7 +217,7 @@ namespace OpenLoco
 
     void setGameSpeed(uint8_t speed)
     {
-        assert(speed <= 3);
+        assert(speed <= GameSpeed::MAX);
 
         if (_gameSpeed != speed)
         {

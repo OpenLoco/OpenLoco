@@ -121,15 +121,15 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             _widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
         }
-        else if (getGameSpeed() == 0)
+        else if (getGameSpeed() == GameSpeed::Normal)
         {
             _widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
         }
-        else if (getGameSpeed() == 1)
+        else if (getGameSpeed() == GameSpeed::FastForward)
         {
             _widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
         }
-        else if (getGameSpeed() == 2)
+        else if (getGameSpeed() == GameSpeed::ExtraFastForward)
         {
             _widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
         }
