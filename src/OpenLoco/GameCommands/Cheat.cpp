@@ -15,6 +15,7 @@
 #include "GameCommands.h"
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::GameCommands
 {
@@ -106,17 +107,17 @@ namespace OpenLoco::GameCommands
                 int16_t newRanking{};
                 if (absolute)
                 {
-                    newRanking = value * max_company_rating;
+                    newRanking = value * kMaxCompanyRating;
                 }
                 else
                 {
-                    newRanking = town.company_ratings[enumValue(companyId)] + max_company_rating;
+                    newRanking = town.company_ratings[enumValue(companyId)] + kMaxCompanyRating;
                     newRanking *= 1.0f + (1.0f / value);
-                    newRanking -= max_company_rating;
+                    newRanking -= kMaxCompanyRating;
                 }
 
                 // Set the new rating.
-                town.company_ratings[enumValue(companyId)] = std::clamp<int16_t>(newRanking, min_company_rating, max_company_rating);
+                town.company_ratings[enumValue(companyId)] = std::clamp<int16_t>(newRanking, kMinCompanyRating, kMaxCompanyRating);
             }
 
             return 0;

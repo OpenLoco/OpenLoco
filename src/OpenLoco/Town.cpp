@@ -51,8 +51,8 @@ namespace OpenLoco
         companies_with_rating |= (1 << enumValue(cid));
         company_ratings[enumValue(cid)] = std::clamp(
             company_ratings[enumValue(cid)] + amount,
-            min_company_rating,
-            max_company_rating);
+            kMinCompanyRating,
+            kMaxCompanyRating);
     }
 
     /**

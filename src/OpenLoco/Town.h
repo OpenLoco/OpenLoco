@@ -7,8 +7,8 @@
 
 namespace OpenLoco
 {
-    constexpr int32_t min_company_rating = -1000;
-    constexpr int32_t max_company_rating = 1000;
+    constexpr int32_t kMinCompanyRating = -1000;
+    constexpr int32_t kMaxCompanyRating = 1000;
 
     namespace TownFlags
     {

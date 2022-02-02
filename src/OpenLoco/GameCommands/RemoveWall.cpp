@@ -5,6 +5,7 @@
 #include "GameCommands.h"
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::GameCommands
 {

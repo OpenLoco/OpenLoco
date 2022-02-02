@@ -28,6 +28,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::WindowManager;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {

@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     view.mapX = industry->x;
                     view.mapY = industry->y;
-                    view.surfaceZ = TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
+                    view.surfaceZ = Map::TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
                     view.rotation = WindowManager::getCurrentRotation();
                     view.zoomLevel = ZoomLevel::half;
                     *selectable = true;
@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     view.mapX = town->x;
                     view.mapY = town->y;
-                    view.surfaceZ = TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
+                    view.surfaceZ = Map::TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
                     view.rotation = WindowManager::getCurrentRotation();
                     view.zoomLevel = ZoomLevel::half;
                     *selectable = true;
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::location:
                     view.mapX = news->item_id_1; // possible union?
                     view.mapY = news->item_id_2;
-                    view.surfaceZ = TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
+                    view.surfaceZ = Map::TileManager::getHeight({ view.mapX, view.mapY }).landHeight;
                     view.zoomLevel = ZoomLevel::full;
                     view.rotation = WindowManager::getCurrentRotation();
                     *selectable = true;

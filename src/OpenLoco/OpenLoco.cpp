@@ -862,7 +862,7 @@ namespace OpenLoco
         addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
         dateTick();
         Map::TileManager::update();
-        WaveManager::update();
+        Map::WaveManager::update();
         TownManager::update();
         IndustryManager::update();
         EntityManager::updateVehicles();
@@ -871,7 +871,7 @@ namespace OpenLoco
         EntityManager::updateMiscEntities();
         sub_46FFCA();
         CompanyManager::update();
-        AnimationManager::update();
+        Map::AnimationManager::update();
         Audio::updateVehicleNoise();
         Audio::updateAmbientNoise();
         Title::update();

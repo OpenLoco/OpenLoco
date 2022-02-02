@@ -18,6 +18,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::StationManager
 {
