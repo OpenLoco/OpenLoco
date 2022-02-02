@@ -574,16 +574,16 @@ namespace OpenLoco::Input::ShortcutManager
 
     static void gameSpeedNormal()
     {
-        GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ 0 }, GameCommands::Flags::apply);
+        GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Normal }, GameCommands::Flags::apply);
     }
 
     static void gameSpeedFastForward()
     {
-        GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ 1 }, GameCommands::Flags::apply);
+        GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::FastForward }, GameCommands::Flags::apply);
     }
 
     static void gameSpeedExtraFastForward()
     {
-        GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ 2 }, GameCommands::Flags::apply);
+        GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::ExtraFastForward }, GameCommands::Flags::apply);
     }
 }
