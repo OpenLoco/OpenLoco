@@ -795,7 +795,7 @@ void OpenLoco::Interop::registerHooks()
             Map::Pos2 pos(regs.ax, regs.cx);
             Map::SurfaceElement* surface = X86Pointer<Map::SurfaceElement>(regs.esi);
 
-            WaveManager::createWave(*surface, pos);
+            Map::WaveManager::createWave(*surface, pos);
 
             regs = backup;
             return 0;

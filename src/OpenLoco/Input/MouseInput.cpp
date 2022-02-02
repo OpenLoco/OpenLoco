@@ -21,6 +21,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Ui::ScrollView;
 using namespace OpenLoco::Ui::ViewportInteraction;
+using namespace OpenLoco::Map;
 
 #define DROPDOWN_ITEM_UNDEFINED -1
 

@@ -11,6 +11,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::Paint
 {

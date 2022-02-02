@@ -27,6 +27,7 @@
 #include "WindowManager.h"
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::Ui::ViewportInteraction
 {

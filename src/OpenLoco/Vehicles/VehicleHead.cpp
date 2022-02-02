@@ -34,6 +34,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::Vehicles
 {
