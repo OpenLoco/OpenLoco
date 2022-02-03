@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             commonFormatArgs[0] = S5::getOptions().scenarioStartYear;
 
-            if ((S5::getOptions().scenarioFlags & Scenario::flags::landscape_generation_done) == 0)
+            if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) == 0)
             {
                 window->activated_widgets |= (1 << widx::generate_when_game_starts);
                 window->disabled_widgets |= (1 << widx::generate_now);
@@ -258,9 +258,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::generate_when_game_starts:
-                    if ((S5::getOptions().scenarioFlags & Scenario::landscape_generation_done) == 0)
+                    if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) == 0)
                     {
-                        S5::getOptions().scenarioFlags |= Scenario::landscape_generation_done;
+                        S5::getOptions().scenarioFlags |= Scenario::Flags::landscapeGenerationDone;
                         Scenario::generateLandscape();
                     }
                     else
@@ -350,11 +350,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             hill_density,
             hill_density_down,
             hill_density_up,
-            hills_edge_of_map,
+            hillsEdgeOfMap,
             scrollview,
         };
 
-        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::generator) | (1 << widx::generator_btn) | (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hills_edge_of_map);
+        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::generator) | (1 << widx::generator_btn) | (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hillsEdgeOfMap);
         const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
         static Widget widgets[] = {
@@ -601,8 +601,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     Common::switchTab(window, widgetIndex);
                     break;
 
-                case widx::hills_edge_of_map:
-                    S5::getOptions().scenarioFlags ^= Scenario::flags::hills_edge_of_map;
+                case widx::hillsEdgeOfMap:
+                    S5::getOptions().scenarioFlags ^= Scenario::Flags::hillsEdgeOfMap;
                     window->invalidate();
                     break;
             }
@@ -663,10 +663,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
             window->widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
-            if ((options.scenarioFlags & Scenario::flags::hills_edge_of_map) != 0)
-                window->activated_widgets |= (1 << widx::hills_edge_of_map);
+            if ((options.scenarioFlags & Scenario::Flags::hillsEdgeOfMap) != 0)
+                window->activated_widgets |= (1 << widx::hillsEdgeOfMap);
             else
-                window->activated_widgets &= ~(1 << widx::hills_edge_of_map);
+                window->activated_widgets &= ~(1 << widx::hillsEdgeOfMap);
         }
 
         // 0x0043E2A2
@@ -1194,12 +1194,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::check_allow_industries_close_down:
-                    *industryFlags ^= Scenario::industry_flags::disallow_industries_close_down;
+                    *industryFlags ^= Scenario::IndustryFlags::disallowIndustriesCloseDown;
                     window->invalidate();
                     break;
 
                 case widx::check_allow_industries_start_up:
-                    *industryFlags ^= Scenario::industry_flags::disallow_industries_start_up;
+                    *industryFlags ^= Scenario::IndustryFlags::disallowIndustriesStartUp;
                     window->invalidate();
                     break;
             }
@@ -1213,9 +1213,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
 
             window->activated_widgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
-            if (!(industryFlags & Scenario::industry_flags::disallow_industries_close_down))
+            if (!(industryFlags & Scenario::IndustryFlags::disallowIndustriesCloseDown))
                 window->activated_widgets |= 1 << widx::check_allow_industries_close_down;
-            if (!(industryFlags & Scenario::industry_flags::disallow_industries_start_up))
+            if (!(industryFlags & Scenario::IndustryFlags::disallowIndustriesStartUp))
                 window->activated_widgets |= 1 << widx::check_allow_industries_start_up;
         }
 

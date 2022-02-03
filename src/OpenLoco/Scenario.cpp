@@ -45,7 +45,7 @@ namespace OpenLoco::Scenario
 
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
 
-    static loco_global<uint8_t, 0x00526230> objectiveType;
+    static loco_global<ObjectiveType, 0x00526230> objectiveType;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
     static loco_global<uint32_t, 0x00526232> objectiveCompanyValue;
     static loco_global<uint32_t, 0x00526236> objectiveMonthlyVehicleProfit;
@@ -218,7 +218,7 @@ namespace OpenLoco::Scenario
     // 0x0043EDAD
     void eraseLandscape()
     {
-        S5::getOptions().scenarioFlags &= ~(Scenario::flags::landscape_generation_done);
+        S5::getOptions().scenarioFlags &= ~(Scenario::Flags::landscapeGenerationDone);
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         reset();
         S5::getOptions().madeAnyChanges = 0;
@@ -322,7 +322,7 @@ namespace OpenLoco::Scenario
         Audio::resetMusic();
 
         auto& gameState = getGameState();
-        if (gameState.flags & flags::landscape_generation_done)
+        if (gameState.flags & Flags::landscapeGenerationDone)
         {
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)
@@ -409,17 +409,17 @@ namespace OpenLoco::Scenario
     {
         switch (objectiveType)
         {
-            case Scenario::objective_type::company_value:
+            case Scenario::ObjectiveType::companyValue:
                 args.push(StringIds::achieve_a_company_value_of);
                 args.push(*objectiveCompanyValue);
                 break;
 
-            case Scenario::objective_type::vehicle_profit:
+            case Scenario::ObjectiveType::vehicleProfit:
                 args.push(StringIds::achieve_a_monthly_profit_from_vehicles_of);
                 args.push(*objectiveMonthlyVehicleProfit);
                 break;
 
-            case Scenario::objective_type::performanceIndex:
+            case Scenario::ObjectiveType::performanceIndex:
             {
                 args.push(StringIds::achieve_a_performance_index_of);
                 int16_t performanceIndex = objectivePerformanceIndex * 10;
@@ -427,7 +427,7 @@ namespace OpenLoco::Scenario
                 break;
             }
 
-            case Scenario::objective_type::cargo_delivery:
+            case Scenario::ObjectiveType::cargoDelivery:
             {
                 args.push(StringIds::deliver);
                 CargoObject* cargoObject = _50D15C;
@@ -441,15 +441,15 @@ namespace OpenLoco::Scenario
             }
         }
 
-        if ((objectiveFlags & Scenario::objective_flags::be_top_company) != 0)
+        if ((objectiveFlags & Scenario::ObjectiveFlags::beTopCompany) != 0)
         {
             args.push(StringIds::and_be_the_top_performing_company);
         }
-        if ((objectiveFlags & Scenario::objective_flags::be_within_top_three_companies) != 0)
+        if ((objectiveFlags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
         {
             args.push(StringIds::and_be_one_of_the_top_3_performing_companies);
         }
-        if ((objectiveFlags & Scenario::objective_flags::within_time_limit) != 0)
+        if ((objectiveFlags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
         {
             if (isTitleMode() || isEditorMode())
             {
