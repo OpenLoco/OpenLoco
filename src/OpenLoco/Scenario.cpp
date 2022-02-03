@@ -218,7 +218,7 @@ namespace OpenLoco::Scenario
     // 0x0043EDAD
     void eraseLandscape()
     {
-        S5::getOptions().scenarioFlags &= ~(Scenario::Flags::landscape_generation_done);
+        S5::getOptions().scenarioFlags &= ~(Scenario::Flags::landscapeGenerationDone);
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         reset();
         S5::getOptions().madeAnyChanges = 0;
@@ -322,7 +322,7 @@ namespace OpenLoco::Scenario
         Audio::resetMusic();
 
         auto& gameState = getGameState();
-        if (gameState.flags & Flags::landscape_generation_done)
+        if (gameState.flags & Flags::landscapeGenerationDone)
         {
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)
@@ -409,12 +409,12 @@ namespace OpenLoco::Scenario
     {
         switch (objectiveType)
         {
-            case Scenario::ObjectiveType::company_value:
+            case Scenario::ObjectiveType::companyValue:
                 args.push(StringIds::achieve_a_company_value_of);
                 args.push(*objectiveCompanyValue);
                 break;
 
-            case Scenario::ObjectiveType::vehicle_profit:
+            case Scenario::ObjectiveType::vehicleProfit:
                 args.push(StringIds::achieve_a_monthly_profit_from_vehicles_of);
                 args.push(*objectiveMonthlyVehicleProfit);
                 break;
@@ -427,7 +427,7 @@ namespace OpenLoco::Scenario
                 break;
             }
 
-            case Scenario::ObjectiveType::cargo_delivery:
+            case Scenario::ObjectiveType::cargoDelivery:
             {
                 args.push(StringIds::deliver);
                 CargoObject* cargoObject = _50D15C;
@@ -441,15 +441,15 @@ namespace OpenLoco::Scenario
             }
         }
 
-        if ((objectiveFlags & Scenario::ObjectiveFlags::be_top_company) != 0)
+        if ((objectiveFlags & Scenario::ObjectiveFlags::beTopCompany) != 0)
         {
             args.push(StringIds::and_be_the_top_performing_company);
         }
-        if ((objectiveFlags & Scenario::ObjectiveFlags::be_within_top_three_companies) != 0)
+        if ((objectiveFlags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
         {
             args.push(StringIds::and_be_one_of_the_top_3_performing_companies);
         }
-        if ((objectiveFlags & Scenario::ObjectiveFlags::within_time_limit) != 0)
+        if ((objectiveFlags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
         {
             if (isTitleMode() || isEditorMode())
             {

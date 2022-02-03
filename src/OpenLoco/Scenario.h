@@ -13,32 +13,32 @@ namespace OpenLoco::Scenario
 {
     namespace Flags
     {
-        constexpr uint16_t landscape_generation_done = (1 << 0);
-        constexpr uint16_t hills_edge_of_map = (1 << 1);
-        constexpr uint16_t preferred_owner_name = (1 << 2);
+        constexpr uint16_t landscapeGenerationDone = (1 << 0);
+        constexpr uint16_t hillsEdgeOfMap = (1 << 1);
+        constexpr uint16_t preferredOwnerName = (1 << 2);
     }
 
     namespace IndustryFlags
     {
-        constexpr uint8_t disallow_industries_close_down = (1 << 0);
-        constexpr uint8_t disallow_industries_start_up = (1 << 1);
+        constexpr uint8_t disallowIndustriesCloseDown = (1 << 0);
+        constexpr uint8_t disallowIndustriesStartUp = (1 << 1);
     }
 
     namespace ObjectiveFlags
     {
-        constexpr uint8_t be_top_company = (1 << 0);
-        constexpr uint8_t be_within_top_three_companies = (1 << 1);
-        constexpr uint8_t within_time_limit = (1 << 2);
+        constexpr uint8_t beTopCompany = (1 << 0);
+        constexpr uint8_t beWithinTopThreeCompanies = (1 << 1);
+        constexpr uint8_t withinTimeLimit = (1 << 2);
         constexpr uint8_t flag_3 = (1 << 3);
         constexpr uint8_t flag_4 = (1 << 4);
     }
 
     enum class ObjectiveType : uint8_t
     {
-        company_value,
-        vehicle_profit,
+        companyValue,
+        vehicleProfit,
         performanceIndex,
-        cargo_delivery,
+        cargoDelivery,
     };
 
     enum class Season : uint8_t
