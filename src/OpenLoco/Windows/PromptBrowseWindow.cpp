@@ -494,7 +494,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         Gfx::fillRectInset(context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
 
-        if (S5::getPreviewOptions().scenarioFlags & Scenario::flags::landscape_generation_done)
+        if (S5::getPreviewOptions().scenarioFlags & Scenario::Flags::landscape_generation_done)
         {
             // Height map
             auto imageId = 0;
