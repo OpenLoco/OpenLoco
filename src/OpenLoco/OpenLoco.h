@@ -35,9 +35,9 @@ namespace OpenLoco
 
     namespace GameSpeed
     {
-        constexpr uint8_t Normal = 0;           // 0x00439A70 (speed: 0)
-        constexpr uint8_t FastForward = 1;      // 0x00439A93 (speed: 1)
-        constexpr uint8_t ExtraFastForward = 2; // 0x00439AB6 (speed: 2)
+        constexpr uint8_t Normal = 0;
+        constexpr uint8_t FastForward = 1;
+        constexpr uint8_t ExtraFastForward = 2;
         constexpr uint8_t MAX = ExtraFastForward;
     }
 
