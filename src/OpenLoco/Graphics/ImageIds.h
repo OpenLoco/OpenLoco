@@ -8,6 +8,8 @@ namespace OpenLoco::ImageIds
 {
     constexpr uint32_t null = 0xFFFFFFFF;
 
+    constexpr uint32_t default_palette = 304;
+
     constexpr uint32_t construction_arrow_north = 428;
     constexpr uint32_t construction_arrow_east = 429;
     constexpr uint32_t construction_arrow_south = 430;

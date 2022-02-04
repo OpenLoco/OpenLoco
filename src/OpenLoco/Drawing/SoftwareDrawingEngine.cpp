@@ -11,10 +11,6 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Drawing
 {
-    struct PaletteEntry
-    {
-        uint8_t b, g, r, a;
-    };
     using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
 
     static loco_global<Ui::ScreenInfo, 0x0050B884> screen_info;
@@ -181,7 +177,7 @@ namespace OpenLoco::Drawing
     void SoftwareDrawingEngine::updatePalette(const PaletteEntry* entries, int32_t index, int32_t count)
     {
         SDL_Color base[256];
-        for (int i = 0; i < 256; i++)
+        for (int i = index; i < count; i++)
         {
             auto& src = entries[i];
             base[i].r = src.r;
@@ -189,7 +185,7 @@ namespace OpenLoco::Drawing
             base[i].b = src.b;
             base[i].a = 0;
         }
-        SDL_SetPaletteColors(_palette, base, 0, 256);
+        SDL_SetPaletteColors(_palette, base, index, count);
     }
 
     void SoftwareDrawingEngine::drawRect(const Rect& _rect)
