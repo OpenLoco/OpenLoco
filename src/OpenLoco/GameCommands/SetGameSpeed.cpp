@@ -6,7 +6,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-    static uint32_t setGameSpeed(const uint8_t speed)
+    static uint32_t setGameSpeed(const GameSpeed speed)
     {
         if (speed > GameSpeed::MAX)
         {
@@ -20,6 +20,6 @@ namespace OpenLoco::GameCommands
     void setGameSpeed(registers& regs)
     {
         SetGameSpeedArgs args(regs);
-        regs.ebx = setGameSpeed(args.newSpeed);
+        regs.ebx = GameCommands::setGameSpeed(args.newSpeed);
     }
 }

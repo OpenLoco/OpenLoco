@@ -52,7 +52,7 @@ namespace OpenLoco::Title
 
     // Explicit deduction guide (not needed as of C++20)
     template<class... Ts>
-    overloaded(Ts...)->overloaded<Ts...>;
+    overloaded(Ts...) -> overloaded<Ts...>;
 
     static const TitleSequence _titleSequence = {
         MoveStep{ 231, 160 },
@@ -168,7 +168,7 @@ namespace OpenLoco::Title
         Ui::WindowManager::closeAllFloatingWindows();
         setAllScreenFlags(currentScreenFlags);
         setScreenFlag(ScreenFlags::title);
-        setGameSpeed(0);
+        setGameSpeed(GameSpeed::Normal);
         ObjectManager::unloadAll();
         sub_473A95(1);
         sub_474874();

@@ -335,21 +335,21 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::setGameSpeed;
         SetGameSpeedArgs() = default;
         explicit SetGameSpeedArgs(const registers& regs)
-            : newSpeed(regs.edi)
+            : newSpeed(static_cast<GameSpeed>(regs.edi))
         {
         }
 
-        explicit SetGameSpeedArgs(const uint8_t speed)
+        explicit SetGameSpeedArgs(const GameSpeed speed)
         {
             newSpeed = speed;
         }
 
-        uint8_t newSpeed;
+        GameSpeed newSpeed;
 
         explicit operator registers() const
         {
             registers regs;
-            regs.edi = newSpeed;
+            regs.edi = static_cast<std::underlying_type_t<GameSpeed>>(newSpeed);
             return regs;
         }
     };

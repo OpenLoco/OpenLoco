@@ -210,21 +210,21 @@ namespace OpenLoco
         *paused_state &= ~(value);
     }
 
-    uint8_t getGameSpeed()
+    GameSpeed getGameSpeed()
     {
-        return _gameSpeed;
+        return static_cast<GameSpeed>(*_gameSpeed);
     }
 
     // 0x00439A70 (speed: 0)
     // 0x00439A93 (speed: 1)
     // 0x00439AB6 (speed: 2)
-    void setGameSpeed(uint8_t speed)
+    void setGameSpeed(const GameSpeed speed)
     {
         assert(speed <= GameSpeed::MAX);
-
-        if (_gameSpeed != speed)
+        auto uSpeed = static_cast<std::underlying_type_t<GameSpeed>>(speed);
+        if (_gameSpeed != uSpeed)
         {
-            _gameSpeed = speed;
+            _gameSpeed = uSpeed;
             WindowManager::invalidate(WindowType::timeToolbar);
         }
     }

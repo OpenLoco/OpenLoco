@@ -213,13 +213,13 @@ namespace OpenLoco::Ui::Windows::TimePanel
                 GameCommands::do_20();
                 break;
             case Widx::normal_speed_btn:
-                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ 0 }, GameCommands::Flags::apply);
+                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Normal }, GameCommands::Flags::apply);
                 break;
             case Widx::fast_forward_btn:
-                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ 1 }, GameCommands::Flags::apply);
+                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::FastForward }, GameCommands::Flags::apply);
                 break;
             case Widx::extra_fast_forward_btn:
-                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ 2 }, GameCommands::Flags::apply);
+                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::ExtraFastForward }, GameCommands::Flags::apply);
                 break;
         }
     }

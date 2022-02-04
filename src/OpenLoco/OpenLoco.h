@@ -33,13 +33,13 @@ namespace OpenLoco
 
     extern const char version[];
 
-    namespace GameSpeed
+    enum class GameSpeed : uint8_t
     {
-        constexpr uint8_t Normal = 0;
-        constexpr uint8_t FastForward = 1;
-        constexpr uint8_t ExtraFastForward = 2;
-        constexpr uint8_t MAX = ExtraFastForward;
-    }
+        Normal = 0,
+        FastForward = 1,
+        ExtraFastForward = 2,
+        MAX = ExtraFastForward,
+    };
 
     std::string getVersionInfo();
 
@@ -63,8 +63,8 @@ namespace OpenLoco
     uint8_t getPauseFlags();
     void setPauseFlag(uint8_t value);
     void unsetPauseFlag(uint8_t value);
-    uint8_t getGameSpeed();
-    void setGameSpeed(uint8_t speed);
+    GameSpeed getGameSpeed();
+    void setGameSpeed(const GameSpeed speed);
     uint32_t scenarioTicks();
     Utility::prng& gPrng();
     void initialiseViewports();
