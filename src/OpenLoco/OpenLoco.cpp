@@ -212,7 +212,7 @@ namespace OpenLoco
 
     GameSpeed getGameSpeed()
     {
-        return static_cast<GameSpeed>(*_gameSpeed);
+        return _gameSpeed;
     }
 
     // 0x00439A70 (speed: 0)
