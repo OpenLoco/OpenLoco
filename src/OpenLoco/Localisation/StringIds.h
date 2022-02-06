@@ -1765,4 +1765,7 @@ namespace OpenLoco::StringIds
     constexpr string_id cheat_month_value = 2235;
     constexpr string_id cheat_day_value = 2236;
     constexpr string_id date_daymonthyear = 2237;
+    constexpr string_id shortcut_game_speed_normal = 2238;
+    constexpr string_id shortcut_game_speed_fast_forward = 2239;
+    constexpr string_id shortcut_game_speed_extra_fast_forward = 2240;
 }

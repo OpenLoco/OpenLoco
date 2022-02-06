@@ -168,7 +168,7 @@ namespace OpenLoco::Title
         Ui::WindowManager::closeAllFloatingWindows();
         setAllScreenFlags(currentScreenFlags);
         setScreenFlag(ScreenFlags::title);
-        setGameSpeed(0);
+        setGameSpeed(GameSpeed::Normal);
         ObjectManager::unloadAll();
         sub_473A95(1);
         sub_474874();

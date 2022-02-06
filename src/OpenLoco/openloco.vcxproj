@@ -45,6 +45,7 @@
     <ClCompile Include="GameCommands\RenameIndustry.cpp" />
     <ClCompile Include="GameCommands\RenameStation.cpp" />
     <ClCompile Include="GameCommands\RenameTown.cpp" />
+    <ClCompile Include="GameCommands\SetGameSpeed.cpp" />
     <ClCompile Include="GameCommands\TogglePause.cpp" />
     <ClCompile Include="GameCommands\VehiclePickup.cpp" />
     <ClCompile Include="GameState.cpp" />

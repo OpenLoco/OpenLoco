@@ -14,6 +14,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Hielke Morsink (Broxzier)
 * Peter Gaál (petergaal)
 * Joe Bloomfield (Svelbeard)
+* Benjamin Sutas (LeftofZen)
 
 ## Bugfixes
 * seifer7

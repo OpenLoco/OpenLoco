@@ -2290,3 +2290,6 @@ strings:
   2235: "{COLOUR BLACK}{INT32}"
   2236: "{COLOUR BLACK}{INT32}"
   2237: "{DATE DMY}"
+  2238: "Game speed: Normal"
+  2239: "Game speed: Fast forward"
+  2240: "Game speed: Extra fast forward"

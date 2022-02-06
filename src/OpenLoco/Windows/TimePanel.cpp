@@ -40,8 +40,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static void formatChallenge(FormatArguments& args);
     static void processChatMessage(const char* str);
-    static void togglePaused();
-    static void changeGameSpeed(Window* w, uint8_t speed);
 
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                                   // 0,
@@ -123,15 +121,15 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             _widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
         }
-        else if (getGameSpeed() == 0)
+        else if (getGameSpeed() == GameSpeed::Normal)
         {
             _widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
         }
-        else if (getGameSpeed() == 1)
+        else if (getGameSpeed() == GameSpeed::FastForward)
         {
             _widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
         }
-        else if (getGameSpeed() == 2)
+        else if (getGameSpeed() == GameSpeed::ExtraFastForward)
         {
             _widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
         }
@@ -212,16 +210,16 @@ namespace OpenLoco::Ui::Windows::TimePanel
                 MessageWindow::open();
                 break;
             case Widx::pause_btn:
-                togglePaused();
+                GameCommands::do_20();
                 break;
             case Widx::normal_speed_btn:
-                changeGameSpeed(window, 0);
+                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Normal }, GameCommands::Flags::apply);
                 break;
             case Widx::fast_forward_btn:
-                changeGameSpeed(window, 1);
+                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::FastForward }, GameCommands::Flags::apply);
                 break;
             case Widx::extra_fast_forward_btn:
-                changeGameSpeed(window, 2);
+                GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::ExtraFastForward }, GameCommands::Flags::apply);
                 break;
         }
     }
@@ -387,25 +385,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             GameCommands::do_71(i, &string[i * 16]);
         }
-    }
-
-    static void togglePaused()
-    {
-        GameCommands::do_20();
-    }
-
-    // 0x00439A70 (speed: 0)
-    // 0x00439A93 (speed: 1)
-    // 0x00439AB6 (speed: 2)
-    static void changeGameSpeed(Window* w, uint8_t speed)
-    {
-        if (getPauseFlags() & 1)
-        {
-            GameCommands::do_20();
-        }
-
-        setGameSpeed(speed);
-        w->invalidate();
     }
 
     void invalidateFrame()

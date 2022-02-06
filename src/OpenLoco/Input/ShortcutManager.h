@@ -7,7 +7,7 @@
 
 namespace OpenLoco::Input::ShortcutManager
 {
-    static constexpr size_t kCount = 44;
+    static constexpr size_t kCount = 47;
 
     void execute(Shortcut s);
     string_id getName(Shortcut s);

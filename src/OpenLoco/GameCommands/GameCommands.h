@@ -115,6 +115,7 @@ namespace OpenLoco::GameCommands
         renameIndustry = 79,
         vehicleClone = 80,
         cheat = 81,
+        setGameSpeed = 82,
     };
 
     enum class LoadOrQuitMode : uint16_t
@@ -325,6 +326,30 @@ namespace OpenLoco::GameCommands
         {
             registers regs;
             regs.edx = newLoan;
+            return regs;
+        }
+    };
+
+    struct SetGameSpeedArgs
+    {
+        static constexpr auto command = GameCommand::setGameSpeed;
+        SetGameSpeedArgs() = default;
+        explicit SetGameSpeedArgs(const registers& regs)
+            : newSpeed(static_cast<GameSpeed>(regs.edi))
+        {
+        }
+
+        explicit SetGameSpeedArgs(const GameSpeed speed)
+        {
+            newSpeed = speed;
+        }
+
+        GameSpeed newSpeed;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.edi = static_cast<std::underlying_type_t<GameSpeed>>(newSpeed);
             return regs;
         }
     };
@@ -1696,6 +1721,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/RenameTown.cpp
     void renameTown(registers& regs);
+
+    // Defined in GameCommands/SetGameSpeed.cpp
+    void setGameSpeed(registers& regs);
 
     // Defined in GameCommands/TogglePause.cpp
     uint32_t togglePause(uint8_t flags);
