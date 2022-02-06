@@ -1699,9 +1699,6 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/ChangeLoan.cpp
     void changeLoan(registers& regs);
 
-    // Defined in GameCommands/SetGameSpeed.cpp
-    void setGameSpeed(registers& regs);
-
     // Defined in GameCommands/Cheat.cpp
     void cheat(registers& regs);
     void vehicleShuntCheat(registers& regs);
@@ -1724,6 +1721,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/RenameTown.cpp
     void renameTown(registers& regs);
+
+    // Defined in GameCommands/SetGameSpeed.cpp
+    void setGameSpeed(registers& regs);
 
     // Defined in GameCommands/TogglePause.cpp
     uint32_t togglePause(uint8_t flags);
