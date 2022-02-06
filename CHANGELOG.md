@@ -1,4 +1,4 @@
-21.10+ (???)
+22.02 (2022-02-06)
 ------------------------------------------------------------------------
 - Feature: [#1271] Vehicles display their total capacity in the cargo window.
 - Feature: [#1278] Added a cheat to change the in-game date.
