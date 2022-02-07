@@ -1768,4 +1768,5 @@ namespace OpenLoco::StringIds
     constexpr string_id shortcut_game_speed_normal = 2238;
     constexpr string_id shortcut_game_speed_fast_forward = 2239;
     constexpr string_id shortcut_game_speed_extra_fast_forward = 2240;
+    constexpr string_id vehicle_capacity = 2241;
 }

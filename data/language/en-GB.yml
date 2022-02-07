@@ -2293,3 +2293,4 @@ strings:
   2238: "Game speed: Normal"
   2239: "Game speed: Fast forward"
   2240: "Game speed: Extra fast forward"
+  2241: "{COLOUR WINDOW_2}Capacity: {COLOUR BLACK}{STRINGID}"
