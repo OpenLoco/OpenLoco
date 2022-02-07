@@ -1004,6 +1004,17 @@ namespace OpenLoco::Audio
         }
     }
 
+    static void addAllSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
+    {
+        for (auto i = 0; i < kNumMusicTracks; i++)
+        {
+            if (i != excludeTrack)
+            {
+                playlist.push_back(i);
+            }
+        }
+    }
+
     static int32_t chooseNextMusicTrack(int32_t excludeTrack)
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
@@ -1011,7 +1022,7 @@ namespace OpenLoco::Audio
         static std::vector<uint8_t> playlist;
         playlist.clear();
 
-        auto cfg = Config::get();
+        const auto& cfg = Config::get();
         switch (cfg.music_playlist)
         {
             case MusicPlaylistType::currentEra:
@@ -1031,13 +1042,7 @@ namespace OpenLoco::Audio
                 break;
             }
             case MusicPlaylistType::all:
-                for (auto i = 0; i < kNumMusicTracks; i++)
-                {
-                    if (i != excludeTrack)
-                    {
-                        playlist.push_back(i);
-                    }
-                }
+                addAllSongsToPlaylist(excludeTrack, playlist);
                 break;
             case MusicPlaylistType::custom:
                 for (auto i = 0; i < kNumMusicTracks; i++)
@@ -1052,25 +1057,7 @@ namespace OpenLoco::Audio
 
         if (playlist.size() == 0)
         {
-            if (excludeTrack == kNoSong)
-            {
-                for (auto i = 0; i < kNumMusicTracks; i++)
-                {
-                    if (i != excludeTrack)
-                    {
-                        playlist.push_back(i);
-                    }
-                }
-            }
-            else
-            {
-                const auto& mi = kMusicInfo[excludeTrack];
-                auto currentYear = getCurrentYear();
-                if (currentYear >= mi.startYear && currentYear <= mi.endYear)
-                {
-                    playlist.push_back(excludeTrack);
-                }
-            }
+            addAllSongsToPlaylist(excludeTrack, playlist);
         }
 
         auto r = std::rand() % playlist.size();
