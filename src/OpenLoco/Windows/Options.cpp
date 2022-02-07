@@ -1142,7 +1142,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (Config::get().music_playlist == Config::MusicPlaylistType::currentEra)
             {
-                uint16_t year = getCurrentYear();
+                auto year = getCurrentYear();
                 for (int i = 0; i < Audio::kNumMusicTracks; i++)
                 {
                     auto info = Audio::getMusicInfo(i);

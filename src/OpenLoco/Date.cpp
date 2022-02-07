@@ -37,12 +37,12 @@ namespace OpenLoco
         getGameState().currentMonth = enumValue(month);
     }
 
-    uint16_t getCurrentYear()
+    Year getCurrentYear()
     {
         return getGameState().currentYear;
     }
 
-    void setCurrentYear(const int16_t year)
+    void setCurrentYear(const Year year)
     {
         getGameState().currentYear = year;
     }
@@ -532,7 +532,7 @@ namespace OpenLoco
         return month_table[dayOfYear];
     }
 
-    uint8_t getMonthTotalDay(uint16_t year, MonthId month)
+    uint8_t getMonthTotalDay(Year year, MonthId month)
     {
         static constexpr std::pair<MonthId, uint8_t> month_table[] = {
             { MonthId::january, 31 },

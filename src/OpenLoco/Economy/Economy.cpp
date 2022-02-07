@@ -1,5 +1,6 @@
 #include "Economy.h"
 #include "../CompanyManager.h"
+#include "../Date.h"
 #include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "../Objects/ObjectManager.h"
@@ -96,7 +97,7 @@ namespace OpenLoco::Economy
     }
 
     // 0x0046E2C0
-    void sub_46E2C0(uint16_t year)
+    void sub_46E2C0(Year year)
     {
         auto& factors = currencyMultiplicationFactors();
         auto& unusedFactors = unusedCurrencyMultiplicationFactors();

@@ -1876,7 +1876,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             const auto company = CompanyManager::get(CompanyId(self.number));
 
-            uint32_t curYear = getCurrentYear();
+            auto curYear = getCurrentYear();
             uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureMonths, expenditureHistoryCapacity);
 
             // Paint years on top of scroll area.
@@ -2358,7 +2358,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challengeFlags & CompanyFlags::challengeCompleted) != 0)
             {
-                uint16_t years = objectiveCompletedChallengeInMonths / 12;
+                Year years = objectiveCompletedChallengeInMonths / 12;
                 uint16_t months = objectiveCompletedChallengeInMonths % 12;
 
                 auto args = FormatArguments::common(years, months);
@@ -2374,7 +2374,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challengeFlags & CompanyFlags::challengeBeatenByOpponent) != 0)
             {
-                uint16_t years = objectiveCompletedChallengeInMonths / 12;
+                Year years = objectiveCompletedChallengeInMonths / 12;
                 uint16_t months = objectiveCompletedChallengeInMonths % 12;
 
                 FormatArguments args{};
@@ -2396,7 +2396,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 // time limited challenge
                 uint16_t monthsLeft = objectiveTimeLimitYears * 12 - objectiveMonthsInChallenge;
-                uint16_t years = monthsLeft / 12;
+                Year years = monthsLeft / 12;
                 uint16_t months = monthsLeft % 12;
 
                 auto args = FormatArguments::common(years, months);

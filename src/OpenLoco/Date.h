@@ -4,6 +4,8 @@
 
 namespace OpenLoco
 {
+    using Year = uint16_t;
+
     enum class MonthId : uint8_t
     {
         january,
@@ -24,13 +26,13 @@ namespace OpenLoco
     {
         int32_t day = 0;
         MonthId month;
-        int32_t year = 0;
+        Year year = 0;
 
         // 0x0112C810 originally used as a return argument in calcDate
         int32_t dayOfOlympiad = 0;
 
         Date() = default;
-        Date(int32_t y, MonthId m, int32_t d)
+        Date(Year y, MonthId m, int32_t d)
             : day(d)
             , month(m)
             , year(y)
@@ -43,8 +45,8 @@ namespace OpenLoco
     uint32_t getCurrentDay();
     void setCurrentDay(const uint32_t day);
     MonthId getCurrentMonth();
-    uint16_t getCurrentYear();
-    void setCurrentYear(const int16_t year);
+    Year getCurrentYear();
+    void setCurrentYear(const Year year);
 
     Date getCurrentDate();
     void setDate(const Date& date);
@@ -62,5 +64,5 @@ namespace OpenLoco
     Date calcDate(uint32_t totalDays);
     uint32_t calcDays(Date date);
 
-    uint8_t getMonthTotalDay(uint16_t year, MonthId month);
+    uint8_t getMonthTotalDay(Year year, MonthId month);
 }

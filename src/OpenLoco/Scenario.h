@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/FileSystem.hpp"
+#include "Date.h"
 #include "Localisation/FormatArguments.hpp"
 #include <cstdint>
 
@@ -114,9 +115,9 @@ namespace OpenLoco::Scenario
     void sub_4748D4();
     void eraseLandscape();
     void generateLandscape();
-    void initialiseDate(uint16_t year);
+    void initialiseDate(Year year);
 
-    void initialiseDate(uint16_t year, OpenLoco::MonthId month, uint8_t day);
+    void initialiseDate(Year year, OpenLoco::MonthId month, uint8_t day);
 
     /**
      * Loads the given scenario file, but does not initialise any game state.

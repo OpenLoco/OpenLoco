@@ -601,7 +601,7 @@ namespace OpenLoco::Ui::Windows::Industry
             }
 
             MonthId month = getCurrentMonth();
-            int16_t year = getCurrentYear();
+            auto year = getCurrentYear();
             int8_t yearSkip = 0;
             // This is either 0 or 1 depending on selected tab
             // used to select the correct history

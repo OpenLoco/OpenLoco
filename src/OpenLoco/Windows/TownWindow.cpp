@@ -179,8 +179,8 @@ namespace OpenLoco::Ui::Windows::Town
                     auto town = TownManager::get(TownId(self->number));
 
                     const uint32_t ebx = (town->var_38 >> 3) + 5;
-                    const int16_t currentYear = getCurrentYear();
-                    int16_t tempYear = currentYear - 51;
+                    const auto currentYear = getCurrentYear();
+                    auto tempYear = currentYear - 51;
                     setCurrentYear(tempYear);
 
                     for (uint8_t i = 8; i > 0; i--)
@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::Town
             }
 
             int8_t month = static_cast<int8_t>(getCurrentMonth());
-            int16_t year = getCurrentYear();
+            auto year = getCurrentYear();
             int8_t yearSkip = 0;
 
             for (uint8_t i = town->historySize - 1; i > 0; i--)
