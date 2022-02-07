@@ -1702,7 +1702,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             head->generateCargoCapacityString(buffer);
             args = {};
             args.push<string_id>(StringIds::buffer_1250);
-            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 15, Colour::black, StringIds::vehicle_capacity, &args);
+            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 15, Colour::black, StringIds::capacity_stringid, &args);
         }
 
         // based on 0x004B40C7
