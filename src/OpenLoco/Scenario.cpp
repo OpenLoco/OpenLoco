@@ -360,7 +360,7 @@ namespace OpenLoco::Scenario
 
         auto savePath = Environment::getPath(Environment::path_id::save);
         savePath /= std::string(_scenarioTitle) + S5::extensionSV5;
-        std::strcat(_currentScenarioFilename, savePath.u8string().c_str());
+        std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
 
         call(0x004C159C);
         call(0x0046E07B); // load currency gfx
