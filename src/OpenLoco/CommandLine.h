@@ -11,7 +11,8 @@ namespace OpenLoco
         uncompress,
         simulate,
         help,
-        version
+        version,
+        intro,
     };
 
     struct CommandLineOptions

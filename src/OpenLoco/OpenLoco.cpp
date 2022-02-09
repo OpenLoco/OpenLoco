@@ -426,7 +426,15 @@ namespace OpenLoco
         call(0x004969DA);
         Scenario::reset();
         setScreenFlag(ScreenFlags::initialised);
-        Intro::state(Intro::State::end);
+        const auto& cmdLineOptions = getCommandLineOptions();
+        if (cmdLineOptions.action == CommandLineAction::intro)
+        {
+            Intro::state(Intro::State::begin);
+        }
+        else
+        {
+            Intro::state(Intro::State::end);
+        }
         Title::start();
         Gui::init();
         Gfx::clear(Gfx::screenContext(), 0x0A0A0A0A);
@@ -459,9 +467,6 @@ namespace OpenLoco
         }
         else
         {
-#ifdef _SHOW_INTRO_
-            Intro::state(Intro::State::begin);
-#endif
             Title::start();
         }
     }
