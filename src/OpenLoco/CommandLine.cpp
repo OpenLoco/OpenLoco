@@ -397,6 +397,7 @@ namespace OpenLoco
         std::cout << "           -o     Output path" << std::endl;
         std::cout << "--help     -h     Print help" << std::endl;
         std::cout << "--version         Print version" << std::endl;
+        std::cout << "--intro           Run the game intro" << std::endl;
     }
 
     std::optional<int> runCommandLineOnlyCommand(const CommandLineOptions& options)
