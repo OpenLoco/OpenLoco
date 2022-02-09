@@ -1283,7 +1283,7 @@ namespace OpenLoco::Gfx
 
     static std::unique_ptr<Drawing::SoftwareDrawingEngine> engine;
 
-    static Drawing::SoftwareDrawingEngine& getDrawingEngine()
+    Drawing::SoftwareDrawingEngine& getDrawingEngine()
     {
         if (!engine)
         {

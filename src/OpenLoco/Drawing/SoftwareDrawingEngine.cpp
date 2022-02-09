@@ -2,6 +2,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include <SDL2/SDL.h>
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -10,12 +11,28 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Drawing
 {
+    struct PaletteEntry
+    {
+        uint8_t b, g, r, a;
+    };
+    using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
+
     static loco_global<Ui::ScreenInfo, 0x0050B884> screen_info;
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
+    loco_global<SetPaletteFunc, 0x0052524C> set_palette_callback;
 
     static void windowDraw(Context* context, Ui::Window* w, Rect rect);
     static void windowDraw(Context* context, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
     static bool windowDrawSplit(Gfx::Context* context, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+
+    SoftwareDrawingEngine::~SoftwareDrawingEngine()
+    {
+        if (_palette != nullptr)
+        {
+            SDL_FreePalette(_palette);
+            _palette = nullptr;
+        }
+    }
 
     // T[m][n]
     template<typename T>
@@ -99,6 +116,19 @@ namespace OpenLoco::Drawing
         }
     }
 
+    // Helper function until all users of set_palette_callback are implemented
+    static void updatePaletteStatic(const PaletteEntry* entries, int32_t index, int32_t count)
+    {
+        Gfx::getDrawingEngine().updatePalette(entries, index, count);
+    }
+
+    void SoftwareDrawingEngine::createPalette()
+    {
+        // Create a palette for the window
+        _palette = SDL_AllocPalette(256);
+        set_palette_callback = updatePaletteStatic;
+    }
+
     // 0x004C5CFA
     void SoftwareDrawingEngine::drawDirtyBlocks()
     {
@@ -146,6 +176,20 @@ namespace OpenLoco::Drawing
             static_cast<uint16_t>(dy * screen_info->dirty_block_height));
 
         this->drawRect(rect);
+    }
+
+    void SoftwareDrawingEngine::updatePalette(const PaletteEntry* entries, int32_t index, int32_t count)
+    {
+        SDL_Color base[256];
+        for (int i = 0; i < 256; i++)
+        {
+            auto& src = entries[i];
+            base[i].r = src.r;
+            base[i].g = src.g;
+            base[i].b = src.b;
+            base[i].a = 0;
+        }
+        SDL_SetPaletteColors(_palette, base, 0, 256);
     }
 
     void SoftwareDrawingEngine::drawRect(const Rect& _rect)
