@@ -397,7 +397,7 @@ namespace OpenLoco::Scenario
             return false;
 
         gameState.rng = Utility::prng(Platform::getTime() ^ oldRng.srand_0(), oldRng.srand_1());
-        std::strncpy(gameState.scenarioFileName, path.u8string().c_str(), std::size(gameState.scenarioFileName));
+        std::strncpy(gameState.scenarioFileName, path.u8string().c_str(), std::size(gameState.scenarioFileName) - 1);
         start();
     }
 
