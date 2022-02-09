@@ -361,7 +361,7 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (Intro::state() == (Intro::State)9)
+            if (Intro::state() == Intro::State::state_9)
             {
                 Intro::state(Intro::State::end);
                 continue;
@@ -369,7 +369,7 @@ namespace OpenLoco::Input
 
             if (Intro::state() != Intro::State::none)
             {
-                Intro::state((Intro::State)8);
+                Intro::state(Intro::State::state_8);
             }
 
             if (tryShortcut(Shortcut::sendMessage, nextKey->keyCode, _keyModifier))
