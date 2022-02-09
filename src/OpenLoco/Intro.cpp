@@ -5,7 +5,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Intro
 {
-    loco_global<uint8_t, 0x0050C195> _state;
+    loco_global<State, 0x0050C195> _state;
 
     bool isActive()
     {
@@ -14,12 +14,12 @@ namespace OpenLoco::Intro
 
     State state()
     {
-        return (State)*_state;
+        return *_state;
     }
 
     void state(State state)
     {
-        _state = (uint8_t)state;
+        _state = state;
     }
 
     // 0x0046AE0C

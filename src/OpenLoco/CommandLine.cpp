@@ -323,7 +323,8 @@ namespace OpenLoco
         auto parser = CommandLineParser(argc, argv)
                           .registerOption("-o", 1)
                           .registerOption("--help", "-h")
-                          .registerOption("--version");
+                          .registerOption("--version")
+                          .registerOption("--intro");
 
         if (!parser.parse())
         {
@@ -339,6 +340,10 @@ namespace OpenLoco
         else if (parser.hasOption("--help") || parser.hasOption("-h"))
         {
             options.action = CommandLineAction::help;
+        }
+        else if (parser.hasOption("--intro"))
+        {
+            options.action = CommandLineAction::intro;
         }
         else
         {
@@ -392,6 +397,7 @@ namespace OpenLoco
         std::cout << "           -o     Output path" << std::endl;
         std::cout << "--help     -h     Print help" << std::endl;
         std::cout << "--version         Print version" << std::endl;
+        std::cout << "--intro           Run the game intro" << std::endl;
     }
 
     std::optional<int> runCommandLineOnlyCommand(const CommandLineOptions& options)
