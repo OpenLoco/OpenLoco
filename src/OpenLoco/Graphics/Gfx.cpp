@@ -1281,7 +1281,16 @@ namespace OpenLoco::Gfx
         setDirtyBlocks(0, 0, Ui::width(), Ui::height());
     }
 
-    Drawing::SoftwareDrawingEngine* engine;
+    static std::unique_ptr<Drawing::SoftwareDrawingEngine> engine;
+
+    static Drawing::SoftwareDrawingEngine& getDrawingEngine()
+    {
+        if (!engine)
+        {
+            engine = std::make_unique<Drawing::SoftwareDrawingEngine>();
+        }
+        return *engine;
+    }
 
     /**
      * 0x004C5C69
@@ -1293,19 +1302,13 @@ namespace OpenLoco::Gfx
      */
     void setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
-        if (engine == nullptr)
-            engine = new Drawing::SoftwareDrawingEngine();
-
-        engine->setDirtyBlocks(left, top, right, bottom);
+        getDrawingEngine().setDirtyBlocks(left, top, right, bottom);
     }
 
     // 0x004C5CFA
     void drawDirtyBlocks()
     {
-        if (engine == nullptr)
-            engine = new Drawing::SoftwareDrawingEngine();
-
-        engine->drawDirtyBlocks();
+        getDrawingEngine().drawDirtyBlocks();
     }
 
     loco_global<char[512], 0x0112CC04> byte_112CC04;
@@ -1314,9 +1317,6 @@ namespace OpenLoco::Gfx
     // 0x004CF63B
     void render()
     {
-        if (engine == nullptr)
-            engine = new Drawing::SoftwareDrawingEngine();
-
         char backup1[512] = { 0 };
         char backup2[512] = { 0 };
 
@@ -1325,7 +1325,7 @@ namespace OpenLoco::Gfx
 
         if (Ui::dirtyBlocksInitialised())
         {
-            engine->drawDirtyBlocks();
+            getDrawingEngine().drawDirtyBlocks();
         }
 
         if (Input::hasFlag(Input::Flags::flag5))
@@ -1348,7 +1348,7 @@ namespace OpenLoco::Gfx
 
     void redrawScreenRect(Rect rect)
     {
-        engine->drawRect(rect);
+        getDrawingEngine().drawRect(rect);
     }
 
     /**
