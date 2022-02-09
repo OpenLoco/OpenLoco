@@ -66,7 +66,7 @@ namespace OpenLoco::Vehicles
     Map::Pos3 VehicleBase::getTrackLoc() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return Map::Pos3(veh->tile_x, veh->tile_y, veh->tile_base_z * 4);
+        return Map::Pos3(veh->tileX, veh->tileY, veh->tileBaseZ * 4);
     }
 
     TrackAndDirection VehicleBase::getVar2C() const
