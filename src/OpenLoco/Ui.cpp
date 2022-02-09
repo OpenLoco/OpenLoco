@@ -1,3 +1,4 @@
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>
@@ -52,12 +53,6 @@ using namespace OpenLoco::GameCommands;
 namespace OpenLoco::Ui
 {
 #pragma pack(push, 1)
-
-    struct palette_entry_t
-    {
-        uint8_t b, g, r, a;
-    };
-
     struct sdl_window_desc
     {
         int32_t x{};
@@ -66,10 +61,7 @@ namespace OpenLoco::Ui
         int32_t height{};
         int32_t flags{};
     };
-
 #pragma pack(pop)
-
-    using set_palette_func = void (*)(const palette_entry_t* palette, int32_t index, int32_t count);
 
 #ifdef _WIN32
     loco_global<void*, 0x00525320> _hwnd;
@@ -79,7 +71,6 @@ namespace OpenLoco::Ui
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<Ui::CursorId, 0x00523393> _currentToolCursor;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
-    loco_global<set_palette_func, 0x0052524C> set_palette_callback;
     loco_global<uint8_t[256], 0x01140740> _keyboard_state;
 
     bool _resolutionsAllowAnyAspectRatio = false;
@@ -88,7 +79,6 @@ namespace OpenLoco::Ui
     static SDL_Window* window;
     static SDL_Surface* surface;
     static SDL_Surface* RGBASurface;
-    static SDL_Palette* palette;
     static std::map<CursorId, SDL_Cursor*> _cursors;
 
     static void setWindowIcon();
@@ -121,8 +111,6 @@ namespace OpenLoco::Ui
     {
         return screen_info->dirty_blocks_initialised != 0;
     }
-
-    void updatePalette(const palette_entry_t* entries, int32_t index, int32_t count);
 
     static sdl_window_desc getWindowDesc(const Config::Display& cfg)
     {
@@ -180,8 +168,7 @@ namespace OpenLoco::Ui
         setWindowIcon();
 
         // Create a palette for the window
-        palette = SDL_AllocPalette(256);
-        set_palette_callback = updatePalette;
+        Gfx::getDrawingEngine().createPalette();
 
         update(desc.width, desc.height);
     }
@@ -376,7 +363,7 @@ namespace OpenLoco::Ui
         RGBASurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
         SDL_SetSurfaceBlendMode(RGBASurface, SDL_BLENDMODE_NONE);
 
-        SDL_SetSurfacePalette(surface, palette);
+        SDL_SetSurfacePalette(surface, Gfx::getDrawingEngine().getPalette());
 
         int32_t pitch = surface->pitch;
 
@@ -513,20 +500,6 @@ namespace OpenLoco::Ui
         }
 
         SDL_UpdateWindowSurface(window);
-    }
-
-    void updatePalette(const palette_entry_t* entries, int32_t index, int32_t count)
-    {
-        SDL_Color base[256];
-        for (int i = 0; i < 256; i++)
-        {
-            auto& src = entries[i];
-            base[i].r = src.r;
-            base[i].g = src.g;
-            base[i].b = src.b;
-            base[i].a = 0;
-        }
-        SDL_SetPaletteColors(palette, base, 0, 256);
     }
 
     // 0x00406FBA

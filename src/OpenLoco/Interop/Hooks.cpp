@@ -108,17 +108,17 @@ static int STDCALL getNumDSoundDevices()
 
 #pragma pack(push, 1)
 
-struct palette_entry_t
+struct PaletteEntry
 {
     uint8_t b, g, r, a;
 };
 #pragma pack(pop)
-using set_palette_func = void (*)(const palette_entry_t* palette, int32_t index, int32_t count);
-static Interop::loco_global<set_palette_func, 0x0052524C> set_palette_callback;
+using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
+static Interop::loco_global<SetPaletteFunc, 0x0052524C> set_palette_callback;
 
 #ifdef _NO_LOCO_WIN32_
 FORCE_ALIGN_ARG_POINTER
-static void CDECL fn_4054a3(const palette_entry_t* palette, int32_t index, int32_t count)
+static void CDECL fn_4054a3(const PaletteEntry* palette, int32_t index, int32_t count)
 {
     if (set_palette_callback != nullptr)
     {

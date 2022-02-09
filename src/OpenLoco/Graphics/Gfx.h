@@ -12,6 +12,11 @@ namespace OpenLoco
     using Colour_t = uint8_t;
 }
 
+namespace OpenLoco::Drawing
+{
+    class SoftwareDrawingEngine;
+}
+
 namespace OpenLoco::Gfx
 {
 #pragma pack(push, 1)
@@ -250,4 +255,6 @@ namespace OpenLoco::Gfx
 
     void setCurrentFontSpriteBase(int16_t value);
     void loadPalette();
+
+    Drawing::SoftwareDrawingEngine& getDrawingEngine();
 }
