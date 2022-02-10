@@ -384,6 +384,7 @@ namespace OpenLoco::ObjectManager
             return;
         }
 
+        _installedObjectCount = 0;
         // Create new index by iterating all DAT files and processing
         IndexHeader header{};
         uint8_t progress = 0;      // Progress is used for the ProgressBar Ui element
@@ -984,7 +985,7 @@ namespace OpenLoco::ObjectManager
         registers regs;
         regs.al = static_cast<uint8_t>(proc);
         regs.esi = X86Pointer(&obj);
-        return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+        return (call(objectProc, regs) & (X86_FLAG_CARRY << 8)) == 0;
     }
 
     static bool callObjectFunction(const LoadedObjectHandle handle, ObjectProcedure proc)
@@ -1004,7 +1005,7 @@ namespace OpenLoco::ObjectManager
         registers regs;
         regs.ebp = X86Pointer(&header);
         regs.ecx = static_cast<int32_t>(id);
-        return (call(0x00471BC5, regs) & X86_FLAG_CARRY) == 0;
+        return (call(0x00471BC5, regs) & (X86_FLAG_CARRY << 8)) == 0;
     }
 
     static LoadedObjectId getObjectId(LoadedObjectIndex index)
@@ -1034,12 +1035,15 @@ namespace OpenLoco::ObjectManager
         for (const auto& header : objects)
         {
             auto id = getObjectId(index);
-            if (!load(header, id))
+            if (!header.isEmpty())
             {
-                result.success = false;
-                result.problemObject = header;
-                unloadAll();
-                break;
+                if (!load(header, id))
+                {
+                    result.success = false;
+                    result.problemObject = header;
+                    unloadAll();
+                    break;
+                }
             }
             index++;
         }
