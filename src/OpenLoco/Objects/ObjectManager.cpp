@@ -985,7 +985,7 @@ namespace OpenLoco::ObjectManager
         registers regs;
         regs.al = static_cast<uint8_t>(proc);
         regs.esi = X86Pointer(&obj);
-        return (call(objectProc, regs) & (X86_FLAG_CARRY << 8)) == 0;
+        return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
     }
 
     static bool callObjectFunction(const LoadedObjectHandle handle, ObjectProcedure proc)
@@ -1005,7 +1005,7 @@ namespace OpenLoco::ObjectManager
         registers regs;
         regs.ebp = X86Pointer(&header);
         regs.ecx = static_cast<int32_t>(id);
-        return (call(0x00471BC5, regs) & (X86_FLAG_CARRY << 8)) == 0;
+        return (call(0x00471BC5, regs) & X86_FLAG_CARRY) == 0;
     }
 
     static LoadedObjectId getObjectId(LoadedObjectIndex index)

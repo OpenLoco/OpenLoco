@@ -3193,7 +3193,7 @@ namespace OpenLoco::Vehicles
     {
         registers regs;
         regs.esi = X86Pointer(this);
-        return call(0x004AC1C2, regs) & (1 << 8);
+        return call(0x004AC1C2, regs) & X86_FLAG_CARRY;
     }
 
     // 0x004AC0A3
@@ -3201,7 +3201,7 @@ namespace OpenLoco::Vehicles
     {
         registers regs;
         regs.esi = X86Pointer(this);
-        return call(0x004AC0A3, regs) & (1 << 8);
+        return call(0x004AC0A3, regs) & X86_FLAG_CARRY;
     }
 
     // 0x004ACCDC
@@ -3209,7 +3209,7 @@ namespace OpenLoco::Vehicles
     {
         registers regs;
         regs.esi = X86Pointer(this);
-        return call(0x004ACCDC, regs) & (1 << 8);
+        return call(0x004ACCDC, regs) & X86_FLAG_CARRY;
     }
 
     // 0x004AD93A

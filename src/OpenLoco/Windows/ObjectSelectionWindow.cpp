@@ -789,7 +789,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         regs.bx = bx;
         regs.ebp = X86Pointer(ebp);
 
-        return call(0x00473D1D, regs) & (1 << 8);
+        return call(0x00473D1D, regs) & X86_FLAG_CARRY;
     }
 
     // 0x00473948

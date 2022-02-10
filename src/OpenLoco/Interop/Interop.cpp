@@ -256,7 +256,7 @@ namespace OpenLoco::Interop
         OpenLoco::Console::groupEnd();
 #endif
         // lahf only modifies ah, zero out the rest
-        return result & 0xFF00;
+        return (result >> 8) & 0xFF;
     }
 
 #ifdef _ENABLE_CALL_BYVALUE_
