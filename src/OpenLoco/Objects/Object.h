@@ -84,6 +84,10 @@ namespace OpenLoco
         {
             return std::memcmp(this, &rhs, sizeof(ObjectHeader)) == 0;
         }
+        bool operator!=(const ObjectHeader& rhs) const
+        {
+            return !(*this == rhs);
+        }
     };
     static_assert(sizeof(ObjectHeader) == 0x10);
 #pragma pack(pop)

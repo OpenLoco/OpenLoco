@@ -998,9 +998,43 @@ namespace OpenLoco::ObjectManager
         throw std::runtime_error("Object not loaded at this index");
     }
 
+    bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data);
+
     // 0x00471BC5
     static bool load(const ObjectHeader& header, LoadedObjectId id)
     {
+        // somewhat duplicates isObjectInstalled
+        const auto installedObjects = getAvailableObjects(header.getType());
+        auto res = std::find_if(std::begin(installedObjects), std::end(installedObjects), [&header](auto& obj) { return *obj.second._header == header; });
+        if (res == std::end(installedObjects))
+        {
+            // Object is not installed
+            return false;
+        }
+
+        auto& [installOffset, installedObject] = *res;
+        const auto filePath = Environment::getPath(Environment::path_id::objects) / fs::u8path(installedObject._filename);
+
+        SawyerStreamReader stream(filePath);
+        ObjectHeader loadingHeader;
+        stream.read(&loadingHeader, sizeof(loadingHeader));
+        if (loadingHeader != header)
+        {
+            // Something wrong has happened and installed object does not match index
+            // Vanilla continued to search for subsequent matching installed headers.
+            return false;
+        }
+        
+        // Vanilla would branch and perform more efficient readChunk if size was kown from installedObject.ObjectHeader2
+        const auto data = stream.readChunk();
+
+        if (loadingHeader.checksum != computeObjectChecksum(loadingHeader, data))
+        {
+            // Something wrong has happened and installed object checksum is broken
+            return false;
+        }
+
+        // 0x00471E79
         registers regs;
         regs.ebp = X86Pointer(&header);
         regs.ecx = static_cast<int32_t>(id);
@@ -1058,7 +1092,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047270B
-    static bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data)
+    bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data)
     {
         // Compute the checksum of header and data
 
