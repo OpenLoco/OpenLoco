@@ -82,8 +82,14 @@ namespace OpenLoco::Map
             _flags &= ~ElementFlags::flag_6;
             _flags |= state == true ? ElementFlags::flag_6 : 0;
         }
+        void setBaseZ(uint8_t baseZ) { _base_z = baseZ; }
         void setClearZ(uint8_t value) { _clear_z = value; }
         bool isLast() const;
+        void setLastFlag(bool state)
+        {
+            _flags &= ~ElementFlags::last;
+            _flags |= state == true ? ElementFlags::last : 0;
+        }
 
         std::array<uint8_t, 8>& rawData()
         {
@@ -188,6 +194,11 @@ namespace OpenLoco::Map
         uint8_t water() const { return _water & 0x1F; }
         void setWater(uint8_t level) { _water = (_water & 0xE0) | (level & 0x1F); };
         uint8_t terrain() const { return _terrain & 0x1F; }
+        void setTerrain(uint8_t terrain)
+        {
+            _terrain &= ~0x1F;
+            _terrain |= terrain & 0x1F;
+        }
         uint8_t var_6_SLR5() const { return _terrain >> 5; }
         void setVar6SLR5(uint8_t var6)
         {
