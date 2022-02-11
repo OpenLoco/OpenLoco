@@ -1024,21 +1024,60 @@ namespace OpenLoco::ObjectManager
             // Vanilla continued to search for subsequent matching installed headers.
             return false;
         }
-        
-        // Vanilla would branch and perform more efficient readChunk if size was kown from installedObject.ObjectHeader2
-        const auto data = stream.readChunk();
 
-        if (loadingHeader.checksum != computeObjectChecksum(loadingHeader, data))
+        // Vanilla would branch and perform more efficient readChunk if size was kown from installedObject.ObjectHeader2
+        auto data = stream.readChunk();
+
+        if (computeObjectChecksum(loadingHeader, data))
         {
             // Something wrong has happened and installed object checksum is broken
             return false;
         }
 
-        // 0x00471E79
-        registers regs;
-        regs.ebp = X86Pointer(&header);
-        regs.ecx = static_cast<int32_t>(id);
-        return (call(0x00471BC5, regs) & X86_FLAG_CARRY) == 0;
+        // Copy the object into Loco freeable memory (required for when load loads the object)
+        Object* object = reinterpret_cast<Object*>(malloc(data.size()));
+        std::copy(std::begin(data), std::end(data), reinterpret_cast<uint8_t*>(object));
+
+        if (!callObjectFunction(loadingHeader.getType(), *object, ObjectProcedure::validate))
+        {
+            free(object);
+            // Object failed validation
+            return false;
+        }
+
+        if (_totalNumImages >= 266266)
+        {
+            free(object);
+            // Too many objects loaded and no free image space
+            return false;
+        }
+
+        // sub_471BCE only code
+        //for (id = 0; id < getMaxObjects(loadingHeader.getType()); ++id)
+        //{
+        //    if (object_repository[enumValue(loadingHeader.getType())].objects[id] == reinterpret_cast<Object*>(-1))
+        //    {
+        //        break;
+        //    }
+        //}
+        //if (id >= getMaxObjects(loadingHeader.getType()))
+        //{
+        //    free(object);
+        //    return false;
+        //}
+
+        object_repository[enumValue(loadingHeader.getType())].objects[id] = object;
+        auto& extendedHeader = object_repository[enumValue(loadingHeader.getType())].object_entry_extendeds[id];
+        extendedHeader = ObjectEntry2{
+            loadingHeader, data.size()
+        };
+
+        if (!*_isPartialLoaded)
+        {
+            callObjectFunction(loadingHeader.getType(), *object, ObjectProcedure::load);
+        }
+
+        return true;
     }
 
     static LoadedObjectId getObjectId(LoadedObjectIndex index)
@@ -1303,6 +1342,7 @@ namespace OpenLoco::ObjectManager
 
         if (_totalNumImages >= 266266)
         {
+            // Free objectData?
             return false;
         }
 
