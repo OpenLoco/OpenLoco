@@ -935,19 +935,10 @@ namespace OpenLoco::ObjectManager
                 if (obj != nullptr && obj != reinterpret_cast<Object*>(-1))
                 {
                     const auto& objHeader = typedObjectList.object_entry_extendeds[i];
-                    if (objHeader.isCustom())
+
+                    if (header == objHeader)
                     {
-                        if (header == objHeader)
-                        {
-                            return { LoadedObjectHandle{ objectType, i } };
-                        }
-                    }
-                    else
-                    {
-                        if (header.getType() == objHeader.getType() && header.getName() == objHeader.getName())
-                        {
-                            return { LoadedObjectHandle{ objectType, i } };
-                        }
+                        return { LoadedObjectHandle{ objectType, i } };
                     }
                 }
             }
@@ -984,6 +975,19 @@ namespace OpenLoco::ObjectManager
         registers regs;
         regs.al = static_cast<uint8_t>(proc);
         regs.esi = X86Pointer(&obj);
+        return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+    }
+
+    static bool callLoadObjectFunction(const LoadedObjectHandle handle, Object& obj)
+    {
+        auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+        auto objectProc = objectProcTable[static_cast<size_t>(handle.type)];
+
+        registers regs;
+        regs.al = static_cast<uint8_t>(ObjectProcedure::load);
+        regs.esi = X86Pointer(&obj);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
         return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
     }
 
@@ -1028,7 +1032,7 @@ namespace OpenLoco::ObjectManager
         // Vanilla would branch and perform more efficient readChunk if size was kown from installedObject.ObjectHeader2
         auto data = stream.readChunk();
 
-        if (computeObjectChecksum(loadingHeader, data))
+        if (!computeObjectChecksum(loadingHeader, data))
         {
             // Something wrong has happened and installed object checksum is broken
             return false;
@@ -1038,7 +1042,7 @@ namespace OpenLoco::ObjectManager
         Object* object = reinterpret_cast<Object*>(malloc(data.size()));
         std::copy(std::begin(data), std::end(data), reinterpret_cast<uint8_t*>(object));
 
-        if (!callObjectFunction(loadingHeader.getType(), *object, ObjectProcedure::validate))
+        if (!callLoadObjectFunction({ loadingHeader.getType(), id }, *object))
         {
             free(object);
             // Object failed validation

@@ -82,7 +82,14 @@ namespace OpenLoco
 
         bool operator==(const ObjectHeader& rhs) const
         {
-            return std::memcmp(this, &rhs, sizeof(ObjectHeader)) == 0;
+            if (isCustom())
+            {
+                return std::memcmp(this, &rhs, sizeof(ObjectHeader)) == 0;
+            }
+            else
+            {
+                return getType() == rhs.getType() && getName() == rhs.getName();
+            }
         }
         bool operator!=(const ObjectHeader& rhs) const
         {
