@@ -1042,7 +1042,7 @@ namespace OpenLoco::ObjectManager
         Object* object = reinterpret_cast<Object*>(malloc(data.size()));
         std::copy(std::begin(data), std::end(data), reinterpret_cast<uint8_t*>(object));
 
-        if (!callLoadObjectFunction({ loadingHeader.getType(), id }, *object))
+        if (!callObjectFunction(loadingHeader.getType(), *object, ObjectProcedure::validate))
         {
             free(object);
             // Object failed validation
@@ -1078,7 +1078,7 @@ namespace OpenLoco::ObjectManager
 
         if (!*_isPartialLoaded)
         {
-            callObjectFunction(loadingHeader.getType(), *object, ObjectProcedure::load);
+            callLoadObjectFunction({ loadingHeader.getType(), id }, *object);
         }
 
         return true;
