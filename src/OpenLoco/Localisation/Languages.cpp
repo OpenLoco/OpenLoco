@@ -20,7 +20,7 @@ namespace OpenLoco::Localisation
         language_descriptors.emplace_back(undefinedLanguage);
 
         // Search the languages dir for YAML language files.
-        fs::path languageDir = Environment::getPath(Environment::path_id::language_files);
+        fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
         for (auto& entry : fs::directory_iterator(languageDir))
         {
             auto filename = entry.path().string();

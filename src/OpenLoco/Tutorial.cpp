@@ -109,10 +109,10 @@ namespace OpenLoco::Tutorial
         }
 
         // Get the environment file for this tutorial.
-        static constexpr Environment::path_id tutorialFileIds[] = {
-            Environment::path_id::tut1024_1,
-            Environment::path_id::tut1024_2,
-            Environment::path_id::tut1024_3,
+        static constexpr Environment::PathId tutorialFileIds[] = {
+            Environment::PathId::tut1024_1,
+            Environment::PathId::tut1024_2,
+            Environment::PathId::tut1024_3,
         };
 
         auto fileId = tutorialFileIds[tutorialNumber];
@@ -132,7 +132,7 @@ namespace OpenLoco::Tutorial
         *_tutorialString = openingStringIds[*_tutorialNumber];
 
         // Load the scenario
-        auto scPath = Environment::getPath(Environment::path_id::boulder_breakers);
+        auto scPath = Environment::getPath(Environment::PathId::boulderBreakers);
         Scenario::load(scPath);
 
         // Set fixed rng seed

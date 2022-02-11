@@ -95,35 +95,35 @@ namespace OpenLoco::Audio
 
     // 0x004FE910
     static const MusicInfo kMusicInfo[] = {
-        { path_id::music_20s1, StringIds::music_chuggin_along, 1925, 1933 },
-        { path_id::music_20s2, StringIds::music_long_dusty_road, 1927, 1935 },
-        { path_id::music_20s4, StringIds::music_flying_high, 1932, 1940 },
-        { path_id::music_50s1, StringIds::music_gettin_on_the_gas, 1956, 1964 },
-        { path_id::music_50s2, StringIds::music_jumpin_the_rails, 1953, 1961 },
-        { path_id::music_70s1, StringIds::music_smooth_running, 1976, 1984 },
-        { path_id::music_70s2, StringIds::music_traffic_jam, 1973, 1981 },
-        { path_id::music_70s3, StringIds::music_never_stop_til_you_get_there, 1970, 1978 },
-        { path_id::music_80s1, StringIds::music_soaring_away, 1990, 9999 },
-        { path_id::music_90s1, StringIds::music_techno_torture, 1993, 9999 },
-        { path_id::music_90s2, StringIds::music_everlasting_high_rise, 1996, 9999 },
-        { path_id::music_rag3, StringIds::music_solace, 1912, 1920 },
-        { path_id::music_chrysanthemum, StringIds::music_chrysanthemum, 0, 1911 },
-        { path_id::music_eugenia, StringIds::music_eugenia, 0, 1908 },
-        { path_id::music_rag2, StringIds::music_the_ragtime_dance, 1909, 1917 },
-        { path_id::music_rag1, StringIds::music_easy_winners, 0, 1914 },
-        { path_id::music_20s3, StringIds::music_setting_off, 1929, 1937 },
-        { path_id::music_40s1, StringIds::music_a_travellers_seranade, 1940, 1948 },
-        { path_id::music_40s2, StringIds::music_latino_trip, 1943, 1951 },
-        { path_id::music_50s3, StringIds::music_a_good_head_of_steam, 1950, 1958 },
-        { path_id::music_40s3, StringIds::music_hop_to_the_bop, 1946, 1954 },
-        { path_id::music_80s2, StringIds::music_the_city_lights, 1980, 1988 },
-        { path_id::music_60s1, StringIds::music_steamin_down_town, 1960, 1968 },
-        { path_id::music_80s3, StringIds::music_bright_expectations, 1983, 1991 },
-        { path_id::music_60s2, StringIds::music_mo_station, 1963, 1971 },
-        { path_id::music_60s3, StringIds::music_far_out, 1966, 1974 },
-        { path_id::music_80s4, StringIds::music_running_on_time, 1986, 1994 },
-        { path_id::music_20s5, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
-        { path_id::music_20s6, StringIds::music_sandy_track_blues, 1921, 1929 }
+        { PathId::music_20s1, StringIds::music_chuggin_along, 1925, 1933 },
+        { PathId::music_20s2, StringIds::music_long_dusty_road, 1927, 1935 },
+        { PathId::music_20s4, StringIds::music_flying_high, 1932, 1940 },
+        { PathId::music_50s1, StringIds::music_gettin_on_the_gas, 1956, 1964 },
+        { PathId::music_50s2, StringIds::music_jumpin_the_rails, 1953, 1961 },
+        { PathId::music_70s1, StringIds::music_smooth_running, 1976, 1984 },
+        { PathId::music_70s2, StringIds::music_traffic_jam, 1973, 1981 },
+        { PathId::music_70s3, StringIds::music_never_stop_til_you_get_there, 1970, 1978 },
+        { PathId::music_80s1, StringIds::music_soaring_away, 1990, 9999 },
+        { PathId::music_90s1, StringIds::music_techno_torture, 1993, 9999 },
+        { PathId::music_90s2, StringIds::music_everlasting_high_rise, 1996, 9999 },
+        { PathId::music_rag3, StringIds::music_solace, 1912, 1920 },
+        { PathId::music_chrysanthemum, StringIds::music_chrysanthemum, 0, 1911 },
+        { PathId::music_eugenia, StringIds::music_eugenia, 0, 1908 },
+        { PathId::music_rag2, StringIds::music_the_ragtime_dance, 1909, 1917 },
+        { PathId::music_rag1, StringIds::music_easy_winners, 0, 1914 },
+        { PathId::music_20s3, StringIds::music_setting_off, 1929, 1937 },
+        { PathId::music_40s1, StringIds::music_a_travellers_seranade, 1940, 1948 },
+        { PathId::music_40s2, StringIds::music_latino_trip, 1943, 1951 },
+        { PathId::music_50s3, StringIds::music_a_good_head_of_steam, 1950, 1958 },
+        { PathId::music_40s3, StringIds::music_hop_to_the_bop, 1946, 1954 },
+        { PathId::music_80s2, StringIds::music_the_city_lights, 1980, 1988 },
+        { PathId::music_60s1, StringIds::music_steamin_down_town, 1960, 1968 },
+        { PathId::music_80s3, StringIds::music_bright_expectations, 1983, 1991 },
+        { PathId::music_60s2, StringIds::music_mo_station, 1963, 1971 },
+        { PathId::music_60s3, StringIds::music_far_out, 1966, 1974 },
+        { PathId::music_80s4, StringIds::music_running_on_time, 1986, 1994 },
+        { PathId::music_20s5, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
+        { PathId::music_20s6, StringIds::music_sandy_track_blues, 1921, 1929 }
     };
 
     static constexpr bool isMusicChannel(ChannelId id)
@@ -338,7 +338,7 @@ namespace OpenLoco::Audio
             _vehicleChannels[i] = VehicleChannel(Channel(4 + i));
         }
 
-        auto css1path = Environment::getPath(Environment::path_id::css1);
+        auto css1path = Environment::getPath(Environment::PathId::css1);
         _samples = loadSoundsFromCSS(css1path);
         _audioInitialised = 1;
     }
@@ -1112,7 +1112,7 @@ namespace OpenLoco::Audio
 
             // Load info on the song to play.
             const auto& mi = kMusicInfo[_currentSong];
-            auto path = Environment::getPath((path_id)mi.pathId);
+            auto path = Environment::getPath((PathId)mi.pathId);
             if (_musicChannel.load(path))
             {
                 _musicCurrentChannel = ChannelId::bgm;
@@ -1154,7 +1154,7 @@ namespace OpenLoco::Audio
         {
             if (!isChannelPlaying(ChannelId::title))
             {
-                auto path = Environment::getPath(path_id::css5);
+                auto path = Environment::getPath(PathId::css5);
                 if (loadChannel(ChannelId::title, path, 0))
                 {
                     playChannel(ChannelId::title, 1, -500, 0, 0);

@@ -339,7 +339,7 @@ namespace OpenLoco
         Ui::disposeInput();
         Localisation::unloadLanguageFile();
 
-        auto tempFilePath = Environment::getPathNoWarning(Environment::path_id::_1tmp);
+        auto tempFilePath = Environment::getPathNoWarning(Environment::PathId::_1tmp);
         if (fs::exists(tempFilePath))
         {
             auto path8 = tempFilePath.u8string();
@@ -907,7 +907,7 @@ namespace OpenLoco
     {
         try
         {
-            auto autosaveDirectory = Environment::getPath(Environment::path_id::autosave);
+            auto autosaveDirectory = Environment::getPath(Environment::PathId::autosave);
             if (fs::is_directory(autosaveDirectory))
             {
                 std::vector<fs::path> autosaveFiles;
@@ -969,7 +969,7 @@ namespace OpenLoco
 
         try
         {
-            auto autosaveDirectory = Environment::getPath(Environment::path_id::autosave);
+            auto autosaveDirectory = Environment::getPath(Environment::PathId::autosave);
             Environment::autoCreateDirectory(autosaveDirectory);
 
             auto autosaveFullPath = autosaveDirectory / filename;

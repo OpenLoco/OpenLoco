@@ -154,7 +154,7 @@ namespace OpenLoco::ObjectManager
     static ObjectFolderState getCurrentObjectFolderState()
     {
         ObjectFolderState currentState;
-        const auto objectPath = Environment::getPathNoWarning(Environment::path_id::objects);
+        const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
         for (const auto& file : fs::directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
         {
             if (!file.is_regular_file())
@@ -192,7 +192,7 @@ namespace OpenLoco::ObjectManager
     static void saveIndex(const IndexHeader& header)
     {
         std::ofstream stream;
-        const auto indexPath = Environment::getPathNoWarning(Environment::path_id::plugin1);
+        const auto indexPath = Environment::getPathNoWarning(Environment::PathId::plugin1);
         stream.open(indexPath, std::ios::out | std::ios::binary);
         if (!stream.is_open())
         {
@@ -388,7 +388,7 @@ namespace OpenLoco::ObjectManager
         IndexHeader header{};
         uint8_t progress = 0;      // Progress is used for the ProgressBar Ui element
         size_t usedBufferSize = 0; // Keep track of used space to allow for growth and for final sizing
-        const auto objectPath = Environment::getPathNoWarning(Environment::path_id::objects);
+        const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
         for (const auto& file : fs::directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
         {
             if (!file.is_regular_file())
@@ -440,7 +440,7 @@ namespace OpenLoco::ObjectManager
 
     static bool tryLoadIndex(const ObjectFolderState& currentState)
     {
-        const auto indexPath = Environment::getPathNoWarning(Environment::path_id::plugin1);
+        const auto indexPath = Environment::getPathNoWarning(Environment::PathId::plugin1);
         if (!fs::exists(indexPath))
         {
             return false;
@@ -1191,8 +1191,7 @@ namespace OpenLoco::ObjectManager
     // is possible and if not permutates the name until it is valid.
     static fs::path findObjectPath(std::string& filename)
     {
-        loco_global<char[257], 0x0050B635> _pathObjects;
-        auto objPath = fs::u8path(_pathObjects.get());
+        auto objPath = Environment::getPath(Environment::PathId::objects);
 
         bool permutateName = false;
         do

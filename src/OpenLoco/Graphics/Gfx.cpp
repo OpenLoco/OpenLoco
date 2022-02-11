@@ -183,7 +183,7 @@ namespace OpenLoco::Gfx
     // 0x0044733C
     void loadG1()
     {
-        auto g1Path = Environment::getPath(Environment::path_id::g1);
+        auto g1Path = Environment::getPath(Environment::PathId::g1);
         std::ifstream stream(g1Path, std::ios::in | std::ios::binary);
         if (!stream)
         {

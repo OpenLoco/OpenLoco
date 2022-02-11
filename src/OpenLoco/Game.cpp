@@ -22,10 +22,10 @@ namespace OpenLoco::Game
     static loco_global<GameCommands::LoadOrQuitMode, 0x0050A002> _savePromptType;
 
     // TODO: make accessible from Environment
-    static loco_global<char[257], 0x0050B1CF> _path_saves_single_player;
-    static loco_global<char[257], 0x0050B2EC> _path_saves_two_player;
-    static loco_global<char[257], 0x0050B406> _path_scenarios;
-    static loco_global<char[257], 0x0050B518> _path_landscapes;
+    static loco_global<char[257], 0x0050B1CF> _pathSavesSinglePlayer;
+    static loco_global<char[257], 0x0050B2EC> _pathSavesTwoPlayer;
+    static loco_global<char[257], 0x0050B406> _pathScenarios;
+    static loco_global<char[257], 0x0050B518> _pathLandscapes;
 
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
 
@@ -64,9 +64,9 @@ namespace OpenLoco::Game
     bool loadSaveGameOpen()
     {
         if (!isNetworked())
-            strncpy(&_savePath[0], &_path_saves_single_player[0], std::size(_savePath));
+            strncpy(&_savePath[0], &_pathSavesSinglePlayer[0], std::size(_savePath));
         else
-            strncpy(&_savePath[0], &_path_saves_two_player[0], std::size(_savePath));
+            strncpy(&_savePath[0], &_pathSavesTwoPlayer[0], std::size(_savePath));
 
         return openBrowsePrompt(StringIds::title_prompt_load_game, browse_type::load, S5::filterSV5);
     }
@@ -74,7 +74,7 @@ namespace OpenLoco::Game
     // 0x004417A7
     bool loadLandscapeOpen()
     {
-        strncpy(&_savePath[0], &_path_landscapes[0], std::size(_savePath));
+        strncpy(&_savePath[0], &_pathLandscapes[0], std::size(_savePath));
 
         return openBrowsePrompt(StringIds::title_prompt_load_landscape, browse_type::load, S5::filterSC5);
     }
@@ -90,7 +90,7 @@ namespace OpenLoco::Game
     // 0x004418DB
     bool saveScenarioOpen()
     {
-        auto path = fs::u8path(&_path_scenarios[0]).parent_path() / &_scenarioTitle[0];
+        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / &_scenarioTitle[0];
         strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
@@ -107,7 +107,7 @@ namespace OpenLoco::Game
             sub_46DB4C();
         }
 
-        auto path = fs::u8path(&_path_landscapes[0]).parent_path() / &_scenarioTitle[0];
+        auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / &_scenarioTitle[0];
         strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 

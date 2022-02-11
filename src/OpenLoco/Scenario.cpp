@@ -301,7 +301,7 @@ namespace OpenLoco::Scenario
         fs::path fullPath = path;
         if (!fullPath.has_root_path())
         {
-            auto scenarioPath = Environment::getPath(Environment::path_id::scenarios);
+            auto scenarioPath = Environment::getPath(Environment::PathId::scenarios);
             fullPath = scenarioPath / path;
         }
 
@@ -358,7 +358,7 @@ namespace OpenLoco::Scenario
             std::strncpy(gameState.scenarioDetails, buffer, sizeof(gameState.scenarioDetails));
         }
 
-        auto savePath = Environment::getPath(Environment::path_id::save);
+        auto savePath = Environment::getPath(Environment::PathId::save);
         savePath /= std::string(_scenarioTitle) + S5::extensionSV5;
         std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
 
