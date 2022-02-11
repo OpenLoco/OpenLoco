@@ -1016,7 +1016,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        auto& [installOffset, installedObject] = *res;
+        auto& installedObject = res->second;
         const auto filePath = Environment::getPath(Environment::path_id::objects) / fs::u8path(installedObject._filename);
 
         SawyerStreamReader stream(filePath);
