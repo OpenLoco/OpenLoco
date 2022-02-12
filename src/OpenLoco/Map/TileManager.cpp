@@ -2,6 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Game.h"
 #include "../GameState.h"
+#include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
@@ -663,7 +664,7 @@ namespace OpenLoco::Map::TileManager
         _startUpdateLocation = TilePos2(shift & 0xF, shift >> 4);
         if (shift == 0)
         {
-            call(0x004574E8);
+            IndustryManager::updateProducedCargoStats();
         }
     }
 

@@ -6,6 +6,7 @@
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
+#include "StationManager.h"
 #include "Utility/Numeric.hpp"
 #include <algorithm>
 
@@ -259,6 +260,59 @@ namespace OpenLoco
                         {
                             AnimationManager::createAnimation(3, animOffsets->pos + tilePos, baseZ);
                             animOffsets++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 0x004574F7
+    void Industry::updateProducedCargoStats()
+    {
+        const auto* industryObj = getObject();
+
+        for (auto cargoNum = 0; cargoNum < 2; ++cargoNum)
+        {
+            auto& indStatsStation = producedCargoStatsStation[cargoNum];
+            auto& indStatsRating = producedCargoStatsRating[cargoNum];
+            std::fill(std::begin(indStatsStation), std::end(indStatsStation), StationId::null);
+            const auto cargoType = industryObj->produced_cargo_type[cargoNum];
+            if (cargoType == 0xFF)
+            {
+                continue;
+            }
+
+            for (auto dword = 0; dword < 32; ++dword)
+            {
+                auto bits = var_E1[dword];
+                for (auto bit = Utility::bitScanForward(bits); bit != -1; bit = Utility::bitScanForward(bits))
+                {
+                    bits &= ~(1 << bit);
+                    const auto stationId = static_cast<StationId>((dword << 5) | bit);
+                    const auto* station = StationManager::get(stationId);
+                    if (station->empty())
+                    {
+                        continue;
+                    }
+
+                    const auto& cargoStats = station->cargoStats[cargoType];
+                    if (!(cargoStats.flags & (1 << 1)))
+                    {
+                        continue;
+                    }
+
+                    const auto rating = cargoStats.rating;
+                    for (auto index = 0; index < 4; ++index)
+                    {
+                        if (indStatsStation[index] == StationId::null || indStatsRating[index] < rating)
+                        {
+                            // Bubble up entries so far
+                            std::memmove(&indStatsStation[index + 1], &indStatsStation[index], 3 - index);
+                            std::memmove(&indStatsRating[index + 1], &indStatsRating[index], 3 - index);
+                            // Insert the new entry
+                            indStatsStation[index] = stationId;
+                            indStatsRating[index] = rating;
                         }
                     }
                 }
