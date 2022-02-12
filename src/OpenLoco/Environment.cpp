@@ -13,16 +13,16 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Environment
 {
-    loco_global<char[260], 0x009D118E> _path_buffer;
-    loco_global<char[257], 0x0050B0CE> _path_install;
-    loco_global<char[257], 0x0050B1CF> _path_saves_single_player;
-    loco_global<char[257], 0x0050B2EC> _path_saves_two_player;
-    loco_global<char[257], 0x0050B406> _path_scenarios;
-    loco_global<char[257], 0x0050B518> _path_landscapes;
-    loco_global<char[257], 0x0050B635> _path_objects;
+    loco_global<char[260], 0x009D118E> _pathBuffer;
+    loco_global<char[257], 0x0050B0CE> _pathInstall;
+    loco_global<char[257], 0x0050B1CF> _pathSavesSinglePlayer;
+    loco_global<char[257], 0x0050B2EC> _pathSavesTwoPlayer;
+    loco_global<char[257], 0x0050B406> _pathScenarios;
+    loco_global<char[257], 0x0050B518> _pathLandscapes;
+    loco_global<char[257], 0x0050B635> _pathObjects;
 
-    static fs::path getBasePath(path_id id);
-    static fs::path getSubPath(path_id id);
+    static fs::path getBasePath(PathId id);
+    static fs::path getSubPath(PathId id);
 #ifndef _WIN32
     static fs::path findSimilarFile(const fs::path& path);
 #endif
@@ -35,7 +35,7 @@ namespace OpenLoco::Environment
         }
         else
         {
-            auto g1Path = path / getSubPath(path_id::g1);
+            auto g1Path = path / getSubPath(PathId::g1);
             bool g1Exists = fs::exists(g1Path);
 #ifndef _WIN32
             if (!g1Exists)
@@ -110,7 +110,7 @@ namespace OpenLoco::Environment
 
     static fs::path getLocoInstallPath()
     {
-        return fs::u8path(_path_install.get());
+        return fs::u8path(_pathInstall.get());
     }
 
 #ifndef _WIN32
@@ -143,7 +143,7 @@ namespace OpenLoco::Environment
 #endif // _WIN32
 
     // 0x004416B5
-    fs::path getPath(path_id id)
+    fs::path getPath(PathId id)
     {
         auto basePath = getBasePath(id);
         auto subPath = getSubPath(id);
@@ -167,7 +167,7 @@ namespace OpenLoco::Environment
         return result;
     }
 
-    fs::path getPathNoWarning(path_id id)
+    fs::path getPathNoWarning(PathId id)
     {
         auto basePath = getBasePath(id);
         auto subPath = getSubPath(id);
@@ -210,10 +210,10 @@ namespace OpenLoco::Environment
     void resolvePaths()
     {
         auto basePath = resolveLocoInstallPath();
-        setDirectory(_path_install, basePath);
+        setDirectory(_pathInstall, basePath);
 
         // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
-        auto saveDirectory = getPathNoWarning(path_id::save) / "";
+        auto saveDirectory = getPathNoWarning(PathId::save) / "";
         auto& configLastSavePath = Config::getNew().last_save_path;
         if (!configLastSavePath.empty())
         {
@@ -230,28 +230,28 @@ namespace OpenLoco::Environment
             {
             }
         }
-        setDirectory(_path_saves_single_player, saveDirectory);
-        setDirectory(_path_saves_two_player, saveDirectory);
+        setDirectory(_pathSavesSinglePlayer, saveDirectory);
+        setDirectory(_pathSavesTwoPlayer, saveDirectory);
         autoCreateDirectory(saveDirectory);
 
-        setDirectory(_path_scenarios, basePath / "Scenarios/*.SC5");
-        setDirectory(_path_landscapes, basePath / "Scenarios/Landscapes/*.SC5");
-        setDirectory(_path_objects, basePath / "ObjData/*.DAT");
+        setDirectory(_pathScenarios, basePath / "Scenarios/*.SC5");
+        setDirectory(_pathLandscapes, basePath / "Scenarios/Landscapes/*.SC5");
+        setDirectory(_pathObjects, basePath / "ObjData/*.DAT");
     }
 
-    static fs::path getBasePath(path_id id)
+    static fs::path getBasePath(PathId id)
     {
         switch (id)
         {
-            case path_id::plugin1:
-            case path_id::plugin2:
-            case path_id::gamecfg:
-            case path_id::scores:
-            case path_id::openloco_yml:
-            case path_id::save:
-            case path_id::autosave:
+            case PathId::plugin1:
+            case PathId::plugin2:
+            case PathId::gamecfg:
+            case PathId::scores:
+            case PathId::openlocoYML:
+            case PathId::save:
+            case PathId::autosave:
                 return Platform::getUserDirectory();
-            case path_id::language_files:
+            case PathId::languageFiles:
 #if defined(__APPLE__) && defined(__MACH__)
                 return Platform::GetBundlePath();
 #else
@@ -262,7 +262,7 @@ namespace OpenLoco::Environment
         }
     }
 
-    static fs::path getSubPath(path_id id)
+    static fs::path getSubPath(PathId id)
     {
         static constexpr const char* paths[] = {
             "Data/g1.DAT",
@@ -325,7 +325,7 @@ namespace OpenLoco::Environment
         size_t index = (size_t)id;
         if (index >= Utility::length(paths))
         {
-            throw std::runtime_error("Invalid path_id: " + std::to_string((int32_t)id));
+            throw std::runtime_error("Invalid PathId: " + std::to_string((int32_t)id));
         }
         return paths[(size_t)id];
     }

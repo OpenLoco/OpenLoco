@@ -4,7 +4,7 @@
 
 namespace OpenLoco::Environment
 {
-    enum class path_id : uint8_t
+    enum class PathId : uint8_t
     {
         g1,
         plugin1,
@@ -47,15 +47,15 @@ namespace OpenLoco::Environment
         music_20s6,
         title,
         scores,
-        boulder_breakers,
+        boulderBreakers,
         tut1024_1,
         tut1024_2,
         tut1024_3,
         tut800_1,
         tut800_2,
         tut800_3,
-        openloco_yml,
-        language_files,
+        openlocoYML,
+        languageFiles,
         save,
         autosave,
         _1tmp,
@@ -64,7 +64,7 @@ namespace OpenLoco::Environment
     };
 
     void autoCreateDirectory(const fs::path& path);
-    fs::path getPath(path_id id);
-    fs::path getPathNoWarning(path_id id);
+    fs::path getPath(PathId id);
+    fs::path getPathNoWarning(PathId id);
     void resolvePaths();
 }

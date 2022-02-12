@@ -118,7 +118,7 @@ namespace OpenLoco::Title
         if (Intro::state() == Intro::State::none)
         {
             auto backupWord = _525F62;
-            auto titlePath = Environment::getPath(Environment::path_id::title);
+            auto titlePath = Environment::getPath(Environment::PathId::title);
             clearScreenFlag(ScreenFlags::networked);
             S5::load(titlePath, S5::LoadFlags::titleSequence);
 

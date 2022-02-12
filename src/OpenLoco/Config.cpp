@@ -57,7 +57,7 @@ namespace OpenLoco::Config
     // 0x00441A6C
     LocoConfig& read()
     {
-        auto configPath = Environment::getPathNoWarning(Environment::path_id::gamecfg);
+        auto configPath = Environment::getPathNoWarning(Environment::PathId::gamecfg);
 
         // Read config file if present.
         if (fs::exists(configPath))
@@ -88,7 +88,7 @@ namespace OpenLoco::Config
     {
         std::ofstream stream;
         stream.exceptions(std::ifstream::failbit);
-        stream.open(Environment::getPathNoWarning(Environment::path_id::gamecfg), std::ios::out | std::ios::binary);
+        stream.open(Environment::getPathNoWarning(Environment::PathId::gamecfg), std::ios::out | std::ios::binary);
         if (stream.is_open())
         {
             uint32_t magicNumber = _legacyConfigMagicNumber;
@@ -120,7 +120,7 @@ namespace OpenLoco::Config
 
     NewConfig& readNewConfig()
     {
-        auto configPath = Environment::getPathNoWarning(Environment::path_id::openloco_yml);
+        auto configPath = Environment::getPathNoWarning(Environment::PathId::openlocoYML);
 
         // No config file? Use defaults.
         if (!fs::exists(configPath))
@@ -191,7 +191,7 @@ namespace OpenLoco::Config
 
     void writeNewConfig()
     {
-        auto configPath = Environment::getPathNoWarning(Environment::path_id::openloco_yml);
+        auto configPath = Environment::getPathNoWarning(Environment::PathId::openlocoYML);
         auto dir = configPath.parent_path();
         Environment::autoCreateDirectory(dir);
 
