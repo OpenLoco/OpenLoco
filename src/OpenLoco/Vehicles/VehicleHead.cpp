@@ -2682,6 +2682,9 @@ namespace OpenLoco::Vehicles
             cargoStats.quantity = Math::Bound::add(cargoStats.quantity, cargo.qty);
             station->updateCargoDistribution();
             cargoStats.enrouteAge = Math::Bound::add(cargoStats.enrouteAge, cargo.numDays);
+
+            // Change from vanilla to deal with the cargo transfer bug:
+            // Calculate the weighted average of the present and the delivered cargo
             if (stationHadPreviousCargo)
             {
                 // enrouteAge = enrouteAge * (1 - addedQuantity / summedQuantity)
