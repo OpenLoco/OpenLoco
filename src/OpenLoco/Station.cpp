@@ -316,7 +316,7 @@ namespace OpenLoco
                                 {
                                     break;
                                 }
-                                auto obj = industry->object();
+                                auto obj = industry->getObject();
 
                                 if (obj == nullptr)
                                 {
@@ -351,7 +351,7 @@ namespace OpenLoco
                                     break;
                                 }
 
-                                auto* obj = buildingEl.object();
+                                auto* obj = buildingEl.getObject();
 
                                 if (obj == nullptr)
                                 {

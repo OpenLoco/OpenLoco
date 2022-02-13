@@ -260,7 +260,7 @@ namespace OpenLoco::Map
         uint8_t colour() const { return _6 >> 11; }
         void setColour(Colour_t colour) { _6 = (_6 & 0x7FF) | (colour << 11); }
         uint8_t objectId() const { return _4; }
-        BuildingObject* object() const;
+        const BuildingObject* getObject() const;
         uint8_t multiTileIndex() const { return _5 & 3; }
         uint8_t unk5u() const { return _5 >> 5; } // likely age related as well (higher precision)
         void setUnk5u(uint8_t value)

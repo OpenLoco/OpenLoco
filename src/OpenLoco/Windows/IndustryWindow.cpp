@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::Windows::Industry
             Common::drawTabs(self, context);
 
             auto industry = IndustryManager::get(IndustryId(self->number));
-            auto industryObj = industry->object();
+            auto industryObj = industry->getObject();
             int16_t xPos = self->x + 3;
             int16_t yPos = self->y + 45;
             Ui::Point origin = { xPos, yPos };

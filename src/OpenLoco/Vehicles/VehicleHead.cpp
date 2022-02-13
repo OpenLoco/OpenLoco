@@ -2208,7 +2208,7 @@ namespace OpenLoco::Vehicles
         }
 
         Vehicle train(this);
-        auto* vehObj = train.cars.firstCar.body->object();
+        auto* vehObj = train.cars.firstCar.body->getObject();
         if (vehObj != nullptr && vehObj->numStartSounds != 0)
         {
             auto numSounds = vehObj->numStartSounds & NumStartSounds::mask;
@@ -2618,7 +2618,7 @@ namespace OpenLoco::Vehicles
             if (cargoStats.industryId != IndustryId::null)
             {
                 auto* industry = IndustryManager::get(cargoStats.industryId);
-                auto* industryObj = industry->object();
+                auto* industryObj = industry->getObject();
 
                 for (auto i = 0; i < 3; ++i)
                 {
@@ -3123,7 +3123,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::produceLeavingDockSound()
     {
         Vehicle train(this);
-        auto* vehObj = train.cars.firstCar.body->object();
+        auto* vehObj = train.cars.firstCar.body->getObject();
         if (vehObj != nullptr && vehObj->numStartSounds != 0)
         {
             auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::mask) - 1);
@@ -3148,7 +3148,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::produceTouchdownAirportSound()
     {
         Vehicle train(this);
-        auto* vehObj = train.cars.firstCar.body->object();
+        auto* vehObj = train.cars.firstCar.body->getObject();
         if (vehObj != nullptr && vehObj->numStartSounds != 0)
         {
 

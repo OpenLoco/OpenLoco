@@ -74,7 +74,7 @@ namespace OpenLoco::IndustryManager
     {
         for (auto& industry : industries())
         {
-            auto industryObj = industry.object();
+            auto industryObj = industry.getObject();
             if ((industryObj->flags & flags) == 0)
                 continue;
 
