@@ -977,6 +977,8 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<InterfaceSkinObject*>(&obj)->validate();
             case ObjectType::sound:
                 return reinterpret_cast<SoundObject*>(&obj)->validate();
+            case ObjectType::currency:
+                return reinterpret_cast<CurrencyObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -998,10 +1000,12 @@ namespace OpenLoco::ObjectManager
     //        case ObjectType::sound:
     //            reinterpret_cast<SoundObject*>(&obj)->load(handle, data);
     //            break;
+    //        case ObjectType::currency:
+    //            reinterpret_cast<CurrencyObject*>(&obj)->load(handle, data);
+    //            break;
     //        default:
     //            auto objectProcTable = (const uintptr_t*)0x004FE1C8;
     //            auto objectProc = objectProcTable[static_cast<size_t>(handle.type)];
-
     //            registers regs;
     //            regs.al = enumValue(ObjectProcedure::load);
     //            regs.esi = X86Pointer(&obj);
@@ -1021,6 +1025,9 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::sound:
                 reinterpret_cast<SoundObject*>(&obj)->unload();
+                break;
+            case ObjectType::currency:
+                reinterpret_cast<CurrencyObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
