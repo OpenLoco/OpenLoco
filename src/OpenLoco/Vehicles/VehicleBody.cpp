@@ -89,7 +89,7 @@ namespace OpenLoco::Vehicles
         if ((headVeh->status == Status::crashed) || (headVeh->status == Status::stuck))
             return;
 
-        auto vehicleObject = getObject();
+        const auto* vehicleObject = getObject();
         int32_t var_05 = vehicleObject->var_24[bodyIndex].var_05;
         if (var_05 == 0)
         {
@@ -142,7 +142,7 @@ namespace OpenLoco::Vehicles
         if (objectSpriteType == 0xFF)
             return;
 
-        auto vehicleObj = getObject();
+        const auto* vehicleObj = getObject();
         uint8_t al = 0;
         if (vehicleObj->bodySprites[objectSpriteType].flags & BodySpriteFlags::hasSpeedAnimation)
         {
@@ -243,7 +243,7 @@ namespace OpenLoco::Vehicles
 
         auto bogieDifference = front_bogie->position - back_bogie->position;
         auto distanceBetweenBogies = Math::Vector::distance(front_bogie->position, back_bogie->position);
-        auto vehObj = getObject();
+        const auto* vehObj = getObject();
         if (vehObj->bodySprites[objectSpriteType].flags & BodySpriteFlags::hasSteepSprites)
         {
             sprite_pitch = updateSpritePitchSteepSlopes(distanceBetweenBogies, bogieDifference.z);
@@ -858,7 +858,7 @@ namespace OpenLoco::Vehicles
     // 0x004AB655
     void VehicleBody::secondaryAnimationUpdate()
     {
-        auto vehicleObject = getObject();
+        const auto* vehicleObject = getObject();
 
         uint8_t var_05 = vehicleObject->var_24[bodyIndex].var_05;
         if (var_05 == 0)
@@ -899,7 +899,7 @@ namespace OpenLoco::Vehicles
     // 0x004AB688, 0x004AACA5
     void VehicleBody::steamPuffsAnimationUpdate(uint8_t num, int32_t var_05)
     {
-        auto vehicleObject = getObject();
+        const auto* vehicleObject = getObject();
         VehicleBogie* frontBogie = vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = vehicleUpdate_backBogie;
         if (frontBogie->var_5F & Flags5F::brokenDown)
@@ -1051,7 +1051,7 @@ namespace OpenLoco::Vehicles
 
         VehicleHead* headVeh = vehicleUpdate_head;
         Vehicle2* veh_2 = vehicleUpdate_2;
-        auto vehicleObject = getObject();
+        const auto* vehicleObject = getObject();
 
         if (headVeh->vehicleType == VehicleType::ship)
         {
@@ -1108,7 +1108,7 @@ namespace OpenLoco::Vehicles
             return;
 
         Vehicle2* veh_2 = vehicleUpdate_2;
-        auto vehicleObject = getObject();
+        const auto* vehicleObject = getObject();
 
         if (veh_2->var_5A != 1)
             return;
@@ -1156,7 +1156,7 @@ namespace OpenLoco::Vehicles
             return;
 
         Vehicle2* veh_2 = vehicleUpdate_2;
-        auto vehicleObject = getObject();
+        const auto* vehicleObject = getObject();
 
         if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
             return;
@@ -1193,7 +1193,7 @@ namespace OpenLoco::Vehicles
             return;
 
         Vehicle2* veh_2 = vehicleUpdate_2;
-        auto vehicleObject = getObject();
+        const auto* vehicleObject = getObject();
 
         if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
             return;
@@ -1243,7 +1243,7 @@ namespace OpenLoco::Vehicles
     void VehicleBody::shipWakeAnimationUpdate(uint8_t num, int32_t)
     {
         Vehicle2* veh_2 = vehicleUpdate_2;
-        auto vehicleObject = getObject();
+        const auto* vehicleObject = getObject();
 
         if (veh_2->var_5A == 0)
             return;
@@ -1308,7 +1308,7 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        auto vehicleObj = getObject();
+        const auto* vehicleObj = getObject();
         auto& bodySprite = vehicleObj->bodySprites[objectSpriteType];
 
         auto percentageFull = std::min((primaryCargo.qty * 256) / primaryCargo.maxQty, 255);

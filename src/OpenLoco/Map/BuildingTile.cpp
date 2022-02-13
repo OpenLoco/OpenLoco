@@ -35,7 +35,7 @@ namespace OpenLoco::Map
             return true;
         }
 
-        auto* buildingObj = getObject();
+        const auto* buildingObj = getObject();
         if (!isConstructed())
         {
             auto newUnk5u = unk5u();

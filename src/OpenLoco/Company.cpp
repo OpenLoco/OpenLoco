@@ -412,7 +412,7 @@ namespace OpenLoco
             Vehicles::Vehicle train(v);
             for (auto& car : train.cars)
             {
-                auto* vehObject = car.body->getObject();
+                const auto* vehObject = car.body->getObject();
                 auto colour = mainColours;
                 if (customVehicleColoursSet & (1 << vehObject->colour_type))
                 {

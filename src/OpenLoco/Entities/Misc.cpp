@@ -79,7 +79,7 @@ namespace OpenLoco
             _exhaust->base_type = EntityBaseType::misc;
             _exhaust->moveTo(loc);
             _exhaust->objectId = type;
-            auto obj = _exhaust->getObject();
+            const auto* obj = _exhaust->getObject();
             _exhaust->var_14 = obj->var_05;
             _exhaust->var_09 = obj->var_06;
             _exhaust->var_15 = obj->var_07;

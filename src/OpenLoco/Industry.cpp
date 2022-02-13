@@ -82,7 +82,7 @@ namespace OpenLoco
     {
         char* ptr = (char*)buffer;
         *ptr = '\0';
-        auto industryObj = getObject();
+        const auto* industryObj = getObject();
 
         // Closing Down
         if (flags & IndustryFlags::closingDown)
@@ -156,7 +156,7 @@ namespace OpenLoco
                 if (surface->industryId() == id())
                 {
                     uint8_t bl = surface->var_6_SLR5();
-                    auto obj = getObject();
+                    const auto* obj = getObject();
                     if (bl == 0 || bl != obj->var_EA)
                     {
                         // loc_4532E5
@@ -179,7 +179,7 @@ namespace OpenLoco
         int16_t tmp_c = var_DB - tmp_b;
         int16_t tmp_d = std::min(tmp_c / 25, 255);
 
-        auto obj = getObject();
+        const auto* obj = getObject();
         if (tmp_d < obj->var_EB)
         {
             var_DF = ((tmp_d * 256) / obj->var_EB) & 0xFF;
@@ -247,7 +247,7 @@ namespace OpenLoco
                 auto tileIndustry = industryEl->industry();
                 if (tileIndustry != nullptr)
                 {
-                    auto industryObject = tileIndustry->getObject();
+                    const auto* industryObject = tileIndustry->getObject();
                     if (industryObject != nullptr)
                     {
                         auto animOffsets = word_4F9274;

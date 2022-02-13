@@ -348,7 +348,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                         }
 
                         auto* industry = elIndustry->industry();
-                        auto* industryObj = industry->getObject();
+                        const auto* industryObj = industry->getObject();
                         if (!(industryObj->flags & IndustryObjectFlags::built_on_water))
                         {
                             continue;

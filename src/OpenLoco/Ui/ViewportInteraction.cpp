@@ -742,7 +742,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        auto* buildingObj = building->getObject();
+        const auto* buildingObj = building->getObject();
         auto args = FormatArguments::mapToolTip();
         if (isEditorMode() || !(buildingObj->flags & BuildingObjectFlags::undestructible))
         {
@@ -802,7 +802,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        auto* buildingObj = building->getObject();
+        const auto* buildingObj = building->getObject();
         auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
         buffer = StringManager::formatString(buffer, buildingObj->name);
         if (!building->isConstructed())
