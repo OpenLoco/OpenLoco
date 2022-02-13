@@ -1,6 +1,7 @@
 #include "TileManager.h"
 #include "../CompanyManager.h"
 #include "../Game.h"
+#include "../GameState.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
@@ -14,6 +15,7 @@ namespace OpenLoco::Map::TileManager
     static loco_global<TileElement*, 0x005230C8> _elements;
     static loco_global<TileElement* [0x30004], 0x00E40134> _tiles;
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
+    static loco_global<uint32_t, 0x00F00168> _F00168;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
     static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
@@ -30,7 +32,22 @@ namespace OpenLoco::Map::TileManager
     // 0x00461179
     void initialise()
     {
-        call(0x00461179);
+        _F00168 = 0;
+        _startUpdateLocation = Map::Pos2(0, 0);
+        const auto landType = getGameState().lastLandOption == 0xFF ? 0 : getGameState().lastLandOption;
+
+        SurfaceElement defaultElement{};
+        defaultElement.setTerrain(landType);
+        defaultElement.setBaseZ(4);
+        defaultElement.setLastFlag(true);
+
+        auto* element = *_elements;
+        for (auto i = 0; i < map_size; ++i, ++element)
+        {
+            *element = *reinterpret_cast<TileElement*>(&defaultElement);
+        }
+        updateTilePointers();
+        getGameState().flags |= (1u << 0);
     }
 
     stdx::span<TileElement> getElements()
