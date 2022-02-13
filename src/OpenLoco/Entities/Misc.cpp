@@ -185,7 +185,7 @@ namespace OpenLoco
         else
         {
             invalidateSprite();
-            if (wiggle == 21)
+            if (wiggle == 22)
             {
                 wiggle = 0;
             }
