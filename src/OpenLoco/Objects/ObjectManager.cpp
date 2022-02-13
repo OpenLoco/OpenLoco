@@ -969,15 +969,73 @@ namespace OpenLoco::ObjectManager
         drawPreview,
     };
 
+    static bool callObjectValidate(const ObjectType type, Object& obj)
+    {
+        switch (type)
+        {
+            case ObjectType::interfaceSkin:
+                return reinterpret_cast<InterfaceSkinObject*>(&obj)->validate();
+            default:
+                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+                auto objectProc = objectProcTable[static_cast<size_t>(type)];
+
+                registers regs;
+                regs.al = enumValue(ObjectProcedure::validate);
+                regs.esi = X86Pointer(&obj);
+                return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+        }
+    }
+
+    //static void callObjectLoad(const ObjectType type, Object& obj, stdx::span<std::byte> data)
+    //{
+    //    switch (type)
+    //    {
+    //        case ObjectType::interfaceSkin:
+    //            reinterpret_cast<InterfaceSkinObject*>(&obj)->load(data);
+    //            break;
+    //        default:
+    //            auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+    //            auto objectProc = objectProcTable[static_cast<size_t>(type)];
+
+    //            registers regs;
+    //            regs.al = enumValue(ObjectProcedure::load);
+    //            regs.esi = X86Pointer(&obj);
+    //            call(objectProc, regs);
+    //            break;
+    //    }
+    //}
+
+    static void callObjectUnload(const ObjectType type, Object& obj)
+    {
+        switch (type)
+        {
+            case ObjectType::interfaceSkin:
+                reinterpret_cast<InterfaceSkinObject*>(&obj)->unload();
+                break;
+            default:
+                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+                auto objectProc = objectProcTable[static_cast<size_t>(type)];
+
+                registers regs;
+                regs.al = enumValue(ObjectProcedure::unload);
+                regs.esi = X86Pointer(&obj);
+                call(objectProc, regs);
+                break;
+        }
+    }
+
     static bool callObjectFunction(const ObjectType type, Object& obj, const ObjectProcedure proc)
     {
-        auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-        auto objectProc = objectProcTable[static_cast<size_t>(type)];
-
-        registers regs;
-        regs.al = static_cast<uint8_t>(proc);
-        regs.esi = X86Pointer(&obj);
-        return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+        switch (proc)
+        {
+            case ObjectProcedure::validate:
+                return callObjectValidate(type, obj);
+            case ObjectProcedure::unload:
+                callObjectUnload(type, obj);
+                return true;
+            default:
+                throw std::runtime_error("Don't call this function with load/drawPreview.");
+        }
     }
 
     static bool callLoadObjectFunction(const LoadedObjectHandle handle, Object& obj)
@@ -1343,7 +1401,7 @@ namespace OpenLoco::ObjectManager
         std::copy(std::begin(data), std::end(data), objectData);
 
         auto* obj = reinterpret_cast<Object*>(objectData);
-        if (!callObjectFunction(objectHeader.getType(), *obj, ObjectProcedure::validate))
+        if (!callObjectValidate(objectHeader.getType(), *obj))
         {
             return false;
         }
