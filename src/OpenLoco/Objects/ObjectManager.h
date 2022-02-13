@@ -63,23 +63,6 @@ namespace OpenLoco
      * a specific object type. DO NOT USE
      */
     using LoadedObjectIndex = size_t;
-
-    /**
-     * Represents an index / ID of a specific object type.
-     */
-    using LoadedObjectId = uint16_t;
-
-    /**
-     * Represents an undefined index / ID for a specific object type.
-     */
-    static constexpr LoadedObjectId NullObjectId = std::numeric_limits<LoadedObjectId>::max();
-
-    struct LoadedObjectHandle
-    {
-        ObjectType type;
-        LoadedObjectId id;
-    };
-    static_assert(sizeof(LoadedObjectHandle) == 4);
 }
 
 namespace OpenLoco::ObjectManager

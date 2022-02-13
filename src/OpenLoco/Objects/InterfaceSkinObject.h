@@ -39,7 +39,7 @@ namespace OpenLoco
 
         // 0x0043C888
         bool validate() { return true; }
-        void load(stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle handle, stdx::span<std::byte> data);
         void unload();
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
     };

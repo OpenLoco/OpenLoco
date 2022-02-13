@@ -6,10 +6,12 @@
 namespace OpenLoco
 {
     // 0x0043C82D
-    void InterfaceSkinObject::load(stdx::span<std::byte> data)
+    void InterfaceSkinObject::load(const LoadedObjectHandle handle, stdx::span<std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
         Interop::call(0x0043C82D, regs);
     }
 

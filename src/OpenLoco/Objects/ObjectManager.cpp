@@ -986,20 +986,22 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    //static void callObjectLoad(const ObjectType type, Object& obj, stdx::span<std::byte> data)
+    //static void callObjectLoad(const LoadedObjectHandle handle, Object& obj, stdx::span<std::byte> data)
     //{
-    //    switch (type)
+    //    switch (handle.type)
     //    {
     //        case ObjectType::interfaceSkin:
-    //            reinterpret_cast<InterfaceSkinObject*>(&obj)->load(data);
+    //            reinterpret_cast<InterfaceSkinObject*>(&obj)->load(handle, data);
     //            break;
     //        default:
     //            auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-    //            auto objectProc = objectProcTable[static_cast<size_t>(type)];
+    //            auto objectProc = objectProcTable[static_cast<size_t>(handle.type)];
 
     //            registers regs;
     //            regs.al = enumValue(ObjectProcedure::load);
     //            regs.esi = X86Pointer(&obj);
+    //            regs.ebx = handle.id;
+    //            regs.ecx = enumValue(handle.type);
     //            call(objectProc, regs);
     //            break;
     //    }

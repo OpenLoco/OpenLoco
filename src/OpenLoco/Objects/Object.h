@@ -98,4 +98,21 @@ namespace OpenLoco
     };
     static_assert(sizeof(ObjectHeader) == 0x10);
 #pragma pack(pop)
+
+    /**
+     * Represents an index / ID of a specific object type.
+     */
+    using LoadedObjectId = uint16_t;
+
+    /**
+     * Represents an undefined index / ID for a specific object type.
+     */
+    static constexpr LoadedObjectId NullObjectId = std::numeric_limits<LoadedObjectId>::max();
+
+    struct LoadedObjectHandle
+    {
+        ObjectType type;
+        LoadedObjectId id;
+    };
+    static_assert(sizeof(LoadedObjectHandle) == 4);
 }
