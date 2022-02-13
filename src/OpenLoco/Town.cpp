@@ -2,6 +2,7 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "TownManager.h"
+#include "Ui/WindowManager.h"
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -46,6 +47,88 @@ namespace OpenLoco
         call(0x00497616, regs);
     }
 
+    // 0x0049749B
+    void Town::updateMonthly()
+    {
+        // Scroll history
+        if (historySize == std::size(history))
+        {
+            for (size_t i = 0; i < std::size(history) - 1; i++)
+                history[i] = history[i + 1];
+        }
+        else
+            historySize++;
+
+        // Compute population growth.
+        uint32_t popSteps = std::max<int32_t>(population - history_min_population, 0) / 50;
+        uint32_t popGrowth = 0;
+        while (popSteps > 255)
+        {
+            popSteps -= 20;
+            popGrowth += 1000;
+        }
+
+        // Any population growth to account for?
+        if (popGrowth != 0)
+        {
+            history_min_population += popGrowth;
+
+            uint8_t offset = (popGrowth / 50) & 0xFF;
+            for (uint8_t i = 0; i < historySize; i++)
+            {
+                int16_t newHistory = history[i] - offset;
+                history[i] = newHistory >= 0 ? static_cast<uint8_t>(newHistory) : 0;
+            }
+        }
+
+        // Write new history point.
+        auto histIndex = std::clamp<int32_t>(historySize - 1, 0, std::size(history));
+        history[histIndex] = popSteps & 0xFF;
+
+        // Find historical maximum population.
+        uint8_t maxPopulation = 0;
+        for (int i = 0; i < historySize; i++)
+            maxPopulation = std::max(maxPopulation, history[i]);
+
+        int32_t popOffset = history_min_population;
+        while (maxPopulation <= 235 && popOffset > 0)
+        {
+            maxPopulation += 20;
+            popOffset -= 1000;
+        }
+
+        popOffset -= history_min_population;
+        if (popOffset != 0)
+        {
+            popOffset = -popOffset;
+            history_min_population -= popOffset;
+            popOffset /= 50;
+
+            for (int i = 0; i < historySize; i++)
+                history[i] += popOffset;
+        }
+
+        // Work towards computing new build speed.
+        // will be the smallest of the influence cargo delivered to the town
+        // i.e. to get maximum growth max of the influence cargo must be delivered
+        // every update. If no influence cargo the grows at max rate
+        uint16_t minCargoDelivered = std::numeric_limits<uint16_t>::max();
+        uint32_t cargoFlags = cargo_influence_flags;
+        while (cargoFlags != 0)
+        {
+            uint32_t cargoId = Utility::bitScanForward(cargoFlags);
+            cargoFlags &= ~(1 << cargoId);
+
+            minCargoDelivered = std::min(minCargoDelivered, monthly_cargo_delivered[cargoId]);
+        }
+
+        // Compute build speed (1=slow build speed, 4=fast build speed)
+        build_speed = std::clamp((minCargoDelivered / 100) + 1, 1, 4);
+
+        // Reset all monthly_cargo_delivered intermediaries to zero.
+        memset(&monthly_cargo_delivered, 0, sizeof(monthly_cargo_delivered));
+    }
+
     void Town::adjustCompanyRating(CompanyId cid, int amount)
     {
         companies_with_rating |= (1 << enumValue(cid));
@@ -55,6 +138,9 @@ namespace OpenLoco
             kMaxCompanyRating);
     }
 
+    // 0x004FF714
+    constexpr uint32_t _populations[]{ 0, 150, 500, 2500, 8000 };
+
     /**
      * 0x004975E0
      * Recalculate size
@@ -63,9 +149,22 @@ namespace OpenLoco
      */
     void Town::recalculateSize()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004975E0, regs);
+        auto newSize = enumValue(size);
+        if (size < TownSize::metropolis
+            && var_34 >= _populations[enumValue(size) + 1])
+        {
+            newSize++;
+        }
+        else if (size != TownSize::hamlet && var_34 + 100 < _populations[enumValue(size)])
+        {
+            newSize--;
+        }
+
+        if (static_cast<TownSize>(newSize) != size)
+        {
+            size = static_cast<TownSize>(newSize);
+            Ui::WindowManager::invalidate(Ui::WindowType::townList);
+        }
     }
 
     /**
