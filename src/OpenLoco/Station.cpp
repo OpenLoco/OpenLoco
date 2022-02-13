@@ -580,6 +580,13 @@ namespace OpenLoco
                 {
                     stationCargo.enrouteAge = std::min(stationCargo.enrouteAge + 1, 255);
                 }
+                else
+                {
+                    // Change from vanilla to deal with the cargo transfer bug:
+                    // Reset enroute age once the station cargo gets cleared
+                    // or else the age keeps increasing
+                    stationCargo.enrouteAge = 0;
+                }
                 stationCargo.age = std::min(stationCargo.age + 1, 255);
 
                 auto targetRating = calculateCargoRating(stationCargo);

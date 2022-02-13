@@ -2677,9 +2677,21 @@ namespace OpenLoco::Vehicles
 
                 break;
             }
+
+            const bool stationHadPreviousCargo = cargoStats.quantity != 0;
             cargoStats.quantity = Math::Bound::add(cargoStats.quantity, cargo.qty);
             station->updateCargoDistribution();
-            cargoStats.enrouteAge = std::max(cargoStats.enrouteAge, cargo.numDays);
+            cargoStats.enrouteAge = Math::Bound::add(cargoStats.enrouteAge, cargo.numDays);
+
+            // Change from vanilla to deal with the cargo transfer bug:
+            // Calculate the weighted average of the present and the delivered cargo
+            if (stationHadPreviousCargo)
+            {
+                // enrouteAge = enrouteAge * (1 - addedQuantity / summedQuantity)
+                const auto multiplier = (1 << 16) - (cargo.qty << 16) / cargoStats.quantity;
+                cargoStats.enrouteAge = (cargoStats.enrouteAge * multiplier) >> 16;
+            }
+
             bool setOrigin = true;
             if (cargoStats.origin != StationId::null)
             {
