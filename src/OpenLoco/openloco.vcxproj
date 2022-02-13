@@ -104,6 +104,7 @@
     <ClCompile Include="Objects\RockObject.cpp" />
     <ClCompile Include="Objects\ScaffoldingObject.cpp" />
     <ClCompile Include="Objects\SnowObject.cpp" />
+    <ClCompile Include="Objects\SoundObject.cpp" />
     <ClCompile Include="Objects\StreetLightObject.cpp" />
     <ClCompile Include="Objects\TrackExtraObject.cpp" />
     <ClCompile Include="Objects\TrackObject.cpp" />

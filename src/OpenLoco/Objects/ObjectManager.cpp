@@ -975,6 +975,8 @@ namespace OpenLoco::ObjectManager
         {
             case ObjectType::interfaceSkin:
                 return reinterpret_cast<InterfaceSkinObject*>(&obj)->validate();
+            case ObjectType::sound:
+                return reinterpret_cast<SoundObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -992,6 +994,9 @@ namespace OpenLoco::ObjectManager
     //    {
     //        case ObjectType::interfaceSkin:
     //            reinterpret_cast<InterfaceSkinObject*>(&obj)->load(handle, data);
+    //            break;
+    //        case ObjectType::sound:
+    //            reinterpret_cast<SoundObject*>(&obj)->load(handle, data);
     //            break;
     //        default:
     //            auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -1013,6 +1018,9 @@ namespace OpenLoco::ObjectManager
         {
             case ObjectType::interfaceSkin:
                 reinterpret_cast<InterfaceSkinObject*>(&obj)->unload();
+                break;
+            case ObjectType::sound:
+                reinterpret_cast<SoundObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
