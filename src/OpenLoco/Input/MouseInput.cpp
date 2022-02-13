@@ -16,6 +16,7 @@
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
 #include <map>
+#include <queue>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -2116,27 +2117,30 @@ namespace OpenLoco::Input
         _rightMouseButtonStatus = status;
     }
 
-#pragma pack(push, 1)
-    struct QueuedMouseInput
-    {
-        uint32_t x;
-        uint32_t y;
-        uint32_t button;
-    };
-#pragma pack(pop)
+    // 0x00113E9E0
+    static std::queue<QueuedMouseInput> _mouseQueue;
 
     // 0x00406FEC
-    void enqueueMouseButton(int32_t button)
+    void enqueueMouseButton(const QueuedMouseInput& input)
     {
-        ((void (*)(int))0x00406FEC)(button);
+        constexpr uint32_t kMouseQueueSize = 64;
+        if (_mouseQueue.size() > kMouseQueueSize)
+        {
+            return;
+        }
+        _mouseQueue.push(input);
     }
 
     // 0x00407247
-    static QueuedMouseInput* dequeueMouseInput()
+    static std::optional<QueuedMouseInput> dequeueMouseInput()
     {
-        registers regs;
-        call(0x00407247, regs);
-        return (QueuedMouseInput*)regs.eax;
+        if (_mouseQueue.empty())
+        {
+            return std::nullopt;
+        }
+        std::optional<QueuedMouseInput> res = _mouseQueue.front();
+        _mouseQueue.pop();
+        return res;
     }
 
     // 0x004C6FCE
@@ -2176,8 +2180,8 @@ namespace OpenLoco::Input
         if (!hasFlag(Flags::flag5))
         {
             // Interrupt tutorial on mouse button input.
-            QueuedMouseInput* input = dequeueMouseInput();
-            if (Tutorial::state() == Tutorial::State::playing && input != nullptr)
+            auto input = dequeueMouseInput();
+            if (Tutorial::state() == Tutorial::State::playing && input.has_value())
             {
                 Tutorial::stop();
             }
@@ -2203,7 +2207,7 @@ namespace OpenLoco::Input
                 }
             }
             // 0x004C6F5F
-            else if (input == nullptr)
+            else if (!input)
             {
                 button = loc_4C6FCE(x, y);
                 if (x == 0x80000000)
@@ -2226,8 +2230,8 @@ namespace OpenLoco::Input
                     default:
                         button = MouseButton::rightReleased;
                 }
-                x = input->x;
-                y = input->y;
+                x = input->pos.x;
+                y = input->pos.y;
             }
 
             // 0x004C6FE4

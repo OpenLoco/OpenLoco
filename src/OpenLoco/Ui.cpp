@@ -601,17 +601,17 @@ namespace OpenLoco::Ui
                 case SDL_MOUSEBUTTONDOWN:
                 {
                     auto scale_factor = Config::getNew().scale_factor;
-                    addr<0x0113E9D4, int32_t>() = (int32_t)(e.button.x / scale_factor);
-                    addr<0x0113E9D8, int32_t>() = (int32_t)(e.button.y / scale_factor);
+                    const auto x = (int32_t)(e.button.x / scale_factor);
+                    const auto y = (int32_t)(e.button.y / scale_factor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            Input::enqueueMouseButton(1);
+                            Input::enqueueMouseButton({ { x, y }, 1 });
                             addr<0x0113E8A0, int32_t>() = 1;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            Input::enqueueMouseButton(2);
+                            Input::enqueueMouseButton({ { x, y }, 2 });
                             addr<0x0113E0C0, int32_t>() = 1;
                             setRightMouseButtonDown(true);
                             addr<0x01140845, uint8_t>() = 0x80;
@@ -622,17 +622,17 @@ namespace OpenLoco::Ui
                 case SDL_MOUSEBUTTONUP:
                 {
                     auto scale_factor = Config::getNew().scale_factor;
-                    addr<0x0113E9D4, int32_t>() = (int32_t)(e.button.x / scale_factor);
-                    addr<0x0113E9D8, int32_t>() = (int32_t)(e.button.y / scale_factor);
+                    const auto x = (int32_t)(e.button.x / scale_factor);
+                    const auto y = (int32_t)(e.button.y / scale_factor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            Input::enqueueMouseButton(3);
+                            Input::enqueueMouseButton({ { x, y }, 3 });
                             addr<0x0113E8A0, int32_t>() = 0;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            Input::enqueueMouseButton(4);
+                            Input::enqueueMouseButton({ { x, y }, 4 });
                             addr<0x0113E0C0, int32_t>() = 0;
                             setRightMouseButtonDown(false);
                             addr<0x01140845, uint8_t>() = 0;
