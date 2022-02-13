@@ -153,7 +153,6 @@ namespace OpenLoco
         0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
         0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
         0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
-        0,
     };
     // clang-format on
 
@@ -172,7 +171,7 @@ namespace OpenLoco
                 wiggle--;
             }
 
-            if (var_26 > 160)
+            if (var_26 >= 160)
             {
                 EntityManager::freeEntity(this);
                 return;
