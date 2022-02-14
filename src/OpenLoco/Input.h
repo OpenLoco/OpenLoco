@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Ui/Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Window.h"
 
@@ -125,6 +126,11 @@ namespace OpenLoco::Input
     bool isRightMouseButtonDown();
     void setRightMouseButtonDown(bool status);
 
-    void enqueueMouseButton(int32_t button);
+    struct QueuedMouseInput
+    {
+        Ui::Point32 pos;
+        uint32_t button;
+    };
+    void enqueueMouseButton(const QueuedMouseInput& input);
     MouseButton nextMouseInput(uint32_t& x, int16_t& y);
 }
