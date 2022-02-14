@@ -9,14 +9,6 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco::GameCommands
 {
-    // 0x00461760 - this should be more generic function and not just related to remove wall function
-    static void sub_461760(const TileElement& tileElement)
-    {
-        registers regs = {};
-        regs.esi = X86Pointer(&tileElement);
-        call(0x00461760, regs);
-    }
-
     /**
      * 0x004C466C
      * Remove wall
@@ -60,7 +52,7 @@ namespace OpenLoco::GameCommands
 
             Ui::ViewportManager::invalidate(args.pos, wallElement->baseZ() * 4, wallElement->baseZ() * 4 + 48, ZoomLevel::half);
 
-            sub_461760(tileElement);
+            TileManager::removeElement(tileElement);
 
             auto& options = S5::getOptions();
             options.madeAnyChanges = 1;
