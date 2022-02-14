@@ -588,10 +588,10 @@ namespace OpenLoco::Ui
                 case SDL_MOUSEMOTION:
                 {
                     auto scale_factor = Config::getNew().scale_factor;
-                    auto x = (int32_t)(e.motion.x / scale_factor);
-                    auto y = (int32_t)(e.motion.y / scale_factor);
-                    auto xrel = (int32_t)(e.motion.xrel / scale_factor);
-                    auto yrel = (int32_t)(e.motion.yrel / scale_factor);
+                    auto x = static_cast<int32_t>(e.motion.x / scale_factor);
+                    auto y = static_cast<int32_t>(e.motion.y / scale_factor);
+                    auto xrel = static_cast<int32_t>(e.motion.xrel / scale_factor);
+                    auto yrel = static_cast<int32_t>(e.motion.yrel / scale_factor);
                     Input::moveMouse(x, y, xrel, yrel);
                     break;
                 }
@@ -601,8 +601,8 @@ namespace OpenLoco::Ui
                 case SDL_MOUSEBUTTONDOWN:
                 {
                     auto scale_factor = Config::getNew().scale_factor;
-                    const auto x = (int32_t)(e.button.x / scale_factor);
-                    const auto y = (int32_t)(e.button.y / scale_factor);
+                    const auto x = static_cast<int32_t>(e.button.x / scale_factor);
+                    const auto y = static_cast<int32_t>(e.button.y / scale_factor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
@@ -622,8 +622,8 @@ namespace OpenLoco::Ui
                 case SDL_MOUSEBUTTONUP:
                 {
                     auto scale_factor = Config::getNew().scale_factor;
-                    const auto x = (int32_t)(e.button.x / scale_factor);
-                    const auto y = (int32_t)(e.button.y / scale_factor);
+                    const auto x = static_cast<int32_t>(e.button.x / scale_factor);
+                    const auto y = static_cast<int32_t>(e.button.y / scale_factor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
