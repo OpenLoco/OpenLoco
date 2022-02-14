@@ -66,7 +66,7 @@ namespace OpenLoco
         uint8_t pad_38[0x49 - 0x38];
         uint8_t objectId; // 0x49
 
-        SteamObject* object() const;
+        const SteamObject* getObject() const;
         void update();
 
         static Exhaust* create(Map::Pos3 loc, uint8_t type);

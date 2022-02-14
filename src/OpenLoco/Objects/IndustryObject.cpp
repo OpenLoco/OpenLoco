@@ -39,7 +39,7 @@ namespace OpenLoco
         return produceCargoState;
     }
 
-    char* IndustryObject::getProducedCargoString(const char* buffer)
+    char* IndustryObject::getProducedCargoString(const char* buffer) const
     {
         char* ptr = (char*)buffer;
         auto producedCargoCount = 0;
@@ -60,7 +60,7 @@ namespace OpenLoco
         return ptr;
     }
 
-    char* IndustryObject::getRequiredCargoString(const char* buffer)
+    char* IndustryObject::getRequiredCargoString(const char* buffer) const
     {
         char* ptr = (char*)buffer;
         auto requiredCargoCount = 0;

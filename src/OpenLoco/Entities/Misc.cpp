@@ -46,7 +46,7 @@ namespace OpenLoco
         }
     }
 
-    SteamObject* Exhaust::object() const
+    const SteamObject* Exhaust::getObject() const
     {
         return ObjectManager::get<SteamObject>(objectId & 0x7F);
     }
@@ -79,7 +79,7 @@ namespace OpenLoco
             _exhaust->base_type = EntityBaseType::misc;
             _exhaust->moveTo(loc);
             _exhaust->objectId = type;
-            auto obj = _exhaust->object();
+            const auto* obj = _exhaust->getObject();
             _exhaust->var_14 = obj->var_05;
             _exhaust->var_09 = obj->var_06;
             _exhaust->var_15 = obj->var_07;

@@ -514,7 +514,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_5E;
         uint8_t var_5F;
 
-        VehicleObject* object() const;
+        const VehicleObject* getObject() const;
         bool update();
         void secondaryAnimationUpdate();
         void sub_4AAB0B();

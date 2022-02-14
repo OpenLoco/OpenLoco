@@ -26,7 +26,7 @@ bool TileElementBase::isLast() const
     return (_flags & ElementFlags::last) != 0;
 }
 
-BuildingObject* BuildingElement::object() const
+const BuildingObject* BuildingElement::getObject() const
 {
     return ObjectManager::get<BuildingObject>(objectId());
 }
