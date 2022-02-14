@@ -2124,7 +2124,7 @@ namespace OpenLoco::Input
     void enqueueMouseButton(const QueuedMouseInput& input)
     {
         constexpr uint32_t kMouseQueueSize = 64;
-        if (_mouseQueue.size() > kMouseQueueSize)
+        if (_mouseQueue.size() >= kMouseQueueSize)
         {
             return;
         }
