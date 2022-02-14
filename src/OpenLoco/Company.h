@@ -131,7 +131,9 @@ namespace OpenLoco
         uint8_t headquartersZ; // 0x2579
         coord_t headquartersX; // 0x257A -1 on no headquarter placed
         coord_t headquartersY; // 0x257C
-        uint8_t pad_257E[0x85F8 - 0x257E];
+        uint8_t pad_257E[0x259E - 0x257E];
+        uint32_t var_259E;
+        uint8_t pad_25A2[0x85F8 - 0x25A2];
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
         int16_t performanceIndexHistory[120];     // 0x87DC
@@ -172,6 +174,13 @@ namespace OpenLoco
         void updateHeadquartersColour();
         void updateOwnerEmotion();
         std::vector<uint8_t> getAvailableRailTracks();
+
+        void callThinkFunc2();
+        bool tryPlaceVehicles();
+        void sub_431295();
+        void sub_43129D();
+        void sub_4312AF();
+        void sub_4312BF();
     };
 #pragma pack(pop)
 

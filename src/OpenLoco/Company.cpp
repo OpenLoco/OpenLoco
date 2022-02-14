@@ -113,41 +113,6 @@ namespace OpenLoco
         sub_431287,
     };
 
-    static void sub_431295(Company* company)
-    {
-        registers regs;
-        regs.esi = X86Pointer(company);
-        call(0x00431295, regs);
-    }
-
-    static void sub_43129D(Company* company)
-    {
-        registers regs;
-        regs.esi = X86Pointer(company);
-        call(0x0043129D, regs);
-    }
-
-    static void sub_4312AF(Company* company)
-    {
-        registers regs;
-        regs.esi = X86Pointer(company);
-        call(0x004312AF, regs);
-    }
-
-    static void sub_4312BF(Company* company)
-    {
-        registers regs;
-        regs.esi = X86Pointer(company);
-        call(0x004312BF, regs);
-    }
-
-    static constexpr UnknownThinkFunction _funcs_43079E[] = {
-        sub_431295,
-        sub_43129D,
-        sub_4312AF,
-        sub_4312BF,
-    };
-
     static constexpr uint32_t _dword4FE720[] = {
         0x849,
         0x4011,
@@ -191,8 +156,7 @@ namespace OpenLoco
         if (empty())
             return;
 
-        const auto thinkFunc2 = _funcs_43079E[var_4A6];
-        thinkFunc2(this);
+        callThinkFunc2();
 
         if (headquartersX != -1 || (challengeFlags & CompanyFlags::bankrupt) || ((challengeFlags & CompanyFlags::unk0) == 0))
         {
@@ -539,5 +503,63 @@ namespace OpenLoco
         });
 
         return result;
+    }
+
+    void Company::callThinkFunc2()
+    {
+        switch (var_4A6)
+        {
+            case 0:
+                sub_431295();
+                break;
+            case 1:
+                sub_43129D();
+                break;
+            case 2:
+                sub_4312AF();
+                break;
+            case 3:
+                sub_4312BF();
+                break;
+            default:
+                assert(false);
+                return;
+        }
+    }
+
+    // 0x00487784
+    bool Company::tryPlaceVehicles()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        return call(0x00487784, regs) & X86_FLAG_CARRY;
+    }
+
+    // 0x00431295
+    void Company::sub_431295()
+    {
+        var_4A6 = 1;
+    }
+
+    // 0x0043129D
+    void Company::sub_43129D()
+    {
+        var_4A6 = 2;
+        var_259E = 0;
+    }
+
+    // 0x004312AF
+    void Company::sub_4312AF()
+    {
+        if (tryPlaceVehicles())
+        {
+            var_4A6 = 3;
+        }
+    }
+
+    // 0x004312BF
+    void Company::sub_4312BF()
+    {
+        var_4A6 = 0;
     }
 }
