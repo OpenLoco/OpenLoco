@@ -75,6 +75,9 @@ namespace OpenLoco
 
     struct MoneyEffect : MiscBase
     {
+        static constexpr uint32_t kLifetime = 160;        // windowCurrency
+        static constexpr uint32_t kRedGreenLifetime = 55; // redGreen (RCT2 legacy) Note: due to delay it is technically 55 * 2
+
         uint8_t pad_24[0x26 - 0x24];
         union
         {

@@ -136,7 +136,7 @@ namespace OpenLoco
 
     // clang-format off
     // 0x004FAD21
-    constexpr int8_t _wiggleZAmounts[] = {
+    constexpr int8_t _wiggleZAmounts[MoneyEffect::kLifetime] = {
         3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
         2, 1, 0, 0, 0, 1, 0, 0, 0, 1,
         0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
@@ -171,7 +171,7 @@ namespace OpenLoco
                 wiggle--;
             }
 
-            if (frame >= 160)
+            if (frame >= kLifetime)
             {
                 EntityManager::freeEntity(this);
                 return;
@@ -202,7 +202,7 @@ namespace OpenLoco
             const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()];
             moveTo(position + Map::Pos3{ nudge.x, nudge.y, position.z });
             numMovements++;
-            if (numMovements >= 55)
+            if (numMovements >= kRedGreenLifetime)
             {
                 EntityManager::freeEntity(this);
             }
