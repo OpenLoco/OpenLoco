@@ -171,15 +171,15 @@ namespace OpenLoco
                 wiggle--;
             }
 
-            if (var_26 >= 160)
+            if (frame >= 160)
             {
                 EntityManager::freeEntity(this);
                 return;
             }
-            const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()] * (var_26 & 1);
-            const auto nudgeZ = _wiggleZAmounts[var_26];
+            const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()] * (frame & 1);
+            const auto nudgeZ = _wiggleZAmounts[frame];
             moveTo(position + Map::Pos3{ nudge.x, nudge.y, nudgeZ });
-            var_26++;
+            frame++;
         }
         else
         {
@@ -192,17 +192,17 @@ namespace OpenLoco
             {
                 wiggle++;
             }
-            var_26++;
-            if (var_26 < 2)
+            moveDelay++;
+            if (moveDelay < 2)
             {
                 return;
             }
-            var_26 = 0;
+            moveDelay = 0;
 
             const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()];
             moveTo(position + Map::Pos3{ nudge.x, nudge.y, position.z });
-            var_28++;
-            if (var_28 >= 55)
+            numMovements++;
+            if (numMovements >= 55)
             {
                 EntityManager::freeEntity(this);
             }
@@ -231,8 +231,8 @@ namespace OpenLoco
             m->var_2E = company;
             m->moveTo(loc);
             m->setSubType(MiscEntityType::windowCurrency);
-            m->var_26 = 0;
-            m->var_28 = 0;
+            m->frame = 0;
+            m->numMovements = 0;
 
             string_id strFormat = (amount < 0) ? StringIds::format_currency_expense_red_negative : StringIds::format_currency_income_green;
             char buffer[255] = {};

@@ -76,10 +76,14 @@ namespace OpenLoco
     struct MoneyEffect : MiscBase
     {
         uint8_t pad_24[0x26 - 0x24];
-        uint16_t var_26;
-        uint16_t var_28;
-        int32_t amount;   // 0x2A - currency amount in British pounds - different currencies are probably getting recalculated
-        CompanyId var_2E; // company colour?
+        union
+        {
+            uint16_t frame;     // 0x26
+            uint16_t moveDelay; // 0x26 Note: this is only used by redGreen money (RCT2 legacy)
+        };
+        uint16_t numMovements; // 0x28 Note: this is only used by redGreen money (RCT2 legacy)
+        int32_t amount;        // 0x2A - currency amount in British pounds - different currencies are probably getting recalculated
+        CompanyId var_2E;      // company colour?
         uint8_t pad_2F[0x44 - 0x2F];
         int16_t offsetX; // 0x44
         uint16_t wiggle; // 0x46
