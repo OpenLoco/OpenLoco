@@ -175,7 +175,7 @@ namespace OpenLoco
     // 0x00430762
     void Company::aiThink()
     {
-        const auto updatingCompanyId = CompanyManager::updatingCompanyId();
+        const auto updatingCompanyId = CompanyManager::getUpdatingCompanyId();
 
         // Ensure this is only used for Non-Player controlled companies.
         if (CompanyManager::isPlayerCompany(updatingCompanyId))

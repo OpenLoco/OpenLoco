@@ -303,7 +303,7 @@ namespace OpenLoco::GameCommands
             return ebx;
 
         // Apply to company money
-        CompanyManager::applyPaymentToCompany(CompanyManager::updatingCompanyId(), ebx, getExpenditureType());
+        CompanyManager::applyPaymentToCompany(CompanyManager::getUpdatingCompanyId(), ebx, getExpenditureType());
 
         if (ebx != 0 && _updatingCompanyId == _player_company[0])
         {

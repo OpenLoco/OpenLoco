@@ -49,7 +49,7 @@ namespace OpenLoco::TownManager
                 auto town = get(id);
                 if (town != nullptr && !town->empty())
                 {
-                    CompanyManager::updatingCompanyId(CompanyId::neutral);
+                    CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
                     town->update();
                 }
             }

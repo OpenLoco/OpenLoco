@@ -43,7 +43,7 @@ namespace OpenLoco::IndustryManager
     {
         if (Game::hasFlags(1u << 0) && !isEditorMode())
         {
-            CompanyManager::updatingCompanyId(CompanyId::neutral);
+            CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
             {
                 industry.update();
