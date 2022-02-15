@@ -192,18 +192,18 @@ namespace OpenLoco::GameCommands
             // Just return the result without applying for now
             registers copyRegs = regs;
             copyRegs.esi = static_cast<int32_t>(command);
-            Network::queueGameCommand(_updating_company_id, copyRegs);
+            Network::queueGameCommand(_updatingCompanyId, copyRegs);
 
             copyRegs.bx &= ~Flags::apply;
             return loc_4313C6(esi, copyRegs);
         }
 
-        return doCommandForReal(command, _updating_company_id, regs);
+        return doCommandForReal(command, _updatingCompanyId, regs);
     }
 
     uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& regs)
     {
-        _updating_company_id = company;
+        _updatingCompanyId = company;
 
         uint16_t flags = regs.bx;
         uint32_t esi = static_cast<uint32_t>(command);
