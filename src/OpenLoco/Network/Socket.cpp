@@ -560,6 +560,7 @@ namespace OpenLoco::Network
 
         std::unique_ptr<INetworkEndpoint> resolve(Protocol protocol, const std::string& address, uint16_t port)
         {
+            InitialiseWSA();
             sockaddr_storage ss{};
             socklen_t ss_len;
             BaseSocket::resolveAddress(protocol, address, port, &ss, &ss_len);
