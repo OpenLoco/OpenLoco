@@ -331,8 +331,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 auto& viewport = self->viewports[0];
                 if (viewport != nullptr)
                 {
-                    viewport->width = 0;
-                    viewport = nullptr;
+                    self->viewportRemove(0);
                     self->invalidate();
                 }
 
@@ -429,11 +428,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 _dword_525CD8 = ecx;
                 _dword_525CDC = edx;
-                auto& viewport = self->viewports[0];
+                auto& viewport = self->viewports[1];
                 if (viewport != nullptr)
                 {
-                    viewport->width = 0;
-                    viewport = nullptr;
+                    self->viewportRemove(1);
                     self->invalidate();
                 }
 
