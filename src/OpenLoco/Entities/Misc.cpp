@@ -126,18 +126,86 @@ namespace OpenLoco
 
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
 
+    // 0x004FADD0
+    constexpr Map::Pos2 _wiggleAmounts[] = {
+        { 1, -1 },
+        { 1, 1 },
+        { -1, 1 },
+        { -1, -1 },
+    };
+
+    // clang-format off
+    // 0x004FAD21
+    constexpr int8_t _wiggleZAmounts[MoneyEffect::kLifetime] = {
+        3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+        2, 1, 0, 0, 0, 1, 0, 0, 0, 1,
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+        0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+        0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+        0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+        0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+        0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+        0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+        0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
+    };
+    // clang-format on
+
     // 0x0044063E
     void MoneyEffect::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
         if (getSubType() == MiscEntityType::windowCurrency)
         {
-            call(0x0044063E, regs);
+            invalidateSprite();
+            if (wiggle == 0)
+            {
+                wiggle = 21;
+            }
+            else
+            {
+                wiggle--;
+            }
+
+            if (frame >= kLifetime)
+            {
+                EntityManager::freeEntity(this);
+                return;
+            }
+            const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()] * (frame & 1);
+            const auto nudgeZ = _wiggleZAmounts[frame];
+            moveTo(position + Map::Pos3{ nudge.x, nudge.y, nudgeZ });
+            frame++;
         }
         else
         {
-            call(0x004405D8, regs);
+            invalidateSprite();
+            if (wiggle == 22)
+            {
+                wiggle = 0;
+            }
+            else
+            {
+                wiggle++;
+            }
+            moveDelay++;
+            if (moveDelay < 2)
+            {
+                return;
+            }
+            moveDelay = 0;
+
+            const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()];
+            moveTo(position + Map::Pos3{ nudge.x, nudge.y, position.z });
+            numMovements++;
+            if (numMovements >= kRedGreenLifetime)
+            {
+                EntityManager::freeEntity(this);
+            }
         }
     }
 
@@ -163,8 +231,8 @@ namespace OpenLoco
             m->var_2E = company;
             m->moveTo(loc);
             m->setSubType(MiscEntityType::windowCurrency);
-            m->var_26 = 0;
-            m->var_28 = 0;
+            m->frame = 0;
+            m->numMovements = 0;
 
             string_id strFormat = (amount < 0) ? StringIds::format_currency_expense_red_negative : StringIds::format_currency_income_green;
             char buffer[255] = {};
