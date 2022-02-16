@@ -1017,7 +1017,7 @@ namespace OpenLoco::ObjectManager
         }
 
         auto& installedObject = res->second;
-        const auto filePath = Environment::getPath(Environment::path_id::objects) / fs::u8path(installedObject._filename);
+        const auto filePath = Environment::getPath(Environment::PathId::objects) / fs::u8path(installedObject._filename);
 
         SawyerStreamReader stream(filePath);
         ObjectHeader loadingHeader;
@@ -1029,7 +1029,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        // Vanilla would branch and perform more efficient readChunk if size was kown from installedObject.ObjectHeader2
+        // Vanilla would branch and perform more efficient readChunk if size was known from installedObject.ObjectHeader2
         auto data = stream.readChunk();
 
         if (!computeObjectChecksum(loadingHeader, data))
