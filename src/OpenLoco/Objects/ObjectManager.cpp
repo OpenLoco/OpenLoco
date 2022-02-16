@@ -1035,15 +1035,12 @@ namespace OpenLoco::ObjectManager
         for (const auto& header : objects)
         {
             auto id = getObjectId(index);
-            if (!header.isEmpty())
+            if (!header.isEmpty() && !load(header, id))
             {
-                if (!load(header, id))
-                {
-                    result.success = false;
-                    result.problemObject = header;
-                    unloadAll();
-                    break;
-                }
+                result.success = false;
+                result.problemObject = header;
+                unloadAll();
+                break;
             }
             index++;
         }
