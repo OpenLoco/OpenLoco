@@ -188,6 +188,51 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
     static loco_global<uint16_t, 0x001135F88> _routingTransformData;
 
+    std::optional<std::pair<Map::SignalElement*, Map::TrackElement*>> findSignalOnTrack(const Map::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
+    {
+        auto tile = Map::TileManager::get(signalLoc);
+        for (auto& el : tile)
+        {
+            if (el.baseZ() != signalLoc.z / 4)
+            {
+                continue;
+            }
+
+            auto* elTrack = el.as<TrackElement>();
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+
+            if (!elTrack->hasSignal())
+            {
+                continue;
+            }
+
+            if (elTrack->unkDirection() != trackAndDirection.cardinalDirection())
+            {
+                continue;
+            }
+
+            if (elTrack->sequenceIndex() != index)
+            {
+                continue;
+            }
+
+            if (elTrack->trackObjectId() != trackType)
+            {
+                continue;
+            }
+
+            if (elTrack->trackId() != trackAndDirection.id())
+            {
+                continue;
+            }
+            return std::make_pair(elTrack->next()->as<SignalElement>(), elTrack);
+        }
+        return std::nullopt;
+    }
+
     // 0x0048963F
     uint8_t sub_48963F(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
     {
@@ -209,50 +254,9 @@ namespace OpenLoco::Vehicles
         {
             auto signalLoc = trackStart + Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()), 0 };
             signalLoc.z += trackPiece.z;
-            auto tile = Map::TileManager::get(signalLoc);
-            Map::TrackElement* foundTrack = nullptr;
-            for (auto& el : tile)
-            {
-                if (el.baseZ() != signalLoc.z / 4)
-                {
-                    continue;
-                }
+            auto res = findSignalOnTrack(signalLoc, trackAndDirection, trackType, trackPiece.index);
 
-                auto* elTrack = el.as<TrackElement>();
-                if (elTrack == nullptr)
-                {
-                    continue;
-                }
-
-                if (!elTrack->hasSignal())
-                {
-                    continue;
-                }
-
-                if (elTrack->unkDirection() != trackAndDirection.cardinalDirection())
-                {
-                    continue;
-                }
-
-                if (elTrack->sequenceIndex() != trackPiece.index)
-                {
-                    continue;
-                }
-
-                if (elTrack->trackObjectId() != trackType)
-                {
-                    continue;
-                }
-
-                if (elTrack->trackId() != trackAndDirection.id())
-                {
-                    continue;
-                }
-                foundTrack = elTrack;
-                break;
-            }
-
-            if (foundTrack == nullptr)
+            if (!res)
             {
                 if (unk1 == 10)
                 {
@@ -261,11 +265,8 @@ namespace OpenLoco::Vehicles
                 return loc.x; // Odd???
             }
 
-            auto* elSignal = foundTrack->next()->as<SignalElement>();
-            if (elSignal == nullptr)
-            {
-                continue;
-            }
+            auto [elSignal, foundTrack] = *res;
+
             // edx
             auto& signalSide = (flags & (1ULL << 31)) ? elSignal->getRight() : elSignal->getLeft();
             if (unk1 == 16)
