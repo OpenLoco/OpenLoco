@@ -1004,6 +1004,33 @@ namespace OpenLoco::Audio
         }
     }
 
+    static void addAllSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
+    {
+        for (auto i = 0; i < kNumMusicTracks; i++)
+        {
+            if (i != excludeTrack)
+            {
+                playlist.push_back(i);
+            }
+        }
+    }
+
+    static void addCurrentEraSongsToPlaylist(int32_t excludeTrack, std::vector<uint8_t>& playlist)
+    {
+        auto currentYear = getCurrentYear();
+        for (auto i = 0; i < kNumMusicTracks; i++)
+        {
+            const auto& mi = kMusicInfo[i];
+            if (currentYear >= mi.startYear && currentYear <= mi.endYear)
+            {
+                if (i != excludeTrack)
+                {
+                    playlist.push_back(i);
+                }
+            }
+        }
+    }
+
     static int32_t chooseNextMusicTrack(int32_t excludeTrack)
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
@@ -1011,33 +1038,14 @@ namespace OpenLoco::Audio
         static std::vector<uint8_t> playlist;
         playlist.clear();
 
-        auto cfg = Config::get();
+        const auto& cfg = Config::get();
         switch (cfg.music_playlist)
         {
             case MusicPlaylistType::currentEra:
-            {
-                auto currentYear = getCurrentYear();
-                for (auto i = 0; i < kNumMusicTracks; i++)
-                {
-                    const auto& mi = kMusicInfo[i];
-                    if (currentYear >= mi.startYear && currentYear <= mi.endYear)
-                    {
-                        if (i != excludeTrack)
-                        {
-                            playlist.push_back(i);
-                        }
-                    }
-                }
+                addCurrentEraSongsToPlaylist(excludeTrack, playlist);
                 break;
-            }
             case MusicPlaylistType::all:
-                for (auto i = 0; i < kNumMusicTracks; i++)
-                {
-                    if (i != excludeTrack)
-                    {
-                        playlist.push_back(i);
-                    }
-                }
+                addAllSongsToPlaylist(excludeTrack, playlist);
                 break;
             case MusicPlaylistType::custom:
                 for (auto i = 0; i < kNumMusicTracks; i++)
@@ -1050,27 +1058,14 @@ namespace OpenLoco::Audio
                 break;
         }
 
-        if (playlist.size() == 0)
+        if (playlist.empty() && cfg.music_playlist != MusicPlaylistType::currentEra)
         {
-            if (excludeTrack == kNoSong)
-            {
-                for (auto i = 0; i < kNumMusicTracks; i++)
-                {
-                    if (i != excludeTrack)
-                    {
-                        playlist.push_back(i);
-                    }
-                }
-            }
-            else
-            {
-                const auto& mi = kMusicInfo[excludeTrack];
-                auto currentYear = getCurrentYear();
-                if (currentYear >= mi.startYear && currentYear <= mi.endYear)
-                {
-                    playlist.push_back(excludeTrack);
-                }
-            }
+            addCurrentEraSongsToPlaylist(excludeTrack, playlist);
+        }
+
+        if (playlist.empty())
+        {
+            addAllSongsToPlaylist(excludeTrack, playlist);
         }
 
         auto r = std::rand() % playlist.size();
