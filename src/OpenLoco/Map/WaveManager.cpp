@@ -29,7 +29,7 @@ namespace OpenLoco::Map::WaveManager
         return getGameState().waves;
     }
 
-    static FixedVector<Wave, Limits::maxWaves> waves()
+    static FixedVector<Wave, Limits::kMaxWaves> waves()
     {
         return FixedVector(rawWaves());
     }

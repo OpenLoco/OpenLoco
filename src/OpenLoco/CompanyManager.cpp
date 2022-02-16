@@ -32,7 +32,7 @@ namespace OpenLoco::CompanyManager
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<uint8_t, 0x00526214> _companyCompetitionDelay;
     static loco_global<uint8_t, 0x00525FB7> _companyMaxCompeting;
-    static loco_global<uint8_t[Limits::maxCompanies + 1], 0x009C645C> _companyColours;
+    static loco_global<uint8_t[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
     static void produceCompanies();
@@ -88,7 +88,7 @@ namespace OpenLoco::CompanyManager
         _updatingCompanyId = id;
     }
 
-    FixedVector<Company, Limits::maxCompanies> companies()
+    FixedVector<Company, Limits::kMaxCompanies> companies()
     {
         return FixedVector(rawCompanies());
     }
@@ -96,7 +96,7 @@ namespace OpenLoco::CompanyManager
     Company* get(CompanyId id)
     {
         auto index = enumValue(id);
-        if (index < Limits::maxCompanies)
+        if (index < Limits::kMaxCompanies)
         {
             return &rawCompanies()[index];
         }

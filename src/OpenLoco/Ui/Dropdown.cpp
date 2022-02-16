@@ -837,7 +837,7 @@ namespace OpenLoco::Ui::Dropdown
         CompanyId companyId = CompanyId::null;
 
         size_t index = 0;
-        for (; index < Limits::maxCompanies; index++)
+        for (; index < Limits::kMaxCompanies; index++)
         {
             int16_t maxPerformanceIndex = -1;
             for (const auto& company : CompanyManager::companies())
@@ -879,7 +879,7 @@ namespace OpenLoco::Ui::Dropdown
         {
             highlightedIndex++;
 
-            if (highlightedIndex > Limits::maxCompanies)
+            if (highlightedIndex > Limits::kMaxCompanies)
             {
                 highlightedIndex = -1;
                 break;

@@ -24,14 +24,14 @@ namespace OpenLoco::IndustryManager
         Ui::Windows::IndustryList::reset();
     }
 
-    FixedVector<Industry, Limits::maxIndustries> industries()
+    FixedVector<Industry, Limits::kMaxIndustries> industries()
     {
         return FixedVector(rawIndustries());
     }
 
     Industry* get(IndustryId id)
     {
-        if (enumValue(id) >= Limits::maxIndustries)
+        if (enumValue(id) >= Limits::kMaxIndustries)
         {
             return nullptr;
         }

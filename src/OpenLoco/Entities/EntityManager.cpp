@@ -63,9 +63,9 @@ namespace OpenLoco::EntityManager
         }
         rawListCounts()[static_cast<uint8_t>(EntityListType::null)] = Limits::maxNormalEntities;
 
-        // Remake null money entities (size maxMoneyEntities)
+        // Remake null money entities (size kMaxMoneyEntities)
         previous = nullptr;
-        for (; id < Limits::maxEntities; ++id)
+        for (; id < Limits::kMaxEntities; ++id)
         {
             auto& ent = rawEntities()[id];
             ent.base_type = EntityBaseType::null;
@@ -84,7 +84,7 @@ namespace OpenLoco::EntityManager
             }
             previous = &ent;
         }
-        rawListCounts()[static_cast<uint8_t>(EntityListType::nullMoney)] = Limits::maxMoneyEntities;
+        rawListCounts()[static_cast<uint8_t>(EntityListType::nullMoney)] = Limits::kMaxMoneyEntities;
 
         resetSpatialIndex();
         EntityTweener::get().reset();
@@ -110,7 +110,7 @@ namespace OpenLoco::EntityManager
     EntityBase* get(EntityId id)
     {
         EntityBase* result = nullptr;
-        if (enumValue(id) < Limits::maxEntities)
+        if (enumValue(id) < Limits::kMaxEntities)
         {
             return &rawEntities()[enumValue(id)];
         }
@@ -177,7 +177,7 @@ namespace OpenLoco::EntityManager
     {
         auto* quadId = &_entitySpatialIndex[index];
         _entitySpatialCount = 0;
-        while (enumValue(*quadId) < Limits::maxEntities)
+        while (enumValue(*quadId) < Limits::kMaxEntities)
         {
             auto* quadEnt = get<EntityBase>(*quadId);
             if (quadEnt == &entity)
@@ -186,7 +186,7 @@ namespace OpenLoco::EntityManager
                 return true;
             }
             _entitySpatialCount++;
-            if (_entitySpatialCount > Limits::maxEntities)
+            if (_entitySpatialCount > Limits::kMaxEntities)
             {
                 break;
             }
@@ -245,7 +245,7 @@ namespace OpenLoco::EntityManager
     // 0x004700A5
     EntityBase* createEntityMisc()
     {
-        if (getListCount(EntityListType::misc) >= Limits::maxMiscEntities)
+        if (getListCount(EntityListType::misc) >= Limits::kMaxMiscEntities)
         {
             return nullptr;
         }
