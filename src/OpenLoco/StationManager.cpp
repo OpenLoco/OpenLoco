@@ -527,7 +527,7 @@ OpenLoco::StationId OpenLoco::Station::id() const
     // TODO check if this is stored in station structure
     //      otherwise add it when possible
     auto index = (size_t)(this - &StationManager::rawStations()[0]);
-    if (index > 1024)
+    if (index >= Limits::maxStations)
     {
         return StationId::null;
     }
