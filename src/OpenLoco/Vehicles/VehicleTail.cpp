@@ -103,8 +103,7 @@ namespace OpenLoco::Vehicles
         {
             if (ref & (1 << 15))
             {
-                // Update signal state?
-                sub_48963F(_oldTilePos, trackAndDirection.track, trackType, 0);
+                setSignalState(_oldTilePos, trackAndDirection.track, trackType, 0);
             }
 
             const auto& trackSize = Map::TrackData::getUnkTrack(ref & 0x1FF);

@@ -233,10 +233,78 @@ namespace OpenLoco::Vehicles
         return std::nullopt;
     }
 
+    // 0x0048963F but only when flags are 0xXXXX_XXXA
+    uint8_t getSignalState(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
+    {
+        auto trackStart = loc;
+        if (trackAndDirection.isReversed())
+        {
+            auto& trackSize = Map::TrackData::getUnkTrack(trackAndDirection._data);
+            trackStart += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                trackStart -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+            }
+            flags ^= (1ULL << 31);
+        }
+
+        auto& trackPieces = Map::TrackData::getTrackPiece(trackAndDirection.id());
+        auto& trackPiece = trackPieces[0];
+
+        auto signalLoc = trackStart + Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()), 0 };
+        signalLoc.z += trackPiece.z;
+        auto res = findSignalOnTrack(signalLoc, trackAndDirection, trackType, trackPiece.index);
+
+        if (!res)
+        {
+            return 0;
+        }
+
+        auto [elSignal, foundTrack] = *res;
+
+        // edx
+        auto& signalSide = (flags & (1ULL << 31)) ? elSignal->getRight() : elSignal->getLeft();
+        uint8_t ret = 0;
+        if (signalSide.hasUnk4_40())
+        {
+            ret |= (1 << 0);
+        }
+        if (signalSide.hasSignal())
+        {
+            ret |= (1 << 1);
+        }
+        if (flags & (1ULL << 31))
+        {
+            if (!elSignal->getLeft().hasSignal() || elSignal->isLeftGhost())
+            {
+                ret |= (1 << 2);
+            }
+
+            if (elSignal->isRightGhost() && elSignal->getLeft().hasSignal())
+            {
+                ret |= (1 << 1);
+            }
+        }
+        else
+        {
+            if (!elSignal->getRight().hasSignal() || elSignal->isRightGhost())
+            {
+                ret |= (1 << 2);
+            }
+
+            if (elSignal->isLeftGhost() && elSignal->getRight().hasSignal())
+            {
+                ret |= (1 << 1);
+            }
+        }
+        return ret;
+    }
+
     // 0x0048963F
-    uint8_t sub_48963F(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
+    void setSignalState(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
     {
         const auto unk1 = flags & 0xFFFF;
+        assert(unk1 != 10); // Only happens if wrong function was called call getSignalState
         auto trackStart = loc;
         if (trackAndDirection.isReversed())
         {
@@ -258,11 +326,7 @@ namespace OpenLoco::Vehicles
 
             if (!res)
             {
-                if (unk1 == 10)
-                {
-                    return 0;
-                }
-                return loc.x; // Odd???
+                return;
             }
 
             auto [elSignal, foundTrack] = *res;
@@ -308,43 +372,6 @@ namespace OpenLoco::Vehicles
                     }
                 }
             }
-            else if (unk1 == 10)
-            {
-                uint8_t ret = 0;
-                if (signalSide.hasUnk4_40())
-                {
-                    ret |= (1 << 0);
-                }
-                if (signalSide.hasSignal())
-                {
-                    ret |= (1 << 1);
-                }
-                if (flags & (1ULL << 31))
-                {
-                    if (!elSignal->getLeft().hasSignal() || elSignal->isLeftGhost())
-                    {
-                        ret |= (1 << 2);
-                    }
-
-                    if (elSignal->isRightGhost() && elSignal->getLeft().hasSignal())
-                    {
-                        ret |= (1 << 1);
-                    }
-                }
-                else
-                {
-                    if (!elSignal->getRight().hasSignal() || elSignal->isRightGhost())
-                    {
-                        ret |= (1 << 2);
-                    }
-
-                    if (elSignal->isLeftGhost() && elSignal->getRight().hasSignal())
-                    {
-                        ret |= (1 << 1);
-                    }
-                }
-                return ret;
-            }
             else if (unk1 == 8)
             {
                 signalSide.setUnk4_40(true);
@@ -383,7 +410,6 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        return loc.x; // Odd???
     }
 
     // 0x004A2AF0
@@ -451,7 +477,7 @@ namespace OpenLoco::Vehicles
 
             bool isOccupied = _routingTransformData & 1;
             uint32_t flags = (1ULL << 31) | (isOccupied ? 8ULL : 9ULL);
-            sub_48963F(interest.loc, interest.tad(), interest.trackType, flags);
+            setSignalState(interest.loc, interest.tad(), interest.trackType, flags);
         }
     }
 
