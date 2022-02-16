@@ -3226,7 +3226,7 @@ namespace OpenLoco::Vehicles
         {
             return false;
         }
-        TrackAndDirection::_TrackAndDirection tad(connections.data[0] >> 3, connections.data[0] & 0x7);
+        TrackAndDirection::_TrackAndDirection tad((connections.data[0] & 0x1FF) >> 3, connections.data[0] & 0x7);
         return sub_4A2A58(nextPos, tad, owner, trackType) & (1 << 1);
     }
 
