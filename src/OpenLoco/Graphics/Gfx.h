@@ -19,6 +19,12 @@ namespace OpenLoco::Drawing
 
 namespace OpenLoco::Gfx
 {
+    namespace G1ExpectedCount
+    {
+        constexpr uint32_t kDisc = 0x101A; // And GOG
+        constexpr uint32_t kSteam = 0x0F38;
+        constexpr uint32_t kObjects = 0x40000;
+    }
 #pragma pack(push, 1)
 
     struct Context

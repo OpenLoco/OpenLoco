@@ -1016,7 +1016,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        auto& installedObject = res->second;
+        const auto& installedObject = res->second;
         const auto filePath = Environment::getPath(Environment::PathId::objects) / fs::u8path(installedObject._filename);
 
         SawyerStreamReader stream(filePath);
@@ -1039,19 +1039,21 @@ namespace OpenLoco::ObjectManager
         }
 
         // Copy the object into Loco freeable memory (required for when load loads the object)
-        Object* object = reinterpret_cast<Object*>(malloc(data.size()));
+        auto* object = reinterpret_cast<Object*>(malloc(data.size()));
         std::copy(std::begin(data), std::end(data), reinterpret_cast<uint8_t*>(object));
 
         if (!callObjectFunction(loadingHeader.getType(), *object, ObjectProcedure::validate))
         {
             free(object);
+            object = nullptr;
             // Object failed validation
             return false;
         }
 
-        if (_totalNumImages >= 266266)
+        if (_totalNumImages >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
         {
             free(object);
+            object = nullptr;
             // Too many objects loaded and no free image space
             return false;
         }
@@ -1344,7 +1346,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        if (_totalNumImages >= 266266)
+        if (_totalNumImages >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
         {
             // Free objectData?
             return false;
