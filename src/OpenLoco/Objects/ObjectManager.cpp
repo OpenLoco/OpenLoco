@@ -384,6 +384,7 @@ namespace OpenLoco::ObjectManager
             return;
         }
 
+        _installedObjectCount = 0;
         // Create new index by iterating all DAT files and processing
         IndexHeader header{};
         uint8_t progress = 0;      // Progress is used for the ProgressBar Ui element
@@ -1034,7 +1035,7 @@ namespace OpenLoco::ObjectManager
         for (const auto& header : objects)
         {
             auto id = getObjectId(index);
-            if (!load(header, id))
+            if (!header.isEmpty() && !load(header, id))
             {
                 result.success = false;
                 result.problemObject = header;

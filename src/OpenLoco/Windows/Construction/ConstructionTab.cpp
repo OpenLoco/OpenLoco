@@ -1804,7 +1804,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         regs.bx = y;
         auto flags = call(0x00478361, regs);
 
-        if (flags & (1 << 8))
+        if (flags & X86_FLAG_CARRY)
             return std::nullopt;
 
         return { std::make_pair(regs.di, regs.dl) };
@@ -1818,7 +1818,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         regs.bx = y;
         auto flags = call(0x004A4011, regs);
 
-        if (flags & (1 << 8))
+        if (flags & X86_FLAG_CARRY)
             return std::nullopt;
 
         return { std::make_pair(regs.di, regs.dl) };

@@ -205,7 +205,7 @@ namespace OpenLoco::Vehicles
             default:
                 break;
         }
-        return (result & (1 << 8)) != 0;
+        return (result & X86_FLAG_CARRY) != 0;
     }
 
     CarComponent::CarComponent(VehicleBase*& component)
