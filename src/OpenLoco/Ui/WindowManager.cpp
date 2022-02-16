@@ -1217,7 +1217,7 @@ namespace OpenLoco::Ui::WindowManager
     void dispatchUpdateAll()
     {
         _523508++;
-        CompanyManager::updatingCompanyId(CompanyManager::getControllingId());
+        CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
 
         for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
         {

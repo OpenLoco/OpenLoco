@@ -635,7 +635,7 @@ namespace OpenLoco::Map::TileManager
             return;
         }
 
-        CompanyManager::updatingCompanyId(CompanyId::neutral);
+        CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
         auto pos = *_startUpdateLocation;
         for (; pos.y < Map::map_height; pos.y += 16 * Map::tile_size)
         {

@@ -157,7 +157,7 @@ namespace OpenLoco::Title
     // 0x0046AD7D
     void start()
     {
-        CompanyManager::updatingCompanyId(CompanyManager::getControllingId());
+        CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
         if (isPaused())
         {
             GameCommands::togglePause(1);

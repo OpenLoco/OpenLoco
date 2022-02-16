@@ -11,8 +11,8 @@
 namespace OpenLoco::CompanyManager
 {
     void reset();
-    CompanyId updatingCompanyId();
-    void updatingCompanyId(CompanyId id);
+    CompanyId getUpdatingCompanyId();
+    void setUpdatingCompanyId(CompanyId id);
 
     FixedVector<Company, Limits::maxCompanies> companies();
     Company* get(CompanyId id);

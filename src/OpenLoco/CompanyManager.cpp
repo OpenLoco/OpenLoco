@@ -78,12 +78,12 @@ namespace OpenLoco::CompanyManager
         updateColours();
     }
 
-    CompanyId updatingCompanyId()
+    CompanyId getUpdatingCompanyId()
     {
         return _updatingCompanyId;
     }
 
-    void updatingCompanyId(CompanyId id)
+    void setUpdatingCompanyId(CompanyId id)
     {
         _updatingCompanyId = id;
     }
@@ -156,7 +156,7 @@ namespace OpenLoco::CompanyManager
             auto company = get(id);
             if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {
-                updatingCompanyId(id);
+                setUpdatingCompanyId(id);
                 company->aiThink();
             }
 

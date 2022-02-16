@@ -671,9 +671,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                         break;
                     case treeCluster::selected:
                     {
-                        auto previousId = CompanyManager::updatingCompanyId();
+                        auto previousId = CompanyManager::getUpdatingCompanyId();
                         if (isEditorMode())
-                            CompanyManager::updatingCompanyId(CompanyId::neutral);
+                            CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
 
                         if (clusterToolDown(*placementArgs, 320, 3, [type = placementArgs->type](const Map::TilePos2&, bool) { return std::optional<uint8_t>(type); }))
                         {
@@ -682,13 +682,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                         }
 
                         if (isEditorMode())
-                            CompanyManager::updatingCompanyId(previousId);
+                            CompanyManager::setUpdatingCompanyId(previousId);
                         break;
                     }
                     case treeCluster::random:
-                        auto previousId = CompanyManager::updatingCompanyId();
+                        auto previousId = CompanyManager::getUpdatingCompanyId();
                         if (isEditorMode())
-                            CompanyManager::updatingCompanyId(CompanyId::neutral);
+                            CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
 
                         if (clusterToolDown(*placementArgs, 384, 4, getRandomTreeTypeFromSurface))
                         {
@@ -697,7 +697,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         }
 
                         if (isEditorMode())
-                            CompanyManager::updatingCompanyId(previousId);
+                            CompanyManager::setUpdatingCompanyId(previousId);
                         break;
                 }
             }
