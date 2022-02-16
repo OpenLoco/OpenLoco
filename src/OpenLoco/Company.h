@@ -2,7 +2,7 @@
 
 #include "Economy/Currency.h"
 #include "Economy/Expenditures.h"
-#include "Map/Tile.h"
+#include "Map/Map.hpp"
 #include "Types.hpp"
 #include <cstddef>
 #include <cstdint>
