@@ -23,14 +23,14 @@ namespace OpenLoco::TownManager
         Ui::Windows::TownList::reset();
     }
 
-    FixedVector<Town, Limits::maxTowns> towns()
+    FixedVector<Town, Limits::kMaxTowns> towns()
     {
         return FixedVector(rawTowns());
     }
 
     Town* get(TownId id)
     {
-        if (enumValue(id) >= Limits::maxTowns)
+        if (enumValue(id) >= Limits::kMaxTowns)
         {
             return nullptr;
         }
@@ -114,7 +114,7 @@ OpenLoco::TownId OpenLoco::Town::id() const
     // TODO check if this is stored in Town structure
     //      otherwise add it when possible
     auto index = static_cast<size_t>(this - &TownManager::rawTowns()[0]);
-    if (index > Limits::maxTowns)
+    if (index > Limits::kMaxTowns)
     {
         return OpenLoco::TownId::null;
     }

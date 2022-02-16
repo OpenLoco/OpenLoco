@@ -11,7 +11,7 @@ namespace OpenLoco::MessageManager
 
     Message* get(MessageId id)
     {
-        if (enumValue(id) >= Limits::maxMessages)
+        if (enumValue(id) >= Limits::kMaxMessages)
         {
             return nullptr;
         }

@@ -34,7 +34,7 @@ namespace OpenLoco::StationManager
         Ui::Windows::Station::reset();
     }
 
-    FixedVector<Station, Limits::maxStations> stations()
+    FixedVector<Station, Limits::kMaxStations> stations()
     {
         return FixedVector(rawStations());
     }
@@ -42,7 +42,7 @@ namespace OpenLoco::StationManager
     Station* get(StationId id)
     {
         auto index = (size_t)id;
-        if (index < Limits::maxStations)
+        if (index < Limits::kMaxStations)
         {
             return &rawStations()[index];
         }
@@ -527,7 +527,7 @@ OpenLoco::StationId OpenLoco::Station::id() const
     // TODO check if this is stored in station structure
     //      otherwise add it when possible
     auto index = (size_t)(this - &StationManager::rawStations()[0]);
-    if (index >= Limits::maxStations)
+    if (index >= Limits::kMaxStations)
     {
         return StationId::null;
     }

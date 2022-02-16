@@ -20,7 +20,7 @@ namespace OpenLoco::Map::AnimationManager
     // 0x004612A6
     void createAnimation(uint8_t type, const Pos2& pos, tile_coord_t baseZ)
     {
-        if (numAnimations() >= Limits::maxAnimations)
+        if (numAnimations() >= Limits::kMaxAnimations)
             return;
 
         for (size_t i = 0; i < numAnimations(); i++)

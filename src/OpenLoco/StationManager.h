@@ -9,7 +9,7 @@
 namespace OpenLoco::StationManager
 {
     void reset();
-    FixedVector<Station, Limits::maxStations> stations();
+    FixedVector<Station, Limits::kMaxStations> stations();
     Station* get(StationId id);
     void update();
     void updateLabels();

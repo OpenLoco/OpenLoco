@@ -23,7 +23,7 @@ namespace OpenLoco::StringManager
 {
     const uint8_t kUserStringSize = 32;
     const uint16_t kUserStringsStart = 0x8000;
-    const uint16_t kUserStringsEnd = kUserStringsStart + Limits::maxUserStrings;
+    const uint16_t kUserStringsEnd = kUserStringsStart + Limits::kMaxUserStrings;
 
     const uint16_t kMaxTownNames = 345;
     const uint16_t kTownNamesStart = 0x9EE7;
@@ -618,7 +618,7 @@ namespace OpenLoco::StringManager
     string_id userStringAllocate(char* str /* edi */, uint8_t cl)
     {
         auto bestSlot = -1;
-        for (auto i = 0u; i < Limits::maxUserStrings; ++i)
+        for (auto i = 0u; i < Limits::kMaxUserStrings; ++i)
         {
             char* userStr = rawUserStrings()[i];
             if (*userStr == '\0')

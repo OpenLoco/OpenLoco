@@ -45,8 +45,8 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136258> _backupZ;
     static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;         // total used length of _987C5C
-    static loco_global<uint8_t[Limits::maxOrders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
+    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;          // total used length of _987C5C
+    static loco_global<uint8_t[Limits::kMaxOrders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
@@ -399,7 +399,7 @@ namespace OpenLoco::Vehicles
     // 0x004B64F9
     static uint16_t createUniqueTypeNumber(const VehicleType type)
     {
-        std::array<bool, Limits::maxVehicles> _unkArr{};
+        std::array<bool, Limits::kMaxVehicles> _unkArr{};
         for (auto v : EntityManager::VehicleList())
         {
             if (v->owner == _updatingCompanyId && v->vehicleType == type)
@@ -579,7 +579,7 @@ namespace OpenLoco::Vehicles
             return {};
         }
 
-        if (_orderTableLength >= Limits::maxOrders)
+        if (_orderTableLength >= Limits::kMaxOrders)
         {
             GameCommands::setErrorText(StringIds::no_space_for_more_vehicle_orders);
             return {};
