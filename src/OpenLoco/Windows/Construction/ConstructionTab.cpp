@@ -349,7 +349,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _113601A[0] = 0;
         _113601A[1] = 0;
         _113609C->size = 0;
-        Map::Track::getTrackConnections(loc, _113609C, CompanyManager::getControllingId(), _trackType, trackAndDirection);
+        auto trackEnd = Map::Track::getTrackConnectionEnd(loc, trackAndDirection);
+        Map::Track::getTrackConnections(trackEnd.first, trackEnd.second, _113609C, CompanyManager::getControllingId(), _trackType);
 
         if (_113609C->size == 0)
         {

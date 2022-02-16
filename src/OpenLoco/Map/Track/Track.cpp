@@ -148,15 +148,22 @@ namespace OpenLoco::Map::Track
         }
     }
 
-    // 0x004A2604
-    void getTrackConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId company, const uint8_t trackObjectId, const uint16_t trackAndDirection)
+    // Part of 0x004A2604
+    // For 0x004A2604 call this followed by getTrackConnections
+    std::pair<Map::Pos3, uint8_t> getTrackConnectionEnd(const Map::Pos3& pos, const uint16_t trackAndDirection)
     {
-        const auto nextTrackPos = pos + TrackData::getUnkTrack(trackAndDirection).pos;
+        const auto& trackData = TrackData::getUnkTrack(trackAndDirection);
+
+        return std::make_pair(pos + trackData.pos, trackData.rotationEnd);
+    }
+
+    // 0x004A2638, 0x004A2601
+    void getTrackConnections(const Map::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t trackObjectId)
+    {
         _1135FAE = StationId::null; // stationId
         _113607D = 0;
 
         uint8_t baseZ = nextTrackPos.z / 4;
-        uint8_t nextRotation = TrackData::getUnkTrack(trackAndDirection).rotationEnd;
 
         const auto tile = Map::TileManager::get(nextTrackPos);
         for (const auto& el : tile)

@@ -35,6 +35,7 @@ namespace OpenLoco::Vehicles
     {
         constexpr uint8_t unk_0 = 1 << 0;
         constexpr uint8_t isReversed = 1 << 1;
+        constexpr uint8_t unk_2 = 1 << 2;
         constexpr uint8_t unk_3 = 1 << 3;
         constexpr uint8_t isGhost = 1 << 4;
     }
@@ -157,6 +158,10 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(TrackAndDirection) == 2);
 
+    // TODO move to a different header
+    uint8_t sub_48963F(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
+    void sub_4A2AD7(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+
     struct VehicleBase : EntityBase
     {
     private:
@@ -219,6 +224,8 @@ namespace OpenLoco::Vehicles
         TransportMode getTransportMode() const;
         uint8_t getFlags38() const;
         uint8_t getTrackType() const;
+        Map::Pos3 getTrackLoc() const;
+        TrackAndDirection getVar2C() const;
         RoutingHandle getRoutingHandle() const;
         EntityId getHead() const;
         void setNextCar(const EntityId newNextCar);
