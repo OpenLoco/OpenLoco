@@ -188,7 +188,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
     static loco_global<uint16_t, 0x001135F88> _routingTransformData;
 
-    std::optional<std::pair<Map::SignalElement*, Map::TrackElement*>> findSignalOnTrack(const Map::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
+    static std::optional<std::pair<Map::SignalElement*, Map::TrackElement*>> findSignalOnTrack(const Map::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
     {
         auto tile = Map::TileManager::get(signalLoc);
         for (auto& el : tile)
@@ -260,7 +260,7 @@ namespace OpenLoco::Vehicles
             return 0;
         }
 
-        auto [elSignal, foundTrack] = *res;
+        auto* elSignal = res->first;
 
         // edx
         auto& signalSide = (flags & (1ULL << 31)) ? elSignal->getRight() : elSignal->getLeft();
