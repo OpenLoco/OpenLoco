@@ -39,6 +39,9 @@ option(STRICT "Build with warnings as errors" YES)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
+# unit testing
+option(ENABLE_TESTS "Build the unit tests for the library." ON)
+
 # Describe current version in terms of closest tag
 execute_process(
     COMMAND git describe HEAD --always
@@ -387,6 +390,29 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 else ()
     # Dummy target to ease invocation
     add_custom_target(${PROJECT}-headers-check)
+endif ()
+
+if (ENABLE_TESTS)
+    enable_testing()
+    include("${ROOT_DIR}/test/CMakeLists.txt" NO_POLICY_SCOPE)
+    # find_package(GTest REQUIRED)
+    # set(GTEST_LIBRARIES ${GTEST_BOTH_LIBRARIES})
+
+    # set(LOCO_TEST_CRASH_HANDLER_SOURCES "test/CrashHandlerTest.cpp")
+
+    # file(GLOB_RECURSE LOCO_TEST_SOURCES "test/*.cpp")
+    # list(FILTER LOCO_TEST_SOURCES EXCLUDE REGEX ${LOCO_TEST_CRASH_HANDLER_SOURCES})
+    # add_executable(tests EXCLUDE_FROM_ALL ${LOCO_TEST_SOURCES})
+    # target_include_directories(tests SYSTEM PRIVATE ${GTEST_INCLUDE_DIRS})
+    # target_include_directories(tests SYSTEM PRIVATE "${CMAKE_INSTALL_PREFIX}/include")
+    # add_dependencies(tests install)
+
+    # set(THREADS_PREFER_PTHREAD_FLAG ON)
+    # find_package(Threads REQUIRED)
+
+    # target_link_libraries(tests ${GTEST_LIBRARIES} sawyer Threads::Threads)
+    # gtest_discover_tests(tests)
+
 endif ()
 
 install(TARGETS "openloco"
