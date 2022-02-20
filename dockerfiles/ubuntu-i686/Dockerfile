@@ -9,6 +9,7 @@ RUN dpkg --add-architecture i386 \
         g++-multilib \
         gcc-multilib \
         git \
+        libopenal-dev:i386 \
         libpng-dev:i386 \
         libsdl2-dev:i386 \
         libsdl2-mixer-dev:i386 \
