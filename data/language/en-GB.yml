@@ -2295,3 +2295,6 @@ strings:
   2240: "Game speed: Extra fast forward"
   2241: "{COLOUR WINDOW_2}Capacity: {COLOUR BLACK}{STRINGID}"
   2242: "{NEWLINE}{COLOUR WINDOW_2} Obsolete: {COLOUR BLACK}{UINT16 RAW}"
+  2243: "Vehicle is locked"
+  2244: "Display locked vehicles"
+  2245: "When enabled, will display obsolete and yet-to-be invented vehicles"
