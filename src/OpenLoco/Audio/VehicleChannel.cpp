@@ -48,6 +48,12 @@ namespace OpenLoco::Audio
         return falloffModifier;
     }
 
+    static int32_t calculatePan(const coord_t coord, const int32_t screenSize)
+    {
+        const auto relativePosition = (coord << 16) / std::max(screenSize, 64);
+        return (relativePosition - (1 << 15)) / 16;
+    }
+
     static std::pair<SoundId, Channel::Attributes> getChannelAttributesFromVehicle(const Vehicles::Vehicle2or6* v)
     {
         auto* w = Ui::WindowManager::find(v->soundWindowType, v->soundWindowNumber);
@@ -56,10 +62,8 @@ namespace OpenLoco::Audio
 
         const auto zoomVolumeModifier = getZoomVolumeModifier(viewport->zoom);
 
-        const auto relativePositionX = (uiPoint.x << 16) / std::max(Ui::width(), 64);
-        const auto panX = (relativePositionX - (1 << 15)) / 16;
-        const auto relativePositionY = (uiPoint.y << 16) / std::max(Ui::height(), 64);
-        const auto panY = (relativePositionY - (1 << 15)) / 16;
+        const auto panX = calculatePan(uiPoint.x, Ui::width());
+        const auto panY = calculatePan(uiPoint.y, Ui::height());
 
         const auto undergroundVolumeModifier = getUndergroundVolumeModifier(v->position);
 
