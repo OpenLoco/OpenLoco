@@ -835,6 +835,7 @@ namespace OpenLoco::Audio
         }
     }
 
+    // 0x0048A1FA
     static void sub_48A1FA(int32_t x)
     {
         if (x == 0)
