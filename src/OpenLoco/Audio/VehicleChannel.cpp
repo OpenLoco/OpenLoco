@@ -11,15 +11,7 @@ namespace OpenLoco::Audio
 {
     static uint8_t getZoomVolumeModifier(uint8_t zoom)
     {
-        switch (zoom)
-        {
-            case 0:
-                return 0;
-            case 1:
-                return 35;
-            default:
-                return 70;
-        }
+        return std::min<uint8_t>(zoom, 2) * 35;
     }
 
     static uint8_t getUndergroundVolumeModifier(const Map::Pos3& pos)
