@@ -176,7 +176,7 @@ namespace OpenLoco
                 EntityManager::freeEntity(this);
                 return;
             }
-            const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()] * (frame & 1);
+            const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()] * ((frame & 1) ? 0 : 1);
             const auto nudgeZ = _wiggleZAmounts[frame];
             moveTo(position + Map::Pos3{ nudge.x, nudge.y, nudgeZ });
             frame++;
