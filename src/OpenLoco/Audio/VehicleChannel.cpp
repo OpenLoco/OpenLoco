@@ -45,14 +45,50 @@ namespace OpenLoco::Audio
         const auto zoomVolumeModifier = getZoomVolumeModifier(viewport->zoom);
 
         const auto relativePositionX = (uiPoint.x << 16) / std::max(Ui::width(), 64);
-        const auto pan = (relativePositionX - (1 << 15)) / 16;
+        const auto panX = (relativePositionX - (1 << 15)) / 16;
+        const auto relativePositionY = (uiPoint.y << 16) / std::max(Ui::height(), 64);
+        const auto panY = (relativePositionY - (1 << 15)) / 16;
 
         const auto undergroundVolumeModifier = getUndergroundVolumeModifier(v->position);
 
-        registers regs;
-        regs.esi = X86Pointer(v);
-        call(0x0048A590, regs);
-        return { static_cast<SoundId>(regs.eax), { regs.ecx, regs.edx, regs.ebx } };
+        const auto xFalloff = std::min(std::abs(panX), 4095);
+        const auto yFalloff = std::min(std::abs(panY), 4095);
+
+        auto xFalloffModifier = 255;
+        auto yFalloffModifier = 255;
+        // This in theory is the max viewport width (might not be valid for modern screens)
+        if (xFalloff > 2048)
+        {
+            if (xFalloff > 3072)
+            {
+                xFalloffModifier = 0;
+            }
+            else
+            {
+                xFalloffModifier = std::min((3072 - xFalloff) / 4, 255);
+            }
+        }
+        // This in theory is the max viewport height (might not be valid for modern screens)
+        if (yFalloff > 2048)
+        {
+            if (yFalloff > 3072)
+            {
+                yFalloffModifier = 0;
+            }
+            else
+            {
+                yFalloffModifier = std::min((3072 - yFalloff) / 4, 255);
+            }
+        }
+
+        const auto falloffVolumeModifier = std::min(xFalloffModifier, yFalloffModifier);
+
+        const auto overalVolumeModifier = std::max(falloffVolumeModifier - undergroundVolumeModifier - zoomVolumeModifier, 0);
+
+        // volume is in hundredth decibels max decrease in volume is -100dB.
+        const auto volume = std::min(((v->drivingSoundVolume * overalVolumeModifier) / 8) - 8191, -10000);
+
+        return { makeObjectSoundId(v->drivingSoundId), { volume, panX, v->drivingSoundFrequency } };
     }
 
     void VehicleChannel::begin(EntityId vid)
