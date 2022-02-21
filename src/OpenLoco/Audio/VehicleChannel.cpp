@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Audio
 {
-    uint8_t getZoomVolumeModifier(uint8_t zoom)
+    static uint8_t getZoomVolumeModifier(uint8_t zoom)
     {
         switch (zoom)
         {
@@ -22,7 +22,7 @@ namespace OpenLoco::Audio
         }
     }
 
-    uint8_t getUndergroundVolumeModifier(const Map::Pos3& pos)
+    static uint8_t getUndergroundVolumeModifier(const Map::Pos3& pos)
     {
         if (pos.x != Location::null && Map::validCoords(pos))
         {
@@ -36,7 +36,27 @@ namespace OpenLoco::Audio
         return 0;
     }
 
-    static std::pair<SoundId, Channel::Attributes> sub_48A590(const Vehicles::Vehicle2or6* v)
+    static uint8_t getFalloffModifier(int32_t pan)
+    {
+        const auto absPan = std::min(std::abs(pan), 4095);
+
+        uint8_t falloffModifier = 255;
+        // This in theory is the max viewport width/height (might not be valid for modern screens)
+        if (absPan > 2048)
+        {
+            if (absPan > 3072)
+            {
+                falloffModifier = 0;
+            }
+            else
+            {
+                falloffModifier = std::min((3072 - absPan) / 4, 255);
+            }
+        }
+        return falloffModifier;
+    }
+
+    static std::pair<SoundId, Channel::Attributes> getChannelAttributesFromVehicle(const Vehicles::Vehicle2or6* v)
     {
         auto* w = Ui::WindowManager::find(v->soundWindowType, v->soundWindowNumber);
         auto* viewport = w->viewports[0];
@@ -51,35 +71,8 @@ namespace OpenLoco::Audio
 
         const auto undergroundVolumeModifier = getUndergroundVolumeModifier(v->position);
 
-        const auto xFalloff = std::min(std::abs(panX), 4095);
-        const auto yFalloff = std::min(std::abs(panY), 4095);
-
-        auto xFalloffModifier = 255;
-        auto yFalloffModifier = 255;
-        // This in theory is the max viewport width (might not be valid for modern screens)
-        if (xFalloff > 2048)
-        {
-            if (xFalloff > 3072)
-            {
-                xFalloffModifier = 0;
-            }
-            else
-            {
-                xFalloffModifier = std::min((3072 - xFalloff) / 4, 255);
-            }
-        }
-        // This in theory is the max viewport height (might not be valid for modern screens)
-        if (yFalloff > 2048)
-        {
-            if (yFalloff > 3072)
-            {
-                yFalloffModifier = 0;
-            }
-            else
-            {
-                yFalloffModifier = std::min((3072 - yFalloff) / 4, 255);
-            }
-        }
+        const auto xFalloffModifier = getFalloffModifier(panX);
+        const auto yFalloffModifier = getFalloffModifier(panY);
 
         const auto falloffVolumeModifier = std::min(xFalloffModifier, yFalloffModifier);
 
@@ -104,7 +97,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto [sid, sa] = sub_48A590(veh26);
+        auto [sid, sa] = getChannelAttributesFromVehicle(veh26);
         auto loop = Audio::shouldSoundLoop(sid);
         auto sample = Audio::getSoundSample(sid);
         if (sample)
@@ -140,7 +133,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto [sid, sa] = sub_48A590(veh26);
+        auto [sid, sa] = getChannelAttributesFromVehicle(veh26);
         if (_soundId != sid)
         {
             stop();
