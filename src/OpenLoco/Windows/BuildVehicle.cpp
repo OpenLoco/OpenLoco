@@ -971,12 +971,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 			buffer = StringManager::formatString(buffer, StringIds::stats_running_cost, &args);
 		}
 
-		if (vehicleObj->designed != 0)
-		{
-			FormatArguments args{};
-			args.push(vehicleObj->designed);
-			buffer = StringManager::formatString(buffer, StringIds::stats_designed, &args);
-		}
+        if (vehicleObj->designed != 0)
+        {
+            FormatArguments args{};
+            args.push(vehicleObj->designed);
+
+            auto locked = vehicleIsLocked(CompanyManager::getControllingId(), window->row_hover);
+            buffer = StringManager::formatString(
+                buffer,
+                locked ? StringIds::stats_proposed_design : StringIds::stats_designed,
+                &args);
+        }
 
 		if (vehicleObj->obsolete != 0 && vehicleObj->obsolete != std::numeric_limits<uint16_t>::max())
 		{
