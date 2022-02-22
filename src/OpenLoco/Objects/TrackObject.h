@@ -12,6 +12,8 @@ namespace OpenLoco
 
     namespace Flags22
     {
+        constexpr uint8_t unk_00 = 1 << 0;
+        constexpr uint8_t unk_01 = 1 << 1;
         constexpr uint8_t unk_02 = 1 << 2;
     }
 

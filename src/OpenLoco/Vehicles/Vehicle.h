@@ -581,7 +581,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_46; // 0x46 roll
         uint8_t var_47;
         VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
-        uint8_t pad_52[0x54 - 0x52];
+        uint16_t var_52;
         uint8_t bodyIndex; // 0x54
         uint8_t pad_55;
         uint32_t creationDay; // 0x56
