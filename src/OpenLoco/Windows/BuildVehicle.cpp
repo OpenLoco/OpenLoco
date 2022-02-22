@@ -326,8 +326,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 			window->rowHover = -1;
 			window->invalidate();
 			window->widgets = _widgets;
-			window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
-			window->holdable_widgets = 0;
+			window->enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection) | (1 << widx::checkbox_display_locked_vehicles);			window->holdable_widgets = 0;
 			window->event_handlers = &_events;
 			window->activated_widgets = 0;
 			setDisabledTransportTabs(window);
@@ -1112,20 +1111,27 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 						continue;
 					}
 
-					auto displayLockedVehiclesScroll = displayLockedVehicles && vehicleIsLocked(CompanyManager::getControllingId(), vehicleType);
-					auto colouredString = StringIds::black_stringid;
-					if (window.rowHover == vehicleType)
-					{
-						Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x2000030);
-						colouredString = StringIds::wcolour2_stringid;
-					}
-					else
-					{
-						if (displayLockedVehiclesScroll)
-						{
-							Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x0000030);
-						}
-					}
+                        auto displayLockedVehiclesScroll = displayLockedVehicles && vehicleIsLocked(CompanyManager::getControllingId(), vehicleType);
+                        auto colouredString = StringIds::black_stringid;
+                        if (window.row_hover == vehicleType)
+                        {
+                            if (displayLockedVehiclesScroll)
+                            {
+                                Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x0100003D);
+                            }
+                            else
+                            {
+                                Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x02000030);
+                            }
+                            colouredString = StringIds::wcolour2_stringid;
+                        }
+                        else
+                        {
+                            if (displayLockedVehiclesScroll)
+                            {
+                                Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x0100003F);
+                            }
+                        }
 
 					int16_t half = (window.rowHeight - 22) / 2;
 					auto x = drawVehicleInline(&context, vehicleType, 0, CompanyManager::getControllingId(), { 0, static_cast<int16_t>(y + half) });
