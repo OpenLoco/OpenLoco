@@ -440,6 +440,8 @@ namespace OpenLoco::Vehicles
         uint16_t var_50;
         uint8_t var_52;
         IncomeStats lastIncome; // 0x53
+
+        bool update();
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 
@@ -482,6 +484,7 @@ namespace OpenLoco::Vehicles
         uint8_t reliability;         // 0x72
         uint8_t var_73;              // 0x73 (bit 0 = broken down, bit 1 = still powered)
 
+        bool update();
         currency32_t totalRecentProfit() const
         {
             return profit[0] + profit[1] + profit[2] + profit[3];
@@ -584,6 +587,7 @@ namespace OpenLoco::Vehicles
 
     public:
         uint16_t getPlaneType();
+        bool update();
     };
     static_assert(sizeof(VehicleBogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
