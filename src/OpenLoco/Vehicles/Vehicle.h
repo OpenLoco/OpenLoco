@@ -24,6 +24,7 @@ namespace OpenLoco::Vehicles
 
     namespace Flags0C // commands?
     {
+        constexpr uint8_t unk_0 = 1 << 0;
         constexpr uint8_t commandStop = 1 << 1; // commanded to stop??
         constexpr uint8_t sorted = 1 << 3;      // vehicle list
         constexpr uint8_t unk_5 = 1 << 5;

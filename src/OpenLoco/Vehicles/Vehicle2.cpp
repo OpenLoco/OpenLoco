@@ -1,4 +1,6 @@
+#include "../CompanyManager.h"
 #include "../Interop/Interop.hpp"
+#include "../MessageManager.h"
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Tutorial.h"
@@ -11,6 +13,23 @@ namespace OpenLoco::Vehicles
 {
     static loco_global<Speed32, 0x01136134> vehicleUpdate_var_1136134; // Speed
     static loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
+
+    // values are pre *256 for maths
+    static constexpr std::array<int32_t, 13> _500170{
+        0,
+        -6645,
+        -13223,
+        -19182,
+        -24963,
+        6645,
+        13223,
+        19182,
+        24963,
+        -11290,
+        11290,
+        -21628,
+        21628,
+    };
 
     // 0x004A9B0B
     bool Vehicle2::update()
@@ -131,8 +150,47 @@ namespace OpenLoco::Vehicles
                 }
             }
             // 4a9d08
+            if (frontBogie->var_5E != 0)
+            {
+                dh = 1;
+            }
+            if (_500170[enumValue(sprite_pitch)] <= -19182)
+            {
+                if (vehObject->power != 0)
+                {
+                    // dl = sub_4AA97A
+                }
+            }
+            ebp += (frontBogie->var_5E * _500170[enumValue(sprite_pitch)]) / 256;
         }
-        // 4A9DA1
+        if (dl != 0)
+        {
+            ebp /= 2;
+            if (!(train.head->var_0C & Flags0C::unk_0))
+            {
+                var_5A = 4;
+                if (currentSpeed <= 3.0_mph && train.head->owner == CompanyManager::getControllingId())
+                {
+                    MessageManager::post(MessageType::vehicleSlipped, train.head->owner, enumValue(train.head->id), 0xFFFF);
+                }
+            }
+        }
+        if (dl == 0 && dh == 0)
+        {
+            if (train.head->var_0C & Flags0C::manualControl)
+            {
+                // 4a9e1c
+            }
+            else
+            {
+                const auto power = (var_73 != 1) ? totalPower / 4 : totalPower;
+                ebp += (power / 2048) / totalWeight;
+            }
+        }
+        const auto speedSquare = toSpeed16(currentSpeed).getRaw() * toSpeed16(currentSpeed).getRaw();
+        ebp -= speedSquare;
+
+        // 4A9E94
         registers regs;
         regs.esi = X86Pointer(this);
 
