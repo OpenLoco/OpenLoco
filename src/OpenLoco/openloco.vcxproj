@@ -151,7 +151,10 @@
     <ClCompile Include="Vehicles\OrderSkip.cpp" />
     <ClCompile Include="Vehicles\Routing.cpp" />
     <ClCompile Include="Vehicles\Vehicle.cpp" />
+    <ClCompile Include="Vehicles\Vehicle1.cpp" />
+    <ClCompile Include="Vehicles\Vehicle2.cpp" />
     <ClCompile Include="Vehicles\VehicleBody.cpp" />
+    <ClCompile Include="Vehicles\VehicleBogie.cpp" />
     <ClCompile Include="Vehicles\VehicleHead.cpp" />
     <ClCompile Include="Vehicles\VehicleManager.cpp" />
     <ClCompile Include="Vehicles\VehicleTail.cpp" />

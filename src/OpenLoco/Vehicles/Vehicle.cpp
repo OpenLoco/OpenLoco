@@ -179,33 +179,25 @@ namespace OpenLoco::Vehicles
 
     bool VehicleBase::updateComponent()
     {
-        int32_t result = 0;
-        registers regs;
-        regs.esi = X86Pointer(this);
         switch (getSubType())
         {
             case VehicleThingType::head:
                 return !asVehicleHead()->update();
             case VehicleThingType::vehicle_1:
-                result = call(0x004A9788, regs);
-                break;
+                return !asVehicle1()->update();
             case VehicleThingType::vehicle_2:
-                result = call(0x004A9B0B, regs);
-                break;
+                return !asVehicle2()->update();
             case VehicleThingType::bogie:
-                result = call(0x004AA008, regs);
-                break;
+                return !asVehicleBogie()->update();
             case VehicleThingType::body_start:
             case VehicleThingType::body_continued:
                 return !asVehicleBody()->update();
-                break;
             case VehicleThingType::tail:
                 return !asVehicleTail()->update();
-                break;
             default:
                 break;
         }
-        return (result & X86_FLAG_CARRY) != 0;
+        return false;
     }
 
     CarComponent::CarComponent(VehicleBase*& component)
