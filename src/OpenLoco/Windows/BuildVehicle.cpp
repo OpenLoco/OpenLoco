@@ -953,6 +953,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             buffer = StringManager::formatString(buffer, StringIds::stats_designed, &args);
         }
 
+        if (vehicleObj->obsolete != 0 && vehicleObj->obsolete != std::numeric_limits<uint16_t>::max())
+        {
+            FormatArguments args{};
+            args.push(vehicleObj->obsolete);
+            buffer = StringManager::formatString(buffer, StringIds::stats_obsolete, &args);
+        }
+
         if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
         {
             buffer = StringManager::formatString(buffer, StringIds::stats_requires);
