@@ -599,6 +599,7 @@ namespace OpenLoco::Vehicles
     public:
         uint16_t getPlaneType();
         bool update();
+        bool isOnRackRail();
 
     private:
         void updateRoll();

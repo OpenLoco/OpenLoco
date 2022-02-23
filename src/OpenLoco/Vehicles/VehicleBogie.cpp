@@ -138,4 +138,14 @@ namespace OpenLoco::Vehicles
             }
         }
     }
+
+    // 0x004AA97A
+    bool VehicleBogie::isOnRackRail()
+    {
+        registers regs;
+        regs.edi = X86Pointer(this);
+
+        call(0x004AA97A, regs);
+        return regs.dl != 1;
+    }
 }

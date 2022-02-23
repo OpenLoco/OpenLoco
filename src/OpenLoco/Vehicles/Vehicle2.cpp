@@ -81,7 +81,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        uint8_t dl = 0;
+        bool isOnRackRail = true; // Note has been inverted
         uint8_t dh = 0;
         uint32_t ebp = 0;
         for (auto& car : train.cars)
@@ -109,14 +109,13 @@ namespace OpenLoco::Vehicles
                         const auto* trackObj = ObjectManager::get<TrackObject>(frontBogie->trackType);
                         if (trackObj->flags & Flags22::unk_01)
                         {
-                            // 4A8D08 continue
+                            // 4a9d08 continue
                         }
                         if (trackObj->flags & Flags22::unk_00)
                         {
-                            //res = sub_4AA97A
-                            if (res == 0)
+                            if (frontBogie->isOnRackRail())
                             {
-                                // 4A8D08 continue
+                                // 4a9d08 continue
                             }
                         }
                     }
@@ -124,20 +123,19 @@ namespace OpenLoco::Vehicles
                     {
                         if (frontBogie->trackType == 0xFF)
                         {
-                            // 4A8D08 continue
+                            // 4a9d08 continue
                         }
                         const auto* roadObj = ObjectManager::get<RoadObject>(frontBogie->trackType);
                         if (roadObj->flags & Flags12::unk_04)
                         {
-                            // 4A8D08 continue
+                            // 4a9d08 continue
                         }
 
                         if (roadObj->flags & Flags12::unk_05)
                         {
-                            //res = sub_4AA97A
-                            if (res == 0)
+                            if (frontBogie->isOnRackRail())
                             {
-                                // 4A8D08 continue
+                                // 4a9d08 continue
                             }
                         }
                     }
@@ -158,12 +156,12 @@ namespace OpenLoco::Vehicles
             {
                 if (vehObject->power != 0)
                 {
-                    // dl = sub_4AA97A
+                    isOnRackRail = frontBogie->isOnRackRail();
                 }
             }
             ebp += (frontBogie->var_5E * _500170[enumValue(sprite_pitch)]) / 256;
         }
-        if (dl != 0)
+        if (!isOnRackRail)
         {
             ebp /= 2;
             if (!(train.head->var_0C & Flags0C::unk_0))
@@ -175,7 +173,7 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        if (dl == 0 && dh == 0)
+        if (isOnRackRail && dh == 0)
         {
             if (train.head->var_0C & Flags0C::manualControl)
             {
