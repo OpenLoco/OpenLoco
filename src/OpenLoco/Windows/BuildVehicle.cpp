@@ -27,7 +27,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-	static const Ui::Size window_size = { 380, 247 };
+	static const Ui::Size window_size = { 380, 233 };
 
 	enum widx
 	{
@@ -51,7 +51,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 		tab_track_type_7,
 		scrollview_vehicle_selection,
 		scrollview_vehicle_preview,
-		checkbox_display_locked_vehicles,
 	};
 
 	enum scrollIdx
@@ -212,7 +211,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 		makeRemapWidget({ 222, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
 		makeWidget({ 3, 72 }, { 374, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
 		makeWidget({ 250, 44 }, { 180, 66 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::none),
-		makeWidget({ 0, 260 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
 		widgetEnd(),
 	};
 
@@ -239,7 +237,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
 	static WindowEventList _events;
 
-	static bool displayLockedVehicles = true;
+	bool displayLockedVehicles = false;
 
 	static void setDisabledTransportTabs(Ui::Window* window);
 	static void setTrackTypeTabs(Ui::Window* window);
@@ -260,7 +258,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 		auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, WindowFlags::flag_11, &_events);
 		window->widgets = _widgets;
 		window->number = enumValue(company);
-		window->enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection) | (1 << widx::checkbox_display_locked_vehicles);
+		window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
 		window->owner = CompanyManager::getControllingId();
 		window->frame_no = 0;
 		auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
@@ -271,6 +269,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 		setDisabledTransportTabs(window);
 		return window;
 	}
+
+	/*void toggleDisplayLockedVehicles()
+	{
+		displayLockedVehicles = !displayLockedVehicles;
+	}*/
 
 	/* 0x4C1AF7
 	 * depending on flags (1<<31) vehicle is a tab id or a VehicleHead thing_id
@@ -320,13 +323,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 				window->currentTab = vehicle;
 			}
 
-			window->rowHeight = _scrollRowHeight[window->currentTab];
-			window->rowCount = 0;
+			window->row_height = _scrollRowHeight[window->current_tab];
+			window->row_count = 0;
 			window->var_83C = 0;
-			window->rowHover = -1;
+			window->row_hover = -1;
 			window->invalidate();
 			window->widgets = _widgets;
-			window->enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection) | (1 << widx::checkbox_display_locked_vehicles);			window->holdable_widgets = 0;
+			window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
+			window->holdable_widgets = 0;
 			window->event_handlers = &_events;
 			window->activated_widgets = 0;
 			setDisabledTransportTabs(window);
@@ -394,11 +398,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 			});
 	}
 
-    /*static bool vehicleIsLocked(CompanyId companyId, uint16_t vehicleObjIndex)
-    {
-        return !(CompanyManager::get(companyId)->unlockedVehicles[vehicleObjIndex >> 5] & (1 << (vehicleObjIndex & 0x1F)));
-    }*/
-
 	/* 0x4B9165
 	 * Works out which vehicles are able to be built for this vehicle_type or vehicle
 	 */
@@ -450,11 +449,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 				continue;
 			}
 
-            const auto* company = CompanyManager::get(companyId);
-            if (!displayLockedVehicles && company->isVehicleIndexUnlocked(vehicleObjIndex))
-            {
-                continue;
-            }
+			const auto* company = CompanyManager::get(companyId);
+			if (!displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleObjIndex))
+			{
+				continue;
+			}
 
 			if (trackType != 0xFF)
 			{
@@ -625,9 +624,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 			_buildTargetVehicle = -1;
 			setTrackTypeTabs(window);
 			resetTrackTypeTabSelection(window);
-			window->rowCount = 0;
+			window->row_count = 0;
 			window->var_83C = 0;
-			window->rowHover = -1;
+			window->row_hover = -1;
 			window->callOnResize();
 			window->callOnPeriodicUpdate();
 			window->callPrepareDraw();
@@ -646,15 +645,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 		case widx::tab_track_type_7:
 		{
 			auto tab = widxToTrackTypeTab(widgetIndex);
-			if (window->currentSecondaryTab == tab)
+			if (window->current_secondary_tab == tab)
 				break;
 
-			window->currentSecondaryTab = tab;
+			window->current_secondary_tab = tab;
 			setTopToolbarLastTrack(_TrackTypesForTab[tab] & ~(1 << 7), _TrackTypesForTab[tab] & (1 << 7));
 			_buildTargetVehicle = -1;
-			window->rowCount = 0;
+			window->row_count = 0;
 			window->var_83C = 0;
-			window->rowHover = -1;
+			window->row_hover = -1;
 			window->callOnResize();
 			window->callOnPeriodicUpdate();
 			window->callPrepareDraw();
@@ -662,10 +661,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 			window->invalidate();
 			break;
 		}
-		case widx::checkbox_display_locked_vehicles:
-			displayLockedVehicles = !displayLockedVehicles;
-			window->invalidate();
-			break;
 		}
 	}
 
@@ -773,12 +768,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 			GameCommands::setErrorTitle(StringIds::cant_add_pop_5_string_id_string_id);
 		}
 
-        const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-        if (!displayLockedVehicles && company->isVehicleIndexUnlocked(item))
-        {
-            Error::open(StringIds::cant_build_pop_5_string_id, StringIds::vehicle_is_locked);
-            return;
-        }
+		const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+		if (!company->isVehicleIndexUnlocked(item))
+		{
+			Error::open(StringIds::cant_build_pop_5_string_id, StringIds::vehicle_is_locked);
+			return;
+		}
 
 		if (GameCommands::do_5(item, EntityId(*_buildTargetVehicle)) == GameCommands::FAILURE)
 		{
@@ -890,10 +885,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 		}
 
 		// Mask off all the tabs
-		auto activeWidgets = window->activatedWidgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_vehicle_selection) | (1 << scrollview_vehicle_preview));
+		auto activeWidgets = window->activated_widgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_vehicle_selection) | (1 << scrollview_vehicle_preview));
 		// Only activate the singular tabs
 		activeWidgets |= 1ULL << _transportTypeTabInformation[window->current_tab].widgetIndex;
 		activeWidgets |= 1ULL << (window->current_secondary_tab + widx::tab_track_type_0);
+
 		window->activated_widgets = activeWidgets;
 
 		window->widgets[widx::caption].text = window->currentTab + StringIds::build_trains;
@@ -916,14 +912,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 		window->widgets[widx::scrollview_vehicle_preview].left = width - 184;
 
 		window->widgets[widx::scrollview_vehicle_selection].right = width - 187;
-		window->widgets[widx::scrollview_vehicle_selection].bottom = height - 28;
-
-		//| (1 << checkbox_display_locked_vehicles)
-
-		window->widgets[widx::checkbox_display_locked_vehicles].type = WidgetType::checkbox;
-		window->widgets[widx::checkbox_display_locked_vehicles].left = 2;
-		window->widgets[widx::checkbox_display_locked_vehicles].top = height - 26;
-		window->widgets[widx::checkbox_display_locked_vehicles].bottom = height - 14;
+		window->widgets[widx::scrollview_vehicle_selection].bottom = height - 14;
 
 		setTransportTypeTabs(window);
 	}
@@ -973,18 +962,18 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 			buffer = StringManager::formatString(buffer, StringIds::stats_running_cost, &args);
 		}
 
-        if (vehicleObj->designed != 0)
-        {
-            FormatArguments args{};
-            args.push(vehicleObj->designed);
+		if (vehicleObj->designed != 0)
+		{
+			FormatArguments args{};
+			args.push(vehicleObj->designed);
 
-            const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-            auto locked = company->isVehicleIndexUnlocked(window->row_hover);
-            buffer = StringManager::formatString(
-                buffer,
-                locked ? StringIds::stats_proposed_design : StringIds::stats_designed,
-                &args);
-        }
+			const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+			auto unlocked = company->isVehicleIndexUnlocked(window->row_hover);
+			buffer = StringManager::formatString(
+				buffer,
+				unlocked ? StringIds::stats_designed : StringIds::stats_proposed_design,
+				&args);
+		}
 
 		if (vehicleObj->obsolete != 0 && vehicleObj->obsolete != std::numeric_limits<uint16_t>::max())
 		{
@@ -1119,29 +1108,29 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 						continue;
 					}
 
-                        const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-                        auto displayLockedVehiclesScroll = displayLockedVehicles && company->isVehicleIndexUnlocked(vehicleType);
+					const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+					auto displayLockedVehiclesScroll = displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleType);
 
-                        auto colouredString = StringIds::black_stringid;
-                        if (window.row_hover == vehicleType)
-                        {
-                            if (displayLockedVehiclesScroll)
-                            {
-                                Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x0100003D);
-                            }
-                            else
-                            {
-                                Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x02000030);
-                            }
-                            colouredString = StringIds::wcolour2_stringid;
-                        }
-                        else
-                        {
-                            if (displayLockedVehiclesScroll)
-                            {
-                                Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x0100003F);
-                            }
-                        }
+					auto colouredString = StringIds::black_stringid;
+					if (window.row_hover == vehicleType)
+					{
+						if (displayLockedVehiclesScroll)
+						{
+							Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x0100003D);
+						}
+						else
+						{
+							Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x02000030);
+						}
+						colouredString = StringIds::wcolour2_stringid;
+					}
+					else
+					{
+						if (displayLockedVehiclesScroll)
+						{
+							Gfx::fillRect(context, 0, y, window.width, y + window.row_height - 1, 0x0100003F);
+						}
+					}
 
 					int16_t half = (window.rowHeight - 22) / 2;
 					auto x = drawVehicleInline(&context, vehicleType, 0, CompanyManager::getControllingId(), { 0, static_cast<int16_t>(y + half) });
