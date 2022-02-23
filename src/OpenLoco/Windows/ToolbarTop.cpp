@@ -337,7 +337,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         assert(std::size(available_objects) >= std::size(availableTracks));
         // Legacy copy to available_objects remove when all users of 0x0050A006 accounted for
         std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(available_objects));
-        available_objects[availableTracks.size()] = 0xFF;
+        available_objects[availableTracks.size()] = std::numeric_limits<uint8_t>::max();
 
         if (availableTracks.size() == 0)
             return;
@@ -346,8 +346,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         // Add available objects to Dropdown.
         uint16_t highlighted_item = 0;
-        auto i = 0u;
-        for (; i < std::size(availableTracks); i++)
+
+        for (auto i = 0u; i < std::size(availableTracks); i++)
         {
             uint32_t obj_image;
             string_id obj_string_id;
@@ -372,7 +372,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 highlighted_item = i;
         }
 
-        Dropdown::showBelow(window, widgetIndex, i, 25, (1 << 6));
+        Dropdown::showBelow(window, widgetIndex, std::size(availableTracks), 25, (1 << 6));
         Dropdown::setHighlightedItem(highlighted_item);
     }
 

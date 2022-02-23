@@ -485,7 +485,7 @@ namespace OpenLoco
         std::unordered_set<uint8_t> tracks;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
-            auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
             if (vehObj == nullptr)
             {
                 continue;
@@ -493,19 +493,19 @@ namespace OpenLoco
 
             if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::rail)
             {
-                tracks.insert(vehObj->track_type);
+                tracks.insert(vehObj->trackType);
             }
         }
 
         std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
-            auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
+            const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
             return (trackObj->flags & Flags22::unk_02) == 0;
         });
 
         std::unordered_set<uint8_t> roads;
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
-            auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
             if (vehObj == nullptr)
             {
                 continue;
@@ -513,15 +513,15 @@ namespace OpenLoco
 
             if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::road)
             {
-                if (vehObj->track_type != 0xFF)
+                if (vehObj->trackType != 0xFF)
                 {
-                    roads.insert(vehObj->track_type | (1 << 7));
+                    roads.insert(vehObj->trackType | (1 << 7));
                 }
             }
         }
         for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::road); ++i)
         {
-            auto* roadObj = ObjectManager::get<RoadObject>(i);
+            const auto* roadObj = ObjectManager::get<RoadObject>(i);
             if (roadObj == nullptr)
             {
                 continue;
@@ -534,7 +534,7 @@ namespace OpenLoco
         }
 
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t trackIdx) {
-            auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
+            const auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
             return (trackObj->flags & Flags12::unk_01) != 0;
         });
 
