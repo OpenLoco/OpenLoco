@@ -29,29 +29,29 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 {
 	static const Ui::Size window_size = { 380, 233 };
 
-	enum widx
-	{
-		frame = 0,
-		caption = 1,
-		close_button = 2,
-		panel = 3,
-		tab_build_new_trains,
-		tab_build_new_buses,
-		tab_build_new_trucks,
-		tab_build_new_trams,
-		tab_build_new_aircraft,
-		tab_build_new_ships,
-		tab_track_type_0,
-		tab_track_type_1,
-		tab_track_type_2,
-		tab_track_type_3,
-		tab_track_type_4,
-		tab_track_type_5,
-		tab_track_type_6,
-		tab_track_type_7,
-		scrollview_vehicle_selection,
-		scrollview_vehicle_preview,
-	};
+    enum widx
+    {
+        frame = 0,
+        caption = 1,
+        close_button = 2,
+        panel = 3,
+        tab_build_new_trains,
+        tab_build_new_buses,
+        tab_build_new_trucks,
+        tab_build_new_trams,
+        tab_build_new_aircraft,
+        tab_build_new_ships,
+        tab_track_type_0,
+        tab_track_type_1,
+        tab_track_type_2,
+        tab_track_type_3,
+        tab_track_type_4,
+        tab_track_type_5,
+        tab_track_type_6,
+        tab_track_type_7,
+        scrollview_vehicle_selection,
+        scrollview_vehicle_preview
+    };
 
 	enum scrollIdx
 	{
@@ -270,32 +270,27 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 		return window;
 	}
 
-	/*void toggleDisplayLockedVehicles()
-	{
-		displayLockedVehicles = !displayLockedVehicles;
-	}*/
-
-	/* 0x4C1AF7
-	 * depending on flags (1<<31) vehicle is a tab id or a VehicleHead thing_id
-	 */
-	Window* open(uint32_t vehicle, uint32_t flags)
-	{
-		auto window = WindowManager::bringToFront(WindowType::buildVehicle, enumValue(CompanyManager::getControllingId()));
-		bool tabMode = flags & (1 << 31);
-		if (window)
-		{
-			WidgetIndex_t tab = widx::tab_build_new_trains;
-			if (!tabMode)
-			{
-				auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicle));
-				tab += static_cast<uint8_t>(veh->vehicleType);
-			}
-			else
-			{
-				// Not a vehicle but a type
-				tab += vehicle;
-			}
-			window->callOnMouseUp(tab);
+    /* 0x4C1AF7
+     * depending on flags (1<<31) vehicle is a tab id or a VehicleHead thing_id
+     */
+    Window* open(uint32_t vehicle, uint32_t flags)
+    {
+        auto window = WindowManager::bringToFront(WindowType::buildVehicle, enumValue(CompanyManager::getControllingId()));
+        bool tabMode = flags & (1 << 31);
+        if (window)
+        {
+            WidgetIndex_t tab = widx::tab_build_new_trains;
+            if (!tabMode)
+            {
+                auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicle));
+                tab += static_cast<uint8_t>(veh->vehicleType);
+            }
+            else
+            {
+                // Not a vehicle but a type
+                tab += vehicle;
+            }
+            window->callOnMouseUp(tab);
 
 			if (tabMode)
 			{
@@ -750,23 +745,22 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 			return;
 		}
 
-		auto pan = window->width / 2 + window->x;
-		Audio::playSound(Audio::SoundId::clickDown, Map::Pos3{ x, y, static_cast<int16_t>(pan) }, pan);
-		auto item = window->rowInfo[scrollItem];
-		auto vehicleObj = ObjectManager::get<VehicleObject>(item);
-		FormatArguments args{};
-		// Skip 5 * 2 bytes
-		args.skip(10);
-		args.push(vehicleObj->name);
-		GameCommands::setErrorTitle(StringIds::cant_build_pop_5_string_id);
-
-		if (_buildTargetVehicle != -1)
-		{
-			auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
-			args.push(vehicle->name);
-			args.push(vehicle->ordinalNumber);
-			GameCommands::setErrorTitle(StringIds::cant_add_pop_5_string_id_string_id);
-		}
+        auto pan = window->width / 2 + window->x;
+        Audio::playSound(Audio::SoundId::clickDown, Map::Pos3{ x, y, static_cast<int16_t>(pan) }, pan);
+        auto item = window->row_info[scrollItem];
+        auto vehicleObj = ObjectManager::get<VehicleObject>(item);
+        FormatArguments args{};
+        // Skip 5 * 2 bytes
+        args.skip(10);
+        args.push(vehicleObj->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop_5_string_id);
+        if (_buildTargetVehicle != -1)
+        {
+            auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
+            args.push(vehicle->name);
+            args.push(vehicle->ordinalNumber);
+            GameCommands::setErrorTitle(StringIds::cant_add_pop_5_string_id_string_id);
+        }
 
 		const auto* company = CompanyManager::get(CompanyManager::getControllingId());
 		if (!company->isVehicleIndexUnlocked(item))

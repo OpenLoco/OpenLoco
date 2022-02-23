@@ -21,7 +21,6 @@ using OpenLoco::GameCommands::CheatCommand;
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
     extern bool displayLockedVehicles;
-    // void toggleDisplayLockedVehicles();
 }
 
 namespace OpenLoco::Ui::Windows::Cheats
