@@ -1,8 +1,10 @@
+#include "../CompanyManager.h"
 #include "../Game.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Objects/BuildingObject.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
+#include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "AnimationManager.h"
 #include "Tile.h"
@@ -10,15 +12,47 @@
 
 namespace OpenLoco::Map
 {
-    static void sub_497DC1(const Map::Pos2& loc, uint32_t population, uint32_t unk1, uint16_t rating, uint16_t unk3)
+    static loco_global<Town*, 0x01135C38> dword_1135C38;
+
+    // 0x00497DC1
+    // The return value of this function is also being returned via dword_1135C38.
+    static Town* sub_497DC1(const Map::Pos2& loc, uint32_t population, uint32_t unk1, uint16_t rating, uint16_t unk3)
     {
-        registers regs;
-        regs.edi = population;
-        regs.esi = unk1;
-        regs.ebp = rating | (unk3 << 16);
-        regs.ax = loc.x;
-        regs.cx = loc.y;
-        call(0x00497DC1, regs);
+        auto res = TownManager::getClosestTownAndUnk(loc);
+        if (res == std::nullopt)
+        {
+            dword_1135C38 = nullptr;
+            return nullptr;
+        }
+        auto townId = res->first;
+        auto town = TownManager::get(townId);
+        dword_1135C38 = town;
+        town->var_34 += unk1;
+        if (population != 0)
+        {
+            town->population += population;
+            Ui::WindowManager::invalidate(Ui::WindowType::townList);
+            Ui::WindowManager::invalidate(Ui::WindowType::town, enumValue(town->id()));
+        }
+        if (rating != 0)
+        {
+            auto companyId = CompanyManager::getUpdatingCompanyId();
+            if (companyId != CompanyId::neutral)
+            {
+                if (!isEditorMode())
+                {
+                    town->adjustCompanyRating(companyId, rating);
+                    Ui::WindowManager::invalidate(Ui::WindowType::town, enumValue(town->id()));
+                }
+            }
+        }
+
+        if (town->var_38 + unk3 <= std::numeric_limits<uint16_t>::max())
+        {
+            town->var_38 += unk3;
+        }
+
+        return town;
     }
 
     // 0x0042DF8B
