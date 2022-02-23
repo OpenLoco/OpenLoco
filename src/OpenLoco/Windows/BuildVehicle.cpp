@@ -394,10 +394,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 			});
 	}
 
-	static bool vehicleIsLocked(CompanyId companyId, uint16_t vehicleObjIndex)
-	{
-		return !(CompanyManager::get(companyId)->unlockedVehicles[vehicleObjIndex >> 5] & (1 << (vehicleObjIndex & 0x1F)));
-	}
+    /*static bool vehicleIsLocked(CompanyId companyId, uint16_t vehicleObjIndex)
+    {
+        return !(CompanyManager::get(companyId)->unlockedVehicles[vehicleObjIndex >> 5] & (1 << (vehicleObjIndex & 0x1F)));
+    }*/
 
 	/* 0x4B9165
 	 * Works out which vehicles are able to be built for this vehicle_type or vehicle
@@ -450,10 +450,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 				continue;
 			}
 
-			if (!displayLockedVehicles && vehicleIsLocked(companyId, vehicleObjIndex))
-			{
-				continue;
-			}
+            const auto* company = CompanyManager::get(companyId);
+            if (!displayLockedVehicles && company->isVehicleIndexUnlocked(vehicleObjIndex))
+            {
+                continue;
+            }
 
 			if (trackType != 0xFF)
 			{
@@ -772,11 +773,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 			GameCommands::setErrorTitle(StringIds::cant_add_pop_5_string_id_string_id);
 		}
 
-		if (vehicleIsLocked(CompanyManager::getControllingId(), item))
-		{
-			Error::open(StringIds::cant_build_pop_5_string_id, StringIds::vehicle_is_locked);
-			return;
-		}
+        const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+        if (!displayLockedVehicles && company->isVehicleIndexUnlocked(item))
+        {
+            Error::open(StringIds::cant_build_pop_5_string_id, StringIds::vehicle_is_locked);
+            return;
+        }
 
 		if (GameCommands::do_5(item, EntityId(*_buildTargetVehicle)) == GameCommands::FAILURE)
 		{
@@ -976,7 +978,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             FormatArguments args{};
             args.push(vehicleObj->designed);
 
-            auto locked = vehicleIsLocked(CompanyManager::getControllingId(), window->row_hover);
+            const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+            auto locked = company->isVehicleIndexUnlocked(window->row_hover);
             buffer = StringManager::formatString(
                 buffer,
                 locked ? StringIds::stats_proposed_design : StringIds::stats_designed,
@@ -1116,7 +1119,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 						continue;
 					}
 
-                        auto displayLockedVehiclesScroll = displayLockedVehicles && vehicleIsLocked(CompanyManager::getControllingId(), vehicleType);
+                        const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+                        auto displayLockedVehiclesScroll = displayLockedVehicles && company->isVehicleIndexUnlocked(vehicleType);
+
                         auto colouredString = StringIds::black_stringid;
                         if (window.row_hover == vehicleType)
                         {
