@@ -11,6 +11,9 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
+    static loco_global<uint32_t, 0x01136114> vehicleUpdate_var_1136114;
+    static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
+    static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
     static loco_global<Speed32, 0x01136134> vehicleUpdate_var_1136134; // Speed
     static loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
 
@@ -43,7 +46,10 @@ namespace OpenLoco::Vehicles
         const auto speedDiff = currentSpeed - *vehicleUpdate_var_1136134;
         if (speedDiff > 0.0_mph)
         {
-            // 0x004A9EF0
+            var_5A = 3;
+            const auto newSpeed = currentSpeed - (currentSpeed / 64 + 0.18311_mph);
+            currentSpeed = std::clamp(newSpeed, *vehicleUpdate_var_1136134, 50.0_mph);
+            // 0x004A9F20
         }
 
         if (!((*vehicleUpdate_head)->var_0C & Flags0C::manualControl))
@@ -177,21 +183,133 @@ namespace OpenLoco::Vehicles
         {
             if (train.head->var_0C & Flags0C::manualControl)
             {
-                // 4a9e1c
+                const auto manualSpeed = train.head->var_6E;
+                if (manualSpeed < 0)
+                {
+                    if (manualSpeed <= -10)
+                    {
+                        var_5A = 3;
+                    }
+                    else
+                    {
+                        var_5A = 2;
+                    }
+                }
+                else
+                {
+                    if (manualSpeed >= 10)
+                    {
+                        var_5A = 1;
+                    }
+                    else
+                    {
+                        var_5A = 2;
+                    }
+                }
+                const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
+                ebp += ((power / 2048) * std::abs(manualSpeed)) / (totalWeight * 40);
             }
             else
             {
-                const auto power = (var_73 != 1) ? totalPower / 4 : totalPower;
+                const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
                 ebp += (power / 2048) / totalWeight;
             }
         }
         const auto speedSquare = toSpeed16(currentSpeed).getRaw() * toSpeed16(currentSpeed).getRaw();
         ebp -= speedSquare;
+        const auto speedAdjustment = std::min(Speed32(ebp), 0.5_mph);
+        auto newSpeed = speedAdjustment + currentSpeed;
+        if (speedAdjustment < 0.0_mph)
+        {
+            auto minSpeed = 5.0_mph;
+            if (train.head->var_0C & Flags0C::manualControl || !isOnRackRail)
+            {
+                minSpeed = 0.0_mph;
+            }
+            if (currentSpeed >= minSpeed)
+            {
+                newSpeed = std::max(newSpeed, minSpeed);
+            }
+        }
 
-        // 4A9E94
-        registers regs;
-        regs.esi = X86Pointer(this);
+        if (!(train.head->var_0C & Flags0C::manualControl))
+        {
+            newSpeed = std::min(newSpeed, *vehicleUpdate_var_1136134);
+        }
+        currentSpeed = newSpeed;
 
-        return !(call(0x004A9B0B, regs) & X86_FLAG_CARRY);
+        // 4A9F20
+
+        vehicleUpdate_var_1136114 = (1 << 15);
+        vehicleUpdate_var_113612C = sub_4B15FF(vehicleUpdate_var_113612C);
+        vehicleUpdate_var_1136130 = vehicleUpdate_var_113612C;
+        if (vehicleUpdate_var_1136114 & (1 << 1))
+        {
+            sub_4AA464();
+            return false;
+        }
+
+        if (vehicleUpdate_var_1136114 & (1 << 0))
+        {
+            if (!(train.head->var_0C & Flags0C::manualControl))
+            {
+                currentSpeed = 0.0_mph;
+                var_5A = 0;
+            }
+        }
+
+        if (var_5A == 4)
+        {
+            vehicleUpdate_var_1136130 = vehicleUpdate_var_113612C + 0x1388;
+        }
+
+        train.head->var_3C -= vehicleUpdate_var_113612C;
+        train.veh1->var_3C -= vehicleUpdate_var_113612C;
+
+        if (var_5A == 3)
+        {
+            if (var_5B == 0)
+            {
+                invalidateSprite();
+                train.veh1->invalidateSprite();
+                train.tail->invalidateSprite();
+                for (auto& car : train.cars)
+                {
+                    for (auto& carComponent : car)
+                    {
+                        carComponent.front->invalidateSprite();
+                        carComponent.back->invalidateSprite();
+                        carComponent.body->invalidateSprite();
+                    }
+                }
+            }
+
+            var_5B = 7;
+            return true;
+        }
+        else
+        {
+            if (var_5B == 0)
+            {
+                return true;
+            }
+            var_5B--;
+            if (var_5B == 0)
+            {
+                invalidateSprite();
+                train.veh1->invalidateSprite();
+                train.tail->invalidateSprite();
+                for (auto& car : train.cars)
+                {
+                    for (auto& carComponent : car)
+                    {
+                        carComponent.front->invalidateSprite();
+                        carComponent.back->invalidateSprite();
+                        carComponent.body->invalidateSprite();
+                    }
+                }
+            }
+            return true;
+        }
     }
 }
