@@ -496,6 +496,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_73;               // 0x73 (bit 0 = broken down, bit 1 = still powered)
 
         bool update();
+        bool sub_4A9F20();
         currency32_t totalRecentProfit() const
         {
             return profit[0] + profit[1] + profit[2] + profit[3];

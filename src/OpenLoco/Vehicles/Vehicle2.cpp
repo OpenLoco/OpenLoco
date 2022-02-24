@@ -34,6 +34,86 @@ namespace OpenLoco::Vehicles
         21628,
     };
 
+    // 0x004A9BA0
+    static bool shouldSetVar5E(const Vehicle& train, VehicleBogie& frontBogie)
+    {
+        const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie.objectId);
+        if (train.head->status != Status::travelling)
+        {
+            return false;
+        }
+
+        if (train.veh2->var_5A == 2 || train.veh2->currentSpeed > 10.0_mph)
+        {
+            return false;
+        }
+
+        if (vehObject->power == 0 || (vehObject->flags & FlagsE0::isHelicopter))
+        {
+            return false;
+        }
+
+        if (frontBogie.var_5E != 0)
+        {
+            return false;
+        }
+
+        if (Tutorial::state() != Tutorial::State::none)
+        {
+            return false;
+        }
+
+        if ((train.head->var_0C & Flags0C::manualControl) && train.head->var_6E <= 10)
+        {
+            return false;
+        }
+
+        const auto tot1 = vehObject->power * train.veh2->totalWeight * 128ULL;
+        const auto tot2 = frontBogie.var_52 * train.veh2->totalPower;
+        auto fraction = tot2 == 0 ? tot1 : tot1 / tot2;
+        fraction = std::min(fraction, 2'000ULL);
+        if (fraction > gPrng().randNext(0xFFFF))
+        {
+            return false;
+        }
+        if (frontBogie.mode == TransportMode::rail)
+        {
+            const auto* trackObj = ObjectManager::get<TrackObject>(frontBogie.trackType);
+            if (trackObj->flags & Flags22::unk_01)
+            {
+                return false;
+            }
+            if (trackObj->flags & Flags22::unk_00)
+            {
+                if (frontBogie.isOnRackRail())
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            if (frontBogie.trackType == 0xFF)
+            {
+                return false;
+            }
+            const auto* roadObj = ObjectManager::get<RoadObject>(frontBogie.trackType);
+            if (roadObj->flags & Flags12::unk_04)
+            {
+                return false;
+            }
+
+            if (roadObj->flags & Flags12::unk_05)
+            {
+                if (frontBogie.isOnRackRail())
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     // 0x004A9B0B
     bool Vehicle2::update()
     {
@@ -49,7 +129,7 @@ namespace OpenLoco::Vehicles
             var_5A = 3;
             const auto newSpeed = currentSpeed - (currentSpeed / 64 + 0.18311_mph);
             currentSpeed = std::clamp(newSpeed, *vehicleUpdate_var_1136134, 50.0_mph);
-            // 0x004A9F20
+            return sub_4A9F20();
         }
 
         if (!((*vehicleUpdate_head)->var_0C & Flags0C::manualControl))
@@ -93,73 +173,23 @@ namespace OpenLoco::Vehicles
         for (auto& car : train.cars)
         {
             auto* frontBogie = car.front;
-            const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie->objectId);
-            if (train.head->status == Status::travelling
-                && var_5A != 2
-                && vehObject->power != 0
-                && currentSpeed <= 10.0_mph
-                && frontBogie->var_5E == 0
-                && !(vehObject->flags & FlagsE0::isHelicopter)
-                && Tutorial::state() == Tutorial::State::none
-                && (!(train.head->var_0C & Flags0C::manualControl)
-                    || train.head->var_6E > 10))
+            if (shouldSetVar5E(train, *frontBogie))
             {
-                const auto tot1 = vehObject->power * totalWeight * 128ULL;
-                const auto tot2 = frontBogie->var_52 * totalPower;
-                auto fraction = tot2 == 0 ? tot1 : tot1 / tot2;
-                fraction = std::min(fraction, 2'000ULL);
-                if (fraction <= gPrng().randNext(0xFFFF))
+                for (auto& carComponent : car)
                 {
-                    if (frontBogie->mode == TransportMode::rail)
-                    {
-                        const auto* trackObj = ObjectManager::get<TrackObject>(frontBogie->trackType);
-                        if (trackObj->flags & Flags22::unk_01)
-                        {
-                            // 4a9d08 continue
-                        }
-                        if (trackObj->flags & Flags22::unk_00)
-                        {
-                            if (frontBogie->isOnRackRail())
-                            {
-                                // 4a9d08 continue
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (frontBogie->trackType == 0xFF)
-                        {
-                            // 4a9d08 continue
-                        }
-                        const auto* roadObj = ObjectManager::get<RoadObject>(frontBogie->trackType);
-                        if (roadObj->flags & Flags12::unk_04)
-                        {
-                            // 4a9d08 continue
-                        }
-
-                        if (roadObj->flags & Flags12::unk_05)
-                        {
-                            if (frontBogie->isOnRackRail())
-                            {
-                                // 4a9d08 continue
-                            }
-                        }
-                    }
-                    for (auto& carComponent : car)
-                    {
-                        carComponent.front->var_5E = 1;
-                        carComponent.back->var_5E = 1;
-                        carComponent.body->var_5E = 1;
-                    }
+                    carComponent.front->var_5E = 1;
+                    carComponent.back->var_5E = 1;
+                    carComponent.body->var_5E = 1;
                 }
             }
-            // 4a9d08
+
             if (frontBogie->var_5E != 0)
             {
                 dh = 1;
             }
             if (_500170[enumValue(sprite_pitch)] <= -19182)
             {
+                const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie->objectId);
                 if (vehObject->power != 0)
                 {
                     isOnRackRail = frontBogie->isOnRackRail();
@@ -238,8 +268,13 @@ namespace OpenLoco::Vehicles
         }
         currentSpeed = newSpeed;
 
-        // 4A9F20
+        return sub_4A9F20();
+    }
 
+    // 0x004A9F20
+    bool Vehicle2::sub_4A9F20()
+    {
+        Vehicle train(head);
         vehicleUpdate_var_1136114 = (1 << 15);
         vehicleUpdate_var_113612C = sub_4B15FF(vehicleUpdate_var_113612C);
         vehicleUpdate_var_1136130 = vehicleUpdate_var_113612C;
