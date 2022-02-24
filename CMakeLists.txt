@@ -311,6 +311,8 @@ endif()
 if (MINGW)
     target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
     target_link_libraries(${PROJECT} imm32 winmm version)
+    # newer GCC gets confused about our use of hardcoded address shenanigans
+    add_definitions("-Wno-stringop-overflow -Wno-stringop-overread -Wno-array-bounds -Wno-stringop-truncation")
 else ()
     if (MSVC)
         target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
