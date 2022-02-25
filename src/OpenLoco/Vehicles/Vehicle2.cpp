@@ -128,7 +128,7 @@ namespace OpenLoco::Vehicles
         {
             var_5A = 3;
             const auto newSpeed = currentSpeed - (currentSpeed / 64 + 0.18311_mph);
-            currentSpeed = std::clamp(newSpeed, *vehicleUpdate_var_1136134, 50.0_mph);
+            currentSpeed = std::max(newSpeed, std::max(*vehicleUpdate_var_1136134, 5.0_mph));
             return sub_4A9F20();
         }
 
@@ -187,7 +187,7 @@ namespace OpenLoco::Vehicles
             {
                 dh = 1;
             }
-            if (_500170[enumValue(sprite_pitch)] <= -19182)
+            if (_500170[enumValue(frontBogie->sprite_pitch)] <= -19182)
             {
                 const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie->objectId);
                 if (vehObject->power != 0)
@@ -195,7 +195,7 @@ namespace OpenLoco::Vehicles
                     isOnRackRail = frontBogie->isOnRackRail();
                 }
             }
-            ebp += (frontBogie->var_5E * _500170[enumValue(sprite_pitch)]) / 256;
+            ebp += (frontBogie->var_52 * _500170[enumValue(frontBogie->sprite_pitch)]) / 256;
         }
         if (!isOnRackRail)
         {
@@ -237,12 +237,12 @@ namespace OpenLoco::Vehicles
                     }
                 }
                 const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
-                ebp += ((power / 2048) * std::abs(manualSpeed)) / (totalWeight * 40);
+                ebp += ((power * 2048) * std::abs(manualSpeed)) / (totalWeight * 40);
             }
             else
             {
                 const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
-                ebp += (power / 2048) / totalWeight;
+                ebp += (power * 2048) / totalWeight;
             }
         }
         const auto speedSquare = toSpeed16(currentSpeed).getRaw() * toSpeed16(currentSpeed).getRaw();
@@ -276,8 +276,9 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(head);
         vehicleUpdate_var_1136114 = (1 << 15);
-        vehicleUpdate_var_113612C = sub_4B15FF(vehicleUpdate_var_113612C);
-        vehicleUpdate_var_1136130 = vehicleUpdate_var_113612C;
+        auto res = sub_4B15FF(vehicleUpdate_var_113612C);
+        vehicleUpdate_var_113612C = vehicleUpdate_var_113612C - res;
+        vehicleUpdate_var_1136130 = vehicleUpdate_var_1136130 - res;
         if (vehicleUpdate_var_1136114 & (1 << 1))
         {
             sub_4AA464();
