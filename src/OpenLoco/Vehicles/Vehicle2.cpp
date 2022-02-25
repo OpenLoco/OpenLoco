@@ -48,7 +48,8 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        if (vehObject->power == 0 || (vehObject->flags & FlagsE0::isHelicopter))
+        // This code seems dead as no aircrafts reach this code so its never a helicopter
+        if (vehObject->power == 0 || !(vehObject->flags & FlagsE0::isHelicopter))
         {
             return false;
         }
@@ -72,7 +73,7 @@ namespace OpenLoco::Vehicles
         const auto tot2 = frontBogie.var_52 * train.veh2->totalPower;
         auto fraction = tot2 == 0 ? tot1 : tot1 / tot2;
         fraction = std::min(fraction, 2'000ULL);
-        if (fraction > gPrng().randNext(0xFFFF))
+        if (fraction < gPrng().randNext(0xFFFF))
         {
             return false;
         }
@@ -169,7 +170,7 @@ namespace OpenLoco::Vehicles
 
         bool isOnRackRail = true; // Note has been inverted
         uint8_t dh = 0;
-        uint32_t ebp = 0;
+        int32_t ebp = 0;
         for (auto& car : train.cars)
         {
             auto* frontBogie = car.front;
@@ -192,11 +193,12 @@ namespace OpenLoco::Vehicles
                 const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie->objectId);
                 if (vehObject->power != 0)
                 {
-                    isOnRackRail = frontBogie->isOnRackRail();
+                    isOnRackRail &= frontBogie->isOnRackRail();
                 }
             }
-            ebp += (frontBogie->var_52 * _500170[enumValue(frontBogie->sprite_pitch)]) / 256;
+            ebp += (frontBogie->var_52 * _500170[enumValue(frontBogie->sprite_pitch)]) >> 8;
         }
+
         if (!isOnRackRail)
         {
             ebp /= 2;

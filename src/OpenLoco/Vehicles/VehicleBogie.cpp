@@ -143,6 +143,7 @@ namespace OpenLoco::Vehicles
     bool VehicleBogie::isOnRackRail()
     {
         registers regs;
+        regs.dl = 0;
         regs.edi = X86Pointer(this);
 
         call(0x004AA97A, regs);
