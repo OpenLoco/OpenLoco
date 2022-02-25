@@ -73,7 +73,7 @@ namespace OpenLoco::Vehicles
         const auto tot2 = frontBogie.var_52 * train.veh2->totalPower;
         auto fraction = tot2 == 0 ? tot1 : tot1 / tot2;
         fraction = std::min(fraction, 2'000ULL);
-        if (fraction < gPrng().randNext(0xFFFF))
+        if (fraction < static_cast<uint16_t>(gPrng().randNext(0xFFFF)))
         {
             return false;
         }
