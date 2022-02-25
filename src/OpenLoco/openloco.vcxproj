@@ -48,6 +48,7 @@
     <ClCompile Include="GameCommands\SetGameSpeed.cpp" />
     <ClCompile Include="GameCommands\TogglePause.cpp" />
     <ClCompile Include="GameCommands\VehiclePickup.cpp" />
+    <ClCompile Include="GameCommands\UpdateOwnerStatus.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Graphics\Colour.cpp" />
     <ClCompile Include="Graphics\Gfx.cpp" />

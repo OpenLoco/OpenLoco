@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Company.h"
 #include "../Economy/Currency.h"
 #include "../Entities/Entity.h"
 #include "../Interop/Interop.hpp"
@@ -1577,25 +1578,27 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::multiplayerSave, regs);
     }
 
-    // Update owner status
-    inline void do_73(EntityId id)
+    struct UpdateOwnerStatusArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.ax = -2;
-        regs.cx = enumValue(id);
-        doCommand(GameCommand::updateOwnerStatus, regs);
-    }
+        static constexpr auto command = GameCommand::updateOwnerStatus;
+        UpdateOwnerStatusArgs() = default;
+        explicit UpdateOwnerStatusArgs(const registers& regs)
+            : ownerStatus(regs.ax, regs.cx)
+        {
+        }
 
-    // Update owner status
-    inline void do_73(Map::Pos2 position)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.ax = position.x;
-        regs.cx = position.y;
-        doCommand(GameCommand::updateOwnerStatus, regs);
-    }
+        OwnerStatus ownerStatus;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            int16_t res[2];
+            ownerStatus.getData(res);
+            regs.ax = res[0];
+            regs.cx = res[1];
+            return regs;
+        }
+    };
 
     inline uint32_t do_74(EntityId head, int16_t speed)
     {
@@ -1731,6 +1734,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/VehiclePickup.cpp
     void vehiclePickup(registers& regs);
+
+    // Defined in GameCommands/UpdateOwnerStatus.cpp
+    void updateOwnerStatus(registers& regs);
 
     const Map::Pos3& getPosition();
     void setPosition(const Map::Pos3& pos);

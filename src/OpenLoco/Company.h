@@ -2,6 +2,7 @@
 
 #include "Economy/Currency.h"
 #include "Economy/Expenditures.h"
+#include "Map/Map.hpp"
 #include "Types.hpp"
 #include <cstddef>
 #include <cstdint>
@@ -45,6 +46,38 @@ namespace OpenLoco
         buildingDock,
         checkingServices,
         surveyingLandscape,
+    };
+
+    class OwnerStatus
+    {
+        int16_t data[2];
+
+    public:
+        OwnerStatus()
+        {
+            data[0] = -1;
+            data[1] = 0;
+        }
+        OwnerStatus(EntityId id)
+        {
+            data[0] = -2;
+            data[1] = enumValue(id);
+        }
+        OwnerStatus(const Map::Pos2& pos)
+        {
+            data[0] = pos.x;
+            data[1] = pos.y;
+        }
+        OwnerStatus(int16_t ax, int16_t cx)
+        {
+            data[0] = ax;
+            data[1] = cx;
+        }
+        void getData(int16_t* res) const
+        {
+            res[0] = data[0];
+            res[1] = data[1];
+        }
     };
 
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
@@ -114,7 +147,8 @@ namespace OpenLoco
         int16_t observationY;                // 0x8BC0;
         uint16_t observationObject;          // 0x8BC2;
         uint16_t var_8BC4;
-        uint8_t pad_8BC6[0x8BCE - 0x8BC6];
+        OwnerStatus ownerStatus; // 0x8BC6
+        uint8_t pad_8BCA[0x8BCE - 0x8BCA];
         uint32_t cargoDelivered[32]; // 0x8BCE;
         uint8_t challengeProgress;   // 0x8C4E - percent completed on challenge
         uint8_t pad_8C4F;
