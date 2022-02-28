@@ -166,13 +166,13 @@ namespace OpenLoco
         constexpr uint16_t flag_03 = 1 << 3; // rollable? APT Driving carriage
         constexpr uint16_t rack_rail = 1 << 6;
         constexpr uint16_t unk_08 = 1 << 8;
-        constexpr uint16_t unk_09 = 1 << 9; //anytrack??
+        constexpr uint16_t unk_09 = 1 << 9; // anytrack??
         constexpr uint16_t speed_control = 1 << 10;
         constexpr uint16_t can_couple = 1 << 11;
-        constexpr uint16_t unk_12 = 1 << 12; //dualhead??
+        constexpr uint16_t unk_12 = 1 << 12; // dualhead??
         constexpr uint16_t isHelicopter = 1 << 13;
         constexpr uint16_t refittable = 1 << 14;
-        constexpr uint16_t unk_15 = 1 << 15; //noannounce??
+        constexpr uint16_t unk_15 = 1 << 15; // noannounce??
     }
 
     enum class DrivingSoundType : uint8_t
@@ -192,6 +192,7 @@ namespace OpenLoco
     struct VehicleObject
     {
         static constexpr auto kObjectType = ObjectType::vehicle;
+        static constexpr auto kMaxBodySprites = 4;
 
         string_id name;     // 0x00
         TransportMode mode; // 0x02
@@ -209,20 +210,20 @@ namespace OpenLoco
         uint16_t compatible_vehicles[8];  // 0x10 array of compatible vehicle_types
         uint8_t required_track_extras[4]; // 0x20
         vehicle_object_unk var_24[4];
-        VehicleObjectBodySprite bodySprites[4];       // 0x3C
-        vehicle_object_bogie_sprite bogie_sprites[2]; // 0xB4
-        uint16_t power;                               // 0xD8
-        Speed16 speed;                                // 0xDA
-        uint16_t rack_speed;                          // 0xDC
-        uint16_t weight;                              // 0xDE
-        uint16_t flags;                               // 0xE0
-        uint8_t max_primary_cargo;                    // 0xE2 size is relative to the first primary_cargo_types
-        uint8_t max_secondary_cargo;                  // 0xE3
-        uint32_t primary_cargo_types;                 // 0xE4
-        uint32_t secondary_cargo_types;               // 0xE8
-        uint8_t cargoTypeSpriteOffsets[32];           // 0xEC
-        uint8_t num_simultaneous_cargo_types;         // 0x10C
-        simple_animation animation[2];                // 0x10D
+        VehicleObjectBodySprite bodySprites[kMaxBodySprites]; // 0x3C
+        vehicle_object_bogie_sprite bogie_sprites[2];         // 0xB4
+        uint16_t power;                                       // 0xD8
+        Speed16 speed;                                        // 0xDA
+        uint16_t rack_speed;                                  // 0xDC
+        uint16_t weight;                                      // 0xDE
+        uint16_t flags;                                       // 0xE0
+        uint8_t max_primary_cargo;                            // 0xE2 size is relative to the first primary_cargo_types
+        uint8_t max_secondary_cargo;                          // 0xE3
+        uint32_t primary_cargo_types;                         // 0xE4
+        uint32_t secondary_cargo_types;                       // 0xE8
+        uint8_t cargoTypeSpriteOffsets[32];                   // 0xEC
+        uint8_t num_simultaneous_cargo_types;                 // 0x10C
+        simple_animation animation[2];                        // 0x10D
         uint8_t var_113;
         uint16_t designed;                 // 0x114
         uint16_t obsolete;                 // 0x116

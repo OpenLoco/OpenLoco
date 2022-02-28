@@ -234,7 +234,7 @@ namespace OpenLoco::Vehicles
     // ebx : sourceVehicleTypeId;
     static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
     {
-        auto newObject = ObjectManager::get<VehicleObject>(newVehicleTypeId);       //edi
+        auto newObject = ObjectManager::get<VehicleObject>(newVehicleTypeId);       // edi
         auto sourceObject = ObjectManager::get<VehicleObject>(sourceVehicleTypeId); // esi
 
         if ((newObject->flags & FlagsE0::can_couple) && (sourceObject->flags & FlagsE0::can_couple))
@@ -289,7 +289,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            auto unk = vehObject->var_24[i].body_sprite_ind & 0x7F;
+            auto unk = vehObject->var_24[i].body_sprite_ind & (VehicleObject::kMaxBodySprites - 1);
             length += vehObject->bodySprites[unk].bogey_position * 2;
         }
         return length;

@@ -294,7 +294,7 @@ namespace OpenLoco::Ui
         uint8_t pad_883[1];
         CompanyId owner = CompanyId::null; // 0x884
         uint8_t var_885 = 0xFF;
-        uint8_t colours[static_cast<uint8_t>(WindowColour::count)]; // 0x886
+        uint8_t colours[enumValue(WindowColour::count)]; // 0x886
         int16_t var_88A;
         int16_t var_88C;
 
@@ -345,13 +345,18 @@ namespace OpenLoco::Ui
 
         constexpr uint8_t getColour(WindowColour index) const
         {
-            assert(index < WindowColour::count);
-            return colours[static_cast<uint8_t>(index)];
+            if (index >= WindowColour::primary && index < WindowColour::count)
+            {
+                return colours[enumValue(index)];
+            }
+            return colours[enumValue(WindowColour::primary)];
         }
         constexpr void setColour(WindowColour index, Colour_t colour)
         {
-            assert(index < WindowColour::count);
-            colours[static_cast<uint8_t>(index)] = colour;
+            if (index >= WindowColour::primary && index < WindowColour::count)
+            {
+                colours[enumValue(index)] = colour;
+            }
         }
 
         bool isVisible()

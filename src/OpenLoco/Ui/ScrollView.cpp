@@ -195,6 +195,7 @@ namespace OpenLoco::Ui::ScrollView
             if (winWidget->type == WidgetType::scrollview)
             {
                 (*scrollIndex)++;
+                break;
             }
         }
 

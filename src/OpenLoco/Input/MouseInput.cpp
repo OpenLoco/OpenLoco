@@ -1623,7 +1623,7 @@ namespace OpenLoco::Input
 
         if (*_tooltipWindowType != Ui::WindowType::undefined)
         {
-            if (*_tooltipWindowType == window->type && _tooltipWindowNumber == window->number && _tooltipWidgetIndex == widgetIndex)
+            if (window != nullptr && *_tooltipWindowType == window->type && _tooltipWindowNumber == window->number && _tooltipWidgetIndex == widgetIndex)
             {
                 _tooltipTimeout += time_since_last_tick;
                 if (_tooltipTimeout >= 8000)
@@ -1975,8 +1975,7 @@ namespace OpenLoco::Input
                                 }
                             }
                         }
-                        //fall-through
-
+                        [[fallthrough]];
                     default:
                         _5233A4 = x;
                         _5233A6 = y;

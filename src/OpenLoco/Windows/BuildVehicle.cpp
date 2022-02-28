@@ -1317,7 +1317,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(CompanyId(window->number));
 
-        for (auto tab : _transportTypeTabInformation)
+        for (const auto& tab : _transportTypeTabInformation)
         {
             auto frameNo = 0;
             if (_transportTypeTabInformation[window->current_tab].type == tab.type)
