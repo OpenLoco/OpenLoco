@@ -220,6 +220,7 @@ namespace OpenLoco::Map
             _type &= ~0x80;
             _type |= state ? 0x80 : 0;
         }
+        void removeIndustry(const Map::Pos2& pos);
     };
     static_assert(sizeof(SurfaceElement) == TileElementSize);
 

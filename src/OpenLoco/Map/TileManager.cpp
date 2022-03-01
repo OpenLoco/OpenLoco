@@ -29,6 +29,17 @@ namespace OpenLoco::Map::TileManager
 
     static TileElement* InvalidTile = reinterpret_cast<TileElement*>(static_cast<intptr_t>(-1));
 
+    // 0x0046902E
+    void removeSurfaceIndustry(const Pos2& pos)
+    {
+        auto tile = get(pos);
+        auto* surface = tile.surface();
+        if (surface != nullptr)
+        {
+            surface->removeIndustry(pos);
+        }
+    }
+
     // 0x00461179
     void initialise()
     {
@@ -681,6 +692,13 @@ namespace OpenLoco::Map::TileManager
             0x004C5596,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 regs.dx = countSurroundingWaterTiles({ regs.ax, regs.cx });
+                return 0;
+            });
+
+        registerHook(
+            0x0046902E,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                removeSurfaceIndustry({ regs.ax, regs.cx });
                 return 0;
             });
     }
