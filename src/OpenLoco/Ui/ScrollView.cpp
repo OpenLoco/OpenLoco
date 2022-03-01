@@ -195,9 +195,10 @@ namespace OpenLoco::Ui::ScrollView
             if (winWidget->type == WidgetType::scrollview)
             {
                 (*scrollIndex)++;
-                break;
             }
         }
+
+        *scrollIndex = std::max<size_t>(*scrollIndex, WindowConstants::kMaxScrollAreas - 1);
 
         const auto& scroll = window->scroll_areas[*scrollIndex];
         auto right = widget->right + window->x;
