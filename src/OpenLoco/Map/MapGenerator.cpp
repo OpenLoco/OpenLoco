@@ -469,18 +469,18 @@ namespace OpenLoco::Map::MapGenerator
             return std::nullopt;
         }
 
-        if (landObj->var_1B == 0 || surface.slope())
+        if (landObj->numVariations == 0 || surface.slope())
         {
             return 0;
         }
 
         // TODO: split into two randNext calls
         uint16_t randVal = gPrng().randNext();
-        if (landObj->var_1C <= (randVal >> 8))
+        if (landObj->variationLikelihood <= (randVal >> 8))
         {
             return 0;
         }
-        return ((randVal & 0xFF) * landObj->var_1B) >> 8;
+        return ((randVal & 0xFF) * landObj->numVariations) >> 8;
     }
 
     // 0x0046A379
