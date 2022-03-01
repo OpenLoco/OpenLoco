@@ -513,7 +513,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::scrollview:
                     if (itemIndex != -1 && window->row_hover != -1)
                     {
-                        S5::getOptions().landDistributionPatterns[window->row_hover] = static_cast<S5::LandDistribuitionPattern>(itemIndex);
+                        S5::getOptions().landDistributionPatterns[window->row_hover] = static_cast<S5::LandDistributionPattern>(itemIndex);
                         window->invalidate();
                     }
                     break;

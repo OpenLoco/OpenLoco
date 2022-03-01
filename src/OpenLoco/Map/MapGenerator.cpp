@@ -439,7 +439,7 @@ namespace OpenLoco::Map::MapGenerator
             {
                 continue;
             }
-            if (S5::getOptions().landDistributionPatterns[landObjectIdx] == LandDistribuitionPattern::everywhere)
+            if (S5::getOptions().landDistributionPatterns[landObjectIdx] == LandDistributionPattern::everywhere)
             {
                 return landObjectIdx;
             }
@@ -557,15 +557,15 @@ namespace OpenLoco::Map::MapGenerator
 
     using GenerateTerrainFunc = void (*)(HeightMap&, uint8_t);
     static const GenerateTerrainFunc _generateFuncs[] = {
-        generateTerrainNull,
-        generateTerrainNull,
-        generateTerrainFarFromWater,
-        generateTerrainNearWater,
-        generateTerrainOnMountains,
-        generateTerrainFarFromMountains,
-        generateTerrainInSmallRandomAreas,
-        generateTerrainInLargeRandomAreas,
-        generateTerrainAroundCliffs
+        generateTerrainNull,               // LandDistributionPattern::everywhere This is null as it is a special function performed separately
+        generateTerrainNull,               // LandDistributionPattern::nowhere
+        generateTerrainFarFromWater,       // LandDistributionPattern::farFromWater
+        generateTerrainNearWater,          // LandDistributionPattern::nearWater
+        generateTerrainOnMountains,        // LandDistributionPattern::onMountains
+        generateTerrainFarFromMountains,   // LandDistributionPattern::farFromMountains
+        generateTerrainInSmallRandomAreas, // LandDistributionPattern::inSmallRandomAreas
+        generateTerrainInLargeRandomAreas, // LandDistributionPattern::inLargeRandomAreas
+        generateTerrainAroundCliffs        // LandDistributionPattern::aroundCliffs
     };
 
     // 0x0046A021
@@ -577,8 +577,8 @@ namespace OpenLoco::Map::MapGenerator
             return;
         }
 
-        TilePosLoop tileLoop{ { 1, 1 }, { map_columns - 1, map_rows - 1 } };
-        for (auto& tilePos : tileLoop)
+        TilePosRangeView tileLoop{ { 1, 1 }, { map_columns - 1, map_rows - 1 } };
+        for (const auto& tilePos : tileLoop)
         {
             auto* surface = Map::TileManager::get(tilePos).surface();
             if (surface == nullptr)
@@ -596,19 +596,18 @@ namespace OpenLoco::Map::MapGenerator
         }
 
         for (const auto pattern : {
-                 LandDistribuitionPattern::nowhere,
-                 LandDistribuitionPattern::farFromWater,
-                 LandDistribuitionPattern::nearWater,
-                 LandDistribuitionPattern::onMountains,
-                 LandDistribuitionPattern::farFromMountains,
-                 LandDistribuitionPattern::inSmallRandomAreas,
-                 LandDistribuitionPattern::inLargeRandomAreas,
-                 LandDistribuitionPattern::aroundCliffs,
+                 LandDistributionPattern::farFromWater,
+                 LandDistributionPattern::nearWater,
+                 LandDistributionPattern::onMountains,
+                 LandDistributionPattern::farFromMountains,
+                 LandDistributionPattern::inSmallRandomAreas,
+                 LandDistributionPattern::inLargeRandomAreas,
+                 LandDistributionPattern::aroundCliffs,
              })
         {
             for (uint8_t landObjectIdx = 0; landObjectIdx < ObjectManager::getMaxObjects(ObjectType::land); ++landObjectIdx)
             {
-                auto* landObj = ObjectManager::get<LandObject>(landObjectIdx);
+                const auto* landObj = ObjectManager::get<LandObject>(landObjectIdx);
                 if (landObj == nullptr)
                 {
                     continue;

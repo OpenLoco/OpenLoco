@@ -29,7 +29,7 @@ namespace OpenLoco::Map
     };
 #pragma pack(pop)
 
-    struct TilePosLoop
+    struct TilePosRangeView
     {
     private:
         TilePos2 _begin;
@@ -74,12 +74,12 @@ namespace OpenLoco::Map
                 return retval;
             }
 
-            bool operator==(Iterator& other) const
+            bool operator==(const Iterator& other) const
             {
                 return _pos == other._pos;
             }
 
-            bool operator!=(Iterator& other) const
+            bool operator!=(const Iterator& other) const
             {
                 return !(*this == other);
             }
@@ -97,7 +97,7 @@ namespace OpenLoco::Map
         };
 
     public:
-        TilePosLoop(const TilePos2& begin, const TilePos2& end)
+        TilePosRangeView(const TilePos2& begin, const TilePos2& end)
             : _begin(begin)
             , _end(end)
         {
