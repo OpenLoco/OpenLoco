@@ -98,15 +98,15 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             initEvents();
             self = WindowManager::createWindow(WindowType::companyFaceSelection, windowSize, 0, &events);
             self->widgets = widgets;
-            self->enabled_widgets = (1 << widx::close_button);
+            self->enabledWidgets = (1 << widx::close_button);
             self->initScrollWidgets();
             _9C68F2 = id;
             self->owner = id;
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->setColour(WindowColour::secondary, skin->colour_0A);
             findAllInUseCompetitors(id);
-            self->row_count = _numberCompetitorObjects;
-            self->row_hover = -1;
+            self->rowCount = _numberCompetitorObjects;
+            self->rowHover = -1;
             self->object = nullptr;
         }
     }
@@ -178,11 +178,11 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
         auto [rowIndex, object] = getObjectFromSelection(y);
-        if (self->row_hover == rowIndex)
+        if (self->rowHover == rowIndex)
         {
             return;
         }
-        self->row_hover = rowIndex;
+        self->rowHover = rowIndex;
         self->object = reinterpret_cast<std::byte*>(object._header);
         ObjectManager::freeScenarioText();
         if (object._header)
@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static void draw(Window* const self, Gfx::Context* const context)
     {
         self->draw(context);
-        if (self->row_hover == -1)
+        if (self->rowHover == -1)
         {
             return;
         }
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto y = index * rowHeight;
             uint8_t inlineColour = ControlCodes::colour_black;
 
-            if (index == self.row_hover)
+            if (index == self.rowHover)
             {
                 inlineColour = ControlCodes::window_colour_2;
                 Gfx::fillRect(context, 0, y, self.width, y + 9, 0x2000000 | 48);

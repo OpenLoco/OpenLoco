@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             window->frame_no++;
             window->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::scenarioOptions, window->number, window->current_tab + widx::tab_challenge);
+            WindowManager::invalidateWidget(WindowType::scenarioOptions, window->number, window->currentTab + widx::tab_challenge);
         }
 
         // 0x004400A4
@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 };
 
                 uint32_t imageId = skin->img;
-                if (window->current_tab == widx::tab_challenge - widx::tab_challenge)
+                if (window->currentTab == widx::tab_challenge - widx::tab_challenge)
                     imageId += challengeTabImageIds[(window->frame_no / 4) % std::size(challengeTabImageIds)];
                 else
                     imageId += challengeTabImageIds[0];
@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 };
 
                 uint32_t imageId = skin->img;
-                if (window->current_tab == widx::tab_finances - widx::tab_challenge)
+                if (window->currentTab == widx::tab_finances - widx::tab_challenge)
                     imageId += financesTabImageIds[(window->frame_no / 2) % std::size(financesTabImageIds)];
                 else
                     imageId += financesTabImageIds[0];
@@ -466,17 +466,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
             }
 
-            self->activated_widgets &= ~((1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit));
+            self->activatedWidgets &= ~((1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit));
 
             if ((*objectiveFlags & Scenario::ObjectiveFlags::beTopCompany) != 0)
-                self->activated_widgets |= 1 << widx::check_be_top_company;
+                self->activatedWidgets |= 1 << widx::check_be_top_company;
 
             if ((*objectiveFlags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
-                self->activated_widgets |= 1 << widx::check_be_within_top_three_companies;
+                self->activatedWidgets |= 1 << widx::check_be_within_top_three_companies;
 
             if ((*objectiveFlags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
             {
-                self->activated_widgets |= 1 << widx::check_time_limit;
+                self->activatedWidgets |= 1 << widx::check_time_limit;
                 widgets[widx::time_limit_value].type = WidgetType::textbox;
                 widgets[widx::time_limit_value_down].type = WidgetType::button;
                 widgets[widx::time_limit_value_up].type = WidgetType::button;
@@ -512,9 +512,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             // 0x0043EEFF start
             window = WindowManager::createWindowCentred(WindowType::scenarioOptions, otherWindowSize, 0, &Challenge::events);
             window->widgets = Challenge::widgets;
-            window->enabled_widgets = Challenge::enabledWidgets;
+            window->enabledWidgets = Challenge::enabledWidgets;
             window->number = 0;
-            window->current_tab = 0;
+            window->currentTab = 0;
             window->frame_no = 0;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -532,14 +532,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // TODO(avgeffen): only needs to be called once.
         Common::initEvents();
 
-        window->current_tab = 0;
+        window->currentTab = 0;
         window->invalidate();
 
         window->widgets = Challenge::widgets;
-        window->enabled_widgets = Challenge::enabledWidgets;
-        window->holdable_widgets = Challenge::holdableWidgets;
-        window->event_handlers = &Challenge::events;
-        window->activated_widgets = 0;
+        window->enabledWidgets = Challenge::enabledWidgets;
+        window->holdableWidgets = Challenge::holdableWidgets;
+        window->eventHandlers = &Challenge::events;
+        window->activatedWidgets = 0;
 
         window->callOnResize();
         window->callPrepareDraw();
@@ -815,11 +815,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self->widgets[widx::preferred_aggressiveness].text = preferenceLabelIds[*preferredAIAggressiveness];
             self->widgets[widx::preferred_competitiveness].text = preferenceLabelIds[*preferredAICompetitiveness];
 
-            self->activated_widgets &= ~((1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships));
+            self->activatedWidgets &= ~((1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships));
 
             // TODO(avgeffen): replace with wicked smart widget-id kerfuffle, someday.
-            self->activated_widgets |= static_cast<uint64_t>(*forbiddenVehiclesCompetitors) << widx::competitor_forbid_trains;
-            self->activated_widgets |= static_cast<uint64_t>(*forbiddenVehiclesPlayers) << widx::player_forbid_trains;
+            self->activatedWidgets |= static_cast<uint64_t>(*forbiddenVehiclesCompetitors) << widx::competitor_forbid_trains;
+            self->activatedWidgets |= static_cast<uint64_t>(*forbiddenVehiclesPlayers) << widx::player_forbid_trains;
         }
 
         static void initEvents()
@@ -1165,7 +1165,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
+            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
@@ -1173,9 +1173,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             // Activate the current tab.
-            self->activated_widgets &= ~((1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario));
-            widx widgetIndex = tabInformationByTabOffset[self->current_tab].widgetIndex;
-            self->activated_widgets |= (1ULL << widgetIndex);
+            self->activatedWidgets &= ~((1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario));
+            widx widgetIndex = tabInformationByTabOffset[self->currentTab].widgetIndex;
+            self->activatedWidgets |= (1ULL << widgetIndex);
 
             // Resize common widgets.
             self->widgets[Common::widx::frame].right = self->width - 1;
@@ -1195,17 +1195,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
-            self->current_tab = widgetIndex - widx::tab_challenge;
+            self->currentTab = widgetIndex - widx::tab_challenge;
             self->frame_no = 0;
             self->flags &= ~(WindowFlags::flag_16);
-            self->disabled_widgets = 0;
+            self->disabledWidgets = 0;
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_challenge];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
-            self->holdable_widgets = *tabInfo.holdableWidgets;
-            self->event_handlers = tabInfo.events;
-            self->activated_widgets = 0;
+            self->enabledWidgets = *tabInfo.enabledWidgets;
+            self->holdableWidgets = *tabInfo.holdableWidgets;
+            self->eventHandlers = tabInfo.events;
+            self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
             self->invalidate();

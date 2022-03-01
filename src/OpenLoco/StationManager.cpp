@@ -85,7 +85,7 @@ namespace OpenLoco::StationManager
     static void sub_49E1F1(StationId id)
     {
         auto w = WindowManager::find(WindowType::construction);
-        if (w != nullptr && w->current_tab == 1)
+        if (w != nullptr && w->currentTab == 1)
         {
             if ((addr<0x00522096, uint8_t>() & 8) && StationId(addr<0x01135F70, int32_t>()) == id) // _constructingStationId
             {

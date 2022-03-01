@@ -1121,7 +1121,7 @@ namespace OpenLoco::Ui::WindowManager
             Audio::playSound(Audio::SoundId::openWindow, origin.x + size.width / 2);
         }
 
-        window.event_handlers = events;
+        window.eventHandlers = events;
 
         size_t length = _windowsEnd - (_windows + dstIndex);
         memmove(_windows + dstIndex + 1, _windows + dstIndex, length * sizeof(Ui::Window));
@@ -1393,7 +1393,7 @@ namespace OpenLoco::Ui::WindowManager
             if (w->number != number)
                 continue;
 
-            if (w->current_tab != 4)
+            if (w->currentTab != 4)
                 continue;
 
             w->invalidate();
@@ -1430,10 +1430,10 @@ namespace OpenLoco::Ui::WindowManager
     static void windowScrollWheelInput(Ui::Window* window, WidgetIndex_t widgetIndex, int wheel)
     {
         int scrollIndex = window->getScrollDataIndex(widgetIndex);
-        ScrollArea* scroll = &window->scroll_areas[scrollIndex];
+        ScrollArea* scroll = &window->scrollAreas[scrollIndex];
         Ui::Widget* widget = &window->widgets[widgetIndex];
 
-        if (window->scroll_areas[scrollIndex].flags & ScrollView::ScrollFlags::vscrollbarVisible)
+        if (window->scrollAreas[scrollIndex].flags & ScrollView::ScrollFlags::vscrollbarVisible)
         {
             int size = widget->bottom - widget->top - 1;
             if (scroll->flags & ScrollView::ScrollFlags::hscrollbarVisible)
@@ -1441,7 +1441,7 @@ namespace OpenLoco::Ui::WindowManager
             size = std::max(0, scroll->contentHeight - size);
             scroll->contentOffsetY = std::clamp(scroll->contentOffsetY + wheel, 0, size);
         }
-        else if (window->scroll_areas[scrollIndex].flags & ScrollView::ScrollFlags::hscrollbarVisible)
+        else if (window->scrollAreas[scrollIndex].flags & ScrollView::ScrollFlags::hscrollbarVisible)
         {
             int size = widget->right - widget->left - 1;
             if (scroll->flags & ScrollView::ScrollFlags::vscrollbarVisible)
@@ -1468,7 +1468,7 @@ namespace OpenLoco::Ui::WindowManager
 
             scrollIndex++;
             constexpr uint16_t scrollbarFlags = ScrollView::ScrollFlags::hscrollbarVisible | ScrollView::ScrollFlags::vscrollbarVisible;
-            if (window->scroll_areas[scrollIndex].flags & scrollbarFlags)
+            if (window->scrollAreas[scrollIndex].flags & scrollbarFlags)
             {
                 windowScrollWheelInput(window, widgetIndex, wheel);
                 return true;
@@ -1568,7 +1568,7 @@ namespace OpenLoco::Ui::WindowManager
                     {
                         auto scrollIndex = window->getScrollDataIndex(widgetIndex);
                         constexpr uint16_t scrollbarFlags = ScrollView::ScrollFlags::hscrollbarVisible | ScrollView::ScrollFlags::vscrollbarVisible;
-                        if (window->scroll_areas[scrollIndex].flags & scrollbarFlags)
+                        if (window->scrollAreas[scrollIndex].flags & scrollbarFlags)
                         {
                             windowScrollWheelInput(window, widgetIndex, wheel);
                             return;

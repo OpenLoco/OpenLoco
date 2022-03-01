@@ -115,7 +115,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                             case MessageItemArgumentType::vehicleTab:
                                 auto vehicleObj = ObjectManager::get<VehicleObject>(itemId);
                                 auto window = Ui::Windows::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1 << 31));
-                                window->row_hover = itemId;
+                                window->rowHover = itemId;
                                 if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
                                 {
                                     if (vehicleObj->trackType != 0xFF)
@@ -125,18 +125,18 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                                         {
                                             if (vehicleObj->trackType == _trackTypesForTab[i])
                                             {
-                                                window->current_secondary_tab = i;
+                                                window->currentSecondaryTab = i;
                                                 break;
                                             }
                                         }
                                     }
                                 }
 
-                                auto rowHover = window->row_hover;
+                                auto rowHover = window->rowHover;
 
                                 Ui::Windows::BuildVehicle::sub_4B92A5(window);
 
-                                window->row_hover = rowHover;
+                                window->rowHover = rowHover;
                                 break;
                         }
                     }

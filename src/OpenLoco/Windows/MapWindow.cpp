@@ -190,10 +190,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto tabIndex = widgetIndex - widx::tabOverall;
 
-                if (tabIndex == self->current_tab)
+                if (tabIndex == self->currentTab)
                     return;
 
-                self->current_tab = tabIndex;
+                self->currentTab = tabIndex;
                 self->frame_no = 0;
                 self->var_854 = 0;
                 break;
@@ -205,12 +205,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void onResize(Window* self)
     {
         self->flags |= WindowFlags::resizable;
-        self->min_width = 350;
-        self->max_width = 800;
-        self->max_height = 800;
+        self->minWidth = 350;
+        self->maxWidth = 800;
+        self->maxHeight = 800;
 
-        Ui::Size minWindowSize = { self->min_width, self->min_height };
-        Ui::Size maxWindowSize = { self->max_width, self->max_height };
+        Ui::Size minWindowSize = { self->minWidth, self->minHeight };
+        Ui::Size maxWindowSize = { self->maxWidth, self->maxHeight };
         self->setSize(minWindowSize, maxWindowSize);
     }
 
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 if (cursorX <= legendWidth)
                 {
                     cursorY -= legendBottom;
-                    if (self->current_tab == (widx::tabRoutes - widx::tabOverall))
+                    if (self->currentTab == (widx::tabRoutes - widx::tabOverall))
                     {
                         y = cursorY;
 
@@ -294,20 +294,20 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     }
                     else
                     {
-                        if (cursorY < legendLengths[self->current_tab] * legendItemHeight)
+                        if (cursorY < legendLengths[self->currentTab] * legendItemHeight)
                         {
                             y = cursorY;
 
-                            for (; i < legendLengths[self->current_tab]; i++)
+                            for (; i < legendLengths[self->currentTab]; i++)
                             {
-                                if (self->current_tab == (widx::tabIndustries - widx::tabOverall))
+                                if (self->currentTab == (widx::tabIndustries - widx::tabOverall))
                                 {
                                     auto industryObj = ObjectManager::get<IndustryObject>(i);
 
                                     if (industryObj == nullptr)
                                         continue;
                                 }
-                                else if (self->current_tab == (widx::tabOwnership - widx::tabOverall))
+                                else if (self->currentTab == (widx::tabOwnership - widx::tabOverall))
                                 {
                                     auto company = CompanyManager::get(CompanyId(i));
 
@@ -346,7 +346,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self->frame_no++;
         self->callPrepareDraw();
 
-        WindowManager::invalidateWidget(WindowType::map, self->number, self->current_tab + widx::tabOverall);
+        WindowManager::invalidateWidget(WindowType::map, self->number, self->currentTab + widx::tabOverall);
 
         mapFrameNumber++;
 
@@ -411,7 +411,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D223
     static void leftAlignTabs(Window* self, uint8_t firstTabIndex, uint8_t lastTabIndex)
     {
-        auto disabledWidgets = self->disabled_widgets;
+        auto disabledWidgets = self->disabledWidgets;
         auto pos = self->widgets[firstTabIndex].left;
         auto tabWidth = self->widgets[firstTabIndex].right - pos;
 
@@ -443,13 +443,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::title_map_companies,
         };
 
-        widgets[widx::caption].text = captionText[self->current_tab];
-        auto activatedWidgets = self->activated_widgets;
+        widgets[widx::caption].text = captionText[self->currentTab];
+        auto activatedWidgets = self->activatedWidgets;
         activatedWidgets &= ~((1ULL << widx::statusBar) | (1ULL << widx::scrollview) | (1ULL << widx::tabOwnership) | (1ULL << widx::tabRoutes) | (1ULL << widx::tabIndustries) | (1ULL << widx::tabVehicles) | (1ULL << widx::tabOverall));
 
-        auto currentWidget = self->current_tab + widx::tabOverall;
+        auto currentWidget = self->currentTab + widx::tabOverall;
         activatedWidgets |= (1ULL << currentWidget);
-        self->activated_widgets = activatedWidgets;
+        self->activatedWidgets = activatedWidgets;
 
         self->widgets[widx::frame].right = self->width - 1;
         self->widgets[widx::frame].bottom = self->height - 1;
@@ -473,7 +473,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             disabledWidgets |= (1 << widx::tabVehicles) | (1 << widx::tabRoutes) | (1 << widx::tabOwnership);
         }
 
-        self->disabled_widgets = disabledWidgets;
+        self->disabledWidgets = disabledWidgets;
 
         leftAlignTabs(self, widx::tabOverall, widx::tabOwnership);
     }
@@ -493,7 +493,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         // tabVehicles,
         {
-            if (!(self->disabled_widgets & (1 << widx::tabVehicles)))
+            if (!(self->disabledWidgets & (1 << widx::tabVehicles)))
             {
                 static const uint32_t vehicleImageIds[] = {
                     InterfaceSkin::ImageIds::vehicle_train_frame_0,
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->current_tab == widx::tabVehicles - widx::tabOverall)
+                if (self->currentTab == widx::tabVehicles - widx::tabOverall)
                     imageId += vehicleImageIds[(self->frame_no / 2) % std::size(vehicleImageIds)];
                 else
                     imageId += vehicleImageIds[0];
@@ -536,7 +536,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         // tabRoutes,
         {
-            if (!(self->disabled_widgets & (1 << widx::tabRoutes)))
+            if (!(self->disabledWidgets & (1 << widx::tabRoutes)))
             {
                 static const uint32_t routeImageIds[] = {
                     InterfaceSkin::ImageIds::tab_routes_frame_0,
@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->current_tab == widx::tabRoutes - widx::tabOverall)
+                if (self->currentTab == widx::tabRoutes - widx::tabOverall)
                     imageId += routeImageIds[(self->frame_no / 16) % std::size(routeImageIds)];
                 else
                     imageId += routeImageIds[0];
@@ -557,7 +557,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         // tabOwnership,
         {
-            if (!(self->disabled_widgets & (1 << widx::tabOwnership)))
+            if (!(self->disabledWidgets & (1 << widx::tabOwnership)))
             {
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_companies;
@@ -940,7 +940,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto x = self->x + self->width - 104;
             uint16_t y = self->y + 44;
 
-            switch (self->current_tab + widx::tabOverall)
+            switch (self->currentTab + widx::tabOverall)
             {
                 case widx::tabOverall:
                     drawGraphKeyOverall(self, context, x, &y);
@@ -967,12 +967,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
             y += 14;
             y = std::max(y, static_cast<uint16_t>(92));
 
-            self->min_height = y;
+            self->minHeight = y;
         }
 
         auto args = FormatArguments();
 
-        switch (self->current_tab + widx::tabOverall)
+        switch (self->currentTab + widx::tabOverall)
         {
             case widx::tabOverall:
             case widx::tabRoutes:
@@ -1411,16 +1411,16 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         *element = backupElement;
 
-        if (self.current_tab + widx::tabOverall == widx::tabVehicles)
+        if (self.currentTab + widx::tabOverall == widx::tabVehicles)
         {
             countVehiclesOnMap();
         }
 
-        drawVehiclesOnMap(&context, self.current_tab + widx::tabOverall);
+        drawVehiclesOnMap(&context, self.currentTab + widx::tabOverall);
 
         drawViewportPosition(&context);
 
-        if (self.saved_view.mapX & (1 << 0))
+        if (self.savedView.mapX & (1 << 0))
         {
             drawTownNames(&context);
         }
@@ -1477,7 +1477,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         window = WindowManager::createWindow(WindowType::map, size, 0, &events);
         window->widgets = widgets;
-        window->enabled_widgets |= enabledWidgets;
+        window->enabledWidgets |= enabledWidgets;
 
         initEvents();
 
@@ -1501,8 +1501,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         centerOnViewPoint();
 
-        window->current_tab = 0;
-        window->saved_view.mapX = 1;
+        window->currentTab = 0;
+        window->savedView.mapX = 1;
         window->var_854 = 0;
         window->var_856 = 0;
 
@@ -1548,8 +1548,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         width = -width;
         height = -height;
-        width += window->scroll_areas[0].contentWidth;
-        height += window->scroll_areas[0].contentHeight;
+        width += window->scrollAreas[0].contentWidth;
+        height += window->scrollAreas[0].contentHeight;
 
         width -= x;
         if (width < 0)
@@ -1565,8 +1565,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
             y = std::max(y, 0);
         }
 
-        window->scroll_areas[0].contentOffsetX = x;
-        window->scroll_areas[0].contentOffsetY = y;
+        window->scrollAreas[0].contentOffsetX = x;
+        window->scrollAreas[0].contentOffsetY = y;
 
         Ui::ScrollView::updateThumbs(window, widx::scrollview);
     }

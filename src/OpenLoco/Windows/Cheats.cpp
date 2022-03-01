@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->current_tab == Widx::tab_finances - Widx::tab_finances)
+                if (self->currentTab == Widx::tab_finances - Widx::tab_finances)
                     imageId += financesTabImageIds[(self->frame_no / 2) % std::size(financesTabImageIds)];
                 else
                     imageId += financesTabImageIds[0];
@@ -105,7 +105,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->current_tab == Widx::tab_vehicles - Widx::tab_finances)
+                if (self->currentTab == Widx::tab_vehicles - Widx::tab_finances)
                     imageId += vehiclesTabImageIds[(self->frame_no / 2) % std::size(vehiclesTabImageIds)];
                 else
                     imageId += vehiclesTabImageIds[0];
@@ -208,7 +208,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void prepareDraw(Window* self)
         {
-            self->activated_widgets = (1 << Common::Widx::tab_finances);
+            self->activatedWidgets = (1 << Common::Widx::tab_finances);
         }
 
         static void draw(Ui::Window* const self, Gfx::Context* const context)
@@ -490,15 +490,15 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void prepareDraw(Window* self)
         {
-            self->activated_widgets = (1 << Common::Widx::tab_companies);
+            self->activatedWidgets = (1 << Common::Widx::tab_companies);
 
             if (_targetCompanyId == CompanyManager::getControllingId())
             {
-                self->disabled_widgets |= (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button);
+                self->disabledWidgets |= (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button);
             }
             else
             {
-                self->disabled_widgets &= ~((1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button));
+                self->disabledWidgets &= ~((1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button));
             }
         }
 
@@ -629,7 +629,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void prepareDraw(Window* self)
         {
-            self->activated_widgets = (1 << Common::Widx::tab_vehicles);
+            self->activatedWidgets = (1 << Common::Widx::tab_vehicles);
         }
 
         static void draw(Ui::Window* const self, Gfx::Context* const context)
@@ -720,7 +720,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void prepareDraw(Window* self)
         {
-            self->activated_widgets = (1 << Common::Widx::tab_towns);
+            self->activatedWidgets = (1 << Common::Widx::tab_towns);
         }
 
         static void draw(Ui::Window* const self, Gfx::Context* const context)
@@ -808,9 +808,9 @@ namespace OpenLoco::Ui::Windows::Cheats
             &Finances::_events);
 
         window->widgets = Finances::_widgets;
-        window->current_tab = Common::Widx::tab_finances - Common::Widx::tab_finances;
-        window->enabled_widgets = Finances::enabledWidgets;
-        window->holdable_widgets = Finances::holdableWidgets;
+        window->currentTab = Common::Widx::tab_finances - Common::Widx::tab_finances;
+        window->enabledWidgets = Finances::enabledWidgets;
+        window->holdableWidgets = Finances::holdableWidgets;
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -843,17 +843,17 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            self->current_tab = widgetIndex - Widx::tab_finances;
+            self->currentTab = widgetIndex - Widx::tab_finances;
             self->frame_no = 0;
 
-            auto tabInfo = tabInformationByTabOffset[self->current_tab];
+            auto tabInfo = tabInformationByTabOffset[self->currentTab];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
-            self->holdable_widgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
-            self->event_handlers = tabInfo.events;
-            self->activated_widgets = 0;
+            self->enabledWidgets = *tabInfo.enabledWidgets;
+            self->holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
+            self->eventHandlers = tabInfo.events;
+            self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
-            self->disabled_widgets = 0;
+            self->disabledWidgets = 0;
 
             self->invalidate();
 

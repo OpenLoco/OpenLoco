@@ -33,16 +33,16 @@ namespace OpenLoco::Ui
         , y(position.y)
         , width(size.width)
         , height(size.height)
-        , min_width(size.width)
-        , max_width(size.width)
-        , min_height(size.height)
-        , max_height(size.height)
+        , minWidth(size.width)
+        , maxWidth(size.width)
+        , minHeight(size.height)
+        , maxHeight(size.height)
     {
     }
 
     bool Window::canResize()
     {
-        return (this->flags & WindowFlags::resizable) && (this->min_width != this->max_width || this->min_height != this->max_height);
+        return (this->flags & WindowFlags::resizable) && (this->minWidth != this->maxWidth || this->minHeight != this->maxHeight);
     }
 
     void Window::capSize(int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight)
@@ -78,10 +78,10 @@ namespace OpenLoco::Ui
         }
         this->width = w;
         this->height = h;
-        this->min_width = minWidth;
-        this->min_height = minHeight;
-        this->max_width = maxWidth;
-        this->max_height = maxHeight;
+        this->minWidth = minWidth;
+        this->minHeight = minHeight;
+        this->maxWidth = maxWidth;
+        this->maxHeight = maxHeight;
         if (shouldInvalidateAfter)
         {
             invalidate();
@@ -90,22 +90,22 @@ namespace OpenLoco::Ui
 
     bool Window::isEnabled(int8_t widget_index)
     {
-        return (this->enabled_widgets & (1ULL << widget_index)) != 0;
+        return (this->enabledWidgets & (1ULL << widget_index)) != 0;
     }
 
     bool Window::isDisabled(int8_t widget_index)
     {
-        return (this->disabled_widgets & (1ULL << widget_index)) != 0;
+        return (this->disabledWidgets & (1ULL << widget_index)) != 0;
     }
 
     bool Window::isActivated(WidgetIndex_t index)
     {
-        return (this->activated_widgets & (1ULL << index)) != 0;
+        return (this->activatedWidgets & (1ULL << index)) != 0;
     }
 
     bool Window::isHoldable(Ui::WidgetIndex_t index)
     {
-        return (this->holdable_widgets & (1ULL << index)) != 0;
+        return (this->holdableWidgets & (1ULL << index)) != 0;
     }
 
     // 0x0045A0B3
@@ -277,7 +277,7 @@ namespace OpenLoco::Ui
         for (int i = 0; i < 2; i++)
         {
             Viewport* viewport = this->viewports[i];
-            ViewportConfig* config = &this->viewport_configurations[i];
+            ViewportConfig* config = &this->viewportConfigurations[i];
 
             if (viewport == nullptr)
             {
@@ -419,18 +419,18 @@ namespace OpenLoco::Ui
 
             if (widget->content & Scrollbars::horizontal)
             {
-                if (this->scroll_areas[s].contentWidth != scrollWidth + 1)
+                if (this->scrollAreas[s].contentWidth != scrollWidth + 1)
                 {
-                    this->scroll_areas[s].contentWidth = scrollWidth + 1;
+                    this->scrollAreas[s].contentWidth = scrollWidth + 1;
                     invalidate = true;
                 }
             }
 
             if (widget->content & Scrollbars::vertical)
             {
-                if (this->scroll_areas[s].contentHeight != scrollHeight + 1)
+                if (this->scrollAreas[s].contentHeight != scrollHeight + 1)
                 {
-                    this->scroll_areas[s].contentHeight = scrollHeight + 1;
+                    this->scrollAreas[s].contentHeight = scrollHeight + 1;
                     invalidate = true;
                 }
             }
@@ -459,22 +459,22 @@ namespace OpenLoco::Ui
             if (widget->type != WidgetType::scrollview)
                 continue;
 
-            this->scroll_areas[s].flags = 0;
+            this->scrollAreas[s].flags = 0;
 
             uint16_t scrollWidth = 0, scrollHeight = 0;
             this->callGetScrollSize(s, &scrollWidth, &scrollHeight);
-            this->scroll_areas[s].contentOffsetX = 0;
-            this->scroll_areas[s].contentWidth = scrollWidth + 1;
-            this->scroll_areas[s].contentOffsetY = 0;
-            this->scroll_areas[s].contentHeight = scrollHeight + 1;
+            this->scrollAreas[s].contentOffsetX = 0;
+            this->scrollAreas[s].contentWidth = scrollWidth + 1;
+            this->scrollAreas[s].contentOffsetY = 0;
+            this->scrollAreas[s].contentHeight = scrollHeight + 1;
 
             if (widget->content & Scrollbars::horizontal)
             {
-                this->scroll_areas[s].flags |= Ui::ScrollView::ScrollFlags::hscrollbarVisible;
+                this->scrollAreas[s].flags |= Ui::ScrollView::ScrollFlags::hscrollbarVisible;
             }
             if (widget->content & Scrollbars::vertical)
             {
-                this->scroll_areas[s].flags |= Ui::ScrollView::ScrollFlags::vscrollbarVisible;
+                this->scrollAreas[s].flags |= Ui::ScrollView::ScrollFlags::vscrollbarVisible;
             }
 
             Ui::ScrollView::updateThumbs(this, w);
@@ -525,7 +525,7 @@ namespace OpenLoco::Ui
                 rebased_y = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
 
         // Compute cursor offset relative to tile.
-        ViewportConfig* vc = &this->viewport_configurations[0];
+        ViewportConfig* vc = &this->viewportConfigurations[0];
         *offset_x = (vc->saved_view_x - (dest.x + rebased_x)) * (1 << v->zoom);
         *offset_y = (vc->saved_view_y - (dest.y + rebased_y)) * (1 << v->zoom);
     }
@@ -533,14 +533,14 @@ namespace OpenLoco::Ui
     // 0x004C6801
     void Window::moveWindowToLocation(viewport_pos pos)
     {
-        if (this->viewport_configurations->viewport_target_sprite != EntityId::null)
+        if (this->viewportConfigurations->viewport_target_sprite != EntityId::null)
             return;
 
         if (this->flags & WindowFlags::viewport_no_scrolling)
             return;
 
-        this->viewport_configurations->saved_view_x = pos.x;
-        this->viewport_configurations->saved_view_y = pos.y;
+        this->viewportConfigurations->saved_view_x = pos.x;
+        this->viewportConfigurations->saved_view_y = pos.y;
         this->flags |= WindowFlags::scrolling_to_location;
     }
 
@@ -583,23 +583,23 @@ namespace OpenLoco::Ui
 
     void Window::viewportCentreMain()
     {
-        if (viewports[0] == nullptr || saved_view.isEmpty())
+        if (viewports[0] == nullptr || savedView.isEmpty())
             return;
 
         auto main = WindowManager::getMainWindow();
 
         // Unfocus the viewport.
-        main->viewport_configurations[0].viewport_target_sprite = EntityId::null;
+        main->viewportConfigurations[0].viewport_target_sprite = EntityId::null;
 
         // Centre viewport on tile/thing.
-        if (saved_view.isThingView())
+        if (savedView.isThingView())
         {
-            auto thing = EntityManager::get<EntityBase>(saved_view.thingId);
+            auto thing = EntityManager::get<EntityBase>(savedView.thingId);
             main->viewportCentreOnTile(thing->position);
         }
         else
         {
-            main->viewportCentreOnTile(saved_view.getPos());
+            main->viewportCentreOnTile(savedView.getPos());
         }
     }
 
@@ -618,44 +618,44 @@ namespace OpenLoco::Ui
                 rebased_y = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
 
         // Apply offset to the viewport.
-        ViewportConfig* vc = &this->viewport_configurations[0];
+        ViewportConfig* vc = &this->viewportConfigurations[0];
         vc->saved_view_x = dest.x + rebased_x + (offset_x / (1 << v->zoom));
         vc->saved_view_y = dest.y + rebased_y + (offset_y / (1 << v->zoom));
     }
 
     void Window::viewportFocusOnEntity(EntityId targetEntity)
     {
-        if (viewports[0] == nullptr || saved_view.isEmpty())
+        if (viewports[0] == nullptr || savedView.isEmpty())
             return;
 
-        viewport_configurations[0].viewport_target_sprite = targetEntity;
+        viewportConfigurations[0].viewport_target_sprite = targetEntity;
     }
 
     bool Window::viewportIsFocusedOnEntity() const
     {
-        if (viewports[0] == nullptr || saved_view.isEmpty())
+        if (viewports[0] == nullptr || savedView.isEmpty())
             return false;
 
-        return viewport_configurations[0].viewport_target_sprite != EntityId::null;
+        return viewportConfigurations[0].viewport_target_sprite != EntityId::null;
     }
 
     void Window::viewportUnfocusFromEntity()
     {
-        if (viewports[0] == nullptr || saved_view.isEmpty())
+        if (viewports[0] == nullptr || savedView.isEmpty())
             return;
 
-        if (viewport_configurations[0].viewport_target_sprite == EntityId::null)
+        if (viewportConfigurations[0].viewport_target_sprite == EntityId::null)
             return;
 
-        auto thing = EntityManager::get<EntityBase>(viewport_configurations[0].viewport_target_sprite);
-        viewport_configurations[0].viewport_target_sprite = EntityId::null;
+        auto thing = EntityManager::get<EntityBase>(viewportConfigurations[0].viewport_target_sprite);
+        viewportConfigurations[0].viewport_target_sprite = EntityId::null;
         viewportCentreOnTile(thing->position);
     }
 
     void Window::viewportZoomSet(int8_t zoomLevel, bool toCursor)
     {
         Viewport* v = this->viewports[0];
-        ViewportConfig* vc = &this->viewport_configurations[0];
+        ViewportConfig* vc = &this->viewportConfigurations[0];
 
         zoomLevel = std::clamp<int8_t>(zoomLevel, 0, 3);
         if (v->zoom == zoomLevel)
@@ -749,7 +749,7 @@ namespace OpenLoco::Ui
         auto viewport = viewports[0];
         if (viewport != nullptr)
         {
-            auto& config = viewport_configurations[0];
+            auto& config = viewportConfigurations[0];
             config.viewport_target_sprite = EntityId::null;
             config.saved_view_x = savedView.viewX;
             config.saved_view_y = savedView.viewY;
@@ -907,180 +907,180 @@ namespace OpenLoco::Ui
 
     void Window::callClose()
     {
-        if (event_handlers->on_close == nullptr)
+        if (eventHandlers->on_close == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->on_close))
+        if (isInteropEvent(eventHandlers->on_close))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->on_close, regs);
+            call((uint32_t)this->eventHandlers->on_close, regs);
             return;
         }
 
-        event_handlers->on_close(this);
+        eventHandlers->on_close(this);
     }
 
     void Window::callOnPeriodicUpdate()
     {
-        if (event_handlers->on_periodic_update == nullptr)
+        if (eventHandlers->on_periodic_update == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->on_periodic_update))
+        if (isInteropEvent(eventHandlers->on_periodic_update))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->on_periodic_update, regs);
+            call((uint32_t)this->eventHandlers->on_periodic_update, regs);
             return;
         }
 
-        event_handlers->on_periodic_update(this);
+        eventHandlers->on_periodic_update(this);
     }
 
     void Window::callUpdate()
     {
-        if (event_handlers->on_update == nullptr)
+        if (eventHandlers->on_update == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->on_update))
+        if (isInteropEvent(eventHandlers->on_update))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uintptr_t)this->event_handlers->on_update, regs);
+            call((uintptr_t)this->eventHandlers->on_update, regs);
             return;
         }
 
-        event_handlers->on_update(this);
+        eventHandlers->on_update(this);
     }
 
     void Window::call_8()
     {
-        if (event_handlers->event_08 == nullptr)
+        if (eventHandlers->event_08 == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->event_08))
+        if (isInteropEvent(eventHandlers->event_08))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uintptr_t)this->event_handlers->event_08, regs);
+            call((uintptr_t)this->eventHandlers->event_08, regs);
             return;
         }
 
-        event_handlers->event_08(this);
+        eventHandlers->event_08(this);
     }
 
     void Window::call_9()
     {
-        if (event_handlers->event_09 == nullptr)
+        if (eventHandlers->event_09 == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->event_09))
+        if (isInteropEvent(eventHandlers->event_09))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uintptr_t)this->event_handlers->event_09, regs);
+            call((uintptr_t)this->eventHandlers->event_09, regs);
             return;
         }
 
-        event_handlers->event_09(this);
+        eventHandlers->event_09(this);
     }
 
     void Window::callToolUpdate(int16_t widget_index, int16_t xPos, int16_t yPos)
     {
-        if (event_handlers->on_tool_update == nullptr)
+        if (eventHandlers->on_tool_update == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->on_tool_update))
+        if (isInteropEvent(eventHandlers->on_tool_update))
         {
             registers regs;
             regs.esi = X86Pointer(this);
             regs.dx = widget_index;
             regs.ax = xPos;
             regs.bx = yPos;
-            call((uintptr_t)this->event_handlers->on_tool_update, regs);
+            call((uintptr_t)this->eventHandlers->on_tool_update, regs);
             return;
         }
 
-        event_handlers->on_tool_update(*this, widget_index, xPos, yPos);
+        eventHandlers->on_tool_update(*this, widget_index, xPos, yPos);
     }
 
     void Window::callToolDown(int16_t widget_index, int16_t xPos, int16_t yPos)
     {
-        if (event_handlers->on_tool_down == nullptr)
+        if (eventHandlers->on_tool_down == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->on_tool_down))
+        if (isInteropEvent(eventHandlers->on_tool_down))
         {
             registers regs;
             regs.ax = xPos;
             regs.bx = yPos;
             regs.dx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->on_tool_down, regs);
+            call((uint32_t)this->eventHandlers->on_tool_down, regs);
             return;
         }
 
-        event_handlers->on_tool_down(*this, widget_index, xPos, yPos);
+        eventHandlers->on_tool_down(*this, widget_index, xPos, yPos);
     }
 
     void Window::callToolDragContinue(const int16_t widget_index, const int16_t xPos, const int16_t yPos)
     {
-        if (event_handlers->toolDragContinue == nullptr)
+        if (eventHandlers->toolDragContinue == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->toolDragContinue))
+        if (isInteropEvent(eventHandlers->toolDragContinue))
         {
             registers regs;
             regs.ax = xPos;
             regs.bx = yPos;
             regs.dx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->toolDragContinue, regs);
+            call((uint32_t)this->eventHandlers->toolDragContinue, regs);
             return;
         }
 
-        event_handlers->toolDragContinue(*this, widget_index, xPos, yPos);
+        eventHandlers->toolDragContinue(*this, widget_index, xPos, yPos);
     }
 
     void Window::callToolDragEnd(const int16_t widget_index)
     {
-        if (event_handlers->toolDragEnd == nullptr)
+        if (eventHandlers->toolDragEnd == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->toolDragEnd))
+        if (isInteropEvent(eventHandlers->toolDragEnd))
         {
             registers regs;
             regs.dx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->toolDragEnd, regs);
+            call((uint32_t)this->eventHandlers->toolDragEnd, regs);
             return;
         }
 
-        event_handlers->toolDragEnd(*this, widget_index);
+        eventHandlers->toolDragEnd(*this, widget_index);
     }
 
     void Window::callToolAbort(int16_t widget_index)
     {
-        if (event_handlers->on_tool_abort == nullptr)
+        if (eventHandlers->on_tool_abort == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->on_tool_abort))
+        if (isInteropEvent(eventHandlers->on_tool_abort))
         {
             registers regs;
             regs.dx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->on_tool_abort, regs);
+            call((uint32_t)this->eventHandlers->on_tool_abort, regs);
             return;
         }
 
-        event_handlers->on_tool_abort(*this, widget_index);
+        eventHandlers->on_tool_abort(*this, widget_index);
     }
 
     Ui::CursorId Window::call_15(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out)
     {
-        if (event_handlers->event_15 == nullptr)
+        if (eventHandlers->event_15 == nullptr)
             return CursorId::pointer;
-        if (isInteropEvent(event_handlers->event_15))
+        if (isInteropEvent(eventHandlers->event_15))
         {
             registers regs;
             regs.ax = xPos;
@@ -1088,22 +1088,22 @@ namespace OpenLoco::Ui
             regs.cx = yPos;
             regs.edi = (int32_t)fallback;
             regs.esi = X86Pointer(this);
-            call(reinterpret_cast<uint32_t>(this->event_handlers->event_15), regs);
+            call(reinterpret_cast<uint32_t>(this->eventHandlers->event_15), regs);
 
             *out = regs.bl;
 
             return (CursorId)regs.edi;
         }
 
-        return event_handlers->event_15(*this, xPos, yPos, fallback, *out);
+        return eventHandlers->event_15(*this, xPos, yPos, fallback, *out);
     }
 
     Ui::CursorId Window::callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
-        if (event_handlers->cursor == nullptr)
+        if (eventHandlers->cursor == nullptr)
             return fallback;
 
-        if (isInteropEvent(event_handlers->cursor))
+        if (isInteropEvent(eventHandlers->cursor))
         {
             registers regs;
             regs.cx = xPos;
@@ -1112,7 +1112,7 @@ namespace OpenLoco::Ui
             regs.ebx = -1;
             regs.edi = X86Pointer(&this->widgets[widgetIdx]);
             regs.esi = X86Pointer(this);
-            call((uintptr_t)this->event_handlers->cursor, regs);
+            call((uintptr_t)this->eventHandlers->cursor, regs);
 
             if (regs.ebx == -1)
             {
@@ -1122,15 +1122,15 @@ namespace OpenLoco::Ui
             return (CursorId)regs.ebx;
         }
 
-        return event_handlers->cursor(this, widgetIdx, xPos, yPos, fallback);
+        return eventHandlers->cursor(this, widgetIdx, xPos, yPos, fallback);
     }
 
     void Window::callOnMouseUp(WidgetIndex_t widgetIndex)
     {
-        if (event_handlers->on_mouse_up == nullptr)
+        if (eventHandlers->on_mouse_up == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->on_mouse_up))
+        if (isInteropEvent(eventHandlers->on_mouse_up))
         {
             registers regs;
             regs.edx = widgetIndex;
@@ -1139,281 +1139,281 @@ namespace OpenLoco::Ui
             // Not sure if this is used
             regs.edi = X86Pointer(&this->widgets[widgetIndex]);
 
-            call((uintptr_t)this->event_handlers->on_mouse_up, regs);
+            call((uintptr_t)this->eventHandlers->on_mouse_up, regs);
             return;
         }
 
-        event_handlers->on_mouse_up(this, widgetIndex);
+        eventHandlers->on_mouse_up(this, widgetIndex);
     }
 
     Ui::Window* Window::callOnResize()
     {
-        if (event_handlers->on_resize == nullptr)
+        if (eventHandlers->on_resize == nullptr)
             return this;
 
-        if (isInteropEvent(event_handlers->on_resize))
+        if (isInteropEvent(eventHandlers->on_resize))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uint32_t)event_handlers->on_resize, regs);
+            call((uint32_t)eventHandlers->on_resize, regs);
             return (Window*)regs.esi;
         }
 
-        event_handlers->on_resize(this);
+        eventHandlers->on_resize(this);
         return this;
     }
 
     void Window::call_3(int8_t widget_index)
     {
-        if (event_handlers->event_03 == nullptr)
+        if (eventHandlers->event_03 == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->event_03))
+        if (isInteropEvent(eventHandlers->event_03))
         {
             registers regs;
             regs.edx = widget_index;
             regs.esi = X86Pointer(this);
             regs.edi = X86Pointer(&this->widgets[widget_index]);
-            call((uint32_t)this->event_handlers->event_03, regs);
+            call((uint32_t)this->eventHandlers->event_03, regs);
             return;
         }
 
-        event_handlers->event_03(this, widget_index);
+        eventHandlers->event_03(this, widget_index);
     }
 
     void Window::callOnMouseDown(Ui::WidgetIndex_t widget_index)
     {
-        if (event_handlers->on_mouse_down == nullptr)
+        if (eventHandlers->on_mouse_down == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->on_mouse_down))
+        if (isInteropEvent(eventHandlers->on_mouse_down))
         {
             registers regs;
             regs.edx = widget_index;
             regs.esi = X86Pointer(this);
             regs.edi = X86Pointer(&this->widgets[widget_index]);
-            call((uint32_t)this->event_handlers->on_mouse_down, regs);
+            call((uint32_t)this->eventHandlers->on_mouse_down, regs);
             return;
         }
 
-        event_handlers->on_mouse_down(this, widget_index);
+        eventHandlers->on_mouse_down(this, widget_index);
     }
 
     void Window::callOnDropdown(Ui::WidgetIndex_t widget_index, int16_t item_index)
     {
-        if (event_handlers->on_dropdown == nullptr)
+        if (eventHandlers->on_dropdown == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->on_dropdown))
+        if (isInteropEvent(eventHandlers->on_dropdown))
         {
             registers regs;
             regs.ax = item_index;
             regs.edx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->on_dropdown, regs);
+            call((uint32_t)this->eventHandlers->on_dropdown, regs);
             return;
         }
 
-        event_handlers->on_dropdown(this, widget_index, item_index);
+        eventHandlers->on_dropdown(this, widget_index, item_index);
     }
 
     void Window::callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        if (event_handlers->get_scroll_size == nullptr)
+        if (eventHandlers->get_scroll_size == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->get_scroll_size))
+        if (isInteropEvent(eventHandlers->get_scroll_size))
         {
             registers regs;
             regs.eax = scrollIndex;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->get_scroll_size, regs);
+            call((uint32_t)this->eventHandlers->get_scroll_size, regs);
             *scrollWidth = regs.cx;
             *scrollHeight = regs.dx;
             return;
         }
 
-        event_handlers->get_scroll_size(this, scrollIndex, scrollWidth, scrollHeight);
+        eventHandlers->get_scroll_size(this, scrollIndex, scrollWidth, scrollHeight);
     }
 
     void Window::callScrollMouseDown(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
-        if (event_handlers->scroll_mouse_down == nullptr)
+        if (eventHandlers->scroll_mouse_down == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->scroll_mouse_down))
+        if (isInteropEvent(eventHandlers->scroll_mouse_down))
         {
             registers regs;
             regs.ax = scroll_index;
             regs.esi = X86Pointer(this);
             regs.cx = xPos;
             regs.dx = yPos;
-            call((uint32_t)this->event_handlers->scroll_mouse_down, regs);
+            call((uint32_t)this->eventHandlers->scroll_mouse_down, regs);
             return;
         }
 
-        this->event_handlers->scroll_mouse_down(this, xPos, yPos, scroll_index);
+        this->eventHandlers->scroll_mouse_down(this, xPos, yPos, scroll_index);
     }
 
     void Window::callScrollMouseDrag(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
-        if (event_handlers->scroll_mouse_drag == nullptr)
+        if (eventHandlers->scroll_mouse_drag == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->scroll_mouse_drag))
+        if (isInteropEvent(eventHandlers->scroll_mouse_drag))
         {
             registers regs;
             regs.ax = scroll_index;
             regs.esi = X86Pointer(this);
             regs.cx = xPos;
             regs.dx = yPos;
-            call((uint32_t)this->event_handlers->scroll_mouse_drag, regs);
+            call((uint32_t)this->eventHandlers->scroll_mouse_drag, regs);
             return;
         }
 
-        this->event_handlers->scroll_mouse_drag(this, xPos, yPos, scroll_index);
+        this->eventHandlers->scroll_mouse_drag(this, xPos, yPos, scroll_index);
     }
 
     void Window::callScrollMouseOver(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
-        if (event_handlers->scroll_mouse_over == nullptr)
+        if (eventHandlers->scroll_mouse_over == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->scroll_mouse_over))
+        if (isInteropEvent(eventHandlers->scroll_mouse_over))
         {
             registers regs;
             regs.ax = scroll_index;
             regs.esi = X86Pointer(this);
             regs.cx = xPos;
             regs.dx = yPos;
-            call((uint32_t)this->event_handlers->scroll_mouse_over, regs);
+            call((uint32_t)this->eventHandlers->scroll_mouse_over, regs);
             return;
         }
 
-        this->event_handlers->scroll_mouse_over(this, xPos, yPos, scroll_index);
+        this->eventHandlers->scroll_mouse_over(this, xPos, yPos, scroll_index);
     }
 
     void Window::callTextInput(WidgetIndex_t caller, const char* buffer)
     {
-        if (event_handlers->text_input == nullptr)
+        if (eventHandlers->text_input == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->text_input))
+        if (isInteropEvent(eventHandlers->text_input))
         {
             registers regs;
             regs.dx = caller;
             regs.esi = X86Pointer(this);
             regs.cl = 1;
             regs.edi = X86Pointer(buffer);
-            call((uintptr_t)this->event_handlers->text_input, regs);
+            call((uintptr_t)this->eventHandlers->text_input, regs);
             return;
         }
 
-        this->event_handlers->text_input(this, caller, buffer);
+        this->eventHandlers->text_input(this, caller, buffer);
     }
 
     void Window::callViewportRotate()
     {
-        if (event_handlers->viewport_rotate == nullptr)
+        if (eventHandlers->viewport_rotate == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->viewport_rotate))
+        if (isInteropEvent(eventHandlers->viewport_rotate))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uintptr_t)this->event_handlers->viewport_rotate, regs);
+            call((uintptr_t)this->eventHandlers->viewport_rotate, regs);
             return;
         }
 
-        this->event_handlers->viewport_rotate(this);
+        this->eventHandlers->viewport_rotate(this);
     }
 
     std::optional<FormatArguments> Window::callTooltip(int16_t widget_index)
     {
         // We only return std::nullopt when required by the tooltip function
-        if (event_handlers->tooltip == nullptr)
+        if (eventHandlers->tooltip == nullptr)
             return FormatArguments();
 
-        if (isInteropEvent(event_handlers->tooltip))
+        if (isInteropEvent(eventHandlers->tooltip))
         {
             registers regs;
             regs.ax = widget_index;
             regs.esi = X86Pointer(this);
-            call((int32_t)this->event_handlers->tooltip, regs);
+            call((int32_t)this->eventHandlers->tooltip, regs);
             auto args = FormatArguments();
             if (regs.ax == (int16_t)StringIds::null)
                 return {};
             return args;
         }
 
-        return event_handlers->tooltip(this, widget_index);
+        return eventHandlers->tooltip(this, widget_index);
     }
 
     void Window::callOnMove(int16_t xPos, int16_t yPos)
     {
-        if (event_handlers->on_move == nullptr)
+        if (eventHandlers->on_move == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->on_move))
+        if (isInteropEvent(eventHandlers->on_move))
         {
             registers regs;
             regs.cx = xPos;
             regs.dx = yPos;
             regs.esi = X86Pointer(this);
-            call(reinterpret_cast<int32_t>(this->event_handlers->on_move), regs);
+            call(reinterpret_cast<int32_t>(this->eventHandlers->on_move), regs);
         }
-        this->event_handlers->on_move(*this, xPos, yPos);
+        this->eventHandlers->on_move(*this, xPos, yPos);
     }
 
     void Window::callPrepareDraw()
     {
-        if (event_handlers->prepare_draw == nullptr)
+        if (eventHandlers->prepare_draw == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->prepare_draw))
+        if (isInteropEvent(eventHandlers->prepare_draw))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((int32_t)this->event_handlers->prepare_draw, regs);
+            call((int32_t)this->eventHandlers->prepare_draw, regs);
             return;
         }
 
-        event_handlers->prepare_draw(this);
+        eventHandlers->prepare_draw(this);
     }
 
     void Window::callDraw(Gfx::Context* context)
     {
-        if (event_handlers->draw == nullptr)
+        if (eventHandlers->draw == nullptr)
             return;
 
-        if (isInteropEvent(this->event_handlers->draw))
+        if (isInteropEvent(this->eventHandlers->draw))
         {
             registers regs;
             regs.esi = X86Pointer(this);
             regs.edi = X86Pointer(context);
-            call((int32_t)this->event_handlers->draw, regs);
+            call((int32_t)this->eventHandlers->draw, regs);
             return;
         }
 
-        event_handlers->draw(this, context);
+        eventHandlers->draw(this, context);
     }
 
     void Window::callDrawScroll(Gfx::Context* context, uint32_t scrollIndex)
     {
-        if (event_handlers->draw_scroll == nullptr)
+        if (eventHandlers->draw_scroll == nullptr)
             return;
 
-        if (isInteropEvent(this->event_handlers->draw_scroll))
+        if (isInteropEvent(this->eventHandlers->draw_scroll))
         {
             registers regs;
             regs.ax = scrollIndex;
             regs.esi = X86Pointer(this);
             regs.edi = X86Pointer(context);
-            call((int32_t)event_handlers->draw_scroll, regs);
+            call((int32_t)eventHandlers->draw_scroll, regs);
             return;
         }
 
-        event_handlers->draw_scroll(*this, *context, scrollIndex);
+        eventHandlers->draw_scroll(*this, *context, scrollIndex);
     }
 
     // 0x004CA4DF

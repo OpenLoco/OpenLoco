@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         auto window = WindowManager::createWindow(WindowType::news, origin, windowSize, flags, &News1::events);
 
         window->widgets = widgets;
-        window->enabled_widgets = Common::enabledWidgets;
+        window->enabledWidgets = Common::enabledWidgets;
 
         Common::initEvents();
 
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::windowSize, flags, &Ticker::events);
 
                 window->widgets = Ticker::widgets;
-                window->enabled_widgets = Ticker::enabledWidgets;
+                window->enabledWidgets = Ticker::enabledWidgets;
 
                 Common::initEvents();
 

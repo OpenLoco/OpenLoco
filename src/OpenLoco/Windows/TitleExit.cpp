@@ -48,7 +48,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << Widx::exit_button);
+        window->enabledWidgets = (1 << Widx::exit_button);
 
         window->initScrollWidgets();
 

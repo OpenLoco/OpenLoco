@@ -68,13 +68,13 @@ namespace OpenLoco::Ui::ViewportManager
         assert(index >= 0 && index < viewportsPerWindow);
         Viewport* viewport = w->viewports[index];
 
-        w->viewport_configurations[index].viewport_target_sprite = dx;
+        w->viewportConfigurations[index].viewport_target_sprite = dx;
 
         auto t = EntityManager::get<EntityBase>(dx);
 
         const auto dest = viewport->centre2dCoordinates(t->position);
-        w->viewport_configurations[index].saved_view_x = dest.x;
-        w->viewport_configurations[index].saved_view_y = dest.y;
+        w->viewportConfigurations[index].saved_view_x = dest.x;
+        w->viewportConfigurations[index].saved_view_y = dest.y;
         viewport->view_x = dest.x;
         viewport->view_y = dest.y;
     }
@@ -84,11 +84,11 @@ namespace OpenLoco::Ui::ViewportManager
         assert(index >= 0 && index < viewportsPerWindow);
         Viewport* viewport = w->viewports[index];
 
-        w->viewport_configurations[index].viewport_target_sprite = EntityId::null;
+        w->viewportConfigurations[index].viewport_target_sprite = EntityId::null;
 
         const auto dest = viewport->centre2dCoordinates(tile);
-        w->viewport_configurations[index].saved_view_x = dest.x;
-        w->viewport_configurations[index].saved_view_y = dest.y;
+        w->viewportConfigurations[index].saved_view_x = dest.x;
+        w->viewportConfigurations[index].saved_view_y = dest.y;
         viewport->view_x = dest.x;
         viewport->view_y = dest.y;
     }
@@ -297,7 +297,7 @@ namespace OpenLoco::Ui::ViewportManager
      * 0x004CBBD2 (quarter)
      * 0x004CBCAC (half)
      * 0x004CBD86 (full)
-     * 
+     *
      * @param t @<esi>
      * @param zoom
      */
