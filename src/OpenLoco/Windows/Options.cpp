@@ -1518,7 +1518,7 @@ namespace OpenLoco::Ui::Windows::Options
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
             int index = -1;
-            for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
+            for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
                 index++;
                 if (index == ax)
@@ -1573,7 +1573,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             int index = -1;
-            for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
+            for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
                 index++;
 

@@ -103,7 +103,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         auto shade = Colour::getShade(window.getColour(WindowColour::secondary), 4);
         Gfx::clearSingle(context, shade);
 
-        auto config = Config::get();
+        const auto& config = Config::get();
 
         uint16_t y = 0;
         for (uint16_t i = 0; i < window.row_count; i++)

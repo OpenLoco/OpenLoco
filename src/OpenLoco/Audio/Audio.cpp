@@ -970,7 +970,7 @@ namespace OpenLoco::Audio
     void revalidateCurrentTrack()
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
-        auto cfg = Config::get();
+        const auto& cfg = Config::get();
 
         if (_currentSong == kNoSong)
             return;

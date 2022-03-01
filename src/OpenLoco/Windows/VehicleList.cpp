@@ -409,7 +409,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto company = CompanyManager::get(CompanyId(self->number));
 
         // Disable the tabs for the vehicles that are _not_ available for this company.
-        self->disabled_widgets = (company->availableVehicles ^ 0x3F) << Widx::tab_trains;
+        self->disabled_widgets = (static_cast<uint64_t>(company->availableVehicles ^ 0x3F)) << Widx::tab_trains;
     }
 
     // 0x004C1AA2

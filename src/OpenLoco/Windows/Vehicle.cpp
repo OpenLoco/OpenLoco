@@ -1599,8 +1599,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         void scrollDragEnd(const Ui::Point& pos)
         {
+            if (_dragCarComponent == nullptr)
+            {
+                return;
+            }
+
             auto vehicleWindow = getVehicleDetailsWindow(pos);
-            if (vehicleWindow == nullptr && _dragCarComponent != nullptr)
+            if (vehicleWindow == nullptr)
             {
                 return;
             }
