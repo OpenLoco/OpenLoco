@@ -1,5 +1,6 @@
 #pragma once
 #include "../Core/Optional.hpp"
+#include <cstdint>
 
 namespace OpenLoco::S5
 {
