@@ -115,11 +115,6 @@ namespace OpenLoco::Ui
         constexpr uint32_t flag_31 = 1 << 31;
     }
 
-    namespace WindowConstants
-    {
-        constexpr size_t kMaxScrollAreas = 2;
-    }
-
     struct WindowEventList
     {
         union
@@ -248,26 +243,28 @@ namespace OpenLoco::Ui
 
     struct Window
     {
-        WindowEventList* event_handlers;                           // 0x00
-        Ui::Viewport* viewports[2] = { nullptr, nullptr };         // 0x04
-        uint64_t enabled_widgets = 0;                              // 0x0C
-        uint64_t disabled_widgets = 0;                             // 0x14
-        uint64_t activated_widgets = 0;                            // 0x1C
-        uint64_t holdable_widgets = 0;                             // 0x24
-        Widget* widgets;                                           // 0x2C
-        int16_t x;                                                 // 0x30
-        int16_t y;                                                 // 0x32
-        uint16_t width;                                            // 0x34
-        uint16_t height;                                           // 0x36
-        uint16_t min_width;                                        // 0x38
-        uint16_t max_width;                                        // 0x3a
-        uint16_t min_height;                                       // 0x3c
-        uint16_t max_height;                                       // 0x3e
-        WindowNumber_t number = 0;                                 // 0x40
-        uint32_t flags;                                            // 0x42
-        ScrollArea scroll_areas[WindowConstants::kMaxScrollAreas]; // 0x46
-        int16_t row_info[1000];                                    // 0x6A
-        uint16_t row_count;                                        // 0x83A
+        static constexpr size_t kMaxScrollAreas = 2;
+
+        WindowEventList* event_handlers;                   // 0x00
+        Ui::Viewport* viewports[2] = { nullptr, nullptr }; // 0x04
+        uint64_t enabled_widgets = 0;                      // 0x0C
+        uint64_t disabled_widgets = 0;                     // 0x14
+        uint64_t activated_widgets = 0;                    // 0x1C
+        uint64_t holdable_widgets = 0;                     // 0x24
+        Widget* widgets;                                   // 0x2C
+        int16_t x;                                         // 0x30
+        int16_t y;                                         // 0x32
+        uint16_t width;                                    // 0x34
+        uint16_t height;                                   // 0x36
+        uint16_t min_width;                                // 0x38
+        uint16_t max_width;                                // 0x3a
+        uint16_t min_height;                               // 0x3c
+        uint16_t max_height;                               // 0x3e
+        WindowNumber_t number = 0;                         // 0x40
+        uint32_t flags;                                    // 0x42
+        ScrollArea scroll_areas[kMaxScrollAreas];          // 0x46
+        int16_t row_info[1000];                            // 0x6A
+        uint16_t row_count;                                // 0x83A
         uint16_t var_83C;
         uint16_t row_height;    // 0x83E
         int16_t row_hover = -1; // 0x840
