@@ -446,7 +446,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Gfx::fillRectInset(context, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary), 0b110000);
 
                 // Draw current distribution setting.
-                const string_id distributionId = landDistributionLabelIds[S5::getOptions().landDistributionPatterns[i]];
+                const string_id distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
                 commonFormatArgs[0] = distributionId;
                 Gfx::drawString_494BBF(context, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
 
@@ -513,7 +513,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::scrollview:
                     if (itemIndex != -1 && window->row_hover != -1)
                     {
-                        S5::getOptions().landDistributionPatterns[window->row_hover] = itemIndex;
+                        S5::getOptions().landDistributionPatterns[window->row_hover] = static_cast<S5::LandDistributionPattern>(itemIndex);
                         window->invalidate();
                     }
                     break;
@@ -647,7 +647,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
                 Dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
 
-            Dropdown::setItemSelected(S5::getOptions().landDistributionPatterns[landIndex]);
+            Dropdown::setItemSelected(enumValue(S5::getOptions().landDistributionPatterns[landIndex]));
         }
 
         // 0x0043DEBF
