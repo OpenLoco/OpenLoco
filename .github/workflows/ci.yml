@@ -100,7 +100,7 @@ jobs:
           fetch-depth: 0
       - name: Install dependencies
         env:
-          dependency_ver: 1.3.0
+          dependency_ver: 1.5.0
         run: |
           ln -s /usr/osxcross/SDK/MacOSX10.13.sdk/System /System
           curl -LfO "https://github.com/OpenLoco/Dependencies/releases/download/v${dependency_ver}/openloco.dependencies.macos.${dependency_ver}.zip"
