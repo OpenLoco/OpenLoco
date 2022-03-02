@@ -16,6 +16,7 @@ namespace OpenLoco
             uint16_t offset;
         };
         static constexpr auto kObjectType = ObjectType::townNames;
+        static constexpr auto kMinNumNameCombinations = 80;
 
         string_id name; // 0x00
         Unk unks[6];    // 0x02

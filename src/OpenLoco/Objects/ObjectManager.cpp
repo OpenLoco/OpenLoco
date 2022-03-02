@@ -987,6 +987,10 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<WaterObject*>(&obj)->validate();
             case ObjectType::land:
                 return reinterpret_cast<LandObject*>(&obj)->validate();
+            case ObjectType::townNames:
+                return reinterpret_cast<TownNamesObject*>(&obj)->validate();
+            case ObjectType::cargo:
+                return reinterpret_cast<CargoObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -1022,6 +1026,12 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::land:
                 reinterpret_cast<LandObject*>(&obj)->unload();
+                break;
+            case ObjectType::townNames:
+                reinterpret_cast<TownNamesObject*>(&obj)->unload();
+                break;
+            case ObjectType::cargo:
+                reinterpret_cast<CargoObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -1073,6 +1083,12 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::land:
                 reinterpret_cast<LandObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::townNames:
+                reinterpret_cast<TownNamesObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::cargo:
+                reinterpret_cast<CargoObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;

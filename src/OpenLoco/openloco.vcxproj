@@ -88,6 +88,7 @@
     <ClCompile Include="Objects\AirportObject.cpp" />
     <ClCompile Include="Objects\BridgeObject.cpp" />
     <ClCompile Include="Objects\BuildingObject.cpp" />
+    <ClCompile Include="Objects\CargoObject.cpp" />
     <ClCompile Include="Objects\CompetitorObject.cpp" />
     <ClCompile Include="Objects\CurrencyObject.cpp" />
     <ClCompile Include="Objects\DockObject.cpp" />
@@ -107,6 +108,7 @@
     <ClCompile Include="Objects\SoundObject.cpp" />
     <ClCompile Include="Objects\SteamObject.cpp" />
     <ClCompile Include="Objects\StreetLightObject.cpp" />
+    <ClCompile Include="Objects\TownNamesObject.cpp" />
     <ClCompile Include="Objects\TrackExtraObject.cpp" />
     <ClCompile Include="Objects\TrackObject.cpp" />
     <ClCompile Include="Objects\TrainSignalObject.cpp" />

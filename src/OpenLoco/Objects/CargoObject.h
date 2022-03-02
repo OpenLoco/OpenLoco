@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "../Types.hpp"
 #include "Object.h"
 
@@ -33,6 +34,10 @@ namespace OpenLoco
         uint16_t paymentFactor;    // 0x1B
         uint8_t paymentIndex;      // 0x1D
         uint8_t unitSize;          // 0x1E
+
+        bool validate() const;
+        void load(const LoadedObjectHandle handle, stdx::span<std::byte> data);
+        void unload();
     };
 #pragma pack(pop)
 
