@@ -981,6 +981,10 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<CurrencyObject*>(&obj)->validate();
             case ObjectType::steam:
                 return reinterpret_cast<SteamObject*>(&obj)->validate();
+            case ObjectType::rock:
+                return reinterpret_cast<RockObject*>(&obj)->validate();
+            case ObjectType::water:
+                return reinterpret_cast<WaterObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -1007,6 +1011,12 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::steam:
                 reinterpret_cast<SteamObject*>(&obj)->unload();
+                break;
+            case ObjectType::rock:
+                reinterpret_cast<RockObject*>(&obj)->unload();
+                break;
+            case ObjectType::water:
+                reinterpret_cast<WaterObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -1049,6 +1059,12 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::steam:
                 reinterpret_cast<SteamObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::rock:
+                reinterpret_cast<RockObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::water:
+                reinterpret_cast<WaterObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;

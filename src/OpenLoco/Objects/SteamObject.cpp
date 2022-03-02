@@ -20,8 +20,8 @@ namespace OpenLoco
         baseImageId = 0;
         var_12 = 0;
         var_14 = 0;
-        var_16 = 0;
-        var_1A = 0;
+        var_16 = nullptr;
+        var_1A = nullptr;
         var_05 = 0;
         var_06 = 0;
         var_07 = 0;
