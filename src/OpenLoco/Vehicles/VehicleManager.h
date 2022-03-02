@@ -19,4 +19,17 @@ namespace OpenLoco::Vehicles::RoutingManager
     uint16_t getRouting(const RoutingHandle routing);
     void freeRouting(const RoutingHandle routing);
     bool isEmptyRoutingSlotAvailable();
+
+    class VehicleView
+    {
+        class Iterator
+        {
+            RoutingHandle _begin;
+        public
+            Iterator(const RoutingHandle begin)
+                : _begin(begin)
+            {
+            }
+        };
+    };
 }

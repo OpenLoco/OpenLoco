@@ -25,6 +25,7 @@ namespace OpenLoco::Vehicles
     // 0x004A9969
     bool Vehicle1::updateRoad()
     {
+
         registers regs;
         regs.esi = X86Pointer(this);
 

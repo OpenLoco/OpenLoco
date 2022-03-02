@@ -442,6 +442,8 @@ namespace OpenLoco::Vehicles
         IncomeStats lastIncome; // 0x53
 
         bool update();
+        bool updateRoad();
+        bool updateRail();
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 
