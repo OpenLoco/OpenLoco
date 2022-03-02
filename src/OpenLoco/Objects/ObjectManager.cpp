@@ -985,6 +985,8 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<RockObject*>(&obj)->validate();
             case ObjectType::water:
                 return reinterpret_cast<WaterObject*>(&obj)->validate();
+            case ObjectType::land:
+                return reinterpret_cast<LandObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -1017,6 +1019,9 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::water:
                 reinterpret_cast<WaterObject*>(&obj)->unload();
+                break;
+            case ObjectType::land:
+                reinterpret_cast<LandObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -1065,6 +1070,9 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::water:
                 reinterpret_cast<WaterObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::land:
+                reinterpret_cast<LandObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
