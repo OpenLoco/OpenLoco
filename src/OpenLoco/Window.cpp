@@ -45,31 +45,31 @@ namespace OpenLoco::Ui
         return (this->flags & WindowFlags::resizable) && (this->minWidth != this->maxWidth || this->minHeight != this->maxHeight);
     }
 
-    void Window::capSize(int32_t _minWidth, int32_t _minHeight, int32_t _maxWidth, int32_t _maxHeight)
+    void Window::capSize(int32_t newMinWidth, int32_t newMinHeight, int32_t newMaxWidth, int32_t newMaxHeight)
     {
         auto w = this->width;
         auto h = this->height;
         auto shouldInvalidateBefore = false;
         auto shouldInvalidateAfter = false;
-        if (w < _minWidth)
+        if (w < newMinWidth)
         {
-            w = _minWidth;
+            w = newMinWidth;
             shouldInvalidateAfter = true;
         }
-        if (h < _minHeight)
+        if (h < newMinHeight)
         {
-            h = _minHeight;
+            h = newMinHeight;
             shouldInvalidateAfter = true;
         }
-        if (w > _maxWidth)
+        if (w > newMaxWidth)
         {
             shouldInvalidateBefore = true;
-            w = _maxWidth;
+            w = newMaxWidth;
         }
-        if (h > _maxHeight)
+        if (h > newMaxHeight)
         {
             shouldInvalidateBefore = true;
-            h = _maxHeight;
+            h = newMaxHeight;
         }
 
         if (shouldInvalidateBefore)
@@ -78,10 +78,10 @@ namespace OpenLoco::Ui
         }
         this->width = w;
         this->height = h;
-        this->minWidth = _minWidth;
-        this->minHeight = _minHeight;
-        this->maxWidth = _maxWidth;
-        this->maxHeight = _maxHeight;
+        this->minWidth = newMinWidth;
+        this->minHeight = newMinHeight;
+        this->maxWidth = newMaxWidth;
+        this->maxHeight = newMaxHeight;
         if (shouldInvalidateAfter)
         {
             invalidate();
@@ -744,17 +744,17 @@ namespace OpenLoco::Ui
     }
 
     // 0x004421FB
-    void Window::viewportFromSavedView(const SavedViewSimple& _savedView)
+    void Window::viewportFromSavedView(const SavedViewSimple& newSavedView)
     {
         auto viewport = viewports[0];
         if (viewport != nullptr)
         {
             auto& config = viewportConfigurations[0];
             config.viewport_target_sprite = EntityId::null;
-            config.saved_view_x = _savedView.viewX;
-            config.saved_view_y = _savedView.viewY;
+            config.saved_view_x = newSavedView.viewX;
+            config.saved_view_y = newSavedView.viewY;
 
-            auto zoom = static_cast<int32_t>(_savedView.zoomLevel) - viewport->zoom;
+            auto zoom = static_cast<int32_t>(newSavedView.zoomLevel) - viewport->zoom;
             if (zoom != 0)
             {
                 if (zoom < 0)
@@ -770,7 +770,7 @@ namespace OpenLoco::Ui
                 }
             }
             viewport->zoom = zoom;
-            viewport->setRotation(_savedView.rotation);
+            viewport->setRotation(newSavedView.rotation);
 
             config.saved_view_x -= viewport->view_width / 2;
             config.saved_view_y -= viewport->view_height / 2;
