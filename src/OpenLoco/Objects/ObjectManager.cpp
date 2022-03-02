@@ -979,6 +979,8 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<SoundObject*>(&obj)->validate();
             case ObjectType::currency:
                 return reinterpret_cast<CurrencyObject*>(&obj)->validate();
+            case ObjectType::steam:
+                return reinterpret_cast<SteamObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -1002,6 +1004,9 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::currency:
                 reinterpret_cast<CurrencyObject*>(&obj)->unload();
+                break;
+            case ObjectType::steam:
+                reinterpret_cast<SteamObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -1041,6 +1046,9 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::currency:
                 reinterpret_cast<CurrencyObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::steam:
+                reinterpret_cast<SteamObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
