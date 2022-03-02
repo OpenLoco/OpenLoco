@@ -246,17 +246,17 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         switch (mode)
         {
-        case SortMode::Name:
-            return orderByName(lhs, rhs);
+            case SortMode::Name:
+                return orderByName(lhs, rhs);
 
-        case SortMode::Profit:
-            return orderByProfit(lhs, rhs);
+            case SortMode::Profit:
+                return orderByProfit(lhs, rhs);
 
-        case SortMode::Age:
-            return orderByAge(lhs, rhs);
+            case SortMode::Age:
+                return orderByAge(lhs, rhs);
 
-        case SortMode::Reliability:
-            return orderByReliability(lhs, rhs);
+            case SortMode::Reliability:
+                return orderByReliability(lhs, rhs);
         }
 
         return false;
@@ -833,36 +833,36 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         switch (widgetIndex)
         {
-        case Widx::close_button:
-            WindowManager::close(self);
-            break;
+            case Widx::close_button:
+                WindowManager::close(self);
+                break;
 
-        case Widx::tab_trains:
-        case Widx::tab_buses:
-        case Widx::tab_trucks:
-        case Widx::tab_trams:
-        case Widx::tab_aircraft:
-        case Widx::tab_ships:
-        {
-            auto vehicleType = VehicleType(widgetIndex - Widx::tab_trains);
-            switchTab(self, vehicleType);
-            break;
-        }
+            case Widx::tab_trains:
+            case Widx::tab_buses:
+            case Widx::tab_trucks:
+            case Widx::tab_trams:
+            case Widx::tab_aircraft:
+            case Widx::tab_ships:
+            {
+                auto vehicleType = VehicleType(widgetIndex - Widx::tab_trains);
+                switchTab(self, vehicleType);
+                break;
+            }
 
-        case Widx::sort_name:
-        case Widx::sort_profit:
-        case Widx::sort_age:
-        case Widx::sort_reliability:
-        {
-            auto sortMode = widgetIndex - Widx::sort_name;
-            if (self->sortMode == sortMode)
-                return;
+            case Widx::sort_name:
+            case Widx::sort_profit:
+            case Widx::sort_age:
+            case Widx::sort_reliability:
+            {
+                auto sortMode = widgetIndex - Widx::sort_name;
+                if (self->sortMode == sortMode)
+                    return;
 
-            self->sortMode = sortMode;
-            self->invalidate();
-            refreshVehicleList(self);
-            break;
-        }
+                self->sortMode = sortMode;
+                self->invalidate();
+                refreshVehicleList(self);
+                break;
+            }
         }
     }
 
