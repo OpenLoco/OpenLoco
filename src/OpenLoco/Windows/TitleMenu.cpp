@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << Widx::scenario_list_btn) | (1 << Widx::load_game_btn) | (1 << Widx::tutorial_btn) | (1 << Widx::scenario_editor_btn) | (1 << Widx::chat_btn);
+        window->enabledWidgets = (1 << Widx::scenario_list_btn) | (1 << Widx::load_game_btn) | (1 << Widx::tutorial_btn) | (1 << Widx::scenario_editor_btn) | (1 << Widx::chat_btn);
 
         window->initScrollWidgets();
 
@@ -178,7 +178,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     // 0x00438E0B
     static void prepareDraw(Ui::Window* window)
     {
-        window->disabled_widgets = 0;
+        window->disabledWidgets = 0;
         window->widgets[Widx::tutorial_btn].type = Ui::WidgetType::buttonWithImage;
         window->widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::buttonWithImage;
 

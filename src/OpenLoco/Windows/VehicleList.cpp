@@ -182,10 +182,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void refreshVehicleList(Window* self)
     {
         refreshActiveStation(self);
-        self->row_count = 0;
+        self->rowCount = 0;
         for (auto vehicle : EntityManager::VehicleList())
         {
-            if (vehicle->vehicleType != static_cast<VehicleType>(self->current_tab))
+            if (vehicle->vehicleType != static_cast<VehicleType>(self->currentTab))
                 continue;
 
             if (vehicle->owner != CompanyId(self->number))
@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         for (auto vehicle : EntityManager::VehicleList())
         {
-            if (vehicle->vehicleType != static_cast<VehicleType>(self->current_tab))
+            if (vehicle->vehicleType != static_cast<VehicleType>(self->currentTab))
                 continue;
 
             if (vehicle->owner != CompanyId(self->number))
@@ -291,7 +291,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
 
             auto insertVehicle = EntityManager::get<VehicleHead>(insertId);
-            if (getOrder(SortMode(self->sort_mode), *vehicle, *insertVehicle))
+            if (getOrder(SortMode(self->sortMode), *vehicle, *insertVehicle))
             {
                 insertId = vehicle->id;
                 continue;
@@ -303,18 +303,18 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto vehicle = EntityManager::get<VehicleHead>(insertId);
             vehicle->var_0C |= Vehicles::Flags0C::sorted;
 
-            if (vehicle->id != EntityId(self->row_info[self->row_count]))
-                self->row_info[self->row_count] = enumValue(vehicle->id);
+            if (vehicle->id != EntityId(self->rowInfo[self->rowCount]))
+                self->rowInfo[self->rowCount] = enumValue(vehicle->id);
 
-            self->row_count++;
+            self->rowCount++;
 
-            if (self->row_count > self->var_83C)
-                self->var_83C = self->row_count;
+            if (self->rowCount > self->var_83C)
+                self->var_83C = self->rowCount;
         }
         else
         {
-            if (self->var_83C != self->row_count)
-                self->var_83C = self->row_count;
+            if (self->var_83C != self->rowCount)
+                self->var_83C = self->rowCount;
 
             refreshVehicleList(self);
         }
@@ -394,7 +394,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (self->isDisabled(tab))
                 continue;
 
-            auto isActive = tab == self->current_tab + Widx::tab_trains;
+            auto isActive = tab == self->currentTab + Widx::tab_trains;
             auto imageId = isActive ? frames[self->frame_no / 2 % 8] : frames[0];
 
             uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
@@ -409,7 +409,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto company = CompanyManager::get(CompanyId(self->number));
 
         // Disable the tabs for the vehicles that are _not_ available for this company.
-        self->disabled_widgets = (static_cast<uint64_t>(company->availableVehicles ^ 0x3F)) << Widx::tab_trains;
+        self->disabledWidgets = (static_cast<uint64_t>(company->availableVehicles ^ 0x3F)) << Widx::tab_trains;
     }
 
     // 0x004C1AA2
@@ -422,7 +422,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             &_events);
 
         self->widgets = _widgets;
-        self->enabled_widgets = _enabledWidgets;
+        self->enabledWidgets = _enabledWidgets;
         self->number = enumValue(companyId);
         self->owner = companyId;
         self->frame_no = 0;
@@ -450,13 +450,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
         // 0x004C1A05
         self = create(companyId);
         auto tabIndex = static_cast<uint8_t>(type);
-        self->current_tab = tabIndex;
-        self->row_height = row_heights[tabIndex];
+        self->currentTab = tabIndex;
+        self->rowHeight = row_heights[tabIndex];
         self->width = window_size.width;
         self->height = window_size.height;
-        self->sort_mode = 0;
+        self->sortMode = 0;
         self->var_83C = 0;
-        self->row_hover = -1;
+        self->rowHover = -1;
         self->var_88A = static_cast<int16_t>(FilterMode::allVehicles);
         self->var_88C = -1;
 
@@ -493,7 +493,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x4C2865
     static void setTransportTypeTabs(Window* self)
     {
-        auto disabledWidgets = self->disabled_widgets >> Widx::tab_trains;
+        auto disabledWidgets = self->disabledWidgets >> Widx::tab_trains;
         auto widget = self->widgets + Widx::tab_trains;
         auto tabWidth = widget->right - widget->left;
         auto tabX = widget->left;
@@ -517,8 +517,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void prepareDraw(Window* self)
     {
         // The original game was setting widget sets here. As all tabs are the same, this has been omitted.
-        self->activated_widgets &= ~_tabWidgets;
-        self->activated_widgets |= 1ULL << (self->current_tab + Widx::tab_trains);
+        self->activatedWidgets &= ~_tabWidgets;
+        self->activatedWidgets |= 1ULL << (self->currentTab + Widx::tab_trains);
 
         auto company = CompanyManager::get(CompanyId(self->number));
         [[maybe_unused]] auto args = FormatArguments::common(company->name);
@@ -540,7 +540,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->widgets[Widx::panel].bottom = self->height - 1;
 
         self->widgets[Widx::caption].right = self->width - 2;
-        self->widgets[Widx::caption].text = typeToCaption[self->current_tab];
+        self->widgets[Widx::caption].text = typeToCaption[self->currentTab];
 
         self->widgets[Widx::close_button].left = self->width - 15;
         self->widgets[Widx::close_button].right = self->width - 3;
@@ -565,10 +565,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->widgets[Widx::company_select].right = self->width - 3;
 
         // Set header button captions.
-        self->widgets[Widx::sort_name].text = self->sort_mode == SortMode::Name ? StringIds::table_header_name_desc : StringIds::table_header_name;
-        self->widgets[Widx::sort_profit].text = self->sort_mode == SortMode::Profit ? StringIds::table_header_monthly_profit_desc : StringIds::table_header_monthly_profit;
-        self->widgets[Widx::sort_age].text = self->sort_mode == SortMode::Age ? StringIds::table_header_age_desc : StringIds::table_header_age;
-        self->widgets[Widx::sort_reliability].text = self->sort_mode == SortMode::Reliability ? StringIds::table_header_reliability_desc : StringIds::table_header_reliability;
+        self->widgets[Widx::sort_name].text = self->sortMode == SortMode::Name ? StringIds::table_header_name_desc : StringIds::table_header_name;
+        self->widgets[Widx::sort_profit].text = self->sortMode == SortMode::Profit ? StringIds::table_header_monthly_profit_desc : StringIds::table_header_monthly_profit;
+        self->widgets[Widx::sort_age].text = self->sortMode == SortMode::Age ? StringIds::table_header_age_desc : StringIds::table_header_age;
+        self->widgets[Widx::sort_reliability].text = self->sortMode == SortMode::Reliability ? StringIds::table_header_reliability_desc : StringIds::table_header_reliability;
 
         // Reposition filter dropdowns
         self->widgets[Widx::filter_type].top = self->height - 13;
@@ -585,9 +585,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         // Disable cargo dropdown if not applicable
         if (self->var_88A != FilterMode::transportingCargo)
-            self->disabled_widgets |= (1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn);
+            self->disabledWidgets |= (1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn);
         else
-            self->disabled_widgets &= ~((1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn));
+            self->disabledWidgets &= ~((1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn));
 
         // Set appropriate tooltip
         static constexpr std::array<string_id, 3> filterTooltipByType = {
@@ -626,7 +626,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         FormatArguments args = {};
 
         {
-            auto& footerStringPair = typeToFooterStringIds[self->current_tab];
+            auto& footerStringPair = typeToFooterStringIds[self->currentTab];
             string_id footerStringId = self->var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
             args = FormatArguments::common(footerStringId, self->var_83C);
@@ -711,23 +711,23 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto yPos = 0;
         for (auto i = 0; i < self.var_83C; i++)
         {
-            const auto vehicleId = EntityId(self.row_info[i]);
+            const auto vehicleId = EntityId(self.rowInfo[i]);
 
             // Item not in rendering context, or no vehicle available for this slot?
-            if (yPos + self.row_height < context.y || yPos >= context.y + context.height + self.row_height || vehicleId == EntityId::null)
+            if (yPos + self.rowHeight < context.y || yPos >= context.y + context.height + self.rowHeight || vehicleId == EntityId::null)
             {
-                yPos += self.row_height;
+                yPos += self.rowHeight;
                 continue;
             }
 
             auto head = EntityManager::get<VehicleHead>(vehicleId);
 
             // Highlight selection.
-            if (head->id == EntityId(self.row_hover))
-                Gfx::drawRect(context, 0, yPos, self.width, self.row_height, Colour::getShade(self.getColour(WindowColour::secondary), 0));
+            if (head->id == EntityId(self.rowHover))
+                Gfx::drawRect(context, 0, yPos, self.width, self.rowHeight, Colour::getShade(self.getColour(WindowColour::secondary), 0));
 
             // Draw vehicle at the bottom of the row.
-            drawVehicle(head, &context, yPos + (self.row_height - 28) / 2 + 6);
+            drawVehicle(head, &context, yPos + (self.rowHeight - 28) / 2 + 6);
 
             // Draw vehicle status
             {
@@ -784,7 +784,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 Gfx::drawString_494BBF(context, 475, yPos, 65, Colour::outline(Colour::black), StringIds::vehicle_list_reliability, &args);
             }
 
-            yPos += self.row_height - 2;
+            yPos += self.rowHeight - 2;
         }
     }
 
@@ -795,8 +795,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
             Input::toolCancel();
 
         auto tabIndex = static_cast<uint8_t>(type);
-        self->current_tab = tabIndex;
-        self->row_height = row_heights[tabIndex];
+        self->currentTab = tabIndex;
+        self->rowHeight = row_heights[tabIndex];
         self->frame_no = 0;
 
         if (CompanyManager::getControllingId() == CompanyId(self->number) && _lastVehiclesOption != type)
@@ -814,11 +814,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (self->width < 220)
             self->width = 220;
 
-        self->row_count = 0;
+        self->rowCount = 0;
         refreshVehicleList(self);
 
         self->var_83C = 0;
-        self->row_hover = -1;
+        self->rowHover = -1;
 
         self->callOnResize();
         self->callOnPeriodicUpdate();
@@ -855,10 +855,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
             case Widx::sort_reliability:
             {
                 auto sortMode = widgetIndex - Widx::sort_name;
-                if (self->sort_mode == sortMode)
+                if (self->sortMode == sortMode)
                     return;
 
-                self->sort_mode = sortMode;
+                self->sortMode = sortMode;
                 self->invalidate();
                 refreshVehicleList(self);
                 break;
@@ -934,11 +934,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         disableUnavailableVehicleTypes(self);
 
-        self->row_count = 0;
+        self->rowCount = 0;
         refreshVehicleList(self);
 
         self->var_83C = 0;
-        self->row_hover = -1;
+        self->rowHover = -1;
 
         self->callOnResize();
         self->callPrepareDraw();
@@ -980,7 +980,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->frame_no++;
         self->callPrepareDraw();
 
-        auto widgetIndex = getTabFromType(static_cast<VehicleType>(self->current_tab));
+        auto widgetIndex = getTabFromType(static_cast<VehicleType>(self->currentTab));
         WindowManager::invalidateWidget(WindowType::vehicleList, self->number, widgetIndex);
 
         updateVehicleList(self);
@@ -1001,14 +1001,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         if (self->flags & WindowFlags::not_scroll_view)
         {
-            self->row_hover = -1;
+            self->rowHover = -1;
         }
     }
 
     // 0x004C265B
     static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = self->var_83C * self->row_height;
+        *scrollHeight = self->var_83C * self->rowHeight;
     }
 
     // 0x004C266D
@@ -1017,8 +1017,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (widgetIdx != Widx::scrollview)
             return fallback;
 
-        uint16_t currentIndex = yPos / self->row_height;
-        if (currentIndex < self->var_83C && self->row_info[currentIndex] != -1)
+        uint16_t currentIndex = yPos / self->rowHeight;
+        if (currentIndex < self->var_83C && self->rowInfo[currentIndex] != -1)
             return CursorId::handPointer;
 
         return fallback;
@@ -1031,27 +1031,27 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         self->flags &= ~WindowFlags::not_scroll_view;
 
-        uint16_t currentRow = y / self->row_height;
+        uint16_t currentRow = y / self->rowHeight;
         if (currentRow < self->var_83C)
-            self->row_hover = self->row_info[currentRow];
+            self->rowHover = self->rowInfo[currentRow];
         else
-            self->row_hover = -1;
+            self->rowHover = -1;
 
         string_id tooltipId = StringIds::buffer_337;
-        if (self->row_hover == -1)
+        if (self->rowHover == -1)
             tooltipId = StringIds::null;
 
         char* tooltipBuffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
 
         // Have we already got the right tooltip?
-        if (tooltipBuffer[0] != '\0' && self->widgets[Widx::scrollview].tooltip == tooltipId && self->row_hover == self->var_85C)
+        if (tooltipBuffer[0] != '\0' && self->widgets[Widx::scrollview].tooltip == tooltipId && self->rowHover == self->var_85C)
             return;
 
         self->widgets[Widx::scrollview].tooltip = tooltipId;
-        self->var_85C = self->row_hover;
+        self->var_85C = self->rowHover;
         Ui::Windows::ToolTip::closeAndReset();
 
-        if (self->row_hover == -1)
+        if (self->rowHover == -1)
             return;
 
         // Initialise tooltip buffer.
@@ -1087,11 +1087,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C27C0
     static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        uint16_t currentRow = y / self->row_height;
+        uint16_t currentRow = y / self->rowHeight;
         if (currentRow >= self->var_83C)
             return;
 
-        EntityId currentVehicleId = EntityId(self->row_info[currentRow]);
+        EntityId currentVehicleId = EntityId(self->rowInfo[currentRow]);
         if (currentVehicleId == EntityId::null)
             return;
 
@@ -1107,21 +1107,21 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         self->flags |= WindowFlags::resizable;
 
-        self->min_width = min_dimensions.width;
-        self->min_height = min_dimensions.height;
+        self->minWidth = min_dimensions.width;
+        self->minHeight = min_dimensions.height;
 
-        self->max_width = max_dimensions.width;
-        self->max_height = max_dimensions.height;
+        self->maxWidth = max_dimensions.width;
+        self->maxHeight = max_dimensions.height;
 
-        if (self->width < self->min_width)
+        if (self->width < self->minWidth)
         {
-            self->width = self->min_width;
+            self->width = self->minWidth;
             self->invalidate();
         }
 
-        if (self->height < self->min_height)
+        if (self->height < self->minHeight)
         {
-            self->height = self->min_height;
+            self->height = self->minHeight;
             self->invalidate();
         }
     }

@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, windowSize, 0, &events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = 1 << Widx::close;
+        window->enabledWidgets = 1 << Widx::close;
         window->initScrollWidgets();
 
         const auto skin = ObjectManager::get<InterfaceSkinObject>();

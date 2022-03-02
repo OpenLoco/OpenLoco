@@ -77,15 +77,15 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         initEvents();
 
         window->widgets = _widgets;
-        window->enabled_widgets = 1 << widx::close;
+        window->enabledWidgets = 1 << widx::close;
         window->initScrollWidgets();
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();
         window->setColour(WindowColour::primary, interface->colour_0B);
         window->setColour(WindowColour::secondary, interface->colour_10);
 
-        window->row_count = Audio::kNumMusicTracks;
-        window->row_hover = -1;
+        window->rowCount = Audio::kNumMusicTracks;
+        window->rowHover = -1;
 
         return window;
     }
@@ -106,12 +106,12 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         const auto& config = Config::get();
 
         uint16_t y = 0;
-        for (uint16_t i = 0; i < window.row_count; i++)
+        for (uint16_t i = 0; i < window.rowCount; i++)
         {
             string_id text_colour_id = StringIds::black_stringid;
 
             // Draw hovered track
-            if (i == window.row_hover)
+            if (i == window.rowHover)
             {
                 Gfx::drawRect(context, 0, y, 800, rowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentTrack = y / rowHeight;
-        if (currentTrack > window->row_count)
+        if (currentTrack > window->rowCount)
             return;
 
         auto& config = Config::get();
@@ -179,10 +179,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentTrack = y / rowHeight;
-        if (currentTrack > window->row_count || currentTrack == window->row_hover)
+        if (currentTrack > window->rowCount || currentTrack == window->rowHover)
             return;
 
-        window->row_hover = currentTrack;
+        window->rowHover = currentTrack;
         window->invalidate();
     }
 
@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void onUpdate(Window* window)
     {
         auto optionsWindow = WindowManager::find(WindowType::options);
-        if (optionsWindow == nullptr || optionsWindow->current_tab != Options::tab_offset_music)
+        if (optionsWindow == nullptr || optionsWindow->currentTab != Options::tab_offset_music)
         {
             WindowManager::close(window);
             return;

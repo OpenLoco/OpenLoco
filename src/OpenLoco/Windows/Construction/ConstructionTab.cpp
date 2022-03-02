@@ -671,7 +671,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         rotation &= 3;
 
         setMapSelectedTilesFromPiece(roadPiece, Map::Pos2(x, y), rotation);
-        window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
+        window->holdableWidgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackType = _trackType & ~(1 << 7);
         auto roadObj = ObjectManager::get<RoadObject>(trackType);
@@ -756,7 +756,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::bridge_dropdown].type = WidgetType::none;
         }
 
-        auto activatedWidgets = window->activated_widgets;
+        auto activatedWidgets = window->activatedWidgets;
         activatedWidgets &= ~(Construction::allTrack);
 
         window->widgets[widx::construct].type = WidgetType::none;
@@ -815,7 +815,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             activatedWidgets |= 1ULL << trackGradient;
         }
-        window->activated_widgets = activatedWidgets;
+        window->activatedWidgets = activatedWidgets;
         window->invalidate();
     }
 
@@ -846,7 +846,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         rotation &= 3;
 
         setMapSelectedTilesFromPiece(trackPiece, Map::Pos2(x, y), rotation);
-        window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
+        window->holdableWidgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
@@ -963,7 +963,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::bridge_dropdown].type = WidgetType::none;
         }
 
-        auto activatedWidgets = window->activated_widgets;
+        auto activatedWidgets = window->activatedWidgets;
         activatedWidgets &= ~(Construction::allTrack);
 
         window->widgets[widx::construct].type = WidgetType::none;
@@ -1022,7 +1022,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             activatedWidgets |= 1ULL << trackGradient;
         }
-        window->activated_widgets = activatedWidgets;
+        window->activatedWidgets = activatedWidgets;
         window->invalidate();
     }
 
@@ -1034,7 +1034,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (window == nullptr)
             return;
 
-        if (window->current_tab == Common::widx::tab_construction - Common::widx::tab_construction)
+        if (window->currentTab == Common::widx::tab_construction - Common::widx::tab_construction)
         {
             if (_trackType & (1 << 7))
             {
@@ -1449,12 +1449,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DAA5
     static void onResize(Window* self)
     {
-        self->enabled_widgets &= ~(1 << widx::construct);
+        self->enabledWidgets &= ~(1 << widx::construct);
 
         if (_constructionHover != 1)
-            self->enabled_widgets |= (1 << widx::construct);
+            self->enabledWidgets |= (1 << widx::construct);
 
-        auto disabledWidgets = self->disabled_widgets;
+        auto disabledWidgets = self->disabledWidgets;
         disabledWidgets &= (1 << Common::widx::tab_construction | 1 << Common::widx::tab_overhead | 1 << Common::widx::tab_signal | 1 << Common::widx::tab_station);
         uint8_t trackType = _trackType;
 
@@ -2712,7 +2712,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     void buildAtCurrentPos(Window* self)
     {
-        if (self->current_tab != Common::widx::tab_construction - Common::widx::tab_construction)
+        if (self->currentTab != Common::widx::tab_construction - Common::widx::tab_construction)
             return;
 
         if (_constructionHover == 0)
@@ -2721,13 +2721,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     void removeAtCurrentPos(Window* self)
     {
-        if (self->current_tab == Common::widx::tab_construction - Common::widx::tab_construction)
+        if (self->currentTab == Common::widx::tab_construction - Common::widx::tab_construction)
             self->callOnMouseUp(widx::remove);
     }
 
     void selectPosition(Window* self)
     {
-        if (self->current_tab != Common::widx::tab_construction - Common::widx::tab_construction)
+        if (self->currentTab != Common::widx::tab_construction - Common::widx::tab_construction)
             return;
 
         if (_constructionHover == 0)

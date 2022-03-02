@@ -245,7 +245,7 @@ namespace OpenLoco::Ui::Windows::Town
                     viewport->height = newHeight;
                     viewport->view_width = newWidth << viewport->zoom;
                     viewport->view_height = newHeight << viewport->zoom;
-                    self->saved_view.clear();
+                    self->savedView.clear();
                 }
             }
 
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x00499A87
         static void initViewport(Window* self)
         {
-            if (self->current_tab != 0)
+            if (self->currentTab != 0)
                 return;
 
             self->callPrepareDraw();
@@ -276,7 +276,7 @@ namespace OpenLoco::Ui::Windows::Town
             uint16_t flags = 0;
             if (self->viewports[0] != nullptr)
             {
-                if (self->saved_view == view)
+                if (self->savedView == view)
                     return;
 
                 flags = self->viewports[0]->flags;
@@ -289,7 +289,7 @@ namespace OpenLoco::Ui::Windows::Town
                     flags |= ViewportFlags::gridlines_on_landscape;
             }
 
-            self->saved_view = view;
+            self->savedView = view;
 
             // 0x00499B39 start
             if (self->viewports[0] == nullptr)
@@ -298,7 +298,7 @@ namespace OpenLoco::Ui::Windows::Town
                 auto tile = Map::Pos3({ town->x, town->y, tileZ });
                 auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
-                ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
+                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, tile);
                 self->invalidate();
                 self->flags |= WindowFlags::viewport_no_scrolling;
             }
@@ -341,10 +341,10 @@ namespace OpenLoco::Ui::Windows::Town
             const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::town, windowSize, newFlags, &Town::events);
             window->number = townId;
-            window->min_width = 192;
-            window->min_height = 161;
-            window->max_width = 600;
-            window->max_height = 440;
+            window->minWidth = 192;
+            window->minHeight = 161;
+            window->maxWidth = 600;
+            window->maxHeight = 440;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
@@ -354,21 +354,21 @@ namespace OpenLoco::Ui::Windows::Town
             }
             // 0x00499C0D end
 
-            window->saved_view.clear();
+            window->savedView.clear();
         }
 
         // TODO(avgeffen): only needs to be called once.
         Common::initEvents();
 
-        window->current_tab = 0;
+        window->currentTab = 0;
         window->invalidate();
 
         window->widgets = Town::widgets;
-        window->enabled_widgets = Town::enabledWidgets;
-        window->holdable_widgets = 0;
-        window->event_handlers = &Town::events;
-        window->activated_widgets = 0;
-        window->disabled_widgets = 0;
+        window->enabledWidgets = Town::enabledWidgets;
+        window->holdableWidgets = 0;
+        window->eventHandlers = &Town::events;
+        window->activatedWidgets = 0;
+        window->disabledWidgets = 0;
         window->initScrollWidgets();
         Town::initViewport(window);
 
@@ -618,7 +618,7 @@ namespace OpenLoco::Ui::Windows::Town
         static void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
+            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
@@ -626,9 +626,9 @@ namespace OpenLoco::Ui::Windows::Town
             }
 
             // Activate the current tab.
-            self->activated_widgets &= ~((1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings));
-            widx widgetIndex = tabInformationByTabOffset[self->current_tab].widgetIndex;
-            self->activated_widgets |= (1ULL << widgetIndex);
+            self->activatedWidgets &= ~((1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings));
+            widx widgetIndex = tabInformationByTabOffset[self->currentTab].widgetIndex;
+            self->activatedWidgets |= (1ULL << widgetIndex);
 
             // Put town name in place.
             commonFormatArgs[0] = TownManager::get(TownId(self->number))->name;
@@ -704,7 +704,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
-            self->current_tab = widgetIndex - widx::tab_town;
+            self->currentTab = widgetIndex - widx::tab_town;
             self->frame_no = 0;
             self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
@@ -713,12 +713,12 @@ namespace OpenLoco::Ui::Windows::Town
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
-            self->holdable_widgets = 0;
-            self->event_handlers = tabInfo.events;
-            self->activated_widgets = 0;
+            self->enabledWidgets = *tabInfo.enabledWidgets;
+            self->holdableWidgets = 0;
+            self->eventHandlers = tabInfo.events;
+            self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
-            self->disabled_widgets = 0;
+            self->disabledWidgets = 0;
 
             self->invalidate();
 
@@ -755,7 +755,7 @@ namespace OpenLoco::Ui::Windows::Town
                 };
 
                 uint32_t imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary));
-                if (self->current_tab == widx::tab_population - widx::tab_town)
+                if (self->currentTab == widx::tab_population - widx::tab_town)
                     imageId += populationTabImageIds[(self->frame_no / 4) % std::size(populationTabImageIds)];
                 else
                     imageId += populationTabImageIds[0];
@@ -785,7 +785,7 @@ namespace OpenLoco::Ui::Windows::Town
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->current_tab == widx::tab_company_ratings - widx::tab_town)
+                if (self->currentTab == widx::tab_company_ratings - widx::tab_town)
                     imageId += ratingsTabImageIds[(self->frame_no / 4) % std::size(ratingsTabImageIds)];
                 else
                     imageId += ratingsTabImageIds[0];
