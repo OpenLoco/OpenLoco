@@ -40,7 +40,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <PackageReference Include="OpenLoco.Dependencies" Version="1.4.0">
-      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
   <!-- enable NuGet TargetMonikers fallback to native -->
