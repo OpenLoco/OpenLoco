@@ -45,7 +45,7 @@ jobs:
       - name: Build artifacts
         run: |
             mkdir artifacts | Out-Null
-            Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,loco.exe,bin\*.dll,bin\*.pdb artifacts
+            Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,loco.exe,tests.exe,bin\*.dll,bin\*.pdb artifacts
             Copy-Item data\language artifacts\data\language -Recurse
             Rename-Item artifacts\loco.exe openloco.exe
       - name: Upload artifacts
