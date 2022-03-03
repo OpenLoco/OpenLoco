@@ -396,7 +396,7 @@ endif ()
 
 if (ENABLE_TESTS)
     enable_testing()
-    include("${ROOT_DIR}/test/CMakeLists.txt" NO_POLICY_SCOPE)
+    include("${CMAKE_CURRENT_LIST_DIR}/test/CMakeLists.txt" NO_POLICY_SCOPE)
     # find_package(GTest REQUIRED)
     # set(GTEST_LIBRARIES ${GTEST_BOTH_LIBRARIES})
 
