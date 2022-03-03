@@ -38,6 +38,7 @@ namespace OpenLoco::Vehicles
         constexpr uint8_t unk_2 = 1 << 2;
         constexpr uint8_t unk_3 = 1 << 3;
         constexpr uint8_t isGhost = 1 << 4;
+        constexpr uint8_t unk_5 = 1 << 5;
     }
 
     namespace Flags73 // veh2 Train breakdown flags
@@ -427,7 +428,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
-        uint32_t var_3C;     // 0x3C
+        Speed32 var_3C;      // 0x3C
         uint8_t pad_40[0x2]; // 0x40
         TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;
@@ -473,7 +474,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_4A;                      // sound-related flag(s) common with tail
         Ui::WindowNumber_t soundWindowNumber; // 0x4C common with tail
         Ui::WindowType soundWindowType;       // 0x4E common with tail
-        uint8_t pad_4F;
+        int8_t var_4F;
         uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
         uint16_t totalWeight; // 0x52
         Speed16 maxSpeed;     // 0x54

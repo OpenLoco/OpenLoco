@@ -25,25 +25,22 @@ namespace OpenLoco::Vehicles::RoutingManager
     private:
         struct Iterator
         {
+            enum class Direction : bool
+            {
+                forward,
+                reverse,
+            };
+
         private:
-            uint16_t* _beginRing;
-            uint16_t* _current;
+            RoutingHandle _current;
             bool _hasLooped = false;
+            bool _isEnd = false;
+            Direction _direction = Direction::forward;
 
         public:
-            Iterator(uint16_t* begin, uint16_t* current)
-                : _beginRing(begin)
-                , _current(current)
-            {
-                // Prevent empty tables looping
-                if (*current == -1)
-                {
-                    _hasLooped = true;
-                }
-            }
+            Iterator(const RoutingHandle& begin, bool isEnd, Direction direction);
 
             Iterator& operator++();
-
             Iterator operator++(int)
             {
                 Iterator res = *this;
@@ -51,41 +48,46 @@ namespace OpenLoco::Vehicles::RoutingManager
                 return res;
             }
 
-            bool operator==(Iterator other) const
+            Iterator& operator--();
+            Iterator operator--(int)
             {
-                return _current == other._current && (_hasLooped || other._hasLooped);
+                Iterator res = *this;
+                --(*this);
+                return res;
             }
 
-            bool operator!=(Iterator other) const
+            bool operator==(const Iterator& other) const;
+
+            bool operator!=(const Iterator& other) const
             {
                 return !(*this == other);
             }
 
-            uint16_t& operator*()
-            {
-                return *_current;
-            }
-
-            const uint16_t& operator*() const
-            {
-                return *_current;
-            }
-
-            uint16_t* operator->()
+            RoutingHandle& operator*()
             {
                 return _current;
             }
 
-            const uint16_t* operator->() const
+            const RoutingHandle& operator*() const
+            {
+                return _current;
+            }
+
+            RoutingHandle& operator->()
+            {
+                return _current;
+            }
+
+            const RoutingHandle& operator->() const
             {
                 return _current;
             }
 
             // iterator traits
             using difference_type = std::ptrdiff_t;
-            using value_type = uint16_t;
-            using pointer = const uint16_t*;
-            using reference = const uint16_t&;
+            using value_type = RoutingHandle;
+            using pointer = const RoutingHandle*;
+            using reference = const RoutingHandle&;
             using iterator_category = std::forward_iterator_tag;
         };
 
@@ -98,9 +100,9 @@ namespace OpenLoco::Vehicles::RoutingManager
         {
         }
 
-        RingView::Iterator begin() const;
-        RingView::Iterator end() const;
-
-        uint16_t* atIndex(const uint8_t index) const;
+        RingView::Iterator begin() const { return Iterator(_begin, false, Iterator::Direction::forward); }
+        RingView::Iterator end() const { return Iterator(_begin, true, Iterator::Direction::forward); }
+        auto rbegin() const { return Iterator(_begin, false, Iterator::Direction::reverse); }
+        auto rend() const { return Iterator(_begin, true, Iterator::Direction::reverse); }
     };
 }

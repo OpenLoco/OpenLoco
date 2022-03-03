@@ -34,6 +34,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::Vehicle
 {
@@ -738,7 +739,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->disabledWidgets |= (1 << widx::pickup);
             }
 
-            if (veh1->var_3C >= 0x3689)
+            if (veh1->var_3C >= 0.21303_mph)
             {
                 self->disabledWidgets |= (1 << widx::pickup) | (1 << widx::changeDirection);
             }

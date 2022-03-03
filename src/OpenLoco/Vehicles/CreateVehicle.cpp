@@ -479,7 +479,7 @@ namespace OpenLoco::Vehicles
         newVeh1->var_09 = 0;
         newVeh1->var_15 = 0;
         newVeh1->var_38 = 0;
-        newVeh1->var_3C = 0;
+        newVeh1->var_3C = 0.0_mph;
         newVeh1->var_44 = 0_mph;
         newVeh1->timeAtSignal = 0;
         newVeh1->var_48 = 0;
