@@ -13,11 +13,13 @@ namespace OpenLoco::GameCommands
 {
     // 0x004BB432
     // TODO: Move to somewhere else multiple functions call this one
-    static void removeTree(Map::TreeElement& element, const uint8_t flags)
+    static void removeTree(Map::TreeElement& element, const uint8_t flags, const Map::Pos2& pos)
     {
         registers regs;
         regs.bl = flags;
         regs.esi = X86Pointer(&element);
+        regs.ax = pos.x;
+        regs.cx = pos.y;
         call(0x004BB432, regs);
     }
 
@@ -63,7 +65,7 @@ namespace OpenLoco::GameCommands
             currency32_t removalCost = Economy::getInflationAdjustedCost(treeObj->clear_cost_factor, treeObj->cost_index, 12);
 
             if (flags & Flags::apply)
-                removeTree(*treeElement, flags);
+                removeTree(*treeElement, flags, pos);
 
             auto& options = S5::getOptions();
             options.madeAnyChanges = 1;
