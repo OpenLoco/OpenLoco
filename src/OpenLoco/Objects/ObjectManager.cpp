@@ -991,6 +991,12 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<TownNamesObject*>(&obj)->validate();
             case ObjectType::cargo:
                 return reinterpret_cast<CargoObject*>(&obj)->validate();
+            case ObjectType::wall:
+                return reinterpret_cast<WallObject*>(&obj)->validate();
+            case ObjectType::trackSignal:
+                return reinterpret_cast<TrainSignalObject*>(&obj)->validate();
+            case ObjectType::levelCrossing:
+                return reinterpret_cast<LevelCrossingObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -1032,6 +1038,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::cargo:
                 reinterpret_cast<CargoObject*>(&obj)->unload();
+                break;
+            case ObjectType::wall:
+                reinterpret_cast<WallObject*>(&obj)->unload();
+                break;
+            case ObjectType::trackSignal:
+                reinterpret_cast<TrainSignalObject*>(&obj)->unload();
+                break;
+            case ObjectType::levelCrossing:
+                reinterpret_cast<LevelCrossingObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -1089,6 +1104,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::cargo:
                 reinterpret_cast<CargoObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::wall:
+                reinterpret_cast<WallObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::trackSignal:
+                reinterpret_cast<TrainSignalObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::levelCrossing:
+                reinterpret_cast<LevelCrossingObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
