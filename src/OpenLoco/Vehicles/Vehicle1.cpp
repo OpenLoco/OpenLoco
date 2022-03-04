@@ -87,6 +87,7 @@ namespace OpenLoco::Vehicles
             maxSpeed = std::min(maxSpeed, train.veh2->rackRailMaxSpeed);
         }
 
+        // Distance to speed32 would be var_3C * 2 but since maxspeed is interms of speed16 we have this awkward 32768
         maxSpeed = std::min(maxSpeed, Speed16(var_3C / 32768) + 5_mph);
 
         if ((train.head->var_0C & Flags0C::manualControl && train.head->var_6E <= -20)
