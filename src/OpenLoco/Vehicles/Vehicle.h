@@ -329,6 +329,7 @@ namespace OpenLoco::Vehicles
         void liftUpVehicle();
         void sub_4B7CC3();
         currency32_t calculateRunningCost() const;
+        void sub_4AD93A();
 
     private:
         void applyBreakdownToTrain();
@@ -388,7 +389,6 @@ namespace OpenLoco::Vehicles
         bool sub_4AC1C2();
         bool sub_4AC0A3();
         bool sub_4ACCDC();
-        void sub_4AD93A();
         StationId manualFindTrainStationAtLocation();
         bool sub_4BADE4();
         bool isOnExpectedRoadOrTrack();
@@ -445,6 +445,7 @@ namespace OpenLoco::Vehicles
         bool update();
         bool updateRoad();
         bool updateRail();
+        int32_t updateRoadMotion(int32_t distance);
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 

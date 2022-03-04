@@ -139,5 +139,6 @@ namespace OpenLoco
         static_assert(6_mph * 2 == 12_mph);
         static_assert(toSpeed16(10000.9_mph) == 10000_mph);
         static_assert(0.21303_mph == Speed32(0x3689));
+        static_assert(0.79798_mph == Speed32(0xCC48));
     }
 }
