@@ -3536,7 +3536,7 @@ namespace OpenLoco::Vehicles
                     {
                         return true;
                     }
-                    if (train.veh1->var_3C <= 0.21303_mph)
+                    if (train.veh1->var_3C <= 0x3689)
                     {
                         return true;
                     }

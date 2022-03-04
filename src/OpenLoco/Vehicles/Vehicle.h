@@ -428,7 +428,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
-        Speed32 var_3C;      // 0x3C
+        int32_t var_3C;      // 0x3C
         uint8_t pad_40[0x2]; // 0x40
         TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;

@@ -78,7 +78,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            maxSpeed = toSpeed16(Speed32((60_mph * curveSpeedFraction).getRaw()));
+            maxSpeed = toSpeed16(Speed32((60_mph).getRaw() * curveSpeedFraction));
         }
 
         maxSpeed = std::min(maxSpeed, train.veh2->maxSpeed);
@@ -87,7 +87,7 @@ namespace OpenLoco::Vehicles
             maxSpeed = std::min(maxSpeed, train.veh2->rackRailMaxSpeed);
         }
 
-        maxSpeed = std::min(maxSpeed, toSpeed16(var_3C / 2 + 5.0_mph));
+        maxSpeed = std::min(maxSpeed, Speed16(var_3C / 32768) + 5_mph);
 
         if ((train.head->var_0C & Flags0C::manualControl && train.head->var_6E <= -20)
             || (train.head->var_0C & Flags0C::commandStop))
@@ -99,11 +99,11 @@ namespace OpenLoco::Vehicles
         }
         var_44 = maxSpeed;
         vehicleUpdate_var_1136134 = maxSpeed;
-        int32_t distance1 = ((train.veh2->currentSpeed / 2) - var_3C).getRaw();
-        const auto unk2 = std::max(vehicleUpdate_var_113612C * 4, (0.79798_mph).getRaw());
+        int32_t distance1 = (train.veh2->currentSpeed / 2).getRaw() - var_3C;
+        const auto unk2 = std::max(vehicleUpdate_var_113612C * 4, 0xCC48);
 
         distance1 = std::min(distance1, unk2);
-        var_3C += Speed32(distance1 - updateRoadMotion(distance1));
+        var_3C += distance1 - updateRoadMotion(distance1);
 
         if (!(vehicleUpdate_var_1136114 & (1 << 1)))
         {

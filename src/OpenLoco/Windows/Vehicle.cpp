@@ -739,7 +739,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->disabledWidgets |= (1 << widx::pickup);
             }
 
-            if (veh1->var_3C >= 0.21303_mph)
+            if (veh1->var_3C >= 0x3689)
             {
                 self->disabledWidgets |= (1 << widx::pickup) | (1 << widx::changeDirection);
             }
