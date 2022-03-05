@@ -1,5 +1,6 @@
 #pragma once
 #include "Routing.h"
+#include <iterator>
 #include <optional>
 
 namespace OpenLoco
@@ -88,7 +89,7 @@ namespace OpenLoco::Vehicles::RoutingManager
             using value_type = RoutingHandle;
             using pointer = const RoutingHandle*;
             using reference = const RoutingHandle&;
-            using iterator_category = std::forward_iterator_tag;
+            using iterator_category = std::bidirectional_iterator_tag;
         };
 
         RoutingHandle _begin;
