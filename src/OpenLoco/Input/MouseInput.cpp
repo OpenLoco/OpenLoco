@@ -1595,21 +1595,18 @@ namespace OpenLoco::Input
         {
             if (widget->type == Ui::WidgetType::scrollview)
             {
-                Ui::ScrollView::ScrollPart scrollArea;
-                int16_t scrollX, scrollY;
-                size_t scrollIndex;
-                Ui::ScrollView::getPart(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
+                auto res = Ui::ScrollView::getPart(window, widget, x, y);
 
-                if (scrollArea == Ui::ScrollView::ScrollPart::none)
+                if (res.area == Ui::ScrollView::ScrollPart::none)
                 {
                 }
-                else if (scrollArea == Ui::ScrollView::ScrollPart::view)
+                else if (res.area == Ui::ScrollView::ScrollPart::view)
                 {
-                    window->callScrollMouseOver(scrollX, scrollY, static_cast<uint8_t>(scrollIndex));
+                    window->callScrollMouseOver(res.scrollviewLoc.x, res.scrollviewLoc.y, static_cast<uint8_t>(res.index));
                 }
                 else
                 {
-                    tooltipStringId = kScrollWidgetTooltips.at(scrollArea);
+                    tooltipStringId = kScrollWidgetTooltips.at(res.area);
                     if (*_tooltipWindowType != Ui::WindowType::undefined)
                     {
                         if (tooltipStringId != _currentTooltipStringId)
@@ -1983,29 +1980,22 @@ namespace OpenLoco::Input
                         break;
 
                     case Ui::WidgetType::scrollview:
+                    {
                         _5233A4 = x;
                         _5233A6 = y;
-                        Ui::ScrollView::ScrollPart output_scroll_area;
-                        size_t scroll_id;
-                        int16_t scroll_x, scroll_y;
-                        Ui::ScrollView::getPart(
+
+                        auto res = Ui::ScrollView::getPart(
                             window,
                             &window->widgets[widgetIdx],
                             x,
-                            y,
-                            &scroll_x,
-                            &scroll_y,
-                            &output_scroll_area,
-                            &scroll_id);
+                            y);
 
-                        if (output_scroll_area == Ui::ScrollView::ScrollPart::view)
+                        if (res.area == Ui::ScrollView::ScrollPart::view)
                         {
-
-                            cursorId = window->callCursor(widgetIdx, scroll_x, scroll_y, cursorId);
+                            cursorId = window->callCursor(widgetIdx, res.scrollviewLoc.x, res.scrollviewLoc.y, cursorId);
                         }
-
                         break;
-
+                    }
                     case Ui::WidgetType::viewport:
                         if (Input::hasFlag(Flags::toolActive))
                         {

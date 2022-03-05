@@ -1523,18 +1523,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static Vehicles::VehicleBase* getCarFromScrollViewPos(Ui::Window& self, const Ui::Point& pos)
         {
-            int16_t scrollX;
-            int16_t scrollY;
-            ScrollView::ScrollPart part;
-            size_t scrollIndex;
             Input::setPressedWidgetIndex(widx::carList);
-            Ui::ScrollView::getPart(&self, &self.widgets[widx::carList], pos.x, pos.y, &scrollX, &scrollY, &part, &scrollIndex);
-            if (part != ScrollView::ScrollPart::view)
+            auto res = Ui::ScrollView::getPart(&self, &self.widgets[widx::carList], pos.x, pos.y);
+            if (res.area != ScrollView::ScrollPart::view)
             {
                 return nullptr;
             }
 
-            auto y = self.rowHeight / 2 + scrollY;
+            auto y = self.rowHeight / 2 + res.scrollviewLoc.y;
             auto car = Common::getCarFromScrollView(&self, y);
             if (!car)
             {
