@@ -1,4 +1,5 @@
 #include "../CompanyManager.h"
+#include "../Config.h"
 #include "../Date.h"
 #include "../GameCommands/Cheat.h"
 #include "../GameCommands/GameCommands.h"
@@ -17,11 +18,6 @@
 #include "../Widget.h"
 
 using OpenLoco::GameCommands::CheatCommand;
-
-namespace OpenLoco::Ui::Windows::BuildVehicle
-{
-    extern bool displayLockedVehicles;
-}
 
 namespace OpenLoco::Ui::Windows::Cheats
 {
@@ -638,7 +634,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             self->activated_widgets = (1 << Common::Widx::tab_vehicles);
 
-            if (BuildVehicle::displayLockedVehicles)
+            if (Config::getNew().displayLockedVehicles)
             {
                 self->activated_widgets |= (1 << Widx::checkbox_display_locked_vehicles);
             }
@@ -686,7 +682,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
                 case Widx::checkbox_display_locked_vehicles:
-                    BuildVehicle::displayLockedVehicles = !BuildVehicle::displayLockedVehicles;
+                    Config::getNew().displayLockedVehicles = !Config::getNew().displayLockedVehicles;
                     WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_display_locked_vehicles);
                     WindowManager::invalidate(WindowType::buildVehicle);
                     break;

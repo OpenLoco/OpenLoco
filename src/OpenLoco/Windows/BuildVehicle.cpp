@@ -1,4 +1,5 @@
 #include "../CompanyManager.h"
+#include "../Config.h"
 #include "../Economy/Economy.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
@@ -24,6 +25,14 @@
 #include "../Widget.h"
 
 using namespace OpenLoco::Interop;
+
+namespace OpenLoco::UI::Windows::Cheats
+{
+    namespace Vehicles
+    {
+        extern bool displayLockedVehicles;
+    }
+}
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
@@ -237,17 +246,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
 	static WindowEventList _events;
 
-	bool displayLockedVehicles = false;
-
-	static void setDisabledTransportTabs(Ui::Window* window);
-	static void setTrackTypeTabs(Ui::Window* window);
-	static void resetTrackTypeTabSelection(Ui::Window* window);
-	static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
-	static void setTransportTypeTabs(Ui::Window* window);
-	static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset);
-	static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId company, Ui::Point loc);
-	static void drawTransportTypeTabs(Ui::Window* window, Gfx::Context* context);
-	static void drawTrackTypeTabs(Ui::Window* window, Gfx::Context* context);
+    static void setDisabledTransportTabs(Ui::Window* window);
+    static void setTrackTypeTabs(Ui::Window* window);
+    static void resetTrackTypeTabSelection(Ui::Window* window);
+    static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
+    static void setTransportTypeTabs(Ui::Window* window);
+    static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset);
+    static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId company, Ui::Point loc);
+    static void drawTransportTypeTabs(Ui::Window* window, Gfx::Context* context);
+    static void drawTrackTypeTabs(Ui::Window* window, Gfx::Context* context);
 
 	static void initEvents();
 
@@ -444,11 +451,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 				continue;
 			}
 
-			const auto* company = CompanyManager::get(companyId);
-			if (!displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleObjIndex))
-			{
-				continue;
-			}
+            const auto* company = CompanyManager::get(companyId);
+            if (!Config::getNew().displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleObjIndex))
+            {
+                continue;
+            }
 
 			if (trackType != 0xFF)
 			{
@@ -1102,8 +1109,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 						continue;
 					}
 
-					const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-					auto displayLockedVehiclesScroll = displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleType);
+                        const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+                        auto displayLockedVehiclesScroll = Config::getNew().displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleType);
 
 					auto colouredString = StringIds::black_stringid;
 					if (window.row_hover == vehicleType)
