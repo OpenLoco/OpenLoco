@@ -74,7 +74,6 @@ namespace OpenLoco::ObjectManager
     assert_struct_size(ObjectRepositoryItem, 8);
 #pragma pack(pop)
 
-    loco_global<ObjectEntry2[maxObjects], 0x1125A90> objectEntries;
     loco_global<ObjectRepositoryItem[64], 0x4FE0B8> object_repository;
     loco_global<Object* [maxObjects], 0x0050C3D0> _allObjects;
     loco_global<InterfaceSkinObject* [1], 0x0050C3D0> _interfaceObjects;
@@ -1543,7 +1542,7 @@ namespace OpenLoco::ObjectManager
 
     size_t getByteLength(const LoadedObjectHandle& handle)
     {
-        return objectEntries[getTypeOffset(handle.type) + handle.id].dataSize;
+        return object_repository[enumValue(handle.type)].object_entry_extendeds[handle.id].dataSize;
     }
 
     template<typename TObject>
