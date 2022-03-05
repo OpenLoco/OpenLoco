@@ -1527,9 +1527,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                     if (ebp.index != -1)
                     {
-                        registers regs2;
-                        regs2.ebp = X86Pointer(ebp.object._header);
-                        call(0x00471FF8, regs2); // unload object
+                        ObjectManager::unload(*ebp.object._header);
                     }
 
                     ObjectManager::load(*object.second._header);

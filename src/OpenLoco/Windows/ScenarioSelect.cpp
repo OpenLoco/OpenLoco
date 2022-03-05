@@ -191,11 +191,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         auto isLoaded = ObjectManager::findIndex(scenarioInfo->currency);
         if (!isLoaded)
         {
-            // Unload current object
-            registers regs;
-            regs.ebp = 0x0011264A4; // currencyMeta
-            call(0x00471FF8, regs); // unload object
-
+            // Unload current currency object
+            ObjectManager::unload(ObjectManager::getHeader({ ObjectType::currency, 0 }));
             ObjectManager::load(scenarioInfo->currency);
             ObjectManager::reloadAll();
             call(0x0046E07B); // load currency gfx

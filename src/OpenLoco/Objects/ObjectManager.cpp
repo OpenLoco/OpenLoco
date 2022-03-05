@@ -497,9 +497,9 @@ namespace OpenLoco::ObjectManager
         _customObjectsInIndex = hasCustomObjectsInIndex();
     }
 
-    ObjectHeader* getHeader(LoadedObjectIndex id)
+    ObjectHeader& getHeader(const LoadedObjectHandle& handle)
     {
-        return &objectEntries[id];
+        return object_repository[enumValue(handle.type)].object_entry_extendeds[handle.id];
     }
 
     static ObjectRepositoryItem& getRepositoryItem(ObjectType type)
@@ -1221,6 +1221,19 @@ namespace OpenLoco::ObjectManager
         return std::nullopt;
     }
 
+    // 0x00471FF8
+    void unload(const ObjectHeader& header)
+    {
+        auto handle = findIndex(header);
+        if (!handle)
+        {
+            return;
+        }
+        unload(*handle);
+        free(object_repository[enumValue(handle->type)].objects[handle->id]);
+        object_repository[enumValue(handle->type)].objects[handle->id] = reinterpret_cast<Object*>(-1);
+    }
+
     // 0x00471BCE
     bool load(const ObjectHeader& header)
     {
@@ -1541,8 +1554,8 @@ namespace OpenLoco::ObjectManager
             auto* obj = ObjectManager::get<TObject>();
             if (obj != nullptr)
             {
-                auto entry = getHeader(getTypeOffset(TObject::kObjectType));
-                entries.push_back(*entry);
+                auto entry = getHeader({ TObject::kObjectType, 0 });
+                entries.push_back(entry);
             }
             else
             {
@@ -1553,13 +1566,13 @@ namespace OpenLoco::ObjectManager
         }
         else
         {
-            for (size_t i = 0; i < getMaxObjects(TObject::kObjectType); ++i)
+            for (LoadedObjectId i = 0; i < getMaxObjects(TObject::kObjectType); ++i)
             {
                 auto* obj = ObjectManager::get<TObject>(i);
                 if (obj != nullptr)
                 {
-                    auto entry = getHeader(i + getTypeOffset(TObject::kObjectType));
-                    entries.push_back(*entry);
+                    auto entry = getHeader({ TObject::kObjectType, i });
+                    entries.push_back(entry);
                 }
                 else
                 {

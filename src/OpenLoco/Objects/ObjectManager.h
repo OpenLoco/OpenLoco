@@ -264,7 +264,7 @@ namespace OpenLoco::ObjectManager
     std::optional<LoadedObjectHandle> findIndex(const ObjectIndexEntry& object);
     void reloadAll();
     ObjIndexPair getActiveObject(ObjectType objectType, uint8_t* edi);
-    ObjectHeader* getHeader(LoadedObjectIndex id);
+    ObjectHeader& getHeader(const LoadedObjectHandle& handle);
     std::vector<ObjectHeader> getHeaders();
 
     LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects);
@@ -272,7 +272,10 @@ namespace OpenLoco::ObjectManager
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();
+    // Only unloads the entry (resets entry does not free)
     void unload(const LoadedObjectHandle& handle);
+    // Unloads and frees the entry
+    void unload(const ObjectHeader& header);
     bool load(const ObjectHeader& header);
 
     size_t getByteLength(const LoadedObjectHandle& handle);
