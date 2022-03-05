@@ -114,56 +114,6 @@ namespace OpenLoco::ObjectManager
     constexpr size_t maxObjects = 859;
     constexpr size_t maxObjectTypes = 34;
 
-    constexpr size_t getTypeOffsetSlow(const ObjectType type)
-    {
-        size_t offset = 0;
-        for (size_t i = 0; i < static_cast<size_t>(type); ++i)
-        {
-            offset += getMaxObjects(static_cast<ObjectType>(i));
-        }
-        return offset;
-    }
-    constexpr size_t getTypeOffset(const ObjectType type)
-    {
-        constexpr size_t _offsets[] = {
-            getTypeOffsetSlow(ObjectType::interfaceSkin),
-            getTypeOffsetSlow(ObjectType::sound),
-            getTypeOffsetSlow(ObjectType::currency),
-            getTypeOffsetSlow(ObjectType::steam),
-            getTypeOffsetSlow(ObjectType::rock),
-            getTypeOffsetSlow(ObjectType::water),
-            getTypeOffsetSlow(ObjectType::land),
-            getTypeOffsetSlow(ObjectType::townNames),
-            getTypeOffsetSlow(ObjectType::cargo),
-            getTypeOffsetSlow(ObjectType::wall),
-            getTypeOffsetSlow(ObjectType::trackSignal),
-            getTypeOffsetSlow(ObjectType::levelCrossing),
-            getTypeOffsetSlow(ObjectType::streetLight),
-            getTypeOffsetSlow(ObjectType::tunnel),
-            getTypeOffsetSlow(ObjectType::bridge),
-            getTypeOffsetSlow(ObjectType::trackStation),
-            getTypeOffsetSlow(ObjectType::trackExtra),
-            getTypeOffsetSlow(ObjectType::track),
-            getTypeOffsetSlow(ObjectType::roadStation),
-            getTypeOffsetSlow(ObjectType::roadExtra),
-            getTypeOffsetSlow(ObjectType::road),
-            getTypeOffsetSlow(ObjectType::airport),
-            getTypeOffsetSlow(ObjectType::dock),
-            getTypeOffsetSlow(ObjectType::vehicle),
-            getTypeOffsetSlow(ObjectType::tree),
-            getTypeOffsetSlow(ObjectType::snow),
-            getTypeOffsetSlow(ObjectType::climate),
-            getTypeOffsetSlow(ObjectType::hillShapes),
-            getTypeOffsetSlow(ObjectType::building),
-            getTypeOffsetSlow(ObjectType::scaffolding),
-            getTypeOffsetSlow(ObjectType::industry),
-            getTypeOffsetSlow(ObjectType::region),
-            getTypeOffsetSlow(ObjectType::competitor),
-            getTypeOffsetSlow(ObjectType::scenarioText),
-        };
-        return _offsets[static_cast<size_t>(type)];
-    }
-
     template<typename T>
     T* get();
 

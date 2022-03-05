@@ -75,7 +75,6 @@ namespace OpenLoco::ObjectManager
 #pragma pack(pop)
 
     loco_global<ObjectRepositoryItem[64], 0x4FE0B8> object_repository;
-    loco_global<Object* [maxObjects], 0x0050C3D0> _allObjects;
     loco_global<InterfaceSkinObject* [1], 0x0050C3D0> _interfaceObjects;
     loco_global<SoundObject* [128], 0x0050C3D4> _soundObjects;
     loco_global<CurrencyObject* [1], 0x0050C5D4> _currencyObjects;
@@ -508,7 +507,7 @@ namespace OpenLoco::ObjectManager
 
     Object* getAny(const LoadedObjectHandle& handle)
     {
-        auto obj = _allObjects[getTypeOffset(handle.type) + handle.id];
+        auto obj = object_repository[enumValue(handle.type)].objects[handle.id];
         if (obj == (void*)-1)
         {
             obj = nullptr;
