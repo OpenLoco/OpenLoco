@@ -35,4 +35,5 @@ namespace OpenLoco::Map::TileManager
     uint16_t countSurroundingTrees(const Pos2& pos);
     void update();
     void registerHooks();
+    void removeSurfaceIndustry(const Pos2& pos);
 }
