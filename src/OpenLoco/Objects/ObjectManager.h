@@ -273,6 +273,7 @@ namespace OpenLoco::ObjectManager
 
     void unloadAll();
     void unload(const LoadedObjectHandle& handle);
+    bool load(const ObjectHeader& header);
 
     size_t getByteLength(const LoadedObjectHandle& handle);
 

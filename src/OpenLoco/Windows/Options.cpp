@@ -1532,10 +1532,7 @@ namespace OpenLoco::Ui::Windows::Options
                         call(0x00471FF8, regs2); // unload object
                     }
 
-                    registers regs3;
-                    regs3.ebp = X86Pointer(object.second._header);
-
-                    call(0x00471BCE, regs3);
+                    ObjectManager::load(*object.second._header);
                     ObjectManager::reloadAll();
                     call(0x0046E07B); // load currency gfx
                     sub_4BF935();

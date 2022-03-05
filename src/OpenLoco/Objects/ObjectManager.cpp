@@ -1195,20 +1195,6 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        // sub_471BCE only code
-        //for (id = 0; id < getMaxObjects(loadingHeader.getType()); ++id)
-        //{
-        //    if (object_repository[enumValue(loadingHeader.getType())].objects[id] == reinterpret_cast<Object*>(-1))
-        //    {
-        //        break;
-        //    }
-        //}
-        //if (id >= getMaxObjects(loadingHeader.getType()))
-        //{
-        //    free(object);
-        //    return false;
-        //}
-
         object_repository[enumValue(loadingHeader.getType())].objects[id] = object;
         auto& extendedHeader = object_repository[enumValue(loadingHeader.getType())].object_entry_extendeds[id];
         extendedHeader = ObjectEntry2{
@@ -1221,6 +1207,29 @@ namespace OpenLoco::ObjectManager
         }
 
         return true;
+    }
+
+    static std::optional<LoadedObjectId> findFreeObjectId(const ObjectType type)
+    {
+        for (LoadedObjectId id = 0; id < getMaxObjects(type); ++id)
+        {
+            if (object_repository[enumValue(type)].objects[id] == reinterpret_cast<Object*>(-1))
+            {
+                return id;
+            }
+        }
+        return std::nullopt;
+    }
+
+    // 0x00471BCE
+    bool load(const ObjectHeader& header)
+    {
+        auto id = findFreeObjectId(header.getType());
+        if (!id)
+        {
+            return false;
+        }
+        return load(header, *id);
     }
 
     static LoadedObjectId getObjectId(LoadedObjectIndex index)
