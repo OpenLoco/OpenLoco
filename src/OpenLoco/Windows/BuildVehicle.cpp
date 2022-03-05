@@ -26,14 +26,6 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::UI::Windows::Cheats
-{
-    namespace Vehicles
-    {
-        extern bool displayLockedVehicles;
-    }
-}
-
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
 	static const Ui::Size window_size = { 380, 233 };
