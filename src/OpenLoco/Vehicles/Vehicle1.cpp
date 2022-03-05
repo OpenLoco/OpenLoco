@@ -59,17 +59,22 @@ namespace OpenLoco::Vehicles
             curveSpeedFraction = std::min(curveSpeedFraction, _roadIdToCurveSpeedFraction[roadId]);
             if (res & (1 << 12))
             {
-                auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);
-                maxSpeed = std::min(bridgeObj->max_speed, maxSpeed);
+                const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);
+                if (bridgeObj->max_speed != speed16Null)
+                {
+                    maxSpeed = std::min(bridgeObj->max_speed, maxSpeed);
+                }
             }
         }
 
         Vehicle train(head);
         if (train.veh2->var_4F != -1)
         {
-            auto* roadObj = ObjectManager::get<RoadObject>(train.veh2->var_4F);
-            maxSpeed = std::min(toSpeed16(Speed32(curveSpeedFraction * roadObj->maxSpeed.getRaw()) + 1.0_mph), maxSpeed);
+            const auto* roadObj = ObjectManager::get<RoadObject>(train.veh2->var_4F);
+            const Speed32 fractionalSpeed = Speed32(static_cast<uint32_t>(curveSpeedFraction) * roadObj->maxSpeed.getRaw());
+            maxSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), maxSpeed);
             maxSpeed = std::max(maxSpeed, 12_mph);
+
             if (train.head->var_38 & Flags38::unk_5)
             {
                 maxSpeed += maxSpeed / 4;
@@ -78,7 +83,8 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            maxSpeed = toSpeed16(Speed32((60_mph).getRaw() * curveSpeedFraction));
+            const Speed32 fractionalSpeed = Speed32(static_cast<uint32_t>(curveSpeedFraction) * (60_mph).getRaw());
+            maxSpeed = toSpeed16(fractionalSpeed);
         }
 
         maxSpeed = std::min(maxSpeed, train.veh2->maxSpeed);
@@ -99,6 +105,7 @@ namespace OpenLoco::Vehicles
             }
         }
         var_44 = maxSpeed;
+
         vehicleUpdate_var_1136134 = maxSpeed;
         int32_t distance1 = (train.veh2->currentSpeed / 2).getRaw() - var_3C;
         const auto unk2 = std::max(vehicleUpdate_var_113612C * 4, 0xCC48);
