@@ -1797,31 +1797,61 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x00478361
-    static std::optional<std::pair<int16_t, int16_t>> getExistingRoadAtLoc(int16_t x, int16_t y)
+    static std::optional<int16_t> getExistingRoadAtLoc(int16_t x, int16_t y)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        auto flags = call(0x00478361, regs);
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        static loco_global<Viewport*, 0x01135F52> _1135F52;
+        _113600C = { x, y };
 
-        if (flags & X86_FLAG_CARRY)
+        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::roadAndTram));
+        _1135F52 = viewport;
+
+        if (interaction.type != ViewportInteraction::InteractionItem::road)
+        {
             return std::nullopt;
+        }
 
-        return { std::make_pair(regs.di, regs.dl) };
+        const auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->as<RoadElement>();
+        if (elTrack == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        const auto& roadPieces = TrackData::getRoadPiece(elTrack->roadId());
+        const auto& roadPiece = roadPieces[elTrack->sequenceIndex()];
+
+        const auto startHeight = elTrack->baseZ() * 4 - roadPiece.z;
+
+        return { startHeight };
     }
 
     // 0x004A4011
     static std::optional<std::pair<int16_t, int16_t>> getExistingTrackAtLoc(int16_t x, int16_t y)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        auto flags = call(0x004A4011, regs);
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        static loco_global<Viewport*, 0x01135F52> _1135F52;
+        _113600C = { x, y };
 
-        if (flags & X86_FLAG_CARRY)
+        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track));
+        _1135F52 = viewport;
+
+        if (interaction.type != ViewportInteraction::InteractionItem::track)
+        {
             return std::nullopt;
+        }
 
-        return { std::make_pair(regs.di, regs.dl) };
+        const auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->as<TrackElement>();
+        if (elTrack == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        const auto& trackPieces = TrackData::getTrackPiece(elTrack->trackId());
+        const auto& trackPiece = trackPieces[elTrack->sequenceIndex()];
+
+        const auto startHeight = elTrack->baseZ() * 4 - trackPiece.z;
+
+        return { std::make_pair(startHeight, elTrack->trackId()) };
     }
 
     static void constructionLoop(const Pos2& mapPos, uint32_t maxRetries, int16_t height)
@@ -1926,7 +1956,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (existingRoad)
         {
-            const auto& existingHeight = existingRoad->first;
+            const auto& existingHeight = *existingRoad;
             const auto mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
             if (mapPos)
             {
