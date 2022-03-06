@@ -9,7 +9,7 @@
 - Fix: [#1325] Crash when saving second loaded scenario of a playthrough.
 - Fix: [#1328] Various object loading bugs related to custom object files causing crashes on load.
 - Change: [#1276] Transfering cargo is now viable. The cargo age is calculated as the weighted average of the present and delivered cargo.
-- Technical: [#1347] Add OpenAL-soft audio engine.
+- Technical: [#1347] Now using OpenAL-soft engine for audio, replacing SDL2_mixer.
 
 22.02 (2022-02-06)
 ------------------------------------------------------------------------
