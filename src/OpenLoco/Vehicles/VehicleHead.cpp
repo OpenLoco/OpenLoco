@@ -2885,10 +2885,7 @@ namespace OpenLoco::Vehicles
             }
             if (highestQty != 0)
             {
-                if (cargo.type != chosenCargo)
-                {
-                    cargo.type = chosenCargo;
-                }
+                cargo.type = chosenCargo;
             }
         }
 
