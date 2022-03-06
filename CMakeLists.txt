@@ -253,8 +253,6 @@ if (NOT SDL2_LIBRARIES)
 	endif()
 endif()
 
-find_package(SDL2_mixer REQUIRED)
-
 find_package(PNG REQUIRED)
 if (NOT APPLE AND NOT MSVC)
 	pkg_check_modules(OPENAL REQUIRED openal)
@@ -296,7 +294,7 @@ else ()
     endif ()
 endif ()
 
-target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
+target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
 target_link_libraries(${PROJECT} ${PNG_LIBRARIES})
 target_link_libraries(${PROJECT} ${OPENAL_LIBRARIES})

@@ -72,8 +72,8 @@ Releases are currently provided for Windows and macOS (32-bit only).
 Regardless of platform, the following libraries/dependencies are required:
 - [libpng](http://www.libpng.org/pub/png/libpng.html)
 - [libzip](https://libzip.org)
+- [OpenAL](https://www.openal.org/)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
-- [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [breakpad](https://github.com/google/breakpad)
 
