@@ -936,19 +936,10 @@ namespace OpenLoco::ObjectManager
                 if (obj != nullptr && obj != reinterpret_cast<Object*>(-1))
                 {
                     const auto& objHeader = typedObjectList.object_entry_extendeds[i];
-                    if (objHeader.isCustom())
+
+                    if (header == objHeader)
                     {
-                        if (header == objHeader)
-                        {
-                            return { LoadedObjectHandle{ objectType, i } };
-                        }
-                    }
-                    else
-                    {
-                        if (header.getType() == objHeader.getType() && header.getName() == objHeader.getName())
-                        {
-                            return { LoadedObjectHandle{ objectType, i } };
-                        }
+                        return { LoadedObjectHandle{ objectType, i } };
                     }
                 }
             }
@@ -988,6 +979,19 @@ namespace OpenLoco::ObjectManager
         return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
     }
 
+    static bool callLoadObjectFunction(const LoadedObjectHandle handle, Object& obj)
+    {
+        auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+        auto objectProc = objectProcTable[static_cast<size_t>(handle.type)];
+
+        registers regs;
+        regs.al = static_cast<uint8_t>(ObjectProcedure::load);
+        regs.esi = X86Pointer(&obj);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
+        return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+    }
+
     static bool callObjectFunction(const LoadedObjectHandle handle, ObjectProcedure proc)
     {
         auto* obj = getAny(handle);
@@ -999,13 +1003,88 @@ namespace OpenLoco::ObjectManager
         throw std::runtime_error("Object not loaded at this index");
     }
 
+    bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data);
+
     // 0x00471BC5
     static bool load(const ObjectHeader& header, LoadedObjectId id)
     {
-        registers regs;
-        regs.ebp = X86Pointer(&header);
-        regs.ecx = static_cast<int32_t>(id);
-        return (call(0x00471BC5, regs) & X86_FLAG_CARRY) == 0;
+        // somewhat duplicates isObjectInstalled
+        const auto installedObjects = getAvailableObjects(header.getType());
+        auto res = std::find_if(std::begin(installedObjects), std::end(installedObjects), [&header](auto& obj) { return *obj.second._header == header; });
+        if (res == std::end(installedObjects))
+        {
+            // Object is not installed
+            return false;
+        }
+
+        const auto& installedObject = res->second;
+        const auto filePath = Environment::getPath(Environment::PathId::objects) / fs::u8path(installedObject._filename);
+
+        SawyerStreamReader stream(filePath);
+        ObjectHeader loadingHeader;
+        stream.read(&loadingHeader, sizeof(loadingHeader));
+        if (loadingHeader != header)
+        {
+            // Something wrong has happened and installed object does not match index
+            // Vanilla continued to search for subsequent matching installed headers.
+            return false;
+        }
+
+        // Vanilla would branch and perform more efficient readChunk if size was known from installedObject.ObjectHeader2
+        auto data = stream.readChunk();
+
+        if (!computeObjectChecksum(loadingHeader, data))
+        {
+            // Something wrong has happened and installed object checksum is broken
+            return false;
+        }
+
+        // Copy the object into Loco freeable memory (required for when load loads the object)
+        auto* object = reinterpret_cast<Object*>(malloc(data.size()));
+        std::copy(std::begin(data), std::end(data), reinterpret_cast<uint8_t*>(object));
+
+        if (!callObjectFunction(loadingHeader.getType(), *object, ObjectProcedure::validate))
+        {
+            free(object);
+            object = nullptr;
+            // Object failed validation
+            return false;
+        }
+
+        if (_totalNumImages >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
+        {
+            free(object);
+            object = nullptr;
+            // Too many objects loaded and no free image space
+            return false;
+        }
+
+        // sub_471BCE only code
+        //for (id = 0; id < getMaxObjects(loadingHeader.getType()); ++id)
+        //{
+        //    if (object_repository[enumValue(loadingHeader.getType())].objects[id] == reinterpret_cast<Object*>(-1))
+        //    {
+        //        break;
+        //    }
+        //}
+        //if (id >= getMaxObjects(loadingHeader.getType()))
+        //{
+        //    free(object);
+        //    return false;
+        //}
+
+        object_repository[enumValue(loadingHeader.getType())].objects[id] = object;
+        auto& extendedHeader = object_repository[enumValue(loadingHeader.getType())].object_entry_extendeds[id];
+        extendedHeader = ObjectEntry2{
+            loadingHeader, data.size()
+        };
+
+        if (!*_isPartialLoaded)
+        {
+            callLoadObjectFunction({ loadingHeader.getType(), id }, *object);
+        }
+
+        return true;
     }
 
     static LoadedObjectId getObjectId(LoadedObjectIndex index)
@@ -1059,7 +1138,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047270B
-    static bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data)
+    bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data)
     {
         // Compute the checksum of header and data
 
@@ -1268,8 +1347,9 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        if (_totalNumImages >= 266266)
+        if (_totalNumImages >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
         {
+            // Free objectData?
             return false;
         }
 

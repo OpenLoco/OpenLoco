@@ -149,9 +149,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BB6B2
         static void updateTreeColours(Window* self)
         {
-            if (self->row_hover != -1)
+            if (self->rowHover != -1)
             {
-                auto treeObj = ObjectManager::get<TreeObject>(self->row_hover);
+                auto treeObj = ObjectManager::get<TreeObject>(self->rowHover);
                 if (treeObj->colours != 0)
                 {
                     Colour_t colour = Utility::bitScanReverse(treeObj->colours);
@@ -167,12 +167,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             uint16_t scrollHeight = 0;
             self->callGetScrollSize(0, 0, &scrollHeight);
-            self->scroll_areas[0].contentHeight = scrollHeight;
+            self->scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
             for (; i <= self->var_83C; i++)
             {
-                if (self->row_info[i] == self->row_hover)
+                if (self->rowInfo[i] == self->rowHover)
                     break;
             }
 
@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             i = (i / 9) * rowHeight;
 
-            self->scroll_areas[0].contentOffsetY = i;
+            self->scrollAreas[0].contentOffsetY = i;
             Ui::ScrollView::updateThumbs(self, widx::scrollview);
         }
 
@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto treeObj = ObjectManager::get<TreeObject>(i);
                 if (treeObj == nullptr)
                     continue;
-                self->row_info[treeCount] = i;
+                self->rowInfo[treeCount] = i;
                 treeCount++;
             }
 
@@ -205,7 +205,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
-                    if (_lastSelectedTree == self->row_info[i])
+                    if (_lastSelectedTree == self->rowInfo[i])
                     {
                         rowHover = _lastSelectedTree;
                         break;
@@ -215,10 +215,10 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (rowHover == -1 && self->var_83C != 0)
             {
-                rowHover = self->row_info[0];
+                rowHover = self->rowInfo[0];
             }
 
-            self->row_hover = rowHover;
+            self->rowHover = rowHover;
 
             updateActiveThumb(self);
             updateTreeColours(self);
@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             _terraformGhostPlaced = 0;
             _lastTreeCost = 0x80000000;
             self->var_83C = 0;
-            self->row_hover = -1;
+            self->rowHover = -1;
             refreshTreeList(self);
             updateTreeColours(self);
         }
@@ -296,8 +296,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onResize(Window* self)
         {
             self->invalidate();
-            Ui::Size minWindowSize = { self->min_width, self->min_height };
-            Ui::Size maxWindowSize = { self->max_width, self->max_height };
+            Ui::Size minWindowSize = { self->minWidth, self->minHeight };
+            Ui::Size maxWindowSize = { self->maxWidth, self->maxHeight };
             bool hasResized = self->setSize(minWindowSize, maxWindowSize);
             if (hasResized)
                 updateActiveThumb(self);
@@ -306,9 +306,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBAEA
         static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (widgetIndex == widx::object_colour && self->row_hover != -1)
+            if (widgetIndex == widx::object_colour && self->rowHover != -1)
             {
-                auto obj = ObjectManager::get<TreeObject>(self->row_hover);
+                auto obj = ObjectManager::get<TreeObject>(self->rowHover);
                 Dropdown::showColour(self, &self->widgets[widgetIndex], obj->colours, _treeColour, self->getColour(WindowColour::secondary));
             }
         }
@@ -354,27 +354,27 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self->saved_view.mapX += 1;
-                            if (self->saved_view.mapX >= 8)
+                            self->savedView.mapX += 1;
+                            if (self->savedView.mapX >= 8)
                             {
-                                auto y = std::min(self->scroll_areas[0].contentHeight - 1 + 60, 562);
+                                auto y = std::min(self->scrollAreas[0].contentHeight - 1 + 60, 562);
                                 if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 358);
                                 }
-                                self->min_width = windowSize.width;
-                                self->min_height = y;
-                                self->max_width = windowSize.width;
-                                self->max_height = y;
+                                self->minWidth = windowSize.width;
+                                self->minHeight = y;
+                                self->maxWidth = windowSize.width;
+                                self->maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self->min_width = windowSize.width;
-                                    self->min_height = windowSize.height;
-                                    self->max_width = windowSize.width;
-                                    self->max_height = windowSize.height;
+                                    self->minWidth = windowSize.width;
+                                    self->minHeight = windowSize.height;
+                                    self->maxWidth = windowSize.width;
+                                    self->maxHeight = windowSize.height;
                                 }
                             }
                         }
@@ -382,20 +382,20 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 else
                 {
-                    self->saved_view.mapX = 0;
+                    self->savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self->min_width = windowSize.width;
-                        self->min_height = windowSize.height;
-                        self->max_width = windowSize.width;
-                        self->max_height = windowSize.height;
+                        self->minWidth = windowSize.width;
+                        self->minHeight = windowSize.height;
+                        self->maxWidth = windowSize.width;
+                        self->maxHeight = windowSize.height;
                     }
                 }
             }
             self->frame_no++;
 
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + Common::widx::tab_clear_area);
+            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->currentTab + Common::widx::tab_clear_area);
         }
 
         // 0x004BBEDF
@@ -456,7 +456,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return {};
             }
 
-            if (self->row_hover == -1)
+            if (self->rowHover == -1)
             {
                 return {};
             }
@@ -464,7 +464,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             GameCommands::TreePlacementArgs args;
             // 0 for Z value means game command finds first available height
             args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
-            args.type = self->row_hover;
+            args.type = self->rowHover;
             args.quadrant = ViewportInteraction::getQuadrantFromPos(res->first) ^ (1 << 1);
             args.colour = _treeColour;
             args.rotation = (_treeRotation - WindowManager::getCurrentRotation()) & 0x3;
@@ -726,11 +726,11 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             for (auto i = 0; i < self->var_83C; i++)
             {
-                auto rowInfo = self->row_info[i];
+                auto rowInfo = self->rowInfo[i];
                 index--;
                 if (index < 0)
                 {
-                    self->row_hover = rowInfo;
+                    self->rowHover = rowInfo;
                     _lastSelectedTree = static_cast<uint8_t>(rowInfo);
 
                     updateTreeColours(self);
@@ -738,7 +738,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     int32_t pan = (self->width >> 1) + self->x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
-                    self->saved_view.mapX = -16;
+                    self->savedView.mapX = -16;
                     _lastTreeCost = 0x80000000;
                     self->invalidate();
                     break;
@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto i = 0;
             for (; i < self->var_83C; i++)
             {
-                rowInfo = self->row_info[i];
+                rowInfo = self->rowInfo[i];
                 index--;
                 if (index < 0)
                 {
@@ -778,20 +778,20 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Common::prepareDraw(self);
 
-            self->activated_widgets &= ~((1ULL << widx::plant_cluster_selected) | (1ULL << widx::plant_cluster_random));
+            self->activatedWidgets &= ~((1ULL << widx::plant_cluster_selected) | (1ULL << widx::plant_cluster_random));
 
             if (_treeClusterType == treeCluster::selected)
-                self->activated_widgets |= (1ULL << widx::plant_cluster_selected);
+                self->activatedWidgets |= (1ULL << widx::plant_cluster_selected);
 
             if (_treeClusterType == treeCluster::random)
-                self->activated_widgets |= (1ULL << widx::plant_cluster_random);
+                self->activatedWidgets |= (1ULL << widx::plant_cluster_random);
 
             self->widgets[widx::rotate_object].type = WidgetType::none;
             self->widgets[widx::object_colour].type = WidgetType::none;
 
-            if (self->row_hover != -1)
+            if (self->rowHover != -1)
             {
-                auto treeObj = ObjectManager::get<TreeObject>(self->row_hover);
+                auto treeObj = ObjectManager::get<TreeObject>(self->rowHover);
                 if (treeObj->name != 0xFFFF)
                 {
                     if (treeObj->num_rotations != 1)
@@ -831,7 +831,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto treeId = self->var_846;
             if (treeId == 0xFFFF)
             {
-                treeId = self->row_hover;
+                treeId = self->rowHover;
                 if (treeId == 0xFFFF)
                     return;
             }
@@ -899,9 +899,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             for (uint16_t i = 0; i < self.var_83C; i++)
             {
                 _lastTreeColourFlag = 0xFFFF;
-                if (self.row_info[i] != self.row_hover)
+                if (self.rowInfo[i] != self.rowHover)
                 {
-                    if (self.row_info[i] == self.var_846)
+                    if (self.rowInfo[i] == self.var_846)
                     {
                         _lastTreeColourFlag = Colour::translucent_flag;
                         Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self.getColour(WindowColour::secondary), Colour::translucent_flag);
@@ -913,7 +913,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto treeObj = ObjectManager::get<TreeObject>(self.row_info[i]);
+                auto treeObj = ObjectManager::get<TreeObject>(self.rowInfo[i]);
                 auto clipped = Gfx::clipContext(context, Ui::Rect(xPos + 1, yPos + 1, 64, rowHeight - 2));
                 if (clipped)
                 {
@@ -972,21 +972,21 @@ namespace OpenLoco::Ui::Windows::Terraform
                 &PlantTrees::events);
 
             window->number = 0;
-            window->current_tab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
+            window->currentTab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
             window->frame_no = 0;
             _terraformGhostPlaced = 0;
             _lastTreeCost = 0x80000000;
             window->owner = _player_company;
             window->var_846 = 0xFFFF;
-            window->saved_view.mapX = 0;
+            window->savedView.mapX = 0;
             _treeClusterType = PlantTrees::treeCluster::none;
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = PlantTrees::windowSize.width;
-            window->min_height = PlantTrees::windowSize.height;
-            window->max_width = PlantTrees::windowSize.width;
-            window->max_height = PlantTrees::windowSize.height;
+            window->minWidth = PlantTrees::windowSize.width;
+            window->minHeight = PlantTrees::windowSize.height;
+            window->maxWidth = PlantTrees::windowSize.width;
+            window->maxHeight = PlantTrees::windowSize.height;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0E);
@@ -1001,18 +1001,18 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->invalidate();
 
             window->widgets = PlantTrees::widgets;
-            window->enabled_widgets = PlantTrees::enabledWidgets;
-            window->holdable_widgets = 0;
-            window->activated_widgets = 0;
+            window->enabledWidgets = PlantTrees::enabledWidgets;
+            window->holdableWidgets = 0;
+            window->activatedWidgets = 0;
 
-            window->disabled_widgets = 0;
+            window->disabledWidgets = 0;
 
             window->callOnResize();
             window->callPrepareDraw();
             window->initScrollWidgets();
 
             window->var_83C = 0;
-            window->row_hover = -1;
+            window->rowHover = -1;
 
             PlantTrees::refreshTreeList(window);
 
@@ -1167,7 +1167,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Common::prepareDraw(self);
 
-            self->activated_widgets |= (1ULL << widx::tool_area);
+            self->activatedWidgets |= (1ULL << widx::tool_area);
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
@@ -1566,7 +1566,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Common::prepareDraw(self);
 
-            self->activated_widgets |= (1ULL << widx::tool_area);
+            self->activatedWidgets |= (1ULL << widx::tool_area);
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
@@ -1741,7 +1741,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 if (!TileManager::setMapSelectionTiles(interaction.pos + Map::Pos2(16, 16), 5))
                 {
-                    //no change in selection
+                    // no change in selection
                     return;
                 }
             }
@@ -1858,7 +1858,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Common::prepareDraw(self);
 
-            self->activated_widgets |= (1ULL << widx::tool_area);
+            self->activatedWidgets |= (1ULL << widx::tool_area);
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
@@ -1944,12 +1944,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             uint16_t scrollHeight = 0;
             self->callGetScrollSize(0, 0, &scrollHeight);
-            self->scroll_areas[0].contentHeight = scrollHeight;
+            self->scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
             for (; i <= self->var_83C; i++)
             {
-                if (self->row_info[i] == self->row_hover)
+                if (self->rowInfo[i] == self->rowHover)
                     break;
             }
 
@@ -1958,7 +1958,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             i = (i / 10) * rowHeight;
 
-            self->scroll_areas[0].contentOffsetY = i;
+            self->scrollAreas[0].contentOffsetY = i;
             Ui::ScrollView::updateThumbs(self, widx::scrollview);
         }
 
@@ -1971,7 +1971,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto wallObj = ObjectManager::get<WallObject>(i);
                 if (wallObj == nullptr)
                     continue;
-                self->row_info[wallCount] = i;
+                self->rowInfo[wallCount] = i;
                 wallCount++;
             }
 
@@ -1982,7 +1982,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
-                    if (_lastSelectedWall == self->row_info[i])
+                    if (_lastSelectedWall == self->rowInfo[i])
                     {
                         rowHover = _lastSelectedWall;
                         break;
@@ -1992,10 +1992,10 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (rowHover == -1 && self->var_83C != 0)
             {
-                rowHover = self->row_info[0];
+                rowHover = self->rowInfo[0];
             }
 
-            self->row_hover = rowHover;
+            self->rowHover = rowHover;
 
             updateActiveThumb(self);
         }
@@ -2016,7 +2016,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Input::setFlag(Input::Flags::flag6);
             _terraformGhostPlaced = 0;
             self->var_83C = 0;
-            self->row_hover = -1;
+            self->rowHover = -1;
             refreshWallList(self);
         }
 
@@ -2024,8 +2024,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onResize(Window* self)
         {
             self->invalidate();
-            Ui::Size minWindowSize = { self->min_width, self->min_height };
-            Ui::Size maxWindowSize = { self->max_width, self->max_height };
+            Ui::Size minWindowSize = { self->minWidth, self->minHeight };
+            Ui::Size maxWindowSize = { self->maxWidth, self->maxHeight };
             bool hasResized = self->setSize(minWindowSize, maxWindowSize);
             if (hasResized)
                 updateActiveThumb(self);
@@ -2060,27 +2060,27 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self->saved_view.mapX += 1;
-                            if (self->saved_view.mapX >= 8)
+                            self->savedView.mapX += 1;
+                            if (self->savedView.mapX >= 8)
                             {
-                                auto y = std::min(self->scroll_areas[0].contentHeight - 1 + 60, 562);
+                                auto y = std::min(self->scrollAreas[0].contentHeight - 1 + 60, 562);
                                 if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 358);
                                 }
-                                self->min_width = windowSize.width;
-                                self->min_height = y;
-                                self->max_width = windowSize.width;
-                                self->max_height = y;
+                                self->minWidth = windowSize.width;
+                                self->minHeight = y;
+                                self->maxWidth = windowSize.width;
+                                self->maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self->min_width = windowSize.width;
-                                    self->min_height = windowSize.height;
-                                    self->max_width = windowSize.width;
-                                    self->max_height = windowSize.height;
+                                    self->minWidth = windowSize.width;
+                                    self->minHeight = windowSize.height;
+                                    self->maxWidth = windowSize.width;
+                                    self->maxHeight = windowSize.height;
                                 }
                             }
                         }
@@ -2088,20 +2088,20 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 else
                 {
-                    self->saved_view.mapX = 0;
+                    self->savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self->min_width = windowSize.width;
-                        self->min_height = windowSize.height;
-                        self->max_width = windowSize.width;
-                        self->max_height = windowSize.height;
+                        self->minWidth = windowSize.width;
+                        self->minHeight = windowSize.height;
+                        self->maxWidth = windowSize.width;
+                        self->maxHeight = windowSize.height;
                     }
                 }
             }
             self->frame_no++;
 
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + Common::widx::tab_clear_area);
+            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->currentTab + Common::widx::tab_clear_area);
         }
 
         // 0x004BC377
@@ -2158,7 +2158,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return {};
             }
 
-            if (self->row_hover == -1)
+            if (self->rowHover == -1)
             {
                 return {};
             }
@@ -2166,7 +2166,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             GameCommands::WallPlacementArgs args;
             // 0 for Z value means game command finds first available height
             args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
-            args.type = self->row_hover;
+            args.type = self->rowHover;
             args.rotation = ViewportInteraction::getSideFromPos(res->first);
             args.primaryColour = Colour::black;
             args.secondaryColour = Colour::black;
@@ -2250,17 +2250,17 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             for (auto i = 0; i < self->var_83C; i++)
             {
-                auto rowInfo = self->row_info[i];
+                auto rowInfo = self->rowInfo[i];
                 index--;
                 if (index < 0)
                 {
-                    self->row_hover = rowInfo;
+                    self->rowHover = rowInfo;
                     _lastSelectedWall = static_cast<uint8_t>(rowInfo);
 
                     int32_t pan = (self->width >> 1) + self->x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
-                    self->saved_view.mapX = -16;
+                    self->savedView.mapX = -16;
                     self->invalidate();
                     break;
                 }
@@ -2276,7 +2276,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             for (; i < self->var_83C; i++)
             {
-                rowInfo = self->row_info[i];
+                rowInfo = self->rowInfo[i];
                 index--;
                 if (index < 0)
                     break;
@@ -2315,7 +2315,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto wallId = self->var_846;
             if (wallId == 0xFFFF)
             {
-                wallId = self->row_hover;
+                wallId = self->rowHover;
                 if (wallId == 0xFFFF)
                     return;
             }
@@ -2338,9 +2338,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
             {
-                if (self.row_info[i] != self.row_hover)
+                if (self.rowInfo[i] != self.rowHover)
                 {
-                    if (self.row_info[i] == self.var_846)
+                    if (self.rowInfo[i] == self.var_846)
                     {
                         Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self.getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
@@ -2350,7 +2350,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto wallObj = ObjectManager::get<WallObject>(self.row_info[i]);
+                auto wallObj = ObjectManager::get<WallObject>(self.rowInfo[i]);
 
                 auto clipped = Gfx::clipContext(context, Ui::Rect(xPos + 1, yPos + 1, 39, 47));
                 if (clipped)
@@ -2429,7 +2429,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self->frame_no++;
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + Common::widx::tab_clear_area);
+            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->currentTab + Common::widx::tab_clear_area);
         }
 
         // 0x004BCD82
@@ -2475,7 +2475,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
+            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
@@ -2483,8 +2483,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             // Activate the current tab..
-            self->activated_widgets &= ~((1ULL << tab_adjust_land) | (1ULL << tab_adjust_water) | (1ULL << tab_build_walls) | (1ULL << tab_clear_area) | (1ULL << tab_plant_trees));
-            self->activated_widgets |= (1ULL << tabInformationByTabOffset[self->current_tab].widgetIndex);
+            self->activatedWidgets &= ~((1ULL << tab_adjust_land) | (1ULL << tab_adjust_water) | (1ULL << tab_build_walls) | (1ULL << tab_clear_area) | (1ULL << tab_plant_trees));
+            self->activatedWidgets |= (1ULL << tabInformationByTabOffset[self->currentTab].widgetIndex);
 
             self->widgets[widx::frame].right = self->width - 1;
             self->widgets[widx::frame].bottom = self->height - 1;
@@ -2521,7 +2521,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto waterObj = ObjectManager::get<WaterObject>();
                 uint32_t imageId = waterObj->image + Water::ImageIds::toolbar_terraform_water;
-                if (self->current_tab == widx::tab_adjust_water - widx::tab_clear_area)
+                if (self->currentTab == widx::tab_adjust_water - widx::tab_clear_area)
                     imageId += (self->frame_no / 2) % 16;
 
                 Widget::drawTab(self, context, imageId, widx::tab_adjust_water);
@@ -2548,17 +2548,17 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            self->current_tab = widgetIndex - widx::tab_clear_area;
+            self->currentTab = widgetIndex - widx::tab_clear_area;
             self->frame_no = 0;
 
             self->viewportRemove(0);
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_clear_area];
 
-            self->enabled_widgets = tabInfo.enabledWidgets;
-            self->holdable_widgets = tabInfo.holdableWidgets;
-            self->event_handlers = tabInfo.events;
-            self->activated_widgets = 0;
+            self->enabledWidgets = tabInfo.enabledWidgets;
+            self->holdableWidgets = tabInfo.holdableWidgets;
+            self->eventHandlers = tabInfo.events;
+            self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
             auto disabledWidgets = 0;
@@ -2567,7 +2567,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             /*if (!isEditorMode() && !isSandboxMode())
                 disabledWidgets |= common::widx::tab_build_walls;*/
 
-            self->disabled_widgets = disabledWidgets;
+            self->disabledWidgets = disabledWidgets;
             self->invalidate();
 
             switch (widgetIndex)
@@ -2657,7 +2657,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     bool rotate(Window* self)
     {
-        if (self->current_tab == Common::widx::tab_plant_trees - Common::widx::tab_clear_area)
+        if (self->currentTab == Common::widx::tab_plant_trees - Common::widx::tab_clear_area)
         {
             if (!self->isDisabled(PlantTrees::widx::rotate_object))
             {

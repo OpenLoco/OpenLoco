@@ -804,8 +804,8 @@ namespace OpenLoco::Input
 
                     if (!window->viewportIsFocusedOnEntity())
                     {
-                        window->viewport_configurations[0].saved_view_x += dragOffset.x << (vp->zoom + 1);
-                        window->viewport_configurations[0].saved_view_y += dragOffset.y << (vp->zoom + 1);
+                        window->viewportConfigurations[0].saved_view_x += dragOffset.x << (vp->zoom + 1);
+                        window->viewportConfigurations[0].saved_view_y += dragOffset.y << (vp->zoom + 1);
                     }
                     else
                     {
@@ -1179,15 +1179,15 @@ namespace OpenLoco::Input
 
         w->invalidate();
 
-        w->width = std::clamp<uint16_t>(w->width + dx, w->min_width, w->max_width);
-        w->height = std::clamp<uint16_t>(w->height + dy, w->min_height, w->max_height);
+        w->width = std::clamp<uint16_t>(w->width + dx, w->minWidth, w->maxWidth);
+        w->height = std::clamp<uint16_t>(w->height + dy, w->minHeight, w->maxHeight);
         w->flags |= Ui::WindowFlags::flag_15;
         w->callOnResize();
         w->callPrepareDraw();
-        w->scroll_areas[0].contentWidth = -1;
-        w->scroll_areas[0].contentHeight = -1;
-        w->scroll_areas[1].contentWidth = -1;
-        w->scroll_areas[1].contentHeight = -1;
+        w->scrollAreas[0].contentWidth = -1;
+        w->scrollAreas[0].contentHeight = -1;
+        w->scrollAreas[1].contentWidth = -1;
+        w->scrollAreas[1].contentHeight = -1;
         window->updateScrollWidgets();
         w->invalidate();
 
@@ -1623,7 +1623,7 @@ namespace OpenLoco::Input
 
         if (*_tooltipWindowType != Ui::WindowType::undefined)
         {
-            if (*_tooltipWindowType == window->type && _tooltipWindowNumber == window->number && _tooltipWidgetIndex == widgetIndex)
+            if (window != nullptr && *_tooltipWindowType == window->type && _tooltipWindowNumber == window->number && _tooltipWidgetIndex == widgetIndex)
             {
                 _tooltipTimeout += time_since_last_tick;
                 if (_tooltipTimeout >= 8000)
@@ -1966,7 +1966,7 @@ namespace OpenLoco::Input
                     case Ui::WidgetType::frame:
                         if (window->flags & Ui::WindowFlags::resizable)
                         {
-                            if (window->min_width != window->max_width || window->min_height != window->max_height)
+                            if (window->minWidth != window->maxWidth || window->minHeight != window->maxHeight)
                             {
                                 if (x >= window->x + window->width - 19 && y >= window->y + window->height - 19)
                                 {
@@ -1975,8 +1975,7 @@ namespace OpenLoco::Input
                                 }
                             }
                         }
-                        //fall-through
-
+                        [[fallthrough]];
                     default:
                         _5233A4 = x;
                         _5233A6 = y;

@@ -69,9 +69,9 @@ namespace OpenLoco::Ui
 
         uint8_t wndColour = window->getColour(windowColour);
         auto widgetIndex = this - &window->widgets[0];
-        bool enabled = (window->enabled_widgets & (1ULL << widgetIndex)) != 0;
-        bool disabled = (window->disabled_widgets & (1ULL << widgetIndex)) != 0;
-        bool activated = (window->activated_widgets & (1ULL << widgetIndex)) != 0;
+        bool enabled = (window->enabledWidgets & (1ULL << widgetIndex)) != 0;
+        bool disabled = (window->disabledWidgets & (1ULL << widgetIndex)) != 0;
+        bool activated = (window->activatedWidgets & (1ULL << widgetIndex)) != 0;
         activated |= (pressedWidgets & (1ULL << widgetIndex)) != 0;
         activated |= (toolWidgets & (1ULL << widgetIndex)) != 0;
         bool hovered = (hoveredWidgets & (1ULL << widgetIndex)) != 0;
@@ -213,7 +213,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        if (window->min_height == window->max_height || window->min_width == window->max_width)
+        if (window->minHeight == window->maxHeight || window->minWidth == window->maxWidth)
         {
             return;
         }
@@ -658,7 +658,7 @@ namespace OpenLoco::Ui
 
     static void draw_hscroll(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
     {
-        const auto* scroll_area = &window->scroll_areas[scrollview_index];
+        const auto* scroll_area = &window->scrollAreas[scrollview_index];
 
         uint16_t ax = window->x + widget->left + 1;
         uint16_t cx = window->y + widget->top + 1;
@@ -723,7 +723,7 @@ namespace OpenLoco::Ui
 
     static void draw_vscroll(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
     {
-        const auto* scroll_area = &window->scroll_areas[scrollview_index];
+        const auto* scroll_area = &window->scrollAreas[scrollview_index];
 
         uint16_t ax = window->x + widget->left + 1;
         uint16_t cx = window->y + widget->top + 1;
@@ -801,7 +801,7 @@ namespace OpenLoco::Ui
         r--;
         b--;
 
-        const auto* scroll_area = &window->scroll_areas[scrollview_index];
+        const auto* scroll_area = &window->scrollAreas[scrollview_index];
 
         _currentFontSpriteBase = Font::medium_bold;
         if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarVisible)

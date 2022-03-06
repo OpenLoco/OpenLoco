@@ -405,7 +405,10 @@ namespace OpenLoco::CompanyManager
             if (vehicle->owner != _updatingCompanyId)
                 continue;
 
-            GameCommands::do_73(vehicle->id);
+            GameCommands::UpdateOwnerStatusArgs args{};
+            args.ownerStatus = OwnerStatus(vehicle->id);
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
             return;
         }
 
@@ -432,7 +435,10 @@ namespace OpenLoco::CompanyManager
             mapPosition = res->first;
         }
 
-        GameCommands::do_73(mapPosition);
+        GameCommands::UpdateOwnerStatusArgs args{};
+        args.ownerStatus = OwnerStatus(mapPosition);
+
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
     // 0x0046DC9F

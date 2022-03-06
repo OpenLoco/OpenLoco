@@ -122,7 +122,7 @@ namespace OpenLoco::Vehicles
                 auto* route = as<OrderRouteThrough>();
                 if (route != nullptr)
                 {
-                    ret |= route->_data << 8;
+                    ret |= static_cast<uint64_t>(route->_data) << 8;
                 }
                 break;
             }

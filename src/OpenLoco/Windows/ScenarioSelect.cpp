@@ -84,7 +84,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         using namespace ScenarioManager;
         auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
-        if (hasScenarioInCategory(self->current_tab, scenarioInfo))
+        if (hasScenarioInCategory(self->currentTab, scenarioInfo))
             return;
 
         // Reset currently selected scenario if it is not in the current category.
@@ -110,7 +110,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             &_events);
 
         self->widgets = _widgets;
-        self->enabled_widgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
+        self->enabledWidgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
         self->initScrollWidgets();
 
         self->setColour(WindowColour::primary, Colour::black);
@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
         }
 
-        self->current_tab = selectedTab;
+        self->currentTab = selectedTab;
 
         initList(self);
 
@@ -146,8 +146,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443995
     static void prepareDraw(Window* self)
     {
-        self->activated_widgets &= ~((1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4));
-        self->activated_widgets |= (1ULL << (self->current_tab + static_cast<uint8_t>(widx::tab0)));
+        self->activatedWidgets &= ~((1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4));
+        self->activatedWidgets |= (1ULL << (self->currentTab + static_cast<uint8_t>(widx::tab0)));
     }
 
     // 0x004439AF
@@ -173,7 +173,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             if (widget.type == WidgetType::none)
                 continue;
 
-            const auto offset = self->current_tab == i ? 1 : 0;
+            const auto offset = self->currentTab == i ? 1 : 0;
             auto origin = Ui::Point(widget.mid_x() + self->x, widget.mid_y() + self->y - 3 - offset);
             const string_id caption = scenarioGroupIds[i];
 
@@ -332,12 +332,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         Gfx::clearSingle(context, colour);
 
         using namespace ScenarioManager;
-        auto scenarioCount = getScenarioCountByCategory(self.current_tab);
+        auto scenarioCount = getScenarioCountByCategory(self.currentTab);
 
         int16_t y = 0;
         for (auto i = 0; i < scenarioCount; i++)
         {
-            auto* scenarioInfo = getNthScenarioFromCategory(self.current_tab, i);
+            auto* scenarioInfo = getNthScenarioFromCategory(self.currentTab, i);
             if (scenarioInfo == nullptr)
                 continue;
 
@@ -419,10 +419,10 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             case widx::tab4:
             {
                 uint8_t selectedCategory = widgetIndex - widx::tab0;
-                if (self->current_tab == selectedCategory)
+                if (self->currentTab == selectedCategory)
                     return;
 
-                self->current_tab = selectedCategory;
+                self->currentTab = selectedCategory;
 
                 auto& config = Config::get();
                 config.scenario_selected_tab = selectedCategory;
@@ -444,19 +444,19 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443EF6
     static void getScrollSize(Window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
-        *scrollHeight = ScenarioManager::getScenarioCountByCategory(self->current_tab) * rowHeight;
+        *scrollHeight = ScenarioManager::getScenarioCountByCategory(self->currentTab) * rowHeight;
     }
 
     // 0x00443F32
     static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self->current_tab);
+        auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self->currentTab);
 
         auto index = y / rowHeight;
         if (index > scenarioCount)
             return;
 
-        auto* scenarioInfo = ScenarioManager::getNthScenarioFromCategory(self->current_tab, index);
+        auto* scenarioInfo = ScenarioManager::getNthScenarioFromCategory(self->currentTab, index);
         if (scenarioInfo == nullptr)
             return;
 
@@ -476,13 +476,13 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443FB2
     static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self->current_tab);
+        auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self->currentTab);
 
         auto index = y / rowHeight;
         if (index > scenarioCount)
             return;
 
-        auto* scenarioEntry = ScenarioManager::getNthScenarioFromCategory(self->current_tab, index);
+        auto* scenarioEntry = ScenarioManager::getNthScenarioFromCategory(self->currentTab, index);
         if (scenarioEntry == nullptr)
             return;
 

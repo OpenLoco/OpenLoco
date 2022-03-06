@@ -25,12 +25,6 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Gfx
 {
-    namespace G1ExpectedCount
-    {
-        constexpr uint32_t kDisc = 0x101A; // And GOG
-        constexpr uint32_t kSteam = 0x0F38;
-    }
-
     namespace TextDrawFlags
     {
         constexpr uint8_t inset = (1ULL << 0);
@@ -39,12 +33,11 @@ namespace OpenLoco::Gfx
         constexpr uint8_t extra_dark = (1ULL << 3);
     }
 
-    constexpr uint32_t kG1CountObjects = 0x40000;
     constexpr uint32_t kG1CountTemporary = 0x1000;
 
     static loco_global<Context, 0x0050B884> _screenContext;
 
-    static loco_global<G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + kG1CountObjects], 0x9E2424> _g1Elements;
+    static loco_global<G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + G1ExpectedCount::kObjects], 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
     static loco_global<uint16_t[147], 0x050B8C8> _paletteToG1Offset;

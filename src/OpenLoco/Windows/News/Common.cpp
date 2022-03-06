@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         auto window = WindowManager::createWindow(WindowType::news, origin, windowSize, flags, &News1::events);
 
         window->widgets = widgets;
-        window->enabled_widgets = Common::enabledWidgets;
+        window->enabledWidgets = Common::enabledWidgets;
 
         Common::initEvents();
 
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::windowSize, flags, &Ticker::events);
 
                 window->widgets = Ticker::widgets;
-                window->enabled_widgets = Ticker::enabledWidgets;
+                window->enabledWidgets = Ticker::enabledWidgets;
 
                 Common::initEvents();
 
@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         else
         {
             uint32_t flags = WindowFlags::stick_to_front | WindowFlags::viewport_no_scrolling | WindowFlags::transparent;
-            auto colour = Colour::translucent(Colour::mutedDarkRed);
+            constexpr auto colour = Colour::translucent(Colour::mutedDarkRed);
 
             createNewsWindow(News1::windowSize, News1::widgets, colour, isOld, flags);
         }

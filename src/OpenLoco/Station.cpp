@@ -626,7 +626,7 @@ namespace OpenLoco
         updateCargoDistribution();
 
         auto w = WindowManager::find(WindowType::station, enumValue(id()));
-        if (w != nullptr && (w->current_tab == 2 || w->current_tab == 1 || quantityUpdated))
+        if (w != nullptr && (w->currentTab == 2 || w->currentTab == 1 || quantityUpdated))
         {
             w->invalidate();
         }

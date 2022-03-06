@@ -181,10 +181,10 @@ namespace OpenLoco::Map
         static constexpr ElementType kElementType = ElementType::surface;
 
     private:
-        uint8_t _slope;       // 0x4
-        uint8_t _water;       // 0x5
-        uint8_t _terrain;     // 0x6
-        IndustryId _industry; // 0x7
+        uint8_t _slope;   // 0x4
+        uint8_t _water;   // 0x5
+        uint8_t _terrain; // 0x6
+        uint8_t _7;       // 0x7 either variation or industry depending on high type flag
 
     public:
         bool isSlopeDoubleHeight() const { return _slope & SurfaceSlope::double_height; }
@@ -205,8 +205,10 @@ namespace OpenLoco::Map
             _terrain &= 0x1F;
             _terrain |= var6 << 5;
         }
-        IndustryId industryId() const { return IndustryId(_industry); }
-        void setIndustry(const IndustryId industry) { _industry = industry; }
+        IndustryId industryId() const { return IndustryId(_7); }
+        uint8_t variation() const { return _7; }
+        void setIndustry(const IndustryId industry) { _7 = enumValue(industry); }
+        void setVariation(const uint8_t variation) { _7 = variation; }
         void setType6Flag(bool state)
         {
             _type &= ~0x40;

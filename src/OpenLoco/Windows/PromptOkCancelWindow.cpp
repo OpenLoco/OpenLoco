@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         // Prepare description buffer for drawing
         StringManager::formatString(_descriptionBuffer, descriptionId, &descriptionArgs);
 
-        window->enabled_widgets = (1 << widx::closeButton) | (1 << widx::okButton) | (1 << widx::cancelButton);
+        window->enabledWidgets = (1 << widx::closeButton) | (1 << widx::okButton) | (1 << widx::cancelButton);
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, Colour::translucent(Colour::mutedDarkRed));
         window->setColour(WindowColour::secondary, Colour::translucent(Colour::mutedDarkRed));

@@ -42,7 +42,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = 1 << Widx::logo;
+        window->enabledWidgets = 1 << Widx::logo;
 
         window->initScrollWidgets();
 

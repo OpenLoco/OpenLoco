@@ -84,7 +84,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         {
             window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, window_size, 0, &events);
             window->widgets = widgets;
-            window->enabled_widgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
+            window->enabledWidgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
             window->initScrollWidgets();
             window->setColour(WindowColour::primary, Colour::translucent(Colour::mutedDarkRed));
             window->setColour(WindowColour::secondary, Colour::translucent(Colour::mutedDarkRed));

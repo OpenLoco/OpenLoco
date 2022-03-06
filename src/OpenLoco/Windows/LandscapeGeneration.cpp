@@ -82,7 +82,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 };
 
                 uint32_t imageId = skin->img;
-                if (window->current_tab == widx::tab_options - widx::tab_options)
+                if (window->currentTab == widx::tab_options - widx::tab_options)
                     imageId += optionTabImageIds[(window->frame_no / 2) % std::size(optionTabImageIds)];
                 else
                     imageId += optionTabImageIds[0];
@@ -142,7 +142,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             window->frame_no++;
             window->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::landscapeGeneration, window->number, window->current_tab + widx::tab_options);
+            WindowManager::invalidateWidget(WindowType::landscapeGeneration, window->number, window->currentTab + widx::tab_options);
         }
     }
 
@@ -192,13 +192,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) == 0)
             {
-                window->activated_widgets |= (1 << widx::generate_when_game_starts);
-                window->disabled_widgets |= (1 << widx::generate_now);
+                window->activatedWidgets |= (1 << widx::generate_when_game_starts);
+                window->disabledWidgets |= (1 << widx::generate_now);
             }
             else
             {
-                window->activated_widgets &= ~(1 << widx::generate_when_game_starts);
-                window->disabled_widgets &= ~(1 << widx::generate_now);
+                window->activatedWidgets &= ~(1 << widx::generate_when_game_starts);
+                window->disabledWidgets &= ~(1 << widx::generate_now);
             }
         }
 
@@ -306,11 +306,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, window_size, 0, &Options::events);
             window->widgets = Options::widgets;
-            window->enabled_widgets = Options::enabled_widgets;
+            window->enabledWidgets = Options::enabled_widgets;
             window->number = 0;
-            window->current_tab = 0;
+            window->currentTab = 0;
             window->frame_no = 0;
-            window->row_hover = -1;
+            window->rowHover = -1;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::primary, interface->colour_0B);
@@ -323,8 +323,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         window->invalidate();
 
-        window->activated_widgets = 0;
-        window->holdable_widgets = Options::holdable_widgets;
+        window->activatedWidgets = 0;
+        window->holdableWidgets = Options::holdable_widgets;
 
         window->callOnResize();
         window->callPrepareDraw();
@@ -446,12 +446,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Gfx::fillRectInset(context, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary), 0b110000);
 
                 // Draw current distribution setting.
-                const string_id distributionId = landDistributionLabelIds[S5::getOptions().landDistributionPatterns[i]];
+                const string_id distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
                 commonFormatArgs[0] = distributionId;
                 Gfx::drawString_494BBF(context, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
 
                 // Draw rectangle (knob).
-                const uint8_t flags = window.row_hover == i ? 0b110000 : 0;
+                const uint8_t flags = window.rowHover == i ? 0b110000 : 0;
                 Gfx::fillRectInset(context, 329, yPos + 6, 339, yPos + 15, window.getColour(WindowColour::secondary), flags);
 
                 // Draw triangle (knob).
@@ -511,9 +511,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::scrollview:
-                    if (itemIndex != -1 && window->row_hover != -1)
+                    if (itemIndex != -1 && window->rowHover != -1)
                     {
-                        S5::getOptions().landDistributionPatterns[window->row_hover] = itemIndex;
+                        S5::getOptions().landDistributionPatterns[window->rowHover] = static_cast<S5::LandDistributionPattern>(itemIndex);
                         window->invalidate();
                     }
                     break;
@@ -635,19 +635,19 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             if (landIndex == -1)
                 return;
 
-            window->row_hover = landIndex;
+            window->rowHover = landIndex;
 
             Audio::playSound(Audio::SoundId::clickDown, window->widgets[widx::scrollview].right);
 
             const Widget& target = window->widgets[widx::scrollview];
             const int16_t dropdownX = window->x + target.left + 151;
-            const int16_t dropdownY = window->y + target.top + 6 + landIndex * rowHeight - window->scroll_areas[0].contentOffsetY;
+            const int16_t dropdownY = window->y + target.top + 6 + landIndex * rowHeight - window->scrollAreas[0].contentOffsetY;
             Dropdown::show(dropdownX, dropdownY, 188, 12, window->getColour(WindowColour::secondary), std::size(landDistributionLabelIds), 0x80);
 
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
                 Dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
 
-            Dropdown::setItemSelected(S5::getOptions().landDistributionPatterns[landIndex]);
+            Dropdown::setItemSelected(enumValue(S5::getOptions().landDistributionPatterns[landIndex]));
         }
 
         // 0x0043DEBF
@@ -664,9 +664,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
             if ((options.scenarioFlags & Scenario::Flags::hillsEdgeOfMap) != 0)
-                window->activated_widgets |= (1 << widx::hillsEdgeOfMap);
+                window->activatedWidgets |= (1 << widx::hillsEdgeOfMap);
             else
-                window->activated_widgets &= ~(1 << widx::hillsEdgeOfMap);
+                window->activatedWidgets &= ~(1 << widx::hillsEdgeOfMap);
         }
 
         // 0x0043E2A2
@@ -683,9 +683,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Common::update(window);
 
             auto dropdown = WindowManager::find(WindowType::dropdown, 0);
-            if (dropdown == nullptr && window->row_hover != -1)
+            if (dropdown == nullptr && window->rowHover != -1)
             {
-                window->row_hover = -1;
+                window->rowHover = -1;
                 window->invalidate();
             }
         }
@@ -1212,11 +1212,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
 
-            window->activated_widgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
+            window->activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
             if (!(industryFlags & Scenario::IndustryFlags::disallowIndustriesCloseDown))
-                window->activated_widgets |= 1 << widx::check_allow_industries_close_down;
+                window->activatedWidgets |= 1 << widx::check_allow_industries_close_down;
             if (!(industryFlags & Scenario::IndustryFlags::disallowIndustriesStartUp))
-                window->activated_widgets |= 1 << widx::check_allow_industries_start_up;
+                window->activatedWidgets |= 1 << widx::check_allow_industries_start_up;
         }
 
         static void initEvents()
@@ -1243,7 +1243,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static void switchTabWidgets(Window* window)
         {
-            window->activated_widgets = 0;
+            window->activatedWidgets = 0;
 
             static Widget* widgetCollectionsByTabId[] = {
                 Options::widgets,
@@ -1253,7 +1253,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Industries::widgets,
             };
 
-            Widget* newWidgets = widgetCollectionsByTabId[window->current_tab];
+            Widget* newWidgets = widgetCollectionsByTabId[window->currentTab];
             if (window->widgets != newWidgets)
             {
                 window->widgets = newWidgets;
@@ -1268,8 +1268,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 tab_industries,
             };
 
-            window->activated_widgets &= ~((1 << tab_options) | (1 << tab_land) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries));
-            window->activated_widgets |= (1ULL << tabWidgetIdxByTabId[window->current_tab]);
+            window->activatedWidgets &= ~((1 << tab_options) | (1 << tab_land) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries));
+            window->activatedWidgets |= (1ULL << tabWidgetIdxByTabId[window->currentTab]);
         }
 
         // 0x0043DC98
@@ -1278,10 +1278,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             if (Input::isToolActive(window->type, window->number))
                 Input::toolCancel();
 
-            window->current_tab = widgetIndex - widx::tab_options;
+            window->currentTab = widgetIndex - widx::tab_options;
             window->frame_no = 0;
             window->flags &= ~(WindowFlags::flag_16);
-            window->disabled_widgets = 0;
+            window->disabledWidgets = 0;
 
             static const uint64_t* enabledWidgetsByTab[] = {
                 &Options::enabled_widgets,
@@ -1291,7 +1291,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Industries::enabled_widgets,
             };
 
-            window->enabled_widgets = *enabledWidgetsByTab[window->current_tab];
+            window->enabledWidgets = *enabledWidgetsByTab[window->currentTab];
 
             static const uint64_t* holdableWidgetsByTab[] = {
                 &Options::holdable_widgets,
@@ -1301,7 +1301,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Industries::holdable_widgets,
             };
 
-            window->holdable_widgets = *holdableWidgetsByTab[window->current_tab];
+            window->holdableWidgets = *holdableWidgetsByTab[window->currentTab];
 
             static WindowEventList* eventsByTab[] = {
                 &Options::events,
@@ -1311,7 +1311,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Industries::events,
             };
 
-            window->event_handlers = eventsByTab[window->current_tab];
+            window->eventHandlers = eventsByTab[window->currentTab];
 
             switchTabWidgets(window);
 

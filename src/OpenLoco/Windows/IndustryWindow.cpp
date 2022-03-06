@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     viewport->height = newHeight;
                     viewport->view_width = newWidth << viewport->zoom;
                     viewport->view_height = newHeight << viewport->zoom;
-                    self->saved_view.clear();
+                    self->savedView.clear();
                 }
             }
 
@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00456C36
         static void initViewport(Window* self)
         {
-            if (self->current_tab != Common::widx::tab_industry - Common::widx::tab_industry)
+            if (self->currentTab != Common::widx::tab_industry - Common::widx::tab_industry)
                 return;
 
             self->callPrepareDraw();
@@ -237,12 +237,12 @@ namespace OpenLoco::Ui::Windows::Industry
                 static_cast<int8_t>(self->viewports[0]->getRotation()),
                 tileZ,
             };
-            //view.flags |= (1 << 14);
+            // view.flags |= (1 << 14);
 
             uint16_t flags = 0;
             if (self->viewports[0] != nullptr)
             {
-                if (self->saved_view == view)
+                if (self->savedView == view)
                     return;
 
                 flags = self->viewports[0]->flags;
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     flags |= ViewportFlags::gridlines_on_landscape;
             }
 
-            self->saved_view = view;
+            self->savedView = view;
 
             if (self->viewports[0] == nullptr)
             {
@@ -263,7 +263,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto tile = Map::Pos3({ industry->x, industry->y, tileZ });
                 auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
-                ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
+                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, tile);
                 self->invalidate();
                 self->flags |= WindowFlags::viewport_no_scrolling;
             }
@@ -305,10 +305,10 @@ namespace OpenLoco::Ui::Windows::Industry
             const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::industry, Industry::windowSize, newFlags, &Industry::events);
             window->number = enumValue(industryId);
-            window->min_width = 192;
-            window->min_height = 137;
-            window->max_width = 600;
-            window->max_height = 440;
+            window->minWidth = 192;
+            window->minHeight = 137;
+            window->maxWidth = 600;
+            window->maxHeight = 440;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
@@ -318,20 +318,20 @@ namespace OpenLoco::Ui::Windows::Industry
             }
             // 0x00456DBC end
 
-            window->saved_view.clear();
+            window->savedView.clear();
         }
 
         // TODO: only needs to be called once.
         Common::initEvents();
 
-        window->current_tab = Common::widx::tab_industry - Common::widx::tab_industry;
+        window->currentTab = Common::widx::tab_industry - Common::widx::tab_industry;
         window->invalidate();
 
         window->widgets = Industry::widgets;
-        window->enabled_widgets = Industry::enabledWidgets;
-        window->holdable_widgets = 0;
-        window->event_handlers = &Industry::events;
-        window->activated_widgets = 0;
+        window->enabledWidgets = Industry::enabledWidgets;
+        window->holdableWidgets = 0;
+        window->eventHandlers = &Industry::events;
+        window->activatedWidgets = 0;
 
         Common::setDisabledWidgets(window);
 
@@ -561,7 +561,7 @@ namespace OpenLoco::Ui::Windows::Industry
             if (industryObj->produced_cargo_type[1] == 0xFF)
                 disabledWidgets |= (1 << Common::widx::tab_production_2);
 
-            self->disabled_widgets = disabledWidgets;
+            self->disabledWidgets = disabledWidgets;
         }
 
         // 0x00456079
@@ -605,7 +605,7 @@ namespace OpenLoco::Ui::Windows::Industry
             int8_t yearSkip = 0;
             // This is either 0 or 1 depending on selected tab
             // used to select the correct history
-            const uint8_t productionTabWidx = self->current_tab + widx::tab_industry;
+            const uint8_t productionTabWidx = self->currentTab + widx::tab_industry;
             const uint8_t productionNum = productionTabWidx - widx::tab_production;
             for (uint8_t i = industry->historySize[productionNum] - 1; i > 0; i--)
             {
@@ -684,7 +684,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
+            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
@@ -692,9 +692,9 @@ namespace OpenLoco::Ui::Windows::Industry
             }
 
             // Activate the current tab.
-            self->activated_widgets &= ~((1ULL << widx::tab_industry) | (1ULL << widx::tab_production) | (1ULL << widx::tab_production_2) | (1ULL << widx::tab_transported));
-            widx widgetIndex = tabInformationByTabOffset[self->current_tab].widgetIndex;
-            self->activated_widgets |= (1ULL << widgetIndex);
+            self->activatedWidgets &= ~((1ULL << widx::tab_industry) | (1ULL << widx::tab_production) | (1ULL << widx::tab_production_2) | (1ULL << widx::tab_transported));
+            widx widgetIndex = tabInformationByTabOffset[self->currentTab].widgetIndex;
+            self->activatedWidgets |= (1ULL << widgetIndex);
 
             // Put industry name in place.
             auto industry = IndustryManager::get(IndustryId(self->number));
@@ -739,7 +739,7 @@ namespace OpenLoco::Ui::Windows::Industry
             WindowManager::invalidate(WindowType::industry, self->number);
         }
 
-        //0x00455D81
+        // 0x00455D81
         static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
             auto industry = IndustryManager::get(IndustryId(self->number));
@@ -784,7 +784,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
-            self->current_tab = widgetIndex - widx::tab_industry;
+            self->currentTab = widgetIndex - widx::tab_industry;
             self->frame_no = 0;
             self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
@@ -793,10 +793,10 @@ namespace OpenLoco::Ui::Windows::Industry
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_industry];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
-            self->holdable_widgets = 0;
-            self->event_handlers = tabInfo.events;
-            self->activated_widgets = 0;
+            self->enabledWidgets = *tabInfo.enabledWidgets;
+            self->holdableWidgets = 0;
+            self->eventHandlers = tabInfo.events;
+            self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
             Common::setDisabledWidgets(self);
@@ -842,7 +842,7 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary));
 
-                if (self->current_tab == tab - widx::tab_industry)
+                if (self->currentTab == tab - widx::tab_industry)
                     imageId += productionTabImageIds[(self->frame_no / 4) % std::size(productionTabImageIds)];
                 else
                     imageId += productionTabImageIds[0];
@@ -893,7 +893,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->current_tab == widx::tab_transported - widx::tab_industry)
+                if (self->currentTab == widx::tab_transported - widx::tab_industry)
                     imageId += transportedTabImageIds[(self->frame_no / 4) % std::size(transportedTabImageIds)];
                 else
                     imageId += transportedTabImageIds[0];

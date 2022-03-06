@@ -501,7 +501,7 @@ namespace OpenLoco::Ui::Windows::Construction
         auto window = WindowManager::find(WindowType::construction);
         if (window == nullptr)
             return;
-        if (window->current_tab == Common::widx::tab_station - Common::widx::tab_construction)
+        if (window->currentTab == Common::widx::tab_station - Common::widx::tab_construction)
         {
             if (_byte_1136063 & ((1 << 7) | (1 << 6)))
                 WindowManager::close(window);
@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::Construction
             return false;
         }
 
-        return window->current_tab == Common::widx::tab_station - Common::widx::tab_construction;
+        return window->currentTab == Common::widx::tab_station - Common::widx::tab_construction;
     }
 
     // 0x004A69EE
@@ -531,7 +531,7 @@ namespace OpenLoco::Ui::Windows::Construction
             return false;
         }
 
-        return window->current_tab == Common::widx::tab_overhead - Common::widx::tab_construction;
+        return window->currentTab == Common::widx::tab_overhead - Common::widx::tab_construction;
     }
 
     // 0x004A6A2A
@@ -543,7 +543,7 @@ namespace OpenLoco::Ui::Windows::Construction
             return false;
         }
 
-        return window->current_tab == Common::widx::tab_signal - Common::widx::tab_construction;
+        return window->currentTab == Common::widx::tab_signal - Common::widx::tab_construction;
     }
 
     // 0x0049FEC7
@@ -582,7 +582,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed
-            const auto& tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
+            const auto& tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
@@ -590,20 +590,20 @@ namespace OpenLoco::Ui::Windows::Construction
             }
 
             // Activate the current tab
-            self->activated_widgets &= ~((1ULL << tab_construction) | (1ULL << tab_overhead) | (1ULL << tab_signal) | (1ULL << tab_station));
-            self->activated_widgets |= (1ULL << Common::tabInformationByTabOffset[self->current_tab].widgetIndex);
+            self->activatedWidgets &= ~((1ULL << tab_construction) | (1ULL << tab_overhead) | (1ULL << tab_signal) | (1ULL << tab_station));
+            self->activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self->currentTab].widgetIndex);
         }
 
         // 0x004A0EF4
         void resetWindow(Window& self, WidgetIndex_t tabWidgetIndex)
         {
-            self.current_tab = tabWidgetIndex - widx::tab_construction;
+            self.currentTab = tabWidgetIndex - widx::tab_construction;
 
             const auto& tabInfo = tabInformationByTabOffset[tabWidgetIndex - widx::tab_construction];
 
-            self.enabled_widgets = tabInfo.enabledWidgets;
-            self.event_handlers = tabInfo.events;
-            self.activated_widgets = 0;
+            self.enabledWidgets = tabInfo.enabledWidgets;
+            self.eventHandlers = tabInfo.events;
+            self.activatedWidgets = 0;
             self.widgets = tabInfo.widgets;
 
             setDisabledWidgets(&self);
@@ -681,7 +681,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049D93A
         void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (self->current_tab == widgetIndex - widx::tab_construction)
+            if (self->currentTab == widgetIndex - widx::tab_construction)
                 return;
 
             if (widgetIndex == widx::tab_station)
@@ -706,17 +706,17 @@ namespace OpenLoco::Ui::Windows::Construction
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            self->current_tab = widgetIndex - widx::tab_construction;
+            self->currentTab = widgetIndex - widx::tab_construction;
             self->frame_no = 0;
             self->flags &= ~(WindowFlags::flag_16);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_construction];
 
-            self->enabled_widgets = tabInfo.enabledWidgets;
-            self->event_handlers = tabInfo.events;
-            self->activated_widgets = 0;
+            self->enabledWidgets = tabInfo.enabledWidgets;
+            self->eventHandlers = tabInfo.events;
+            self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
-            self->holdable_widgets = 0;
+            self->holdableWidgets = 0;
 
             setDisabledWidgets(self);
 
@@ -744,7 +744,7 @@ namespace OpenLoco::Ui::Windows::Construction
             // Construction Tab
             {
                 auto imageId = roadObj->image;
-                if (self->current_tab == widx::tab_construction - widx::tab_construction)
+                if (self->currentTab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 32;
 
                 Widget::drawTab(self, context, Gfx::recolour(imageId, companyColour), widx::tab_construction);
@@ -758,7 +758,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     auto y = self->widgets[widx::tab_station].top + self->y + 1;
                     auto width = 29;
                     auto height = 25;
-                    if (self->current_tab == widx::tab_station - widx::tab_construction)
+                    if (self->currentTab == widx::tab_station - widx::tab_construction)
                         height++;
 
                     auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
@@ -798,7 +798,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         {
                             auto roadExtraObj = ObjectManager::get<RoadExtraObject>(_modList[i]);
                             auto imageId = roadExtraObj->var_0E;
-                            if (self->current_tab == widx::tab_overhead - widx::tab_construction)
+                            if (self->currentTab == widx::tab_overhead - widx::tab_construction)
                                 imageId += (self->frame_no / 2) % 8;
                             Gfx::drawImage(context, x, y, imageId);
                         }
@@ -818,7 +818,7 @@ namespace OpenLoco::Ui::Windows::Construction
             // Construction Tab
             {
                 auto imageId = trackObj->image;
-                if (self->current_tab == widx::tab_construction - widx::tab_construction)
+                if (self->currentTab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 15;
 
                 Widget::drawTab(self, context, Gfx::recolour(imageId, companyColour), widx::tab_construction);
@@ -848,7 +848,7 @@ namespace OpenLoco::Ui::Windows::Construction
                             auto y = self->widgets[widx::tab_station].top + self->y + 1;
                             auto width = 29;
                             auto height = 25;
-                            if (self->current_tab == widx::tab_station - widx::tab_construction)
+                            if (self->currentTab == widx::tab_station - widx::tab_construction)
                                 height++;
 
                             auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
@@ -887,7 +887,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     auto y = self->widgets[widx::tab_signal].top + self->y + 1;
                     auto width = 29;
                     auto height = 25;
-                    if (self->current_tab == widx::tab_station - widx::tab_construction)
+                    if (self->currentTab == widx::tab_station - widx::tab_construction)
                         height++;
 
                     auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
@@ -895,7 +895,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
                         auto imageId = trainSignalObject->image;
-                        if (self->current_tab == widx::tab_signal - widx::tab_construction)
+                        if (self->currentTab == widx::tab_signal - widx::tab_construction)
                         {
                             auto frames = signalFrames[(((trainSignalObject->num_frames + 2) / 3) - 2)];
                             auto frameCount = std::size(frames) - 1;
@@ -924,7 +924,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         {
                             auto trackExtraObj = ObjectManager::get<TrackExtraObject>(_modList[i]);
                             auto imageId = trackExtraObj->var_0E;
-                            if (self->current_tab == widx::tab_overhead - widx::tab_construction)
+                            if (self->currentTab == widx::tab_overhead - widx::tab_construction)
                                 imageId += (self->frame_no / 2) % 8;
                             Gfx::drawImage(context, x, y, imageId);
                         }
@@ -985,7 +985,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             self->frame_no++;
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::construction, self->number, self->current_tab + Common::widx::tab_construction);
+            WindowManager::invalidateWidget(WindowType::construction, self->number, self->currentTab + Common::widx::tab_construction);
 
             if (Input::isToolActive(WindowType::construction, self->number))
                 return;
@@ -1058,7 +1058,7 @@ namespace OpenLoco::Ui::Windows::Construction
             if (_lastSelectedStationType == 0xFF)
                 disabledWidgets |= (1ULL << Common::widx::tab_station);
 
-            self->disabled_widgets = disabledWidgets;
+            self->disabledWidgets = disabledWidgets;
         }
 
         // 0x004A0963
@@ -1071,9 +1071,9 @@ namespace OpenLoco::Ui::Windows::Construction
                 &Construction::events);
 
             window->widgets = Construction::widgets;
-            window->current_tab = 0;
-            window->enabled_widgets = Construction::enabledWidgets;
-            window->activated_widgets = 0;
+            window->currentTab = 0;
+            window->enabledWidgets = Construction::enabledWidgets;
+            window->activatedWidgets = 0;
 
             setDisabledWidgets(window);
 
@@ -1529,7 +1529,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
     bool rotate(Window* self)
     {
-        switch (self->current_tab)
+        switch (self->currentTab)
         {
             case Common::widx::tab_construction - Common::widx::tab_construction:
                 if (_constructionHover == 1)

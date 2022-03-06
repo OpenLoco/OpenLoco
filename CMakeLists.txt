@@ -314,6 +314,8 @@ endif()
 if (MINGW)
     target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
     target_link_libraries(${PROJECT} imm32 winmm version)
+    # newer GCC gets confused about our use of hardcoded address shenanigans
+    add_definitions("-Wno-stringop-overflow -Wno-stringop-overread -Wno-array-bounds -Wno-stringop-truncation")
 else ()
     if (MSVC)
         target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
@@ -394,7 +396,7 @@ endif ()
 
 if (ENABLE_TESTS)
     enable_testing()
-    include("${ROOT_DIR}/test/CMakeLists.txt" NO_POLICY_SCOPE)
+    include("${CMAKE_CURRENT_LIST_DIR}/test/CMakeLists.txt" NO_POLICY_SCOPE)
     # find_package(GTest REQUIRED)
     # set(GTEST_LIBRARIES ${GTEST_BOTH_LIBRARIES})
 

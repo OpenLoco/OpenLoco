@@ -388,7 +388,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         self->widgets[widgetIndex].text = name;
 
         if (_lastSelectedMods & (1 << checkboxIndex))
-            self->activated_widgets |= (1ULL << widgetIndex);
+            self->activatedWidgets |= (1ULL << widgetIndex);
     }
 
     // 0x0049E7D3
@@ -396,7 +396,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     {
         Common::prepareDraw(self);
 
-        self->activated_widgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
+        self->activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
 
         self->widgets[widx::checkbox_1].type = WidgetType::none;
         self->widgets[widx::checkbox_2].type = WidgetType::none;
@@ -437,7 +437,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
         }
 
-        //self->activated_widgets = activatedWidgets;
+        // self->activatedWidgets = activatedWidgets;
 
         self->widgets[widx::image].type = WidgetType::none;
         self->widgets[widx::track].type = WidgetType::none;

@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static void onResize(Window* self)
         {
             auto scrollview = self->widgets[widx::scrollview];
-            auto scrollarea = self->scroll_areas[0];
+            auto scrollarea = self->scrollAreas[0];
 
             auto y = scrollarea.contentHeight - scrollview.height() - 1;
             y = std::max(0, y);
@@ -129,10 +129,10 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (!(self->flags & WindowFlags::not_scroll_view))
                 return;
 
-            if (self->row_hover == -1)
+            if (self->rowHover == -1)
                 return;
 
-            self->row_hover = -1;
+            self->rowHover = -1;
             self->invalidate();
         }
 
@@ -183,9 +183,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (messageIndex < _messageCount)
                 messageId = messageIndex;
 
-            if (self->row_hover != messageId)
+            if (self->rowHover != messageId)
             {
-                self->row_hover = messageId;
+                self->rowHover = messageId;
                 self->invalidate();
             }
         }
@@ -244,7 +244,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                 auto stringId = StringIds::black_stringid;
 
-                if (self.row_hover == i)
+                if (self.rowHover == i)
                 {
                     Gfx::drawRect(context, 0, height, self.width, 38, (1 << 25) | PaletteIndex::index_30);
                     stringId = StringIds::wcolour2_stringid;
@@ -271,13 +271,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A7B9
         static void tabReset(Window* self)
         {
-            self->min_width = minWindowSize.width;
-            self->min_height = minWindowSize.height;
-            self->max_width = maxWindowSize.width;
-            self->max_height = maxWindowSize.height;
+            self->minWidth = minWindowSize.width;
+            self->minHeight = minWindowSize.height;
+            self->maxWidth = maxWindowSize.width;
+            self->maxHeight = maxWindowSize.height;
             self->width = minWindowSize.width;
             self->height = minWindowSize.height;
-            self->row_hover = -1;
+            self->rowHover = -1;
         }
 
         static void initEvents()
@@ -324,19 +324,19 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 WindowFlags::flag_11,
                 &Messages::events);
 
-            window->enabled_widgets = Messages::enabledWidgets;
+            window->enabledWidgets = Messages::enabledWidgets;
             window->number = 0;
-            window->current_tab = 0;
+            window->currentTab = 0;
             window->frame_no = 0;
-            window->row_hover = -1;
-            window->disabled_widgets = 0;
+            window->rowHover = -1;
+            window->disabledWidgets = 0;
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = Messages::minWindowSize.width;
-            window->min_height = Messages::minWindowSize.height;
-            window->max_width = Messages::maxWindowSize.width;
-            window->max_height = Messages::maxWindowSize.height;
+            window->minWidth = Messages::minWindowSize.width;
+            window->minHeight = Messages::minWindowSize.height;
+            window->maxWidth = Messages::maxWindowSize.width;
+            window->maxHeight = Messages::maxWindowSize.height;
             window->flags |= WindowFlags::resizable;
 
             window->owner = _playerCompany;
@@ -347,14 +347,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             window->height = Messages::minWindowSize.height;
         }
 
-        window->current_tab = 0;
+        window->currentTab = 0;
         window->invalidate();
 
         window->widgets = Messages::widgets;
-        window->enabled_widgets = Messages::enabledWidgets;
-        window->holdable_widgets = 0;
-        window->event_handlers = &Messages::events;
-        window->disabled_widgets = 0;
+        window->enabledWidgets = Messages::enabledWidgets;
+        window->holdableWidgets = 0;
+        window->eventHandlers = &Messages::events;
+        window->disabledWidgets = 0;
 
         Common::initEvents();
 
@@ -370,7 +370,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         if (static_cast<int16_t>(scrollHeight) < 0)
             scrollHeight = 0;
 
-        window->scroll_areas[0].contentOffsetY = scrollHeight;
+        window->scrollAreas[0].contentOffsetY = scrollHeight;
 
         Ui::ScrollView::updateThumbs(window, Messages::widx::scrollview);
     }
@@ -544,10 +544,10 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A7E8
         static void tabReset(Window* self)
         {
-            self->min_width = windowSize.width;
-            self->min_height = windowSize.height;
-            self->max_width = windowSize.width;
-            self->max_height = windowSize.height;
+            self->minWidth = windowSize.width;
+            self->minHeight = windowSize.height;
+            self->maxWidth = windowSize.width;
+            self->maxHeight = windowSize.height;
             self->width = windowSize.width;
             self->height = windowSize.height;
         }
@@ -581,7 +581,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
+            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
             if (self->widgets != tabWidgets)
             {
                 self->widgets = tabWidgets;
@@ -589,8 +589,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             }
 
             // Activate the current tab..
-            self->activated_widgets &= ~((1ULL << tab_messages) | (1ULL << tab_settings));
-            self->activated_widgets |= (1ULL << tabInformationByTabOffset[self->current_tab].widgetIndex);
+            self->activatedWidgets &= ~((1ULL << tab_messages) | (1ULL << tab_settings));
+            self->activatedWidgets |= (1ULL << tabInformationByTabOffset[self->currentTab].widgetIndex);
 
             self->widgets[Common::widx::frame].right = self->width - 1;
             self->widgets[Common::widx::frame].bottom = self->height - 1;
@@ -610,7 +610,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            self->current_tab = widgetIndex - widx::tab_messages;
+            self->currentTab = widgetIndex - widx::tab_messages;
             self->frame_no = 0;
             self->flags &= ~(WindowFlags::flag_16);
 
@@ -618,18 +618,18 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_messages];
 
-            self->enabled_widgets = tabInfo.enabledWidgets;
-            self->holdable_widgets = 0;
-            self->event_handlers = tabInfo.events;
-            self->activated_widgets = 0;
+            self->enabledWidgets = tabInfo.enabledWidgets;
+            self->holdableWidgets = 0;
+            self->eventHandlers = tabInfo.events;
+            self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
-            self->disabled_widgets = 0;
+            self->disabledWidgets = 0;
 
             self->invalidate();
 
-            if (self->current_tab == widx::tab_messages - widx::tab_messages)
+            if (self->currentTab == widx::tab_messages - widx::tab_messages)
                 Messages::tabReset(self);
-            if (self->current_tab == widx::tab_settings - widx::tab_messages)
+            if (self->currentTab == widx::tab_settings - widx::tab_messages)
                 Settings::tabReset(self);
 
             self->callOnResize();
@@ -666,7 +666,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         {
             self->frame_no++;
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::messages, self->number, self->current_tab + Common::widx::tab_messages);
+            WindowManager::invalidateWidget(WindowType::messages, self->number, self->currentTab + Common::widx::tab_messages);
         }
 
         static void initEvents()
