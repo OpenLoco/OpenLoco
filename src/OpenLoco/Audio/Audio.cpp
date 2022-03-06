@@ -7,9 +7,11 @@
 #include "../Game.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Map/TileLoop.hpp"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/SoundObject.h"
+#include "../Objects/TreeObject.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Stream.hpp"
 #include "../Vehicles/Vehicle.h"
@@ -75,6 +77,7 @@ namespace OpenLoco::Audio
     static loco_global<uint8_t, 0x0050D435> _lastSong;
     static loco_global<bool, 0x0050D554> _audioIsPaused;
     static loco_global<bool, 0x0050D555> _audioIsEnabled;
+    static loco_global<uint32_t, 0x0050D5B0> _chosenAmbientNoisePathId;
 
     static uint8_t _numActiveVehicleSounds; // 0x0112C666
     static std::vector<std::string> _devices;
@@ -881,7 +884,110 @@ namespace OpenLoco::Audio
         if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled)
             return;
 
-        call(0x0048AD25);
+        auto* mainViewport = WindowManager::getMainViewport();
+        std::optional<PathId> ambientSound = std::nullopt;
+        if (!Game::hasFlags((1u << 0)) && mainViewport != nullptr)
+        {
+            const auto maxVolume = getZoomVolumeModifier(mainViewport->zoom);
+            const auto centre = mainViewport->getCentreMapPosition();
+            const auto topLeft = Map::TilePos2{ centre } - Map::TilePos2{ 5, 5 };
+            const auto bottomRight = topLeft + Map::TilePos2{ 11, 11 };
+            Map::TilePosRangeView searchRange(topLeft, bottomRight);
+            size_t waterCount = 0;      // bl
+            size_t wildernessCount = 0; // bh
+            size_t treeCount = 0;       //cx
+            for (auto& tilePos : searchRange)
+            {
+                const auto tile = Map::TileManager::get(tilePos);
+                bool passedSurface = false;
+                for (const auto& el : tile)
+                {
+                    auto* elSurface = el.as<Map::SurfaceElement>();
+                    if (elSurface != nullptr)
+                    {
+                        passedSurface = true;
+                        if (elSurface->water() != 0)
+                        {
+                            waterCount++;
+                            break;
+                        }
+                        else if (elSurface->var_4_E0() && elSurface->isLast())
+                        {
+                            wildernessCount++;
+                            break;
+                        }
+                        else if (elSurface->baseZ() >= 64 && elSurface->isLast())
+                        {
+                            wildernessCount++;
+                            break;
+                        }
+                        continue;
+                    }
+                    auto* elTree = el.as<Map::TreeElement>();
+                    if (passedSurface && elTree != nullptr)
+                    {
+                        const auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
+                        if (!(treeObj->flags & TreeObjectFlags::droughtResistant))
+                        {
+                            treeCount++;
+                        }
+                    }
+                }
+            }
+
+            if (waterCount > 60)
+            {
+                ambientSound = PathId::css3;
+            }
+            else if (wildernessCount > 60)
+            {
+                ambientSound = PathId::css2;
+            }
+            else if (treeCount > 30)
+            {
+                ambientSound = PathId::css4;
+            }
+        }
+        if (_chosenAmbientNoisePathId != ambientSound)
+        {
+            if (_ambientStopped)
+            {
+                if (!ambientSound)
+                {
+                    return;
+                }
+                auto path = Environment::getPath(ambientSound.value());
+                if (loadChannel(ChannelId::ambient, path, 0))
+                {
+                    playChannel(ChannelId::ambient, true, -3500, 0, 0);
+                    // save -3500 as volume
+                }
+                return;
+            }
+            else
+            {
+                //volume - 100 and save
+                if (volume < -3500)
+                {
+                    stopChannel(ChannelId::ambient);
+                    _ambientStopped = true;
+                }
+                else
+                {
+                    setChannelVolume(ChannelId::ambient, volume);
+
+                }
+            }
+
+        }
+        else
+        {
+            auto newVolume = std::min(volume + 100, maxVolume); // and save
+            if (newVolume != volume)
+            {
+                setChannelVolume(ChannelId::ambient, volume);
+            }
+        }
     }
 
     // 0x0048ABE3
