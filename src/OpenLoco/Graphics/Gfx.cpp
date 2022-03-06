@@ -1450,9 +1450,19 @@ namespace OpenLoco::Gfx
         _currentFontSpriteBase = value;
     }
 
+    static loco_global<Drawing::PaletteEntry[256], 0x0113ED20> _113ED20;
+
     // 0x004523F4
     void loadPalette()
     {
-        call(0x004523F4);
+        auto* g1Palette = getG1Element(ImageIds::default_palette);
+        uint8_t* colourData = g1Palette->offset;
+        for (auto i = g1Palette->x_offset; i < g1Palette->width; ++i)
+        {
+            _113ED20[i].b = *colourData++;
+            _113ED20[i].g = *colourData++;
+            _113ED20[i].r = *colourData++;
+        }
+        getDrawingEngine().updatePalette(_113ED20, 10, 236);
     }
 }
