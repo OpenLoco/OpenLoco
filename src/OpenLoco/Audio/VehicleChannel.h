@@ -1,6 +1,4 @@
 #pragma once
-
-#include "../Entities/Entity.h"
 #include "Audio.h"
 #include "Channel.h"
 
@@ -22,11 +20,10 @@ namespace OpenLoco::Audio
         ChannelAttributes _attributes;
 
     public:
-        VehicleChannel() = default;
-        VehicleChannel(const VehicleChannel& c) = delete;
-        explicit VehicleChannel(Channel&& c);
-        VehicleChannel(VehicleChannel&& c);
-        VehicleChannel& operator=(VehicleChannel&& other);
+        VehicleChannel(const Channel& channel)
+            : _channel(channel)
+        {
+        }
 
         bool isFree() const { return _vehicleId == EntityId::null; }
 

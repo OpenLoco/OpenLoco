@@ -626,6 +626,7 @@ namespace OpenLoco::S5
             call(0x004748FA);
             TileManager::resetSurfaceClearance();
             IndustryManager::createAllMapAnimations();
+            Audio::resetSoundObjects();
 
             if (!(flags & LoadFlags::titleSequence))
             {

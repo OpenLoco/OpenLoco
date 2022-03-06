@@ -14,10 +14,7 @@
 #include "../Utility/Stream.hpp"
 #include "../Vehicles/Vehicle.h"
 #include "Channel.h"
-#include "MusicChannel.h"
 #include "VehicleChannel.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
 #include <array>
 #include <cassert>
 #include <fstream>
@@ -81,14 +78,18 @@ namespace OpenLoco::Audio
 
     static uint8_t _numActiveVehicleSounds; // 0x0112C666
     static std::vector<std::string> _devices;
-    static AudioFormat _outputFormat;
-    static std::array<Channel, 4> _channels;
-    static std::array<VehicleChannel, 10> _vehicleChannels;
-    static MusicChannel _musicChannel;
+    static std::vector<Channel> _channels;
+    static std::vector<VehicleChannel> _vehicleChannels;
+    static std::vector<Channel> _soundFX;
     static ChannelId _musicCurrentChannel = ChannelId::bgm;
 
-    static std::vector<Sample> _samples;
-    static std::unordered_map<uint16_t, Sample> _objectSamples;
+    static std::vector<uint32_t> _samples;
+    static std::unordered_map<uint16_t, uint32_t> _objectSamples;
+    static std::unordered_map<uint8_t, uint32_t> _musicSamples;
+
+    static OpenAL::Device _device;
+    static OpenAL::SourceManager _sourceManager;
+    static OpenAL::BufferManager _bufferManager;
 
     static void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
     static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq);
@@ -131,11 +132,6 @@ namespace OpenLoco::Audio
         return (id == ChannelId::bgm || id == ChannelId::title);
     }
 
-    int32_t volumeLocoToSDL(int32_t loco)
-    {
-        return static_cast<int32_t>(SDL_MIX_MAXVOLUME * (SDL_pow(10.0, static_cast<float>(loco) / 2000.0f)));
-    }
-
     static Channel* getChannel(ChannelId id)
     {
         auto index = static_cast<size_t>(id);
@@ -146,74 +142,16 @@ namespace OpenLoco::Audio
         return nullptr;
     }
 
-    static Sample loadSoundFromWaveMemory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
+    static uint32_t loadSoundFromWaveMemory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
     {
-        // Build a CVT to convert the audio
-        const auto& dstFormat = _outputFormat;
-        SDL_AudioCVT cvt{};
-        auto cr = SDL_BuildAudioCVT(
-            &cvt,
-            AUDIO_S16LSB,
-            format.nChannels,
-            format.nSamplesPerSec,
-            dstFormat.format,
-            dstFormat.channels,
-            dstFormat.frequency);
-
-        if (cr == -1)
-        {
-            Console::error("Error during SDL_BuildAudioCVT: %s", SDL_GetError());
-            return {};
-        }
-        else if (cr == 0)
-        {
-            // No conversion necessary
-            Sample s;
-            s.pcm = std::malloc(pcmLen);
-            if (s.pcm == nullptr)
-            {
-                throw std::bad_alloc();
-            }
-            s.len = pcmLen;
-            std::memcpy(s.pcm, pcm, s.len);
-            s.chunk = Mix_QuickLoad_RAW((uint8_t*)s.pcm, pcmLen);
-            return s;
-        }
-        else
-        {
-            // Allocate a new buffer with src data for conversion
-            cvt.len = pcmLen;
-            cvt.buf = (uint8_t*)std::malloc(cvt.len * cvt.len_mult);
-            if (cvt.buf == nullptr)
-            {
-                throw std::bad_alloc();
-            }
-            std::memcpy(cvt.buf, pcm, pcmLen);
-            if (SDL_ConvertAudio(&cvt) != 0)
-            {
-                Console::error("Error during SDL_ConvertAudio: %s", SDL_GetError());
-                return {};
-            }
-
-            // Trim converted buffer
-            cvt.buf = (uint8_t*)std::realloc(cvt.buf, cvt.len_cvt);
-            if (cvt.buf == nullptr)
-            {
-                throw std::bad_alloc();
-            }
-
-            Sample s;
-            s.pcm = cvt.buf;
-            s.len = cvt.len_cvt;
-            s.chunk = Mix_QuickLoad_RAW(cvt.buf, cvt.len_cvt);
-            return s;
-        }
+        const auto id = _bufferManager.allocate(stdx::span<const uint8_t>(reinterpret_cast<const uint8_t*>(pcm), pcmLen), format.nSamplesPerSec, format.nChannels == 2, format.wBitsPerSample);
+        return id;
     }
 
-    static std::vector<Sample> loadSoundsFromCSS(const fs::path& path)
+    static std::vector<uint32_t> loadSoundsFromCSS(const fs::path& path)
     {
         Console::logVerbose("loadSoundsFromCSS(%s)", path.string().c_str());
-        std::vector<Sample> results;
+        std::vector<uint32_t> results;
         std::ifstream fs(path, std::ios::in | std::ios::binary);
 
         if (fs.is_open())
@@ -236,8 +174,7 @@ namespace OpenLoco::Audio
                 pcm.resize(pcmLen);
                 readData(fs, pcm.data(), pcmLen);
 
-                auto s = loadSoundFromWaveMemory(format, pcm.data(), pcmLen);
-                results.push_back(s);
+                results.push_back(loadSoundFromWaveMemory(format, pcm.data(), pcmLen));
             }
         }
         return results;
@@ -245,18 +182,16 @@ namespace OpenLoco::Audio
 
     static void disposeSamples()
     {
-        for (size_t i = 0; i < _samples.size(); i++)
-        {
-            Mix_FreeChunk(_samples[i].chunk);
-            std::free(_samples[i].pcm);
-        }
-        _samples = {};
+        _samples.clear();
+        _objectSamples.clear();
+        _musicSamples.clear();
     }
 
     static void disposeChannels()
     {
-        std::generate(_channels.begin(), _channels.end(), []() { return Channel(); });
-        std::generate(_vehicleChannels.begin(), _vehicleChannels.end(), []() { return VehicleChannel(); });
+        _channels.clear();
+        _vehicleChannels.clear();
+        _soundFX.clear();
     }
 
     static void reinitialise()
@@ -291,51 +226,30 @@ namespace OpenLoco::Audio
     {
         if (_devices.empty())
         {
-            // If devices is empty we need to load the default audio device to initliase the audio system
-            // this will then allow populating the devices
-            auto& format = _outputFormat;
-            format.frequency = MIX_DEFAULT_FREQUENCY;
-            format.format = MIX_DEFAULT_FORMAT;
-            format.channels = MIX_DEFAULT_CHANNELS;
-            if (Mix_OpenAudioDevice(format.frequency, format.format, format.channels, 1024, nullptr, 0) != 0)
-            {
-                Console::error("Mix_OpenAudio failed: %s", Mix_GetError());
-                return;
-            }
-            Mix_CloseAudio();
+            _devices = getDevices();
         }
-        const char* deviceName = nullptr;
+        std::string deviceName{};
         const auto& cfg = Config::getNew();
         if (!cfg.audio.device.empty())
         {
-            deviceName = cfg.audio.device.c_str();
-
-            // Use default device if config device could not be found
-            if (getDeviceIndex(deviceName) == std::numeric_limits<size_t>().max())
+            if (std::find(std::begin(_devices), std::end(_devices), cfg.audio.device) != std::end(_devices))
             {
-                deviceName = nullptr;
+                deviceName = cfg.audio.device;
             }
         }
 
-        auto& format = _outputFormat;
-        format.frequency = MIX_DEFAULT_FREQUENCY;
-        format.format = MIX_DEFAULT_FORMAT;
-        format.channels = MIX_DEFAULT_CHANNELS;
-        if (Mix_OpenAudioDevice(format.frequency, format.format, format.channels, 1024, deviceName, 0) != 0)
+        _device.open(deviceName);
+        _channels.clear();
+        for (auto i = 0; i < 4; ++i)
         {
-            Console::error("Mix_OpenAudio failed: %s", Mix_GetError());
-            return;
+            const auto sourceId = _sourceManager.allocate();
+            _channels.push_back(Channel(sourceId));
         }
-        Mix_AllocateChannels(kNumReservedChannels + kNumSoundChannels);
-        Mix_ReserveChannels(kNumReservedChannels);
-
-        for (size_t i = 0; i < _channels.size(); i++)
+        _vehicleChannels.clear();
+        for (auto i = 0; i < 10; ++i)
         {
-            _channels[i] = Channel(i);
-        }
-        for (size_t i = 0; i < _vehicleChannels.size(); i++)
-        {
-            _vehicleChannels[i] = VehicleChannel(Channel(4 + i));
+            const auto sourceId = _sourceManager.allocate();
+            _vehicleChannels.push_back(Channel(sourceId));
         }
 
         auto css1path = Environment::getPath(Environment::PathId::css1);
@@ -346,11 +260,12 @@ namespace OpenLoco::Audio
     // 0x00404E58
     void disposeDSound()
     {
-        disposeSamples();
         disposeChannels();
-        _musicChannel = {};
+        disposeSamples();
+        _sourceManager.dispose();
+        _bufferManager.dispose();
+        _device.close();
         _musicCurrentChannel = (ChannelId)-1;
-        Mix_CloseAudio();
         _audioInitialised = 0;
     }
 
@@ -371,19 +286,21 @@ namespace OpenLoco::Audio
     {
         _devices.clear();
 #ifdef __HAS_DEFAULT_DEVICE__
-        auto defaultDevice = getDefaultDeviceName();
-        if (defaultDevice != nullptr)
+        auto* ddChar = getDefaultDeviceName();
+        std::string defaultDevice = ddChar == nullptr ? "" : std::string(ddChar);
+        if (!defaultDevice.empty())
         {
             _devices.push_back(getDefaultDeviceName());
         }
 #endif
-        auto count = SDL_GetNumAudioDevices(0);
-        for (auto i = 0; i < count; i++)
+        auto newDevices = _device.getAvailableDeviceNames();
+        for (auto& device : newDevices)
         {
-            auto name = SDL_GetAudioDeviceName(i, 0);
-            if (name != nullptr)
+#ifdef __HAS_DEFAULT_DEVICE__
+            if (defaultDevice.empty() || device != defaultDevice)
+#endif
             {
-                _devices.push_back(name);
+                _devices.push_back(device);
             }
         }
         return _devices;
@@ -599,7 +516,7 @@ namespace OpenLoco::Audio
     // 0x00489CB5
     void playSound(SoundId id, const Map::Pos3& loc, int32_t pan)
     {
-        playSound(id, loc, 0, pan, 0);
+        playSound(id, loc, 0, pan, 22050);
     }
 
     // 0x00489CB5 / 0x00489F1B
@@ -645,10 +562,11 @@ namespace OpenLoco::Audio
         }
     }
 
-    Sample* getSoundSample(SoundId id)
+    std::optional<uint32_t> getSoundSample(SoundId id)
     {
         if (isObjectSoundId(id))
         {
+            // TODO this is not getting deallocated when sound objects unloaded
             // TODO use a LRU queue for object samples
             auto sr = _objectSamples.find((uint16_t)id);
             if (sr == _objectSamples.end())
@@ -658,63 +576,109 @@ namespace OpenLoco::Audio
                 {
                     auto data = (SoundObjectData*)obj->data;
                     assert(data->offset == 8);
-                    auto sample = loadSoundFromWaveMemory(data->pcm_header, data->pcm(), data->length);
-                    _objectSamples[static_cast<size_t>(id)] = sample;
-                    return &_objectSamples[static_cast<size_t>(id)];
+                    _objectSamples[static_cast<size_t>(id)] = loadSoundFromWaveMemory(data->pcm_header, data->pcm(), data->length);
+                    return _objectSamples[static_cast<size_t>(id)];
                 }
             }
             else
             {
-                return &sr->second;
+                return sr->second;
             }
         }
         else if (static_cast<size_t>(id) < _samples.size())
         {
-            return &_samples[static_cast<size_t>(id)];
+            return _samples[static_cast<size_t>(id)];
         }
-        return nullptr;
+        return std::nullopt;
     }
 
     static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq)
     {
         Console::logVerbose("mixSound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
         auto sample = getSoundSample(id);
-        if (sample != nullptr && sample->chunk != nullptr)
+        if (sample)
         {
-            auto loops = loop == 0 ? 0 : -1;
-            auto channel = Mix_PlayChannel(-1, sample->chunk, loops);
-            auto sdlv = volumeLocoToSDL(volume);
-            Mix_Volume(channel, sdlv);
-
-            auto [left, right] = panLocoToSDL(pan);
-            Mix_SetPanning(channel, left, right);
+            auto freeChannel = std::find_if(std::begin(_soundFX), std::end(_soundFX), [](auto& channel) { return !channel.isPlaying(); });
+            Channel* channel = nullptr;
+            if (freeChannel == std::end(_soundFX))
+            {
+                _soundFX.push_back(Channel(_sourceManager.allocate()));
+                channel = &_soundFX.back();
+            }
+            else
+            {
+                channel = &*freeChannel;
+            }
+            channel->load(*sample);
+            channel->setVolume(volume);
+            channel->setFrequency(freq);
+            channel->setPan(pan);
+            channel->play(loop);
         }
     }
 
     // 0x0048A18C
     void updateSounds()
     {
+        if (_soundFX.empty())
+        {
+            return;
+        }
+        for (auto& channel : _soundFX)
+        {
+            if (!channel.isPlaying())
+            {
+                channel.stop(); // This forces deallocation of buffer
+            }
+        }
+    }
+
+    static uint32_t loadMusicSample(uint8_t, const fs::path& path)
+    {
+        // TODO: This is leaking memory as it doesn't lookup already loaded results
+        std::ifstream fs(path, std::ios::in | std::ios::binary);
+
+        if (fs.is_open())
+        {
+            char buffer[5]{};
+            // Read length of wave data and load it into the pcm buffer
+            fs.read(buffer, 4);      // RIFF
+            readValue<uint32_t>(fs); // size
+            fs.read(buffer, 4);      // WAVE
+            fs.read(buffer, 4);      // fmt
+            readValue<uint32_t>(fs); // headersize
+            readValue<uint16_t>(fs); // PCM
+            const auto channels = readValue<uint16_t>(fs);
+            const auto sampleRate = readValue<uint32_t>(fs);
+            readValue<uint32_t>(fs);
+            readValue<uint16_t>(fs);
+            const auto bits = readValue<uint16_t>(fs);
+            fs.read(buffer, 4); // data
+            auto pcmLen = readValue<uint32_t>(fs);
+            std::vector<std::uint8_t> pcm;
+            pcm.resize(pcmLen);
+            readData(fs, pcm.data(), pcmLen);
+            const auto id = _bufferManager.allocate(stdx::span<const uint8_t>(pcm.data(), pcmLen), sampleRate, channels == 2, bits);
+
+            return id;
+        }
+        return 0;
     }
 
     static bool loadChannel(ChannelId id, const fs::path& path, int32_t c)
     {
         Console::logVerbose("loadChannel(%d, %s, %d)", id, path.string().c_str(), c);
-        if (isMusicChannel(id))
+        auto channel = getChannel(id);
+        if (channel != nullptr)
         {
-            if (_musicChannel.load(path))
+            // TODO: This is leaking samples should lookup already allocated
+            auto sample = loadMusicSample(0, path);
+            channel->load(sample);
+            if (isMusicChannel(id))
             {
                 _musicCurrentChannel = id;
-                return true;
             }
-        }
-        else
-        {
-            auto channel = getChannel(id);
-            if (channel != nullptr)
-            {
-                channel->load(path);
-                return true;
-            }
+            return true;
         }
         return false;
     }
@@ -729,22 +693,13 @@ namespace OpenLoco::Audio
     bool playChannel(ChannelId id, int32_t loop, int32_t volume, int32_t d, int32_t freq)
     {
         Console::logVerbose("playChannel(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
-        if (isMusicChannel(id))
+
+        auto* channel = getChannel(id);
+        if (channel != nullptr)
         {
-            if (_musicChannel.play(loop != 0))
-            {
-                _musicChannel.setVolume(volume);
-            }
-        }
-        else
-        {
-            auto channel = getChannel(id);
-            if (channel != nullptr)
-            {
-                channel->play(loop != 0);
-                channel->setVolume(volume);
-                return true;
-            }
+            channel->play(loop != 0);
+            channel->setVolume(volume);
+            return true;
         }
         return false;
     }
@@ -753,20 +708,11 @@ namespace OpenLoco::Audio
     void stopChannel(ChannelId id)
     {
         Console::logVerbose("stopChannel(%d)", id);
-        if (isMusicChannel(id))
+
+        auto channel = getChannel(id);
+        if (channel != nullptr)
         {
-            if (_musicCurrentChannel == id)
-            {
-                _musicChannel.stop();
-            }
-        }
-        else
-        {
-            auto channel = getChannel(id);
-            if (channel != nullptr)
-            {
-                channel->stop();
-            }
+            channel->stop();
         }
     }
 
@@ -774,37 +720,20 @@ namespace OpenLoco::Audio
     void setChannelVolume(ChannelId id, int32_t volume)
     {
         Console::logVerbose("setChannelVolume(%d, %d)", id, volume);
-        if (isMusicChannel(id))
+        auto channel = getChannel(id);
+        if (channel != nullptr)
         {
-            if (_musicCurrentChannel == id)
-            {
-                _musicChannel.setVolume(volume);
-            }
-        }
-        else
-        {
-            auto channel = getChannel(id);
-            if (channel != nullptr)
-            {
-                channel->setVolume(volume);
-            }
+            channel->setVolume(volume);
         }
     }
 
     // 0x00401B10
     bool isChannelPlaying(ChannelId id)
     {
-        if (isMusicChannel(id))
+        auto channel = getChannel(id);
+        if (channel != nullptr)
         {
-            return _musicCurrentChannel == id && _musicChannel.isPlaying();
-        }
-        else
-        {
-            auto channel = getChannel(id);
-            if (channel != nullptr)
-            {
-                return channel->isPlaying();
-            }
+            return channel->isPlaying();
         }
         return false;
     }
@@ -1087,7 +1016,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        if (!_musicChannel.isPlaying())
+        if (_musicCurrentChannel != ChannelId::bgm || !_channels[enumValue(_musicCurrentChannel)].isPlaying())
         {
             // Not playing, but the 'current song' is last song? It's been requested manually!
             bool requestedSong = _lastSong != kNoSong && _lastSong == _currentSong;
@@ -1108,10 +1037,11 @@ namespace OpenLoco::Audio
             // Load info on the song to play.
             const auto& mi = kMusicInfo[_currentSong];
             auto path = Environment::getPath((PathId)mi.pathId);
-            if (_musicChannel.load(path))
+            auto sample = loadMusicSample(0, path);
+            if (_channels[enumValue(ChannelId::bgm)].load(sample))
             {
                 _musicCurrentChannel = ChannelId::bgm;
-                if (!_musicChannel.play(false))
+                if (!_channels[enumValue(_musicCurrentChannel)].play(false))
                 {
                     cfg.music_playing = 0;
                 }
@@ -1136,9 +1066,9 @@ namespace OpenLoco::Audio
     // 0x0048AAE8
     void stopBackgroundMusic()
     {
-        if (_audioInitialised && _musicChannel.isPlaying())
+        if (_audioInitialised && _musicCurrentChannel != static_cast<ChannelId>(-1) && _channels[enumValue(_musicCurrentChannel)].isPlaying())
         {
-            _musicChannel.stop();
+            _channels[enumValue(_musicCurrentChannel)].stop();
         }
     }
 
@@ -1172,6 +1102,15 @@ namespace OpenLoco::Audio
         {
             stopChannel(ChannelId::title);
         }
+    }
+
+    void resetSoundObjects()
+    {
+        for (auto& sample : _objectSamples)
+        {
+            _bufferManager.deAllocate(sample.second);
+        }
+        _objectSamples.clear();
     }
 
     bool isAudioEnabled()

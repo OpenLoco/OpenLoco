@@ -4,11 +4,10 @@
 #include "../Location.hpp"
 #include "../Map/Map.hpp"
 #include "../Types.hpp"
+#include <optional>
 #include <string>
 #include <tuple>
 #include <vector>
-
-struct Mix_Chunk;
 
 namespace OpenLoco::Vehicles
 {
@@ -17,13 +16,6 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::Audio
 {
-    struct Sample
-    {
-        void* pcm{};
-        size_t len{};
-        Mix_Chunk* chunk{};
-    };
-
     // TODO: This should only be a byte needs to be split off from sound object
     enum class SoundId : uint16_t
     {
@@ -92,7 +84,7 @@ namespace OpenLoco::Audio
     size_t getCurrentDevice();
     void setDevice(size_t index);
 
-    Sample* getSoundSample(SoundId id);
+    std::optional<uint32_t> getSoundSample(SoundId id);
     bool shouldSoundLoop(SoundId id);
 
     void toggleSound();
@@ -126,17 +118,12 @@ namespace OpenLoco::Audio
     void playTitleScreenMusic();
     void stopTitleMusic();
 
+    void resetSoundObjects();
+
     bool isAudioEnabled();
 
     const MusicInfo* getMusicInfo(MusicId track);
     constexpr int32_t kNumMusicTracks = 29;
-
-    /**
-     * Converts a Locomotion volume range to SDL2.
-     * @remarks Not constexpr as it requires an SDL2 macro and we avoid
-     *          library header includes in our own headers.
-     */
-    int32_t volumeLocoToSDL(int32_t loco);
 
     constexpr bool isObjectSoundId(SoundId id)
     {
@@ -146,29 +133,5 @@ namespace OpenLoco::Audio
     constexpr SoundId makeObjectSoundId(SoundObjectId_t id)
     {
         return static_cast<SoundId>((static_cast<int32_t>(id) | 0x8000));
-    }
-
-    /**
-     * Converts a Locomotion pan range to a left and right value for SDL2 mixer.
-     */
-    constexpr std::pair<int32_t, int32_t> panLocoToSDL(int32_t pan)
-    {
-        constexpr auto kRange = 2048.0f;
-        constexpr auto kMaxPan = std::numeric_limits<uint8_t>::max();
-
-        if (pan == 0)
-        {
-            return { 0, 0 };
-        }
-        else if (pan < 0)
-        {
-            auto r = static_cast<int32_t>(kMaxPan - ((pan / -kRange) * kMaxPan));
-            return { kMaxPan, r };
-        }
-        else
-        {
-            auto r = static_cast<int32_t>(kMaxPan - ((pan / kRange) * kMaxPan));
-            return { r, kMaxPan };
-        }
     }
 }
