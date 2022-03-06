@@ -175,32 +175,21 @@ namespace OpenLoco::Ui::ScrollView
 
     // 0x004C8EF0
     // Note: Original function returns a scrollAreaOffset not an index
-    void getPart(
-        Ui::Window* window,
-        Ui::Widget* widget,
-        int16_t x,
-        int16_t y,
-        int16_t* output_x,
-        int16_t* output_y,
-        ScrollPart* output_scroll_area,
-        size_t* scrollIndex)
+    GetPartResult getPart(Ui::Window* window, Ui::Widget* widget, int16_t x, int16_t y)
     {
-        *scrollIndex = 0;
-        *output_x = x;
-        *output_y = y;
-        *output_scroll_area = ScrollPart::none;
+        GetPartResult res{ { x, y }, ScrollPart::none, 0 };
 
         for (const auto* winWidget = window->widgets; winWidget != widget; winWidget++)
         {
             if (winWidget->type == WidgetType::scrollview)
             {
-                (*scrollIndex)++;
+                res.index++;
             }
         }
 
-        *scrollIndex = std::min<size_t>(*scrollIndex, Window::kMaxScrollAreas - 1);
+        res.index = std::min<size_t>(res.index, Window::kMaxScrollAreas - 1);
 
-        const auto& scroll = window->scrollAreas[*scrollIndex];
+        const auto& scroll = window->scrollAreas[res.index];
         auto right = widget->right + window->x;
         auto left = widget->left + window->x;
         auto top = widget->top + window->y;
@@ -211,8 +200,8 @@ namespace OpenLoco::Ui::ScrollView
         {
             if (x < left + barWidth)
             {
-                *output_scroll_area = ScrollPart::hscrollbarButtonLeft;
-                return;
+                res.area = ScrollPart::hscrollbarButtonLeft;
+                return res;
             }
 
             // If vertical is also visible then there is a deadzone in the corner
@@ -224,36 +213,36 @@ namespace OpenLoco::Ui::ScrollView
             // Within deadzone
             if (x >= right)
             {
-                *output_scroll_area = ScrollPart::none;
-                return;
+                res.area = ScrollPart::none;
+                return res;
             }
 
             if (x >= right - thumbSize)
             {
-                *output_scroll_area = ScrollPart::hscrollbarButtonRight;
-                return;
+                res.area = ScrollPart::hscrollbarButtonRight;
+                return res;
             }
 
             if (x < scroll.h_thumb_left + left)
             {
-                *output_scroll_area = ScrollPart::hscrollbarTrackLeft;
-                return;
+                res.area = ScrollPart::hscrollbarTrackLeft;
+                return res;
             }
 
             if (x > scroll.h_thumb_right + left)
             {
-                *output_scroll_area = ScrollPart::hscrollbarTrackRight;
-                return;
+                res.area = ScrollPart::hscrollbarTrackRight;
+                return res;
             }
 
-            *output_scroll_area = ScrollPart::hscrollbarThumb;
+            res.area = ScrollPart::hscrollbarThumb;
         }
         else if ((scroll.flags & ScrollFlags::vscrollbarVisible) && x >= (right - barWidth))
         {
             if (y < top + barWidth)
             {
-                *output_scroll_area = ScrollPart::vscrollbarButtonTop;
-                return;
+                res.area = ScrollPart::vscrollbarButtonTop;
+                return res;
             }
 
             // If horizontal is also visible then there is a deadzone in the corner
@@ -265,43 +254,44 @@ namespace OpenLoco::Ui::ScrollView
             // Within deadzone
             if (y >= bottom)
             {
-                *output_scroll_area = ScrollPart::none;
-                return;
+                res.area = ScrollPart::none;
+                return res;
             }
 
             if (y >= bottom - thumbSize)
             {
-                *output_scroll_area = ScrollPart::vscrollbarButtonBottom;
-                return;
+                res.area = ScrollPart::vscrollbarButtonBottom;
+                return res;
             }
 
             if (y < scroll.v_thumb_top + top)
             {
-                *output_scroll_area = ScrollPart::vscrollbarTrackTop;
-                return;
+                res.area = ScrollPart::vscrollbarTrackTop;
+                return res;
             }
 
             if (y > scroll.v_thumb_bottom + top)
             {
-                *output_scroll_area = ScrollPart::vscrollbarTrackBottom;
-                return;
+                res.area = ScrollPart::vscrollbarTrackBottom;
+                return res;
             }
 
-            *output_scroll_area = ScrollPart::vscrollbarThumb;
+            res.area = ScrollPart::vscrollbarThumb;
         }
         else
         {
-            *output_x -= left + 1;
-            *output_y -= top + 1;
-            if (*output_x < 0 || *output_y < 0)
+            res.scrollviewLoc.x -= left + 1;
+            res.scrollviewLoc.y -= top + 1;
+            if (res.scrollviewLoc.x < 0 || res.scrollviewLoc.y < 0)
             {
-                *output_scroll_area = ScrollPart::none;
-                return;
+                res.area = ScrollPart::none;
+                return res;
             }
-            *output_x += scroll.contentOffsetX;
-            *output_y += scroll.contentOffsetY;
-            *output_scroll_area = ScrollPart::view;
+            res.scrollviewLoc.x += scroll.contentOffsetX;
+            res.scrollviewLoc.y += scroll.contentOffsetY;
+            res.area = ScrollPart::view;
         }
+        return res;
     }
 
     // 0x004CA1ED
@@ -430,45 +420,41 @@ namespace OpenLoco::Ui::ScrollView
     // 0x004C8689
     void scrollLeftBegin(const int16_t x, const int16_t y, Ui::Window* const w, Ui::Widget* const widget, const WidgetIndex_t widgetIndex)
     {
-        Ui::ScrollView::ScrollPart scrollArea;
-        int16_t outX, outY;
-        size_t scrollIndex;
+        auto res = getPart(w, widget, x, y);
 
-        Ui::ScrollView::getPart(w, widget, x, y, &outX, &outY, &scrollArea, &scrollIndex);
-
-        _currentScrollArea = scrollArea;
-        setCurrentScrollIndex(scrollIndex);
+        _currentScrollArea = res.area;
+        setCurrentScrollIndex(res.index);
 
         // Not implemented for any window
         // window->call_22()
-        switch (scrollArea)
+        switch (res.area)
         {
             case Ui::ScrollView::ScrollPart::view:
-                w->callScrollMouseDown(outX, outY, static_cast<uint8_t>(scrollIndex));
+                w->callScrollMouseDown(res.scrollviewLoc.x, res.scrollviewLoc.y, static_cast<uint8_t>(res.index));
                 break;
             case Ui::ScrollView::ScrollPart::hscrollbarButtonLeft:
-                hButtonLeft(w, scrollIndex, widgetIndex);
+                hButtonLeft(w, res.index, widgetIndex);
                 break;
             case Ui::ScrollView::ScrollPart::hscrollbarButtonRight:
-                hButtonRight(w, scrollIndex, widgetIndex);
+                hButtonRight(w, res.index, widgetIndex);
                 break;
             case Ui::ScrollView::ScrollPart::hscrollbarTrackLeft:
-                hTrackLeft(w, scrollIndex, widgetIndex);
+                hTrackLeft(w, res.index, widgetIndex);
                 break;
             case Ui::ScrollView::ScrollPart::hscrollbarTrackRight:
-                hTrackRight(w, scrollIndex, widgetIndex);
+                hTrackRight(w, res.index, widgetIndex);
                 break;
             case Ui::ScrollView::ScrollPart::vscrollbarButtonTop:
-                vButtonTop(w, scrollIndex, widgetIndex);
+                vButtonTop(w, res.index, widgetIndex);
                 break;
             case Ui::ScrollView::ScrollPart::vscrollbarButtonBottom:
-                vButtonBottom(w, scrollIndex, widgetIndex);
+                vButtonBottom(w, res.index, widgetIndex);
                 break;
             case Ui::ScrollView::ScrollPart::vscrollbarTrackTop:
-                vTrackTop(w, scrollIndex, widgetIndex);
+                vTrackTop(w, res.index, widgetIndex);
                 break;
             case Ui::ScrollView::ScrollPart::vscrollbarTrackBottom:
-                vTrackBottom(w, scrollIndex, widgetIndex);
+                vTrackBottom(w, res.index, widgetIndex);
                 break;
             default:
                 break;
@@ -478,18 +464,14 @@ namespace OpenLoco::Ui::ScrollView
     // Based on 0x004C8689
     void scrollModalRight(const int16_t x, const int16_t y, Ui::Window* const w, Ui::Widget* const widget, const WidgetIndex_t widgetIndex)
     {
-        Ui::ScrollView::ScrollPart scrollArea;
-        int16_t outX, outY;
-        size_t scrollIndex;
+        auto res = getPart(w, widget, x, y);
 
-        Ui::ScrollView::getPart(w, widget, x, y, &outX, &outY, &scrollArea, &scrollIndex);
+        _currentScrollArea = res.area;
+        setCurrentScrollIndex(res.index);
 
-        _currentScrollArea = scrollArea;
-        setCurrentScrollIndex(scrollIndex);
-
-        if (scrollArea == Ui::ScrollView::ScrollPart::view)
+        if (res.area == Ui::ScrollView::ScrollPart::view)
         {
-            w->callScrollMouseDown(outX, outY, static_cast<uint8_t>(scrollIndex));
+            w->callScrollMouseDown(res.scrollviewLoc.x, res.scrollviewLoc.y, static_cast<uint8_t>(res.index));
         }
     }
 
@@ -531,36 +513,34 @@ namespace OpenLoco::Ui::ScrollView
         }
         else
         {
-            Ui::ScrollView::ScrollPart scrollArea;
-            Ui::Point point;
-            Ui::ScrollView::getPart(w, widget, x, y, &point.x, &point.y, &scrollArea, &scrollIndex);
-            if (scrollArea != _currentScrollArea)
+            auto res = getPart(w, widget, x, y);
+            if (res.area != _currentScrollArea)
             {
                 clearPressedButtons(w->type, w->number, widgetIndex);
                 return;
             }
 
-            switch (scrollArea)
+            switch (res.area)
             {
                 case ScrollPart::view: // 0x004C729A
-                    w->callScrollMouseDrag(point.x, point.y, static_cast<uint8_t>(scrollIndex));
+                    w->callScrollMouseDrag(res.scrollviewLoc.x, res.scrollviewLoc.y, static_cast<uint8_t>(res.index));
                     break;
 
                 case ScrollPart::hscrollbarButtonLeft:
-                    hButtonLeft(w, scrollIndex, widgetIndex);
+                    hButtonLeft(w, res.index, widgetIndex);
                     break;
                 case ScrollPart::hscrollbarButtonRight:
-                    hButtonRight(w, scrollIndex, widgetIndex);
+                    hButtonRight(w, res.index, widgetIndex);
                     break;
                 case ScrollPart::hscrollbarTrackLeft:
                 case ScrollPart::hscrollbarTrackRight:
                     break;
 
                 case ScrollPart::vscrollbarButtonTop:
-                    vButtonTop(w, scrollIndex, widgetIndex);
+                    vButtonTop(w, res.index, widgetIndex);
                     break;
                 case ScrollPart::vscrollbarButtonBottom:
-                    vButtonBottom(w, scrollIndex, widgetIndex);
+                    vButtonBottom(w, res.index, widgetIndex);
                     break;
                 case ScrollPart::vscrollbarTrackTop:
                 case ScrollPart::vscrollbarTrackBottom:
