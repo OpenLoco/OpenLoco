@@ -1,10 +1,10 @@
 #pragma once
 #include "../Core/Span.hpp"
+#include <AL/alc.h>
 #include <string>
 #include <vector>
 
-struct ALCdevice;
-struct ALCcontext;
+// TODO: When ubuntu dependencies upreved remove AL/alc.h and forward declare ALCcontext and ALCdevice
 
 namespace OpenAL
 {
