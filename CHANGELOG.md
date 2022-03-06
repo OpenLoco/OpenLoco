@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#1327] Readd the game intro (use commandline switch --intro to enable).
 - Feature: [#1350] Show vehicle obsolete date in build vehicle window.
+- Feature: [#1354] Added a cheat to display locked vehicles.
 - Fix: [#239] Vehicles sound do not modify pitch and incorrect sounds can be loaded when loading saves.
 - Fix: [#1280] Crash when removing crashed vehicles with news window open.
 - Fix: [#1320] Inability to mark scenario as complete.
