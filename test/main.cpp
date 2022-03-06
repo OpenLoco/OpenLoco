@@ -1,6 +1,6 @@
-#ifdef _MSC_VER
-
 #include <gtest/gtest.h>
+
+#ifdef _MSC_VER
 
 int main(int argc, char** argv)
 {
