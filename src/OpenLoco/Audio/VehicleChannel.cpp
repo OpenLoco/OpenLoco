@@ -54,6 +54,7 @@ namespace OpenLoco::Audio
         return (relativePosition - (1 << 15)) / 16;
     }
 
+    // 0x0048A590
     static std::pair<SoundId, Channel::Attributes> getChannelAttributesFromVehicle(const Vehicles::Vehicle2or6* v)
     {
         auto* w = Ui::WindowManager::find(v->soundWindowType, v->soundWindowNumber);
