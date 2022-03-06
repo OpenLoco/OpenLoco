@@ -182,6 +182,8 @@ namespace OpenLoco::Config
             _new_config.showFPS = config["showFPS"].as<bool>();
         if (config["uncapFPS"])
             _new_config.uncapFPS = config["uncapFPS"].as<bool>();
+        if (config["displayLockedVehicles"])
+            _new_config.displayLockedVehicles = config["displayLockedVehicles"].as<bool>();
 
         auto& scNode = config["shortcuts"];
         readShortcutConfig(scNode);
@@ -237,6 +239,7 @@ namespace OpenLoco::Config
         node["autosave_amount"] = _new_config.autosave_amount;
         node["showFPS"] = _new_config.showFPS;
         node["uncapFPS"] = _new_config.uncapFPS;
+        node["displayLockedVehicles"] = _new_config.displayLockedVehicles;
 
         // Shortcuts
         const auto& shortcuts = _new_config.shortcuts;

@@ -1770,4 +1770,8 @@ namespace OpenLoco::StringIds
     constexpr string_id shortcut_game_speed_extra_fast_forward = 2240;
     constexpr string_id vehicle_capacity_stringid = 2241;
     constexpr string_id stats_obsolete = 2242;
+    constexpr string_id vehicle_is_locked = 2243;
+    constexpr string_id display_locked_vehicles = 2244;
+    constexpr string_id tooltip_display_locked_vehicles = 2245;
+    constexpr string_id stats_proposed_design = 2246;
 }

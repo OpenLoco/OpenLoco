@@ -1,4 +1,5 @@
 #include "../CompanyManager.h"
+#include "../Config.h"
 #include "../Economy/Economy.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
@@ -442,8 +443,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 continue;
             }
 
-            // Is vehicle type unlocked
-            if (!(CompanyManager::get(companyId)->unlockedVehicles[vehicleObjIndex >> 5] & (1 << (vehicleObjIndex & 0x1F))))
+            const auto* company = CompanyManager::get(companyId);
+            if (!Config::getNew().displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleObjIndex))
             {
                 continue;
             }
@@ -760,6 +761,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             GameCommands::setErrorTitle(StringIds::cant_add_pop_5_string_id_string_id);
         }
 
+        const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+        if (!company->isVehicleIndexUnlocked(item))
+        {
+            Error::open(StringIds::cant_build_pop_5_string_id, StringIds::vehicle_is_locked);
+            return;
+        }
+
         if (GameCommands::do_5(item, EntityId(*_buildTargetVehicle)) == GameCommands::FAILURE)
         {
             return;
@@ -874,6 +882,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         // Only activate the singular tabs
         activeWidgets |= 1ULL << _transportTypeTabInformation[window->currentTab].widgetIndex;
         activeWidgets |= 1ULL << (window->currentSecondaryTab + widx::tab_track_type_0);
+
         window->activatedWidgets = activeWidgets;
 
         window->widgets[widx::caption].text = window->currentTab + StringIds::build_trains;
@@ -950,7 +959,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             FormatArguments args{};
             args.push(vehicleObj->designed);
-            buffer = StringManager::formatString(buffer, StringIds::stats_designed, &args);
+
+            const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+            auto unlocked = company->isVehicleIndexUnlocked(window->rowHover);
+            buffer = StringManager::formatString(
+                buffer,
+                unlocked ? StringIds::stats_designed : StringIds::stats_proposed_design,
+                &args);
         }
 
         if (vehicleObj->obsolete != 0 && vehicleObj->obsolete != std::numeric_limits<uint16_t>::max())
@@ -1086,11 +1101,28 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                             continue;
                         }
 
+                        const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+                        auto displayLockedVehiclesScroll = Config::getNew().displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleType);
+
                         auto colouredString = StringIds::black_stringid;
                         if (window.rowHover == vehicleType)
                         {
-                            Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x2000030);
+                            if (displayLockedVehiclesScroll)
+                            {
+                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x0100003D);
+                            }
+                            else
+                            {
+                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x02000030);
+                            }
                             colouredString = StringIds::wcolour2_stringid;
+                        }
+                        else
+                        {
+                            if (displayLockedVehiclesScroll)
+                            {
+                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x0100003F);
+                            }
                         }
 
                         int16_t half = (window.rowHeight - 22) / 2;
