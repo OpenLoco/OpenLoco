@@ -48,8 +48,8 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
     static loco_global<int16_t, 0x01136168> vehicleUpdate_targetZ;
-    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237; // remainingDistance related?
-    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238; // remainingDistance related?
+    static loco_global<uint8_t, 0x01136237> vehicleUpdate_frontBogieHasMoved; // remainingDistance related?
+    static loco_global<uint8_t, 0x01136238> vehicleUpdate_backBogieHasMoved; // remainingDistance related?
     static loco_global<Status, 0x0113646C> vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> vehicleUpdate_helicopterTargetYaw;
     static loco_global<uint32_t, 0x00525BB0> vehicleUpdate_var_525BB0;
