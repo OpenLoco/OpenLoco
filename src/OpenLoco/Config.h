@@ -173,7 +173,7 @@ namespace OpenLoco::Config
         bool showFPS = false;
         bool uncapFPS = false;
         KeyboardShortcut shortcuts[Input::ShortcutManager::kCount];
-        bool displayLockedVehicles;
+        bool displayLockedVehicles = false;
     };
 
     LocoConfig& get();

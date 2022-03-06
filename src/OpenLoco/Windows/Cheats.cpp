@@ -632,15 +632,15 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void prepareDraw(Window* self)
         {
-            self->activated_widgets = (1 << Common::Widx::tab_vehicles);
+            self->activatedWidgets = (1 << Common::Widx::tab_vehicles);
 
             if (Config::getNew().displayLockedVehicles)
             {
-                self->activated_widgets |= (1 << Widx::checkbox_display_locked_vehicles);
+                self->activatedWidgets |= (1 << Widx::checkbox_display_locked_vehicles);
             }
             else
             {
-                self->activated_widgets &= ~(1 << Widx::checkbox_display_locked_vehicles);
+                self->activatedWidgets &= ~(1 << Widx::checkbox_display_locked_vehicles);
             }
         }
 
