@@ -1,13 +1,15 @@
 22.02+ (???)
 ------------------------------------------------------------------------
-- Feature: [#1327] Readd the game intro (use commandline switch --intro to enable)
+- Feature: [#1327] Readd the game intro (use commandline switch --intro to enable).
 - Feature: [#1350] Show vehicle obsolete date in build vehicle window.
+- Fix: [#239] Vehicles sound do not modify pitch and incorrect sounds can be loaded when loading saves.
 - Fix: [#1280] Crash when removing crashed vehicles with news window open.
 - Fix: [#1320] Inability to mark scenario as complete.
 - Fix: [#1323] Playlist crash when setting the date really far into the future.
 - Fix: [#1325] Crash when saving second loaded scenario of a playthrough.
 - Fix: [#1328] Various object loading bugs related to custom object files causing crashes on load.
 - Change: [#1276] Transfering cargo is now viable. The cargo age is calculated as the weighted average of the present and delivered cargo.
+- Technical: [#1347] Add OpenAL-soft audio engine.
 
 22.02 (2022-02-06)
 ------------------------------------------------------------------------
