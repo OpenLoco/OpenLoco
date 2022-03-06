@@ -21,12 +21,12 @@ namespace OpenLoco::Vehicles
     static loco_global<Vehicle2*, 0x01136120> vehicleUpdate_2;
     static loco_global<VehicleBogie*, 0x01136124> vehicleUpdate_frontBogie;
     static loco_global<VehicleBogie*, 0x01136128> vehicleUpdate_backBogie;
-    static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130;        // Speed
-    static loco_global<uint8_t, 0x01136237> vehicleUpdate_frontBogieHasMoved; // remainingDistance related?
-    static loco_global<uint8_t, 0x01136238> vehicleUpdate_backBogieHasMoved;  // remainingDistance related?
-    static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C;            // var_2C related?
-    static loco_global<bool[44], 0x004F8A7C> trackIdToSparkDirection;         // bools true for right false for left
-    static loco_global<bool, 0x00525FAE> trafficHandedness;                   // boolean true for right false for left
+    static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
+    static loco_global<bool, 0x01136237> vehicleUpdate_frontBogieHasMoved;
+    static loco_global<bool, 0x01136238> vehicleUpdate_backBogieHasMoved;
+    static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C;    // var_2C related?
+    static loco_global<bool[44], 0x004F8A7C> trackIdToSparkDirection; // bools true for right false for left
+    static loco_global<bool, 0x00525FAE> trafficHandedness;           // boolean true for right false for left
 
     // 0x00503E5C
     static constexpr Pitch kVehicleBodyIndexToPitch[] = {
@@ -56,7 +56,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        if (vehicleUpdate_frontBogieHasMoved | vehicleUpdate_backBogieHasMoved)
+        if (vehicleUpdate_frontBogieHasMoved || vehicleUpdate_backBogieHasMoved)
         {
             invalidateSprite();
             sub_4AC255(vehicleUpdate_backBogie, vehicleUpdate_frontBogie);
