@@ -9,6 +9,7 @@ namespace OpenLoco
     namespace CargoObjectFlags
     {
         constexpr uint8_t refit = (1 << 1);
+        constexpr uint8_t unk2 = (1 << 2);
     }
 
 #pragma pack(push, 1)

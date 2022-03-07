@@ -9,6 +9,7 @@
 #include "../GameCommands/GameCommands.h"
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
+#include "../MessageManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
 #include "../Objects/SoundObject.h"
@@ -659,16 +660,6 @@ namespace OpenLoco::Vehicles
         _orderTableLength = _orderTableLength - head->sizeOfOrderTable;
     }
 
-    // 0x0042851C
-    // Delete related news items??
-    static void sub_42851C(const EntityId id, const uint8_t type)
-    {
-        registers regs{};
-        regs.al = type;
-        regs.dx = enumValue(id);
-        call(0x0042851C, regs);
-    }
-
     // 0x004AE6DE
     static void updateWholeVehicle(VehicleHead* const head)
     {
@@ -720,7 +711,7 @@ namespace OpenLoco::Vehicles
                 // Cleanup and delete base vehicle before exit.
                 RoutingManager::freeRoutingHandle(_head->routingHandle);
                 sub_470334(_head);
-                sub_42851C(_head->id, 3);
+                MessageManager::removeAllSubjectRefs(enumValue(_head->id), MessageItemArgumentType::vehicle);
                 auto veh1 = _head->nextVehicleComponent();
                 if (veh1 == nullptr)
                 {

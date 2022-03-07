@@ -472,12 +472,6 @@ namespace OpenLoco
         }
     }
 
-    // 0x00428E47
-    static void sub_428E47()
-    {
-        call(0x00428E47);
-    }
-
     // 0x0046E388
     static void sub_46E388()
     {
@@ -504,7 +498,7 @@ namespace OpenLoco
         _updatingCompanyId = CompanyManager::getControllingId();
         for (auto i = 0; i < var_F253A0; i++)
         {
-            sub_428E47();
+            MessageManager::sub_428E47();
             WindowManager::dispatchUpdateAll();
         }
 
@@ -521,7 +515,7 @@ namespace OpenLoco
             _updatingCompanyId = CompanyManager::getControllingId();
             for (auto i = 0; i < var_F253A0; i++)
             {
-                sub_428E47();
+                MessageManager::sub_428E47();
                 WindowManager::dispatchUpdateAll();
             }
 
@@ -546,7 +540,7 @@ namespace OpenLoco
             // run twice as often as var_F253A0
             for (auto i = 0; i < var_F253A0 * 2; i++)
             {
-                sub_428E47();
+                MessageManager::sub_428E47();
                 WindowManager::dispatchUpdateAll();
             }
 
@@ -582,7 +576,7 @@ namespace OpenLoco
             // run twice as often as var_F253A0
             for (auto i = 0; i < var_F253A0 * 2; i++)
             {
-                sub_428E47();
+                MessageManager::sub_428E47();
                 WindowManager::dispatchUpdateAll();
             }
 

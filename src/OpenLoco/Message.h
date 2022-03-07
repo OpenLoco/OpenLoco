@@ -12,24 +12,37 @@ namespace OpenLoco
 {
     enum class MessageType : uint8_t
     {
-        cantWaitForFullLoad = 0,
-        industryClosingDown = 1,
-        cargoNowAccepted = 9,
-        cargoNoLongerAccepted = 10,
+        cantWaitForFullLoad,
+        industryClosingDown,
+        vehicleSlipped,
+        unk3,
+        unk4,
+        unk5,
+        unk6,
+        unk7,
+        unk8,
+        cargoNowAccepted,
+        cargoNoLongerAccepted,
         newCompany,
-        unableToLandAtAirport = 12,
+        unableToLandAtAirport,
         citizensCelebrate,
         workersCelebrate,
         newVehicle,
-        newIndustry = 17,
+        companyPromoted,
+        newIndustry,
         industryProductionUp,
         industryProductionDown,
-        bankruptcyWarning6Months = 23,
+        congratulationsCompleted,
+        failedObjectives,
+        haveBeenBeaten,
+        bankruptcyWarning6Months,
         bankruptcyWarning3Months,
         bankruptcyDeclared,
-        vehicleCrashed = 27,
+        bankruptcyDeclared2,
+        vehicleCrashed,
         companyCheated,
-        newSpeedRecord = 29,
+        newSpeedRecord,
+        newSpeedRecord2,
     };
 
     enum class MessageCriticality : uint8_t
@@ -70,6 +83,8 @@ namespace OpenLoco
         Audio::SoundId sound;
         uint16_t flags;
         MessageItemArgumentType argumentTypes[3];
+        uint16_t duration;
+        uint8_t priority;
         constexpr bool hasFlag(uint16_t flag) const { return flags & flag; }
     };
 
@@ -84,6 +99,16 @@ namespace OpenLoco
         uint16_t var_C8;
         uint16_t itemSubjects[3]; // 0xCA
         uint32_t date;            // 0xD0
+
+        constexpr bool operator==(const Message& lhs) const
+        {
+            // Unsure why companyId not compared
+            return type == lhs.type
+                && itemSubjects[0] == lhs.itemSubjects[0]
+                && itemSubjects[1] == lhs.itemSubjects[1]
+                && itemSubjects[2] == lhs.itemSubjects[2];
+        }
+        constexpr bool operator!=(const Message& lhs) const { return !(*this == lhs); }
     };
 #pragma pack(pop)
 }

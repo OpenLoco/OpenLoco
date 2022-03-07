@@ -369,7 +369,7 @@ namespace OpenLoco::Scenario
         initialiseDate(_activeOptions->scenarioStartYear);
         initialiseSnowLine();
         sub_4748D4();
-        std::memset(gameState.recordType, 0, sizeof(gameState.recordType));
+        std::memset(gameState.recordSpeed, 0, sizeof(gameState.recordSpeed));
         gameState.objectiveTimeLimitUntilYear = gameState.objectiveTimeLimitYears - 1 + gameState.currentYear;
         gameState.objectiveMonthsInChallenge = 0;
         call(0x0049B546);

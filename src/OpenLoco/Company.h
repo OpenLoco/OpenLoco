@@ -198,6 +198,7 @@ namespace OpenLoco
     static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
     static_assert(offsetof(Company, var_8BB0) == 0x8BB0);
 
+    string_id getCorporateRatingAsStringId(CorporateRating rating);
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
 }
