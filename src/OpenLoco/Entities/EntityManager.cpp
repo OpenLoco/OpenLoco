@@ -323,6 +323,18 @@ namespace OpenLoco::EntityManager
         }
     }
 
+    // 0x004B94CF
+    void updateDaily()
+    {
+        call(0x004B94CF);
+    }
+
+    // 0x004C3C54
+    void updateMonthly()
+    {
+        call(0x004C3C54);
+    }
+
     // 0x0047019F
     void moveEntityToList(EntityBase* const entity, const EntityListType list)
     {

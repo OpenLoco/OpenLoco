@@ -568,6 +568,12 @@ namespace OpenLoco::Ui::WindowManager
         allWheelInput();
     }
 
+    // 0x00439BA5
+    void updateDaily()
+    {
+        call(0x00439BA5);
+    }
+
     // 0x004CE438
     Window* getMainWindow()
     {

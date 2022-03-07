@@ -294,4 +294,7 @@ namespace OpenLoco::ObjectManager
     size_t getByteLength(const LoadedObjectHandle handle);
 
     void drawGenericDescription(Gfx::Context& context, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete);
+
+    void updateYearly1();
+    void updateYearly2();
 }

@@ -51,6 +51,12 @@ namespace OpenLoco::IndustryManager
         }
     }
 
+    // 0x00453487
+    void updateDaily()
+    {
+        call(0x00453487);
+    }
+
     // 0x0045383B
     void updateMonthly()
     {

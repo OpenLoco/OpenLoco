@@ -679,6 +679,12 @@ namespace OpenLoco::Map::TileManager
         }
     }
 
+    // 0x0047AB9B
+    void updateYearly()
+    {
+        call(0x0047AB9B);
+    }
+
     void registerHooks()
     {
         // This hook can be removed once sub_4599B3 has been implemented
