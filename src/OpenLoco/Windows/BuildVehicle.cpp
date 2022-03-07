@@ -761,12 +761,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             GameCommands::setErrorTitle(StringIds::cant_add_pop_5_string_id_string_id);
         }
 
-        const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-        if (!company->isVehicleIndexUnlocked(item))
-        {
-            GameCommands::setErrorTitle(StringIds::vehicle_is_locked);
-        }
-
         if (GameCommands::do_5(item, EntityId(*_buildTargetVehicle)) == GameCommands::FAILURE)
         {
             return;
