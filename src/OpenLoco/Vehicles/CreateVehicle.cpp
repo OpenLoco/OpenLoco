@@ -821,7 +821,7 @@ namespace OpenLoco::Vehicles
         const auto* company = CompanyManager::get(CompanyManager::getControllingId());
         if (!company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleThingId)))
         {
-            GameCommands::setErrorTitle(StringIds::vehicle_is_locked);
+            GameCommands::setErrorText(StringIds::vehicle_is_locked);
             return GameCommands::FAILURE;
         }
 
