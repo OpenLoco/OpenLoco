@@ -212,6 +212,15 @@ namespace OpenLoco::TownManager
         return { std::make_pair(town->id(), invUnk) };
     }
 
+    void registerHooks()
+    {
+        registerHook(
+            0x00497348,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                sub_497348();
+                return 0;
+            });
+    }
 }
 
 OpenLoco::TownId OpenLoco::Town::id() const
