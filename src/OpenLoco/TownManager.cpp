@@ -3,6 +3,10 @@
 #include "Game.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
+#include "Map/TileLoop.hpp"
+#include "Map/TileManager.h"
+#include "Objects/BuildingObject.h"
+#include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
@@ -58,6 +62,61 @@ namespace OpenLoco::TownManager
     }
 
     static auto& rawTowns() { return getGameState().towns; }
+
+    // 0x00497348
+    void sub_497348()
+    {
+        for (auto& town : towns())
+        {
+            town.var_38 = 0;
+            town.population = 0;
+            town.var_34 = 0;
+            std::fill(std::begin(town.var_150), std::end(town.var_150), 0);
+        }
+
+        Map::TilePosRangeView tileLoop{ { 1, 1 }, { Map::map_columns - 1, Map::map_rows - 1 } };
+        for (const auto& tilePos : tileLoop)
+        {
+            auto tile = Map::TileManager::get(tilePos);
+            for (auto& element : tile)
+            {
+                auto* building = element.as<Map::BuildingElement>();
+                if (building == nullptr)
+                    continue;
+
+                if (building->isGhost())
+                    continue;
+
+                if (building->has_40())
+                    continue;
+
+                if (building->multiTileIndex() != 0)
+                    continue;
+
+                auto objectId = building->objectId();
+                auto* buildingObj = ObjectManager::get<BuildingObject>(objectId);
+                auto producedQuantity = buildingObj->producedQuantity[0];
+                uint32_t population;
+                if (!building->isConstructed())
+                {
+                    population = 0;
+                }
+                else
+                {
+                    population = producedQuantity;
+                }
+                auto* town = sub_497DC1(tilePos, population, producedQuantity, 0, 1);
+                if (town != nullptr)
+                {
+                    if (buildingObj->var_AC != 0xFF)
+                    {
+                        town->var_150[buildingObj->var_AC] += 1;
+                    }
+                }
+            }
+        }
+        Gfx::invalidateScreen();
+    }
 
     // 0x00496B38
     void reset()

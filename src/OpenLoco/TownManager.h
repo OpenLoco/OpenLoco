@@ -15,4 +15,5 @@ namespace OpenLoco::TownManager
     void updateLabels();
     void updateMonthly();
     Town* sub_497DC1(const Map::Pos2& loc, uint32_t population, uint32_t unk1, int16_t rating, uint16_t unk3);
+    void sub_497348();
 }

@@ -43,7 +43,7 @@ namespace OpenLoco
         uint8_t historySize;            // 0x5B (<= 20 * 12)
         uint8_t history[20 * 12];       // 0x5C (20 years, 12 months)
         int32_t history_min_population; // 0x14C
-        uint8_t pad_150[0x158 - 0x150];
+        uint8_t var_150[8];
         uint16_t monthly_cargo_delivered[32];
         uint32_t cargo_influence_flags;
         uint16_t var_19C[2][2];
