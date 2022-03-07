@@ -1480,4 +1480,18 @@ namespace OpenLoco::ObjectManager
             rowPosition.y += descriptionRowHeight;
         }
     }
+
+    // 0x004796A9
+    void updateYearly1()
+    {
+        // set default levelCrossing
+        call(0x004796A9);
+    }
+
+    // 0x004C3A9E
+    void updateYearly2()
+    {
+        // update available vehicles/roads/airports/etc.
+        call(0x004C3A9E);
+    }
 }

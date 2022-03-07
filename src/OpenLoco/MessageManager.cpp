@@ -33,4 +33,10 @@ namespace OpenLoco::MessageManager
         regs.dx = subjectIdC;
         call(0x004285BA, regs);
     }
+
+    // 0x004284DB
+    void updateDaily()
+    {
+        call(0x004284DB);
+    }
 }

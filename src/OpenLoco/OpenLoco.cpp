@@ -48,6 +48,7 @@
 #include "Map/AnimationManager.h"
 #include "Map/TileManager.h"
 #include "Map/WaveManager.h"
+#include "MessageManager.h"
 #include "MultiPlayer.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
@@ -1012,11 +1013,11 @@ namespace OpenLoco
             if (updateDayCounter())
             {
                 StationManager::updateDaily();
-                call(0x004B94CF); // VehicleManager::updateDaily();
-                call(0x00453487); // IndustryManager::updateDaily();
-                call(0x004284DB); // MessageManager::updateDaily();
+                EntityManager::updateDaily();
+                IndustryManager::updateDaily();
+                MessageManager::updateDaily();
                 call(0x004969DA); // nop this sets the real time not used
-                call(0x00439BA5); // WindowManager::updateDaily??
+                WindowManager::updateDaily();
 
                 auto yesterday = calcDate(getCurrentDay() - 1);
                 auto today = calcDate(getCurrentDay());
@@ -1030,9 +1031,9 @@ namespace OpenLoco
                     addr<0x00526243, uint16_t>()++;
                     TownManager::updateMonthly();
                     IndustryManager::updateMonthly();
-                    call(0x0043037B); // CompanyManager::updateMonthly
-                    call(0x0042F213); // CompanyManager::updateMonthly2
-                    call(0x004C3C54); // VehicleManager::updateMonthly
+                    CompanyManager::updateMonthly1();
+                    CompanyManager::updateMonthly2();
+                    EntityManager::updateMonthly();
 
                     if (today.year <= 2029)
                     {
@@ -1052,10 +1053,10 @@ namespace OpenLoco
                     if (today.year != yesterday.year)
                     {
                         // End of every year
-                        call(0x004312C7); // CompanyManager::updateYearly
-                        call(0x004796A9); // set default levelCrossing
-                        call(0x004C3A9E); // update available vehicles/roads/airports/etc.
-                        call(0x0047AB9B); // TileManager::updateYearly
+                        CompanyManager::updateYearly();
+                        ObjectManager::updateYearly1();
+                        ObjectManager::updateYearly2();
+                        Map::TileManager::updateYearly();
                     }
 
                     autosaveCheck();

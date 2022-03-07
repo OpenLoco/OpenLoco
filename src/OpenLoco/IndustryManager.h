@@ -12,6 +12,7 @@ namespace OpenLoco::IndustryManager
     FixedVector<Industry, Limits::kMaxIndustries> industries();
     Industry* get(IndustryId id);
     void update();
+    void updateDaily();
     void updateMonthly();
     void createAllMapAnimations();
     bool industryNearPosition(const Map::Pos2& position, uint32_t flags);

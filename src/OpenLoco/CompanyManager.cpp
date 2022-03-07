@@ -178,6 +178,18 @@ namespace OpenLoco::CompanyManager
         }
     }
 
+    // 0x0043037B
+    void updateMonthly1()
+    {
+        call(0x0043037B);
+    }
+
+    // 0x0042F213
+    void updateMonthly2()
+    {
+        call(0x0042F213);
+    }
+
     // 0x00487FC1
     void updateQuarterly()
     {
@@ -185,6 +197,12 @@ namespace OpenLoco::CompanyManager
         {
             company.updateQuarterly();
         }
+    }
+
+    // 0x004312C7
+    void updateYearly()
+    {
+        call(0x004312C7);
     }
 
     // 0x0042F9CB
