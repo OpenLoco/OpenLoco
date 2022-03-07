@@ -817,6 +817,13 @@ namespace OpenLoco::Vehicles
     {
         GameCommands::setExpenditureType(ExpenditureType::VehiclePurchases);
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
+
+        const auto* company = CompanyManager::get(CompanyManager::getControllingId());
+        if (!company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleThingId)))
+        {
+            return GameCommands::FAILURE;
+        }
+
         if (vehicleThingId == EntityId::null)
         {
             return createNewVehicle(flags, vehicleTypeId);
