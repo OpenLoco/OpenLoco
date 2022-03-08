@@ -1,4 +1,4 @@
-22.02+ (???)
+22.03 (2022-03-08)
 ------------------------------------------------------------------------
 - Feature: [#1327] Readd the game intro (use commandline switch --intro to enable).
 - Feature: [#1350] Show vehicle obsolete date in build vehicle window.

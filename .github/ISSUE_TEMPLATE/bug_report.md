@@ -9,8 +9,8 @@ assignees: ''
 
 **Version information:**
  - Platform: [e.g. Windows 10]
- - Version: [e.g. 22.02]
- - Build/commit: [e.g. e18b716]
+ - Version: [e.g. 22.03]
+ - Build/commit: [e.g. 0c4cc36]
 
 **Describe the bug**
 A clear and concise description of what the bug is.
