@@ -32,7 +32,7 @@ namespace OpenLoco::TownManager
         dword_1135C38 = town;
         if (town != nullptr)
         {
-            town->var_34 += unk1;
+            town->populationCapacity += unk1;
         }
         if (population != 0)
         {
@@ -70,7 +70,7 @@ namespace OpenLoco::TownManager
         {
             town.var_38 = 0;
             town.population = 0;
-            town.var_34 = 0;
+            town.populationCapacity = 0;
             std::fill(std::begin(town.var_150), std::end(town.var_150), 0);
         }
 

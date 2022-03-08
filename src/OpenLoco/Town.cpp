@@ -151,11 +151,11 @@ namespace OpenLoco
     {
         auto newSize = enumValue(size);
         if (size < TownSize::metropolis
-            && var_34 >= _populations[enumValue(size) + 1])
+            && populationCapacity >= _populations[enumValue(size) + 1])
         {
             newSize++;
         }
-        else if (size != TownSize::hamlet && var_34 + 100 < _populations[enumValue(size)])
+        else if (size != TownSize::hamlet && populationCapacity + 100 < _populations[enumValue(size)])
         {
             newSize--;
         }

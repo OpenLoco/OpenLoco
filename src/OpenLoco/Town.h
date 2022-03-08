@@ -28,14 +28,14 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Town
     {
-        string_id name;        // 0x00
-        coord_t x;             // 0x02
-        coord_t y;             // 0x04
-        uint16_t flags;        // 0x06
-        LabelFrame labelFrame; // 0x08
-        Utility::prng prng;    // 0x28
-        uint32_t population;   // 0x30
-        uint32_t var_34;
+        string_id name;              // 0x00
+        coord_t x;                   // 0x02
+        coord_t y;                   // 0x04
+        uint16_t flags;              // 0x06
+        LabelFrame labelFrame;       // 0x08
+        Utility::prng prng;          // 0x28
+        uint32_t population;         // 0x30
+        uint32_t populationCapacity; // 0x34
         uint16_t var_38;
         int16_t company_ratings[15];    // 0x3A
         uint16_t companies_with_rating; // 0x58
