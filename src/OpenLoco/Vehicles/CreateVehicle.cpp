@@ -819,7 +819,7 @@ namespace OpenLoco::Vehicles
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
 
         const auto* company = CompanyManager::get(CompanyManager::getUpdatingCompanyId());
-        if (!company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleThingId)))
+        if (!company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleTypeId)))
         {
             GameCommands::setErrorText(StringIds::vehicle_is_locked);
             return GameCommands::FAILURE;
