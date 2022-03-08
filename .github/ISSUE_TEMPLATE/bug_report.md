@@ -9,7 +9,7 @@ assignees: ''
 
 **Version information:**
  - Platform: [e.g. Windows 10]
- - Version: [e.g. 22.03]
+ - Version: [e.g. 22.03.1]
  - Build/commit: [e.g. 0c4cc36]
 
 **Describe the bug**
