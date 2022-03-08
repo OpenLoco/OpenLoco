@@ -64,7 +64,7 @@ namespace OpenLoco::TownManager
     static auto& rawTowns() { return getGameState().towns; }
 
     // 0x00497348
-    void sub_497348()
+    void resetBuildingsInfluence()
     {
         for (auto& town : towns())
         {
@@ -217,7 +217,7 @@ namespace OpenLoco::TownManager
         registerHook(
             0x00497348,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                sub_497348();
+                resetBuildingsInfluence();
                 return 0;
             });
     }
