@@ -699,6 +699,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     if (!Config::getNew().displayLockedVehicles)
                     {
                         Config::getNew().buildLockedVehicles = false;
+                        WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
                     }
 
                     WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_display_locked_vehicles);
@@ -712,6 +713,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     if (Config::getNew().buildLockedVehicles)
                     {
                         Config::getNew().displayLockedVehicles = true;
+                        WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_display_locked_vehicles);
                     }
 
                     WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
