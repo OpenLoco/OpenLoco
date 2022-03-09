@@ -40,11 +40,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 case Common::widx::close_button:
                 {
-                    if (_activeMessageIndex != MessageId::null)
+                    if (MessageManager::getActiveIndex() != MessageId::null)
                     {
-                        auto news = MessageManager::get(_activeMessageIndex);
+                        auto news = MessageManager::get(MessageManager::getActiveIndex());
                         news->var_C8 = 0xFFFF;
-                        _activeMessageIndex = MessageId::null;
+                        MessageManager::setActiveIndex(MessageId::null);
                     }
                     WindowManager::close(self);
                     break;
@@ -53,9 +53,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case Common::widx::viewport1Button:
                 case Common::widx::viewport2Button:
                 {
-                    if (_activeMessageIndex != MessageId::null)
+                    if (MessageManager::getActiveIndex() != MessageId::null)
                     {
-                        auto news = MessageManager::get(_activeMessageIndex);
+                        auto news = MessageManager::get(MessageManager::getActiveIndex());
                         const auto& mtd = getMessageTypeDescriptor(news->type);
                         if (widgetIndex == Common::widx::viewport1Button)
                         {
@@ -284,12 +284,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)-1;
             view.thingId = EntityId::null;
-            auto news = MessageManager::get(_activeMessageIndex);
+            auto news = MessageManager::get(MessageManager::getActiveIndex());
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
             bool selectable = false;
 
-            if (_activeMessageIndex != MessageId::null)
+            if (MessageManager::getActiveIndex() != MessageId::null)
             {
                 if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
                 {
@@ -385,7 +385,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.thingId = EntityId::null;
             selectable = false;
 
-            if (_activeMessageIndex != MessageId::null)
+            if (MessageManager::getActiveIndex() != MessageId::null)
             {
                 if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
                 {
@@ -752,7 +752,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429739
         static void draw(Ui::Window* self, Gfx::Context* context)
         {
-            auto news = MessageManager::get(_activeMessageIndex);
+            auto news = MessageManager::get(MessageManager::getActiveIndex());
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
             if (mtd.hasFlag(MessageTypeFlags::unk1))

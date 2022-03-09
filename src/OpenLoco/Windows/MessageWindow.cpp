@@ -30,7 +30,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<CompanyId, 0x00525E3C> _playerCompany;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
-    static loco_global<MessageId, 0x005271D0> _activeMessageIndex;
 
     namespace Common
     {
@@ -150,9 +149,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (messageIndex >= _messageCount)
                 return;
 
-            if (_activeMessageIndex != MessageId::null)
+            if (MessageManager::getActiveIndex() != MessageId::null)
             {
-                auto message = MessageManager::get(_activeMessageIndex);
+                auto message = MessageManager::get(MessageManager::getActiveIndex());
                 if (message->var_C8 != 0xFFFF)
                 {
                     if (message->var_C8 & (1 << 15))
@@ -160,7 +159,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 }
             }
 
-            _activeMessageIndex = MessageId::null;
+            MessageManager::setActiveIndex(MessageId::null);
             WindowManager::close(WindowType::news, 0);
 
             auto message = MessageManager::get(MessageId(messageIndex));

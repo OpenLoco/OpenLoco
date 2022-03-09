@@ -83,7 +83,7 @@ namespace OpenLoco
         CompanyId companyId;     // 0xC7
         uint16_t var_C8;
         uint16_t itemSubjects[3]; // 0xCA
-        uint32_t date; // 0xD0
+        uint32_t date;            // 0xD0
     };
 #pragma pack(pop)
 }
