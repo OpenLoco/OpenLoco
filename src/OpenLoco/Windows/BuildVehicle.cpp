@@ -1100,7 +1100,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         auto colouredString = StringIds::black_stringid;
                         if (window.rowHover == vehicleType)
                         {
-                            if (displayLockedVehiclesScroll)
+                            if (displayLockedVehiclesScroll && !Config::getNew().buildLockedVehicles)
                             {
                                 Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x0100003D);
                             }
@@ -1112,7 +1112,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         }
                         else
                         {
-                            if (displayLockedVehiclesScroll)
+                            if (displayLockedVehiclesScroll && !Config::getNew().buildLockedVehicles)
                             {
                                 Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x0100003F);
                             }

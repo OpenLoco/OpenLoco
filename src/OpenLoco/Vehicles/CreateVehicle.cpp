@@ -1,5 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
+#include "../Config.h"
 #include "../Core/Optional.hpp"
 #include "../Date.h"
 #include "../Economy/Economy.h"
@@ -819,7 +820,9 @@ namespace OpenLoco::Vehicles
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
 
         const auto* company = CompanyManager::get(CompanyManager::getUpdatingCompanyId());
-        if (!company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleTypeId)))
+        auto vehicleIsLocked = !company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleTypeId));
+
+        if (vehicleIsLocked && !Config::getNew().buildLockedVehicles)
         {
             GameCommands::setErrorText(StringIds::vehicle_is_locked);
             return GameCommands::FAILURE;

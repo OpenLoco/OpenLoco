@@ -1774,4 +1774,6 @@ namespace OpenLoco::StringIds
     constexpr string_id display_locked_vehicles = 2244;
     constexpr string_id tooltip_display_locked_vehicles = 2245;
     constexpr string_id stats_proposed_design = 2246;
+    constexpr string_id build_locked_vehicles = 2247;
+    constexpr string_id tooltip_build_locked_vehicles = 2248;
 }
