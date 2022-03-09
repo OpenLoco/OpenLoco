@@ -18,6 +18,9 @@ namespace OpenLoco::MessageManager
         return &rawMessages()[enumValue(id)];
     }
 
+    MessageId getActiveIndex() { return getGameState().activeMessageIndex; }
+    void setActiveIndex(const MessageId newIndex) { getGameState().activeMessageIndex = newIndex; }
+
     void post(
         MessageType type,
         CompanyId companyId,

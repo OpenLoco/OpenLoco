@@ -119,7 +119,7 @@ namespace OpenLoco
         uint32_t var_478;                                                        // 0x000478 (0x00526290)
         uint8_t pad_047C[0x13B6 - 0x47C];                                        // 0x00047C
         uint16_t numMessages;                                                    // 0x0013B6 (0x005271CE)
-        uint16_t activeMessageIndex;                                             // 0x0013B8 (0x005271D0)
+        MessageId activeMessageIndex;                                            // 0x0013B8 (0x005271D0)
         Message messages[Limits::kMaxMessages];                                  // 0x0013BA (0x005271D2)
         uint8_t pad_B886[0xB94C - 0xB886];                                       // 0x00B886
         uint8_t var_B94C;                                                        // 0x00B94C (0x00531774)

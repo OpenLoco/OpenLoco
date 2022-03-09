@@ -24,14 +24,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         if (widgetIndex != 0)
             return;
 
-        if (_activeMessageIndex == MessageId::null)
+        if (MessageManager::getActiveIndex() == MessageId::null)
             return;
 
-        auto news = MessageManager::get(_activeMessageIndex);
+        auto news = MessageManager::get(MessageManager::getActiveIndex());
         news->var_C8 = 1;
 
-        auto activeMessageIndex = _activeMessageIndex;
-        _activeMessageIndex = MessageId::null;
+        auto activeMessageIndex = MessageManager::getActiveIndex();
+        MessageManager::setActiveIndex(MessageId::null);
 
         WindowManager::close(self);
         open(activeMessageIndex);
@@ -81,9 +81,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
             if (!(_word_525CE0 & 0x8007))
             {
-                if (_activeMessageIndex != MessageId::null)
+                if (MessageManager::getActiveIndex() != MessageId::null)
                 {
-                    auto news = MessageManager::get(_activeMessageIndex);
+                    auto news = MessageManager::get(MessageManager::getActiveIndex());
                     auto cx = _word_525CE0 >> 2;
                     char* newsString = news->messageString;
                     auto newsStringChar = *newsString;
@@ -128,10 +128,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             }
         }
 
-        if (_activeMessageIndex != MessageId::null)
+        if (MessageManager::getActiveIndex() != MessageId::null)
             return;
 
-        _activeMessageIndex = MessageId::null;
+        MessageManager::setActiveIndex(MessageId::null);
 
         WindowManager::close(self);
     }
@@ -158,7 +158,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         if (getPauseFlags() & (1 << 2))
             return;
 
-        auto news = MessageManager::get(_activeMessageIndex);
+        auto news = MessageManager::get(MessageManager::getActiveIndex());
 
         auto x = self->x;
         auto y = self->y;

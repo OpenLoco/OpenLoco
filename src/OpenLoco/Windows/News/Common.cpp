@@ -57,7 +57,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             isOld = true;
         }
 
-        _activeMessageIndex = messageIndex;
+        MessageManager::setActiveIndex(messageIndex);
 
         const auto& mtd = getMessageTypeDescriptor(news->type);
 
@@ -149,9 +149,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     // 0x0042AC27
     void openLastMessage()
     {
-        if (_activeMessageIndex != MessageId::null)
+        if (MessageManager::getActiveIndex() != MessageId::null)
         {
-            auto message = MessageManager::get(_activeMessageIndex);
+            auto message = MessageManager::get(MessageManager::getActiveIndex());
             if (message->var_C8 != 0xFFFF)
             {
                 if (message->var_C8 & (1 << 15))
@@ -159,7 +159,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        _activeMessageIndex = MessageId::null;
+        MessageManager::setActiveIndex(MessageId::null);
         WindowManager::close(WindowType::news, 0);
 
         if (_messageCount != 0)
