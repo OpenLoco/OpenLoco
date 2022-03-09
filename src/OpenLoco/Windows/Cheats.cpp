@@ -604,7 +604,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Vehicles
     {
-        constexpr Ui::Size windowSize = { 250, 130 };
+        constexpr Ui::Size windowSize = { 250, 155 };
 
         static WindowEventList _events;
 
@@ -615,6 +615,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 reliability_group = Common::Widx::nextWidx,
                 reliablity_all_to_zero,
                 reliablity_all_to_hundred,
+                vehicle_locked_group,
                 checkbox_display_locked_vehicles,
                 checkbox_build_locked_vehicles,
             };
@@ -625,8 +626,9 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_vehicle_reliability),
             makeWidget({ 10, 62 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_zero),
             makeWidget({ 10, 78 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_hundred),
-            makeWidget({ 4, 100 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
-            makeWidget({ 4, 114 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::build_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
+            makeWidget({ 4, 102 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
+            makeWidget({ 10, 116 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
+            makeWidget({ 25, 130 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::build_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
             widgetEnd(),
         };
 
@@ -693,12 +695,14 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
                 case Widx::checkbox_display_locked_vehicles:
+
                     Config::getNew().displayLockedVehicles = !Config::getNew().displayLockedVehicles;
 
                     // if we don't want to display locked vehicles, there is no reason to allow building them
                     if (!Config::getNew().displayLockedVehicles)
                     {
                         Config::getNew().buildLockedVehicles = false;
+                        self->enabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
                         WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
                     }
 
@@ -707,17 +711,12 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
 
                 case Widx::checkbox_build_locked_vehicles:
-                    Config::getNew().buildLockedVehicles = !Config::getNew().buildLockedVehicles;
-
-                    // if we want to enable building locked vehicles, we should probably allow displaying them too
-                    if (Config::getNew().buildLockedVehicles)
+                    if (Config::getNew().displayLockedVehicles)
                     {
-                        Config::getNew().displayLockedVehicles = true;
-                        WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_display_locked_vehicles);
+                        Config::getNew().buildLockedVehicles = !Config::getNew().buildLockedVehicles;
+                        WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
+                        WindowManager::invalidate(WindowType::buildVehicle);
                     }
-
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
-                    WindowManager::invalidate(WindowType::buildVehicle);
                     break;
             }
         }
