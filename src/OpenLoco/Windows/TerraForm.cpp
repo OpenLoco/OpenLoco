@@ -1495,7 +1495,11 @@ namespace OpenLoco::Ui::Windows::Terraform
                     GameCommands::setErrorTitle(StringIds::error_cant_change_land_type);
                     auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
 
-                    GameCommands::do_24(pointA, pointB, _lastSelectedLand, Flags::apply);
+                    ChangeLandMaterialArgs args{};
+                    args.pointA = pointA;
+                    args.pointB = pointB;
+                    args.landType = _lastSelectedLand;
+                    GameCommands::doCommand(args, Flags::apply);
                 }
             }
 
