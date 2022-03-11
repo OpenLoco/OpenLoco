@@ -178,7 +178,7 @@ namespace OpenLoco::Ui::Windows::Town
                 {
                     auto town = TownManager::get(TownId(self->number));
 
-                    const uint32_t ebx = (town->var_38 >> 3) + 5;
+                    const uint32_t ebx = (town->numBuildings >> 3) + 5;
                     const int16_t currentYear = getCurrentYear();
                     int16_t tempYear = currentYear - 51;
                     setCurrentYear(tempYear);
