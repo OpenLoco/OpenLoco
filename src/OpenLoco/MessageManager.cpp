@@ -469,7 +469,7 @@ namespace OpenLoco::MessageManager
     }
 
     // 0x00428F38
-    MessageId getActiveHighestPriority()
+    static MessageId getActiveHighestPriority()
     {
         uint8_t highestPriority = 0;
         MessageId bestId = MessageId::null;
@@ -528,6 +528,10 @@ namespace OpenLoco::MessageManager
             }
 
             auto* message = get(messageId);
+            if (message == nullptr)
+            {
+                return;
+            }
             message->var_C8++;
 
             const auto numWaitingMessages = numMessages() - enumValue(getActiveIndex());

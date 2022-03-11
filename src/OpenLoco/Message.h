@@ -100,15 +100,15 @@ namespace OpenLoco
         uint16_t itemSubjects[3]; // 0xCA
         uint32_t date;            // 0xD0
 
-        constexpr bool operator==(const Message& lhs) const
+        constexpr bool operator==(const Message& rhs) const
         {
             // Unsure why companyId not compared
-            return type == lhs.type
-                && itemSubjects[0] == lhs.itemSubjects[0]
-                && itemSubjects[1] == lhs.itemSubjects[1]
-                && itemSubjects[2] == lhs.itemSubjects[2];
+            return type == rhs.type
+                && itemSubjects[0] == rhs.itemSubjects[0]
+                && itemSubjects[1] == rhs.itemSubjects[1]
+                && itemSubjects[2] == rhs.itemSubjects[2];
         }
-        constexpr bool operator!=(const Message& lhs) const { return !(*this == lhs); }
+        constexpr bool operator!=(const Message& rhs) const { return !(*this == rhs); }
     };
 #pragma pack(pop)
 }
