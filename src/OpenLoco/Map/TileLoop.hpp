@@ -29,6 +29,7 @@ namespace OpenLoco::Map
     };
 #pragma pack(pop)
 
+    // Loops over a range from bottomLeft to topRight inclusive
     struct TilePosRangeView
     {
     private:
@@ -43,10 +44,10 @@ namespace OpenLoco::Map
             TilePos2 _pos;
 
         public:
-            Iterator(const TilePos2& begin, const TilePos2& end)
-                : _begin(begin)
-                , _end(end)
-                , _pos(begin)
+            Iterator(const TilePos2& bottomLeft, const TilePos2& topRight)
+                : _begin(bottomLeft)
+                , _end(topRight)
+                , _pos(bottomLeft)
             {
             }
 
@@ -54,11 +55,8 @@ namespace OpenLoco::Map
             {
                 if (_pos.x >= _end.x)
                 {
-                    if (_pos.y < _end.y)
-                    {
-                        _pos.x = _begin.x;
-                        _pos.y++;
-                    }
+                    _pos.x = _begin.x;
+                    _pos.y++;
                 }
                 else
                 {
@@ -104,6 +102,9 @@ namespace OpenLoco::Map
         }
 
         Iterator begin() { return Iterator(_begin, _end); }
-        Iterator end() { return Iterator(_end, _end); }
+        Iterator end()
+        {
+            return Iterator(_end + TilePos2{ 0, 1 }, _end); // End iterator must be 1 step past the end so that loop is inclusive
+        }
     };
 }
