@@ -3,6 +3,10 @@
 #include "Game.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
+#include "Map/TileLoop.hpp"
+#include "Map/TileManager.h"
+#include "Objects/BuildingObject.h"
+#include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
@@ -15,7 +19,7 @@ namespace OpenLoco::TownManager
 
     // 0x00497DC1
     // The return value of this function is also being returned via dword_1135C38.
-    Town* sub_497DC1(const Map::Pos2& loc, uint32_t population, uint32_t unk1, int16_t rating, uint16_t unk3)
+    Town* sub_497DC1(const Map::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings)
     {
         auto res = getClosestTownAndUnk(loc);
         if (res == std::nullopt)
@@ -28,7 +32,7 @@ namespace OpenLoco::TownManager
         dword_1135C38 = town;
         if (town != nullptr)
         {
-            town->var_34 += unk1;
+            town->populationCapacity += populationCapacity;
         }
         if (population != 0)
         {
@@ -49,15 +53,70 @@ namespace OpenLoco::TownManager
             }
         }
 
-        if (town->var_38 + unk3 <= std::numeric_limits<uint16_t>::max())
+        if (town->numBuildings + numBuildings <= std::numeric_limits<int16_t>::max())
         {
-            town->var_38 += unk3;
+            town->numBuildings += numBuildings;
         }
 
         return town;
     }
 
     static auto& rawTowns() { return getGameState().towns; }
+
+    // 0x00497348
+    void resetBuildingsInfluence()
+    {
+        for (auto& town : towns())
+        {
+            town.numBuildings = 0;
+            town.population = 0;
+            town.populationCapacity = 0;
+            std::fill(std::begin(town.var_150), std::end(town.var_150), 0);
+        }
+
+        Map::TilePosRangeView tileLoop{ { 1, 1 }, { Map::map_columns - 1, Map::map_rows - 1 } };
+        for (const auto& tilePos : tileLoop)
+        {
+            auto tile = Map::TileManager::get(tilePos);
+            for (auto& element : tile)
+            {
+                auto* building = element.as<Map::BuildingElement>();
+                if (building == nullptr)
+                    continue;
+
+                if (building->isGhost())
+                    continue;
+
+                if (building->has_40())
+                    continue;
+
+                if (building->multiTileIndex() != 0)
+                    continue;
+
+                auto objectId = building->objectId();
+                auto* buildingObj = ObjectManager::get<BuildingObject>(objectId);
+                auto producedQuantity = buildingObj->producedQuantity[0];
+                uint32_t population;
+                if (!building->isConstructed())
+                {
+                    population = 0;
+                }
+                else
+                {
+                    population = producedQuantity;
+                }
+                auto* town = sub_497DC1(tilePos, population, producedQuantity, 0, 1);
+                if (town != nullptr)
+                {
+                    if (buildingObj->var_AC != 0xFF)
+                    {
+                        town->var_150[buildingObj->var_AC] += 1;
+                    }
+                }
+            }
+        }
+        Gfx::invalidateScreen();
+    }
 
     // 0x00496B38
     void reset()
@@ -148,11 +207,20 @@ namespace OpenLoco::TownManager
             return std::nullopt;
         }
         const int32_t realDistance = Math::Vector::distance(Map::Pos2(town->x, town->y), loc);
-        const auto unk = std::clamp((realDistance - town->var_38 * 4 + 512) / 128, 0, 4);
+        const auto unk = std::clamp((realDistance - town->numBuildings * 4 + 512) / 128, 0, 4);
         const uint8_t invUnk = std::min(4 - unk, 3); //edx
         return { std::make_pair(town->id(), invUnk) };
     }
 
+    void registerHooks()
+    {
+        registerHook(
+            0x00497348,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                resetBuildingsInfluence();
+                return 0;
+            });
+    }
 }
 
 OpenLoco::TownId OpenLoco::Town::id() const

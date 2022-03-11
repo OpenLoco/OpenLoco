@@ -28,6 +28,7 @@
 #include "../Station.h"
 #include "../StationManager.h"
 #include "../Title.h"
+#include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Ui/ProgressBar.h"
@@ -782,6 +783,7 @@ void OpenLoco::Interop::registerHooks()
     GameCommands::registerHooks();
     Scenario::registerHooks();
     StationManager::registerHooks();
+    TownManager::registerHooks();
     S5::registerHooks();
     Title::registerHooks();
     OpenLoco::Tutorial::registerHooks();
