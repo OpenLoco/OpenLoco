@@ -31,16 +31,19 @@ namespace OpenLoco::Audio
 
     void Channel::setVolume(int32_t volume)
     {
+        _attributes.volume = volume;
         _source.setGain(OpenAL::volumeFromLoco(volume));
     }
 
     void Channel::setPan(int32_t pan)
     {
+        _attributes.pan = pan;
         _source.setPan(OpenAL::panFromLoco(pan));
     }
 
     void Channel::setFrequency(int32_t freq)
     {
+        _attributes.freq = freq;
         _source.setPitch(OpenAL::freqFromLoco(freq));
     }
 

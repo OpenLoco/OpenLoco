@@ -8,13 +8,22 @@ namespace OpenLoco::Audio
     public:
         static constexpr int32_t kUndefinedId = -1;
 
+        struct Attributes
+        {
+            int32_t volume{};
+            int32_t pan{};
+            int32_t freq{};
+        };
+
     private:
         OpenAL::Source _source;
         bool _isLoaded = false;
+        Attributes _attributes;
 
     public:
         Channel(OpenAL::Source source)
             : _source(source)
+            , _attributes{}
         {
         }
         bool load(uint32_t buffer);
@@ -25,5 +34,6 @@ namespace OpenLoco::Audio
         void setFrequency(int32_t freq);
         bool isPlaying() const;
         const OpenAL::Source& getSource() { return _source; }
+        const Attributes& getAttributes() { return _attributes; }
     };
 }
