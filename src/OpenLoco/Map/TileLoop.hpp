@@ -33,29 +33,29 @@ namespace OpenLoco::Map
     struct TilePosRangeView
     {
     private:
-        TilePos2 _begin;
-        TilePos2 _end;
+        TilePos2 _bottomLeft;
+        TilePos2 _topRight;
 
         class Iterator
         {
         private:
-            const TilePos2& _begin;
-            const TilePos2& _end;
+            const TilePos2& _bottomLeft;
+            const TilePos2& _topRight;
             TilePos2 _pos;
 
         public:
             Iterator(const TilePos2& bottomLeft, const TilePos2& topRight)
-                : _begin(bottomLeft)
-                , _end(topRight)
+                : _bottomLeft(bottomLeft)
+                , _topRight(topRight)
                 , _pos(bottomLeft)
             {
             }
 
             Iterator& operator++()
             {
-                if (_pos.x >= _end.x)
+                if (_pos.x >= _topRight.x)
                 {
-                    _pos.x = _begin.x;
+                    _pos.x = _bottomLeft.x;
                     _pos.y++;
                 }
                 else
@@ -95,16 +95,16 @@ namespace OpenLoco::Map
         };
 
     public:
-        TilePosRangeView(const TilePos2& begin, const TilePos2& end)
-            : _begin(begin)
-            , _end(end)
+        TilePosRangeView(const TilePos2& bottomLeft, const TilePos2& topRight)
+            : _bottomLeft(bottomLeft)
+            , _topRight(topRight)
         {
         }
 
-        Iterator begin() { return Iterator(_begin, _end); }
+        Iterator begin() { return Iterator(_bottomLeft, _topRight); }
         Iterator end()
         {
-            return Iterator(_end + TilePos2{ 0, 1 }, _end); // End iterator must be 1 step past the end so that loop is inclusive
+            return Iterator(TilePos2(_bottomLeft.x, _topRight.y + 1), _topRight); // End iterator must be 1 step past the end so that loop is inclusive
         }
     };
 }
