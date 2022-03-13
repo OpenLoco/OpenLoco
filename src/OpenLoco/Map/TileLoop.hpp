@@ -104,7 +104,8 @@ namespace OpenLoco::Map
         Iterator begin() { return Iterator(_bottomLeft, _topRight); }
         Iterator end()
         {
-            return Iterator(TilePos2(_bottomLeft.x, _topRight.y + 1), _topRight); // End iterator must be 1 step past the end so that loop is inclusive
+            // End iterator must be 1 step past the end so that loop is inclusive
+            return Iterator(TilePos2(_bottomLeft.x, _topRight.y + 1), _topRight);
         }
     };
 }
