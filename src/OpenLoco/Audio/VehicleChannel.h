@@ -4,20 +4,12 @@
 
 namespace OpenLoco::Audio
 {
-    struct ChannelAttributes
-    {
-        int32_t volume{};
-        int32_t pan{};
-        int32_t freq{};
-    };
-
     class VehicleChannel
     {
     private:
         Channel _channel;
         EntityId _vehicleId = EntityId::null;
         SoundId _soundId{};
-        ChannelAttributes _attributes;
 
     public:
         VehicleChannel(const Channel& channel)
