@@ -77,7 +77,7 @@ namespace OpenLoco::Audio
     static loco_global<uint8_t, 0x0050D435> _lastSong;
     static loco_global<bool, 0x0050D554> _audioIsPaused;
     static loco_global<bool, 0x0050D555> _audioIsEnabled;
-    static loco_global<uint32_t, 0x0050D5B0> _chosenAmbientNoisePathId;
+    static loco_global<PathId, 0x0050D5B0> _chosenAmbientNoisePathId;
 
     static uint8_t _numActiveVehicleSounds; // 0x0112C666
     static std::vector<std::string> _devices;
@@ -878,6 +878,12 @@ namespace OpenLoco::Audio
         }
     }
 
+    int32_t getAmbientMaxVolume(uint8_t zoom)
+    {
+        static constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
+        return _volumes[zoom];
+    }
+
     // 0x0048ACFD
     void updateAmbientNoise()
     {
@@ -886,9 +892,11 @@ namespace OpenLoco::Audio
 
         auto* mainViewport = WindowManager::getMainViewport();
         std::optional<PathId> ambientSound = std::nullopt;
+        int32_t maxVolume = -3500;
+
         if (!Game::hasFlags((1u << 0)) && mainViewport != nullptr)
         {
-            const auto maxVolume = getZoomVolumeModifier(mainViewport->zoom);
+            maxVolume = getAmbientMaxVolume(mainViewport->zoom);
             const auto centre = mainViewport->getCentreMapPosition();
             const auto topLeft = Map::TilePos2{ centre } - Map::TilePos2{ 5, 5 };
             const auto bottomRight = topLeft + Map::TilePos2{ 11, 11 };
@@ -948,45 +956,38 @@ namespace OpenLoco::Audio
                 ambientSound = PathId::css4;
             }
         }
-        if (_chosenAmbientNoisePathId != ambientSound)
+        auto* channel = getChannel(ChannelId::ambient);
+        if (channel == nullptr)
         {
-            if (_ambientStopped)
+            return;
+        }
+        // In these situations quieten until channel stopped
+        if (!ambientSound.has_value() || (channel->isPlaying() && _chosenAmbientNoisePathId != *ambientSound))
+        {
+            const auto newVolume = channel->getAttributes().volume - 100;
+            if (newVolume < -3500)
             {
-                if (!ambientSound)
-                {
-                    return;
-                }
-                auto path = Environment::getPath(ambientSound.value());
-                if (loadChannel(ChannelId::ambient, path, 0))
-                {
-                    playChannel(ChannelId::ambient, true, -3500, 0, 0);
-                    // save -3500 as volume
-                }
-                return;
+                stopChannel(ChannelId::ambient);
             }
             else
             {
-                //volume - 100 and save
-                if (volume < -3500)
-                {
-                    stopChannel(ChannelId::ambient);
-                    _ambientStopped = true;
-                }
-                else
-                {
-                    setChannelVolume(ChannelId::ambient, volume);
-
-                }
+                channel->setVolume(newVolume);
             }
+            return;
+        }
 
+        if (_chosenAmbientNoisePathId != *ambientSound)
+        {
+            auto path = Environment::getPath(ambientSound.value());
+            if (loadChannel(ChannelId::ambient, path, 0))
+            {
+                playChannel(ChannelId::ambient, true, -3500, 0, 0);
+            }
         }
         else
         {
-            auto newVolume = std::min(volume + 100, maxVolume); // and save
-            if (newVolume != volume)
-            {
-                setChannelVolume(ChannelId::ambient, volume);
-            }
+            auto newVolume = std::min(channel->getAttributes().volume + 100, maxVolume);
+            channel->setVolume(newVolume);
         }
     }
 
