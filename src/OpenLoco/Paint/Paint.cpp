@@ -11,6 +11,7 @@
 #include "../Ui/WindowManager.h"
 #include "PaintEntity.h"
 #include "PaintTile.h"
+#include "PaintTrack.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -356,6 +357,7 @@ namespace OpenLoco::Paint
                 regs = backup;
                 return 0;
             });
+        registerTrackHooks();
     }
 
     const uint16_t segmentOffsets[9] = { Segment::_58, Segment::_5C, Segment::_60, Segment::_64, Segment::_68, Segment::_6C, Segment::_70, Segment::_74, Segment::_78 };

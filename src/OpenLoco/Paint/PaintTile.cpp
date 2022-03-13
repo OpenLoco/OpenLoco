@@ -7,7 +7,11 @@
 #include "../Ui.h"
 #include "Paint.h"
 #include "PaintSignal.h"
+<<<<<<< HEAD
 #include "PaintStation.h"
+=======
+#include "PaintTrack.h"
+>>>>>>> 4c5e643f (Add base of paintTrack)
 #include "PaintTree.h"
 
 using namespace OpenLoco::Interop;
@@ -119,16 +123,6 @@ namespace OpenLoco::Paint
         regs.esi = X86Pointer(&elSurface);
         regs.dx = elSurface.baseHeight();
         call(0x004656BF, regs);
-    }
-
-    // 0x0049B6BF
-    static void paintTrack(PaintSession& session, Map::TrackElement& elTrack)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elTrack);
-        regs.ecx = (session.getRotation() + elTrack.unkDirection()) & 0x3;
-        regs.dx = elTrack.baseHeight();
-        call(0x0049B6BF, regs);
     }
 
     // 0x0042C6C4
