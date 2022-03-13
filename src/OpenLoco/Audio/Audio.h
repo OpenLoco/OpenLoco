@@ -97,11 +97,6 @@ namespace OpenLoco::Audio
     void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t frequency);
     void updateSounds();
 
-    bool loadChannel(ChannelId id, const char* path, int32_t c);
-    bool playChannel(ChannelId id, int32_t loop, int32_t volume, int32_t d, int32_t freq);
-    void stopChannel(ChannelId id);
-    void setChannelVolume(ChannelId id, int32_t volume);
-    bool isChannelPlaying(ChannelId id);
     void setBgmVolume(int32_t volume);
 
     void updateVehicleNoise();

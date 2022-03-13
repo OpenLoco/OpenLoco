@@ -60,31 +60,28 @@ using namespace OpenLoco;
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audioLoadChannel(int a0, const char* a1, int a2, int a3, int a4)
 {
-    return Audio::loadChannel((Audio::ChannelId)a0, a1, a2) ? 1 : 0;
+    return 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audioPlayChannel(int a0, int a1, int a2, int a3, int a4)
 {
-    return Audio::playChannel((Audio::ChannelId)a0, a1, a2, a3, a4) ? 1 : 0;
+    return 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void CDECL audioStopChannel(int a0, int a1, int a2, int a3, int a4)
 {
-    Audio::stopChannel((Audio::ChannelId)a0);
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void CDECL audioSetChannelVolume(int a0, int a1)
 {
-    Audio::setChannelVolume((Audio::ChannelId)a0, a1);
 }
 
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audioIsChannelPlaying(int a0)
 {
-    return Audio::isChannelPlaying((Audio::ChannelId)a0) ? 1 : 0;
 }
 
 #ifdef _NO_LOCO_WIN32_
