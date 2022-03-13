@@ -16,7 +16,7 @@ namespace OpenLoco::Paint
     static loco_global<uint32_t, 0x001135F26> _trackBaseImageId;
     static loco_global<uint32_t, 0x001135F32> _trackImageId1;
     static loco_global<uint32_t, 0x001135F36> _trackImageId2;
-    static loco_global<uint32_t**[1], 0x004FFB7C> _trackPaintModes;
+    static loco_global<uint32_t** [1], 0x004FFB7C> _trackPaintModes;
     static loco_global<uint8_t, 0x00113605E> _trackVar1B;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
 
