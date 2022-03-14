@@ -716,18 +716,32 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Change Land Material
-    inline void do_24(Map::Pos2 pointA, Map::Pos2 pointB, uint8_t landType, uint8_t flags)
+    struct ChangeLandMaterialArgs
     {
-        registers regs;
-        regs.ax = pointA.x;
-        regs.cx = pointA.y;
-        regs.di = pointB.x;
-        regs.bp = pointB.y;
-        regs.dl = landType;
-        regs.bl = flags;
-        doCommand(GameCommand::changeLandMaterial, regs);
-    }
+        static constexpr auto command = GameCommand::changeLandMaterial;
+        ChangeLandMaterialArgs() = default;
+        explicit ChangeLandMaterialArgs(const registers& regs)
+            : pointA(regs.ax, regs.cx)
+            , pointB(regs.di, regs.bp)
+            , landType(regs.dl)
+        {
+        }
+
+        Map::Pos2 pointA;
+        Map::Pos2 pointB;
+        uint8_t landType;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pointA.x;
+            regs.cx = pointA.y;
+            regs.di = pointB.x;
+            regs.bp = pointB.y;
+            regs.dl = landType;
+            return regs;
+        }
+    };
 
     // Raise Land
     inline uint32_t do_25(Map::Pos2 centre, Map::Pos2 pointA, Map::Pos2 pointB, uint16_t di, uint8_t flags)
@@ -1737,6 +1751,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/UpdateOwnerStatus.cpp
     void updateOwnerStatus(registers& regs);
+
+    // Defined in GameCommands/ChangeLandMaterial.cpp
+    void changeLandMaterial(registers& regs);
 
     const Map::Pos3& getPosition();
     void setPosition(const Map::Pos3& pos);
