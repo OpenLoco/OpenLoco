@@ -13,7 +13,7 @@ namespace OpenLoco::Ui::TextInput
     // Common code from 0x0044685C, 0x004CE910
     bool InputSession::handleInput(uint32_t charCode, uint32_t keyCode)
     {
-        if ((charCode >= SDLK_SPACE && charCode < SDLK_F12) || (charCode >= 159 && charCode <= 255))
+        if ((charCode >= SDLK_SPACE && charCode < SDLK_DELETE) || (charCode >= 159 && charCode <= 255))
         {
             if (buffer.length() == 199)
             {
