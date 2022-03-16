@@ -878,9 +878,9 @@ namespace OpenLoco::Audio
         }
     }
 
-    int32_t getAmbientMaxVolume(uint8_t zoom)
+    static constexpr int32_t getAmbientMaxVolume(uint8_t zoom)
     {
-        static constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
+        constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
         return _volumes[zoom];
     }
 
