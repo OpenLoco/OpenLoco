@@ -15,6 +15,7 @@ namespace OpenLoco::Map::TileManager
     static loco_global<TileElement*, 0x005230C8> _elements;
     static loco_global<TileElement* [0x30004], 0x00E40134> _tiles;
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
+    static loco_global<TileElement*, 0x00F00158> _F00158;
     static loco_global<uint32_t, 0x00F00168> _F00168;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
@@ -102,12 +103,45 @@ namespace OpenLoco::Map::TileManager
         TileManager::updateTilePointers();
     }
 
+    // Note: Must be past the last tile flag
+    static void markElementAsFree(TileElement& element)
+    {
+        element.setBaseZ(255);
+        if (element.next() == *_elementsEnd)
+        {
+            _elementsEnd--;
+        }
+    }
+
     // 0x00461760
     void removeElement(TileElement& element)
     {
-        registers regs;
-        regs.esi = X86Pointer(&element);
-        call(0x00461760, regs);
+        if (&element == *_F00158)
+        {
+            if (element.isLast())
+            {
+                *_F00158 = reinterpret_cast<TileElement*>(-1);
+            }
+        }
+
+        if (element.isLast())
+        {
+            auto* prev = element.prev();
+            prev->setLastFlag(true);
+            markElementAsFree(element);
+        }
+        else
+        {
+            // Move all of the elments up one until last for the tile
+            auto* next = element.next();
+            auto* cur = &element;
+            do
+            {
+                *cur++ = *next++;
+            } while (!next->isLast());
+
+            markElementAsFree(*next);
+        }
     }
 
     TileElement** getElementIndex()
