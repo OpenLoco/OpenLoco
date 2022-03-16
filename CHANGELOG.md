@@ -1,5 +1,6 @@
 22.03.1+ (???)
 ------------------------------------------------------------------------
+- Fix: [#1284] Delete key doesn't work in text input widgets.
 - Fix: [#1379] Year formatted correctly in date cheat window.
 
 22.03.1 (2022-03-08)
