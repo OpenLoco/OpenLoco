@@ -48,7 +48,7 @@ namespace OpenLoco::Vehicles
     bool Vehicle1::updateRoad()
     {
         uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
-        Speed16 maxSpeed = 32767_mph;
+        Speed16 maxSpeed = kSpeed16Max;
         RoutingManager::RingView ring(routingHandle);
         bool isOnRackRail = false;
         for (auto iter = ring.rbegin(); iter != ring.rend(); ++iter)
@@ -60,7 +60,7 @@ namespace OpenLoco::Vehicles
             if (res & (1 << 12))
             {
                 const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);
-                if (bridgeObj->max_speed != speed16Null)
+                if (bridgeObj->max_speed != kSpeed16Null)
                 {
                     maxSpeed = std::min(bridgeObj->max_speed, maxSpeed);
                 }

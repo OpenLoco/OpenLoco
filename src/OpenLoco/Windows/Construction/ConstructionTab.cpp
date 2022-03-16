@@ -1588,7 +1588,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto args = FormatArguments();
             args.push(imageId);
 
-            if (bridgeObj->max_speed == speed16Null)
+            if (bridgeObj->max_speed == kSpeed16Null)
             {
                 args.push(StringIds::unlimited_speed);
                 args.push<uint16_t>(0);
@@ -2455,7 +2455,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (bridgeObj != nullptr)
             {
                 args.push(bridgeObj->name);
-                if (bridgeObj->max_speed == speed16Null)
+                if (bridgeObj->max_speed == kSpeed16Null)
                 {
                     args.push(StringIds::unlimited_speed);
                     args.push<uint16_t>(0);
