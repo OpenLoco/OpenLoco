@@ -38,6 +38,7 @@ namespace OpenLoco::Vehicles
         constexpr uint8_t unk_2 = 1 << 2;
         constexpr uint8_t unk_3 = 1 << 3;
         constexpr uint8_t isGhost = 1 << 4;
+        constexpr uint8_t unk_5 = 1 << 5;
     }
 
     namespace Flags73 // veh2 Train breakdown flags
@@ -328,6 +329,7 @@ namespace OpenLoco::Vehicles
         void liftUpVehicle();
         void sub_4B7CC3();
         currency32_t calculateRunningCost() const;
+        void sub_4AD93A();
 
     private:
         void applyBreakdownToTrain();
@@ -387,7 +389,6 @@ namespace OpenLoco::Vehicles
         bool sub_4AC1C2();
         bool sub_4AC0A3();
         bool sub_4ACCDC();
-        void sub_4AD93A();
         StationId manualFindTrainStationAtLocation();
         bool sub_4BADE4();
         bool isOnExpectedRoadOrTrack();
@@ -427,7 +428,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
-        uint32_t var_3C;     // 0x3C
+        int32_t var_3C;      // 0x3C
         uint8_t pad_40[0x2]; // 0x40
         TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;
@@ -442,6 +443,9 @@ namespace OpenLoco::Vehicles
         IncomeStats lastIncome; // 0x53
 
         bool update();
+        bool updateRoad();
+        bool updateRail();
+        int32_t updateRoadMotion(int32_t distance);
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 
@@ -471,7 +475,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_4A;                      // sound-related flag(s) common with tail
         Ui::WindowNumber_t soundWindowNumber; // 0x4C common with tail
         Ui::WindowType soundWindowType;       // 0x4E common with tail
-        uint8_t pad_4F;
+        int8_t var_4F;
         uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
         uint16_t totalWeight; // 0x52
         Speed16 maxSpeed;     // 0x54

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Speed.hpp"
 #include "../Types.hpp"
 #include "Object.h"
 
@@ -20,7 +21,7 @@ namespace OpenLoco
         uint8_t pad_03[0x08 - 0x03];
         uint8_t span_length;          // 0x08
         uint8_t pillar_spacing;       // 0x09
-        uint16_t max_speed;           // 0x0A
+        Speed16 max_speed;            // 0x0A
         uint8_t max_height;           // 0x0C
         uint8_t cost_index;           // 0x0D
         uint16_t base_cost_factor;    // 0x0E

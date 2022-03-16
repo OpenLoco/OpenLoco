@@ -102,7 +102,8 @@ namespace OpenLoco
     using Speed32 = SpeedTemplate<int32_t>;
     using Speed16 = SpeedTemplate<int16_t>;
 
-    constexpr auto speed16Null = Speed16(-1);
+    constexpr auto kSpeed16Null = Speed16(-1);
+    constexpr auto kSpeed16Max = Speed16(0x7FFF);
     // Truncates only use if safe to lose information
     constexpr Speed16 toSpeed16(Speed32 speed)
     {
@@ -138,5 +139,7 @@ namespace OpenLoco
         static_assert(6.0_mph * 2 == 12.0_mph);
         static_assert(6_mph * 2 == 12_mph);
         static_assert(toSpeed16(10000.9_mph) == 10000_mph);
+        static_assert(0.21303_mph == Speed32(0x3689));
+        static_assert(0.79798_mph == Speed32(0xCC48));
     }
 }

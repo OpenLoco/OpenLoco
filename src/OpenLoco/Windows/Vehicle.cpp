@@ -34,6 +34,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::Vehicle
 {
@@ -1425,8 +1426,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             {
                 FormatArguments args{};
-                args.push<uint16_t>(train.veh2->maxSpeed == speed16Null ? 0 : train.veh2->maxSpeed.getRaw());
-                args.push<uint16_t>(train.veh2->rackRailMaxSpeed == speed16Null ? 0 : train.veh2->rackRailMaxSpeed.getRaw());
+                args.push<uint16_t>(train.veh2->maxSpeed == kSpeed16Null ? 0 : train.veh2->maxSpeed.getRaw());
+                args.push<uint16_t>(train.veh2->rackRailMaxSpeed == kSpeed16Null ? 0 : train.veh2->rackRailMaxSpeed.getRaw());
                 args.push<uint16_t>(train.veh2->reliability == 0 ? 64 : train.veh2->reliability);
                 string_id str = StringIds::vehicle_details_max_speed_and_reliability;
                 if (train.veh1->var_49 != 0)
