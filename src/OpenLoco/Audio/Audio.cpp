@@ -978,7 +978,7 @@ namespace OpenLoco::Audio
 
         if (_chosenAmbientNoisePathId != *ambientSound)
         {
-            auto path = Environment::getPath(ambientSound.value());
+            auto path = Environment::getPath(*ambientSound);
             if (loadChannel(ChannelId::ambient, path, 0))
             {
                 playChannel(ChannelId::ambient, true, -3500, 0, 0);
