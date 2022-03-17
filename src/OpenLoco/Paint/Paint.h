@@ -66,10 +66,9 @@ namespace OpenLoco::Paint
         PaintStringStruct* next; // 0x02
         int16_t x;               // 0x06
         int16_t y;               // 0x08
-        uint16_t args[7];        // 0x0A
-        uint8_t pad_18[0x1A - 0x18];
-        uint8_t* yOffsets; // 0x1A
-        uint16_t colour;   // 0x1E
+        uint16_t args[8];        // 0x0A
+        const int8_t* yOffsets;  // 0x1A
+        uint16_t colour;         // 0x1E
     };
     assert_struct_size(PaintStringStruct, 0x20);
 
@@ -167,6 +166,10 @@ namespace OpenLoco::Paint
         {
             return Map::Pos2{ _unkPositionX, _unkPositionY };
         }
+        Map::Pos2 getSpritePosition()
+        {
+            return Map::Pos2{ _spritePositionX, _spritePositionY };
+        }
         uint16_t getViewFlags() { return viewFlags; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
@@ -190,25 +193,13 @@ namespace OpenLoco::Paint
         /*      
          * @param amount    @<eax>
          * @param stringId  @<bx>
-         * @param y         @<cx>
          * @param z         @<dx>
-         * @param offset_x  @<si>
-         * @param y_offsets @<edi>
-         * @param rotation  @<ebp>
-         */
-        void addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x);
-
-        /*      
-         * @param amount    @<eax>
-         * @param stringId  @<bx>
-         * @param y         @<cx>
-         * @param z         @<dx>
-         * @param offset_x  @<si>
-         * @param y_offsets @<edi>
+         * @param xOffset   @<si>
+         * @param yOffsets  @<edi>
          * @param rotation  @<ebp>
          * @param colour    @<0xE3F0A8>
          */
-        void addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x, uint16_t colour);
+        void addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour);
 
         /*      
          * @param rotation @<ebp>

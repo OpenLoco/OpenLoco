@@ -76,7 +76,7 @@ namespace OpenLoco::Paint
         uint32_t currencyAmount = abs(moneyEffect->amount);
         const int8_t* yOffsets = &kWiggleYOffsets[moneyEffect->wiggle];
 
-        session.addToStringPlotList(currencyAmount, stringId, moneyEffect->position.y, moneyEffect->position.z, yOffsets, moneyEffect->offsetX);
+        session.addToStringPlotList(currencyAmount, stringId, moneyEffect->position.z, moneyEffect->offsetX, yOffsets, 0);
     }
 
     // 0x00440400
@@ -92,7 +92,7 @@ namespace OpenLoco::Paint
         const int8_t* yOffsets = &kWiggleYOffsets[moneyEffect->wiggle];
         auto companyColour = CompanyManager::getCompanyColour(moneyEffect->var_2E);
 
-        session.addToStringPlotList(currencyAmount, stringId, moneyEffect->position.y, moneyEffect->position.z, yOffsets, moneyEffect->offsetX, enumValue(companyColour));
+        session.addToStringPlotList(currencyAmount, stringId, moneyEffect->position.z, moneyEffect->offsetX, yOffsets, enumValue(companyColour));
     }
 
     // 0x0044044E

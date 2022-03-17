@@ -2,6 +2,7 @@
 #include "../Game.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/FormatArguments.hpp"
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
 #include "../StationManager.h"
@@ -80,7 +81,7 @@ namespace OpenLoco::Paint
         _maxHeight = (maxClearZ * Map::kSmallZStep) + 32;
     }
 
-    loco_global<int32_t[4], 0x4FD120> _4FD120;
+    loco_global<int32_t[4], 0x4FD120> _addToStringPlotList;
     loco_global<int32_t[4], 0x4FD130> _4FD130;
     loco_global<int32_t[4], 0x4FD140> _4FD140;
     loco_global<int32_t[4], 0x4FD150> _4FD150;
@@ -89,32 +90,34 @@ namespace OpenLoco::Paint
     loco_global<int32_t[4], 0x4FD200> _4FD200;
 
     // 0x004FD120
-    void PaintSession::addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x)
+    void PaintSession::addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour)
     {
-        registers regs;
-        regs.bx = stringId;
-        regs.edi = X86Pointer(y_offsets);
-        regs.si = offset_x;
-        regs.eax = amount;
-        regs.cx = y;
-        regs.dx = z;
+        auto* ps = *_nextFreePaintStruct;
+        if (ps >= *_endOfPaintStructArray)
+        {
+            return;
+        }
+        *_nextFreePaintStruct = reinterpret_cast<PaintEntry*>(reinterpret_cast<uintptr_t>(*_nextFreePaintStruct) + sizeof(PaintStringStruct));
 
-        call(_4FD120[currentRotation], regs);
-    }
+        auto* psString = &ps->string;
+        *psString = PaintStringStruct{};
+        psString->stringId = stringId;
+        psString->next = nullptr;
+        std::memcpy(&psString->args[0], &amount, sizeof(amount));
+        psString->yOffsets = yOffsets;
+        psString->colour = colour;
 
-    // 0x004FD120
-    void PaintSession::addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x, uint16_t colour)
-    {
-        registers regs;
-        regs.bx = stringId;
-        regs.edi = X86Pointer(y_offsets);
-        regs.si = offset_x;
-        regs.eax = amount;
-        regs.cx = y;
-        regs.dx = z;
-        addr<0xE3F0A8, uint16_t>() = colour;
+        const auto& vpPos = Map::gameToScreen(Map::Pos3{ getSpritePosition(), z }, currentRotation);
+        psString->x = vpPos.x + xOffset;
+        psString->y = vpPos.y;
 
-        call(_4FD120[currentRotation], regs);
+        auto* previous = *_lastPaintString;
+        _lastPaintString = psString;
+        if (previous == nullptr)
+        {
+            _paintStringHead = psString;
+        }
+        previous->next = psString;
     }
 
     // 0x004FD130
