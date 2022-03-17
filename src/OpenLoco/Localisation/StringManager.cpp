@@ -506,7 +506,7 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::power:
                     {
-                        uint32_t value = args.pop<int16_t>();
+                        uint32_t value = args.pop<uint16_t>();
                         auto measurement_format = Config::get().measurement_format;
 
                         const char* unit;
