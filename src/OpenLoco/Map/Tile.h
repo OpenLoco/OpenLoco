@@ -76,7 +76,7 @@ namespace OpenLoco::Map
 
         bool isGhost() const { return _flags & ElementFlags::ghost; }
         bool isFlag5() const { return _flags & ElementFlags::flag_5; }
-        bool isFlag6() const { return _flags & ElementFlags::flag_6; }
+        bool isFlag6() const { return _flags & ElementFlags::flag_6; } // in tracks/roads indicates is last tile of multi tile
         void setFlag6(bool state)
         {
             _flags &= ~ElementFlags::flag_6;
