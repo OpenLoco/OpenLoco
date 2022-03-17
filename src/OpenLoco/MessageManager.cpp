@@ -401,9 +401,10 @@ namespace OpenLoco::MessageManager
     // 0x00428E0F
     static void clearActiveMessage()
     {
-        if (getGameState().activeMessageIndex != MessageId::null)
+        auto* message = get(getGameState().activeMessageIndex);
+        if (message != nullptr)
         {
-            get(getGameState().activeMessageIndex)->timeActive = 0xFFFF;
+            message->setActive(false);
         }
         Ui::WindowManager::close(Ui::WindowType::news);
         getGameState().activeMessageIndex = MessageId::null;
@@ -478,13 +479,13 @@ namespace OpenLoco::MessageManager
         for (auto i = 0; i < numMessages(); ++i)
         {
             auto& message = rawMessages()[i];
-            if (message.timeActive == 0xFFFF)
+            if (!message.isActive())
             {
                 continue;
             }
 
-            const auto priority = message.timeActive & (1 << 15) ? std::numeric_limits<uint8_t>::max()
-                                                             : getMessageTypeDescriptor(message.type).priority;
+            const auto priority = message.isUserSelected() ? std::numeric_limits<uint8_t>::max()
+                                                           : getMessageTypeDescriptor(message.type).priority;
 
             if (priority > highestPriority)
             {

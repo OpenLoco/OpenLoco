@@ -28,7 +28,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             return;
 
         auto news = MessageManager::get(MessageManager::getActiveIndex());
-        news->timeActive = 1;
+        news->setActive(true);
+        news->timeActive++;
 
         auto activeMessageIndex = MessageManager::getActiveIndex();
         MessageManager::setActiveIndex(MessageId::null);

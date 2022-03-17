@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (newsSettings == NewsType::none)
             {
-                news->timeActive = 0xFFFF;
+                news->setActive(false);
                 return;
             }
 
@@ -152,10 +152,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         if (MessageManager::getActiveIndex() != MessageId::null)
         {
             auto message = MessageManager::get(MessageManager::getActiveIndex());
-            if (message->timeActive != 0xFFFF)
+            if (message->isActive())
             {
-                if (message->timeActive & (1 << 15))
-                    message->timeActive = 0xFFFF;
+                // If the current active message was user selected then remove from queue of active messages
+                if (message->isUserSelected())
+                    message->setActive(false);
             }
         }
 
@@ -165,7 +166,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         if (_messageCount != 0)
         {
             auto message = MessageManager::get(MessageId(_messageCount - 1));
-            message->timeActive = (1 << 15) | (1 << 0);
+            message->setUserSelected();
+            message->timeActive++;
 
             NewsWindow::open(MessageId(_messageCount - 1));
         }
