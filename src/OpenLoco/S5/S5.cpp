@@ -504,6 +504,7 @@ namespace OpenLoco::S5
             }
         }
         *dst++ = '/';
+        *dst = '\0';
         std::stringstream ss;
         ss << std::uppercase << std::setfill('0') << std::hex << std::setw(8) << header.flags << std::setw(8) << header.checksum;
         const auto flagsChecksum = ss.str();
