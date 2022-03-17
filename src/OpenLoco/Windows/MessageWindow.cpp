@@ -152,10 +152,10 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (MessageManager::getActiveIndex() != MessageId::null)
             {
                 auto message = MessageManager::get(MessageManager::getActiveIndex());
-                if (message->var_C8 != 0xFFFF)
+                if (message->timeActive != 0xFFFF)
                 {
-                    if (message->var_C8 & (1 << 15))
-                        message->var_C8 = 0xFFFF;
+                    if (message->timeActive & (1 << 15))
+                        message->timeActive = 0xFFFF;
                 }
             }
 
@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             WindowManager::close(WindowType::news, 0);
 
             auto message = MessageManager::get(MessageId(messageIndex));
-            message->var_C8 = (1 << 15) | (1 << 0);
+            message->timeActive = (1 << 15) | (1 << 0);
 
             NewsWindow::open(MessageId(messageIndex));
 

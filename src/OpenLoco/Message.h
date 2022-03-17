@@ -77,28 +77,17 @@ namespace OpenLoco
         constexpr uint16_t unk5 = 1 << 5; // Never set
     }
 
-    struct MessageTypeDescriptor
-    {
-        MessageCriticality criticality;
-        Audio::SoundId sound;
-        uint16_t flags;
-        MessageItemArgumentType argumentTypes[3];
-        uint16_t duration;
-        uint8_t priority;
-        constexpr bool hasFlag(uint16_t flag) const { return flags & flag; }
-    };
-
-    const MessageTypeDescriptor& getMessageTypeDescriptor(const MessageType type);
-
 #pragma pack(push, 1)
     struct Message
     {
-        MessageType type;        // 0x00
-        char messageString[198]; // 0x01
-        CompanyId companyId;     // 0xC7
-        uint16_t var_C8;
-        uint16_t itemSubjects[3]; // 0xCA
-        uint32_t date;            // 0xD0
+        static constexpr uint8_t kNumSubjects = 3;
+
+        MessageType type;                    // 0x00
+        char messageString[198];             // 0x01
+        CompanyId companyId;                 // 0xC7
+        uint16_t timeActive;                 // 0xC8 (1 << 15) implies manually opened news 0xFFFF implies no longer active
+        uint16_t itemSubjects[kNumSubjects]; // 0xCA
+        uint32_t date;                       // 0xD0
 
         constexpr bool operator==(const Message& rhs) const
         {
@@ -111,4 +100,17 @@ namespace OpenLoco
         constexpr bool operator!=(const Message& rhs) const { return !(*this == rhs); }
     };
 #pragma pack(pop)
+
+    struct MessageTypeDescriptor
+    {
+        MessageCriticality criticality;
+        Audio::SoundId sound;
+        uint16_t flags;
+        MessageItemArgumentType argumentTypes[Message::kNumSubjects];
+        uint16_t duration;
+        uint8_t priority;
+        constexpr bool hasFlag(uint16_t flag) const { return flags & flag; }
+    };
+
+    const MessageTypeDescriptor& getMessageTypeDescriptor(const MessageType type);
 }

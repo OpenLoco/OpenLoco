@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     if (MessageManager::getActiveIndex() != MessageId::null)
                     {
                         auto news = MessageManager::get(MessageManager::getActiveIndex());
-                        news->var_C8 = 0xFFFF;
+                        news->timeActive = 0xFFFF;
                         MessageManager::setActiveIndex(MessageId::null);
                     }
                     WindowManager::close(self);

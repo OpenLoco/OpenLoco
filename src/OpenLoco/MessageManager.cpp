@@ -69,7 +69,7 @@ namespace OpenLoco::MessageManager
             for (auto i = 0; i < numMessages(); ++i)
             {
                 auto& message = rawMessages()[i];
-                if (message.var_C8 != 0)
+                if (message.timeActive != 0)
                 {
                     const int32_t age = getMessageTypeDescriptor(message.type).duration + message.date - getCurrentDay();
                     if (age > oldest)
@@ -385,8 +385,9 @@ namespace OpenLoco::MessageManager
             break;
         }
 
-        std::copy_n(std::begin(tempBuffer), 197, std::begin(message.messageString));
-        for (auto i = 195; i < 197; ++i)
+        std::copy_n(std::begin(tempBuffer), std::size(message.messageString) - 1, std::begin(message.messageString));
+        // I don't quite see the significance of 0xFF as its not a control code but for now just follow vanilla
+        for (auto i = std::size(message.messageString) - 3; i < std::size(message.messageString) - 1; ++i)
         {
             if (message.messageString[i] == '\xFF')
             {
@@ -402,7 +403,7 @@ namespace OpenLoco::MessageManager
     {
         if (getGameState().activeMessageIndex != MessageId::null)
         {
-            get(getGameState().activeMessageIndex)->var_C8 = 0xFFFF;
+            get(getGameState().activeMessageIndex)->timeActive = 0xFFFF;
         }
         Ui::WindowManager::close(Ui::WindowType::news);
         getGameState().activeMessageIndex = MessageId::null;
@@ -423,7 +424,7 @@ namespace OpenLoco::MessageManager
             }
         }
         numMessages()--;
-        // Move element to end of array (this seems excesive you could just move to end of numMessages)
+        // Move element to end of array (this seems excessive you could just move to end of numMessages)
         if (enumValue(id) < Limits::kMaxMessages - 1)
         {
             std::rotate(get(id), get(id) + 1, std::end(rawMessages()));
@@ -439,7 +440,7 @@ namespace OpenLoco::MessageManager
             auto& message = rawMessages()[i];
             const auto& descriptor = getMessageTypeDescriptor(message.type);
             bool hasModified = false;
-            for (auto j = 0; j < 3; ++j)
+            for (auto j = 0; j < Message::kNumSubjects; ++j)
             {
                 if (descriptor.argumentTypes[j] == type
                     && message.itemSubjects[j] == subject)
@@ -477,12 +478,12 @@ namespace OpenLoco::MessageManager
         for (auto i = 0; i < numMessages(); ++i)
         {
             auto& message = rawMessages()[i];
-            if (message.var_C8 == 0xFFFF)
+            if (message.timeActive == 0xFFFF)
             {
                 continue;
             }
 
-            const auto priority = message.var_C8 & (1 << 15) ? std::numeric_limits<uint8_t>::max()
+            const auto priority = message.timeActive & (1 << 15) ? std::numeric_limits<uint8_t>::max()
                                                              : getMessageTypeDescriptor(message.type).priority;
 
             if (priority > highestPriority)
@@ -532,7 +533,7 @@ namespace OpenLoco::MessageManager
             {
                 return;
             }
-            message->var_C8++;
+            message->timeActive++;
 
             const auto numWaitingMessages = numMessages() - enumValue(getActiveIndex());
             uint16_t time = 0;
@@ -572,7 +573,7 @@ namespace OpenLoco::MessageManager
                 }
             }
             time = std::min(time, time2);
-            if (time > (message->var_C8 & 0x7FFF))
+            if (time > (message->timeActive & 0x7FFF))
             {
                 return;
             }
