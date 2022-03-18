@@ -92,32 +92,22 @@ namespace OpenLoco::Paint
     // 0x004FD120
     void PaintSession::addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour)
     {
-        auto* ps = *_nextFreePaintStruct;
-        if (ps >= *_endOfPaintStructArray)
+        auto* psString = allocatePaintStruct<PaintStringStruct>();
+        if (psString == nullptr)
         {
             return;
         }
-        *_nextFreePaintStruct = reinterpret_cast<PaintEntry*>(reinterpret_cast<uintptr_t>(*_nextFreePaintStruct) + sizeof(PaintStringStruct));
-
-        auto* psString = &ps->string;
-        *psString = PaintStringStruct{};
         psString->stringId = stringId;
         psString->next = nullptr;
         std::memcpy(&psString->args[0], &amount, sizeof(amount));
         psString->yOffsets = yOffsets;
         psString->colour = colour;
 
-        const auto& vpPos = Map::gameToScreen(Map::Pos3{ getSpritePosition(), z }, currentRotation);
+        const auto& vpPos = Map::gameToScreen(Map::Pos3(getSpritePosition(), z), currentRotation);
         psString->x = vpPos.x + xOffset;
         psString->y = vpPos.y;
 
-        auto* previous = *_lastPaintString;
-        _lastPaintString = psString;
-        if (previous == nullptr)
-        {
-            _paintStringHead = psString;
-        }
-        previous->next = psString;
+        attachStringStruct(*psString);
     }
 
     // 0x004FD130
@@ -374,6 +364,20 @@ namespace OpenLoco::Paint
             paintEntities2(*this, loc5);
 
             p.mapLoc += p.nextVerticalQuadrant;
+        }
+    }
+
+    void PaintSession::attachStringStruct(PaintStringStruct& psString)
+    {
+        auto* previous = *_lastPaintString;
+        _lastPaintString = &psString;
+        if (previous == nullptr)
+        {
+            _paintStringHead = &psString;
+        }
+        else
+        {
+            previous->next = &psString;
         }
     }
 

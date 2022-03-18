@@ -347,6 +347,20 @@ namespace OpenLoco::Paint
         //Map::TileElement* trackElementOnSameHeight;
         //uint8_t unk141E9DB;
         //uint32_t trackColours[4];
+        template<typename T>
+        T* allocatePaintStruct()
+        {
+            auto* ps = *_nextFreePaintStruct;
+            if (ps >= *_endOfPaintStructArray)
+            {
+                return nullptr;
+            }
+            *_nextFreePaintStruct = reinterpret_cast<PaintEntry*>(reinterpret_cast<uintptr_t>(*_nextFreePaintStruct) + sizeof(T));
+            auto* specificPs = reinterpret_cast<T*>(ps);
+            *specificPs = {}; // Zero out the struct
+            return specificPs;
+        }
+        void attachStringStruct(PaintStringStruct& psString);
     };
 
     PaintSession* allocateSession(Gfx::Context& context, const uint16_t viewportFlags);
