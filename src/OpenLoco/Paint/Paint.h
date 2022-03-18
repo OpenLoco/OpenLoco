@@ -256,7 +256,8 @@ namespace OpenLoco::Paint
          * @param boundBoxOffset_y @<0xE3F0A2>
          * @param boundBoxOffset_z @<0xE3F0A4>
          */
-        void addToPlotList4FD1E0(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+        void addToPlotListAsChild(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+
         /*      
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
@@ -270,6 +271,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffset_z @<0xE3F0A4>
          */
         void addToPlotList4FD180(uint32_t imageId, uint32_t ecx, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+
         /*      
          * @param rotation @<ebp>
          * @param imageId  @<ebx>

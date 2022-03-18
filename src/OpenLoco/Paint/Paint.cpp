@@ -310,7 +310,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD1E0
-    void PaintSession::addToPlotList4FD1E0(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    void PaintSession::addToPlotListAsChild(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
         registers regs;
         regs.ebx = imageId;
