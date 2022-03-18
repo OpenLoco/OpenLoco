@@ -37,4 +37,6 @@ namespace OpenLoco::Map::TileManager
     void updateYearly();
     void registerHooks();
     void removeSurfaceIndustry(const Pos2& pos);
+    void createDestructExplosion(const Map::Pos3& pos);
+    void removeBuildingElement(BuildingElement& element, const Map::Pos2& pos);
 }
