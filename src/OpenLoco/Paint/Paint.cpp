@@ -98,6 +98,46 @@ namespace OpenLoco::Paint
         return (direction * 3) % 4;
     }
 
+    static int32_t remapPositionToQuadrant(const PaintStruct& ps, uint8_t rotation)
+    {
+        constexpr auto mapRangeMax = kMaxPaintQuadrants * Map::tile_size;
+        constexpr auto mapRangeCenter = mapRangeMax / 2;
+
+        const auto x = ps.bounds.x;
+        const auto y = ps.bounds.y;
+        // NOTE: We are not calling CoordsXY::Rotate on purpose to mix in the additional
+        // value without a secondary switch.
+        switch (rotation & 3)
+        {
+            case 0:
+                return x + y;
+            case 1:
+                // Because one component may be the maximum we add the center to be a positive value.
+                return (y - x) + mapRangeCenter;
+            case 2:
+                // If both components would be the maximum it would be the negative xy, to be positive add max.
+                return (-(y + x)) + mapRangeMax;
+            case 3:
+                // Same as 1 but inverted.
+                return (x - y) + mapRangeCenter;
+        }
+        return 0;
+    }
+
+    void PaintSession::addPSToQuadrant(PaintStruct& ps)
+    {
+        const auto positionHash = remapPositionToQuadrant(ps, currentRotation);
+
+        // Values below zero or above MaxPaintQuadrants are void, corners also share the same quadrant as void.
+        const uint32_t paintQuadrantIndex = std::clamp(positionHash / Map::tile_size, 0, kMaxPaintQuadrants - 1);
+
+        ps.quadrantIndex = paintQuadrantIndex;
+        ps.nextQuadrantPS = _quadrants[paintQuadrantIndex];
+        _quadrants[paintQuadrantIndex] = &ps;
+
+        _quadrantBackIndex = std::min(*_quadrantBackIndex, paintQuadrantIndex);
+        _quadrantFrontIndex = std::max(*_quadrantFrontIndex, paintQuadrantIndex);
+    }
     // 0x004FD120
     void PaintSession::addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour)
     {
@@ -163,7 +203,7 @@ namespace OpenLoco::Paint
             case 0:
                 output.x--;
                 output.y--;
-                output = Map::Pos3{ Math::Vector::rotate(output,0), output.z };
+                output = Map::Pos3{ Math::Vector::rotate(output, 0), output.z };
                 break;
             case 1:
                 output.x--;
@@ -183,6 +223,8 @@ namespace OpenLoco::Paint
     // 0x004FD140
     void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
+        _lastPS = nullptr;
+
         auto* const g1 = Gfx::getG1Element(imageId);
         if (g1 == nullptr)
         {
@@ -225,22 +267,8 @@ namespace OpenLoco::Paint
         ps->map_x = _mapPosition->x;
         ps->map_y = _mapPosition->y;
         ps->tileElement = reinterpret_cast<Map::TileElement*>(*_currentItem);
-        paintSessionAddPSToQuadrant();
-        return;
-        registers regs;
-        regs.ebx = imageId;
-        regs.al = offset.x;
-        regs.cl = offset.y;
-        regs.dx = offset.z;
-        regs.di = boundBoxSize.x;
-        regs.si = boundBoxSize.y;
-        regs.ah = boundBoxSize.z;
-
-        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
-        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
-        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
-
-        call(_4FD140[currentRotation], regs);
+        _lastPS = ps;
+        addPSToQuadrant(*ps);
     }
 
     // 0x004FD150

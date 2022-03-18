@@ -145,6 +145,8 @@ namespace OpenLoco::Paint
 #pragma pack(pop)
     struct GenerationParameters;
 
+    static constexpr auto kMaxPaintQuadrants = 1024;
+
     struct PaintSession
     {
     public:
@@ -317,7 +319,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<uint8_t, 0x00E3F0AD> _trackModId;
         inline static Interop::loco_global<Map::Pos2, 0x00E3F0B0> _mapPosition;
         inline static Interop::loco_global<void*, 0x00E3F0B4> _currentItem;
-        inline static Interop::loco_global<PaintStruct* [1024], 0x00E3F0C0> _quadrants;
+        inline static Interop::loco_global<PaintStruct* [kMaxPaintQuadrants], 0x00E3F0C0> _quadrants;
         inline static Interop::loco_global<uint32_t, 0x00E400C0> _quadrantBackIndex;
         inline static Interop::loco_global<uint32_t, 0x00E400C4> _quadrantFrontIndex;
         inline static Interop::loco_global<PaintEntry* [2], 0x00E400E4> _E400E4;
@@ -361,6 +363,7 @@ namespace OpenLoco::Paint
             return specificPs;
         }
         void attachStringStruct(PaintStringStruct& psString);
+        void addPSToQuadrant(PaintStruct& ps);
     };
 
     PaintSession* allocateSession(Gfx::Context& context, const uint16_t viewportFlags);
