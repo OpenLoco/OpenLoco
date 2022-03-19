@@ -5,6 +5,8 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
+#include "../Objects/BuildingObject.h"
+#include "../TownManager.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"
 
@@ -713,6 +715,59 @@ namespace OpenLoco::Map::TileManager
         }
     }
 
+    // 0x0048B0C7
+    void createDestructExplosion(const Map::Pos3& pos)
+    {
+        registers regs;
+        regs.cx = pos.x;
+        regs.dx = pos.y;
+        regs.bp = pos.z;
+        call(0x0048B0C7, regs);
+    }
+
+    // 0x0042D8FF
+    void removeBuildingElement(BuildingElement& elBuilding, const Map::Pos2& pos)
+    {
+        if (!elBuilding.isGhost() && !elBuilding.isFlag5())
+        {
+            if (CompanyManager::getUpdatingCompanyId() != CompanyId::neutral)
+            {
+                createDestructExplosion(Map::Pos3(pos.x + 16, pos.y + 16, elBuilding.baseZ() * 4));
+            }
+        }
+
+        if (elBuilding.multiTileIndex() == 0)
+        {
+            if (!elBuilding.isGhost())
+            {
+                auto* buildingObj = elBuilding.getObject();
+                if (buildingObj != nullptr)
+                {
+                    if (!(buildingObj->flags & BuildingObjectFlags::misc_building))
+                    {
+                        auto buildingCapacity = -buildingObj->producedQuantity[0];
+                        auto removedPopulation = buildingCapacity;
+                        if (!elBuilding.isConstructed())
+                        {
+                            removedPopulation = 0;
+                        }
+                        auto ratingReduction = buildingObj->demolishRatingReduction;
+                        auto* town = TownManager::sub_497DC1(pos, removedPopulation, buildingCapacity, ratingReduction, -1);
+                        if (town != nullptr)
+                        {
+                            if (buildingObj->var_AC != 0xFF)
+                            {
+                                town->var_150[buildingObj->var_AC] -= 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Ui::ViewportManager::invalidate(pos, elBuilding.baseZ() * 4, elBuilding.clearZ() * 4, ZoomLevel::eighth);
+        TileManager::removeElement(*reinterpret_cast<TileElement*>(&elBuilding));
+    }
+
     // 0x0047AB9B
     void updateYearly()
     {
@@ -740,6 +795,15 @@ namespace OpenLoco::Map::TileManager
             0x0046902E,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 removeSurfaceIndustry({ regs.ax, regs.cx });
+                return 0;
+            });
+
+        registerHook(
+            0x0042D8FF,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                removeBuildingElement(*X86Pointer<BuildingElement>(regs.esi), { regs.ax, regs.cx });
+                regs = backup;
                 return 0;
             });
     }
