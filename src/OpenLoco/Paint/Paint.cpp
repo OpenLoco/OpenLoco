@@ -139,12 +139,12 @@ namespace OpenLoco::Paint
         _quadrantFrontIndex = std::max(*_quadrantFrontIndex, paintQuadrantIndex);
     }
     // 0x004FD120
-    void PaintSession::addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour)
+    PaintStringStruct* PaintSession::addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour)
     {
         auto* psString = allocatePaintStruct<PaintStringStruct>();
         if (psString == nullptr)
         {
-            return;
+            return nullptr;
         }
         psString->stringId = stringId;
         psString->next = nullptr;
@@ -157,21 +157,13 @@ namespace OpenLoco::Paint
         psString->y = vpPos.y;
 
         attachStringStruct(*psString);
+        return psString;
     }
 
     // 0x004FD130
-    void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize)
     {
-        registers regs;
-        regs.ebx = imageId;
-        regs.al = offset.x;
-        regs.cl = offset.y;
-        regs.dx = offset.z;
-        regs.di = boundBoxSize.x;
-        regs.si = boundBoxSize.y;
-        regs.ah = boundBoxSize.z;
-
-        call(_4FD130[currentRotation], regs);
+        return addToPlotListAsParent(imageId, offset, offset, boundBoxSize);
     }
 
     static constexpr bool imageWithinContext(const Ui::viewport_pos& imagePos, const Gfx::G1Element& g1, const Gfx::Context& context)
@@ -221,54 +213,17 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD140
-    void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
         _lastPS = nullptr;
 
-        auto* const g1 = Gfx::getG1Element(imageId);
-        if (g1 == nullptr)
+        auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
+        if (ps != nullptr)
         {
-            return;
+            _lastPS = ps;
+            addPSToQuadrant(*ps);
         }
-
-        const auto swappedRotation = directionFlipXAxis(currentRotation);
-        auto swappedRotCoord = Map::Pos3{ Math::Vector::rotate(offset, swappedRotation), offset.z };
-        swappedRotCoord += Map::Pos3{ getSpritePosition(), 0 };
-
-        const auto vpPos = Map::gameToScreen(swappedRotCoord, currentRotation);
-
-        if (!imageWithinContext(vpPos, *g1, **_context))
-        {
-            return;
-        }
-
-        const auto rotBoundBoxOffset = Map::Pos3{ Math::Vector::rotate(boundBoxOffset, swappedRotation), boundBoxOffset.z };
-        const auto rotBoundBoxSize = rotateBoundBoxSize(boundBoxSize, currentRotation);
-
-        auto* ps = allocatePaintStruct<PaintStruct>();
-        if (ps == nullptr)
-        {
-            return;
-        }
-
-        ps->imageId = imageId;
-        ps->x = vpPos.x;
-        ps->y = vpPos.y;
-        ps->bounds.xEnd = rotBoundBoxSize.x + rotBoundBoxOffset.x + getSpritePosition().x;
-        ps->bounds.yEnd = rotBoundBoxSize.y + rotBoundBoxOffset.y + getSpritePosition().y;
-        ps->bounds.zEnd = rotBoundBoxSize.z + rotBoundBoxOffset.z;
-        ps->bounds.x = rotBoundBoxOffset.x + getSpritePosition().x;
-        ps->bounds.y = rotBoundBoxOffset.y + getSpritePosition().y;
-        ps->bounds.z = rotBoundBoxOffset.z;
-        ps->flags = 0;
-        ps->attachedPS = nullptr;
-        ps->children = nullptr;
-        ps->type = _itemType;
-        ps->map_x = _mapPosition->x;
-        ps->map_y = _mapPosition->y;
-        ps->tileElement = reinterpret_cast<Map::TileElement*>(*_currentItem);
-        _lastPS = ps;
-        addPSToQuadrant(*ps);
+        return ps;
     }
 
     // 0x004FD150
@@ -310,22 +265,16 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD1E0
-    void PaintSession::addToPlotListAsChild(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotListAsChild(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
-        registers regs;
-        regs.ebx = imageId;
-        regs.al = offset.x;
-        regs.cl = offset.y;
-        regs.dx = offset.z;
-        regs.di = boundBoxSize.x;
-        regs.si = boundBoxSize.y;
-        regs.ah = boundBoxSize.z;
-
-        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
-        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
-        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
-
-        call(_4FD1E0[currentRotation], regs);
+        if (*_lastPS == nullptr)
+        {
+            return addToPlotListAsParent(imageId, offset, boundBoxOffset, boundBoxSize);
+        }
+        auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
+        (*_lastPS)->children = ps;
+        _lastPS = ps;
+        return ps;
     }
 
     void PaintSession::addToPlotList4FD180(uint32_t imageId, uint32_t ecx, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
@@ -346,14 +295,19 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045E779
-    void PaintSession::attachToPrevious(uint32_t imageId, const Map::Pos2& offset)
+    AttachedPaintStruct* PaintSession::attachToPrevious(uint32_t imageId, const Map::Pos2& offset)
     {
-        registers regs;
-        regs.ebx = imageId;
-        regs.ax = offset.x;
-        regs.cx = offset.y;
-
-        call(0x0045E779, regs);
+        if (_lastPS == nullptr)
+        {
+            return nullptr;
+        }
+        auto* attached = allocatePaintStruct<AttachedPaintStruct>();
+        attached->imageId = imageId;
+        attached->x = offset.x;
+        attached->y = offset.y;
+        attached->next = (*_lastPS)->attachedPS;
+        (*_lastPS)->attachedPS = attached;
+        return attached;
     }
 
     void PaintSession::init(Gfx::Context& context, const uint16_t viewportFlags)
@@ -504,6 +458,53 @@ namespace OpenLoco::Paint
         {
             previous->next = &psString;
         }
+    }
+
+    PaintStruct* PaintSession::createNormalPaintStruct(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    {
+        auto* const g1 = Gfx::getG1Element(imageId);
+        if (g1 == nullptr)
+        {
+            return nullptr;
+        }
+
+        const auto swappedRotation = directionFlipXAxis(currentRotation);
+        auto swappedRotCoord = Map::Pos3{ Math::Vector::rotate(offset, swappedRotation), offset.z };
+        swappedRotCoord += Map::Pos3{ getSpritePosition(), 0 };
+
+        const auto vpPos = Map::gameToScreen(swappedRotCoord, currentRotation);
+
+        if (!imageWithinContext(vpPos, *g1, **_context))
+        {
+            return nullptr;
+        }
+
+        const auto rotBoundBoxOffset = Map::Pos3{ Math::Vector::rotate(boundBoxOffset, swappedRotation), boundBoxOffset.z };
+        const auto rotBoundBoxSize = rotateBoundBoxSize(boundBoxSize, currentRotation);
+
+        auto* ps = allocatePaintStruct<PaintStruct>();
+        if (ps == nullptr)
+        {
+            return nullptr;
+        }
+
+        ps->imageId = imageId;
+        ps->x = vpPos.x;
+        ps->y = vpPos.y;
+        ps->bounds.xEnd = rotBoundBoxSize.x + rotBoundBoxOffset.x + getSpritePosition().x;
+        ps->bounds.yEnd = rotBoundBoxSize.y + rotBoundBoxOffset.y + getSpritePosition().y;
+        ps->bounds.zEnd = rotBoundBoxSize.z + rotBoundBoxOffset.z;
+        ps->bounds.x = rotBoundBoxOffset.x + getSpritePosition().x;
+        ps->bounds.y = rotBoundBoxOffset.y + getSpritePosition().y;
+        ps->bounds.z = rotBoundBoxOffset.z;
+        ps->flags = 0;
+        ps->attachedPS = nullptr;
+        ps->children = nullptr;
+        ps->type = _itemType;
+        ps->map_x = _mapPosition->x;
+        ps->map_y = _mapPosition->y;
+        ps->tileElement = reinterpret_cast<Map::TileElement*>(*_currentItem);
+        return ps;
     }
 
     // 0x004622A2

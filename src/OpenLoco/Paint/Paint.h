@@ -201,7 +201,7 @@ namespace OpenLoco::Paint
          * @param rotation  @<ebp>
          * @param colour    @<0xE3F0A8>
          */
-        void addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour);
+        PaintStringStruct* addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour);
 
         /*      
          * @param rotation @<ebp>
@@ -213,7 +213,7 @@ namespace OpenLoco::Paint
          * @param boundBoxLength_y @<si>
          * @param boundBoxLength_z @<ah>
          */
-        void addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize);
+        PaintStruct* addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize);
 
         /*      
          * @param rotation @<ebp>
@@ -228,7 +228,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffset_y @<0xE3F0A2>
          * @param boundBoxOffset_z @<0xE3F0A4>
          */
-        void addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+        PaintStruct* addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
         /*      
          * @param rotation @<ebp>
@@ -256,7 +256,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffset_y @<0xE3F0A2>
          * @param boundBoxOffset_z @<0xE3F0A4>
          */
-        void addToPlotListAsChild(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+        PaintStruct* addToPlotListAsChild(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
         /*      
          * @param rotation @<ebp>
@@ -291,7 +291,7 @@ namespace OpenLoco::Paint
          * @param offset_x @<ax>
          * @param offset_y @<cx>
          */
-        void attachToPrevious(uint32_t imageId, const Map::Pos2& offset);
+        AttachedPaintStruct* attachToPrevious(uint32_t imageId, const Map::Pos2& offset);
 
     private:
         void generateTilesAndEntities(GenerationParameters&& p);
@@ -366,6 +366,7 @@ namespace OpenLoco::Paint
         }
         void attachStringStruct(PaintStringStruct& psString);
         void addPSToQuadrant(PaintStruct& ps);
+        PaintStruct* createNormalPaintStruct(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
     };
 
     PaintSession* allocateSession(Gfx::Context& context, const uint16_t viewportFlags);
