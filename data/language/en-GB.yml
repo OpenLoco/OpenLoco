@@ -2299,6 +2299,6 @@ strings:
   2244: "Display locked vehicles"
   2245: "{SMALLFONT}{COLOUR BLACK}When enabled, will display obsolete and proposed vehicles"
   2246: "{NEWLINE}{COLOUR WINDOW_2} Proposed: {COLOUR BLACK}{UINT16 RAW}"
-  2247: "Build locked vehicles"
+  2247: "Allow building locked vehicles"
   2248: "{SMALLFONT}{COLOUR BLACK}When enabled, will allow building obsolete and proposed vehicles"
   2249: "Build Vehicles Window"

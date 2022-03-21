@@ -628,7 +628,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 10, 78 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_hundred),
             makeWidget({ 4, 102 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
             makeWidget({ 10, 116 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
-            makeWidget({ 25, 130 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::build_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
+            makeWidget({ 25, 130 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
             widgetEnd(),
         };
 
