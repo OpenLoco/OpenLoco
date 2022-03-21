@@ -91,6 +91,15 @@ namespace OpenLoco::IndustryManager
 
         return false;
     }
+
+    // 0x004574E8
+    void updateProducedCargoStats()
+    {
+        for (auto& industry : industries())
+        {
+            industry.updateProducedCargoStats();
+        }
+    }
 }
 
 OpenLoco::IndustryId OpenLoco::Industry::id() const

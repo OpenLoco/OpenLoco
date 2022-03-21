@@ -36,8 +36,11 @@ namespace OpenLoco
         int16_t var_DB;
         int16_t var_DD;
         uint8_t var_DF;
-        CompanyId owner; // 0xE0
-        uint8_t pad_E1[0x189 - 0xE1];
+        CompanyId owner;     // 0xE0
+        uint32_t var_E1[32]; // 0xE1 stations bit set
+        StationId producedCargoStatsStation[2][4];
+        uint8_t producedCargoStatsRating[2][4];
+        uint8_t pad_179[0x189 - 0x179];
         uint16_t produced_cargo_quantity[2]; // 0x189
         uint16_t var_18D[3];
         uint16_t required_cargo_quantity[3]; // 0x193
@@ -63,6 +66,7 @@ namespace OpenLoco
         void sub_453354();
         void sub_454A43(const Map::Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl);
         void createMapAnimations();
+        void updateProducedCargoStats();
     };
 #pragma pack(pop)
 
