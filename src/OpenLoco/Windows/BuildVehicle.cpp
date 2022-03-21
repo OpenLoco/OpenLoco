@@ -23,6 +23,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
+#include <algorithm>
 
 using namespace OpenLoco::Interop;
 
@@ -482,13 +483,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            auto power = std::min<uint16_t>(vehicleObj->power, 1);
-            // Unsure why power is only checked for first byte.
-            buildableVehicles.push_back({ vehicleObjIndex, static_cast<uint8_t>(power), vehicleObj->designed });
+            // 'power' is a flag indicating if the vehicle is powered or not. 1 = powered, 0 = unpowered
+            auto power = static_cast<uint8_t>(std::min<uint16_t>(vehicleObj->power, 1));
+            buildableVehicles.push_back({ vehicleObjIndex, power, vehicleObj->designed });
         }
 
         std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.designed < item2.designed; });
-        std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.power > item2.power; });
+        std::stable_sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.power > item2.power; });
         for (size_t i = 0; i < buildableVehicles.size(); ++i)
         {
             _availableVehicles[i] = buildableVehicles[i].vehicle_index;
