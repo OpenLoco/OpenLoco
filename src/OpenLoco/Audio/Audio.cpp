@@ -878,6 +878,12 @@ namespace OpenLoco::Audio
         }
     }
 
+    static constexpr auto kAmbientMinVolume = -3500;
+    static constexpr auto kAmbientVolumeChangePerTick = 100;
+    static constexpr auto kAmbientNumWaterTilesForOcean = 60;
+    static constexpr auto kAmbientNumTreeTilesForForest = 30;
+    static constexpr auto kAmbientNumMountainTilesForWildernest = 60;
+
     static constexpr int32_t getAmbientMaxVolume(uint8_t zoom)
     {
         constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
@@ -892,7 +898,7 @@ namespace OpenLoco::Audio
 
         auto* mainViewport = WindowManager::getMainViewport();
         std::optional<PathId> ambientSound = std::nullopt;
-        int32_t maxVolume = -3500;
+        int32_t maxVolume = kAmbientMinVolume;
 
         if (!Game::hasFlags((1u << 0)) && mainViewport != nullptr)
         {
@@ -903,7 +909,7 @@ namespace OpenLoco::Audio
             Map::TilePosRangeView searchRange(topLeft, bottomRight);
             size_t waterCount = 0;      // bl
             size_t wildernessCount = 0; // bh
-            size_t treeCount = 0;       //cx
+            size_t treeCount = 0;       // cx
             for (auto& tilePos : searchRange)
             {
                 const auto tile = Map::TileManager::get(tilePos);
@@ -943,15 +949,15 @@ namespace OpenLoco::Audio
                 }
             }
 
-            if (waterCount > 60)
+            if (waterCount > kAmbientNumWaterTilesForOcean)
             {
                 ambientSound = PathId::css3;
             }
-            else if (wildernessCount > 60)
+            else if (wildernessCount > kAmbientNumMountainTilesForWildernest)
             {
                 ambientSound = PathId::css2;
             }
-            else if (treeCount > 30)
+            else if (treeCount > kAmbientNumTreeTilesForForest)
             {
                 ambientSound = PathId::css4;
             }
@@ -964,8 +970,8 @@ namespace OpenLoco::Audio
         // In these situations quieten until channel stopped
         if (!ambientSound.has_value() || (channel->isPlaying() && _chosenAmbientNoisePathId != *ambientSound))
         {
-            const auto newVolume = channel->getAttributes().volume - 100;
-            if (newVolume < -3500)
+            const auto newVolume = channel->getAttributes().volume - kAmbientVolumeChangePerTick;
+            if (newVolume < kAmbientMinVolume)
             {
                 stopChannel(ChannelId::ambient);
             }
@@ -981,12 +987,12 @@ namespace OpenLoco::Audio
             auto path = Environment::getPath(*ambientSound);
             if (loadChannel(ChannelId::ambient, path, 0))
             {
-                playChannel(ChannelId::ambient, true, -3500, 0, 0);
+                playChannel(ChannelId::ambient, true, kAmbientMinVolume, 0, 0);
             }
         }
         else
         {
-            auto newVolume = std::min(channel->getAttributes().volume + 100, maxVolume);
+            auto newVolume = std::min(channel->getAttributes().volume + kAmbientVolumeChangePerTick, maxVolume);
             channel->setVolume(newVolume);
         }
     }
