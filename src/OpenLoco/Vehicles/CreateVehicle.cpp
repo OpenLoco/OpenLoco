@@ -453,7 +453,7 @@ namespace OpenLoco::Vehicles
         newHead->var_5F = 0;
         newHead->var_60 = -1;
         newHead->var_61 = -1;
-        newHead->var_69 = 0;
+        newHead->totalRefundCost = 0;
         newHead->lastAverageSpeed = 0;
         newHead->var_79 = 0;
         sub_470312(newHead);
@@ -517,7 +517,7 @@ namespace OpenLoco::Vehicles
         newVeh2->drivingSoundId = SoundObjectId::null;
         newVeh2->objectId = -1;
         newVeh2->var_4A = 0;
-        newVeh2->lifetimeProfit = 0;
+        newVeh2->curMonthRevenue = 0;
         newVeh2->profit[0] = 0;
         newVeh2->profit[1] = 0;
         newVeh2->profit[2] = 0;
