@@ -609,4 +609,12 @@ namespace OpenLoco
         var_2578 = 0xFF;
         sub_494805();
     }
+
+    // 0x00494805
+    void Company::sub_494805()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x00494805, regs);
+    }
 }
