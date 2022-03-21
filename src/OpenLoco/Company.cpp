@@ -10,6 +10,7 @@
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
 #include "Math/Bound.hpp"
+#include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
@@ -18,6 +19,7 @@
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
 #include "Vehicles/Vehicle.h"
+#include "ViewportManager.h"
 #include <algorithm>
 #include <array>
 #include <map>
@@ -357,6 +359,12 @@ namespace OpenLoco
         updateLoanAutorepay();
     }
 
+    // 0x0042F220
+    void Company::updateMonthlyHeadquarters()
+    {
+        setHeadquartersVariation(getHeadquarterPerformanceVariation());
+    }
+
     void Company::updateLoanAutorepay()
     {
         if (currentLoan > 0 && cash > 0 && ((challengeFlags & CompanyFlags::autopayLoan) != 0))
@@ -504,6 +512,66 @@ namespace OpenLoco
         });
 
         return result;
+    }
+
+    // 0x0042F042
+    uint8_t Company::getHeadquarterPerformanceVariation() const
+    {
+        return std::min(performanceIndex / 200, 4);
+    }
+
+    // 0x0042F0FC
+    void Company::setHeadquartersVariation(const uint8_t variation)
+    {
+        if (headquartersX == -1)
+        {
+            return;
+        }
+        Map::TilePos2 headPos = Map::Pos2{ headquartersX, headquartersY };
+        for (const auto& pos : Map::TilePosRangeView(headPos, headPos + Map::TilePos2{ 1, 1 }))
+        {
+            setHeadquartersVariation(variation, pos);
+        }
+    }
+
+    // 0x0042F142
+    void Company::setHeadquartersVariation(const uint8_t variation, const Map::TilePos2& pos)
+    {
+        auto tile = Map::TileManager::get(pos);
+        for (auto& el : tile)
+        {
+            auto* elBuilding = el.as<Map::BuildingElement>();
+            if (elBuilding == nullptr)
+            {
+                continue;
+            }
+            if (elBuilding->baseZ() != headquartersZ)
+            {
+                continue;
+            }
+            if (elBuilding->variation() == variation)
+            {
+                break;
+            }
+
+            elBuilding->setVariation(variation);
+            elBuilding->setAge(0);
+            elBuilding->setConstructed(false);
+            elBuilding->setUnk5u(0);
+
+            Ui::ViewportManager::invalidate(pos, elBuilding->baseZ() * 4, elBuilding->clearZ() * 4);
+
+            const auto* buildingObj = elBuilding->getObject();
+            auto totalHeight = 0;
+            for (auto* unkVariation = buildingObj->variationsArr10[variation]; *unkVariation != 0xFF; unkVariation++)
+            {
+                totalHeight += buildingObj->varationHeights[*unkVariation];
+            }
+            elBuilding->setClearZ((totalHeight / 4) + elBuilding->baseZ());
+
+            Ui::ViewportManager::invalidate(pos, elBuilding->baseZ() * 4, elBuilding->clearZ() * 4);
+            break;
+        }
     }
 
     void Company::callThinkFunc2()

@@ -185,9 +185,12 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x0042F213
-    void updateMonthly2()
+    void updateMonthlyHeadquarters()
     {
-        call(0x0042F213);
+        for (auto& company : companies())
+        {
+            company.updateMonthlyHeadquarters();
+        }
     }
 
     // 0x00487FC1

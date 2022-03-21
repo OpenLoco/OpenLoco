@@ -1026,7 +1026,7 @@ namespace OpenLoco
                     TownManager::updateMonthly();
                     IndustryManager::updateMonthly();
                     CompanyManager::updateMonthly1();
-                    CompanyManager::updateMonthly2();
+                    CompanyManager::updateMonthlyHeadquarters();
                     EntityManager::updateMonthly();
 
                     if (today.year <= 2029)
