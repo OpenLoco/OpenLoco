@@ -305,18 +305,27 @@ namespace OpenLoco
                     const auto rating = cargoStats.rating;
                     for (auto index = 0; index < 4; ++index)
                     {
-                        if (indStatsStation[index] == StationId::null || indStatsRating[index] < rating)
+                        if (indStatsStation[index] == StationId::null || indStatsRating[index] <= rating)
                         {
-                            // Bubble up entries so far
-                            std::memmove(&indStatsStation[index + 1], &indStatsStation[index], 3 - index);
-                            std::memmove(&indStatsRating[index + 1], &indStatsRating[index], 3 - index);
-                            // Insert the new entry
+                            // This is an insertion sort.
+                            // Rotate so that we overwrite the last entry
+                            std::rotate(std::begin(indStatsStation) + index, std::end(indStatsStation) - 1, std::end(indStatsStation));
+                            std::rotate(std::begin(indStatsRating) + index, std::end(indStatsRating) - 1, std::end(indStatsRating));
                             indStatsStation[index] = stationId;
                             indStatsRating[index] = rating;
+                            break;
                         }
                     }
                 }
             }
+
+            uint8_t ratingFraction = 0xFF;
+            for (auto& rating : indStatsRating)
+            {
+                rating = (rating * ratingFraction) / 256;
+                ratingFraction = -rating;
+            }
         }
+        std::fill(std::begin(var_E1), std::end(var_E1), 0);
     }
 }
