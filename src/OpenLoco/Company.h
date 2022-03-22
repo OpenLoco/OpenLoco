@@ -127,13 +127,17 @@ namespace OpenLoco
         uint8_t var_4A6;
         uint8_t var_4A7;
         unk4A8 var_4A8[60];
-        uint8_t pad_2578;
+        uint8_t var_2578;
         uint8_t headquartersZ; // 0x2579
         coord_t headquartersX; // 0x257A -1 on no headquarter placed
         coord_t headquartersY; // 0x257C
         uint8_t pad_257E[0x259E - 0x257E];
         uint32_t var_259E;
-        uint8_t pad_25A2[0x85F8 - 0x25A2];
+        uint8_t pad_25A2[0x85C4 - 0x25A2];
+        uint16_t var_85C4;
+        uint16_t var_85C6;
+        uint8_t pad_85C8[0x85F6 - 0x85C8];
+        uint16_t var_85F6;
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
         int16_t performanceIndexHistory[120];     // 0x87DC
@@ -181,6 +185,9 @@ namespace OpenLoco
         void sub_43129D();
         void sub_4312AF();
         void sub_4312BF();
+
+        void sub_4308D4();
+        void sub_494805();
     };
 #pragma pack(pop)
 

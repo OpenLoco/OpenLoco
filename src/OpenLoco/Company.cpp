@@ -13,6 +13,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
+#include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
@@ -561,5 +562,59 @@ namespace OpenLoco
     void Company::sub_4312BF()
     {
         var_4A6 = 0;
+    }
+
+    void Company::sub_4308D4()
+    {
+        var_85F6++;
+        if (var_85F6 < 672)
+        {
+            var_4A4 = 2;
+            var_4A5 = 0;
+            return;
+        }
+
+        if (challengeFlags & CompanyFlags::bankrupt)
+        {
+            bool hasAssets = false;
+            for (auto& unk : var_4A8)
+            {
+                if (unk.var_00 == 0xFF)
+                {
+                    hasAssets = true;
+                    break;
+                }
+            }
+            if (!hasAssets)
+            {
+                for (auto& station : StationManager::stations())
+                {
+                    if (station.owner == id())
+                    {
+                        hasAssets = true;
+                        break;
+                    }
+                }
+            }
+            if (!hasAssets)
+            {
+                var_4A4 = 10;
+                var_85C4 = 0;
+                return;
+            }
+        }
+
+        var_85F6 = 0;
+        var_4A4 = 1;
+        var_2578 = 0xFF;
+        sub_494805();
+    }
+
+    // 0x00494805
+    void Company::sub_494805()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x00494805, regs);
     }
 }
