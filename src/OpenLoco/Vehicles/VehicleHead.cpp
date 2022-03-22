@@ -164,6 +164,8 @@ namespace OpenLoco::Vehicles
             // Reduce the refund cost by 0.78% each month
             car.front->refundCost -= car.front->refundCost / 128;
         }
+
+        calculateRefundCost();
     }
 
     // 0x004BA8D4

@@ -306,7 +306,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_61;
         uint8_t pad_63[0x68 - 0x63];
         uint8_t airportMovementEdge; // 0x68
-        uint32_t totalRefundCost;
+        uint32_t totalRefundCost;    // 0x69
         uint8_t pad_6D;
         int8_t var_6E;             // manual speed/brake
         int16_t var_6F;            // 0x6F x
