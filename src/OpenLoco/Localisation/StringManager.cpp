@@ -517,7 +517,8 @@ namespace OpenLoco::StringManager
                         else
                         {
                             unit = getString(StringIds::unit_kW);
-                            value = std::round(value * 0.746);
+                            constexpr double hpTokW = 764.0 / 1024.0;
+                            value = std::round(value * hpTokW);
                         }
 
                         buffer = formatInt32Grouped(value, buffer);
