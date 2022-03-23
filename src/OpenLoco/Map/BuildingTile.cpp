@@ -100,7 +100,7 @@ namespace OpenLoco::Map
                 for (auto i = 1; i < 4; ++i)
                 {
                     const auto pos = loc + Map::offsets[i];
-                    TileManager::visitAll<BuildingElement>(TilePos2{ pos }, [this, isConstructed, newUnk5u, newAge, pos](BuildingElement& elBuilding2) {
+                    TileManager::visitAll<BuildingElement>(TilePos2{ pos }, [=](BuildingElement& elBuilding2) {
                         if (elBuilding2.baseZ() != baseZ())
                         {
                             return;

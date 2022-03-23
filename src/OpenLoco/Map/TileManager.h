@@ -65,7 +65,10 @@ namespace OpenLoco::Map::TileManager
             {
                 continue;
             }
-            vis(*elT);
+            if (!vis(*elT))
+            {
+                continue;
+            }
             return elT;
         }
     }
