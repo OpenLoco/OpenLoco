@@ -31,6 +31,7 @@
 #include "Orders.h"
 #include "Vehicle.h"
 #include <cassert>
+#include <numeric>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
@@ -129,6 +130,42 @@ namespace OpenLoco::Vehicles
             tryCreateInitialMovementSound();
         }
         return continueUpdating;
+    }
+
+    // 0x004C3C65
+    void VehicleHead::updateMonthly()
+    {
+        Vehicle train(head);
+        if ((tileX != -1) && !(var_38 & Flags38::isGhost))
+        {
+            constexpr ExpenditureType vehTypeToCost[] = {
+                ExpenditureType::TrainRunningCosts,
+                ExpenditureType::BusRunningCosts,
+                ExpenditureType::TruckRunningCosts,
+                ExpenditureType::TramRunningCosts,
+                ExpenditureType::AircraftRunningCosts,
+                ExpenditureType::ShipRunningCosts,
+            };
+            const auto costs = calculateRunningCost();
+            CompanyManager::applyPaymentToCompany(owner, costs, vehTypeToCost[enumValue(vehicleType)]);
+
+            const auto monthlyProfit = train.veh2->curMonthRevenue - costs;
+
+            auto& profitHist = train.veh2->profit;
+            std::rotate(std::begin(profitHist), std::end(profitHist) - 1, std::end(profitHist));
+            profitHist[0] = monthlyProfit;
+
+            train.veh2->curMonthRevenue = 0;
+            Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(id));
+        }
+
+        for (auto& car : train.cars)
+        {
+            // Reduce the refund cost by 0.78% each month
+            car.front->refundCost -= car.front->refundCost / 128;
+        }
+
+        calculateRefundCost();
     }
 
     // 0x004BA8D4
@@ -2796,7 +2833,7 @@ namespace OpenLoco::Vehicles
                 company->var_4A8[var_60].var_80 += cargoProfit;
             }
             Vehicle2* veh2 = vehicleUpdate_2;
-            veh2->lifetimeProfit += cargoProfit;
+            veh2->curMonthRevenue += cargoProfit;
             Vehicle1* veh1 = vehicleUpdate_1;
             if (cargoProfit != 0)
             {
@@ -3467,6 +3504,16 @@ namespace OpenLoco::Vehicles
         {
             Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(id));
         }
+    }
+
+    // 0x004B82AE
+    void VehicleHead::calculateRefundCost()
+    {
+        Vehicle train(head);
+
+        totalRefundCost = std::accumulate(train.cars.begin(), train.cars.end(), 0, [](currency32_t total, const Car& car) {
+            return total + car.front->refundCost;
+        });
     }
 
     // 0x004B7CC3

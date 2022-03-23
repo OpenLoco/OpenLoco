@@ -332,7 +332,10 @@ namespace OpenLoco::EntityManager
     // 0x004C3C54
     void updateMonthly()
     {
-        call(0x004C3C54);
+        for (auto v : VehicleList())
+        {
+            v->updateMonthly();
+        }
     }
 
     // 0x0047019F

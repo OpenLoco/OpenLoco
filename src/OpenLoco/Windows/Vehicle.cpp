@@ -2126,7 +2126,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 // Sale value of vehicle: {CURRENCY32}
                 auto args = FormatArguments();
-                args.push(train.head->var_69);
+                args.push(train.head->totalRefundCost);
                 pos.y = self->y + self->height - 14;
                 Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::sale_value_of_vehicle, &args);
             }
