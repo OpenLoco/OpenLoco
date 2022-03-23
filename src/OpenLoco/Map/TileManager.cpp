@@ -154,7 +154,7 @@ namespace OpenLoco::Map::TileManager
         return _tiles.get();
     }
 
-    Tile get(TilePos2 pos)
+    Tile get(const TilePos2& pos)
     {
         size_t index = (pos.y << 9) | pos.x;
         auto data = _tiles[index];
@@ -165,7 +165,7 @@ namespace OpenLoco::Map::TileManager
         return Tile(pos, data);
     }
 
-    Tile get(Pos2 pos)
+    Tile get(const Pos2& pos)
     {
         return get(pos.x, pos.y);
     }

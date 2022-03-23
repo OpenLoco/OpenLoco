@@ -13,8 +13,8 @@ namespace OpenLoco::Map::TileManager
     stdx::span<TileElement> getElements();
     TileElement* getElementsEnd();
     TileElement** getElementIndex();
-    Tile get(TilePos2 pos);
-    Tile get(Pos2 pos);
+    Tile get(const TilePos2& pos);
+    Tile get(const Pos2& pos);
     Tile get(coord_t x, coord_t y);
     void setElements(stdx::span<TileElement> elements);
     void removeElement(TileElement& element);
@@ -39,4 +39,34 @@ namespace OpenLoco::Map::TileManager
     void removeSurfaceIndustry(const Pos2& pos);
     void createDestructExplosion(const Map::Pos3& pos);
     void removeBuildingElement(BuildingElement& element, const Map::Pos2& pos);
+
+    template<typename T, typename Visitor>
+    void visitAll(const TilePos2& pos, Visitor&& vis)
+    {
+        auto tile = get(pos);
+        for (auto& el : tile)
+        {
+            auto* elT = el.as<T>();
+            if (elT == nullptr)
+            {
+                continue;
+            }
+            vis(*elT);
+        }
+    }
+    template<typename T, typename Visitor>
+    T* visitFirst(const TilePos2& pos, Visitor&& vis)
+    {
+        auto tile = get(pos);
+        for (auto& el : tile)
+        {
+            auto* elT = el.as<T>();
+            if (elT == nullptr)
+            {
+                continue;
+            }
+            vis(*elT);
+            return elT;
+        }
+    }
 }
