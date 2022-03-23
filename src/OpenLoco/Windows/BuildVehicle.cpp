@@ -417,7 +417,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         struct build_item
         {
             uint16_t vehicle_index;
-            uint8_t power;
+            bool isPowered;
             uint16_t designed;
         };
         std::vector<build_item> buildableVehicles;
@@ -483,13 +483,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            // 'power' is a flag indicating if the vehicle is powered or not. 1 = powered, 0 = unpowered
-            auto power = static_cast<uint8_t>(std::min<uint16_t>(vehicleObj->power, 1));
-            buildableVehicles.push_back({ vehicleObjIndex, power, vehicleObj->designed });
+            buildableVehicles.push_back({ vehicleObjIndex, vehicleObj->power > 0, vehicleObj->designed });
         }
 
         std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.designed < item2.designed; });
-        std::stable_sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.power > item2.power; });
+        std::stable_sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.isPowered > item2.isPowered; });
         for (size_t i = 0; i < buildableVehicles.size(); ++i)
         {
             _availableVehicles[i] = buildableVehicles[i].vehicle_index;
