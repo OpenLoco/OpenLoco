@@ -272,6 +272,10 @@ namespace OpenLoco::Paint
             return addToPlotListAsParent(imageId, offset, boundBoxOffset, boundBoxSize);
         }
         auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
+        if (ps == nullptr)
+        {
+            return nullptr;
+        }
         (*_lastPS)->children = ps;
         _lastPS = ps;
         return ps;
@@ -302,6 +306,10 @@ namespace OpenLoco::Paint
             return nullptr;
         }
         auto* attached = allocatePaintStruct<AttachedPaintStruct>();
+        if (attached == nullptr)
+        {
+            return nullptr;
+        }
         attached->imageId = imageId;
         attached->x = offset.x;
         attached->y = offset.y;
@@ -501,6 +509,7 @@ namespace OpenLoco::Paint
         ps->attachedPS = nullptr;
         ps->children = nullptr;
         ps->type = _itemType;
+        ps->var_29 = _trackModId;
         ps->map_x = _mapPosition->x;
         ps->map_y = _mapPosition->y;
         ps->tileElement = reinterpret_cast<Map::TileElement*>(*_currentItem);
