@@ -52,7 +52,7 @@ namespace OpenLoco::Title
 
     // Explicit deduction guide (not needed as of C++20)
     template<class... Ts>
-    overloaded(Ts...)->overloaded<Ts...>;
+    overloaded(Ts...) -> overloaded<Ts...>;
 
     static const TitleSequence _titleSequence = {
         MoveStep{ 231, 160 },
@@ -224,7 +224,7 @@ namespace OpenLoco::Title
                                     {
                                         auto pos3d = Map::Pos3(pos.x, pos.y, height.landHeight);
                                         main->viewportCentreOnTile(pos3d);
-                                        main->flags &= ~Ui::WindowFlags::scrolling_to_location;
+                                        main->flags &= ~Ui::WindowFlags::scrollingToLocation;
                                         main->viewportsUpdatePosition();
                                     }
                                 }

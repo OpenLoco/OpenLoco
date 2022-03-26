@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window = WindowManager::createWindowCentred(
                 WindowType::saveGamePrompt,
                 { 260, 48 },
-                WindowFlags::not_scroll_view | WindowFlags::stick_to_front,
+                WindowFlags::notScrollView | WindowFlags::stickToFront,
                 &_events);
 
             if (window == nullptr)

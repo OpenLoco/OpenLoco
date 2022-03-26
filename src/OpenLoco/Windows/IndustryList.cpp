@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458140
         static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(WindowFlags::not_scroll_view);
+            self->flags &= ~(WindowFlags::notScrollView);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentIndustry = -1;
@@ -461,13 +461,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x004580DE
         static void event_08(Window* self)
         {
-            self->flags |= WindowFlags::not_scroll_view;
+            self->flags |= WindowFlags::notScrollView;
         }
 
         // 0x004580E6
         static void event_09(Window* self)
         {
-            if ((self->flags & WindowFlags::not_scroll_view) == 0)
+            if ((self->flags & WindowFlags::notScrollView) == 0)
                 return;
 
             if (self->rowHover == -1)
