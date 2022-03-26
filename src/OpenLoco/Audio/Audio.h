@@ -134,4 +134,6 @@ namespace OpenLoco::Audio
     {
         return static_cast<SoundId>((static_cast<int32_t>(id) | 0x8000));
     }
+
+    int32_t calculatePan(const coord_t coord, const int32_t screenSize);
 }

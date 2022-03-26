@@ -21,7 +21,6 @@ namespace OpenLoco::Audio
     // We have kept original value but could be changed to correctly represent the full range of volume
     constexpr int32_t kVehicleVolumeCalcMin = -81'91; // hundredth decibels (-81.91dB)
 
-    constexpr int32_t kVpSizeMin = 64; // Note check if defined in viewport.hpp
     constexpr int32_t kPanFalloffStart = 2048;
     constexpr int32_t kPanFalloffEnd = 3072;
 
@@ -62,12 +61,6 @@ namespace OpenLoco::Audio
             }
         }
         return falloffModifier;
-    }
-
-    static int32_t calculatePan(const coord_t coord, const int32_t screenSize)
-    {
-        const auto relativePosition = (coord << 16) / std::max(screenSize, kVpSizeMin);
-        return (relativePosition - (1 << 15)) / 16;
     }
 
     // 0x0048A590

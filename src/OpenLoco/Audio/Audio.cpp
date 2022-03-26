@@ -522,6 +522,14 @@ namespace OpenLoco::Audio
         playSound(id, loc, 0, pan, 22050);
     }
 
+    constexpr int32_t kVpSizeMin = 64; // Note check if defined in viewport.hpp
+
+    int32_t calculatePan(const coord_t coord, const int32_t screenSize)
+    {
+        const auto relativePosition = (coord << 16) / std::max(screenSize, kVpSizeMin);
+        return (relativePosition - (1 << 15)) / 16;
+    }
+
     // 0x00489CB5 / 0x00489F1B
     // pan is in UI pixels or known constant
     void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency)
@@ -557,8 +565,7 @@ namespace OpenLoco::Audio
             }
             else if (pan != 0)
             {
-                auto uiWidth = std::max(64, Ui::width());
-                pan = (((pan << 16) / uiWidth) - 0x8000) >> 4;
+                pan = calculatePan(pan, Ui::width());
             }
 
             mixSound(id, 0, volume, pan, frequency);
