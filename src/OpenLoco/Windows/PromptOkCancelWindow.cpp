@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     static void initEvents()
     {
         _events.draw = draw;
-        _events.on_mouse_up = onMouseUp;
-        _events.prepare_draw = prepareDraw;
+        _events.onMouseUp = onMouseUp;
+        _events.prepareDraw = prepareDraw;
     }
 }

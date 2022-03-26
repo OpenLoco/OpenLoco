@@ -120,6 +120,6 @@ namespace OpenLoco::Ui::Windows::About
     static void initEvents()
     {
         _events.draw = draw;
-        _events.on_mouse_up = onMouseUp;
+        _events.onMouseUp = onMouseUp;
     }
 }

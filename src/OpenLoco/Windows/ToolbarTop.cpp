@@ -90,12 +90,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         last_town_option = 0;
         last_port_option = 0;
 
-        _events.on_resize = Common::onResize;
+        _events.onResize = Common::onResize;
         _events.event_03 = onMouseDown;
-        _events.on_mouse_down = onMouseDown;
-        _events.on_dropdown = onDropdown;
-        _events.on_update = Common::onUpdate;
-        _events.prepare_draw = prepareDraw;
+        _events.onMouseDown = onMouseDown;
+        _events.onDropdown = onDropdown;
+        _events.onUpdate = Common::onUpdate;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
 
         auto window = WindowManager::createWindow(

@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 
     static void initEvents()
     {
-        events.on_mouse_up = onMouseUp;
+        events.onMouseUp = onMouseUp;
         events.draw = draw;
     }
 }

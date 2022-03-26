@@ -279,10 +279,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            events.prepare_draw = prepareDraw;
-            events.on_mouse_down = onMouseDown;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.onMouseDown = onMouseDown;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = Common::update;
         }
     }
 
@@ -693,14 +693,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            events.draw_scroll = drawScroll;
-            events.get_scroll_size = getScrollSize;
-            events.prepare_draw = prepareDraw;
-            events.on_dropdown = onDropdown;
-            events.on_mouse_down = onMouseDown;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = update;
-            events.scroll_mouse_down = scrollMouseDown;
+            events.drawScroll = drawScroll;
+            events.getScrollSize = getScrollSize;
+            events.prepareDraw = prepareDraw;
+            events.onDropdown = onDropdown;
+            events.onMouseDown = onMouseDown;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = update;
+            events.scrollMouseDown = scrollMouseDown;
             events.tooltip = tooltip;
         }
     }
@@ -961,10 +961,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            events.prepare_draw = prepareDraw;
-            events.on_mouse_down = onMouseDown;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.onMouseDown = onMouseDown;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = Common::update;
         }
     }
 
@@ -1101,11 +1101,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            events.prepare_draw = prepareDraw;
-            events.on_dropdown = onDropdown;
-            events.on_mouse_down = onMouseDown;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.onDropdown = onDropdown;
+            events.onMouseDown = onMouseDown;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = Common::update;
         }
     }
 
@@ -1222,11 +1222,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void initEvents()
         {
             events.draw = draw;
-            events.prepare_draw = prepareDraw;
-            events.on_dropdown = onDropdown;
-            events.on_mouse_down = onMouseDown;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.onDropdown = onDropdown;
+            events.onMouseDown = onMouseDown;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = Common::update;
         }
     };
 

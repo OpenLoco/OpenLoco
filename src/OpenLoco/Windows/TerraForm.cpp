@@ -932,22 +932,22 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void initEvents()
         {
-            events.on_close = onClose;
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_mouse_down = onMouseDown;
-            events.on_dropdown = onDropdown;
-            events.on_update = onUpdate;
+            events.onClose = onClose;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onMouseDown = onMouseDown;
+            events.onDropdown = onDropdown;
+            events.onUpdate = onUpdate;
             events.event_08 = event_08;
-            events.on_tool_update = onToolUpdate;
-            events.on_tool_down = onToolDown;
-            events.get_scroll_size = getScrollSize;
-            events.scroll_mouse_down = scrollMouseDown;
-            events.scroll_mouse_over = scrollMouseOver;
+            events.onToolUpdate = onToolUpdate;
+            events.onToolDown = onToolDown;
+            events.getScrollSize = getScrollSize;
+            events.scrollMouseDown = scrollMouseDown;
+            events.scrollMouseOver = scrollMouseOver;
             events.tooltip = tooltip;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = drawScroll;
+            events.drawScroll = drawScroll;
         }
     }
 
@@ -1199,16 +1199,16 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void initEvents()
         {
-            events.on_close = onClose;
-            events.on_mouse_up = Common::onMouseUp;
-            events.on_resize = onResize;
-            events.on_mouse_down = onMouseDown;
-            events.on_update = Common::onUpdate;
-            events.on_tool_update = onToolUpdate;
-            events.on_tool_down = onToolDown;
+            events.onClose = onClose;
+            events.onMouseUp = Common::onMouseUp;
+            events.onResize = onResize;
+            events.onMouseDown = onMouseDown;
+            events.onUpdate = Common::onUpdate;
+            events.onToolUpdate = onToolUpdate;
+            events.onToolDown = onToolDown;
             events.toolDragContinue = toolDragContinue;
             events.toolDragEnd = toolDragEnd;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
         }
     }
@@ -1625,17 +1625,17 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void initEvents()
         {
-            events.on_close = onClose;
-            events.on_mouse_up = Common::onMouseUp;
-            events.on_resize = onResize;
-            events.on_mouse_down = onMouseDown;
-            events.on_dropdown = onDropdown;
-            events.on_update = Common::onUpdate;
-            events.on_tool_update = onToolUpdate;
-            events.on_tool_down = onToolDown;
+            events.onClose = onClose;
+            events.onMouseUp = Common::onMouseUp;
+            events.onResize = onResize;
+            events.onMouseDown = onMouseDown;
+            events.onDropdown = onDropdown;
+            events.onUpdate = Common::onUpdate;
+            events.onToolUpdate = onToolUpdate;
+            events.onToolDown = onToolDown;
             events.toolDragContinue = toolDragContinue;
             events.toolDragEnd = toolDragEnd;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
         }
     }
@@ -1907,16 +1907,16 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void initEvents()
         {
-            events.on_close = onClose;
-            events.on_mouse_up = Common::onMouseUp;
-            events.on_resize = onResize;
-            events.on_mouse_down = onMouseDown;
-            events.on_update = Common::onUpdate;
-            events.on_tool_update = onToolUpdate;
-            events.on_tool_down = onToolDown;
+            events.onClose = onClose;
+            events.onMouseUp = Common::onMouseUp;
+            events.onResize = onResize;
+            events.onMouseDown = onMouseDown;
+            events.onUpdate = Common::onUpdate;
+            events.onToolUpdate = onToolUpdate;
+            events.onToolDown = onToolDown;
             events.toolDragContinue = toolDragContinue;
             events.toolDragEnd = toolDragEnd;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
         }
     }
@@ -2372,20 +2372,20 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void initEvents()
         {
-            events.on_close = onClose;
-            events.on_mouse_up = Common::onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = onUpdate;
+            events.onClose = onClose;
+            events.onMouseUp = Common::onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = onUpdate;
             events.event_08 = event_08;
-            events.on_tool_update = onToolUpdate;
-            events.on_tool_down = onToolDown;
-            events.get_scroll_size = getScrollSize;
-            events.scroll_mouse_down = scrollMouseDown;
-            events.scroll_mouse_over = scrollMouseOver;
+            events.onToolUpdate = onToolUpdate;
+            events.onToolDown = onToolDown;
+            events.getScrollSize = getScrollSize;
+            events.scrollMouseDown = scrollMouseDown;
+            events.scrollMouseOver = scrollMouseOver;
             events.tooltip = tooltip;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = drawScroll;
+            events.drawScroll = drawScroll;
         }
     }
 

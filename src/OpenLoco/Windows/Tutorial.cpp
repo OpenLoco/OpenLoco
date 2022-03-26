@@ -82,6 +82,6 @@ namespace OpenLoco::Ui::Windows::Tutorial
     static void initEvents()
     {
         _events.draw = draw;
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
     }
 }

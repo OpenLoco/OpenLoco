@@ -281,14 +281,14 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static void initEvents()
     {
-        events.on_close = onClose;
-        events.on_mouse_up = onMouseUp;
-        events.get_scroll_size = getScrollSize;
-        events.scroll_mouse_down = scrollMouseDown;
-        events.scroll_mouse_over = scrollMouseOver;
+        events.onClose = onClose;
+        events.onMouseUp = onMouseUp;
+        events.getScrollSize = getScrollSize;
+        events.scrollMouseDown = scrollMouseDown;
+        events.scrollMouseOver = scrollMouseOver;
         events.tooltip = tooltip;
-        events.prepare_draw = prepareDraw;
+        events.prepareDraw = prepareDraw;
         events.draw = draw;
-        events.draw_scroll = drawScroll;
+        events.drawScroll = drawScroll;
     }
 }

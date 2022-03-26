@@ -266,7 +266,7 @@ namespace OpenLoco::Ui::Windows::Error
         static void initEvents()
         {
             events.draw = Common::draw;
-            events.on_periodic_update = Common::onPeriodicUpdate;
+            events.onPeriodicUpdate = Common::onPeriodicUpdate;
         }
     }
 }

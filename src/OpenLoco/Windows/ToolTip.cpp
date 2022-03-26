@@ -223,8 +223,8 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static void initEvents()
     {
-        events.on_close = onClose;
-        events.on_update = update;
+        events.onClose = onClose;
+        events.onUpdate = update;
         events.draw = draw;
     }
 }

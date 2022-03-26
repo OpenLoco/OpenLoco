@@ -907,50 +907,50 @@ namespace OpenLoco::Ui
 
     void Window::callClose()
     {
-        if (eventHandlers->on_close == nullptr)
+        if (eventHandlers->onClose == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->on_close))
+        if (isInteropEvent(eventHandlers->onClose))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->eventHandlers->on_close, regs);
+            call((uint32_t)this->eventHandlers->onClose, regs);
             return;
         }
 
-        eventHandlers->on_close(this);
+        eventHandlers->onClose(this);
     }
 
     void Window::callOnPeriodicUpdate()
     {
-        if (eventHandlers->on_periodic_update == nullptr)
+        if (eventHandlers->onPeriodicUpdate == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->on_periodic_update))
+        if (isInteropEvent(eventHandlers->onPeriodicUpdate))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->eventHandlers->on_periodic_update, regs);
+            call((uint32_t)this->eventHandlers->onPeriodicUpdate, regs);
             return;
         }
 
-        eventHandlers->on_periodic_update(this);
+        eventHandlers->onPeriodicUpdate(this);
     }
 
     void Window::callUpdate()
     {
-        if (eventHandlers->on_update == nullptr)
+        if (eventHandlers->onUpdate == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->on_update))
+        if (isInteropEvent(eventHandlers->onUpdate))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uintptr_t)this->eventHandlers->on_update, regs);
+            call((uintptr_t)this->eventHandlers->onUpdate, regs);
             return;
         }
 
-        eventHandlers->on_update(this);
+        eventHandlers->onUpdate(this);
     }
 
     void Window::call_8()
@@ -987,40 +987,40 @@ namespace OpenLoco::Ui
 
     void Window::callToolUpdate(int16_t widget_index, int16_t xPos, int16_t yPos)
     {
-        if (eventHandlers->on_tool_update == nullptr)
+        if (eventHandlers->onToolUpdate == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->on_tool_update))
+        if (isInteropEvent(eventHandlers->onToolUpdate))
         {
             registers regs;
             regs.esi = X86Pointer(this);
             regs.dx = widget_index;
             regs.ax = xPos;
             regs.bx = yPos;
-            call((uintptr_t)this->eventHandlers->on_tool_update, regs);
+            call((uintptr_t)this->eventHandlers->onToolUpdate, regs);
             return;
         }
 
-        eventHandlers->on_tool_update(*this, widget_index, xPos, yPos);
+        eventHandlers->onToolUpdate(*this, widget_index, xPos, yPos);
     }
 
     void Window::callToolDown(int16_t widget_index, int16_t xPos, int16_t yPos)
     {
-        if (eventHandlers->on_tool_down == nullptr)
+        if (eventHandlers->onToolDown == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->on_tool_down))
+        if (isInteropEvent(eventHandlers->onToolDown))
         {
             registers regs;
             regs.ax = xPos;
             regs.bx = yPos;
             regs.dx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->eventHandlers->on_tool_down, regs);
+            call((uint32_t)this->eventHandlers->onToolDown, regs);
             return;
         }
 
-        eventHandlers->on_tool_down(*this, widget_index, xPos, yPos);
+        eventHandlers->onToolDown(*this, widget_index, xPos, yPos);
     }
 
     void Window::callToolDragContinue(const int16_t widget_index, const int16_t xPos, const int16_t yPos)
@@ -1061,19 +1061,19 @@ namespace OpenLoco::Ui
 
     void Window::callToolAbort(int16_t widget_index)
     {
-        if (eventHandlers->on_tool_abort == nullptr)
+        if (eventHandlers->onToolAbort == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->on_tool_abort))
+        if (isInteropEvent(eventHandlers->onToolAbort))
         {
             registers regs;
             regs.dx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->eventHandlers->on_tool_abort, regs);
+            call((uint32_t)this->eventHandlers->onToolAbort, regs);
             return;
         }
 
-        eventHandlers->on_tool_abort(*this, widget_index);
+        eventHandlers->onToolAbort(*this, widget_index);
     }
 
     Ui::CursorId Window::call_15(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out)
@@ -1127,10 +1127,10 @@ namespace OpenLoco::Ui
 
     void Window::callOnMouseUp(WidgetIndex_t widgetIndex)
     {
-        if (eventHandlers->on_mouse_up == nullptr)
+        if (eventHandlers->onMouseUp == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->on_mouse_up))
+        if (isInteropEvent(eventHandlers->onMouseUp))
         {
             registers regs;
             regs.edx = widgetIndex;
@@ -1139,27 +1139,27 @@ namespace OpenLoco::Ui
             // Not sure if this is used
             regs.edi = X86Pointer(&this->widgets[widgetIndex]);
 
-            call((uintptr_t)this->eventHandlers->on_mouse_up, regs);
+            call((uintptr_t)this->eventHandlers->onMouseUp, regs);
             return;
         }
 
-        eventHandlers->on_mouse_up(this, widgetIndex);
+        eventHandlers->onMouseUp(this, widgetIndex);
     }
 
     Ui::Window* Window::callOnResize()
     {
-        if (eventHandlers->on_resize == nullptr)
+        if (eventHandlers->onResize == nullptr)
             return this;
 
-        if (isInteropEvent(eventHandlers->on_resize))
+        if (isInteropEvent(eventHandlers->onResize))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uint32_t)eventHandlers->on_resize, regs);
+            call((uint32_t)eventHandlers->onResize, regs);
             return (Window*)regs.esi;
         }
 
-        eventHandlers->on_resize(this);
+        eventHandlers->onResize(this);
         return this;
     }
 
@@ -1183,149 +1183,149 @@ namespace OpenLoco::Ui
 
     void Window::callOnMouseDown(Ui::WidgetIndex_t widget_index)
     {
-        if (eventHandlers->on_mouse_down == nullptr)
+        if (eventHandlers->onMouseDown == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->on_mouse_down))
+        if (isInteropEvent(eventHandlers->onMouseDown))
         {
             registers regs;
             regs.edx = widget_index;
             regs.esi = X86Pointer(this);
             regs.edi = X86Pointer(&this->widgets[widget_index]);
-            call((uint32_t)this->eventHandlers->on_mouse_down, regs);
+            call((uint32_t)this->eventHandlers->onMouseDown, regs);
             return;
         }
 
-        eventHandlers->on_mouse_down(this, widget_index);
+        eventHandlers->onMouseDown(this, widget_index);
     }
 
     void Window::callOnDropdown(Ui::WidgetIndex_t widget_index, int16_t item_index)
     {
-        if (eventHandlers->on_dropdown == nullptr)
+        if (eventHandlers->onDropdown == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->on_dropdown))
+        if (isInteropEvent(eventHandlers->onDropdown))
         {
             registers regs;
             regs.ax = item_index;
             regs.edx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->eventHandlers->on_dropdown, regs);
+            call((uint32_t)this->eventHandlers->onDropdown, regs);
             return;
         }
 
-        eventHandlers->on_dropdown(this, widget_index, item_index);
+        eventHandlers->onDropdown(this, widget_index, item_index);
     }
 
     void Window::callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        if (eventHandlers->get_scroll_size == nullptr)
+        if (eventHandlers->getScrollSize == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->get_scroll_size))
+        if (isInteropEvent(eventHandlers->getScrollSize))
         {
             registers regs;
             regs.eax = scrollIndex;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->eventHandlers->get_scroll_size, regs);
+            call((uint32_t)this->eventHandlers->getScrollSize, regs);
             *scrollWidth = regs.cx;
             *scrollHeight = regs.dx;
             return;
         }
 
-        eventHandlers->get_scroll_size(this, scrollIndex, scrollWidth, scrollHeight);
+        eventHandlers->getScrollSize(this, scrollIndex, scrollWidth, scrollHeight);
     }
 
     void Window::callScrollMouseDown(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
-        if (eventHandlers->scroll_mouse_down == nullptr)
+        if (eventHandlers->scrollMouseDown == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->scroll_mouse_down))
+        if (isInteropEvent(eventHandlers->scrollMouseDown))
         {
             registers regs;
             regs.ax = scroll_index;
             regs.esi = X86Pointer(this);
             regs.cx = xPos;
             regs.dx = yPos;
-            call((uint32_t)this->eventHandlers->scroll_mouse_down, regs);
+            call((uint32_t)this->eventHandlers->scrollMouseDown, regs);
             return;
         }
 
-        this->eventHandlers->scroll_mouse_down(this, xPos, yPos, scroll_index);
+        this->eventHandlers->scrollMouseDown(this, xPos, yPos, scroll_index);
     }
 
     void Window::callScrollMouseDrag(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
-        if (eventHandlers->scroll_mouse_drag == nullptr)
+        if (eventHandlers->scrollMouseDrag == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->scroll_mouse_drag))
+        if (isInteropEvent(eventHandlers->scrollMouseDrag))
         {
             registers regs;
             regs.ax = scroll_index;
             regs.esi = X86Pointer(this);
             regs.cx = xPos;
             regs.dx = yPos;
-            call((uint32_t)this->eventHandlers->scroll_mouse_drag, regs);
+            call((uint32_t)this->eventHandlers->scrollMouseDrag, regs);
             return;
         }
 
-        this->eventHandlers->scroll_mouse_drag(this, xPos, yPos, scroll_index);
+        this->eventHandlers->scrollMouseDrag(this, xPos, yPos, scroll_index);
     }
 
     void Window::callScrollMouseOver(int16_t xPos, int16_t yPos, uint8_t scroll_index)
     {
-        if (eventHandlers->scroll_mouse_over == nullptr)
+        if (eventHandlers->scrollMouseOver == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->scroll_mouse_over))
+        if (isInteropEvent(eventHandlers->scrollMouseOver))
         {
             registers regs;
             regs.ax = scroll_index;
             regs.esi = X86Pointer(this);
             regs.cx = xPos;
             regs.dx = yPos;
-            call((uint32_t)this->eventHandlers->scroll_mouse_over, regs);
+            call((uint32_t)this->eventHandlers->scrollMouseOver, regs);
             return;
         }
 
-        this->eventHandlers->scroll_mouse_over(this, xPos, yPos, scroll_index);
+        this->eventHandlers->scrollMouseOver(this, xPos, yPos, scroll_index);
     }
 
     void Window::callTextInput(WidgetIndex_t caller, const char* buffer)
     {
-        if (eventHandlers->text_input == nullptr)
+        if (eventHandlers->textInput == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->text_input))
+        if (isInteropEvent(eventHandlers->textInput))
         {
             registers regs;
             regs.dx = caller;
             regs.esi = X86Pointer(this);
             regs.cl = 1;
             regs.edi = X86Pointer(buffer);
-            call((uintptr_t)this->eventHandlers->text_input, regs);
+            call((uintptr_t)this->eventHandlers->textInput, regs);
             return;
         }
 
-        this->eventHandlers->text_input(this, caller, buffer);
+        this->eventHandlers->textInput(this, caller, buffer);
     }
 
     void Window::callViewportRotate()
     {
-        if (eventHandlers->viewport_rotate == nullptr)
+        if (eventHandlers->viewportRotate == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->viewport_rotate))
+        if (isInteropEvent(eventHandlers->viewportRotate))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uintptr_t)this->eventHandlers->viewport_rotate, regs);
+            call((uintptr_t)this->eventHandlers->viewportRotate, regs);
             return;
         }
 
-        this->eventHandlers->viewport_rotate(this);
+        this->eventHandlers->viewportRotate(this);
     }
 
     std::optional<FormatArguments> Window::callTooltip(int16_t widget_index)
@@ -1351,34 +1351,34 @@ namespace OpenLoco::Ui
 
     void Window::callOnMove(int16_t xPos, int16_t yPos)
     {
-        if (eventHandlers->on_move == nullptr)
+        if (eventHandlers->onMove == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->on_move))
+        if (isInteropEvent(eventHandlers->onMove))
         {
             registers regs;
             regs.cx = xPos;
             regs.dx = yPos;
             regs.esi = X86Pointer(this);
-            call(reinterpret_cast<int32_t>(this->eventHandlers->on_move), regs);
+            call(reinterpret_cast<int32_t>(this->eventHandlers->onMove), regs);
         }
-        this->eventHandlers->on_move(*this, xPos, yPos);
+        this->eventHandlers->onMove(*this, xPos, yPos);
     }
 
     void Window::callPrepareDraw()
     {
-        if (eventHandlers->prepare_draw == nullptr)
+        if (eventHandlers->prepareDraw == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->prepare_draw))
+        if (isInteropEvent(eventHandlers->prepareDraw))
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((int32_t)this->eventHandlers->prepare_draw, regs);
+            call((int32_t)this->eventHandlers->prepareDraw, regs);
             return;
         }
 
-        eventHandlers->prepare_draw(this);
+        eventHandlers->prepareDraw(this);
     }
 
     void Window::callDraw(Gfx::Context* context)
@@ -1400,20 +1400,20 @@ namespace OpenLoco::Ui
 
     void Window::callDrawScroll(Gfx::Context* context, uint32_t scrollIndex)
     {
-        if (eventHandlers->draw_scroll == nullptr)
+        if (eventHandlers->drawScroll == nullptr)
             return;
 
-        if (isInteropEvent(this->eventHandlers->draw_scroll))
+        if (isInteropEvent(this->eventHandlers->drawScroll))
         {
             registers regs;
             regs.ax = scrollIndex;
             regs.esi = X86Pointer(this);
             regs.edi = X86Pointer(context);
-            call((int32_t)eventHandlers->draw_scroll, regs);
+            call((int32_t)eventHandlers->drawScroll, regs);
             return;
         }
 
-        eventHandlers->draw_scroll(*this, *context, scrollIndex);
+        eventHandlers->drawScroll(*this, *context, scrollIndex);
     }
 
     // 0x004CA4DF

@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
     static void initEvents()
     {
-        events.on_update = update;
+        events.onUpdate = update;
         events.draw = draw;
     }
 }

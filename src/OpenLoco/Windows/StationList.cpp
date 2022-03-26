@@ -112,17 +112,17 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         _events.cursor = cursor;
         _events.draw = draw;
-        _events.draw_scroll = drawScroll;
+        _events.drawScroll = drawScroll;
         _events.event_08 = event_08;
         _events.event_09 = event_09;
-        _events.get_scroll_size = getScrollSize;
-        _events.on_dropdown = onDropdown;
-        _events.on_mouse_down = onMouseDown;
-        _events.on_mouse_up = onMouseUp;
-        _events.on_update = onUpdate;
-        _events.scroll_mouse_down = onScrollMouseDown;
-        _events.scroll_mouse_over = onScrollMouseOver;
-        _events.prepare_draw = prepareDraw;
+        _events.getScrollSize = getScrollSize;
+        _events.onDropdown = onDropdown;
+        _events.onMouseDown = onMouseDown;
+        _events.onMouseUp = onMouseUp;
+        _events.onUpdate = onUpdate;
+        _events.scrollMouseDown = onScrollMouseDown;
+        _events.scrollMouseOver = onScrollMouseOver;
+        _events.prepareDraw = prepareDraw;
         _events.tooltip = tooltip;
     }
 

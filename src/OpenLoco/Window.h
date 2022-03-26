@@ -122,35 +122,35 @@ namespace OpenLoco::Ui
             void* events[29];
             struct
             {
-                void (*on_close)(Window*);
-                void (*on_mouse_up)(Window*, WidgetIndex_t);
-                void (*on_resize)(Window*);
+                void (*onClose)(Window*);
+                void (*onMouseUp)(Window*, WidgetIndex_t);
+                void (*onResize)(Window*);
                 void (*event_03)(Window*, WidgetIndex_t); // mouse_over?
-                void (*on_mouse_down)(Window*, WidgetIndex_t);
-                void (*on_dropdown)(Window*, WidgetIndex_t, int16_t);
-                void (*on_periodic_update)(Window*);
-                void (*on_update)(Window*);
+                void (*onMouseDown)(Window*, WidgetIndex_t);
+                void (*onDropdown)(Window*, WidgetIndex_t, int16_t);
+                void (*onPeriodicUpdate)(Window*);
+                void (*onUpdate)(Window*);
                 void (*event_08)(Window*);
                 void (*event_09)(Window*);
-                void (*on_tool_update)(Window&, const WidgetIndex_t, const int16_t, const int16_t);
-                void (*on_tool_down)(Window&, const WidgetIndex_t, const int16_t, const int16_t);
+                void (*onToolUpdate)(Window&, const WidgetIndex_t, const int16_t, const int16_t);
+                void (*onToolDown)(Window&, const WidgetIndex_t, const int16_t, const int16_t);
                 void (*toolDragContinue)(Window&, const WidgetIndex_t, const int16_t, const int16_t);
                 void (*toolDragEnd)(Window&, const WidgetIndex_t);
-                void (*on_tool_abort)(Window&, const WidgetIndex_t);
+                void (*onToolAbort)(Window&, const WidgetIndex_t);
                 Ui::CursorId (*event_15)(Window&, const int16_t x, const int16_t y, const Ui::CursorId, bool&);
-                void (*get_scroll_size)(Window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-                void (*scroll_mouse_down)(Ui::Window*, int16_t x, int16_t y, uint8_t scroll_index);
-                void (*scroll_mouse_drag)(Ui::Window*, int16_t x, int16_t y, uint8_t scroll_index);
-                void (*scroll_mouse_over)(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
-                void (*text_input)(Window*, WidgetIndex_t, const char*);
-                void (*viewport_rotate)(Window*);
+                void (*getScrollSize)(Window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+                void (*scrollMouseDown)(Ui::Window*, int16_t x, int16_t y, uint8_t scrollIndex);
+                void (*scrollMouseDrag)(Ui::Window*, int16_t x, int16_t y, uint8_t scrollIndex);
+                void (*scrollMouseOver)(Ui::Window* window, int16_t x, int16_t y, uint8_t scrollIndex);
+                void (*textInput)(Window*, WidgetIndex_t, const char*);
+                void (*viewportRotate)(Window*);
                 uint32_t event_22;
                 std::optional<FormatArguments> (*tooltip)(Window*, WidgetIndex_t);
                 Ui::CursorId (*cursor)(Window*, int16_t, int16_t, int16_t, Ui::CursorId);
-                void (*on_move)(Window&, const int16_t x, const int16_t y);
-                void (*prepare_draw)(Window*);
+                void (*onMove)(Window&, const int16_t x, const int16_t y);
+                void (*prepareDraw)(Window*);
                 void (*draw)(Window*, Gfx::Context*);
-                void (*draw_scroll)(Window&, Gfx::Context&, const uint32_t scrollIndex);
+                void (*drawScroll)(Window&, Gfx::Context&, const uint32_t scrollIndex);
             };
         };
 
