@@ -1428,17 +1428,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static void initEvents()
     {
-        events.on_close = onClose;
-        events.on_mouse_up = onMouseUp;
-        events.on_resize = onResize;
-        events.on_update = onUpdate;
-        events.get_scroll_size = getScrollSize;
-        events.scroll_mouse_down = scrollMouseDown;
-        events.scroll_mouse_drag = scrollMouseDown;
+        events.onClose = onClose;
+        events.onMouseUp = onMouseUp;
+        events.onResize = onResize;
+        events.onUpdate = onUpdate;
+        events.getScrollSize = getScrollSize;
+        events.scrollMouseDown = scrollMouseDown;
+        events.scrollMouseDrag = scrollMouseDown;
         events.tooltip = tooltip;
-        events.prepare_draw = prepareDraw;
+        events.prepareDraw = prepareDraw;
         events.draw = draw;
-        events.draw_scroll = drawScroll;
+        events.drawScroll = drawScroll;
     }
 
     static void sub_46CFF0()

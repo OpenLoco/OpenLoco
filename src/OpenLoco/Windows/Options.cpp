@@ -665,12 +665,12 @@ namespace OpenLoco::Ui::Windows::Options
 
         static const WindowEventList initEvents()
         {
-            _events.on_close = onClose;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_mouse_down = onMouseDown;
-            _events.on_dropdown = onDropdown;
-            _events.on_update = onUpdate;
-            _events.prepare_draw = prepareDraw;
+            _events.onClose = onClose;
+            _events.onMouseUp = onMouseUp;
+            _events.onMouseDown = onMouseDown;
+            _events.onDropdown = onDropdown;
+            _events.onUpdate = onUpdate;
+            _events.prepareDraw = prepareDraw;
             _events.draw = draw;
             return _events;
         }
@@ -850,12 +850,12 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void initEvents()
         {
-            _events.on_close = onClose;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_mouse_down = onMouseDown;
-            _events.on_dropdown = onDropdown;
-            _events.on_update = onUpdate;
-            _events.prepare_draw = prepareDraw;
+            _events.onClose = onClose;
+            _events.onMouseUp = onMouseUp;
+            _events.onMouseDown = onMouseDown;
+            _events.onDropdown = onDropdown;
+            _events.onUpdate = onUpdate;
+            _events.prepareDraw = prepareDraw;
             _events.draw = draw;
         }
     }
@@ -1231,12 +1231,12 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void initEvents()
         {
-            _events.on_close = onClose;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_mouse_down = onMouseDown;
-            _events.on_dropdown = onDropdown;
-            _events.on_update = onUpdate;
-            _events.prepare_draw = prepareDraw;
+            _events.onClose = onClose;
+            _events.onMouseUp = onMouseUp;
+            _events.onMouseDown = onMouseDown;
+            _events.onDropdown = onDropdown;
+            _events.onUpdate = onUpdate;
+            _events.prepareDraw = prepareDraw;
             _events.draw = draw;
         }
     }
@@ -1714,12 +1714,12 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void initEvents()
         {
-            _events.on_close = onClose;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_mouse_down = onMouseDown;
-            _events.on_dropdown = onDropdown;
-            _events.on_update = onUpdate;
-            _events.prepare_draw = prepareDraw;
+            _events.onClose = onClose;
+            _events.onMouseUp = onMouseUp;
+            _events.onMouseDown = onMouseDown;
+            _events.onDropdown = onDropdown;
+            _events.onUpdate = onUpdate;
+            _events.prepareDraw = prepareDraw;
             _events.draw = draw;
         }
     }
@@ -1857,10 +1857,10 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void initEvents()
         {
-            _events.on_close = onClose;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_update = onUpdate;
-            _events.prepare_draw = prepareDraw;
+            _events.onClose = onClose;
+            _events.onMouseUp = onMouseUp;
+            _events.onUpdate = onUpdate;
+            _events.prepareDraw = prepareDraw;
             _events.draw = draw;
         }
     }
@@ -2307,13 +2307,13 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void initEvents()
         {
-            _events.on_close = onClose;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_mouse_down = onMouseDown;
-            _events.on_dropdown = onDropdown;
-            _events.on_update = onUpdate;
-            _events.text_input = textInput;
-            _events.prepare_draw = prepareDraw;
+            _events.onClose = onClose;
+            _events.onMouseUp = onMouseUp;
+            _events.onMouseDown = onMouseDown;
+            _events.onDropdown = onDropdown;
+            _events.onUpdate = onUpdate;
+            _events.textInput = textInput;
+            _events.prepareDraw = prepareDraw;
             _events.draw = draw;
         }
     }

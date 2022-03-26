@@ -445,10 +445,10 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             _date = getCurrentDate();
             _events.draw = draw;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_mouse_down = onMouseDown;
-            _events.on_update = onUpdate;
-            _events.prepare_draw = prepareDraw;
+            _events.onMouseUp = onMouseUp;
+            _events.onMouseDown = onMouseDown;
+            _events.onUpdate = onUpdate;
+            _events.prepareDraw = prepareDraw;
         }
     }
 
@@ -594,11 +594,11 @@ namespace OpenLoco::Ui::Windows::Cheats
         static void initEvents()
         {
             _events.draw = draw;
-            _events.on_dropdown = onDropdown;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_mouse_down = onMouseDown;
-            _events.on_update = onUpdate;
-            _events.prepare_draw = prepareDraw;
+            _events.onDropdown = onDropdown;
+            _events.onMouseUp = onMouseUp;
+            _events.onMouseDown = onMouseDown;
+            _events.onUpdate = onUpdate;
+            _events.prepareDraw = prepareDraw;
         }
     }
 
@@ -699,9 +699,9 @@ namespace OpenLoco::Ui::Windows::Cheats
         static void initEvents()
         {
             _events.draw = draw;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_update = onUpdate;
-            _events.prepare_draw = prepareDraw;
+            _events.onMouseUp = onMouseUp;
+            _events.onUpdate = onUpdate;
+            _events.prepareDraw = prepareDraw;
         }
     }
 
@@ -802,9 +802,9 @@ namespace OpenLoco::Ui::Windows::Cheats
         static void initEvents()
         {
             _events.draw = draw;
-            _events.on_mouse_up = onMouseUp;
-            _events.on_update = onUpdate;
-            _events.prepare_draw = prepareDraw;
+            _events.onMouseUp = onMouseUp;
+            _events.onUpdate = onUpdate;
+            _events.prepareDraw = prepareDraw;
         }
     }
 

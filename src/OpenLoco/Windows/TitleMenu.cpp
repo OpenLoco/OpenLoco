@@ -147,13 +147,13 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
     Window* open()
     {
-        _events.on_mouse_up = onMouseUp;
-        _events.on_mouse_down = onMouseDown;
-        _events.on_dropdown = onDropdown;
-        _events.text_input = onTextInput;
+        _events.onMouseUp = onMouseUp;
+        _events.onMouseDown = onMouseDown;
+        _events.onDropdown = onDropdown;
+        _events.textInput = onTextInput;
         _events.cursor = onCursor;
-        _events.on_update = onUpdate;
-        _events.prepare_draw = prepareDraw;
+        _events.onUpdate = onUpdate;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
 
         auto window = OpenLoco::Ui::WindowManager::createWindow(

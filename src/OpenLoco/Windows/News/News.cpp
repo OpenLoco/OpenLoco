@@ -804,10 +804,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         void initEvents()
         {
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = initViewport;
-            events.on_update = onUpdate;
-            events.viewport_rotate = initViewport;
+            events.onMouseUp = onMouseUp;
+            events.onResize = initViewport;
+            events.onUpdate = onUpdate;
+            events.viewportRotate = initViewport;
             events.draw = draw;
         }
     }

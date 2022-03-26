@@ -487,11 +487,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void initEvents()
         {
             events.draw = draw;
-            events.on_dropdown = onDropdown;
-            events.on_mouse_down = onMouseDown;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = Common::update;
-            events.prepare_draw = prepareDraw;
+            events.onDropdown = onDropdown;
+            events.onMouseDown = onMouseDown;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = Common::update;
+            events.prepareDraw = prepareDraw;
         }
     }
 
@@ -825,11 +825,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void initEvents()
         {
             events.draw = draw;
-            events.on_dropdown = onDropdown;
-            events.on_mouse_down = onMouseDown;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = Common::update;
-            events.prepare_draw = prepareDraw;
+            events.onDropdown = onDropdown;
+            events.onMouseDown = onMouseDown;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = Common::update;
+            events.prepareDraw = prepareDraw;
         }
     }
 
@@ -958,10 +958,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_down = onMouseDown;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = Common::update;
-            events.prepare_draw = prepareDraw;
+            events.onMouseDown = onMouseDown;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = Common::update;
+            events.prepareDraw = prepareDraw;
         }
     }
 
@@ -1135,12 +1135,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void initEvents()
         {
             events.draw = draw;
-            events.on_dropdown = onDropdown;
-            events.on_mouse_down = onMouseDown;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = Common::update;
-            events.prepare_draw = prepareDraw;
-            events.text_input = textInput;
+            events.onDropdown = onDropdown;
+            events.onMouseDown = onMouseDown;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.textInput = textInput;
         }
     }
 

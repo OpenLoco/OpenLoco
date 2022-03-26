@@ -157,10 +157,10 @@ namespace OpenLoco::Ui::Windows::AboutMusic
 
     static void initEvents()
     {
-        _events.on_mouse_up = onMouseUp;
-        _events.get_scroll_size = getScrollSize;
+        _events.onMouseUp = onMouseUp;
+        _events.getScrollSize = getScrollSize;
         _events.tooltip = tooltip;
         _events.draw = draw;
-        _events.draw_scroll = drawScroll;
+        _events.drawScroll = drawScroll;
     }
 }

@@ -1456,17 +1456,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static void initEvents()
     {
-        _events.on_mouse_up = onMouseUp;
-        _events.on_resize = onResize;
-        _events.on_periodic_update = onPeriodicUpdate;
-        _events.on_update = onUpdate;
-        _events.get_scroll_size = getScrollSize;
-        _events.scroll_mouse_down = onScrollMouseDown;
-        _events.scroll_mouse_over = onScrollMouseOver;
+        _events.onMouseUp = onMouseUp;
+        _events.onResize = onResize;
+        _events.onPeriodicUpdate = onPeriodicUpdate;
+        _events.onUpdate = onUpdate;
+        _events.getScrollSize = getScrollSize;
+        _events.scrollMouseDown = onScrollMouseDown;
+        _events.scrollMouseOver = onScrollMouseOver;
         _events.tooltip = tooltip;
         _events.cursor = cursor;
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
-        _events.draw_scroll = drawScroll;
+        _events.drawScroll = drawScroll;
     }
 }

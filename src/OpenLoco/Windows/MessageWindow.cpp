@@ -281,18 +281,18 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static void initEvents()
         {
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::onUpdate;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::onUpdate;
             events.event_08 = event_08;
             events.event_09 = event_09;
-            events.get_scroll_size = getScrollSize;
-            events.scroll_mouse_down = scrollMouseDown;
-            events.scroll_mouse_over = scrollMouseOver;
+            events.getScrollSize = getScrollSize;
+            events.scrollMouseDown = scrollMouseDown;
+            events.scrollMouseOver = scrollMouseOver;
             events.tooltip = tooltip;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = drawScroll;
+            events.drawScroll = drawScroll;
         }
     }
 
@@ -553,11 +553,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static void initEvents()
         {
-            events.on_mouse_up = onMouseUp;
-            events.on_mouse_down = onMouseDown;
-            events.on_dropdown = onDropdown;
-            events.on_update = Common::onUpdate;
-            events.prepare_draw = Common::prepareDraw;
+            events.onMouseUp = onMouseUp;
+            events.onMouseDown = onMouseDown;
+            events.onDropdown = onDropdown;
+            events.onUpdate = Common::onUpdate;
+            events.prepareDraw = Common::prepareDraw;
             events.draw = draw;
         }
     }

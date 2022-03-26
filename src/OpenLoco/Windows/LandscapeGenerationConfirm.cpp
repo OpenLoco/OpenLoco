@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     static void init_events()
     {
         events.draw = draw;
-        events.on_mouse_up = onMouseUp;
+        events.onMouseUp = onMouseUp;
     }
 
     // 0x004C180C

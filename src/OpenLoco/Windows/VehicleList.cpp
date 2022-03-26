@@ -1128,20 +1128,20 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     static void initEvents()
     {
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
-        _events.draw_scroll = drawScroll;
-        _events.on_mouse_up = onMouseUp;
-        _events.on_mouse_down = onMouseDown;
-        _events.on_dropdown = onDropdown;
+        _events.drawScroll = drawScroll;
+        _events.onMouseUp = onMouseUp;
+        _events.onMouseDown = onMouseDown;
+        _events.onDropdown = onDropdown;
         _events.tooltip = tooltip;
-        _events.on_update = onUpdate;
+        _events.onUpdate = onUpdate;
         _events.event_08 = event_08;
         _events.event_09 = event_09;
-        _events.get_scroll_size = getScrollSize;
+        _events.getScrollSize = getScrollSize;
         _events.cursor = cursor;
-        _events.scroll_mouse_down = onScrollMouseDown;
-        _events.scroll_mouse_over = onScrollMouseOver;
-        _events.on_resize = onResize;
+        _events.scrollMouseDown = onScrollMouseDown;
+        _events.scrollMouseOver = onScrollMouseOver;
+        _events.onResize = onResize;
     }
 }

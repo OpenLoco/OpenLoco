@@ -290,7 +290,7 @@ namespace OpenLoco::Ui::Dropdown
 
         static void initEvents()
         {
-            events.on_update = onUpdate;
+            events.onUpdate = onUpdate;
             events.draw = draw;
         }
 

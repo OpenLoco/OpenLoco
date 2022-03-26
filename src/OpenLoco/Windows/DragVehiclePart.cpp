@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     static void initEvents()
     {
         events.cursor = cursor;
-        events.on_move = onMove;
+        events.onMove = onMove;
         events.draw = draw;
     }
 }

@@ -140,6 +140,6 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     static void initEvents()
     {
         _events.draw = draw;
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
     }
 }

@@ -147,8 +147,8 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static void initEvents()
     {
-        _events.on_mouse_up = onMouseUp;
-        _events.prepare_draw = prepareDraw;
+        _events.onMouseUp = onMouseUp;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
     }
 }

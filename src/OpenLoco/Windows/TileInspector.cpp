@@ -460,14 +460,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static void initEvents()
     {
         _events.draw = draw;
-        _events.draw_scroll = drawScroll;
-        _events.get_scroll_size = getScrollSize;
-        _events.on_close = onClose;
-        _events.on_mouse_up = onMouseUp;
-        _events.on_tool_update = onToolUpdate;
-        _events.on_tool_down = onToolDown;
-        _events.prepare_draw = prepareDraw;
-        _events.scroll_mouse_down = scrollMouseDown;
-        _events.scroll_mouse_over = scrollMouseOver;
+        _events.drawScroll = drawScroll;
+        _events.getScrollSize = getScrollSize;
+        _events.onClose = onClose;
+        _events.onMouseUp = onMouseUp;
+        _events.onToolUpdate = onToolUpdate;
+        _events.onToolDown = onToolDown;
+        _events.prepareDraw = prepareDraw;
+        _events.scrollMouseDown = scrollMouseDown;
+        _events.scrollMouseOver = scrollMouseOver;
     }
 }
