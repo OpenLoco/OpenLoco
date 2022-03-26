@@ -265,7 +265,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, tile);
                 self->invalidate();
-                self->flags |= WindowFlags::viewport_no_scrolling;
+                self->flags |= WindowFlags::viewportNoScrolling;
             }
 
             if (self->viewports[0] != nullptr)

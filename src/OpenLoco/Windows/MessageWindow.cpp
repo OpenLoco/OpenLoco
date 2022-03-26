@@ -119,13 +119,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A847
         static void event_08(Window* self)
         {
-            self->flags |= WindowFlags::not_scroll_view;
+            self->flags |= WindowFlags::notScrollView;
         }
 
         // 0x0042A84F
         static void event_09(Window* self)
         {
-            if (!(self->flags & WindowFlags::not_scroll_view))
+            if (!(self->flags & WindowFlags::notScrollView))
                 return;
 
             if (self->rowHover == -1)
@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A87C
         static void scrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
-            self->flags &= ~(WindowFlags::not_scroll_view);
+            self->flags &= ~(WindowFlags::notScrollView);
 
             auto messageIndex = y / messageHeight;
             auto messageId = 0xFFFF;

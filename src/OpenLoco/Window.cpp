@@ -339,7 +339,7 @@ namespace OpenLoco::Ui
                 centre.x = config->saved_view_x;
                 centre.y = config->saved_view_y;
 
-                if (this->flags & WindowFlags::scrolling_to_location)
+                if (this->flags & WindowFlags::scrollingToLocation)
                 {
                     bool flippedX = false;
                     centre.x -= viewport->view_x;
@@ -362,7 +362,7 @@ namespace OpenLoco::Ui
 
                     if (centre.x == 0 && centre.y == 0)
                     {
-                        this->flags &= ~WindowFlags::scrolling_to_location;
+                        this->flags &= ~WindowFlags::scrollingToLocation;
                     }
 
                     if (flippedX)
@@ -536,12 +536,12 @@ namespace OpenLoco::Ui
         if (this->viewportConfigurations->viewport_target_sprite != EntityId::null)
             return;
 
-        if (this->flags & WindowFlags::viewport_no_scrolling)
+        if (this->flags & WindowFlags::viewportNoScrolling)
             return;
 
         this->viewportConfigurations->saved_view_x = pos.x;
         this->viewportConfigurations->saved_view_y = pos.y;
-        this->flags |= WindowFlags::scrolling_to_location;
+        this->flags |= WindowFlags::scrollingToLocation;
     }
 
     // 0x004C6827
@@ -1419,7 +1419,7 @@ namespace OpenLoco::Ui
     // 0x004CA4DF
     void Window::draw(Gfx::Context* context)
     {
-        if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::no_background))
+        if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::noBackground))
         {
             Gfx::fillRect(*context, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
@@ -1459,7 +1459,7 @@ namespace OpenLoco::Ui
             widget->draw(context, this, pressed_widget, tool_widget, hovered_widget, scrollviewIndex);
         }
 
-        if (this->flags & WindowFlags::white_border_mask)
+        if (this->flags & WindowFlags::whiteBorderMask)
         {
             Gfx::fillRectInset(
                 *context,

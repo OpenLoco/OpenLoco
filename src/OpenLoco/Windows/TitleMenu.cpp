@@ -160,7 +160,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             WindowType::titleMenu,
             Ui::Point((Ui::width() - ww) / 2, Ui::height() - wh - 25),
             { ww, wh },
-            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
 
         window->widgets = _widgets;

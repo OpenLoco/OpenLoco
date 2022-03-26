@@ -106,7 +106,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             Ui::Point({ static_cast<int16_t>(width() / 2 - windowSize.width / 2),
                         std::max<int16_t>(height() / 2 - windowSize.height / 2, 28) }),
             windowSize,
-            WindowFlags::stick_to_front | WindowFlags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::flag_12,
             &_events);
 
         self->widgets = _widgets;

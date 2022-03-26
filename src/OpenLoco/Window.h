@@ -92,25 +92,25 @@ namespace OpenLoco::Ui
 
     namespace WindowFlags
     {
-        constexpr uint32_t stick_to_back = 1 << 0;
-        constexpr uint32_t stick_to_front = 1 << 1;
-        constexpr uint32_t viewport_no_scrolling = 1 << 2;
-        constexpr uint32_t scrolling_to_location = 1 << 3;
+        constexpr uint32_t stickToBack = 1 << 0;
+        constexpr uint32_t stickToFront = 1 << 1;
+        constexpr uint32_t viewportNoScrolling = 1 << 2;
+        constexpr uint32_t scrollingToLocation = 1 << 3;
         constexpr uint32_t transparent = 1 << 4;
-        constexpr uint32_t no_background = 1 << 5;
+        constexpr uint32_t noBackground = 1 << 5;
         constexpr uint32_t flag_6 = 1 << 6;
         constexpr uint32_t flag_7 = 1 << 7;
         constexpr uint32_t flag_8 = 1 << 8;
         constexpr uint32_t resizable = 1 << 9;
-        constexpr uint32_t no_auto_close = 1 << 10;
+        constexpr uint32_t noAutoClose = 1 << 10;
         constexpr uint32_t flag_11 = 1 << 11;
         constexpr uint32_t flag_12 = 1 << 12;
         constexpr uint32_t openQuietly = 1 << 13;
-        constexpr uint32_t not_scroll_view = 1 << 14;
+        constexpr uint32_t notScrollView = 1 << 14;
         constexpr uint32_t flag_15 = 1 << 15;
         constexpr uint32_t flag_16 = 1 << 16;
-        constexpr uint32_t white_border_one = (1 << 17);
-        constexpr uint32_t white_border_mask = WindowFlags::white_border_one | (1 << 18);
+        constexpr uint32_t whiteBorderOne = (1 << 17);
+        constexpr uint32_t whiteBorderMask = WindowFlags::whiteBorderOne | (1 << 18);
         constexpr uint32_t flag_19 = 1 << 19;
         constexpr uint32_t flag_31 = 1 << 31;
     }

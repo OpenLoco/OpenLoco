@@ -49,7 +49,7 @@ namespace OpenLoco::Ui
 
     void Widget::draw(Gfx::Context* context, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex)
     {
-        if ((window->flags & WindowFlags::no_background) == 0)
+        if ((window->flags & WindowFlags::noBackground) == 0)
         {
             // Check if widget is outside the draw region
             if (window->x + left >= context->x + context->width && window->x + right < context->x)

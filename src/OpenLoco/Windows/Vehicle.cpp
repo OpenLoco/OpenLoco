@@ -323,7 +323,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, targetThing);
                 self->invalidate();
-                self->flags |= WindowFlags::viewport_no_scrolling;
+                self->flags |= WindowFlags::viewportNoScrolling;
             }
             // 0x004B5E88 end
 
@@ -1189,7 +1189,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             Input::setTooltipTimeout(2000);
-            self->flags &= ~WindowFlags::not_scroll_view;
+            self->flags &= ~WindowFlags::notScrollView;
             auto car = Common::getCarFromScrollView(self, y);
             string_id tooltipFormat = StringIds::null;
             EntityId tooltipContent = EntityId::null;
@@ -1567,7 +1567,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     auto car = getCarFromScrollViewPos(*vehicleWindow, pos);
                     if (car != nullptr)
                     {
-                        vehicleWindow->flags &= ~WindowFlags::not_scroll_view;
+                        vehicleWindow->flags &= ~WindowFlags::notScrollView;
                         if (car->id != EntityId(vehicleWindow->rowHover))
                         {
                             vehicleWindow->rowHover = enumValue(car->id);
@@ -1935,7 +1935,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             Input::setTooltipTimeout(2000);
-            self->flags &= ~WindowFlags::not_scroll_view;
+            self->flags &= ~WindowFlags::notScrollView;
             auto car = Common::getCarFromScrollView(self, y);
             string_id tooltipFormat = StringIds::null;
             EntityId tooltipContent = EntityId::null;
@@ -2863,7 +2863,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B530C
         static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
-            self->flags &= ~WindowFlags::not_scroll_view;
+            self->flags &= ~WindowFlags::notScrollView;
             auto item = y / lineHeight;
             if (self->rowHover != item)
             {
@@ -4110,13 +4110,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B45DD, 0x004B55A7, 0x004B3C1B
         static void event8(Window* const self)
         {
-            self->flags |= WindowFlags::not_scroll_view;
+            self->flags |= WindowFlags::notScrollView;
         }
 
         // 0x004B45E5, 0x004B55B6, 0x004B3C23
         static void event9(Window* const self)
         {
-            if (self->flags & WindowFlags::not_scroll_view)
+            if (self->flags & WindowFlags::notScrollView)
             {
                 if (self->rowHover != -1)
                 {

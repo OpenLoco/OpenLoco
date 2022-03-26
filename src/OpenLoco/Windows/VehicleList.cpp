@@ -993,13 +993,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C2640
     static void event_08(Window* self)
     {
-        self->flags |= WindowFlags::not_scroll_view;
+        self->flags |= WindowFlags::notScrollView;
     }
 
     // 0x004C2648
     static void event_09(Window* self)
     {
-        if (self->flags & WindowFlags::not_scroll_view)
+        if (self->flags & WindowFlags::notScrollView)
         {
             self->rowHover = -1;
         }
@@ -1029,7 +1029,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         Input::setTooltipTimeout(2000);
 
-        self->flags &= ~WindowFlags::not_scroll_view;
+        self->flags &= ~WindowFlags::notScrollView;
 
         uint16_t currentRow = y / self->rowHeight;
         if (currentRow < self->var_83C)

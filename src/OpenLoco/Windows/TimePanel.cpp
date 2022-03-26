@@ -90,7 +90,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             WindowType::timeToolbar,
             Ui::Point(Ui::width() - window_size.width, Ui::height() - window_size.height),
             Ui::Size(window_size.width, window_size.height),
-            Ui::WindowFlags::stick_to_front | Ui::WindowFlags::transparent | Ui::WindowFlags::no_background,
+            Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             &_events);
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::map_chat_menu) | (1 << Widx::date_btn) | (1 << Widx::pause_btn) | (1 << Widx::normal_speed_btn) | (1 << Widx::fast_forward_btn) | (1 << Widx::extra_fast_forward_btn);

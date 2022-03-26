@@ -134,7 +134,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             WindowType::editorToolbar,
             origin,
             windowSize,
-            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             &_events);
         window->widgets = _widgets;
         window->enabledWidgets = 1 << widx::previous_button | 1 << widx::previous_frame | 1 << widx::next_frame | 1 << widx::next_button;

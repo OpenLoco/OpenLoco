@@ -98,7 +98,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
             WindowType::tooltip,
             Ui::Point(x, y),
             Ui::Size(width, height),
-            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::flag_7,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
             &events);
         tooltip->widgets = _widgets;
         _tooltipNotShownTicks = 0;

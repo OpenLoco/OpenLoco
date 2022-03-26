@@ -375,13 +375,13 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x0049196F
     static void event_08(Window* window)
     {
-        window->flags |= WindowFlags::not_scroll_view;
+        window->flags |= WindowFlags::notScrollView;
     }
 
     // 0x00491977
     static void event_09(Window* window)
     {
-        if ((window->flags & WindowFlags::not_scroll_view) == 0)
+        if ((window->flags & WindowFlags::notScrollView) == 0)
             return;
 
         if (window->rowHover == -1)
@@ -689,7 +689,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x004919D1
     static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        window->flags &= ~(WindowFlags::not_scroll_view);
+        window->flags &= ~(WindowFlags::notScrollView);
 
         uint16_t currentRow = y / rowHeight;
         int16_t currentStation = -1;

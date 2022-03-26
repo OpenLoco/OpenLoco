@@ -297,7 +297,7 @@ namespace OpenLoco::Ui::Dropdown
         // 0x004CCF1E
         static void open(Ui::Point origin, Ui::Size size, Colour_t colour)
         {
-            auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, WindowFlags::stick_to_front, &common::events);
+            auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, WindowFlags::stickToFront, &common::events);
 
             window->widgets = common::widgets;
 
