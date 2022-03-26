@@ -5,10 +5,18 @@
 #include "Types.hpp"
 #include "Utility/Prng.hpp"
 #include <limits>
+#include <vector>
 
 namespace OpenLoco
 {
     struct IndustryObject;
+
+    struct Unk4F9274
+    {
+        Map::Pos2 pos;
+        uint8_t unk;
+    };
+    const std::vector<Unk4F9274>& getUnk4F9274(bool type);
 
     namespace IndustryFlags
     {
