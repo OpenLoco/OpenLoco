@@ -882,7 +882,7 @@ namespace OpenLoco::Audio
     static constexpr auto kAmbientVolumeChangePerTick = 100;
     static constexpr auto kAmbientNumWaterTilesForOcean = 60;
     static constexpr auto kAmbientNumTreeTilesForForest = 30;
-    static constexpr auto kAmbientNumMountainTilesForWildernest = 60;
+    static constexpr auto kAmbientNumMountainTilesForWilderness = 60;
 
     static constexpr int32_t getAmbientMaxVolume(uint8_t zoom)
     {
@@ -953,7 +953,7 @@ namespace OpenLoco::Audio
             {
                 ambientSound = PathId::css3;
             }
-            else if (wildernessCount > kAmbientNumMountainTilesForWildernest)
+            else if (wildernessCount > kAmbientNumMountainTilesForWilderness)
             {
                 ambientSound = PathId::css2;
             }
