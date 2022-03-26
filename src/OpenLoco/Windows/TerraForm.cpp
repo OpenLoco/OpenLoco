@@ -1215,23 +1215,27 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     namespace AdjustLand
     {
+        static void paintLand();
         enum widx
         {
             tool_area = 9,
             decrease_area,
             increase_area,
             land_material,
+            paint_mode
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material) | (1 << paint_mode);
         const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
+        bool isPaintMode = false;
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
-            makeWidget({ 55 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
+            makeWidget({ 55, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
+            makeWidget({ 77, 92 }, { 20, 20 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::about_locomotion_69), // todo: update image and tooltip
             widgetEnd(),
         };
 
@@ -1315,6 +1319,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
+        static void toolDragContinue(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y);
+        static void toolDragEnd(Window& self, const WidgetIndex_t widgetIndex);
+
         // 0x004BC9A7
         static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
@@ -1343,6 +1350,23 @@ namespace OpenLoco::Ui::Windows::Terraform
                         _adjustToolSize = 10;
                     _adjustLandToolSize = _adjustToolSize;
                     self->invalidate();
+                    break;
+                }
+
+                case widx::paint_mode:
+                {
+                    isPaintMode = !isPaintMode;
+
+                    if (isPaintMode)
+                    {
+                        events.toolDragContinue = nullptr;
+                        events.toolDragEnd = nullptr;
+                    }
+                    else
+                    {
+                        events.toolDragContinue = toolDragContinue;
+                        events.toolDragEnd = toolDragEnd;
+                    }
                     break;
                 }
             }
@@ -1473,10 +1497,15 @@ namespace OpenLoco::Ui::Windows::Terraform
             else
             {
                 lowerCost = lowerLand(Flags::flag_2);
-
                 raiseCost = raiseLand(Flags::flag_2);
             }
             setAdjustCost(raiseCost, lowerCost);
+
+            auto mouseButtonUsed = Input::getLastKnownButtonState();
+            if (isPaintMode && mouseButtonUsed == Input::MouseButton::leftPressed)
+            {
+                paintLand();
+            }
         }
 
         // 0x004BC9ED
@@ -1487,6 +1516,11 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
                 return;
 
+            Ui::setToolCursor(CursorId::upDownArrow);
+        }
+
+        static void paintLand()
+        {
             // CHANGE: Allows the player to change land type outside of the scenario editor.
             if (_adjustToolSize != 0)
             {
@@ -1502,8 +1536,6 @@ namespace OpenLoco::Ui::Windows::Terraform
                     GameCommands::doCommand(args, Flags::apply);
                 }
             }
-
-            Ui::setToolCursor(CursorId::upDownArrow);
         }
 
         // 0x004BC9E2
@@ -1526,6 +1558,9 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             auto viewport = window->viewports[0];
             if (viewport == nullptr)
+                return;
+
+            if (isPaintMode)
                 return;
 
             auto zoom = viewport->zoom;
@@ -1571,6 +1606,14 @@ namespace OpenLoco::Ui::Windows::Terraform
             Common::prepareDraw(self);
 
             self->activatedWidgets |= (1ULL << widx::tool_area);
+            if (isPaintMode)
+            {
+                self->activatedWidgets |= (1 << widx::paint_mode);
+            }
+            else
+            {
+                self->activatedWidgets &= ~(1 << widx::paint_mode);
+            }
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
