@@ -9,12 +9,28 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Audio
 {
-    static uint8_t getZoomVolumeModifier(uint8_t zoom)
+    // Vehicle Volume is multiplied by the modifier then divided by 8 to get in terms of hundredth decibels
+    // 255 represents full volume
+    // 0 represents no volume
+    constexpr int8_t kVolumeModifierZoomIncrement = -35; // 13.7% decrease in volume for each zoom increment (up to 2)
+    constexpr int8_t kVolumeModifierUnderground = -28;   // 11.0% decrease in volume when underground
+    constexpr uint8_t kVolumeModifierMax = 255;
+
+    constexpr int32_t kVolumeMin = -100'00; // hundredth decibels (-100dB)
+    // Calculated min is 255*255/8=8128 but original has done 256*256/8=8192
+    // We have kept original value but could be changed to correctly represent the full range of volume
+    constexpr int32_t kVehicleVolumeCalcMin = -81'91; // hundredth decibels (-81.91dB)
+
+    constexpr int32_t kVpSizeMin = 64; // Note check if defined in viewport.hpp
+    constexpr int32_t kPanFalloffStart = 2048;
+    constexpr int32_t kPanFalloffEnd = 3072;
+
+    static int8_t getZoomVolumeModifier(uint8_t zoom)
     {
-        return std::min<uint8_t>(zoom, 2) * 35;
+        return std::min<uint8_t>(zoom, 2) * kVolumeModifierZoomIncrement;
     }
 
-    static uint8_t getUndergroundVolumeModifier(const Map::Pos3& pos)
+    static int8_t getUndergroundVolumeModifier(const Map::Pos3& pos)
     {
         if (pos.x != Location::null && Map::validCoords(pos))
         {
@@ -23,26 +39,26 @@ namespace OpenLoco::Audio
         auto* surface = Map::TileManager::get(pos).surface();
         if (surface->baseZ() * 4 > pos.z)
         {
-            return 28;
+            return kVolumeModifierUnderground;
         }
         return 0;
     }
 
     static uint8_t getFalloffModifier(int32_t pan)
     {
-        const auto absPan = std::min(std::abs(pan), 4095);
+        const auto absPan = std::min(std::abs(pan), 4095); // This is pointless subsequent if's take care of max
 
-        uint8_t falloffModifier = 255;
+        uint8_t falloffModifier = kVolumeModifierMax;
         // This in theory is the max viewport width/height (might not be valid for modern screens)
-        if (absPan > 2048)
+        if (absPan > kPanFalloffStart)
         {
-            if (absPan > 3072)
+            if (absPan > kPanFalloffEnd)
             {
                 falloffModifier = 0;
             }
             else
             {
-                falloffModifier = std::min((3072 - absPan) / 4, 255);
+                falloffModifier = static_cast<uint8_t>(std::min<uint16_t>((kPanFalloffEnd - absPan) / 4, kVolumeModifierMax));
             }
         }
         return falloffModifier;
@@ -50,7 +66,7 @@ namespace OpenLoco::Audio
 
     static int32_t calculatePan(const coord_t coord, const int32_t screenSize)
     {
-        const auto relativePosition = (coord << 16) / std::max(screenSize, 64);
+        const auto relativePosition = (coord << 16) / std::max(screenSize, kVpSizeMin);
         return (relativePosition - (1 << 15)) / 16;
     }
 
@@ -73,10 +89,10 @@ namespace OpenLoco::Audio
 
         const auto falloffVolumeModifier = std::min(xFalloffModifier, yFalloffModifier);
 
-        const auto overalVolumeModifier = std::max(falloffVolumeModifier - undergroundVolumeModifier - zoomVolumeModifier, 0);
+        const auto overalVolumeModifier = std::max(falloffVolumeModifier + undergroundVolumeModifier + zoomVolumeModifier, 0);
 
         // volume is in hundredth decibels max decrease in volume is -100dB.
-        const auto volume = std::min(((v->drivingSoundVolume * overalVolumeModifier) / 8) - 8191, -10000);
+        const auto volume = std::min(((v->drivingSoundVolume * overalVolumeModifier) / 8) - kVehicleVolumeCalcMin, kVolumeMin);
 
         return { makeObjectSoundId(v->drivingSoundId), { volume, panX, v->drivingSoundFrequency } };
     }
