@@ -147,7 +147,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
                 // Save Landscape
                 if (OpenLoco::Game::saveLandscapeOpen())
+                {
+                    OpenLoco::Game::saveLandscape();
                     Gfx::invalidateScreen();
+                }
                 break;
             }
 

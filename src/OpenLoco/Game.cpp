@@ -267,14 +267,11 @@ namespace OpenLoco::Game
         {
             if (Game::saveLandscapeOpen())
             {
-                // 0x0043C4B3
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
-                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
-
-                if (!S5::save(path, S5::SaveFlags::scenario))
-                    Ui::Windows::Error::open(StringIds::landscape_save_failed, StringIds::null);
-                else
+                if (saveLandscape())
+                {
+                    // load landscape
                     GameCommands::do_21(2, 0);
+                }
             }
         }
         else if (!isNetworked())
@@ -317,6 +314,16 @@ namespace OpenLoco::Game
 
         // 0x0043C411
         Gfx::invalidateScreen();
+    }
+
+    bool saveLandscape()
+    {
+        // 0x0043C4B3
+        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
+        std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+
+        if (!S5::save(path, S5::SaveFlags::scenario))
+            Ui::Windows::Error::open(StringIds::landscape_save_failed, StringIds::null);
     }
 
     uint32_t getFlags()
