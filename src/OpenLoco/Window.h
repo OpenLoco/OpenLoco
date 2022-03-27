@@ -79,15 +79,15 @@ namespace OpenLoco::Ui
 
     struct ScrollArea
     {
-        uint16_t flags;          // 0x00
-        int16_t contentOffsetX;  // 0x02
-        int16_t contentWidth;    // 0x04
-        uint16_t h_thumb_left;   // 0x06
-        uint16_t h_thumb_right;  // 0x08
-        int16_t contentOffsetY;  // 0x0A
-        int16_t contentHeight;   // 0x0C
-        uint16_t v_thumb_top;    // 0x0E
-        uint16_t v_thumb_bottom; // 0x10
+        uint16_t flags;         // 0x00
+        int16_t contentOffsetX; // 0x02
+        int16_t contentWidth;   // 0x04
+        uint16_t hThumbLeft;    // 0x06
+        uint16_t hThumbRight;   // 0x08
+        int16_t contentOffsetY; // 0x0A
+        int16_t contentHeight;  // 0x0C
+        uint16_t vThumbTop;     // 0x0E
+        uint16_t vThumbBottom;  // 0x10
     };
 
     namespace WindowFlags
