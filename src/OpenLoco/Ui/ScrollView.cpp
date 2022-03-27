@@ -223,13 +223,13 @@ namespace OpenLoco::Ui::ScrollView
                 return res;
             }
 
-            if (x < scroll.h_thumb_left + left)
+            if (x < scroll.hThumbLeft + left)
             {
                 res.area = ScrollPart::hscrollbarTrackLeft;
                 return res;
             }
 
-            if (x > scroll.h_thumb_right + left)
+            if (x > scroll.hThumbRight + left)
             {
                 res.area = ScrollPart::hscrollbarTrackRight;
                 return res;
@@ -264,13 +264,13 @@ namespace OpenLoco::Ui::ScrollView
                 return res;
             }
 
-            if (y < scroll.v_thumb_top + top)
+            if (y < scroll.vThumbTop + top)
             {
                 res.area = ScrollPart::vscrollbarTrackTop;
                 return res;
             }
 
-            if (y > scroll.v_thumb_bottom + top)
+            if (y > scroll.vThumbBottom + top)
             {
                 res.area = ScrollPart::vscrollbarTrackBottom;
                 return res;
