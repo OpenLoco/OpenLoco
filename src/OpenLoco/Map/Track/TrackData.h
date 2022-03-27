@@ -1,11 +1,11 @@
 #pragma once
 
+#include "../../Core/Span.hpp"
 #include "../../Types.hpp"
 #include "../Map.hpp"
 #include <array>
 #include <cstddef>
 #include <cstdlib>
-#include <vector>
 
 namespace OpenLoco::Map::TrackData
 {
@@ -45,8 +45,8 @@ namespace OpenLoco::Map::TrackData
     static_assert(sizeof(TrackCoordinates) == 0x8);
 #pragma pack(pop)
 
-    const std::vector<PreviewTrack>& getTrackPiece(size_t trackId);
-    const std::vector<PreviewTrack>& getRoadPiece(size_t trackId);
+    const stdx::span<const PreviewTrack> getTrackPiece(size_t trackId);
+    const stdx::span<const PreviewTrack> getRoadPiece(size_t trackId);
     const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection);
     const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection);
 }
