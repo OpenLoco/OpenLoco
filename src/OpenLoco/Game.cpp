@@ -322,8 +322,11 @@ namespace OpenLoco::Game
         auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
         std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
-        if (!S5::save(path, S5::SaveFlags::scenario))
+        bool saveResult = !S5::save(path, S5::SaveFlags::scenario);
+        if (saveResult)
             Ui::Windows::Error::open(StringIds::landscape_save_failed, StringIds::null);
+
+        return saveResult;
     }
 
     uint32_t getFlags()
