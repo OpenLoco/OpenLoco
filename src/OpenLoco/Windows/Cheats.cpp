@@ -604,7 +604,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Vehicles
     {
-        constexpr Ui::Size windowSize = { 250, 118 };
+        constexpr Ui::Size windowSize = { 250, 155 };
 
         static WindowEventList _events;
 
@@ -615,7 +615,9 @@ namespace OpenLoco::Ui::Windows::Cheats
                 reliability_group = Common::Widx::nextWidx,
                 reliablity_all_to_zero,
                 reliablity_all_to_hundred,
+                vehicle_locked_group,
                 checkbox_display_locked_vehicles,
+                checkbox_build_locked_vehicles,
             };
         }
 
@@ -624,11 +626,13 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_vehicle_reliability),
             makeWidget({ 10, 62 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_zero),
             makeWidget({ 10, 78 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_hundred),
-            makeWidget({ 4, 100 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
+            makeWidget({ 4, 102 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
+            makeWidget({ 10, 116 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
+            makeWidget({ 25, 130 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
             widgetEnd(),
         };
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred) | (1 << Widx::checkbox_display_locked_vehicles);
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred) | (1 << Widx::checkbox_display_locked_vehicles) | (1 << Widx::checkbox_build_locked_vehicles);
 
         static void prepareDraw(Window* self)
         {
@@ -637,10 +641,21 @@ namespace OpenLoco::Ui::Windows::Cheats
             if (Config::getNew().displayLockedVehicles)
             {
                 self->activatedWidgets |= (1 << Widx::checkbox_display_locked_vehicles);
+                self->disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
             }
             else
             {
                 self->activatedWidgets &= ~(1 << Widx::checkbox_display_locked_vehicles);
+                self->disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
+            }
+
+            if (Config::getNew().buildLockedVehicles)
+            {
+                self->activatedWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
+            }
+            else
+            {
+                self->activatedWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
             }
         }
 
@@ -682,9 +697,32 @@ namespace OpenLoco::Ui::Windows::Cheats
                     return;
                 }
                 case Widx::checkbox_display_locked_vehicles:
+
                     Config::getNew().displayLockedVehicles = !Config::getNew().displayLockedVehicles;
+
+                    // if we don't want to display locked vehicles, there is no reason to allow building them
+                    if (Config::getNew().displayLockedVehicles)
+                    {
+                        self->disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
+                    }
+                    else
+                    {
+                        Config::getNew().buildLockedVehicles = false;
+                        self->disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
+                    }
+
+                    WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
                     WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_display_locked_vehicles);
                     WindowManager::invalidate(WindowType::buildVehicle);
+                    break;
+
+                case Widx::checkbox_build_locked_vehicles:
+                    if (Config::getNew().displayLockedVehicles)
+                    {
+                        Config::getNew().buildLockedVehicles = !Config::getNew().buildLockedVehicles;
+                        WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
+                        WindowManager::invalidate(WindowType::buildVehicle);
+                    }
                     break;
             }
         }

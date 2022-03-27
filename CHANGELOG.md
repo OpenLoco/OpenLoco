@@ -1,5 +1,6 @@
 22.03.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1316] Added a cheat to allow building locked vehicles.
 - Fix: [#1241] Total vehicle power formatted incorrectly.
 - Fix: [#1242] Cannot select both sides of a single way signals.
 - Fix: [#1284] Delete key doesn't work in text input widgets.

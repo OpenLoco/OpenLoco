@@ -1094,26 +1094,33 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         }
 
                         const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-                        auto displayLockedVehiclesScroll = Config::getNew().displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleType);
+                        auto rowIsALockedVehicle = Config::getNew().displayLockedVehicles
+                            && !company->isVehicleIndexUnlocked(vehicleType)
+                            && !Config::getNew().buildLockedVehicles;
 
                         auto colouredString = StringIds::black_stringid;
+
+                        const int32_t lockedHoverRowColour = 0x0100003D;
+                        const int32_t normalHoverRowColour = 0x02000030;
+                        const int32_t lockedRowColour = 0x0100003F;
+
                         if (window.rowHover == vehicleType)
                         {
-                            if (displayLockedVehiclesScroll)
+                            if (rowIsALockedVehicle)
                             {
-                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x0100003D);
+                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, lockedHoverRowColour);
                             }
                             else
                             {
-                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x02000030);
+                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, normalHoverRowColour);
                             }
                             colouredString = StringIds::wcolour2_stringid;
                         }
                         else
                         {
-                            if (displayLockedVehiclesScroll)
+                            if (rowIsALockedVehicle)
                             {
-                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x0100003F);
+                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, lockedRowColour);
                             }
                         }
 
