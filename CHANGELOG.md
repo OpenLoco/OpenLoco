@@ -4,6 +4,7 @@
 - Fix: [#1242] Cannot select both sides of a single way signals.
 - Fix: [#1284] Delete key doesn't work in text input widgets.
 - Fix: [#1379] Year formatted correctly in date cheat window.
+- Fix: [#1393] Vehicles not sorted correctly in build vehicle window.
 
 22.03.1 (2022-03-08)
 ------------------------------------------------------------------------
