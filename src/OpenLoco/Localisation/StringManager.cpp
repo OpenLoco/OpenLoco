@@ -251,6 +251,17 @@ namespace OpenLoco::StringManager
 
     static char* formatString(char* buffer, string_id id, ArgsWrapper& args);
 
+    constexpr uint32_t hpTokW(uint32_t hp)
+    {
+        // vanilla conversion ratio is 764 / 1024, or 0.74609375
+        return hp * 0.74609375;
+    }
+    static_assert(0 == hpTokW(0));
+    static_assert(0 == hpTokW(1));
+    static_assert(1 == hpTokW(2));
+    static_assert(920 == hpTokW(1234));
+    static_assert(48895 == hpTokW(65535));
+
     static char* formatStringPart(char* buffer, const char* sourceStr, ArgsWrapper& args)
     {
         while (true)
@@ -517,7 +528,7 @@ namespace OpenLoco::StringManager
                         else
                         {
                             unit = getString(StringIds::unit_kW);
-                            value = std::round(value * 0.746);
+                            value = hpTokW(value);
                         }
 
                         buffer = formatInt32Grouped(value, buffer);

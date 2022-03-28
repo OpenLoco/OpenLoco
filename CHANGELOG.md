@@ -7,6 +7,7 @@
 - Fix: [#1284] Delete key doesn't work in text input widgets.
 - Fix: [#1379] Year formatted correctly in date cheat window.
 - Fix: [#1393] Vehicles not sorted correctly in build vehicle window.
+- Fix: [#1400] Imperial-to-metric power conversion didn't match vanilla.
 
 22.03.1 (2022-03-08)
 ------------------------------------------------------------------------
