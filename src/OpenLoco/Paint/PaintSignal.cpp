@@ -157,7 +157,7 @@ namespace OpenLoco::Paint
         if (side.hasSignal())
         {
             session.setItemType(InteractionItem::signal);
-            session.setTrackModId(0);
+            session.setTrackModId(isRight ? 1 : 0);
             auto* signalObj = ObjectManager::get<TrainSignalObject>(side.signalObjectId());
             const auto trackRotation = getTrackRotation(isRight, trackId, rotation);
             const auto& offsetAndBBoffsetArr = (signalObj->flags & TrainSignalObjectFlags::isLeft) ? _4FE870 : _4FE830;

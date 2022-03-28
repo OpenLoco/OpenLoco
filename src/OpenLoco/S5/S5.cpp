@@ -110,7 +110,7 @@ namespace OpenLoco::S5
                 WindowType::previewImage,
                 { 0, 0 },
                 size,
-                WindowFlags::stick_to_front,
+                WindowFlags::stickToFront,
                 &eventList);
             if (tempWindow != nullptr)
             {

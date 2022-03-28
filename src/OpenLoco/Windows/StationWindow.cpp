@@ -238,7 +238,7 @@ namespace OpenLoco::Ui::Windows::Station
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, tile);
                 self->invalidate();
-                self->flags |= WindowFlags::viewport_no_scrolling;
+                self->flags |= WindowFlags::viewportNoScrolling;
             }
             // 0x0048F1CB end
 
@@ -252,12 +252,12 @@ namespace OpenLoco::Ui::Windows::Station
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::update;
-            events.prepare_draw = prepareDraw;
-            events.text_input = Common::textInput;
-            events.viewport_rotate = initViewport;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.textInput = Common::textInput;
+            events.viewportRotate = initViewport;
         }
     }
 
@@ -552,16 +552,16 @@ namespace OpenLoco::Ui::Windows::Station
 
         static void initEvents()
         {
-            events.on_close = onClose;
+            events.onClose = onClose;
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::update;
-            events.prepare_draw = prepareDraw;
-            events.text_input = Common::textInput;
-            events.get_scroll_size = getScrollSize;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.textInput = Common::textInput;
+            events.getScrollSize = getScrollSize;
             events.tooltip = tooltip;
-            events.draw_scroll = drawScroll;
+            events.drawScroll = drawScroll;
         }
     }
 
@@ -713,14 +713,14 @@ namespace OpenLoco::Ui::Windows::Station
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::update;
-            events.prepare_draw = prepareDraw;
-            events.text_input = Common::textInput;
-            events.get_scroll_size = getScrollSize;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.textInput = Common::textInput;
+            events.getScrollSize = getScrollSize;
             events.tooltip = tooltip;
-            events.draw_scroll = drawScroll;
+            events.drawScroll = drawScroll;
         }
     }
 

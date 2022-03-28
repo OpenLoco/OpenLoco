@@ -554,15 +554,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.on_mouse_down = onMouseDown;
-            events.on_dropdown = onDropdown;
-            events.text_input = textInput;
-            events.on_update = onUpdate;
-            events.on_resize = onResize;
-            events.viewport_rotate = viewportRotate;
+            events.onMouseUp = onMouseUp;
+            events.onMouseDown = onMouseDown;
+            events.onDropdown = onDropdown;
+            events.textInput = textInput;
+            events.onUpdate = onUpdate;
+            events.onResize = onResize;
+            events.viewportRotate = viewportRotate;
         }
     }
 
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto size = Ui::Size(widget.width() - 2, widget.height() - 2);
 
             ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, view.getPos());
-            self->flags |= WindowFlags::viewport_no_scrolling;
+            self->flags |= WindowFlags::viewportNoScrolling;
             self->invalidate();
         }
 
@@ -1118,18 +1118,18 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.on_mouse_down = onMouseDown;
-            events.on_dropdown = onDropdown;
-            events.text_input = textInput;
-            events.on_tool_update = onToolUpdate;
-            events.on_tool_down = onToolDown;
-            events.on_tool_abort = onToolAbort;
-            events.on_update = onUpdate;
-            events.on_resize = onResize;
-            events.viewport_rotate = viewportRotate;
+            events.onMouseUp = onMouseUp;
+            events.onMouseDown = onMouseDown;
+            events.onDropdown = onDropdown;
+            events.textInput = textInput;
+            events.onToolUpdate = onToolUpdate;
+            events.onToolDown = onToolDown;
+            events.onToolAbort = onToolAbort;
+            events.onUpdate = onUpdate;
+            events.onResize = onResize;
+            events.viewportRotate = viewportRotate;
         }
     }
 
@@ -1564,14 +1564,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.on_mouse_down = onMouseDown;
-            events.text_input = textInput;
-            events.on_dropdown = onDropdown;
-            events.on_update = onUpdate;
-            events.on_resize = onResize;
+            events.onMouseUp = onMouseUp;
+            events.onMouseDown = onMouseDown;
+            events.textInput = textInput;
+            events.onDropdown = onDropdown;
+            events.onUpdate = onUpdate;
+            events.onResize = onResize;
         }
     }
 
@@ -2045,17 +2045,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = drawScroll;
-            events.on_mouse_up = onMouseUp;
-            events.on_mouse_down = onMouseDown;
-            events.text_input = textInput;
-            events.on_dropdown = onDropdown;
-            events.get_scroll_size = getScrollSize;
+            events.drawScroll = drawScroll;
+            events.onMouseUp = onMouseUp;
+            events.onMouseDown = onMouseDown;
+            events.textInput = textInput;
+            events.onDropdown = onDropdown;
+            events.getScrollSize = getScrollSize;
             events.tooltip = tooltip;
-            events.on_update = onUpdate;
-            events.on_resize = onResize;
+            events.onUpdate = onUpdate;
+            events.onResize = onResize;
         }
     }
 
@@ -2272,14 +2272,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.on_mouse_down = onMouseDown;
-            events.text_input = textInput;
-            events.on_dropdown = onDropdown;
-            events.on_update = onUpdate;
-            events.on_resize = onResize;
+            events.onMouseUp = onMouseUp;
+            events.onMouseDown = onMouseDown;
+            events.textInput = textInput;
+            events.onDropdown = onDropdown;
+            events.onUpdate = onUpdate;
+            events.onResize = onResize;
         }
     }
 
@@ -2454,12 +2454,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void initEvents()
         {
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.text_input = textInput;
-            events.on_update = onUpdate;
-            events.on_resize = onResize;
+            events.onMouseUp = onMouseUp;
+            events.textInput = textInput;
+            events.onUpdate = onUpdate;
+            events.onResize = onResize;
         }
     }
 

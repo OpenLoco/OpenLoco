@@ -42,7 +42,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         pos.y -= 30;
         pos.x -= width / 2;
         Ui::Size size = { width, 60 };
-        auto self = WindowManager::createWindow(WindowType::dragVehiclePart, pos, size, WindowFlags::transparent | WindowFlags::stick_to_front, &events);
+        auto self = WindowManager::createWindow(WindowType::dragVehiclePart, pos, size, WindowFlags::transparent | WindowFlags::stickToFront, &events);
         self->widgets = widgets;
         self->widgets[widx::frame].right = width - 1;
         Input::windowPositionBegin(Input::getTooltipMouseLocation().x, Input::getTooltipMouseLocation().y, self, widx::frame);
@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     static void initEvents()
     {
         events.cursor = cursor;
-        events.on_move = onMove;
+        events.onMove = onMove;
         events.draw = draw;
     }
 }

@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         auto window = WindowManager::createWindowCentred(
             WindowType::confirmationPrompt,
             { 280, 92 },
-            Ui::WindowFlags::flag_12 | Ui::WindowFlags::stick_to_front,
+            Ui::WindowFlags::flag_12 | Ui::WindowFlags::stickToFront,
             &_events);
 
         if (window == nullptr)
@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     static void initEvents()
     {
         _events.draw = draw;
-        _events.on_mouse_up = onMouseUp;
-        _events.prepare_draw = prepareDraw;
+        _events.onMouseUp = onMouseUp;
+        _events.prepareDraw = prepareDraw;
     }
 }

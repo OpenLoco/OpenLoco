@@ -90,19 +90,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         last_town_option = 0;
         last_port_option = 0;
 
-        _events.on_resize = Common::onResize;
+        _events.onResize = Common::onResize;
         _events.event_03 = onMouseDown;
-        _events.on_mouse_down = onMouseDown;
-        _events.on_dropdown = onDropdown;
-        _events.on_update = Common::onUpdate;
-        _events.prepare_draw = prepareDraw;
+        _events.onMouseDown = onMouseDown;
+        _events.onDropdown = onDropdown;
+        _events.onUpdate = Common::onUpdate;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
 
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
             Ui::Size(Ui::width(), 28),
-            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             &_events);
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Common::Widx::railroad_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::port_menu) | (1 << Common::Widx::build_vehicles_menu) | (1 << Common::Widx::vehicles_menu) | (1 << Common::Widx::stations_menu) | (1 << Common::Widx::towns_menu);

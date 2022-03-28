@@ -23,6 +23,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
+#include <algorithm>
 
 using namespace OpenLoco::Interop;
 
@@ -416,7 +417,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         struct build_item
         {
             uint16_t vehicle_index;
-            uint8_t power;
+            bool isPowered;
             uint16_t designed;
         };
         std::vector<build_item> buildableVehicles;
@@ -482,13 +483,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            auto power = std::min<uint16_t>(vehicleObj->power, 1);
-            // Unsure why power is only checked for first byte.
-            buildableVehicles.push_back({ vehicleObjIndex, static_cast<uint8_t>(power), vehicleObj->designed });
+            buildableVehicles.push_back({ vehicleObjIndex, vehicleObj->power > 0, vehicleObj->designed });
         }
 
         std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.designed < item2.designed; });
-        std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.power > item2.power; });
+        std::stable_sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.isPowered > item2.isPowered; });
         for (size_t i = 0; i < buildableVehicles.size(); ++i)
         {
             _availableVehicles[i] = buildableVehicles[i].vehicle_index;
@@ -1095,26 +1094,33 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         }
 
                         const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-                        auto displayLockedVehiclesScroll = Config::getNew().displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleType);
+                        auto rowIsALockedVehicle = Config::getNew().displayLockedVehicles
+                            && !company->isVehicleIndexUnlocked(vehicleType)
+                            && !Config::getNew().buildLockedVehicles;
 
                         auto colouredString = StringIds::black_stringid;
+
+                        const int32_t lockedHoverRowColour = 0x0100003D;
+                        const int32_t normalHoverRowColour = 0x02000030;
+                        const int32_t lockedRowColour = 0x0100003F;
+
                         if (window.rowHover == vehicleType)
                         {
-                            if (displayLockedVehiclesScroll)
+                            if (rowIsALockedVehicle)
                             {
-                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x0100003D);
+                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, lockedHoverRowColour);
                             }
                             else
                             {
-                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x02000030);
+                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, normalHoverRowColour);
                             }
                             colouredString = StringIds::wcolour2_stringid;
                         }
                         else
                         {
-                            if (displayLockedVehiclesScroll)
+                            if (rowIsALockedVehicle)
                             {
-                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, 0x0100003F);
+                                Gfx::fillRect(context, 0, y, window.width, y + window.rowHeight - 1, lockedRowColour);
                             }
                         }
 
@@ -1456,17 +1462,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static void initEvents()
     {
-        _events.on_mouse_up = onMouseUp;
-        _events.on_resize = onResize;
-        _events.on_periodic_update = onPeriodicUpdate;
-        _events.on_update = onUpdate;
-        _events.get_scroll_size = getScrollSize;
-        _events.scroll_mouse_down = onScrollMouseDown;
-        _events.scroll_mouse_over = onScrollMouseOver;
+        _events.onMouseUp = onMouseUp;
+        _events.onResize = onResize;
+        _events.onPeriodicUpdate = onPeriodicUpdate;
+        _events.onUpdate = onUpdate;
+        _events.getScrollSize = getScrollSize;
+        _events.scrollMouseDown = onScrollMouseDown;
+        _events.scrollMouseOver = onScrollMouseOver;
         _events.tooltip = tooltip;
         _events.cursor = cursor;
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
-        _events.draw_scroll = drawScroll;
+        _events.drawScroll = drawScroll;
     }
 }

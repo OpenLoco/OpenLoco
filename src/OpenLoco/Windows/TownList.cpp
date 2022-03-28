@@ -277,7 +277,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A532
         static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(WindowFlags::not_scroll_view);
+            self->flags &= ~(WindowFlags::notScrollView);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentTown = -1;
@@ -436,13 +436,13 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A4D0
         static void event_08(Window* self)
         {
-            self->flags |= WindowFlags::not_scroll_view;
+            self->flags |= WindowFlags::notScrollView;
         }
 
         // 0x0049A4D8
         static void event_09(Window* self)
         {
-            if (!(self->flags & WindowFlags::not_scroll_view))
+            if (!(self->flags & WindowFlags::notScrollView))
                 return;
 
             if (self->rowHover == -1)
@@ -498,15 +498,15 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             events.draw = draw;
             events.cursor = cursor;
-            events.draw_scroll = drawScroll;
+            events.drawScroll = drawScroll;
             events.event_08 = event_08;
             events.event_09 = event_09;
-            events.get_scroll_size = getScrollSize;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = onUpdate;
-            events.scroll_mouse_down = onScrollMouseDown;
-            events.scroll_mouse_over = onScrollMouseOver;
-            events.prepare_draw = prepareDraw;
+            events.getScrollSize = getScrollSize;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = onUpdate;
+            events.scrollMouseDown = onScrollMouseDown;
+            events.scrollMouseOver = onScrollMouseOver;
+            events.prepareDraw = prepareDraw;
             events.tooltip = tooltip;
         }
     }
@@ -775,16 +775,16 @@ namespace OpenLoco::Ui::Windows::TownList
         static void initEvents()
         {
             events.draw = draw;
-            events.on_close = onClose;
-            events.on_dropdown = onDropdown;
-            events.on_resize = onResize;
-            events.on_tool_update = onToolUpdate;
-            events.on_tool_down = onToolDown;
-            events.on_mouse_up = onMouseUp;
-            events.on_mouse_down = onMouseDown;
-            events.on_update = onUpdate;
-            events.prepare_draw = prepareDraw;
-            events.on_tool_abort = onToolAbort;
+            events.onClose = onClose;
+            events.onDropdown = onDropdown;
+            events.onResize = onResize;
+            events.onToolUpdate = onToolUpdate;
+            events.onToolDown = onToolDown;
+            events.onMouseUp = onMouseUp;
+            events.onMouseDown = onMouseDown;
+            events.onUpdate = onUpdate;
+            events.prepareDraw = prepareDraw;
+            events.onToolAbort = onToolAbort;
         }
     }
 
@@ -1406,22 +1406,22 @@ namespace OpenLoco::Ui::Windows::TownList
         static void initEvents()
         {
             events.draw = draw;
-            events.on_close = onClose;
-            events.on_resize = onResize;
-            events.draw_scroll = drawScroll;
+            events.onClose = onClose;
+            events.onResize = onResize;
+            events.drawScroll = drawScroll;
             events.event_08 = event_08;
-            events.on_dropdown = onDropdown;
-            events.on_tool_update = onToolUpdate;
-            events.on_tool_down = onToolDown;
-            events.on_mouse_down = onMouseDown;
-            events.get_scroll_size = getScrollSize;
-            events.on_mouse_up = onMouseUp;
-            events.on_update = onUpdate;
-            events.scroll_mouse_down = onScrollMouseDown;
-            events.scroll_mouse_over = onScrollMouseOver;
-            events.prepare_draw = prepareDraw;
+            events.onDropdown = onDropdown;
+            events.onToolUpdate = onToolUpdate;
+            events.onToolDown = onToolDown;
+            events.onMouseDown = onMouseDown;
+            events.getScrollSize = getScrollSize;
+            events.onMouseUp = onMouseUp;
+            events.onUpdate = onUpdate;
+            events.scrollMouseDown = onScrollMouseDown;
+            events.scrollMouseOver = onScrollMouseOver;
+            events.prepareDraw = prepareDraw;
             events.tooltip = tooltip;
-            events.on_tool_abort = onToolAbort;
+            events.onToolAbort = onToolAbort;
         }
     }
 

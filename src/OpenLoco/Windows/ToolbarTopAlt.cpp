@@ -70,12 +70,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
     static void initEvents()
     {
-        _events.on_resize = Common::onResize;
+        _events.onResize = Common::onResize;
         _events.event_03 = onMouseDown;
-        _events.on_mouse_down = onMouseDown;
-        _events.on_dropdown = onDropdown;
-        _events.on_update = Common::onUpdate;
-        _events.prepare_draw = prepareDraw;
+        _events.onMouseDown = onMouseDown;
+        _events.onDropdown = onDropdown;
+        _events.onUpdate = Common::onUpdate;
+        _events.prepareDraw = prepareDraw;
         _events.draw = Common::draw;
     }
 
@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             WindowType::topToolbar,
             { 0, 0 },
             Ui::Size(Ui::width(), 28),
-            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             &_events);
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Widx::map_generation_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::towns_menu);
@@ -147,7 +147,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
                 // Save Landscape
                 if (OpenLoco::Game::saveLandscapeOpen())
+                {
+                    OpenLoco::Game::saveLandscape();
                     Gfx::invalidateScreen();
+                }
                 break;
             }
 

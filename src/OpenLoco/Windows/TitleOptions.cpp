@@ -35,14 +35,14 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 
     Window* open()
     {
-        _events.on_mouse_up = onMouseUp;
+        _events.onMouseUp = onMouseUp;
         _events.draw = draw;
 
         auto window = WindowManager::createWindow(
             WindowType::titleOptions,
             Ui::Point(Ui::width() - window_size.width, 0),
             window_size,
-            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
 
         window->widgets = _widgets;

@@ -26,7 +26,7 @@ namespace OpenLoco::Ui::Windows::TitleVersion
             WindowType::openLocoVersion,
             Ui::Point(8, Ui::height() - height),
             Ui::Size(width, height),
-            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
         window->widgets = widgets;
 

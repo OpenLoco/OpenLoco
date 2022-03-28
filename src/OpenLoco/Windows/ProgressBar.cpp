@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         auto window = WindowManager::createWindowCentred(
             WindowType::progressBar,
             windowSize,
-            WindowFlags::flag_11 | WindowFlags::stick_to_front,
+            WindowFlags::flag_11 | WindowFlags::stickToFront,
             &_events);
 
         window->widgets = widgets;
@@ -140,6 +140,6 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     static void initEvents()
     {
         _events.draw = draw;
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
     }
 }

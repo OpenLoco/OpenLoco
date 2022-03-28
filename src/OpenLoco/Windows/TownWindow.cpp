@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::Windows::Town
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, tile);
                 self->invalidate();
-                self->flags |= WindowFlags::viewport_no_scrolling;
+                self->flags |= WindowFlags::viewportNoScrolling;
             }
             // 0x00499B39 end
 
@@ -314,12 +314,12 @@ namespace OpenLoco::Ui::Windows::Town
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::update;
-            events.prepare_draw = prepareDraw;
-            events.text_input = Common::textInput;
-            events.viewport_rotate = initViewport;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.textInput = Common::textInput;
+            events.viewportRotate = initViewport;
         }
     }
 
@@ -493,11 +493,11 @@ namespace OpenLoco::Ui::Windows::Town
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::update;
-            events.prepare_draw = prepareDraw;
-            events.text_input = Common::textInput;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.textInput = Common::textInput;
         }
     }
 
@@ -591,11 +591,11 @@ namespace OpenLoco::Ui::Windows::Town
         static void initEvents()
         {
             events.draw = draw;
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::update;
-            events.prepare_draw = prepareDraw;
-            events.text_input = Common::textInput;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::update;
+            events.prepareDraw = prepareDraw;
+            events.textInput = Common::textInput;
         }
     }
 

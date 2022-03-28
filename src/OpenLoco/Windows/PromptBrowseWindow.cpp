@@ -119,7 +119,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
             { 500, 380 },
-            Ui::WindowFlags::stick_to_front | Ui::WindowFlags::resizable | Ui::WindowFlags::flag_12,
+            Ui::WindowFlags::stickToFront | Ui::WindowFlags::resizable | Ui::WindowFlags::flag_12,
             &_events);
 
         if (window != nullptr)
@@ -900,16 +900,16 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void initEvents()
     {
-        _events.on_close = onClose;
-        _events.on_mouse_up = onMouseUp;
-        _events.on_resize = onResize;
-        _events.on_update = onUpdate;
-        _events.get_scroll_size = getScrollSize;
-        _events.scroll_mouse_down = onScrollMouseDown;
-        _events.scroll_mouse_over = onScrollMouseOver;
+        _events.onClose = onClose;
+        _events.onMouseUp = onMouseUp;
+        _events.onResize = onResize;
+        _events.onUpdate = onUpdate;
+        _events.getScrollSize = getScrollSize;
+        _events.scrollMouseDown = onScrollMouseDown;
+        _events.scrollMouseOver = onScrollMouseOver;
         _events.tooltip = tooltip;
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
-        _events.draw_scroll = drawScroll;
+        _events.drawScroll = drawScroll;
     }
 }

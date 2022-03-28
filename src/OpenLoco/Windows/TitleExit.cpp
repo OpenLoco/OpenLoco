@@ -36,15 +36,15 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
     Window* open()
     {
-        _events.on_mouse_up = onMouseUp;
-        _events.prepare_draw = prepareDraw;
+        _events.onMouseUp = onMouseUp;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
 
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleExit,
             Ui::Point(Ui::width() - window_size.width, Ui::height() - window_size.height),
             window_size,
-            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
 
         window->widgets = _widgets;

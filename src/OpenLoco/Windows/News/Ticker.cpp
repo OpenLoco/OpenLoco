@@ -227,9 +227,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
     void initEvents()
     {
-        events.on_mouse_up = onMouseUp;
-        events.on_resize = onResize;
-        events.on_update = onUpdate;
+        events.onMouseUp = onMouseUp;
+        events.onResize = onResize;
+        events.onUpdate = onUpdate;
         events.draw = draw;
     }
 }

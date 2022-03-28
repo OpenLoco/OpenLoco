@@ -1,5 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
+#include "../Config.h"
 #include "../Core/Optional.hpp"
 #include "../Date.h"
 #include "../Economy/Economy.h"
@@ -453,7 +454,7 @@ namespace OpenLoco::Vehicles
         newHead->var_5F = 0;
         newHead->var_60 = -1;
         newHead->var_61 = -1;
-        newHead->var_69 = 0;
+        newHead->totalRefundCost = 0;
         newHead->lastAverageSpeed = 0;
         newHead->var_79 = 0;
         sub_470312(newHead);
@@ -517,7 +518,7 @@ namespace OpenLoco::Vehicles
         newVeh2->drivingSoundId = SoundObjectId::null;
         newVeh2->objectId = -1;
         newVeh2->var_4A = 0;
-        newVeh2->lifetimeProfit = 0;
+        newVeh2->curMonthRevenue = 0;
         newVeh2->profit[0] = 0;
         newVeh2->profit[1] = 0;
         newVeh2->profit[2] = 0;
@@ -819,7 +820,9 @@ namespace OpenLoco::Vehicles
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
 
         const auto* company = CompanyManager::get(CompanyManager::getUpdatingCompanyId());
-        if (!company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleTypeId)))
+        auto vehicleIsLocked = !company->isVehicleIndexUnlocked(static_cast<uint16_t>(vehicleTypeId));
+
+        if (vehicleIsLocked && !Config::getNew().buildLockedVehicles)
         {
             GameCommands::setErrorText(StringIds::vehicle_is_locked);
             return GameCommands::FAILURE;

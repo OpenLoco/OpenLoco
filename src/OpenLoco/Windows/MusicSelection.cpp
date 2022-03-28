@@ -51,12 +51,12 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void initEvents()
     {
         _events.draw = draw;
-        _events.draw_scroll = drawScroll;
-        _events.get_scroll_size = getScrollSize;
-        _events.on_mouse_up = onMouseUp;
-        _events.on_update = onUpdate;
-        _events.scroll_mouse_down = onScrollMouseDown;
-        _events.scroll_mouse_over = onScrollMouseOver;
+        _events.drawScroll = drawScroll;
+        _events.getScrollSize = getScrollSize;
+        _events.onMouseUp = onMouseUp;
+        _events.onUpdate = onUpdate;
+        _events.scrollMouseDown = onScrollMouseDown;
+        _events.scrollMouseOver = onScrollMouseOver;
         _events.tooltip = tooltip;
     }
 

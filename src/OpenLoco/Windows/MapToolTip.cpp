@@ -82,7 +82,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         else
         {
             initEvents();
-            window = WindowManager::createWindow(WindowType::mapTooltip, Ui::Point(x, y), Ui::Size(width, height), WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background, &events);
+            window = WindowManager::createWindow(WindowType::mapTooltip, Ui::Point(x, y), Ui::Size(width, height), WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground, &events);
             window->widgets = _widgets;
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_06);
@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
     static void initEvents()
     {
-        events.on_update = update;
+        events.onUpdate = update;
         events.draw = draw;
     }
 }

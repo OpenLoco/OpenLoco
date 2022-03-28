@@ -786,7 +786,7 @@ namespace OpenLoco::Input
                     return;
                 }
 
-                if (window->flags & WindowFlags::viewport_no_scrolling)
+                if (window->flags & WindowFlags::viewportNoScrolling)
                 {
                     return;
                 }
@@ -1875,7 +1875,7 @@ namespace OpenLoco::Input
 
     static void viewportDragBegin(Window* w)
     {
-        w->flags &= ~Ui::WindowFlags::scrolling_to_location;
+        w->flags &= ~Ui::WindowFlags::scrollingToLocation;
         state(State::viewportRight);
         _dragWindowType = w->type;
         _dragWindowNumber = w->number;

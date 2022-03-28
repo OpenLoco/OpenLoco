@@ -323,7 +323,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, targetThing);
                 self->invalidate();
-                self->flags |= WindowFlags::viewport_no_scrolling;
+                self->flags |= WindowFlags::viewportNoScrolling;
             }
             // 0x004B5E88 end
 
@@ -955,18 +955,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void initEvents()
         {
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_mouse_down = onMouseDown;
-            events.on_dropdown = onDropdown;
-            events.on_update = onUpdate;
-            events.on_tool_update = onToolUpdate;
-            events.on_tool_down = onToolDown;
-            events.on_tool_abort = onToolAbort;
-            events.text_input = Common::textInput;
-            events.viewport_rotate = createViewport;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onMouseDown = onMouseDown;
+            events.onDropdown = onDropdown;
+            events.onUpdate = onUpdate;
+            events.onToolUpdate = onToolUpdate;
+            events.onToolDown = onToolDown;
+            events.onToolAbort = onToolAbort;
+            events.textInput = Common::textInput;
+            events.viewportRotate = createViewport;
             events.tooltip = tooltip;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
         }
     }
@@ -1189,7 +1189,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             Input::setTooltipTimeout(2000);
-            self->flags &= ~WindowFlags::not_scroll_view;
+            self->flags &= ~WindowFlags::notScrollView;
             auto car = Common::getCarFromScrollView(self, y);
             string_id tooltipFormat = StringIds::null;
             EntityId tooltipContent = EntityId::null;
@@ -1491,25 +1491,25 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void initEvents()
         {
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_mouse_down = onMouseDown;
-            events.on_dropdown = onDropdown;
-            events.on_update = onUpdate;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onMouseDown = onMouseDown;
+            events.onDropdown = onDropdown;
+            events.onUpdate = onUpdate;
             events.event_08 = Common::event8;
             events.event_09 = Common::event9;
-            events.on_tool_update = onToolUpdate;
-            events.on_tool_down = onToolDown;
-            events.on_tool_abort = onToolAbort;
-            events.get_scroll_size = getScrollSize;
-            events.scroll_mouse_down = scrollMouseDown;
-            events.scroll_mouse_over = scrollMouseOver;
-            events.text_input = Common::textInput;
+            events.onToolUpdate = onToolUpdate;
+            events.onToolDown = onToolDown;
+            events.onToolAbort = onToolAbort;
+            events.getScrollSize = getScrollSize;
+            events.scrollMouseDown = scrollMouseDown;
+            events.scrollMouseOver = scrollMouseOver;
+            events.textInput = Common::textInput;
             events.tooltip = tooltip;
             events.cursor = cursor;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = drawScroll;
+            events.drawScroll = drawScroll;
         }
 
         static Ui::Window* getVehicleDetailsWindow(const Ui::Point& pos)
@@ -1567,7 +1567,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     auto car = getCarFromScrollViewPos(*vehicleWindow, pos);
                     if (car != nullptr)
                     {
-                        vehicleWindow->flags &= ~WindowFlags::not_scroll_view;
+                        vehicleWindow->flags &= ~WindowFlags::notScrollView;
                         if (car->id != EntityId(vehicleWindow->rowHover))
                         {
                             vehicleWindow->rowHover = enumValue(car->id);
@@ -1935,7 +1935,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             Input::setTooltipTimeout(2000);
-            self->flags &= ~WindowFlags::not_scroll_view;
+            self->flags &= ~WindowFlags::notScrollView;
             auto car = Common::getCarFromScrollView(self, y);
             string_id tooltipFormat = StringIds::null;
             EntityId tooltipContent = EntityId::null;
@@ -2000,21 +2000,21 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void initEvents()
         {
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_mouse_down = onMouseDown;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onMouseDown = onMouseDown;
             events.draw = draw;
-            events.draw_scroll = drawScroll;
-            events.prepare_draw = prepareDraw;
-            events.on_dropdown = onDropdown;
-            events.text_input = Common::textInput;
+            events.drawScroll = drawScroll;
+            events.prepareDraw = prepareDraw;
+            events.onDropdown = onDropdown;
+            events.textInput = Common::textInput;
             events.tooltip = tooltip;
-            events.get_scroll_size = getScrollSize;
-            events.scroll_mouse_over = scrollMouseOver;
+            events.getScrollSize = getScrollSize;
+            events.scrollMouseOver = scrollMouseOver;
             events.event_08 = Common::event8;
             events.event_09 = Common::event9;
-            events.on_update = onUpdate;
-            events.on_resize = onResize;
+            events.onUpdate = onUpdate;
+            events.onResize = onResize;
         }
     }
 
@@ -2126,7 +2126,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 // Sale value of vehicle: {CURRENCY32}
                 auto args = FormatArguments();
-                args.push(train.head->var_69);
+                args.push(train.head->totalRefundCost);
                 pos.y = self->y + self->height - 14;
                 Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::sale_value_of_vehicle, &args);
             }
@@ -2180,12 +2180,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void initEvents()
         {
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = onUpdate;
-            events.text_input = Common::textInput;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = onUpdate;
+            events.textInput = Common::textInput;
             events.tooltip = tooltip;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
         }
     }
@@ -2863,7 +2863,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B530C
         static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
-            self->flags &= ~WindowFlags::not_scroll_view;
+            self->flags &= ~WindowFlags::notScrollView;
             auto item = y / lineHeight;
             if (self->rowHover != item)
             {
@@ -3177,27 +3177,27 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void initEvents()
         {
-            events.on_close = close;
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_mouse_down = onMouseDown;
-            events.on_dropdown = onDropdown;
-            events.on_update = onUpdate;
+            events.onClose = close;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onMouseDown = onMouseDown;
+            events.onDropdown = onDropdown;
+            events.onUpdate = onUpdate;
             events.event_08 = Common::event8;
             events.event_09 = Common::event9;
-            events.on_tool_down = onToolDown;
-            events.on_tool_abort = toolCancel;
+            events.onToolDown = onToolDown;
+            events.onToolAbort = toolCancel;
             events.event_15 = event15;
-            events.get_scroll_size = getScrollSize;
-            events.scroll_mouse_down = scrollMouseDown;
-            events.scroll_mouse_over = scrollMouseOver;
-            events.text_input = Common::textInput;
-            events.viewport_rotate = createViewport;
+            events.getScrollSize = getScrollSize;
+            events.scrollMouseDown = scrollMouseDown;
+            events.scrollMouseOver = scrollMouseOver;
+            events.textInput = Common::textInput;
+            events.viewportRotate = createViewport;
             events.tooltip = tooltip;
             events.cursor = cursor;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = drawScroll;
+            events.drawScroll = drawScroll;
         }
     }
 
@@ -4110,13 +4110,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B45DD, 0x004B55A7, 0x004B3C1B
         static void event8(Window* const self)
         {
-            self->flags |= WindowFlags::not_scroll_view;
+            self->flags |= WindowFlags::notScrollView;
         }
 
         // 0x004B45E5, 0x004B55B6, 0x004B3C23
         static void event9(Window* const self)
         {
-            if (self->flags & WindowFlags::not_scroll_view)
+            if (self->flags & WindowFlags::notScrollView)
             {
                 if (self->rowHover != -1)
                 {

@@ -106,7 +106,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             Ui::Point({ static_cast<int16_t>(width() / 2 - windowSize.width / 2),
                         std::max<int16_t>(height() / 2 - windowSize.height / 2, 28) }),
             windowSize,
-            WindowFlags::stick_to_front | WindowFlags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::flag_12,
             &_events);
 
         self->widgets = _widgets;
@@ -500,14 +500,14 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
     static void initEvents()
     {
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
-        _events.draw_scroll = drawScroll;
-        _events.on_mouse_up = onMouseUp;
-        _events.on_mouse_down = onMouseDown;
-        _events.get_scroll_size = getScrollSize;
-        _events.scroll_mouse_down = onScrollMouseDown;
-        _events.scroll_mouse_over = onScrollMouseOver;
+        _events.drawScroll = drawScroll;
+        _events.onMouseUp = onMouseUp;
+        _events.onMouseDown = onMouseDown;
+        _events.getScrollSize = getScrollSize;
+        _events.scrollMouseDown = onScrollMouseDown;
+        _events.scrollMouseOver = onScrollMouseOver;
         _events.tooltip = tooltip;
     }
 }

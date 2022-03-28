@@ -2700,16 +2700,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     void initEvents()
     {
-        events.on_close = Common::onClose;
-        events.on_mouse_up = onMouseUp;
-        events.on_resize = onResize;
-        events.on_mouse_down = onMouseDown;
-        events.on_dropdown = onDropdown;
-        events.on_update = onUpdate;
-        events.on_tool_update = onToolUpdate;
-        events.on_tool_down = onToolDown;
+        events.onClose = Common::onClose;
+        events.onMouseUp = onMouseUp;
+        events.onResize = onResize;
+        events.onMouseDown = onMouseDown;
+        events.onDropdown = onDropdown;
+        events.onUpdate = onUpdate;
+        events.onToolUpdate = onToolUpdate;
+        events.onToolDown = onToolDown;
         events.cursor = cursor;
-        events.prepare_draw = prepareDraw;
+        events.prepareDraw = prepareDraw;
         events.draw = draw;
     }
 

@@ -75,22 +75,22 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     Window* open()
     {
-        _events.on_mouse_up = onMouseUp;
+        _events.onMouseUp = onMouseUp;
         _events.event_03 = onMouseDown;
-        _events.on_mouse_down = onMouseDown;
-        _events.on_dropdown = onDropdown;
-        _events.on_update = onUpdate;
-        _events.text_input = textInput;
+        _events.onMouseDown = onMouseDown;
+        _events.onDropdown = onDropdown;
+        _events.onUpdate = onUpdate;
+        _events.textInput = textInput;
         _events.tooltip = tooltip;
         _events.cursor = onCursor;
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
 
         auto window = WindowManager::createWindow(
             WindowType::timeToolbar,
             Ui::Point(Ui::width() - window_size.width, Ui::height() - window_size.height),
             Ui::Size(window_size.width, window_size.height),
-            Ui::WindowFlags::stick_to_front | Ui::WindowFlags::transparent | Ui::WindowFlags::no_background,
+            Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             &_events);
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::map_chat_menu) | (1 << Widx::date_btn) | (1 << Widx::pause_btn) | (1 << Widx::normal_speed_btn) | (1 << Widx::fast_forward_btn) | (1 << Widx::extra_fast_forward_btn);

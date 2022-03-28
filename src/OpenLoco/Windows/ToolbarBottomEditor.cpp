@@ -134,7 +134,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             WindowType::editorToolbar,
             origin,
             windowSize,
-            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             &_events);
         window->widgets = _widgets;
         window->enabledWidgets = 1 << widx::previous_button | 1 << widx::previous_frame | 1 << widx::next_frame | 1 << widx::next_button;
@@ -147,8 +147,8 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static void initEvents()
     {
-        _events.on_mouse_up = onMouseUp;
-        _events.prepare_draw = prepareDraw;
+        _events.onMouseUp = onMouseUp;
+        _events.prepareDraw = prepareDraw;
         _events.draw = draw;
     }
 }

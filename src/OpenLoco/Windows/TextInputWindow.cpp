@@ -109,14 +109,14 @@ namespace OpenLoco::Ui::Windows::TextInput
         cancel();
 
         _events.draw = draw;
-        _events.prepare_draw = prepareDraw;
-        _events.on_mouse_up = onMouseUp;
-        _events.on_update = onUpdate;
+        _events.prepareDraw = prepareDraw;
+        _events.onMouseUp = onMouseUp;
+        _events.onUpdate = onUpdate;
 
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
             { 330, 90 },
-            WindowFlags::stick_to_front | WindowFlags::flag_12,
+            WindowFlags::stickToFront | WindowFlags::flag_12,
             &_events);
         window->widgets = _widgets;
         window->enabledWidgets |= 1ULL << Widx::close;

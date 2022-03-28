@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window = WindowManager::createWindowCentred(
                 WindowType::saveGamePrompt,
                 { 260, 48 },
-                WindowFlags::not_scroll_view | WindowFlags::stick_to_front,
+                WindowFlags::notScrollView | WindowFlags::stickToFront,
                 &_events);
 
             if (window == nullptr)
@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     static void initEvents()
     {
         _events.draw = draw;
-        _events.on_close = onClose;
-        _events.on_mouse_up = onMouseUp;
+        _events.onClose = onClose;
+        _events.onMouseUp = onMouseUp;
     }
 }

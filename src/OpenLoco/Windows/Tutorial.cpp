@@ -37,7 +37,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
             WindowType::tutorial,
             Ui::Point(windowSize.width, Ui::height() - 27),
             Ui::Size(Ui::width() - 280, 27),
-            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
+            WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             &_events);
 
         window->widgets = widgets;
@@ -82,6 +82,6 @@ namespace OpenLoco::Ui::Windows::Tutorial
     static void initEvents()
     {
         _events.draw = draw;
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
     }
 }

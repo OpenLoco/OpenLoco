@@ -306,7 +306,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_61;
         uint8_t pad_63[0x68 - 0x63];
         uint8_t airportMovementEdge; // 0x68
-        uint32_t var_69;
+        uint32_t totalRefundCost;    // 0x69
         uint8_t pad_6D;
         int8_t var_6E;             // manual speed/brake
         int16_t var_6F;            // 0x6F x
@@ -320,6 +320,7 @@ namespace OpenLoco::Vehicles
         void updateBreakdown();
         void updateVehicle();
         bool update();
+        void updateMonthly();
         VehicleStatus getStatus() const;
         OrderRingView getCurrentOrders() const;
         bool isPlaced() const { return tileX != -1 && !(var_38 & Flags38::isGhost); }
@@ -397,6 +398,7 @@ namespace OpenLoco::Vehicles
         VehicleStatus getStatusTravelling() const;
         void getSecondStatus(VehicleStatus& vehStatus) const;
         void updateLastIncomeStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
+        void calculateRefundCost();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
@@ -483,11 +485,11 @@ namespace OpenLoco::Vehicles
         Speed32 currentSpeed; // 0x56
         uint8_t var_5A;
         uint8_t var_5B;
-        Speed16 rackRailMaxSpeed;    // 0x5C
-        currency32_t lifetimeProfit; // 0x5E
-        currency32_t profit[4];      // 0x62 last 4 months profit
-        uint8_t reliability;         // 0x72
-        uint8_t var_73;              // 0x73 (bit 0 = broken down, bit 1 = still powered)
+        Speed16 rackRailMaxSpeed;     // 0x5C
+        currency32_t curMonthRevenue; // 0x5E monthly revenue
+        currency32_t profit[4];       // 0x62 last 4 months net profit
+        uint8_t reliability;          // 0x72
+        uint8_t var_73;               // 0x73 (bit 0 = broken down, bit 1 = still powered)
 
         bool update();
         currency32_t totalRecentProfit() const

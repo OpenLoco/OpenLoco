@@ -328,13 +328,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004362F7
         static void event_08(Window* self)
         {
-            self->flags |= WindowFlags::not_scroll_view;
+            self->flags |= WindowFlags::notScrollView;
         }
 
         // 0x004362FF
         static void event_09(Window* self)
         {
-            if (!(self->flags & WindowFlags::not_scroll_view))
+            if (!(self->flags & WindowFlags::notScrollView))
                 return;
 
             if (self->rowHover == -1)
@@ -367,7 +367,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436361
         static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(WindowFlags::not_scroll_view);
+            self->flags &= ~(WindowFlags::notScrollView);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentCompany = -1;
@@ -553,19 +553,19 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = onUpdate;
+            events.onMouseUp = onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = onUpdate;
             events.event_08 = event_08;
             events.event_09 = event_09;
-            events.get_scroll_size = getScrollSize;
-            events.scroll_mouse_down = onScrollMouseDown;
-            events.scroll_mouse_over = onScrollMouseOver;
+            events.getScrollSize = getScrollSize;
+            events.scrollMouseDown = onScrollMouseDown;
+            events.scrollMouseOver = onScrollMouseOver;
             events.tooltip = tooltip;
             events.cursor = cursor;
-            events.prepare_draw = prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
-            events.draw_scroll = drawScroll;
+            events.drawScroll = drawScroll;
         }
     }
 
@@ -715,10 +715,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = Common::onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::onUpdate;
-            events.prepare_draw = Common::prepareDraw;
+            events.onMouseUp = Common::onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::onUpdate;
+            events.prepareDraw = Common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -806,10 +806,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = Common::onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::onUpdate;
-            events.prepare_draw = Common::prepareDraw;
+            events.onMouseUp = Common::onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::onUpdate;
+            events.prepareDraw = Common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -897,10 +897,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = Common::onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::onUpdate;
-            events.prepare_draw = Common::prepareDraw;
+            events.onMouseUp = Common::onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::onUpdate;
+            events.prepareDraw = Common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -988,10 +988,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = Common::onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::onUpdate;
-            events.prepare_draw = Common::prepareDraw;
+            events.onMouseUp = Common::onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::onUpdate;
+            events.prepareDraw = Common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -1191,10 +1191,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = Common::onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::onUpdate;
-            events.prepare_draw = Common::prepareDraw;
+            events.onMouseUp = Common::onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::onUpdate;
+            events.prepareDraw = Common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -1277,10 +1277,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = Common::onMouseUp;
-            events.on_resize = onResize;
-            events.on_update = Common::onUpdate;
-            events.prepare_draw = Common::prepareDraw;
+            events.onMouseUp = Common::onMouseUp;
+            events.onResize = onResize;
+            events.onUpdate = Common::onUpdate;
+            events.prepareDraw = Common::prepareDraw;
             events.draw = draw;
         }
     }

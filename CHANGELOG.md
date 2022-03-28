@@ -1,8 +1,12 @@
 22.03.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1316] Added a cheat to allow building locked vehicles.
 - Fix: [#1241] Total vehicle power formatted incorrectly.
+- Fix: [#1242] Cannot select both sides of a single way signals.
+- Fix: [#1250] Cannot save landscape in scenario editor.
 - Fix: [#1284] Delete key doesn't work in text input widgets.
 - Fix: [#1379] Year formatted correctly in date cheat window.
+- Fix: [#1393] Vehicles not sorted correctly in build vehicle window.
 - Fix: [#1400] Imperial-to-metric power conversion didn't match vanilla.
 
 22.03.1 (2022-03-08)

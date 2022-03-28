@@ -224,7 +224,7 @@ namespace OpenLoco::Title
                                     {
                                         auto pos3d = Map::Pos3(pos.x, pos.y, height.landHeight);
                                         main->viewportCentreOnTile(pos3d);
-                                        main->flags &= ~Ui::WindowFlags::scrolling_to_location;
+                                        main->flags &= ~Ui::WindowFlags::scrollingToLocation;
                                         main->viewportsUpdatePosition();
                                     }
                                 }

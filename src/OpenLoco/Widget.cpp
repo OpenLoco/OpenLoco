@@ -49,7 +49,7 @@ namespace OpenLoco::Ui
 
     void Widget::draw(Gfx::Context* context, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex)
     {
-        if ((window->flags & WindowFlags::no_background) == 0)
+        if ((window->flags & WindowFlags::noBackground) == 0)
         {
             // Check if widget is outside the draw region
             if (window->x + left >= context->x + context->width && window->x + right < context->x)
@@ -717,7 +717,7 @@ namespace OpenLoco::Ui
         {
             f = 0x20;
         }
-        Gfx::fillRectInset(*context, ax - 1 + scroll_area->h_thumb_left, cx, ax - 1 + scroll_area->h_thumb_right, dx, colour, f);
+        Gfx::fillRectInset(*context, ax - 1 + scroll_area->hThumbLeft, cx, ax - 1 + scroll_area->hThumbRight, dx, colour, f);
         // popa
     }
 
@@ -782,7 +782,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(*context, ax, cx - 1 + scroll_area->v_thumb_top, bx, cx - 1 + scroll_area->v_thumb_bottom, colour, f);
+        Gfx::fillRectInset(*context, ax, cx - 1 + scroll_area->vThumbTop, bx, cx - 1 + scroll_area->vThumbBottom, colour, f);
         // popa
     }
 
