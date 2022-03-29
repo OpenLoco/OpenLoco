@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "../Types.hpp"
 #include "Object.h"
 
@@ -36,9 +37,14 @@ namespace OpenLoco
         uint8_t colour_16;
         uint8_t colour_17;
 
+        // 0x0043C888
+        bool validate() const { return true; }
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void unload();
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
+    static_assert(sizeof(InterfaceSkinObject) == 0x18);
 
     namespace InterfaceSkin::ImageIds
     {

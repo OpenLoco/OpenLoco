@@ -507,7 +507,7 @@ namespace OpenLoco::ObjectManager
         return object_repository[static_cast<uint8_t>(type)];
     }
 
-    Object* getAny(const LoadedObjectHandle handle)
+    Object* getAny(const LoadedObjectHandle& handle)
     {
         auto obj = _allObjects[getTypeOffset(handle.type) + handle.id];
         if (obj == (void*)-1)
@@ -969,31 +969,166 @@ namespace OpenLoco::ObjectManager
         drawPreview,
     };
 
+    static bool callObjectValidate(const ObjectType type, Object& obj)
+    {
+        switch (type)
+        {
+            case ObjectType::interfaceSkin:
+                return reinterpret_cast<InterfaceSkinObject*>(&obj)->validate();
+            case ObjectType::sound:
+                return reinterpret_cast<SoundObject*>(&obj)->validate();
+            case ObjectType::currency:
+                return reinterpret_cast<CurrencyObject*>(&obj)->validate();
+            case ObjectType::steam:
+                return reinterpret_cast<SteamObject*>(&obj)->validate();
+            case ObjectType::rock:
+                return reinterpret_cast<RockObject*>(&obj)->validate();
+            case ObjectType::water:
+                return reinterpret_cast<WaterObject*>(&obj)->validate();
+            case ObjectType::land:
+                return reinterpret_cast<LandObject*>(&obj)->validate();
+            case ObjectType::townNames:
+                return reinterpret_cast<TownNamesObject*>(&obj)->validate();
+            case ObjectType::cargo:
+                return reinterpret_cast<CargoObject*>(&obj)->validate();
+            case ObjectType::wall:
+                return reinterpret_cast<WallObject*>(&obj)->validate();
+            case ObjectType::trackSignal:
+                return reinterpret_cast<TrainSignalObject*>(&obj)->validate();
+            case ObjectType::levelCrossing:
+                return reinterpret_cast<LevelCrossingObject*>(&obj)->validate();
+            default:
+                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+                auto objectProc = objectProcTable[static_cast<size_t>(type)];
+
+                registers regs;
+                regs.al = enumValue(ObjectProcedure::validate);
+                regs.esi = X86Pointer(&obj);
+                return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+        }
+    }
+
+    static void callObjectUnload(const ObjectType type, Object& obj)
+    {
+        switch (type)
+        {
+            case ObjectType::interfaceSkin:
+                reinterpret_cast<InterfaceSkinObject*>(&obj)->unload();
+                break;
+            case ObjectType::sound:
+                reinterpret_cast<SoundObject*>(&obj)->unload();
+                break;
+            case ObjectType::currency:
+                reinterpret_cast<CurrencyObject*>(&obj)->unload();
+                break;
+            case ObjectType::steam:
+                reinterpret_cast<SteamObject*>(&obj)->unload();
+                break;
+            case ObjectType::rock:
+                reinterpret_cast<RockObject*>(&obj)->unload();
+                break;
+            case ObjectType::water:
+                reinterpret_cast<WaterObject*>(&obj)->unload();
+                break;
+            case ObjectType::land:
+                reinterpret_cast<LandObject*>(&obj)->unload();
+                break;
+            case ObjectType::townNames:
+                reinterpret_cast<TownNamesObject*>(&obj)->unload();
+                break;
+            case ObjectType::cargo:
+                reinterpret_cast<CargoObject*>(&obj)->unload();
+                break;
+            case ObjectType::wall:
+                reinterpret_cast<WallObject*>(&obj)->unload();
+                break;
+            case ObjectType::trackSignal:
+                reinterpret_cast<TrainSignalObject*>(&obj)->unload();
+                break;
+            case ObjectType::levelCrossing:
+                reinterpret_cast<LevelCrossingObject*>(&obj)->unload();
+                break;
+            default:
+                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+                auto objectProc = objectProcTable[static_cast<size_t>(type)];
+
+                registers regs;
+                regs.al = enumValue(ObjectProcedure::unload);
+                regs.esi = X86Pointer(&obj);
+                call(objectProc, regs);
+                break;
+        }
+    }
+
     static bool callObjectFunction(const ObjectType type, Object& obj, const ObjectProcedure proc)
     {
-        auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-        auto objectProc = objectProcTable[static_cast<size_t>(type)];
-
-        registers regs;
-        regs.al = static_cast<uint8_t>(proc);
-        regs.esi = X86Pointer(&obj);
-        return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+        switch (proc)
+        {
+            case ObjectProcedure::validate:
+                return callObjectValidate(type, obj);
+            case ObjectProcedure::unload:
+                callObjectUnload(type, obj);
+                return true;
+            default:
+                throw std::runtime_error("Don't call this function with load/drawPreview.");
+        }
     }
 
-    static bool callLoadObjectFunction(const LoadedObjectHandle handle, Object& obj)
+    static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, stdx::span<std::byte> data)
     {
-        auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-        auto objectProc = objectProcTable[static_cast<size_t>(handle.type)];
+        switch (handle.type)
+        {
+            case ObjectType::interfaceSkin:
+                reinterpret_cast<InterfaceSkinObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::sound:
+                reinterpret_cast<SoundObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::currency:
+                reinterpret_cast<CurrencyObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::steam:
+                reinterpret_cast<SteamObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::rock:
+                reinterpret_cast<RockObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::water:
+                reinterpret_cast<WaterObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::land:
+                reinterpret_cast<LandObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::townNames:
+                reinterpret_cast<TownNamesObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::cargo:
+                reinterpret_cast<CargoObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::wall:
+                reinterpret_cast<WallObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::trackSignal:
+                reinterpret_cast<TrainSignalObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::levelCrossing:
+                reinterpret_cast<LevelCrossingObject*>(&obj)->load(handle, data);
+                break;
+            default:
+                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+                auto objectProc = objectProcTable[static_cast<size_t>(handle.type)];
 
-        registers regs;
-        regs.al = static_cast<uint8_t>(ObjectProcedure::load);
-        regs.esi = X86Pointer(&obj);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+                registers regs;
+                regs.al = static_cast<uint8_t>(ObjectProcedure::load);
+                regs.esi = X86Pointer(&obj);
+                regs.ebx = handle.id;
+                regs.ecx = enumValue(handle.type);
+                call(objectProc, regs);
+                break;
+        }
     }
 
-    static bool callObjectFunction(const LoadedObjectHandle handle, ObjectProcedure proc)
+    static bool callObjectFunction(const LoadedObjectHandle& handle, ObjectProcedure proc)
     {
         auto* obj = getAny(handle);
         if (obj != nullptr)
@@ -1082,7 +1217,7 @@ namespace OpenLoco::ObjectManager
 
         if (!*_isPartialLoaded)
         {
-            callLoadObjectFunction({ loadingHeader.getType(), id }, *object);
+            callObjectLoad({ loadingHeader.getType(), id }, *object, stdx::span<std::byte>(reinterpret_cast<std::byte*>(object), data.size()));
         }
 
         return true;
@@ -1343,7 +1478,7 @@ namespace OpenLoco::ObjectManager
         std::copy(std::begin(data), std::end(data), objectData);
 
         auto* obj = reinterpret_cast<Object*>(objectData);
-        if (!callObjectFunction(objectHeader.getType(), *obj, ObjectProcedure::validate))
+        if (!callObjectValidate(objectHeader.getType(), *obj))
         {
             return false;
         }
@@ -1379,12 +1514,12 @@ namespace OpenLoco::ObjectManager
         call(0x00472031);
     }
 
-    void unload(const LoadedObjectHandle handle)
+    void unload(const LoadedObjectHandle& handle)
     {
         callObjectFunction(handle, ObjectProcedure::unload);
     }
 
-    size_t getByteLength(const LoadedObjectHandle handle)
+    size_t getByteLength(const LoadedObjectHandle& handle)
     {
         return objectEntries[getTypeOffset(handle.type) + handle.id].dataSize;
     }

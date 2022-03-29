@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "../Types.hpp"
 #include "Object.h"
 #include <vector>
@@ -30,12 +31,12 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::trackSignal;
 
         string_id name;
-        uint16_t flags;            // 0x02
-        uint8_t animationSpeed;    // 0x04
-        uint8_t num_frames;        // 0x05
-        uint16_t cost_factor;      // 0x06
-        uint16_t sell_cost_factor; // 0x08
-        uint8_t cost_index;        // 0x0A
+        uint16_t flags;           // 0x02
+        uint8_t animationSpeed;   // 0x04
+        uint8_t num_frames;       // 0x05
+        int16_t cost_factor;      // 0x06
+        int16_t sell_cost_factor; // 0x08
+        uint8_t cost_index;       // 0x0A
         uint8_t var_0B;
         uint16_t var_0C;
         uint32_t image;         // 0x0E
@@ -44,9 +45,13 @@ namespace OpenLoco
         uint16_t designed_year; // 0x1A
         uint16_t obsolete_year; // 0x1C
 
+        bool validate() const;
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void unload();
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
+    static_assert(sizeof(TrainSignalObject) == 0x1E);
 
     const std::vector<uint8_t> signalFrames2State = { 1, 2, 3, 3, 3, 3, 3, 3, 2, 1, 0, 0, 0, 0, 0 };
     const std::vector<uint8_t> signalFrames3State = { 1, 2, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0 };
