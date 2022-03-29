@@ -57,33 +57,6 @@ using namespace OpenLoco;
 // MSVC ignores C++17's [[maybe_unused]] attribute on functions, so just disable the warning
 #pragma warning(disable : 4505) // unreferenced local function has been removed.
 
-FORCE_ALIGN_ARG_POINTER
-static int32_t CDECL audioLoadChannel(int a0, const char* a1, int a2, int a3, int a4)
-{
-    return 0;
-}
-
-FORCE_ALIGN_ARG_POINTER
-static int32_t CDECL audioPlayChannel(int a0, int a1, int a2, int a3, int a4)
-{
-    return 0;
-}
-
-FORCE_ALIGN_ARG_POINTER
-static void CDECL audioStopChannel(int a0, int a1, int a2, int a3, int a4)
-{
-}
-
-FORCE_ALIGN_ARG_POINTER
-static void CDECL audioSetChannelVolume(int a0, int a1)
-{
-}
-
-FORCE_ALIGN_ARG_POINTER
-static int32_t CDECL audioIsChannelPlaying(int a0)
-{
-}
-
 #ifdef _NO_LOCO_WIN32_
 static void STDCALL fn_40447f()
 {
@@ -587,12 +560,6 @@ void OpenLoco::Interop::loadSections()
 static void registerAudioHooks()
 {
     using namespace OpenLoco::Interop;
-
-    writeJmp(0x0040194E, (void*)&audioLoadChannel);
-    writeJmp(0x00401999, (void*)&audioPlayChannel);
-    writeJmp(0x00401A05, (void*)&audioStopChannel);
-    writeJmp(0x00401AD3, (void*)&audioSetChannelVolume);
-    writeJmp(0x00401B10, (void*)&audioIsChannelPlaying);
 
     writeRet(0x0048AB36);
     writeRet(0x00404B40);

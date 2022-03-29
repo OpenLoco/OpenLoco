@@ -92,6 +92,7 @@ namespace OpenLoco::Audio
     void unpauseSound();
     void playSound(Vehicles::Vehicle2or6* t);
     void playSound(SoundId id, const Map::Pos3& loc);
+    // FOR HOOKS ONLY DO NOT USE FOR OPENLOCO CODE
     void playSound(SoundId id, const Map::Pos3& loc, int32_t pan);
     void playSound(SoundId id, int32_t pan);
     void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t frequency);
