@@ -509,7 +509,7 @@ namespace OpenLoco::Paint
         ps->attachedPS = nullptr;
         ps->children = nullptr;
         ps->type = _itemType;
-        ps->var_29 = _trackModId;
+        ps->modId = _trackModId;
         ps->map_x = _mapPosition->x;
         ps->map_y = _mapPosition->y;
         ps->tileElement = reinterpret_cast<Map::TileElement*>(*_currentItem);

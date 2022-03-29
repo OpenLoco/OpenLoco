@@ -451,7 +451,7 @@ namespace OpenLoco::Ui::ViewportManager
                 regs.ax = interaction.pos.x;
                 regs.cx = interaction.pos.y;
                 regs.bl = static_cast<uint8_t>(interaction.type);
-                regs.bh = static_cast<uint8_t>(interaction.unkBh);
+                regs.bh = static_cast<uint8_t>(interaction.modId);
                 regs.edx = static_cast<uint32_t>(interaction.value);
                 regs.edi = X86Pointer(vp);
                 return 0;

@@ -108,7 +108,7 @@ namespace OpenLoco::Paint
         PaintStruct* children;                         // 0x20
         PaintStruct* nextQuadrantPS;                   // 0x24
         Ui::ViewportInteraction::InteractionItem type; // 0x28
-        uint8_t var_29;
+        uint8_t modId;                                 // 0x29 used for track mods and signal sides
         uint16_t pad_2A;
         coord_t map_x; // 0x2C
         coord_t map_y; // 0x2E

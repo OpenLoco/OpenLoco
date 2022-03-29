@@ -200,13 +200,13 @@ namespace OpenLoco::Ui
                 void* object;
             };
             InteractionItem type;
-            uint8_t unkBh; // used to indicate left/right signals
+            uint8_t modId; // used for track mods and to indicate left/right signals
             InteractionArg() = default;
             InteractionArg(const Map::Pos2& _pos, uint32_t _value, InteractionItem _type, uint8_t _unkBh)
                 : pos(_pos)
                 , value(_value)
                 , type(_type)
-                , unkBh(_unkBh)
+                , modId(_unkBh)
             {
             }
             InteractionArg(const Paint::PaintStruct& ps);
