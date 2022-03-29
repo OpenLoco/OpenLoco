@@ -130,11 +130,6 @@ namespace OpenLoco::Audio
         { PathId::music_20s6, StringIds::music_sandy_track_blues, 1921, 1929 }
     };
 
-    static constexpr bool isMusicChannel(ChannelId id)
-    {
-        return (id == ChannelId::bgm || id == ChannelId::title);
-    }
-
     static Channel* getChannel(ChannelId id)
     {
         auto index = static_cast<size_t>(id);
