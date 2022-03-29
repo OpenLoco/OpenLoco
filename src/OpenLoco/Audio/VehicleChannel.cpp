@@ -45,7 +45,7 @@ namespace OpenLoco::Audio
 
     static uint8_t getFalloffModifier(int32_t pan)
     {
-        const auto absPan = std::min(std::abs(pan), 4095); // This is pointless subsequent if's take care of max
+        const auto absPan = std::abs(pan);
 
         uint8_t falloffModifier = kVolumeModifierMax;
         // This in theory is the max viewport width/height (might not be valid for modern screens)
@@ -82,10 +82,10 @@ namespace OpenLoco::Audio
 
         const auto falloffVolumeModifier = std::min(xFalloffModifier, yFalloffModifier);
 
-        const auto overalVolumeModifier = std::max(falloffVolumeModifier + undergroundVolumeModifier + zoomVolumeModifier, 0);
+        const auto overallVolumeModifier = std::max(falloffVolumeModifier + undergroundVolumeModifier + zoomVolumeModifier, 0);
 
         // volume is in hundredth decibels max decrease in volume is -100dB.
-        const auto volume = std::min(((v->drivingSoundVolume * overalVolumeModifier) / 8) - kVehicleVolumeCalcMin, kVolumeMin);
+        const auto volume = std::min(((v->drivingSoundVolume * overallVolumeModifier) / 8) - kVehicleVolumeCalcMin, kVolumeMin);
 
         return { makeObjectSoundId(v->drivingSoundId), { volume, panX, v->drivingSoundFrequency } };
     }
