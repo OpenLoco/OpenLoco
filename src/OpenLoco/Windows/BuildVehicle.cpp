@@ -1212,6 +1212,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 // Reset the tabs
                 _TrackTypesForTab[0] = -1;
+                _numTrackTypeTabs = 1;
                 window->widgets[tab_track_type_0].type = WidgetType::tab;
                 for (WidgetIndex_t j = tab_track_type_1; j <= tab_track_type_7; ++j)
                 {
