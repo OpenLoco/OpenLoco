@@ -28,7 +28,7 @@ namespace OpenLoco
         uint32_t image;        // 0x0E
 
         bool validate() const;
-        void load(const LoadedObjectHandle handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;

@@ -48,7 +48,7 @@ namespace OpenLoco
     }
 
     // 0x004898E4
-    void TrainSignalObject::load(const LoadedObjectHandle handle, stdx::span<std::byte> data)
+    void TrainSignalObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

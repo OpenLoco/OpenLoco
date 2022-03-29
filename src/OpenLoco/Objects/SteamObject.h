@@ -28,7 +28,7 @@ namespace OpenLoco
 
         // 0x00440DDE
         bool validate() const { return true; }
-        void load(const LoadedObjectHandle handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();
     };
 #pragma pack(pop)

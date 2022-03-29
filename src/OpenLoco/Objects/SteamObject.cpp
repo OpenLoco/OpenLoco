@@ -4,7 +4,7 @@
 namespace OpenLoco
 {
     // 0x00440CAD
-    void SteamObject::load(const LoadedObjectHandle handle, stdx::span<std::byte> data)
+    void SteamObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

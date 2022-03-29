@@ -24,7 +24,7 @@ namespace OpenLoco
         uint8_t factor;          // 0x0B
 
         bool validate() const;
-        void load(const LoadedObjectHandle handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
     };

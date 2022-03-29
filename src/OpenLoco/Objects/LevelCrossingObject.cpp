@@ -32,7 +32,7 @@ namespace OpenLoco
     }
 
     // 0x004780E7
-    void LevelCrossingObject::load(const LoadedObjectHandle handle, stdx::span<std::byte> data)
+    void LevelCrossingObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

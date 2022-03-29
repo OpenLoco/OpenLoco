@@ -24,15 +24,12 @@ namespace OpenLoco
         {
             return false;
         }
-        if (var_04 == 1 || var_04 == 2 || var_04 == 4)
-        {
-            return true;
-        }
-        return false;
+
+        return (var_04 == 1 || var_04 == 2 || var_04 == 4);
     }
 
     // 0x0046983C
-    void LandObject::load(const LoadedObjectHandle handle, stdx::span<std::byte> data)
+    void LandObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

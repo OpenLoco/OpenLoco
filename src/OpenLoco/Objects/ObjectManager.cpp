@@ -507,7 +507,7 @@ namespace OpenLoco::ObjectManager
         return object_repository[static_cast<uint8_t>(type)];
     }
 
-    Object* getAny(const LoadedObjectHandle handle)
+    Object* getAny(const LoadedObjectHandle& handle)
     {
         auto obj = _allObjects[getTypeOffset(handle.type) + handle.id];
         if (obj == (void*)-1)
@@ -1074,7 +1074,7 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    static void callObjectLoad(const LoadedObjectHandle handle, Object& obj, stdx::span<std::byte> data)
+    static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, stdx::span<std::byte> data)
     {
         switch (handle.type)
         {
@@ -1128,7 +1128,7 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    static bool callObjectFunction(const LoadedObjectHandle handle, ObjectProcedure proc)
+    static bool callObjectFunction(const LoadedObjectHandle& handle, ObjectProcedure proc)
     {
         auto* obj = getAny(handle);
         if (obj != nullptr)
@@ -1514,12 +1514,12 @@ namespace OpenLoco::ObjectManager
         call(0x00472031);
     }
 
-    void unload(const LoadedObjectHandle handle)
+    void unload(const LoadedObjectHandle& handle)
     {
         callObjectFunction(handle, ObjectProcedure::unload);
     }
 
-    size_t getByteLength(const LoadedObjectHandle handle)
+    size_t getByteLength(const LoadedObjectHandle& handle)
     {
         return objectEntries[getTypeOffset(handle.type) + handle.id].dataSize;
     }
