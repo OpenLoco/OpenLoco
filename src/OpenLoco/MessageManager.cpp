@@ -399,7 +399,7 @@ namespace OpenLoco::MessageManager
     }
 
     // 0x00428E0F
-    static void clearActiveMessage()
+    void clearActiveMessage()
     {
         auto* message = get(getGameState().activeMessageIndex);
         if (message != nullptr)

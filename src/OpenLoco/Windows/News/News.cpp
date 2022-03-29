@@ -40,14 +40,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 case Common::widx::close_button:
                 {
-                    // identical to MessageManager::clearActiveMessage()
-                    if (MessageManager::getActiveIndex() != MessageId::null)
-                    {
-                        auto news = MessageManager::get(MessageManager::getActiveIndex());
-                        news->setActive(false);
-                        MessageManager::setActiveIndex(MessageId::null);
-                    }
-                    WindowManager::close(self);
+                    MessageManager::clearActiveMessage();
                     break;
                 }
 
