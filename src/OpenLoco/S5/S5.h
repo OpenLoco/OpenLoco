@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Core/FileSystem.hpp"
+#include "../EditorController.h"
 #include "../Objects/Object.h"
 #include "Limits.h"
 #include <cstdint>
@@ -74,7 +75,7 @@ namespace OpenLoco::S5
 #pragma pack(push, 1)
     struct Options
     {
-        uint8_t editorStep;                                   // 0x00
+        EditorController::Step editorStep;                    // 0x00
         uint8_t difficulty;                                   // 0x01
         uint16_t scenarioStartYear;                           // 0x02
         uint8_t pad_4[2];                                     // 0x04
@@ -336,7 +337,7 @@ namespace OpenLoco::S5
         uint32_t var_40C;                                                                // 0x00040C (0x00526224)
         uint32_t var_410;                                                                // 0x000410 (0x00526228)
         uint8_t lastBuildVehiclesOption;                                                 // 0x000414 (0x0052622C)
-        uint8_t var_415;                                                                 // 0x000415 (0x0052622D)
+        uint8_t numberOfIndustries;                                                      // 0x000415 (0x0052622D)
         uint16_t var_416;                                                                // 0x000416 (0x0052622E)
         uint8_t objectiveType;                                                           // 0x000418 (0x00526230)
         uint8_t objectiveFlags;                                                          // 0x000419 (0x00526231)
@@ -441,4 +442,6 @@ namespace OpenLoco::S5
 
     bool load(const fs::path& path, uint32_t flags);
     bool load(Stream& stream, uint32_t flags);
+
+    void sub_4BAEC4();
 }

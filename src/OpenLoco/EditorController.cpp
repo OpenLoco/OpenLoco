@@ -2,7 +2,13 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/StringIds.h"
+#include "Objects/CargoObject.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/ScenarioTextObject.h"
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "ScenarioManager.h"
@@ -16,20 +22,7 @@ using namespace OpenLoco::Ui::Windows;
 namespace OpenLoco::EditorController
 {
     static loco_global<uint8_t, 0x00508F17> paused_state;
-    static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
-    static loco_global<Step, 0x009C8714> _editorStep;
     static loco_global<char[267], 0x00050B745> activeSavePath;
-    static loco_global<uint8_t, 0x00525FB7> maxCompetingCompanies;
-    static loco_global<uint8_t, 0x00526214> competitorStartDelay;
-    static loco_global<uint8_t, 0x0052622D> _52622D;
-    static loco_global<uint8_t, 0x00526230> objectiveType;
-    static loco_global<uint8_t, 0x00526231> objectiveFlags;
-    static loco_global<uint32_t, 0x00526232> objectiveCompanyValue;
-    static loco_global<uint32_t, 0x00526236> objectiveMonthlyVehicleProfit;
-    static loco_global<uint8_t, 0x0052623A> objectivePerformanceIndex;
-    static loco_global<uint8_t, 0x0052623B> objectiveDeliveredCargoType;
-    static loco_global<uint32_t, 0x0052623C> objectiveDeliveredCargoAmount;
-    static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
     static loco_global<char[512], 0x00112CE04> scenarioFilename;
 
     // 0x0043D7DC
@@ -40,17 +33,17 @@ namespace OpenLoco::EditorController
 
     Step getCurrentStep()
     {
-        return (Step)S5::getOptions().editorStep;
+        return S5::getOptions().editorStep;
     }
 
     Step getPreviousStep()
     {
-        return Step(static_cast<uint8_t>(S5::getOptions().editorStep) - 1);
+        return Step(enumValue(getCurrentStep()) - 1);
     }
 
     Step getNextStep()
     {
-        return Step(static_cast<uint8_t>(S5::getOptions().editorStep) + 1);
+        return Step(enumValue(getCurrentStep()) + 1);
     }
 
     bool canGoBack()
@@ -58,15 +51,23 @@ namespace OpenLoco::EditorController
         return getCurrentStep() != Step::objectSelection;
     }
 
-    static void sub_440165()
+    // 0x00440165
+    static void setDefaultScenarioOptions()
     {
         S5::Options& options = S5::getOptions();
-        //        options.scenarioText.type = 0xFF;
+        auto& gameState = getGameState();
+        // Sets the type of the scenario text to an invalid type
+        options.scenarioText.flags = 0xFF | options.scenarioText.flags;
 
-        auto obj = ObjectManager::get<ScenarioTextObject>();
+        auto* obj = ObjectManager::get<ScenarioTextObject>();
         if (obj != nullptr)
         {
-            // TODO: copy text object string + header
+            char buffer[256]{};
+            StringManager::formatString(buffer, obj->name);
+            strncpy(options.scenarioName, buffer, std::size(options.scenarioName) - 1);
+            options.scenarioName[std::size(options.scenarioName) - 1] = '\0';
+            // Copy the object
+            options.scenarioText = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::scenarioText, 0 });
         }
 
         if (strnlen(options.scenarioName, sizeof(options.scenarioName)) == 0)
@@ -74,28 +75,27 @@ namespace OpenLoco::EditorController
             StringManager::formatString(options.scenarioName, StringIds::unnamed);
         }
 
-        options.scenarioFlags &= ~Scenario::flags::landscape_generation_done;
+        options.scenarioFlags &= ~Scenario::Flags::landscapeGenerationDone;
         if (addr<0x00525E28, uint32_t>() & 1)
         {
-            options.scenarioFlags |= Scenario::flags::landscape_generation_done;
-            call(0x46DB4C); // draw preview map
+            options.scenarioFlags |= Scenario::Flags::landscapeGenerationDone;
+            Game::sub_46DB4C(); // draw preview map
         }
 
-        options.maxCompetingCompanies = maxCompetingCompanies;
-        options.competitorStartDelay = competitorStartDelay;
-        _52622D = options.numberOfIndustries;
-        options.objectiveType = objectiveType;
-        options.objectiveFlags = objectiveFlags;
-        options.objectiveCompanyValue = objectiveCompanyValue;
-        options.objectiveMonthlyVehicleProfit = objectiveMonthlyVehicleProfit;
-        options.objectivePerformanceIndex = objectivePerformanceIndex;
-        options.objectiveDeliveredCargoType = objectiveDeliveredCargoType;
-        options.objectiveDeliveredCargoAmount = objectiveDeliveredCargoAmount;
-        options.objectiveTimeLimitYears = objectiveTimeLimitYears;
+        options.maxCompetingCompanies = gameState.maxCompetingCompanies;
+        options.competitorStartDelay = gameState.competitorStartDelay;
+        gameState.numberOfIndustries = options.numberOfIndustries;
+        options.objectiveType = gameState.objectiveType;
+        options.objectiveFlags = gameState.objectiveFlags;
+        options.objectiveCompanyValue = gameState.objectiveCompanyValue;
+        options.objectiveMonthlyVehicleProfit = gameState.objectiveMonthlyVehicleProfit;
+        options.objectivePerformanceIndex = gameState.objectivePerformanceIndex;
+        options.objectiveDeliveredCargoType = gameState.objectiveDeliveredCargoType;
+        options.objectiveDeliveredCargoAmount = gameState.objectiveDeliveredCargoAmount;
+        options.objectiveTimeLimitYears = gameState.objectiveTimeLimitYears;
 
-        // TODO: copy object headers
-        options.objectiveDeliveredCargo = ObjectHeader();
-        options.currency = ObjectHeader();
+        options.objectiveDeliveredCargo = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::cargo, options.objectiveDeliveredCargoType });
+        options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, options.objectiveDeliveredCargoType });
     }
 
     // 0x0043EE25
@@ -106,48 +106,13 @@ namespace OpenLoco::EditorController
             return true;
         }
 
-        for (auto& town : TownManager::towns())
+        if (!TownManager::towns().empty())
         {
-            if (!town.empty())
-                return true;
+            return true;
         }
 
-        gGameCommandErrorText = StringIds::str_1671;
+        GameCommands::setErrorText(StringIds::at_least_one_town_be_built);
         return false;
-    }
-
-    static bool sub_4418DB()
-    {
-        char title[128];
-        StringManager::formatString(title, StringIds::str_366); // Save Scenario
-
-        // TODO: build default scenario path
-        char path[128];
-
-        // Unused? Maybe for CJK versions?
-        char buffer2[128];
-        StringManager::formatString(buffer2, StringIds::str_368); // OpenLoco Scenario File
-
-        Audio::pauseSound();
-        paused_state = paused_state ^ (1 << 2);
-        Gfx::invalidateScreen();
-        Gfx::render();
-
-        // blocking
-        auto result = PromptBrowse::open(PromptBrowse::browse_type::save, path, S5::filterSC5, title);
-
-        Audio::unpauseSound();
-        call(0x004072EC);
-        paused_state = paused_state ^ (1 << 2);
-        Gfx::invalidateScreen();
-        Gfx::render();
-        return result;
-    }
-
-    // 0x004BAEC4
-    void TerraformConfig()
-    {
-        call(0x004BAEC4);
     }
 
     // 0x0043D0FA
@@ -162,14 +127,14 @@ namespace OpenLoco::EditorController
             case Step::landscapeEditor:
                 // 0x0043D119
                 WindowManager::closeAllFloatingWindows();
-                _editorStep = Step::objectSelection;
+                S5::getOptions().editorStep = Step::objectSelection;
                 break;
 
             case Step::scenarioOptions:
                 // 0x0043D12C
                 WindowManager::closeAllFloatingWindows();
-                TerraformConfig();
-                _editorStep = Step::landscapeEditor;
+                S5::sub_4BAEC4();
+                S5::getOptions().editorStep = Step::landscapeEditor;
                 LandscapeGeneration::open();
                 break;
 
@@ -178,11 +143,6 @@ namespace OpenLoco::EditorController
         }
 
         Gfx::invalidateScreen();
-    }
-
-    void ClimateInit()
-    {
-        call(0x00496A18);
     }
 
     // 0x0043D15D
@@ -194,14 +154,14 @@ namespace OpenLoco::EditorController
                 break;
 
             case Step::objectSelection:
-                call(0x473A13);
-                call(0x4747D4);
-                call(0x4748D4);
-                ClimateInit();
-                TerraformConfig();
-                _editorStep = Step::landscapeEditor;
+                ObjectSelectionWindow::closeWindow();
+                call(0x004747D4);
+                Scenario::sub_4748D4();
+                Scenario::initialiseSnowLine();
+                S5::sub_4BAEC4();
+                S5::getOptions().editorStep = Step::landscapeEditor;
                 LandscapeGeneration::open();
-                if (S5::getOptions().scenarioFlags & Scenario::landscape_generation_done)
+                if (S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone)
                 {
                     if ((addr<0x00525E28, uint32_t>() & 1) == 0)
                     {
@@ -214,14 +174,14 @@ namespace OpenLoco::EditorController
             {
                 if (!validateStep1())
                 {
-                    Windows::Error::open(StringIds::str_1672, gGameCommandErrorText);
+                    Windows::Error::open(StringIds::cant_advance_to_next_editor_stage, GameCommands::getErrorText());
                     break;
                 }
 
-                int eax = S5::getOptions().objectiveDeliveredCargoType;
-                if (ObjectManager::get<CargoObject>(eax) == nullptr)
+                const auto cargoId = S5::getOptions().objectiveDeliveredCargoType;
+                if (ObjectManager::get<CargoObject>(cargoId) == nullptr)
                 {
-                    for (size_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
+                    for (size_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
                     {
                         if (ObjectManager::get<CargoObject>(i) != nullptr)
                         {
@@ -233,30 +193,30 @@ namespace OpenLoco::EditorController
 
                 WindowManager::closeAllFloatingWindows();
                 Scenario::initialiseDate(S5::getOptions().scenarioStartYear);
-                ClimateInit();
+                Scenario::initialiseSnowLine();
                 ScenarioOptions::open();
-                _editorStep = Step::scenarioOptions;
+                S5::getOptions().editorStep = Step::scenarioOptions;
                 break;
             }
 
             case Step::scenarioOptions:
             {
-                sub_440165();
+                setDefaultScenarioOptions();
                 // Original checks for a non-true response, and aborts saving with an error.
 
                 WindowManager::closeAllFloatingWindows();
 
-                if (!sub_4418DB())
+                if (!Game::saveScenarioOpen())
                     break;
 
-                _editorStep = Step::null;
-                call(0x0046F910);
+                S5::getOptions().editorStep = Step::null;
+                call(0x0046F910); // Sets up new multiplayer related rands
 
-                auto path = fs::path(scenarioFilename.get());
+                auto path = fs::u8path(scenarioFilename.get());
                 path.replace_extension(S5::extensionSC5);
                 strncpy(activeSavePath, path.u8string().c_str(), 257); // Or 256?
                 uint32_t saveFlags = S5::SaveFlags::scenario;
-                if (Config::get().flags & Config::flags::export_objects_with_saves)
+                if (Config::get().flags & Config::Flags::exportObjectsWithSaves)
                 {
                     saveFlags |= S5::SaveFlags::packCustomObjects;
                 }
@@ -265,15 +225,15 @@ namespace OpenLoco::EditorController
 
                 if (!success)
                 {
-                    showError(StringIds::str_1711);
-                    _editorStep = Step::scenarioOptions;
+                    showError(StringIds::scenario_save_failed);
+                    S5::getOptions().editorStep = Step::scenarioOptions;
                     break;
                 }
 
                 ScenarioManager::loadIndex(1);
 
                 // This ends with a premature tick termination
-                call(0x0043C0FD);
+                Game::returnToTitle();
                 return; // won't be reached
             }
 

@@ -1299,8 +1299,8 @@ namespace OpenLoco::StringIds
     constexpr string_id industry_size_medium = 1668;
     constexpr string_id industry_size_high = 1669;
     constexpr string_id number_of_industries = 1670;
-    constexpr string_id str_1671 = 1671;
-    constexpr string_id str_1672 = 1672;
+    constexpr string_id at_least_one_town_be_built = 1671;
+    constexpr string_id cant_advance_to_next_editor_stage = 1672;
     constexpr string_id str_1673 = 1673;
     constexpr string_id tooltip_scenario_options = 1674;
     constexpr string_id tooltip_scenario_challenge = 1675;
@@ -1340,8 +1340,6 @@ namespace OpenLoco::StringIds
     constexpr string_id unnamed = 1709;
     constexpr string_id landscape_save_failed = 1710;
     constexpr string_id scenario_save_failed = 1711;
-
-    constexpr string_id str_1711 = 1711;
 
     constexpr string_id chat_send_message = 1716;
     constexpr string_id chat_title = 1717;

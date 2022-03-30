@@ -300,7 +300,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF1C6
     static void adjustLand()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == 0)
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
         Windows::Terraform::openAdjustLand();
@@ -309,7 +309,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF1E1
     static void adjustWater()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == 0)
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
         Windows::Terraform::openAdjustWater();
@@ -318,7 +318,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF1FC
     static void plantTrees()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == 0)
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
         Windows::Terraform::openPlantTrees();
@@ -327,7 +327,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF217
     static void bulldozeArea()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == 0)
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
         Windows::Terraform::openClearArea();
@@ -349,7 +349,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF24F
     static void buildRoads()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == 0)
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
         loco_global<uint8_t, 0x00525FAB> last_road_option;
@@ -420,7 +420,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF308
     static void showTownsList()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == 0)
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
         Windows::TownList::open();
@@ -429,7 +429,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF323
     static void showIndustriesList()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == 0)
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
         Windows::IndustryList::open();
@@ -438,7 +438,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF33E
     static void showMap()
     {
-        if (isEditorMode() && S5::getOptions().editorStep == 0)
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
         Windows::MapWindow::open();

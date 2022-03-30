@@ -525,7 +525,7 @@ namespace OpenLoco::S5
         }
     };
 
-    static void sub_4BAEC4()
+    void sub_4BAEC4() // TerraformConfig
     {
         addr<0x001136496, uint8_t>() = 2;
         addr<0x00525FB1, uint8_t>() = 255;
