@@ -282,7 +282,7 @@ namespace OpenLoco::Game
                 auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
                 std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
-                S5::SaveFlags flags = {};
+                uint32_t flags = 0;
                 if (Config::get().flags & Config::Flags::exportObjectsWithSaves)
                     flags = S5::SaveFlags::packCustomObjects;
 
