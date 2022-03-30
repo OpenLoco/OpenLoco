@@ -406,15 +406,15 @@ namespace OpenLoco::S5
         constexpr uint32_t twoPlayer = 1 << 1;
     }
 
-    enum SaveFlags : uint32_t
+    namespace SaveFlags
     {
-        none = 0,
-        packCustomObjects = 1 << 0,
-        scenario = 1 << 1,
-        landscape = 1 << 2,
-        noWindowClose = 1u << 29,
-        raw = 1u << 30,  // Save raw data including pointers with no clean up
-        dump = 1u << 31, // Used for dumping the game state when there is a fatal error
+        constexpr uint32_t none = 0;
+        constexpr uint32_t packCustomObjects = 1 << 0;
+        constexpr uint32_t scenario = 1 << 1;
+        constexpr uint32_t landscape = 1 << 2;
+        constexpr uint32_t noWindowClose = 1u << 29;
+        constexpr uint32_t raw = 1u << 30;  // Save raw data including pointers with no clean up
+        constexpr uint32_t dump = 1u << 31; // Used for dumping the game state when there is a fatal error
     };
 
     constexpr const char* extensionSC5 = ".SC5";
@@ -425,8 +425,8 @@ namespace OpenLoco::S5
 
     Options& getOptions();
     Options& getPreviewOptions();
-    bool save(const fs::path& path, SaveFlags flags);
-    bool save(Stream& stream, SaveFlags flags);
+    bool save(const fs::path& path, uint32_t flags);
+    bool save(Stream& stream, uint32_t flags);
     void registerHooks();
 
     bool load(const fs::path& path, uint32_t flags);

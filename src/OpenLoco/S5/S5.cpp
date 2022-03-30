@@ -52,7 +52,7 @@ namespace OpenLoco::S5
         return _previewOptions;
     }
 
-    static Header prepareHeader(SaveFlags flags, size_t numPackedObjects)
+    static Header prepareHeader(uint32_t flags, size_t numPackedObjects)
     {
         Header result;
         std::memset(&result, 0, sizeof(result));
@@ -238,7 +238,7 @@ namespace OpenLoco::S5
         }
     }
 
-    static std::unique_ptr<S5File> prepareSaveFile(SaveFlags flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
+    static std::unique_ptr<S5File> prepareSaveFile(uint32_t flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
     {
         auto mainWindow = WindowManager::getMainWindow();
         auto savedView = mainWindow != nullptr && mainWindow->viewports[0] != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple{ 0, 0, 0, 0 };
@@ -268,19 +268,19 @@ namespace OpenLoco::S5
         return file;
     }
 
-    static constexpr bool shouldPackObjects(SaveFlags flags)
+    static constexpr bool shouldPackObjects(uint32_t flags)
     {
         return !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump) && (flags & SaveFlags::packCustomObjects) && !isNetworked();
     }
 
     // 0x00441C26
-    bool save(const fs::path& path, SaveFlags flags)
+    bool save(const fs::path& path, uint32_t flags)
     {
         FileStream fs(path, StreamFlags::write);
         return save(fs, flags);
     }
 
-    bool save(Stream& stream, SaveFlags flags)
+    bool save(Stream& stream, uint32_t flags)
     {
         if (!(flags & SaveFlags::noWindowClose) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
         {
@@ -695,7 +695,7 @@ namespace OpenLoco::S5
             0x00441C26,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto path = fs::u8path(std::string(_savePath));
-                return save(path, static_cast<SaveFlags>(regs.eax)) ? 0 : X86_FLAG_CARRY;
+                return save(path, regs.eax) ? 0 : X86_FLAG_CARRY;
             });
         registerHook(
             0x00441FA7,
