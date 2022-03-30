@@ -645,7 +645,6 @@ namespace OpenLoco::Audio
         {
             return res->second;
         }
-        // TODO: This is leaking memory as it doesn't lookup already loaded results
         const auto path = Environment::getPath(asset);
         std::ifstream fs(path, std::ios::in | std::ios::binary);
 
