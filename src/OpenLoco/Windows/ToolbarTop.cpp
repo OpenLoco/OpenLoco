@@ -794,7 +794,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->getColour(WindowColour::primary));
         }
 
-        if (Config::getNew().cheats_menu_enabled)
+        if (Config::getNew().cheatsMenuEnabled)
         {
             window->widgets[Widx::cheats_menu].type = WidgetType::toolbarTab;
             auto& baseWidget = window->widgets[Widx::cheats_menu];

@@ -159,17 +159,17 @@ namespace OpenLoco::Config
     {
         Display display;
         Audio audio;
-        std::string loco_install_path;
-        std::string last_save_path;
+        std::string locoInstallPath;
+        std::string lastSavePath;
         std::string language = "en-GB";
-        bool cheats_menu_enabled = false;
-        bool breakdowns_disabled = false;
+        bool cheatsMenuEnabled = false;
+        bool breakdownsDisabled = false;
         bool trainsReverseAtSignals = true;
         bool companyAIDisabled = false;
-        float scale_factor = 1.0f;
-        bool zoom_to_cursor = true;
-        int32_t autosave_frequency = 1;
-        int32_t autosave_amount = 12;
+        float scaleFactor = 1.0f;
+        bool zoomToCursor = true;
+        int32_t autosaveFrequency = 1;
+        int32_t autosaveAmount = 12;
         bool showFPS = false;
         bool uncapFPS = false;
         KeyboardShortcut shortcuts[Input::ShortcutManager::kCount];

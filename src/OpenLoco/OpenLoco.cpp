@@ -926,7 +926,7 @@ namespace OpenLoco
                     }
                 }
 
-                auto amountToKeep = static_cast<size_t>(std::max(1, Config::getNew().autosave_amount));
+                auto amountToKeep = static_cast<size_t>(std::max(1, Config::getNew().autosaveAmount));
                 if (autosaveFiles.size() > amountToKeep)
                 {
                     // Sort them by name (which should correspond to date order)
@@ -990,7 +990,7 @@ namespace OpenLoco
 
         if (!isTitleMode())
         {
-            auto freq = Config::getNew().autosave_frequency;
+            auto freq = Config::getNew().autosaveFrequency;
             if (freq > 0 && _monthsSinceLastAutosave >= freq)
             {
                 autosave();
@@ -1309,9 +1309,9 @@ extern "C" {
 
 #ifdef _WIN32
 /**
-     * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
-     * be built as a stand alone application.
-     */
+ * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
+ * be built as a stand alone application.
+ */
 // Hack to trick mingw into thinking we forward-declared this function.
 __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
 __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
