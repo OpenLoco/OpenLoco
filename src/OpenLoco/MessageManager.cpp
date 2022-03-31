@@ -566,7 +566,7 @@ namespace OpenLoco::MessageManager
                     }
                     else
                     {
-                        if (Config::get().news_settings[enumValue(getMessageTypeDescriptor(message->type).criticality)] == Config::NewsType::newsWindow)
+                        if (Config::get().newsSettings[enumValue(getMessageTypeDescriptor(message->type).criticality)] == Config::NewsType::newsWindow)
                         {
                             time2 = 128;
                         }

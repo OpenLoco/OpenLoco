@@ -228,7 +228,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (!Audio::isAudioEnabled())
             Dropdown::setItemSelected(0);
 
-        if (Config::get().music_playing)
+        if (Config::get().musicPlaying)
             Dropdown::setItemSelected(1);
 
         Dropdown::setHighlightedItem(0);
@@ -249,14 +249,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             case 1:
             {
                 auto& config = Config::get();
-                if (config.music_playing)
+                if (config.musicPlaying)
                 {
-                    config.music_playing = false;
+                    config.musicPlaying = false;
                     Audio::stopBackgroundMusic();
                 }
                 else
                 {
-                    config.music_playing = true;
+                    config.musicPlaying = true;
                 }
                 Config::write();
                 break;

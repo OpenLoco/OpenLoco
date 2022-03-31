@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            auto newsSettings = Config::get().news_settings[static_cast<uint8_t>(messageSubType)];
+            auto newsSettings = Config::get().newsSettings[static_cast<uint8_t>(messageSubType)];
 
             if (newsSettings == NewsType::none)
             {
