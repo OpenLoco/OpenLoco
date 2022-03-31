@@ -143,8 +143,8 @@ namespace OpenLoco::Config
             auto& displayConfig = _new_config.display;
             displayConfig.mode = displayNode["mode"].as<ScreenMode>(ScreenMode::window);
             displayConfig.index = displayNode["index"].as<int32_t>(0);
-            displayConfig.window_resolution = displayNode["window_resolution"].as<Resolution>();
-            displayConfig.fullscreen_resolution = displayNode["fullscreen_resolution"].as<Resolution>();
+            displayConfig.windowResolution = displayNode["window_resolution"].as<Resolution>();
+            displayConfig.fullscreenResolution = displayNode["fullscreen_resolution"].as<Resolution>();
         }
 
         auto& audioNode = config["audio"];
@@ -213,8 +213,8 @@ namespace OpenLoco::Config
         {
             displayNode.remove("index");
         }
-        displayNode["window_resolution"] = displayConfig.window_resolution;
-        displayNode["fullscreen_resolution"] = displayConfig.fullscreen_resolution;
+        displayNode["window_resolution"] = displayConfig.windowResolution;
+        displayNode["fullscreen_resolution"] = displayConfig.fullscreenResolution;
         node["display"] = displayNode;
 
         // Audio

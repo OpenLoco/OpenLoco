@@ -117,8 +117,8 @@ namespace OpenLoco::Ui
         sdl_window_desc desc;
         desc.x = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
         desc.y = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
-        desc.width = std::max(640, cfg.window_resolution.width);
-        desc.height = std::max(480, cfg.window_resolution.height);
+        desc.width = std::max(640, cfg.windowResolution.width);
+        desc.height = std::max(480, cfg.windowResolution.height);
         desc.flags = SDL_WINDOW_RESIZABLE;
 #if !(defined(__APPLE__) && defined(__MACH__))
         switch (cfg.mode)
@@ -126,8 +126,8 @@ namespace OpenLoco::Ui
             case Config::ScreenMode::window:
                 break;
             case Config::ScreenMode::fullscreen:
-                desc.width = cfg.fullscreen_resolution.width;
-                desc.height = cfg.fullscreen_resolution.height;
+                desc.width = cfg.fullscreenResolution.width;
+                desc.height = cfg.fullscreenResolution.height;
                 desc.flags |= SDL_WINDOW_FULLSCREEN;
                 break;
             case Config::ScreenMode::fullscreenBorderless:
@@ -412,7 +412,7 @@ namespace OpenLoco::Ui
         if (!(wf & SDL_WINDOW_MAXIMIZED) && !(wf & SDL_WINDOW_FULLSCREEN))
         {
             auto& cfg = Config::getNew().display;
-            cfg.window_resolution = { width, height };
+            cfg.windowResolution = { width, height };
             Config::writeNewConfig();
         }
 
@@ -679,13 +679,13 @@ namespace OpenLoco::Ui
         auto& config = Config::getNew();
         if (mode == Config::ScreenMode::window)
         {
-            if (config.display.window_resolution.isPositive())
-                return config.display.window_resolution;
+            if (config.display.windowResolution.isPositive())
+                return config.display.windowResolution;
             else
                 return { 800, 600 };
         }
-        else if (mode == Config::ScreenMode::fullscreen && config.display.fullscreen_resolution.isPositive())
-            return config.display.fullscreen_resolution;
+        else if (mode == Config::ScreenMode::fullscreen && config.display.fullscreenResolution.isPositive())
+            return config.display.fullscreenResolution;
         else
             return getDesktopResolution();
     }
@@ -739,9 +739,9 @@ namespace OpenLoco::Ui
         config.display.mode = mode;
 
         if (mode == Config::ScreenMode::window)
-            config.display.window_resolution = newResolution;
+            config.display.windowResolution = newResolution;
         else if (mode == Config::ScreenMode::fullscreen)
-            config.display.fullscreen_resolution = newResolution;
+            config.display.fullscreenResolution = newResolution;
 
         // We're also keeping track the resolution in the legacy config, for now.
         auto& legacyConfig = Config::get();
@@ -803,12 +803,12 @@ namespace OpenLoco::Ui
         // Update config fullscreen resolution if not set
         auto& cfg = Config::get();
         auto& cfg_new = Config::getNew();
-        if (!(cfg_new.display.fullscreen_resolution.isPositive() && cfg.resolution_width > 0 && cfg.resolution_height > 0))
+        if (!(cfg_new.display.fullscreenResolution.isPositive() && cfg.resolution_width > 0 && cfg.resolution_height > 0))
         {
             cfg.resolution_width = resolutions.back().width;
             cfg.resolution_height = resolutions.back().height;
-            cfg_new.display.fullscreen_resolution.width = resolutions.back().width;
-            cfg_new.display.fullscreen_resolution.height = resolutions.back().height;
+            cfg_new.display.fullscreenResolution.width = resolutions.back().width;
+            cfg_new.display.fullscreenResolution.height = resolutions.back().height;
         }
 
         _fsResolutions = resolutions;
