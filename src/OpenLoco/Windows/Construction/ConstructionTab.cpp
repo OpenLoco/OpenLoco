@@ -628,7 +628,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         disableUnusedTrackPieces(self, trackObj, disabledWidgets);
     }
 
-    static void setMapSelectedTilesFromPiece(const std::vector<TrackData::PreviewTrack>& pieces, const Map::Pos2& origin, const uint8_t rotation)
+    static void setMapSelectedTilesFromPiece(const stdx::span<const TrackData::PreviewTrack> pieces, const Map::Pos2& origin, const uint8_t rotation)
     {
         size_t i = 0;
         for (const auto& piece : pieces)
@@ -2004,7 +2004,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { std::make_pair(Map::TilePos2(*mapPos), height) };
     }
 
-    static int16_t getMaxPieceHeight(const std::vector<TrackData::PreviewTrack>& piece)
+    static int16_t getMaxPieceHeight(const stdx::span<const TrackData::PreviewTrack> piece)
     {
         int16_t maxPieceHeight = 0;
 
@@ -2306,7 +2306,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
         _byte_1136065 = pieceId->id;
-        const auto& trackPieces = getPiece(pieceId->id);
+        const auto trackPieces = getPiece(pieceId->id);
         setMapSelectedTilesFromPiece(trackPieces, constructPos, _constructionRotation);
 
         if (_makeJunction != 1)
@@ -2389,7 +2389,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto maxRetries = 0;
         if (Input::hasKeyModifier(Input::KeyModifier::shift) || _makeJunction != 1)
         {
-            const auto& piece = getPiece(_byte_1136065);
+            const auto piece = getPiece(_byte_1136065);
 
             constructHeight -= getMaxPieceHeight(piece);
             constructHeight -= 16;
