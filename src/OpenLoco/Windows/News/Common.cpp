@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         bool isOld = false;
         auto news = MessageManager::get(messageIndex);
 
-        if ((news->var_C8 != 0) && (getScreenAge() >= 10))
+        if ((news->timeActive != 0) && (getScreenAge() >= 10))
         {
             isOld = true;
         }
@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (newsSettings == NewsType::none)
             {
-                news->var_C8 = 0xFFFF;
+                news->setActive(false);
                 return;
             }
 
@@ -152,10 +152,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         if (MessageManager::getActiveIndex() != MessageId::null)
         {
             auto message = MessageManager::get(MessageManager::getActiveIndex());
-            if (message->var_C8 != 0xFFFF)
+            if (message->isActive())
             {
-                if (message->var_C8 & (1 << 15))
-                    message->var_C8 = 0xFFFF;
+                // If the current active message was user selected then remove from queue of active messages
+                if (message->isUserSelected())
+                    message->setActive(false);
             }
         }
 
@@ -165,7 +166,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         if (_messageCount != 0)
         {
             auto message = MessageManager::get(MessageId(_messageCount - 1));
-            message->var_C8 = (1 << 15) | (1 << 0);
+            message->setUserSelected();
+            message->timeActive++;
 
             NewsWindow::open(MessageId(_messageCount - 1));
         }

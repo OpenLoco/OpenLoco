@@ -1228,12 +1228,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto i = 0; i < 3; i++)
             {
-                auto recordType = _word_52624E[i];
-                if (recordType == 0)
+                auto recordSpeed = _word_52624E[i];
+                if (recordSpeed == 0)
                     continue;
                 {
                     auto args = FormatArguments();
-                    args.push(recordType);
+                    args.push(recordSpeed);
 
                     const string_id string[] = {
                         StringIds::land_speed_record,

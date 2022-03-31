@@ -22,4 +22,7 @@ namespace OpenLoco::MessageManager
         uint16_t subjectIdC = 0xFFFF);
 
     void updateDaily();
+    void removeAllSubjectRefs(const uint16_t subject, MessageItemArgumentType type);
+    void sub_428E47();
+    void clearActiveMessage();
 }

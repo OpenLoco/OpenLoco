@@ -33,6 +33,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Ui;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Scenario
 {
@@ -369,7 +370,7 @@ namespace OpenLoco::Scenario
         initialiseDate(_activeOptions->scenarioStartYear);
         initialiseSnowLine();
         sub_4748D4();
-        std::memset(gameState.recordType, 0, sizeof(gameState.recordType));
+        std::fill(std::begin(gameState.recordSpeed), std::end(gameState.recordSpeed), 0_mph);
         gameState.objectiveTimeLimitUntilYear = gameState.objectiveTimeLimitYears - 1 + gameState.currentYear;
         gameState.objectiveMonthsInChallenge = 0;
         call(0x0049B546);

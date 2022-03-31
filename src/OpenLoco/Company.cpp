@@ -308,7 +308,7 @@ namespace OpenLoco
         { CorporateRating::tycoon, StringIds::corporate_rating_tycoon },
     };
 
-    static string_id getCorporateRatingAsStringId(CorporateRating rating)
+    string_id getCorporateRatingAsStringId(CorporateRating rating)
     {
         auto it = _ratingNames.find(rating);
         if (it != _ratingNames.end())
