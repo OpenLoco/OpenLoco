@@ -277,38 +277,39 @@ namespace OpenLoco
                 continue;
             }
 
-            for (auto dword = 0; dword < 32; ++dword)
+            auto id = 0;
+            for (const auto& hasBit : var_E1)
             {
-                auto bits = var_E1[dword];
-                for (auto bit = Utility::bitScanForward(bits); bit != -1; bit = Utility::bitScanForward(bits))
+                const auto stationId = static_cast<StationId>(id);
+                id++;
+                if (!hasBit)
                 {
-                    bits &= ~(1 << bit);
-                    const auto stationId = static_cast<StationId>((dword << 5) | bit);
-                    const auto* station = StationManager::get(stationId);
-                    if (station->empty())
-                    {
-                        continue;
-                    }
+                    continue;
+                }
+                const auto* station = StationManager::get(stationId);
+                if (station->empty())
+                {
+                    continue;
+                }
 
-                    const auto& cargoStats = station->cargoStats[cargoType];
-                    if (!(cargoStats.flags & (1 << 1)))
-                    {
-                        continue;
-                    }
+                const auto& cargoStats = station->cargoStats[cargoType];
+                if (!(cargoStats.flags & (1 << 1)))
+                {
+                    continue;
+                }
 
-                    const auto rating = cargoStats.rating;
-                    for (auto index = 0; index < 4; ++index)
+                const auto rating = cargoStats.rating;
+                for (auto index = 0; index < 4; ++index)
+                {
+                    if (indStatsStation[index] == StationId::null || indStatsRating[index] <= rating)
                     {
-                        if (indStatsStation[index] == StationId::null || indStatsRating[index] <= rating)
-                        {
-                            // This is an insertion sort.
-                            // Rotate so that we overwrite the last entry
-                            std::rotate(std::begin(indStatsStation) + index, std::end(indStatsStation) - 1, std::end(indStatsStation));
-                            std::rotate(std::begin(indStatsRating) + index, std::end(indStatsRating) - 1, std::end(indStatsRating));
-                            indStatsStation[index] = stationId;
-                            indStatsRating[index] = rating;
-                            break;
-                        }
+                        // This is an insertion sort.
+                        // Rotate so that we overwrite the last entry
+                        std::rotate(std::begin(indStatsStation) + index, std::end(indStatsStation) - 1, std::end(indStatsStation));
+                        std::rotate(std::begin(indStatsRating) + index, std::end(indStatsRating) - 1, std::end(indStatsRating));
+                        indStatsStation[index] = stationId;
+                        indStatsRating[index] = rating;
+                        break;
                     }
                 }
             }
@@ -320,6 +321,6 @@ namespace OpenLoco
                 ratingFraction = -rating;
             }
         }
-        std::fill(std::begin(var_E1), std::end(var_E1), 0);
+        var_E1.reset();
     }
 }
