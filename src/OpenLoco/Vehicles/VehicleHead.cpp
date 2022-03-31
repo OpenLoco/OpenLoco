@@ -206,7 +206,7 @@ namespace OpenLoco::Vehicles
             if ((car.front->var_5F & Flags5F::breakdownPending) && !isTitleMode())
             {
                 auto newConfig = Config::getNew();
-                if (!newConfig.breakdowns_disabled)
+                if (!newConfig.breakdownsDisabled)
                 {
                     car.front->var_5F &= ~Flags5F::breakdownPending;
                     car.front->var_5F |= Flags5F::brokenDown;

@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             Gfx::fillRectInset(context, 2, y, 11, y + 10, window.getColour(WindowColour::secondary), 0xE0);
 
             // Draw checkmark if track is enabled.
-            if (config.enabled_music[i])
+            if (config.enabledMusic[i])
                 Gfx::drawString_494B3F(context, 2, y, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
 
             // Draw track name.
@@ -159,16 +159,16 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         auto& config = Config::get();
 
         // Toggle the track in question.
-        config.enabled_music[currentTrack] = !config.enabled_music[currentTrack];
+        config.enabledMusic[currentTrack] = !config.enabledMusic[currentTrack];
 
         // Are any tracks enabled?
         uint8_t anyEnabled = 0;
         for (uint8_t i = 0; i < Audio::kNumMusicTracks; i++)
-            anyEnabled |= config.enabled_music[i];
+            anyEnabled |= config.enabledMusic[i];
 
         // Ensure at least this track is enabled.
         if (!anyEnabled)
-            config.enabled_music[currentTrack] = true;
+            config.enabledMusic[currentTrack] = true;
 
         Config::write();
         Audio::revalidateCurrentTrack();

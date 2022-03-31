@@ -423,7 +423,7 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::velocity:
                     {
-                        auto measurement_format = Config::get().measurement_format;
+                        auto measurement_format = Config::get().measurementFormat;
 
                         int32_t value = args.pop<int16_t>();
 
@@ -463,7 +463,7 @@ namespace OpenLoco::StringManager
                     case ControlCodes::distance:
                     {
                         uint32_t value = args.pop<uint16_t>();
-                        auto measurement_format = Config::get().measurement_format;
+                        auto measurement_format = Config::get().measurementFormat;
 
                         const char* unit;
                         if (measurement_format == Config::MeasurementFormat::imperial)
@@ -489,7 +489,7 @@ namespace OpenLoco::StringManager
                         int32_t value = args.pop<int16_t>();
 
                         bool showHeightAsUnits = Config::get().flags & Config::Flags::showHeightAsUnits;
-                        auto measurement_format = Config::get().measurement_format;
+                        auto measurement_format = Config::get().measurementFormat;
                         const char* unit;
 
                         if (showHeightAsUnits)
@@ -518,7 +518,7 @@ namespace OpenLoco::StringManager
                     case ControlCodes::power:
                     {
                         uint32_t value = args.pop<uint16_t>();
-                        auto measurement_format = Config::get().measurement_format;
+                        auto measurement_format = Config::get().measurementFormat;
 
                         const char* unit;
                         if (measurement_format == Config::MeasurementFormat::imperial)

@@ -232,9 +232,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.push(head->name);
         args.push(head->ordinalNumber);
         args.push(status.status1);
-        args.push(status.status1Args); //32bit
+        args.push(status.status1Args); // 32bit
         args.push(status.status2);
-        args.push(status.status2Args); //32bit
+        args.push(status.status2Args); // 32bit
         return true;
     }
 
@@ -373,7 +373,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (viewport == nullptr)
             return InteractionArg{};
 
-        if (viewport->zoom > Config::get().vehicles_min_scale)
+        if (viewport->zoom > Config::get().vehiclesMinScale)
             return InteractionArg{};
 
         uint32_t nearestDistance = std::numeric_limits<uint32_t>().max();
@@ -1013,7 +1013,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             interaction = session->getNormalInteractionInfo(flags);
             if (!(vp->flags & ViewportFlags::station_names_displayed))
             {
-                if (_context2->zoom_level <= Config::get().station_names_min_scale)
+                if (_context2->zoom_level <= Config::get().stationNamesMinScale)
                 {
                     auto stationInteraction = session->getStationNameInteractionInfo(flags);
                     if (stationInteraction.type != InteractionItem::noInteraction)

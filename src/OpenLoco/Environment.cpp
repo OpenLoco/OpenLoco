@@ -71,7 +71,7 @@ namespace OpenLoco::Environment
     static fs::path resolveLocoInstallPath()
     {
         auto& cfg = Config::getNew();
-        auto path = fs::u8path(cfg.loco_install_path);
+        auto path = fs::u8path(cfg.locoInstallPath);
         if (!path.empty())
         {
             if (validateLocoInstallPath(path))
@@ -85,7 +85,7 @@ namespace OpenLoco::Environment
         path = autoDetectLocoInstallPath();
         if (!path.empty())
         {
-            cfg.loco_install_path = path.make_preferred().u8string();
+            cfg.locoInstallPath = path.make_preferred().u8string();
             Config::writeNewConfig();
             return path;
         }
@@ -97,7 +97,7 @@ namespace OpenLoco::Environment
             path = Platform::promptDirectory("Select your Locomotion install path.");
             if (validateLocoInstallPath(path))
             {
-                cfg.loco_install_path = path.make_preferred().u8string();
+                cfg.locoInstallPath = path.make_preferred().u8string();
                 Config::writeNewConfig();
                 return path;
             }
@@ -214,7 +214,7 @@ namespace OpenLoco::Environment
 
         // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
         auto saveDirectory = getPathNoWarning(PathId::save) / "";
-        auto& configLastSavePath = Config::getNew().last_save_path;
+        auto& configLastSavePath = Config::getNew().lastSavePath;
         if (!configLastSavePath.empty())
         {
             // Getting the directory can fail if config is bad.

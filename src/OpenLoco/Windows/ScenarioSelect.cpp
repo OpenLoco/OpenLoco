@@ -122,7 +122,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         initTabs(self);
 
         // Select the last tab used, or the first available one.
-        uint8_t selectedTab = Config::get().scenario_selected_tab;
+        uint8_t selectedTab = Config::get().scenarioSelectedTab;
         if (self->widgets[widx::tab0 + selectedTab].type == WidgetType::none)
         {
             selectedTab = 0;
@@ -425,7 +425,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 self->currentTab = selectedCategory;
 
                 auto& config = Config::get();
-                config.scenario_selected_tab = selectedCategory;
+                config.scenarioSelectedTab = selectedCategory;
                 Config::write();
 
                 self->info = 0xFFFFFFFF;
