@@ -139,8 +139,8 @@ namespace OpenLoco::Config
     {
         ScreenMode mode;
         int32_t index{};
-        Resolution window_resolution = { 800, 600 };
-        Resolution fullscreen_resolution;
+        Resolution windowResolution = { 800, 600 };
+        Resolution fullscreenResolution;
     };
 
     struct Audio

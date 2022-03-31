@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::Windows::Options
             for (size_t i = 0; i < resolutions.size(); i++)
             {
                 Dropdown::add(i, StringIds::dropdown_stringid, { StringIds::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
-                if (cfg.display.fullscreen_resolution.width == resolutions[i].width && cfg.display.fullscreen_resolution.height == resolutions[i].height)
+                if (cfg.display.fullscreenResolution.width == resolutions[i].width && cfg.display.fullscreenResolution.height == resolutions[i].height)
                     Dropdown::setItemSelected((int16_t)i);
             }
         }
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             FormatArguments args = {};
             args.skip(0x10);
-            auto& resolution = Config::getNew().display.fullscreen_resolution;
+            auto& resolution = Config::getNew().display.fullscreenResolution;
             args.push<uint16_t>(resolution.width);
             args.push<uint16_t>(resolution.height);
 
