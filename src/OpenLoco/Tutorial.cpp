@@ -87,9 +87,9 @@ namespace OpenLoco::Tutorial
         // Figure out what dimensions to use for the tutorial, and whether we can continue using scaling.
         const auto& config = Config::getNew();
         Config::Resolution newResolution = tutorialResolution;
-        if (config.scale_factor > 1.0)
+        if (config.scaleFactor > 1.0)
         {
-            newResolution *= config.scale_factor;
+            newResolution *= config.scaleFactor;
             Config::Resolution desktopResolution = Ui::getDesktopResolution();
 
             // Don't scale if it means the new window won't fit the desktop.

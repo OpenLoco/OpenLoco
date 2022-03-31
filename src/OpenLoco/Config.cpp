@@ -157,27 +157,27 @@ namespace OpenLoco::Config
         }
 
         if (config["loco_install_path"])
-            _new_config.loco_install_path = config["loco_install_path"].as<std::string>();
+            _new_config.locoInstallPath = config["loco_install_path"].as<std::string>();
         if (config["last_save_path"])
-            _new_config.last_save_path = config["last_save_path"].as<std::string>();
+            _new_config.lastSavePath = config["last_save_path"].as<std::string>();
         if (config["language"])
             _new_config.language = config["language"].as<std::string>();
         if (config["breakdowns_disabled"])
-            _new_config.breakdowns_disabled = config["breakdowns_disabled"].as<bool>();
+            _new_config.breakdownsDisabled = config["breakdowns_disabled"].as<bool>();
         if (config["trainsReverseAtSignals"])
             _new_config.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>();
         if (config["cheats_menu_enabled"])
-            _new_config.cheats_menu_enabled = config["cheats_menu_enabled"].as<bool>();
+            _new_config.cheatsMenuEnabled = config["cheats_menu_enabled"].as<bool>();
         if (config["companyAIDisabled"])
             _new_config.companyAIDisabled = config["companyAIDisabled"].as<bool>();
         if (config["scale_factor"])
-            _new_config.scale_factor = config["scale_factor"].as<float>();
+            _new_config.scaleFactor = config["scale_factor"].as<float>();
         if (config["zoom_to_cursor"])
-            _new_config.zoom_to_cursor = config["zoom_to_cursor"].as<bool>();
+            _new_config.zoomToCursor = config["zoom_to_cursor"].as<bool>();
         if (config["autosave_frequency"])
-            _new_config.autosave_frequency = config["autosave_frequency"].as<int32_t>();
+            _new_config.autosaveFrequency = config["autosave_frequency"].as<int32_t>();
         if (config["autosave_amount"])
-            _new_config.autosave_amount = config["autosave_amount"].as<int32_t>();
+            _new_config.autosaveAmount = config["autosave_amount"].as<int32_t>();
         if (config["showFPS"])
             _new_config.showFPS = config["showFPS"].as<bool>();
         if (config["uncapFPS"])
@@ -228,17 +228,17 @@ namespace OpenLoco::Config
         audioNode["play_title_music"] = audioConfig.playTitleMusic;
         node["audio"] = audioNode;
 
-        node["loco_install_path"] = _new_config.loco_install_path;
-        node["last_save_path"] = _new_config.last_save_path;
+        node["loco_install_path"] = _new_config.locoInstallPath;
+        node["last_save_path"] = _new_config.lastSavePath;
         node["language"] = _new_config.language;
-        node["breakdowns_disabled"] = _new_config.breakdowns_disabled;
+        node["breakdowns_disabled"] = _new_config.breakdownsDisabled;
         node["trainsReverseAtSignals"] = _new_config.trainsReverseAtSignals;
-        node["cheats_menu_enabled"] = _new_config.cheats_menu_enabled;
+        node["cheats_menu_enabled"] = _new_config.cheatsMenuEnabled;
         node["companyAIDisabled"] = _new_config.companyAIDisabled;
-        node["scale_factor"] = _new_config.scale_factor;
-        node["zoom_to_cursor"] = _new_config.zoom_to_cursor;
-        node["autosave_frequency"] = _new_config.autosave_frequency;
-        node["autosave_amount"] = _new_config.autosave_amount;
+        node["scale_factor"] = _new_config.scaleFactor;
+        node["zoom_to_cursor"] = _new_config.zoomToCursor;
+        node["autosave_frequency"] = _new_config.autosaveFrequency;
+        node["autosave_amount"] = _new_config.autosaveAmount;
         node["showFPS"] = _new_config.showFPS;
         node["uncapFPS"] = _new_config.uncapFPS;
         node["displayLockedVehicles"] = _new_config.displayLockedVehicles;

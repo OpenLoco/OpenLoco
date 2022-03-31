@@ -828,9 +828,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (_fileType == BrowseFileType::savedGame)
         {
             if (!fs::is_directory(_currentDirectory))
-                Config::getNew().last_save_path = _currentDirectory.parent_path().u8string();
+                Config::getNew().lastSavePath = _currentDirectory.parent_path().u8string();
             else
-                Config::getNew().last_save_path = _currentDirectory.u8string();
+                Config::getNew().lastSavePath = _currentDirectory.u8string();
             Config::writeNewConfig();
             Environment::resolvePaths();
         }

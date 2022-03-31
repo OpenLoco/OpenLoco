@@ -601,12 +601,12 @@ namespace OpenLoco::Ui::Windows::Options
                 w->activatedWidgets |= (1 << Widx::gridlines_on_landscape);
             }
 
-            if (Config::getNew().scale_factor <= OpenLoco::Ui::ScaleFactor::min)
+            if (Config::getNew().scaleFactor <= OpenLoco::Ui::ScaleFactor::min)
                 w->disabledWidgets |= (1 << Widx::display_scale_down_btn);
             else
                 w->disabledWidgets &= ~(1 << Widx::display_scale_down_btn);
 
-            if (Config::getNew().scale_factor >= OpenLoco::Ui::ScaleFactor::max)
+            if (Config::getNew().scaleFactor >= OpenLoco::Ui::ScaleFactor::max)
                 w->disabledWidgets |= (1 << Widx::display_scale_up_btn);
             else
                 w->disabledWidgets &= ~(1 << Widx::display_scale_up_btn);
@@ -645,7 +645,7 @@ namespace OpenLoco::Ui::Windows::Options
             y = w->y + Display::_widgets[Display::Widx::display_scale].top + 1;
             drawString_494B3F(*context, x, y, Colour::black, StringIds::window_scale_factor, nullptr);
 
-            int scale = (int)(Config::getNew().scale_factor * 100);
+            int scale = (int)(Config::getNew().scaleFactor * 100);
             auto& scale_widget = w->widgets[Widx::display_scale];
             drawString_494B3F(*context, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, Colour::black, StringIds::scale_formatted, &scale);
         }
@@ -1775,7 +1775,7 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w->activatedWidgets |= (1 << Widx::edge_scrolling);
             }
-            if (Config::getNew().zoom_to_cursor)
+            if (Config::getNew().zoomToCursor)
             {
                 w->activatedWidgets |= (1 << Widx::zoom_to_cursor);
             }
@@ -1835,7 +1835,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void zoomToCursorMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::getNew();
-            cfg.zoom_to_cursor = !cfg.zoom_to_cursor;
+            cfg.zoomToCursor = !cfg.zoomToCursor;
             Config::write();
 
             w->invalidate();
@@ -1934,12 +1934,12 @@ namespace OpenLoco::Ui::Windows::Options
             w->widgets[Common::Widx::close_button].left = w->width - 15;
             w->widgets[Common::Widx::close_button].right = w->width - 15 + 12;
 
-            if (Config::getNew().cheats_menu_enabled)
+            if (Config::getNew().cheatsMenuEnabled)
                 w->activatedWidgets |= (1 << Widx::enableCheatsToolbarButton);
             else
                 w->activatedWidgets &= ~(1 << Widx::enableCheatsToolbarButton);
 
-            if (Config::getNew().breakdowns_disabled)
+            if (Config::getNew().breakdownsDisabled)
                 w->activatedWidgets |= (1 << Widx::disable_vehicle_breakdowns);
             else
                 w->activatedWidgets &= ~(1 << Widx::disable_vehicle_breakdowns);
@@ -2004,7 +2004,7 @@ namespace OpenLoco::Ui::Windows::Options
             auto y = w->y + w->widgets[Widx::autosave_frequency].top + 1;
             drawString_494B3F(*context, w->x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
 
-            auto freq = Config::getNew().autosave_frequency;
+            auto freq = Config::getNew().autosaveFrequency;
             string_id stringId;
             switch (freq)
             {
@@ -2023,17 +2023,17 @@ namespace OpenLoco::Ui::Windows::Options
             y = w->y + w->widgets[Widx::autosave_amount].top + 1;
             drawString_494B3F(*context, w->x + 10, y, Colour::black, StringIds::autosave_amount, nullptr);
 
-            auto scale = Config::getNew().autosave_amount;
+            auto scale = Config::getNew().autosaveAmount;
             drawDropdownContent(w, context, Widx::autosave_amount, StringIds::int_32, scale);
         }
 
         static void changeAutosaveAmount(Window* w, int32_t delta)
         {
             auto& cfg = Config::getNew();
-            auto newValue = std::clamp(cfg.autosave_amount + delta, 1, 24);
-            if (cfg.autosave_amount != newValue)
+            auto newValue = std::clamp(cfg.autosaveAmount + delta, 1, 24);
+            if (cfg.autosaveAmount != newValue)
             {
-                cfg.autosave_amount = newValue;
+                cfg.autosaveAmount = newValue;
                 Config::writeNewConfig();
                 w->invalidate();
             }
@@ -2042,9 +2042,9 @@ namespace OpenLoco::Ui::Windows::Options
         static void changeAutosaveFrequency(Window* w, int32_t value)
         {
             auto& cfg = Config::getNew();
-            if (cfg.autosave_frequency != value)
+            if (cfg.autosaveFrequency != value)
             {
-                cfg.autosave_frequency = value;
+                cfg.autosaveFrequency = value;
                 Config::writeNewConfig();
                 w->invalidate();
             }
@@ -2063,7 +2063,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(4, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint32_t>(12) });
 
             // Set current selection
-            auto freq = Config::getNew().autosave_frequency;
+            auto freq = Config::getNew().autosaveFrequency;
             std::optional<size_t> selected;
             switch (freq)
             {
@@ -2251,7 +2251,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void enableCheatsToolbarButtonMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::getNew();
-            cfg.cheats_menu_enabled = !cfg.cheats_menu_enabled;
+            cfg.cheatsMenuEnabled = !cfg.cheatsMenuEnabled;
             Config::write();
             w->invalidate();
             WindowManager::invalidate(WindowType::topToolbar);
@@ -2260,7 +2260,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void disableVehicleBreakdownsMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::getNew();
-            cfg.breakdowns_disabled = !cfg.breakdowns_disabled;
+            cfg.breakdownsDisabled = !cfg.breakdownsDisabled;
             Config::write();
             w->invalidate();
         }

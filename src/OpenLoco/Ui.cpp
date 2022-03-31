@@ -284,7 +284,7 @@ namespace OpenLoco::Ui
         int x = 0, y = 0;
         SDL_GetMouseState(&x, &y);
 
-        auto scale = Config::getNew().scale_factor;
+        auto scale = Config::getNew().scaleFactor;
         x /= scale;
         y /= scale;
         return { x, y };
@@ -293,7 +293,7 @@ namespace OpenLoco::Ui
     // 0x00407FEE
     void setCursorPos(int32_t x, int32_t y)
     {
-        auto scale = Config::getNew().scale_factor;
+        auto scale = Config::getNew().scaleFactor;
         x *= scale;
         y *= scale;
 
@@ -340,9 +340,9 @@ namespace OpenLoco::Ui
     void update(int32_t width, int32_t height)
     {
         // Scale the width and height by configured scale factor
-        auto scale_factor = Config::getNew().scale_factor;
-        width = (int32_t)(width / scale_factor);
-        height = (int32_t)(height / scale_factor);
+        auto scaleFactor = Config::getNew().scaleFactor;
+        width = (int32_t)(width / scaleFactor);
+        height = (int32_t)(height / scaleFactor);
 
         int32_t widthShift = 6;
         int16_t blockWidth = 1 << widthShift;
@@ -473,8 +473,8 @@ namespace OpenLoco::Ui
             SDL_UnlockSurface(surface);
         }
 
-        auto scale_factor = Config::getNew().scale_factor;
-        if (scale_factor == 1 || scale_factor <= 0)
+        auto scaleFactor = Config::getNew().scaleFactor;
+        if (scaleFactor == 1 || scaleFactor <= 0)
         {
             if (SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr))
             {
@@ -587,11 +587,11 @@ namespace OpenLoco::Ui
                     break;
                 case SDL_MOUSEMOTION:
                 {
-                    auto scale_factor = Config::getNew().scale_factor;
-                    auto x = static_cast<int32_t>(e.motion.x / scale_factor);
-                    auto y = static_cast<int32_t>(e.motion.y / scale_factor);
-                    auto xrel = static_cast<int32_t>(e.motion.xrel / scale_factor);
-                    auto yrel = static_cast<int32_t>(e.motion.yrel / scale_factor);
+                    auto scaleFactor = Config::getNew().scaleFactor;
+                    auto x = static_cast<int32_t>(e.motion.x / scaleFactor);
+                    auto y = static_cast<int32_t>(e.motion.y / scaleFactor);
+                    auto xrel = static_cast<int32_t>(e.motion.xrel / scaleFactor);
+                    auto yrel = static_cast<int32_t>(e.motion.yrel / scaleFactor);
                     Input::moveMouse(x, y, xrel, yrel);
                     break;
                 }
@@ -600,9 +600,9 @@ namespace OpenLoco::Ui
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 {
-                    auto scale_factor = Config::getNew().scale_factor;
-                    const auto x = static_cast<int32_t>(e.button.x / scale_factor);
-                    const auto y = static_cast<int32_t>(e.button.y / scale_factor);
+                    auto scaleFactor = Config::getNew().scaleFactor;
+                    const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
+                    const auto y = static_cast<int32_t>(e.button.y / scaleFactor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
@@ -621,9 +621,9 @@ namespace OpenLoco::Ui
                 }
                 case SDL_MOUSEBUTTONUP:
                 {
-                    auto scale_factor = Config::getNew().scale_factor;
-                    const auto x = static_cast<int32_t>(e.button.x / scale_factor);
-                    const auto y = static_cast<int32_t>(e.button.y / scale_factor);
+                    auto scaleFactor = Config::getNew().scaleFactor;
+                    const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
+                    const auto y = static_cast<int32_t>(e.button.y / scaleFactor);
                     addr<0x00525324, int32_t>() = 1;
                     switch (e.button.button)
                     {
@@ -1019,10 +1019,10 @@ namespace OpenLoco::Ui
     {
         auto& config = Config::getNew();
         newScaleFactor = std::clamp(newScaleFactor, ScaleFactor::min, ScaleFactor::max);
-        if (config.scale_factor == newScaleFactor)
+        if (config.scaleFactor == newScaleFactor)
             return;
 
-        config.scale_factor = newScaleFactor;
+        config.scaleFactor = newScaleFactor;
 
         OpenLoco::Config::write();
         Ui::triggerResize();
@@ -1032,8 +1032,8 @@ namespace OpenLoco::Ui
     void adjustWindowScale(float adjust_by)
     {
         auto& config = Config::getNew();
-        float newScaleFactor = std::clamp(config.scale_factor + adjust_by, ScaleFactor::min, ScaleFactor::max);
-        if (config.scale_factor == newScaleFactor)
+        float newScaleFactor = std::clamp(config.scaleFactor + adjust_by, ScaleFactor::min, ScaleFactor::max);
+        if (config.scaleFactor == newScaleFactor)
             return;
 
         setWindowScaling(newScaleFactor);
