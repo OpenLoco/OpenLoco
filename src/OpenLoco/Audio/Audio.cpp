@@ -699,7 +699,7 @@ namespace OpenLoco::Audio
         if (v->sprite_left == Location::null)
             return;
 
-        if (_numActiveVehicleSounds >= Config::get().max_vehicle_sounds)
+        if (_numActiveVehicleSounds >= Config::get().maxVehicleSounds)
             return;
 
         auto spritePosition = viewport_pos(v->sprite_left, v->sprite_top);
@@ -967,7 +967,7 @@ namespace OpenLoco::Audio
             return;
 
         bool trackStillApplies = true;
-        switch (cfg.music_playlist)
+        switch (cfg.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
             {
@@ -982,7 +982,7 @@ namespace OpenLoco::Audio
                 return;
 
             case MusicPlaylistType::custom:
-                if (!cfg.enabled_music[_currentSong])
+                if (!cfg.enabledMusic[_currentSong])
                     trackStillApplies = false;
                 break;
         }
@@ -1030,7 +1030,7 @@ namespace OpenLoco::Audio
         playlist.clear();
 
         const auto& cfg = Config::get();
-        switch (cfg.music_playlist)
+        switch (cfg.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
                 addCurrentEraSongsToPlaylist(excludeTrack, playlist);
@@ -1041,7 +1041,7 @@ namespace OpenLoco::Audio
             case MusicPlaylistType::custom:
                 for (auto i = 0; i < kNumMusicTracks; i++)
                 {
-                    if (i != excludeTrack && (cfg.enabled_music[i] & 1))
+                    if (i != excludeTrack && (cfg.enabledMusic[i] & 1))
                     {
                         playlist.push_back(i);
                     }
@@ -1049,7 +1049,7 @@ namespace OpenLoco::Audio
                 break;
         }
 
-        if (playlist.empty() && cfg.music_playlist != MusicPlaylistType::currentEra)
+        if (playlist.empty() && cfg.musicPlaylist != MusicPlaylistType::currentEra)
         {
             addCurrentEraSongsToPlaylist(excludeTrack, playlist);
         }
@@ -1073,7 +1073,7 @@ namespace OpenLoco::Audio
         }
 
         auto cfg = Config::get();
-        if (cfg.music_playing == 0 || isTitleMode() || isEditorMode())
+        if (cfg.musicPlaying == 0 || isTitleMode() || isEditorMode())
         {
             return;
         }
@@ -1104,12 +1104,12 @@ namespace OpenLoco::Audio
                 _musicCurrentChannel = ChannelId::bgm;
                 if (!_channels[enumValue(_musicCurrentChannel)].play(false))
                 {
-                    cfg.music_playing = 0;
+                    cfg.musicPlaying = 0;
                 }
             }
             else
             {
-                cfg.music_playing = 0;
+                cfg.musicPlaying = 0;
             }
 
             WindowManager::invalidate(WindowType::options);

@@ -36,22 +36,22 @@ namespace OpenLoco::Config
     {
         if (_113E21C > 0x4000000)
         {
-            _config->sound_quality = 1;
-            _config->vehicles_min_scale = 1;
+            _config->soundQuality = 1;
+            _config->vehiclesMinScale = 1;
         }
         else if (_113E21C > 0x8000000)
         {
-            _config->sound_quality = 2;
-            _config->vehicles_min_scale = 2;
+            _config->soundQuality = 2;
+            _config->vehiclesMinScale = 2;
         }
         else
         {
-            _config->sound_quality = 0;
-            _config->vehicles_min_scale = 1;
+            _config->soundQuality = 0;
+            _config->vehiclesMinScale = 1;
         }
-        _config->max_vehicle_sounds = _defaultMaxVehicleSounds[_config->sound_quality];
-        _config->max_sound_instances = _defaultMaxSoundInstances[_config->sound_quality];
-        _config->preferred_currency = _defaultPreferredCurrency;
+        _config->maxVehicleSounds = _defaultMaxVehicleSounds[_config->soundQuality];
+        _config->maxSoundInstances = _defaultMaxSoundInstances[_config->soundQuality];
+        _config->preferredCurrency = _defaultPreferredCurrency;
     }
 
     // 0x00441A6C
