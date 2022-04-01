@@ -11,6 +11,7 @@ namespace OpenLoco
         // animationSpeed must be 1 less than a power of 2 (its a mask)
         switch (animationSpeed)
         {
+            case 0:
             case 1:
             case 3:
             case 7:
