@@ -74,7 +74,7 @@ namespace OpenLoco::ObjectManager
     assert_struct_size(ObjectRepositoryItem, 8);
 #pragma pack(pop)
 
-    loco_global<ObjectRepositoryItem[64], 0x4FE0B8> object_repository;
+    loco_global<ObjectRepositoryItem[maxObjectTypes], 0x4FE0B8> object_repository;
     loco_global<InterfaceSkinObject* [1], 0x0050C3D0> _interfaceObjects;
     loco_global<SoundObject* [128], 0x0050C3D4> _soundObjects;
     loco_global<CurrencyObject* [1], 0x0050C5D4> _currencyObjects;
@@ -495,19 +495,19 @@ namespace OpenLoco::ObjectManager
         _customObjectsInIndex = hasCustomObjectsInIndex();
     }
 
-    ObjectHeader& getHeader(const LoadedObjectHandle& handle)
-    {
-        return object_repository[enumValue(handle.type)].object_entry_extendeds[handle.id];
-    }
-
     static ObjectRepositoryItem& getRepositoryItem(ObjectType type)
     {
-        return object_repository[static_cast<uint8_t>(type)];
+        return object_repository[enumValue(type)];
+    }
+
+    ObjectHeader& getHeader(const LoadedObjectHandle& handle)
+    {
+        return getRepositoryItem(handle.type).object_entry_extendeds[handle.id];
     }
 
     Object* getAny(const LoadedObjectHandle& handle)
     {
-        auto obj = object_repository[enumValue(handle.type)].objects[handle.id];
+        auto obj = getRepositoryItem(handle.type).objects[handle.id];
         if (obj == (void*)-1)
         {
             obj = nullptr;
@@ -515,322 +515,6 @@ namespace OpenLoco::ObjectManager
         return obj;
     }
 
-    template<>
-    InterfaceSkinObject* get()
-    {
-        if (_interfaceObjects[0] == (void*)-1)
-        {
-            return nullptr;
-        }
-
-        return _interfaceObjects[0];
-    }
-
-    template<>
-    SoundObject* get(size_t id)
-    {
-        if (_soundObjects[id] != reinterpret_cast<SoundObject*>(-1))
-        {
-            return _soundObjects[id];
-        }
-        return nullptr;
-    }
-
-    template<>
-    SteamObject* get(size_t id)
-    {
-        if (_steamObjects[id] != reinterpret_cast<SteamObject*>(-1))
-        {
-            return _steamObjects[id];
-        }
-        return nullptr;
-    }
-
-    template<>
-    RockObject* get(size_t id)
-    {
-        if (_rockObjects[id] != reinterpret_cast<RockObject*>(-1))
-            return _rockObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    CargoObject* get(size_t id)
-    {
-        if (_cargoObjects[id] != (CargoObject*)-1)
-            return _cargoObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TrainSignalObject* get(size_t id)
-    {
-        if (_trainSignalObjects[id] != reinterpret_cast<TrainSignalObject*>(-1))
-            return _trainSignalObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    RoadStationObject* get(size_t id)
-    {
-        if (_roadStationObjects[id] != reinterpret_cast<RoadStationObject*>(-1))
-            return _roadStationObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    VehicleObject* get(size_t id)
-    {
-        if (_vehicleObjects[id] != reinterpret_cast<VehicleObject*>(-1))
-            return _vehicleObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TreeObject* get(size_t id)
-    {
-        if (_treeObjects[id] != reinterpret_cast<TreeObject*>(-1))
-            return _treeObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    WallObject* get(size_t id)
-    {
-        if (_wallObjects[id] != reinterpret_cast<WallObject*>(-1))
-            return _wallObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    BuildingObject* get(size_t id)
-    {
-        if (_buildingObjects[id] != reinterpret_cast<BuildingObject*>(-1))
-            return _buildingObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    IndustryObject* get(size_t id)
-    {
-        if (_industryObjects[id] != reinterpret_cast<IndustryObject*>(-1))
-            return _industryObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    CurrencyObject* get()
-    {
-        if (_currencyObjects[0] != reinterpret_cast<CurrencyObject*>(-1))
-        {
-            return _currencyObjects[0];
-        }
-        return nullptr;
-    }
-
-    template<>
-    BridgeObject* get(size_t id)
-    {
-        if (_bridgeObjects[id] != reinterpret_cast<BridgeObject*>(-1))
-            return _bridgeObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TrainStationObject* get(size_t id)
-    {
-        if (_trainStationObjects[id] != reinterpret_cast<TrainStationObject*>(-1))
-            return _trainStationObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TrackExtraObject* get(size_t id)
-    {
-        if (_trackExtraObjects[id] != reinterpret_cast<TrackExtraObject*>(-1))
-        {
-            return _trackExtraObjects[id];
-        }
-        return nullptr;
-    }
-
-    template<>
-    TrackObject* get(size_t id)
-    {
-        if (_trackObjects[id] != reinterpret_cast<TrackObject*>(-1))
-            return _trackObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    RoadExtraObject* get(size_t id)
-    {
-        if (_roadExtraObjects[id] != reinterpret_cast<RoadExtraObject*>(-1))
-        {
-            return _roadExtraObjects[id];
-        }
-        return nullptr;
-    }
-
-    template<>
-    RoadObject* get(size_t id)
-    {
-        if (_roadObjects[id] != reinterpret_cast<RoadObject*>(-1))
-            return _roadObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    AirportObject* get(size_t id)
-    {
-        if (_airportObjects[id] != reinterpret_cast<AirportObject*>(-1))
-            return _airportObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    DockObject* get(size_t id)
-    {
-        if (_dockObjects[id] != reinterpret_cast<DockObject*>(-1))
-            return _dockObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    LandObject* get(size_t id)
-    {
-        if (_landObjects[id] != (LandObject*)-1)
-            return _landObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    WaterObject* get()
-    {
-        if (_waterObjects[0] != reinterpret_cast<WaterObject*>(-1))
-        {
-            return _waterObjects[0];
-        }
-        return nullptr;
-    }
-
-    template<>
-    CompetitorObject* get(size_t id)
-    {
-        if (_competitorObjects[id] != reinterpret_cast<CompetitorObject*>(-1))
-        {
-            return _competitorObjects[id];
-        }
-        return nullptr;
-    }
-
-    template<>
-    ClimateObject* get()
-    {
-        if (_climateObjects[0] == (void*)-1)
-        {
-            return nullptr;
-        }
-
-        return _climateObjects[0];
-    }
-
-    template<>
-    ScenarioTextObject* get()
-    {
-        if (_scenarioTextObjects[0] != (ScenarioTextObject*)-1)
-            return _scenarioTextObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    RegionObject* get()
-    {
-        if (_regionObjects[0] != reinterpret_cast<RegionObject*>(-1))
-            return _regionObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TownNamesObject* get()
-    {
-        if (_townNamesObjects[0] != reinterpret_cast<TownNamesObject*>(-1))
-            return _townNamesObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    LevelCrossingObject* get(size_t id)
-    {
-        if (_levelCrossingObjects[id] != reinterpret_cast<LevelCrossingObject*>(-1))
-            return _levelCrossingObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    StreetLightObject* get()
-    {
-        if (_streetLightObjects[0] != reinterpret_cast<StreetLightObject*>(-1))
-            return _streetLightObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TunnelObject* get(size_t id)
-    {
-        if (_tunnelObjects[id] != reinterpret_cast<TunnelObject*>(-1))
-            return _tunnelObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    SnowObject* get()
-    {
-        if (_snowObjects[0] != reinterpret_cast<SnowObject*>(-1))
-            return _snowObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    HillShapesObject* get()
-    {
-        if (_hillShapeObjects[0] != reinterpret_cast<HillShapesObject*>(-1))
-            return _hillShapeObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    ScaffoldingObject* get()
-    {
-        if (_scaffoldingObjects[0] != reinterpret_cast<ScaffoldingObject*>(-1))
-            return _scaffoldingObjects[0];
-        else
-            return nullptr;
-    }
     /*
     static void printHeader(header data)
     {
@@ -1211,7 +895,7 @@ namespace OpenLoco::ObjectManager
     {
         for (LoadedObjectId id = 0; id < getMaxObjects(type); ++id)
         {
-            if (object_repository[enumValue(type)].objects[id] == reinterpret_cast<Object*>(-1))
+            if (getAny({ type, id }) == nullptr)
             {
                 return id;
             }
@@ -1541,7 +1225,7 @@ namespace OpenLoco::ObjectManager
 
     size_t getByteLength(const LoadedObjectHandle& handle)
     {
-        return object_repository[enumValue(handle.type)].object_entry_extendeds[handle.id].dataSize;
+        return getRepositoryItem(handle.type).object_entry_extendeds[handle.id].dataSize;
     }
 
     template<typename TObject>

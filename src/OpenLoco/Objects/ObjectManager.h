@@ -114,60 +114,21 @@ namespace OpenLoco::ObjectManager
     constexpr size_t maxObjects = 859;
     constexpr size_t maxObjectTypes = 34;
 
-    template<typename T>
-    T* get();
-
-    template<typename T>
-    T* get(size_t id);
-
     Object* getAny(const LoadedObjectHandle& handle);
 
-    template<>
-    InterfaceSkinObject* get();
-    template<>
-    SteamObject* get(size_t id);
-    template<>
-    RockObject* get(size_t id);
-    template<>
-    CargoObject* get(size_t id);
-    template<>
-    TrainSignalObject* get(size_t id);
-    template<>
-    RoadStationObject* get(size_t id);
-    template<>
-    VehicleObject* get(size_t id);
-    template<>
-    TreeObject* get(size_t id);
-    template<>
-    WallObject* get(size_t id);
-    template<>
-    BuildingObject* get(size_t id);
-    template<>
-    IndustryObject* get(size_t id);
-    template<>
-    CurrencyObject* get();
-    template<>
-    BridgeObject* get();
-    template<>
-    TrainStationObject* get();
-    template<>
-    TrackObject* get(size_t id);
-    template<>
-    RoadObject* get(size_t id);
-    template<>
-    AirportObject* get(size_t id);
-    template<>
-    DockObject* get(size_t id);
-    template<>
-    LandObject* get(size_t id);
-    template<>
-    WaterObject* get();
-    template<>
-    RegionObject* get();
-    template<>
-    CompetitorObject* get(size_t id);
-    template<>
-    ScenarioTextObject* get();
+    template<typename T>
+    T* get()
+    {
+        static_assert(getMaxObjects(T::kObjectType) == 1);
+        return reinterpret_cast<T*>(getAny({ T::kObjectType, 0 }));
+    }
+
+    template<typename T>
+    T* get(size_t id)
+    {
+        static_assert(getMaxObjects(T::kObjectType) != 1);
+        return reinterpret_cast<T*>(getAny({ T::kObjectType, static_cast<LoadedObjectId>(id) }));
+    }
 
 #pragma pack(push, 1)
     struct ObjectHeader2

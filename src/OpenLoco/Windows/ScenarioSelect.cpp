@@ -191,7 +191,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         auto isLoaded = ObjectManager::findIndex(scenarioInfo->currency);
         if (!isLoaded)
         {
-            // Unload current currency object
+            // Swap out the currency object and reload
             ObjectManager::unload(ObjectManager::getHeader({ ObjectType::currency, 0 }));
             ObjectManager::load(scenarioInfo->currency);
             ObjectManager::reloadAll();

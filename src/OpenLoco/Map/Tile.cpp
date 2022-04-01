@@ -1,6 +1,7 @@
 #include "Tile.h"
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
+#include "../Objects/BuildingObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Station.h"
 #include "../Ui/WindowManager.h"
