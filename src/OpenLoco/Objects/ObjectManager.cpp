@@ -645,6 +645,12 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<TrainSignalObject*>(&obj)->validate();
             case ObjectType::levelCrossing:
                 return reinterpret_cast<LevelCrossingObject*>(&obj)->validate();
+            case ObjectType::streetLight:
+                return reinterpret_cast<StreetLightObject*>(&obj)->validate();
+            case ObjectType::tunnel:
+                return reinterpret_cast<TunnelObject*>(&obj)->validate();
+            case ObjectType::bridge:
+                return reinterpret_cast<BridgeObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -695,6 +701,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::levelCrossing:
                 reinterpret_cast<LevelCrossingObject*>(&obj)->unload();
+                break;
+            case ObjectType::streetLight:
+                reinterpret_cast<StreetLightObject*>(&obj)->unload();
+                break;
+            case ObjectType::tunnel:
+                reinterpret_cast<TunnelObject*>(&obj)->unload();
+                break;
+            case ObjectType::bridge:
+                reinterpret_cast<BridgeObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -761,6 +776,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::levelCrossing:
                 reinterpret_cast<LevelCrossingObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::streetLight:
+                reinterpret_cast<StreetLightObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::tunnel:
+                reinterpret_cast<TunnelObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::bridge:
+                reinterpret_cast<BridgeObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
