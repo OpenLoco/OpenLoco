@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Span.hpp"
 #include "Map/Tile.h"
 #include "Map/TileLoop.hpp"
 #include "Types.hpp"
@@ -9,6 +10,13 @@
 namespace OpenLoco
 {
     struct IndustryObject;
+
+    struct Unk4F9274
+    {
+        Map::Pos2 pos;
+        uint8_t unk;
+    };
+    const stdx::span<const Unk4F9274> getUnk4F9274(bool type);
 
     namespace IndustryFlags
     {

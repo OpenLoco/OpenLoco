@@ -15,22 +15,21 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco
 {
-    struct Unk4F9274
+    const std::array<Unk4F9274, 1> word_4F9274 = {
+        Unk4F9274{ { 0, 0 }, 0 },
+    };
+    const std::array<Unk4F9274, 4> word_4F927C = {
+        Unk4F9274{ { 0, 0 }, 0 },
+        Unk4F9274{ { 0, 32 }, 1 },
+        Unk4F9274{ { 32, 32 }, 2 },
+        Unk4F9274{ { 32, 0 }, 3 },
+    };
+    const stdx::span<const Unk4F9274> getUnk4F9274(bool type)
     {
-        Pos2 pos;
-        uint8_t unk;
-    };
-    static const Unk4F9274 word_4F9274[] = {
-        { { 0, 0 }, 0 },
-        { { Location::null, 0 }, 0 }
-    };
-    static const Unk4F9274 word_4F927C[] = {
-        { { 0, 0 }, 0 },
-        { { 0, 32 }, 1 },
-        { { 32, 32 }, 2 },
-        { { 32, 0 }, 3 },
-        { { Location::null, 0 }, 0 }
-    };
+        if (type)
+            return word_4F927C;
+        return word_4F9274;
+    }
 
     const IndustryObject* Industry::getObject() const
     {
@@ -251,15 +250,10 @@ namespace OpenLoco
                     const auto* industryObject = tileIndustry->getObject();
                     if (industryObject != nullptr)
                     {
-                        auto animOffsets = word_4F9274;
-                        if (industryObject->var_C6 & (1 << industryEl->var_6_1F()))
+                        auto animOffsets = getUnk4F9274(industryObject->var_C6 & (1 << industryEl->var_6_1F()));
+                        for (auto animOffset : animOffsets)
                         {
-                            animOffsets = word_4F927C;
-                        }
-                        while (animOffsets[0].pos.x != Location::null)
-                        {
-                            AnimationManager::createAnimation(3, animOffsets->pos + tilePos, baseZ);
-                            animOffsets++;
+                            AnimationManager::createAnimation(3, animOffset.pos + tilePos, baseZ);
                         }
                     }
                 }
