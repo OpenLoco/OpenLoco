@@ -1,8 +1,9 @@
 #pragma once
+#include <cstdint>
 
 namespace OpenLoco::Intro
 {
-    enum class State
+    enum class State : uint8_t
     {
         none,
         begin,
