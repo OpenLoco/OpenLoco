@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Core/Span.hpp"
 #include "Map/Tile.h"
 #include "Map/TileLoop.hpp"
 #include "Types.hpp"
 #include "Utility/Prng.hpp"
 #include <limits>
-#include <vector>
 
 namespace OpenLoco
 {
@@ -16,7 +16,7 @@ namespace OpenLoco
         Map::Pos2 pos;
         uint8_t unk;
     };
-    const std::vector<Unk4F9274>& getUnk4F9274(bool type);
+    const stdx::span<const Unk4F9274> getUnk4F9274(bool type);
 
     namespace IndustryFlags
     {
