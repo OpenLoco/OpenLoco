@@ -1274,6 +1274,7 @@ namespace OpenLoco
         {
             std::cerr << e.what() << std::endl;
             Ui::showMessageBox("Exception", e.what());
+            exitCleanly();
             return 2;
         }
     }
