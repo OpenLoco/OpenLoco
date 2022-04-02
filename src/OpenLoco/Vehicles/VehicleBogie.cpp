@@ -66,10 +66,27 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
+        collision();
+        return false;
+    }
+
+    // 0x004AAC02
+    void VehicleBogie::updateRoll()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+
+        call(0x004AAC02, regs);
+    }
+
+    // 0x004AA0DF
+    void VehicleBogie::collision()
+    {
         sub_4AA464();
         applyDestructionToComponent(*this);
         var_0C |= Flags0C::unk_5;
 
+        // Apply collision to the whole car
         Vehicle train(head);
         bool end = false;
         for (auto& car : train.cars)
@@ -89,6 +106,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
+        // Apply Collision to collided train
         auto* collideEntity = EntityManager::get<EntityBase>(vehicleUpdate_collisionCarComponent);
         auto* collideCarComponent = collideEntity->asVehicle();
         if (collideCarComponent != nullptr)
@@ -99,7 +117,6 @@ namespace OpenLoco::Vehicles
                 collideCarComponent->sub_4AA464();
             }
 
-            end = false;
             for (auto& car : train.cars)
             {
                 for (auto& carComponent : car)
@@ -115,25 +132,10 @@ namespace OpenLoco::Vehicles
                     if (carComponent.front == collideCarComponent || carComponent.back == collideCarComponent || carComponent.body == collideCarComponent)
                     {
                         applyDestructionToComponent(*carComponent.body);
-                        end = true;
-                        break;
+                        return;
                     }
-                }
-                if (end)
-                {
-                    break;
                 }
             }
         }
-        return false;
-    }
-
-    // 0x004AAC02
-    void VehicleBogie::updateRoll()
-    {
-        registers regs;
-        regs.esi = X86Pointer(this);
-
-        call(0x004AAC02, regs);
     }
 }
