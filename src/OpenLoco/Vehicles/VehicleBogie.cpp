@@ -15,6 +15,15 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
     static loco_global<EntityId, 0x0113610E> vehicleUpdate_collisionCarComponent;
 
+    template<typename T>
+    void applyDestructionToComponent(T& component)
+    {
+        component.explodeComponent();
+        component.var_5A &= ~(1u << 31);
+        component.var_5A >>= 3;
+        component.var_5A |= (1u << 31);
+    }
+
     // 0x004AA008
     bool VehicleBogie::update()
     {
@@ -58,11 +67,8 @@ namespace OpenLoco::Vehicles
         }
 
         sub_4AA464();
-        explodeComponent();
+        applyDestructionToComponent(*this);
         var_0C |= Flags0C::unk_5;
-        var_5A &= ~(1u << 31);
-        var_5A >>= 3;
-        var_5A |= (1u << 31);
 
         Vehicle train(head);
         bool end = false;
@@ -72,10 +78,7 @@ namespace OpenLoco::Vehicles
             {
                 if (carComponent.front == this || carComponent.back == this)
                 {
-                    carComponent.body->explodeComponent();
-                    carComponent.body->var_5A &= ~(1u << 31);
-                    carComponent.body->var_5A >>= 3;
-                    carComponent.body->var_5A |= (1u << 31);
+                    applyDestructionToComponent(*carComponent.body);
                     end = true;
                     break;
                 }
@@ -103,24 +106,15 @@ namespace OpenLoco::Vehicles
                 {
                     if (carComponent.front == collideCarComponent)
                     {
-                        carComponent.front->explodeComponent();
-                        carComponent.front->var_5A &= ~(1u << 31);
-                        carComponent.front->var_5A >>= 3;
-                        carComponent.front->var_5A |= (1u << 31);
+                        applyDestructionToComponent(*carComponent.front);
                     }
                     if (carComponent.back == collideCarComponent)
                     {
-                        carComponent.back->explodeComponent();
-                        carComponent.back->var_5A &= ~(1u << 31);
-                        carComponent.back->var_5A >>= 3;
-                        carComponent.back->var_5A |= (1u << 31);
+                        applyDestructionToComponent(*carComponent.back);
                     }
                     if (carComponent.front == collideCarComponent || carComponent.back == collideCarComponent || carComponent.body == collideCarComponent)
                     {
-                        carComponent.body->explodeComponent();
-                        carComponent.body->var_5A &= ~(1u << 31);
-                        carComponent.body->var_5A >>= 3;
-                        carComponent.body->var_5A |= (1u << 31);
+                        applyDestructionToComponent(*carComponent.body);
                         end = true;
                         break;
                     }
