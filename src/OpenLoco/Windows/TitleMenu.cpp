@@ -392,7 +392,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         auto& cfg = Config::get();
         auto szHost = std::string(host);
-        Utility::strcpy_safe(cfg.last_host, szHost.c_str());
+        Utility::strcpy_safe(cfg.lastHost, szHost.c_str());
 
         Network::joinServer(host);
     }

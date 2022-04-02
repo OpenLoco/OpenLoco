@@ -47,11 +47,11 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         auto window = WindowManager::createWindowCentred(
             WindowType::networkStatus,
             windowSize,
-            WindowFlags::flag_11 | WindowFlags::stick_to_front,
+            WindowFlags::flag_11 | WindowFlags::stickToFront,
             &_events);
 
         window->widgets = widgets;
-        window->enabled_widgets = (1 << Widx::closeBtn);
+        window->enabledWidgets = (1 << Widx::closeBtn);
 
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, Colour::black);
@@ -114,9 +114,9 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
     static void initEvents()
     {
-        _events.on_close = onClose;
-        _events.on_mouse_up = onMouseUp;
+        _events.onClose = onClose;
+        _events.onMouseUp = onMouseUp;
         _events.draw = draw;
-        _events.prepare_draw = prepareDraw;
+        _events.prepareDraw = prepareDraw;
     }
 }

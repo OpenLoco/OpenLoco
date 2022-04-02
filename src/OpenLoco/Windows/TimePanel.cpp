@@ -42,8 +42,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static void formatChallenge(FormatArguments& args);
     static void sendChatMessage(const char* str);
-    static void togglePaused();
-    static void changeGameSpeed(Window* w, uint8_t speed);
 
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                                   // 0,
