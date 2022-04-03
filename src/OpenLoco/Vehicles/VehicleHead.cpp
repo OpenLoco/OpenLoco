@@ -30,6 +30,7 @@
 #include "../ViewportManager.h"
 #include "Orders.h"
 #include "Vehicle.h"
+#include <OpenLoco/GameState.h>
 #include <cassert>
 #include <numeric>
 
@@ -195,7 +196,7 @@ namespace OpenLoco::Vehicles
         {
             if (car.front->var_5F & Flags5F::brokenDown)
             {
-                if ((scenarioTicks() & 3) == 0)
+                if ((getGameState().scenarioTicks & 3) == 0)
                 {
                     auto v2 = car.body; // body
 
@@ -3117,7 +3118,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::beginNewJourney()
     {
         // Set initial position for updateLastJourneyAverageSpeed
-        var_73 = scenarioTicks();
+        var_73 = getGameState().scenarioTicks;
         Vehicle train(this);
         var_6F = train.veh2->position.x;
         var_71 = train.veh2->position.y;

@@ -2,6 +2,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "ObjectManager.h"
+#include <OpenLoco/GameState.h>
 
 namespace OpenLoco
 {
@@ -53,7 +54,7 @@ namespace OpenLoco
     {
         auto imageId = (closedFrames + 1) * 8;
         auto frameCount = (closingFrames - 1);
-        auto animationFrame = frameCount & (scenarioTicks() >> animationSpeed);
+        auto animationFrame = frameCount & (getGameState().scenarioTicks >> animationSpeed);
         auto frameIndex = 8 * animationFrame;
         imageId += frameIndex;
         imageId += image;

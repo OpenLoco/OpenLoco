@@ -152,7 +152,7 @@ namespace OpenLoco::CompanyManager
     {
         if (!isEditorMode() && !Config::getNew().companyAIDisabled)
         {
-            CompanyId id = CompanyId(scenarioTicks() & 0x0F);
+            CompanyId id = CompanyId(getGameState().scenarioTicks & 0x0F);
             auto company = get(id);
             if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {

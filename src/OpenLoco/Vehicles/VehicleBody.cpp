@@ -9,6 +9,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
 #include "Vehicle.h"
+#include <OpenLoco/GameState.h>
 #include <cassert>
 
 using namespace OpenLoco::Interop;
@@ -927,7 +928,7 @@ namespace OpenLoco::Vehicles
 
         if (tickCalc && (soundCode == false))
         {
-            if (scenarioTicks() & 7)
+            if (getGameState().scenarioTicks & 7)
                 return;
         }
         else
@@ -1063,7 +1064,7 @@ namespace OpenLoco::Vehicles
                 var_05 = -var_05;
             }
 
-            if (scenarioTicks() & 3)
+            if (getGameState().scenarioTicks & 3)
                 return;
 
             auto positionFactor = vehicleObject->bodySprites[0].bogey_position * var_05 / 256;
@@ -1083,7 +1084,7 @@ namespace OpenLoco::Vehicles
                 var_05 = -var_05;
             }
 
-            if (scenarioTicks() & 3)
+            if (getGameState().scenarioTicks & 3)
                 return;
 
             if (var_5E != 0)
@@ -1121,7 +1122,7 @@ namespace OpenLoco::Vehicles
             var_05 = -var_05;
         }
 
-        if (scenarioTicks() & 7)
+        if (getGameState().scenarioTicks & 7)
             return;
 
         var_05 += 64;
@@ -1265,7 +1266,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if ((scenarioTicks() % frequency) != 0)
+        if ((getGameState().scenarioTicks % frequency) != 0)
             return;
 
         auto positionFactor = vehicleObject->bodySprites[0].bogey_position;

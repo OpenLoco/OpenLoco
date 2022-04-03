@@ -54,7 +54,7 @@ namespace OpenLoco::StationManager
     {
         if (Game::hasFlags(1u << 0) && !isEditorMode())
         {
-            const auto id = StationId(scenarioTicks() & 0x3FF);
+            const auto id = StationId(getGameState().scenarioTicks & 0x3FF);
             auto station = get(id);
             if (station != nullptr && !station->empty())
             {

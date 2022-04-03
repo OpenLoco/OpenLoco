@@ -229,11 +229,6 @@ namespace OpenLoco
         }
     }
 
-    uint32_t scenarioTicks()
-    {
-        return _scenario_ticks;
-    }
-
     Utility::prng& gPrng()
     {
         return getGameState().rng;

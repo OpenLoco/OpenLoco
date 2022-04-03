@@ -147,7 +147,7 @@ namespace OpenLoco::TownManager
     {
         if (Game::hasFlags(1u << 0) && !isEditorMode())
         {
-            auto ticks = scenarioTicks();
+            auto ticks = getGameState().scenarioTicks;
             if (ticks % 8 == 0)
             {
                 const auto id = TownId((ticks / 8) % 0x7F);
@@ -208,7 +208,7 @@ namespace OpenLoco::TownManager
         }
         const int32_t realDistance = Math::Vector::distance(Map::Pos2(town->x, town->y), loc);
         const auto unk = std::clamp((realDistance - town->numBuildings * 4 + 512) / 128, 0, 4);
-        const uint8_t invUnk = std::min(4 - unk, 3); //edx
+        const uint8_t invUnk = std::min(4 - unk, 3); // edx
         return { std::make_pair(town->id(), invUnk) };
     }
 
