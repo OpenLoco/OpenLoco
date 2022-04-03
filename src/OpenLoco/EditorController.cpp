@@ -1,5 +1,6 @@
 #include "EditorController.h"
 #include "Game.h"
+#include "S5/S5.h"
 #include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
@@ -8,8 +9,6 @@ using namespace OpenLoco::Ui::Windows;
 
 namespace OpenLoco::EditorController
 {
-    static loco_global<Step, 0x009C8714> _editorStep;
-
     // 0x0043D7DC
     void init()
     {
@@ -18,17 +17,17 @@ namespace OpenLoco::EditorController
 
     Step getCurrentStep()
     {
-        return _editorStep;
+        return (Step)S5::getOptions().editorStep;
     }
 
     Step getPreviousStep()
     {
-        return Step(static_cast<uint8_t>(*_editorStep) - 1);
+        return Step(static_cast<uint8_t>(S5::getOptions().editorStep) - 1);
     }
 
     Step getNextStep()
     {
-        return Step(static_cast<uint8_t>(*_editorStep) + 1);
+        return Step(static_cast<uint8_t>(S5::getOptions().editorStep) + 1);
     }
 
     bool canGoBack()
