@@ -1,9 +1,9 @@
 #include "../CompanyManager.h"
 #include "../Economy/Economy.h"
+#include "../GameState.h"
 #include "../Localisation/StringIds.h"
 #include "../Ui/WindowManager.h"
 #include "GameCommands.h"
-#include <OpenLoco/GameState.h>
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands

@@ -4,6 +4,7 @@
 #include "../Entities/EntityManager.h"
 #include "../Game.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -25,7 +26,6 @@
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
 #include "ToolbarTopCommon.h"
-#include <OpenLoco/GameState.h>
 #include <map>
 
 using namespace OpenLoco::Interop;

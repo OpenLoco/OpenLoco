@@ -1,6 +1,7 @@
 #include "ShortcutManager.h"
 #include "../CompanyManager.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
@@ -9,7 +10,6 @@
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Windows/Construction/Construction.h"
-#include <OpenLoco/GameState.h>
 #include <array>
 #include <unordered_map>
 
