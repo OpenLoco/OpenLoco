@@ -26,9 +26,9 @@ namespace OpenLoco
         Speed16 max_speed;            // 0x0A
         uint8_t max_height;           // 0x0C
         uint8_t cost_index;           // 0x0D
-        uint16_t base_cost_factor;    // 0x0E
-        uint16_t height_cost_factor;  // 0x10
-        uint16_t sell_cost_factor;    // 0x12
+        int16_t base_cost_factor;     // 0x0E
+        int16_t height_cost_factor;   // 0x10
+        int16_t sell_cost_factor;     // 0x12
         uint16_t disabled_track_cfg;  // 0x14
         uint32_t image;               // 0x16
         uint8_t track_num_compatible; // 0x1A
