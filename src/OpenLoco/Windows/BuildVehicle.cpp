@@ -235,7 +235,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
-    static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
     static WindowEventList _events;
 
@@ -1147,8 +1146,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     break;
                 }
 
-                uint8_t unk1 = _52622E & 0x3F;
-                uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
+                uint8_t unk1 = getGameState().var_416 & 0x3F;
+                uint8_t unk2 = ((getGameState().var_416 + 2) / 4) & 0x3F;
                 drawVehicleOverview(&context, window.rowHover, CompanyManager::getControllingId(), unk1, unk2, { 90, 37 });
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);

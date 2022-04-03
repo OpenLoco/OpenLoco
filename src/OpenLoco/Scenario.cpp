@@ -41,8 +41,6 @@ namespace OpenLoco::Scenario
 
     static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
 
-    static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
-
     static loco_global<ObjectiveType, 0x00526230> objectiveType;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
     static loco_global<uint32_t, 0x00526232> objectiveCompanyValue;
@@ -251,7 +249,7 @@ namespace OpenLoco::Scenario
         setDayProgression(0);
 
         _scenario_ticks = 0;
-        _52622E = 0;
+        getGameState().var_416 = 0;
         getGameState().currentSeason = Season::winter;
 
         CompanyManager::determineAvailableVehicles();

@@ -759,7 +759,7 @@ namespace OpenLoco
                             case State::scrollRight: break;
                         }
                     }
-                    addr<0x0052622E, int16_t>() += numUpdates;
+                    getGameState().var_416 += numUpdates;
                     if (isPaused())
                     {
                         numUpdates = 0;
