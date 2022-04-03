@@ -29,8 +29,6 @@ namespace OpenLoco::Game
 
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
 
-    static loco_global<uint16_t, 0x009C871A> _scenarioFlags;
-
     static loco_global<char[512], 0x0112CE04> _savePath;
 
     // 0x0046DB4C
@@ -99,10 +97,10 @@ namespace OpenLoco::Game
     // 0x00441993
     bool saveLandscapeOpen()
     {
-        *_scenarioFlags &= ~(1 << 0);
+        S5::getOptions().scenarioFlags &= ~(1 << 0);
         if (hasFlags(1u << 0))
         {
-            *_scenarioFlags |= (1 << 0);
+            S5::getOptions().scenarioFlags |= (1 << 0);
             sub_46DB4C();
         }
 
