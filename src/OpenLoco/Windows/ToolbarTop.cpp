@@ -25,6 +25,7 @@
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
 #include "ToolbarTopCommon.h"
+#include <OpenLoco/GameState.h>
 #include <map>
 
 using namespace OpenLoco::Interop;
@@ -36,7 +37,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
     static loco_global<VehicleType, 0x00525FAF> last_vehicles_option;
-    static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
 
     static loco_global<uint32_t, 0x009C86F8> zoom_ticks;
 
@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        Dropdown::setHighlightedItem(last_build_vehicles_option);
+        Dropdown::setHighlightedItem(getGameState().lastBuildVehiclesOption);
     }
 
     // 0x0043ADC7
@@ -496,7 +496,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
 
         itemIndex = menu_options[itemIndex];
-        last_build_vehicles_option = itemIndex;
+        getGameState().lastBuildVehiclesOption = itemIndex;
 
         BuildVehicle::open(itemIndex, 1 << 31);
     }
@@ -769,7 +769,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             // Figure out what icon to show on the button face.
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[last_build_vehicles_option], company_colour);
+            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[getGameState().lastBuildVehiclesOption], company_colour);
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::build_vehicles_menu))
                 fg_image++;

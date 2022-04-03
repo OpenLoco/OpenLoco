@@ -9,6 +9,7 @@
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Windows/Construction/Construction.h"
+#include <OpenLoco/GameState.h>
 #include <array>
 #include <unordered_map>
 
@@ -391,11 +392,10 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
-        if (last_build_vehicles_option == 0xFF)
+        if (getGameState().lastBuildVehiclesOption == 0xFF)
             return;
 
-        Windows::BuildVehicle::open(last_build_vehicles_option, 1 << 31);
+        Windows::BuildVehicle::open(getGameState().lastBuildVehiclesOption, 1 << 31);
     }
 
     // 0x004BF2D1

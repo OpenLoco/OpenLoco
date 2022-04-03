@@ -23,6 +23,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
+#include <OpenLoco/GameState.h>
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -234,8 +235,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
-    static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option; // Type is VehicleType
-    static loco_global<uint16_t, 0x0052622E> _52622E;                   // Tick related
+    static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
     static WindowEventList _events;
 
@@ -595,9 +595,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window->rowHeight = _scrollRowHeight[newTab];
                 window->frame_no = 0;
                 window->currentSecondaryTab = 0;
-                if (newTab != last_build_vehicles_option)
+                if (newTab != getGameState().lastBuildVehiclesOption)
                 {
-                    last_build_vehicles_option = newTab;
+                    getGameState().lastBuildVehiclesOption = newTab;
                     WindowManager::invalidate(WindowType::topToolbar, 0);
                 }
 
