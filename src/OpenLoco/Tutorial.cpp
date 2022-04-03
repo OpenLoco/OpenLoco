@@ -19,8 +19,8 @@ namespace OpenLoco::Tutorial
     static loco_global<State, 0x00508F19> _state;
 
     // The following two globals are unused, but left here for documentation purposes.
-    static loco_global<uint16_t*, 0x009C86FC> _tutorialOffset;
-    static loco_global<uint16_t*, 0x009C8704> _tutorialEnd;
+    // static loco_global<uint16_t*, 0x009C86FC> _tutorialOffset;
+    // static loco_global<uint16_t*, 0x009C8704> _tutorialEnd;
 
     static loco_global<string_id, 0x009C8708> _tutorialString;
     static loco_global<uint8_t, 0x009C870A> _tutorialNumber;
