@@ -3,12 +3,12 @@
 #include "../Localisation/StringIds.h"
 #include "../Ui/WindowManager.h"
 #include "GameCommands.h"
+#include <OpenLoco/GameState.h>
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
-    static loco_global<uint16_t, 0x0052621A> maxLoanSize;
 
     // 0x0046DE88
     static uint32_t changeLoan(const currency32_t newLoan, const uint8_t flags)
@@ -28,7 +28,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            const auto maxLoan = Economy::getInflationAdjustedCost(maxLoanSize, 0, 8);
+            const auto maxLoan = Economy::getInflationAdjustedCost(getGameState().maxLoanSize, 0, 8);
             if (newLoan > maxLoan)
             {
                 GameCommands::setErrorText(StringIds::bank_refuses_to_increase_loan);

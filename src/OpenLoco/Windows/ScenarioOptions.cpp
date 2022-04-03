@@ -29,7 +29,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     static loco_global<uint8_t, 0x00526216> preferredAIAggressiveness;
     static loco_global<uint8_t, 0x00526217> preferredAICompetitiveness;
     static loco_global<uint16_t, 0x00526218> startingLoanSize;
-    static loco_global<uint16_t, 0x0052621A> maxLoanSize;
 
     static loco_global<Scenario::ObjectiveType, 0x00526230> objectiveType;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
@@ -893,18 +892,18 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::starting_loan_up:
                     *startingLoanSize = std::min<uint16_t>(*startingLoanSize + 50, Scenario::max_start_loan_units);
-                    if (*startingLoanSize > *maxLoanSize)
-                        *maxLoanSize = *startingLoanSize;
+                    if (*startingLoanSize > getGameState().maxLoanSize)
+                        getGameState().maxLoanSize = *startingLoanSize;
                     break;
 
                 case widx::max_loan_size_down:
-                    *maxLoanSize = std::max<int16_t>(*maxLoanSize - 50, Scenario::min_loan_size_units);
-                    if (*startingLoanSize > *maxLoanSize)
-                        *startingLoanSize = *maxLoanSize;
+                    getGameState().maxLoanSize = std::max<int16_t>(getGameState().maxLoanSize - 50, Scenario::min_loan_size_units);
+                    if (*startingLoanSize > getGameState().maxLoanSize)
+                        *startingLoanSize = getGameState().maxLoanSize;
                     break;
 
                 case widx::max_loan_size_up:
-                    *maxLoanSize = std::min<uint16_t>(*maxLoanSize + 50, Scenario::max_loan_size_units);
+                    getGameState().maxLoanSize = std::min<uint16_t>(getGameState().maxLoanSize + 50, Scenario::max_loan_size_units);
                     break;
 
                 case widx::loan_interest_rate_down:
@@ -947,7 +946,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
             *(uint32_t*)&commonFormatArgs[0] = loanSizeInCurrency;
 
-            uint64_t maxLoanSizeInCurrency = Economy::getInflationAdjustedCost(*maxLoanSize, 0, 8) / 100 * 100;
+            uint64_t maxLoanSizeInCurrency = Economy::getInflationAdjustedCost(getGameState().maxLoanSize, 0, 8) / 100 * 100;
             *(uint32_t*)&commonFormatArgs[2] = static_cast<uint32_t>(maxLoanSizeInCurrency);
 
             *(uint32_t*)&commonFormatArgs[4] = *loanInterestRate;
