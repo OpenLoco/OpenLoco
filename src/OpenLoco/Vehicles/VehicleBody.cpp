@@ -9,7 +9,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
 #include "Vehicle.h"
-#include <OpenLoco/GameState.h>
+#include "../GameState.h"
 #include <cassert>
 
 using namespace OpenLoco::Interop;

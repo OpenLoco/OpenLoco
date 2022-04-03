@@ -7,6 +7,7 @@
 #include "../Entities/EntityManager.h"
 #include "../Entities/Misc.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../Graphics/Gfx.h"
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
@@ -30,7 +31,6 @@
 #include "../ViewportManager.h"
 #include "Orders.h"
 #include "Vehicle.h"
-#include <OpenLoco/GameState.h>
 #include <cassert>
 #include <numeric>
 

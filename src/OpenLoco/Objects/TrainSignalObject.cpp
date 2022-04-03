@@ -2,7 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
-#include <OpenLoco/GameState.h>
+#include "../GameState.h"
 
 namespace OpenLoco
 {
