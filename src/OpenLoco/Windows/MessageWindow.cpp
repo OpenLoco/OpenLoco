@@ -3,6 +3,7 @@
 #include "../Config.h"
 #include "../Date.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -21,7 +22,6 @@
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
-#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 

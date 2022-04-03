@@ -1,5 +1,6 @@
 #include "../../Audio/Audio.h"
 #include "../../Config.h"
+#include "../../GameState.h"
 #include "../../Graphics/Colour.h"
 #include "../../Interop/Interop.hpp"
 #include "../../Message.h"
@@ -7,7 +8,6 @@
 #include "../../Objects/InterfaceSkinObject.h"
 #include "../../Objects/ObjectManager.h"
 #include "News.h"
-#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Config;

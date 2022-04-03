@@ -1,6 +1,7 @@
 #include "../../CompanyManager.h"
 #include "../../Date.h"
 #include "../../GameCommands/GameCommands.h"
+#include "../../GameState.h"
 #include "../../Graphics/Colour.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
@@ -20,7 +21,6 @@
 #include "../../StationManager.h"
 #include "../../Widget.h"
 #include "Construction.h"
-#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

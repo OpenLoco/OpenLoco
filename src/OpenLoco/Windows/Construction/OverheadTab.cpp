@@ -1,6 +1,7 @@
 #include "../../Audio/Audio.h"
 #include "../../CompanyManager.h"
 #include "../../GameCommands/GameCommands.h"
+#include "../../GameState.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
@@ -13,7 +14,6 @@
 #include "../../Ui/Dropdown.h"
 #include "../../Widget.h"
 #include "Construction.h"
-#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

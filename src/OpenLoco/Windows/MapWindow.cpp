@@ -2,6 +2,7 @@
 #include "../Entities/Entity.h"
 #include "../Entities/EntityManager.h"
 #include "../Game.h"
+#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -25,7 +26,6 @@
 #include "../Vehicles/Orders.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
-#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::WindowManager;
