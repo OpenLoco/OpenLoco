@@ -25,7 +25,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
     static loco_global<uint8_t, 0x00525FC6> loanInterestRate;
 
-    static loco_global<uint8_t, 0x00526214> competitorStartDelay;
     static loco_global<uint8_t, 0x00526215> preferredAIIntelligence;
     static loco_global<uint8_t, 0x00526216> preferredAIAggressiveness;
     static loco_global<uint8_t, 0x00526217> preferredAICompetitiveness;
@@ -705,12 +704,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
 
                 case widx::delay_before_competing_companies_start_down:
-                    *competitorStartDelay = std::max<int8_t>(*competitorStartDelay - 1, Scenario::min_competitor_start_delay);
+                    getGameState().competitorStartDelay = std::max<int8_t>(getGameState().competitorStartDelay - 1, Scenario::min_competitor_start_delay);
                     self->invalidate();
                     break;
 
                 case widx::delay_before_competing_companies_start_up:
-                    *competitorStartDelay = std::min<uint8_t>(*competitorStartDelay + 1, Scenario::max_competitor_start_delay);
+                    getGameState().competitorStartDelay = std::min<uint8_t>(getGameState().competitorStartDelay + 1, Scenario::max_competitor_start_delay);
                     self->invalidate();
                     break;
 
@@ -808,7 +807,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             Common::prepareDraw(self);
 
             commonFormatArgs[0] = getGameState().maxCompetingCompanies;
-            commonFormatArgs[1] = *competitorStartDelay;
+            commonFormatArgs[1] = getGameState().competitorStartDelay;
 
             self->widgets[widx::preferred_intelligence].text = preferenceLabelIds[*preferredAIIntelligence];
             self->widgets[widx::preferred_aggressiveness].text = preferenceLabelIds[*preferredAIAggressiveness];
