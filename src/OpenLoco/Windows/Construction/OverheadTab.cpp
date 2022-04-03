@@ -13,6 +13,7 @@
 #include "../../Ui/Dropdown.h"
 #include "../../Widget.h"
 #include "Construction.h"
+#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
@@ -501,7 +502,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 x = 0x2000;
                 y = 0x2000;
 
-                auto company = CompanyManager::get(_playerCompany);
+                auto company = CompanyManager::get(getGameState().playerCompanies[0]);
                 auto companyColour = company->mainColours.primary;
                 _byte_522095 = _byte_522095 | (1 << 0);
 

@@ -15,6 +15,7 @@
 #include "../../Ui/Dropdown.h"
 #include "../../Widget.h"
 #include "Construction.h"
+#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
@@ -1581,7 +1582,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 Dropdown::setHighlightedItem(i);
 
             auto bridgeObj = ObjectManager::get<BridgeObject>(bridge);
-            auto company = CompanyManager::get(_playerCompany);
+            auto company = CompanyManager::get(getGameState().playerCompanies[0]);
             auto companyColour = company->mainColours.primary;
             auto imageId = Gfx::recolour(bridgeObj->image, companyColour);
 
@@ -2573,7 +2574,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto bridgeObj = ObjectManager::get<BridgeObject>(_lastSelectedBridge);
                 if (bridgeObj != nullptr)
                 {
-                    auto company = CompanyManager::get(_playerCompany);
+                    auto company = CompanyManager::get(getGameState().playerCompanies[0]);
                     auto imageId = Gfx::recolour(bridgeObj->image, company->mainColours.primary);
                     auto x = self->x + self->widgets[widx::bridge].left + 2;
                     auto y = self->y + self->widgets[widx::bridge].top + 1;

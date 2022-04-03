@@ -7,6 +7,7 @@
 #include "../../Objects/InterfaceSkinObject.h"
 #include "../../Objects/ObjectManager.h"
 #include "News.h"
+#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Config;
@@ -67,7 +68,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (messageSubType == MessageCriticality::majorCompany)
             {
-                if (news->companyId != _playerCompany)
+                if (news->companyId != getGameState().playerCompanies[0])
                 {
                     messageSubType = MessageCriticality::majorCompetitor;
                 }
@@ -75,7 +76,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (messageSubType == MessageCriticality::minorCompany)
             {
-                if (news->companyId != _playerCompany)
+                if (news->companyId != getGameState().playerCompanies[0])
                 {
                     messageSubType = MessageCriticality::minorCompetitor;
                 }
@@ -119,7 +120,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             Audio::SoundId soundId = Audio::SoundId::notification;
 
-            if (news->companyId == CompanyId::null || news->companyId == _playerCompany)
+            if (news->companyId == CompanyId::null || news->companyId == getGameState().playerCompanies[0])
             {
                 soundId = mtd.sound;
             }
