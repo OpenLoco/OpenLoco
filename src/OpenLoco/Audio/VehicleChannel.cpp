@@ -85,7 +85,7 @@ namespace OpenLoco::Audio
         const auto overallVolumeModifier = std::max(falloffVolumeModifier + undergroundVolumeModifier + zoomVolumeModifier, 0);
 
         // volume is in hundredth decibels max decrease in volume is -100dB.
-        const auto volume = std::min(((v->drivingSoundVolume * overallVolumeModifier) / 8) - kVehicleVolumeCalcMin, kVolumeMin);
+        const auto volume = std::max(((v->drivingSoundVolume * overallVolumeModifier) / 8) + kVehicleVolumeCalcMin, kVolumeMin);
 
         return { makeObjectSoundId(v->drivingSoundId), { volume, panX, v->drivingSoundFrequency } };
     }
