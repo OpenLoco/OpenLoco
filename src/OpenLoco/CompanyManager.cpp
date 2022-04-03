@@ -31,7 +31,6 @@ namespace OpenLoco::CompanyManager
 {
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<uint8_t, 0x00526214> _companyCompetitionDelay;
-    static loco_global<uint8_t, 0x00525FB7> _companyMaxCompeting;
     static loco_global<uint8_t[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
@@ -300,7 +299,7 @@ namespace OpenLoco::CompanyManager
     // 0x004306D1
     static void produceCompanies()
     {
-        if (_companyCompetitionDelay == 0 && _companyMaxCompeting != 0)
+        if (_companyCompetitionDelay == 0 && getGameState().maxCompetingCompanies != 0)
         {
             int32_t companies_active = 0;
             for (const auto& company : companies())
@@ -312,7 +311,7 @@ namespace OpenLoco::CompanyManager
             auto& prng = gPrng();
             if (prng.randNext(16) == 0)
             {
-                if (prng.randNext(_companyMaxCompeting) + 1 > companies_active)
+                if (prng.randNext(getGameState().maxCompetingCompanies) + 1 > companies_active)
                 {
                     createAiCompany();
                 }

@@ -13,6 +13,7 @@
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
+#include <OpenLoco/GameState.h>
 
 using namespace OpenLoco::Interop;
 
@@ -21,8 +22,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     static const Ui::Size challengeWindowSize = { 366, 197 };
     static const Ui::Size companiesWindowSize = { 366, 327 };
     static const Ui::Size otherWindowSize = { 366, 217 };
-
-    static loco_global<uint8_t, 0x00525FB7> maxCompetingCompanies;
 
     static loco_global<uint8_t, 0x00525FC6> loanInterestRate;
 
@@ -696,12 +695,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             switch (widgetIndex)
             {
                 case widx::max_competing_companies_down:
-                    *maxCompetingCompanies = std::max<int8_t>(*maxCompetingCompanies - 1, Scenario::min_competing_companies);
+                    getGameState().maxCompetingCompanies = std::max<int8_t>(getGameState().maxCompetingCompanies - 1, Scenario::min_competing_companies);
                     self->invalidate();
                     break;
 
                 case widx::max_competing_companies_up:
-                    *maxCompetingCompanies = std::min<uint8_t>(*maxCompetingCompanies + 1, Scenario::max_competing_companies);
+                    getGameState().maxCompetingCompanies = std::min<uint8_t>(getGameState().maxCompetingCompanies + 1, Scenario::max_competing_companies);
                     self->invalidate();
                     break;
 
@@ -808,7 +807,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            commonFormatArgs[0] = *maxCompetingCompanies;
+            commonFormatArgs[0] = getGameState().maxCompetingCompanies;
             commonFormatArgs[1] = *competitorStartDelay;
 
             self->widgets[widx::preferred_intelligence].text = preferenceLabelIds[*preferredAIIntelligence];
