@@ -651,6 +651,12 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<TunnelObject*>(&obj)->validate();
             case ObjectType::bridge:
                 return reinterpret_cast<BridgeObject*>(&obj)->validate();
+            case ObjectType::trackStation:
+                return reinterpret_cast<TrainStationObject*>(&obj)->validate();
+            case ObjectType::trackExtra:
+                return reinterpret_cast<TrackExtraObject*>(&obj)->validate();
+            case ObjectType::track:
+                return reinterpret_cast<TrackObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -710,6 +716,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::bridge:
                 reinterpret_cast<BridgeObject*>(&obj)->unload();
+                break;
+            case ObjectType::trackStation:
+                reinterpret_cast<TrainStationObject*>(&obj)->unload();
+                break;
+            case ObjectType::trackExtra:
+                reinterpret_cast<TrackExtraObject*>(&obj)->unload();
+                break;
+            case ObjectType::track:
+                reinterpret_cast<TrackObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -785,6 +800,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::bridge:
                 reinterpret_cast<BridgeObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::trackStation:
+                reinterpret_cast<TrainStationObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::trackExtra:
+                reinterpret_cast<TrackExtraObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::track:
+                reinterpret_cast<TrackObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;

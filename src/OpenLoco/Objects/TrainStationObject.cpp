@@ -1,6 +1,7 @@
 #include "TrainStationObject.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
+#include "../Interop/Interop.hpp"
 #include "ObjectManager.h"
 #include <cassert>
 
@@ -29,6 +30,49 @@ namespace OpenLoco
     {
         Ui::Point rowPosition = { x, y };
         ObjectManager::drawGenericDescription(context, rowPosition, designed_year, obsolete_year);
+    }
+
+    // 0x004909F3
+    bool TrainStationObject::validate() const
+    {
+        if (cost_index >= 32)
+        {
+            return false;
+        }
+        if (-sell_cost_factor > build_cost_factor)
+        {
+            return false;
+        }
+        if (build_cost_factor <= 0)
+        {
+            return false;
+        }
+        if (var_02 >= 1)
+        {
+            return false;
+        }
+        return num_compatible <= 7;
+    }
+
+    // 0x004908F1
+    void TrainStationObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    {
+        Interop::registers regs;
+        regs.esi = Interop::X86Pointer(this);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
+        Interop::call(0x004908F1, regs);
+    }
+
+    // 0x004909A5
+    void TrainStationObject::unload()
+    {
+        name = 0;
+        image = 0;
+        std::fill(std::begin(var_12), std::end(var_12), 0);
+        std::fill(std::begin(mods), std::end(mods), 0);
+        std::fill(std::begin(cargoOffsetBytes), std::end(cargoOffsetBytes), nullptr);
+        std::fill(std::begin(var_6E), std::end(var_6E), 0);
     }
 
     std::vector<TrainStationObject::CargoOffset> TrainStationObject::getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const
