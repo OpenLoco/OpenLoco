@@ -8,6 +8,7 @@ namespace OpenLoco
 {
     namespace CargoObjectFlags
     {
+        constexpr uint8_t unk0 = (1 << 0);
         constexpr uint8_t refit = (1 << 1);
         constexpr uint8_t unk2 = (1 << 2);
     }
@@ -26,7 +27,7 @@ namespace OpenLoco
         uint32_t unit_inline_sprite;    // 0xC
         std::uint8_t pad_10[0x12 - 0x10];
         uint8_t flags; // 0x12
-        std::uint8_t pad_13;
+        uint8_t var_13;
         uint8_t var_14;
         uint8_t premiumDays;       // 0x15
         uint8_t maxNonPremiumDays; // 0x16

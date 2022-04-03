@@ -83,7 +83,9 @@ namespace OpenLoco::Paint
     loco_global<int32_t[4], 0x4FD120> _4FD120;
     loco_global<int32_t[4], 0x4FD130> _4FD130;
     loco_global<int32_t[4], 0x4FD140> _4FD140;
+    loco_global<int32_t[4], 0x4FD150> _4FD150;
     loco_global<int32_t[4], 0x4FD1E0> _4FD1E0;
+    loco_global<int32_t[4], 0x4FD180> _4FD180;
     loco_global<int32_t[4], 0x4FD200> _4FD200;
 
     // 0x004FD120
@@ -149,6 +151,25 @@ namespace OpenLoco::Paint
         call(_4FD140[currentRotation], regs);
     }
 
+    // 0x004FD150
+    void PaintSession::addToPlotList4FD150(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    {
+        registers regs;
+        regs.ebx = imageId;
+        // regs.al = offset.x;
+        // regs.cl = offset.y;
+        regs.dx = offset.z;
+        regs.di = boundBoxSize.x;
+        regs.si = boundBoxSize.y;
+        regs.ah = boundBoxSize.z;
+
+        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
+        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
+        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+
+        call(_4FD150[currentRotation], regs);
+    }
+
     // 0x004FD200
     void PaintSession::addToPlotList4FD200(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
@@ -185,6 +206,23 @@ namespace OpenLoco::Paint
         addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
 
         call(_4FD1E0[currentRotation], regs);
+    }
+
+    void PaintSession::addToPlotList4FD180(uint32_t imageId, uint32_t ecx, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    {
+        registers regs;
+        regs.ebx = imageId;
+        regs.ecx = ecx;
+        regs.dx = offset.z;
+        regs.di = boundBoxSize.x;
+        regs.si = boundBoxSize.y;
+        regs.ah = boundBoxSize.z;
+
+        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
+        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
+        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+
+        call(_4FD180[currentRotation], regs);
     }
 
     // 0x0045E779
