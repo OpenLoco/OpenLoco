@@ -2,6 +2,7 @@
 #include "../Config.h"
 #include "../Entities/EntityManager.h"
 #include "../Entities/Misc.h"
+#include "../GameState.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
@@ -9,7 +10,6 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
 #include "Vehicle.h"
-#include "../GameState.h"
 #include <cassert>
 
 using namespace OpenLoco::Interop;
