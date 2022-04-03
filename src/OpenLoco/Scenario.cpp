@@ -41,7 +41,6 @@ namespace OpenLoco::Scenario
 
     static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
 
-    static loco_global<uint8_t, 0x00525FB4> _currentSnowLine;
     static loco_global<Season, 0x00525FB5> _currentSeason;
 
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
@@ -118,11 +117,11 @@ namespace OpenLoco::Scenario
 
         if (_currentSeason == Season::winter)
         {
-            _currentSnowLine = climateObj->winterSnowLine;
+            getGameState().currentSnowLine = climateObj->winterSnowLine;
         }
         else
         {
-            _currentSnowLine = climateObj->summerSnowLine;
+            getGameState().currentSnowLine = climateObj->summerSnowLine;
         }
     }
 
@@ -137,13 +136,13 @@ namespace OpenLoco::Scenario
 
         if (_currentSeason == Season::winter)
         {
-            if (_currentSnowLine != climateObj->winterSnowLine)
-                _currentSnowLine--;
+            if (getGameState().currentSnowLine != climateObj->winterSnowLine)
+                getGameState().currentSnowLine--;
         }
         else
         {
-            if (_currentSnowLine != climateObj->summerSnowLine)
-                _currentSnowLine++;
+            if (getGameState().currentSnowLine != climateObj->summerSnowLine)
+                getGameState().currentSnowLine++;
         }
     }
 
