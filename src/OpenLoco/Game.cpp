@@ -30,7 +30,6 @@ namespace OpenLoco::Game
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
 
     static loco_global<uint16_t, 0x009C871A> _scenarioFlags;
-    static loco_global<char[64], 0x009C873E> _scenarioTitle;
 
     static loco_global<char[512], 0x0112CE04> _savePath;
 
@@ -90,7 +89,7 @@ namespace OpenLoco::Game
     // 0x004418DB
     bool saveScenarioOpen()
     {
-        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / &_scenarioTitle[0];
+        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / S5::getOptions().scenarioName;
         strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
@@ -107,7 +106,7 @@ namespace OpenLoco::Game
             sub_46DB4C();
         }
 
-        auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / &_scenarioTitle[0];
+        auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / S5::getOptions().scenarioName;
         strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 

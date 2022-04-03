@@ -59,7 +59,6 @@ namespace OpenLoco::Scenario
     static loco_global<S5::Options, 0x009C8714> _activeOptions;
 
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
-    static loco_global<char[64], 0x009C873E> _scenarioTitle;
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
 
     // 0x0046115C
@@ -360,7 +359,7 @@ namespace OpenLoco::Scenario
         }
 
         auto savePath = Environment::getPath(Environment::PathId::save);
-        savePath /= std::string(_scenarioTitle) + S5::extensionSV5;
+        savePath /= std::string(S5::getOptions().scenarioName) + S5::extensionSV5;
         std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
 
         call(0x004C159C);
