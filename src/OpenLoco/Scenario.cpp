@@ -41,8 +41,6 @@ namespace OpenLoco::Scenario
 
     static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
 
-    static loco_global<Season, 0x00525FB5> _currentSeason;
-
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
 
     static loco_global<ObjectiveType, 0x00526230> objectiveType;
@@ -100,7 +98,7 @@ namespace OpenLoco::Scenario
             season = nextSeason(season);
         }
 
-        _currentSeason = season;
+        getGameState().currentSeason = season;
     }
 
     // 0x00496A18
@@ -115,7 +113,7 @@ namespace OpenLoco::Scenario
 
         updateSeason(currentDayOfYear, climateObj);
 
-        if (_currentSeason == Season::winter)
+        if (getGameState().currentSeason == Season::winter)
         {
             getGameState().currentSnowLine = climateObj->winterSnowLine;
         }
@@ -134,7 +132,7 @@ namespace OpenLoco::Scenario
 
         updateSeason(currentDayOfYear, climateObj);
 
-        if (_currentSeason == Season::winter)
+        if (getGameState().currentSeason == Season::winter)
         {
             if (getGameState().currentSnowLine != climateObj->winterSnowLine)
                 getGameState().currentSnowLine--;
@@ -254,7 +252,7 @@ namespace OpenLoco::Scenario
 
         _scenario_ticks = 0;
         _52622E = 0;
-        _currentSeason = Season::winter;
+        getGameState().currentSeason = Season::winter;
 
         CompanyManager::determineAvailableVehicles();
 
