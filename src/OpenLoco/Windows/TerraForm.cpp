@@ -1356,18 +1356,6 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::paint_mode:
                 {
                     isPaintMode = !isPaintMode;
-
-                    /*if (isPaintMode)
-                    {
-                        events.toolDragContinue = nullptr;
-                        events.toolDragEnd = nullptr;
-                    }
-                    else
-                    {
-                        events.toolDragContinue = toolDragContinue;
-                        events.toolDragEnd = toolDragEnd;
-                    }
-                    break;*/
                 }
             }
         }
