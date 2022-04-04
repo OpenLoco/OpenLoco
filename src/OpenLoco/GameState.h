@@ -6,9 +6,9 @@
 #include "Map/Animation.h"
 #include "Map/Wave.h"
 #include "Message.h"
+#include "Scenario.h"
 #include "Station.h"
 #include "Town.h"
-#include <OpenLoco/Scenario.h>
 
 namespace OpenLoco
 {
