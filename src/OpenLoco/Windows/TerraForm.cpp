@@ -1357,7 +1357,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     isPaintMode = !isPaintMode;
 
-                    if (isPaintMode)
+                    /*if (isPaintMode)
                     {
                         events.toolDragContinue = nullptr;
                         events.toolDragEnd = nullptr;
@@ -1367,7 +1367,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         events.toolDragContinue = toolDragContinue;
                         events.toolDragEnd = toolDragEnd;
                     }
-                    break;
+                    break;*/
                 }
             }
         }
@@ -1445,10 +1445,39 @@ namespace OpenLoco::Ui::Windows::Terraform
             WindowManager::invalidate(WindowType::terraform, 0);
         }
 
+        static void onPaintToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        {
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+
+            uint32_t cost = 0x80000000;
+            auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
+            if (res)
+            {
+                if (Map::TileManager::setMapSelectionTiles(res->first, 4) == 0)
+                {
+                    return;
+                }
+                const auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                const Pos2 centre = (pointA + pointB) / 2;
+                cost = GameCommands::do_66(centre, pointA, pointB, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
+            }
+
+            if (cost != _raiseLandCost)
+            {
+                _raiseLandCost = cost;
+                WindowManager::invalidate(WindowType::terraform);
+            }
+        }
+
         // 0x004BC9D7
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            // if (isPaintMode)
+            if (isPaintMode)
+            {
+                onPaintToolUpdate(self, widgetIndex, x, y);
+                return;
+            }
 
             uint16_t xPos = 0;
             if (widgetIndex != Common::widx::panel)
@@ -1509,12 +1538,17 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (widgetIndex != Common::widx::panel)
                 return;
+
+            if (isPaintMode)
+            {
+                paintLand();
+                return;
+            }
+
             if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
                 return;
 
             Ui::setToolCursor(CursorId::upDownArrow);
-
-            paintLand();
         }
 
         static void paintLand()
@@ -1542,13 +1576,19 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (widgetIndex != Common::widx::panel)
                 return;
 
-            auto window = WindowManager::findAt(x, y);
-            if (window == nullptr)
+            if (isPaintMode)
             {
-                if (isPaintMode)
+                auto window = WindowManager::find(WindowType::error);
+                if (window == nullptr)
                 {
                     paintLand();
                 }
+                return;
+            }
+
+            auto window = WindowManager::findAt(x, y);
+            if (window == nullptr)
+            {
                 return;
             }
 
@@ -1562,9 +1602,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             auto viewport = window->viewports[0];
             if (viewport == nullptr)
-                return;
-
-            if (isPaintMode)
                 return;
 
             auto zoom = viewport->zoom;
