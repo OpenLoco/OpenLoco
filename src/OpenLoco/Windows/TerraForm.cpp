@@ -1448,6 +1448,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC9D7
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
+            // if (isPaintMode)
+
             uint16_t xPos = 0;
             if (widgetIndex != Common::widx::panel)
                 return;
@@ -1500,12 +1502,6 @@ namespace OpenLoco::Ui::Windows::Terraform
                 raiseCost = raiseLand(Flags::flag_2);
             }
             setAdjustCost(raiseCost, lowerCost);
-
-            auto mouseButtonUsed = Input::getLastKnownButtonState();
-            if (isPaintMode && mouseButtonUsed == Input::MouseButton::leftPressed)
-            {
-                paintLand();
-            }
         }
 
         // 0x004BC9ED
@@ -1517,6 +1513,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
 
             Ui::setToolCursor(CursorId::upDownArrow);
+
+            paintLand();
         }
 
         static void paintLand()
@@ -1546,7 +1544,13 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             auto window = WindowManager::findAt(x, y);
             if (window == nullptr)
+            {
+                if (isPaintMode)
+                {
+                    paintLand();
+                }
                 return;
+            }
 
             WidgetIndex_t newWidgetIndex = window->findWidgetAt(x, y);
             if (newWidgetIndex == -1)
