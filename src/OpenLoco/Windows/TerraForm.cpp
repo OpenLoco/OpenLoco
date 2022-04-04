@@ -1215,7 +1215,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     namespace AdjustLand
     {
-        static void paintLand();
         enum widx
         {
             tool_area = 9,
@@ -1458,15 +1457,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        // 0x004BC9D7
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        void onAdjustLandToolUpdate(const OpenLoco::Ui::WidgetIndex_t& widgetIndex, const int16_t& x, const int16_t& y)
         {
-            if (isPaintMode)
-            {
-                onPaintToolUpdate(self, widgetIndex, x, y);
-                return;
-            }
-
             uint16_t xPos = 0;
             if (widgetIndex != Common::widx::panel)
                 return;
@@ -1521,22 +1513,18 @@ namespace OpenLoco::Ui::Windows::Terraform
             setAdjustCost(raiseCost, lowerCost);
         }
 
-        // 0x004BC9ED
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        // 0x004BC9D7
+        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != Common::widx::panel)
-                return;
-
             if (isPaintMode)
             {
-                paintLand();
+                onPaintToolUpdate(self, widgetIndex, x, y);
                 return;
             }
-
-            if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
-                return;
-
-            Ui::setToolCursor(CursorId::upDownArrow);
+            else
+            {
+                onAdjustLandToolUpdate(widgetIndex, x, y);
+            }
         }
 
         static void paintLand()
@@ -1556,6 +1544,24 @@ namespace OpenLoco::Ui::Windows::Terraform
                     GameCommands::doCommand(args, Flags::apply);
                 }
             }
+        }
+
+        // 0x004BC9ED
+        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        {
+            if (widgetIndex != Common::widx::panel)
+                return;
+
+            if (isPaintMode)
+            {
+                paintLand();
+                return;
+            }
+
+            if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                return;
+
+            Ui::setToolCursor(CursorId::upDownArrow);
         }
 
         // 0x004BC9E2
@@ -1635,6 +1641,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Common::prepareDraw(self);
 
             self->activatedWidgets |= (1ULL << widx::tool_area);
+
             if (isPaintMode)
             {
                 self->activatedWidgets |= (1 << widx::paint_mode);
