@@ -1234,7 +1234,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
             makeWidget({ 55, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
-            makeWidget({ 77, 92 }, { 20, 20 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_paint_landscape_tool), // todo: update image
+            makeWidget({ 77, 92 }, { 28, 28 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::null, StringIds::tooltip_paint_landscape_tool), // todo: update image
             widgetEnd(),
         };
 
@@ -1668,7 +1668,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC909
         static void draw(Window* self, Gfx::Context* context)
         {
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
+            auto imgId = skin->img;
+            self->widgets[widx::paint_mode].image = imgId + InterfaceSkin::ImageIds::tab_colour_scheme_frame0;
+
             self->draw(context);
+
             Common::drawTabs(self, context);
 
             auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
