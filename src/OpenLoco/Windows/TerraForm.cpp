@@ -1318,9 +1318,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void toolDragContinue(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y);
-        static void toolDragEnd(Window& self, const WidgetIndex_t widgetIndex);
-
         // 0x004BC9A7
         static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
