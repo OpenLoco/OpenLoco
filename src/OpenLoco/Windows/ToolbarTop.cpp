@@ -4,7 +4,6 @@
 #include "../Entities/EntityManager.h"
 #include "../Game.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -25,6 +24,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
+#include "../WindowGameState.h"
 #include "ToolbarTopCommon.h"
 #include <map>
 

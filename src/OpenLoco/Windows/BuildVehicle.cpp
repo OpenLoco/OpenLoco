@@ -3,7 +3,6 @@
 #include "../Economy/Economy.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -24,6 +23,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
+#include "../WindowGameState.h"
 #include <algorithm>
 
 using namespace OpenLoco::Interop;

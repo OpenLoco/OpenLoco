@@ -2,7 +2,6 @@
 #include "../CompanyManager.h"
 #include "../Economy/Economy.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -24,6 +23,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Utility/Numeric.hpp"
 #include "../Widget.h"
+#include "../WindowGameState.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

@@ -1,5 +1,4 @@
 #include "../Economy/Economy.h"
-#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -14,6 +13,7 @@
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
+#include "../WindowGameState.h"
 
 using namespace OpenLoco::Interop;
 
