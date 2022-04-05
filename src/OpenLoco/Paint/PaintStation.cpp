@@ -109,34 +109,114 @@ namespace OpenLoco::Paint
     // 0x004D79AC (0x00411456, 0x004115EB, 0x00411780, 0x00419915)
     void paintTrainStationStyle0StraightTrack(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageGlassBase)
     {
-        //const auto rotation = (session.getRotation() + elStation.rotation()) & 0x3;
+        const auto rotation = (session.getRotation() + elStation.rotation()) & 0x3;
 
         const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation.objectId());
         // This was part of paintStationCargo
         const auto unkPosHash = (session.getUnkPosition().x + session.getUnkPosition().y) / 32;
-        auto cargoOffsets = stationObj->getCargoOffsets(0, unkPosHash & 0x3);
+        auto cargoOffsets = stationObj->getCargoOffsets(rotation, unkPosHash & 0x3);
 
-        const Map::Pos3 bbSize = { 28, 4, 3 };
+        constexpr std::array<std::array<uint8_t, 4>, 4> cargoRotationFlags = {
+            std::array<uint8_t, 4>{ 0x9, 0x5, 0x6, 0xA },
+            std::array<uint8_t, 4>{ 0x9, 0x5, 0x6, 0xA },
+            std::array<uint8_t, 4>{ 0xA, 0x6, 0x5, 0x9 },
+            std::array<uint8_t, 4>{ 0xA, 0x6, 0x5, 0x9 },
+        };
+
+        struct PaintDetail
         {
-            Map::Pos3 bbOffsets = { 2, 2, elStation.baseHeight() + 8 };
-            // probably add rotation to imageBase
-            session.addToPlotList4FD150(imageBase, { 0, 0, elStation.baseHeight() }, bbOffsets, bbSize);
-
-            paintStationCargo(session, elStation, 0x9, 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffsets, bbSize);
-            paintStationCargo(session, elStation, 0x5, 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffsets, bbSize);
-        }
+            uint32_t imageId;
+            Map::Pos3 bbOffset;
+            Map::Pos3 bbSize;
+        };
+        struct PlatformImage
         {
-            // probably add rotation to imageBase
-            Map::Pos3 bbOffsets = { 2, 24, elStation.baseHeight() + 8 };
-            session.addToPlotList4FD150(imageBase + 1, { 0, 0, elStation.baseHeight() }, { 2, 24, elStation.baseHeight() + 8 }, bbSize);
+            PaintDetail back;
+            PaintDetail front;
+            PaintDetail canopy;
+            PaintDetail canopyTranslucent;
+        };
 
-            paintStationCargo(session, elStation, 0x6, 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffsets, bbSize);
-            paintStationCargo(session, elStation, 0xA, 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffsets, bbSize);
+        constexpr PlatformImage neStationPlatformImage = {
+            {
+                TrainStation::ImageIds::type0platformBackNE,
+                { 2, 2, 8 },
+                { 28, 4, 3 },
+            },
+            {
+                TrainStation::ImageIds::type0platformFrontNE,
+                { 2, 24, 8 },
+                { 28, 4, 3 },
+            },
+            {
+                TrainStation::ImageIds::type0platformCanopyNE,
+                { 2, 2, 26 },
+                { 28, 28, 1 },
+            },
+            {
+                TrainStation::ImageIds::type0platformCanopyTranslucentNE,
+                {},
+                {},
+            },
+        };
+        constexpr PlatformImage seStationPlatformImage = {
+            {
+                TrainStation::ImageIds::type0platformBackSE,
+                { 2, 2, 8 },
+                { 4, 28, 3 },
+            },
+            {
+                TrainStation::ImageIds::type0platformFrontSE,
+                { 24, 2, 8 },
+                { 4, 28, 3 },
+            },
+            {
+                TrainStation::ImageIds::type0platformCanopySE,
+                { 2, 2, 26 },
+                { 28, 28, 1 },
+            },
+            {
+                TrainStation::ImageIds::type0platformCanopyTranslucentSE,
+                {},
+                {},
+            },
+        };
+
+        constexpr std::array<PlatformImage, 4> stationPlatformImages = {
+            neStationPlatformImage,
+            seStationPlatformImage,
+            neStationPlatformImage,
+            seStationPlatformImage,
+        };
+
+        const auto& cargoFlags = cargoRotationFlags[rotation];
+        const auto& platformImages = stationPlatformImages[rotation];
+
+        const Map::Pos3 heightOffest(0, 0, elStation.baseHeight());
+
+        // Paint Back part of platform
+        {
+            Map::Pos3 bbOffset = platformImages.back.bbOffset + heightOffest;
+            session.addToPlotList4FD150(imageBase + platformImages.back.imageId, heightOffest, bbOffset, platformImages.back.bbSize);
+
+            paintStationCargo(session, elStation, cargoFlags[0], 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffset, platformImages.back.bbSize);
+            paintStationCargo(session, elStation, cargoFlags[1], 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffset, platformImages.back.bbSize);
+        }
+        // Paint Front part of platform
+        {
+            Map::Pos3 bbOffset = platformImages.front.bbOffset + heightOffest;
+            session.addToPlotList4FD150(imageBase + platformImages.front.imageId, heightOffest, bbOffset, platformImages.front.bbSize);
+
+            paintStationCargo(session, elStation, cargoFlags[2], 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffset, platformImages.front.bbSize);
+            paintStationCargo(session, elStation, cargoFlags[3], 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffset, platformImages.front.bbSize);
         }
 
-        session.addToPlotList4FD180(imageBase + 2, 1, { 0, 0, elStation.baseHeight() }, { 2, 2, elStation.baseHeight() + 28 }, { 28, 28, 1 });
-        session.attachToPrevious(imageGlassBase + 3, { 0, 0 });
-
+        // Paint Canopy of platform
+        {
+            Map::Pos3 bbOffset = platformImages.canopy.bbOffset + heightOffest;
+            session.addToPlotList4FD180(imageBase + platformImages.canopy.imageId, 1, heightOffest, bbOffset, platformImages.canopy.bbSize);
+            session.attachToPrevious(imageGlassBase + platformImages.canopyTranslucent.imageId, { 0, 0 });
+        }
         session.set525CF8(session.get525CF8() | 0x1FF);
     }
 

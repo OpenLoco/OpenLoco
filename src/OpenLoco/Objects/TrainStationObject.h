@@ -57,5 +57,25 @@ namespace OpenLoco
     {
         constexpr uint32_t preview_image = 0;
         constexpr uint32_t preview_image_windows = 1;
+        // These are relative to to var_12
+        // var_12 is the imageIds per sequenceIndex (for diagonal)
+        // A signle var_12 entry will have 4 rotations for each of the below
+        constexpr uint32_t type0platformBackNE = 0;
+        constexpr uint32_t type0platformFrontNE = 1;
+        constexpr uint32_t type0platformCanopyNE = 2;
+        constexpr uint32_t type0platformCanopyTranslucentNE = 3;
+        constexpr uint32_t type0platformBackSE = 4;
+        constexpr uint32_t type0platformFrontSE = 5;
+        constexpr uint32_t type0platformCanopySE = 6;
+        constexpr uint32_t type0platformCanopyTranslucentSE = 7;
+        constexpr uint32_t type0platformNE0 = 8;
+        constexpr uint32_t type0platformNE4 = 9;
+        constexpr uint32_t type0platformNE1 = 10;
+        constexpr uint32_t type0platformCanopyNE1 = 11;
+        constexpr uint32_t type0platformCanopyTranslucentNE1 = 12;
+        constexpr uint32_t type0platformSE1 = 13;
+        constexpr uint32_t type0platformSE2 = 14;
+        constexpr uint32_t type0platformSE3 = 15;
+        constexpr uint32_t type0platformCanopyTranslucentSE3 = 16;
     }
 }
