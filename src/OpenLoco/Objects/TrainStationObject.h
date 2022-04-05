@@ -68,7 +68,7 @@ namespace OpenLoco
         constexpr uint32_t style0StraightCanopySE = 6;
         constexpr uint32_t style0StraightCanopyTranslucentSE = 7;
         constexpr uint32_t style0DiagonalNE0 = 8;
-        constexpr uint32_t style0DiagonalNE4 = 9;
+        constexpr uint32_t style0DiagonalNE3 = 9;
         constexpr uint32_t style0DiagonalNE1 = 10;
         constexpr uint32_t style0DiagonalCanopyNE1 = 11;
         constexpr uint32_t style0DiagonalCanopyTranslucentNE1 = 12;
