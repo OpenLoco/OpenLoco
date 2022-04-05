@@ -1234,7 +1234,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
             makeWidget({ 85, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
-            makeWidget({ 55, 92 }, { 28, 28 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::null, StringIds::tooltip_paint_landscape_tool), // todo: update image
+            makeWidget({ 55, 92 }, { 28, 28 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::null, StringIds::tooltip_paint_landscape_tool),
             widgetEnd(),
         };
 
