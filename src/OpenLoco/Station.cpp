@@ -716,22 +716,22 @@ namespace OpenLoco
         for (uint8_t i = 0; i < kMaxCargoStats; ++i)
         {
             auto& stationCargo = cargoStats[i];
-            auto newAmount = 0;
+            auto newDensity = 0;
             if (stationCargo.quantity != 0)
             {
                 if (stationTileSize != 0)
                 {
-                    newAmount = stationCargo.quantity / stationTileSize;
+                    newDensity = stationCargo.quantity / stationTileSize;
                     auto* cargoObj = ObjectManager::get<CargoObject>(i);
-                    newAmount += (1 << cargoObj->var_14) - 1;
-                    newAmount >>= cargoObj->var_14;
+                    newDensity += (1 << cargoObj->var_14) - 1;
+                    newDensity >>= cargoObj->var_14;
 
-                    newAmount = std::min(newAmount, 15);
+                    newDensity = std::min(newDensity, 15);
                 }
             }
-            if (stationCargo.var_40 != newAmount)
+            if (stationCargo.densityPerTile != newDensity)
             {
-                stationCargo.var_40 = newAmount;
+                stationCargo.densityPerTile = newDensity;
                 hasChanged = true;
             }
         }

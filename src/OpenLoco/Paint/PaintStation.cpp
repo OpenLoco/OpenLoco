@@ -15,7 +15,7 @@
 namespace OpenLoco::Paint
 {
     // 0x0042F550
-    void paintStationCargo(PaintSession& session, const Map::StationElement& elStation, const uint8_t flags, const uint32_t cargoTypes, const std::vector<TrainStationObject::CargoOffset>& cargoOffsets, const int16_t offsetZ, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    static void paintStationCargo(PaintSession& session, const Map::StationElement& elStation, const uint8_t flags, const uint32_t cargoTypes, const std::vector<TrainStationObject::CargoOffset>& cargoOffsets, const int16_t offsetZ, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
         if (elStation.isGhost())
         {
@@ -40,23 +40,23 @@ namespace OpenLoco::Paint
                 continue;
             }
             cargoId++;
-            if (cargoStat.var_40 == 0)
+            if (cargoStat.densityPerTile == 0)
             {
                 continue;
             }
 
-            if (cargoObj->var_13 == 0)
+            if (cargoObj->numPlatformVariations == 0)
             {
                 continue;
             }
 
-            uint32_t unkEax = cargoObj->var_13 - 1;
-            unkEax &= unkPosHash;
-            for (uint32_t i = 0; i < cargoStat.var_40; ++i)
+            uint32_t variation = cargoObj->numPlatformVariations - 1;
+            variation &= unkPosHash;
+            for (uint32_t i = 0; i < cargoStat.densityPerTile; ++i)
             {
-                if (unkEax > cargoObj->var_13)
+                if (variation > cargoObj->numPlatformVariations)
                 {
-                    unkEax = 0;
+                    variation = 0;
                 }
                 if (i > cargoOffsets.size())
                 {
@@ -65,6 +65,7 @@ namespace OpenLoco::Paint
 
                 if (hasDrawn)
                 {
+                    hasDrawn = true;
                     if (!(flags & (1 << 1)))
                     {
                         continue;
@@ -72,6 +73,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
+                    hasDrawn = true;
                     if (!(flags & (1 << 0)))
                     {
                         continue;
@@ -100,21 +102,21 @@ namespace OpenLoco::Paint
                         continue;
                     }
                 }
-                const auto imageId = cargoObj->unit_inline_sprite + 1 + unkEax; //Use imageID
+                const auto imageId = cargoObj->unit_inline_sprite + Cargo::ImageIds::stationPlatformBegin + variation;
                 session.addToPlotList4FD1E0(imageId, offset + Map::Pos3{ 0, 0, offsetZ }, boundBoxOffset, boundBoxSize);
             }
         }
     }
 
     // 0x004D79AC (0x00411456, 0x004115EB, 0x00411780, 0x00419915)
-    void paintTrainStationStyle0StraightTrack(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageGlassBase)
+    static void paintTrainStationStyle0StraightTrack(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
         const auto rotation = (session.getRotation() + elStation.rotation()) & 0x3;
 
         const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation.objectId());
         // This was part of paintStationCargo
         const auto unkPosHash = (session.getUnkPosition().x + session.getUnkPosition().y) / 32;
-        auto cargoOffsets = stationObj->getCargoOffsets(rotation, unkPosHash & 0x3);
+        const auto cargoOffsets = stationObj->getCargoOffsets(rotation, unkPosHash & 0x3);
 
         constexpr std::array<std::array<uint8_t, 4>, 4> cargoRotationFlags = {
             std::array<uint8_t, 4>{ 0x9, 0x5, 0x6, 0xA },
@@ -139,44 +141,44 @@ namespace OpenLoco::Paint
 
         constexpr PlatformImage neStationPlatformImage = {
             {
-                TrainStation::ImageIds::type0platformBackNE,
+                TrainStation::ImageIds::style0StraightBackNE,
                 { 2, 2, 8 },
                 { 28, 4, 3 },
             },
             {
-                TrainStation::ImageIds::type0platformFrontNE,
+                TrainStation::ImageIds::style0StraightFrontNE,
                 { 2, 24, 8 },
                 { 28, 4, 3 },
             },
             {
-                TrainStation::ImageIds::type0platformCanopyNE,
+                TrainStation::ImageIds::style0StraightCanopyNE,
                 { 2, 2, 26 },
                 { 28, 28, 1 },
             },
             {
-                TrainStation::ImageIds::type0platformCanopyTranslucentNE,
+                TrainStation::ImageIds::style0StraightCanopyTranslucentNE,
                 {},
                 {},
             },
         };
         constexpr PlatformImage seStationPlatformImage = {
             {
-                TrainStation::ImageIds::type0platformBackSE,
+                TrainStation::ImageIds::style0StraightBackSE,
                 { 2, 2, 8 },
                 { 4, 28, 3 },
             },
             {
-                TrainStation::ImageIds::type0platformFrontSE,
+                TrainStation::ImageIds::style0StraightFrontSE,
                 { 24, 2, 8 },
                 { 4, 28, 3 },
             },
             {
-                TrainStation::ImageIds::type0platformCanopySE,
+                TrainStation::ImageIds::style0StraightCanopySE,
                 { 2, 2, 26 },
                 { 28, 28, 1 },
             },
             {
-                TrainStation::ImageIds::type0platformCanopyTranslucentSE,
+                TrainStation::ImageIds::style0StraightCanopyTranslucentSE,
                 {},
                 {},
             },
@@ -215,27 +217,30 @@ namespace OpenLoco::Paint
         {
             Map::Pos3 bbOffset = platformImages.canopy.bbOffset + heightOffest;
             session.addToPlotList4FD180(imageBase + platformImages.canopy.imageId, 1, heightOffest, bbOffset, platformImages.canopy.bbSize);
-            session.attachToPrevious(imageGlassBase + platformImages.canopyTranslucent.imageId, { 0, 0 });
+            session.attachToPrevious(imageTranslucentBase + platformImages.canopyTranslucent.imageId, { 0, 0 });
         }
         session.set525CF8(session.get525CF8() | 0x1FF);
     }
 
     // 0x004D78EC
-    void paintTrainStationStyle0(PaintSession& session, const Map::StationElement& elStation, const uint8_t trackId, const uint8_t sequenceIndex, const uint32_t imageBase, const uint32_t imageGlassBase)
+    static void paintTrainStationStyle0(PaintSession& session, const Map::StationElement& elStation, const uint8_t trackId, const uint8_t sequenceIndex, const uint32_t imageBase, const uint32_t imageGlassBase)
     {
         switch (trackId)
         {
             case 0:
                 paintTrainStationStyle0StraightTrack(session, elStation, imageBase, imageGlassBase);
                 break;
+            case 1:
+                // 0x004D7A5C
+                // Vanllia had hard to reach code for diagonal train stations
+                break;
             default:
-                // Vanllia had unreachable code for diagonal train stations
                 return;
         }
     }
 
     // 0x0048B34D
-    void paintTrainStation(PaintSession& session, const Map::StationElement& elStation)
+    static void paintTrainStation(PaintSession& session, const Map::StationElement& elStation)
     {
         session.setItemType(Ui::ViewportInteraction::InteractionItem::trackStation);
 
@@ -248,37 +253,40 @@ namespace OpenLoco::Paint
             return;
         }
         const auto companyColour = CompanyManager::getCompanyColour(elTrack->owner());
-        auto colour2 = PaletteIndex::index_2E; //_byte_5045FA[companyColour];
+        auto translucentColour = Colour::getTranslucent(companyColour);
         if (!(stationObj->flags & TrainStationFlags::recolourable))
         {
-            colour2 = PaletteIndex::index_2E;
+            translucentColour = PaletteIndex::index_2E;
         }
 
-        uint32_t imageIdbase = 0;      // 0x0112C720
-        uint32_t imageIdGlassBase = 0; // 0x0112C724
+        uint32_t imageIdbase = 0;            // 0x0112C720
+        uint32_t imageIdTranslucentBase = 0; // 0x0112C724
 
         if (elStation.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
             imageIdbase = Gfx::applyGhostToImage(stationObj->var_12[elStation.multiTileIndex()]);
-            imageIdGlassBase = Gfx::recolourTranslucent(stationObj->var_12[elStation.multiTileIndex()], PaletteIndex::index_2F);
+            imageIdTranslucentBase = Gfx::recolourTranslucent(stationObj->var_12[elStation.multiTileIndex()], PaletteIndex::index_2F);
         }
         else
         {
             imageIdbase = Gfx::recolour(stationObj->var_12[elStation.multiTileIndex()], companyColour);
-            imageIdGlassBase = Gfx::recolourTranslucent(stationObj->var_12[elStation.multiTileIndex()], colour2);
-        }
-        // Track only have 1 style of drawing
-        if (stationObj->var_02 > 0)
-        {
-            return;
+            imageIdTranslucentBase = Gfx::recolourTranslucent(stationObj->var_12[elStation.multiTileIndex()], translucentColour);
         }
 
-        paintTrainStationStyle0(session, elStation, elTrack->trackId(), elTrack->sequenceIndex(), imageIdbase, imageIdGlassBase);
+        switch (stationObj->drawStyle)
+        {
+            case 0:
+                paintTrainStationStyle0(session, elStation, elTrack->trackId(), elTrack->sequenceIndex(), imageIdbase, imageIdTranslucentBase);
+                break;
+            default:
+                // Track only have 1 style of drawing
+                break;
+        }
     }
 
     // 0x0048B403
-    void paintRoadStation(PaintSession& session, const Map::StationElement& elStation)
+    static void paintRoadStation(PaintSession& session, const Map::StationElement& elStation)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(&elStation);
@@ -289,7 +297,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0048B4D0
-    void paintAirport(PaintSession& session, const Map::StationElement& elStation)
+    static void paintAirport(PaintSession& session, const Map::StationElement& elStation)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(&elStation);
@@ -300,7 +308,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0048B86E
-    void paintDocks(PaintSession& session, const Map::StationElement& elStation)
+    static void paintDocks(PaintSession& session, const Map::StationElement& elStation)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(&elStation);

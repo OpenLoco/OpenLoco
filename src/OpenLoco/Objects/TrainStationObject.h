@@ -29,7 +29,7 @@ namespace OpenLoco
         };
 
         string_id name;
-        uint8_t var_02;
+        uint8_t drawStyle; // 0x02
         uint8_t var_03;
         uint16_t track_pieces;      // 0x04
         uint16_t build_cost_factor; // 0x06
@@ -58,24 +58,23 @@ namespace OpenLoco
         constexpr uint32_t preview_image = 0;
         constexpr uint32_t preview_image_windows = 1;
         // These are relative to to var_12
-        // var_12 is the imageIds per sequenceIndex (for diagonal)
-        // A signle var_12 entry will have 4 rotations for each of the below
-        constexpr uint32_t type0platformBackNE = 0;
-        constexpr uint32_t type0platformFrontNE = 1;
-        constexpr uint32_t type0platformCanopyNE = 2;
-        constexpr uint32_t type0platformCanopyTranslucentNE = 3;
-        constexpr uint32_t type0platformBackSE = 4;
-        constexpr uint32_t type0platformFrontSE = 5;
-        constexpr uint32_t type0platformCanopySE = 6;
-        constexpr uint32_t type0platformCanopyTranslucentSE = 7;
-        constexpr uint32_t type0platformNE0 = 8;
-        constexpr uint32_t type0platformNE4 = 9;
-        constexpr uint32_t type0platformNE1 = 10;
-        constexpr uint32_t type0platformCanopyNE1 = 11;
-        constexpr uint32_t type0platformCanopyTranslucentNE1 = 12;
-        constexpr uint32_t type0platformSE1 = 13;
-        constexpr uint32_t type0platformSE2 = 14;
-        constexpr uint32_t type0platformSE3 = 15;
-        constexpr uint32_t type0platformCanopyTranslucentSE3 = 16;
+        // var_12 is the imageIds per sequenceIndex (for start/middle/end of the platform)
+        constexpr uint32_t style0StraightBackNE = 0;
+        constexpr uint32_t style0StraightFrontNE = 1;
+        constexpr uint32_t style0StraightCanopyNE = 2;
+        constexpr uint32_t style0StraightCanopyTranslucentNE = 3;
+        constexpr uint32_t style0StraightBackSE = 4;
+        constexpr uint32_t style0StraightFrontSE = 5;
+        constexpr uint32_t style0StraightCanopySE = 6;
+        constexpr uint32_t style0StraightCanopyTranslucentSE = 7;
+        constexpr uint32_t style0DiagonalNE0 = 8;
+        constexpr uint32_t style0DiagonalNE4 = 9;
+        constexpr uint32_t style0DiagonalNE1 = 10;
+        constexpr uint32_t style0DiagonalCanopyNE1 = 11;
+        constexpr uint32_t style0DiagonalCanopyTranslucentNE1 = 12;
+        constexpr uint32_t style0DiagonalSE1 = 13;
+        constexpr uint32_t style0DiagonalSE2 = 14;
+        constexpr uint32_t style0DiagonalSE3 = 15;
+        constexpr uint32_t style0DiagonalCanopyTranslucentSE3 = 16;
     }
 }
