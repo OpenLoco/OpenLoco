@@ -1049,7 +1049,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::number_of_towns_down:
                 {
-                    uint16_t newNumTowns = std::max<uint16_t>(1, options.numberOfTowns - 1);
+                    uint16_t newNumTowns = std::max<uint16_t>(Limits::kMinTowns, options.numberOfTowns - 1);
                     options.numberOfTowns = newNumTowns;
                     window->invalidate();
                     break;
