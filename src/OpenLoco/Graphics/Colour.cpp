@@ -1,6 +1,7 @@
 #include "Colour.h"
 #include "../Interop/Interop.hpp"
 #include "Gfx.h"
+#include <array>
 #include <cassert>
 
 using namespace OpenLoco::Interop;
@@ -12,7 +13,7 @@ namespace OpenLoco::Colour
     loco_global<uint8_t[32][8], 0x01136C98> _colour_map_b;
 
     // 0x005045FA
-    static constexpr uint8_t _translucentColourMap[31] = {
+    static constexpr std::array<uint8_t, 32> _translucentColourMap = {
         PaletteIndex::index_35,
         PaletteIndex::index_35,
         PaletteIndex::index_6E,
