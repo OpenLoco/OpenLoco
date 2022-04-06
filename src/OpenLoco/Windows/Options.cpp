@@ -1527,15 +1527,10 @@ namespace OpenLoco::Ui::Windows::Options
 
                     if (ebp.index != -1)
                     {
-                        registers regs2;
-                        regs2.ebp = X86Pointer(ebp.object._header);
-                        call(0x00471FF8, regs2); // unload object
+                        ObjectManager::unload(*ebp.object._header);
                     }
 
-                    registers regs3;
-                    regs3.ebp = X86Pointer(object.second._header);
-
-                    call(0x00471BCE, regs3);
+                    ObjectManager::load(*object.second._header);
                     ObjectManager::reloadAll();
                     call(0x0046E07B); // load currency gfx
                     sub_4BF935();
