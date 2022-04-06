@@ -275,7 +275,7 @@ namespace OpenLoco::Map
         void setVariation(uint8_t variation)
         {
             _6 &= ~0x07C0;
-            _6 |= variation & 0x1F;
+            _6 |= (variation & 0x1F) << 6;
         }
         uint8_t age() const { return _6 & 0x3F; } // 6l
         void setAge(uint8_t value)                // 6l
