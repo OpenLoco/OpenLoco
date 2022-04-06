@@ -233,13 +233,6 @@ namespace OpenLoco
         return getGameState().rng;
     }
 
-    static bool sub_4054B9()
-    {
-        registers regs;
-        call(0x004054B9, regs);
-        return regs.eax != 0;
-    }
-
 #ifdef _NO_LOCO_WIN32_
     /**
      * Use this to allocate memory that will be freed in vanilla code or via loco_free.
@@ -1250,18 +1243,16 @@ namespace OpenLoco
 
             resetCmdline();
             registerHooks();
-            if (sub_4054B9())
-            {
-                Ui::createWindow(cfg.display);
-                call(0x004078FE);
-                call(0x00407B26);
-                Ui::initialiseInput();
-                Audio::initialiseDSound();
-                run();
-                exitCleanly();
 
-                // TODO extra clean up code
-            }
+            Ui::createWindow(cfg.display);
+            call(0x004078FE);
+            call(0x00407B26);
+            Ui::initialiseInput();
+            Audio::initialiseDSound();
+            run();
+            exitCleanly();
+
+            // TODO extra clean up code
             return 0;
         }
         catch (const std::exception& e)
