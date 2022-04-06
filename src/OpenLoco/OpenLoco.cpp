@@ -386,8 +386,8 @@ namespace OpenLoco
     {
         std::srand(std::time(0));
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
-        call(0x004078BE);
-        call(0x004BF476);
+        call(0x004078BE); // getSystemTime unused dead code?
+        call(0x004BF476); // Map::TileManager::initaliseElements
         Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
@@ -403,7 +403,7 @@ namespace OpenLoco
         Ui::ProgressBar::setProgress(60);
         Gfx::loadG1();
         Ui::ProgressBar::setProgress(220);
-        call(0x004949BC);
+        call(0x004949BC); // Gfx characterWidthsInitialise
         Ui::ProgressBar::setProgress(235);
         Ui::ProgressBar::setProgress(250);
         Ui::initialiseCursors();
@@ -411,7 +411,7 @@ namespace OpenLoco
         Ui::initialise();
         initialiseViewports();
         Title::sub_4284C8();
-        call(0x004969DA);
+        call(0x004969DA); // getLocalTime not used (dead code?)
         Scenario::reset();
         setScreenFlag(ScreenFlags::initialised);
         const auto& cmdLineOptions = getCommandLineOptions();
@@ -670,7 +670,7 @@ namespace OpenLoco
                             esi += 2;
                             esi += addr<0x00F25394, int32_t>();
                             addr<0x00F2539C, int32_t>() |= *((int32_t*)esi);
-                            call(0x00403575);
+                            call(0x00403575); // ddrwaUnlockPSurface
                         }
                     }
                     Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
@@ -852,7 +852,7 @@ namespace OpenLoco
         addr<0x00525F64, int32_t>()++;
         addr<0x00525FCC, uint32_t>() = gPrng().srand_0();
         addr<0x00525FD0, uint32_t>() = gPrng().srand_1();
-        call(0x004613F0);
+        call(0x004613F0); // Map::TileManager::reorg?
         addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
         dateTick();
         Map::TileManager::update();
@@ -1245,8 +1245,8 @@ namespace OpenLoco
             registerHooks();
 
             Ui::createWindow(cfg.display);
-            call(0x004078FE);
-            call(0x00407B26);
+            call(0x004078FE); // getSystemInfo used for some config, multiplayer name,
+            call(0x00407B26); // videoCreate used for creating window (dead code?)
             Ui::initialiseInput();
             Audio::initialiseDSound();
             run();
