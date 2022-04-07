@@ -11,7 +11,7 @@ jobs:
       image: openrct2/openrct2-build:0.2.4-format
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Run clang-format
         run: scripts/check-code-formatting.sh
   windows:
@@ -23,7 +23,7 @@ jobs:
       POWERSHELL_TELEMETRY_OPTOUT: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Build OpenLoco
@@ -49,7 +49,7 @@ jobs:
             Copy-Item data\language artifacts\data\language -Recurse
             Rename-Item artifacts\loco.exe openloco.exe
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: OpenLoco-${{ runner.os }}-Win32
           path: artifacts
@@ -65,7 +65,7 @@ jobs:
         compiler: [g++, clang++]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Build OpenLoco
@@ -81,7 +81,7 @@ jobs:
     container: openloco/openloco:1-mingw32
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Build OpenLoco
@@ -95,7 +95,7 @@ jobs:
     needs: check-code-formatting
     container: openloco/osxcross:latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Install dependencies
@@ -121,7 +121,7 @@ jobs:
           make -j$(getconf _NPROCESSORS_ONLN)
           tar -cvzf ../openloco.tar.gz openloco.app
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: OpenLoco-macOS
           path: openloco.tar.gz
