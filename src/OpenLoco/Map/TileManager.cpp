@@ -142,8 +142,8 @@ namespace OpenLoco::Map::TileManager
             auto* cur = &element;
             do
             {
-                *cur++ = *next++;
-            } while (!next->isLast());
+                *cur++ = *next;
+            } while (!next++->isLast());
 
             markElementAsFree(*next);
         }
