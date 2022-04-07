@@ -8,6 +8,7 @@
 - Fix: [#1379] Year formatted correctly in date cheat window.
 - Fix: [#1393] Vehicles not sorted correctly in build vehicle window.
 - Fix: [#1400] Imperial-to-metric power conversion didn't match vanilla.
+- Fix: [#1424] Crash when loading a scenario after waiting on title screen.
 - Fix: [#1434] Can set 0 or more than 80 towns in scenario editor.
 
 22.03.1 (2022-03-08)
