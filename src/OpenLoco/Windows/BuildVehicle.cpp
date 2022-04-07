@@ -283,6 +283,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             if (!tabMode)
             {
                 auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicle));
+                if (veh == nullptr)
+                {
+                    return nullptr;
+                }
                 tab += static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -311,6 +315,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 _buildTargetVehicle = vehicle;
                 auto veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(vehicle));
+                if (veh == nullptr)
+                {
+                    WindowManager::close(window);
+                    return nullptr;
+                }
                 window->currentTab = static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -508,6 +517,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 continue;
 
             auto vehicle = EntityManager::get<Vehicles::VehicleBase>(EntityId(w->number));
+            if (vehicle == nullptr)
+                continue;
+
             if (vehicle->owner != CompanyManager::getControllingId())
                 continue;
 
@@ -755,9 +767,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (_buildTargetVehicle != -1)
         {
             auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
-            args.push(vehicle->name);
-            args.push(vehicle->ordinalNumber);
-            GameCommands::setErrorTitle(StringIds::cant_add_pop_5_string_id_string_id);
+            if (vehicle != nullptr)
+            {
+                args.push(vehicle->name);
+                args.push(vehicle->ordinalNumber);
+                GameCommands::setErrorTitle(StringIds::cant_add_pop_5_string_id_string_id);
+            }
         }
 
         if (GameCommands::do_5(item, EntityId(*_buildTargetVehicle)) == GameCommands::FAILURE)
@@ -917,9 +932,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             if (_buildTargetVehicle != -1)
             {
                 auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
-                args.push(vehicle->name);
-                args.push(vehicle->ordinalNumber);
-                bottomLeftMessage = StringIds::select_vehicle_to_add_to_string_id;
+                if (vehicle != nullptr)
+                {
+                    args.push(vehicle->name);
+                    args.push(vehicle->ordinalNumber);
+                    bottomLeftMessage = StringIds::select_vehicle_to_add_to_string_id;
+                }
             }
 
             Gfx::drawString_494BBF(*context, x, y, window->width - 186, Colour::black, bottomLeftMessage, &args);
@@ -1062,9 +1080,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     if (_buildTargetVehicle != -1)
                     {
                         auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(*_buildTargetVehicle));
-                        defaultMessage = StringIds::no_compatible_vehicles_available;
-                        args.push(vehicle->name);
-                        args.push(vehicle->ordinalNumber);
+                        if (vehicle != nullptr)
+                        {
+                            defaultMessage = StringIds::no_compatible_vehicles_available;
+                            args.push(vehicle->name);
+                            args.push(vehicle->ordinalNumber);
+                        }
                     }
 
                     auto widget = window.widgets[widx::scrollview_vehicle_selection];

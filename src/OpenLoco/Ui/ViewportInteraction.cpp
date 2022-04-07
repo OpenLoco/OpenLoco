@@ -213,7 +213,10 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
         auto head = EntityManager::get<Vehicles::VehicleHead>(vehicle->getHead());
-
+        if (head == nullptr)
+        {
+            return false;
+        }
         auto company = CompanyManager::get(head->owner);
         Windows::MapToolTip::setOwner(head->owner);
         auto status = head->getStatus();

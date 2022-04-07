@@ -234,9 +234,14 @@ namespace OpenLoco::GameCommands
     // 0x004BAC53
     static uint32_t vehicleShuntCheat(EntityId head, uint8_t flags)
     {
+        auto* veh = EntityManager::get<Vehicles::VehicleHead>(head);
+        if (veh == nullptr)
+        {
+            return GameCommands::FAILURE;
+        }
         if (flags & Flags::apply)
         {
-            EntityManager::get<Vehicles::VehicleHead>(head)->var_0C |= Vehicles::Flags0C::shuntCheat;
+            veh->var_0C |= Vehicles::Flags0C::shuntCheat;
         }
         return 0;
     }

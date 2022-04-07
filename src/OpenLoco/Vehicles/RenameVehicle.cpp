@@ -58,6 +58,10 @@ namespace OpenLoco::Vehicles
         EntityId vehicleHeadId = _113621D;
         Vehicles::VehicleHead* vehicleHead = EntityManager::get<Vehicles::VehicleHead>(vehicleHeadId);
 
+        if (vehicleHead == nullptr)
+        {
+            return GameCommands::FAILURE;
+        }
         char renameStringBuffer[37] = "";
         memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
         renameStringBuffer[36] = '\0';
