@@ -18,7 +18,7 @@ namespace OpenLoco
 
         string_id name;
         uint16_t track_pieces;     // 0x02
-        uint8_t is_overhead;       // 0x04 (drawing mode)
+        uint8_t paintStyle;        // 0x04
         uint8_t cost_index;        // 0x05
         int16_t build_cost_factor; // 0x06
         int16_t sell_cost_factor;  // 0x08

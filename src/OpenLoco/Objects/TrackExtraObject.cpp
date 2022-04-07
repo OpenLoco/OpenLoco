@@ -10,7 +10,7 @@ namespace OpenLoco
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        if (is_overhead == 0)
+        if (paintStyle == 0)
         {
             Gfx::drawImage(&context, x, y, colourImage);
         }
@@ -25,7 +25,7 @@ namespace OpenLoco
     // 0x004A6D38
     bool TrackExtraObject::validate() const
     {
-        if (is_overhead >= 2)
+        if (paintStyle >= 2)
         {
             return false;
         }
