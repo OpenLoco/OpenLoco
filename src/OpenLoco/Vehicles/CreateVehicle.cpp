@@ -95,7 +95,7 @@ namespace OpenLoco::Vehicles
     {
         auto* const base = EntityManager::createEntityVehicle();
         base->base_type = EntityBaseType::vehicle;
-        auto* const vehicleBase = base->asVehicle();
+        auto* const vehicleBase = base->asBase<Vehicles::VehicleBase>();
         vehicleBase->setSubType(T::kVehicleThingType);
         return static_cast<T*>(vehicleBase);
     }

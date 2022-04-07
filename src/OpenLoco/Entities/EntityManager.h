@@ -32,7 +32,8 @@ namespace OpenLoco::EntityManager
     template<typename T>
     T* get(EntityId id)
     {
-        return static_cast<T*>(get<EntityBase>(id));
+        auto* base = get<EntityBase>(id);
+        return base != nullptr ? base->asBase<T>() : nullptr;
     }
 
     EntityId firstId(EntityListType list);

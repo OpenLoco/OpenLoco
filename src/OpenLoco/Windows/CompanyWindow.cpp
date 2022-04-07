@@ -515,7 +515,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 // loc_434170
                 auto thing = EntityManager::get<OpenLoco::EntityBase>(company->observationThing);
-                auto* vehicle = thing->asVehicle();
+                auto* vehicle = thing->asBase<Vehicles::VehicleBase>();
                 if (vehicle == nullptr)
                 {
                     invalidViewport(self);

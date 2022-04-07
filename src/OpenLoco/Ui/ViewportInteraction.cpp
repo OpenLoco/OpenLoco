@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     static bool getVehicleArguments(const InteractionArg& interaction)
     {
         auto* entity = reinterpret_cast<EntityBase*>(interaction.object);
-        auto vehicle = entity->asVehicle();
+        auto vehicle = entity->asBase<Vehicles::VehicleBase>();
         if (vehicle == nullptr)
         {
             return false;

@@ -166,6 +166,8 @@ namespace OpenLoco::Vehicles
 
     struct VehicleBase : EntityBase
     {
+        static constexpr auto kBaseType = EntityBaseType::vehicle;
+
     private:
         template<VehicleThingType SubType>
         bool is() const

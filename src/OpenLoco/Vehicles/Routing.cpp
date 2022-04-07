@@ -437,7 +437,7 @@ namespace OpenLoco::Vehicles
 
             for (auto* entity : EntityManager::EntityTileList(trackLoc))
             {
-                auto* vehicle = entity->asVehicle();
+                auto* vehicle = entity->asBase<Vehicles::VehicleBase>();
                 if (vehicle == nullptr)
                 {
                     continue;
