@@ -203,9 +203,35 @@ namespace OpenLoco::Vehicles
     CarComponent::CarComponent(VehicleBase*& component)
     {
         front = component->asVehicleBogie();
-        back = front->nextVehicleComponent()->asVehicleBogie();
-        body = back->nextVehicleComponent()->asVehicleBody();
-        component = body->nextVehicleComponent();
+        if (front == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        component = component->nextVehicleComponent();
+        if (component == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        back = component->asVehicleBogie();
+        if (back == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        component = component->nextVehicleComponent();
+        if (component == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        body = component->asVehicleBody();
+        if (body == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        component = component->nextVehicleComponent();
+        if (component == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
     }
 
     Vehicle::Vehicle(EntityId _head)
@@ -216,9 +242,35 @@ namespace OpenLoco::Vehicles
             throw std::runtime_error("Bad vehicle structure");
         }
         head = component->asVehicleHead();
-        veh1 = head->nextVehicleComponent()->asVehicle1();
-        veh2 = veh1->nextVehicleComponent()->asVehicle2();
-        component = veh2->nextVehicleComponent();
+        if (head == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        component = component->nextVehicleComponent();
+        if (component == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        veh1 = component->asVehicle1();
+        if (veh1 == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        component = component->nextVehicleComponent();
+        if (component == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        veh2 = component->asVehicle2();
+        if (veh2 == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        component = component->nextVehicleComponent();
+        if (component == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
         if (component->getSubType() != VehicleThingType::tail)
         {
             cars = Cars{ Car{ component } };
@@ -226,6 +278,10 @@ namespace OpenLoco::Vehicles
         while (component->getSubType() != VehicleThingType::tail)
         {
             component = component->nextVehicleComponent();
+            if (component == nullptr)
+            {
+                throw std::runtime_error("Bad vehicle structure");
+            }
         }
         tail = component->asVehicleTail();
     }

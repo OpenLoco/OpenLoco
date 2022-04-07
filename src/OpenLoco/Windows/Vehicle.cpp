@@ -68,7 +68,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static Vehicles::VehicleHead* getVehicle(const Window* self)
         {
-            return EntityManager::get<Vehicles::VehicleHead>(EntityId(self->number));
+            auto* veh = EntityManager::get<Vehicles::VehicleHead>(EntityId(self->number));
+            if (veh == nullptr)
+            {
+                WindowManager::close(WindowType::vehicle, self->number);
+                return nullptr;
+            }
+            return veh;
         }
 
         static void setActiveTabs(Window* const self);
@@ -266,6 +272,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->callPrepareDraw();
 
             auto vehHead = Common::getVehicle(self);
+            if (vehHead == nullptr)
+            {
+                return;
+            }
             Vehicles::Vehicle train(vehHead);
 
             // If picked up no need for viewport drawn
@@ -352,7 +362,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets = widgets;
             self->enabledWidgets = enabledWidgets;
             self->number = enumValue(head);
-            const auto* vehicle = EntityManager::get<Vehicles::VehicleHead>(head);
+            const auto* vehicle = Common::getVehicle(self);
+            if (vehicle == nullptr)
+            {
+                return self;
+            }
             self->owner = vehicle->owner;
             self->rowHeight = rowHeights[static_cast<uint8_t>(vehicle->vehicleType)];
             self->currentTab = 0;
@@ -375,6 +389,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B6033
         Window* open(const Vehicles::VehicleBase* vehicle)
         {
+            if (vehicle == nullptr)
+            {
+                return nullptr;
+            }
             const auto head = vehicle->getHead();
             auto* self = WindowManager::find(WindowType::vehicle, enumValue(head));
             if (self != nullptr)
@@ -411,9 +429,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 _pickupDirection = _pickupDirection ^ 1;
                 return;
             }
-
+            auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             GameCommands::setErrorTitle(StringIds::cant_reverse_train);
-            GameCommands::do_3(EntityId(self->number), Common::getVehicle(self));
+            GameCommands::do_3(EntityId(self->number), head);
         }
 
         static void onCentreViewportControl(Window* const self)
@@ -485,7 +507,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto head = Common::getVehicle(self);
-
+            if (head == nullptr)
+            {
+                return;
+            }
             // If vehicle not placed put into pickup mode if window in focus
             if (head->isPlaced())
             {
@@ -513,6 +538,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (self->viewports[0] != nullptr)
             {
                 auto head = Common::getVehicle(self);
+                if (head == nullptr)
+                {
+                    return;
+                }
                 uint16_t newWidth = self->width - 30;
                 if (head->owner != CompanyManager::getControllingId())
                     newWidth += 22;
@@ -546,6 +575,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto dropdownCount = 2;
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             if (head->mode == TransportMode::rail && isDriverCheatEnabled())
             {
                 dropdownCount = 3;
@@ -621,6 +654,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::setErrorTitle(errorTitle);
             FormatArguments args{};
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             args.skip(6);
             args.push(head->name);
             args.push(head->ordinalNumber);
@@ -639,6 +676,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (itemIndex == 1)
             {
                 auto vehHead = Common::getVehicle(self);
+                if (vehHead == nullptr)
+                {
+                    return;
+                }
                 Vehicles::Vehicle train(vehHead);
                 EntityId targetThing = train.veh2->id;
 
@@ -698,6 +739,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             FormatArguments args{};
 
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return {};
+            }
             args.skip(2);
             args.push(StringIds::getVehicleType(head->vehicleType));
             return args;
@@ -714,6 +759,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             Common::setActiveTabs(self);
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             Vehicles::Vehicle train(head);
 
             self->widgets[widx::stopStart].type = WidgetType::buttonWithImage;
@@ -876,6 +925,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto veh = Common::getVehicle(self);
+            if (veh == nullptr)
+            {
+                return;
+            }
             {
                 auto status = veh->getStatus();
                 FormatArguments args = {};
@@ -977,7 +1030,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         Window* open(const Vehicles::VehicleBase* vehicle)
         {
             auto self = Main::open(vehicle);
-            self->callOnMouseUp(Common::widx::tabDetails);
+            if (self != nullptr)
+            {
+                self->callOnMouseUp(Common::widx::tabDetails);
+            }
             return self;
         }
 
@@ -985,6 +1041,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             static loco_global<EntityId, 0x0113642A> _113642A;
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             GameCommands::setErrorTitle(StringIds::cant_clone_vehicle);
             if (GameCommands::do_80(head->head))
             {
@@ -1020,6 +1080,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case widx::remove:
                 {
                     auto head = Common::getVehicle(self);
+                    if (head == nullptr)
+                    {
+                        break;
+                    }
                     FormatArguments args{};
                     args.skip(10);
                     args.push(head->name);
@@ -1108,6 +1172,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto vehicle = Common::getVehicle(self);
+            if (vehicle == nullptr)
+            {
+                return;
+            }
             if (vehicle->isPlaced())
                 return;
 
@@ -1163,6 +1231,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void scrollMouseDown(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             if (head->owner != CompanyManager::getControllingId())
             {
                 return;
@@ -1286,6 +1358,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(StringIds::tooltip_scroll_vehicle_list);
 
             auto vehicle = Common::getVehicle(self);
+            if (vehicle == nullptr)
+            {
+                return {};
+            }
             args.push(StringIds::getVehicleType(vehicle->vehicleType));
             return args;
         }
@@ -1299,6 +1375,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return fallback;
+            }
             if (head->owner != CompanyManager::getControllingId())
             {
                 return fallback;
@@ -1333,6 +1413,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::setActiveTabs(self);
 
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             auto args = FormatArguments();
             args.push(head->name);
             args.push(head->ordinalNumber);
@@ -1408,6 +1492,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             OpenLoco::Vehicles::Vehicle train{ head };
             Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 23) };
 
@@ -1443,6 +1531,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
             auto head = Common::getVehicle(&self);
+            if (head == nullptr)
+            {
+                return;
+            }
             OpenLoco::Vehicles::Vehicle train{ head };
             Ui::Point pos{ 0, 0 };
             for (auto& car : train.cars)
@@ -1536,6 +1628,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (!car)
             {
                 auto head = Common::getVehicle(&self);
+                if (head == nullptr)
+                {
+                    return nullptr;
+                }
                 Vehicles::Vehicle train(head);
                 return train.tail;
             }
@@ -1660,6 +1756,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::setActiveTabs(self);
 
             auto* headVehicle = Common::getVehicle(self);
+            if (headVehicle == nullptr)
+            {
+                return;
+            }
             FormatArguments args = {};
             args.push(headVehicle->name);
             args.push(headVehicle->ordinalNumber);
@@ -1694,6 +1794,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // draw total cargo
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             head->generateCargoTotalString(buffer);
             FormatArguments args = {};
             args.push<string_id>(StringIds::buffer_1250);
@@ -1732,7 +1836,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void drawScroll(Window& self, Gfx::Context& context, const uint32_t i)
         {
             Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
-            Vehicles::Vehicle train{ Common::getVehicle(&self) };
+            auto* head = Common::getVehicle(&self);
+            if (head == nullptr)
+            {
+                return;
+            }
+            Vehicles::Vehicle train{ head };
             int16_t y = 0;
             for (auto& car : train.cars)
             {
@@ -1833,7 +1942,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void onRefitButton(Window* const self, const WidgetIndex_t wi)
         {
-            Vehicles::Vehicle train(Common::getVehicle(self));
+            auto* head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
+            Vehicles::Vehicle train(head);
             auto vehicleObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             auto maxPrimaryCargo = vehicleObject->max_primary_cargo;
             auto primaryCargoId = Utility::bitScanForward(vehicleObject->primary_cargo_types);
@@ -1882,6 +1996,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(StringIds::tooltip_scroll_vehicle_list);
 
             auto vehicle = Common::getVehicle(self);
+            if (vehicle == nullptr)
+            {
+                return {};
+            }
             args.push(StringIds::getVehicleType(vehicle->vehicleType));
             return args;
         }
@@ -2032,6 +2150,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::setActiveTabs(self);
 
             auto vehicle = Common::getVehicle(self);
+            if (vehicle == nullptr)
+            {
+                return;
+            }
             auto args = FormatArguments();
             args.push(vehicle->name);
             args.push(vehicle->ordinalNumber);
@@ -2056,6 +2178,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto pos = Ui::Point(self->x + 4, self->y + 46);
 
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             Vehicles::Vehicle train(head);
             auto veh1 = train.veh1;
             if (veh1->lastIncome.day != -1)
@@ -2158,6 +2284,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             FormatArguments args{};
             auto veh0 = Common::getVehicle(self);
+            if (veh0 == nullptr)
+            {
+                return {};
+            }
             args.skip(2);
             args.push(StringIds::getVehicleType(veh0->vehicleType));
             return args;
@@ -2403,6 +2533,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4B43
         static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
         {
+            auto* head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             switch (widgetIndex)
             {
                 case Common::widx::closeButton:
@@ -2421,14 +2556,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case widx::orderDelete:
                 {
 
-                    onOrderDelete(Common::getVehicle(self), self->var_842);
+                    onOrderDelete(head, self->var_842);
                     if (self->var_842 == -1)
                     {
                         return;
                     }
 
                     // Refresh selection (check if we are now at no order selected)
-                    auto* order = getOrderTable(Common::getVehicle(self)).atIndex(self->var_842);
+                    auto* order = getOrderTable(head).atIndex(self->var_842);
 
                     // If no order selected anymore
                     if (order == nullptr)
@@ -2439,7 +2574,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 case widx::localMode:
                 {
-                    auto head = Common::getVehicle(self);
                     if (!CompanyManager::isPlayerCompany(head->owner))
                         return;
 
@@ -2453,7 +2587,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 case widx::expressMode:
                 {
-                    auto head = Common::getVehicle(self);
                     if (!CompanyManager::isPlayerCompany(head->owner))
                         return;
 
@@ -2470,7 +2603,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     GameCommands::do_37(EntityId(self->number));
                     break;
                 case widx::orderUp:
-                    if (onOrderMove(Common::getVehicle(self), self->var_842, orderUpCommand))
+                    if (onOrderMove(head, self->var_842, orderUpCommand))
                     {
                         if (self->var_842 <= 0)
                         {
@@ -2480,13 +2613,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     }
                     break;
                 case widx::orderDown:
-                    if (onOrderMove(Common::getVehicle(self), self->var_842, orderDownCommand))
+                    if (onOrderMove(head, self->var_842, orderDownCommand))
                     {
                         if (self->var_842 < 0)
                         {
                             return;
                         }
-                        auto* order = getOrderTable(Common::getVehicle(self)).atIndex(self->var_842);
+                        auto* order = getOrderTable(head).atIndex(self->var_842);
                         if (order != nullptr)
                         {
                             self->var_842++;
@@ -2507,6 +2640,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void createOrderDropdown(Window* const self, const WidgetIndex_t i, const string_id orderType)
         {
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             auto index = 0;
             for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
             {
@@ -2553,6 +2690,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void addNewOrder(Window* const self, const Vehicles::Order& order)
         {
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             auto chosenOffset = head->sizeOfOrderTable - 1;
             if (self->var_842 != -1)
             {
@@ -2615,8 +2756,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (!WindowManager::isInFront(self))
                 return;
-
-            if (Common::getVehicle(self)->owner != CompanyManager::getControllingId())
+            auto* head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
+            if (head->owner != CompanyManager::getControllingId())
                 return;
 
             if (!Input::isToolActive(WindowType::vehicle, self->number))
@@ -2624,7 +2769,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (Input::toolSet(self, widx::tool, CursorId::crosshair))
                 {
                     self->invalidate();
-                    sub_470824(Common::getVehicle(self));
+                    sub_470824(head);
                 }
             }
         }
@@ -2635,6 +2780,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_orders_list);
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return {};
+            }
             args.push(StringIds::getVehicleType(head->vehicleType));
             return args;
         }
@@ -2762,6 +2911,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void getScrollSize(Ui::Window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
         {
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             auto table = getOrderTable(head);
             *height = lineHeight * std::distance(table.begin(), table.end());
 
@@ -2772,6 +2925,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void scrollMouseDown(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             auto item = y / lineHeight;
             Vehicles::Order* selectedOrder = getOrderTable(head).atIndex(item);
             if (selectedOrder == nullptr)
@@ -2891,6 +3048,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void createViewport(Window* const self)
         {
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             sub_470824(head);
         }
 
@@ -2905,6 +3066,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             Common::setActiveTabs(self);
             auto head = Common::getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             FormatArguments args{};
             args.push(head->name);
             args.push(head->ordinalNumber);
@@ -3097,6 +3262,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
 
             auto head = Common::getVehicle(&self);
+            if (head == nullptr)
+            {
+                return;
+            }
             Vehicles::Vehicle train(head);
 
             auto rowNum = 0;
@@ -3848,6 +4017,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y)
         {
             auto* head = getVehicle(&self);
+            if (head == nullptr)
+            {
+                return;
+            }
             Ui::setToolCursor(typeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0]);
 
             switch (head->mode)
@@ -3984,6 +4157,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void pickupToolDown(Window& self, const int16_t x, const int16_t y)
         {
             auto* head = getVehicle(&self);
+            if (head == nullptr)
+            {
+                return;
+            }
             switch (head->mode)
             {
                 case TransportMode::rail:
@@ -4005,7 +4182,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void pickupToolAbort(Window& self)
         {
             // TODO: refactor to use removeAirplaneGhost family of functions
-            auto head = getVehicle(&self);
+            auto* head = EntityManager::get<Vehicles::VehicleHead>(EntityId(self.number));
+            if (head == nullptr)
+            {
+                return;
+            }
             if (head->tileX == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
             {
                 self.invalidate();
@@ -4101,6 +4282,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             self->enabledWidgets |= 1 << widx::caption;
             auto head = getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             if (head->owner != CompanyManager::getControllingId())
             {
                 self->enabledWidgets &= ~static_cast<uint64_t>(1 << widx::caption);
@@ -4131,6 +4316,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             self->invalidate();
             auto head = getVehicle(self);
+            if (head == nullptr)
+            {
+                return;
+            }
             if (!head->isPlaced())
             {
                 CursorId cursor = typeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
@@ -4169,7 +4358,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static size_t getNumCars(Ui::Window* const self)
         {
-            Vehicles::Vehicle train(Common::getVehicle(self));
+            auto* head = getVehicle(self);
+            if (head == nullptr)
+            {
+                return 0;
+            }
+            Vehicles::Vehicle train(head);
 
             if (train.cars.empty())
             {
@@ -4196,6 +4390,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B5CC1
         static std::optional<Vehicles::Car> getCarFromScrollView(Window* const self, const int16_t y)
         {
+            auto* head = getVehicle(self);
+            if (head == nullptr)
+            {
+                return {};
+            }
             Vehicles::Vehicle train(getVehicle(self));
 
             auto heightOffset = y;
@@ -4231,6 +4430,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
 
             auto vehicle = Common::getVehicle(self);
+            if (vehicle == nullptr)
+            {
+                return;
+            }
             auto vehicleType = vehicle->vehicleType;
 
             auto mainTab = tabIconByVehicleType.at(vehicleType);

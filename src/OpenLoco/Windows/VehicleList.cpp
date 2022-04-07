@@ -290,7 +290,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            auto insertVehicle = EntityManager::get<VehicleHead>(insertId);
+            auto* insertVehicle = EntityManager::get<VehicleHead>(insertId);
+            if (insertVehicle == nullptr)
+            {
+                continue;
+            }
             if (getOrder(SortMode(self->sortMode), *vehicle, *insertVehicle))
             {
                 insertId = vehicle->id;
@@ -301,6 +305,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (insertId != EntityId::null)
         {
             auto vehicle = EntityManager::get<VehicleHead>(insertId);
+            if (vehicle == nullptr)
+            {
+                self->var_83C = self->rowCount;
+                refreshVehicleList(self);
+                return;
+            }
             vehicle->var_0C |= Vehicles::Flags0C::sorted;
 
             if (vehicle->id != EntityId(self->rowInfo[self->rowCount]))
@@ -721,7 +731,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
 
             auto head = EntityManager::get<VehicleHead>(vehicleId);
-
+            if (head == nullptr)
+            {
+                continue;
+            }
             // Highlight selection.
             if (head->id == EntityId(self.rowHover))
                 Gfx::drawRect(context, 0, yPos, self.width, self.rowHeight, Colour::getShade(self.getColour(WindowColour::secondary), 0));
@@ -1059,6 +1072,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         // Append load to buffer.
         auto head = EntityManager::get<VehicleHead>(EntityId(self->var_85C));
+        if (head == nullptr)
+        {
+            return;
+        }
         buffer = head->generateCargoTotalString(buffer);
 
         // Figure out what stations the vehicle stops at.
@@ -1095,7 +1112,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (currentVehicleId == EntityId::null)
             return;
 
-        auto head = EntityManager::get<VehicleHead>(currentVehicleId);
+        auto* head = EntityManager::get<VehicleHead>(currentVehicleId);
+        if (head == nullptr)
+        {
+            return;
+        }
+
         if (head->isPlaced())
             Ui::Windows::Vehicle::Main::open(head);
         else
