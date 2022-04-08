@@ -8,9 +8,15 @@ namespace OpenLoco
     struct Company;
 }
 
+namespace OpenLoco::Vehicles
+{
+    struct VehicleHead;
+}
+
 namespace OpenLoco::VehicleManager
 {
     void determineAvailableVehicles(Company& company);
+    void deleteTrain(Vehicles::VehicleHead& head);
 }
 
 namespace OpenLoco::Vehicles::RoutingManager

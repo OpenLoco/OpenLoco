@@ -2,6 +2,8 @@
 #include "../Company.h"
 #include "../GameState.h"
 #include "../Interop/Interop.hpp"
+#include "../Ui/WindowManager.h"
+#include "Vehicle.h"
 
 using namespace OpenLoco::Interop;
 
@@ -13,6 +15,37 @@ namespace OpenLoco::VehicleManager
         registers regs;
         regs.esi = X86Pointer(&company);
         call(0x004C3A0C, regs);
+    }
+
+    // 0x004AF06E
+    void deleteTrain(Vehicles::VehicleHead& head)
+    {
+        Ui::WindowManager::close(Ui::WindowType::vehicle, enumValue(head.id));
+        auto* vehListWnd = Ui::WindowManager::find(Ui::WindowType::vehicleList, enumValue(head.owner));
+        if (vehListWnd != nullptr)
+        {
+            vehListWnd->invalidate();
+            Ui::Windows::VehicleList::removeTrainFromList(vehListWnd, head.id); // 0x004C1D19
+        }
+        // Change to vanilla, update the build window to a valid train
+        auto* vehBuildWnd = Ui::WindowManager::find(Ui::WindowType::buildVehicle, enumValue(head.owner));
+        if (vehBuildWnd != nullptr)
+        {
+            vehBuildWnd->invalidate();
+            Ui::Windows::BuildVehicle::sub_4B92A5(vehBuildWnd);
+        }
+
+        // 0x004AF0A3
+        switch (head.mode)
+        {
+            case TransportMode::road:
+            case TransportMode::rail:
+                break;
+            case TransportMode::air:
+                break;
+            case TransportMode::water:
+                break;
+        }
     }
 }
 
