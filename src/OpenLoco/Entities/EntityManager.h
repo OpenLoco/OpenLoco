@@ -102,6 +102,10 @@ namespace OpenLoco::EntityManager
         }
         TEntityType* operator*()
         {
+            if (entity == nullptr)
+            {
+                throw "Bad Entity List!";
+            }
             return entity;
         }
         // iterator traits
