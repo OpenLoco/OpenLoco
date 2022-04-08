@@ -171,8 +171,11 @@ namespace OpenLoco::GameCommands
                 Vehicles::Vehicle train(vehicle);
                 train.veh2->reliability = newReliablity;
 
-                // Set reliability for the first car's front bogie component.
-                train.cars.firstCar.front->reliability = newReliablity * 256;
+                // Set reliability for the front bogie component on each car.
+                for (auto& car : train.cars)
+                {
+                    car.front->reliability = newReliablity * 256;
+                }
             }
             return 0;
         }

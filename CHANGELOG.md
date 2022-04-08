@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#1316] Added a cheat to allow building locked vehicles.
 - Feature: [#1435] Separate landscape height tool from landscape paint tool.
+- Fix: [#1229] Reliability cheat would not apply to multi power locos.
 - Fix: [#1241] Total vehicle power formatted incorrectly.
 - Fix: [#1242] Cannot select both sides of a single way signals.
 - Fix: [#1250] Cannot save landscape in scenario editor.
@@ -9,6 +10,8 @@
 - Fix: [#1379] Year formatted correctly in date cheat window.
 - Fix: [#1393] Vehicles not sorted correctly in build vehicle window.
 - Fix: [#1400] Imperial-to-metric power conversion didn't match vanilla.
+- Fix: [#1424] Crash when loading a scenario after waiting on title screen.
+- Fix: [#1434] Can set 0 or more than 80 towns in scenario editor.
 
 22.03.1 (2022-03-08)
 ------------------------------------------------------------------------

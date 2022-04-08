@@ -22,7 +22,6 @@ namespace OpenLoco::Ui::Dropdown
 {
     static constexpr int bytes_per_item = 8;
 
-    static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
     static loco_global<uint8_t[31], 0x00504619> _byte_504619;
     static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
     static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
@@ -271,7 +270,7 @@ namespace OpenLoco::Ui::Dropdown
                     }
                     else
                     {
-                        uint32_t colour = _byte_5045FA[Colour::opaque(self->getColour(WindowColour::primary))] | (1 << 25);
+                        uint32_t colour = Colour::getTranslucent(Colour::opaque(self->getColour(WindowColour::primary))) | (1 << 25);
                         colour++;
                         Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++;

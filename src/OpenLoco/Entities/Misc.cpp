@@ -296,4 +296,21 @@ namespace OpenLoco
             EntityManager::freeEntity(this);
         }
     }
+
+    // 0x00440BBF
+    ExplosionSmoke* ExplosionSmoke::create(const Map::Pos3& loc)
+    {
+        auto t = static_cast<ExplosionSmoke*>(EntityManager::createEntityMisc());
+        if (t != nullptr)
+        {
+            t->var_14 = 44;
+            t->var_09 = 32;
+            t->var_15 = 34;
+            t->base_type = EntityBaseType::misc;
+            t->moveTo(loc + Map::Pos3{ 0, 0, 4 });
+            t->setSubType(MiscEntityType::explosionSmoke);
+            t->frame = 0;
+        }
+        return t;
+    }
 }

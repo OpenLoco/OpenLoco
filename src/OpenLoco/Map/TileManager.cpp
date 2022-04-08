@@ -1,5 +1,7 @@
 #include "TileManager.h"
+#include "../Audio/Audio.h"
 #include "../CompanyManager.h"
+#include "../Entities/Misc.h"
 #include "../Game.h"
 #include "../GameState.h"
 #include "../IndustryManager.h"
@@ -140,8 +142,8 @@ namespace OpenLoco::Map::TileManager
             auto* cur = &element;
             do
             {
-                *cur++ = *next++;
-            } while (!next->isLast());
+                *cur++ = *next;
+            } while (!next++->isLast());
 
             markElementAsFree(*next);
         }
@@ -719,11 +721,9 @@ namespace OpenLoco::Map::TileManager
     // 0x0048B0C7
     void createDestructExplosion(const Map::Pos3& pos)
     {
-        registers regs;
-        regs.cx = pos.x;
-        regs.dx = pos.y;
-        regs.bp = pos.z;
-        call(0x0048B0C7, regs);
+        ExplosionSmoke::create(pos + Map::Pos3{ 0, 0, 13 });
+        const auto randFreq = gPrng().randNext(20'003, 24'098);
+        Audio::playSound(Audio::SoundId::demolishBuilding, pos, -1400, randFreq);
     }
 
     // 0x0042D8FF

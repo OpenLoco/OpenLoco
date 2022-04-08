@@ -142,6 +142,8 @@ namespace OpenLoco
         uint16_t frame; // 0x28
 
         void update();
+
+        static ExplosionSmoke* create(const Map::Pos3& loc);
     };
     static_assert(sizeof(ExplosionSmoke) == 0x2A);
 

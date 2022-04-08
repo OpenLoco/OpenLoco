@@ -172,12 +172,18 @@ namespace OpenLoco
         void updateDailyLogic();
         void updateDailyPlayer();
         void updateDailyControllingPlayer();
+        void updateMonthlyHeadquarters();
         void updateLoanAutorepay();
         void updateQuarterly();
         void updateVehicleColours();
         void updateHeadquartersColour();
         void updateOwnerEmotion();
         std::vector<uint8_t> getAvailableRailTracks();
+
+    private:
+        uint8_t getHeadquarterPerformanceVariation() const;
+        void setHeadquartersVariation(const uint8_t variation);
+        void setHeadquartersVariation(const uint8_t variation, const Map::TilePos2& pos);
 
         void callThinkFunc2();
         bool tryPlaceVehicles();

@@ -1,6 +1,7 @@
 #include "Colour.h"
 #include "../Interop/Interop.hpp"
 #include "Gfx.h"
+#include <array>
 #include <cassert>
 
 using namespace OpenLoco::Interop;
@@ -10,6 +11,41 @@ namespace OpenLoco::Colour
 
     loco_global<uint8_t[32][8], 0x01136BA0> _colour_map_a;
     loco_global<uint8_t[32][8], 0x01136C98> _colour_map_b;
+
+    // 0x005045FA
+    static constexpr std::array<uint8_t, 32> _translucentColourMap = {
+        PaletteIndex::index_35,
+        PaletteIndex::index_35,
+        PaletteIndex::index_6E,
+        PaletteIndex::index_41,
+        PaletteIndex::index_41,
+        PaletteIndex::index_59,
+        PaletteIndex::index_38,
+        PaletteIndex::index_38,
+        PaletteIndex::index_62,
+        PaletteIndex::index_62,
+        PaletteIndex::index_53,
+        PaletteIndex::index_3E,
+        PaletteIndex::index_4D,
+        PaletteIndex::index_53,
+        PaletteIndex::index_50,
+        PaletteIndex::index_44,
+        PaletteIndex::index_4A,
+        PaletteIndex::index_4A,
+        PaletteIndex::index_5F,
+        PaletteIndex::index_71,
+        PaletteIndex::index_5F,
+        PaletteIndex::index_47,
+        PaletteIndex::index_47,
+        PaletteIndex::index_68,
+        PaletteIndex::index_56,
+        PaletteIndex::index_3B,
+        PaletteIndex::index_5C,
+        PaletteIndex::index_5C,
+        PaletteIndex::index_65,
+        PaletteIndex::index_65,
+        PaletteIndex::index_6B,
+    };
 
     void initColourMap()
     {
@@ -48,5 +84,11 @@ namespace OpenLoco::Colour
         }
 
         return _colour_map_b[colour][shade - 8];
+    }
+
+    // 0x005045FA
+    PaletteIndex_t getTranslucent(Colour_t colour)
+    {
+        return _translucentColourMap[colour];
     }
 }

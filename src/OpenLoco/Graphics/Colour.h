@@ -67,6 +67,7 @@ namespace OpenLoco
 
         void initColourMap();
         PaletteIndex_t getShade(Colour_t colour, uint8_t shade);
+        PaletteIndex_t getTranslucent(Colour_t colour);
     }
 
     namespace PaletteIndex
@@ -89,16 +90,30 @@ namespace OpenLoco
         constexpr PaletteIndex_t index_35 = 0x35;
         constexpr PaletteIndex_t index_38 = 0x38;
         constexpr PaletteIndex_t index_3B = 0x3B;
+        constexpr PaletteIndex_t index_3E = 0x3E;
         constexpr PaletteIndex_t index_3F = 0x3F;
         constexpr PaletteIndex_t index_41 = 0x41;
         constexpr PaletteIndex_t index_43 = 0x43;
+        constexpr PaletteIndex_t index_44 = 0x44;
+        constexpr PaletteIndex_t index_47 = 0x47;
+        constexpr PaletteIndex_t index_4A = 0x4A;
         constexpr PaletteIndex_t index_4B = 0x4B;
+        constexpr PaletteIndex_t index_4D = 0x4D;
         constexpr PaletteIndex_t index_50 = 0x50;
+        constexpr PaletteIndex_t index_53 = 0x53;
+        constexpr PaletteIndex_t index_56 = 0x56;
         constexpr PaletteIndex_t index_58 = 0x58;
+        constexpr PaletteIndex_t index_59 = 0x59;
+        constexpr PaletteIndex_t index_5C = 0x5C;
+        constexpr PaletteIndex_t index_5F = 0x5F;
+        constexpr PaletteIndex_t index_62 = 0x62;
         constexpr PaletteIndex_t index_64 = 0x64;
+        constexpr PaletteIndex_t index_65 = 0x65;
         constexpr PaletteIndex_t index_66 = 0x66;
         constexpr PaletteIndex_t index_67 = 0x67;
         constexpr PaletteIndex_t index_68 = 0x68;
+        constexpr PaletteIndex_t index_6B = 0x6B;
+        constexpr PaletteIndex_t index_6E = 0x6E;
         constexpr PaletteIndex_t index_71 = 0x71;
         constexpr PaletteIndex_t index_74 = 0x74;
         constexpr PaletteIndex_t index_7D = 0x7D;

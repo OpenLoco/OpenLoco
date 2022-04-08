@@ -74,43 +74,7 @@ namespace OpenLoco::ObjectManager
     assert_struct_size(ObjectRepositoryItem, 8);
 #pragma pack(pop)
 
-    loco_global<ObjectEntry2[maxObjects], 0x1125A90> objectEntries;
-    loco_global<ObjectRepositoryItem[64], 0x4FE0B8> object_repository;
-    loco_global<Object* [maxObjects], 0x0050C3D0> _allObjects;
-    loco_global<InterfaceSkinObject* [1], 0x0050C3D0> _interfaceObjects;
-    loco_global<SoundObject* [128], 0x0050C3D4> _soundObjects;
-    loco_global<CurrencyObject* [1], 0x0050C5D4> _currencyObjects;
-    loco_global<SteamObject* [32], 0x0050C5D8> _steamObjects;
-    loco_global<RockObject* [8], 0x0050C658> _rockObjects;
-    loco_global<WaterObject* [1], 0x0050C678> _waterObjects;
-    loco_global<LandObject* [32], 0x0050C67C> _landObjects;
-    loco_global<TownNamesObject* [1], 0x0050C6FC> _townNamesObjects;
-    loco_global<CargoObject* [32], 0x0050C700> _cargoObjects;
-    loco_global<WallObject* [32], 0x0050C780> _wallObjects;
-    loco_global<TrainSignalObject* [16], 0x0050C800> _trainSignalObjects;
-    loco_global<LevelCrossingObject* [4], 0x0050C840> _levelCrossingObjects;
-    loco_global<StreetLightObject* [1], 0x0050C850> _streetLightObjects;
-    loco_global<TunnelObject* [16], 0x0050C854> _tunnelObjects;
-    loco_global<BridgeObject* [8], 0x0050C894> _bridgeObjects;
-    loco_global<TrainStationObject* [16], 0x0050C8B4> _trainStationObjects;
-    loco_global<TrackExtraObject* [8], 0x0050C8F4> _trackExtraObjects;
-    loco_global<TrackObject* [8], 0x0050C914> _trackObjects;
-    loco_global<RoadStationObject* [16], 0x0050C934> _roadStationObjects;
-    loco_global<RoadExtraObject* [4], 0x0050C974> _roadExtraObjects;
-    loco_global<RoadObject* [8], 0x0050C984> _roadObjects;
-    loco_global<AirportObject* [8], 0x0050C9A4> _airportObjects;
-    loco_global<DockObject* [8], 0x0050C9C4> _dockObjects;
-    loco_global<VehicleObject* [224], 0x0050C9E4> _vehicleObjects;
-    loco_global<TreeObject* [64], 0x0050CD64> _treeObjects;
-    loco_global<SnowObject* [1], 0x0050CE64> _snowObjects;
-    loco_global<ClimateObject* [1], 0x0050CE68> _climateObjects;
-    loco_global<HillShapesObject* [1], 0x0050CE6C> _hillShapeObjects;
-    loco_global<BuildingObject* [128], 0x0050CE70> _buildingObjects;
-    loco_global<ScaffoldingObject* [1], 0x0050D070> _scaffoldingObjects;
-    loco_global<IndustryObject* [16], 0x0050D074> _industryObjects;
-    loco_global<RegionObject* [1], 0x0050D0B4> _regionObjects;
-    loco_global<CompetitorObject* [32], 0x0050D0B8> _competitorObjects;
-    loco_global<ScenarioTextObject* [1], 0x0050D138> _scenarioTextObjects;
+    loco_global<ObjectRepositoryItem[maxObjectTypes], 0x4FE0B8> object_repository;
 
     loco_global<uint32_t, 0x0050D154> _totalNumImages;
 
@@ -497,19 +461,19 @@ namespace OpenLoco::ObjectManager
         _customObjectsInIndex = hasCustomObjectsInIndex();
     }
 
-    ObjectHeader* getHeader(LoadedObjectIndex id)
-    {
-        return &objectEntries[id];
-    }
-
     static ObjectRepositoryItem& getRepositoryItem(ObjectType type)
     {
-        return object_repository[static_cast<uint8_t>(type)];
+        return object_repository[enumValue(type)];
+    }
+
+    ObjectHeader& getHeader(const LoadedObjectHandle& handle)
+    {
+        return getRepositoryItem(handle.type).object_entry_extendeds[handle.id];
     }
 
     Object* getAny(const LoadedObjectHandle& handle)
     {
-        auto obj = _allObjects[getTypeOffset(handle.type) + handle.id];
+        auto obj = getRepositoryItem(handle.type).objects[handle.id];
         if (obj == (void*)-1)
         {
             obj = nullptr;
@@ -517,322 +481,6 @@ namespace OpenLoco::ObjectManager
         return obj;
     }
 
-    template<>
-    InterfaceSkinObject* get()
-    {
-        if (_interfaceObjects[0] == (void*)-1)
-        {
-            return nullptr;
-        }
-
-        return _interfaceObjects[0];
-    }
-
-    template<>
-    SoundObject* get(size_t id)
-    {
-        if (_soundObjects[id] != reinterpret_cast<SoundObject*>(-1))
-        {
-            return _soundObjects[id];
-        }
-        return nullptr;
-    }
-
-    template<>
-    SteamObject* get(size_t id)
-    {
-        if (_steamObjects[id] != reinterpret_cast<SteamObject*>(-1))
-        {
-            return _steamObjects[id];
-        }
-        return nullptr;
-    }
-
-    template<>
-    RockObject* get(size_t id)
-    {
-        if (_rockObjects[id] != reinterpret_cast<RockObject*>(-1))
-            return _rockObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    CargoObject* get(size_t id)
-    {
-        if (_cargoObjects[id] != (CargoObject*)-1)
-            return _cargoObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TrainSignalObject* get(size_t id)
-    {
-        if (_trainSignalObjects[id] != reinterpret_cast<TrainSignalObject*>(-1))
-            return _trainSignalObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    RoadStationObject* get(size_t id)
-    {
-        if (_roadStationObjects[id] != reinterpret_cast<RoadStationObject*>(-1))
-            return _roadStationObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    VehicleObject* get(size_t id)
-    {
-        if (_vehicleObjects[id] != reinterpret_cast<VehicleObject*>(-1))
-            return _vehicleObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TreeObject* get(size_t id)
-    {
-        if (_treeObjects[id] != reinterpret_cast<TreeObject*>(-1))
-            return _treeObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    WallObject* get(size_t id)
-    {
-        if (_wallObjects[id] != reinterpret_cast<WallObject*>(-1))
-            return _wallObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    BuildingObject* get(size_t id)
-    {
-        if (_buildingObjects[id] != reinterpret_cast<BuildingObject*>(-1))
-            return _buildingObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    IndustryObject* get(size_t id)
-    {
-        if (_industryObjects[id] != reinterpret_cast<IndustryObject*>(-1))
-            return _industryObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    CurrencyObject* get()
-    {
-        if (_currencyObjects[0] != reinterpret_cast<CurrencyObject*>(-1))
-        {
-            return _currencyObjects[0];
-        }
-        return nullptr;
-    }
-
-    template<>
-    BridgeObject* get(size_t id)
-    {
-        if (_bridgeObjects[id] != reinterpret_cast<BridgeObject*>(-1))
-            return _bridgeObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TrainStationObject* get(size_t id)
-    {
-        if (_trainStationObjects[id] != reinterpret_cast<TrainStationObject*>(-1))
-            return _trainStationObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TrackExtraObject* get(size_t id)
-    {
-        if (_trackExtraObjects[id] != reinterpret_cast<TrackExtraObject*>(-1))
-        {
-            return _trackExtraObjects[id];
-        }
-        return nullptr;
-    }
-
-    template<>
-    TrackObject* get(size_t id)
-    {
-        if (_trackObjects[id] != reinterpret_cast<TrackObject*>(-1))
-            return _trackObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    RoadExtraObject* get(size_t id)
-    {
-        if (_roadExtraObjects[id] != reinterpret_cast<RoadExtraObject*>(-1))
-        {
-            return _roadExtraObjects[id];
-        }
-        return nullptr;
-    }
-
-    template<>
-    RoadObject* get(size_t id)
-    {
-        if (_roadObjects[id] != reinterpret_cast<RoadObject*>(-1))
-            return _roadObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    AirportObject* get(size_t id)
-    {
-        if (_airportObjects[id] != reinterpret_cast<AirportObject*>(-1))
-            return _airportObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    DockObject* get(size_t id)
-    {
-        if (_dockObjects[id] != reinterpret_cast<DockObject*>(-1))
-            return _dockObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    LandObject* get(size_t id)
-    {
-        if (_landObjects[id] != (LandObject*)-1)
-            return _landObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    WaterObject* get()
-    {
-        if (_waterObjects[0] != reinterpret_cast<WaterObject*>(-1))
-        {
-            return _waterObjects[0];
-        }
-        return nullptr;
-    }
-
-    template<>
-    CompetitorObject* get(size_t id)
-    {
-        if (_competitorObjects[id] != reinterpret_cast<CompetitorObject*>(-1))
-        {
-            return _competitorObjects[id];
-        }
-        return nullptr;
-    }
-
-    template<>
-    ClimateObject* get()
-    {
-        if (_climateObjects[0] == (void*)-1)
-        {
-            return nullptr;
-        }
-
-        return _climateObjects[0];
-    }
-
-    template<>
-    ScenarioTextObject* get()
-    {
-        if (_scenarioTextObjects[0] != (ScenarioTextObject*)-1)
-            return _scenarioTextObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    RegionObject* get()
-    {
-        if (_regionObjects[0] != reinterpret_cast<RegionObject*>(-1))
-            return _regionObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TownNamesObject* get()
-    {
-        if (_townNamesObjects[0] != reinterpret_cast<TownNamesObject*>(-1))
-            return _townNamesObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    LevelCrossingObject* get(size_t id)
-    {
-        if (_levelCrossingObjects[id] != reinterpret_cast<LevelCrossingObject*>(-1))
-            return _levelCrossingObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    StreetLightObject* get()
-    {
-        if (_streetLightObjects[0] != reinterpret_cast<StreetLightObject*>(-1))
-            return _streetLightObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    TunnelObject* get(size_t id)
-    {
-        if (_tunnelObjects[id] != reinterpret_cast<TunnelObject*>(-1))
-            return _tunnelObjects[id];
-        else
-            return nullptr;
-    }
-
-    template<>
-    SnowObject* get()
-    {
-        if (_snowObjects[0] != reinterpret_cast<SnowObject*>(-1))
-            return _snowObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    HillShapesObject* get()
-    {
-        if (_hillShapeObjects[0] != reinterpret_cast<HillShapesObject*>(-1))
-            return _hillShapeObjects[0];
-        else
-            return nullptr;
-    }
-
-    template<>
-    ScaffoldingObject* get()
-    {
-        if (_scaffoldingObjects[0] != reinterpret_cast<ScaffoldingObject*>(-1))
-            return _scaffoldingObjects[0];
-        else
-            return nullptr;
-    }
     /*
     static void printHeader(header data)
     {
@@ -1195,20 +843,6 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        // sub_471BCE only code
-        //for (id = 0; id < getMaxObjects(loadingHeader.getType()); ++id)
-        //{
-        //    if (object_repository[enumValue(loadingHeader.getType())].objects[id] == reinterpret_cast<Object*>(-1))
-        //    {
-        //        break;
-        //    }
-        //}
-        //if (id >= getMaxObjects(loadingHeader.getType()))
-        //{
-        //    free(object);
-        //    return false;
-        //}
-
         object_repository[enumValue(loadingHeader.getType())].objects[id] = object;
         auto& extendedHeader = object_repository[enumValue(loadingHeader.getType())].object_entry_extendeds[id];
         extendedHeader = ObjectEntry2{
@@ -1221,6 +855,42 @@ namespace OpenLoco::ObjectManager
         }
 
         return true;
+    }
+
+    static std::optional<LoadedObjectId> findFreeObjectId(const ObjectType type)
+    {
+        for (LoadedObjectId id = 0; id < getMaxObjects(type); ++id)
+        {
+            if (getAny({ type, id }) == nullptr)
+            {
+                return id;
+            }
+        }
+        return std::nullopt;
+    }
+
+    // 0x00471FF8
+    void unload(const ObjectHeader& header)
+    {
+        auto handle = findIndex(header);
+        if (!handle)
+        {
+            return;
+        }
+        unload(*handle);
+        free(object_repository[enumValue(handle->type)].objects[handle->id]);
+        object_repository[enumValue(handle->type)].objects[handle->id] = reinterpret_cast<Object*>(-1);
+    }
+
+    // 0x00471BCE
+    bool load(const ObjectHeader& header)
+    {
+        auto id = findFreeObjectId(header.getType());
+        if (!id)
+        {
+            return false;
+        }
+        return load(header, *id);
     }
 
     static LoadedObjectId getObjectId(LoadedObjectIndex index)
@@ -1521,7 +1191,7 @@ namespace OpenLoco::ObjectManager
 
     size_t getByteLength(const LoadedObjectHandle& handle)
     {
-        return objectEntries[getTypeOffset(handle.type) + handle.id].dataSize;
+        return getRepositoryItem(handle.type).object_entry_extendeds[handle.id].dataSize;
     }
 
     template<typename TObject>
@@ -1532,8 +1202,8 @@ namespace OpenLoco::ObjectManager
             auto* obj = ObjectManager::get<TObject>();
             if (obj != nullptr)
             {
-                auto entry = getHeader(getTypeOffset(TObject::kObjectType));
-                entries.push_back(*entry);
+                auto entry = getHeader({ TObject::kObjectType, 0 });
+                entries.push_back(entry);
             }
             else
             {
@@ -1544,13 +1214,13 @@ namespace OpenLoco::ObjectManager
         }
         else
         {
-            for (size_t i = 0; i < getMaxObjects(TObject::kObjectType); ++i)
+            for (LoadedObjectId i = 0; i < getMaxObjects(TObject::kObjectType); ++i)
             {
                 auto* obj = ObjectManager::get<TObject>(i);
                 if (obj != nullptr)
                 {
-                    auto entry = getHeader(i + getTypeOffset(TObject::kObjectType));
-                    entries.push_back(*entry);
+                    auto entry = getHeader({ TObject::kObjectType, i });
+                    entries.push_back(entry);
                 }
                 else
                 {
