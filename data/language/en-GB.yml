@@ -2281,7 +2281,7 @@ strings:
   2226: "Construction: Select position"
   2227: "Trains reverse at signals"
   2228: Autopay
-  2229: "Once per day, any current funds you have will be used to pay off your loan, if you have one."
+  2229: "{SMALLFONT}{COLOUR BLACK}Once per day, any current funds you have will be used to pay off your loan, if you have one."
   2230: "{COLOUR WINDOW_2}Year:"
   2231: "{COLOUR WINDOW_2}Month:"
   2232: "{COLOUR WINDOW_2}Day:"
