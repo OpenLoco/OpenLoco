@@ -791,7 +791,7 @@ namespace OpenLoco::Audio
 
         for (auto v : EntityManager::VehicleList())
         {
-            Vehicles::Vehicle train(v);
+            Vehicles::Vehicle train(*v);
             off_4FEB58(reinterpret_cast<Vehicles::Vehicle2or6*>(train.veh2), x);
             off_4FEB58(reinterpret_cast<Vehicles::Vehicle2or6*>(train.tail), x);
         }

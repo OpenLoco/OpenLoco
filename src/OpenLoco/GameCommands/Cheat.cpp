@@ -60,7 +60,7 @@ namespace OpenLoco::GameCommands
                 if (vehicle->owner != targetCompanyId)
                     continue;
 
-                Vehicles::Vehicle train(vehicle);
+                Vehicles::Vehicle train(*vehicle);
                 train.head->owner = ourCompanyId;
                 train.veh1->owner = ourCompanyId;
                 train.veh2->owner = ourCompanyId;
@@ -168,7 +168,7 @@ namespace OpenLoco::GameCommands
                 if (vehicle->owner != ourCompanyId)
                     continue;
 
-                Vehicles::Vehicle train(vehicle);
+                Vehicles::Vehicle train(*vehicle);
                 train.veh2->reliability = newReliablity;
 
                 // Set reliability for the front bogie component on each car.

@@ -842,8 +842,8 @@ namespace OpenLoco::Vehicles
         VehicleTail* tail;
         Cars cars;
 
-        Vehicle(const VehicleHead* _head)
-            : Vehicle(_head->id)
+        Vehicle(const VehicleHead& _head)
+            : Vehicle(_head.id)
         {
         }
         Vehicle(EntityId _head);

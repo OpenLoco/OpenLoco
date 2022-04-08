@@ -386,7 +386,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            Vehicles::Vehicle train(v);
+            Vehicles::Vehicle train(*v);
             for (auto& car : train.cars)
             {
                 const auto* vehObject = car.body->getObject();

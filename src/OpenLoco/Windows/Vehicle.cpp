@@ -276,7 +276,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            Vehicles::Vehicle train(vehHead);
+            Vehicles::Vehicle train(*vehHead);
 
             // If picked up no need for viewport drawn
             if (vehHead->tileX == -1)
@@ -680,7 +680,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     return;
                 }
-                Vehicles::Vehicle train(vehHead);
+                Vehicles::Vehicle train(*vehHead);
                 EntityId targetThing = train.veh2->id;
 
                 // Focus viewport on vehicle, with locking.
@@ -763,7 +763,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            Vehicles::Vehicle train(head);
+            Vehicles::Vehicle train(*head);
 
             self->widgets[widx::stopStart].type = WidgetType::buttonWithImage;
             self->widgets[widx::pickup].type = WidgetType::buttonWithImage;
@@ -1246,7 +1246,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            OpenLoco::Vehicles::Vehicle train{ head };
+            OpenLoco::Vehicles::Vehicle train{ *head };
             for (auto c : train.cars)
             {
                 if (c.front == car->front)
@@ -1460,7 +1460,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto buildImage = skin->img + additionalVehicleButtonByVehicleType.at(head->vehicleType);
             self->widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self->owner));
 
-            Vehicles::Vehicle train{ head };
+            Vehicles::Vehicle train{ *head };
             if (train.cars.empty())
             {
                 self->disabledWidgets |= 1 << widx::pickup;
@@ -1496,7 +1496,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            OpenLoco::Vehicles::Vehicle train{ head };
+            OpenLoco::Vehicles::Vehicle train{ *head };
             Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 23) };
 
             {
@@ -1535,7 +1535,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            OpenLoco::Vehicles::Vehicle train{ head };
+            OpenLoco::Vehicles::Vehicle train{ *head };
             Ui::Point pos{ 0, 0 };
             for (auto& car : train.cars)
             {
@@ -1632,7 +1632,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     return nullptr;
                 }
-                Vehicles::Vehicle train(head);
+                Vehicles::Vehicle train(*head);
                 return train.tail;
             }
             return car->front;
@@ -1733,7 +1733,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return false;
             }
 
-            OpenLoco::Vehicles::Vehicle train(headVehicle);
+            OpenLoco::Vehicles::Vehicle train(*headVehicle);
 
             if (train.cars.empty())
             {
@@ -1841,7 +1841,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            Vehicles::Vehicle train{ head };
+            Vehicles::Vehicle train{ *head };
             int16_t y = 0;
             for (auto& car : train.cars)
             {
@@ -1947,7 +1947,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            Vehicles::Vehicle train(head);
+            Vehicles::Vehicle train(*head);
             auto vehicleObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             auto maxPrimaryCargo = vehicleObject->max_primary_cargo;
             auto primaryCargoId = Utility::bitScanForward(vehicleObject->primary_cargo_types);
@@ -2182,7 +2182,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            Vehicles::Vehicle train(head);
+            Vehicles::Vehicle train(*head);
             auto veh1 = train.veh1;
             if (veh1->lastIncome.day != -1)
             {
@@ -2577,7 +2577,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     if (!CompanyManager::isPlayerCompany(head->owner))
                         return;
 
-                    Vehicles::Vehicle train(head);
+                    Vehicles::Vehicle train(*head);
                     if (train.veh1->var_48 & (1 << 1))
                     {
                         GameCommands::setErrorTitle(StringIds::empty);
@@ -2590,7 +2590,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     if (!CompanyManager::isPlayerCompany(head->owner))
                         return;
 
-                    Vehicles::Vehicle train(head);
+                    Vehicles::Vehicle train(*head);
                     if (!(train.veh1->var_48 & (1 << 1)))
                     {
                         GameCommands::setErrorTitle(StringIds::empty);
@@ -3111,7 +3111,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             // Express / local
             self->activatedWidgets &= ~((1 << widx::expressMode) | (1 << widx::localMode));
-            Vehicles::Vehicle train(head);
+            Vehicles::Vehicle train(*head);
             if (train.veh1->var_48 & (1 << 1))
                 self->activatedWidgets |= (1 << widx::expressMode);
             else
@@ -3266,7 +3266,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            Vehicles::Vehicle train(head);
+            Vehicles::Vehicle train(*head);
 
             auto rowNum = 0;
             if (head->sizeOfOrderTable == 1)
@@ -4363,7 +4363,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return 0;
             }
-            Vehicles::Vehicle train(head);
+            Vehicles::Vehicle train(*head);
 
             if (train.cars.empty())
             {
@@ -4395,7 +4395,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return {};
             }
-            Vehicles::Vehicle train(getVehicle(self));
+            Vehicles::Vehicle train(*head);
 
             auto heightOffset = y;
             for (auto& car : train.cars)

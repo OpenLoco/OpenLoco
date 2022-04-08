@@ -385,7 +385,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         for (auto v : EntityManager::VehicleList())
         {
-            auto train = Vehicles::Vehicle(v);
+            auto train = Vehicles::Vehicle(*v);
             checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *train.veh2, targetPosition);
             for (auto car : train.cars)
             {

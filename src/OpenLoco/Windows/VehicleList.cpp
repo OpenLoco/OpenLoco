@@ -218,8 +218,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1EC9
     static bool orderByProfit(const VehicleHead& lhs, const VehicleHead& rhs)
     {
-        auto profitL = Vehicles::Vehicle(&lhs).veh2->totalRecentProfit();
-        auto profitR = Vehicles::Vehicle(&rhs).veh2->totalRecentProfit();
+        auto profitL = Vehicles::Vehicle(lhs).veh2->totalRecentProfit();
+        auto profitR = Vehicles::Vehicle(rhs).veh2->totalRecentProfit();
 
         return profitR - profitL < 0;
     }
@@ -227,8 +227,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1F1E
     static bool orderByAge(const VehicleHead& lhs, const VehicleHead& rhs)
     {
-        auto dayCreatedL = Vehicles::Vehicle(&lhs).veh1->dayCreated;
-        auto dayCreatedR = Vehicles::Vehicle(&rhs).veh1->dayCreated;
+        auto dayCreatedL = Vehicles::Vehicle(lhs).veh1->dayCreated;
+        auto dayCreatedR = Vehicles::Vehicle(rhs).veh1->dayCreated;
 
         return static_cast<int32_t>(dayCreatedL - dayCreatedR) < 0;
     }
@@ -236,8 +236,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1F45
     static bool orderByReliability(const VehicleHead& lhs, const VehicleHead& rhs)
     {
-        auto reliabilityL = Vehicles::Vehicle(&lhs).veh2->reliability;
-        auto reliabilityR = Vehicles::Vehicle(&rhs).veh2->reliability;
+        auto reliabilityL = Vehicles::Vehicle(lhs).veh2->reliability;
+        auto reliabilityR = Vehicles::Vehicle(rhs).veh2->reliability;
 
         return static_cast<int32_t>(reliabilityR - reliabilityL) < 0;
     }
@@ -763,7 +763,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 Gfx::drawString_494BBF(context, 1, yPos, 308, Colour::outline(Colour::black), format, &args);
             }
 
-            auto vehicle = Vehicles::Vehicle(head);
+            auto vehicle = Vehicles::Vehicle(*head);
 
             // Vehicle profit
             {

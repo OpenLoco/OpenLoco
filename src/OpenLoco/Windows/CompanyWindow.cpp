@@ -527,8 +527,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     return;
                 }
 
-                auto* head = vehicle->asVehicleHead();
-                Vehicles::Vehicle train(head);
+                Vehicles::Vehicle train(vehicle->getHead());
 
                 int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                 SavedView view(
