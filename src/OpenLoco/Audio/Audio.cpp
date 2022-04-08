@@ -859,6 +859,10 @@ namespace OpenLoco::Audio
             size_t treeCount = 0;       // cx
             for (auto& tilePos : searchRange)
             {
+                if (!Map::validCoords(tilePos))
+                {
+                    continue;
+                }
                 const auto tile = Map::TileManager::get(tilePos);
                 bool passedSurface = false;
                 for (const auto& el : tile)
