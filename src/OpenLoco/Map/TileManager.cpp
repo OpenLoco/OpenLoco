@@ -145,7 +145,7 @@ namespace OpenLoco::Map::TileManager
                 *cur++ = *next;
             } while (!next++->isLast());
 
-            markElementAsFree(*next);
+            markElementAsFree(*cur);
         }
     }
 

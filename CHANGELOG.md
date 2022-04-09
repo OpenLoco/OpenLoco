@@ -11,7 +11,9 @@
 - Fix: [#1400] Imperial-to-metric power conversion didn't match vanilla.
 - Fix: [#1424] Crash when loading a scenario after waiting on title screen.
 - Fix: [#1434] Can set 0 or more than 80 towns in scenario editor.
+- Fix: [#1449] Autopay tooltip was formatted poorly.
 - Fix: [#1450] Some strings were erroneously referenced in the language files.
+
 
 22.03.1 (2022-03-08)
 ------------------------------------------------------------------------
