@@ -91,7 +91,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::createRoadStation,            nullptr,                   0x0048C708, true  },
         { GameCommand::removeRoadStation,            nullptr,                   0x0048D2AC, true  },
         { GameCommand::createBuilding,               nullptr,                   0x0042D133, true  },
-        { GameCommand::removeBuilding,               nullptr,                   0x0042D74E, true  },
+        { GameCommand::removeBuilding,               removeBuilding,            0x0042D74E, true  },
         { GameCommand::renameTown,                   renameTown,                0x0049B11E, false },
         { GameCommand::createIndustry,               nullptr,                   0x0045436B, true  },
         { GameCommand::removeIndustry,               nullptr,                   0x00455943, true  },

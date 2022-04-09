@@ -833,14 +833,5 @@ namespace OpenLoco::Map::TileManager
                 removeSurfaceIndustry({ regs.ax, regs.cx });
                 return 0;
             });
-
-        registerHook(
-            0x0042D8FF,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                removeBuildingElement(*X86Pointer<BuildingElement>(regs.esi), { regs.ax, regs.cx });
-                regs = backup;
-                return 0;
-            });
     }
 }

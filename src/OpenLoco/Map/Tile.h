@@ -256,6 +256,7 @@ namespace OpenLoco::Map
         uint16_t _6;
 
     public:
+        uint8_t rotation() const { return _type & 0x03; }
         bool has_40() const { return (_type & 0x40) != 0; }
         bool isConstructed() const { return (_type & 0x80) != 0; }
         void setConstructed(bool state)
