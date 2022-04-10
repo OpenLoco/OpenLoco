@@ -3,8 +3,8 @@
 #include "../Economy/Economy.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameState.h"
 #include "../GameStateHelpers/LastGameOption.h"
+#include "../GameStateHelpers/Misc.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -1147,8 +1147,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     break;
                 }
 
-                uint8_t unk1 = getGameState().var_416 & 0x3F;
-                uint8_t unk2 = ((getGameState().var_416 + 2) / 4) & 0x3F;
+                uint8_t unk1 = gameStateVar416() & 0x3F;
+                uint8_t unk2 = ((gameStateVar416() + 2) / 4) & 0x3F;
                 drawVehicleOverview(&context, window.rowHover, CompanyManager::getControllingId(), unk1, unk2, { 90, 37 });
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);

@@ -8,4 +8,10 @@ namespace OpenLoco
     {
         return getGameState().flags;
     }
+
+    // 0x0052622E
+    uint16_t& gameStateVar416()
+    {
+        return getGameState().var_416;
+    }
 }
