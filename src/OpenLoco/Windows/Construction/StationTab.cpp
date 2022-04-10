@@ -627,7 +627,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         self->draw(context);
         Common::drawTabs(self, context);
 
-        auto company = CompanyManager::get(_playerCompany);
+        auto company = CompanyManager::get(CompanyManager::rawPlayerCompanies()[0]);
         auto companyColour = company->mainColours.primary;
         int16_t xPos = self->widgets[widx::image].left + self->x;
         int16_t yPos = self->widgets[widx::image].top + self->y;
