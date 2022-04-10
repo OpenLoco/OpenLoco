@@ -4,6 +4,7 @@
 #include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "../Limits.h"
+#include "../ScenarioManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Prng.hpp"
 #include "../ViewportManager.h"
@@ -77,7 +78,7 @@ namespace OpenLoco::Map::WaveManager
     // 0x004C56F6
     void update()
     {
-        if (!Game::hasFlags(1u << 0) || (getGameState().scenarioTicks & 0x3))
+        if (!Game::hasFlags(1u << 0) || (ScenarioManager::getScenarioTicks() & 0x3))
         {
             return;
         }

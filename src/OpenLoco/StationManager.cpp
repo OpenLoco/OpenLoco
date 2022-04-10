@@ -9,6 +9,7 @@
 #include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
 #include "OpenLoco.h"
+#include "ScenarioManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
@@ -54,7 +55,7 @@ namespace OpenLoco::StationManager
     {
         if (Game::hasFlags(1u << 0) && !isEditorMode())
         {
-            const auto id = StationId(getGameState().scenarioTicks & 0x3FF);
+            const auto id = StationId(ScenarioManager::getScenarioTicks() & 0x3FF);
             auto station = get(id);
             if (station != nullptr && !station->empty())
             {

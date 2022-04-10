@@ -854,7 +854,7 @@ namespace OpenLoco
     // 0x0046ABCB
     static void tickLogic()
     {
-        getGameState().scenarioTicks++;
+        ScenarioManager::setScenarioTicks(ScenarioManager::getScenarioTicks() + 1);
 
         addr<0x00525F64, int32_t>()++;
         addr<0x00525FCC, uint32_t>() = gPrng().srand_0();

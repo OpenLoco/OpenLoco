@@ -7,7 +7,6 @@
 #include "../Entities/EntityManager.h"
 #include "../Entities/Misc.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameState.h"
 #include "../Graphics/Gfx.h"
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
@@ -25,6 +24,7 @@
 #include "../Objects/RoadStationObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
+#include "../ScenarioManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
@@ -196,7 +196,7 @@ namespace OpenLoco::Vehicles
         {
             if (car.front->var_5F & Flags5F::brokenDown)
             {
-                if ((getGameState().scenarioTicks & 3) == 0)
+                if ((ScenarioManager::getScenarioTicks() & 3) == 0)
                 {
                     auto v2 = car.body; // body
 
@@ -3118,7 +3118,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::beginNewJourney()
     {
         // Set initial position for updateLastJourneyAverageSpeed
-        var_73 = getGameState().scenarioTicks;
+        var_73 = ScenarioManager::getScenarioTicks();
         Vehicle train(this);
         var_6F = train.veh2->position.x;
         var_71 = train.veh2->position.y;

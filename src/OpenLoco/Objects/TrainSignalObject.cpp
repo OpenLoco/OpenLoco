@@ -1,8 +1,8 @@
 #include "TrainSignalObject.h"
-#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
+#include "../ScenarioManager.h"
 
 namespace OpenLoco
 {
@@ -73,7 +73,7 @@ namespace OpenLoco
     {
         auto frames = signalFrames[(((num_frames + 2) / 3) - 2)];
         auto frameCount = std::size(frames) - 1;
-        auto animationFrame = frameCount & (getGameState().scenarioTicks >> animationSpeed);
+        auto animationFrame = frameCount & (ScenarioManager::getScenarioTicks() >> animationSpeed);
 
         auto frameIndex = frames[animationFrame];
         frameIndex *= 8;

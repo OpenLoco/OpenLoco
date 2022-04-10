@@ -8,6 +8,7 @@
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
+#include "ScenarioManager.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
 
@@ -147,7 +148,7 @@ namespace OpenLoco::TownManager
     {
         if (Game::hasFlags(1u << 0) && !isEditorMode())
         {
-            auto ticks = getGameState().scenarioTicks;
+            auto ticks = ScenarioManager::getScenarioTicks();
             if (ticks % 8 == 0)
             {
                 const auto id = TownId((ticks / 8) % 0x7F);
