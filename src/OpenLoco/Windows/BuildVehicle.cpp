@@ -234,7 +234,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
 
     static WindowEventList _events;
@@ -1266,13 +1265,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         uint32_t trackTab = 0;
         for (; trackTab < _numTrackTypeTabs; trackTab++)
         {
-            if (last_railroad_option == _TrackTypesForTab[trackTab])
+            if (getLastRailRoadOption() == _TrackTypesForTab[trackTab])
             {
                 found = true;
                 break;
             }
 
-            if (last_road_option == _TrackTypesForTab[trackTab])
+            if (getLastRoadOption() == _TrackTypesForTab[trackTab])
             {
                 found = true;
                 break;
@@ -1309,11 +1308,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         if (setRail)
         {
-            last_railroad_option = trackType;
+            setLastRailRoadOption(trackType);
         }
         else
         {
-            last_road_option = trackType;
+            setLastRoadOption(trackType);
         }
 
         // The window number doesn't really matter as there is only one top toolbar
