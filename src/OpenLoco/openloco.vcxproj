@@ -84,6 +84,7 @@
     <ClCompile Include="Math\Vector.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="MessageManager.cpp" />
+    <ClCompile Include="GameStateHelpers\Misc.cpp" />
     <ClCompile Include="MultiPlayer.cpp" />
     <ClCompile Include="Objects\AirportObject.cpp" />
     <ClCompile Include="Objects\BridgeObject.cpp" />
@@ -308,6 +309,7 @@
     <ClInclude Include="Math\Trigonometry.hpp" />
     <ClInclude Include="Math\Vector.hpp" />
     <ClInclude Include="MessageManager.h" />
+    <ClInclude Include="GameStateHelpers\Misc.h" />
     <ClInclude Include="MultiPlayer.h" />
     <ClInclude Include="Objects\AirportObject.h" />
     <ClInclude Include="Objects\BridgeObject.h" />

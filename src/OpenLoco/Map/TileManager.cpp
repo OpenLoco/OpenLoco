@@ -3,8 +3,8 @@
 #include "../CompanyManager.h"
 #include "../Entities/Misc.h"
 #include "../Game.h"
-#include "../GameState.h"
 #include "../GameStateHelpers/LastGameOption.h"
+#include "../GameStateHelpers/Misc.h"
 #include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
@@ -65,7 +65,7 @@ namespace OpenLoco::Map::TileManager
             *element = *reinterpret_cast<TileElement*>(&defaultElement);
         }
         updateTilePointers();
-        getGameState().flags |= (1u << 0);
+        gameStateFlags() |= (1u << 0);
     }
 
     stdx::span<TileElement> getElements()
