@@ -1,7 +1,6 @@
 #include "../../CompanyManager.h"
 #include "../../Date.h"
 #include "../../GameCommands/GameCommands.h"
-#include "../../GameStateHelpers/LastGameOption.h"
 #include "../../Graphics/Colour.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
