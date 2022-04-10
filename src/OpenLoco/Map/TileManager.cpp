@@ -7,7 +7,7 @@
 #include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
-#include "../LastWindowState.h"
+#include "../LastGameOption.h"
 #include "../Map/Map.hpp"
 #include "../Objects/BuildingObject.h"
 #include "../TownManager.h"

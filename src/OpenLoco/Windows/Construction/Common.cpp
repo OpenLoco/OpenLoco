@@ -5,7 +5,7 @@
 #include "../../Graphics/Colour.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
-#include "../../LastWindowState.h"
+#include "../../LastGameOption.h"
 #include "../../Map/Track/TrackData.h"
 #include "../../Objects/AirportObject.h"
 #include "../../Objects/BridgeObject.h"

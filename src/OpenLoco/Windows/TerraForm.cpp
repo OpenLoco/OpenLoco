@@ -7,7 +7,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
-#include "../LastWindowState.h"
+#include "../LastGameOption.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Map.hpp"

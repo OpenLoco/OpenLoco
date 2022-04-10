@@ -174,7 +174,7 @@
     <ClCompile Include="ViewportManager.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="WindowState.cpp" />
+    <ClCompile Include="LastGameOption.cpp" />
     <ClCompile Include="Windows\About.cpp" />
     <ClCompile Include="Windows\AboutMusic.cpp" />
     <ClCompile Include="Windows\BuildVehicle.cpp" />

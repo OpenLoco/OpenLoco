@@ -3,7 +3,7 @@
 #include "../GameCommands/GameCommands.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
-#include "../LastWindowState.h"
+#include "../LastGameOption.h"
 #include "../Localisation/StringIds.h"
 #include "../S5/S5.h"
 #include "../StationManager.h"
