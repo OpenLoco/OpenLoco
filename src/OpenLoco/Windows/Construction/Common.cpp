@@ -1,7 +1,6 @@
 #include "../../CompanyManager.h"
 #include "../../Date.h"
 #include "../../GameCommands/GameCommands.h"
-#include "../../GameState.h"
 #include "../../GameStateHelpers/LastGameOption.h"
 #include "../../Graphics/Colour.h"
 #include "../../Graphics/ImageIds.h"
@@ -740,7 +739,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049EFEF
         static void drawRoadTabs(Window* self, Gfx::Context* context)
         {
-            auto company = CompanyManager::get(getGameState().playerCompanies[0]);
+            auto company = CompanyManager::get(CompanyManager::rawPlayerCompanies()[0]);
             auto companyColour = company->mainColours.primary;
             auto roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
             // Construction Tab
@@ -814,7 +813,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049ED40
         static void drawTrackTabs(Window* self, Gfx::Context* context)
         {
-            auto company = CompanyManager::get(getGameState().playerCompanies[0]);
+            auto company = CompanyManager::get(CompanyManager::rawPlayerCompanies()[0]);
             auto companyColour = company->mainColours.primary;
             auto trackObj = ObjectManager::get<TrackObject>(_trackType);
             // Construction Tab
@@ -1080,7 +1079,7 @@ namespace OpenLoco::Ui::Windows::Construction
             setDisabledWidgets(window);
 
             window->initScrollWidgets();
-            window->owner = getGameState().playerCompanies[0];
+            window->owner = CompanyManager::rawPlayerCompanies()[0];
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0D);
