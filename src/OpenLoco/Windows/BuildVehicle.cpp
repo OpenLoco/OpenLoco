@@ -234,7 +234,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint8_t, 0x00525FAB> last_road_option;
 
     static WindowEventList _events;
 
