@@ -409,7 +409,7 @@ namespace OpenLoco::CompanyManager
             return;
         }
 
-        auto company = CompanyManager::get(_updatingCompanyId);
+        auto company = CompanyManager::get(getUpdatingCompanyId());
         if (company == nullptr)
         {
             return;
@@ -430,7 +430,7 @@ namespace OpenLoco::CompanyManager
             if (vehicle->position.x == Location::null)
                 continue;
 
-            if (vehicle->owner != _updatingCompanyId)
+            if (vehicle->owner != getUpdatingCompanyId())
                 continue;
 
             GameCommands::UpdateOwnerStatusArgs args{};
@@ -545,14 +545,14 @@ namespace OpenLoco::CompanyManager
         GameCommands::setErrorTitle(StringIds::cannot_change_owner_name);
         {
             const uint32_t* buffer = reinterpret_cast<uint32_t*>(Config::get().preferredName);
-            GameCommands::do_31(_updatingCompanyId, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_31(getUpdatingCompanyId(), 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_31(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
             if (GameCommands::do_31(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]))
                 Ui::Windows::TextInput::cancel();
         }
 
         // Only continue if we've not set a custom company name yet.
-        auto* company = get(_updatingCompanyId);
+        auto* company = get(getUpdatingCompanyId());
         if (company == nullptr || company->name != StringIds::new_company)
             return;
 
@@ -569,7 +569,7 @@ namespace OpenLoco::CompanyManager
             // Now, set the company name.
             const uint32_t* buffer = reinterpret_cast<uint32_t*>(companyName);
             GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
-            GameCommands::do_30(_updatingCompanyId, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_30(getUpdatingCompanyId(), 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_30(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
             GameCommands::do_30(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]);
         }
@@ -624,7 +624,7 @@ namespace OpenLoco::CompanyManager
 
     uint32_t competingColourMask()
     {
-        return competingColourMask(_updatingCompanyId);
+        return competingColourMask(getUpdatingCompanyId());
     }
 
     // 0x00434F2D
