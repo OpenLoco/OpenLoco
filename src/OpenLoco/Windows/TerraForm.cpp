@@ -1249,7 +1249,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBBF7
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, Common::widx::panel, CursorId::landTool);
+            Input::toolSet(self, isPaintMode ? widx::paint_mode : Common::widx::panel, CursorId::landTool);
             Input::setFlag(Input::Flags::flag6);
             for (auto i = 0; i < 32; i++)
             {
@@ -1352,6 +1352,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::paint_mode:
                 {
                     isPaintMode = !isPaintMode;
+                    tabReset(self);
                 }
             }
         }
@@ -1457,8 +1458,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onAdjustLandToolUpdate(const OpenLoco::Ui::WidgetIndex_t& widgetIndex, const int16_t& x, const int16_t& y)
         {
             uint16_t xPos = 0;
-            if (widgetIndex != Common::widx::panel)
-                return;
 
             TileManager::mapInvalidateSelectionRect();
 
@@ -1513,14 +1512,15 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC9D7
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            if (isPaintMode)
+            switch (widgetIndex)
             {
-                onPaintToolUpdate(self, widgetIndex, x, y);
-                return;
-            }
-            else
-            {
-                onAdjustLandToolUpdate(widgetIndex, x, y);
+                case widx::paint_mode:
+                    onPaintToolUpdate(self, widgetIndex, x, y);
+                    break;
+
+                case Common::widx::panel:
+                    onAdjustLandToolUpdate(widgetIndex, x, y);
+                    break;
             }
         }
 
@@ -1546,89 +1546,94 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC9ED
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != Common::widx::panel)
-                return;
-
-            if (isPaintMode)
+            switch (widgetIndex)
             {
-                paintLand();
-                return;
+                case widx::paint_mode:
+                    paintLand();
+                    break;
+                case Common::widx::panel:
+                    if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                        return;
+
+                    Ui::setToolCursor(CursorId::upDownArrow);
+                    break;
             }
-
-            if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
-                return;
-
-            Ui::setToolCursor(CursorId::upDownArrow);
         }
 
         // 0x004BC9E2
         static void toolDragContinue(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != Common::widx::panel)
-                return;
-
-            if (isPaintMode)
+            switch (widgetIndex)
             {
-                auto window = WindowManager::find(WindowType::error);
-                if (window == nullptr)
+                case widx::paint_mode:
                 {
-                    paintLand();
+                    auto window = WindowManager::find(WindowType::error);
+                    if (window == nullptr)
+                    {
+                        paintLand();
+                    }
+                    break;
                 }
-                return;
+                case Common::widx::panel:
+                {
+                    auto window = WindowManager::findAt(x, y);
+                    if (window == nullptr)
+                    {
+                        break;
+                    }
+
+                    WidgetIndex_t newWidgetIndex = window->findWidgetAt(x, y);
+                    if (newWidgetIndex == -1)
+                        break;
+
+                    auto widget = window->widgets[newWidgetIndex];
+                    if (widget.type != WidgetType::viewport)
+                        break;
+
+                    auto viewport = window->viewports[0];
+                    if (viewport == nullptr)
+                        break;
+
+                    auto zoom = viewport->zoom;
+
+                    auto dY = -(16 >> zoom);
+                    if (dY == 0)
+                        dY = -1;
+                    auto deltaY = y - _dragLastY;
+                    auto flags = Flags::apply;
+
+                    if (deltaY <= dY)
+                    {
+                        _dragLastY = _dragLastY + dY;
+                        raiseLand(flags);
+                    }
+                    else
+                    {
+                        dY = -dY;
+                        if (deltaY < dY)
+                            break;
+                        _dragLastY = _dragLastY + dY;
+                        lowerLand(flags);
+                    }
+                    _raiseLandCost = 0x80000000;
+                    _lowerLandCost = 0x80000000;
+                    break;
+                }
             }
-
-            auto window = WindowManager::findAt(x, y);
-            if (window == nullptr)
-            {
-                return;
-            }
-
-            WidgetIndex_t newWidgetIndex = window->findWidgetAt(x, y);
-            if (newWidgetIndex == -1)
-                return;
-
-            auto widget = window->widgets[newWidgetIndex];
-            if (widget.type != WidgetType::viewport)
-                return;
-
-            auto viewport = window->viewports[0];
-            if (viewport == nullptr)
-                return;
-
-            auto zoom = viewport->zoom;
-
-            auto dY = -(16 >> zoom);
-            if (dY == 0)
-                dY = -1;
-            auto deltaY = y - _dragLastY;
-            auto flags = Flags::apply;
-
-            if (deltaY <= dY)
-            {
-                _dragLastY = _dragLastY + dY;
-                raiseLand(flags);
-            }
-            else
-            {
-                dY = -dY;
-                if (deltaY < dY)
-                    return;
-                _dragLastY = _dragLastY + dY;
-                lowerLand(flags);
-            }
-            _raiseLandCost = 0x80000000;
-            _lowerLandCost = 0x80000000;
         }
 
         // 0x004BCA5D
         static void toolDragEnd(Window& self, const WidgetIndex_t widgetIndex)
         {
-            if (widgetIndex == Common::widx::panel)
+            switch (widgetIndex)
             {
-                TileManager::mapInvalidateSelectionRect();
+                case widx::paint_mode:
+                case Common::widx::panel:
+                    TileManager::mapInvalidateSelectionRect();
 
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-                Ui::setToolCursor(CursorId::landTool);
+                    Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                    Ui::setToolCursor(CursorId::landTool);
+                    break;
             }
         }
 
