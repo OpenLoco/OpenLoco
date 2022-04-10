@@ -1,9 +1,9 @@
 #include "ShortcutManager.h"
 #include "../CompanyManager.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameState.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastWindowState.h"
 #include "../Localisation/StringIds.h"
 #include "../S5/S5.h"
 #include "../StationManager.h"
@@ -392,10 +392,10 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        if (getGameState().lastWindowState.lastBuildVehiclesOption == 0xFF)
+        if (getLastWindowState().lastBuildVehiclesOption == 0xFF)
             return;
 
-        Windows::BuildVehicle::open(getGameState().lastWindowState.lastBuildVehiclesOption, 1 << 31);
+        Windows::BuildVehicle::open(getLastWindowState().lastBuildVehiclesOption, 1 << 31);
     }
 
     // 0x004BF2D1

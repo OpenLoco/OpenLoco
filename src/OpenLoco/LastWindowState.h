@@ -30,21 +30,3 @@ namespace OpenLoco
 
     LastWindowState& getLastWindowState();
 }
-
-namespace OpenLoco::LastWindowOption
-{
-    // uint8_t getLastIndustryOption();          // 0x0001AF (0x00525FC7)
-    // void setLastIndustryOption(uint8_t last); // 0x0001AF (0x00525FC7)
-
-    // uint8_t getLastBuildingOption();          // 0x0001B0 (0x00525FC8)
-    // void setLastBuildingOption(uint8_t last); // 0x0001B0 (0x00525FC8)
-
-    // uint8_t getLastMiscBuildingOption();          // 0x0001B1 (0x00525FC9)
-    // void setLastMiscBuildingOption(uint8_t last); // 0x0001B1 (0x00525FC9)
-
-    // uint8_t getLastWallOption();          // 0x0001B2 (0x00525FCA)
-    // void setLastWallOption(uint8_t last); // 0x0001B2 (0x00525FCA)
-
-    // uint8_t getLastBuildVehiclesOption();          // 0x000414 (0x0052622C)
-    // void setLastBuildVehiclesOption(uint8_t last); // 0x000414 (0x0052622C)
-}

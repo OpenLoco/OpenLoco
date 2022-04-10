@@ -7,6 +7,7 @@
 #include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastWindowState.h"
 #include "../Map/Map.hpp"
 #include "../Objects/BuildingObject.h"
 #include "../TownManager.h"
@@ -51,7 +52,7 @@ namespace OpenLoco::Map::TileManager
     {
         _F00168 = 0;
         _startUpdateLocation = Map::Pos2(0, 0);
-        const auto landType = getGameState().lastWindowState.lastLandOption == 0xFF ? 0 : getGameState().lastWindowState.lastLandOption;
+        const auto landType = getLastWindowState().lastLandOption == 0xFF ? 0 : getLastWindowState().lastLandOption;
 
         SurfaceElement defaultElement{};
         defaultElement.setTerrain(landType);
