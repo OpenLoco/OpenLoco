@@ -9,6 +9,12 @@ namespace OpenLoco
         return getGameState().flags;
     }
 
+    // 0x00525FB4
+    uint8_t& gameStateCurrentSnowLine()
+    {
+        return getGameState().currentSnowLine;
+    }
+
     // 0x0052622E
     uint16_t& gameStateVar416()
     {

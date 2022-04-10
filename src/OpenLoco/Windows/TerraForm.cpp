@@ -2,8 +2,8 @@
 #include "../CompanyManager.h"
 #include "../Economy/Economy.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameState.h"
 #include "../GameStateHelpers/LastGameOption.h"
+#include "../GameStateHelpers/Misc.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -532,7 +532,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             uint16_t mustTreeFlags = 0;
-            if (surface->baseZ() - 4 > getGameState().currentSnowLine)
+            if (surface->baseZ() - 4 > gameStateCurrentSnowLine())
             {
                 mustTreeFlags |= TreeObjectFlags::hasSnowVariation;
             }
