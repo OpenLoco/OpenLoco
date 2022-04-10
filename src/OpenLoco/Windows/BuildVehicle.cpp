@@ -595,9 +595,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window->rowHeight = _scrollRowHeight[newTab];
                 window->frame_no = 0;
                 window->currentSecondaryTab = 0;
-                if (newTab != getLastWindowState().lastBuildVehiclesOption)
+                if (newTab != getLastBuildVehiclesOption())
                 {
-                    getLastWindowState().lastBuildVehiclesOption = newTab;
+                    setLastBuildVehiclesOption(newTab);
                     WindowManager::invalidate(WindowType::topToolbar, 0);
                 }
 

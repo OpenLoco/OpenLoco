@@ -3,7 +3,7 @@
 #include "./Types.hpp"
 #include <cstdint>
 
-namespace OpenLoco::GameState::LastOption
+namespace OpenLoco
 {
     // 0x00525FAF
     VehicleType getLastVehicleType();
@@ -47,4 +47,7 @@ namespace OpenLoco::GameState::LastOption
     // uint8_t lastTreeOption;       // 0x000199 (0x00525FB1)
     // uint8_t lastLandOption;       // 0x00019E (0x00525FB6)
 
+    // 0x00525FB6
+    uint8_t getLastLandOption();
+    void setLastLandOption(uint8_t last);
 }

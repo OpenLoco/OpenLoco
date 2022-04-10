@@ -1,7 +1,7 @@
 #include "./GameState.h"
 #include "./LastWindowState.h"
 
-namespace OpenLoco::GameState::LastOption
+namespace OpenLoco
 {
     // 0x00525FAF
     VehicleType getLastVehicleType()
@@ -62,5 +62,15 @@ namespace OpenLoco::GameState::LastOption
     void setLastBuildVehiclesOption(uint8_t last)
     {
         getGameState().lastBuildVehiclesOption = last;
+    }
+
+    // 0x00525FB6
+    uint8_t getLastLandOption()
+    {
+        return getGameState().lastLandOption;
+    }
+    void setLastLandOption(uint8_t last)
+    {
+        getGameState().lastLandOption = last;
     }
 }

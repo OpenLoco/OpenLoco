@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        Dropdown::setHighlightedItem(getLastWindowState().lastBuildVehiclesOption);
+        Dropdown::setHighlightedItem(getLastBuildVehiclesOption());
     }
 
     // 0x0043ADC7
@@ -496,7 +496,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
 
         itemIndex = menu_options[itemIndex];
-        getLastWindowState().lastBuildVehiclesOption = itemIndex;
+        setLastBuildVehiclesOption(itemIndex);
 
         BuildVehicle::open(itemIndex, 1 << 31);
     }
@@ -769,7 +769,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             // Figure out what icon to show on the button face.
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[getLastWindowState().lastBuildVehiclesOption], company_colour);
+            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[getLastBuildVehiclesOption()], company_colour);
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::build_vehicles_menu))
                 fg_image++;

@@ -392,10 +392,10 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        if (getLastWindowState().lastBuildVehiclesOption == 0xFF)
+        if (getLastBuildVehiclesOption() == 0xFF)
             return;
 
-        Windows::BuildVehicle::open(getLastWindowState().lastBuildVehiclesOption, 1 << 31);
+        Windows::BuildVehicle::open(getLastBuildVehiclesOption(), 1 << 31);
     }
 
     // 0x004BF2D1
