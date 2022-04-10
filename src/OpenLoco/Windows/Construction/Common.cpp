@@ -1,9 +1,11 @@
 #include "../../CompanyManager.h"
 #include "../../Date.h"
 #include "../../GameCommands/GameCommands.h"
+#include "../../GameState.h"
 #include "../../Graphics/Colour.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
+#include "../../LastWindowState.h"
 #include "../../Map/Track/TrackData.h"
 #include "../../Objects/AirportObject.h"
 #include "../../Objects/BridgeObject.h"
@@ -19,7 +21,6 @@
 #include "../../Objects/TrainStationObject.h"
 #include "../../StationManager.h"
 #include "../../Widget.h"
-#include "../../WindowGameState.h"
 #include "Construction.h"
 
 using namespace OpenLoco::Interop;

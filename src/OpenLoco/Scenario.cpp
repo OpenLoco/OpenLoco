@@ -370,7 +370,7 @@ namespace OpenLoco::Scenario
         gameState.objectiveTimeLimitUntilYear = gameState.objectiveTimeLimitYears - 1 + gameState.currentYear;
         gameState.objectiveMonthsInChallenge = 0;
         call(0x0049B546);
-        gameState.lastMapWindowFlags = 0;
+        gameState.lastWindowState.lastMapWindowFlags = 0;
 
         TownManager::updateLabels();
         StationManager::updateLabels();

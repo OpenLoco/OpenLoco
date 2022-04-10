@@ -392,10 +392,10 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        if (getGameState().lastBuildVehiclesOption == 0xFF)
+        if (getGameState().lastWindowState.lastBuildVehiclesOption == 0xFF)
             return;
 
-        Windows::BuildVehicle::open(getGameState().lastBuildVehiclesOption, 1 << 31);
+        Windows::BuildVehicle::open(getGameState().lastWindowState.lastBuildVehiclesOption, 1 << 31);
     }
 
     // 0x004BF2D1

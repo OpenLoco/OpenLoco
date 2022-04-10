@@ -2,6 +2,7 @@
 #include "Company.h"
 #include "Entities/Entity.h"
 #include "Industry.h"
+#include "LastWindowState.h"
 #include "Limits.h"
 #include "Map/Animation.h"
 #include "Map/Wave.h"
@@ -12,6 +13,7 @@
 
 namespace OpenLoco
 {
+
 #pragma pack(push, 1)
     struct GameState
     {
@@ -46,18 +48,11 @@ namespace OpenLoco
         uint8_t var_17A[8];                                                      // 0x00017A (0x00525F92)
         uint8_t scenarioRoadStations[8];                                         // 0x000182 (0x00525F9A)
         uint8_t scenarioRoadMods[8];                                             // 0x00018A (0x00525FA2)
-        uint8_t lastRailroadOption;                                              // 0x000192 (0x00525FAA)
-        uint8_t lastRoadOption;                                                  // 0x000193 (0x00525FAB)
-        uint8_t lastAirport;                                                     // 0x000194 (0x00525FAC)
-        uint8_t lastShipPort;                                                    // 0x000195 (0x00525FAD)
         bool trafficHandedness;                                                  // 0x000196 (0x00525FAE)
-        VehicleType lastVehicleType;                                             // 0x000197 (0x00525FAF)
         uint8_t pickupDirection;                                                 // 0x000198 (0x00525FB0)
-        uint8_t lastTreeOption;                                                  // 0x000199 (0x00525FB1)
         uint16_t seaLevel;                                                       // 0x00019A (0x00525FB2)
         uint8_t currentSnowLine;                                                 // 0x00019C (0x00525FB4)
         Scenario::Season currentSeason;                                          // 0x00019D (0x00525FB5)
-        uint8_t lastLandOption;                                                  // 0x00019E (0x00525FB6)
         uint8_t maxCompetingCompanies;                                           // 0x00019F (0x00525FB7)
         uint32_t numOrders;                                                      // 0x0001A0 (0x00525FB8)
         uint32_t var_1A4;                                                        // 0x0001A4 (0x00525FBC)
@@ -65,10 +60,6 @@ namespace OpenLoco
         uint8_t var_1AC;                                                         // 0x0001AC (0x00525FC4)
         uint8_t var_1AD;                                                         // 0x0001AD (0x00525FC5)
         uint8_t loanInterestRate;                                                // 0x0001AE (0x00525FC6)
-        uint8_t lastIndustryOption;                                              // 0x0001AF (0x00525FC7)
-        uint8_t lastBuildingOption;                                              // 0x0001B0 (0x00525FC8)
-        uint8_t lastMiscBuildingOption;                                          // 0x0001B1 (0x00525FC9)
-        uint8_t lastWallOption;                                                  // 0x0001B2 (0x00525FCA)
         uint8_t var_1B3;                                                         // 0x0001B3 (0x00525FCB)
         Utility::prng var_1B4;                                                   // 0x0001B4 (0x00525FCC)
         char scenarioFileName[256];                                              // 0x0001BC (0x00525FD4)
@@ -84,7 +75,6 @@ namespace OpenLoco
         uint32_t var_408;                                                        // 0x000408 (0x00526220)
         uint32_t var_40C;                                                        // 0x00040C (0x00526224)
         uint32_t var_410;                                                        // 0x000410 (0x00526228)
-        uint8_t lastBuildVehiclesOption;                                         // 0x000414 (0x0052622C)
         uint8_t var_415;                                                         // 0x000415 (0x0052622D)
         uint16_t var_416;                                                        // 0x000416 (0x0052622E)
         uint8_t objectiveType;                                                   // 0x000418 (0x00526230)
@@ -113,10 +103,6 @@ namespace OpenLoco
         uint32_t var_460;                                                        // 0x000460 (0x00526278)
         uint32_t var_464;                                                        // 0x000464 (0x0052627C)
         uint32_t var_468;                                                        // 0x000468 (0x00526280)
-        uint32_t lastMapWindowFlags;                                             // 0x00046C (0x00526284)
-        Ui::Size lastMapWindowSize;                                              // 0x000470 (0x00526288)
-        uint16_t lastMapWindowVar88A;                                            // 0x000474 (0x0052628C)
-        uint16_t lastMapWindowVar88C;                                            // 0x000476 (0x0052628E)
         uint32_t var_478;                                                        // 0x000478 (0x00526290)
         uint8_t pad_047C[0x13B6 - 0x47C];                                        // 0x00047C
         uint16_t numMessages;                                                    // 0x0013B6 (0x005271CE)
@@ -145,6 +131,7 @@ namespace OpenLoco
         char userStrings[Limits::kMaxUserStrings][32];                           // 0x432A44 (0x0095885C)
         uint16_t routings[Limits::kMaxVehicles][Limits::kMaxRoutingsPerVehicle]; // 0x442A44 (0x0096885C)
         uint8_t orders[Limits::kMaxOrders];                                      // 0x461E44 (0x00987C5C)
+        LastWindowState lastWindowState;
     };
 #pragma pack(pop)
     static_assert(sizeof(GameState) == 0x4A0644);

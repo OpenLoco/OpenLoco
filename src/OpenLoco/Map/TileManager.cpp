@@ -51,7 +51,7 @@ namespace OpenLoco::Map::TileManager
     {
         _F00168 = 0;
         _startUpdateLocation = Map::Pos2(0, 0);
-        const auto landType = getGameState().lastLandOption == 0xFF ? 0 : getGameState().lastLandOption;
+        const auto landType = getGameState().lastWindowState.lastLandOption == 0xFF ? 0 : getGameState().lastWindowState.lastLandOption;
 
         SurfaceElement defaultElement{};
         defaultElement.setTerrain(landType);

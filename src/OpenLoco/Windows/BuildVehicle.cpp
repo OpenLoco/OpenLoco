@@ -3,10 +3,12 @@
 #include "../Economy/Economy.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastWindowState.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Map.hpp"
@@ -23,7 +25,6 @@
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
-#include "../WindowGameState.h"
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -594,9 +595,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window->rowHeight = _scrollRowHeight[newTab];
                 window->frame_no = 0;
                 window->currentSecondaryTab = 0;
-                if (newTab != getGameState().lastBuildVehiclesOption)
+                if (newTab != getLastWindowState().lastBuildVehiclesOption)
                 {
-                    getGameState().lastBuildVehiclesOption = newTab;
+                    getLastWindowState().lastBuildVehiclesOption = newTab;
                     WindowManager::invalidate(WindowType::topToolbar, 0);
                 }
 

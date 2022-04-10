@@ -9,6 +9,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastWindowState.h"
 #include "../Localisation/StringIds.h"
 #include "../MultiPlayer.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -24,7 +25,6 @@
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
-#include "../WindowGameState.h"
 #include "ToolbarTopCommon.h"
 #include <map>
 
@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        Dropdown::setHighlightedItem(getGameState().lastBuildVehiclesOption);
+        Dropdown::setHighlightedItem(getLastWindowState().lastBuildVehiclesOption);
     }
 
     // 0x0043ADC7
@@ -496,7 +496,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
 
         itemIndex = menu_options[itemIndex];
-        getGameState().lastBuildVehiclesOption = itemIndex;
+        getLastWindowState().lastBuildVehiclesOption = itemIndex;
 
         BuildVehicle::open(itemIndex, 1 << 31);
     }
@@ -769,7 +769,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             // Figure out what icon to show on the button face.
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[getGameState().lastBuildVehiclesOption], company_colour);
+            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[getLastWindowState().lastBuildVehiclesOption], company_colour);
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::build_vehicles_menu))
                 fg_image++;

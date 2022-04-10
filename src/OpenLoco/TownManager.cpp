@@ -208,7 +208,7 @@ namespace OpenLoco::TownManager
         }
         const int32_t realDistance = Math::Vector::distance(Map::Pos2(town->x, town->y), loc);
         const auto unk = std::clamp((realDistance - town->numBuildings * 4 + 512) / 128, 0, 4);
-        const uint8_t invUnk = std::min(4 - unk, 3); //edx
+        const uint8_t invUnk = std::min(4 - unk, 3); // edx
         return { std::make_pair(town->id(), invUnk) };
     }
 
