@@ -39,7 +39,7 @@ namespace OpenLoco::CompanyManager
         return getGameState().companies;
     }
 
-    static auto& rawPlayerCompanies()
+    std::array<CompanyId, 2>& rawPlayerCompanies()
     {
         return getGameState().playerCompanies;
     }

@@ -14,6 +14,8 @@ namespace OpenLoco::CompanyManager
     CompanyId getUpdatingCompanyId();
     void setUpdatingCompanyId(CompanyId id);
 
+    std::array<CompanyId, 2>& rawPlayerCompanies();
+
     FixedVector<Company, Limits::kMaxCompanies> companies();
     Company* get(CompanyId id);
     CompanyId getControllingId();

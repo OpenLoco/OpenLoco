@@ -94,11 +94,8 @@ namespace OpenLoco
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-    static loco_global<CompanyId[2], 0x00525E3C> _playerCompanies;
     loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
     static loco_global<int16_t, 0x00525F62> _525F62;
-
-    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
     static loco_global<char[256], 0x011367A0> _11367A0;
     static loco_global<char[256], 0x011368A0> _11368A0;
@@ -495,7 +492,7 @@ namespace OpenLoco
 
     void sub_431695(uint16_t var_F253A0)
     {
-        _updatingCompanyId = CompanyManager::getControllingId();
+        CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
         for (auto i = 0; i < var_F253A0; i++)
         {
             MessageManager::sub_428E47();
@@ -512,7 +509,7 @@ namespace OpenLoco
     {
         if (!isNetworked())
         {
-            _updatingCompanyId = CompanyManager::getControllingId();
+            CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
             for (auto i = 0; i < var_F253A0; i++)
             {
                 MessageManager::sub_428E47();
@@ -535,7 +532,7 @@ namespace OpenLoco
         // Host/client?
         if (isNetworkHost())
         {
-            _updatingCompanyId = CompanyManager::getControllingId();
+            CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
 
             // run twice as often as var_F253A0
             for (auto i = 0; i < var_F253A0 * 2; i++)
@@ -551,15 +548,15 @@ namespace OpenLoco
             CompanyManager::updateOwnerStatus();
             sub_46E388();
 
-            _updatingCompanyId = _playerCompanies[1];
+            CompanyManager::setUpdatingCompanyId(CompanyManager::rawPlayerCompanies()[1]);
             sub_4317BD();
         }
         else
         {
-            _updatingCompanyId = _playerCompanies[1];
+            CompanyManager::setUpdatingCompanyId(CompanyManager::rawPlayerCompanies()[1]);
             auto eax = sub_4317BD();
 
-            _updatingCompanyId = _playerCompanies[0];
+            CompanyManager::setUpdatingCompanyId(CompanyManager::rawPlayerCompanies()[0]);
             if (!isTitleMode())
             {
                 auto edx = gPrng().srand_0();
