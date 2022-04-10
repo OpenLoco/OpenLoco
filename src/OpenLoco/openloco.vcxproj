@@ -174,7 +174,7 @@
     <ClCompile Include="ViewportManager.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="LastGameOption.cpp" />
+    <ClCompile Include="GameStateHelpers\LastGameOption.cpp" />
     <ClCompile Include="Windows\About.cpp" />
     <ClCompile Include="Windows\AboutMusic.cpp" />
     <ClCompile Include="Windows\BuildVehicle.cpp" />
@@ -269,6 +269,7 @@
     <ClInclude Include="GameCommands\GameCommands.h" />
     <ClInclude Include="GameException.hpp" />
     <ClInclude Include="GameState.h" />
+    <ClInclude Include="GameStateHelpers\LastGameOption.h" />
     <ClInclude Include="Graphics\Colour.h" />
     <ClInclude Include="Graphics\Gfx.h" />
     <ClInclude Include="Graphics\ImageIds.h" />

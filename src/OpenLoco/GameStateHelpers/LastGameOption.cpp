@@ -1,5 +1,5 @@
 #include "./LastGameOption.h"
-#include "./GameState.h"
+#include "../GameState.h"
 
 namespace OpenLoco
 {
