@@ -66,7 +66,7 @@ namespace OpenLoco::CompanyManager
     {
         return getGameState().maxLoanSize;
     }
-    void setMaxLoanSize(uint8_t loanSize)
+    void setMaxLoanSize(uint16_t loanSize)
     {
         getGameState().maxLoanSize = loanSize;
     }
