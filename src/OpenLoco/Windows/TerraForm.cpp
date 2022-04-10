@@ -34,10 +34,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 {
     static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<CompanyId, 0x00525E3C> _player_company;
-    static loco_global<uint8_t, 0x00525FB1> _lastSelectedTree;
-    static loco_global<uint8_t, 0x00525FB6> _grassLand;
-    static loco_global<uint8_t, 0x00525FCA> _lastSelectedWall;
     static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
     static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
     static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
@@ -203,13 +199,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->var_83C = treeCount;
             auto rowHover = -1;
 
-            if (_lastSelectedTree != 0xFF)
+            if (getLastTreeOption() != 0xFF)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
-                    if (_lastSelectedTree == self->rowInfo[i])
+                    if (getLastTreeOption() == self->rowInfo[i])
                     {
-                        rowHover = _lastSelectedTree;
+                        rowHover = getLastTreeOption();
                         break;
                     }
                 }
@@ -731,7 +727,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (index < 0)
                 {
                     self->rowHover = rowInfo;
-                    _lastSelectedTree = static_cast<uint8_t>(rowInfo);
+                    setLastTreeOption(static_cast<uint8_t>(rowInfo));
 
                     updateTreeColours(self);
 
@@ -976,7 +972,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->frame_no = 0;
             _terraformGhostPlaced = 0;
             _lastTreeCost = 0x80000000;
-            window->owner = _player_company;
+            window->owner = CompanyManager::rawPlayerCompanies()[0];
             window->var_846 = 0xFFFF;
             window->savedView.mapX = 0;
             _treeClusterType = PlantTrees::treeCluster::none;
@@ -1982,13 +1978,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->var_83C = wallCount;
             auto rowHover = -1;
 
-            if (_lastSelectedTree != 0xFF)
+            if (getLastTreeOption() != 0xFF)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
-                    if (_lastSelectedWall == self->rowInfo[i])
+                    if (getLastWallOption() == self->rowInfo[i])
                     {
-                        rowHover = _lastSelectedWall;
+                        rowHover = getLastWallOption();
                         break;
                     }
                 }
@@ -2259,7 +2255,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (index < 0)
                 {
                     self->rowHover = rowInfo;
-                    _lastSelectedWall = static_cast<uint8_t>(rowInfo);
+                    setLastWallOption(static_cast<uint8_t>(rowInfo));
 
                     int32_t pan = (self->width >> 1) + self->x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
@@ -2516,7 +2512,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             // Adjust Land Tab
             {
-                auto landObj = ObjectManager::get<LandObject>(_grassLand);
+                auto landObj = ObjectManager::get<LandObject>(getLastLandOption());
                 uint32_t imageId = landObj->var_16 + Land::ImageIds::toolbar_terraform_land;
 
                 Widget::drawTab(self, context, imageId, widx::tab_adjust_land);

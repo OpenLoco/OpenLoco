@@ -39,11 +39,13 @@ namespace OpenLoco::CompanyManager
         return getGameState().companies;
     }
 
+    // 0x00525E3C
     std::array<CompanyId, 2>& rawPlayerCompanies()
     {
         return getGameState().playerCompanies;
     }
 
+    // 0x00525FB7
     uint8_t getMaxCompetingCompanies()
     {
         return getGameState().maxCompetingCompanies;
@@ -53,6 +55,7 @@ namespace OpenLoco::CompanyManager
         getGameState().maxCompetingCompanies = competingCompanies;
     }
 
+    // 0x00526214
     uint8_t getCompetitorStartDelay()
     {
         return getGameState().competitorStartDelay;
