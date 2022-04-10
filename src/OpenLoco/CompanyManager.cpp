@@ -62,6 +62,15 @@ namespace OpenLoco::CompanyManager
         getGameState().competitorStartDelay = competetorStartDelay;
     }
 
+    uint16_t getMaxLoanSize()
+    {
+        return getGameState().maxLoanSize;
+    }
+    void setMaxLoanSize(uint8_t loanSize)
+    {
+        getGameState().maxLoanSize = loanSize;
+    }
+
     // 0x0042F7F8
     void reset()
     {

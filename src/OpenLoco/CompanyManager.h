@@ -20,6 +20,9 @@ namespace OpenLoco::CompanyManager
     uint8_t getCompetitorStartDelay();
     void setCompetitorStartDelay(uint8_t competetorStartDelay);
 
+    uint16_t getMaxLoanSize();
+    void setMaxLoanSize(uint16_t loanSize);
+
     std::array<CompanyId, 2>& rawPlayerCompanies();
 
     FixedVector<Company, Limits::kMaxCompanies> companies();

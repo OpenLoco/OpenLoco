@@ -1,6 +1,5 @@
 #include "../CompanyManager.h"
 #include "../Economy/Economy.h"
-#include "../GameState.h"
 #include "../Localisation/StringIds.h"
 #include "../Ui/WindowManager.h"
 #include "GameCommands.h"
@@ -26,7 +25,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            const auto maxLoan = Economy::getInflationAdjustedCost(getGameState().maxLoanSize, 0, 8);
+            const auto maxLoan = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8);
             if (newLoan > maxLoan)
             {
                 GameCommands::setErrorText(StringIds::bank_refuses_to_increase_loan);
