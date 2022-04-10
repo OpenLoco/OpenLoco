@@ -44,14 +44,22 @@ namespace OpenLoco::CompanyManager
         return getGameState().playerCompanies;
     }
 
-    static auto& maxCompetingCompanies()
+    uint8_t getMaxCompetingCompanies()
     {
         return getGameState().maxCompetingCompanies;
     }
+    void setMaxCompetingCompanies(uint8_t competingCompanies)
+    {
+        getGameState().maxCompetingCompanies = competingCompanies;
+    }
 
-    static auto& competitorStartDelay()
+    uint8_t getCompetitorStartDelay()
     {
         return getGameState().competitorStartDelay;
+    }
+    void setCompetitorStartDelay(uint8_t competetorStartDelay)
+    {
+        getGameState().competitorStartDelay = competetorStartDelay;
     }
 
     // 0x0042F7F8
@@ -307,7 +315,7 @@ namespace OpenLoco::CompanyManager
     // 0x004306D1
     static void produceCompanies()
     {
-        if (competitorStartDelay() == 0 && maxCompetingCompanies() != 0)
+        if (getCompetitorStartDelay() == 0 && getMaxCompetingCompanies() != 0)
         {
             int32_t companies_active = 0;
             for (const auto& company : companies())
@@ -319,7 +327,7 @@ namespace OpenLoco::CompanyManager
             auto& prng = gPrng();
             if (prng.randNext(16) == 0)
             {
-                if (prng.randNext(maxCompetingCompanies()) + 1 > companies_active)
+                if (prng.randNext(getMaxCompetingCompanies()) + 1 > companies_active)
                 {
                     createAiCompany();
                 }

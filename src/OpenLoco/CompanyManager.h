@@ -14,6 +14,12 @@ namespace OpenLoco::CompanyManager
     CompanyId getUpdatingCompanyId();
     void setUpdatingCompanyId(CompanyId id);
 
+    uint8_t getMaxCompetingCompanies();
+    void setMaxCompetingCompanies(uint8_t competingCompanies);
+
+    uint8_t getCompetitorStartDelay();
+    void setCompetitorStartDelay(uint8_t competetorStartDelay);
+
     std::array<CompanyId, 2>& rawPlayerCompanies();
 
     FixedVector<Company, Limits::kMaxCompanies> companies();
