@@ -1221,17 +1221,20 @@ namespace OpenLoco::Ui::Windows::Terraform
             decrease_area,
             increase_area,
             land_material,
+            paint_mode
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material) | (1 << paint_mode);
         const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
+        static bool isPaintMode = false;
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
-            makeWidget({ 55 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
+            makeWidget({ 69 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
+            makeWidget({ 39 + 16, 92 }, { 28, 28 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::null, StringIds::tooltip_paint_landscape_tool),
             widgetEnd(),
         };
 
@@ -1246,7 +1249,13 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBBF7
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, Common::widx::panel, CursorId::landTool);
+            Input::toolSet(
+                self,
+                isPaintMode
+                    ? static_cast<uint16_t>(widx::paint_mode)
+                    : static_cast<uint16_t>(Common::widx::panel),
+                CursorId::landTool);
+
             Input::setFlag(Input::Flags::flag6);
             for (auto i = 0; i < 32; i++)
             {
@@ -1345,6 +1354,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self->invalidate();
                     break;
                 }
+
+                case widx::paint_mode:
+                {
+                    isPaintMode = !isPaintMode;
+                    tabReset(self);
+                }
             }
         }
 
@@ -1421,12 +1436,34 @@ namespace OpenLoco::Ui::Windows::Terraform
             WindowManager::invalidate(WindowType::terraform, 0);
         }
 
-        // 0x004BC9D7
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onPaintToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        {
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+
+            uint32_t cost = 0x80000000;
+            auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
+            if (res)
+            {
+                if (Map::TileManager::setMapSelectionTiles(res->first, 4) == 0)
+                {
+                    return;
+                }
+                const auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                const Pos2 centre = (pointA + pointB) / 2;
+                cost = GameCommands::do_66(centre, pointA, pointB, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
+            }
+
+            if (cost != _raiseLandCost)
+            {
+                _raiseLandCost = cost;
+                WindowManager::invalidate(WindowType::terraform);
+            }
+        }
+
+        static void onAdjustLandToolUpdate(const OpenLoco::Ui::WidgetIndex_t& widgetIndex, const int16_t& x, const int16_t& y)
         {
             uint16_t xPos = 0;
-            if (widgetIndex != Common::widx::panel)
-                return;
 
             TileManager::mapInvalidateSelectionRect();
 
@@ -1473,20 +1510,28 @@ namespace OpenLoco::Ui::Windows::Terraform
             else
             {
                 lowerCost = lowerLand(Flags::flag_2);
-
                 raiseCost = raiseLand(Flags::flag_2);
             }
             setAdjustCost(raiseCost, lowerCost);
         }
 
-        // 0x004BC9ED
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        // 0x004BC9D7
+        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != Common::widx::panel)
-                return;
-            if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
-                return;
+            switch (widgetIndex)
+            {
+                case widx::paint_mode:
+                    onPaintToolUpdate(self, widgetIndex, x, y);
+                    break;
 
+                case Common::widx::panel:
+                    onAdjustLandToolUpdate(widgetIndex, x, y);
+                    break;
+            }
+        }
+
+        static void paintLand()
+        {
             // CHANGE: Allows the player to change land type outside of the scenario editor.
             if (_adjustToolSize != 0)
             {
@@ -1502,66 +1547,99 @@ namespace OpenLoco::Ui::Windows::Terraform
                     GameCommands::doCommand(args, Flags::apply);
                 }
             }
+        }
 
-            Ui::setToolCursor(CursorId::upDownArrow);
+        // 0x004BC9ED
+        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        {
+            switch (widgetIndex)
+            {
+                case widx::paint_mode:
+                    paintLand();
+                    break;
+                case Common::widx::panel:
+                    if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                        return;
+
+                    Ui::setToolCursor(CursorId::upDownArrow);
+                    break;
+            }
         }
 
         // 0x004BC9E2
         static void toolDragContinue(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != Common::widx::panel)
-                return;
-
-            auto window = WindowManager::findAt(x, y);
-            if (window == nullptr)
-                return;
-
-            WidgetIndex_t newWidgetIndex = window->findWidgetAt(x, y);
-            if (newWidgetIndex == -1)
-                return;
-
-            auto widget = window->widgets[newWidgetIndex];
-            if (widget.type != WidgetType::viewport)
-                return;
-
-            auto viewport = window->viewports[0];
-            if (viewport == nullptr)
-                return;
-
-            auto zoom = viewport->zoom;
-
-            auto dY = -(16 >> zoom);
-            if (dY == 0)
-                dY = -1;
-            auto deltaY = y - _dragLastY;
-            auto flags = Flags::apply;
-
-            if (deltaY <= dY)
+            switch (widgetIndex)
             {
-                _dragLastY = _dragLastY + dY;
-                raiseLand(flags);
+                case widx::paint_mode:
+                {
+                    auto window = WindowManager::find(WindowType::error);
+                    if (window == nullptr)
+                    {
+                        paintLand();
+                    }
+                    break;
+                }
+                case Common::widx::panel:
+                {
+                    auto window = WindowManager::findAt(x, y);
+                    if (window == nullptr)
+                    {
+                        break;
+                    }
+
+                    WidgetIndex_t newWidgetIndex = window->findWidgetAt(x, y);
+                    if (newWidgetIndex == -1)
+                        break;
+
+                    auto widget = window->widgets[newWidgetIndex];
+                    if (widget.type != WidgetType::viewport)
+                        break;
+
+                    auto viewport = window->viewports[0];
+                    if (viewport == nullptr)
+                        break;
+
+                    auto zoom = viewport->zoom;
+
+                    auto dY = -(16 >> zoom);
+                    if (dY == 0)
+                        dY = -1;
+                    auto deltaY = y - _dragLastY;
+                    auto flags = Flags::apply;
+
+                    if (deltaY <= dY)
+                    {
+                        _dragLastY = _dragLastY + dY;
+                        raiseLand(flags);
+                    }
+                    else
+                    {
+                        dY = -dY;
+                        if (deltaY < dY)
+                            break;
+                        _dragLastY = _dragLastY + dY;
+                        lowerLand(flags);
+                    }
+                    _raiseLandCost = 0x80000000;
+                    _lowerLandCost = 0x80000000;
+                    break;
+                }
             }
-            else
-            {
-                dY = -dY;
-                if (deltaY < dY)
-                    return;
-                _dragLastY = _dragLastY + dY;
-                lowerLand(flags);
-            }
-            _raiseLandCost = 0x80000000;
-            _lowerLandCost = 0x80000000;
         }
 
         // 0x004BCA5D
         static void toolDragEnd(Window& self, const WidgetIndex_t widgetIndex)
         {
-            if (widgetIndex == Common::widx::panel)
+            switch (widgetIndex)
             {
-                TileManager::mapInvalidateSelectionRect();
+                case widx::paint_mode:
+                case Common::widx::panel:
+                    TileManager::mapInvalidateSelectionRect();
 
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-                Ui::setToolCursor(CursorId::landTool);
+                    Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                    Ui::setToolCursor(CursorId::landTool);
+                    break;
             }
         }
 
@@ -1571,6 +1649,15 @@ namespace OpenLoco::Ui::Windows::Terraform
             Common::prepareDraw(self);
 
             self->activatedWidgets |= (1ULL << widx::tool_area);
+
+            if (isPaintMode)
+            {
+                self->activatedWidgets |= (1 << widx::paint_mode);
+            }
+            else
+            {
+                self->activatedWidgets &= ~(1 << widx::paint_mode);
+            }
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
@@ -1592,7 +1679,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC909
         static void draw(Window* self, Gfx::Context* context)
         {
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
+            auto imgId = skin->img;
+            self->widgets[widx::paint_mode].image = imgId + InterfaceSkin::ImageIds::tab_colour_scheme_frame0;
+
             self->draw(context);
+
             Common::drawTabs(self, context);
 
             auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;

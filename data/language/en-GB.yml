@@ -2302,3 +2302,4 @@ strings:
   2247: "Allow building locked vehicles"
   2248: "{SMALLFONT}{COLOUR BLACK}When enabled, will allow building obsolete and proposed vehicles"
   2249: "Build Vehicles Window"
+  2250: "{SMALLFONT}{COLOUR BLACK}While dragging, paint landscape instead of changing elevation"

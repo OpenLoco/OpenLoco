@@ -1805,4 +1805,5 @@ namespace OpenLoco::StringIds
     constexpr string_id allow_building_locked_vehicles = 2247;
     constexpr string_id tooltip_build_locked_vehicles = 2248;
     constexpr string_id cheat_build_vehicle_window = 2249;
+    constexpr string_id tooltip_paint_landscape_tool = 2250;
 }
