@@ -1249,7 +1249,13 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBBF7
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, isPaintMode ? widx::paint_mode : Common::widx::panel, CursorId::landTool);
+            Input::toolSet(
+                self,
+                isPaintMode
+                    ? static_cast<uint16_t>(widx::paint_mode)
+                    : static_cast<uint16_t>(Common::widx::panel),
+                CursorId::landTool);
+
             Input::setFlag(Input::Flags::flag6);
             for (auto i = 0; i < 32; i++)
             {
