@@ -348,7 +348,10 @@ namespace OpenLoco
             for (auto i = 0; i < unk.var_44; ++i)
             {
                 auto* vehHead = EntityManager::get<Vehicles::VehicleHead>(unk.var_66[i]);
-                totalRunCost += vehHead->calculateRunningCost();
+                if (vehHead != nullptr)
+                {
+                    totalRunCost += vehHead->calculateRunningCost();
+                }
             }
             unk.var_7C = totalRunCost;
         }
@@ -386,7 +389,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            Vehicles::Vehicle train(v);
+            Vehicles::Vehicle train(*v);
             for (auto& car : train.cars)
             {
                 const auto* vehObject = car.body->getObject();

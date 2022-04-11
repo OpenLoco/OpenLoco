@@ -218,8 +218,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1EC9
     static bool orderByProfit(const VehicleHead& lhs, const VehicleHead& rhs)
     {
-        auto profitL = Vehicles::Vehicle(&lhs).veh2->totalRecentProfit();
-        auto profitR = Vehicles::Vehicle(&rhs).veh2->totalRecentProfit();
+        auto profitL = Vehicles::Vehicle(lhs).veh2->totalRecentProfit();
+        auto profitR = Vehicles::Vehicle(rhs).veh2->totalRecentProfit();
 
         return profitR - profitL < 0;
     }
@@ -227,8 +227,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1F1E
     static bool orderByAge(const VehicleHead& lhs, const VehicleHead& rhs)
     {
-        auto dayCreatedL = Vehicles::Vehicle(&lhs).veh1->dayCreated;
-        auto dayCreatedR = Vehicles::Vehicle(&rhs).veh1->dayCreated;
+        auto dayCreatedL = Vehicles::Vehicle(lhs).veh1->dayCreated;
+        auto dayCreatedR = Vehicles::Vehicle(rhs).veh1->dayCreated;
 
         return static_cast<int32_t>(dayCreatedL - dayCreatedR) < 0;
     }
@@ -236,8 +236,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1F45
     static bool orderByReliability(const VehicleHead& lhs, const VehicleHead& rhs)
     {
-        auto reliabilityL = Vehicles::Vehicle(&lhs).veh2->reliability;
-        auto reliabilityR = Vehicles::Vehicle(&rhs).veh2->reliability;
+        auto reliabilityL = Vehicles::Vehicle(lhs).veh2->reliability;
+        auto reliabilityR = Vehicles::Vehicle(rhs).veh2->reliability;
 
         return static_cast<int32_t>(reliabilityR - reliabilityL) < 0;
     }
@@ -290,7 +290,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
             }
 
-            auto insertVehicle = EntityManager::get<VehicleHead>(insertId);
+            auto* insertVehicle = EntityManager::get<VehicleHead>(insertId);
+            if (insertVehicle == nullptr)
+            {
+                continue;
+            }
             if (getOrder(SortMode(self->sortMode), *vehicle, *insertVehicle))
             {
                 insertId = vehicle->id;
@@ -301,6 +305,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (insertId != EntityId::null)
         {
             auto vehicle = EntityManager::get<VehicleHead>(insertId);
+            if (vehicle == nullptr)
+            {
+                self->var_83C = self->rowCount;
+                refreshVehicleList(self);
+                return;
+            }
             vehicle->var_0C |= Vehicles::Flags0C::sorted;
 
             if (vehicle->id != EntityId(self->rowInfo[self->rowCount]))
@@ -721,7 +731,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
 
             auto head = EntityManager::get<VehicleHead>(vehicleId);
-
+            if (head == nullptr)
+            {
+                continue;
+            }
             // Highlight selection.
             if (head->id == EntityId(self.rowHover))
                 Gfx::drawRect(context, 0, yPos, self.width, self.rowHeight, Colour::getShade(self.getColour(WindowColour::secondary), 0));
@@ -750,7 +763,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 Gfx::drawString_494BBF(context, 1, yPos, 308, Colour::outline(Colour::black), format, &args);
             }
 
-            auto vehicle = Vehicles::Vehicle(head);
+            auto vehicle = Vehicles::Vehicle(*head);
 
             // Vehicle profit
             {
@@ -1059,6 +1072,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         // Append load to buffer.
         auto head = EntityManager::get<VehicleHead>(EntityId(self->var_85C));
+        if (head == nullptr)
+        {
+            return;
+        }
         buffer = head->generateCargoTotalString(buffer);
 
         // Figure out what stations the vehicle stops at.
@@ -1095,7 +1112,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (currentVehicleId == EntityId::null)
             return;
 
-        auto head = EntityManager::get<VehicleHead>(currentVehicleId);
+        auto* head = EntityManager::get<VehicleHead>(currentVehicleId);
+        if (head == nullptr)
+        {
+            return;
+        }
+
         if (head->isPlaced())
             Ui::Windows::Vehicle::Main::open(head);
         else

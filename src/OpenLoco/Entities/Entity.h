@@ -7,15 +7,8 @@
 #include <cstdint>
 #include <limits>
 
-namespace OpenLoco::Vehicles
-{
-    struct VehicleBase;
-}
-
 namespace OpenLoco
 {
-    struct MiscBase;
-
     enum class EntityBaseType : uint8_t
     {
         vehicle = 0,
@@ -72,20 +65,26 @@ namespace OpenLoco
         void moveTo(const Map::Pos3& loc);
         void invalidateSprite();
 
-        Vehicles::VehicleBase* asVehicle() const { return asBase<Vehicles::VehicleBase, EntityBaseType::vehicle>(); }
-        MiscBase* asMisc() const { return asBase<MiscBase, EntityBaseType::misc>(); }
+        template<typename T>
+        bool isBase() const
+        {
+            return base_type == T::kBaseType;
+        }
+        template<typename BaseType>
+        BaseType* asBase()
+        {
+            return isBase<BaseType>() ? reinterpret_cast<BaseType*>(this) : nullptr;
+        }
+        template<typename BaseType>
+        const BaseType* asBase() const
+        {
+            return isBase<BaseType>() ? reinterpret_cast<const BaseType*>(this) : nullptr;
+        }
         bool empty() const;
 
     protected:
         constexpr uint8_t getSubType() const { return type; }
         void setSubType(const uint8_t newType) { type = newType; }
-
-    private:
-        template<typename TType, EntityBaseType TClass>
-        TType* asBase() const
-        {
-            return base_type == TClass ? (TType*)this : nullptr;
-        }
     };
 
     // Max size of a Entity. Use when needing to know Entity size

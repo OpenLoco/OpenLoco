@@ -530,7 +530,7 @@ namespace OpenLoco::Input
                         case InteractionItem::entity:
                         {
                             auto _thing = reinterpret_cast<EntityBase*>(interaction.object);
-                            auto veh = _thing->asVehicle();
+                            auto veh = _thing->asBase<Vehicles::VehicleBase>();
                             if (veh != nullptr)
                             {
                                 Ui::Windows::Vehicle::Main::open(veh);
@@ -839,12 +839,15 @@ namespace OpenLoco::Input
                         {
                             case InteractionItem::entity:
                             {
-                                auto _thing = reinterpret_cast<EntityBase*>(item2.object);
-                                auto veh = _thing->asVehicle();
+                                auto* entity = reinterpret_cast<EntityBase*>(item2.object);
+                                auto* veh = entity->asBase<Vehicles::VehicleBase>();
                                 if (veh != nullptr)
                                 {
-                                    auto head = EntityManager::get<Vehicles::VehicleHead>(veh->getHead());
-                                    Ui::Windows::VehicleList::open(head->owner, head->vehicleType);
+                                    auto* head = EntityManager::get<Vehicles::VehicleHead>(veh->getHead());
+                                    if (head != nullptr)
+                                    {
+                                        Ui::Windows::VehicleList::open(head->owner, head->vehicleType);
+                                    }
                                 }
                                 break;
                             }

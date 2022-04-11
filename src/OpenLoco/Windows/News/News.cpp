@@ -497,6 +497,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::vehicle:
                 {
                     auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(itemIndex));
+                    if (vehicle == nullptr)
+                    {
+                        WindowManager::close(WindowType::news);
+                        break;
+                    }
                     auto company = CompanyManager::get(vehicle->owner);
                     if (CompanyManager::isPlayerCompany(vehicle->owner))
                     {

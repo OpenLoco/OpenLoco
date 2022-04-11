@@ -32,6 +32,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct MiscBase : EntityBase
     {
+        static constexpr auto kBaseType = EntityBaseType::misc;
+
     private:
         template<typename TType, MiscEntityType TClass>
         TType* as() const

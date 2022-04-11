@@ -95,7 +95,7 @@ namespace OpenLoco::Vehicles
     {
         auto* const base = EntityManager::createEntityVehicle();
         base->base_type = EntityBaseType::vehicle;
-        auto* const vehicleBase = base->asVehicle();
+        auto* const vehicleBase = base->asBase<Vehicles::VehicleBase>();
         vehicleBase->setSubType(T::kVehicleThingType);
         return static_cast<T*>(vehicleBase);
     }
@@ -334,7 +334,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Get Car insertion location
-        Vehicle train(head);
+        Vehicle train(*head);
         // lastVeh will point to the vehicle component prior to the tail (head, unk_1, unk_2 *here*, tail) or (... bogie, bogie, body *here*, tail)
         VehicleBase* lastVeh = nullptr;
         if (!train.cars.empty())
@@ -790,7 +790,7 @@ namespace OpenLoco::Vehicles
 
                 VehicleHead* veh0backup = _backupVeh0;
                 // If it has an existing body
-                Vehicle bkupTrain(veh0backup);
+                Vehicle bkupTrain(*veh0backup);
                 if (!bkupTrain.cars.empty())
                 {
                     placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
