@@ -55,6 +55,8 @@ namespace OpenLoco
         ship
     };
 
+    enum class Colour2 : uint8_t;
+
     struct ColourScheme
     {
         uint8_t primary;

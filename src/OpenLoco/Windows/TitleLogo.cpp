@@ -46,8 +46,8 @@ namespace OpenLoco::Ui::Windows::TitleLogo
 
         window->initScrollWidgets();
 
-        window->setColour(WindowColour::primary, Colour::translucent(Colour::grey));
-        window->setColour(WindowColour::secondary, Colour::translucent(Colour::grey));
+        window->setColour(WindowColour::primary, AdvancedColour(Colour2::grey).translucent());
+        window->setColour(WindowColour::secondary, AdvancedColour(Colour2::grey).translucent());
 
         return window;
     }

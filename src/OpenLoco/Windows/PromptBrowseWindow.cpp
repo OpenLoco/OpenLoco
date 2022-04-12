@@ -138,8 +138,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto& widget = window->widgets[widx::text_filename];
             inputSession.calculateTextOffset(widget.width());
 
-            window->setColour(WindowColour::primary, Colour::black);
-            window->setColour(WindowColour::secondary, Colour::mutedSeaGreen);
+            window->setColour(WindowColour::primary, Colour2::black);
+            window->setColour(WindowColour::secondary, Colour2::mutedSeaGreen);
 
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
             promptTickLoop(

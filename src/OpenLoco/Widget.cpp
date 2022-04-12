@@ -67,7 +67,7 @@ namespace OpenLoco::Ui
             widgetFlags = 0x80;
         }
 
-        uint8_t wndColour = window->getColour(windowColour);
+        uint8_t wndColour = static_cast<uint8_t>(window->getColour(windowColour));
         auto widgetIndex = this - &window->widgets[0];
         bool enabled = (window->enabledWidgets & (1ULL << widgetIndex)) != 0;
         bool disabled = (window->disabledWidgets & (1ULL << widgetIndex)) != 0;
@@ -199,10 +199,10 @@ namespace OpenLoco::Ui
             if (Input::isPressed(window->type, window->number, widgetIndex))
                 flags = 0x20;
 
-            Gfx::drawRectInset(*context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), Colour::translucent(window->getColour(WindowColour::secondary)), flags);
+            Gfx::drawRectInset(*context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), Colour::translucent(enumValue(window->getColour(WindowColour::secondary).c())), flags);
         }
 
-        Gfx::drawImage(context, widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, window->getColour(WindowColour::secondary)));
+        Gfx::drawImage(context, widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, enumValue(window->getColour(WindowColour::secondary).c())));
     }
 
     // 0x004CAB8E
@@ -914,7 +914,7 @@ namespace OpenLoco::Ui
 
     void Widget::drawGroupbox(Gfx::Context* const context, const Window* window)
     {
-        const uint8_t colour = window->getColour(windowColour) & 0x7F;
+        const uint8_t colour = static_cast<uint8_t>(window->getColour(windowColour).opaque());
         int32_t l = window->x + left + 5;
         int32_t t = window->y + top;
         int32_t r = window->x + right;
@@ -1000,8 +1000,9 @@ namespace OpenLoco::Ui
             {
                 Gfx::drawImage(ctx, pos.x, pos.y + 1, imageId);
             }
+
             Gfx::drawImage(ctx, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, PaletteIndex::index_33));
-            Gfx::drawRect(*ctx, pos.x, pos.y + 26, 31, 1, Colour::getShade(w->getColour(WindowColour::secondary), 7));
+            Gfx::drawRect(*ctx, pos.x, pos.y + 26, 31, 1, Colours::getShade(w->getColour(WindowColour::secondary).c(), 7));
         }
     }
 }

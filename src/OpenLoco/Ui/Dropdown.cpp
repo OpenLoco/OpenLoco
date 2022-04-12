@@ -223,7 +223,7 @@ namespace OpenLoco::Ui::Dropdown
                                 }
                             }
 
-                            auto colour = Colour::opaque(self->getColour(WindowColour::primary));
+                            auto colour = Colour::opaque(static_cast<uint8_t>(self->getColour(WindowColour::primary)));
 
                             if (itemCount == _dropdownHighlightedIndex)
                             {
@@ -234,7 +234,7 @@ namespace OpenLoco::Ui::Dropdown
                             {
                                 if (itemCount < 32)
                                 {
-                                    colour = Colour::inset(Colour::opaque(self->getColour(WindowColour::primary)));
+                                    colour = Colour::inset(Colour::opaque(static_cast<uint8_t>(self->getColour(WindowColour::primary))));
                                 }
                             }
 
@@ -263,14 +263,14 @@ namespace OpenLoco::Ui::Dropdown
                     auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                     auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 1 + _dropdownItemHeight / 2;
 
-                    if (!(self->getColour(WindowColour::primary) & Colour::translucent_flag))
+                    if (!self->getColour(WindowColour::primary).isTranslucent())
                     {
-                        Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, Colour::getShade(self->getColour(WindowColour::primary), 3));
-                        Gfx::drawRect(*context, x, y + 1, _dropdownItemWidth - 1, 1, Colour::getShade(self->getColour(WindowColour::primary), 7));
+                        Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self->getColour(WindowColour::primary).c(), 3));
+                        Gfx::drawRect(*context, x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self->getColour(WindowColour::primary).c(), 7));
                     }
                     else
                     {
-                        uint32_t colour = Colour::getTranslucent(Colour::opaque(self->getColour(WindowColour::primary))) | (1 << 25);
+                        uint32_t colour = Colour::getTranslucent(Colour::opaque(static_cast<uint8_t>(self->getColour(WindowColour::primary)))) | (1 << 25);
                         colour++;
                         Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++;
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Dropdown
             common::initEvents();
 
             common::widgets[0].windowColour = WindowColour::primary;
-            window->setColour(WindowColour::primary, colour);
+            window->setColour(WindowColour::primary, AdvancedColour(static_cast<Colour2>(colour)));
 
             _dropdownHighlightedIndex = -1;
             _dropdownDisabledItems = 0;
@@ -637,16 +637,15 @@ namespace OpenLoco::Ui::Dropdown
         WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
 
         auto widget = window->widgets[widgetIndex];
-        auto colour = window->getColour(widget.windowColour);
-        colour = Colour::translucent(colour);
+        auto colour = window->getColour(widget.windowColour).translucent();
 
         auto x = widget.left + window->x;
         auto y = widget.top + window->y;
 
-        if (colour & Colour::translucent_flag)
+        if (colour.isTranslucent())
         {
-            colour = _byte_504619[Colour::opaque(colour)];
-            colour = Colour::translucent(colour);
+            colour = static_cast<Colour2>(_byte_504619[enumValue(colour.c())]);
+            colour = colour.translucent();
         }
 
         Input::resetFlag(Input::Flags::flag1);
@@ -659,7 +658,7 @@ namespace OpenLoco::Ui::Dropdown
 
         flags &= ~(1 << 7);
 
-        common::showText(x, y, widget.width(), widget.height(), itemHeight, colour, count, flags);
+        common::showText(x, y, widget.width(), widget.height(), itemHeight, static_cast<uint8_t>(colour), count, flags);
     }
 
     // 0x004CC989
@@ -868,9 +867,9 @@ namespace OpenLoco::Ui::Dropdown
         }
         auto x = widget->left + window->x;
         auto y = widget->top + window->y;
-        auto colour = Colour::translucent(window->getColour(widget->windowColour));
+        auto colour = window->getColour(widget->windowColour).translucent();
 
-        showText(x, y, widget->width(), widget->height(), 25, colour, index, (1 << 6));
+        showText(x, y, widget->width(), widget->height(), 25, static_cast<uint8_t>(colour), index, (1 << 6));
 
         size_t highlightedIndex = 0;
 

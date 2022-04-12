@@ -140,9 +140,9 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         window->enabledWidgets = 1 << widx::previous_button | 1 << widx::previous_frame | 1 << widx::next_frame | 1 << widx::next_button;
         window->var_854 = 0;
         window->initScrollWidgets();
-        window->setColour(WindowColour::primary, Colour::translucent(Colour::mutedSeaGreen));
-        window->setColour(WindowColour::secondary, Colour::translucent(Colour::mutedSeaGreen));
-        window->setColour(WindowColour::tertiary, Colour::translucent(Colour::mutedSeaGreen));
+        window->setColour(WindowColour::primary, AdvancedColour(Colour2::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::secondary, AdvancedColour(Colour2::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::tertiary, AdvancedColour(Colour2::mutedSeaGreen).translucent());
     }
 
     static void initEvents()

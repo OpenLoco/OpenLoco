@@ -2,6 +2,7 @@
 
 #include "Company.h"
 #include "Core/Optional.hpp"
+#include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
@@ -296,7 +297,7 @@ namespace OpenLoco::Ui
         uint8_t pad_883[1];
         CompanyId owner = CompanyId::null; // 0x884
         uint8_t var_885 = 0xFF;
-        uint8_t colours[enumValue(WindowColour::count)]; // 0x886
+        AdvancedColour colours[enumValue(WindowColour::count)]; // 0x886
         int16_t var_88A;
         int16_t var_88C;
 
@@ -345,7 +346,7 @@ namespace OpenLoco::Ui
             setSize(size, size);
         }
 
-        constexpr uint8_t getColour(WindowColour index) const
+        constexpr AdvancedColour getColour(WindowColour index) const
         {
             if (index >= WindowColour::primary && index < WindowColour::count)
             {
@@ -353,7 +354,7 @@ namespace OpenLoco::Ui
             }
             return colours[enumValue(WindowColour::primary)];
         }
-        constexpr void setColour(WindowColour index, Colour_t colour)
+        constexpr void setColour(WindowColour index, AdvancedColour colour)
         {
             if (index >= WindowColour::primary && index < WindowColour::count)
             {

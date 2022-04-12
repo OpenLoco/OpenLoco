@@ -1192,18 +1192,18 @@ namespace OpenLoco::Ui::WindowManager
         // Company colour
         if (w->owner != CompanyId::null)
         {
-            w->setColour(WindowColour::primary, CompanyManager::getCompanyColour(w->owner));
+            w->setColour(WindowColour::primary, static_cast<Colour2>(CompanyManager::getCompanyColour(w->owner)));
         }
 
         addr<0x1136F9C, int16_t>() = w->x;
         addr<0x1136F9E, int16_t>() = w->y;
 
-        loco_global<uint8_t[4], 0x1136594> windowColours;
+        loco_global<AdvancedColour[4], 0x1136594> windowColours;
         // Text colouring
-        windowColours[0] = Colour::opaque(w->getColour(WindowColour::primary));
-        windowColours[1] = Colour::opaque(w->getColour(WindowColour::secondary));
-        windowColours[2] = Colour::opaque(w->getColour(WindowColour::tertiary));
-        windowColours[3] = Colour::opaque(w->getColour(WindowColour::quaternary));
+        windowColours[0] = w->getColour(WindowColour::primary).opaque();
+        windowColours[1] = w->getColour(WindowColour::secondary).opaque();
+        windowColours[2] = w->getColour(WindowColour::tertiary).opaque();
+        windowColours[3] = w->getColour(WindowColour::quaternary).opaque();
 
         w->callPrepareDraw();
         w->callDraw(&context);

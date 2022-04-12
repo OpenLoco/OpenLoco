@@ -113,8 +113,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         self->enabledWidgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
         self->initScrollWidgets();
 
-        self->setColour(WindowColour::primary, Colour::black);
-        self->setColour(WindowColour::secondary, Colour::mutedSeaGreen);
+        self->setColour(WindowColour::primary, Colour2::black);
+        self->setColour(WindowColour::secondary, Colour2::mutedSeaGreen);
 
         self->var_846 = 0xFFFF;
         self->var_85A = static_cast<int32_t>(0xFFFFFFFF);

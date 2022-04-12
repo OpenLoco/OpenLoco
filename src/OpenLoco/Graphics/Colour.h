@@ -1,11 +1,97 @@
 #pragma once
 
-#include <cstdint>
+#include "../Types.hpp"
 
 namespace OpenLoco
 {
     using Colour_t = uint8_t;
     using PaletteIndex_t = uint8_t;
+
+    enum class Colour2 : uint8_t
+    {
+        black = 0,
+        grey = 1,
+        white = 2,
+        mutedDarkPurple = 3,
+        mutedPurple = 4,
+        purple = 5,
+        darkBlue = 6,
+        blue = 7,
+        mutedDarkTeal = 8,
+        mutedTeal = 9,
+        darkGreen = 10,
+        mutedSeaGreen = 11,
+        mutedGrassGreen = 12,
+        green = 13,
+        mutedAvocadoGreen = 14,
+        mutedOliveGreen = 15,
+        yellow = 16,
+        darkYellow = 17,
+        orange = 18,
+        amber = 19,
+        darkOrange = 20,
+        mutedDarkYellow = 21,
+        mutedYellow = 22,
+        brown = 23,
+        mutedOrange = 24,
+        mutedDarkRed = 25,
+        darkRed = 26,
+        red = 27,
+        darkPink = 28,
+        pink = 29,
+        mutedRed = 30,
+    };
+
+    struct AdvancedColour
+    {
+        static constexpr uint8_t outline_flag = 1 << 5;
+        static constexpr uint8_t inset_flag = 1 << 6;
+        static constexpr uint8_t translucent_flag = 1 << 7;
+
+    private:
+        Colour2 _c = Colour2::black;
+
+    public:
+        constexpr AdvancedColour() = default;
+        constexpr AdvancedColour(const Colour2 c)
+            : _c(c)
+        {
+        }
+
+        constexpr explicit operator Colour2() { return static_cast<Colour2>(enumValue(_c) & ~(outline_flag | inset_flag | translucent_flag)); }
+        constexpr Colour2 c() { return static_cast<Colour2>(*this); }
+        constexpr explicit operator uint8_t() { return enumValue(_c); }
+        constexpr uint8_t u8() { return static_cast<uint8_t>(*this); }
+
+        constexpr AdvancedColour outline()
+        {
+            _c = static_cast<Colour2>(enumValue(_c) | outline_flag);
+            return *this;
+        }
+        constexpr bool isOutline() const { return enumValue(_c) & outline_flag; }
+
+        constexpr AdvancedColour inset()
+        {
+            _c = static_cast<Colour2>(enumValue(_c) | inset_flag);
+            return *this;
+        }
+        constexpr bool isInset() const { return enumValue(_c) & inset_flag; }
+
+        constexpr AdvancedColour translucent()
+        {
+            _c = static_cast<Colour2>(enumValue(_c) | translucent_flag);
+            return *this;
+        }
+        constexpr bool isTranslucent() const { return enumValue(_c) & translucent_flag; }
+
+        constexpr AdvancedColour opaque()
+        {
+            _c = static_cast<Colour2>(enumValue(_c) & ~translucent_flag);
+            return *this;
+        }
+        constexpr bool isOpaque() const { return !isTranslucent(); }
+    };
+    static_assert(sizeof(AdvancedColour) == 1);
 
     namespace Colour
     {
@@ -68,6 +154,13 @@ namespace OpenLoco
         void initColourMap();
         PaletteIndex_t getShade(Colour_t colour, uint8_t shade);
         PaletteIndex_t getTranslucent(Colour_t colour);
+    }
+
+    namespace Colours
+    {
+        void initColourMap() { Colour::initColourMap(); }
+        PaletteIndex_t getShade(Colour2 colour, uint8_t shade) { return Colour::getShade(enumValue(colour), shade); }
+        PaletteIndex_t getTranslucent(Colour2 colour) { return Colour::getTranslucent(enumValue(colour)); }
     }
 
     namespace PaletteIndex
