@@ -15,7 +15,7 @@
 - Fix: [#1434] Can set 0 or more than 80 towns in scenario editor.
 - Fix: [#1449] Autopay tooltip was formatted poorly.
 - Fix: [#1450] Some strings were erroneously referenced in the language files.
-
+- Fix: [#1453] Vehicle modify button image disapears for certain company colours.
 
 22.03.1 (2022-03-08)
 ------------------------------------------------------------------------
