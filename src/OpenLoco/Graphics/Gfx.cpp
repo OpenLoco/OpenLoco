@@ -1440,8 +1440,9 @@ namespace OpenLoco::Gfx
         return { newContext };
     }
 
-    G1Element* getG1Element(uint32_t id)
+    G1Element* getG1Element(uint32_t imageId)
     {
+        const auto id = getImageIndex(imageId);
         if (id < _g1Elements.size())
         {
             return &_g1Elements[id];

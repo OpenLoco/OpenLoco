@@ -249,6 +249,7 @@ namespace OpenLoco::Gfx
     [[nodiscard]] uint32_t recolour2(uint32_t image, ColourScheme colourScheme);
     [[nodiscard]] uint32_t recolourTranslucent(uint32_t image, ExtColour colour);
     [[nodiscard]] uint32_t applyGhostToImage(uint32_t imageId);
+    [[nodiscard]] constexpr uint32_t getImageIndex(uint32_t imageId) { return imageId & 0x7FFFF; }
 
     void invalidateScreen();
     void setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
