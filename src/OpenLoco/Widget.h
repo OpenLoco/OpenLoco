@@ -11,6 +11,11 @@ namespace OpenLoco::Ui
 #pragma pack(push, 1)
     struct Widget
     {
+        // Indicates that the imageId has a colour set and not to replace it with the window colour
+        // This reuses the ImageIdFlags::translucent flag for use in widget draw
+        // Flag *MUST* be removed before passing to Gfx::drawImage functions
+        static constexpr uint32_t imageIdColourSet = (1 << 30);
+
         WidgetType type;           // 0x00
         WindowColour windowColour; // 0x01
         int16_t left;              // 0x02

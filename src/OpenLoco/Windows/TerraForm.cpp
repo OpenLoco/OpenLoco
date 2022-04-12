@@ -800,7 +800,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (treeObj->colours != 0)
                     {
 
-                        self->widgets[widx::object_colour].image = (1 << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, _treeColour);
+                        self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, _treeColour);
                         self->widgets[widx::object_colour].type = WidgetType::buttonWithColour;
                     }
                 }
