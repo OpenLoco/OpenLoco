@@ -1000,7 +1000,7 @@ namespace OpenLoco::Ui
             {
                 Gfx::drawImage(ctx, pos.x, pos.y + 1, imageId);
             }
-            Gfx::drawImage(ctx, pos.x, pos.y, Widget::imageIdColourSet | (51 << 19) | ImageIds::tab);
+            Gfx::drawImage(ctx, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, PaletteIndex::index_33));
             Gfx::drawRect(*ctx, pos.x, pos.y + 26, 31, 1, Colour::getShade(w->getColour(WindowColour::secondary), 7));
         }
     }

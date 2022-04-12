@@ -87,6 +87,7 @@ namespace OpenLoco
         constexpr PaletteIndex_t index_30 = 0x30;
         constexpr PaletteIndex_t index_31 = 0x31;
         constexpr PaletteIndex_t index_32 = 0x32;
+        constexpr PaletteIndex_t index_33 = 0x33;
         constexpr PaletteIndex_t index_35 = 0x35;
         constexpr PaletteIndex_t index_38 = 0x38;
         constexpr PaletteIndex_t index_3B = 0x3B;
