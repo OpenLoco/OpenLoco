@@ -1445,7 +1445,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         selectedColour = company->mainColours.primary;
 
                     auto availableColours = 0x7FFFFFFF & ~(CompanyManager::competingColourMask(CompanyId(self->number)));
-                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary).u8());
+                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, static_cast<Colour2>(selectedColour), self->getColour(WindowColour::secondary));
                     break;
                 }
 
@@ -1472,7 +1472,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         selectedColour = company->mainColours.secondary;
 
                     auto availableColours = 0x7FFFFFFF;
-                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary).u8());
+                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, static_cast<Colour2>(selectedColour), self->getColour(WindowColour::secondary));
                     break;
                 }
             }

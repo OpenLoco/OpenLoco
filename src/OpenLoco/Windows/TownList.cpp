@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::TownList
     static loco_global<currency32_t, 0x01135C34> dword_1135C34;
     static loco_global<bool, 0x01135C60> _buildingGhostPlaced;
     static loco_global<Map::Pos3, 0x01135C50> _buildingGhostPos;
-    static loco_global<Colour_t, 0x01135C61> _buildingColour;
+    static loco_global<Colour2, 0x01135C61> _buildingColour;
     static loco_global<Colour_t, 0x01135C62> _buildingGhostType;
     static loco_global<uint8_t, 0x01135C63> _buildingRotation;
     static loco_global<uint8_t, 0x01135C64> _buildingGhostRotation;
@@ -728,7 +728,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             auto& currentSizeWidget = self->widgets[widx::current_size];
 
-            Dropdown::show(self->x + currentSizeWidget.left, self->y + currentSizeWidget.top, currentSizeWidget.width() - 2, currentSizeWidget.height(), self->getColour(WindowColour::secondary).u8(), 8, (1 << 7));
+            Dropdown::show(self->x + currentSizeWidget.left, self->y + currentSizeWidget.top, currentSizeWidget.width() - 2, currentSizeWidget.height(), self->getColour(WindowColour::secondary), 8, (1 << 7));
 
             for (size_t i = 0; i < std::size(townSizeNames); ++i)
             {
@@ -816,7 +816,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A8A6
         static void prepareDraw(Ui::Window* self)
         {
-            self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, _buildingColour);
+            self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(*_buildingColour));
             self->widgets[widx::object_colour].type = WidgetType::none;
 
             if (self->rowHover != -1)
@@ -968,7 +968,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (itemIndex == -1)
                 return;
 
-            _buildingColour = Dropdown::getItemArgument(itemIndex, 2);
+            _buildingColour = static_cast<Colour2>(Dropdown::getItemArgument(itemIndex, 2));
             self->invalidate();
         }
 
@@ -1033,7 +1033,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             GameCommands::BuildingPlacementArgs args;
             args.rotation = (_buildingRotation - WindowManager::getCurrentRotation()) & 0x3; // bh
-            args.colour = _buildingColour;
+            args.colour = enumValue(*_buildingColour);
             auto tile = Map::TileManager::get(*pos);
             const auto* surface = tile.surface();
             if (surface == nullptr)
@@ -1122,7 +1122,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (widgetIndex == widx::object_colour)
             {
                 auto obj = ObjectManager::get<BuildingObject>(self->rowHover);
-                Dropdown::showColour(self, &self->widgets[widgetIndex], obj->colours, _buildingColour, self->getColour(WindowColour::secondary).u8());
+                Dropdown::showColour(self, &self->widgets[widgetIndex], obj->colours, _buildingColour, self->getColour(WindowColour::secondary));
             }
         }
 
@@ -1205,7 +1205,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 auto clipped = Gfx::clipContext(context, Ui::Rect(xPos + 1, yPos + 1, 110, 110));
                 if (clipped)
                 {
-                    Colour_t colour = _buildingColour;
+                    Colour_t colour = enumValue(*_buildingColour);
                     if (self.rowHover != self.rowInfo[i])
                     {
                         colour = Utility::bitScanReverse(buildingObj->colours);
@@ -1237,7 +1237,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     Colour_t colour = Utility::bitScanReverse(buildingObj->colours);
                     if (colour == 0xFF)
                         colour = 0;
-                    _buildingColour = colour;
+                    _buildingColour = static_cast<Colour2>(colour);
                 }
             }
         }

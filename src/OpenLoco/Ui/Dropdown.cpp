@@ -22,7 +22,7 @@ namespace OpenLoco::Ui::Dropdown
 {
     static constexpr int bytes_per_item = 8;
 
-    static loco_global<uint8_t[31], 0x00504619> _byte_504619;
+    static loco_global<Colour2[31], 0x00504619> _byte_504619;
     static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
     static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x00494BF6
-        static void sub_494BF6(Window* self, Gfx::Context* context, string_id stringId, int16_t x, int16_t y, int16_t width, Colour_t colour, FormatArguments args)
+        static void sub_494BF6(Window* self, Gfx::Context* context, string_id stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
@@ -184,7 +184,7 @@ namespace OpenLoco::Ui::Dropdown
 
             _currentFontSpriteBase = Font::m1;
 
-            Gfx::drawString(*context, x, y, colour, _byte_112CC04);
+            Gfx::drawString(*context, x, y, colour.u8(), _byte_112CC04);
         }
 
         // 0x004CD00E
@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::Dropdown
                             auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                             auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 1;
                             auto width = self->width - 5;
-                            sub_494BF6(self, context, dropdownItemFormat, x, y, width, colour.u8(), args);
+                            sub_494BF6(self, context, dropdownItemFormat, x, y, width, colour, args);
                         }
                     }
 
@@ -294,13 +294,13 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CCF1E
-        static void open(Ui::Point origin, Ui::Size size, Colour_t colour)
+        static void open(Ui::Point origin, Ui::Size size, AdvancedColour colour)
         {
             auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, WindowFlags::stickToFront, &common::events);
 
             window->widgets = common::widgets;
 
-            if (colour & Colour::translucent_flag)
+            if (colour.isTranslucent())
             {
                 window->flags |= WindowFlags::transparent;
             }
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Dropdown
             common::initEvents();
 
             common::widgets[0].windowColour = WindowColour::primary;
-            window->setColour(WindowColour::primary, AdvancedColour(static_cast<Colour2>(colour)));
+            window->setColour(WindowColour::primary, colour);
 
             _dropdownHighlightedIndex = -1;
             _dropdownDisabledItems = 0;
@@ -317,12 +317,12 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CC807 based on
-        static void setColourAndInputFlags(Colour_t& colour, uint8_t& flags)
+        static void setColourAndInputFlags(AdvancedColour& colour, uint8_t& flags)
         {
-            if (colour & Colour::translucent_flag)
+            if (colour.isTranslucent())
             {
-                colour = _byte_504619[Colour::opaque(colour)];
-                colour = Colour::translucent(colour);
+                colour = _byte_504619[enumValue(colour.c())];
+                colour = colour.translucent();
             }
 
             Input::resetFlag(Input::Flags::flag1);
@@ -337,7 +337,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CCAB2
-        static void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, Colour_t colour, size_t count, uint8_t flags)
+        static void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, AdvancedColour colour, size_t count, uint8_t flags)
         {
             _dropdownColumnCount = 1;
             _dropdownItemWidth = 0;
@@ -438,7 +438,7 @@ namespace OpenLoco::Ui::Dropdown
      * @param flags
      * Custom Dropdown height if flags & (1<<6) is true
      */
-    void show(int16_t x, int16_t y, int16_t width, int16_t height, Colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags)
+    void show(int16_t x, int16_t y, int16_t width, int16_t height, AdvancedColour colour, size_t count, uint8_t itemHeight, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
@@ -525,7 +525,7 @@ namespace OpenLoco::Ui::Dropdown
      * @param count
      * @param flags
      */
-    void show(int16_t x, int16_t y, int16_t width, int16_t height, Colour_t colour, size_t count, uint8_t flags)
+    void show(int16_t x, int16_t y, int16_t width, int16_t height, AdvancedColour colour, size_t count, uint8_t flags)
     {
         show(x, y, width, height, colour, count, 0, flags & ~(1 << 6));
     }
@@ -543,7 +543,7 @@ namespace OpenLoco::Ui::Dropdown
      * @param count
      * @param flags
      */
-    void showImage(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, Colour_t colour, uint8_t columnCount, uint8_t count, uint8_t flags)
+    void showImage(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, AdvancedColour colour, uint8_t columnCount, uint8_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
         assert(count < std::size(_appropriateImageDropdownItemsPerRow));
@@ -658,7 +658,7 @@ namespace OpenLoco::Ui::Dropdown
 
         flags &= ~(1 << 7);
 
-        common::showText(x, y, widget.width(), widget.height(), itemHeight, static_cast<uint8_t>(colour), count, flags);
+        common::showText(x, y, widget.width(), widget.height(), itemHeight, colour, count, flags);
     }
 
     // 0x004CC989
@@ -679,7 +679,7 @@ namespace OpenLoco::Ui::Dropdown
      * flags @<bh>
      * Custom Dropdown height if flags & (1<<6) is true
      */
-    void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, Colour_t colour, size_t count, uint8_t flags)
+    void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, AdvancedColour colour, size_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
@@ -692,7 +692,7 @@ namespace OpenLoco::Ui::Dropdown
     }
 
     // 0x004CCA6D
-    void showText(int16_t x, int16_t y, int16_t width, int16_t height, Colour_t colour, size_t count, uint8_t flags)
+    void showText(int16_t x, int16_t y, int16_t width, int16_t height, AdvancedColour colour, size_t count, uint8_t flags)
     {
         showText(x, y, width, height, 0, colour, count, flags & ~(1 << 6));
     }
@@ -707,7 +707,7 @@ namespace OpenLoco::Ui::Dropdown
      * count @<bl>
      * flags @<bh>
      */
-    void showText2(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, Colour_t colour, size_t count, uint8_t flags)
+    void showText2(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, AdvancedColour colour, size_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
@@ -776,7 +776,7 @@ namespace OpenLoco::Ui::Dropdown
         common::open(origin, size, colour);
     }
 
-    void showText2(int16_t x, int16_t y, int16_t width, int16_t height, Colour_t colour, size_t count, uint8_t flags)
+    void showText2(int16_t x, int16_t y, int16_t width, int16_t height, AdvancedColour colour, size_t count, uint8_t flags)
     {
         showText2(x, y, width, height, 0, colour, count, flags & ~(1 << 6));
     }
@@ -789,7 +789,7 @@ namespace OpenLoco::Ui::Dropdown
      * dropdownColour @<al>
      * selectedColour @<ah>
      */
-    void showColour(const Window* window, const Widget* widget, uint32_t availableColours, Colour_t selectedColour, Colour_t dropdownColour)
+    void showColour(const Window* window, const Widget* widget, uint32_t availableColours, Colour2 selectedColour, AdvancedColour dropdownColour)
     {
         uint8_t count = 0;
         for (uint8_t i = 0; i < 32; i++)
@@ -814,7 +814,7 @@ namespace OpenLoco::Ui::Dropdown
             if (!(availableColours & (1 << i)))
                 continue;
 
-            if (i == selectedColour)
+            if (static_cast<Colour2>(i) == selectedColour)
                 Dropdown::setHighlightedItem(currentIndex);
 
             auto args = FormatArguments();
@@ -869,7 +869,7 @@ namespace OpenLoco::Ui::Dropdown
         auto y = widget->top + window->y;
         auto colour = window->getColour(widget->windowColour).translucent();
 
-        showText(x, y, widget->width(), widget->height(), 25, static_cast<uint8_t>(colour), index, (1 << 6));
+        showText(x, y, widget->width(), widget->height(), 25, colour, index, (1 << 6));
 
         size_t highlightedIndex = 0;
 

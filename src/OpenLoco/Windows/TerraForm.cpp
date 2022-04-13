@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
     static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
     static loco_global<uint8_t, 0x01136496> _treeRotation;
-    static loco_global<uint8_t, 0x01136497> _treeColour;
+    static loco_global<Colour2, 0x01136497> _treeColour;
     static loco_global<uint8_t, 0x0113649A> _terraformGhostPlaced;
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     Colour_t colour = Utility::bitScanReverse(treeObj->colours);
                     if (colour == 0xFF)
                         colour = 0;
-                    _treeColour = colour;
+                    _treeColour = static_cast<Colour2>(colour);
                 }
             }
         }
@@ -309,7 +309,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (widgetIndex == widx::object_colour && self->rowHover != -1)
             {
                 auto obj = ObjectManager::get<TreeObject>(self->rowHover);
-                Dropdown::showColour(self, &self->widgets[widgetIndex], obj->colours, _treeColour, self->getColour(WindowColour::secondary).u8());
+                Dropdown::showColour(self, &self->widgets[widgetIndex], obj->colours, _treeColour, self->getColour(WindowColour::secondary));
             }
         }
 
@@ -321,7 +321,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (itemIndex == -1)
                 return;
 
-            _treeColour = Dropdown::getHighlightedItem();
+            _treeColour = static_cast<Colour2>(Dropdown::getHighlightedItem());
             self->invalidate();
         }
 
@@ -466,7 +466,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
             args.type = self->rowHover;
             args.quadrant = ViewportInteraction::getQuadrantFromPos(res->first) ^ (1 << 1);
-            args.colour = _treeColour;
+            args.colour = enumValue(*_treeColour);
             args.rotation = (_treeRotation - WindowManager::getCurrentRotation()) & 0x3;
             if (isEditorMode())
             {
@@ -799,8 +799,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                     if (treeObj->colours != 0)
                     {
-
-                        self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, _treeColour);
+                        self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(*_treeColour));
                         self->widgets[widx::object_colour].type = WidgetType::buttonWithColour;
                     }
                 }
@@ -876,7 +875,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto colourOptions = treeObj->colours;
             if (colourOptions != 0)
             {
-                Colour_t colour = _treeColour;
+                Colour_t colour = enumValue(*_treeColour);
                 if (!(_lastTreeColourFlag & (1 << 5)))
                 {
                     colour = Utility::bitScanReverse(colourOptions);
@@ -1302,7 +1301,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto colour = self->getColour(WindowColour::secondary).translucent();
             auto count = Dropdown::getItemsPerRow(landCount);
 
-            Dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour.u8(), count, landCount);
+            Dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
 
             auto landIndex = 0;
             for (uint16_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::land); i++)

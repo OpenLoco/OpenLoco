@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto height = widget.height() + 2;
                     auto flags = 1 << 7;
 
-                    Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary).u8(), 3, flags);
+                    Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), 3, flags);
 
                     Dropdown::add(0, StringIds::dropdown_stringid, StringIds::message_off);
                     Dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);

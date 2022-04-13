@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void constructionMarkerMouseDown(Window* w, WidgetIndex_t wi)
         {
             Widget dropdown = w->widgets[Widx::construction_marker];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), 2, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
@@ -332,7 +332,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void vehicleZoomMouseDown(Window* w, WidgetIndex_t wi)
         {
             Widget dropdown = w->widgets[Widx::vehicles_min_scale];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), 4, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
@@ -362,7 +362,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void stationNamesScaleMouseDown(Window* w, WidgetIndex_t wi)
         {
             Widget dropdown = w->widgets[Widx::station_names_min_scale];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), 4, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
@@ -405,7 +405,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void screenModeMouseDown(Window* w, WidgetIndex_t wi)
         {
             Widget dropdown = w->widgets[Widx::screen_mode];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), 3, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen);
@@ -437,7 +437,7 @@ namespace OpenLoco::Ui::Windows::Options
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
             Widget dropdown = w->widgets[Widx::display_resolution];
-            Dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->getColour(WindowColour::secondary).u8(), resolutions.size(), 0x80);
+            Dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->getColour(WindowColour::secondary), resolutions.size(), 0x80);
 
             auto& cfg = Config::getNew();
             for (size_t i = 0; i < resolutions.size(); i++)
@@ -802,7 +802,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (devices.size() != 0)
             {
                 Widget dropdown = w->widgets[Widx::audio_device];
-                Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), devices.size(), 0x80);
+                Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), devices.size(), 0x80);
                 for (size_t i = 0; i < devices.size(); i++)
                 {
                     auto name = devices[i].c_str();
@@ -1108,7 +1108,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void musicPlaylistMouseDown(Window* w)
         {
             Widget dropdown = w->widgets[Widx::music_playlist];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), 3, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
@@ -1187,7 +1187,7 @@ namespace OpenLoco::Ui::Windows::Options
             auto tracks = get_available_tracks();
 
             Widget dropdown = w->widgets[Widx::currently_playing];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), tracks.size(), 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), tracks.size(), 0x80);
 
             int index = -1;
             for (auto track : tracks)
@@ -1456,7 +1456,7 @@ namespace OpenLoco::Ui::Windows::Options
             uint8_t num_languages = static_cast<uint8_t>(lds.size());
 
             Widget dropdown = w->widgets[Widx::language];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), num_languages - 1, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), num_languages - 1, 0x80);
 
             std::string& current_language = Config::getNew().language;
 
@@ -1492,7 +1492,7 @@ namespace OpenLoco::Ui::Windows::Options
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
             Widget dropdown = w->widgets[Widx::currency];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), _112C185, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
             int index = -1;
             for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
@@ -1546,7 +1546,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void preferredCurrencyMouseDown(Window* w)
         {
             Widget dropdown = w->widgets[Widx::preferred_currency];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), _112C185, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
 
             int index = -1;
             for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
@@ -1630,7 +1630,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void distanceSpeedMouseDown(Window* w)
         {
             Widget dropdown = w->widgets[Widx::distance_speed];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), 2, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::metric);
@@ -1661,7 +1661,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void heightsLabelsMouseDown(Window* w)
         {
             Widget dropdown = w->widgets[Widx::heights];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), 2, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::height_units);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::height_real_values);
@@ -2048,7 +2048,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void showAutosaveFrequencyDropdown(Window* w, WidgetIndex_t wi)
         {
             auto dropdown = w->widgets[wi];
-            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary).u8(), 5, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 5, 0x80);
 
             // Add pre-defined entries
             Dropdown::add(0, StringIds::dropdown_stringid, { StringIds::autosave_never });

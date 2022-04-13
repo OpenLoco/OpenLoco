@@ -449,7 +449,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + widget->top,
                 widget->width(),
                 widget->height(),
-                self->getColour(WindowColour::secondary).u8(),
+                self->getColour(WindowColour::secondary),
                 2,
                 0);
 
@@ -590,7 +590,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + widget->top,
                 widget->width(),
                 widget->height(),
-                self->getColour(WindowColour::secondary).u8(),
+                self->getColour(WindowColour::secondary),
                 dropdownCount,
                 0);
 
@@ -1116,7 +1116,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + widget->top,
                 widget->width(),
                 widget->height(),
-                self->getColour(WindowColour::secondary).u8(),
+                self->getColour(WindowColour::secondary),
                 2,
                 0);
 
@@ -1983,7 +1983,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + button.top,
                 button.width(),
                 button.height(),
-                self->getColour(WindowColour::secondary).u8(),
+                self->getColour(WindowColour::secondary),
                 index,
                 0);
             Dropdown::setHighlightedItem(0);
@@ -2665,7 +2665,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto y = self->widgets[i].top + self->y;
             auto width = self->widgets[i].width();
             auto height = self->widgets[i].height();
-            Dropdown::showText(x, y, width, height, self->getColour(WindowColour::secondary).u8(), index, 0);
+            Dropdown::showText(x, y, width, height, self->getColour(WindowColour::secondary), index, 0);
             Dropdown::setHighlightedItem(0);
         }
 
