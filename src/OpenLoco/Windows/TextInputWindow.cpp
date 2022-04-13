@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { inputSession.xOffset, 1 };
         Gfx::drawString_494B3F(*clipped, &position, 0, StringIds::black_stringid, _commonFormatArgs);
-        Gfx::fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->getColour(WindowColour::secondary), 9));
+        Gfx::fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9));
     }
 
     // 0x004CE8B6

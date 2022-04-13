@@ -223,25 +223,25 @@ namespace OpenLoco::Ui::Dropdown
                                 }
                             }
 
-                            auto colour = Colour::opaque(static_cast<uint8_t>(self->getColour(WindowColour::primary)));
+                            auto colour = self->getColour(WindowColour::primary).opaque();
 
                             if (itemCount == _dropdownHighlightedIndex)
                             {
-                                colour = Colour::white;
+                                colour = Colour2::white;
                             }
 
                             if ((_dropdownDisabledItems & (1 << itemCount)))
                             {
                                 if (itemCount < 32)
                                 {
-                                    colour = Colour::inset(Colour::opaque(static_cast<uint8_t>(self->getColour(WindowColour::primary))));
+                                    colour = self->getColour(WindowColour::primary).opaque().inset();
                                 }
                             }
 
                             auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                             auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 1;
                             auto width = self->width - 5;
-                            sub_494BF6(self, context, dropdownItemFormat, x, y, width, colour, args);
+                            sub_494BF6(self, context, dropdownItemFormat, x, y, width, colour.u8(), args);
                         }
                     }
 
@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Dropdown
                     }
                     else
                     {
-                        uint32_t colour = Colour::getTranslucent(Colour::opaque(static_cast<uint8_t>(self->getColour(WindowColour::primary)))) | (1 << 25);
+                        uint32_t colour = Colour::getTranslucent(enumValue(self->getColour(WindowColour::primary).c())) | (1 << 25);
                         colour++;
                         Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++;

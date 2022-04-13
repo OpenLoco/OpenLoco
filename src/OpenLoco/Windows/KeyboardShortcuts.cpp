@@ -154,8 +154,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     // 0x004BE72C
     static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        auto colour = self.getColour(WindowColour::secondary);
-        auto shade = Colour::getShade(colour, 4);
+        auto colour = self.getColour(WindowColour::secondary).c();
+        auto shade = Colours::getShade(colour, 4);
         Gfx::clearSingle(context, shade);
 
         const auto& shortcuts = Config::getNew().shortcuts;

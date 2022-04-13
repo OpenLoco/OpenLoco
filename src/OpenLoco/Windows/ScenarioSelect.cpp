@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x004439AF
     static void draw(Window* self, Gfx::Context* context)
     {
-        Gfx::drawRectInset(*context, self->x, self->y + 20, self->width, 41, self->getColour(WindowColour::primary), 0);
+        Gfx::drawRectInset(*context, self->x, self->y + 20, self->width, 41, self->getColour(WindowColour::primary).u8(), 0);
 
         // Draw widgets.
         self->draw(context);
@@ -221,7 +221,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Outline for preview image
         {
             x = baseX + 20;
-            Gfx::drawRectInset(*context, x, y, 130, 130, self->getColour(WindowColour::secondary), 0x30);
+            Gfx::drawRectInset(*context, x, y, 130, 130, self->getColour(WindowColour::secondary).u8(), 0x30);
 
             x += 1;
             y += 1;
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             y += 1;
 
             // No preview image -- a placeholder will have to do.
-            auto image = Gfx::recolour(ImageIds::random_map_watermark, self->getColour(WindowColour::secondary));
+            auto image = Gfx::recolour(ImageIds::random_map_watermark, enumValue(self->getColour(WindowColour::secondary).c()));
             Gfx::drawImage(context, x, y, image);
 
             x += 64;
@@ -322,7 +322,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443D02
     static void drawScroll(Window& self, Gfx::Context& context, const uint32_t)
     {
-        auto colour = Colour::getShade(self.getColour(WindowColour::secondary), 4);
+        auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
         Gfx::clearSingle(context, colour);
 
         using namespace ScenarioManager;

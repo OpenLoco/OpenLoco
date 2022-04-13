@@ -437,7 +437,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawSavePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
     {
-        Gfx::fillRectInset(context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
+        Gfx::fillRectInset(context, x, y, x + width, y + height, window.getColour(WindowColour::secondary).u8(), 0x30);
 
         auto imageId = 0;
         auto g1 = Gfx::getG1Element(imageId);
@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawLandscapePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height)
     {
-        Gfx::fillRectInset(context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
+        Gfx::fillRectInset(context, x, y, x + width, y + height, window.getColour(WindowColour::secondary).u8(), 0x30);
 
         if (S5::getPreviewOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone)
         {
@@ -516,7 +516,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         else
         {
             // Randomly generated landscape
-            auto imageId = Gfx::recolour(ImageIds::random_map_watermark, window.getColour(WindowColour::secondary));
+            auto imageId = Gfx::recolour(ImageIds::random_map_watermark, enumValue(window.getColour(WindowColour::secondary).c()));
             Gfx::drawImage(&context, x, y, imageId);
             auto origin = Ui::Point(x + 64, y + 60);
             Gfx::drawStringCentredWrapped(context, origin, 128, 0, StringIds::randomly_generated_landscape);
@@ -549,7 +549,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, &args);
 
                 // Draw vertical caret
-                Gfx::drawRect(context, origin.x, origin.y, 1, 9, Colour::getShade(window->getColour(WindowColour::secondary), 9));
+                Gfx::drawRect(context, origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9));
             }
         }
     }
@@ -563,7 +563,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
     {
         // Background
-        Gfx::clearSingle(context, Colour::getShade(window.getColour(WindowColour::secondary), 4));
+        Gfx::clearSingle(context, Colours::getShade(window.getColour(WindowColour::secondary).c(), 4));
 
         // Directories / files
         auto i = 0;

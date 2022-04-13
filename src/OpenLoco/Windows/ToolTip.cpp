@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
         uint16_t height = window->height;
 
         Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-        Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + ObjectManager::get<InterfaceSkinObject>()->colour_08));
+        Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(ObjectManager::get<InterfaceSkinObject>()->colour_08)));
 
         Gfx::drawRect(*context, x, y + 2, 1, height - 4, 0x2000000 | 46);
         Gfx::drawRect(*context, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);

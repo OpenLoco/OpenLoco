@@ -67,7 +67,7 @@ namespace OpenLoco::Ui
             widgetFlags = 0x80;
         }
 
-        uint8_t wndColour = static_cast<uint8_t>(window->getColour(windowColour));
+        uint8_t wndColour = window->getColour(windowColour).u8();
         auto widgetIndex = this - &window->widgets[0];
         bool enabled = (window->enabledWidgets & (1ULL << widgetIndex)) != 0;
         bool disabled = (window->disabledWidgets & (1ULL << widgetIndex)) != 0;

@@ -709,7 +709,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             }
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->getColour(WindowColour::tertiary));
+            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, enumValue(window->getColour(WindowColour::tertiary).c()));
 
             y--;
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::railroad_menu))
@@ -739,7 +739,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
             uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(*last_vehicles_option)], company_colour);
-            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->getColour(WindowColour::quaternary));
+            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, enumValue(window->getColour(WindowColour::quaternary).c()));
 
             y--;
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::vehicles_menu))
@@ -786,12 +786,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (!Audio::isAudioEnabled())
         {
             window->activatedWidgets |= (1 << Common::Widx::audio_menu);
-            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->getColour(WindowColour::primary));
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, enumValue(window->getColour(WindowColour::primary).c()));
         }
         else
         {
             window->activatedWidgets &= ~(1 << Common::Widx::audio_menu);
-            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->getColour(WindowColour::primary));
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, enumValue(window->getColour(WindowColour::primary).c()));
         }
 
         if (Config::getNew().cheatsMenuEnabled)

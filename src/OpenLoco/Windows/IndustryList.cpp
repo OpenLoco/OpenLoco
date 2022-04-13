@@ -380,7 +380,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457D2A
         static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 4);
+            auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
             Gfx::clearSingle(context, shade);
 
             uint16_t yPos = 0;
@@ -875,7 +875,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458352
         static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 4);
+            auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
             Gfx::clearSingle(context, shade);
 
             loco_global<uint16_t, 0x00E0C3C6> word_E0C3C6;
@@ -889,13 +889,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     if (self.rowInfo[i] == self.var_846)
                     {
                         word_E0C3C6 = Colour::translucent_flag;
-                        Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary), Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary).u8(), Colour::translucent_flag);
                     }
                 }
                 else
                 {
                     word_E0C3C6 = Colour::translucent_flag | Colour::outline_flag;
-                    Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary).u8(), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self.rowInfo[i]);

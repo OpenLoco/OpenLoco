@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         Common::initEvents();
 
         window->initScrollWidgets();
-        window->setColour(WindowColour::primary, colour);
+        window->setColour(WindowColour::primary, Colour2(colour));
 
         _dword_525CD0 = 0xFFFFFFFF;
         _dword_525CD4 = 0xFFFFFFFF;

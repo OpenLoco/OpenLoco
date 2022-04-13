@@ -715,7 +715,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C21CD
     static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 1);
+        auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 1);
         Gfx::clearSingle(context, shade);
 
         auto yPos = 0;
@@ -737,7 +737,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
             // Highlight selection.
             if (head->id == EntityId(self.rowHover))
-                Gfx::drawRect(context, 0, yPos, self.width, self.rowHeight, Colour::getShade(self.getColour(WindowColour::secondary), 0));
+                Gfx::drawRect(context, 0, yPos, self.width, self.rowHeight, Colours::getShade(self.getColour(WindowColour::secondary).c(), 0));
 
             // Draw vehicle at the bottom of the row.
             drawVehicle(head, &context, yPos + (self.rowHeight - 28) / 2 + 6);
@@ -888,7 +888,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         else if (widgetIndex == Widx::filter_type_btn)
         {
             Widget dropdown = self->widgets[Widx::filter_type];
-            Dropdown::show(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary), 3, 0x80);
+            Dropdown::show(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary).u8(), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::stopping_at_station);
@@ -918,7 +918,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
 
             Widget dropdown = self->widgets[Widx::cargo_type];
-            Dropdown::showText(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary), index, 0);
+            Dropdown::showText(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary).u8(), index, 0);
             if (selectedIndex != -1)
                 Dropdown::setItemSelected(selectedIndex);
         }

@@ -1445,7 +1445,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         selectedColour = company->mainColours.primary;
 
                     auto availableColours = 0x7FFFFFFF & ~(CompanyManager::competingColourMask(CompanyId(self->number)));
-                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary));
+                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary).u8());
                     break;
                 }
 
@@ -1472,7 +1472,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         selectedColour = company->mainColours.secondary;
 
                     auto availableColours = 0x7FFFFFFF;
-                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary));
+                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary).u8());
                     break;
                 }
             }
@@ -1704,7 +1704,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 6) | 0x1000000;
+                    auto colour = Colours::getShade(self->getColour(WindowColour::secondary).c(), 6) | 0x1000000;
                     Gfx::fillRect(*context, self->x + 4, y, self->x + 129, y + 9, colour);
                 }
 
@@ -1866,7 +1866,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = Colour::getShade(self.getColour(WindowColour::secondary), 6) | 0x1000000;
+                    auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 6) | 0x1000000;
                     Gfx::fillRect(context, 0, y, expenditureColumnWidth * 17, y + 9, colour);
                 }
 
@@ -2673,7 +2673,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Details tab
             {
-                const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::ImageIds::tab_company_details, self->getColour(WindowColour::primary));
+                const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::ImageIds::tab_company_details, enumValue(self->getColour(WindowColour::primary).c()));
                 Widget::drawTab(self, context, imageId, widx::tab_details);
             }
 

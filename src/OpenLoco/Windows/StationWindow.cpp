@@ -466,7 +466,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E986
         static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
+            Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
             int16_t y = 1;
@@ -660,7 +660,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EF02
         static void drawRatingBar(Window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour_t colour)
         {
-            Gfx::fillRectInset(*context, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary), 48);
+            Gfx::fillRectInset(*context, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary).u8(), 48);
 
             uint16_t rating = (amount * 96) / 256;
             if (rating > 2)
@@ -672,7 +672,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048ED2F
         static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
+            Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
             int16_t y = 0;

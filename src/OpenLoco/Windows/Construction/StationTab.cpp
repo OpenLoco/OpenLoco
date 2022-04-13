@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 auto yPos = widget.top + self->y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
-                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), stationCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary).u8(), stationCount, (1 << 7));
 
                 if (_byte_1136063 & (1 << 7))
                 {
@@ -691,7 +691,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         xPos = self->x + 3;
         yPos = self->widgets[widx::image].bottom + self->y + 16;
         auto width = self->width - 4;
-        Gfx::drawRectInset(*context, xPos, yPos, width, 1, self->getColour(WindowColour::secondary), (1 << 5));
+        Gfx::drawRectInset(*context, xPos, yPos, width, 1, self->getColour(WindowColour::secondary).u8(), (1 << 5));
 
         if (!(_byte_522096 & (1 << 3)))
             return;

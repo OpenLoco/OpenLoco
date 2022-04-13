@@ -411,7 +411,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             window->y + widget->top,
             widget->width(),
             widget->height(),
-            Colour::translucent(window->getColour(WindowColour::primary)),
+            window->getColour(WindowColour::primary).translucent().u8(),
             3,
             0x80);
     }

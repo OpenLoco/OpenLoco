@@ -593,7 +593,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto args = FormatArguments();
                 args.push(yTick);
 
-                Gfx::drawRect(*context, self->x + 41, yPos, 239, 1, Colour::getShade(self->getColour(WindowColour::secondary), 4));
+                Gfx::drawRect(*context, self->x + 41, yPos, 239, 1, Colour::getShade(self->getColour(WindowColour::secondary).u8(), 4));
 
                 Gfx::drawString_494C78(*context, self->x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
@@ -623,7 +623,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    Gfx::drawRect(*context, xPos, yPos + 11, 1, self->height - 74, Colour::getShade(self->getColour(WindowColour::secondary), 4));
+                    Gfx::drawRect(*context, xPos, yPos + 11, 1, self->height - 74, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));
                 }
 
                 const auto history = productionTabWidx == widx::tab_production ? industry->history_1 : industry->history_2;
@@ -638,7 +638,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     {
                         if (yPos2 <= graphBottom)
                         {
-                            Gfx::drawLine(*context, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->getColour(WindowColour::secondary), 7));
+                            Gfx::drawLine(*context, xPos, yPos1, xPos + 1, yPos2, Colours::getShade(self->getColour(WindowColour::secondary).c(), 7));
                         }
                     }
                 }
@@ -840,7 +840,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             if (industryObj->produced_cargo_type[productionTabNumber] != 0xFF)
             {
-                imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary));
+                imageId = Gfx::recolour(skin->img, enumValue(self->getColour(WindowColour::secondary).c()));
 
                 if (self->currentTab == tab - widx::tab_industry)
                     imageId += productionTabImageIds[(self->frame_no / 4) % std::size(productionTabImageIds)];

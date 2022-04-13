@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1663
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        auto shade = Colour::getShade(window.getColour(WindowColour::secondary), 4);
+        auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
         Gfx::clearSingle(context, shade);
 
         const auto& config = Config::get();
@@ -118,15 +118,15 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             }
 
             // Draw checkbox.
-            Gfx::fillRectInset(context, 2, y, 11, y + 10, window.getColour(WindowColour::secondary), 0xE0);
+            Gfx::fillRectInset(context, 2, y, 11, y + 10, window.getColour(WindowColour::secondary).u8(), 0xE0);
 
             // Draw checkmark if track is enabled.
             if (config.enabledMusic[i])
-                Gfx::drawString_494B3F(context, 2, y, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
+                Gfx::drawString_494B3F(context, 2, y, window.getColour(WindowColour::secondary).u8(), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
 
             // Draw track name.
             string_id music_title_id = Audio::getMusicInfo(i)->titleId;
-            Gfx::drawString_494B3F(context, 15, y, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
+            Gfx::drawString_494B3F(context, 15, y, window.getColour(WindowColour::secondary).u8(), text_colour_id, (void*)&music_title_id);
 
             y += rowHeight;
         }

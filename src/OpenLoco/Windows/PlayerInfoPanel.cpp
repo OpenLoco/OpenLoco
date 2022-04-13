@@ -212,7 +212,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         // Draw widgets.
         window->draw(context);
 
-        drawRectInset(*context, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->getColour(WindowColour::secondary), 0x30);
+        drawRectInset(*context, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->getColour(WindowColour::secondary).u8(), 0x30);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);
@@ -234,15 +234,15 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 }
             }
 
-            auto colour = Colour::opaque(window->getColour(WindowColour::primary));
+            auto colour = window->getColour(WindowColour::primary).opaque();
             if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::company_value))
             {
-                colour = Colour::white;
+                colour = Colour2::white;
             }
             auto args = FormatArguments();
             args.push(playerCompany->cash.var_00);
             args.push(playerCompany->cash.var_04);
-            Gfx::drawStringCentred(*context, x, window->y + frame.top + 2, colour, companyValueString, &args);
+            Gfx::drawStringCentred(*context, x, window->y + frame.top + 2, colour.u8(), companyValueString, &args);
         }
 
         {
@@ -257,15 +257,15 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 performanceString = StringIds::player_info_performance_decrease;
             }
 
-            auto colour = window->getColour(WindowColour::primary) & 0x7F;
+            auto colour = window->getColour(WindowColour::primary).opaque();
             if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::performanceIndex))
             {
-                colour = Colour::white;
+                colour = Colour2::white;
             }
 
             auto args = FormatArguments();
             args.push(playerCompany->performanceIndex);
-            Gfx::drawStringCentred(*context, x, window->y + frame.top + 14, colour, performanceString, &args);
+            Gfx::drawStringCentred(*context, x, window->y + frame.top + 14, colour.u8(), performanceString, &args);
         }
     }
 

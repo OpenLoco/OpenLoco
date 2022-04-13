@@ -158,9 +158,9 @@ namespace OpenLoco
 
     namespace Colours
     {
-        void initColourMap() { Colour::initColourMap(); }
-        PaletteIndex_t getShade(Colour2 colour, uint8_t shade) { return Colour::getShade(enumValue(colour), shade); }
-        PaletteIndex_t getTranslucent(Colour2 colour) { return Colour::getTranslucent(enumValue(colour)); }
+        inline void initColourMap() { Colour::initColourMap(); }
+        inline PaletteIndex_t getShade(Colour2 colour, uint8_t shade) { return Colour::getShade(enumValue(colour), shade); }
+        inline PaletteIndex_t getTranslucent(Colour2 colour) { return Colour::getTranslucent(enumValue(colour)); }
     }
 
     namespace PaletteIndex

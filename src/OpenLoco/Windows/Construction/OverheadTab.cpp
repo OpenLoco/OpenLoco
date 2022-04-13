@@ -82,7 +82,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
-                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), modCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary).u8(), modCount, (1 << 7));
 
                 Dropdown::add(0, StringIds::single_section);
                 Dropdown::add(1, StringIds::block_section);

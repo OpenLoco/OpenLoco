@@ -1569,7 +1569,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto width = 155;
         auto height = widget.height();
 
-        Dropdown::show(x, y, width, height, self->getColour(WindowColour::secondary), bridgeCount, 22, flags);
+        Dropdown::show(x, y, width, height, self->getColour(WindowColour::secondary).u8(), bridgeCount, 22, flags);
         for (auto i = 0; i < 9; i++)
         {
             auto bridge = _bridgeList[i];
