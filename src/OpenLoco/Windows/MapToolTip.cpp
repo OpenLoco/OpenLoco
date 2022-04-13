@@ -142,7 +142,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
             auto* company = CompanyManager::get(_mapTooltipOwner);
             auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
-            auto imageId = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
+            auto imageId = Gfx::recolour(competitor->images[company->ownerEmotion], enumValue(company->mainColours.primary));
 
             Gfx::drawImage(context, left + 1, top + 1, imageId);
         }

@@ -206,7 +206,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw company owner image.
             {
-                const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary) + 1;
+                const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], enumValue(company->mainColours.primary)) + 1;
                 const uint16_t x = self->x + self->widgets[widx::face].left + 1;
                 const uint16_t y = self->y + self->widgets[widx::face].top + 1;
                 Gfx::drawImage(context, x, y, image);
@@ -1283,10 +1283,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::repositionTabs(self);
 
             // Set company's main colour
-            self->widgets[widx::main_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
+            self->widgets[widx::main_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(company->mainColours.primary));
 
             // Set company's secondary colour
-            self->widgets[widx::secondary_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.secondary);
+            self->widgets[widx::secondary_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(company->mainColours.secondary));
 
             struct ColourSchemeTuple
             {
@@ -1318,8 +1318,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     self->activatedWidgets |= (1ULL << tuples[i].checkbox);
 
-                    self->widgets[tuples[i].primary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].primary);
-                    self->widgets[tuples[i].secondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].secondary);
+                    self->widgets[tuples[i].primary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(company->vehicleColours[i].primary));
+                    self->widgets[tuples[i].secondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(company->vehicleColours[i].secondary));
 
                     self->widgets[tuples[i].primary].type = WidgetType::buttonWithColour;
                     self->widgets[tuples[i].secondary].type = WidgetType::buttonWithColour;
@@ -1435,7 +1435,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case main_colour_ships:
                 {
                     auto* company = CompanyManager::get(CompanyId(self->number));
-                    Colour_t selectedColour;
+                    Colour2 selectedColour;
                     if (widgetIndex != main_colour_scheme)
                     {
                         auto vehicleType = widgetIndex - main_colour_steam_locomotives;
@@ -1445,7 +1445,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         selectedColour = company->mainColours.primary;
 
                     auto availableColours = 0x7FFFFFFF & ~(CompanyManager::competingColourMask(CompanyId(self->number)));
-                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, static_cast<Colour2>(selectedColour), self->getColour(WindowColour::secondary));
+                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary));
                     break;
                 }
 
@@ -1462,7 +1462,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case secondary_colour_ships:
                 {
                     auto* company = CompanyManager::get(CompanyId(self->number));
-                    Colour_t selectedColour;
+                    Colour2 selectedColour;
                     if (widgetIndex != secondary_colour_scheme)
                     {
                         auto vehicleType = widgetIndex - secondary_colour_steam_locomotives;
@@ -1472,7 +1472,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         selectedColour = company->mainColours.secondary;
 
                     auto availableColours = 0x7FFFFFFF;
-                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, static_cast<Colour2>(selectedColour), self->getColour(WindowColour::secondary));
+                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary));
                     break;
                 }
             }
@@ -2654,7 +2654,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             const auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
 
             // Draw company owner face.
-            const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
+            const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], enumValue(company->mainColours.primary));
             const uint16_t x = self->x + self->widgets[Common::widx::company_select].left + 1;
             const uint16_t y = self->y + self->widgets[Common::widx::company_select].top + 1;
             Gfx::drawImage(context, x, y, image);

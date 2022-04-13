@@ -1385,7 +1385,7 @@ namespace OpenLoco::Gfx
 
     uint32_t recolour2(uint32_t image, ColourScheme colourScheme)
     {
-        return recolour2(image, colourScheme.primary, colourScheme.secondary);
+        return recolour2(image, enumValue(colourScheme.primary), enumValue(colourScheme.secondary));
     }
 
     uint32_t recolourTranslucent(uint32_t image, uint8_t colour)

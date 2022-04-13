@@ -75,7 +75,7 @@ namespace OpenLoco::CompanyManager
         }
 
         // Reset primary company colours.
-        rawCompanies()[0].mainColours.primary = Colour::mutedSeaGreen;
+        rawCompanies()[0].mainColours.primary = Colour2::mutedSeaGreen;
         updateColours();
     }
 
@@ -526,7 +526,7 @@ namespace OpenLoco::CompanyManager
         size_t index = 0;
         for (auto& company : rawCompanies())
         {
-            _companyColours[index] = static_cast<Colour2>(company.mainColours.primary);
+            _companyColours[index] = company.mainColours.primary;
             index++;
         }
         _companyColours[enumValue(CompanyId::neutral)] = Colour2::grey;
@@ -614,7 +614,7 @@ namespace OpenLoco::CompanyManager
             if (company.id() == companyId)
                 continue;
 
-            mask |= similarColourMask[company.mainColours.primary];
+            mask |= similarColourMask[enumValue(company.mainColours.primary)];
         }
         return mask;
     }

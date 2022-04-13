@@ -619,7 +619,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         // Draw company owner image.
         auto company = CompanyManager::get(CompanyId(self->number));
         auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
-        uint32_t image = Gfx::recolour(competitorObj->images[company->ownerEmotion], company->mainColours.primary);
+        uint32_t image = Gfx::recolour(competitorObj->images[company->ownerEmotion], enumValue(company->mainColours.primary));
         uint16_t x = self->x + self->widgets[Widx::company_select].left + 1;
         uint16_t y = self->y + self->widgets[Widx::company_select].top + 1;
         Gfx::drawImage(context, x, y, image);

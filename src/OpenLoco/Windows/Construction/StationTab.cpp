@@ -635,23 +635,23 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         if (_byte_1136063 & (1 << 7))
         {
             auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
-            auto imageId = Gfx::recolour(airportObj->image, companyColour);
+            auto imageId = Gfx::recolour(airportObj->image, enumValue(companyColour));
             Gfx::drawImage(context, xPos, yPos, imageId);
         }
         else if (_byte_1136063 & (1 << 6))
         {
             auto dockObj = ObjectManager::get<DockObject>(_lastSelectedStationType);
-            auto imageId = Gfx::recolour(dockObj->image, companyColour);
+            auto imageId = Gfx::recolour(dockObj->image, enumValue(companyColour));
             Gfx::drawImage(context, xPos, yPos, imageId);
         }
         else if (_trackType & (1 << 7))
         {
             auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
-            auto imageId = Gfx::recolour(roadStationObj->image + RoadStation::ImageIds::preview_image, companyColour);
+            auto imageId = Gfx::recolour(roadStationObj->image + RoadStation::ImageIds::preview_image, enumValue(companyColour));
             Gfx::drawImage(context, xPos, yPos, imageId);
 
-            auto colour = Colour::getTranslucent(companyColour);
+            auto colour = Colours::getTranslucent(companyColour);
             if (!(roadStationObj->flags & RoadStationFlags::recolourable))
             {
                 colour = PaletteIndex::index_2E;
@@ -664,10 +664,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 
-            auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
+            auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, enumValue(companyColour));
             Gfx::drawImage(context, xPos, yPos, imageId);
 
-            auto colour = Colour::getTranslucent(companyColour);
+            auto colour = Colours::getTranslucent(companyColour);
             if (!(trainStationObj->flags & TrainStationFlags::recolourable))
             {
                 colour = PaletteIndex::index_2E;

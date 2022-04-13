@@ -508,11 +508,11 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 if (_trackType & (1 << 7))
                 {
                     uint8_t trackType = _trackType & ~(1 << 7);
-                    Construction::drawRoad(x, y, _lastSelectedMods, 0x1D0, trackType, 0, companyColour, WindowManager::getCurrentRotation());
+                    Construction::drawRoad(x, y, _lastSelectedMods, 0x1D0, trackType, 0, enumValue(companyColour), WindowManager::getCurrentRotation());
                 }
                 else
                 {
-                    Construction::drawTrack(x, y, _lastSelectedMods, 0x1D0, _trackType, 0, companyColour, WindowManager::getCurrentRotation());
+                    Construction::drawTrack(x, y, _lastSelectedMods, 0x1D0, _trackType, 0, enumValue(companyColour), WindowManager::getCurrentRotation());
                 }
                 _byte_522095 = _byte_522095 & ~(1 << 0);
                 _dword_E0C3E0 = nullptr;

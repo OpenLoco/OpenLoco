@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 else
                     imageId += vehicleImageIds[0];
 
-                auto colour = Colour::black;
+                auto colour = Colour2::black;
 
                 if (!isEditorMode() && !isSandboxMode())
                 {
@@ -520,7 +520,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     colour = company->mainColours.primary;
                 }
 
-                imageId = Gfx::recolour(imageId, colour);
+                imageId = Gfx::recolour(imageId, enumValue(colour));
 
                 Widget::drawTab(self, context, imageId, widx::tabVehicles);
             }
@@ -780,7 +780,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         for (const auto& company : CompanyManager::companies())
         {
             auto index = company.id();
-            auto colour = Colour::getShade(company.mainColours.primary, 6);
+            auto colour = Colours::getShade(company.mainColours.primary, 6);
 
             if (!(self->var_854 & (1 << enumValue(index))) || !(mapFrameNumber & (1 << 2)))
             {

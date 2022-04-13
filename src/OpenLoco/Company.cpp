@@ -410,7 +410,7 @@ namespace OpenLoco
     }
 
     // 0x0042F0C1
-    static void updateHeadquartersColourAtTile(const Map::TilePos2& pos, uint8_t zPos, Colour_t newColour)
+    static void updateHeadquartersColourAtTile(const Map::TilePos2& pos, uint8_t zPos, Colour2 newColour)
     {
         auto tile = Map::TileManager::get(pos);
         for (auto& element : tile)
@@ -422,7 +422,7 @@ namespace OpenLoco
             if (building == nullptr)
                 continue;
 
-            building->setColour(newColour);
+            building->setColour(enumValue(newColour));
             return;
         }
     }
@@ -433,7 +433,7 @@ namespace OpenLoco
         if (headquartersX == -1)
             return;
 
-        Colour_t colour = mainColours.primary;
+        const auto colour = mainColours.primary;
         auto hqPos = Map::TilePos2(Map::Pos2(headquartersX, headquartersY));
         updateHeadquartersColourAtTile(hqPos + Map::TilePos2(0, 0), headquartersZ, colour);
         updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 0), headquartersZ, colour);

@@ -59,8 +59,8 @@ namespace OpenLoco
 
     struct ColourScheme
     {
-        uint8_t primary;
-        uint8_t secondary;
+        Colour2 primary;
+        Colour2 secondary;
     };
 
     constexpr uint8_t vehicleTypeCount = 6;

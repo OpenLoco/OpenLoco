@@ -109,7 +109,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    imageId = Gfx::recolour2(imageId, bogie->colourScheme.primary, bogie->colourScheme.secondary);
+                    imageId = Gfx::recolour2(imageId, bogie->colourScheme);
                 }
 
                 if (sprite.flags & BogieSpriteFlags::unk_4)
@@ -137,7 +137,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    imageId = Gfx::recolour2(imageId, bogie->colourScheme.primary, bogie->colourScheme.secondary);
+                    imageId = Gfx::recolour2(imageId, bogie->colourScheme);
                 }
                 if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
@@ -161,7 +161,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    imageId = Gfx::recolour2(imageId, bogie->colourScheme.primary, bogie->colourScheme.secondary);
+                    imageId = Gfx::recolour2(imageId, bogie->colourScheme);
                 }
                 session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
                 break;
@@ -436,7 +436,7 @@ namespace OpenLoco::Paint
         }
         else
         {
-            imageId = Gfx::recolour2(bodyImage, body->colourScheme.primary, body->colourScheme.secondary);
+            imageId = Gfx::recolour2(bodyImage, body->colourScheme);
         }
         session.addToPlotList4FD200(imageId, offsets, boundBoxOffsets, boundBoxSize);
 

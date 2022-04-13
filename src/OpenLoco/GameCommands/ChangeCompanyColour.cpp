@@ -39,9 +39,9 @@ namespace OpenLoco::GameCommands
                     colours = &company->vehicleColours[type - 1];
 
                 if (!isSecondary)
-                    colours->primary = value;
+                    colours->primary = static_cast<Colour2>(value);
                 else
-                    colours->secondary = value;
+                    colours->secondary = static_cast<Colour2>(value);
             }
 
             company->updateVehicleColours();
