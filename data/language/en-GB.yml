@@ -2303,3 +2303,5 @@ strings:
   2248: "{SMALLFONT}{COLOUR BLACK}When enabled, will allow building obsolete and proposed vehicles"
   2249: "Build Vehicles Window"
   2250: "{SMALLFONT}{COLOUR BLACK}While dragging, paint landscape instead of changing elevation"
+  2251: "Invert right mouse dragging"
+  2252: "When enabled, panning the main game view will have inverted movement"
