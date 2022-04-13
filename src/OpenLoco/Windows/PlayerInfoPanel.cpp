@@ -242,7 +242,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             auto args = FormatArguments();
             args.push(playerCompany->cash.var_00);
             args.push(playerCompany->cash.var_04);
-            Gfx::drawStringCentred(*context, x, window->y + frame.top + 2, colour.u8(), companyValueString, &args);
+            Gfx::drawStringCentred(*context, x, window->y + frame.top + 2, colour, companyValueString, &args);
         }
 
         {
@@ -265,7 +265,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
             auto args = FormatArguments();
             args.push(playerCompany->performanceIndex);
-            Gfx::drawStringCentred(*context, x, window->y + frame.top + 14, colour.u8(), performanceString, &args);
+            Gfx::drawStringCentred(*context, x, window->y + frame.top + 14, colour, performanceString, &args);
         }
     }
 

@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         *commonFormatArgs = prompt;
 
         auto origin = Ui::Point(window->x + (window->width / 2), window->y + 41);
-        Gfx::drawStringCentredWrapped(*context, origin, window->width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*commonFormatArgs);
+        Gfx::drawStringCentredWrapped(*context, origin, window->width, Colour2::black, StringIds::wcolour2_stringid, (const char*)&*commonFormatArgs);
     }
 
     // 0x004C18E4

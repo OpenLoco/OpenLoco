@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::Industry
             auto x = self->x + widget->left - 1;
             auto y = self->y + widget->top - 1;
             auto width = widget->width();
-            Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawString_494BBF(*context, x, y, width, Colour2::black, StringIds::black_stringid, &args);
         }
 
         // 0x00455C86
@@ -453,7 +453,7 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 origin.x += 4;
                 origin.y += 10;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::received_cargo);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour2::black, StringIds::received_cargo);
 
                 auto cargoNumber = 0;
                 for (const auto& receivedCargoType : industryObj->required_cargo_type)
@@ -473,7 +473,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         }
                         args.push<uint32_t>(industry->required_cargo_quantity[cargoNumber]);
 
-                        origin.y = Gfx::drawString_495224(*context, origin.x, origin.y, 290, Colour::black, StringIds::black_stringid, &args);
+                        origin.y = Gfx::drawString_495224(*context, origin.x, origin.y, 290, Colour2::black, StringIds::black_stringid, &args);
                     }
                     cargoNumber++;
                 }
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // Draw Last Months produced cargo stats
             if (industry->canProduceCargo())
             {
-                Gfx::drawString_494B3F(*context, origin.x, origin.y, Colour::black, StringIds::produced_cargo);
+                Gfx::drawString_494B3F(*context, origin.x, origin.y, Colour2::black, StringIds::produced_cargo);
                 origin.y += 10;
                 origin.x += 4;
 
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         args.push<uint32_t>(industry->produced_cargo_quantity[cargoNumber]);
                         args.push<uint16_t>(industry->produced_cargo_transported[cargoNumber]);
 
-                        origin.y = Gfx::drawString_495224(*context, origin.x, origin.y, 290, Colour::black, StringIds::transported_cargo, &args);
+                        origin.y = Gfx::drawString_495224(*context, origin.x, origin.y, 290, Colour2::black, StringIds::transported_cargo, &args);
                     }
                     cargoNumber++;
                 }
@@ -582,7 +582,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 int16_t x = self->x + 2;
                 int16_t y = self->y - 24 + 68;
 
-                Gfx::drawString_494B3F(*context, x, y, Colour::black, StringIds::production_graph_label, &args);
+                Gfx::drawString_494B3F(*context, x, y, Colour2::black, StringIds::production_graph_label, &args);
             }
 
             // Draw Y label and grid lines.
@@ -595,7 +595,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 Gfx::drawRect(*context, self->x + 41, yPos, 239, 1, Colour::getShade(self->getColour(WindowColour::secondary).u8(), 4));
 
-                Gfx::drawString_494C78(*context, self->x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
+                Gfx::drawString_494C78(*context, self->x + 39, yPos - 6, Colour2::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -620,7 +620,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         auto args = FormatArguments();
                         args.push(year);
 
-                        Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
+                        Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::population_graph_year, &args);
                     }
 
                     Gfx::drawRect(*context, xPos, yPos + 11, 1, self->height - 74, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));

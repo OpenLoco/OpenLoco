@@ -494,14 +494,14 @@ namespace OpenLoco::Ui::Windows::StationList
             _common_format_args[2] = enumValue(station->town);
             _common_format_args[3] = getTransportIconsFromStationFlags(station->flags);
 
-            Gfx::drawString_494BBF(context, 0, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(context, 0, yPos, 198, Colour2::black, text_colour_id, &*_common_format_args);
 
             // Then the station's current status.
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             station->getStatusString(buffer);
 
             _common_format_args[0] = StringIds::buffer_1250;
-            Gfx::drawString_494BBF(context, 200, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(context, 200, yPos, 198, Colour2::black, text_colour_id, &*_common_format_args);
 
             // Total units waiting.
             uint16_t totalUnits = 0;
@@ -510,7 +510,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
             _common_format_args[0] = StringIds::num_units;
             *(uint32_t*)&_common_format_args[1] = totalUnits;
-            Gfx::drawString_494BBF(context, 400, yPos, 88, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(context, 400, yPos, 88, Colour2::black, text_colour_id, &*_common_format_args);
 
             // And, finally, what goods the station accepts.
             char* ptr = buffer;
@@ -530,7 +530,7 @@ namespace OpenLoco::Ui::Windows::StationList
             }
 
             _common_format_args[0] = StringIds::buffer_1250;
-            Gfx::drawString_494BBF(context, 490, yPos, 118, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(context, 490, yPos, 118, Colour2::black, text_colour_id, &*_common_format_args);
 
             yPos += rowHeight;
         }
@@ -570,7 +570,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Draw number of stations.
         auto origin = Ui::Point(window->x + 4, window->y + window->height - 12);
-        Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::black_stringid, &*_common_format_args);
+        Gfx::drawString_494B3F(*context, &origin, Colour2::black, StringIds::black_stringid, &*_common_format_args);
     }
 
     // 0x004917BB

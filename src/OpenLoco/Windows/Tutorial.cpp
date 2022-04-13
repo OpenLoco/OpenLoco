@@ -73,10 +73,10 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
         auto& widget = self->widgets[Widx::frame];
         auto yPos = self->y + widget.top + 4;
-        Gfx::drawStringCentred(*context, self->x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_text, &args);
+        Gfx::drawStringCentred(*context, self->x + widget.mid_x(), yPos, Colour2::black, StringIds::tutorial_text, &args);
 
         yPos += 10;
-        Gfx::drawStringCentred(*context, self->x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
+        Gfx::drawStringCentred(*context, self->x + widget.mid_x(), yPos, Colour2::black, StringIds::tutorial_control, nullptr);
     }
 
     static void initEvents()

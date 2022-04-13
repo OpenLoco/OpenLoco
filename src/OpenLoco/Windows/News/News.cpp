@@ -547,7 +547,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::company:
                 case MessageItemArgumentType::vehicleTab:
                 {
-                    Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::black_tiny_font, &args);
+                    Gfx::drawStringCentredClipped(*context, x, y, width, Colour2::black, StringIds::black_tiny_font, &args);
                     break;
                 }
 
@@ -586,13 +586,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 38;
             Ui::Point origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(*context, origin, 352, Colour::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredWrapped(*context, origin, 352, Colour2::black, StringIds::buffer_2039);
 
             x = self->x + 1;
             y = self->y + 1;
             origin = { x, y };
 
-            Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::news_date, &news->date);
+            Gfx::drawString_494B3F(*context, &origin, Colour2::black, StringIds::news_date, &news->date);
 
             self->drawViewports(context);
 
@@ -668,12 +668,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 38;
             Ui::Point origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(*context, origin, 352, Colour::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredWrapped(*context, origin, 352, Colour2::black, StringIds::buffer_2039);
 
             origin.x = self->x + 4;
             origin.y = self->y + 5;
 
-            Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::news_date, &news->date);
+            Gfx::drawString_494B3F(*context, &origin, Colour2::black, StringIds::news_date, &news->date);
 
             self->drawViewports(context);
 
@@ -711,7 +711,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 17;
             Ui::Point origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(*context, origin, 338, Colour::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredWrapped(*context, origin, 338, Colour2::black, StringIds::buffer_2039);
 
             self->drawViewports(context);
             const auto& mtd = getMessageTypeDescriptor(news->type);

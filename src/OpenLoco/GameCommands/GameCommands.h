@@ -842,8 +842,8 @@ namespace OpenLoco::GameCommands
             , rotation(regs.dl)
             , type(regs.bh)
             , unk(regs.dh)
-            , primaryColour(regs.bp & 0xFF)
-            , secondaryColour((regs.bp >> 8) & 0xFF)
+            , primaryColour(static_cast<Colour2>(regs.bp & 0x1F))
+            , secondaryColour(static_cast<Colour2>((regs.bp >> 8) & 0x1F))
         {
         }
 
@@ -851,8 +851,8 @@ namespace OpenLoco::GameCommands
         uint8_t rotation;
         uint8_t type;
         uint8_t unk;
-        Colour_t primaryColour;
-        Colour_t secondaryColour;
+        Colour2 primaryColour;
+        Colour2 secondaryColour;
 
         explicit operator registers() const
         {
@@ -862,7 +862,7 @@ namespace OpenLoco::GameCommands
             regs.dl = rotation;
             regs.dh = unk;
             regs.di = pos.z;
-            regs.bp = primaryColour | (secondaryColour << 8);
+            regs.bp = enumValue(primaryColour) | (enumValue(secondaryColour) << 8);
             regs.bh = type;
             return regs;
         }

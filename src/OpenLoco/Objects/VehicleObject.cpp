@@ -51,20 +51,20 @@ namespace OpenLoco
         {
             FormatArguments args{};
             args.push(power);
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::object_selection_power, &args);
             rowPosition.y += descriptionRowHeight;
         }
 
         {
             FormatArguments args{};
             args.push(weight);
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_weight, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::object_selection_weight, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(speed);
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_max_speed, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::object_selection_max_speed, &args);
         }
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         // Clear buffer
@@ -74,7 +74,7 @@ namespace OpenLoco
 
         if (strlen(buffer) != 0)
         {
-            Gfx::drawString_495224(context, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
+            Gfx::drawString_495224(context, rowPosition.x, rowPosition.y, width - 4, Colour2::black, StringIds::buffer_1250);
         }
     }
 

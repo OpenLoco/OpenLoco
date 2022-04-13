@@ -857,12 +857,12 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto xPos = self->x + 3 + self->width - 17;
                 auto yPos = self->y + self->height - 13;
-                Gfx::drawString_494C78(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+                Gfx::drawString_494C78(*context, xPos, yPos, Colour2::black, StringIds::build_cost, &args);
             }
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - xPos;
-            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
+            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour2::black, StringIds::black_stringid, &treeObj->name);
         }
 
         static void drawTreeThumb(TreeObject* treeObj, Gfx::Context* clipped)
@@ -1193,7 +1193,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto args = FormatArguments();
             args.push<uint32_t>(_raiseLandCost);
 
-            Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
+            Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::clear_land_cost, &args);
         }
 
         static void initEvents()
@@ -1697,7 +1697,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseLandCost);
-                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1709,7 +1709,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerLandCost);
-                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -1978,7 +1978,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseWaterCost);
 
-                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1991,7 +1991,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerWaterCost);
 
-                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -2263,8 +2263,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
             args.type = self->rowHover;
             args.rotation = ViewportInteraction::getSideFromPos(res->first);
-            args.primaryColour = Colour::black;
-            args.secondaryColour = Colour::black;
+            args.primaryColour = Colour2::black;
+            args.secondaryColour = Colour2::black;
             args.unk = 0;
             return { args };
         }
@@ -2420,7 +2420,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19;
 
-            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
+            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour2::black, StringIds::black_stringid, &wallObj->name);
         }
 
         // 0x004BC11C

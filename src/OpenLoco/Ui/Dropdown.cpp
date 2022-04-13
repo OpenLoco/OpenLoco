@@ -184,7 +184,7 @@ namespace OpenLoco::Ui::Dropdown
 
             _currentFontSpriteBase = Font::m1;
 
-            Gfx::drawString(*context, x, y, colour.u8(), _byte_112CC04);
+            Gfx::drawString(*context, x, y, colour, _byte_112CC04);
         }
 
         // 0x004CD00E

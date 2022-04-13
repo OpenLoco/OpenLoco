@@ -1273,7 +1273,7 @@ namespace OpenLoco::ObjectManager
         {
             FormatArguments args{};
             args.push(designed);
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_designed, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::object_selection_designed, &args);
             rowPosition.y += descriptionRowHeight;
         }
 
@@ -1281,7 +1281,7 @@ namespace OpenLoco::ObjectManager
         {
             FormatArguments args{};
             args.push(obsolete);
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_obsolete, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::object_selection_obsolete, &args);
             rowPosition.y += descriptionRowHeight;
         }
     }

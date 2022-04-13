@@ -605,7 +605,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour::black, stringId, &args);
+            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour2::black, stringId, &args);
 
             *y += 10;
         }
@@ -651,7 +651,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour::black, stringId, &args);
+            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour2::black, stringId, &args);
 
             *y += 10;
         }
@@ -718,7 +718,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour::black, stringId, &args);
+            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour2::black, stringId, &args);
 
             *y += 10;
         }
@@ -768,7 +768,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour::black, stringId, &args);
+            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour2::black, stringId, &args);
 
             *y += 10;
         }
@@ -797,7 +797,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour::black, stringId, &args);
+            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour2::black, stringId, &args);
 
             *y += 10;
         }
@@ -993,7 +993,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto y = self->y + self->widgets[widx::statusBar].top - 1;
         auto width = self->widgets[widx::statusBar].width();
 
-        Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
+        Gfx::drawString_494BBF(*context, x, y, width, Colour2::black, StringIds::black_stringid, &args);
     }
 
     // 0x0046BF0F based on
@@ -1381,7 +1381,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             townPos.y -= 3;
 
             _currentFontSpriteBase = Font::small;
-            Gfx::drawString(*context, townPos.x, townPos.y, Colour::outline(Colour::purple), _stringFormatBuffer);
+            Gfx::drawString(*context, townPos.x, townPos.y, AdvancedColour(Colour2::purple).outline(), _stringFormatBuffer);
         }
     }
 

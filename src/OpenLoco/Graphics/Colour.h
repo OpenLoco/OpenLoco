@@ -50,6 +50,7 @@ namespace OpenLoco
         static constexpr uint8_t fd = 0xFD;
         static constexpr uint8_t fe = 0xFE;
         static constexpr uint8_t ff = 0xFF;
+
     private:
         Colour2 _c = Colour2::black;
 
@@ -102,8 +103,23 @@ namespace OpenLoco
             return *this;
         }
         constexpr bool isOpaque() const { return !isTranslucent(); }
+        constexpr AdvancedColour FF()
+        {
+            _c = static_cast<Colour2>(ff);
+            return *this;
+        }
         constexpr bool isFF() const { return enumValue(_c) == ff; }
+        constexpr AdvancedColour FE()
+        {
+            _c = static_cast<Colour2>(fe);
+            return *this;
+        }
         constexpr bool isFE() const { return enumValue(_c) == fe; }
+        constexpr AdvancedColour FD()
+        {
+            _c = static_cast<Colour2>(fd);
+            return *this;
+        }
         constexpr bool isFD() const { return enumValue(_c) == fd; }
     };
     static_assert(sizeof(AdvancedColour) == 1);

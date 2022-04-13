@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
         Gfx::drawRect(*context, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
         Gfx::drawRect(*context, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
-        Gfx::drawStringCentredRaw(*context, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, _text);
+        Gfx::drawStringCentredRaw(*context, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour2::black, _text);
     }
 
     // 0x004C94F7

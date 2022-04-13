@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::Town
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::status_town_population, &args);
+            Gfx::drawString_494BBF(*context, x, y, width, Colour2::black, StringIds::status_town_population, &args);
         }
 
         // 0x00499079
@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::Town
                 const uint16_t xPos = 39;
                 Gfx::drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));
 
-                Gfx::drawString_494C78(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
+                Gfx::drawString_494C78(*clipped, xPos, yPos - 6, Colour2::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -434,7 +434,7 @@ namespace OpenLoco::Ui::Windows::Town
                         auto args = FormatArguments();
                         args.push(year);
 
-                        Gfx::drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
+                        Gfx::drawStringCentred(*clipped, xPos, yPos, Colour2::black, StringIds::population_graph_year, &args);
                     }
 
                     Gfx::drawRect(*clipped, xPos, 11, 1, self->height - 66, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));
@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             uint16_t xPos = self->x + 4;
             uint16_t yPos = self->y + 46;
-            Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
+            Gfx::drawString_494B3F(*context, xPos, yPos, Colour2::black, StringIds::local_authority_ratings_transport_companies);
 
             xPos += 4;
             yPos += 14;
@@ -553,7 +553,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(rating);
                 args.push(rank);
 
-                Gfx::drawString_494BBF(*context, xPos, yPos, self->width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
+                Gfx::drawString_494BBF(*context, xPos, yPos, self->width - 12, Colour2::black, StringIds::town_rating_company_percentage_rank, &args);
 
                 yPos += 10;
             }

@@ -940,7 +940,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            Gfx::drawString_494BBF(*context, x, y, window->width - 186, Colour::black, bottomLeftMessage, &args);
+            Gfx::drawString_494BBF(*context, x, y, window->width - 186, Colour2::black, bottomLeftMessage, &args);
         }
 
         if (window->rowHover == -1)
@@ -1061,7 +1061,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         auto x = window->widgets[widx::scrollview_vehicle_selection].right + window->x + 2;
         auto y = window->widgets[widx::scrollview_vehicle_preview].bottom + window->y + 2;
-        Gfx::drawString_495224(*context, x, y, 180, Colour::black, StringIds::buffer_1250);
+        Gfx::drawString_495224(*context, x, y, 180, Colour2::black, StringIds::buffer_1250);
     }
 
     // 0x4C3307
@@ -1091,7 +1091,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     auto widget = window.widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
                     auto y = (window.rowHeight - 10) / 2;
-                    Gfx::drawString_495224(context, 3, y, width, Colour::black, defaultMessage, &args);
+                    Gfx::drawString_495224(context, 3, y, width, Colour2::black, defaultMessage, &args);
                 }
                 else
                 {
@@ -1152,7 +1152,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         FormatArguments args{};
                         args.push(vehicleObj->name);
                         half = (window.rowHeight - 10) / 2;
-                        Gfx::drawString_494B3F(context, x + 3, y + half, Colour::black, colouredString, &args);
+                        Gfx::drawString_494B3F(context, x + 3, y + half, Colour2::black, colouredString, &args);
                     }
                 }
                 break;
@@ -1190,7 +1190,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 *buffer++ = '\0';
                 FormatArguments args{};
                 args.push(StringIds::buffer_1250);
-                Gfx::drawStringCentredClipped(context, 89, 52, 177, 0x20, StringIds::wcolour2_stringid, &args);
+                Gfx::drawStringCentredClipped(context, 89, 52, 177, Colour2::darkOrange, StringIds::wcolour2_stringid, &args);
                 break;
             }
         }

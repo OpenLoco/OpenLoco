@@ -134,7 +134,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         args.push(StringIds::buffer_2039);
 
         auto origin = Ui::Point(self->x + self->width / 2, self->y + 41);
-        Gfx::drawStringCentredWrapped(*context, origin, self->width, Colour::black, StringIds::wcolour2_stringid, &args);
+        Gfx::drawStringCentredWrapped(*context, origin, self->width, Colour2::black, StringIds::wcolour2_stringid, &args);
     }
 
     static void initEvents()

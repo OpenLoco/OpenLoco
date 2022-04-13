@@ -75,7 +75,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
         int16_t x = window->x + window->width / 2;
         int16_t y = window->y + window->widgets[Widx::exit_button].top + 8;
         Ui::Point origin = { x, y };
-        Gfx::drawStringCentredWrapped(*context, origin, window->width, Colour::black, StringIds::title_exit_game);
+        Gfx::drawStringCentredWrapped(*context, origin, window->width, Colour2::black, StringIds::title_exit_game);
     }
 
     // 0x00439268

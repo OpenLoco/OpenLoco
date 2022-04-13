@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         }
         Gfx::drawRectInset(*ctx, next.left + self->x + 1, next.top + self->y + 1, next.width() - 2, next.height() - 2, self->getColour(WindowColour::secondary).u8(), 0x30);
 
-        Gfx::drawStringCentred(*ctx, (previous.right + next.left) / 2 + self->x, self->y + self->height - 12, self->getColour(WindowColour::tertiary).opaque().outline().u8(), _stepNames[EditorController::getCurrentStep()]);
+        Gfx::drawStringCentred(*ctx, (previous.right + next.left) / 2 + self->x, self->y + self->height - 12, self->getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
 
         if (EditorController::canGoBack())
         {
@@ -93,8 +93,8 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             {
                 textColour = Colour2::white;
             }
-            Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, textColour.u8(), StringIds::editor_previous_step);
-            Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, textColour.u8(), _stepNames[EditorController::getPreviousStep()]);
+            Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, textColour, StringIds::editor_previous_step);
+            Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, textColour, _stepNames[EditorController::getPreviousStep()]);
         }
         Gfx::drawImage(ctx, self->x + next.right - 29, self->y + next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
@@ -104,8 +104,8 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         {
             textColour = Colour2::white;
         }
-        Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, textColour.u8(), StringIds::editor_next_step);
-        Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, textColour.u8(), _stepNames[EditorController::getNextStep()]);
+        Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, textColour, StringIds::editor_next_step);
+        Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, textColour, _stepNames[EditorController::getNextStep()]);
     }
 
     // 0x0043D0ED

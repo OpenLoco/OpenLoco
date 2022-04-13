@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             auto folder = &_displayFolderBuffer[0];
             auto args = getStringPtrFormatArgs(folder);
-            Gfx::drawString_494B3F(*context, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, StringIds::window_browse_folder, &args);
+            Gfx::drawString_494B3F(*context, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, Colour2::black, StringIds::window_browse_folder, &args);
         }
 
         auto selectedIndex = window->var_85A;
@@ -399,7 +399,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     x + (width / 2),
                     y,
                     width,
-                    0,
+                    Colour2::black,
                     StringIds::wcolour2_stringid,
                     &args);
                 y += 12;
@@ -424,7 +424,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (filenameBox.type != WidgetType::none)
         {
             // Draw filename label
-            Gfx::drawString_494B3F(*context, window->x + 3, window->y + filenameBox.top + 2, 0, StringIds::window_browse_filename, nullptr);
+            Gfx::drawString_494B3F(*context, window->x + 3, window->y + filenameBox.top + 2, Colour2::black, StringIds::window_browse_filename, nullptr);
 
             // Clip to text box
             auto context2 = Gfx::clipContext(*context, Ui::Rect(window->x + filenameBox.left + 1, window->y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
@@ -459,17 +459,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Company
         {
             auto args = getStringPtrFormatArgs(saveInfo.company);
-            y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::window_browse_company, &args);
+            y = Gfx::drawString_495224(context, x, y, maxWidth, Colour2::black, StringIds::window_browse_company, &args);
         }
 
         // Owner
         {
             auto args = getStringPtrFormatArgs(saveInfo.owner);
-            y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::owner_label, &args);
+            y = Gfx::drawString_495224(context, x, y, maxWidth, Colour2::black, StringIds::owner_label, &args);
         }
 
         // Date
-        y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::window_browse_date, &saveInfo.date);
+        y = Gfx::drawString_495224(context, x, y, maxWidth, Colour2::black, StringIds::window_browse_date, &saveInfo.date);
 
         // Challenge progress
         auto flags = saveInfo.challengeFlags;
@@ -486,7 +486,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     progress = saveInfo.challenge_progress;
                 }
             }
-            Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, stringId, &progress);
+            Gfx::drawString_495224(context, x, y, maxWidth, Colour2::black, stringId, &progress);
         }
     }
 
@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto imageId = Gfx::recolour(ImageIds::random_map_watermark, enumValue(window.getColour(WindowColour::secondary).c()));
             Gfx::drawImage(&context, x, y, imageId);
             auto origin = Ui::Point(x + 64, y + 60);
-            Gfx::drawStringCentredWrapped(context, origin, 128, 0, StringIds::randomly_generated_landscape);
+            Gfx::drawStringCentredWrapped(context, origin, 128, Colour2::black, StringIds::randomly_generated_landscape);
         }
     }
 
@@ -529,7 +529,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Ui::Point origin = { 0, 1 };
         {
             auto args = getStringPtrFormatArgs(text);
-            Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, &args);
+            Gfx::drawString_494B3F(context, &origin, Colour2::black, StringIds::black_stringid, &args);
         }
 
         if (showCaret)
@@ -537,7 +537,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             if (caret == -1)
             {
                 // Draw horizontal caret
-                Gfx::drawString_494B3F(context, &origin, 0, StringIds::window_browse_input_caret, nullptr);
+                Gfx::drawString_494B3F(context, &origin, Colour2::black, StringIds::window_browse_input_caret, nullptr);
             }
             else
             {
@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 const std::string gbuffer = std::string(text, caret);
                 auto args = getStringPtrFormatArgs(gbuffer.c_str());
                 origin = { 0, 1 };
-                Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, &args);
+                Gfx::drawString_494B3F(context, &origin, Colour2::black, StringIds::black_stringid, &args);
 
                 // Draw vertical caret
                 Gfx::drawRect(context, origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9));
@@ -594,7 +594,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
                 // Draw the name
                 auto args = getStringPtrFormatArgs(nameBuffer.c_str());
-                Gfx::drawString_494B3F(context, x, y, 0, stringId, &args);
+                Gfx::drawString_494B3F(context, x, y, Colour2::black, stringId, &args);
             }
             y += lineHeight;
             i++;

@@ -28,7 +28,7 @@ namespace OpenLoco
             args.push<uint16_t>(intelligence);
             args.push(aiRatingToLevel(intelligence));
 
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_intelligence, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::company_details_intelligence, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
@@ -36,7 +36,7 @@ namespace OpenLoco
             args.push<uint16_t>(aggressiveness);
             args.push(aiRatingToLevel(aggressiveness));
 
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_aggressiveness, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::company_details_aggressiveness, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
@@ -44,7 +44,7 @@ namespace OpenLoco
             args.push<uint16_t>(competitiveness);
             args.push(aiRatingToLevel(competitiveness));
 
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_competitiveness, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::company_details_competitiveness, &args);
         }
     }
 

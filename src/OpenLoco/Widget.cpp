@@ -573,7 +573,7 @@ namespace OpenLoco::Ui
         }
         else
         {
-            colour = colour.fd();
+            colour = colour.FD();
         }
 
         drawString_494B3F(*context, window->x + left + 1, window->y + top, colour, text, _commonFormatArgs);

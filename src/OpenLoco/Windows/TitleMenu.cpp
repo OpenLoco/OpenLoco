@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 string = StringIds::two_player_mode_connected;
             }
 
-            drawStringCentredClipped(*context, x, y, ww - 4, Colour::black, string, (char*)0x112c826);
+            drawStringCentredClipped(*context, x, y, ww - 4, Colour2::black, string, (char*)0x112c826);
         }
     }
 
