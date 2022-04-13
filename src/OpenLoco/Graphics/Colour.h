@@ -47,7 +47,9 @@ namespace OpenLoco
         static constexpr uint8_t outline_flag = 1 << 5;
         static constexpr uint8_t inset_flag = 1 << 6;
         static constexpr uint8_t translucent_flag = 1 << 7;
-
+        static constexpr uint8_t fd = 0xFD;
+        static constexpr uint8_t fe = 0xFE;
+        static constexpr uint8_t ff = 0xFF;
     private:
         Colour2 _c = Colour2::black;
 
@@ -58,10 +60,10 @@ namespace OpenLoco
         {
         }
 
-        constexpr explicit operator Colour2() { return static_cast<Colour2>(enumValue(_c) & ~(outline_flag | inset_flag | translucent_flag)); }
-        constexpr Colour2 c() { return static_cast<Colour2>(*this); }
-        constexpr explicit operator uint8_t() { return enumValue(_c); }
-        constexpr uint8_t u8() { return static_cast<uint8_t>(*this); }
+        constexpr explicit operator Colour2() const { return static_cast<Colour2>(enumValue(_c) & ~(outline_flag | inset_flag | translucent_flag)); }
+        constexpr Colour2 c() const { return static_cast<Colour2>(*this); }
+        constexpr explicit operator uint8_t() const { return enumValue(_c); }
+        constexpr uint8_t u8() const { return static_cast<uint8_t>(*this); }
 
         constexpr AdvancedColour outline()
         {
@@ -89,7 +91,20 @@ namespace OpenLoco
             _c = static_cast<Colour2>(enumValue(_c) & ~translucent_flag);
             return *this;
         }
+        constexpr AdvancedColour clearInset()
+        {
+            _c = static_cast<Colour2>(enumValue(_c) & ~inset_flag);
+            return *this;
+        }
+        constexpr AdvancedColour clearOutline()
+        {
+            _c = static_cast<Colour2>(enumValue(_c) & ~outline_flag);
+            return *this;
+        }
         constexpr bool isOpaque() const { return !isTranslucent(); }
+        constexpr bool isFF() const { return enumValue(_c) == ff; }
+        constexpr bool isFE() const { return enumValue(_c) == fe; }
+        constexpr bool isFD() const { return enumValue(_c) == fd; }
     };
     static_assert(sizeof(AdvancedColour) == 1);
 

@@ -10,6 +10,7 @@
 namespace OpenLoco
 {
     using Colour_t = uint8_t;
+    struct AdvancedColour;
 }
 
 namespace OpenLoco::Drawing
@@ -148,27 +149,27 @@ namespace OpenLoco::Gfx
     uint16_t getStringWidth(const char* buffer);
     uint16_t getMaxStringWidth(const char* buffer);
 
-    Ui::Point drawString(Context& context, int16_t x, int16_t y, uint8_t colour, void* str);
+    Ui::Point drawString(Context& context, int16_t x, int16_t y, AdvancedColour colour, void* str);
 
     int16_t drawString_495224(
         Context& context,
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawString_494B3F(
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawString_494B3F(
         Context& context,
         Ui::Point* origin,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawString_494BBF(
@@ -176,35 +177,35 @@ namespace OpenLoco::Gfx
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawString_494C78(
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringUnderline(
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args);
     void drawStringLeftUnderline(
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringCentred(
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringCentredClipped(
@@ -212,14 +213,14 @@ namespace OpenLoco::Gfx
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     uint16_t drawStringCentredWrapped(
         Context& context,
         Ui::Point& origin,
         uint16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringCentredRaw(
@@ -227,7 +228,7 @@ namespace OpenLoco::Gfx
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         const void* args);
     uint16_t getStringWidthNewLined(const char* buffer);
     std::pair<uint16_t, uint16_t> wrapString(const char* buffer, uint16_t stringWidth);
