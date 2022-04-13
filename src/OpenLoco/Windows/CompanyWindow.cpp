@@ -676,7 +676,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto companyColour = CompanyManager::getCompanyColour(CompanyId(self->number));
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             uint32_t image = skin->img + InterfaceSkin::ImageIds::build_headquarters;
-            self->widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | Widget::imageIdColourSet;
+            self->widgets[widx::build_hq].image = Gfx::recolour(image, enumValue(companyColour)) | Widget::imageIdColourSet;
 
             self->disabledWidgets &= ~(1 << widx::centre_on_viewport);
             if (company->headquartersX == -1)

@@ -114,7 +114,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 auto companyId = CompanyManager::getControllingId();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
-                imageId = Gfx::recolour(imageId, companyColour);
+                imageId = Gfx::recolour(imageId, enumValue(companyColour));
 
                 Widget::drawTab(self, context, imageId, Widx::tab_vehicles);
             }

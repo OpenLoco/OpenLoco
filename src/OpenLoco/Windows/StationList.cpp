@@ -544,7 +544,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         for (const auto& tab : tabInformationByType)
         {
-            uint32_t image = Gfx::recolour(skin->img + tab.imageId, companyColour);
+            uint32_t image = Gfx::recolour(skin->img + tab.imageId, enumValue(companyColour));
             Widget::drawTab(window, context, image, tab.widgetIndex);
         }
     }

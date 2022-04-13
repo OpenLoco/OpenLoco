@@ -947,7 +947,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             // Station tab
             {
-                uint32_t imageId = Gfx::recolour(skin->img, companyColour);
+                uint32_t imageId = Gfx::recolour(skin->img, enumValue(companyColour));
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_stations;
                 Widget::drawTab(self, context, imageId, widx::tab_station);
             }

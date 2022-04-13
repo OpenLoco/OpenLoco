@@ -90,9 +90,9 @@ namespace OpenLoco::Paint
         const string_id stringId = moneyEffect->amount >= 0 ? StringIds::format_currency_income_in_company_colour : StringIds::format_currency_expense_in_company_colour_negative;
         uint32_t currencyAmount = abs(moneyEffect->amount);
         const int8_t* yOffsets = &kWiggleYOffsets[moneyEffect->wiggle];
-        uint16_t companyColour = CompanyManager::getCompanyColour(moneyEffect->var_2E);
+        auto companyColour = CompanyManager::getCompanyColour(moneyEffect->var_2E);
 
-        session.addToStringPlotList(currencyAmount, stringId, moneyEffect->position.y, moneyEffect->position.z, yOffsets, moneyEffect->offsetX, companyColour);
+        session.addToStringPlotList(currencyAmount, stringId, moneyEffect->position.y, moneyEffect->position.z, yOffsets, moneyEffect->offsetX, enumValue(companyColour));
     }
 
     // 0x0044044E

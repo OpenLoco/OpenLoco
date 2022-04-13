@@ -407,7 +407,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto isActive = tab == self->currentTab + Widx::tab_trains;
             auto imageId = isActive ? frames[self->frame_no / 2 % 8] : frames[0];
 
-            uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
+            uint32_t image = Gfx::recolour(skin->img + imageId, enumValue(companyColour));
             Widget::drawTab(self, context, image, tab);
         }
     }

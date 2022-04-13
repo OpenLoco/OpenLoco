@@ -683,7 +683,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.performanceIndexHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colours::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
             }
@@ -774,7 +774,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargoUnitsDeliveredHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colours::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
             }
@@ -865,7 +865,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargoUnitsDistanceHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colours::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
             }
@@ -956,7 +956,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.companyValueHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colours::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
             }
@@ -1641,7 +1641,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             for (auto& company : CompanyManager::companies())
             {
                 auto companyColour = CompanyManager::getCompanyColour(company.id());
-                auto colour = Colour::getShade(companyColour, 6);
+                auto colour = Colours::getShade(companyColour, 6);
                 auto stringId = StringIds::small_black_string;
 
                 if (self->var_854 & (1 << companyCount))
