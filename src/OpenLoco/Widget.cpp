@@ -249,14 +249,14 @@ namespace OpenLoco::Ui
             uint8_t c;
             if (colour.isTranslucent())
             {
-                c =  Colours::getShade(colour.c(), 4);
+                c = Colours::getShade(colour.c(), 4);
                 Gfx::drawImageSolid(context, xPlaceForImage + 1, yPlaceForImage + 1, imageId, c);
-                c =  Colours::getShade(colour.c(), 2);
+                c = Colours::getShade(colour.c(), 2);
                 Gfx::drawImageSolid(context, xPlaceForImage, yPlaceForImage, imageId, c);
             }
             else
             {
-                c =  Colours::getShade(colour.c(), 6);
+                c = Colours::getShade(colour.c(), 6);
                 Gfx::drawImageSolid(context, xPlaceForImage + 1, yPlaceForImage + 1, imageId, c);
                 c = Colours::getShade(colour.c(), 4);
                 Gfx::drawImageSolid(context, xPlaceForImage, yPlaceForImage, imageId, c);
