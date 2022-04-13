@@ -10,6 +10,7 @@
 namespace OpenLoco
 {
     using Colour_t = uint8_t;
+    using PaletteIndex_t = uint8_t;
     struct AdvancedColour;
 }
 
@@ -242,10 +243,11 @@ namespace OpenLoco::Gfx
     void drawImageSolid(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t palette_index);
     void drawImagePaletteSet(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t* palette);
     [[nodiscard]] uint32_t recolour(uint32_t image);
+    [[nodiscard]] uint32_t recolour(uint32_t image, Colour2 colour);
     [[nodiscard]] uint32_t recolour(uint32_t image, uint8_t colour);
-    [[nodiscard]] uint32_t recolour2(uint32_t image, uint8_t colour1, uint8_t colour2);
+    [[nodiscard]] uint32_t recolour2(uint32_t image, Colour2 colour1, Colour2 colour2);
     [[nodiscard]] uint32_t recolour2(uint32_t image, ColourScheme colourScheme);
-    [[nodiscard]] uint32_t recolourTranslucent(uint32_t image, uint8_t colour);
+    [[nodiscard]] uint32_t recolourTranslucent(uint32_t image, PaletteIndex_t colour);
     [[nodiscard]] uint32_t applyGhostToImage(uint32_t imageId);
 
     void invalidateScreen();

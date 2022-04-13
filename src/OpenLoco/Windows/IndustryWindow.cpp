@@ -840,7 +840,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             if (industryObj->produced_cargo_type[productionTabNumber] != 0xFF)
             {
-                imageId = Gfx::recolour(skin->img, enumValue(self->getColour(WindowColour::secondary).c()));
+                imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
 
                 if (self->currentTab == tab - widx::tab_industry)
                     imageId += productionTabImageIds[(self->frame_no / 4) % std::size(productionTabImageIds)];

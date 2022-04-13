@@ -26,10 +26,13 @@ namespace OpenLoco
     void WallObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
         auto image = sprite;
-        image = Gfx::recolour(image, Colour::mutedDarkRed);
         if (flags & (1 << 6))
         {
-            image |= (1 << 31) | (1 << 28);
+            image = Gfx::recolour2(sprite, Colour2::mutedDarkRed, Colour2::grey);
+        }
+        else
+        {
+            image = Gfx::recolour(sprite, Colour2::mutedDarkRed);
         }
 
         Gfx::drawImage(&context, x + 14, y + 16 + (var_08 * 2), image);

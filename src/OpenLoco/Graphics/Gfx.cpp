@@ -45,7 +45,7 @@ namespace OpenLoco::Gfx
     static loco_global<uint16_t, 0x112C824> _currentFontFlags;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
-    static loco_global<uint8_t[4], 0x1136594> _windowColours;
+    static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
 
     static PaletteIndex_t _textColours[8] = { 0 };
 
@@ -668,26 +668,26 @@ namespace OpenLoco::Gfx
                     break;
                 case ControlCodes::window_colour_1:
                 {
-                    int hue = _windowColours[0];
-                    setTextColours(Colour::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                    auto hue = _windowColours[0].c();
+                    setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
                 case ControlCodes::window_colour_2:
                 {
-                    int hue = _windowColours[1];
-                    setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                    auto hue = _windowColours[1].c();
+                    setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
                 case ControlCodes::window_colour_3:
                 {
-                    int hue = _windowColours[2];
-                    setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                    auto hue = _windowColours[2].c();
+                    setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
                 case ControlCodes::window_colour_4:
                 {
-                    int hue = _windowColours[3];
-                    setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                    auto hue = _windowColours[3].c();
+                    setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
 
@@ -846,9 +846,9 @@ namespace OpenLoco::Gfx
         }
 
         _textColours[0] = PaletteIndex::transparent;
-        _textColours[1] = Colour::getShade(Colour::mutedDarkPurple, 5);
-        _textColours[2] = Colour::getShade(Colour::mutedRed, 5);
-        _textColours[3] = Colour::getShade(Colour::blue, 5);
+        _textColours[1] = Colours::getShade(Colour2::mutedDarkPurple, 5);
+        _textColours[2] = Colours::getShade(Colour2::mutedRed, 5);
+        _textColours[3] = Colours::getShade(Colour2::blue, 5);
 
         if (colour.isOutline())
         {
@@ -1377,18 +1377,26 @@ namespace OpenLoco::Gfx
     {
         return ImageIdFlags::remap | (colour << 19) | image;
     }
+    uint32_t recolour(uint32_t image, Colour2 colour)
+    {
+        return ImageIdFlags::remap | (enumValue(colour) << 19) | image;
+    }
 
     uint32_t recolour2(uint32_t image, uint8_t colour1, uint8_t colour2)
     {
         return ImageIdFlags::remap | ImageIdFlags::remap2 | (colour1 << 19) | (colour2 << 24) | image;
     }
+    uint32_t recolour2(uint32_t image, Colour2 colour1, Colour2 colour2)
+    {
+        return ImageIdFlags::remap | ImageIdFlags::remap2 | (enumValue(colour1) << 19) | (enumValue(colour2) << 24) | image;
+    }
 
     uint32_t recolour2(uint32_t image, ColourScheme colourScheme)
     {
-        return recolour2(image, enumValue(colourScheme.primary), enumValue(colourScheme.secondary));
+        return recolour2(image, colourScheme.primary, colourScheme.secondary);
     }
 
-    uint32_t recolourTranslucent(uint32_t image, uint8_t colour)
+    uint32_t recolourTranslucent(uint32_t image, PaletteIndex_t colour)
     {
         return ImageIdFlags::translucent | (colour << 19) | image;
     }

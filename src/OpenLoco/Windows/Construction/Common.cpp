@@ -747,7 +747,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (self->currentTab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 32;
 
-                Widget::drawTab(self, context, Gfx::recolour(imageId, enumValue(companyColour)), widx::tab_construction);
+                Widget::drawTab(self, context, Gfx::recolour(imageId, companyColour), widx::tab_construction);
             }
             // Station Tab
             {
@@ -770,7 +770,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         clipped->x <<= 1;
                         clipped->y <<= 1;
                         auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
-                        auto imageId = Gfx::recolour(roadStationObj->image, enumValue(companyColour));
+                        auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
                         Gfx::drawImage(&*clipped, -4, -10, imageId);
                         auto colour = Colours::getTranslucent(companyColour);
                         if (!(roadStationObj->flags & RoadStationFlags::recolourable))
@@ -821,7 +821,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (self->currentTab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 15;
 
-                Widget::drawTab(self, context, Gfx::recolour(imageId, enumValue(companyColour)), widx::tab_construction);
+                Widget::drawTab(self, context, Gfx::recolour(imageId, companyColour), widx::tab_construction);
             }
             // Station Tab
             {
@@ -861,7 +861,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                 clipped->y *= 2;
 
                                 auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
-                                auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, enumValue(companyColour));
+                                auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
                                 Gfx::drawImage(&*clipped, -4, -9, imageId);
 
                                 auto colour = Colours::getTranslucent(companyColour);

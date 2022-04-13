@@ -520,7 +520,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     colour = company->mainColours.primary;
                 }
 
-                imageId = Gfx::recolour(imageId, enumValue(colour));
+                imageId = Gfx::recolour(imageId, colour);
 
                 Widget::drawTab(self, context, imageId, widx::tabVehicles);
             }

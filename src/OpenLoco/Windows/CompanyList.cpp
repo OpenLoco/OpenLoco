@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 auto company = CompanyManager::get(CompanyId(rowItem));
                 auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
-                auto imageId = Gfx::recolour(competitorObj->images[company->ownerEmotion], enumValue(company->mainColours.primary));
+                auto imageId = Gfx::recolour(competitorObj->images[company->ownerEmotion], company->mainColours.primary);
 
                 {
                     auto args = FormatArguments();
@@ -1254,7 +1254,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
 
                     auto imageId = competitorObj->images[company->ownerEmotion];
-                    imageId = Gfx::recolour(imageId, enumValue(company->mainColours.primary));
+                    imageId = Gfx::recolour(imageId, company->mainColours.primary);
 
                     auto x = self->x + 4;
                     Gfx::drawImage(context, x, y, imageId);
@@ -1503,7 +1503,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += performanceImageIds[0];
 
-                imageId = Gfx::recolour(imageId, enumValue(self->getColour(WindowColour::secondary).c()));
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
                 Widget::drawTab(self, context, imageId, widx::tab_performance);
             }
@@ -1527,7 +1527,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += cargoUnitsImageIds[0];
 
-                imageId = Gfx::recolour(imageId, enumValue(self->getColour(WindowColour::secondary).c()));
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
                 Widget::drawTab(self, context, imageId, widx::tab_cargo_units);
             }
@@ -1551,7 +1551,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += cargoDistanceImageIds[0];
 
-                imageId = Gfx::recolour(imageId, enumValue(self->getColour(WindowColour::secondary).c()));
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
                 Widget::drawTab(self, context, imageId, widx::tab_cargo_distance);
             }
@@ -1575,7 +1575,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += companyValuesImageIds[0];
 
-                imageId = Gfx::recolour(imageId, enumValue(self->getColour(WindowColour::secondary).c()));
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
                 Widget::drawTab(self, context, imageId, widx::tab_values);
 
@@ -1608,7 +1608,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_awards;
 
-                imageId = Gfx::recolour(imageId, enumValue(self->getColour(WindowColour::secondary).c()));
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
                 Widget::drawTab(self, context, imageId, widx::tab_speed_records);
             }

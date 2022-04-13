@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::Error
                 auto companyObj = ObjectManager::get<CompetitorObject>(company->competitorId);
 
                 auto imageId = companyObj->images[company->ownerEmotion];
-                imageId = Gfx::recolour(imageId, enumValue(company->mainColours.primary));
+                imageId = Gfx::recolour(imageId, company->mainColours.primary);
                 imageId++;
 
                 Gfx::drawImage(context, xPos, yPos, imageId);

@@ -206,7 +206,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw company owner image.
             {
-                const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], enumValue(company->mainColours.primary)) + 1;
+                const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion] + 1, company->mainColours.primary);
                 const uint16_t x = self->x + self->widgets[widx::face].left + 1;
                 const uint16_t y = self->y + self->widgets[widx::face].top + 1;
                 Gfx::drawImage(context, x, y, image);
@@ -676,7 +676,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto companyColour = CompanyManager::getCompanyColour(CompanyId(self->number));
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             uint32_t image = skin->img + InterfaceSkin::ImageIds::build_headquarters;
-            self->widgets[widx::build_hq].image = Gfx::recolour(image, enumValue(companyColour)) | Widget::imageIdColourSet;
+            self->widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | Widget::imageIdColourSet;
 
             self->disabledWidgets &= ~(1 << widx::centre_on_viewport);
             if (company->headquartersX == -1)
@@ -1283,10 +1283,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::repositionTabs(self);
 
             // Set company's main colour
-            self->widgets[widx::main_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(company->mainColours.primary));
+            self->widgets[widx::main_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
 
             // Set company's secondary colour
-            self->widgets[widx::secondary_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(company->mainColours.secondary));
+            self->widgets[widx::secondary_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.secondary);
 
             struct ColourSchemeTuple
             {
@@ -1318,8 +1318,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     self->activatedWidgets |= (1ULL << tuples[i].checkbox);
 
-                    self->widgets[tuples[i].primary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(company->vehicleColours[i].primary));
-                    self->widgets[tuples[i].secondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(company->vehicleColours[i].secondary));
+                    self->widgets[tuples[i].primary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].primary);
+                    self->widgets[tuples[i].secondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].secondary);
 
                     self->widgets[tuples[i].primary].type = WidgetType::buttonWithColour;
                     self->widgets[tuples[i].secondary].type = WidgetType::buttonWithColour;
@@ -2654,7 +2654,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             const auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
 
             // Draw company owner face.
-            const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], enumValue(company->mainColours.primary));
+            const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
             const uint16_t x = self->x + self->widgets[Common::widx::company_select].left + 1;
             const uint16_t y = self->y + self->widgets[Common::widx::company_select].top + 1;
             Gfx::drawImage(context, x, y, image);
@@ -2673,7 +2673,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Details tab
             {
-                const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::ImageIds::tab_company_details, enumValue(self->getColour(WindowColour::primary).c()));
+                const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::ImageIds::tab_company_details, self->getColour(WindowColour::primary).c());
                 Widget::drawTab(self, context, imageId, widx::tab_details);
             }
 

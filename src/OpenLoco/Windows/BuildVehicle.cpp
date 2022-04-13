@@ -1378,7 +1378,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 frameNo = (window->frame_no / 2) & 0xF;
             }
-            uint32_t image = Gfx::recolour(skin->img + tab.imageIds[frameNo], enumValue(companyColour));
+            uint32_t image = Gfx::recolour(skin->img + tab.imageIds[frameNo], companyColour);
             Widget::drawTab(window, context, image, tab.widgetIndex);
         }
     }
@@ -1436,7 +1436,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 {
                     img += (window->frame_no / 4) & 0x1F;
                 }
-                img = Gfx::recolour(img, enumValue(companyColour));
+                img = Gfx::recolour(img, companyColour);
             }
             else
             {
@@ -1446,7 +1446,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 {
                     img += (window->frame_no / 4) & 0xF;
                 }
-                img = Gfx::recolour(img, enumValue(companyColour));
+                img = Gfx::recolour(img, companyColour);
             }
 
             Widget::drawTab(window, context, img, tab + widx::tab_track_type_0);

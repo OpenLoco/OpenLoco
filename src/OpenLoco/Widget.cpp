@@ -42,8 +42,8 @@ namespace OpenLoco::Ui
     // 0x004CF3EB
     static void drawStationNameBackground(Gfx::Context* context, const Window* window, const Widget* widget, int16_t x, int16_t y, AdvancedColour colour, int16_t width)
     {
-        Gfx::drawImage(context, x - 4, y, Gfx::recolour(ImageIds::curved_border_left, enumValue(colour.c())));
-        Gfx::drawImage(context, x + width, y, Gfx::recolour(ImageIds::curved_border_right, enumValue(colour.c())));
+        Gfx::drawImage(context, x - 4, y, Gfx::recolour(ImageIds::curved_border_left, colour.c()));
+        Gfx::drawImage(context, x + width, y, Gfx::recolour(ImageIds::curved_border_right, colour.c()));
         Gfx::fillRect(*context, x, y, x + width - 1, y + 11, Colours::getShade(colour.c(), 5));
     }
 
@@ -202,7 +202,7 @@ namespace OpenLoco::Ui
             Gfx::drawRectInset(*context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), Colour::translucent(enumValue(window->getColour(WindowColour::secondary).c())), flags);
         }
 
-        Gfx::drawImage(context, widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, enumValue(window->getColour(WindowColour::secondary).c())));
+        Gfx::drawImage(context, widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, window->getColour(WindowColour::secondary).c()));
     }
 
     // 0x004CAB8E
@@ -220,7 +220,7 @@ namespace OpenLoco::Ui
 
         int16_t x = widget->right + window->x - 18;
         int16_t y = widget->bottom + window->y - 18;
-        uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, enumValue(colour.c()));
+        uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
         Gfx::drawImage(context, x, y, image);
     }
 
@@ -300,11 +300,11 @@ namespace OpenLoco::Ui
             uint32_t imageId = image;
             if (window->flags & WindowFlags::flag_11)
             {
-                imageId = Gfx::recolour(ImageIds::frame_background_image, enumValue(colour.c()));
+                imageId = Gfx::recolour(ImageIds::frame_background_image, colour.c());
             }
             else
             {
-                imageId = Gfx::recolour(ImageIds::frame_background_image_alt, enumValue(colour.c()));
+                imageId = Gfx::recolour(ImageIds::frame_background_image_alt, colour.c());
             }
             Gfx::drawImage(&*clipped, 0, 0, imageId);
         }

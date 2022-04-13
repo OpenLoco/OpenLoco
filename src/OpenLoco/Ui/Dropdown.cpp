@@ -814,11 +814,12 @@ namespace OpenLoco::Ui::Dropdown
             if (!(availableColours & (1 << i)))
                 continue;
 
-            if (static_cast<Colour2>(i) == selectedColour)
+            const auto colour = static_cast<Colour2>(i);
+            if (colour == selectedColour)
                 Dropdown::setHighlightedItem(currentIndex);
 
             auto args = FormatArguments();
-            args.push(Gfx::recolour(ImageIds::colour_swatch_recolourable_raised, i));
+            args.push(Gfx::recolour(ImageIds::colour_swatch_recolourable_raised, colour));
             args.push<uint16_t>(i);
 
             Dropdown::add(currentIndex, 0xFFFE, args);
@@ -861,7 +862,7 @@ namespace OpenLoco::Ui::Dropdown
             auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
             auto ownerEmotion = company->ownerEmotion;
             auto imageId = competitorObj->images[ownerEmotion];
-            imageId = Gfx::recolour(imageId, enumValue(company->mainColours.primary));
+            imageId = Gfx::recolour(imageId, company->mainColours.primary);
 
             add(index, StringIds::dropdown_company_select, { imageId, company->name });
         }

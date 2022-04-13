@@ -15,7 +15,7 @@ namespace OpenLoco
     {
         Gfx::drawRect(context, 0, 0, objectPreviewSize.width, objectPreviewSize.height, Colour::inset(Colour::mutedOrange));
 
-        auto image = Gfx::recolour(images[0], Colour::inset(Colour::mutedOrange));
+        auto image = Gfx::recolour(images[0], Colour2::mutedSeaGreen);
         Gfx::drawImage(&context, x - 32, y - 32, image);
     }
 

@@ -74,7 +74,7 @@ namespace OpenLoco::Paint
             ImageIds::construction_arrow_south_west,
             ImageIds::construction_arrow_north_west,
         };
-        const auto imageId = Gfx::recolour(kConstructionArrowImages[dirIndex], Colour::yellow);
+        const auto imageId = Gfx::recolour(kConstructionArrowImages[dirIndex], Colour2::yellow);
         session.setItemType(InteractionItem::noInteraction);
         session.addToPlotListAsParent(imageId, { 0, 0, _constructionArrowLocation->z }, Map::Pos3(0, 0, _constructionArrowLocation->z + 10), { 32, 32, 255 });
     }

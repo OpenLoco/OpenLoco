@@ -270,20 +270,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 if (_tabInformation[index].row != row)
                     continue;
 
-                auto image = Gfx::recolour(ImageIds::tab, enumValue(self->getColour(WindowColour::secondary).c()));
+                auto image = Gfx::recolour(ImageIds::tab, self->getColour(WindowColour::secondary).c());
                 if (_tabInformation[index].index == self->currentTab)
                 {
-                    image = Gfx::recolour(ImageIds::selected_tab, enumValue(self->getColour(WindowColour::secondary).c()));
+                    image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
                     Gfx::drawImage(context, xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour2::mutedSeaGreen);
                     Gfx::drawImage(context, xPos, yPos, image);
                 }
                 else
                 {
                     Gfx::drawImage(context, xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour2::mutedSeaGreen);
                     Gfx::drawImage(context, xPos, yPos, image);
 
                     image = Gfx::recolourTranslucent(ImageIds::tab, 51);
