@@ -124,65 +124,6 @@ namespace OpenLoco
     };
     static_assert(sizeof(AdvancedColour) == 1);
 
-    namespace Colour
-    {
-        constexpr uint8_t outline_flag = 1 << 5;
-        constexpr uint8_t inset_flag = 1 << 6;
-        constexpr uint8_t translucent_flag = 1 << 7;
-
-        constexpr Colour_t black = 0;
-        constexpr Colour_t grey = 1;
-        constexpr Colour_t white = 2;
-        constexpr Colour_t mutedDarkPurple = 3;
-        constexpr Colour_t mutedPurple = 4;
-        constexpr Colour_t purple = 5;
-        constexpr Colour_t darkBlue = 6;
-        constexpr Colour_t blue = 7;
-        constexpr Colour_t mutedDarkTeal = 8;
-        constexpr Colour_t mutedTeal = 9;
-        constexpr Colour_t darkGreen = 10;
-        constexpr Colour_t mutedSeaGreen = 11;
-        constexpr Colour_t mutedGrassGreen = 12;
-        constexpr Colour_t green = 13;
-        constexpr Colour_t mutedAvocadoGreen = 14;
-        constexpr Colour_t mutedOliveGreen = 15;
-        constexpr Colour_t yellow = 16;
-        constexpr Colour_t darkYellow = 17;
-        constexpr Colour_t orange = 18;
-        constexpr Colour_t amber = 19;
-        constexpr Colour_t darkOrange = 20;
-        constexpr Colour_t mutedDarkYellow = 21;
-        constexpr Colour_t mutedYellow = 22;
-        constexpr Colour_t brown = 23;
-        constexpr Colour_t mutedOrange = 24;
-        constexpr Colour_t mutedDarkRed = 25;
-        constexpr Colour_t darkRed = 26;
-        constexpr Colour_t red = 27;
-        constexpr Colour_t darkPink = 28;
-        constexpr Colour_t pink = 29;
-        constexpr Colour_t mutedRed = 30;
-
-        constexpr Colour_t outline(Colour_t c)
-        {
-            return c | outline_flag;
-        }
-
-        constexpr Colour_t inset(Colour_t c)
-        {
-            return c | inset_flag;
-        }
-
-        constexpr Colour_t translucent(Colour_t c)
-        {
-            return c | translucent_flag;
-        }
-
-        constexpr Colour_t opaque(Colour_t c)
-        {
-            return c & ~translucent_flag;
-        }
-    }
-
     namespace Colours
     {
         void initColourMap();

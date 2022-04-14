@@ -888,14 +888,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        word_E0C3C6 = Colour::translucent_flag;
-                        Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary).u8(), Colour::translucent_flag);
+                        word_E0C3C6 = AdvancedColour::translucent_flag;
+                        Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucent_flag);
                     }
                 }
                 else
                 {
-                    word_E0C3C6 = Colour::translucent_flag | Colour::outline_flag;
-                    Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary).u8(), (Colour::translucent_flag | Colour::outline_flag));
+                    word_E0C3C6 = AdvancedColour::translucent_flag | AdvancedColour::outline_flag;
+                    Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucent_flag | AdvancedColour::outline_flag));
                 }
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self.rowInfo[i]);
