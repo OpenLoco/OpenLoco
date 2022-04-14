@@ -88,7 +88,7 @@ namespace OpenLoco::Config
         ObjectHeader preferredCurrency;                 // 0x7C
         uint8_t enabledMusic[29];                       // 0x50AF40, 0x8C
         uint8_t pad_A9[0xCC - 0xA9];                    // 0xA9
-        uint32_t volume;                                // 0x50AF80, 0xCC // deprecated in favour of NewConfig::audio::bgmVolume
+        int32_t volume;                                 // 0x50AF80, 0xCC // deprecated in favour of NewConfig::audio::bgmVolume
         uint32_t connectionTimeout;                     // 0xD0
         char lastHost[64];                              // 0xD4
         uint8_t stationNamesMinScale;                   // 0x114

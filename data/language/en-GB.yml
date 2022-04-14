@@ -1567,7 +1567,6 @@ strings:
   1532: "{SMALLFONT}{COLOUR BLACK}Refit vehicle to carry a different type of cargo"
   1533: Can't refit this vehicle to carry a different type of cargo
   1534: Requires water in front of dock
-
   1535: "{COLOUR WINDOW_2}Currently playing:"
   1536: "{SMALLFONT}{COLOUR BLACK}Stop music"
   1537: "{SMALLFONT}{COLOUR BLACK}Play music"

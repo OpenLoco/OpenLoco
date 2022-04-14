@@ -1212,7 +1212,7 @@ namespace OpenLoco::Audio
         }
 
         cfg.audio.bgmVolume = volume;
-        Config::writeNewConfig();
+        Config::write();
 
         auto* channel = getChannel(ChannelId::bgm);
         if (channel == nullptr)
