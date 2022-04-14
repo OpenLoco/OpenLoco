@@ -4,7 +4,6 @@
 
 namespace OpenLoco
 {
-    using Colour_t = uint8_t;
     using PaletteIndex_t = uint8_t;
 
     enum class Colour : uint8_t

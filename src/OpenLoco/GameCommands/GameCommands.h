@@ -689,7 +689,7 @@ namespace OpenLoco::GameCommands
             , rotation(regs.di & 0x3)
             , type(regs.bh)
             , quadrant(regs.dl)
-            , colour(regs.dh)
+            , colour(static_cast<Colour>(regs.dh & 0x1F))
             , buildImmediately(regs.di & 0x8000)
             , requiresFullClearance(regs.di & 0x4000)
         {
@@ -699,7 +699,7 @@ namespace OpenLoco::GameCommands
         uint8_t rotation;
         uint8_t type;
         uint8_t quadrant;
-        Colour_t colour;
+        Colour colour;
         bool buildImmediately = false;
         bool requiresFullClearance = false;
 
@@ -709,7 +709,7 @@ namespace OpenLoco::GameCommands
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.dl = quadrant;
-            regs.dh = colour;
+            regs.dh = enumValue(colour);
             regs.di = rotation | (buildImmediately ? 0x8000 : 0) | (requiresFullClearance ? 0x4000 : 0);
             regs.bh = type;
             return regs;

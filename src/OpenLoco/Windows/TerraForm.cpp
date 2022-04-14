@@ -465,7 +465,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
             args.type = self->rowHover;
             args.quadrant = ViewportInteraction::getQuadrantFromPos(res->first) ^ (1 << 1);
-            args.colour = enumValue(*_treeColour);
+            args.colour = *_treeColour;
             args.rotation = (_treeRotation - WindowManager::getCurrentRotation()) & 0x3;
             if (isEditorMode())
             {
@@ -618,7 +618,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.pos = Map::Pos2(newLoc.x & 0xFFE0, newLoc.y & 0xFFE0);
                 // Note: this is not the same as the randomDirection above as it is the trees rotation
                 args.rotation = rng.randNext(3);
-                args.colour = 0;
+                args.colour = Colour::black;
                 auto type = getTreeType(newLoc, false);
                 if (!type)
                 {
