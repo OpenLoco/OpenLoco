@@ -138,16 +138,16 @@ namespace OpenLoco::Gfx
         std::memcpy(&_data[dstIndex], &src._data[srcIndex], copyLength);
     }
 
-    std::optional<uint32_t> getPaletteG1Index(Colour_t paletteId)
+    std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId)
     {
-        if (paletteId < std::size(_paletteToG1Offset))
+        if (enumValue(paletteId) < std::size(_paletteToG1Offset))
         {
-            return _paletteToG1Offset[paletteId];
+            return _paletteToG1Offset[enumValue(paletteId)];
         }
         return std::nullopt;
     }
 
-    std::optional<PaletteMap> getPaletteMapForColour(Colour_t paletteId)
+    std::optional<PaletteMap> getPaletteMapForColour(ExtColour paletteId)
     {
         auto g1Index = getPaletteG1Index(paletteId);
         if (g1Index)

@@ -138,8 +138,8 @@ namespace OpenLoco::Gfx
         void copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length);
     };
 
-    std::optional<uint32_t> getPaletteG1Index(Colour_t paletteId);
-    std::optional<PaletteMap> getPaletteMapForColour(Colour_t paletteId);
+    std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId);
+    std::optional<PaletteMap> getPaletteMapForColour(ExtColour paletteId);
 
     Context& screenContext();
 

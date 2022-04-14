@@ -599,10 +599,10 @@ namespace OpenLoco::Paint
         if (imageId & Gfx::ImageIdFlags::remap)
         {
             _interactionFlags = Gfx::ImageIdFlags::remap;
-            int32_t index = (imageId >> 19) & 0x7F;
+            ExtColour index = static_cast<ExtColour>((imageId >> 19) & 0x7F);
             if (imageId & Gfx::ImageIdFlags::remap2)
             {
-                index &= 0x1F;
+                index = static_cast<ExtColour>((imageId >> 19) & 0x1F);
             }
             if (auto pm = Gfx::getPaletteMapForColour(index))
             {
