@@ -154,10 +154,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto treeObj = ObjectManager::get<TreeObject>(self->rowHover);
                 if (treeObj->colours != 0)
                 {
-                    Colour_t colour = Utility::bitScanReverse(treeObj->colours);
-                    if (colour == 0xFF)
-                        colour = 0;
-                    _treeColour = static_cast<Colour2>(colour);
+                    auto bit = Utility::bitScanReverse(treeObj->colours);
+                    auto colour = bit == -1 ? Colour2::black : static_cast<Colour2>(bit);
+                    _treeColour = colour;
                 }
             }
         }
@@ -875,12 +874,11 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto colourOptions = treeObj->colours;
             if (colourOptions != 0)
             {
-                Colour_t colour = enumValue(*_treeColour);
+                auto colour = *_treeColour;
                 if (!(_lastTreeColourFlag & (1 << 5)))
                 {
-                    colour = Utility::bitScanReverse(colourOptions);
-                    if (colour == 0xFF)
-                        colour = 0;
+                    auto bit = Utility::bitScanReverse(colourOptions);
+                    colour = bit == -1 ? Colour2::black : static_cast<Colour2>(bit);
                 }
                 image = Gfx::recolour(image, colour);
             }
@@ -1037,8 +1035,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::clear_area),
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_clear_area),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour2::white), StringIds::tooltip_decrease_clear_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour2::white), StringIds::tooltip_increase_clear_area),
             widgetEnd(),
         };
 
@@ -1230,8 +1228,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour2::white), StringIds::tooltip_decrease_adjust_land_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour2::white), StringIds::tooltip_increase_adjust_land_area),
             makeWidget({ 69 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
             makeWidget({ 39 + 16, 92 }, { 28, 28 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::null, StringIds::tooltip_paint_landscape_tool),
             widgetEnd(),
@@ -1746,8 +1744,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_water),
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_water_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_water_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_water_area),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour2::white), StringIds::tooltip_decrease_adjust_water_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour2::white), StringIds::tooltip_increase_adjust_water_area),
             widgetEnd(),
         };
 

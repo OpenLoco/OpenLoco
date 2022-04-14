@@ -1145,7 +1145,7 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , type(regs.dl)
             , variation(regs.dh)
-            , colour(regs.edi >> 16)
+            , colour(static_cast<Colour2>((regs.edi >> 16) & 0x1F))
             , buildImmediately(regs.bh & 0x80)
         {
         }
@@ -1154,14 +1154,14 @@ namespace OpenLoco::GameCommands
         uint8_t rotation;
         uint8_t type;
         uint8_t variation;
-        Colour_t colour;
+        Colour2 colour;
         bool buildImmediately = false; // No scaffolding required (editor mode)
         explicit operator registers() const
         {
             registers regs;
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.edi = pos.z | (colour << 16);
+            regs.edi = pos.z | (enumValue(colour) << 16);
             regs.dl = type;
             regs.dh = variation;
             regs.bh = rotation | (buildImmediately ? 0x80 : 0);

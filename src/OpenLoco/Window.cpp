@@ -1467,7 +1467,7 @@ namespace OpenLoco::Ui
                 this->y,
                 this->x + this->width - 1,
                 this->y + this->height - 1,
-                Colour::white,
+                enumValue(Colour2::white),
                 0x10);
         }
     }

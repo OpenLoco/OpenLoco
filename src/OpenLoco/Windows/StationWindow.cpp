@@ -658,14 +658,14 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EF02
-        static void drawRatingBar(Window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour_t colour)
+        static void drawRatingBar(Window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour2 colour)
         {
             Gfx::fillRectInset(*context, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary).u8(), 48);
 
             uint16_t rating = (amount * 96) / 256;
             if (rating > 2)
             {
-                Gfx::fillRectInset(*context, x + 2, y + 2, x + 1 + rating, y + 8, colour, 0);
+                Gfx::fillRectInset(*context, x + 2, y + 2, x + 1 + rating, y + 8, enumValue(colour), 0);
             }
         }
 
@@ -690,13 +690,13 @@ namespace OpenLoco::Ui::Windows::Station
                 Gfx::drawString_494BBF(context, 1, y, 98, Colour2::black, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
-                auto colour = Colour::green;
+                auto colour = Colour2::green;
                 if (rating < 100)
                 {
-                    colour = Colour::yellow;
+                    colour = Colour2::yellow;
                     if (rating < 50)
                     {
-                        colour = Colour::red;
+                        colour = Colour2::red;
                     }
                 }
 
@@ -987,16 +987,16 @@ namespace OpenLoco::Ui::Windows::Station
                     {
                         Gfx::fillRect(*context, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
 
-                        auto ratingColour = Colour::green;
+                        auto ratingColour = Colour2::green;
                         if (cargo.rating < 100)
                         {
-                            ratingColour = Colour::yellow;
+                            ratingColour = Colour2::yellow;
                             if (cargo.rating < 50)
-                                ratingColour = Colour::red;
+                                ratingColour = Colour2::red;
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;
-                        Gfx::fillRect(*context, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colour::getShade(ratingColour, 6));
+                        Gfx::fillRect(*context, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colours::getShade(ratingColour, 6));
 
                         yOffset += 3;
                         totalRatingBars++;

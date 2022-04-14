@@ -6,7 +6,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Colour
+namespace OpenLoco::Colours
 {
 
     loco_global<uint8_t[32][8], 0x01136BA0> _colour_map_a;
@@ -73,22 +73,21 @@ namespace OpenLoco::Colour
         }
     }
 
-    uint8_t getShade(Colour_t colour, uint8_t shade)
+    uint8_t getShade(Colour2 colour, uint8_t shade)
     {
-        colour &= ~Colour::inset_flag;
-        assert(colour <= 31);
+        assert(enumValue(colour) <= 31);
 
         if (shade < 8)
         {
-            return _colour_map_a[colour][shade];
+            return _colour_map_a[enumValue(colour)][shade];
         }
 
-        return _colour_map_b[colour][shade - 8];
+        return _colour_map_b[enumValue(colour)][shade - 8];
     }
 
     // 0x005045FA
-    PaletteIndex_t getTranslucent(Colour_t colour)
+    PaletteIndex_t getTranslucent(Colour2 colour)
     {
-        return _translucentColourMap[colour];
+        return _translucentColourMap[enumValue(colour)];
     }
 }

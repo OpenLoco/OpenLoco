@@ -181,17 +181,13 @@ namespace OpenLoco
         {
             return c & ~translucent_flag;
         }
-
-        void initColourMap();
-        PaletteIndex_t getShade(Colour_t colour, uint8_t shade);
-        PaletteIndex_t getTranslucent(Colour_t colour);
     }
 
     namespace Colours
     {
-        inline void initColourMap() { Colour::initColourMap(); }
-        inline PaletteIndex_t getShade(Colour2 colour, uint8_t shade) { return Colour::getShade(enumValue(colour), shade); }
-        inline PaletteIndex_t getTranslucent(Colour2 colour) { return Colour::getTranslucent(enumValue(colour)); }
+        void initColourMap();
+        PaletteIndex_t getShade(Colour2 colour, uint8_t shade);
+        PaletteIndex_t getTranslucent(Colour2 colour);
     }
 
     namespace PaletteIndex

@@ -260,8 +260,8 @@ namespace OpenLoco::Map
             _type &= ~0x80;
             _type |= state ? 0x80 : 0;
         }
-        uint8_t colour() const { return _6 >> 11; }
-        void setColour(Colour_t colour) { _6 = (_6 & 0x7FF) | (colour << 11); }
+        Colour2 colour() const { return static_cast<Colour2>(_6 >> 11); }
+        void setColour(Colour2 colour) { _6 = (_6 & 0x7FF) | (enumValue(colour) << 11); }
         uint8_t objectId() const { return _4; }
         const BuildingObject* getObject() const;
         uint8_t multiTileIndex() const { return _5 & 3; }

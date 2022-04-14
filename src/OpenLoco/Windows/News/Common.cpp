@@ -13,7 +13,7 @@ using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static void createNewsWindow(Ui::Size windowSize, Widget* widgets, uint8_t colour, bool isOld, uint32_t flags)
+    static void createNewsWindow(Ui::Size windowSize, Widget* widgets, AdvancedColour colour, bool isOld, uint32_t flags)
     {
         _word_525CE0 = 5;
 
@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         Common::initEvents();
 
         window->initScrollWidgets();
-        window->setColour(WindowColour::primary, Colour2(colour));
+        window->setColour(WindowColour::primary, colour);
 
         _dword_525CD0 = 0xFFFFFFFF;
         _dword_525CD4 = 0xFFFFFFFF;
@@ -135,12 +135,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             uint32_t flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::noBackground;
 
-            createNewsWindow(News2::windowSize, News2::widgets, Colour::grey, isOld, flags);
+            createNewsWindow(News2::windowSize, News2::widgets, Colour2::grey, isOld, flags);
         }
         else
         {
             uint32_t flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent;
-            constexpr auto colour = Colour::translucent(Colour::mutedDarkRed);
+            constexpr auto colour = AdvancedColour(Colour2::mutedDarkRed).translucent();
 
             createNewsWindow(News1::windowSize, News1::widgets, colour, isOld, flags);
         }

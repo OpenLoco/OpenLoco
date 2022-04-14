@@ -199,7 +199,7 @@ namespace OpenLoco::Ui
             if (Input::isPressed(window->type, window->number, widgetIndex))
                 flags = 0x20;
 
-            Gfx::drawRectInset(*context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), Colour::translucent(enumValue(window->getColour(WindowColour::secondary).c())), flags);
+            Gfx::drawRectInset(*context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), window->getColour(WindowColour::secondary).translucent().u8(), flags);
         }
 
         Gfx::drawImage(context, widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, window->getColour(WindowColour::secondary).c()));
@@ -912,7 +912,7 @@ namespace OpenLoco::Ui
         int r = window->x + right;
         int t = window->y + top;
         int b = window->y + bottom;
-        Gfx::fillRect(*context, l, t, r, b, Colour::getShade(Colour::black, 5));
+        Gfx::fillRect(*context, l, t, r, b, Colours::getShade(Colour2::black, 5));
     }
 
     void Widget::drawGroupbox(Gfx::Context* const context, const Window* window)

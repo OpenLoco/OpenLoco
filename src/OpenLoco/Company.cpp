@@ -422,7 +422,7 @@ namespace OpenLoco
             if (building == nullptr)
                 continue;
 
-            building->setColour(enumValue(newColour));
+            building->setColour(newColour);
             return;
         }
     }

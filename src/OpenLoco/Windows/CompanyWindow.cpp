@@ -1853,7 +1853,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             Gfx::drawString_494C78(*context, x, y, Colour2::black, mainFormat, &args);
 
-            Gfx::fillRect(*context, x - expenditureColumnWidth + 10, y - 2, x, y - 2, Colour::darkGreen);
+            Gfx::fillRect(*context, x - expenditureColumnWidth + 10, y - 2, x, y - 2, enumValue(Colour2::darkGreen));
         }
 
         // 0x0043361E

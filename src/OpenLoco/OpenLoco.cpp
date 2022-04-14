@@ -366,7 +366,7 @@ namespace OpenLoco
     {
         Ui::Windows::MapToolTip::reset();
 
-        Colour::initColourMap();
+        Colours::initColourMap();
         Ui::WindowManager::init();
         Ui::ViewportManager::init();
 

@@ -21,7 +21,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::CompanyList
 {
-    static loco_global<uint8_t[32], 0x004F9442> _cargoLineColour;
+    static loco_global<Colour2[32], 0x004F9442> _cargoLineColour;
     static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t[3], 0x0052624E> _word_52624E;
@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     static loco_global<uint32_t, 0x0113DD0C> _graphDataTypeSize;
     static loco_global<uint16_t[32], 0x0113DD10> _graphDataStart;
     static loco_global<uint32_t, 0x0113DD50> _dword_113DD50;
-    static loco_global<uint8_t[32], 0x0113DD54> _graphLineColour;
+    static loco_global<PaletteIndex_t[32], 0x0113DD54> _graphLineColour;
     static loco_global<uint16_t, 0x0113DD74> _graphDataEnd;
     static loco_global<uint16_t, 0x0113DD76> _graphXLabel;
     static loco_global<uint32_t, 0x0113DD78> _graphXAxisRange;
@@ -1026,7 +1026,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     continue;
 
                 auto colour = _cargoLineColour[i];
-                colour = Colour::getShade(colour, 6);
+                auto pallete = Colours::getShade(colour, 6);
                 auto stringId = StringIds::small_black_string;
 
                 if (self->var_854 & (1 << cargoCount))
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (!(self->var_854 & (1 << cargoCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    Gfx::fillRect(*context, x, y + 3, x + 4, y + 7, colour);
+                    Gfx::fillRect(*context, x, y + 3, x + 4, y + 7, pallete);
                 }
 
                 auto args = FormatArguments();
@@ -1075,7 +1075,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&_deliveredCargoPayment[i][0]);
                 _graphDataStart[count] = 0;
-                _graphLineColour[count] = Colour::getShade(colour, 6);
+                _graphLineColour[count] = Colours::getShade(colour, 6);
                 _graphItemId[count] = i;
                 count++;
             }

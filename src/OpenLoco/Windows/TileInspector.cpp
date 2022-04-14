@@ -307,7 +307,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             string_id formatString;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(context, 0, yPos, self.width, yPos + self.rowHeight, Colour::darkGreen);
+                Gfx::fillRect(context, 0, yPos, self.width, yPos + self.rowHeight, enumValue(Colour2::darkGreen));
                 formatString = StringIds::white_stringid;
             }
             else if (self.rowHover == rowNum)

@@ -3251,7 +3251,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (Input::isToolActive(self.type, self.number))
                 {
                     auto imageId = numberCircle[_113646A - 1];
-                    Gfx::drawImage(&context, loc.x + 3, loc.y + 1, Gfx::recolour(imageId, Colour::white));
+                    Gfx::drawImage(&context, loc.x + 3, loc.y + 1, Gfx::recolour(imageId, Colour2::white));
                 }
                 _113646A++;
             }
@@ -3283,7 +3283,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto strFormat = StringIds::black_stringid;
                 if (self.var_842 == rowNum)
                 {
-                    Gfx::fillRect(context, 0, y, self.width, y + 9, Colour::darkGreen);
+                    Gfx::fillRect(context, 0, y, self.width, y + 9, enumValue(Colour2::darkGreen));
                     strFormat = StringIds::white_stringid;
                 }
                 if (self.rowHover == rowNum)
@@ -3331,7 +3331,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto strFormat = StringIds::black_stringid;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(context, 0, loc.y, self.width, loc.y + lineHeight, Colour::darkGreen);
+                Gfx::fillRect(context, 0, loc.y, self.width, loc.y + lineHeight, enumValue(Colour2::darkGreen));
                 strFormat = StringIds::white_stringid;
             }
             if (self.rowHover == rowNum)
