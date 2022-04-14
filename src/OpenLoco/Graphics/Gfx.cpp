@@ -846,9 +846,9 @@ namespace OpenLoco::Gfx
         }
 
         _textColours[0] = PaletteIndex::transparent;
-        _textColours[1] = Colours::getShade(Colour2::mutedDarkPurple, 5);
-        _textColours[2] = Colours::getShade(Colour2::mutedRed, 5);
-        _textColours[3] = Colours::getShade(Colour2::blue, 5);
+        _textColours[1] = Colours::getShade(Colour::mutedDarkPurple, 5);
+        _textColours[2] = Colours::getShade(Colour::mutedRed, 5);
+        _textColours[3] = Colours::getShade(Colour::blue, 5);
 
         if (colour.isOutline())
         {
@@ -1377,7 +1377,7 @@ namespace OpenLoco::Gfx
     {
         return ImageIdFlags::remap | (colour << 19) | image;
     }
-    uint32_t recolour(uint32_t image, Colour2 colour)
+    uint32_t recolour(uint32_t image, Colour colour)
     {
         return ImageIdFlags::remap | (enumValue(colour) << 19) | image;
     }
@@ -1386,7 +1386,7 @@ namespace OpenLoco::Gfx
     {
         return ImageIdFlags::remap | ImageIdFlags::remap2 | (colour1 << 19) | (colour2 << 24) | image;
     }
-    uint32_t recolour2(uint32_t image, Colour2 colour1, Colour2 colour2)
+    uint32_t recolour2(uint32_t image, Colour colour1, Colour colour2)
     {
         return ImageIdFlags::remap | ImageIdFlags::remap2 | (enumValue(colour1) << 19) | (enumValue(colour2) << 24) | image;
     }

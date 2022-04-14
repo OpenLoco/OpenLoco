@@ -55,12 +55,12 @@ namespace OpenLoco
         ship
     };
 
-    enum class Colour2 : uint8_t;
+    enum class Colour : uint8_t;
 
     struct ColourScheme
     {
-        Colour2 primary;
-        Colour2 secondary;
+        Colour primary;
+        Colour secondary;
     };
 
     constexpr uint8_t vehicleTypeCount = 6;

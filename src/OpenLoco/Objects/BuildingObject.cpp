@@ -13,13 +13,13 @@ namespace OpenLoco
     {
         auto bit = Utility::bitScanReverse(colours);
 
-        const auto colour = (bit == -1) ? Colour2::black : static_cast<Colour2>(bit);
+        const auto colour = (bit == -1) ? Colour::black : static_cast<Colour>(bit);
 
         drawBuilding(&context, 1, x, y + 40, colour);
     }
 
     // 0x0042DB95
-    void BuildingObject::drawBuilding(Gfx::Context* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour2 colour) const
+    void BuildingObject::drawBuilding(Gfx::Context* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const
     {
         registers regs;
         regs.cx = x;

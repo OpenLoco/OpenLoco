@@ -130,7 +130,7 @@ namespace OpenLoco::Ui::Windows::Station
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawString_494BBF(*context, x, y, width, Colour2::black, StringIds::black_stringid, &args);
+            Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0048E4D4
@@ -397,7 +397,7 @@ namespace OpenLoco::Ui::Windows::Station
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width();
 
-            Gfx::drawString_494BBF(*context, x, y, width, Colour2::black, StringIds::buffer_1250);
+            Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::buffer_1250);
         }
 
         // 0x0048EB0B
@@ -513,7 +513,7 @@ namespace OpenLoco::Ui::Windows::Station
                 const auto& widget = self.widgets[widx::scrollview];
                 auto xPos = widget.width() - 14;
 
-                Gfx::drawString_494C78(context, xPos, y, AdvancedColour(Colour2::black).outline(), cargoStr, &args);
+                Gfx::drawString_494C78(context, xPos, y, AdvancedColour(Colour::black).outline(), cargoStr, &args);
                 y += 10;
                 if (cargo.origin != StationId(self.number))
                 {
@@ -522,7 +522,7 @@ namespace OpenLoco::Ui::Windows::Station
                     args2.push(originStation->name);
                     args2.push(originStation->town);
 
-                    Gfx::drawString_494C78(context, xPos, y, AdvancedColour(Colour2::black).outline(), StringIds::station_cargo_en_route_end, &args2);
+                    Gfx::drawString_494C78(context, xPos, y, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, &args2);
                     y += 10;
                 }
                 y += 2;
@@ -537,7 +537,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 auto args = FormatArguments();
                 args.push(StringIds::nothing_waiting);
-                Gfx::drawString_494B3F(context, 1, 0, Colour2::black, StringIds::black_stringid, &args);
+                Gfx::drawString_494B3F(context, 1, 0, Colour::black, StringIds::black_stringid, &args);
             }
         }
 
@@ -658,7 +658,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EF02
-        static void drawRatingBar(Window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour2 colour)
+        static void drawRatingBar(Window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour colour)
         {
             Gfx::fillRectInset(*context, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary).u8(), 48);
 
@@ -687,16 +687,16 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
-                Gfx::drawString_494BBF(context, 1, y, 98, Colour2::black, StringIds::wcolour2_stringid, &cargoObj->name);
+                Gfx::drawString_494BBF(context, 1, y, 98, Colour::black, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
-                auto colour = Colour2::green;
+                auto colour = Colour::green;
                 if (rating < 100)
                 {
-                    colour = Colour2::yellow;
+                    colour = Colour::yellow;
                     if (rating < 50)
                     {
-                        colour = Colour2::red;
+                        colour = Colour::red;
                     }
                 }
 
@@ -704,7 +704,7 @@ namespace OpenLoco::Ui::Windows::Station
                 drawRatingBar(&self, &context, 100, y, amount, colour);
 
                 uint16_t percent = rating / 2;
-                Gfx::drawString_494B3F(context, 201, y, Colour2::black, StringIds::station_cargo_rating_percent, &percent);
+                Gfx::drawString_494B3F(context, 201, y, Colour::black, StringIds::station_cargo_rating_percent, &percent);
                 y += 10;
                 cargoId++;
             }
@@ -987,12 +987,12 @@ namespace OpenLoco::Ui::Windows::Station
                     {
                         Gfx::fillRect(*context, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
 
-                        auto ratingColour = Colour2::green;
+                        auto ratingColour = Colour::green;
                         if (cargo.rating < 100)
                         {
-                            ratingColour = Colour2::yellow;
+                            ratingColour = Colour::yellow;
                             if (cargo.rating < 50)
-                                ratingColour = Colour2::red;
+                                ratingColour = Colour::red;
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;

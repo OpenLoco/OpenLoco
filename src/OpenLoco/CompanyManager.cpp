@@ -33,7 +33,7 @@ namespace OpenLoco::CompanyManager
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<uint8_t, 0x00526214> _companyCompetitionDelay;
     static loco_global<uint8_t, 0x00525FB7> _companyMaxCompeting;
-    static loco_global<Colour2[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
+    static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
     static void produceCompanies();
@@ -75,7 +75,7 @@ namespace OpenLoco::CompanyManager
         }
 
         // Reset primary company colours.
-        rawCompanies()[0].mainColours.primary = Colour2::mutedSeaGreen;
+        rawCompanies()[0].mainColours.primary = Colour::mutedSeaGreen;
         updateColours();
     }
 
@@ -129,12 +129,12 @@ namespace OpenLoco::CompanyManager
         return get(rawPlayerCompanies()[0]);
     }
 
-    Colour2 getCompanyColour(CompanyId id)
+    Colour getCompanyColour(CompanyId id)
     {
         return _companyColours[enumValue(id)];
     }
 
-    Colour2 getPlayerCompanyColour()
+    Colour getPlayerCompanyColour()
     {
         return _companyColours[enumValue(rawPlayerCompanies()[0])];
     }
@@ -529,7 +529,7 @@ namespace OpenLoco::CompanyManager
             _companyColours[index] = company.mainColours.primary;
             index++;
         }
-        _companyColours[enumValue(CompanyId::neutral)] = Colour2::grey;
+        _companyColours[enumValue(CompanyId::neutral)] = Colour::grey;
     }
 
     // 0x004C95A6

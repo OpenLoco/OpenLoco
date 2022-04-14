@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
     static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
     static loco_global<uint8_t, 0x01136496> _treeRotation;
-    static loco_global<Colour2, 0x01136497> _treeColour;
+    static loco_global<Colour, 0x01136497> _treeColour;
     static loco_global<uint8_t, 0x0113649A> _terraformGhostPlaced;
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
@@ -155,7 +155,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (treeObj->colours != 0)
                 {
                     auto bit = Utility::bitScanReverse(treeObj->colours);
-                    auto colour = bit == -1 ? Colour2::black : static_cast<Colour2>(bit);
+                    auto colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                     _treeColour = colour;
                 }
             }
@@ -320,7 +320,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (itemIndex == -1)
                 return;
 
-            _treeColour = static_cast<Colour2>(Dropdown::getHighlightedItem());
+            _treeColour = static_cast<Colour>(Dropdown::getHighlightedItem());
             self->invalidate();
         }
 
@@ -856,12 +856,12 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto xPos = self->x + 3 + self->width - 17;
                 auto yPos = self->y + self->height - 13;
-                Gfx::drawString_494C78(*context, xPos, yPos, Colour2::black, StringIds::build_cost, &args);
+                Gfx::drawString_494C78(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - xPos;
-            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour2::black, StringIds::black_stringid, &treeObj->name);
+            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
         }
 
         static void drawTreeThumb(TreeObject* treeObj, Gfx::Context* clipped)
@@ -878,7 +878,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (!(_lastTreeColourFlag & (1 << 5)))
                 {
                     auto bit = Utility::bitScanReverse(colourOptions);
-                    colour = bit == -1 ? Colour2::black : static_cast<Colour2>(bit);
+                    colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                 }
                 image = Gfx::recolour(image, colour);
             }
@@ -1035,8 +1035,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::clear_area),
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_clear_area),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour2::white), StringIds::tooltip_decrease_clear_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour2::white), StringIds::tooltip_increase_clear_area),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area),
             widgetEnd(),
         };
 
@@ -1191,7 +1191,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto args = FormatArguments();
             args.push<uint32_t>(_raiseLandCost);
 
-            Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::clear_land_cost, &args);
+            Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
         }
 
         static void initEvents()
@@ -1228,8 +1228,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour2::white), StringIds::tooltip_decrease_adjust_land_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour2::white), StringIds::tooltip_increase_adjust_land_area),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
             makeWidget({ 69 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
             makeWidget({ 39 + 16, 92 }, { 28, 28 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::null, StringIds::tooltip_paint_landscape_tool),
             widgetEnd(),
@@ -1695,7 +1695,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseLandCost);
-                    Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::increase_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1707,7 +1707,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerLandCost);
-                    Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::decrease_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -1744,8 +1744,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_water),
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_water_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour2::white), StringIds::tooltip_decrease_adjust_water_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour2::white), StringIds::tooltip_increase_adjust_water_area),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_water_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_water_area),
             widgetEnd(),
         };
 
@@ -1976,7 +1976,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseWaterCost);
 
-                    Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::increase_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1989,7 +1989,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerWaterCost);
 
-                    Gfx::drawStringCentred(*context, xPos, yPos, Colour2::black, StringIds::decrease_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -2261,8 +2261,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
             args.type = self->rowHover;
             args.rotation = ViewportInteraction::getSideFromPos(res->first);
-            args.primaryColour = Colour2::black;
-            args.secondaryColour = Colour2::black;
+            args.primaryColour = Colour::black;
+            args.secondaryColour = Colour::black;
             args.unk = 0;
             return { args };
         }
@@ -2418,7 +2418,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19;
 
-            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour2::black, StringIds::black_stringid, &wallObj->name);
+            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
         }
 
         // 0x004BC11C

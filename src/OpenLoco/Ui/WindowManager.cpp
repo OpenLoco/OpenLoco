@@ -1192,7 +1192,7 @@ namespace OpenLoco::Ui::WindowManager
         // Company colour
         if (w->owner != CompanyId::null)
         {
-            w->setColour(WindowColour::primary, static_cast<Colour2>(CompanyManager::getCompanyColour(w->owner)));
+            w->setColour(WindowColour::primary, static_cast<Colour>(CompanyManager::getCompanyColour(w->owner)));
         }
 
         addr<0x1136F9C, int16_t>() = w->x;

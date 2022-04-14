@@ -135,12 +135,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             uint32_t flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::noBackground;
 
-            createNewsWindow(News2::windowSize, News2::widgets, Colour2::grey, isOld, flags);
+            createNewsWindow(News2::windowSize, News2::widgets, Colour::grey, isOld, flags);
         }
         else
         {
             uint32_t flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent;
-            constexpr auto colour = AdvancedColour(Colour2::mutedDarkRed).translucent();
+            constexpr auto colour = AdvancedColour(Colour::mutedDarkRed).translucent();
 
             createNewsWindow(News1::windowSize, News1::widgets, colour, isOld, flags);
         }

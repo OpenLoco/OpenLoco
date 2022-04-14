@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             *str++ = ControlCodes::window_colour_2;
             auto objectPtr = self->object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
-            Gfx::drawStringCentredClipped(*context, x, y, width, Colour2::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             name.insert(0, 1, inlineColour);
 
             _currentFontSpriteBase = Font::medium_bold;
-            AdvancedColour stringColour = Colour2::black;
+            AdvancedColour stringColour = Colour::black;
             if (isInUseCompetitor(object.first))
             {
                 _currentFontSpriteBase = Font::m1;

@@ -39,6 +39,6 @@ namespace OpenLoco::Ui::Windows::TitleVersion
     static void draw(Ui::Window* window, Gfx::Context* context)
     {
         auto versionInfo = getVersionInfo();
-        Gfx::drawString(*context, window->x, window->y, AdvancedColour(Colour2::white).outline(), (void*)versionInfo.c_str());
+        Gfx::drawString(*context, window->x, window->y, AdvancedColour(Colour::white).outline(), (void*)versionInfo.c_str());
     }
 }

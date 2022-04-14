@@ -22,7 +22,7 @@ namespace OpenLoco::Ui::Dropdown
 {
     static constexpr int bytes_per_item = 8;
 
-    static loco_global<Colour2[31], 0x00504619> _byte_504619;
+    static loco_global<Colour[31], 0x00504619> _byte_504619;
     static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
     static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Dropdown
 
                             if (itemCount == _dropdownHighlightedIndex)
                             {
-                                colour = Colour2::white;
+                                colour = Colour::white;
                             }
 
                             if ((_dropdownDisabledItems & (1 << itemCount)))
@@ -644,7 +644,7 @@ namespace OpenLoco::Ui::Dropdown
 
         if (colour.isTranslucent())
         {
-            colour = static_cast<Colour2>(_byte_504619[enumValue(colour.c())]);
+            colour = static_cast<Colour>(_byte_504619[enumValue(colour.c())]);
             colour = colour.translucent();
         }
 
@@ -789,7 +789,7 @@ namespace OpenLoco::Ui::Dropdown
      * dropdownColour @<al>
      * selectedColour @<ah>
      */
-    void showColour(const Window* window, const Widget* widget, uint32_t availableColours, Colour2 selectedColour, AdvancedColour dropdownColour)
+    void showColour(const Window* window, const Widget* widget, uint32_t availableColours, Colour selectedColour, AdvancedColour dropdownColour)
     {
         uint8_t count = 0;
         for (uint8_t i = 0; i < 32; i++)
@@ -814,7 +814,7 @@ namespace OpenLoco::Ui::Dropdown
             if (!(availableColours & (1 << i)))
                 continue;
 
-            const auto colour = static_cast<Colour2>(i);
+            const auto colour = static_cast<Colour>(i);
             if (colour == selectedColour)
                 Dropdown::setHighlightedItem(currentIndex);
 

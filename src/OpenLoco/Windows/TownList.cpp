@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::TownList
     static loco_global<currency32_t, 0x01135C34> dword_1135C34;
     static loco_global<bool, 0x01135C60> _buildingGhostPlaced;
     static loco_global<Map::Pos3, 0x01135C50> _buildingGhostPos;
-    static loco_global<Colour2, 0x01135C61> _buildingColour;
+    static loco_global<Colour, 0x01135C61> _buildingColour;
     static loco_global<uint8_t, 0x01135C62> _buildingGhostType;
     static loco_global<uint8_t, 0x01135C63> _buildingRotation;
     static loco_global<uint8_t, 0x01135C64> _buildingGhostRotation;
@@ -177,14 +177,14 @@ namespace OpenLoco::Ui::Windows::TownList
                     auto args = FormatArguments();
                     args.push(town->name);
 
-                    Gfx::drawString_494BBF(context, 0, yPos, 198, Colour2::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(context, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Town Type
                 {
                     auto args = FormatArguments();
                     args.push(town->getTownSizeString());
 
-                    Gfx::drawString_494BBF(context, 200, yPos, 278, Colour2::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(context, 200, yPos, 278, Colour::black, text_colour_id, &args);
                 }
                 // Town Population
                 {
@@ -192,7 +192,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push(town->population);
 
-                    Gfx::drawString_494BBF(context, 280, yPos, 68, Colour2::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(context, 280, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 // Town Stations
                 {
@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push<int32_t>(town->num_stations);
 
-                    Gfx::drawString_494BBF(context, 350, yPos, 68, Colour2::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(context, 350, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 yPos += rowHeight;
             }
@@ -221,7 +221,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 args.push(StringIds::status_towns_plural);
             args.push(self->var_83C);
 
-            Gfx::drawString_494B3F(*context, xPos, yPos, Colour2::black, StringIds::black_stringid, &args);
+            Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0049A27F
@@ -636,9 +636,9 @@ namespace OpenLoco::Ui::Windows::TownList
             self->draw(context);
             Common::drawTabs(self, context);
 
-            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, Colour2::black, StringIds::town_size_label);
+            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
 
-            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour2::black, StringIds::select_town_size);
+            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::select_town_size);
         }
 
         // 0x0049A675
@@ -863,7 +863,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             auto buildingObj = ObjectManager::get<BuildingObject>(buildingId);
 
-            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 19, Colour2::black, StringIds::black_stringid, &buildingObj->name);
+            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
         }
 
         // 0x0049AB31
@@ -968,7 +968,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (itemIndex == -1)
                 return;
 
-            _buildingColour = static_cast<Colour2>(Dropdown::getItemArgument(itemIndex, 2));
+            _buildingColour = static_cast<Colour>(Dropdown::getItemArgument(itemIndex, 2));
             self->invalidate();
         }
 
@@ -1209,7 +1209,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     if (self.rowHover != self.rowInfo[i])
                     {
                         auto bit = Utility::bitScanReverse(buildingObj->colours);
-                        colour = bit == -1 ? Colour2::black : static_cast<Colour2>(bit);
+                        colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                     }
 
                     buildingObj->drawBuilding(&*clipped, _buildingRotation, 56, 96, colour);
@@ -1234,7 +1234,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 if (buildingObj->colours != 0)
                 {
                     auto bit = Utility::bitScanReverse(buildingObj->colours);
-                    auto colour = bit == -1 ? Colour2::black : static_cast<Colour2>(bit);
+                    auto colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                     _buildingColour = colour;
                 }
             }

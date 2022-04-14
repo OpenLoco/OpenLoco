@@ -13,9 +13,9 @@ namespace OpenLoco
     // 0x00434D5B
     void CompetitorObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
-        Gfx::drawRect(context, 0, 0, objectPreviewSize.width, objectPreviewSize.height, AdvancedColour(Colour2::mutedOrange).inset().u8());
+        Gfx::drawRect(context, 0, 0, objectPreviewSize.width, objectPreviewSize.height, AdvancedColour(Colour::mutedOrange).inset().u8());
 
-        auto image = Gfx::recolour(images[0], Colour2::mutedSeaGreen);
+        auto image = Gfx::recolour(images[0], Colour::mutedSeaGreen);
         Gfx::drawImage(&context, x - 32, y - 32, image);
     }
 
@@ -28,7 +28,7 @@ namespace OpenLoco
             args.push<uint16_t>(intelligence);
             args.push(aiRatingToLevel(intelligence));
 
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::company_details_intelligence, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_intelligence, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
@@ -36,7 +36,7 @@ namespace OpenLoco
             args.push<uint16_t>(aggressiveness);
             args.push(aiRatingToLevel(aggressiveness));
 
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::company_details_aggressiveness, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_aggressiveness, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
@@ -44,7 +44,7 @@ namespace OpenLoco
             args.push<uint16_t>(competitiveness);
             args.push(aiRatingToLevel(competitiveness));
 
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour2::black, StringIds::company_details_competitiveness, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_competitiveness, &args);
         }
     }
 

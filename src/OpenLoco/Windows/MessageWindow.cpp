@@ -256,14 +256,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(StringIds::tiny_font_date);
                     args.push(message->date);
 
-                    Gfx::drawString_494B3F(context, 0, height, Colour2::black, stringId, &args);
+                    Gfx::drawString_494B3F(context, 0, height, Colour::black, stringId, &args);
                 }
                 {
                     auto args = FormatArguments();
                     args.push(StringIds::buffer_2039);
 
                     auto width = self.widgets[widx::scrollview].width() - 14;
-                    Gfx::drawString_495224(context, 0, height + 6, width, Colour2::black, stringId, &args);
+                    Gfx::drawString_495224(context, 0, height + 6, width, Colour::black, stringId, &args);
                     height += messageHeight;
                 }
             }
@@ -528,7 +528,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsStringIds[i]);
 
-                    Gfx::drawString_494B3F(*context, self->x + 4, yPos, Colour2::black, StringIds::wcolour2_stringid, &args);
+                    Gfx::drawString_494B3F(*context, self->x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
                 }
 
                 {
@@ -536,7 +536,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().newsSettings[i])]);
 
-                    Gfx::drawString_494B3F(*context, xPos, yPos, Colour2::black, StringIds::black_stringid, &args);
+                    Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
                 }
                 yPos += 15;
             }

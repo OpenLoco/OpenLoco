@@ -842,8 +842,8 @@ namespace OpenLoco::GameCommands
             , rotation(regs.dl)
             , type(regs.bh)
             , unk(regs.dh)
-            , primaryColour(static_cast<Colour2>(regs.bp & 0x1F))
-            , secondaryColour(static_cast<Colour2>((regs.bp >> 8) & 0x1F))
+            , primaryColour(static_cast<Colour>(regs.bp & 0x1F))
+            , secondaryColour(static_cast<Colour>((regs.bp >> 8) & 0x1F))
         {
         }
 
@@ -851,8 +851,8 @@ namespace OpenLoco::GameCommands
         uint8_t rotation;
         uint8_t type;
         uint8_t unk;
-        Colour2 primaryColour;
-        Colour2 secondaryColour;
+        Colour primaryColour;
+        Colour secondaryColour;
 
         explicit operator registers() const
         {
@@ -1145,7 +1145,7 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , type(regs.dl)
             , variation(regs.dh)
-            , colour(static_cast<Colour2>((regs.edi >> 16) & 0x1F))
+            , colour(static_cast<Colour>((regs.edi >> 16) & 0x1F))
             , buildImmediately(regs.bh & 0x80)
         {
         }
@@ -1154,7 +1154,7 @@ namespace OpenLoco::GameCommands
         uint8_t rotation;
         uint8_t type;
         uint8_t variation;
-        Colour2 colour;
+        Colour colour;
         bool buildImmediately = false; // No scaffolding required (editor mode)
         explicit operator registers() const
         {

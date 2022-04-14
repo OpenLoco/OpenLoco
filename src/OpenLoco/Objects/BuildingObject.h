@@ -45,7 +45,7 @@ namespace OpenLoco
         uint8_t var_AD;
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
-        void drawBuilding(Gfx::Context* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour2 colour) const;
+        void drawBuilding(Gfx::Context* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const;
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
     };
 #pragma pack(pop)

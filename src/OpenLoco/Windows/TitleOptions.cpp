@@ -50,8 +50,8 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 
         window->initScrollWidgets();
 
-        window->setColour(WindowColour::primary, AdvancedColour(Colour2::mutedSeaGreen).translucent());
-        window->setColour(WindowColour::secondary, AdvancedColour(Colour2::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedSeaGreen).translucent());
 
         return window;
     }
@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         int16_t y = window->y + window->widgets[Widx::options_button].top + 2;
         Ui::Point origin = { x, y };
 
-        Gfx::drawStringCentredWrapped(*context, origin, window->width, Colour2::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
+        Gfx::drawStringCentredWrapped(*context, origin, window->width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
     }
 
     static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)

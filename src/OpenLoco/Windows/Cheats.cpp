@@ -225,7 +225,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     *context,
                     self->x + 10,
                     self->y + widget.top,
-                    Colour2::black,
+                    Colour::black,
                     StringIds::cheat_amount);
 
                 auto args = FormatArguments::common();
@@ -234,7 +234,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     *context,
                     self->x + widget.left + 1,
                     self->y + widget.top,
-                    Colour2::black,
+                    Colour::black,
                     StringIds::cheat_loan_value,
                     &args);
             }
@@ -246,7 +246,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     *context,
                     self->x + 10,
                     self->y + widget.top,
-                    Colour2::black,
+                    Colour::black,
                     StringIds::company_current_loan);
 
                 auto company = CompanyManager::getPlayerCompany();
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     *context,
                     self->x + widget.left + 1,
                     self->y + widget.top,
-                    Colour2::black,
+                    Colour::black,
                     StringIds::cheat_loan_value,
                     &args);
             }
@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     *context,
                     self->x + 10,
                     self->y + widget.top,
-                    Colour2::black,
+                    Colour::black,
                     StringIds::cheat_year);
 
                 auto args = FormatArguments::common();
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     *context,
                     self->x + widget.left + 1,
                     self->y + widget.top,
-                    Colour2::black,
+                    Colour::black,
                     StringIds::cheat_year_value,
                     &args);
             }
@@ -290,7 +290,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     *context,
                     self->x + 10,
                     self->y + widget.top,
-                    Colour2::black,
+                    Colour::black,
                     StringIds::cheat_month);
 
                 auto args = FormatArguments::common();
@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     *context,
                     self->x + widget.left + 1,
                     self->y + widget.top,
-                    Colour2::black,
+                    Colour::black,
                     StringIds::black_stringid,
                     &args);
             }
@@ -311,7 +311,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     *context,
                     self->x + 10,
                     self->y + widget.top,
-                    Colour2::black,
+                    Colour::black,
                     StringIds::cheat_day);
 
                 auto args = FormatArguments::common();
@@ -320,7 +320,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     *context,
                     self->x + widget.left + 1,
                     self->y + widget.top,
-                    Colour2::black,
+                    Colour::black,
                     StringIds::cheat_day_value,
                     &args);
             }
@@ -516,7 +516,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 *context,
                 self->x + widget.left,
                 self->y + widget.top,
-                Colour2::black,
+                Colour::black,
                 StringIds::black_stringid,
                 &company->name);
         }

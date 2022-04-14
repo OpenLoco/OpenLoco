@@ -142,15 +142,15 @@ namespace OpenLoco::Ui::Windows::AboutMusic
             // TODO: optimisation: don't draw past fold.
 
             // Song name
-            drawStringCentred(context, x, y, Colour2::black, songStrings.first, nullptr);
+            drawStringCentred(context, x, y, Colour::black, songStrings.first, nullptr);
             y += 10;
 
             // Credit line
-            drawStringCentred(context, x, y, Colour2::black, songStrings.second, nullptr);
+            drawStringCentred(context, x, y, Colour::black, songStrings.second, nullptr);
             y += 10;
 
             // Show CS' copyright after every two lines.
-            drawStringCentred(context, x, y, Colour2::black, StringIds::music_copyright, nullptr);
+            drawStringCentred(context, x, y, Colour::black, StringIds::music_copyright, nullptr);
             y += 14;
         }
     }

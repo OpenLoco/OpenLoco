@@ -93,10 +93,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Widx::map_generation_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
-        window->setColour(WindowColour::primary, Colour2::grey);
-        window->setColour(WindowColour::secondary, Colour2::grey);
-        window->setColour(WindowColour::tertiary, Colour2::grey);
-        window->setColour(WindowColour::quaternary, Colour2::grey);
+        window->setColour(WindowColour::primary, Colour::grey);
+        window->setColour(WindowColour::secondary, Colour::grey);
+        window->setColour(WindowColour::tertiary, Colour::grey);
+        window->setColour(WindowColour::quaternary, Colour::grey);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)

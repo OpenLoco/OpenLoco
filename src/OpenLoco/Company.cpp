@@ -410,7 +410,7 @@ namespace OpenLoco
     }
 
     // 0x0042F0C1
-    static void updateHeadquartersColourAtTile(const Map::TilePos2& pos, uint8_t zPos, Colour2 newColour)
+    static void updateHeadquartersColourAtTile(const Map::TilePos2& pos, uint8_t zPos, Colour newColour)
     {
         auto tile = Map::TileManager::get(pos);
         for (auto& element : tile)

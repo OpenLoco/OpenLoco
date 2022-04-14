@@ -65,8 +65,8 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
 
         window->enabledWidgets = (1 << widx::closeButton) | (1 << widx::okButton) | (1 << widx::cancelButton);
         window->initScrollWidgets();
-        window->setColour(WindowColour::primary, AdvancedColour(Colour2::mutedDarkRed).translucent());
-        window->setColour(WindowColour::secondary, AdvancedColour(Colour2::mutedDarkRed).translucent());
+        window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedDarkRed).translucent());
+        window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedDarkRed).translucent());
         window->flags |= Ui::WindowFlags::transparent;
 
         _result = 0;
@@ -134,7 +134,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         args.push(StringIds::buffer_2039);
 
         auto origin = Ui::Point(self->x + self->width / 2, self->y + 41);
-        Gfx::drawStringCentredWrapped(*context, origin, self->width, Colour2::black, StringIds::wcolour2_stringid, &args);
+        Gfx::drawStringCentredWrapped(*context, origin, self->width, Colour::black, StringIds::wcolour2_stringid, &args);
     }
 
     static void initEvents()

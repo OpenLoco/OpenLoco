@@ -7,7 +7,7 @@ namespace OpenLoco
     // 0x004A6D5F
     void TrackExtraObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
-        auto colourImage = Gfx::recolour(image, Colour2::mutedDarkRed);
+        auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
         if (is_overhead == 0)
         {

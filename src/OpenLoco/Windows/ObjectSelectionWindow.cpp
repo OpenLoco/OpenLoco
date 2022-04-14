@@ -276,14 +276,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
                     Gfx::drawImage(context, xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour2::mutedSeaGreen);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
                     Gfx::drawImage(context, xPos, yPos, image);
                 }
                 else
                 {
                     Gfx::drawImage(context, xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour2::mutedSeaGreen);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
                     Gfx::drawImage(context, xPos, yPos, image);
 
                     image = Gfx::recolourTranslucent(ImageIds::tab, 51);
@@ -536,7 +536,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         args.push(_112C1C5[type]);
         args.push(ObjectManager::getMaxObjects(static_cast<ObjectType>(type)));
 
-        Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 12, Colour2::black, 2038, &args);
+        Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 12, Colour::black, 2038, &args);
 
         if (self->rowHover == -1)
             return;
@@ -569,7 +569,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             strncpy(buffer, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name, 510);
 
-            Gfx::drawStringCentredClipped(*context, x, y, width, Colour2::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 
         {
@@ -638,7 +638,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             strncpy(&buffer[1], object._name, 510);
             _currentFontSpriteBase = Font::medium_bold;
 
-            Gfx::drawString(context, 15, y, Colour2::black, buffer);
+            Gfx::drawString(context, 15, y, Colour::black, buffer);
             y += rowHeight;
         }
     }

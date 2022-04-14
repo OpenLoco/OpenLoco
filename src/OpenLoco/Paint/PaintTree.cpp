@@ -73,7 +73,7 @@ namespace OpenLoco::Paint
         if (treeObj->colours != 0)
         {
             // No vanilla object has this property set
-            const auto colour = static_cast<Colour2>(elTree.colour());
+            const auto colour = static_cast<Colour>(elTree.colour());
             imageId2 = Gfx::recolour(imageId2, colour);
             imageId1 = Gfx::recolour(imageId1, colour);
         }

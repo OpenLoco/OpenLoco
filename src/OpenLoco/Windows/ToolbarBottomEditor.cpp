@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             auto textColour = self->getColour(WindowColour::secondary).opaque();
             if (Input::isHovering(self->type, self->number, widx::previous_button))
             {
-                textColour = Colour2::white;
+                textColour = Colour::white;
             }
             Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, textColour, StringIds::editor_previous_step);
             Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, textColour, _stepNames[EditorController::getPreviousStep()]);
@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         auto textColour = self->getColour(WindowColour::secondary).opaque();
         if (Input::isHovering(self->type, self->number, widx::next_button))
         {
-            textColour = Colour2::white;
+            textColour = Colour::white;
         }
         Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, textColour, StringIds::editor_next_step);
         Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, textColour, _stepNames[EditorController::getNextStep()]);
@@ -140,9 +140,9 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         window->enabledWidgets = 1 << widx::previous_button | 1 << widx::previous_frame | 1 << widx::next_frame | 1 << widx::next_button;
         window->var_854 = 0;
         window->initScrollWidgets();
-        window->setColour(WindowColour::primary, AdvancedColour(Colour2::mutedSeaGreen).translucent());
-        window->setColour(WindowColour::secondary, AdvancedColour(Colour2::mutedSeaGreen).translucent());
-        window->setColour(WindowColour::tertiary, AdvancedColour(Colour2::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::tertiary, AdvancedColour(Colour::mutedSeaGreen).translucent());
     }
 
     static void initEvents()

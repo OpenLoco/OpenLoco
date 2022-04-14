@@ -599,7 +599,7 @@ namespace OpenLoco::Ui
         int16_t y = t + 1;
         int16_t x = l + 2 + (width / 2);
 
-        Gfx::drawStringCentredClipped(*context, x, y, width, AdvancedColour(Colour2::white).outline(), text, _commonFormatArgs);
+        Gfx::drawStringCentredClipped(*context, x, y, width, AdvancedColour(Colour::white).outline(), text, _commonFormatArgs);
     }
 
     // 0x004CA750
@@ -620,7 +620,7 @@ namespace OpenLoco::Ui
 
         drawStationNameBackground(context, window, this, x, y, colour, width);
 
-        Gfx::drawString(*context, x, y, Colour2::black, stringBuffer);
+        Gfx::drawString(*context, x, y, Colour::black, stringBuffer);
     }
 
     // 0x004CA7F6
@@ -638,7 +638,7 @@ namespace OpenLoco::Ui
         int16_t stringWidth = Gfx::clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(*context, x, window->y + top + 1, AdvancedColour(Colour2::black).outline(), stringBuffer);
+        Gfx::drawString(*context, x, window->y + top + 1, AdvancedColour(Colour::black).outline(), stringBuffer);
     }
 
     // 0x004CA88B
@@ -656,7 +656,7 @@ namespace OpenLoco::Ui
         int16_t stringWidth = Gfx::clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(*context, x, window->y + top + 1, AdvancedColour(Colour2::black).outline(), stringBuffer);
+        Gfx::drawString(*context, x, window->y + top + 1, AdvancedColour(Colour::black).outline(), stringBuffer);
     }
 
     static void draw_hscroll(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
@@ -686,7 +686,7 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        Gfx::drawString(*context, ax + 2, cx, Colour2::black, (char*)0x005045F2);
+        Gfx::drawString(*context, ax + 2, cx, Colour::black, (char*)0x005045F2);
         // popa
 
         // pusha
@@ -699,7 +699,7 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        Gfx::drawString(*context, bx - 6 - 1, cx, Colour2::black, (char*)0x005045F5);
+        Gfx::drawString(*context, bx - 6 - 1, cx, Colour::black, (char*)0x005045F5);
         // popa
 
         // pusha
@@ -751,7 +751,7 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        Gfx::drawString(*context, ax + 1, cx - 1, Colour2::black, (char*)0x005045EC);
+        Gfx::drawString(*context, ax + 1, cx - 1, Colour::black, (char*)0x005045EC);
         // popa
 
         // pusha
@@ -764,7 +764,7 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        Gfx::drawString(*context, ax + 1, dx - 8 - 1, Colour2::black, (char*)0x005045EF);
+        Gfx::drawString(*context, ax + 1, dx - 8 - 1, Colour::black, (char*)0x005045EF);
         // popa
 
         // pusha
@@ -912,7 +912,7 @@ namespace OpenLoco::Ui
         int r = window->x + right;
         int t = window->y + top;
         int b = window->y + bottom;
-        Gfx::fillRect(*context, l, t, r, b, Colours::getShade(Colour2::black, 5));
+        Gfx::fillRect(*context, l, t, r, b, Colours::getShade(Colour::black, 5));
     }
 
     void Widget::drawGroupbox(Gfx::Context* const context, const Window* window)

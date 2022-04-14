@@ -73,7 +73,7 @@ namespace OpenLoco::Colours
         }
     }
 
-    uint8_t getShade(Colour2 colour, uint8_t shade)
+    uint8_t getShade(Colour colour, uint8_t shade)
     {
         assert(enumValue(colour) <= 31);
 
@@ -86,7 +86,7 @@ namespace OpenLoco::Colours
     }
 
     // 0x005045FA
-    PaletteIndex_t getTranslucent(Colour2 colour)
+    PaletteIndex_t getTranslucent(Colour colour)
     {
         return _translucentColourMap[enumValue(colour)];
     }

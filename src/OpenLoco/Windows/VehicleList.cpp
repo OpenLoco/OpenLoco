@@ -640,7 +640,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             string_id footerStringId = self->var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
             args = FormatArguments::common(footerStringId, self->var_83C);
-            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour2::black, StringIds::black_stringid, &args);
+            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
         }
 
         static constexpr std::array<string_id, 3> typeToFilterStringIds{
@@ -654,7 +654,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             string_id filter = typeToFilterStringIds[self->var_88A];
             args = FormatArguments::common(filter);
             auto* widget = &self->widgets[Widx::filter_type];
-            Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour2::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         auto* widget = &self->widgets[Widx::cargo_type];
@@ -696,7 +696,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (filterActive)
         {
             // Draw filter text as prepared
-            Gfx::drawString_494BBF(*context, xPos, self->y + widget->top, widget->width() - 15, Colour2::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawString_494BBF(*context, xPos, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
     }
 
@@ -760,7 +760,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 // Draw status
                 yPos += 2;
-                Gfx::drawString_494BBF(context, 1, yPos, 308, AdvancedColour(Colour2::black).outline(), format, &args);
+                Gfx::drawString_494BBF(context, 1, yPos, 308, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             auto vehicle = Vehicles::Vehicle(*head);
@@ -776,7 +776,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 }
 
                 auto args = FormatArguments::common(profit);
-                Gfx::drawString_494BBF(context, 310, yPos, 98, AdvancedColour(Colour2::black).outline(), format, &args);
+                Gfx::drawString_494BBF(context, 310, yPos, 98, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             // Vehicle age
@@ -787,14 +787,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
                     format = StringIds::vehicle_list_age_year;
 
                 auto args = FormatArguments::common(age);
-                Gfx::drawString_494BBF(context, 410, yPos, 63, AdvancedColour(Colour2::black).outline(), format, &args);
+                Gfx::drawString_494BBF(context, 410, yPos, 63, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             // Vehicle reliability
             {
                 int16_t reliability = vehicle.veh2->reliability;
                 auto args = FormatArguments::common(reliability);
-                Gfx::drawString_494BBF(context, 475, yPos, 65, AdvancedColour(Colour2::black).outline(), StringIds::vehicle_list_reliability, &args);
+                Gfx::drawString_494BBF(context, 475, yPos, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, &args);
             }
 
             yPos += self.rowHeight - 2;

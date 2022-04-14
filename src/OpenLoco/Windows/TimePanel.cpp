@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto c = self->getColour(WindowColour::primary).opaque();
         if (Input::isHovering(WindowType::timeToolbar, 0, Widx::date_btn))
         {
-            c = Colour2::white;
+            c = Colour::white;
         }
         Gfx::drawStringCentred(*context, self->x + _widgets[Widx::date_btn].mid_x(), self->y + _widgets[Widx::date_btn].top + 1, c, format, &*_common_format_args);
 

@@ -58,7 +58,7 @@ namespace OpenLoco
         auto defaultWidth = _characterWidths[Font::large + 131];
         _characterWidths[Font::large + 131] = currencyElement->width + 1;
 
-        Gfx::drawStringCentred(context, x, y - 9, Colour2::black, StringIds::object_currency_big_font);
+        Gfx::drawStringCentred(context, x, y - 9, Colour::black, StringIds::object_currency_big_font);
 
         _characterWidths[Font::large + 131] = defaultWidth;
         *defaultElement = backupElement;

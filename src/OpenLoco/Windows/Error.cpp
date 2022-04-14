@@ -228,7 +228,7 @@ namespace OpenLoco::Ui::Windows::Error
 
             if (_errorCompetitorId == CompanyId::null)
             {
-                Gfx::drawStringCentredRaw(*context, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, Colour2::black, &_byte_9C64B3[0]);
+                Gfx::drawStringCentredRaw(*context, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
             }
             else
             {
@@ -249,7 +249,7 @@ namespace OpenLoco::Ui::Windows::Error
                     Gfx::drawImage(context, xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                Gfx::drawStringCentredRaw(*context, self->x + 156, self->y + 20, _word_9C66B3, Colour2::black, &_byte_9C64B3[0]);
+                Gfx::drawStringCentredRaw(*context, self->x + 156, self->y + 20, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
             }
         }
 

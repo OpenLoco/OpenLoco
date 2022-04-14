@@ -28,11 +28,11 @@ namespace OpenLoco
         auto image = sprite;
         if (flags & (1 << 6))
         {
-            image = Gfx::recolour2(sprite, Colour2::mutedDarkRed, Colour2::grey);
+            image = Gfx::recolour2(sprite, Colour::mutedDarkRed, Colour::grey);
         }
         else
         {
-            image = Gfx::recolour(sprite, Colour2::mutedDarkRed);
+            image = Gfx::recolour(sprite, Colour::mutedDarkRed);
         }
 
         Gfx::drawImage(&context, x + 14, y + 16 + (var_08 * 2), image);

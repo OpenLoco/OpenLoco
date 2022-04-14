@@ -237,7 +237,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             auto colour = window->getColour(WindowColour::primary).opaque();
             if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::company_value))
             {
-                colour = Colour2::white;
+                colour = Colour::white;
             }
             auto args = FormatArguments();
             args.push(playerCompany->cash.var_00);
@@ -260,7 +260,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             auto colour = window->getColour(WindowColour::primary).opaque();
             if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::performanceIndex))
             {
-                colour = Colour2::white;
+                colour = Colour::white;
             }
 
             auto args = FormatArguments();

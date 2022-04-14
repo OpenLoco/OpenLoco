@@ -168,8 +168,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         window->initScrollWidgets();
 
-        window->setColour(WindowColour::primary, AdvancedColour(Colour2::mutedSeaGreen).translucent());
-        window->setColour(WindowColour::secondary, AdvancedColour(Colour2::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedSeaGreen).translucent());
         window->var_846 = 0;
 
         return window;
@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 string = StringIds::two_player_mode_connected;
             }
 
-            drawStringCentredClipped(*context, x, y, ww - 4, Colour2::black, string, (char*)0x112c826);
+            drawStringCentredClipped(*context, x, y, ww - 4, Colour::black, string, (char*)0x112c826);
         }
     }
 

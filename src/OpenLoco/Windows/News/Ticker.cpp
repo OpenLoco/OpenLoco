@@ -171,12 +171,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         if (!clipped)
             return;
 
-        auto colour = Colours::getShade(Colour2::white, 5);
+        auto colour = Colours::getShade(Colour::white, 5);
         const auto& mtd = getMessageTypeDescriptor(news->type);
 
         if (!mtd.hasFlag(MessageTypeFlags::unk1))
         {
-            colour = Colours::getShade(Colour2::mutedDarkRed, 5);
+            colour = Colours::getShade(Colour::mutedDarkRed, 5);
         }
 
         Gfx::clearSingle(*clipped, colour);
