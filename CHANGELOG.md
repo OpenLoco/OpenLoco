@@ -1,6 +1,6 @@
 22.04+ (???)
 ------------------------------------------------------------------------
-- Change: [....] Changes internal volume representation from dB to %
+- Change: [#1460] Changes internal volume representation from dB to a percentage.
 
 22.04 (2022-04-12)
 ------------------------------------------------------------------------
