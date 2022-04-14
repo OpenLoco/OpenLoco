@@ -10,7 +10,7 @@ namespace OpenLoco::Audio
 
         struct Attributes
         {
-            int32_t volume{};
+            float volume{};
             int32_t pan{};
             int32_t freq{};
         };
@@ -29,7 +29,7 @@ namespace OpenLoco::Audio
         bool load(uint32_t buffer);
         bool play(bool loop);
         void stop();
-        void setVolume(int32_t volume);
+        void setVolume(float volume);
         void setPan(int32_t pan);
         void setFrequency(int32_t freq);
         bool isPlaying() const;

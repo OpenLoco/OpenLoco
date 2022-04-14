@@ -32,7 +32,7 @@ namespace OpenLoco::Ui
         frame = 2,
         wt_3,
         wt_4,
-        wt_5,
+        wt_5, // slider
         wt_6,
         toolbarTab = 7,
         tab = 8,

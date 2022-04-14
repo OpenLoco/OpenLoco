@@ -1,6 +1,7 @@
 #include "Channel.h"
 #include "../Console.h"
 #include <utility>
+#include <algorithm>
 
 namespace OpenLoco::Audio
 {
@@ -29,10 +30,11 @@ namespace OpenLoco::Audio
         _isLoaded = false;
     }
 
-    void Channel::setVolume(int32_t volume)
+    void Channel::setVolume(float volume)
     {
+        volume = std::clamp(volume, 0.f, 1.f);
         _attributes.volume = volume;
-        _source.setGain(OpenAL::volumeFromLoco(volume));
+        _source.setGain(volume);
     }
 
     void Channel::setPan(int32_t pan)

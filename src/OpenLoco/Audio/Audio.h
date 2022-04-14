@@ -65,6 +65,9 @@ namespace OpenLoco::Audio
     };
     constexpr int32_t kNumReservedChannels = 4 + 10;
 
+    constexpr float kMinVolume = 0.f;
+    constexpr float kMaxVolume = 1.f;
+
     using MusicId = uint8_t;
 
     struct MusicInfo
@@ -98,10 +101,10 @@ namespace OpenLoco::Audio
     void playSound(SoundId id, const Map::Pos3& loc, int32_t pan);
 
     void playSound(SoundId id, int32_t pan);
-    void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t frequency);
+    void playSound(SoundId id, const Map::Pos3& loc, float volume, int32_t frequency);
     void updateSounds();
 
-    void setBgmVolume(int32_t volume);
+    void setBgmVolume(float volume);
 
     void updateVehicleNoise();
     void stopVehicleNoise();
