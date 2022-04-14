@@ -271,9 +271,9 @@ namespace OpenLoco::Ui::Dropdown
                     else
                     {
                         uint32_t colour = enumValue(Colours::getTranslucent(self->getColour(WindowColour::primary).c())) | (1 << 25);
-                        colour++;
+                        colour++; // Gets ExtColour::translucentXXX2 highlight
                         Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, colour);
-                        colour++;
+                        colour++; // Gets ExtColour::translucentXXX0 shadow
                         Gfx::drawRect(*context, x, y + 1, _dropdownItemWidth - 1, 1, colour);
                     }
                 }
