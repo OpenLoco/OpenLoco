@@ -11,11 +11,7 @@ namespace OpenLoco::Audio
 {
     constexpr float kVolumeModifierZoomIncrement = 0.137f; // 13.7% decrease in volume for each zoom increment (up to 2)
     constexpr float kVolumeModifierUnderground = 0.11f;    // 11.0% decrease in volume when underground
-
-    // Calculated min is 255*255/8=8128 but original has done 256*256/8=8192
-    // We have kept original value but could be changed to correctly represent the full range of volume
-    constexpr int32_t kVehicleVolumeCalcMin = -81'91; // hundredth decibels (-81.91dB)
-    constexpr float kDrivingSoundModifier = 1.f / 8.f;
+    constexpr float kDrivingSoundModifier = 1.f / 8.f;     // driving sounds are 1/8th the volume
 
     constexpr float kPanFalloffModifier = 1024.f;
     constexpr int32_t kPanFalloffStart = 2048;
@@ -82,7 +78,7 @@ namespace OpenLoco::Audio
         const auto overallVolumeModifier = std::max(falloffVolumeModifier + undergroundVolumeModifier + zoomVolumeModifier, kMaxVolume);
 
         auto drivingSoundVolume = static_cast<float>(v->drivingSoundVolume) / static_cast<float>(std::numeric_limits<uint8_t>().max());
-        const auto volume = std::max(drivingSoundVolume * overallVolumeModifier * kDrivingSoundModifier, kMaxVolume);
+        const auto volume = drivingSoundVolume * overallVolumeModifier * kDrivingSoundModifier;
 
         return { makeObjectSoundId(v->drivingSoundId), { volume, panX, v->drivingSoundFrequency } };
     }
