@@ -54,17 +54,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             if (isRoad)
             {
                 auto obj = ObjectManager::get<RoadObject>(last_road_option & ~(1 << 7));
-                fgImage = Gfx::recolour(obj->image, enumValue(companyColour));
+                fgImage = Gfx::recolour(obj->image, companyColour);
             }
             else
             {
                 auto obj = ObjectManager::get<TrackObject>(last_road_option);
-                fgImage = Gfx::recolour(obj->image, enumValue(companyColour));
+                fgImage = Gfx::recolour(obj->image, companyColour);
             }
 
             y--;
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t bgImage = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, enumValue(self->getColour(WindowColour::tertiary).c()));
+            uint32_t bgImage = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self->getColour(WindowColour::tertiary).c());
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Widx::road_menu))
             {
@@ -217,13 +217,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
                 obj_string_id = road->name;
-                obj_image = Gfx::recolour(road->image, enumValue(companyColour));
+                obj_image = Gfx::recolour(road->image, companyColour);
             }
             else
             {
                 auto track = ObjectManager::get<TrackObject>(objIndex);
                 obj_string_id = track->name;
-                obj_image = Gfx::recolour(track->image, enumValue(companyColour));
+                obj_image = Gfx::recolour(track->image, companyColour);
             }
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });

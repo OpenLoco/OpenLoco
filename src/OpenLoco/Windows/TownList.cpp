@@ -816,7 +816,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A8A6
         static void prepareDraw(Ui::Window* self)
         {
-            self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, enumValue(*_buildingColour));
+            self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_buildingColour);
             self->widgets[widx::object_colour].type = WidgetType::none;
 
             if (self->rowHover != -1)

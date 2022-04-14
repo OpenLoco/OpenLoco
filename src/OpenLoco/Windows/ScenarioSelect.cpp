@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             y += 1;
 
             // No preview image -- a placeholder will have to do.
-            auto image = Gfx::recolour(ImageIds::random_map_watermark, enumValue(self->getColour(WindowColour::secondary).c()));
+            auto image = Gfx::recolour(ImageIds::random_map_watermark, self->getColour(WindowColour::secondary).c());
             Gfx::drawImage(context, x, y, image);
 
             x += 64;

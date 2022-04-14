@@ -407,7 +407,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto isActive = tab == self->currentTab + Widx::tab_trains;
             auto imageId = isActive ? frames[self->frame_no / 2 % 8] : frames[0];
 
-            uint32_t image = Gfx::recolour(skin->img + imageId, enumValue(companyColour));
+            uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
             Widget::drawTab(self, context, image, tab);
         }
     }
@@ -619,7 +619,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         // Draw company owner image.
         auto company = CompanyManager::get(CompanyId(self->number));
         auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
-        uint32_t image = Gfx::recolour(competitorObj->images[company->ownerEmotion], enumValue(company->mainColours.primary));
+        uint32_t image = Gfx::recolour(competitorObj->images[company->ownerEmotion], company->mainColours.primary);
         uint16_t x = self->x + self->widgets[Widx::company_select].left + 1;
         uint16_t y = self->y + self->widgets[Widx::company_select].top + 1;
         Gfx::drawImage(context, x, y, image);

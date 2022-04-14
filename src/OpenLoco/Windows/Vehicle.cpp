@@ -920,7 +920,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         context,
                         self->x + pickupButton.left,
                         self->y + pickupButton.top,
-                        Gfx::recolour(pickupButton.image, enumValue(CompanyManager::getCompanyColour(self->owner))));
+                        Gfx::recolour(pickupButton.image, CompanyManager::getCompanyColour(self->owner)));
                 }
             }
 
@@ -960,7 +960,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     context,
                     self->x + speedWidget.left,
                     self->y + speedWidget.top + 10,
-                    Gfx::recolour(ImageIds::speed_control_track, enumValue(self->getColour(WindowColour::secondary).c())));
+                    Gfx::recolour(ImageIds::speed_control_track, self->getColour(WindowColour::secondary).c()));
 
                 Gfx::drawStringCentred(
                     *context,
@@ -980,7 +980,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     context,
                     self->x + speedWidget.left + 1,
                     self->y + speedWidget.top + 57 - veh->var_6E,
-                    Gfx::recolour(ImageIds::speed_control_thumb, enumValue(self->getColour(WindowColour::secondary).c())));
+                    Gfx::recolour(ImageIds::speed_control_thumb, self->getColour(WindowColour::secondary).c()));
             }
 
             if (self->viewports[0] != nullptr)
@@ -1459,7 +1459,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto buildImage = skin->img + additionalVehicleButtonByVehicleType.at(head->vehicleType);
 
-            self->widgets[widx::buildNew].image = Gfx::recolour(buildImage, enumValue(CompanyManager::getCompanyColour(self->owner))) | Widget::imageIdColourSet;
+            self->widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self->owner)) | Widget::imageIdColourSet;
 
             Vehicles::Vehicle train{ *head };
             if (train.cars.empty())
@@ -1487,7 +1487,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 if ((self->widgets[widx::pickup].image & (1 << 29)) && !self->isDisabled(widx::pickup))
                 {
-                    auto image = Gfx::recolour(self->widgets[widx::pickup].image, enumValue(CompanyManager::getCompanyColour(self->owner)));
+                    auto image = Gfx::recolour(self->widgets[widx::pickup].image, CompanyManager::getCompanyColour(self->owner));
                     Gfx::drawImage(context, self->widgets[widx::pickup].left + self->x, self->widgets[widx::pickup].top + self->y, image);
                 }
             }
@@ -4447,7 +4447,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widget::drawTab(
                 self,
                 context,
-                Gfx::recolour(skin->img + mainTab.image + frame, enumValue(CompanyManager::getCompanyColour(self->owner))),
+                Gfx::recolour(skin->img + mainTab.image + frame, CompanyManager::getCompanyColour(self->owner)),
                 widx::tabMain);
 
             frame = 0;

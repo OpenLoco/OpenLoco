@@ -971,10 +971,10 @@ namespace OpenLoco::Ui::Windows::Options
 
             Gfx::drawString_494B3F(*context, w->x + 183, w->y + w->widgets[Widx::volume].top + 7, Colour::black, StringIds::volume, nullptr);
 
-            Gfx::drawImage(context, w->x + w->widgets[Widx::volume].left, w->y + w->widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, enumValue(w->getColour(WindowColour::secondary).c())));
+            Gfx::drawImage(context, w->x + w->widgets[Widx::volume].left, w->y + w->widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w->getColour(WindowColour::secondary).c()));
 
             int16_t x = 90 + (Config::get().volume / 32);
-            Gfx::drawImage(context, w->x + w->widgets[Widx::volume].left + x, w->y + w->widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, enumValue(w->getColour(WindowColour::secondary).c())));
+            Gfx::drawImage(context, w->x + w->widgets[Widx::volume].left + x, w->y + w->widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w->getColour(WindowColour::secondary).c()));
         }
 
         static void onMouseUp(Window* w, WidgetIndex_t wi)

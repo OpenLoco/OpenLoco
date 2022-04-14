@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::Windows::Town
                     InterfaceSkin::ImageIds::tab_population_frame7,
                 };
 
-                uint32_t imageId = Gfx::recolour(skin->img, enumValue(self->getColour(WindowColour::secondary).c()));
+                uint32_t imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
                 if (self->currentTab == widx::tab_population - widx::tab_town)
                     imageId += populationTabImageIds[(self->frame_no / 4) % std::size(populationTabImageIds)];
                 else

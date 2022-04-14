@@ -1382,10 +1382,6 @@ namespace OpenLoco::Gfx
         return ImageIdFlags::remap | (enumValue(colour) << 19) | image;
     }
 
-    uint32_t recolour2(uint32_t image, uint8_t colour1, uint8_t colour2)
-    {
-        return ImageIdFlags::remap | ImageIdFlags::remap2 | (colour1 << 19) | (colour2 << 24) | image;
-    }
     uint32_t recolour2(uint32_t image, Colour colour1, Colour colour2)
     {
         return ImageIdFlags::remap | ImageIdFlags::remap2 | (enumValue(colour1) << 19) | (enumValue(colour2) << 24) | image;

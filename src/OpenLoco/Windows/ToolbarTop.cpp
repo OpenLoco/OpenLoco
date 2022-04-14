@@ -357,13 +357,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
                 obj_string_id = road->name;
-                obj_image = Gfx::recolour(road->image, enumValue(companyColour));
+                obj_image = Gfx::recolour(road->image, companyColour);
             }
             else
             {
                 auto track = ObjectManager::get<TrackObject>(objIndex);
                 obj_string_id = track->name;
-                obj_image = Gfx::recolour(track->image, enumValue(companyColour));
+                obj_image = Gfx::recolour(track->image, companyColour);
             }
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
@@ -475,7 +475,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
-            uint32_t vehicle_image = Gfx::recolour(interface_param.build_image, enumValue(companyColour));
+            uint32_t vehicle_image = Gfx::recolour(interface_param.build_image, companyColour);
 
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, interface_param.build_string });
             menu_options[ddIndex] = vehicleType;
@@ -531,7 +531,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
-            uint32_t vehicle_image = Gfx::recolour(interface_param.image, enumValue(companyColour));
+            uint32_t vehicle_image = Gfx::recolour(interface_param.image, companyColour);
             uint16_t vehicle_count = vehicle_counts[vehicleType];
 
             // TODO: replace with locale-based plurals.
@@ -573,7 +573,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         // Apply company colour.
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
-        sprite_base = Gfx::recolour(sprite_base, enumValue(companyColour));
+        sprite_base = Gfx::recolour(sprite_base, companyColour);
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::all_stations, StringIds::all_stations });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::rail_stations, StringIds::rail_stations });
@@ -700,16 +700,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             {
                 ebx = ebx & ~(1 << 7);
                 auto obj = ObjectManager::get<RoadObject>(ebx);
-                fg_image = Gfx::recolour(obj->image, enumValue(companyColour));
+                fg_image = Gfx::recolour(obj->image, companyColour);
             }
             else
             {
                 auto obj = ObjectManager::get<TrackObject>(ebx);
-                fg_image = Gfx::recolour(obj->image, enumValue(companyColour));
+                fg_image = Gfx::recolour(obj->image, companyColour);
             }
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, enumValue(window->getColour(WindowColour::tertiary).c()));
+            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->getColour(WindowColour::tertiary).c());
 
             y--;
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::railroad_menu))
@@ -738,8 +738,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             };
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(*last_vehicles_option)], enumValue(companyColour));
-            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, enumValue(window->getColour(WindowColour::quaternary).c()));
+            uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(*last_vehicles_option)], companyColour);
+            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->getColour(WindowColour::quaternary).c());
 
             y--;
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::vehicles_menu))
@@ -769,7 +769,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             // Figure out what icon to show on the button face.
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[last_build_vehicles_option], enumValue(companyColour));
+            uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[last_build_vehicles_option], companyColour);
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::build_vehicles_menu))
                 fg_image++;
@@ -786,12 +786,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (!Audio::isAudioEnabled())
         {
             window->activatedWidgets |= (1 << Common::Widx::audio_menu);
-            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, enumValue(window->getColour(WindowColour::primary).c()));
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->getColour(WindowColour::primary).c());
         }
         else
         {
             window->activatedWidgets &= ~(1 << Common::Widx::audio_menu);
-            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, enumValue(window->getColour(WindowColour::primary).c()));
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->getColour(WindowColour::primary).c());
         }
 
         if (Config::getNew().cheatsMenuEnabled)
@@ -814,30 +814,30 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (last_port_option == 0 && addr<0x00525FAC, int8_t>() != -1 && addr<0x00525FAD, int8_t>() == -1)
             last_port_option = 1;
 
-        window->widgets[Common::Widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave, 0);
-        window->widgets[Widx::cheats_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels, 0);
-        window->widgets[Common::Widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom, 0);
-        window->widgets[Common::Widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate, 0);
-        window->widgets[Common::Widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view, 0);
+        window->widgets[Common::Widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave);
+        window->widgets[Widx::cheats_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
+        window->widgets[Common::Widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom);
+        window->widgets[Common::Widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate);
+        window->widgets[Common::Widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view);
 
-        window->widgets[Common::Widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform, 0);
-        window->widgets[Common::Widx::railroad_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
-        window->widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
-        window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
-        window->widgets[Common::Widx::build_vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
+        window->widgets[Common::Widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform);
+        window->widgets[Common::Widx::railroad_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
+        window->widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
+        window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
+        window->widgets[Common::Widx::build_vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
 
-        window->widgets[Common::Widx::vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
-        window->widgets[Common::Widx::stations_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_stations, 0);
+        window->widgets[Common::Widx::vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
+        window->widgets[Common::Widx::stations_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_stations);
 
         if (last_town_option == 0)
-            window->widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns, 0);
+            window->widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
         else
-            window->widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries, 0);
+            window->widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
 
         if (last_port_option == 0)
-            window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_airports, 0);
+            window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_airports);
         else
-            window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports, 0);
+            window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
 
         if (last_road_option != 0xFF)
             window->widgets[Common::Widx::road_menu].type = WidgetType::toolbarTab;
