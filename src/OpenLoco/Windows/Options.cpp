@@ -974,7 +974,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             auto volumeWidget = w->widgets[Widx::volume];
 
-            auto configVolume = std::clamp(Config::get().volume, Audio::kMinVolume, Audio::kMaxVolume);
+            auto configVolume = std::clamp(Config::getNew().audio.bgmVolume, Audio::kMinVolume, Audio::kMaxVolume);
             auto args = FormatArguments();
             args.push<uint16_t>((uint16_t)(configVolume * 100));
             Gfx::drawString_494B3F(*context, w->x + 183, w->y + volumeWidget.top + 7, 0, StringIds::volume, &args);

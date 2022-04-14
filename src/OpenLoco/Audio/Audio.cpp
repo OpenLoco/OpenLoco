@@ -1204,14 +1204,15 @@ namespace OpenLoco::Audio
     void setBgmVolume(float volume)
     {
         volume = std::clamp(volume, kMinVolume, kMaxVolume);
-        if (Config::get().volume == volume)
+        auto& cfg = Config::getNew();
+
+        if (cfg.audio.bgmVolume == volume)
         {
             return;
         }
 
-        auto& cfg = Config::get();
-        cfg.volume = volume;
-        Config::write();
+        cfg.audio.bgmVolume = volume;
+        Config::writeNewConfig();
 
         auto* channel = getChannel(ChannelId::bgm);
         if (channel == nullptr)

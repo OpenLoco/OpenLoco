@@ -152,6 +152,7 @@ namespace OpenLoco::Config
         {
             auto& audioConfig = _new_config.audio;
             audioConfig.device = audioNode["device"].as<std::string>("");
+            audioConfig.bgmVolume = audioNode["bgmVolume"].as<float>();
             if (audioNode["play_title_music"])
                 audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>();
         }
@@ -221,6 +222,7 @@ namespace OpenLoco::Config
         const auto& audioConfig = _new_config.audio;
         auto audioNode = node["audio"];
         audioNode["device"] = audioConfig.device;
+        audioNode["bgmVolume"] = audioConfig.bgmVolume;
         if (audioConfig.device.empty())
         {
             audioNode.remove("device");
