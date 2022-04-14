@@ -959,8 +959,8 @@ namespace OpenLoco::Ui::Windows::Options
             sub_4C13BE(w);
         }
 
-        constexpr auto volumeSliderXReduction = 20;
-        constexpr auto volumeSliderXOffset = 6;
+        constexpr auto kVolumeSliderXReduction = 20;
+        constexpr auto kVolumeSliderXOffset = 6;
 
         // 0x004C05F9
         static void draw(Window* w, Gfx::Context* context)
@@ -981,9 +981,9 @@ namespace OpenLoco::Ui::Windows::Options
 
             Gfx::drawImage(context, w->x + volumeWidget.left, w->y + volumeWidget.top, 0x20000000 | (w->getColour(WindowColour::secondary) << 19) | ImageIds::volume_slider_track);
 
-            auto sliderRange = volumeWidget.width() - volumeSliderXReduction;
+            auto sliderRange = volumeWidget.width() - kVolumeSliderXReduction;
             auto sliderX = sliderRange * configVolume;
-            Gfx::drawImage(context, w->x + volumeWidget.left + sliderX + volumeSliderXOffset, w->y + volumeWidget.top, 0x20000000 | (w->getColour(WindowColour::secondary) << 19) | ImageIds::volume_slider_thumb);
+            Gfx::drawImage(context, w->x + volumeWidget.left + sliderX + kVolumeSliderXOffset, w->y + volumeWidget.top, 0x20000000 | (w->getColour(WindowColour::secondary) << 19) | ImageIds::volume_slider_thumb);
         }
 
         static void onMouseUp(Window* w, WidgetIndex_t wi)
@@ -1060,9 +1060,9 @@ namespace OpenLoco::Ui::Windows::Options
         {
             _clickRepeatTicks = 31;
 
-            auto left = w->x + w->widgets[Widx::volume].left + volumeSliderXOffset;
+            auto left = w->x + w->widgets[Widx::volume].left + kVolumeSliderXOffset;
             int relX = _5233A4 - left;
-            float volume = relX / static_cast<float>(w->widgets[Widx::volume].width() - volumeSliderXReduction);
+            float volume = relX / static_cast<float>(w->widgets[Widx::volume].width() - kVolumeSliderXReduction);
             Audio::setBgmVolume(volume);
 
             w->invalidate();
