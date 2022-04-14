@@ -42,6 +42,158 @@ namespace OpenLoco
         mutedRed = 30,
     };
 
+    enum class ExtColour : uint8_t
+    {
+        black = 0,
+        grey = 1,
+        white = 2,
+        mutedDarkPurple = 3,
+        mutedPurple = 4,
+        purple = 5,
+        darkBlue = 6,
+        blue = 7,
+        mutedDarkTeal = 8,
+        mutedTeal = 9,
+        darkGreen = 10,
+        mutedSeaGreen = 11,
+        mutedGrassGreen = 12,
+        green = 13,
+        mutedAvocadoGreen = 14,
+        mutedOliveGreen = 15,
+        yellow = 16,
+        darkYellow = 17,
+        orange = 18,
+        amber = 19,
+        darkOrange = 20,
+        mutedDarkYellow = 21,
+        mutedYellow = 22,
+        brown = 23,
+        mutedOrange = 24,
+        mutedDarkRed = 25,
+        darkRed = 26,
+        red = 27,
+        darkPink = 28,
+        pink = 29,
+        mutedRed = 30,
+        // First 30 are inherited from Colour
+        clear = 31, // No colour
+        null = 32,  // Does not represent any palette
+        unk21,
+        unk22,
+        unk23,
+        unk24,
+        unk25,
+        unk26,
+        unk27,
+        unk28,
+        unk29,
+        unk2A,
+        unk2B,
+        unk2C,
+        unk2D,
+        unk2E,
+        unk2F,
+        unk30,
+        unk31,
+        unk32, // shadow
+        unk33,
+        unk34,
+        unk35, // 0-1 black, grey
+        unk36,
+        unk37,
+        unk38, // 6-7 darkBlue, blue
+        unk39,
+        unk3A,
+        unk3B, // 25 mutedDarkRed
+        unk3C,
+        unk3D,
+        unk3E, // 11 mutedSeaGreen
+        unk3F,
+        unk40,
+        unk41, // 3-4 mutedDarkPurple, mutedPurple
+        unk42,
+        unk43,
+        unk44, // 15 mutedOliveGreen
+        unk45,
+        unk46,
+        unk47, // 21-22 mutedDarkYellow, mutedYellow
+        unk48,
+        unk49,
+        unk4A, // 16-17 yellow, darkYellow
+        unk4B,
+        unk4C,
+        unk4D, // 12 mutedGrassGreen
+        unk4E,
+        unk4F,
+        unk50, // 14 mutedAvocadoGreen
+        unk51,
+        unk52,
+        unk53, // 10, 13 darkGreen, green
+        unk54,
+        unk55,
+        unk56, // 24 mutedOrange
+        unk57,
+        unk58,
+        unk59, // 5 purple
+        unk5A,
+        unk5B,
+        unk5C, // 26-27 darkRed, red
+        unk5D,
+        unk5E,
+        unk5F, // 18, 20 orange, darkOrange
+        unk60,
+        unk61,
+        unk62, // 8-9 mutedDarkTeal, mutedTeal
+        unk63,
+        unk64,
+        unk65, // 28-29 pink, darkPink
+        unk66,
+        unk67,
+        unk68, // 23 brown
+        unk69,
+        unk6A,
+        unk6B, // 30 mutedRed
+        unk6C,
+        unk6D,
+        unk6E, // 2 white
+        unk6F,
+        unk70,
+        unk71, // 19 amber
+        unk72,
+        unk73,
+        unk74,
+        unk75,
+        unk76,
+        unk77,
+        unk78,
+        unk79,
+        unk7A,
+        unk7B,
+        unk7C,
+        unk7D,
+        unk7E,
+        unk7F,
+        unk80,
+        unk81,
+        unk82,
+        unk83,
+        unk84,
+        unk85,
+        unk86,
+        unk87,
+        unk88,
+        unk89,
+        unk8A,
+        unk8B,
+        unk8C,
+        unk8D,
+        unk8E,
+        unk8F,
+        unk90,
+        unk91,
+        unk92,
+    };
+
     struct AdvancedColour
     {
         static constexpr uint8_t outline_flag = 1 << 5;
@@ -128,12 +280,16 @@ namespace OpenLoco
     {
         void initColourMap();
         PaletteIndex_t getShade(Colour colour, uint8_t shade);
-        PaletteIndex_t getTranslucent(Colour colour);
+        ExtColour getTranslucent(Colour colour);
+        constexpr ExtColour toExt(Colour c) { return static_cast<ExtColour>(c); }
     }
 
     namespace PaletteIndex
     {
         constexpr PaletteIndex_t transparent = 0;
+        constexpr PaletteIndex_t primaryRemap0 = 0x07;
+        constexpr PaletteIndex_t primaryRemap1 = 0x08;
+        constexpr PaletteIndex_t primaryRemap2 = 0x09;
         constexpr PaletteIndex_t index_0A = 0x0A;
         constexpr PaletteIndex_t index_0C = 0x0C;
         constexpr PaletteIndex_t index_0E = 0x0E;
@@ -193,9 +349,30 @@ namespace OpenLoco
         constexpr PaletteIndex_t index_BC = 0xBC;
         constexpr PaletteIndex_t index_C3 = 0xC3;
         constexpr PaletteIndex_t index_C6 = 0xC6;
+        constexpr PaletteIndex_t secondaryRemap0 = 0xCA;
+        constexpr PaletteIndex_t secondaryRemap1 = 0xCB;
+        constexpr PaletteIndex_t secondaryRemap2 = 0xCC;
+        constexpr PaletteIndex_t secondaryRemap3 = 0xCD;
+        constexpr PaletteIndex_t secondaryRemap4 = 0xCE;
+        constexpr PaletteIndex_t secondaryRemap5 = 0xCF;
+        constexpr PaletteIndex_t secondaryRemap6 = 0xD0;
+        constexpr PaletteIndex_t secondaryRemap7 = 0xD1;
+        constexpr PaletteIndex_t secondaryRemap8 = 0xD2;
+        constexpr PaletteIndex_t secondaryRemap9 = 0xD3;
+        constexpr PaletteIndex_t secondaryRemapA = 0xD4;
+        constexpr PaletteIndex_t secondaryRemapB = 0xD5;
         constexpr PaletteIndex_t index_D0 = 0xD0;
         constexpr PaletteIndex_t index_D3 = 0xD3;
         constexpr PaletteIndex_t index_DB = 0xDB;
         constexpr PaletteIndex_t index_DE = 0xDE;
+        constexpr PaletteIndex_t primaryRemap3 = 0xF6;
+        constexpr PaletteIndex_t primaryRemap4 = 0xF7;
+        constexpr PaletteIndex_t primaryRemap5 = 0xF8;
+        constexpr PaletteIndex_t primaryRemap6 = 0xF9;
+        constexpr PaletteIndex_t primaryRemap7 = 0xFA;
+        constexpr PaletteIndex_t primaryRemap8 = 0xFB;
+        constexpr PaletteIndex_t primaryRemap9 = 0xFC;
+        constexpr PaletteIndex_t primaryRemapA = 0xFD;
+        constexpr PaletteIndex_t primaryRemapB = 0xFE;
     }
 }

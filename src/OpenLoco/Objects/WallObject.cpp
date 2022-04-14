@@ -38,7 +38,7 @@ namespace OpenLoco
         Gfx::drawImage(&context, x + 14, y + 16 + (var_08 * 2), image);
         if (flags & (1 << 1))
         {
-            Gfx::drawImage(&context, x + 14, y + 16 + (var_08 * 2), Gfx::recolourTranslucent(sprite + 6, 140));
+            Gfx::drawImage(&context, x + 14, y + 16 + (var_08 * 2), Gfx::recolourTranslucent(sprite + 6, ExtColour::unk8C));
         }
         else
         {

@@ -13,38 +13,38 @@ namespace OpenLoco::Colours
     loco_global<uint8_t[32][8], 0x01136C98> _colour_map_b;
 
     // 0x005045FA
-    static constexpr std::array<uint8_t, 32> _translucentColourMap = {
-        PaletteIndex::index_35,
-        PaletteIndex::index_35,
-        PaletteIndex::index_6E,
-        PaletteIndex::index_41,
-        PaletteIndex::index_41,
-        PaletteIndex::index_59,
-        PaletteIndex::index_38,
-        PaletteIndex::index_38,
-        PaletteIndex::index_62,
-        PaletteIndex::index_62,
-        PaletteIndex::index_53,
-        PaletteIndex::index_3E,
-        PaletteIndex::index_4D,
-        PaletteIndex::index_53,
-        PaletteIndex::index_50,
-        PaletteIndex::index_44,
-        PaletteIndex::index_4A,
-        PaletteIndex::index_4A,
-        PaletteIndex::index_5F,
-        PaletteIndex::index_71,
-        PaletteIndex::index_5F,
-        PaletteIndex::index_47,
-        PaletteIndex::index_47,
-        PaletteIndex::index_68,
-        PaletteIndex::index_56,
-        PaletteIndex::index_3B,
-        PaletteIndex::index_5C,
-        PaletteIndex::index_5C,
-        PaletteIndex::index_65,
-        PaletteIndex::index_65,
-        PaletteIndex::index_6B,
+    static constexpr std::array<ExtColour, 31> _translucentColourMap = {
+        ExtColour::unk35,
+        ExtColour::unk35,
+        ExtColour::unk6E,
+        ExtColour::unk41,
+        ExtColour::unk41,
+        ExtColour::unk59,
+        ExtColour::unk38,
+        ExtColour::unk38,
+        ExtColour::unk62,
+        ExtColour::unk62,
+        ExtColour::unk53,
+        ExtColour::unk3E,
+        ExtColour::unk4D,
+        ExtColour::unk53,
+        ExtColour::unk50,
+        ExtColour::unk44,
+        ExtColour::unk4A,
+        ExtColour::unk4A,
+        ExtColour::unk5F,
+        ExtColour::unk71,
+        ExtColour::unk5F,
+        ExtColour::unk47,
+        ExtColour::unk47,
+        ExtColour::unk68,
+        ExtColour::unk56,
+        ExtColour::unk3B,
+        ExtColour::unk5C,
+        ExtColour::unk5C,
+        ExtColour::unk65,
+        ExtColour::unk65,
+        ExtColour::unk6B,
     };
 
     void initColourMap()
@@ -86,7 +86,7 @@ namespace OpenLoco::Colours
     }
 
     // 0x005045FA
-    PaletteIndex_t getTranslucent(Colour colour)
+    ExtColour getTranslucent(Colour colour)
     {
         return _translucentColourMap[enumValue(colour)];
     }

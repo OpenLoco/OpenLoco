@@ -286,7 +286,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
                     Gfx::drawImage(context, xPos, yPos, image);
 
-                    image = Gfx::recolourTranslucent(ImageIds::tab, 51);
+                    image = Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33);
                     Gfx::drawImage(context, xPos, yPos, image);
 
                     if (row < 1)

@@ -654,7 +654,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             auto colour = Colours::getTranslucent(companyColour);
             if (!(roadStationObj->flags & RoadStationFlags::recolourable))
             {
-                colour = PaletteIndex::index_2E;
+                colour = ExtColour::unk2E;
             }
 
             imageId = Gfx::recolourTranslucent(roadStationObj->image + RoadStation::ImageIds::preview_image_windows, colour);
@@ -670,7 +670,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             auto colour = Colours::getTranslucent(companyColour);
             if (!(trainStationObj->flags & TrainStationFlags::recolourable))
             {
-                colour = PaletteIndex::index_2E;
+                colour = ExtColour::unk2E;
             }
 
             imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);

@@ -60,7 +60,7 @@ namespace OpenLoco::Paint
         std::optional<uint32_t> shadowImageId = std::nullopt;
         if (treeObj->flags & TreeObjectFlags::hasShadow)
         {
-            shadowImageId = Gfx::recolourTranslucent(treeObj->shadowImageOffset + treeFrameNum + seasonBaseImageId, PaletteIndex::index_32);
+            shadowImageId = Gfx::recolourTranslucent(treeObj->shadowImageOffset + treeFrameNum + seasonBaseImageId, ExtColour::unk32);
         }
 
         const uint8_t quadrant = (elTree.quadrant() + session.getRotation()) % 4;

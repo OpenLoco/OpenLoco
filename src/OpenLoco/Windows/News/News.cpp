@@ -639,11 +639,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x004299E7
         static void drawEarlyNews(Window* self, Gfx::Context* context, Message* news)
         {
-            auto imageId = Gfx::recolour(ImageIds::news_background_old_left, PaletteIndex::index_68);
+            auto imageId = Gfx::recolour(ImageIds::news_background_old_left, ExtColour::unk68);
 
             Gfx::drawImage(context, self->x, self->y, imageId);
 
-            imageId = Gfx::recolour(ImageIds::news_background_old_right, PaletteIndex::index_68);
+            imageId = Gfx::recolour(ImageIds::news_background_old_right, ExtColour::unk68);
 
             Gfx::drawImage(context, self->x + (windowSize.width / 2), self->y, imageId);
 

@@ -91,7 +91,7 @@ namespace OpenLoco::Paint
                 }
                 else if (bogie->var_0C & Flags0C::unk_5)
                 {
-                    imageId = Gfx::recolour(imageId, PaletteIndex::index_74);
+                    imageId = Gfx::recolour(imageId, ExtColour::unk74);
                 }
                 else if (bogie->getTransportMode() == TransportMode::air)
                 {
@@ -103,7 +103,7 @@ namespace OpenLoco::Paint
                         return;
                     }
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::recolourTranslucent(imageId, PaletteIndex::index_32);
+                    imageId = Gfx::recolourTranslucent(imageId, ExtColour::unk32);
                     session.addToPlotList4FD200(imageId, { 0, 0, bogie->position.z }, { 8, 8, static_cast<coord_t>(bogie->position.z + 6) }, { 48, 48, 2 });
                     return;
                 }
@@ -432,7 +432,7 @@ namespace OpenLoco::Paint
         }
         else if (body->var_0C & Flags0C::unk_5)
         {
-            imageId = Gfx::recolour(bodyImage, PaletteIndex::index_74);
+            imageId = Gfx::recolour(bodyImage, ExtColour::unk74);
         }
         else
         {

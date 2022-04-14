@@ -74,11 +74,11 @@ namespace OpenLoco::Gfx
     {
         if (Config::get().constructionMarker)
         {
-            return Gfx::recolourTranslucent(imageId, PaletteIndex::index_31);
+            return Gfx::recolourTranslucent(imageId, ExtColour::unk31);
         }
         else
         {
-            return Gfx::recolour(imageId, PaletteIndex::index_2C);
+            return Gfx::recolour(imageId, ExtColour::unk2C);
         }
     }
 
@@ -1377,9 +1377,13 @@ namespace OpenLoco::Gfx
     {
         return ImageIdFlags::remap | (colour << 19) | image;
     }
-    uint32_t recolour(uint32_t image, Colour colour)
+    uint32_t recolour(uint32_t image, ExtColour colour)
     {
         return ImageIdFlags::remap | (enumValue(colour) << 19) | image;
+    }
+    uint32_t recolour(uint32_t image, Colour colour)
+    {
+        return recolour(image, Colours::toExt(colour));
     }
 
     uint32_t recolour2(uint32_t image, Colour colour1, Colour colour2)
@@ -1392,9 +1396,9 @@ namespace OpenLoco::Gfx
         return recolour2(image, colourScheme.primary, colourScheme.secondary);
     }
 
-    uint32_t recolourTranslucent(uint32_t image, PaletteIndex_t colour)
+    uint32_t recolourTranslucent(uint32_t image, ExtColour colour)
     {
-        return ImageIdFlags::translucent | (colour << 19) | image;
+        return ImageIdFlags::translucent | (enumValue(colour) << 19) | image;
     }
 
     loco_global<uint8_t*, 0x0050B860> _50B860;
