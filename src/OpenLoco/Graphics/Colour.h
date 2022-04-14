@@ -88,78 +88,78 @@ namespace OpenLoco
         unk29,
         unk2A,
         unk2B,
-        unk2C,
+        unk2C, // ghost
         unk2D,
-        unk2E,
-        unk2F,
-        unk30,
-        unk31,
+        unk2E, // translucentGlass1
+        unk2F, // translucentGlass2
+        unk30, // translucentGlass0
+        unk31, // translucentGhost
         unk32, // shadow
         unk33,
         unk34,
-        unk35, // 0-1 black, grey
-        unk36,
-        unk37,
-        unk38, // 6-7 darkBlue, blue
-        unk39,
-        unk3A,
-        unk3B, // 25 mutedDarkRed
-        unk3C,
-        unk3D,
-        unk3E, // 11 mutedSeaGreen
-        unk3F,
-        unk40,
-        unk41, // 3-4 mutedDarkPurple, mutedPurple
-        unk42,
-        unk43,
-        unk44, // 15 mutedOliveGreen
-        unk45,
-        unk46,
-        unk47, // 21-22 mutedDarkYellow, mutedYellow
-        unk48,
-        unk49,
-        unk4A, // 16-17 yellow, darkYellow
-        unk4B,
-        unk4C,
-        unk4D, // 12 mutedGrassGreen
-        unk4E,
-        unk4F,
-        unk50, // 14 mutedAvocadoGreen
-        unk51,
-        unk52,
-        unk53, // 10, 13 darkGreen, green
-        unk54,
-        unk55,
-        unk56, // 24 mutedOrange
-        unk57,
-        unk58,
-        unk59, // 5 purple
-        unk5A,
-        unk5B,
-        unk5C, // 26-27 darkRed, red
-        unk5D,
-        unk5E,
-        unk5F, // 18, 20 orange, darkOrange
-        unk60,
-        unk61,
-        unk62, // 8-9 mutedDarkTeal, mutedTeal
-        unk63,
-        unk64,
-        unk65, // 28-29 pink, darkPink
-        unk66,
-        unk67,
-        unk68, // 23 brown
-        unk69,
-        unk6A,
-        unk6B, // 30 mutedRed
-        unk6C,
-        unk6D,
-        unk6E, // 2 white
-        unk6F,
-        unk70,
-        unk71, // 19 amber
-        unk72,
-        unk73,
+        translucentGrey1, // 0-1 black, grey
+        translucentGrey2,
+        translucentGrey0,
+        translucentBlue1, // 6-7 darkBlue, blue
+        translucentBlue2,
+        translucentBlue0,
+        translucentMutedDarkRed1, // 25 mutedDarkRed
+        translucentMutedDarkRed2,
+        translucentMutedDarkRed0,
+        translucentMutedSeaGreen1, // 11 mutedSeaGreen
+        translucentMutedSeaGreen2,
+        translucentMutedSeaGreen0,
+        translucentMutedPurple1, // 3-4 mutedDarkPurple, mutedPurple
+        translucentMutedPurple2,
+        translucentMutedPurple0,
+        translucentMutedOliveGreen1, // 15 mutedOliveGreen
+        translucentMutedOliveGreen2,
+        translucentMutedOliveGreen0,
+        translucentMutedYellow1, // 21-22 mutedDarkYellow, mutedYellow
+        translucentMutedYellow2,
+        translucentMutedYellow0,
+        translucentYellow1, // 16-17 yellow, darkYellow
+        translucentYellow2,
+        translucentYellow0,
+        translucentMutedGrassGreen1, // 12 mutedGrassGreen
+        translucentMutedGrassGreen2,
+        translucentMutedGrassGreen0,
+        translucentMutedAvocadoGreen1, // 14 mutedAvocadoGreen
+        translucentMutedAvocadoGreen2,
+        translucentMutedAvocadoGreen0,
+        translucentGreen1, // 10, 13 darkGreen, green
+        translucentGreen2,
+        translucentGreen0,
+        translucentMutedOrange1, // 24 mutedOrange
+        translucentMutedOrange2,
+        translucentMutedOrange0,
+        translucentPurple1, // 5 purple
+        translucentPurple2,
+        translucentPurple0,
+        translucentRed1, // 26-27 darkRed, red
+        translucentRed2,
+        translucentRed0,
+        translucentOrange1, // 18, 20 orange, darkOrange
+        translucentOrange2,
+        translucentOrange0,
+        translucentMutedTeal1, // 8-9 mutedDarkTeal, mutedTeal
+        translucentMutedTeal2,
+        translucentMutedTeal0,
+        translucentPink1, // 28-29 pink, darkPink
+        translucentPink2,
+        translucentPink0,
+        translucentBrown1, // 23 brown
+        translucentBrown2,
+        translucentBrown0,
+        translucentMutedRed1, // 30 mutedRed
+        translucentMutedRed2,
+        translucentMutedRed0,
+        translucentWhite1, // 2 white
+        translucentWhite2,
+        translucentWhite0,
+        translucentAmber1, // 19 amber
+        translucentAmber2,
+        translucentAmber0,
         unk74,
         unk75,
         unk76,

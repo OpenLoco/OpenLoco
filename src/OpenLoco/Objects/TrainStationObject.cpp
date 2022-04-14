@@ -12,7 +12,7 @@ namespace OpenLoco
 
         Gfx::drawImage(&context, x - 34, y - 34, colourImage);
 
-        auto colour = ExtColour::unk3B;
+        auto colour = ExtColour::translucentMutedDarkRed1;
         if (!(flags & TrainStationFlags::recolourable))
         {
             colour = ExtColour::unk2E;
