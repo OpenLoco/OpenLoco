@@ -65,6 +65,9 @@ namespace OpenLoco::Audio
     };
     constexpr int32_t kNumReservedChannels = 4 + 10;
 
+    constexpr float kMinVolume = 0.f;
+    constexpr float kMaxVolume = 1.f;
+
     using MusicId = uint8_t;
 
     struct MusicInfo

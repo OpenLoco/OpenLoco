@@ -1203,7 +1203,7 @@ namespace OpenLoco::Audio
     // 0x0048AA67
     void setBgmVolume(float volume)
     {
-        volume = std::clamp(volume, 0.f, 1.f);
+        volume = std::clamp(volume, kMinVolume, kMaxVolume);
         if (Config::get().volume == volume)
         {
             return;

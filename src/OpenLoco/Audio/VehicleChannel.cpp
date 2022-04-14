@@ -11,8 +11,6 @@ namespace OpenLoco::Audio
 {
     constexpr float kVolumeModifierZoomIncrement = 0.137f; // 13.7% decrease in volume for each zoom increment (up to 2)
     constexpr float kVolumeModifierUnderground = 0.11f;    // 11.0% decrease in volume when underground
-    constexpr float kVolumeMax = 1.f;
-    constexpr float kVolumeMin = 0.f;
 
     // Calculated min is 255*255/8=8128 but original has done 256*256/8=8192
     // We have kept original value but could be changed to correctly represent the full range of volume
@@ -46,7 +44,7 @@ namespace OpenLoco::Audio
     {
         const auto absPan = std::abs(pan);
 
-        float falloffModifier = kVolumeMax;
+        float falloffModifier = kMinVolume;
         // This in theory is the max viewport width/height (might not be valid for modern screens)
         if (absPan > kPanFalloffStart)
         {
@@ -56,7 +54,7 @@ namespace OpenLoco::Audio
             }
             else
             {
-                falloffModifier = std::min(static_cast<float>(kPanFalloffEnd - absPan) / kPanFalloffModifier, kVolumeMax);
+                falloffModifier = std::min(static_cast<float>(kPanFalloffEnd - absPan) / kPanFalloffModifier, kMinVolume);
             }
         }
         return falloffModifier;
@@ -81,10 +79,10 @@ namespace OpenLoco::Audio
 
         const auto falloffVolumeModifier = std::min(xFalloffModifier, yFalloffModifier);
 
-        const auto overallVolumeModifier = std::max(falloffVolumeModifier + undergroundVolumeModifier + zoomVolumeModifier, 0.f);
+        const auto overallVolumeModifier = std::max(falloffVolumeModifier + undergroundVolumeModifier + zoomVolumeModifier, kMaxVolume);
 
         auto drivingSoundVolume = static_cast<float>(v->drivingSoundVolume) / static_cast<float>(std::numeric_limits<uint8_t>().max());
-        const auto volume = std::max(drivingSoundVolume * overallVolumeModifier * kDrivingSoundModifier, kVolumeMin);
+        const auto volume = std::max(drivingSoundVolume * overallVolumeModifier * kDrivingSoundModifier, kMaxVolume);
 
         return { makeObjectSoundId(v->drivingSoundId), { volume, panX, v->drivingSoundFrequency } };
     }
