@@ -11,15 +11,15 @@ namespace OpenLoco::Audio
 {
     constexpr float kVolumeModifierZoomIncrement = 0.137f; // 13.7% decrease in volume for each zoom increment (up to 2)
     constexpr float kVolumeModifierUnderground = 0.11f;    // 11.0% decrease in volume when underground
-    constexpr float kVolumeModifierMax = 1.f;
-
+    constexpr float kVolumeMax = 1.f;
     constexpr float kVolumeMin = 0.f;
-    constexpr float kPanFalloffModifier = 1024.f;
-    constexpr float kDrivingSoundModifier = 1.f / 8.f;
 
     // Calculated min is 255*255/8=8128 but original has done 256*256/8=8192
     // We have kept original value but could be changed to correctly represent the full range of volume
     constexpr int32_t kVehicleVolumeCalcMin = -81'91; // hundredth decibels (-81.91dB)
+    constexpr float kDrivingSoundModifier = 1.f / 8.f;
+
+    constexpr float kPanFalloffModifier = 1024.f;
     constexpr int32_t kPanFalloffStart = 2048;
     constexpr int32_t kPanFalloffEnd = 3072;
 
@@ -46,7 +46,7 @@ namespace OpenLoco::Audio
     {
         const auto absPan = std::abs(pan);
 
-        float falloffModifier = kVolumeModifierMax;
+        float falloffModifier = kVolumeMax;
         // This in theory is the max viewport width/height (might not be valid for modern screens)
         if (absPan > kPanFalloffStart)
         {
@@ -56,7 +56,7 @@ namespace OpenLoco::Audio
             }
             else
             {
-                falloffModifier = std::min(static_cast<float>(kPanFalloffEnd - absPan) / kPanFalloffModifier, kVolumeModifierMax);
+                falloffModifier = std::min(static_cast<float>(kPanFalloffEnd - absPan) / kPanFalloffModifier, kVolumeMax);
             }
         }
         return falloffModifier;
