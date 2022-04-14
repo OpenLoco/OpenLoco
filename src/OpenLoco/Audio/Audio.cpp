@@ -94,8 +94,8 @@ namespace OpenLoco::Audio
     static OpenAL::SourceManager _sourceManager;
     static OpenAL::BufferManager _bufferManager;
 
-    static void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
-    static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq);
+    static void playSound(SoundId id, const Map::Pos3& loc, float volume, int32_t pan, int32_t frequency);
+    static void mixSound(SoundId id, bool loop, float volume, int32_t pan, int32_t freq);
 
     // 0x004FE910
     static const MusicInfo kMusicInfo[] = {
@@ -417,25 +417,26 @@ namespace OpenLoco::Audio
         return nullptr;
     }
 
-    static int32_t getVolumeForSoundId(SoundId id)
+    static float getVolumeForSoundId(SoundId id)
     {
+        auto volume = 0;
         if (isObjectSoundId(id))
         {
             auto obj = getSoundObject(id);
             if (obj != nullptr)
             {
-                return obj->volume;
+                volume = obj->volume;
             }
-            return 0;
         }
         else
         {
             loco_global<int32_t[32], 0x004FEAB8> unk_4FEAB8;
-            return unk_4FEAB8[(int32_t)id];
+            volume = unk_4FEAB8[(int32_t)id];
         }
+        return OpenAL::volumeFromLoco(volume);
     }
 
-    static int32_t calculateVolumeFromViewport(SoundId id, const Map::Pos3& mpos, const Viewport& viewport)
+    static float calculateVolumeFromViewport(SoundId id, const Map::Pos3& mpos, const Viewport& viewport)
     {
         auto volume = 0;
         auto zVol = 0;
@@ -452,7 +453,7 @@ namespace OpenLoco::Audio
             }
             volume = ((-1024 * viewport.zoom - 1) << zVol) + 1;
         }
-        return volume;
+        return OpenAL::volumeFromLoco(volume);
     }
 
     void playSound(SoundId id, const Map::Pos3& loc)
@@ -506,7 +507,7 @@ namespace OpenLoco::Audio
     }
 
     // 0x00489F1B
-    void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t frequency)
+    void playSound(SoundId id, const Map::Pos3& loc, float volume, int32_t frequency)
     {
         playSound(id, loc, volume, kPlayAtLocation, frequency);
     }
@@ -527,7 +528,7 @@ namespace OpenLoco::Audio
 
     // 0x00489CB5 / 0x00489F1B
     // pan is in UI pixels or known constant
-    void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency)
+    void playSound(SoundId id, const Map::Pos3& loc, float volume, int32_t pan, int32_t frequency)
     {
         if (_audioIsEnabled)
         {
@@ -543,7 +544,7 @@ namespace OpenLoco::Audio
 
                 volume += calculateVolumeFromViewport(id, loc, *viewport);
                 pan = viewport->viewportToScreen(vpos).x;
-                if (volume < -10000)
+                if (volume < 0.f)
                 {
                     return;
                 }
@@ -597,9 +598,9 @@ namespace OpenLoco::Audio
         return std::nullopt;
     }
 
-    static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq)
+    static void mixSound(SoundId id, bool loop, float volume, int32_t pan, int32_t freq)
     {
-        Console::logVerbose("mixSound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
+        Console::logVerbose("mixSound(%d, %s, %.2f, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
         auto sample = getSoundSample(id);
         if (sample)
         {
@@ -825,15 +826,15 @@ namespace OpenLoco::Audio
         }
     }
 
-    static constexpr auto kAmbientMinVolume = -3500;
+    static constexpr auto kAmbientMinVolume = 0.f;
     static constexpr auto kAmbientVolumeChangePerTick = 100;
     static constexpr auto kAmbientNumWaterTilesForOcean = 60;
     static constexpr auto kAmbientNumTreeTilesForForest = 30;
     static constexpr auto kAmbientNumMountainTilesForWilderness = 60;
 
-    static constexpr int32_t getAmbientMaxVolume(uint8_t zoom)
+    static constexpr float getAmbientMaxVolume(uint8_t zoom)
     {
-        constexpr int32_t _volumes[]{ -1200, -2000, -3000, -3000 };
+        constexpr float _volumes[]{ 0.25f, 0.1f, 0.03f, 0.03f };
         return _volumes[zoom];
     }
 
@@ -845,7 +846,7 @@ namespace OpenLoco::Audio
 
         auto* mainViewport = WindowManager::getMainViewport();
         std::optional<PathId> ambientSound = std::nullopt;
-        int32_t maxVolume = kAmbientMinVolume;
+        auto maxVolume = kAmbientMinVolume;
 
         if (!Game::hasFlags((1u << 0)) && mainViewport != nullptr)
         {
@@ -1200,8 +1201,9 @@ namespace OpenLoco::Audio
     }
 
     // 0x0048AA67
-    void setBgmVolume(int32_t volume)
+    void setBgmVolume(float volume)
     {
+        volume = std::clamp(volume, 0.f, 1.f);
         if (Config::get().volume == volume)
         {
             return;

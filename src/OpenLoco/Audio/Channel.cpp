@@ -29,10 +29,11 @@ namespace OpenLoco::Audio
         _isLoaded = false;
     }
 
-    void Channel::setVolume(int32_t volume)
+    void Channel::setVolume(float volume)
     {
         _attributes.volume = volume;
-        _source.setGain(OpenAL::volumeFromLoco(volume));
+        //_source.setGain(0.5f);
+        _source.setGain(volume);
     }
 
     void Channel::setPan(int32_t pan)

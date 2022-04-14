@@ -98,10 +98,10 @@ namespace OpenLoco::Audio
     void playSound(SoundId id, const Map::Pos3& loc, int32_t pan);
 
     void playSound(SoundId id, int32_t pan);
-    void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t frequency);
+    void playSound(SoundId id, const Map::Pos3& loc, float volume, int32_t frequency);
     void updateSounds();
 
-    void setBgmVolume(int32_t volume);
+    void setBgmVolume(float volume);
 
     void updateVehicleNoise();
     void stopVehicleNoise();

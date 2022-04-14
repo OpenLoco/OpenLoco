@@ -1580,7 +1580,7 @@ strings:
   1544: Edit Music Selection
   1545: "{SMALLFONT}{COLOUR BLACK}Click on music track to toggle selection on/off"
   1546: ✓
-  1547: "{COLOUR WINDOW_2}Volume:"
+  1547: "{COLOUR WINDOW_2}Volume: {COLOUR WINDOW_2}{INT16}"
   1548: "{SMALLFONT}{COLOUR BLACK}Set music volume"
   1549: Music Options
   1550: Select Owner's Face for {STRINGID}
