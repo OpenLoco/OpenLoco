@@ -8,7 +8,9 @@
 #include "../Objects/TreeObject.h"
 #include "../OpenLoco.h"
 #include "../S5/S5.h"
+#include "../Scenario.h"
 #include "../TownManager.h"
+#include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "GameCommands.h"
 
@@ -80,7 +82,7 @@ namespace OpenLoco::GameCommands
             clearanceZ = 255;
         }
 
-        Map::QuarterTile qt{ 1 << (args.quadrant ^ (1 << 1)), 0xF };
+        Map::QuarterTile qt(1 << (args.quadrant ^ (1 << 1)), 0xF);
         if (!Map::TileManager::canConstructAt(args.pos, baseZ, clearanceZ, qt))
         {
             // Error message set in canConstructAt
@@ -107,7 +109,7 @@ namespace OpenLoco::GameCommands
             {
                 elTree->setUnk5l(treeObj->growth - 1);
                 elTree->setClearZ(treeObj->height / 4 + elTree->baseZ());
-                if (elTree->baseZ() - 4 > Scenario::getCurrentSnowLine() && (treeObj->flags & TreeObjectFlags::hasSnowVariation))
+                if (elTree->baseZ() - 4 > Scenario::getSnowLine() && (treeObj->flags & TreeObjectFlags::hasSnowVariation))
                 {
                     elTree->setSnow(true);
                 }

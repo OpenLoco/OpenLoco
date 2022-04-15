@@ -73,7 +73,7 @@ namespace OpenLoco::Map
         void setType(ElementType t)
         {
             // Purposely clobers any other data in _type
-            _type = enumValue(t);
+            _type = enumValue(t) << 2;
         }
         uint8_t flags() const { return _flags; }
         SmallZ baseZ() const { return _base_z; }

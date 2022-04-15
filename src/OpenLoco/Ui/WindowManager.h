@@ -302,6 +302,7 @@ namespace OpenLoco::Ui::Windows
         void openPlantTrees();
         void openBuildWalls();
         bool rotate(Window*);
+        void setLastPlacedTree(Map::TreeElement* elTree);
     }
 
     namespace TextInput

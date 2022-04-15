@@ -144,6 +144,11 @@ namespace OpenLoco::Scenario
         }
     }
 
+    uint8_t getSnowLine()
+    {
+        return _currentSnowLine;
+    }
+
     // 0x00475988
     static void sub_475988()
     {

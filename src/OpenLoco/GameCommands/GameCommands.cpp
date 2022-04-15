@@ -144,6 +144,15 @@ namespace OpenLoco::GameCommands
                 regs.ebx = ebx;
                 return 0;
             });
+
+        // Used by a number of functions instead of going via doCommand
+        registerHook(0x004BB138, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            createTree(backup);
+
+            regs.ebx = backup.ebx;
+            return 0;
+        });
     }
 
     static uint32_t loc_4314EA();

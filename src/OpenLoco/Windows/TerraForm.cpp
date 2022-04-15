@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint32_t, 0x00F25310> _lowerLandCost;
     static loco_global<uint32_t, 0x01136484> _lastTreeCost;
     static loco_global<Map::TileElement*, 0x01136470> _lastPlacedWall;
-    static loco_global<Map::TileElement*, 0x01136470> _lastPlacedTree;
+    static loco_global<Map::TreeElement*, 0x01136470> _lastPlacedTree;
     static loco_global<Map::Pos2, 0x01136488> _terraformGhostPos;
     static loco_global<uint16_t, 0x01136490> _lastTreeColourFlag;
     static loco_global<uint16_t, 0x01136492> _terraformGhostTreeRotationFlag;
@@ -2763,5 +2763,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         return false;
+    }
+
+    void setLastPlacedTree(Map::TreeElement* elTree)
+    {
+        _lastPlacedTree = elTree;
     }
 }
