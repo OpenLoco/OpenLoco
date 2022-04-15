@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static loco_global<int32_t, 0x011364E8> _buildTargetVehicle; // -1 for no target VehicleHead
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     // Array of types if 0xFF then no type, flag (1<<7) as well
-    static loco_global<int8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1], 0x011364F0> _TrackTypesForTab;
+    static loco_global<uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1], 0x011364F0> _trackTypesForTab;
     static std::array<uint16_t, 6> _scrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
@@ -369,7 +369,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         WidgetIndex_t widgetIndex = widx::tab_track_type_0;
         for (uint32_t trackTypeTab = 0; trackTypeTab < _numTrackTypeTabs; trackTypeTab++)
         {
-            if (targetTrackType == _TrackTypesForTab[trackTypeTab])
+            if (targetTrackType == _trackTypesForTab[trackTypeTab])
             {
                 widgetIndex = widx::tab_track_type_0 + trackTypeTab;
                 break;
@@ -551,7 +551,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         VehicleType vehicleType = _transportTypeTabInformation[window->currentTab].type;
-        uint8_t trackType = _TrackTypesForTab[window->currentSecondaryTab];
+        uint8_t trackType = _trackTypesForTab[window->currentSecondaryTab];
 
         Vehicles::VehicleBase* veh = nullptr;
         if (_buildTargetVehicle != -1)
@@ -654,7 +654,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     break;
 
                 window->currentSecondaryTab = tab;
-                setTopToolbarLastTrack(_TrackTypesForTab[tab] & ~(1 << 7), _TrackTypesForTab[tab] & (1 << 7));
+                setTopToolbarLastTrack(_trackTypesForTab[tab] & ~(1 << 7), _trackTypesForTab[tab] & (1 << 7));
                 _buildTargetVehicle = -1;
                 window->rowCount = 0;
                 window->var_83C = 0;
@@ -821,7 +821,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         else
         {
             auto trackTypeTab = widxToTrackTypeTab(widgetIndex);
-            auto type = _TrackTypesForTab[trackTypeTab];
+            auto type = _trackTypesForTab[trackTypeTab];
             if (type == -1)
             {
                 if (_transportTypeTabInformation[window->currentTab].type == VehicleType::aircraft)
@@ -1232,7 +1232,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             else
             {
                 // Reset the tabs
-                _TrackTypesForTab[0] = -1;
+                _trackTypesForTab[0] = 0xFF;
                 _numTrackTypeTabs = 1;
                 window->widgets[tab_track_type_0].type = WidgetType::tab;
                 for (WidgetIndex_t j = tab_track_type_1; j <= tab_track_type_7; ++j)
@@ -1249,7 +1249,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             railTrackTypes &= ~(1 << trackType);
             window->widgets[trackTypeTab].type = WidgetType::tab;
-            _TrackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType;
+            _trackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType;
             trackTypeTab++;
         }
 
@@ -1259,7 +1259,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 roadTrackTypes &= ~(1 << trackType);
                 window->widgets[trackTypeTab].type = WidgetType::tab;
-                _TrackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType | (1 << 7);
+                _trackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType | (1 << 7);
                 trackTypeTab++;
             }
         }
@@ -1287,23 +1287,24 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         uint32_t trackTab = 0;
         for (; trackTab < _numTrackTypeTabs; trackTab++)
         {
-            if (last_railroad_option == _TrackTypesForTab[trackTab])
+            if (last_railroad_option == _trackTypesForTab[trackTab])
             {
                 found = true;
                 break;
             }
 
-            if (last_road_option == _TrackTypesForTab[trackTab])
+            if (last_road_option == _trackTypesForTab[trackTab])
             {
                 found = true;
                 break;
             }
         }
 
-        window->currentSecondaryTab = found ? trackTab : 0;
+        trackTab = found ? trackTab : 0;
+        window->currentSecondaryTab = trackTab;
 
-        bool isRoad = _TrackTypesForTab[trackTab] & (1 << 7);
-        uint8_t trackType = _TrackTypesForTab[trackTab] & ~(1 << 7);
+        bool isRoad = _trackTypesForTab[trackTab] & (1 << 7);
+        uint8_t trackType = _trackTypesForTab[trackTab] & ~(1 << 7);
         setTopToolbarLastTrack(trackType, isRoad);
     }
 
@@ -1330,11 +1331,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         if (setRail)
         {
-            last_railroad_option = trackType;
+            last_railroad_option = trackType | (isRoad ? (1 << 7) : 0);
         }
         else
         {
-            last_road_option = trackType;
+            last_road_option = trackType | (isRoad ? (1 << 7) : 0);
         }
 
         // The window number doesn't really matter as there is only one top toolbar
@@ -1413,7 +1414,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
 
             auto img = 0;
-            auto type = _TrackTypesForTab[tab];
+            auto type = _trackTypesForTab[tab];
             if (type == -1)
             {
                 if (window->currentTab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains))
