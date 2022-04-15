@@ -59,7 +59,7 @@ namespace OpenLoco
         regs.esi = Interop::X86Pointer(this);
         regs.ebx = handle.id;
         regs.ecx = enumValue(handle.type);
-        Interop::call(0x0042F4D0, regs);
+        Interop::call(0x004A6A5F, regs);
     }
 
     // 0x004A6C2D
