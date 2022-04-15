@@ -61,7 +61,7 @@ namespace OpenLoco::GameCommands
 
         if (elSurface->water())
         {
-            if (elSurface->water() * 8 - 1 > quadrantHeight.landHeight)
+            if (elSurface->water() * 16 - 1 > quadrantHeight.landHeight)
             {
                 setErrorText(StringIds::cant_build_this_underwater);
                 return FAILURE;
