@@ -515,7 +515,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 // loc_434170
                 auto thing = EntityManager::get<OpenLoco::EntityBase>(company->observationThing);
-                auto* vehicle = thing->asVehicle();
+                auto* vehicle = thing->asBase<Vehicles::VehicleBase>();
                 if (vehicle == nullptr)
                 {
                     invalidViewport(self);
@@ -527,8 +527,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     return;
                 }
 
-                auto* head = vehicle->asVehicleHead();
-                Vehicles::Vehicle train(head);
+                Vehicles::Vehicle train(vehicle->getHead());
 
                 int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                 SavedView view(

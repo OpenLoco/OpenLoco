@@ -166,6 +166,8 @@ namespace OpenLoco::Vehicles
 
     struct VehicleBase : EntityBase
     {
+        static constexpr auto kBaseType = EntityBaseType::vehicle;
+
     private:
         template<VehicleThingType SubType>
         bool is() const
@@ -840,8 +842,8 @@ namespace OpenLoco::Vehicles
         VehicleTail* tail;
         Cars cars;
 
-        Vehicle(const VehicleHead* _head)
-            : Vehicle(_head->id)
+        Vehicle(const VehicleHead& _head)
+            : Vehicle(_head.id)
         {
         }
         Vehicle(EntityId _head);

@@ -108,8 +108,13 @@ namespace OpenLoco::MessageManager
                 // 0x0042870F
                 FormatArguments args{};
                 auto* head = EntityManager::get<Vehicles::VehicleHead>(static_cast<EntityId>(message.itemSubjects[0]));
+                if (head == nullptr)
+                {
+                    break;
+                }
                 args.push(head->ordinalNumber);
                 args.push(head->name);
+
                 auto* station = StationManager::get(static_cast<StationId>(message.itemSubjects[1]));
                 args.push(station->name);
                 args.push(station->town);
@@ -132,6 +137,10 @@ namespace OpenLoco::MessageManager
                 // 0x004287BA
                 FormatArguments args{};
                 auto* head = EntityManager::get<Vehicles::VehicleHead>(static_cast<EntityId>(message.itemSubjects[0]));
+                if (head == nullptr)
+                {
+                    break;
+                }
                 args.push(head->ordinalNumber);
                 args.push(head->name);
                 StringManager::formatString(tempBuffer, StringIds::message_has_slipped_to_a_halt_on_incline, &args);
@@ -186,6 +195,10 @@ namespace OpenLoco::MessageManager
                 // 0x004288ED
                 FormatArguments args{};
                 auto* head = EntityManager::get<Vehicles::VehicleHead>(static_cast<EntityId>(message.itemSubjects[0]));
+                if (head == nullptr)
+                {
+                    break;
+                }
                 args.push(head->ordinalNumber);
                 args.push(head->name);
                 auto* station = StationManager::get(static_cast<StationId>(message.itemSubjects[1]));
@@ -344,6 +357,10 @@ namespace OpenLoco::MessageManager
                 // 0x00428C9F
                 FormatArguments args{};
                 auto* head = EntityManager::get<Vehicles::VehicleHead>(static_cast<EntityId>(message.itemSubjects[0]));
+                if (head == nullptr)
+                {
+                    break;
+                }
                 args.push(head->ordinalNumber);
                 args.push(head->name);
                 StringManager::formatString(tempBuffer, StringIds::message_has_crashed, &args);
@@ -377,6 +394,10 @@ namespace OpenLoco::MessageManager
                     StringIds::ship_2,
                 };
                 auto* head = EntityManager::get<Vehicles::VehicleHead>(static_cast<EntityId>(message.itemSubjects[0]));
+                if (head == nullptr)
+                {
+                    break;
+                }
                 args.push(recordTypeStrings[message.itemSubjects[2]]);
                 args.push(vehicleTypeStrings[enumValue(head->vehicleType)]);
                 args.push(getGameState().recordSpeed[message.itemSubjects[2]]);

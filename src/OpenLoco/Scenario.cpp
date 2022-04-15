@@ -306,6 +306,7 @@ namespace OpenLoco::Scenario
             fullPath = scenarioPath / path;
         }
 
+        Audio::pauseSound();
         static loco_global<char[512], 0x00112CE04> scenarioFilename;
         std::strncpy(&*scenarioFilename, fullPath.u8string().c_str(), std::size(scenarioFilename));
         auto flags = call(0x00442837);

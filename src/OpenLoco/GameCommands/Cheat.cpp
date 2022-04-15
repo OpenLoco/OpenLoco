@@ -60,7 +60,7 @@ namespace OpenLoco::GameCommands
                 if (vehicle->owner != targetCompanyId)
                     continue;
 
-                Vehicles::Vehicle train(vehicle);
+                Vehicles::Vehicle train(*vehicle);
                 train.head->owner = ourCompanyId;
                 train.veh1->owner = ourCompanyId;
                 train.veh2->owner = ourCompanyId;
@@ -168,11 +168,14 @@ namespace OpenLoco::GameCommands
                 if (vehicle->owner != ourCompanyId)
                     continue;
 
-                Vehicles::Vehicle train(vehicle);
+                Vehicles::Vehicle train(*vehicle);
                 train.veh2->reliability = newReliablity;
 
-                // Set reliability for the first car's front bogie component.
-                train.cars.firstCar.front->reliability = newReliablity * 256;
+                // Set reliability for the front bogie component on each car.
+                for (auto& car : train.cars)
+                {
+                    car.front->reliability = newReliablity * 256;
+                }
             }
             return 0;
         }
@@ -231,9 +234,14 @@ namespace OpenLoco::GameCommands
     // 0x004BAC53
     static uint32_t vehicleShuntCheat(EntityId head, uint8_t flags)
     {
+        auto* veh = EntityManager::get<Vehicles::VehicleHead>(head);
+        if (veh == nullptr)
+        {
+            return GameCommands::FAILURE;
+        }
         if (flags & Flags::apply)
         {
-            EntityManager::get<Vehicles::VehicleHead>(head)->var_0C |= Vehicles::Flags0C::shuntCheat;
+            veh->var_0C |= Vehicles::Flags0C::shuntCheat;
         }
         return 0;
     }

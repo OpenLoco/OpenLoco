@@ -207,13 +207,16 @@ namespace OpenLoco::Ui::ViewportInteraction
     static bool getVehicleArguments(const InteractionArg& interaction)
     {
         auto* entity = reinterpret_cast<EntityBase*>(interaction.object);
-        auto vehicle = entity->asVehicle();
+        auto vehicle = entity->asBase<Vehicles::VehicleBase>();
         if (vehicle == nullptr)
         {
             return false;
         }
         auto head = EntityManager::get<Vehicles::VehicleHead>(vehicle->getHead());
-
+        if (head == nullptr)
+        {
+            return false;
+        }
         auto company = CompanyManager::get(head->owner);
         Windows::MapToolTip::setOwner(head->owner);
         auto status = head->getStatus();
@@ -382,7 +385,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         for (auto v : EntityManager::VehicleList())
         {
-            auto train = Vehicles::Vehicle(v);
+            auto train = Vehicles::Vehicle(*v);
             checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *train.veh2, targetPosition);
             for (auto car : train.cars)
             {

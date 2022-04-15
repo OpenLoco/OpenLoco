@@ -1136,7 +1136,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         for (auto vehicle : EntityManager::VehicleList())
         {
-            Vehicles::Vehicle train(vehicle);
+            Vehicles::Vehicle train(*vehicle);
 
             if (train.head->var_38 & (1 << 4))
                 continue;
@@ -1154,7 +1154,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         for (auto vehicle : EntityManager::VehicleList())
         {
-            Vehicles::Vehicle train(vehicle);
+            Vehicles::Vehicle train(*vehicle);
 
             if (train.head->var_38 & (1 << 4))
                 continue;

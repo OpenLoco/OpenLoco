@@ -879,10 +879,10 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_build_new_ships = 1193;
     constexpr string_id tooltip_trains = 1194;
     constexpr string_id tooltip_buses = 1195;
-    constexpr string_id tooltip_trucks = 1194;
-    constexpr string_id tooltip_trams = 1195;
-    constexpr string_id tooltip_aircraft = 1194;
-    constexpr string_id tooltip_ships = 1195;
+    constexpr string_id tooltip_trucks = 1196;
+    constexpr string_id tooltip_trams = 1197;
+    constexpr string_id tooltip_aircraft = 1198;
+    constexpr string_id tooltip_ships = 1199;
 
     constexpr string_id tooltip_all_stations = 1200;
     constexpr string_id tooltip_rail_stations = 1201;
@@ -1114,7 +1114,7 @@ namespace OpenLoco::StringIds
     constexpr string_id prompt_enter_new_name_for_owner = 1460;
     constexpr string_id cannot_change_owner_name = 1461;
     constexpr string_id headquarters = 1462;
-    constexpr string_id stringid_headquarters = 1462;
+    constexpr string_id stringid_headquarters = 1463;
 
     constexpr string_id tooltip_select_company = 1465;
 
@@ -1571,7 +1571,6 @@ namespace OpenLoco::StringIds
     constexpr string_id aircraft_2 = 1993;
     constexpr string_id ship_2 = 1994;
     constexpr string_id tab_speed_records = 1995;
-    constexpr string_id speed_records = 1995;
     constexpr string_id title_speed_records = 1996;
     constexpr string_id land_speed_record = 1997;
     constexpr string_id air_speed_record = 1998;
@@ -1806,4 +1805,5 @@ namespace OpenLoco::StringIds
     constexpr string_id allow_building_locked_vehicles = 2247;
     constexpr string_id tooltip_build_locked_vehicles = 2248;
     constexpr string_id cheat_build_vehicle_window = 2249;
+    constexpr string_id tooltip_paint_landscape_tool = 2250;
 }

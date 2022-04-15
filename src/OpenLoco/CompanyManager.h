@@ -27,7 +27,7 @@ namespace OpenLoco::CompanyManager
     void update();
     void updateDaily();
     void updateMonthly1();
-    void updateMonthly2();
+    void updateMonthlyHeadquarters();
     void updateQuarterly();
     void updateYearly();
     void determineAvailableVehicles();

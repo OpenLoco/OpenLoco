@@ -791,7 +791,7 @@ namespace OpenLoco::Audio
 
         for (auto v : EntityManager::VehicleList())
         {
-            Vehicles::Vehicle train(v);
+            Vehicles::Vehicle train(*v);
             off_4FEB58(reinterpret_cast<Vehicles::Vehicle2or6*>(train.veh2), x);
             off_4FEB58(reinterpret_cast<Vehicles::Vehicle2or6*>(train.tail), x);
         }
@@ -859,6 +859,10 @@ namespace OpenLoco::Audio
             size_t treeCount = 0;       // cx
             for (auto& tilePos : searchRange)
             {
+                if (!Map::validCoords(tilePos))
+                {
+                    continue;
+                }
                 const auto tile = Map::TileManager::get(tilePos);
                 bool passedSurface = false;
                 for (const auto& el : tile)

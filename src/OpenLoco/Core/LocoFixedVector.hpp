@@ -85,5 +85,19 @@ namespace OpenLoco
         {
             return Iter(startAddress, Count);
         }
+
+        [[nodiscard]] bool empty() const
+        {
+            for (const auto& val : *this)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        [[nodiscard]] size_t size() const
+        {
+            return std::distance(begin(), end());
+        }
     };
 }

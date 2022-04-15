@@ -114,110 +114,21 @@ namespace OpenLoco::ObjectManager
     constexpr size_t maxObjects = 859;
     constexpr size_t maxObjectTypes = 34;
 
-    constexpr size_t getTypeOffsetSlow(const ObjectType type)
-    {
-        size_t offset = 0;
-        for (size_t i = 0; i < static_cast<size_t>(type); ++i)
-        {
-            offset += getMaxObjects(static_cast<ObjectType>(i));
-        }
-        return offset;
-    }
-    constexpr size_t getTypeOffset(const ObjectType type)
-    {
-        constexpr size_t _offsets[] = {
-            getTypeOffsetSlow(ObjectType::interfaceSkin),
-            getTypeOffsetSlow(ObjectType::sound),
-            getTypeOffsetSlow(ObjectType::currency),
-            getTypeOffsetSlow(ObjectType::steam),
-            getTypeOffsetSlow(ObjectType::rock),
-            getTypeOffsetSlow(ObjectType::water),
-            getTypeOffsetSlow(ObjectType::land),
-            getTypeOffsetSlow(ObjectType::townNames),
-            getTypeOffsetSlow(ObjectType::cargo),
-            getTypeOffsetSlow(ObjectType::wall),
-            getTypeOffsetSlow(ObjectType::trackSignal),
-            getTypeOffsetSlow(ObjectType::levelCrossing),
-            getTypeOffsetSlow(ObjectType::streetLight),
-            getTypeOffsetSlow(ObjectType::tunnel),
-            getTypeOffsetSlow(ObjectType::bridge),
-            getTypeOffsetSlow(ObjectType::trackStation),
-            getTypeOffsetSlow(ObjectType::trackExtra),
-            getTypeOffsetSlow(ObjectType::track),
-            getTypeOffsetSlow(ObjectType::roadStation),
-            getTypeOffsetSlow(ObjectType::roadExtra),
-            getTypeOffsetSlow(ObjectType::road),
-            getTypeOffsetSlow(ObjectType::airport),
-            getTypeOffsetSlow(ObjectType::dock),
-            getTypeOffsetSlow(ObjectType::vehicle),
-            getTypeOffsetSlow(ObjectType::tree),
-            getTypeOffsetSlow(ObjectType::snow),
-            getTypeOffsetSlow(ObjectType::climate),
-            getTypeOffsetSlow(ObjectType::hillShapes),
-            getTypeOffsetSlow(ObjectType::building),
-            getTypeOffsetSlow(ObjectType::scaffolding),
-            getTypeOffsetSlow(ObjectType::industry),
-            getTypeOffsetSlow(ObjectType::region),
-            getTypeOffsetSlow(ObjectType::competitor),
-            getTypeOffsetSlow(ObjectType::scenarioText),
-        };
-        return _offsets[static_cast<size_t>(type)];
-    }
-
-    template<typename T>
-    T* get();
-
-    template<typename T>
-    T* get(size_t id);
-
     Object* getAny(const LoadedObjectHandle& handle);
 
-    template<>
-    InterfaceSkinObject* get();
-    template<>
-    SteamObject* get(size_t id);
-    template<>
-    RockObject* get(size_t id);
-    template<>
-    CargoObject* get(size_t id);
-    template<>
-    TrainSignalObject* get(size_t id);
-    template<>
-    RoadStationObject* get(size_t id);
-    template<>
-    VehicleObject* get(size_t id);
-    template<>
-    TreeObject* get(size_t id);
-    template<>
-    WallObject* get(size_t id);
-    template<>
-    BuildingObject* get(size_t id);
-    template<>
-    IndustryObject* get(size_t id);
-    template<>
-    CurrencyObject* get();
-    template<>
-    BridgeObject* get();
-    template<>
-    TrainStationObject* get();
-    template<>
-    TrackObject* get(size_t id);
-    template<>
-    RoadObject* get(size_t id);
-    template<>
-    AirportObject* get(size_t id);
-    template<>
-    DockObject* get(size_t id);
-    template<>
-    LandObject* get(size_t id);
-    template<>
-    WaterObject* get();
-    template<>
-    RegionObject* get();
-    template<>
-    CompetitorObject* get(size_t id);
-    template<>
-    ScenarioTextObject* get();
+    template<typename T>
+    T* get()
+    {
+        static_assert(getMaxObjects(T::kObjectType) == 1);
+        return reinterpret_cast<T*>(getAny({ T::kObjectType, 0 }));
+    }
+
+    template<typename T>
+    T* get(size_t id)
+    {
+        static_assert(getMaxObjects(T::kObjectType) != 1);
+        return reinterpret_cast<T*>(getAny({ T::kObjectType, static_cast<LoadedObjectId>(id) }));
+    }
 
 #pragma pack(push, 1)
     struct ObjectHeader2
@@ -264,7 +175,7 @@ namespace OpenLoco::ObjectManager
     std::optional<LoadedObjectHandle> findIndex(const ObjectIndexEntry& object);
     void reloadAll();
     ObjIndexPair getActiveObject(ObjectType objectType, uint8_t* edi);
-    ObjectHeader* getHeader(LoadedObjectIndex id);
+    ObjectHeader& getHeader(const LoadedObjectHandle& handle);
     std::vector<ObjectHeader> getHeaders();
 
     LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects);
@@ -272,7 +183,11 @@ namespace OpenLoco::ObjectManager
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();
+    // Only unloads the entry (resets entry does not free)
     void unload(const LoadedObjectHandle& handle);
+    // Unloads and frees the entry
+    void unload(const ObjectHeader& header);
+    bool load(const ObjectHeader& header);
 
     size_t getByteLength(const LoadedObjectHandle& handle);
 

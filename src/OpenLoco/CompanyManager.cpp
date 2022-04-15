@@ -186,9 +186,12 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x0042F213
-    void updateMonthly2()
+    void updateMonthlyHeadquarters()
     {
-        call(0x0042F213);
+        for (auto& company : companies())
+        {
+            company.updateMonthlyHeadquarters();
+        }
     }
 
     // 0x00487FC1
@@ -417,7 +420,10 @@ namespace OpenLoco::CompanyManager
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(EntityId(w->number));
+            auto* vehicle = EntityManager::get<Vehicles::VehicleBase>(EntityId(w->number));
+            if (vehicle == nullptr)
+                continue;
+
             if (vehicle->position.x == Location::null)
                 continue;
 

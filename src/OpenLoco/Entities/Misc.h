@@ -32,6 +32,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct MiscBase : EntityBase
     {
+        static constexpr auto kBaseType = EntityBaseType::misc;
+
     private:
         template<typename TType, MiscEntityType TClass>
         TType* as() const
@@ -142,6 +144,8 @@ namespace OpenLoco
         uint16_t frame; // 0x28
 
         void update();
+
+        static ExplosionSmoke* create(const Map::Pos3& loc);
     };
     static_assert(sizeof(ExplosionSmoke) == 0x2A);
 

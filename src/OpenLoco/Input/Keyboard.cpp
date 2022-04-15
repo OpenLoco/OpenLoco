@@ -86,6 +86,9 @@ namespace OpenLoco::Input
                 continue;
 
             auto t = EntityManager::get<Vehicles::VehicleBase>(EntityId(w->number));
+            if (t == nullptr)
+                continue;
+
             if (t->owner != CompanyManager::getControllingId())
                 continue;
 
