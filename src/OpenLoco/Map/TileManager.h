@@ -27,7 +27,7 @@ namespace OpenLoco::Map::TileManager
     template<typename TileT>
     TileT* insertElement(const Pos2& pos, const uint8_t baseZ, const uint8_t occupiedQuads)
     {
-        return insertElement(TileT::kElementType, pos, baseZ, occupiedQuads)->as<TileT>();
+        return insertElement(TileT::kElementType, pos, baseZ, occupiedQuads)->template as<TileT>();
     }
     TileHeight getHeight(const Pos2& pos);
     void updateTilePointers();
