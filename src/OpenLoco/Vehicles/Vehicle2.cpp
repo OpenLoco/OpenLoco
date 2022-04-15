@@ -18,6 +18,7 @@ namespace OpenLoco::Vehicles
     static loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
 
     // values are pre *256 for maths
+    // Lateral force due to gravity due to Pitch possibly SIN(angle) * 256 * 256
     static constexpr std::array<int32_t, 13> _500170{
         0,
         -6645,
