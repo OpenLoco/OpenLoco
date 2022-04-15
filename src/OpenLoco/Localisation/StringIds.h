@@ -464,6 +464,8 @@ namespace OpenLoco::StringIds
     constexpr string_id audio_device_none = 479;
     constexpr string_id stringptr = 480;
 
+    constexpr string_id cant_build_this_underwater = 484;
+    constexpr string_id land_type_not_suitable = 485;
     constexpr string_id spinner_up = 486;
     constexpr string_id spinner_down = 487;
 

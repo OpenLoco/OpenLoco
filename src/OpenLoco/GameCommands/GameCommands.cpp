@@ -69,7 +69,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::pauseGame,                    togglePause,               0x00431E32, false },
         { GameCommand::loadSaveQuitGame,             loadSaveQuit,              0x0043BFCB, false },
         { GameCommand::removeTree,                   removeTree,                0x004BB392, true  },
-        { GameCommand::createTree,                   nullptr,                   0x004BB138, true  },
+        { GameCommand::createTree,                   createTree,                0x004BB138, true  },
         { GameCommand::changeLandMaterial,           changeLandMaterial,        0x00468EDD, true  },
         { GameCommand::raiseLand,                    nullptr,                   0x00463702, true  },
         { GameCommand::lowerLand,                    nullptr,                   0x004638C6, true  },

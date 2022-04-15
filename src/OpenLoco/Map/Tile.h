@@ -70,6 +70,11 @@ namespace OpenLoco::Map
         // Temporary, use this to get fields easily before they are defined
         const uint8_t* data() const;
         ElementType type() const;
+        void setType(ElementType t)
+        {
+            // Purposely clobers any other data in _type
+            _type = enumValue(t);
+        }
         uint8_t flags() const { return _flags; }
         SmallZ baseZ() const { return _base_z; }
         int16_t baseHeight() const { return _base_z * kSmallZStep; }
@@ -302,8 +307,22 @@ namespace OpenLoco::Map
 
     public:
         uint8_t treeObjectId() const { return _4; } // _4
+        void setTreeObjectId(uint8_t type)
+        {
+            _4 = type;
+        }
         uint8_t rotation() const { return _type & 0x03; }
+        void setRotation(uint8_t rotation)
+        {
+            _type &= ~0x3;
+            _type |= rotation & 0x3;
+        }
         uint8_t quadrant() const { return (_type >> 6) & 0x03; } // _0_C0
+        void setQuadrant(uint8_t quad)
+        {
+            _type &= ~0xC0;
+            _type |= (quad & 0x3) << 6;
+        }
         uint8_t unk5l() const { return _5 & 0xF; }
         uint8_t colour() const { return _6 & 0x1F; } //_6l
         bool hasSnow() const { return _6 & 0x40; }   //_6_40
