@@ -108,7 +108,7 @@ namespace OpenLoco::Vehicles
 
         // Apply Collision to collided train
         auto* collideEntity = EntityManager::get<EntityBase>(vehicleUpdate_collisionCarComponent);
-        auto* collideCarComponent = collideEntity->asVehicle();
+        auto* collideCarComponent = collideEntity->asBase<VehicleBase>();
         if (collideCarComponent != nullptr)
         {
             Vehicle collideTrain(collideCarComponent->getHead());
