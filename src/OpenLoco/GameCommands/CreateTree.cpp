@@ -79,7 +79,7 @@ namespace OpenLoco::GameCommands
         auto clearanceZ = baseZ + treeObj->var_02;
         if (args.requiresFullClearance)
         {
-            clearanceZ = 255;
+            clearanceZ = std::numeric_limits<uint8_t>::max();
         }
 
         Map::QuarterTile qt(1 << (args.quadrant ^ (1 << 1)), 0xF);
