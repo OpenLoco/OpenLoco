@@ -82,6 +82,11 @@ namespace OpenLoco::Map
         int16_t clearHeight() const { return _clear_z * kSmallZStep; }
 
         bool isGhost() const { return _flags & ElementFlags::ghost; }
+        void setGhost(bool state)
+        {
+            _flags &= ~ElementFlags::ghost;
+            _flags |= state == true ? ElementFlags::ghost : 0;
+        }
         bool isFlag5() const { return _flags & ElementFlags::flag_5; }
         bool isFlag6() const { return _flags & ElementFlags::flag_6; } // in tracks/roads indicates is last tile of multi tile
         void setFlag6(bool state)
@@ -324,10 +329,45 @@ namespace OpenLoco::Map
             _type |= (quad & 0x3) << 6;
         }
         uint8_t unk5l() const { return _5 & 0xF; }
+        void setUnk5l(uint8_t unk)
+        {
+            _5 &= ~0xF;
+            _5 |= unk & 0xF;
+        }
+        void setUnk5h(uint8_t unk)
+        {
+            _5 &= ~0xF0;
+            _5 |= (unk & 0xF) << 4;
+        }
         uint8_t colour() const { return _6 & 0x1F; } //_6l
-        bool hasSnow() const { return _6 & 0x40; }   //_6_40
+        void setColour(uint8_t colour)
+        {
+            _6 &= ~0x1F;
+            _6 |= colour & 0x1F;
+        }
+        bool hasSnow() const { return _6 & 0x40; } //_6_40
+        void setSnow(bool hasSnow)
+        {
+            _6 &= ~0x40;
+            _6 |= hasSnow ? 0x40 : 0;
+        }
+        void setUnk6_80(bool unk)
+        {
+            _6 &= ~0x80;
+            _6 |= unk ? 0x80 : 0;
+        }
         uint8_t unk7l() const { return _7 & 0x7; }
+        void setUnk7l(uint8_t unk)
+        {
+            _7 &= ~0x7;
+            _7 |= unk & 0x7;
+        }
         uint8_t season() const { return (_7 >> 3) & 0x7; } // unsure of &0x7
+        void setSeason(uint8_t season)
+        {
+            _7 &= ~0xF8;
+            _7 |= (season & 0x1F) << 3; // unsure of & 0x1F
+        }
     };
     static_assert(sizeof(TreeElement) == TileElementSize);
 

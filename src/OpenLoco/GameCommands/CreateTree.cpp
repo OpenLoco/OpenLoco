@@ -8,6 +8,8 @@
 #include "../Objects/TreeObject.h"
 #include "../OpenLoco.h"
 #include "../S5/S5.h"
+#include "../TownManager.h"
+#include "../ViewportManager.h"
 #include "GameCommands.h"
 
 using namespace OpenLoco::Interop;
@@ -92,7 +94,33 @@ namespace OpenLoco::GameCommands
             elTree->setRotation(args.rotation);
             elTree->setQuadrant(args.quadrant);
             elTree->setTreeObjectId(args.type);
-            // 0x004BB2B7
+            elTree->setUnk5l(0);
+            elTree->setUnk5h(0);
+            elTree->setColour(args.colour);
+            elTree->setUnk6_80(false);
+            elTree->setSnow(false);
+            elTree->setSeason(treeObj->var_3E);
+            elTree->setUnk7l(7);
+            elTree->setClearZ(treeObj->var_02 / 4 + elTree->baseZ());
+            S5::getOptions().madeAnyChanges = 1;
+            if (args.buildImmediately)
+            {
+                elTree->setUnk5l(treeObj->growth - 1);
+                elTree->setClearZ(treeObj->height / 4 + elTree->baseZ());
+                if (elTree->baseZ() - 4 > Scenario::getCurrentSnowLine() && (treeObj->flags & TreeObjectFlags::hasSnowVariation))
+                {
+                    elTree->setSnow(true);
+                }
+            }
+            if (flags & Flags::flag_6)
+            {
+                elTree->setGhost(true);
+            }
+            else
+            {
+                TownManager::sub_497DC1(args.pos, 0, 0, treeObj->rating, 0);
+            }
+            Ui::ViewportManager::invalidate(args.pos, elTree->baseZ() * 4, elTree->clearZ() * 4, ZoomLevel::eighth, 56);
         }
 
         return Economy::getInflationAdjustedCost(treeObj->build_cost_factor, treeObj->cost_index, 12);

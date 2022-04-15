@@ -45,7 +45,7 @@ namespace OpenLoco
         uint16_t build_cost_factor; // 0x40
         uint16_t clear_cost_factor; // 0x42
         uint32_t colours;           // 0x44
-        uint16_t var_48;
+        int16_t rating;             // 0x48
         uint16_t var_4A;
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
