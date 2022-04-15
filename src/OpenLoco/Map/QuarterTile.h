@@ -23,7 +23,7 @@ namespace OpenLoco::Map
         {
             switch (amount)
             {
-                case 0:
+                default:
                     return QuarterTile{ *this };
                 case 1:
                 {
