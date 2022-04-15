@@ -240,6 +240,7 @@ namespace OpenLoco::Vehicles
         void sub_4AA464();
         uint8_t sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
         uint32_t sub_4B15FF(uint32_t unk1);
+        void explodeComponent();
     };
 
     struct Vehicle2or6 : VehicleBase
@@ -529,7 +530,7 @@ namespace OpenLoco::Vehicles
         uint8_t bodyIndex; // 0x54
         int8_t var_55;
         uint32_t creationDay; // 0x56
-        uint8_t pad_5A[0x5E - 0x5A];
+        uint32_t var_5A;
         uint8_t var_5E;
         uint8_t var_5F;
 
@@ -584,7 +585,7 @@ namespace OpenLoco::Vehicles
         uint8_t bodyIndex; // 0x54
         uint8_t pad_55;
         uint32_t creationDay; // 0x56
-        uint8_t pad_5A[0x5E - 0x5A];
+        uint32_t var_5A;
         uint8_t var_5E;
         uint8_t var_5F;
         uint8_t var_60;
@@ -597,6 +598,10 @@ namespace OpenLoco::Vehicles
     public:
         uint16_t getPlaneType();
         bool update();
+
+    private:
+        void updateRoll();
+        void collision();
     };
     static_assert(sizeof(VehicleBogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
