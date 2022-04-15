@@ -95,7 +95,6 @@ namespace OpenLoco
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
     static loco_global<CompanyId[2], 0x00525E3C> _playerCompanies;
-    loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
     static loco_global<int16_t, 0x00525F62> _525F62;
 
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
@@ -227,11 +226,6 @@ namespace OpenLoco
             _gameSpeed = speed;
             WindowManager::invalidate(WindowType::timeToolbar);
         }
-    }
-
-    uint32_t scenarioTicks()
-    {
-        return _scenario_ticks;
     }
 
     Utility::prng& gPrng()
@@ -860,7 +854,7 @@ namespace OpenLoco
     // 0x0046ABCB
     static void tickLogic()
     {
-        _scenario_ticks++;
+        ScenarioManager::setScenarioTicks(ScenarioManager::getScenarioTicks() + 1);
 
         addr<0x00525F64, int32_t>()++;
         addr<0x00525FCC, uint32_t>() = gPrng().srand_0();

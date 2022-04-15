@@ -1,4 +1,5 @@
 #include "ScenarioManager.h"
+#include "GameState.h"
 #include "Interop/Interop.hpp"
 
 using namespace OpenLoco::Interop;
@@ -84,5 +85,16 @@ namespace OpenLoco::ScenarioManager
         registers regs;
         regs.al = al;
         call(0x0044452F, regs);
+    }
+
+    // 0x00525F5E
+    uint32_t getScenarioTicks()
+    {
+        return getGameState().scenarioTicks;
+    }
+
+    void setScenarioTicks(uint32_t ticks)
+    {
+        getGameState().scenarioTicks = ticks;
     }
 }

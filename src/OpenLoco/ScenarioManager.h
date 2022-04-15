@@ -46,4 +46,8 @@ namespace OpenLoco::ScenarioManager
     uint16_t getScenarioCountByCategory(uint8_t category);
     ScenarioIndexEntry* getNthScenarioFromCategory(uint8_t category, uint8_t index);
     void loadIndex(uint8_t al);
+
+    // 0x00525F5E
+    uint32_t getScenarioTicks();
+    void setScenarioTicks(uint32_t ticks);
 }
