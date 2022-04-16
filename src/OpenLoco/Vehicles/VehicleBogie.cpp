@@ -27,8 +27,8 @@ namespace OpenLoco::Vehicles
     // 0x004AA008
     bool VehicleBogie::update()
     {
-        vehicleUpdate_backBogie = vehicleUpdate_frontBogie;
-        vehicleUpdate_frontBogie = this;
+        vehicleUpdate_frontBogie = vehicleUpdate_backBogie;
+        vehicleUpdate_backBogie = this;
 
         if (mode == TransportMode::air || mode == TransportMode::water)
         {
