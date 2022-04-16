@@ -1,3 +1,4 @@
+#include "../CompanyManager.h"
 #include "../Economy/Economy.h"
 #include "../Industry.h"
 #include "../Localisation/FormatArguments.hpp"
@@ -11,12 +12,23 @@
 namespace OpenLoco::GameCommands
 {
     // 0x00497D8D
-    static int8_t sub_497D8D(Map::Pos2& pos)
+    static std::optional<int16_t> getCompanyRating(Map::Pos2& pos)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        return call(0x00497D8D, regs);
+        auto companyId = CompanyManager::getUpdatingCompanyId();
+        if (companyId != CompanyId::neutral)
+        {
+            auto res = TownManager::getClosestTownAndUnk(pos);
+            if (res.has_value())
+            {
+                auto townId = res->first;
+                auto town = TownManager::get(townId);
+                if (town != nullptr)
+                {
+                    return town->company_ratings[enumValue(companyId)];
+                }
+            }
+        }
+        return std::nullopt;
     }
 
     // 0x0042D74E
@@ -49,8 +61,8 @@ namespace OpenLoco::GameCommands
 
                     if ((buildingObj->flags & BuildingObjectFlags::misc_building) == 0)
                     {
-                        auto rating = sub_497D8D(pos);
-                        if (rating < 0)
+                        auto rating = getCompanyRating(pos);
+                        if (rating.has_value() && *rating < 0)
                         {
                             auto res = TownManager::getClosestTownAndUnk(pos);
                             auto* town = TownManager::get(res->first);
