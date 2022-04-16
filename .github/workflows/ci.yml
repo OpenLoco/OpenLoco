@@ -26,6 +26,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Install MSVC problem matcher
+        uses: ammaraskar/msvc-problem-matcher@master
       - name: Build OpenLoco
         run: |
             $installPath = vswhere -latest -property installationpath
@@ -68,6 +70,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Install GCC problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
       - name: Build OpenLoco
         run: |
           mkdir build
@@ -84,6 +88,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Install GCC problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
       - name: Build OpenLoco
         run: |
           cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/ -DPNG_LIBRARY=/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll -DPNG_PNG_INCLUDE_DIR=/usr/i686-w64-mingw32/sys-root/mingw/include
@@ -98,6 +104,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Install GCC problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
       - name: Install dependencies
         env:
           dependency_ver: 1.5.0
