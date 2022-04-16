@@ -822,7 +822,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             auto trackTypeTab = widxToTrackTypeTab(widgetIndex);
             auto type = _trackTypesForTab[trackTypeTab];
-            if (type == -1)
+            if (type == 0xFF)
             {
                 if (_transportTypeTabInformation[window->currentTab].type == VehicleType::aircraft)
                 {
@@ -1415,7 +1415,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             auto img = 0;
             auto type = _trackTypesForTab[tab];
-            if (type == -1)
+            if (type == 0xFF)
             {
                 if (window->currentTab == (widx::tab_build_new_aircraft - widx::tab_build_new_trains))
                 {
