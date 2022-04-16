@@ -77,9 +77,9 @@ namespace OpenLoco::Paint
         uint16_t x;    // 0x08
         uint16_t y;    // 0x0A
         uint16_t z;    // 0x0C
-        uint16_t xEnd; // 0x0E
-        uint16_t yEnd; // 0x10
-        uint16_t zEnd; // 0x12
+        uint16_t zEnd; // 0x0E
+        uint16_t xEnd; // 0x10
+        uint16_t yEnd; // 0x12
     };
 
     namespace QuadrantFlags
