@@ -92,6 +92,10 @@ namespace OpenLoco::GameCommands
         if (flags & Flags::apply)
         {
             auto* elTree = Map::TileManager::insertElement<Map::TreeElement>(args.pos, baseZ, qt.getBaseQuarterOccupied());
+            if (elTree == nullptr)
+            {
+                return FAILURE;
+            }
             Ui::Windows::Terraform::setLastPlacedTree(elTree);
             elTree->setRotation(args.rotation);
             elTree->setQuadrant(args.quadrant);
