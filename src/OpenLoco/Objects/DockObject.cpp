@@ -1,8 +1,8 @@
 #include "DockObject.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
-#include "ObjectManager.h"
 #include "../Interop/Interop.hpp"
+#include "ObjectManager.h"
 
 namespace OpenLoco
 {
@@ -44,7 +44,7 @@ namespace OpenLoco
         regs.esi = Interop::X86Pointer(this);
         regs.ebx = handle.id;
         regs.ecx = enumValue(handle.type);
-        Interop::call(0x0042F4D0, regs);
+        Interop::call(0x00490E49, regs);
     }
 
     // 0x00490EC9

@@ -1,8 +1,8 @@
 #include "AirportObject.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
-#include "ObjectManager.h"
 #include "../Interop/Interop.hpp"
+#include "ObjectManager.h"
 
 namespace OpenLoco
 {

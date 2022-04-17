@@ -176,4 +176,190 @@ namespace OpenLoco
             }
         }
     }
+
+    // 0x004B8B23
+    bool VehicleObject::validate() const
+    {
+        if (cost_index > 32)
+        {
+            return false;
+        }
+        if (run_cost_index > 32)
+        {
+            return false;
+        }
+
+        if (cost_factor <= 0)
+        {
+            return false;
+        }
+        if (run_cost_factor < 0)
+        {
+            return false;
+        }
+
+        if (flags & FlagsE0::unk_09)
+        {
+            if (num_mods != 0)
+            {
+                return false;
+            }
+            if (flags & FlagsE0::rack_rail)
+            {
+                return false;
+            }
+        }
+
+        if (num_mods > 4)
+        {
+            return false;
+        }
+
+        if (num_simultaneous_cargo_types > 2)
+        {
+            return false;
+        }
+
+        if (num_compat > 8)
+        {
+            return false;
+        }
+
+        if (rack_speed > speed)
+        {
+            return false;
+        }
+
+        for (const auto& bodySprite : bodySprites)
+        {
+            if (!(bodySprite.flags & BodySpriteFlags::hasSprites))
+            {
+                continue;
+            }
+
+            switch (bodySprite.numFlatRotationFrames)
+            {
+                case 8:
+                case 16:
+                case 32:
+                case 64:
+                case 128:
+                    break;
+                default:
+                    return false;
+            }
+            switch (bodySprite.numSlopedRotationFrames)
+            {
+                case 4:
+                case 8:
+                case 16:
+                case 32:
+                    break;
+                default:
+                    return false;
+            }
+            switch (bodySprite.numAnimationFrames)
+            {
+                case 1:
+                case 2:
+                case 4:
+                    break;
+                default:
+                    return false;
+            }
+            if (bodySprite.numCargoLoadFrames < 1 || bodySprite.numCargoLoadFrames > 5)
+            {
+                return false;
+            }
+            switch (bodySprite.numRollFrames)
+            {
+                case 1:
+                case 3:
+                    break;
+                default:
+                    return false;
+            }
+        }
+
+        for (auto& bogieSprite : bogie_sprites)
+        {
+            if (!(bogieSprite.flags & BogieSpriteFlags::hasSprites))
+            {
+                continue;
+            }
+
+            switch (bogieSprite.rollStates)
+            {
+                case 1:
+                case 2:
+                case 4:
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    // 0x004B841B
+    void VehicleObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    {
+        Interop::registers regs;
+        regs.esi = Interop::X86Pointer(this);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
+        Interop::call(0x004B841B, regs);
+    }
+
+    // 0x004B89FF
+    void VehicleObject::unload()
+    {
+        name = 0;
+        trackType = 0;
+        for (auto& anim : animation)
+        {
+            anim.objectId = 0;
+        }
+
+        std::fill(std::begin(required_track_extras), std::end(required_track_extras), 0);
+
+        max_primary_cargo = 0;
+        max_secondary_cargo = 0;
+        primary_cargo_types = 0;
+        secondary_cargo_types = 0;
+        num_simultaneous_cargo_types = 0;
+
+        std::fill(std::begin(cargoTypeSpriteOffsets), std::end(cargoTypeSpriteOffsets), 0);
+        std::fill(std::begin(compatible_vehicles), std::end(compatible_vehicles), 0);
+
+        for (auto& bodySprite : bodySprites)
+        {
+            bodySprite.flatImageId = 0;
+            bodySprite.var_0B = 0;
+            bodySprite.numFramesPerRotation = 0;
+            bodySprite.gentleImageId = 0;
+            bodySprite.var_0C = 0;
+            bodySprite.steepImageId = 0;
+            bodySprite.unkImageId = 0;
+            bodySprite.var_08 = 0;
+            bodySprite.var_09 = 0;
+            bodySprite.var_0A = 0;
+        }
+
+        for (auto& bogieSprite : bogie_sprites)
+        {
+            bogieSprite.flatImageIds = 0;
+            bogieSprite.gentleImageIds = 0;
+            bogieSprite.steepImageIds = 0;
+            bogieSprite.var_02 = 0;
+            bogieSprite.var_03 = 0;
+            bogieSprite.var_04 = 0;
+            bogieSprite.numRollSprites = 0;
+        }
+
+        rack_rail_type = 0;
+        sound.engine1.soundObjectId = 0;
+
+        std::fill(std::begin(startSounds), std::end(startSounds), 0);
+    }
 }
