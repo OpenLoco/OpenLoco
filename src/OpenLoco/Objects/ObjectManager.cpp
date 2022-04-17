@@ -663,6 +663,12 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<RoadExtraObject*>(&obj)->validate();
             case ObjectType::road:
                 return reinterpret_cast<RoadObject*>(&obj)->validate();
+            case ObjectType::airport:
+                return reinterpret_cast<AirportObject*>(&obj)->validate();
+            case ObjectType::dock:
+                return reinterpret_cast<DockObject*>(&obj)->validate();
+            case ObjectType::vehicle:
+                return reinterpret_cast<VehicleObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -740,6 +746,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::road:
                 reinterpret_cast<RoadObject*>(&obj)->unload();
+                break;
+            case ObjectType::airport:
+                reinterpret_cast<AirportObject*>(&obj)->unload();
+                break;
+            case ObjectType::dock:
+                reinterpret_cast<DockObject*>(&obj)->unload();
+                break;
+            case ObjectType::vehicle:
+                reinterpret_cast<VehicleObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -833,6 +848,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::road:
                 reinterpret_cast<RoadObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::airport:
+                reinterpret_cast<AirportObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::dock:
+                reinterpret_cast<DockObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::vehicle:
+                reinterpret_cast<VehicleObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
