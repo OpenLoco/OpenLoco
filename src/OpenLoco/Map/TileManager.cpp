@@ -347,15 +347,15 @@ namespace OpenLoco::Map::TileManager
                 height.landHeight += getOneSideUpLandHeight(xl, yl, slope);
                 break;
 
-            case SurfaceSlope::w_corner_dn:
-            case SurfaceSlope::s_corner_dn:
-            case SurfaceSlope::e_corner_dn:
             case SurfaceSlope::n_corner_dn:
+            case SurfaceSlope::e_corner_dn:
+            case SurfaceSlope::s_corner_dn:
+            case SurfaceSlope::w_corner_dn:
                 height.landHeight += getOneCornerDownLandHeight(xl, yl, slope, surfaceEl->isSlopeDoubleHeight());
                 break;
 
-            case SurfaceSlope::w_e_valley:
             case SurfaceSlope::n_s_valley:
+            case SurfaceSlope::w_e_valley:
                 height.landHeight += getValleyLandHeight(xl, yl, slope);
                 break;
         }
