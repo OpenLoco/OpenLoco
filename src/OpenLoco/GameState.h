@@ -84,7 +84,7 @@ namespace OpenLoco
         uint32_t var_40C;                                                        // 0x00040C (0x00526224)
         uint32_t var_410;                                                        // 0x000410 (0x00526228)
         uint8_t lastBuildVehiclesOption;                                         // 0x000414 (0x0052622C)
-        uint8_t var_415;                                                         // 0x000415 (0x0052622D)
+        uint8_t numberOfIndustries;                                              // 0x000415 (0x0052622D)
         uint16_t var_416;                                                        // 0x000416 (0x0052622E)
         uint8_t objectiveType;                                                   // 0x000418 (0x00526230)
         uint8_t objectiveFlags;                                                  // 0x000419 (0x00526231)

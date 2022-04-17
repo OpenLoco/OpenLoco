@@ -32,9 +32,9 @@ namespace OpenLoco::Game
     static loco_global<char[512], 0x0112CE04> _savePath;
 
     // 0x0046DB4C
-    static void sub_46DB4C()
+    void sub_46DB4C()
     {
-        call(0x0046DB4C);
+        call(0x0046DB4C); // draw preview map
     }
 
     using Ui::Windows::PromptBrowse::browse_type;
@@ -344,16 +344,5 @@ namespace OpenLoco::Game
     void removeFlags(uint32_t flags)
     {
         setFlags(getFlags() & ~flags);
-    }
-
-    void registerHooks()
-    {
-        // Can be removed after https://github.com/OpenLoco/OpenLoco/pull/781
-        registerHook(
-            0x004418DB,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                regs.eax = saveScenarioOpen();
-                return 0;
-            });
     }
 }

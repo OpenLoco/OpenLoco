@@ -743,7 +743,6 @@ void OpenLoco::Interop::registerHooks()
     Ui::Windows::Construction::registerHooks();
     Ui::WindowManager::registerHooks();
     Ui::ViewportManager::registerHooks();
-    Game::registerHooks();
     GameCommands::registerHooks();
     Scenario::registerHooks();
     StationManager::registerHooks();
