@@ -934,7 +934,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t characters_large_small_z_acute = 2010;
     constexpr uint32_t characters_large_small_255 = 2011;
 
-    constexpr uint32_t currency_symbol = 1919;
+    constexpr uint32_t currency_symbol = characters_large_pound_sterling_sign;
 
     constexpr uint32_t text_palette = 2169;
 
