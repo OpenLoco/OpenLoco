@@ -128,9 +128,9 @@ namespace OpenLoco
         uint8_t var_4A7;
         unk4A8 var_4A8[60];
         uint8_t var_2578;
-        uint8_t headquartersZ; // 0x2579
-        coord_t headquartersX; // 0x257A -1 on no headquarter placed
-        coord_t headquartersY; // 0x257C
+        Map::SmallZ headquartersZ; // 0x2579
+        coord_t headquartersX;     // 0x257A -1 on no headquarter placed
+        coord_t headquartersY;     // 0x257C
         uint8_t pad_257E[0x259E - 0x257E];
         uint32_t var_259E;
         uint8_t pad_25A2[0x85C4 - 0x25A2];

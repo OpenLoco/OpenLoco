@@ -154,7 +154,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         GameCommands::SignalPlacementArgs args;
         args.type = _lastSelectedSignal;
-        args.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseZ() * 4);
+        args.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
         args.rotation = elTrack->unkDirection();
         args.trackId = elTrack->trackId();
         args.index = elTrack->sequenceIndex();

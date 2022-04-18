@@ -1784,7 +1784,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (surfaceTile == nullptr)
             return std::nullopt;
 
-        Map::TileHeight height = { static_cast<coord_t>(surfaceTile->baseZ() * 4), static_cast<coord_t>(surfaceTile->water() * Map::kMicroZStep) };
+        Map::TileHeight height = { static_cast<coord_t>(surfaceTile->baseHeight()), surfaceTile->waterHeight() };
         if (surfaceTile->slopeCorners())
         {
             height.landHeight += 16;
@@ -1821,7 +1821,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto& roadPieces = TrackData::getRoadPiece(elTrack->roadId());
         const auto& roadPiece = roadPieces[elTrack->sequenceIndex()];
 
-        const auto startHeight = elTrack->baseZ() * 4 - roadPiece.z;
+        const auto startHeight = elTrack->baseHeight() - roadPiece.z;
 
         return { startHeight };
     }
@@ -1850,7 +1850,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto& trackPieces = TrackData::getTrackPiece(elTrack->trackId());
         const auto& trackPiece = trackPieces[elTrack->sequenceIndex()];
 
-        const auto startHeight = elTrack->baseZ() * 4 - trackPiece.z;
+        const auto startHeight = elTrack->baseHeight() - trackPiece.z;
 
         return { std::make_pair(startHeight, elTrack->trackId()) };
     }

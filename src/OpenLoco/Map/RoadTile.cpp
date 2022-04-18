@@ -67,7 +67,7 @@ namespace OpenLoco::Map
         CompanyManager::setUpdatingCompanyId(owner());
 
         GameCommands::RoadRemovalArgs args;
-        args.pos = Map::Pos3(loc.x, loc.y, baseZ() * 4);
+        args.pos = Map::Pos3(loc.x, loc.y, baseHeight());
         args.unkDirection = unkDirection();
         args.roadId = roadId();
         args.sequenceIndex = sequenceIndex();

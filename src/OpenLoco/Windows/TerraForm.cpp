@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 _terraformGhostPlaced = _terraformGhostPlaced & ~Common::GhostPlaced::tree;
                 GameCommands::TreeRemovalArgs args;
-                args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * 4);
+                args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * Map::kSmallZStep);
                 args.type = _terraformGhostType;
                 args.elementType = _terraformGhostTreeElementType;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
@@ -2217,7 +2217,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 _terraformGhostPlaced = _terraformGhostPlaced & ~Common::GhostPlaced::wall;
                 GameCommands::WallRemovalArgs args;
-                args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * 4);
+                args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * Map::kSmallZStep);
                 args.rotation = _terraformGhostRotation;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             }

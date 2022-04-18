@@ -70,14 +70,14 @@ namespace OpenLoco::Paint
 
             if (surface->water())
             {
-                maxClearZ = std::max<uint8_t>(maxClearZ, surface->water() * 4);
+                maxClearZ = std::max<uint8_t>(maxClearZ, surface->water() * Map::kMicroToSmallZStep);
             }
             if (surface->hasHighTypeFlag())
             {
                 maxClearZ = std::max<uint8_t>(maxClearZ, surface->clearZ() + 24);
             }
         }
-        _maxHeight = (maxClearZ * 4) + 32;
+        _maxHeight = (maxClearZ * Map::kSmallZStep) + 32;
     }
 
     loco_global<int32_t[4], 0x4FD120> _4FD120;

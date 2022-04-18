@@ -116,7 +116,7 @@ namespace OpenLoco::Paint
     {
         registers regs;
         regs.esi = X86Pointer(&elSurface);
-        regs.dx = elSurface.baseZ() * 4;
+        regs.dx = elSurface.baseHeight();
         call(0x004656BF, regs);
     }
 
@@ -126,7 +126,7 @@ namespace OpenLoco::Paint
         registers regs;
         regs.esi = X86Pointer(&elTrack);
         regs.ecx = (session.getRotation() + elTrack.unkDirection()) & 0x3;
-        regs.dx = elTrack.baseZ() * 4;
+        regs.dx = elTrack.baseHeight();
         call(0x0049B6BF, regs);
     }
 
@@ -136,7 +136,7 @@ namespace OpenLoco::Paint
         registers regs;
         regs.esi = X86Pointer(&elStation);
         regs.ecx = (session.getRotation() + elStation.rotation()) & 0x3;
-        regs.dx = elStation.baseZ() * 4;
+        regs.dx = elStation.baseHeight();
         call(0x0048B313, regs);
     }
 
@@ -146,7 +146,7 @@ namespace OpenLoco::Paint
         registers regs;
         regs.esi = X86Pointer(&elBuilding);
         regs.ecx = (session.getRotation() + (elBuilding.data()[0] & 0x3)) & 0x3;
-        regs.dx = elBuilding.baseZ() * 4;
+        regs.dx = elBuilding.baseHeight();
         call(0x0042C6C4, regs);
     }
 
@@ -156,7 +156,7 @@ namespace OpenLoco::Paint
         registers regs;
         regs.esi = X86Pointer(&elWall);
         regs.ecx = (session.getRotation() + (elWall.data()[0] & 0x3)) & 0x3;
-        regs.dx = elWall.baseZ() * 4;
+        regs.dx = elWall.baseHeight();
         call(0x004C3D7C, regs);
     }
 
@@ -166,7 +166,7 @@ namespace OpenLoco::Paint
         registers regs;
         regs.esi = X86Pointer(&elRoad);
         regs.ecx = (session.getRotation() + elRoad.unkDirection()) & 0x3;
-        regs.dx = elRoad.baseZ() * 4;
+        regs.dx = elRoad.baseHeight();
         call(0x004759A6, regs);
     }
 
@@ -176,7 +176,7 @@ namespace OpenLoco::Paint
         registers regs;
         regs.esi = X86Pointer(&elIndustry);
         regs.ecx = (session.getRotation() + (elIndustry.data()[0] & 0x3)) & 0x3;
-        regs.dx = elIndustry.baseZ() * 4;
+        regs.dx = elIndustry.baseHeight();
         call(0x00453C52, regs);
     }
 
@@ -275,7 +275,7 @@ namespace OpenLoco::Paint
         auto tile = TileManager::get(loc);
         for (auto& el : tile)
         {
-            session.setUnkVpY(vpPos->y - el.baseZ() * 4);
+            session.setUnkVpY(vpPos->y - el.baseHeight());
             session.setCurrentItem(&el);
             switch (el.type())
             {
@@ -356,7 +356,7 @@ namespace OpenLoco::Paint
         auto tile = TileManager::get(loc);
         for (auto& el : tile)
         {
-            session.setUnkVpY(vpPos->y - el.baseZ() * 4);
+            session.setUnkVpY(vpPos->y - el.baseHeight());
             session.setCurrentItem(&el);
             switch (el.type())
             {

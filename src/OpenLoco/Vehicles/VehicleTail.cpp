@@ -75,7 +75,7 @@ namespace OpenLoco::Vehicles
         }
 
         const auto _oldRoutingHandle = routingHandle;
-        const Map::Pos3 _oldTilePos = Map::Pos3(tileX, tileY, tileBaseZ * 4);
+        const Map::Pos3 _oldTilePos = Map::Pos3(tileX, tileY, tileBaseZ * Map::kSmallZStep);
 
         vehicleUpdate_var_1136114 = 0;
         sub_4B15FF(*vehicleUpdate_var_113612C);

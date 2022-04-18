@@ -202,7 +202,7 @@ namespace OpenLoco
             auto tile = Map::TileManager::get(selectedPos);
             auto* surface = tile.surface();
 
-            coord_t z = surface->baseZ() * Map::kSmallZStep;
+            coord_t z = surface->baseHeight();
             if (surface->slope() != 0)
                 z += 16;
 
@@ -562,7 +562,7 @@ namespace OpenLoco
             elBuilding->setConstructed(false);
             elBuilding->setUnk5u(0);
 
-            Ui::ViewportManager::invalidate(pos, elBuilding->baseZ() * Map::kSmallZStep, elBuilding->clearZ() * Map::kSmallZStep);
+            Ui::ViewportManager::invalidate(pos, elBuilding->baseHeight(), elBuilding->clearHeight());
 
             const auto* buildingObj = elBuilding->getObject();
             auto totalHeight = 0;
@@ -572,7 +572,7 @@ namespace OpenLoco
             }
             elBuilding->setClearZ((totalHeight / 4) + elBuilding->baseZ());
 
-            Ui::ViewportManager::invalidate(pos, elBuilding->baseZ() * Map::kSmallZStep, elBuilding->clearZ() * Map::kSmallZStep);
+            Ui::ViewportManager::invalidate(pos, elBuilding->baseHeight(), elBuilding->clearHeight());
             break;
         }
     }

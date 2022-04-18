@@ -42,7 +42,7 @@ namespace OpenLoco::Map::WaveManager
         {
             return;
         }
-        auto vpPoint = gameToScreen(Pos3(pos.x + 16, pos.y + 16, surface.water() * Map::kMicroZStep), WindowManager::getCurrentRotation());
+        auto vpPoint = gameToScreen(Pos3(pos.x + 16, pos.y + 16, surface.waterHeight()), WindowManager::getCurrentRotation());
         auto w = WindowManager::findWindowShowing(vpPoint);
         if (w == nullptr)
             return;
@@ -72,7 +72,7 @@ namespace OpenLoco::Map::WaveManager
         rawWaves()[waveIndex].frame = 0;
         surface.setFlag6(true);
 
-        ViewportManager::invalidate(pos, surface.water() * Map::kMicroZStep, surface.water() * Map::kMicroZStep, ZoomLevel::full);
+        ViewportManager::invalidate(pos, surface.waterHeight(), surface.waterHeight(), ZoomLevel::full);
     }
 
     // 0x004C56F6
@@ -93,7 +93,7 @@ namespace OpenLoco::Map::WaveManager
                 continue;
             }
 
-            ViewportManager::invalidate(wave.loc, surface->water() * 4, surface->water() * 4, ZoomLevel::full);
+            ViewportManager::invalidate(wave.loc, surface->waterHeight(), surface->waterHeight(), ZoomLevel::full);
 
             if (surface->water())
             {

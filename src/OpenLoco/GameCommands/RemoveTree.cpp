@@ -51,7 +51,7 @@ namespace OpenLoco::GameCommands
             if (element.rawData()[0] != elementType)
                 continue;
 
-            if (element.baseZ() * Map::kSmallZStep != pos.z)
+            if (element.baseHeight() != pos.z)
                 continue;
 
             auto* treeElement = element.as<Map::TreeElement>();

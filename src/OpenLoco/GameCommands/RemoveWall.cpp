@@ -50,7 +50,7 @@ namespace OpenLoco::GameCommands
                 return 0;
             }
 
-            Ui::ViewportManager::invalidate(args.pos, wallElement->baseZ() * Map::kSmallZStep, wallElement->baseZ() * Map::kSmallZStep + 48, ZoomLevel::half);
+            Ui::ViewportManager::invalidate(args.pos, wallElement->baseHeight(), wallElement->baseHeight() + 48, ZoomLevel::half);
 
             TileManager::removeElement(tileElement);
 

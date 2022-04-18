@@ -72,7 +72,9 @@ namespace OpenLoco::Map
         ElementType type() const;
         uint8_t flags() const { return _flags; }
         SmallZ baseZ() const { return _base_z; }
+        int16_t baseHeight() const { return _base_z * kSmallZStep; }
         SmallZ clearZ() const { return _clear_z; }
+        int16_t clearHeight() const { return _clear_z * kSmallZStep; }
 
         bool isGhost() const { return _flags & ElementFlags::ghost; }
         bool isFlag5() const { return _flags & ElementFlags::flag_5; }
@@ -192,6 +194,7 @@ namespace OpenLoco::Map
         uint8_t slope() const { return _slope & 0x1F; }
         uint8_t var_4_E0() const { return _slope & 0xE0; }
         MircoZ water() const { return _water & 0x1F; }
+        int16_t waterHeight() const { return (_water & 0x1F) * kMicroZStep; }
         void setWater(MircoZ level) { _water = (_water & 0xE0) | (level & 0x1F); };
         uint8_t terrain() const { return _terrain & 0x1F; }
         void setTerrain(uint8_t terrain)

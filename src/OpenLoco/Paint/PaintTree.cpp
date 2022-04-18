@@ -64,9 +64,9 @@ namespace OpenLoco::Paint
         }
 
         const uint8_t quadrant = (elTree.quadrant() + session.getRotation()) % 4;
-        const auto imageOffset = Map::Pos3(kTreeQuadrantOffset[quadrant].x, kTreeQuadrantOffset[quadrant].y, elTree.baseZ() * 4);
+        const auto imageOffset = Map::Pos3(kTreeQuadrantOffset[quadrant].x, kTreeQuadrantOffset[quadrant].y, elTree.baseHeight());
 
-        const int16_t boundBoxSizeZ = std::min(elTree.clearZ() - elTree.baseZ(), 32) * 4 - 3;
+        const int16_t boundBoxSizeZ = std::min(elTree.clearZ() - elTree.baseZ(), 32) * Map::kSmallZStep - 3;
 
         uint32_t imageId1 = treeFrameNum + seasonBaseImageId;
 

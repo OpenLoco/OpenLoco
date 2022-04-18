@@ -547,7 +547,7 @@ namespace OpenLoco::Vehicles
                 }
 
                 const auto startTargetPos2 = Map::Pos2{ pieceLoc } - Math::Vector::rotate(Map::Pos2{ targetPiece.x, targetPiece.y }, elTrack->unkDirection());
-                const auto startTargetPos = Map::Pos3{ startTargetPos2, static_cast<int16_t>(elTrack->baseZ() * 4 - targetPiece.z) };
+                const auto startTargetPos = Map::Pos3{ startTargetPos2, static_cast<int16_t>(elTrack->baseHeight() - targetPiece.z) };
                 TrackAndDirection::_TrackAndDirection tad2(elTrack->trackId(), elTrack->unkDirection());
                 LocationOfInterest newInterest{ startTargetPos, tad2._data, elTrack->owner(), elTrack->trackObjectId() };
 
