@@ -1458,8 +1458,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto buildImage = skin->img + additionalVehicleButtonByVehicleType.at(head->vehicleType);
-            // Note this 1 << 30 is a flag for Widget::sub_4CADE8 and not the translucent flag which has the same offset
-            self->widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self->owner)) | (1 << 30);
+            self->widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self->owner)) | Widget::imageIdColourSet;
 
             Vehicles::Vehicle train{ *head };
             if (train.cars.empty())

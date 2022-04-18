@@ -271,13 +271,13 @@ namespace OpenLoco::Ui
             assert(false);
         }
 
-        if ((imageId & (1 << 30)) == 0)
+        if ((imageId & Widget::imageIdColourSet) == 0)
         {
             imageId |= colour << 19;
         }
         else
         {
-            imageId &= ~(1 << 30);
+            imageId &= ~Widget::imageIdColourSet;
         }
 
         Gfx::drawImage(context, xPlaceForImage, yPlaceForImage, imageId);
@@ -393,13 +393,13 @@ namespace OpenLoco::Ui
         // TODO: Remove addedImage addition
         uint32_t addedImage = image + 2;
 
-        if ((addedImage & (1 << 30)) == 0)
+        if ((addedImage & Widget::imageIdColourSet) == 0)
         {
             addedImage |= colour << 19;
         }
         else
         {
-            addedImage &= ~(1 << 30);
+            addedImage &= ~Widget::imageIdColourSet;
         }
 
         Gfx::drawImage(context, window->x + left, window->y + top, addedImage);
@@ -470,13 +470,13 @@ namespace OpenLoco::Ui
             }
         }
 
-        if ((addedImage & (1 << 30)) == 0)
+        if ((addedImage & Widget::imageIdColourSet) == 0)
         {
             addedImage |= colour << 19;
         }
         else
         {
-            addedImage &= ~(1 << 30);
+            addedImage &= ~Widget::imageIdColourSet;
         }
 
         Gfx::drawImage(context, window->x + left, window->y + top, addedImage);
@@ -1000,7 +1000,7 @@ namespace OpenLoco::Ui
             {
                 Gfx::drawImage(ctx, pos.x, pos.y + 1, imageId);
             }
-            Gfx::drawImage(ctx, pos.x, pos.y, (1 << 30) | (51 << 19) | ImageIds::tab);
+            Gfx::drawImage(ctx, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, PaletteIndex::index_33));
             Gfx::drawRect(*ctx, pos.x, pos.y + 26, 31, 1, Colour::getShade(w->getColour(WindowColour::secondary), 7));
         }
     }

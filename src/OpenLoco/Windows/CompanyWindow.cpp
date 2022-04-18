@@ -676,7 +676,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto companyColour = CompanyManager::getCompanyColour(CompanyId(self->number));
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             uint32_t image = skin->img + InterfaceSkin::ImageIds::build_headquarters;
-            self->widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | (1 << 30);
+            self->widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | Widget::imageIdColourSet;
 
             self->disabledWidgets &= ~(1 << widx::centre_on_viewport);
             if (company->headquartersX == -1)
@@ -1283,10 +1283,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::repositionTabs(self);
 
             // Set company's main colour
-            self->widgets[widx::main_colour_scheme].image = (1 << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
+            self->widgets[widx::main_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
 
             // Set company's secondary colour
-            self->widgets[widx::secondary_colour_scheme].image = (1 << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.secondary);
+            self->widgets[widx::secondary_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.secondary);
 
             struct ColourSchemeTuple
             {
