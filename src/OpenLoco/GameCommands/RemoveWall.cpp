@@ -18,7 +18,7 @@ namespace OpenLoco::GameCommands
      *
      * @param args.pos.x @<ax>
      * @param args.pos.y @<cx>
-     * @param args.pos.z @<dh> * 4 (multiplied by 4 in WallRemovalArgs initialiser)
+     * @param args.pos.z @<dh> * Map::kSmallZStep (multiplied by Map::kSmallZStep in WallRemovalArgs initialiser)
      * @param args.rotation @<bh>
      * @param flags @<bl>
      * @return @<ebx> - returns 0 (always successful)
@@ -50,7 +50,7 @@ namespace OpenLoco::GameCommands
                 return 0;
             }
 
-            Ui::ViewportManager::invalidate(args.pos, wallElement->baseZ() * 4, wallElement->baseZ() * 4 + 48, ZoomLevel::half);
+            Ui::ViewportManager::invalidate(args.pos, wallElement->baseZ() * Map::kSmallZStep, wallElement->baseZ() * Map::kSmallZStep + 48, ZoomLevel::half);
 
             TileManager::removeElement(tileElement);
 

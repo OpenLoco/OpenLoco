@@ -52,7 +52,7 @@ namespace OpenLoco::Map
                     {
                         totalHeight += buildingObj->varationHeights[*unkVariation];
                     }
-                    Ui::ViewportManager::invalidate(loc, baseZ() * 4, clearZ() * 4, ZoomLevel::quarter);
+                    Ui::ViewportManager::invalidate(loc, baseZ() * Map::kSmallZStep, clearZ() * Map::kSmallZStep, ZoomLevel::quarter);
 
                     const auto newClearHeight = baseZ() + totalHeight / 4;
                     setClearZ(newClearHeight);

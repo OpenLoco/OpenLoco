@@ -311,7 +311,7 @@ namespace OpenLoco::Map::TileManager
             return height;
         }
 
-        height.waterHeight = surfaceEl->water() * 16;
+        height.waterHeight = surfaceEl->water() * Map::kMicroZStep;
         height.landHeight = surfaceEl->baseZ() * 4;
 
         const auto slope = surfaceEl->slopeCorners();

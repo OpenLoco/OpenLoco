@@ -1062,7 +1062,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (info.type == InteractionItem::water)
         {
             auto* surface = static_cast<const SurfaceElement*>(info.object);
-            waterHeight = surface->water() * 16;
+            waterHeight = surface->water() * Map::kMicroZStep;
         }
 
         const auto minPosition = info.pos;                  // E40128/A
