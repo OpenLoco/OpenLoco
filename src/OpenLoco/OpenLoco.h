@@ -65,7 +65,6 @@ namespace OpenLoco
     void unsetPauseFlag(uint8_t value);
     GameSpeed getGameSpeed();
     void setGameSpeed(const GameSpeed speed);
-    uint32_t scenarioTicks();
     Utility::prng& gPrng();
     void initialiseViewports();
     void simulateGame(const fs::path& path, int32_t ticks);

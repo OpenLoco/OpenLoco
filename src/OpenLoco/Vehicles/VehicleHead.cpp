@@ -24,6 +24,7 @@
 #include "../Objects/RoadStationObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
+#include "../ScenarioManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
@@ -48,8 +49,6 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
     static loco_global<int16_t, 0x01136168> vehicleUpdate_targetZ;
-    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237; // remainingDistance related?
-    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238; // remainingDistance related?
     static loco_global<Status, 0x0113646C> vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> vehicleUpdate_helicopterTargetYaw;
     static loco_global<uint32_t, 0x00525BB0> vehicleUpdate_var_525BB0;
@@ -195,7 +194,7 @@ namespace OpenLoco::Vehicles
         {
             if (car.front->var_5F & Flags5F::brokenDown)
             {
-                if ((scenarioTicks() & 3) == 0)
+                if ((ScenarioManager::getScenarioTicks() & 3) == 0)
                 {
                     auto v2 = car.body; // body
 
@@ -3117,7 +3116,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::beginNewJourney()
     {
         // Set initial position for updateLastJourneyAverageSpeed
-        var_73 = scenarioTicks();
+        var_73 = ScenarioManager::getScenarioTicks();
         Vehicle train(head);
         var_6F = train.veh2->position.x;
         var_71 = train.veh2->position.y;

@@ -56,10 +56,7 @@ namespace OpenLoco::Scenario
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
     static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
 
-    static loco_global<S5::Options, 0x009C8714> _activeOptions;
-
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
-    static loco_global<char[64], 0x009C873E> _scenarioTitle;
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
 
     // 0x0046115C
@@ -349,8 +346,8 @@ namespace OpenLoco::Scenario
         sub_4BAEC4();
         Title::sub_4284C8();
 
-        std::memcpy(gameState.scenarioDetails, _activeOptions->scenarioDetails, sizeof(gameState.scenarioDetails));
-        std::memcpy(gameState.scenarioName, _activeOptions->scenarioName, sizeof(gameState.scenarioName));
+        std::memcpy(gameState.scenarioDetails, S5::getOptions().scenarioDetails, sizeof(gameState.scenarioDetails));
+        std::memcpy(gameState.scenarioName, S5::getOptions().scenarioName, sizeof(gameState.scenarioName));
 
         const auto* stexObj = ObjectManager::get<ScenarioTextObject>();
         if (stexObj != nullptr)
@@ -361,14 +358,14 @@ namespace OpenLoco::Scenario
         }
 
         auto savePath = Environment::getPath(Environment::PathId::save);
-        savePath /= std::string(_scenarioTitle) + S5::extensionSV5;
+        savePath /= std::string(S5::getOptions().scenarioName) + S5::extensionSV5;
         std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
 
         call(0x004C159C);
         call(0x0046E07B); // load currency gfx
         CompanyManager::reset();
         CompanyManager::createPlayerCompany();
-        initialiseDate(_activeOptions->scenarioStartYear);
+        initialiseDate(S5::getOptions().scenarioStartYear);
         initialiseSnowLine();
         sub_4748D4();
         std::fill(std::begin(gameState.recordSpeed), std::end(gameState.recordSpeed), 0_mph);

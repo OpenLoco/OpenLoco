@@ -88,11 +88,7 @@ namespace OpenLoco
 
         [[nodiscard]] bool empty() const
         {
-            for (const auto& val : *this)
-            {
-                return true;
-            }
-            return false;
+            return begin() == end();
         }
 
         [[nodiscard]] size_t size() const

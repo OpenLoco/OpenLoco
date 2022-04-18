@@ -8,6 +8,7 @@
 #include "../Math/Trigonometry.hpp"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
+#include "../ScenarioManager.h"
 #include "Vehicle.h"
 #include <cassert>
 
@@ -22,11 +23,11 @@ namespace OpenLoco::Vehicles
     static loco_global<VehicleBogie*, 0x01136124> vehicleUpdate_frontBogie;
     static loco_global<VehicleBogie*, 0x01136128> vehicleUpdate_backBogie;
     static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
-    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // remainingDistance related?
-    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // remainingDistance related?
-    static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C;     // var_2C related?
-    static loco_global<bool[44], 0x004F8A7C> trackIdToSparkDirection;  // bools true for right false for left
-    static loco_global<bool, 0x00525FAE> trafficHandedness;            // boolean true for right false for left
+    static loco_global<bool, 0x01136237> vehicleUpdate_frontBogieHasMoved;
+    static loco_global<bool, 0x01136238> vehicleUpdate_backBogieHasMoved;
+    static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C;    // var_2C related?
+    static loco_global<bool[44], 0x004F8A7C> trackIdToSparkDirection; // bools true for right false for left
+    static loco_global<bool, 0x00525FAE> trafficHandedness;           // boolean true for right false for left
 
     // 0x00503E5C
     static constexpr Pitch kVehicleBodyIndexToPitch[] = {
@@ -56,7 +57,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        if (vehicle_var_1136237 | vehicle_var_1136238)
+        if (vehicleUpdate_frontBogieHasMoved || vehicleUpdate_backBogieHasMoved)
         {
             invalidateSprite();
             sub_4AC255(vehicleUpdate_backBogie, vehicleUpdate_frontBogie);
@@ -927,7 +928,7 @@ namespace OpenLoco::Vehicles
 
         if (tickCalc && (soundCode == false))
         {
-            if (scenarioTicks() & 7)
+            if (ScenarioManager::getScenarioTicks() & 7)
                 return;
         }
         else
@@ -1063,7 +1064,7 @@ namespace OpenLoco::Vehicles
                 var_05 = -var_05;
             }
 
-            if (scenarioTicks() & 3)
+            if (ScenarioManager::getScenarioTicks() & 3)
                 return;
 
             auto positionFactor = vehicleObject->bodySprites[0].bogey_position * var_05 / 256;
@@ -1083,7 +1084,7 @@ namespace OpenLoco::Vehicles
                 var_05 = -var_05;
             }
 
-            if (scenarioTicks() & 3)
+            if (ScenarioManager::getScenarioTicks() & 3)
                 return;
 
             if (var_5E != 0)
@@ -1121,7 +1122,7 @@ namespace OpenLoco::Vehicles
             var_05 = -var_05;
         }
 
-        if (scenarioTicks() & 7)
+        if (ScenarioManager::getScenarioTicks() & 7)
             return;
 
         var_05 += 64;
@@ -1265,7 +1266,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if ((scenarioTicks() % frequency) != 0)
+        if ((ScenarioManager::getScenarioTicks() % frequency) != 0)
             return;
 
         auto positionFactor = vehicleObject->bodySprites[0].bogey_position;

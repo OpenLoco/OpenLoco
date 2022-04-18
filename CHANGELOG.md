@@ -1,6 +1,7 @@
 22.04+ (???)
 ------------------------------------------------------------------------
 - Feature: [#1457] Added option to invert right-mouse panning the game view.
+- Fix: [#1463] Crash when opening the build window under certain situations.
 
 22.04 (2022-04-12)
 ------------------------------------------------------------------------

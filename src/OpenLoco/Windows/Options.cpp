@@ -2356,7 +2356,7 @@ namespace OpenLoco::Ui::Windows::Options
             w->disabledWidgets |= 1 << Common::Widx::tab_music;
         }
 
-        if (isEditorMode() && S5::getOptions().editorStep == 0)
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
         {
             w->disabledWidgets |= 1 << Common::Widx::tab_regional;
         }

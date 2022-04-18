@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
             case 1:
             {
-                if (S5::getOptions().editorStep == 0)
+                if (S5::getOptions().editorStep == EditorController::Step::objectSelection)
                     ObjectSelectionWindow::closeWindow();
 
                 WindowManager::closeAllFloatingWindows();

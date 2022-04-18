@@ -19,6 +19,7 @@
 #include "Objects/TrackObject.h"
 #include "OpenLoco.h"
 #include "Scenario.h"
+#include "ScenarioManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -152,7 +153,7 @@ namespace OpenLoco::CompanyManager
     {
         if (!isEditorMode() && !Config::getNew().companyAIDisabled)
         {
-            CompanyId id = CompanyId(scenarioTicks() & 0x0F);
+            CompanyId id = CompanyId(ScenarioManager::getScenarioTicks() & 0x0F);
             auto company = get(id);
             if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {
