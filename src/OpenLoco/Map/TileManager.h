@@ -40,8 +40,27 @@ namespace OpenLoco::Map::TileManager
     void createDestructExplosion(const Map::Pos3& pos);
     void removeBuildingElement(BuildingElement& element, const Map::Pos2& pos);
 
+    template<typename T, typename Predicate, typename Visitor>
+    void visit(const TilePos2& pos, Predicate&& pred, Visitor&& vis)
+    {
+        auto tile = get(pos);
+        for (auto& el : tile)
+        {
+            auto* elT = el.as<T>();
+            if (elT == nullptr)
+            {
+                continue;
+            }
+            if (!pred(*elT))
+            {
+                continue;
+            }
+            vis(*elT);
+        }
+    }
+
     template<typename T, typename Visitor>
-    void visitAll(const TilePos2& pos, Visitor&& vis)
+    void visit(const TilePos2& pos, Visitor&& vis)
     {
         auto tile = get(pos);
         for (auto& el : tile)
@@ -54,8 +73,8 @@ namespace OpenLoco::Map::TileManager
             vis(*elT);
         }
     }
-    template<typename T, typename Visitor>
-    T* visitFirst(const TilePos2& pos, Visitor&& vis)
+    template<typename T, typename Predicate>
+    T* find(const TilePos2& pos, Predicate&& pred)
     {
         auto tile = get(pos);
         for (auto& el : tile)
@@ -65,7 +84,7 @@ namespace OpenLoco::Map::TileManager
             {
                 continue;
             }
-            if (!vis(*elT))
+            if (!pred(*elT))
             {
                 continue;
             }
