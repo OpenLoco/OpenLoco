@@ -1026,7 +1026,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     continue;
 
                 auto colour = _cargoLineColour[i];
-                auto pallete = Colours::getShade(colour, 6);
+                auto palette = Colours::getShade(colour, 6);
                 auto stringId = StringIds::small_black_string;
 
                 if (self->var_854 & (1 << cargoCount))
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (!(self->var_854 & (1 << cargoCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    Gfx::fillRect(*context, x, y + 3, x + 4, y + 7, pallete);
+                    Gfx::fillRect(*context, x, y + 3, x + 4, y + 7, palette);
                 }
 
                 auto args = FormatArguments();

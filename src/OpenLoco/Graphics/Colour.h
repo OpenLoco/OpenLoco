@@ -373,5 +373,6 @@ namespace OpenLoco
         constexpr PaletteIndex_t primaryRemap9 = 0xFC;
         constexpr PaletteIndex_t primaryRemapA = 0xFD;
         constexpr PaletteIndex_t primaryRemapB = 0xFE;
+        constexpr PaletteIndex_t index_FF = 0xFF;
     }
 }
