@@ -100,8 +100,11 @@ namespace OpenLoco::Map
                 for (auto i = 1; i < 4; ++i)
                 {
                     const auto pos = loc + Map::offsets[i];
-                    auto func = std::bind(TileManager::atHeight<BuildingElement>, std::placeholders::_1, baseZ());
-                    TileManager::visit<BuildingElement>(TilePos2{ pos }, func, [=](BuildingElement& elBuilding2) {
+                    TileManager::visit<BuildingElement>(TilePos2{ pos }, [=](BuildingElement& elBuilding2) {
+                        if (TileManager::atHeight(elBuilding2, baseZ()))
+                        {
+                            return;
+                        }
                         elBuilding2.setConstructed(isConstructed);
                         elBuilding2.setUnk5u(newUnk5u);
                         elBuilding2.setAge(newAge);
