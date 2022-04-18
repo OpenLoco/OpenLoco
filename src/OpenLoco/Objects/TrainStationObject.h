@@ -59,22 +59,25 @@ namespace OpenLoco
         constexpr uint32_t preview_image_windows = 1;
         // These are relative to to var_12
         // var_12 is the imageIds per sequenceIndex (for start/middle/end of the platform)
-        constexpr uint32_t style0StraightBackNE = 0;
-        constexpr uint32_t style0StraightFrontNE = 1;
-        constexpr uint32_t style0StraightCanopyNE = 2;
-        constexpr uint32_t style0StraightCanopyTranslucentNE = 3;
-        constexpr uint32_t style0StraightBackSE = 4;
-        constexpr uint32_t style0StraightFrontSE = 5;
-        constexpr uint32_t style0StraightCanopySE = 6;
-        constexpr uint32_t style0StraightCanopyTranslucentSE = 7;
-        constexpr uint32_t style0DiagonalNE0 = 8;
-        constexpr uint32_t style0DiagonalNE3 = 9;
-        constexpr uint32_t style0DiagonalNE1 = 10;
-        constexpr uint32_t style0DiagonalCanopyNE1 = 11;
-        constexpr uint32_t style0DiagonalCanopyTranslucentNE1 = 12;
-        constexpr uint32_t style0DiagonalSE1 = 13;
-        constexpr uint32_t style0DiagonalSE2 = 14;
-        constexpr uint32_t style0DiagonalSE3 = 15;
-        constexpr uint32_t style0DiagonalCanopyTranslucentSE3 = 16;
+        namespace Style0
+        {
+            constexpr uint32_t straightBackNE = 0;
+            constexpr uint32_t straightFrontNE = 1;
+            constexpr uint32_t straightCanopyNE = 2;
+            constexpr uint32_t straightCanopyTranslucentNE = 3;
+            constexpr uint32_t straightBackSE = 4;
+            constexpr uint32_t straightFrontSE = 5;
+            constexpr uint32_t straightCanopySE = 6;
+            constexpr uint32_t straightCanopyTranslucentSE = 7;
+            constexpr uint32_t diagonalNE0 = 8;
+            constexpr uint32_t diagonalNE3 = 9;
+            constexpr uint32_t diagonalNE1 = 10;
+            constexpr uint32_t diagonalCanopyNE1 = 11;
+            constexpr uint32_t diagonalCanopyTranslucentNE1 = 12;
+            constexpr uint32_t diagonalSE1 = 13;
+            constexpr uint32_t diagonalSE2 = 14;
+            constexpr uint32_t diagonalSE3 = 15;
+            constexpr uint32_t diagonalCanopyTranslucentSE3 = 16;
+        }
     }
 }

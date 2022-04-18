@@ -140,44 +140,44 @@ namespace OpenLoco::Paint
 
         constexpr PlatformImage neStationPlatformImage = {
             {
-                TrainStation::ImageIds::style0StraightBackNE,
+                TrainStation::ImageIds::Style0::straightBackNE,
                 { 2, 2, 8 },
                 { 28, 4, 3 },
             },
             {
-                TrainStation::ImageIds::style0StraightFrontNE,
+                TrainStation::ImageIds::Style0::straightFrontNE,
                 { 2, 24, 8 },
                 { 28, 4, 3 },
             },
             {
-                TrainStation::ImageIds::style0StraightCanopyNE,
+                TrainStation::ImageIds::Style0::straightCanopyNE,
                 { 2, 2, 26 },
                 { 28, 28, 1 },
             },
             {
-                TrainStation::ImageIds::style0StraightCanopyTranslucentNE,
+                TrainStation::ImageIds::Style0::straightCanopyTranslucentNE,
                 {},
                 {},
             },
         };
         constexpr PlatformImage seStationPlatformImage = {
             {
-                TrainStation::ImageIds::style0StraightBackSE,
+                TrainStation::ImageIds::Style0::straightBackSE,
                 { 2, 2, 8 },
                 { 4, 28, 3 },
             },
             {
-                TrainStation::ImageIds::style0StraightFrontSE,
+                TrainStation::ImageIds::Style0::straightFrontSE,
                 { 24, 2, 8 },
                 { 4, 28, 3 },
             },
             {
-                TrainStation::ImageIds::style0StraightCanopySE,
+                TrainStation::ImageIds::Style0::straightCanopySE,
                 { 2, 2, 26 },
                 { 28, 28, 1 },
             },
             {
-                TrainStation::ImageIds::style0StraightCanopyTranslucentSE,
+                TrainStation::ImageIds::Style0::straightCanopyTranslucentSE,
                 {},
                 {},
             },
@@ -227,7 +227,7 @@ namespace OpenLoco::Paint
         const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
         Map::Pos3 bbOffset = Map::Pos3{ 2, 2, 8 } + heightOffest;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
-        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::style0DiagonalNE0, heightOffest, bbOffset, bbSize);
+        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE0, heightOffest, bbOffset, bbSize);
     }
 
     // 0x00411B09
@@ -238,14 +238,14 @@ namespace OpenLoco::Paint
         {
             Map::Pos3 bbOffset = Map::Pos3{ 6, 6, 8 } + heightOffest;
             Map::Pos3 bbSize = Map::Pos3{ 2, 2, 11 };
-            session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::style0DiagonalNE1, heightOffest, bbOffset, bbSize);
+            session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE1, heightOffest, bbOffset, bbSize);
         }
         // Canopy
         {
             Map::Pos3 bbOffset = Map::Pos3{ 6, 6, 26 } + heightOffest;
             Map::Pos3 bbSize = Map::Pos3{ 2, 2, 1 };
-            session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::style0DiagonalCanopyNE1, heightOffest, bbOffset, bbSize);
-            session.attachToPrevious(imageTranslucentBase + TrainStation::ImageIds::style0DiagonalCanopyTranslucentNE1, { 0, 0 });
+            session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalCanopyNE1, heightOffest, bbOffset, bbSize);
+            session.attachToPrevious(imageTranslucentBase + TrainStation::ImageIds::Style0::diagonalCanopyTranslucentNE1, { 0, 0 });
         }
     }
 
@@ -261,7 +261,7 @@ namespace OpenLoco::Paint
         const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
         Map::Pos3 bbOffset = Map::Pos3{ 2, 2, 8 } + heightOffest;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
-        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::style0DiagonalNE3, heightOffest, bbOffset, bbSize);
+        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE3, heightOffest, bbOffset, bbSize);
     }
 
     // 0x00411BEB
@@ -276,7 +276,7 @@ namespace OpenLoco::Paint
         const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
         Map::Pos3 bbOffset = Map::Pos3{ 28, 34, 8 } + heightOffest;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
-        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::style0DiagonalSE1, heightOffest, bbOffset, bbSize);
+        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalSE1, heightOffest, bbOffset, bbSize);
     }
 
     // 0x00411C30
@@ -285,7 +285,7 @@ namespace OpenLoco::Paint
         const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
         Map::Pos3 bbOffset = Map::Pos3{ 34, 28, 8 } + heightOffest;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
-        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::style0DiagonalSE2, heightOffest, bbOffset, bbSize);
+        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalSE2, heightOffest, bbOffset, bbSize);
     }
 
     // 0x00411C73
@@ -294,8 +294,8 @@ namespace OpenLoco::Paint
         const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
         Map::Pos3 bbOffset = Map::Pos3{ 0, 0, 26 } + heightOffest;
         Map::Pos3 bbSize = Map::Pos3{ 30, 30, 1 };
-        session.addToPlotList4FD180(imageBase + TrainStation::ImageIds::style0DiagonalSE3, 1, heightOffest, bbOffset, bbSize);
-        session.attachToPrevious(imageTranslucentBase + TrainStation::ImageIds::style0DiagonalCanopyTranslucentSE3, { 0, 0 });
+        session.addToPlotList4FD180(imageBase + TrainStation::ImageIds::Style0::diagonalSE3, 1, heightOffest, bbOffset, bbSize);
+        session.attachToPrevious(imageTranslucentBase + TrainStation::ImageIds::Style0::diagonalCanopyTranslucentSE3, { 0, 0 });
     }
 
     // 0x004D7A5C
@@ -378,10 +378,10 @@ namespace OpenLoco::Paint
             return;
         }
         const auto companyColour = CompanyManager::getCompanyColour(elTrack->owner());
-        auto translucentColour = Colour::getTranslucent(companyColour);
+        auto translucentColour = Colours::getTranslucent(companyColour);
         if (!(stationObj->flags & TrainStationFlags::recolourable))
         {
-            translucentColour = PaletteIndex::index_2E;
+            translucentColour = ExtColour::unk2E;
         }
 
         uint32_t imageIdbase = 0;            // 0x0112C720
@@ -391,7 +391,7 @@ namespace OpenLoco::Paint
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
             imageIdbase = Gfx::applyGhostToImage(stationObj->var_12[elStation.multiTileIndex()]);
-            imageIdTranslucentBase = Gfx::recolourTranslucent(stationObj->var_12[elStation.multiTileIndex()], PaletteIndex::index_2F);
+            imageIdTranslucentBase = Gfx::recolourTranslucent(stationObj->var_12[elStation.multiTileIndex()], ExtColour::unk2F);
         }
         else
         {
