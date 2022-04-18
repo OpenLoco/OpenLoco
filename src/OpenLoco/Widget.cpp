@@ -1004,7 +1004,7 @@ namespace OpenLoco::Ui
                 Gfx::drawImage(ctx, pos.x, pos.y + 1, imageId);
             }
 
-            Gfx::drawImage(ctx, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, PaletteIndex::index_33));
+            Gfx::drawImage(ctx, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
             Gfx::drawRect(*ctx, pos.x, pos.y + 26, 31, 1, Colours::getShade(w->getColour(WindowColour::secondary).c(), 7));
         }
     }
