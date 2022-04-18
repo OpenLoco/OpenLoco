@@ -69,52 +69,57 @@ namespace OpenLoco
         {
         }
 
-        uint32_t toUInt32() const
+        constexpr ImageId(uint32_t index, ColourScheme scheme)
+            : ImageId(index, scheme.primary, scheme.secondary)
+        {
+        }
+
+        constexpr uint32_t toUInt32() const
         {
             return _index;
         }
 
-        bool hasValue() const
+        constexpr bool hasValue() const
         {
             return getIndex() != kImageIndexUndefined;
         }
 
-        bool hasPrimary() const
+        constexpr bool hasPrimary() const
         {
             return _index & kFlagPrimary;
         }
 
-        bool hasSecondary() const
+        constexpr bool hasSecondary() const
         {
             return _index & kFlagSecondary;
         }
 
-        bool isRemap() const
+        constexpr bool isRemap() const
         {
             return (_index & kFlagPrimary) && !(_index & kFlagSecondary);
         }
 
-        bool isBlended() const
+        constexpr bool isBlended() const
         {
             return _index & kFlagBlend;
         }
 
-        ImageIndex getIndex() const
+        constexpr ImageIndex getIndex() const
         {
             return _index & kMaskIndex;
         }
 
-        ExtColour getRemap() const
+        constexpr ExtColour getRemap() const
         {
             return static_cast<ExtColour>((_index & kMaskRemap) >> kShiftRemap);
         }
 
-        Colour getPrimary() const
+        constexpr Colour getPrimary() const
         {
             return static_cast<Colour>((_index & kMaskPrimary) >> kShiftPrimary);
         }
 
-        Colour getSecondary() const
+        constexpr Colour getSecondary() const
         {
             return static_cast<Colour>((_index & kMaskSecondary) >> kShiftSecondary);
         }
@@ -160,7 +165,7 @@ namespace OpenLoco
             return result;
         }
 
-        ImageId withTransparancy(ExtColour colour) const
+        constexpr ImageId withTranslucency(ExtColour colour) const
         {
             ImageId result = *this;
             result._index &= ~(kMaskPrimary | kMaskSecondary | kFlagSecondary | kFlagPrimary);
