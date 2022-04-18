@@ -175,6 +175,116 @@ namespace OpenLoco::Map::TileManager
         return get(TilePos2(x / Map::tile_size, y / Map::tile_size));
     }
 
+    constexpr uint8_t kTileSize = 31;
+
+    static int16_t getOneCornerUpLandHeight(int8_t xl, int8_t yl, uint8_t slope)
+    {
+        int16_t quad = 0;
+        switch (slope)
+        {
+            case SurfaceSlope::n_corner_up:
+                quad = xl + yl - kTileSize;
+                break;
+            case SurfaceSlope::e_corner_up:
+                quad = xl - yl;
+                break;
+            case SurfaceSlope::s_corner_up:
+                quad = kTileSize - yl - xl;
+                break;
+            case SurfaceSlope::w_corner_up:
+                quad = yl - xl;
+                break;
+        }
+        // If the element is in the quadrant with the slope, raise its height
+        if (quad > 0)
+        {
+            return quad;
+        }
+        return 0;
+    }
+
+    static int16_t getOneSideUpLandHeight(int8_t xl, int8_t yl, uint8_t slope)
+    {
+        int16_t edge = 0;
+        switch (slope)
+        {
+            case SurfaceSlope::ne_side_up:
+                edge = xl / 2 + 1;
+                break;
+            case SurfaceSlope::se_side_up:
+                edge = (kTileSize - yl) / 2;
+                break;
+            case SurfaceSlope::nw_side_up:
+                edge = yl / 2 + 1;
+                break;
+            case SurfaceSlope::sw_side_up:
+                edge = (kTileSize - xl) / 2;
+                break;
+        }
+        return edge;
+    }
+
+    // This also takes care of the one corner down and one opposite corner up
+    static int16_t getOneCornerDownLandHeight(int8_t xl, int8_t yl, uint8_t slope, bool isDoubleHeight)
+    {
+        int16_t quadExtra = 0;
+        int16_t quad = 0;
+
+        switch (slope)
+        {
+            case SurfaceSlope::w_corner_dn:
+                quadExtra = xl + kTileSize - yl;
+                quad = xl - yl;
+                break;
+            case SurfaceSlope::s_corner_dn:
+                quadExtra = xl + yl;
+                quad = xl + yl - kTileSize - 1;
+                break;
+            case SurfaceSlope::e_corner_dn:
+                quadExtra = kTileSize - xl + yl;
+                quad = yl - xl;
+                break;
+            case SurfaceSlope::n_corner_dn:
+                quadExtra = (kTileSize - xl) + (kTileSize - yl);
+                quad = kTileSize - yl - xl - 1;
+                break;
+        }
+
+        if (isDoubleHeight)
+        {
+            return quadExtra / 2 + 1;
+        }
+        else
+        {
+            // This tile is essentially at the next height level
+            // so we move *down* the slope
+            return quad / 2 + 16;
+        }
+    }
+
+    static int16_t getValleyLandHeight(int8_t xl, int8_t yl, uint8_t slope)
+    {
+        int16_t quad = 0;
+        switch (slope)
+        {
+            case SurfaceSlope::w_e_valley:
+                if (xl + yl > kTileSize + 1)
+                {
+                    quad = kTileSize - xl - yl;
+                }
+                break;
+            case SurfaceSlope::n_s_valley:
+                quad = xl - yl;
+                break;
+        }
+
+        if (quad > 0)
+        {
+            return quad / 2;
+        }
+        return 0;
+    }
+
     /**
      * Return the absolute height of an element, given its (x, y) coordinates
      * remember to & with 0xFFFF if you don't want water affecting results
@@ -205,17 +315,6 @@ namespace OpenLoco::Map::TileManager
         height.landHeight = surfaceEl->baseZ() * 4;
 
         const auto slope = surfaceEl->slopeCorners();
-        if (slope == SurfaceSlope::flat)
-        {
-            // Flat surface requires no further calculations.
-            return height;
-        }
-
-        int8_t quad = 0;
-        int8_t quad_extra = 0; // which quadrant the element is in?
-                               // quad_extra is for extra height tiles
-
-        constexpr uint8_t TILE_SIZE = 31;
 
         // Subtile coords
         const auto xl = pos.x & 0x1f;
@@ -224,106 +323,42 @@ namespace OpenLoco::Map::TileManager
         // Slope logic:
         // Each of the four bits in slope represents that corner being raised
         // slope == 15 (all four bits) is not used and slope == 0 is flat
-        // If the extra_height bit is set, then the slope goes up two z-levels
+        // If the extra_height bit is set, then the slope goes up two z-levels (this happens with one corner down with oppisite corner up)
 
         // We arbitrarily take the SW corner to be closest to the viewer
 
-        // One corner up
         switch (slope)
         {
+            case SurfaceSlope::flat:
+                // Flat surface requires no further calculations.
+                break;
+
             case SurfaceSlope::n_corner_up:
-                quad = xl + yl - TILE_SIZE;
-                break;
             case SurfaceSlope::e_corner_up:
-                quad = xl - yl;
-                break;
             case SurfaceSlope::s_corner_up:
-                quad = TILE_SIZE - yl - xl;
-                break;
             case SurfaceSlope::w_corner_up:
-                quad = yl - xl;
+                height.landHeight += getOneCornerUpLandHeight(xl, yl, slope);
                 break;
-        }
-        // If the element is in the quadrant with the slope, raise its height
-        if (quad > 0)
-        {
-            height.landHeight += quad / 2;
-        }
 
-        // One side up
-        switch (slope)
-        {
             case SurfaceSlope::ne_side_up:
-                height.landHeight += xl / 2 + 1;
-                break;
             case SurfaceSlope::se_side_up:
-                height.landHeight += (TILE_SIZE - yl) / 2;
-                break;
             case SurfaceSlope::nw_side_up:
-                height.landHeight += yl / 2;
-                height.landHeight++;
-                break;
             case SurfaceSlope::sw_side_up:
-                height.landHeight += (TILE_SIZE - xl) / 2;
+                height.landHeight += getOneSideUpLandHeight(xl, yl, slope);
                 break;
-        }
 
-        // One corner down
-        switch (slope)
-        {
-            case SurfaceSlope::w_corner_dn:
-                quad_extra = xl + TILE_SIZE - yl;
-                quad = xl - yl;
-                break;
-            case SurfaceSlope::s_corner_dn:
-                quad_extra = xl + yl;
-                quad = xl + yl - TILE_SIZE - 1;
-                break;
-            case SurfaceSlope::e_corner_dn:
-                quad_extra = TILE_SIZE - xl + yl;
-                quad = yl - xl;
-                break;
             case SurfaceSlope::n_corner_dn:
-                quad_extra = (TILE_SIZE - xl) + (TILE_SIZE - yl);
-                quad = TILE_SIZE - yl - xl - 1;
+            case SurfaceSlope::e_corner_dn:
+            case SurfaceSlope::s_corner_dn:
+            case SurfaceSlope::w_corner_dn:
+                height.landHeight += getOneCornerDownLandHeight(xl, yl, slope, surfaceEl->isSlopeDoubleHeight());
                 break;
-        }
 
-        if (surfaceEl->isSlopeDoubleHeight())
-        {
-            height.landHeight += quad_extra / 2;
-            height.landHeight++;
-            return height;
-        }
-
-        // This tile is essentially at the next height level
-        height.landHeight += 0x10;
-        // so we move *down* the slope
-        if (quad < 0)
-        {
-            height.landHeight += quad / 2;
-        }
-
-        // Valleys
-        switch (slope)
-        {
-            case SurfaceSlope::w_e_valley:
-                if (xl + yl <= TILE_SIZE + 1)
-                {
-                    return height;
-                }
-                quad = TILE_SIZE - xl - yl;
-                break;
             case SurfaceSlope::n_s_valley:
-                quad = xl - yl;
+            case SurfaceSlope::w_e_valley:
+                height.landHeight += getValleyLandHeight(xl, yl, slope);
                 break;
         }
-
-        if (quad > 0)
-        {
-            height.landHeight += quad / 2;
-        }
-
         return height;
     }
 
