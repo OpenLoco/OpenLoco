@@ -40,6 +40,11 @@ namespace OpenLoco::Map::TileManager
     void createDestructExplosion(const Map::Pos3& pos);
     void removeBuildingElement(BuildingElement& element, const Map::Pos2& pos);
 
+    template<typename T>
+    bool atHeight(T& el, uint8_t baseZ) {
+        return el.baseZ() == baseZ;
+    }
+
     template<typename T, typename Predicate, typename Visitor>
     void visit(const TilePos2& pos, Predicate&& pred, Visitor&& vis)
     {
