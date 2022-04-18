@@ -416,5 +416,6 @@ namespace OpenLoco::Ui::Windows
     namespace VehicleList
     {
         Window* open(CompanyId companyId, VehicleType type);
+        void removeTrainFromList(Window& self, EntityId head);
     }
 }

@@ -19,6 +19,11 @@ namespace OpenLoco::VehicleManager
     void deleteTrain(Vehicles::VehicleHead& head);
 }
 
+namespace OpenLoco::Vehicles::OrderManager
+{
+    void sub_470334(VehicleHead* const head);
+}
+
 namespace OpenLoco::Vehicles::RoutingManager
 {
     std::optional<RoutingHandle> getAndAllocateFreeRoutingHandle();

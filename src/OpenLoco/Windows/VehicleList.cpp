@@ -481,6 +481,19 @@ namespace OpenLoco::Ui::Windows::VehicleList
         return self;
     }
 
+    // 0x004C1D19
+    void removeTrainFromList(Window& self, EntityId head)
+    {
+        for (auto i = 0; i < self.var_83C; ++i)
+        {
+            auto& entry = self.rowInfo[i];
+            if (entry == enumValue(head))
+            {
+                entry = enumValue(EntityId::null);
+            }
+        }
+    }
+
     static Widx getTabFromType(VehicleType type)
     {
         auto tabIndex = static_cast<uint8_t>(type);

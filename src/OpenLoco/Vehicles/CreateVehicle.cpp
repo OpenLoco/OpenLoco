@@ -552,6 +552,7 @@ namespace OpenLoco::Vehicles
         newTail->drivingSoundId = SoundObjectId::null;
         newTail->objectId = -1;
         newTail->var_4A = 0;
+        newTail->trainDanglingTimeout = 0;
         lastVeh->setNextCar(newTail->id);
         newTail->nextCarId = EntityId::null;
         return newTail;
@@ -638,28 +639,6 @@ namespace OpenLoco::Vehicles
         call(0x004B05E4, regs);
     }
 
-    static void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
-    {
-        for (auto head : EntityManager::VehicleList())
-        {
-            if (head->orderTableOffset >= removeOrderTableOffset)
-            {
-                head->orderTableOffset += sizeOfRemovedOrderTable;
-            }
-        }
-    }
-
-    // 0x00470334
-    // Remove vehicle ?orders?
-    static void sub_470334(VehicleHead* const head)
-    {
-        sub_470795(head->orderTableOffset, head->sizeOfOrderTable * -1);
-        auto length = _orderTableLength - head->orderTableOffset - head->sizeOfOrderTable;
-        memmove(&_987C5C[head->orderTableOffset], &_987C5C[head->sizeOfOrderTable + head->orderTableOffset], length);
-
-        _orderTableLength = _orderTableLength - head->sizeOfOrderTable;
-    }
-
     // 0x004AE6DE
     static void updateWholeVehicle(VehicleHead* const head)
     {
@@ -710,7 +689,7 @@ namespace OpenLoco::Vehicles
             {
                 // Cleanup and delete base vehicle before exit.
                 RoutingManager::freeRoutingHandle(_head->routingHandle);
-                sub_470334(_head);
+                OrderManager::sub_470334(_head);
                 MessageManager::removeAllSubjectRefs(enumValue(_head->id), MessageItemArgumentType::vehicle);
                 auto veh1 = _head->nextVehicleComponent();
                 if (veh1 == nullptr)
