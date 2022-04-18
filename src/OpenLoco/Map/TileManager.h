@@ -13,8 +13,8 @@ namespace OpenLoco::Map::TileManager
     stdx::span<TileElement> getElements();
     TileElement* getElementsEnd();
     TileElement** getElementIndex();
-    Tile get(TilePos2 pos);
-    Tile get(Pos2 pos);
+    Tile get(const TilePos2& pos);
+    Tile get(const Pos2& pos);
     Tile get(coord_t x, coord_t y);
     void setElements(stdx::span<TileElement> elements);
     void removeElement(TileElement& element);
@@ -39,4 +39,61 @@ namespace OpenLoco::Map::TileManager
     void removeSurfaceIndustry(const Pos2& pos);
     void createDestructExplosion(const Map::Pos3& pos);
     void removeBuildingElement(BuildingElement& element, const Map::Pos2& pos);
+
+    template<typename T>
+    bool atHeight(T& el, uint8_t baseZ) {
+        return el.baseZ() == baseZ;
+    }
+
+    template<typename T, typename Predicate, typename Visitor>
+    void visit(const TilePos2& pos, Predicate&& pred, Visitor&& vis)
+    {
+        auto tile = get(pos);
+        for (auto& el : tile)
+        {
+            auto* elT = el.as<T>();
+            if (elT == nullptr)
+            {
+                continue;
+            }
+            if (!pred(*elT))
+            {
+                continue;
+            }
+            vis(*elT);
+        }
+    }
+
+    template<typename T, typename Visitor>
+    void visit(const TilePos2& pos, Visitor&& vis)
+    {
+        auto tile = get(pos);
+        for (auto& el : tile)
+        {
+            auto* elT = el.as<T>();
+            if (elT == nullptr)
+            {
+                continue;
+            }
+            vis(*elT);
+        }
+    }
+    template<typename T, typename Predicate>
+    T* find(const TilePos2& pos, Predicate&& pred)
+    {
+        auto tile = get(pos);
+        for (auto& el : tile)
+        {
+            auto* elT = el.as<T>();
+            if (elT == nullptr)
+            {
+                continue;
+            }
+            if (!pred(*elT))
+            {
+                continue;
+            }
+            return elT;
+        }
+    }
 }

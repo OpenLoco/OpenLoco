@@ -100,23 +100,16 @@ namespace OpenLoco::Map
                 for (auto i = 1; i < 4; ++i)
                 {
                     const auto pos = loc + Map::offsets[i];
-                    auto tile = TileManager::get(pos);
-                    for (auto& el : tile)
-                    {
-                        auto* elBuilding2 = el.as<BuildingElement>();
-                        if (elBuilding2 == nullptr)
+                    TileManager::visit<BuildingElement>(TilePos2{ pos }, [=](BuildingElement& elBuilding2) {
+                        if (TileManager::atHeight(elBuilding2, baseZ()))
                         {
-                            continue;
+                            return;
                         }
-                        if (elBuilding2->baseZ() != baseZ())
-                        {
-                            continue;
-                        }
-                        elBuilding2->setConstructed(isConstructed);
-                        elBuilding2->setUnk5u(newUnk5u);
-                        elBuilding2->setAge(newAge);
-                        Ui::ViewportManager::invalidate(pos, elBuilding2->baseZ() * 4, elBuilding2->clearZ() * 4, ZoomLevel::quarter);
-                    }
+                        elBuilding2.setConstructed(isConstructed);
+                        elBuilding2.setUnk5u(newUnk5u);
+                        elBuilding2.setAge(newAge);
+                        Ui::ViewportManager::invalidate(pos, elBuilding2.baseZ() * 4, elBuilding2.clearZ() * 4, ZoomLevel::quarter);
+                    });
                 }
             }
         }
