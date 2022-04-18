@@ -271,6 +271,7 @@
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Graphics\Colour.h" />
     <ClInclude Include="Graphics\Gfx.h" />
+    <ClInclude Include="Graphics\ImageId.h" />
     <ClInclude Include="Graphics\ImageIds.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Industry.h" />
