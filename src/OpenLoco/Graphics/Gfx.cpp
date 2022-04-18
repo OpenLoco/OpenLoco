@@ -40,7 +40,7 @@ namespace OpenLoco::Gfx
     static loco_global<G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + G1ExpectedCount::kObjects], 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
-    static loco_global<uint16_t[147], 0x050B8C8> _paletteToG1Offset;
+    static loco_global<uint32_t[147], 0x050B8C8> _paletteToG1Offset;
 
     static loco_global<uint16_t, 0x112C824> _currentFontFlags;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
