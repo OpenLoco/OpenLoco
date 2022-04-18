@@ -193,20 +193,20 @@ namespace OpenLoco::Paint
         const auto& cargoFlags = cargoRotationFlags[rotation];
         const auto& platformImages = stationPlatformImages[rotation];
 
-        const Map::Pos3 heightOffest(0, 0, elStation.baseHeight());
+        const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
 
         // Paint Back part of platform
         {
-            Map::Pos3 bbOffset = platformImages.back.bbOffset + heightOffest;
-            session.addToPlotList4FD150(imageBase + platformImages.back.imageId, heightOffest, bbOffset, platformImages.back.bbSize);
+            Map::Pos3 bbOffset = platformImages.back.bbOffset + heightOffset;
+            session.addToPlotList4FD150(imageBase + platformImages.back.imageId, heightOffset, bbOffset, platformImages.back.bbSize);
 
             paintStationCargo(session, elStation, cargoFlags[0], 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffset, platformImages.back.bbSize);
             paintStationCargo(session, elStation, cargoFlags[1], 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffset, platformImages.back.bbSize);
         }
         // Paint Front part of platform
         {
-            Map::Pos3 bbOffset = platformImages.front.bbOffset + heightOffest;
-            session.addToPlotList4FD150(imageBase + platformImages.front.imageId, heightOffest, bbOffset, platformImages.front.bbSize);
+            Map::Pos3 bbOffset = platformImages.front.bbOffset + heightOffset;
+            session.addToPlotList4FD150(imageBase + platformImages.front.imageId, heightOffset, bbOffset, platformImages.front.bbSize);
 
             paintStationCargo(session, elStation, cargoFlags[2], 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffset, platformImages.front.bbSize);
             paintStationCargo(session, elStation, cargoFlags[3], 0xFFFFFFFF, cargoOffsets, elStation.baseHeight(), bbOffset, platformImages.front.bbSize);
@@ -214,8 +214,8 @@ namespace OpenLoco::Paint
 
         // Paint Canopy of platform
         {
-            Map::Pos3 bbOffset = platformImages.canopy.bbOffset + heightOffest;
-            session.addToPlotList4FD180(imageBase + platformImages.canopy.imageId, 1, heightOffest, bbOffset, platformImages.canopy.bbSize);
+            Map::Pos3 bbOffset = platformImages.canopy.bbOffset + heightOffset;
+            session.addToPlotList4FD180(imageBase + platformImages.canopy.imageId, 1, heightOffset, bbOffset, platformImages.canopy.bbSize);
             session.attachToPrevious(imageTranslucentBase + platformImages.canopyTranslucent.imageId, { 0, 0 });
         }
         session.set525CF8(session.get525CF8() | 0x1FF);
@@ -224,27 +224,27 @@ namespace OpenLoco::Paint
     // 0x00411AC6
     static void paintTrainStationStyle0DiagonalTrack0NE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
-        Map::Pos3 bbOffset = Map::Pos3{ 2, 2, 8 } + heightOffest;
+        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        Map::Pos3 bbOffset = Map::Pos3{ 2, 2, 8 } + heightOffset;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
-        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE0, heightOffest, bbOffset, bbSize);
+        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE0, heightOffset, bbOffset, bbSize);
     }
 
     // 0x00411B09
     static void paintTrainStationStyle0DiagonalTrack1NE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
+        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
         // Platform
         {
-            Map::Pos3 bbOffset = Map::Pos3{ 6, 6, 8 } + heightOffest;
+            Map::Pos3 bbOffset = Map::Pos3{ 6, 6, 8 } + heightOffset;
             Map::Pos3 bbSize = Map::Pos3{ 2, 2, 11 };
-            session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE1, heightOffest, bbOffset, bbSize);
+            session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE1, heightOffset, bbOffset, bbSize);
         }
         // Canopy
         {
-            Map::Pos3 bbOffset = Map::Pos3{ 6, 6, 26 } + heightOffest;
+            Map::Pos3 bbOffset = Map::Pos3{ 6, 6, 26 } + heightOffset;
             Map::Pos3 bbSize = Map::Pos3{ 2, 2, 1 };
-            session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalCanopyNE1, heightOffest, bbOffset, bbSize);
+            session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalCanopyNE1, heightOffset, bbOffset, bbSize);
             session.attachToPrevious(imageTranslucentBase + TrainStation::ImageIds::Style0::diagonalCanopyTranslucentNE1, { 0, 0 });
         }
     }
@@ -258,10 +258,10 @@ namespace OpenLoco::Paint
     // 0x00411BA8
     static void paintTrainStationStyle0DiagonalTrack3NE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
-        Map::Pos3 bbOffset = Map::Pos3{ 2, 2, 8 } + heightOffest;
+        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        Map::Pos3 bbOffset = Map::Pos3{ 2, 2, 8 } + heightOffset;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
-        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE3, heightOffest, bbOffset, bbSize);
+        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE3, heightOffset, bbOffset, bbSize);
     }
 
     // 0x00411BEB
@@ -273,28 +273,28 @@ namespace OpenLoco::Paint
     // 0x00411BED
     static void paintTrainStationStyle0DiagonalTrack1SE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
-        Map::Pos3 bbOffset = Map::Pos3{ 28, 34, 8 } + heightOffest;
+        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        Map::Pos3 bbOffset = Map::Pos3{ 28, 34, 8 } + heightOffset;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
-        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalSE1, heightOffest, bbOffset, bbSize);
+        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalSE1, heightOffset, bbOffset, bbSize);
     }
 
     // 0x00411C30
     static void paintTrainStationStyle0DiagonalTrack2SE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
-        Map::Pos3 bbOffset = Map::Pos3{ 34, 28, 8 } + heightOffest;
+        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        Map::Pos3 bbOffset = Map::Pos3{ 34, 28, 8 } + heightOffset;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
-        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalSE2, heightOffest, bbOffset, bbSize);
+        session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalSE2, heightOffset, bbOffset, bbSize);
     }
 
     // 0x00411C73
     static void paintTrainStationStyle0DiagonalTrack3SE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffest(0, 0, elStation.baseZ() * 4);
-        Map::Pos3 bbOffset = Map::Pos3{ 0, 0, 26 } + heightOffest;
+        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        Map::Pos3 bbOffset = Map::Pos3{ 0, 0, 26 } + heightOffset;
         Map::Pos3 bbSize = Map::Pos3{ 30, 30, 1 };
-        session.addToPlotList4FD180(imageBase + TrainStation::ImageIds::Style0::diagonalSE3, 1, heightOffest, bbOffset, bbSize);
+        session.addToPlotList4FD180(imageBase + TrainStation::ImageIds::Style0::diagonalSE3, 1, heightOffset, bbOffset, bbSize);
         session.attachToPrevious(imageTranslucentBase + TrainStation::ImageIds::Style0::diagonalCanopyTranslucentSE3, { 0, 0 });
     }
 
