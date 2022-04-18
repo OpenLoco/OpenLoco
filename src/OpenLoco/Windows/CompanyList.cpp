@@ -21,7 +21,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::CompanyList
 {
-    static loco_global<uint8_t[32], 0x004F9442> _cargoLineColour;
+    static loco_global<Colour[32], 0x004F9442> _cargoLineColour;
     static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t[3], 0x0052624E> _word_52624E;
@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     static loco_global<uint32_t, 0x0113DD0C> _graphDataTypeSize;
     static loco_global<uint16_t[32], 0x0113DD10> _graphDataStart;
     static loco_global<uint32_t, 0x0113DD50> _dword_113DD50;
-    static loco_global<uint8_t[32], 0x0113DD54> _graphLineColour;
+    static loco_global<PaletteIndex_t[32], 0x0113DD54> _graphLineColour;
     static loco_global<uint16_t, 0x0113DD74> _graphDataEnd;
     static loco_global<uint16_t, 0x0113DD76> _graphXLabel;
     static loco_global<uint32_t, 0x0113DD78> _graphXAxisRange;
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00435EA7
         static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto colour = Colour::getShade(self.getColour(WindowColour::secondary), 3);
+            auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
             Gfx::clearSingle(context, colour);
 
             auto yBottom = 0;
@@ -683,7 +683,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.performanceIndexHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colours::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
             }
@@ -774,7 +774,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargoUnitsDeliveredHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colours::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
             }
@@ -865,7 +865,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargoUnitsDistanceHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colours::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
             }
@@ -956,7 +956,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.companyValueHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.historySize;
-                _graphLineColour[count] = Colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colours::getShade(companyColour, 6);
                 _graphItemId[count] = enumValue(companyId);
                 count++;
             }
@@ -1026,7 +1026,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     continue;
 
                 auto colour = _cargoLineColour[i];
-                colour = Colour::getShade(colour, 6);
+                auto palette = Colours::getShade(colour, 6);
                 auto stringId = StringIds::small_black_string;
 
                 if (self->var_854 & (1 << cargoCount))
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (!(self->var_854 & (1 << cargoCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    Gfx::fillRect(*context, x, y + 3, x + 4, y + 7, colour);
+                    Gfx::fillRect(*context, x, y + 3, x + 4, y + 7, palette);
                 }
 
                 auto args = FormatArguments();
@@ -1075,7 +1075,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&_deliveredCargoPayment[i][0]);
                 _graphDataStart[count] = 0;
-                _graphLineColour[count] = Colour::getShade(colour, 6);
+                _graphLineColour[count] = Colours::getShade(colour, 6);
                 _graphItemId[count] = i;
                 count++;
             }
@@ -1503,7 +1503,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += performanceImageIds[0];
 
-                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary));
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
                 Widget::drawTab(self, context, imageId, widx::tab_performance);
             }
@@ -1527,7 +1527,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += cargoUnitsImageIds[0];
 
-                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary));
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
                 Widget::drawTab(self, context, imageId, widx::tab_cargo_units);
             }
@@ -1551,7 +1551,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += cargoDistanceImageIds[0];
 
-                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary));
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
                 Widget::drawTab(self, context, imageId, widx::tab_cargo_distance);
             }
@@ -1575,7 +1575,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += companyValuesImageIds[0];
 
-                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary));
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
                 Widget::drawTab(self, context, imageId, widx::tab_values);
 
@@ -1608,7 +1608,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_awards;
 
-                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary));
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary).c());
 
                 Widget::drawTab(self, context, imageId, widx::tab_speed_records);
             }
@@ -1641,7 +1641,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             for (auto& company : CompanyManager::companies())
             {
                 auto companyColour = CompanyManager::getCompanyColour(company.id());
-                auto colour = Colour::getShade(companyColour, 6);
+                auto colour = Colours::getShade(companyColour, 6);
                 auto stringId = StringIds::small_black_string;
 
                 if (self->var_854 & (1 << companyCount))

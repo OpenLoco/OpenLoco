@@ -16,12 +16,9 @@ namespace OpenLoco
         if (colourOptions != 0)
         {
 
-            Colour_t colour = Utility::bitScanReverse(colourOptions);
+            auto bit = Utility::bitScanReverse(colourOptions);
 
-            if (colour == 0xFF)
-            {
-                colour = 0;
-            }
+            auto colour = (bit == -1) ? Colour::black : static_cast<Colour>(bit);
 
             image = Gfx::recolour(image, colour);
         }
@@ -36,13 +33,9 @@ namespace OpenLoco
 
             if (colourOptions != 0)
             {
+                auto bit = Utility::bitScanReverse(colourOptions);
 
-                Colour_t colour = Utility::bitScanReverse(colourOptions);
-
-                if (colour == 0xFF)
-                {
-                    colour = 0;
-                }
+                auto colour = (bit == -1) ? Colour::black : static_cast<Colour>(bit);
 
                 snowImage = Gfx::recolour(snowImage, colour);
             }

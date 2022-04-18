@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
     static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
     static loco_global<uint8_t, 0x01136496> _treeRotation;
-    static loco_global<uint8_t, 0x01136497> _treeColour;
+    static loco_global<Colour, 0x01136497> _treeColour;
     static loco_global<uint8_t, 0x0113649A> _terraformGhostPlaced;
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
@@ -154,9 +154,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto treeObj = ObjectManager::get<TreeObject>(self->rowHover);
                 if (treeObj->colours != 0)
                 {
-                    Colour_t colour = Utility::bitScanReverse(treeObj->colours);
-                    if (colour == 0xFF)
-                        colour = 0;
+                    auto bit = Utility::bitScanReverse(treeObj->colours);
+                    auto colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                     _treeColour = colour;
                 }
             }
@@ -321,7 +320,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (itemIndex == -1)
                 return;
 
-            _treeColour = Dropdown::getHighlightedItem();
+            _treeColour = static_cast<Colour>(Dropdown::getHighlightedItem());
             self->invalidate();
         }
 
@@ -466,7 +465,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
             args.type = self->rowHover;
             args.quadrant = ViewportInteraction::getQuadrantFromPos(res->first) ^ (1 << 1);
-            args.colour = _treeColour;
+            args.colour = *_treeColour;
             args.rotation = (_treeRotation - WindowManager::getCurrentRotation()) & 0x3;
             if (isEditorMode())
             {
@@ -619,7 +618,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.pos = Map::Pos2(newLoc.x & 0xFFE0, newLoc.y & 0xFFE0);
                 // Note: this is not the same as the randomDirection above as it is the trees rotation
                 args.rotation = rng.randNext(3);
-                args.colour = 0;
+                args.colour = Colour::black;
                 auto type = getTreeType(newLoc, false);
                 if (!type)
                 {
@@ -799,8 +798,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                     if (treeObj->colours != 0)
                     {
-
-                        self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, _treeColour);
+                        self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_treeColour);
                         self->widgets[widx::object_colour].type = WidgetType::buttonWithColour;
                     }
                 }
@@ -876,12 +874,11 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto colourOptions = treeObj->colours;
             if (colourOptions != 0)
             {
-                Colour_t colour = _treeColour;
+                auto colour = *_treeColour;
                 if (!(_lastTreeColourFlag & (1 << 5)))
                 {
-                    colour = Utility::bitScanReverse(colourOptions);
-                    if (colour == 0xFF)
-                        colour = 0;
+                    auto bit = Utility::bitScanReverse(colourOptions);
+                    colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                 }
                 image = Gfx::recolour(image, colour);
             }
@@ -891,7 +888,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BB982
         static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 3);
+            auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
             Gfx::clearSingle(context, shade);
 
             uint16_t xPos = 0;
@@ -903,14 +900,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        _lastTreeColourFlag = Colour::translucent_flag;
-                        Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self.getColour(WindowColour::secondary), Colour::translucent_flag);
+                        _lastTreeColourFlag = AdvancedColour::translucent_flag;
+                        Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucent_flag);
                     }
                 }
                 else
                 {
-                    _lastTreeColourFlag = Colour::translucent_flag | Colour::outline_flag;
-                    Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
+                    _lastTreeColourFlag = AdvancedColour::translucent_flag | AdvancedColour::outline_flag;
+                    Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucent_flag | AdvancedColour::outline_flag));
                 }
 
                 auto treeObj = ObjectManager::get<TreeObject>(self.rowInfo[i]);
@@ -1299,7 +1296,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto xPos = self->widgets[widgetIndex].left + self->x;
             auto yPos = self->widgets[widgetIndex].bottom + self->y;
             auto heightOffset = self->widgets[widgetIndex].height() - 18;
-            auto colour = self->getColour(WindowColour::secondary) | 0x80;
+            auto colour = self->getColour(WindowColour::secondary).translucent();
             auto count = Dropdown::getItemsPerRow(landCount);
 
             Dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
@@ -2427,7 +2424,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC11C
         static void drawScroll(Window& self, Gfx::Context& context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 3);
+            auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
             Gfx::clearSingle(context, shade);
 
             uint16_t xPos = 0;
@@ -2438,12 +2435,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self.getColour(WindowColour::secondary), Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucent_flag | AdvancedColour::outline_flag));
                 }
 
                 auto wallObj = ObjectManager::get<WallObject>(self.rowInfo[i]);

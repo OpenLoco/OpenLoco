@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window->widgets = _widgets;
             window->enabledWidgets = (1 << widx::closeButton) | (1 << widx::saveButton) | (1 << widx::dontSaveButton) | (1 << widx::cancelButton);
             window->initScrollWidgets();
-            window->setColour(WindowColour::primary, Colour::translucent(Colour::mutedDarkRed));
+            window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedDarkRed).translucent());
             window->flags |= Ui::WindowFlags::transparent;
 
             setPauseFlag(1 << 1);

@@ -18,24 +18,24 @@ namespace OpenLoco
 
         string_id name; // 0x00
         uint32_t img;   // 0x02
-        uint8_t colour_06;
-        uint8_t colour_07;
-        uint8_t colour_08;
-        uint8_t colour_09;
-        uint8_t colour_0A;
-        uint8_t colour_0B;
-        uint8_t colour_0C;
-        uint8_t colour_0D;
-        uint8_t colour_0E;
-        uint8_t colour_0F;
-        uint8_t colour_10;
-        uint8_t colour_11;
-        uint8_t colour_12;
-        uint8_t colour_13;
-        uint8_t colour_14;
-        uint8_t colour_15;
-        uint8_t colour_16;
-        uint8_t colour_17;
+        Colour colour_06;
+        Colour colour_07;
+        Colour colour_08;
+        Colour colour_09;
+        Colour colour_0A;
+        Colour colour_0B;
+        Colour colour_0C;
+        Colour colour_0D;
+        Colour colour_0E;
+        Colour colour_0F;
+        Colour colour_10;
+        Colour colour_11;
+        Colour colour_12;
+        Colour colour_13;
+        Colour colour_14;
+        Colour colour_15;
+        Colour colour_16;
+        Colour colour_17;
 
         // 0x0043C888
         bool validate() const { return true; }

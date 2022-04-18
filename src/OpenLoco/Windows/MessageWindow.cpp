@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A5D7
         static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto colour = Colour::getShade(self.getColour(WindowColour::secondary), 4);
+            auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
 
             Gfx::clearSingle(context, colour);
 

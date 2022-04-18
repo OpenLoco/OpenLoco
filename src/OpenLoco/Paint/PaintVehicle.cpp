@@ -91,7 +91,7 @@ namespace OpenLoco::Paint
                 }
                 else if (bogie->var_0C & Flags0C::unk_5)
                 {
-                    imageId = Gfx::recolour(imageId, PaletteIndex::index_74);
+                    imageId = Gfx::recolour(imageId, ExtColour::unk74);
                 }
                 else if (bogie->getTransportMode() == TransportMode::air)
                 {
@@ -103,13 +103,13 @@ namespace OpenLoco::Paint
                         return;
                     }
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::recolourTranslucent(imageId, PaletteIndex::index_32);
+                    imageId = Gfx::recolourTranslucent(imageId, ExtColour::unk32);
                     session.addToPlotList4FD200(imageId, { 0, 0, bogie->position.z }, { 8, 8, static_cast<coord_t>(bogie->position.z + 6) }, { 48, 48, 2 });
                     return;
                 }
                 else
                 {
-                    imageId = Gfx::recolour2(imageId, bogie->colourScheme.primary, bogie->colourScheme.secondary);
+                    imageId = Gfx::recolour2(imageId, bogie->colourScheme);
                 }
 
                 if (sprite.flags & BogieSpriteFlags::unk_4)
@@ -137,7 +137,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    imageId = Gfx::recolour2(imageId, bogie->colourScheme.primary, bogie->colourScheme.secondary);
+                    imageId = Gfx::recolour2(imageId, bogie->colourScheme);
                 }
                 if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
@@ -161,7 +161,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    imageId = Gfx::recolour2(imageId, bogie->colourScheme.primary, bogie->colourScheme.secondary);
+                    imageId = Gfx::recolour2(imageId, bogie->colourScheme);
                 }
                 session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
                 break;
@@ -432,11 +432,11 @@ namespace OpenLoco::Paint
         }
         else if (body->var_0C & Flags0C::unk_5)
         {
-            imageId = Gfx::recolour(bodyImage, PaletteIndex::index_74);
+            imageId = Gfx::recolour(bodyImage, ExtColour::unk74);
         }
         else
         {
-            imageId = Gfx::recolour2(bodyImage, body->colourScheme.primary, body->colourScheme.secondary);
+            imageId = Gfx::recolour2(bodyImage, body->colourScheme);
         }
         session.addToPlotList4FD200(imageId, offsets, boundBoxOffsets, boundBoxSize);
 

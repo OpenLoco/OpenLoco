@@ -72,7 +72,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         FormatArguments args{};
         args.push(ShortcutManager::getName(static_cast<Shortcut>(*_editingShortcutIndex)));
         auto point = Ui::Point(self->x + 140, self->y + 32);
-        Gfx::drawStringCentredWrapped(*ctx, point, 272, 0, StringIds::change_keyboard_shortcut_desc, &args);
+        Gfx::drawStringCentredWrapped(*ctx, point, 272, Colour::black, StringIds::change_keyboard_shortcut_desc, &args);
     }
 
     // 0x004BE821

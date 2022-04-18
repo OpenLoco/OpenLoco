@@ -13,7 +13,7 @@ using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static void createNewsWindow(Ui::Size windowSize, Widget* widgets, uint8_t colour, bool isOld, uint32_t flags)
+    static void createNewsWindow(Ui::Size windowSize, Widget* widgets, AdvancedColour colour, bool isOld, uint32_t flags)
     {
         _word_525CE0 = 5;
 
@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 window->initScrollWidgets();
 
                 auto skin = ObjectManager::get<InterfaceSkinObject>();
-                window->setColour(WindowColour::primary, Colour::translucent(skin->colour_0C));
+                window->setColour(WindowColour::primary, AdvancedColour(skin->colour_0C).translucent());
 
                 window->var_852 = 0;
 
@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         else
         {
             uint32_t flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent;
-            constexpr auto colour = Colour::translucent(Colour::mutedDarkRed);
+            constexpr auto colour = AdvancedColour(Colour::mutedDarkRed).translucent();
 
             createNewsWindow(News1::windowSize, News1::widgets, colour, isOld, flags);
         }

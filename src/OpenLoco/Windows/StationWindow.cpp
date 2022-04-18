@@ -466,7 +466,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E986
         static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
+            Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
             int16_t y = 1;
@@ -513,7 +513,7 @@ namespace OpenLoco::Ui::Windows::Station
                 const auto& widget = self.widgets[widx::scrollview];
                 auto xPos = widget.width() - 14;
 
-                Gfx::drawString_494C78(context, xPos, y, Colour::outline(Colour::black), cargoStr, &args);
+                Gfx::drawString_494C78(context, xPos, y, AdvancedColour(Colour::black).outline(), cargoStr, &args);
                 y += 10;
                 if (cargo.origin != StationId(self.number))
                 {
@@ -522,7 +522,7 @@ namespace OpenLoco::Ui::Windows::Station
                     args2.push(originStation->name);
                     args2.push(originStation->town);
 
-                    Gfx::drawString_494C78(context, xPos, y, Colour::outline(Colour::black), StringIds::station_cargo_en_route_end, &args2);
+                    Gfx::drawString_494C78(context, xPos, y, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, &args2);
                     y += 10;
                 }
                 y += 2;
@@ -658,21 +658,21 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EF02
-        static void drawRatingBar(Window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour_t colour)
+        static void drawRatingBar(Window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour colour)
         {
-            Gfx::fillRectInset(*context, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary), 48);
+            Gfx::fillRectInset(*context, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary).u8(), 48);
 
             uint16_t rating = (amount * 96) / 256;
             if (rating > 2)
             {
-                Gfx::fillRectInset(*context, x + 2, y + 2, x + 1 + rating, y + 8, colour, 0);
+                Gfx::fillRectInset(*context, x + 2, y + 2, x + 1 + rating, y + 8, enumValue(colour), 0);
             }
         }
 
         // 0x0048ED2F
         static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
+            Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
             int16_t y = 0;
@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
-                Gfx::drawString_494BBF(context, 1, y, 98, 0, StringIds::wcolour2_stringid, &cargoObj->name);
+                Gfx::drawString_494BBF(context, 1, y, 98, Colour::black, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
                 auto colour = Colour::green;
@@ -704,7 +704,7 @@ namespace OpenLoco::Ui::Windows::Station
                 drawRatingBar(&self, &context, 100, y, amount, colour);
 
                 uint16_t percent = rating / 2;
-                Gfx::drawString_494B3F(context, 201, y, 0, StringIds::station_cargo_rating_percent, &percent);
+                Gfx::drawString_494B3F(context, 201, y, Colour::black, StringIds::station_cargo_rating_percent, &percent);
                 y += 10;
                 cargoId++;
             }
@@ -996,7 +996,7 @@ namespace OpenLoco::Ui::Windows::Station
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;
-                        Gfx::fillRect(*context, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colour::getShade(ratingColour, 6));
+                        Gfx::fillRect(*context, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colours::getShade(ratingColour, 6));
 
                         yOffset += 3;
                         totalRatingBars++;

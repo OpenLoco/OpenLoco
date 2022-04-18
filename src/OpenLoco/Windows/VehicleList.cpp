@@ -715,7 +715,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C21CD
     static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 1);
+        auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 1);
         Gfx::clearSingle(context, shade);
 
         auto yPos = 0;
@@ -737,7 +737,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
             // Highlight selection.
             if (head->id == EntityId(self.rowHover))
-                Gfx::drawRect(context, 0, yPos, self.width, self.rowHeight, Colour::getShade(self.getColour(WindowColour::secondary), 0));
+                Gfx::drawRect(context, 0, yPos, self.width, self.rowHeight, Colours::getShade(self.getColour(WindowColour::secondary).c(), 0));
 
             // Draw vehicle at the bottom of the row.
             drawVehicle(head, &context, yPos + (self.rowHeight - 28) / 2 + 6);
@@ -760,7 +760,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 // Draw status
                 yPos += 2;
-                Gfx::drawString_494BBF(context, 1, yPos, 308, Colour::outline(Colour::black), format, &args);
+                Gfx::drawString_494BBF(context, 1, yPos, 308, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             auto vehicle = Vehicles::Vehicle(*head);
@@ -776,7 +776,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 }
 
                 auto args = FormatArguments::common(profit);
-                Gfx::drawString_494BBF(context, 310, yPos, 98, Colour::outline(Colour::black), format, &args);
+                Gfx::drawString_494BBF(context, 310, yPos, 98, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             // Vehicle age
@@ -787,14 +787,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
                     format = StringIds::vehicle_list_age_year;
 
                 auto args = FormatArguments::common(age);
-                Gfx::drawString_494BBF(context, 410, yPos, 63, Colour::outline(Colour::black), format, &args);
+                Gfx::drawString_494BBF(context, 410, yPos, 63, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             // Vehicle reliability
             {
                 int16_t reliability = vehicle.veh2->reliability;
                 auto args = FormatArguments::common(reliability);
-                Gfx::drawString_494BBF(context, 475, yPos, 65, Colour::outline(Colour::black), StringIds::vehicle_list_reliability, &args);
+                Gfx::drawString_494BBF(context, 475, yPos, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, &args);
             }
 
             yPos += self.rowHeight - 2;

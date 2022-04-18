@@ -410,7 +410,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
-                Gfx::drawRect(*clipped, xPos, yPos, 241, 1, Colour::getShade(self->getColour(WindowColour::secondary), 4));
+                Gfx::drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));
 
                 Gfx::drawString_494C78(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
@@ -437,7 +437,7 @@ namespace OpenLoco::Ui::Windows::Town
                         Gfx::drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    Gfx::drawRect(*clipped, xPos, 11, 1, self->height - 66, Colour::getShade(self->getColour(WindowColour::secondary), 4));
+                    Gfx::drawRect(*clipped, xPos, 11, 1, self->height - 66, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));
                 }
 
                 // Draw population graph
@@ -446,7 +446,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                 // Do not draw current segment yet; it may be zeroed.
                 if (i < town->historySize - 1)
-                    Gfx::drawLine(*clipped, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->getColour(WindowColour::secondary), 7));
+                    Gfx::drawLine(*clipped, xPos, yPos1, xPos + 1, yPos2, Colours::getShade(self->getColour(WindowColour::secondary).c(), 7));
 
                 month--;
                 if (month < 0)
@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::Windows::Town
                     InterfaceSkin::ImageIds::tab_population_frame7,
                 };
 
-                uint32_t imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary));
+                uint32_t imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
                 if (self->currentTab == widx::tab_population - widx::tab_town)
                     imageId += populationTabImageIds[(self->frame_no / 4) % std::size(populationTabImageIds)];
                 else

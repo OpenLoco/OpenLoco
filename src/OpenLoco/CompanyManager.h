@@ -21,8 +21,8 @@ namespace OpenLoco::CompanyManager
     void setControllingId(CompanyId id);
     void setSecondaryPlayerId(CompanyId id);
     Company* getPlayerCompany();
-    uint8_t getCompanyColour(CompanyId id);
-    uint8_t getPlayerCompanyColour();
+    Colour getCompanyColour(CompanyId id);
+    Colour getPlayerCompanyColour();
     bool isPlayerCompany(CompanyId id);
     void update();
     void updateDaily();

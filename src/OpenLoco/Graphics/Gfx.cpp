@@ -40,12 +40,12 @@ namespace OpenLoco::Gfx
     static loco_global<G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + G1ExpectedCount::kObjects], 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
-    static loco_global<uint16_t[147], 0x050B8C8> _paletteToG1Offset;
+    static loco_global<uint32_t[147], 0x050B8C8> _paletteToG1Offset;
 
     static loco_global<uint16_t, 0x112C824> _currentFontFlags;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
-    static loco_global<uint8_t[4], 0x1136594> _windowColours;
+    static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
 
     static PaletteIndex_t _textColours[8] = { 0 };
 
@@ -74,11 +74,11 @@ namespace OpenLoco::Gfx
     {
         if (Config::get().constructionMarker)
         {
-            return Gfx::recolourTranslucent(imageId, PaletteIndex::index_31);
+            return Gfx::recolourTranslucent(imageId, ExtColour::unk31);
         }
         else
         {
-            return Gfx::recolour(imageId, PaletteIndex::index_2C);
+            return Gfx::recolour(imageId, ExtColour::unk2C);
         }
     }
 
@@ -138,16 +138,16 @@ namespace OpenLoco::Gfx
         std::memcpy(&_data[dstIndex], &src._data[srcIndex], copyLength);
     }
 
-    std::optional<uint32_t> getPaletteG1Index(Colour_t paletteId)
+    std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId)
     {
-        if (paletteId < std::size(_paletteToG1Offset))
+        if (enumValue(paletteId) < std::size(_paletteToG1Offset))
         {
-            return _paletteToG1Offset[paletteId];
+            return _paletteToG1Offset[enumValue(paletteId)];
         }
         return std::nullopt;
     }
 
-    std::optional<PaletteMap> getPaletteMapForColour(Colour_t paletteId)
+    std::optional<PaletteMap> getPaletteMapForColour(ExtColour paletteId)
     {
         auto g1Index = getPaletteG1Index(paletteId);
         if (g1Index)
@@ -668,26 +668,26 @@ namespace OpenLoco::Gfx
                     break;
                 case ControlCodes::window_colour_1:
                 {
-                    int hue = _windowColours[0];
-                    setTextColours(Colour::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                    auto hue = _windowColours[0].c();
+                    setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
                 case ControlCodes::window_colour_2:
                 {
-                    int hue = _windowColours[1];
-                    setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                    auto hue = _windowColours[1].c();
+                    setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
                 case ControlCodes::window_colour_3:
                 {
-                    int hue = _windowColours[2];
-                    setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                    auto hue = _windowColours[2].c();
+                    setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
                 case ControlCodes::window_colour_4:
                 {
-                    int hue = _windowColours[3];
-                    setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                    auto hue = _windowColours[3].c();
+                    setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
 
@@ -798,17 +798,17 @@ namespace OpenLoco::Gfx
      * @param context @<edi>
      * @param text @<esi>
      */
-    Ui::Point drawString(Context& context, int16_t x, int16_t y, uint8_t colour, void* str)
+    Ui::Point drawString(Context& context, int16_t x, int16_t y, AdvancedColour colour, void* str)
     {
         // 0x00E04348, 0x00E0434A
         Ui::Point origin = { x, y };
 
-        if (colour == FormatFlags::fe)
+        if (colour.isFE())
         {
             return loopNewline(&context, origin, (uint8_t*)str);
         }
 
-        if (colour == FormatFlags::fd)
+        if (colour.isFD())
         {
             _currentFontFlags = 0;
             setTextColour(0);
@@ -827,7 +827,7 @@ namespace OpenLoco::Gfx
         if (y < context.y - 90)
             return origin;
 
-        if (colour == FormatFlags::ff)
+        if (colour.isFF())
         {
             return loopNewline(&context, origin, (uint8_t*)str);
         }
@@ -846,19 +846,19 @@ namespace OpenLoco::Gfx
         }
 
         _textColours[0] = PaletteIndex::transparent;
-        _textColours[1] = Colour::getShade(Colour::mutedDarkPurple, 5);
-        _textColours[2] = Colour::getShade(Colour::mutedRed, 5);
-        _textColours[3] = Colour::getShade(Colour::blue, 5);
+        _textColours[1] = Colours::getShade(Colour::mutedDarkPurple, 5);
+        _textColours[2] = Colours::getShade(Colour::mutedRed, 5);
+        _textColours[3] = Colours::getShade(Colour::blue, 5);
 
-        if (colour & FormatFlags::textflag_5)
+        if (colour.isOutline())
         {
-            colour &= ~FormatFlags::textflag_5;
+            colour = colour.clearOutline();
             _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
         }
 
-        if (colour & FormatFlags::textflag_6)
+        if (colour.isInset())
         {
-            colour &= ~FormatFlags::textflag_6;
+            colour = colour.clearInset();
             _currentFontFlags = _currentFontFlags | TextDrawFlags::inset;
         }
 
@@ -866,26 +866,26 @@ namespace OpenLoco::Gfx
         {
             if ((_currentFontFlags & TextDrawFlags::dark) != 0 && (_currentFontFlags & TextDrawFlags::extra_dark) != 0)
             {
-                _textColours[1] = Colour::getShade(colour, 2);
+                _textColours[1] = Colours::getShade(colour.c(), 2);
                 _textColours[2] = PaletteIndex::transparent;
-                _textColours[3] = Colour::getShade(colour, 4);
+                _textColours[3] = Colours::getShade(colour.c(), 4);
             }
             else if ((_currentFontFlags & TextDrawFlags::dark) != 0)
             {
-                _textColours[1] = Colour::getShade(colour, 3);
+                _textColours[1] = Colours::getShade(colour.c(), 3);
                 _textColours[2] = PaletteIndex::transparent;
-                _textColours[3] = Colour::getShade(colour, 5);
+                _textColours[3] = Colours::getShade(colour.c(), 5);
             }
             else
             {
-                _textColours[1] = Colour::getShade(colour, 4);
+                _textColours[1] = Colours::getShade(colour.c(), 4);
                 _textColours[2] = PaletteIndex::transparent;
-                _textColours[3] = Colour::getShade(colour, 6);
+                _textColours[3] = Colours::getShade(colour.c(), 6);
             }
         }
         else
         {
-            setTextColours(Colour::getShade(colour, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+            setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
         }
 
         return loopNewline(&context, origin, (uint8_t*)str);
@@ -904,12 +904,12 @@ namespace OpenLoco::Gfx
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args)
     {
         registers regs;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bx = stringId;
         regs.bp = width;
         regs.cx = x;
@@ -932,12 +932,12 @@ namespace OpenLoco::Gfx
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args)
     {
         registers regs;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bx = stringId;
         regs.cx = x;
         regs.dx = y;
@@ -957,12 +957,12 @@ namespace OpenLoco::Gfx
     void drawString_494B3F(
         Context& context,
         Point* origin,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args)
     {
         registers regs;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bx = stringId;
         regs.cx = origin->x;
         regs.dx = origin->y;
@@ -987,12 +987,12 @@ namespace OpenLoco::Gfx
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args)
     {
         registers regs;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bx = stringId;
         regs.cx = x;
         regs.dx = y;
@@ -1013,12 +1013,12 @@ namespace OpenLoco::Gfx
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args)
     {
         registers regs;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bx = stringId;
         regs.cx = x;
         regs.dx = y;
@@ -1038,12 +1038,12 @@ namespace OpenLoco::Gfx
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args)
     {
         registers regs;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bx = stringId;
         regs.cx = x;
         regs.dx = y;
@@ -1063,12 +1063,12 @@ namespace OpenLoco::Gfx
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args)
     {
         registers regs;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bx = stringId;
         regs.cx = x;
         regs.dx = y;
@@ -1088,12 +1088,12 @@ namespace OpenLoco::Gfx
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args)
     {
         registers regs;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bx = stringId;
         regs.cx = x;
         regs.dx = y;
@@ -1115,7 +1115,7 @@ namespace OpenLoco::Gfx
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args)
     {
@@ -1125,7 +1125,7 @@ namespace OpenLoco::Gfx
         regs.ebx = stringId;
         regs.cx = x;
         regs.dx = y;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bp = width;
         call(0x00494C36, regs);
     }
@@ -1145,7 +1145,7 @@ namespace OpenLoco::Gfx
         Context& context,
         Point& origin,
         uint16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args)
     {
@@ -1155,7 +1155,7 @@ namespace OpenLoco::Gfx
         regs.cx = origin.x;
         regs.dx = origin.y;
         regs.bp = width;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bx = stringId;
         call(0x00494ECF, regs);
 
@@ -1177,7 +1177,7 @@ namespace OpenLoco::Gfx
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         const void* args)
     {
         registers regs;
@@ -1185,7 +1185,7 @@ namespace OpenLoco::Gfx
         regs.esi = X86Pointer(args);
         regs.cx = x;
         regs.dx = y;
-        regs.al = colour;
+        regs.al = colour.u8();
         regs.bp = width;
         call(0x00494E33, regs);
     }
@@ -1373,14 +1373,18 @@ namespace OpenLoco::Gfx
         return ImageIdFlags::remap | image;
     }
 
-    uint32_t recolour(uint32_t image, uint8_t colour)
+    uint32_t recolour(uint32_t image, ExtColour colour)
     {
-        return ImageIdFlags::remap | (colour << 19) | image;
+        return ImageIdFlags::remap | (enumValue(colour) << 19) | image;
+    }
+    uint32_t recolour(uint32_t image, Colour colour)
+    {
+        return recolour(image, Colours::toExt(colour));
     }
 
-    uint32_t recolour2(uint32_t image, uint8_t colour1, uint8_t colour2)
+    uint32_t recolour2(uint32_t image, Colour colour1, Colour colour2)
     {
-        return ImageIdFlags::remap | ImageIdFlags::remap2 | (colour1 << 19) | (colour2 << 24) | image;
+        return ImageIdFlags::remap | ImageIdFlags::remap2 | (enumValue(colour1) << 19) | (enumValue(colour2) << 24) | image;
     }
 
     uint32_t recolour2(uint32_t image, ColourScheme colourScheme)
@@ -1388,9 +1392,9 @@ namespace OpenLoco::Gfx
         return recolour2(image, colourScheme.primary, colourScheme.secondary);
     }
 
-    uint32_t recolourTranslucent(uint32_t image, uint8_t colour)
+    uint32_t recolourTranslucent(uint32_t image, ExtColour colour)
     {
-        return ImageIdFlags::translucent | (colour << 19) | image;
+        return ImageIdFlags::translucent | (enumValue(colour) << 19) | image;
     }
 
     loco_global<uint8_t*, 0x0050B860> _50B860;

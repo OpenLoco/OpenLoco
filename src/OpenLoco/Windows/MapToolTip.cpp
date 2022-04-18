@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             auto right = left + 25;
             auto bottom = top + 25;
 
-            Gfx::fillRect(*context, left, top, right, bottom, Colour::darkGreen);
+            Gfx::fillRect(*context, left, top, right, bottom, enumValue(Colour::darkGreen));
 
             auto* company = CompanyManager::get(_mapTooltipOwner);
             auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);

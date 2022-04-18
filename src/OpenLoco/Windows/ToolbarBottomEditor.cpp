@@ -77,18 +77,18 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            Gfx::drawRectInset(*ctx, previous.left + self->x + 1, previous.top + self->y + 1, previous.width() - 2, previous.height() - 2, self->getColour(WindowColour::secondary), 0x30);
+            Gfx::drawRectInset(*ctx, previous.left + self->x + 1, previous.top + self->y + 1, previous.width() - 2, previous.height() - 2, self->getColour(WindowColour::secondary).u8(), 0x30);
         }
-        Gfx::drawRectInset(*ctx, next.left + self->x + 1, next.top + self->y + 1, next.width() - 2, next.height() - 2, self->getColour(WindowColour::secondary), 0x30);
+        Gfx::drawRectInset(*ctx, next.left + self->x + 1, next.top + self->y + 1, next.width() - 2, next.height() - 2, self->getColour(WindowColour::secondary).u8(), 0x30);
 
-        Gfx::drawStringCentred(*ctx, (previous.right + next.left) / 2 + self->x, self->y + self->height - 12, Colour::opaque(self->getColour(WindowColour::tertiary)) | Colour::outline_flag, _stepNames[EditorController::getCurrentStep()]);
+        Gfx::drawStringCentred(*ctx, (previous.right + next.left) / 2 + self->x, self->y + self->height - 12, self->getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
 
         if (EditorController::canGoBack())
         {
             Gfx::drawImage(ctx, self->x + previous.left + 6, self->y + previous.top + 6, ImageIds::step_back);
             int x = (previous.left + 30 + previous.right) / 2;
             int y = previous.top + 6;
-            Colour_t textColour = Colour::opaque(self->getColour(WindowColour::secondary));
+            auto textColour = self->getColour(WindowColour::secondary).opaque();
             if (Input::isHovering(self->type, self->number, widx::previous_button))
             {
                 textColour = Colour::white;
@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         Gfx::drawImage(ctx, self->x + next.right - 29, self->y + next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
         int y = next.top + 6;
-        Colour_t textColour = Colour::opaque(self->getColour(WindowColour::secondary));
+        auto textColour = self->getColour(WindowColour::secondary).opaque();
         if (Input::isHovering(self->type, self->number, widx::next_button))
         {
             textColour = Colour::white;
@@ -140,9 +140,9 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         window->enabledWidgets = 1 << widx::previous_button | 1 << widx::previous_frame | 1 << widx::next_frame | 1 << widx::next_button;
         window->var_854 = 0;
         window->initScrollWidgets();
-        window->setColour(WindowColour::primary, Colour::translucent(Colour::mutedSeaGreen));
-        window->setColour(WindowColour::secondary, Colour::translucent(Colour::mutedSeaGreen));
-        window->setColour(WindowColour::tertiary, Colour::translucent(Colour::mutedSeaGreen));
+        window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedSeaGreen).translucent());
+        window->setColour(WindowColour::tertiary, AdvancedColour(Colour::mutedSeaGreen).translucent());
     }
 
     static void initEvents()

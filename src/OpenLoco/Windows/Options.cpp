@@ -967,14 +967,14 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::drawTabs(w, context);
 
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::currently_playing_btn].top, 0, StringIds::currently_playing, nullptr);
+            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::currently_playing_btn].top, Colour::black, StringIds::currently_playing, nullptr);
 
-            Gfx::drawString_494B3F(*context, w->x + 183, w->y + w->widgets[Widx::volume].top + 7, 0, StringIds::volume, nullptr);
+            Gfx::drawString_494B3F(*context, w->x + 183, w->y + w->widgets[Widx::volume].top + 7, Colour::black, StringIds::volume, nullptr);
 
-            Gfx::drawImage(context, w->x + w->widgets[Widx::volume].left, w->y + w->widgets[Widx::volume].top, 0x20000000 | (w->getColour(WindowColour::secondary) << 19) | ImageIds::volume_slider_track);
+            Gfx::drawImage(context, w->x + w->widgets[Widx::volume].left, w->y + w->widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w->getColour(WindowColour::secondary).c()));
 
             int16_t x = 90 + (Config::get().volume / 32);
-            Gfx::drawImage(context, w->x + w->widgets[Widx::volume].left + x, w->y + w->widgets[Widx::volume].top, 0x20000000 | (w->getColour(WindowColour::secondary) << 19) | ImageIds::volume_slider_thumb);
+            Gfx::drawImage(context, w->x + w->widgets[Widx::volume].left + x, w->y + w->widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w->getColour(WindowColour::secondary).c()));
         }
 
         static void onMouseUp(Window* w, WidgetIndex_t wi)
@@ -1364,11 +1364,11 @@ namespace OpenLoco::Ui::Windows::Options
             w->draw(context);
             Common::drawTabs(w, context);
 
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::language].top + 1, 0, StringIds::options_language, nullptr);
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::distance_speed].top + 1, 0, StringIds::distance_and_speed, nullptr);
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::heights].top + 1, 0, StringIds::heights, nullptr);
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::currency].top + 1, 0, StringIds::current_game_currency, nullptr);
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::preferred_currency].top + 1, 0, StringIds::new_game_currency, nullptr);
+            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::language].top + 1, Colour::black, StringIds::options_language, nullptr);
+            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::distance_speed].top + 1, Colour::black, StringIds::distance_and_speed, nullptr);
+            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::heights].top + 1, Colour::black, StringIds::heights, nullptr);
+            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::currency].top + 1, Colour::black, StringIds::current_game_currency, nullptr);
+            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::preferred_currency].top + 1, Colour::black, StringIds::new_game_currency, nullptr);
         }
 
         static void onMouseUp(Window* w, WidgetIndex_t wi)
@@ -1994,7 +1994,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             FormatArguments args = {};
             args.push(StringIds::buffer_2039);
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::change_btn].top + 1, 0, StringIds::wcolour2_preferred_owner_name, &args);
+            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::change_btn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
 
             auto y = w->y + w->widgets[Widx::autosave_frequency].top + 1;
             drawString_494B3F(*context, w->x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);

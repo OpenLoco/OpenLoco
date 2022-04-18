@@ -960,7 +960,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     context,
                     self->x + speedWidget.left,
                     self->y + speedWidget.top + 10,
-                    Gfx::recolour(ImageIds::speed_control_track, self->getColour(WindowColour::secondary)));
+                    Gfx::recolour(ImageIds::speed_control_track, self->getColour(WindowColour::secondary).c()));
 
                 Gfx::drawStringCentred(
                     *context,
@@ -980,7 +980,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     context,
                     self->x + speedWidget.left + 1,
                     self->y + speedWidget.top + 57 - veh->var_6E,
-                    Gfx::recolour(ImageIds::speed_control_thumb, self->getColour(WindowColour::secondary)));
+                    Gfx::recolour(ImageIds::speed_control_thumb, self->getColour(WindowColour::secondary).c()));
             }
 
             if (self->viewports[0] != nullptr)
@@ -1458,6 +1458,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto buildImage = skin->img + additionalVehicleButtonByVehicleType.at(head->vehicleType);
+
             self->widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self->owner)) | Widget::imageIdColourSet;
 
             Vehicles::Vehicle train{ *head };
@@ -1529,7 +1530,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B36A3
         static void drawScroll(Window& self, Gfx::Context& context, const uint32_t i)
         {
-            Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
+            Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
             {
@@ -1561,7 +1562,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (car.front == _dragCarComponent)
                 {
                     al = 12;
-                    ah = self.getColour(WindowColour::secondary);
+                    ah = self.getColour(WindowColour::secondary).u8();
                 }
                 auto x = Common::sub_4B743B(al, ah, 0, y, car.front, &context);
 
@@ -1835,7 +1836,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 004B3F62
         static void drawScroll(Window& self, Gfx::Context& context, const uint32_t i)
         {
-            Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
+            Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
             auto* head = Common::getVehicle(&self);
             if (head == nullptr)
             {
@@ -3259,7 +3260,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B48BA
         static void drawScroll(Window& self, Gfx::Context& context, const uint32_t i)
         {
-            Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
+            Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
@@ -3282,7 +3283,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto strFormat = StringIds::black_stringid;
                 if (self.var_842 == rowNum)
                 {
-                    Gfx::fillRect(context, 0, y, self.width, y + 9, Colour::darkGreen);
+                    Gfx::fillRect(context, 0, y, self.width, y + 9, enumValue(Colour::darkGreen));
                     strFormat = StringIds::white_stringid;
                 }
                 if (self.rowHover == rowNum)
@@ -3330,7 +3331,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto strFormat = StringIds::black_stringid;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(context, 0, loc.y, self.width, loc.y + lineHeight, Colour::darkGreen);
+                Gfx::fillRect(context, 0, loc.y, self.width, loc.y + lineHeight, enumValue(Colour::darkGreen));
                 strFormat = StringIds::white_stringid;
             }
             if (self.rowHover == rowNum)

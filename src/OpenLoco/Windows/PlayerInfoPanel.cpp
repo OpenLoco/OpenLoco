@@ -190,8 +190,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, Colour::translucent(skin->colour_16));
-            window->setColour(WindowColour::secondary, Colour::translucent(skin->colour_16));
+            window->setColour(WindowColour::primary, AdvancedColour(skin->colour_16).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->colour_16).translucent());
         }
 
         return window;
@@ -212,7 +212,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         // Draw widgets.
         window->draw(context);
 
-        drawRectInset(*context, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->getColour(WindowColour::secondary), 0x30);
+        drawRectInset(*context, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->getColour(WindowColour::secondary).u8(), 0x30);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);
@@ -234,7 +234,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 }
             }
 
-            auto colour = Colour::opaque(window->getColour(WindowColour::primary));
+            auto colour = window->getColour(WindowColour::primary).opaque();
             if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::company_value))
             {
                 colour = Colour::white;
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 performanceString = StringIds::player_info_performance_decrease;
             }
 
-            auto colour = window->getColour(WindowColour::primary) & 0x7F;
+            auto colour = window->getColour(WindowColour::primary).opaque();
             if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::performanceIndex))
             {
                 colour = Colour::white;

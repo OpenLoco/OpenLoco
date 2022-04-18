@@ -1,78 +1,294 @@
 #pragma once
 
-#include <cstdint>
+#include "../Types.hpp"
 
 namespace OpenLoco
 {
-    using Colour_t = uint8_t;
     using PaletteIndex_t = uint8_t;
 
-    namespace Colour
+    enum class Colour : uint8_t
     {
-        constexpr uint8_t outline_flag = 1 << 5;
-        constexpr uint8_t inset_flag = 1 << 6;
-        constexpr uint8_t translucent_flag = 1 << 7;
+        black = 0,
+        grey = 1,
+        white = 2,
+        mutedDarkPurple = 3,
+        mutedPurple = 4,
+        purple = 5,
+        darkBlue = 6,
+        blue = 7,
+        mutedDarkTeal = 8,
+        mutedTeal = 9,
+        darkGreen = 10,
+        mutedSeaGreen = 11,
+        mutedGrassGreen = 12,
+        green = 13,
+        mutedAvocadoGreen = 14,
+        mutedOliveGreen = 15,
+        yellow = 16,
+        darkYellow = 17,
+        orange = 18,
+        amber = 19,
+        darkOrange = 20,
+        mutedDarkYellow = 21,
+        mutedYellow = 22,
+        brown = 23,
+        mutedOrange = 24,
+        mutedDarkRed = 25,
+        darkRed = 26,
+        red = 27,
+        darkPink = 28,
+        pink = 29,
+        mutedRed = 30,
+    };
 
-        constexpr Colour_t black = 0;
-        constexpr Colour_t grey = 1;
-        constexpr Colour_t white = 2;
-        constexpr Colour_t mutedDarkPurple = 3;
-        constexpr Colour_t mutedPurple = 4;
-        constexpr Colour_t purple = 5;
-        constexpr Colour_t darkBlue = 6;
-        constexpr Colour_t blue = 7;
-        constexpr Colour_t mutedDarkTeal = 8;
-        constexpr Colour_t mutedTeal = 9;
-        constexpr Colour_t darkGreen = 10;
-        constexpr Colour_t mutedSeaGreen = 11;
-        constexpr Colour_t mutedGrassGreen = 12;
-        constexpr Colour_t green = 13;
-        constexpr Colour_t mutedAvocadoGreen = 14;
-        constexpr Colour_t mutedOliveGreen = 15;
-        constexpr Colour_t yellow = 16;
-        constexpr Colour_t darkYellow = 17;
-        constexpr Colour_t orange = 18;
-        constexpr Colour_t amber = 19;
-        constexpr Colour_t darkOrange = 20;
-        constexpr Colour_t mutedDarkYellow = 21;
-        constexpr Colour_t mutedYellow = 22;
-        constexpr Colour_t brown = 23;
-        constexpr Colour_t mutedOrange = 24;
-        constexpr Colour_t mutedDarkRed = 25;
-        constexpr Colour_t darkRed = 26;
-        constexpr Colour_t red = 27;
-        constexpr Colour_t darkPink = 28;
-        constexpr Colour_t pink = 29;
-        constexpr Colour_t mutedRed = 30;
+    enum class ExtColour : uint8_t
+    {
+        black = 0,
+        grey = 1,
+        white = 2,
+        mutedDarkPurple = 3,
+        mutedPurple = 4,
+        purple = 5,
+        darkBlue = 6,
+        blue = 7,
+        mutedDarkTeal = 8,
+        mutedTeal = 9,
+        darkGreen = 10,
+        mutedSeaGreen = 11,
+        mutedGrassGreen = 12,
+        green = 13,
+        mutedAvocadoGreen = 14,
+        mutedOliveGreen = 15,
+        yellow = 16,
+        darkYellow = 17,
+        orange = 18,
+        amber = 19,
+        darkOrange = 20,
+        mutedDarkYellow = 21,
+        mutedYellow = 22,
+        brown = 23,
+        mutedOrange = 24,
+        mutedDarkRed = 25,
+        darkRed = 26,
+        red = 27,
+        darkPink = 28,
+        pink = 29,
+        mutedRed = 30,
+        // First 30 are inherited from Colour
+        clear = 31, // No colour
+        null = 32,  // Does not represent any palette
+        unk21,
+        unk22,
+        unk23,
+        unk24,
+        unk25,
+        unk26,
+        unk27,
+        unk28,
+        unk29,
+        unk2A,
+        unk2B,
+        unk2C, // ghost
+        unk2D,
+        unk2E, // translucentGlass1
+        unk2F, // translucentGlass2
+        unk30, // translucentGlass0
+        unk31, // translucentGhost
+        unk32, // shadow
+        unk33,
+        unk34,
+        translucentGrey1, // 0-1 black, grey
+        translucentGrey2,
+        translucentGrey0,
+        translucentBlue1, // 6-7 darkBlue, blue
+        translucentBlue2,
+        translucentBlue0,
+        translucentMutedDarkRed1, // 25 mutedDarkRed
+        translucentMutedDarkRed2,
+        translucentMutedDarkRed0,
+        translucentMutedSeaGreen1, // 11 mutedSeaGreen
+        translucentMutedSeaGreen2,
+        translucentMutedSeaGreen0,
+        translucentMutedPurple1, // 3-4 mutedDarkPurple, mutedPurple
+        translucentMutedPurple2,
+        translucentMutedPurple0,
+        translucentMutedOliveGreen1, // 15 mutedOliveGreen
+        translucentMutedOliveGreen2,
+        translucentMutedOliveGreen0,
+        translucentMutedYellow1, // 21-22 mutedDarkYellow, mutedYellow
+        translucentMutedYellow2,
+        translucentMutedYellow0,
+        translucentYellow1, // 16-17 yellow, darkYellow
+        translucentYellow2,
+        translucentYellow0,
+        translucentMutedGrassGreen1, // 12 mutedGrassGreen
+        translucentMutedGrassGreen2,
+        translucentMutedGrassGreen0,
+        translucentMutedAvocadoGreen1, // 14 mutedAvocadoGreen
+        translucentMutedAvocadoGreen2,
+        translucentMutedAvocadoGreen0,
+        translucentGreen1, // 10, 13 darkGreen, green
+        translucentGreen2,
+        translucentGreen0,
+        translucentMutedOrange1, // 24 mutedOrange
+        translucentMutedOrange2,
+        translucentMutedOrange0,
+        translucentPurple1, // 5 purple
+        translucentPurple2,
+        translucentPurple0,
+        translucentRed1, // 26-27 darkRed, red
+        translucentRed2,
+        translucentRed0,
+        translucentOrange1, // 18, 20 orange, darkOrange
+        translucentOrange2,
+        translucentOrange0,
+        translucentMutedTeal1, // 8-9 mutedDarkTeal, mutedTeal
+        translucentMutedTeal2,
+        translucentMutedTeal0,
+        translucentPink1, // 28-29 pink, darkPink
+        translucentPink2,
+        translucentPink0,
+        translucentBrown1, // 23 brown
+        translucentBrown2,
+        translucentBrown0,
+        translucentMutedRed1, // 30 mutedRed
+        translucentMutedRed2,
+        translucentMutedRed0,
+        translucentWhite1, // 2 white
+        translucentWhite2,
+        translucentWhite0,
+        translucentAmber1, // 19 amber
+        translucentAmber2,
+        translucentAmber0,
+        unk74,
+        unk75,
+        unk76,
+        unk77,
+        unk78,
+        unk79,
+        unk7A,
+        unk7B,
+        unk7C,
+        unk7D,
+        unk7E,
+        unk7F,
+        unk80,
+        unk81,
+        unk82,
+        unk83,
+        unk84,
+        unk85,
+        unk86,
+        unk87,
+        unk88,
+        unk89,
+        unk8A,
+        unk8B,
+        unk8C,
+        unk8D,
+        unk8E,
+        unk8F,
+        unk90,
+        unk91,
+        unk92,
+    };
 
-        constexpr Colour_t outline(Colour_t c)
+    struct AdvancedColour
+    {
+        static constexpr uint8_t outline_flag = 1 << 5;
+        static constexpr uint8_t inset_flag = 1 << 6;
+        static constexpr uint8_t translucent_flag = 1 << 7;
+        static constexpr uint8_t fd = 0xFD;
+        static constexpr uint8_t fe = 0xFE;
+        static constexpr uint8_t ff = 0xFF;
+
+    private:
+        Colour _c = Colour::black;
+
+    public:
+        constexpr AdvancedColour() = default;
+        constexpr AdvancedColour(const Colour c)
+            : _c(c)
         {
-            return c | outline_flag;
         }
 
-        constexpr Colour_t inset(Colour_t c)
-        {
-            return c | inset_flag;
-        }
+        constexpr explicit operator Colour() const { return static_cast<Colour>(enumValue(_c) & ~(outline_flag | inset_flag | translucent_flag)); }
+        constexpr Colour c() const { return static_cast<Colour>(*this); }
+        constexpr explicit operator uint8_t() const { return enumValue(_c); }
+        constexpr uint8_t u8() const { return static_cast<uint8_t>(*this); }
 
-        constexpr Colour_t translucent(Colour_t c)
+        constexpr AdvancedColour outline()
         {
-            return c | translucent_flag;
+            _c = static_cast<Colour>(enumValue(_c) | outline_flag);
+            return *this;
         }
+        constexpr bool isOutline() const { return enumValue(_c) & outline_flag; }
 
-        constexpr Colour_t opaque(Colour_t c)
+        constexpr AdvancedColour inset()
         {
-            return c & ~translucent_flag;
+            _c = static_cast<Colour>(enumValue(_c) | inset_flag);
+            return *this;
         }
+        constexpr bool isInset() const { return enumValue(_c) & inset_flag; }
 
+        constexpr AdvancedColour translucent()
+        {
+            _c = static_cast<Colour>(enumValue(_c) | translucent_flag);
+            return *this;
+        }
+        constexpr bool isTranslucent() const { return enumValue(_c) & translucent_flag; }
+
+        constexpr AdvancedColour opaque()
+        {
+            _c = static_cast<Colour>(enumValue(_c) & ~translucent_flag);
+            return *this;
+        }
+        constexpr AdvancedColour clearInset()
+        {
+            _c = static_cast<Colour>(enumValue(_c) & ~inset_flag);
+            return *this;
+        }
+        constexpr AdvancedColour clearOutline()
+        {
+            _c = static_cast<Colour>(enumValue(_c) & ~outline_flag);
+            return *this;
+        }
+        constexpr bool isOpaque() const { return !isTranslucent(); }
+        constexpr AdvancedColour FF()
+        {
+            _c = static_cast<Colour>(ff);
+            return *this;
+        }
+        constexpr bool isFF() const { return enumValue(_c) == ff; }
+        constexpr AdvancedColour FE()
+        {
+            _c = static_cast<Colour>(fe);
+            return *this;
+        }
+        constexpr bool isFE() const { return enumValue(_c) == fe; }
+        constexpr AdvancedColour FD()
+        {
+            _c = static_cast<Colour>(fd);
+            return *this;
+        }
+        constexpr bool isFD() const { return enumValue(_c) == fd; }
+    };
+    static_assert(sizeof(AdvancedColour) == 1);
+
+    namespace Colours
+    {
         void initColourMap();
-        PaletteIndex_t getShade(Colour_t colour, uint8_t shade);
-        PaletteIndex_t getTranslucent(Colour_t colour);
+        PaletteIndex_t getShade(Colour colour, uint8_t shade);
+        ExtColour getTranslucent(Colour colour);
+        constexpr ExtColour toExt(Colour c) { return static_cast<ExtColour>(c); }
     }
 
     namespace PaletteIndex
     {
         constexpr PaletteIndex_t transparent = 0;
+        constexpr PaletteIndex_t primaryRemap0 = 0x07;
+        constexpr PaletteIndex_t primaryRemap1 = 0x08;
+        constexpr PaletteIndex_t primaryRemap2 = 0x09;
         constexpr PaletteIndex_t index_0A = 0x0A;
         constexpr PaletteIndex_t index_0C = 0x0C;
         constexpr PaletteIndex_t index_0E = 0x0E;
@@ -132,9 +348,31 @@ namespace OpenLoco
         constexpr PaletteIndex_t index_BC = 0xBC;
         constexpr PaletteIndex_t index_C3 = 0xC3;
         constexpr PaletteIndex_t index_C6 = 0xC6;
+        constexpr PaletteIndex_t secondaryRemap0 = 0xCA;
+        constexpr PaletteIndex_t secondaryRemap1 = 0xCB;
+        constexpr PaletteIndex_t secondaryRemap2 = 0xCC;
+        constexpr PaletteIndex_t secondaryRemap3 = 0xCD;
+        constexpr PaletteIndex_t secondaryRemap4 = 0xCE;
+        constexpr PaletteIndex_t secondaryRemap5 = 0xCF;
+        constexpr PaletteIndex_t secondaryRemap6 = 0xD0;
+        constexpr PaletteIndex_t secondaryRemap7 = 0xD1;
+        constexpr PaletteIndex_t secondaryRemap8 = 0xD2;
+        constexpr PaletteIndex_t secondaryRemap9 = 0xD3;
+        constexpr PaletteIndex_t secondaryRemapA = 0xD4;
+        constexpr PaletteIndex_t secondaryRemapB = 0xD5;
         constexpr PaletteIndex_t index_D0 = 0xD0;
         constexpr PaletteIndex_t index_D3 = 0xD3;
         constexpr PaletteIndex_t index_DB = 0xDB;
         constexpr PaletteIndex_t index_DE = 0xDE;
+        constexpr PaletteIndex_t primaryRemap3 = 0xF6;
+        constexpr PaletteIndex_t primaryRemap4 = 0xF7;
+        constexpr PaletteIndex_t primaryRemap5 = 0xF8;
+        constexpr PaletteIndex_t primaryRemap6 = 0xF9;
+        constexpr PaletteIndex_t primaryRemap7 = 0xFA;
+        constexpr PaletteIndex_t primaryRemap8 = 0xFB;
+        constexpr PaletteIndex_t primaryRemap9 = 0xFC;
+        constexpr PaletteIndex_t primaryRemapA = 0xFD;
+        constexpr PaletteIndex_t primaryRemapB = 0xFE;
+        constexpr PaletteIndex_t index_FF = 0xFF;
     }
 }

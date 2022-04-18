@@ -9,7 +9,9 @@
 
 namespace OpenLoco
 {
-    using Colour_t = uint8_t;
+    using PaletteIndex_t = uint8_t;
+    struct AdvancedColour;
+    enum class ExtColour : uint8_t;
 }
 
 namespace OpenLoco::Drawing
@@ -135,8 +137,8 @@ namespace OpenLoco::Gfx
         void copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length);
     };
 
-    std::optional<uint32_t> getPaletteG1Index(Colour_t paletteId);
-    std::optional<PaletteMap> getPaletteMapForColour(Colour_t paletteId);
+    std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId);
+    std::optional<PaletteMap> getPaletteMapForColour(ExtColour paletteId);
 
     Context& screenContext();
 
@@ -148,27 +150,27 @@ namespace OpenLoco::Gfx
     uint16_t getStringWidth(const char* buffer);
     uint16_t getMaxStringWidth(const char* buffer);
 
-    Ui::Point drawString(Context& context, int16_t x, int16_t y, uint8_t colour, void* str);
+    Ui::Point drawString(Context& context, int16_t x, int16_t y, AdvancedColour colour, void* str);
 
     int16_t drawString_495224(
         Context& context,
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawString_494B3F(
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawString_494B3F(
         Context& context,
         Ui::Point* origin,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawString_494BBF(
@@ -176,35 +178,35 @@ namespace OpenLoco::Gfx
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawString_494C78(
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringUnderline(
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args);
     void drawStringLeftUnderline(
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringCentred(
         Context& context,
         int16_t x,
         int16_t y,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringCentredClipped(
@@ -212,14 +214,14 @@ namespace OpenLoco::Gfx
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     uint16_t drawStringCentredWrapped(
         Context& context,
         Ui::Point& origin,
         uint16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringCentredRaw(
@@ -227,7 +229,7 @@ namespace OpenLoco::Gfx
         int16_t x,
         int16_t y,
         int16_t width,
-        uint8_t colour,
+        AdvancedColour colour,
         const void* args);
     uint16_t getStringWidthNewLined(const char* buffer);
     std::pair<uint16_t, uint16_t> wrapString(const char* buffer, uint16_t stringWidth);
@@ -241,10 +243,11 @@ namespace OpenLoco::Gfx
     void drawImageSolid(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t palette_index);
     void drawImagePaletteSet(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t* palette);
     [[nodiscard]] uint32_t recolour(uint32_t image);
-    [[nodiscard]] uint32_t recolour(uint32_t image, uint8_t colour);
-    [[nodiscard]] uint32_t recolour2(uint32_t image, uint8_t colour1, uint8_t colour2);
+    [[nodiscard]] uint32_t recolour(uint32_t image, Colour colour);
+    [[nodiscard]] uint32_t recolour(uint32_t image, ExtColour colour);
+    [[nodiscard]] uint32_t recolour2(uint32_t image, Colour colour1, Colour colour2);
     [[nodiscard]] uint32_t recolour2(uint32_t image, ColourScheme colourScheme);
-    [[nodiscard]] uint32_t recolourTranslucent(uint32_t image, uint8_t colour);
+    [[nodiscard]] uint32_t recolourTranslucent(uint32_t image, ExtColour colour);
     [[nodiscard]] uint32_t applyGhostToImage(uint32_t imageId);
 
     void invalidateScreen();

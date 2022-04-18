@@ -11,23 +11,20 @@ namespace OpenLoco
     // 0x0042DE40
     void BuildingObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
-        Colour_t colour = Utility::bitScanReverse(colours);
+        auto bit = Utility::bitScanReverse(colours);
 
-        if (colour == 0xFF)
-        {
-            colour = 0;
-        }
+        const auto colour = (bit == -1) ? Colour::black : static_cast<Colour>(bit);
 
         drawBuilding(&context, 1, x, y + 40, colour);
     }
 
     // 0x0042DB95
-    void BuildingObject::drawBuilding(Gfx::Context* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour_t colour) const
+    void BuildingObject::drawBuilding(Gfx::Context* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const
     {
         registers regs;
         regs.cx = x;
         regs.dx = y;
-        regs.esi = colour;
+        regs.esi = enumValue(colour);
         regs.eax = buildingRotation;
         regs.edi = X86Pointer(clipped);
         regs.ebp = X86Pointer(this);

@@ -651,10 +651,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             auto imageId = Gfx::recolour(roadStationObj->image + RoadStation::ImageIds::preview_image, companyColour);
             Gfx::drawImage(context, xPos, yPos, imageId);
 
-            auto colour = Colour::getTranslucent(companyColour);
+            auto colour = Colours::getTranslucent(companyColour);
             if (!(roadStationObj->flags & RoadStationFlags::recolourable))
             {
-                colour = PaletteIndex::index_2E;
+                colour = ExtColour::unk2E;
             }
 
             imageId = Gfx::recolourTranslucent(roadStationObj->image + RoadStation::ImageIds::preview_image_windows, colour);
@@ -667,10 +667,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
             Gfx::drawImage(context, xPos, yPos, imageId);
 
-            auto colour = Colour::getTranslucent(companyColour);
+            auto colour = Colours::getTranslucent(companyColour);
             if (!(trainStationObj->flags & TrainStationFlags::recolourable))
             {
-                colour = PaletteIndex::index_2E;
+                colour = ExtColour::unk2E;
             }
 
             imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
@@ -691,7 +691,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         xPos = self->x + 3;
         yPos = self->widgets[widx::image].bottom + self->y + 16;
         auto width = self->width - 4;
-        Gfx::drawRectInset(*context, xPos, yPos, width, 1, self->getColour(WindowColour::secondary), (1 << 5));
+        Gfx::drawRectInset(*context, xPos, yPos, width, 1, self->getColour(WindowColour::secondary).u8(), (1 << 5));
 
         if (!(_byte_522096 & (1 << 3)))
             return;

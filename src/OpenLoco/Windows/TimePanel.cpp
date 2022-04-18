@@ -101,8 +101,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->setColour(WindowColour::primary, Colour::translucent(skin->colour_17));
-            window->setColour(WindowColour::secondary, Colour::translucent(skin->colour_17));
+            window->setColour(WindowColour::primary, AdvancedColour(skin->colour_17).translucent());
+            window->setColour(WindowColour::secondary, AdvancedColour(skin->colour_17).translucent());
         }
 
         return window;
@@ -177,7 +177,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         // Draw widgets.
         self->draw(context);
 
-        Gfx::drawRectInset(*context, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->getColour(WindowColour::secondary), 0x30);
+        Gfx::drawRectInset(*context, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->getColour(WindowColour::secondary).u8(), 0x30);
 
         *(uint32_t*)&_common_format_args[0] = getCurrentDay();
         string_id format = StringIds::date_daymonthyear;
@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             }
         }
 
-        Colour_t c = Colour::opaque(self->getColour(WindowColour::primary));
+        auto c = self->getColour(WindowColour::primary).opaque();
         if (Input::isHovering(WindowType::timeToolbar, 0, Widx::date_btn))
         {
             c = Colour::white;

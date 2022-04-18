@@ -214,7 +214,7 @@ namespace OpenLoco::Ui::Windows::Error
             auto skin = ObjectManager::get<InterfaceSkinObject>()->colour_09;
 
             Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-            Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + skin));
+            Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(skin)));
 
             Gfx::drawRect(*context, x, y + 2, 1, height - 4, 0x2000000 | 46);
             Gfx::drawRect(*context, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);

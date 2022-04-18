@@ -462,7 +462,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x0049157F
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        auto shade = Colour::getShade(window.getColour(WindowColour::secondary), 4);
+        auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
         Gfx::clearSingle(context, shade);
 
         uint16_t yPos = 0;
