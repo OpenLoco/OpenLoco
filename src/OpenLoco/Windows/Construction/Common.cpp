@@ -620,7 +620,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             const auto& piece = TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
             const auto firstTileOffset = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elTrack.unkDirection());
-            const auto firstTile = Map::Pos3(pos.x, pos.y, elTrack.baseZ() * 4) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
+            const auto firstTile = Map::Pos3(pos.x, pos.y, elTrack.baseHeight()) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
 
             // Get coordinates of the next tile after the end of the track piece
             const auto trackAndDirection = (elTrack.trackId() << 3) | elTrack.unkDirection();
@@ -644,7 +644,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             const auto& piece = TrackData::getRoadPiece(elRoad.roadId())[elRoad.sequenceIndex()];
             const auto firstTileOffset = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elRoad.unkDirection());
-            const auto firstTile = Map::Pos3(pos.x, pos.y, elRoad.baseZ() * 4) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
+            const auto firstTile = Map::Pos3(pos.x, pos.y, elRoad.baseHeight()) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
 
             // Get coordinates of the next tile after the end of the track piece
             const auto trackAndDirection = (elRoad.roadId() << 3) | elRoad.unkDirection();

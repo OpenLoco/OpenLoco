@@ -31,7 +31,7 @@ namespace OpenLoco::GameCommands
      *
      * @param pos_x @<ax>
      * @param pos_y @<cx>
-     * @param pos_z @<dl> * 4
+     * @param pos_z @<dl> * Map::kSmallZStep
      * @param type @<dh>
      * @param elementType @<bh>
      * @param flags @<bl>
@@ -51,7 +51,7 @@ namespace OpenLoco::GameCommands
             if (element.rawData()[0] != elementType)
                 continue;
 
-            if (element.baseZ() * 4 != pos.z)
+            if (element.baseHeight() != pos.z)
                 continue;
 
             auto* treeElement = element.as<Map::TreeElement>();

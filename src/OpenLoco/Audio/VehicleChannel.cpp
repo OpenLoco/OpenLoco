@@ -36,7 +36,7 @@ namespace OpenLoco::Audio
             return 0;
         }
         auto* surface = Map::TileManager::get(pos).surface();
-        if (surface->baseZ() * 4 > pos.z)
+        if (surface->baseHeight() > pos.z)
         {
             return kVolumeModifierUnderground;
         }

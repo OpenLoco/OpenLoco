@@ -445,7 +445,7 @@ namespace OpenLoco::Audio
             auto surface = tile.surface();
             if (surface != nullptr)
             {
-                if ((surface->baseZ() * 4) - 5 > mpos.z)
+                if ((surface->baseHeight()) - 5 > mpos.z)
                 {
                     zVol = 8;
                 }

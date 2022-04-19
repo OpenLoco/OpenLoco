@@ -52,7 +52,7 @@ namespace OpenLoco::Map
                     {
                         totalHeight += buildingObj->varationHeights[*unkVariation];
                     }
-                    Ui::ViewportManager::invalidate(loc, baseZ() * 4, clearZ() * 4, ZoomLevel::quarter);
+                    Ui::ViewportManager::invalidate(loc, baseHeight(), clearHeight(), ZoomLevel::quarter);
 
                     const auto newClearHeight = baseZ() + totalHeight / 4;
                     setClearZ(newClearHeight);
@@ -78,7 +78,7 @@ namespace OpenLoco::Map
                                     continue;
                                 }
 
-                                Ui::ViewportManager::invalidate(pos, elBuilding2->baseZ() * 4, elBuilding2->clearZ() * 4, ZoomLevel::quarter);
+                                Ui::ViewportManager::invalidate(pos, elBuilding2->baseHeight(), elBuilding2->clearHeight(), ZoomLevel::quarter);
                                 elBuilding2->setClearZ(newClearHeight);
                             }
                         }
@@ -94,7 +94,7 @@ namespace OpenLoco::Map
             setConstructed(isConstructed);
             setUnk5u(newUnk5u);
             setAge(newAge);
-            Ui::ViewportManager::invalidate(loc, baseZ() * 4, clearZ() * 4, ZoomLevel::quarter);
+            Ui::ViewportManager::invalidate(loc, baseHeight(), clearHeight(), ZoomLevel::quarter);
             if (buildingObj->flags & BuildingObjectFlags::large_tile)
             {
                 for (auto i = 1; i < 4; ++i)
@@ -115,7 +115,7 @@ namespace OpenLoco::Map
                         elBuilding2->setConstructed(isConstructed);
                         elBuilding2->setUnk5u(newUnk5u);
                         elBuilding2->setAge(newAge);
-                        Ui::ViewportManager::invalidate(pos, elBuilding2->baseZ() * 4, elBuilding2->clearZ() * 4, ZoomLevel::quarter);
+                        Ui::ViewportManager::invalidate(pos, elBuilding2->baseHeight(), elBuilding2->clearHeight(), ZoomLevel::quarter);
                     }
                 }
             }
@@ -170,7 +170,7 @@ namespace OpenLoco::Map
             if (town->prng.randNext(0xFFFF) <= 16)
             {
                 GameCommands::BuildingRemovalArgs args;
-                args.pos = Map::Pos3(loc.x, loc.y, baseZ() * 4);
+                args.pos = Map::Pos3(loc.x, loc.y, baseHeight());
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 return false;
             }

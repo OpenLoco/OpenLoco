@@ -69,7 +69,7 @@ namespace OpenLoco
         if (surface == nullptr)
             return nullptr;
 
-        if (loc.z <= surface->baseZ() * 4)
+        if (loc.z <= surface->baseHeight())
             return nullptr;
 
         auto _exhaust = static_cast<Exhaust*>(EntityManager::createEntityMisc());

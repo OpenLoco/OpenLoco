@@ -12,6 +12,11 @@ namespace OpenLoco::Map
     constexpr coord_t map_height = map_rows * tile_size;
     constexpr coord_t map_width = map_columns * tile_size;
     constexpr int32_t map_size = map_columns * map_rows;
+    constexpr int16_t kMicroZStep = 16;       // e.g. SurfaceElement::water is a microZ
+    constexpr int16_t kMicroToSmallZStep = 4; // e.g. for comparisons between water and baseZ
+    constexpr int16_t kSmallZStep = 4;        // e.g. TileElement::baseZ is a smallZ
+    using SmallZ = uint8_t;
+    using MircoZ = uint8_t;
 
     constexpr coord_t tileFloor(coord_t coord)
     {

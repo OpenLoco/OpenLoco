@@ -269,11 +269,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                     return std::nullopt;
                 }
 
-                const auto baseZ = surface->water() ? surface->water() * 4 : surface->baseZ();
+                const auto baseZ = surface->water() ? surface->water() * Map::kMicroToSmallZStep : surface->baseZ();
                 maxBaseZ = std::max(maxBaseZ, baseZ);
             }
         }
-        placementArgs.pos = Map::Pos3(pos->x, pos->y, maxBaseZ * 4);
+        placementArgs.pos = Map::Pos3(pos->x, pos->y, maxBaseZ * Map::kSmallZStep);
         return { placementArgs };
     }
 
@@ -369,7 +369,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                         {
                             continue;
                         }
-                        waterHeight = surface->water() * 4;
+                        waterHeight = surface->water() * Map::kMicroToSmallZStep;
                         if (waterHeight - 4 == surface->baseZ() && surface->isSlopeDoubleHeight())
                         {
                             continue;
@@ -388,7 +388,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         GameCommands::PortPlacementArgs placementArgs;
         placementArgs.type = _lastSelectedStationType;
-        placementArgs.pos = Map::Pos3(pos->x, pos->y, waterHeight * 4);
+        placementArgs.pos = Map::Pos3(pos->x, pos->y, waterHeight * Map::kSmallZStep);
         if (directionOfIndustry != 0xFF)
         {
             placementArgs.rotation = directionOfIndustry;
@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         GameCommands::RoadStationPlacementArgs placementArgs;
-        placementArgs.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseZ() * 4);
+        placementArgs.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseHeight());
         placementArgs.rotation = elRoad->unkDirection();
         placementArgs.roadId = elRoad->roadId();
         placementArgs.index = elRoad->sequenceIndex();
@@ -503,7 +503,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         GameCommands::TrackStationPlacementArgs placementArgs;
-        placementArgs.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseZ() * 4);
+        placementArgs.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
         placementArgs.rotation = elTrack->unkDirection();
         placementArgs.trackId = elTrack->trackId();
         placementArgs.index = elTrack->sequenceIndex();

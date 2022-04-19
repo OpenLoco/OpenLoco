@@ -2827,7 +2827,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     auto trackElement = tileElement->as<TrackElement>();
                     if (trackElement == nullptr)
                         break;
-                    auto height = trackElement->baseZ() * 4;
+                    auto height = trackElement->baseHeight();
                     auto trackId = trackElement->trackId();
                     const auto& trackPiece = Map::TrackData::getTrackPiece(trackId);
                     const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
@@ -2875,7 +2875,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     auto* roadElement = tileElement->as<RoadElement>();
                     if (roadElement == nullptr)
                         break;
-                    auto height = roadElement->baseZ() * 4;
+                    auto height = roadElement->baseHeight();
                     auto roadId = roadElement->roadId();
                     const auto& roadPiece = Map::TrackData::getRoadPiece(roadId);
                     const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
@@ -3525,7 +3525,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         if (distance < bestDistance)
                         {
                             bestDistance = distance;
-                            bestLoc = Map::Pos3(loc.x, loc.y, elStation->baseZ() * 4);
+                            bestLoc = Map::Pos3(loc.x, loc.y, elStation->baseHeight());
                         }
                     }
                 }
@@ -3817,7 +3817,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             // Get the best progress along the road relative to the cursor
             auto* roadElement = static_cast<Map::RoadElement*>(interaction.object);
-            Map::Pos3 loc(interaction.pos.x, interaction.pos.y, roadElement->baseZ() * 4);
+            Map::Pos3 loc(interaction.pos.x, interaction.pos.y, roadElement->baseHeight());
             auto progress = getRoadProgressAtCursor({ x, y }, *viewport, *roadElement, loc);
 
             // Get the coordinates of the first tile of the possibly multitile road
@@ -3922,7 +3922,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             // Get the best progress along the track relative to the cursor
             auto* trackElement = static_cast<Map::TrackElement*>(interaction.object);
-            Map::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseZ() * 4);
+            Map::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseHeight());
             auto progress = getTrackProgressAtCursor({ x, y }, *viewport, *trackElement, loc);
 
             // Get the coordinates of the first tile of the possibly multitile road

@@ -243,7 +243,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        const coord_t height = elSignal.baseZ() * 4;
+        const coord_t height = elSignal.baseHeight();
         const auto trackId = elTrack->trackId();
         const uint8_t rotation = (session.getRotation() + elSignal.rotation()) & 0x3;
         if (elTrack->sequenceIndex() == 0)

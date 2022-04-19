@@ -311,8 +311,8 @@ namespace OpenLoco::Map::TileManager
             return height;
         }
 
-        height.waterHeight = surfaceEl->water() * 16;
-        height.landHeight = surfaceEl->baseZ() * 4;
+        height.waterHeight = surfaceEl->waterHeight();
+        height.landHeight = surfaceEl->baseHeight();
 
         const auto slope = surfaceEl->slopeCorners();
 
@@ -768,7 +768,7 @@ namespace OpenLoco::Map::TileManager
         {
             if (CompanyManager::getUpdatingCompanyId() != CompanyId::neutral)
             {
-                createDestructExplosion(Map::Pos3(pos.x + 16, pos.y + 16, elBuilding.baseZ() * 4));
+                createDestructExplosion(Map::Pos3(pos.x + 16, pos.y + 16, elBuilding.baseHeight()));
             }
         }
 
@@ -800,7 +800,7 @@ namespace OpenLoco::Map::TileManager
                 }
             }
         }
-        Ui::ViewportManager::invalidate(pos, elBuilding.baseZ() * 4, elBuilding.clearZ() * 4, ZoomLevel::eighth);
+        Ui::ViewportManager::invalidate(pos, elBuilding.baseHeight(), elBuilding.clearHeight(), ZoomLevel::eighth);
         TileManager::removeElement(*reinterpret_cast<TileElement*>(&elBuilding));
     }
 

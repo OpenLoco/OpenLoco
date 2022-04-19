@@ -949,7 +949,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return {};
             }
 
-            auto z = surface->baseZ() * 4; // di
+            auto z = surface->baseHeight(); // di
             if (surface->slope())
             {
                 z += 16;
@@ -1076,7 +1076,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Map::Pos3 loc = {
                 static_cast<coord_t>(company->headquartersX + 32),
                 static_cast<coord_t>(company->headquartersY + 32),
-                static_cast<coord_t>((company->headquartersZ + 8) * 4)
+                static_cast<coord_t>((company->headquartersZ + 8) * Map::kSmallZStep)
             };
             SavedView view{
                 loc.x,

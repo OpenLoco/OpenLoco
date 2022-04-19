@@ -618,7 +618,7 @@ namespace OpenLoco::Input
         }
 
         GameCommands::SignalRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, track->baseZ() * 4);
+        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
         args.rotation = track->unkDirection();
         args.trackId = track->trackId();
         args.index = track->sequenceIndex();
@@ -649,7 +649,7 @@ namespace OpenLoco::Input
 
         GameCommands::setErrorTitle(StringIds::cant_remove_station);
         GameCommands::TrackStationRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, track->baseZ() * 4);
+        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
         args.rotation = track->unkDirection();
         args.trackId = track->trackId();
         args.index = track->sequenceIndex();
@@ -671,7 +671,7 @@ namespace OpenLoco::Input
 
         GameCommands::setErrorTitle(StringIds::cant_remove_station);
         GameCommands::RoadStationRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, road->baseZ() * 4);
+        args.pos = Pos3(pos.x, pos.y, road->baseHeight());
         args.rotation = road->unkDirection();
         args.roadId = road->roadId();
         args.index = road->sequenceIndex();
@@ -692,7 +692,7 @@ namespace OpenLoco::Input
         }
         GameCommands::setErrorTitle(StringIds::cant_remove_airport);
         GameCommands::AirportRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, station->baseZ() * 4);
+        args.pos = Pos3(pos.x, pos.y, station->baseHeight());
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
@@ -710,7 +710,7 @@ namespace OpenLoco::Input
         GameCommands::setErrorTitle(StringIds::cant_remove_ship_port);
         GameCommands::PortRemovalArgs args;
         Pos2 firstTile = pos - Map::offsets[station->multiTileIndex()];
-        args.pos = Pos3(firstTile.x, firstTile.y, station->baseZ() * 4);
+        args.pos = Pos3(firstTile.x, firstTile.y, station->baseHeight());
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
@@ -722,7 +722,7 @@ namespace OpenLoco::Input
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::TreeRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, tree->baseZ() * 4);
+        args.pos = Pos3(pos.x, pos.y, tree->baseHeight());
         args.elementType = tree->rawData()[0];
         args.type = tree->treeObjectId();
         GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -734,7 +734,7 @@ namespace OpenLoco::Input
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::BuildingRemovalArgs args;
         Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
-        args.pos = Pos3(firstTile.x, firstTile.y, building->baseZ() * 4);
+        args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
@@ -743,7 +743,7 @@ namespace OpenLoco::Input
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::WallRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, wall->baseZ() * 4);
+        args.pos = Pos3(pos.x, pos.y, wall->baseHeight());
         args.rotation = wall->rotation();
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
@@ -754,7 +754,7 @@ namespace OpenLoco::Input
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::HeadquarterRemovalArgs args;
         Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
-        args.pos = Pos3(firstTile.x, firstTile.y, building->baseZ() * 4);
+        args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 

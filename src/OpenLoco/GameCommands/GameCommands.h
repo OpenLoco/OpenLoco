@@ -155,7 +155,7 @@ namespace OpenLoco::GameCommands
 
         VehiclePlacementArgs() = default;
         explicit VehiclePlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.dx * 4)
+            : pos(regs.ax, regs.cx, regs.dx * Map::kSmallZStep)
             , trackAndDirection(regs.bp)
             , trackProgress(regs.ebx >> 16)
             , head(EntityId(regs.di))
@@ -176,7 +176,7 @@ namespace OpenLoco::GameCommands
             regs.di = enumValue(head);
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.dx = pos.z / 4;
+            regs.dx = pos.z / Map::kSmallZStep;
             regs.ebx = convertGhost ? 0xFFFF0000 : (trackProgress << 16);
             return regs;
         }
@@ -657,7 +657,7 @@ namespace OpenLoco::GameCommands
 
         TreeRemovalArgs() = default;
         explicit TreeRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.dl * 4)
+            : pos(regs.ax, regs.cx, regs.dl * Map::kSmallZStep)
             , type(regs.dh)
             , elementType(regs.bh)
         {
@@ -672,7 +672,7 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.dl = pos.z / 4;
+            regs.dl = pos.z / Map::kSmallZStep;
             regs.dh = type;
             regs.bh = elementType;
             return regs;
@@ -874,7 +874,7 @@ namespace OpenLoco::GameCommands
 
         WallRemovalArgs() = default;
         explicit WallRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.dh * 4)
+            : pos(regs.ax, regs.cx, regs.dh * Map::kSmallZStep)
             , rotation(regs.dl)
         {
         }
@@ -887,7 +887,7 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.dh = pos.z / 4;
+            regs.dh = pos.z / Map::kSmallZStep;
             regs.dl = rotation;
             return regs;
         }

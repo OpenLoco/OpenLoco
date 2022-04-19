@@ -1041,7 +1041,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 return {};
             }
 
-            auto z = surface->baseZ() * 4; // di
+            auto z = surface->baseHeight(); // di
             if (surface->slope())
             {
                 z += 16;
