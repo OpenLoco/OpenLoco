@@ -61,7 +61,7 @@ namespace OpenLoco::GameCommands
 
         if (elSurface->water())
         {
-            if (elSurface->water() * 16 - 1 > quadrantHeight.landHeight)
+            if (elSurface->waterHeight() - 1 > quadrantHeight.landHeight)
             {
                 setErrorText(StringIds::cant_build_this_underwater);
                 return FAILURE;
@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        const auto baseZ = quadrantHeight.landHeight / 4;
+        const auto baseZ = quadrantHeight.landHeight / Map::kSmallZStep;
         auto clearanceZ = baseZ + treeObj->var_02;
         if (args.requiresFullClearance)
         {
@@ -107,12 +107,12 @@ namespace OpenLoco::GameCommands
             elTree->setSnow(false);
             elTree->setSeason(treeObj->var_3E);
             elTree->setUnk7l(7);
-            elTree->setClearZ(treeObj->var_02 / 4 + elTree->baseZ());
+            elTree->setClearZ(treeObj->var_02 / Map::kSmallZStep + elTree->baseZ());
             S5::getOptions().madeAnyChanges = 1;
             if (args.buildImmediately)
             {
                 elTree->setUnk5l(treeObj->growth - 1);
-                elTree->setClearZ(treeObj->height / 4 + elTree->baseZ());
+                elTree->setClearZ(treeObj->height / Map::kSmallZStep + elTree->baseZ());
                 if (elTree->baseZ() - 4 > Scenario::getSnowLine() && (treeObj->flags & TreeObjectFlags::hasSnowVariation))
                 {
                     elTree->setSnow(true);
@@ -126,7 +126,7 @@ namespace OpenLoco::GameCommands
             {
                 TownManager::sub_497DC1(args.pos, 0, 0, treeObj->rating, 0);
             }
-            Ui::ViewportManager::invalidate(args.pos, elTree->baseZ() * 4, elTree->clearZ() * 4, ZoomLevel::eighth, 56);
+            Ui::ViewportManager::invalidate(args.pos, elTree->baseHeight(), elTree->clearHeight(), ZoomLevel::eighth, 56);
         }
 
         return Economy::getInflationAdjustedCost(treeObj->build_cost_factor, treeObj->cost_index, 12);
