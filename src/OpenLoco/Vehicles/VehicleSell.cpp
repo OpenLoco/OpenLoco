@@ -53,8 +53,6 @@ namespace OpenLoco::Vehicles
                     Map::Pos3 pos;
                     TrackAndDirection tad;
                     uint16_t subPosition;
-
-                    PlaceDown() = default;
                 };
                 std::optional<PlaceDown> placeArgs;
                 if (head->tileX != -1)
