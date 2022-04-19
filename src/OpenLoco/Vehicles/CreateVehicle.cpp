@@ -132,7 +132,7 @@ namespace OpenLoco::Vehicles
         newBogie->tileY = 0;
         newBogie->tileBaseZ = 0;
         newBogie->subPosition = 0;
-        newBogie->var_2C = TrackAndDirection(0, 0);
+        newBogie->trackAndDirection = TrackAndDirection(0, 0);
         newBogie->routingHandle = lastVeh->getRoutingHandle();
         newBogie->objectId = vehicleTypeId;
 
@@ -251,7 +251,7 @@ namespace OpenLoco::Vehicles
         newBody->tileY = 0;
         newBody->tileBaseZ = 0;
         newBody->subPosition = 0;
-        newBody->var_2C = TrackAndDirection(0, 0);
+        newBody->trackAndDirection = TrackAndDirection(0, 0);
         newBody->routingHandle = lastVeh->getRoutingHandle();
         newBody->var_38 = Flags38::unk_0; // different to create bogie
         newBody->objectId = vehicleTypeId;
@@ -437,7 +437,7 @@ namespace OpenLoco::Vehicles
         newHead->tileBaseZ = 0;
         newHead->remainingDistance = 0;
         newHead->subPosition = 0;
-        newHead->var_2C = TrackAndDirection(0, 0);
+        newHead->trackAndDirection = TrackAndDirection(0, 0);
         newHead->routingHandle = routingHandle;
         newHead->var_14 = 0;
         newHead->var_09 = 0;
@@ -475,7 +475,7 @@ namespace OpenLoco::Vehicles
         newVeh1->tileBaseZ = 0;
         newVeh1->remainingDistance = 0;
         newVeh1->subPosition = 0;
-        newVeh1->var_2C = TrackAndDirection(0, 0);
+        newVeh1->trackAndDirection = TrackAndDirection(0, 0);
         newVeh1->routingHandle = lastVeh->getRoutingHandle();
         newVeh1->var_14 = 0;
         newVeh1->var_09 = 0;
@@ -506,7 +506,7 @@ namespace OpenLoco::Vehicles
         newVeh2->tileBaseZ = 0;
         newVeh2->remainingDistance = 0;
         newVeh2->subPosition = 0;
-        newVeh2->var_2C = TrackAndDirection(0, 0);
+        newVeh2->trackAndDirection = TrackAndDirection(0, 0);
         newVeh2->routingHandle = lastVeh->getRoutingHandle();
         newVeh2->var_14 = 0;
         newVeh2->var_09 = 0;
@@ -543,7 +543,7 @@ namespace OpenLoco::Vehicles
         newTail->tileBaseZ = 0;
         newTail->remainingDistance = 0;
         newTail->subPosition = 0;
-        newTail->var_2C = TrackAndDirection(0, 0);
+        newTail->trackAndDirection = TrackAndDirection(0, 0);
         newTail->routingHandle = lastVeh->getRoutingHandle();
         newTail->var_14 = 0;
         newTail->var_09 = 0;
@@ -749,7 +749,7 @@ namespace OpenLoco::Vehicles
                 _backupX = train.head->tileX;
                 _backupY = train.head->tileY;
                 _backupZ = train.head->tileBaseZ;
-                _backup2C = train.head->var_2C;
+                _backup2C = train.head->trackAndDirection;
                 _backup2E = train.head->subPosition;
                 _backupVeh0 = train.head;
                 train.head->liftUpVehicle();

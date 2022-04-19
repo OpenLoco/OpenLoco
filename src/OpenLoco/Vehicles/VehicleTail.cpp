@@ -92,18 +92,18 @@ namespace OpenLoco::Vehicles
         }
 
         const auto ref = RoutingManager::getRouting(_oldRoutingHandle);
-        TrackAndDirection trackAndDirection((ref & 0x1F8) >> 3, ref & 0x7);
+        TrackAndDirection trackAndDir((ref & 0x1F8) >> 3, ref & 0x7);
         RoutingManager::freeRouting(_oldRoutingHandle);
 
         if (mode == TransportMode::road)
         {
-            sub_47D959(_oldTilePos, trackAndDirection.road, false);
+            sub_47D959(_oldTilePos, trackAndDir.road, false);
         }
         else
         {
             if (ref & (1 << 15))
             {
-                setSignalState(_oldTilePos, trackAndDirection.track, trackType, 0);
+                setSignalState(_oldTilePos, trackAndDir.track, trackType, 0);
             }
 
             const auto& trackSize = Map::TrackData::getUnkTrack(ref & 0x1FF);
@@ -112,10 +112,10 @@ namespace OpenLoco::Vehicles
             {
                 nextTile -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
             }
-            auto trackAndDirection2 = trackAndDirection;
+            auto trackAndDirection2 = trackAndDir;
             trackAndDirection2.track.setReversed(!trackAndDirection2.track.isReversed());
             sub_4A2AD7(nextTile, trackAndDirection2.track, owner, trackType);
-            leaveLevelCrossing(_oldTilePos, trackAndDirection.track, 9);
+            leaveLevelCrossing(_oldTilePos, trackAndDir.track, 9);
         }
         return true;
     }

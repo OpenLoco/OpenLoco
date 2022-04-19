@@ -163,8 +163,8 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                ah = vehicle_arr_4F865C[frontBogie->var_2C.track._data >> 2];
-                if ((frontBogie->var_2C.track.id() == 12) || (frontBogie->var_2C.track.id() == 13))
+                ah = vehicle_arr_4F865C[frontBogie->trackAndDirection.track._data >> 2];
+                if ((frontBogie->trackAndDirection.track.id() == 12) || (frontBogie->trackAndDirection.track.id() == 13))
                 {
                     if (frontBogie->subPosition >= 48)
                     {
@@ -980,9 +980,9 @@ namespace OpenLoco::Vehicles
                     continue;
                 if (track->baseZ() != frontBogie->tileBaseZ)
                     continue;
-                if (track->trackId() != frontBogie->var_2C.track.id())
+                if (track->trackId() != frontBogie->trackAndDirection.track.id())
                     continue;
-                if (track->unkDirection() != frontBogie->var_2C.track.cardinalDirection())
+                if (track->unkDirection() != frontBogie->trackAndDirection.track.cardinalDirection())
                     continue;
                 if (!track->hasStationElement())
                     continue;
@@ -1223,12 +1223,12 @@ namespace OpenLoco::Vehicles
         auto yaw = (sprite_yaw + 16) & 0x3F;
         auto firstBogie = var_38 & Flags38::isReversed ? backBogie : frontBogie;
         auto unkFactor = 5;
-        if (!trackIdToSparkDirection[(firstBogie->var_2C.road._data >> 3)])
+        if (!trackIdToSparkDirection[(firstBogie->trackAndDirection.road._data >> 3)])
         {
             unkFactor = -5;
         }
 
-        if (firstBogie->var_2C.road.isReversed())
+        if (firstBogie->trackAndDirection.road.isReversed())
         {
             unkFactor = -unkFactor;
         }

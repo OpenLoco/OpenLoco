@@ -229,7 +229,7 @@ namespace OpenLoco::Vehicles
         uint8_t getFlags38() const;
         uint8_t getTrackType() const;
         Map::Pos3 getTrackLoc() const;
-        TrackAndDirection getVar2C() const;
+        TrackAndDirection getTrackAndDirection() const;
         RoutingHandle getRoutingHandle() const;
         EntityId getHead() const;
         void setNextCar(const EntityId newNextCar);
@@ -275,15 +275,15 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto kVehicleThingType = VehicleThingType::head;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId head;              // 0x26
-        uint32_t remainingDistance; // 0x28
-        TrackAndDirection var_2C;
-        uint16_t subPosition;        // 0x2E
-        int16_t tileX;               // 0x30
-        int16_t tileY;               // 0x32
-        Map::SmallZ tileBaseZ;       // 0x34
-        uint8_t trackType;           // 0x35 field same in all vehicles
-        RoutingHandle routingHandle; // 0x36 field same in all vehicles orderId * maxNumRoutingSteps
+        EntityId head;                       // 0x26
+        uint32_t remainingDistance;          // 0x28
+        TrackAndDirection trackAndDirection; // 0x2C
+        uint16_t subPosition;                // 0x2E
+        int16_t tileX;                       // 0x30
+        int16_t tileY;                       // 0x32
+        Map::SmallZ tileBaseZ;               // 0x34
+        uint8_t trackType;                   // 0x35 field same in all vehicles
+        RoutingHandle routingHandle;         // 0x36 field same in all vehicles orderId * maxNumRoutingSteps
         uint8_t var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
@@ -421,15 +421,15 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto kVehicleThingType = VehicleThingType::vehicle_1;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId head;              // 0x26
-        uint32_t remainingDistance; // 0x28
-        TrackAndDirection var_2C;
-        uint16_t subPosition;        // 0x2E
-        int16_t tileX;               // 0x30
-        int16_t tileY;               // 0x32
-        Map::SmallZ tileBaseZ;       // 0x34
-        uint8_t trackType;           // 0x35 field same in all vehicles
-        RoutingHandle routingHandle; // 0x36 field same in all vehicles
+        EntityId head;                       // 0x26
+        uint32_t remainingDistance;          // 0x28
+        TrackAndDirection trackAndDirection; // 0x2C
+        uint16_t subPosition;                // 0x2E
+        int16_t tileX;                       // 0x30
+        int16_t tileY;                       // 0x32
+        uint8_t tileBaseZ;                   // 0x34
+        uint8_t trackType;                   // 0x35 field same in all vehicles
+        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
@@ -458,15 +458,15 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto kVehicleThingType = VehicleThingType::vehicle_2;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId head;              // 0x26
-        uint32_t remainingDistance; // 0x28
-        TrackAndDirection var_2C;
-        uint16_t subPosition;        // 0x2E
-        int16_t tileX;               // 0x30
-        int16_t tileY;               // 0x32
-        Map::SmallZ tileBaseZ;       // 0x34
-        uint8_t trackType;           // 0x35 field same in all vehicles
-        RoutingHandle routingHandle; // 0x36 field same in all vehicles
+        EntityId head;                       // 0x26
+        uint32_t remainingDistance;          // 0x28
+        TrackAndDirection trackAndDirection; // 0x2C
+        uint16_t subPosition;                // 0x2E
+        int16_t tileX;                       // 0x30
+        int16_t tileY;                       // 0x32
+        uint8_t tileBaseZ;                   // 0x34
+        uint8_t trackType;                   // 0x35 field same in all vehicles
+        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
@@ -504,16 +504,16 @@ namespace OpenLoco::Vehicles
     struct VehicleBody : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleThingType::body_continued;
-        ColourScheme colourScheme;  // 0x24
-        EntityId head;              // 0x26
-        uint32_t remainingDistance; // 0x28
-        TrackAndDirection var_2C;
-        uint16_t subPosition;        // 0x2E
-        int16_t tileX;               // 0x30
-        int16_t tileY;               // 0x32
-        Map::SmallZ tileBaseZ;       // 0x34
-        uint8_t trackType;           // 0x35 field same in all vehicles
-        RoutingHandle routingHandle; // 0x36 field same in all vehicles
+        ColourScheme colourScheme;           // 0x24
+        EntityId head;                       // 0x26
+        uint32_t remainingDistance;          // 0x28
+        TrackAndDirection trackAndDirection; // 0x2C
+        uint16_t subPosition;                // 0x2E
+        int16_t tileX;                       // 0x30
+        int16_t tileY;                       // 0x32
+        uint8_t tileBaseZ;                   // 0x34
+        uint8_t trackType;                   // 0x35 field same in all vehicles
+        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
@@ -559,16 +559,16 @@ namespace OpenLoco::Vehicles
     struct VehicleBogie : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleThingType::bogie;
-        ColourScheme colourScheme;  // 0x24
-        EntityId head;              // 0x26
-        uint32_t remainingDistance; // 0x28
-        TrackAndDirection var_2C;
-        uint16_t subPosition;        // 0x2E
-        int16_t tileX;               // 0x30
-        int16_t tileY;               // 0x32
-        Map::SmallZ tileBaseZ;       // 0x34
-        uint8_t trackType;           // 0x35 field same in all vehicles
-        RoutingHandle routingHandle; // 0x36 field same in all vehicles
+        ColourScheme colourScheme;           // 0x24
+        EntityId head;                       // 0x26
+        uint32_t remainingDistance;          // 0x28
+        TrackAndDirection trackAndDirection; // 0x2C
+        uint16_t subPosition;                // 0x2E
+        int16_t tileX;                       // 0x30
+        int16_t tileY;                       // 0x32
+        uint8_t tileBaseZ;                   // 0x34
+        uint8_t trackType;                   // 0x35 field same in all vehicles
+        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
@@ -608,15 +608,15 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto kVehicleThingType = VehicleThingType::tail;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId head;              // 0x26
-        uint32_t remainingDistance; // 0x28
-        TrackAndDirection var_2C;
-        uint16_t subPosition;        // 0x2E
-        int16_t tileX;               // 0x30
-        int16_t tileY;               // 0x32
-        Map::SmallZ tileBaseZ;       // 0x34
-        uint8_t trackType;           // 0x35 field same in all vehicles
-        RoutingHandle routingHandle; // 0x36 field same in all vehicles
+        EntityId head;                       // 0x26
+        uint32_t remainingDistance;          // 0x28
+        TrackAndDirection trackAndDirection; // 0x2C
+        uint16_t subPosition;                // 0x2E
+        int16_t tileX;                       // 0x30
+        int16_t tileY;                       // 0x32
+        uint8_t tileBaseZ;                   // 0x34
+        uint8_t trackType;                   // 0x35 field same in all vehicles
+        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
