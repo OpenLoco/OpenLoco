@@ -22,6 +22,7 @@ namespace OpenLoco::Vehicles
     void cloneVehicle(OpenLoco::Interop::registers& regs);
     void rename(OpenLoco::Interop::registers& regs);
     void vehiclePickupWater(OpenLoco::Interop::registers& regs);
+    void sell(OpenLoco::Interop::registers& regs);
 
     namespace Flags0C // commands?
     {
@@ -341,9 +342,10 @@ namespace OpenLoco::Vehicles
         currency32_t calculateRunningCost() const;
         void sub_4AD93A();
         uint32_t getCarCount() const;
+        void applyBreakdownToTrain();
+        void sub_4AF7A4();
 
     private:
-        void applyBreakdownToTrain();
         void updateDrivingSounds();
         void updateDrivingSound(Vehicle2or6* vehType2or6);
         void updateDrivingSoundNone(Vehicle2or6* vehType2or6);

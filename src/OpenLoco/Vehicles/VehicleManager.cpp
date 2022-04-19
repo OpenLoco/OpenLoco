@@ -22,7 +22,7 @@ namespace OpenLoco::VehicleManager
     }
 
     // 0x004279CC
-    static void vehiclePickupWater(EntityId head, uint8_t flags)
+    void vehiclePickupWater(EntityId head, uint8_t flags)
     {
         registers regs;
         regs.di = enumValue(head);
@@ -31,7 +31,7 @@ namespace OpenLoco::VehicleManager
     }
 
     // 0x004AF0B2
-    static void vehiclePickupAir(EntityId head, uint8_t flags)
+    void vehiclePickupAir(EntityId head, uint8_t flags)
     {
         registers regs;
         regs.di = enumValue(head);
@@ -39,8 +39,21 @@ namespace OpenLoco::VehicleManager
         call(0x004AF0B2, regs);
     }
 
+    // 0x004B05E4
+    void placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& unk1, const uint16_t unk2)
+    {
+        registers regs{};
+        regs.esi = X86Pointer(head);
+        regs.ax = x;
+        regs.cx = y;
+        regs.bx = unk2;
+        regs.dl = baseZ;
+        regs.ebp = unk1.track._data;
+        call(0x004B05E4, regs);
+    }
+
     // 0x004AEFB5
-    static void deleteCar(Vehicles::Car& car)
+    void deleteCar(Vehicles::Car& car)
     {
         registers regs;
         regs.esi = X86Pointer(car.front);
