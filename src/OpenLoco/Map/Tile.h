@@ -339,11 +339,11 @@ namespace OpenLoco::Map
             _5 &= ~0xF0;
             _5 |= (unk & 0xF) << 4;
         }
-        uint8_t colour() const { return _6 & 0x1F; } //_6l
-        void setColour(uint8_t colour)
+        Colour colour() const { return static_cast<Colour>(_6 & 0x1F); } //_6l
+        void setColour(Colour colour)
         {
             _6 &= ~0x1F;
-            _6 |= colour & 0x1F;
+            _6 |= enumValue(colour) & 0x1F;
         }
         bool hasSnow() const { return _6 & 0x40; } //_6_40
         void setSnow(bool hasSnow)
