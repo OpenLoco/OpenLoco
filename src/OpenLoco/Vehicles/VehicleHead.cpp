@@ -31,6 +31,7 @@
 #include "../ViewportManager.h"
 #include "Orders.h"
 #include "Vehicle.h"
+#include "VehicleManager.h"
 #include <cassert>
 #include <numeric>
 
@@ -106,7 +107,7 @@ namespace OpenLoco::Vehicles
             {
                 return false;
             }
-            removeDanglingTrain();
+            VehicleManager::deleteTrain(*this);
             return false;
         }
         updateBreakdown();
@@ -845,14 +846,6 @@ namespace OpenLoco::Vehicles
         }
 
         vehType2or6->drivingSoundId = snd->soundObjectId;
-    }
-
-    // 0x004AF06E
-    void VehicleHead::removeDanglingTrain()
-    {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AF06E, regs);
     }
 
     // Returns veh1, veh2 position

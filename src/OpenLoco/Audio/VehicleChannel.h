@@ -19,6 +19,7 @@ namespace OpenLoco::Audio
 
         bool isFree() const { return _vehicleId == EntityId::null; }
 
+        EntityId getId() const { return _vehicleId; }
         void begin(EntityId vid);
         void update();
         void stop();

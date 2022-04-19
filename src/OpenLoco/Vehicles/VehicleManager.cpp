@@ -1,7 +1,13 @@
 #include "VehicleManager.h"
 #include "../Company.h"
+#include "../CompanyManager.h"
+#include "../Entities/EntityManager.h"
+#include "../GameCommands/GameCommands.h"
 #include "../GameState.h"
 #include "../Interop/Interop.hpp"
+#include "../MessageManager.h"
+#include "../Ui/WindowManager.h"
+#include "Vehicle.h"
 
 using namespace OpenLoco::Interop;
 
@@ -13,6 +19,86 @@ namespace OpenLoco::VehicleManager
         registers regs;
         regs.esi = X86Pointer(&company);
         call(0x004C3A0C, regs);
+    }
+
+    // 0x004279CC
+    static void vehiclePickupWater(EntityId head, uint8_t flags)
+    {
+        registers regs;
+        regs.di = enumValue(head);
+        regs.bl = flags;
+        call(0x004279CC, regs);
+    }
+
+    // 0x004AF0B2
+    static void vehiclePickupAir(EntityId head, uint8_t flags)
+    {
+        registers regs;
+        regs.di = enumValue(head);
+        regs.bl = flags;
+        call(0x004AF0B2, regs);
+    }
+
+    // 0x004AEFB5
+    static void deleteCar(Vehicles::Car& car)
+    {
+        registers regs;
+        regs.esi = X86Pointer(car.front);
+        call(0x004AEFB5, regs);
+    }
+
+    // 0x004AF06E
+    void deleteTrain(Vehicles::VehicleHead& head)
+    {
+        Ui::WindowManager::close(Ui::WindowType::vehicle, enumValue(head.id));
+        auto* vehListWnd = Ui::WindowManager::find(Ui::WindowType::vehicleList, enumValue(head.owner));
+        if (vehListWnd != nullptr)
+        {
+            vehListWnd->invalidate();
+            Ui::Windows::VehicleList::removeTrainFromList(*vehListWnd, head.id);
+        }
+        // Change to vanilla, update the build window to a valid train
+        auto* vehBuildWnd = Ui::WindowManager::find(Ui::WindowType::buildVehicle, enumValue(head.owner));
+        if (vehBuildWnd != nullptr)
+        {
+            vehBuildWnd->invalidate();
+            Ui::Windows::BuildVehicle::sub_4B92A5(vehBuildWnd);
+        }
+
+        // 0x004AF0A3
+        switch (head.mode)
+        {
+            case TransportMode::road:
+            case TransportMode::rail:
+                head.liftUpVehicle();
+                break;
+            case TransportMode::air:
+                vehiclePickupAir(head.id, GameCommands::Flags::apply);
+                break;
+            case TransportMode::water:
+                vehiclePickupWater(head.id, GameCommands::Flags::apply);
+                break;
+        }
+
+        Vehicles::Vehicle train(head);
+        auto* nextVeh = train.veh2->nextVehicleComponent();
+        while (nextVeh != nullptr && !nextVeh->isVehicleTail())
+        {
+            Vehicles::Car car(nextVeh);
+            deleteCar(car);
+            nextVeh = train.veh2->nextVehicleComponent();
+        }
+
+        Audio::stopVehicleNoise(head.id);
+        Vehicles::RoutingManager::freeRoutingHandle(head.routingHandle);
+        Vehicles::OrderManager::freeOrders(&head);
+        MessageManager::removeAllSubjectRefs(enumValue(head.id), MessageItemArgumentType::vehicle);
+        const auto companyId = head.owner;
+        EntityManager::freeEntity(train.tail);
+        EntityManager::freeEntity(train.veh2);
+        EntityManager::freeEntity(train.veh1);
+        EntityManager::freeEntity(train.head);
+        CompanyManager::get(companyId)->recalculateTransportCounts();
     }
 }
 
@@ -122,5 +208,33 @@ namespace OpenLoco::Vehicles::RoutingManager
             return routings()[_current.getVehicleRef()][_current.getIndex()] == kAllocatedButFreeRoutingStation;
         }
         return false;
+    }
+}
+
+namespace OpenLoco::Vehicles::OrderManager
+{
+    static auto& orders() { return getGameState().orders; }
+    static auto& numOrders() { return getGameState().numOrders; }
+
+    static void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
+    {
+        for (auto head : EntityManager::VehicleList())
+        {
+            if (head->orderTableOffset >= removeOrderTableOffset)
+            {
+                head->orderTableOffset += sizeOfRemovedOrderTable;
+            }
+        }
+    }
+
+    // 0x00470334
+    // Remove vehicle ?orders?
+    void freeOrders(VehicleHead* const head)
+    {
+        sub_470795(head->orderTableOffset, head->sizeOfOrderTable * -1);
+        auto length = numOrders() - head->orderTableOffset - head->sizeOfOrderTable;
+        memmove(&orders()[head->orderTableOffset], &orders()[head->sizeOfOrderTable + head->orderTableOffset], length);
+
+        numOrders() -= head->sizeOfOrderTable;
     }
 }

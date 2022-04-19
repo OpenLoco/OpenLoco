@@ -344,7 +344,6 @@ namespace OpenLoco::Vehicles
         void updateDrivingSoundFriction(Vehicle2or6* vehType2or6, VehicleObjectFrictionSound* snd);
         void updateDrivingSoundEngine1(Vehicle2or6* vehType2or6, VehicleObjectEngine1Sound* snd);
         void updateDrivingSoundEngine2(Vehicle2or6* vehType2or6, VehicleObjectEngine2Sound* snd);
-        void removeDanglingTrain();
         bool updateLand();
         bool sub_4A8DB7();
         bool sub_4A8F22();
