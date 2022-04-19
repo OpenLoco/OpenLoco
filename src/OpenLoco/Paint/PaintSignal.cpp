@@ -188,7 +188,7 @@ namespace OpenLoco::Paint
                         session.setItemType(InteractionItem::noInteraction);
                         imageId = Gfx::applyGhostToImage(imageOffset);
                     }
-                    session.addToPlotList4FD1E0(imageId, offset, bbOffset, bbSize);
+                    session.addToPlotListAsChild(imageId, offset, bbOffset, bbSize);
                 }
                 if (side.hasGreenLight())
                 {
@@ -200,7 +200,7 @@ namespace OpenLoco::Paint
                         session.setItemType(InteractionItem::noInteraction);
                         imageId = Gfx::applyGhostToImage(imageOffset);
                     }
-                    session.addToPlotList4FD1E0(imageId, offset, bbOffset, bbSize);
+                    session.addToPlotListAsChild(imageId, offset, bbOffset, bbSize);
                 }
             }
         }

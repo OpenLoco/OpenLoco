@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     InteractionArg::InteractionArg(const Paint::PaintStruct& ps)
         : object(ps.entity)
         , type(ps.type)
-        , unkBh(ps.var_29)
+        , modId(ps.modId)
     {
         pos = Pos2{ ps.map_x, ps.map_y };
     }
@@ -462,12 +462,12 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        if (!track->hasMod(interaction.unkBh))
+        if (!track->hasMod(interaction.modId))
         {
             return rightOverTrack(interaction);
         }
         auto* trackObj = ObjectManager::get<TrackObject>(track->trackObjectId());
-        auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[interaction.unkBh]);
+        auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[interaction.modId]);
         FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, trackExtraObj->name);
         return true;
     }
@@ -583,12 +583,12 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        if (!road->hasMod(interaction.unkBh))
+        if (!road->hasMod(interaction.modId))
         {
             return rightOverRoad(interaction);
         }
         auto* roadObj = ObjectManager::get<RoadObject>(road->roadObjectId());
-        auto* roadExtraObj = ObjectManager::get<TrackExtraObject>(roadObj->mods[interaction.unkBh]);
+        auto* roadExtraObj = ObjectManager::get<TrackExtraObject>(roadObj->mods[interaction.modId]);
         FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, roadExtraObj->name);
         return true;
     }
