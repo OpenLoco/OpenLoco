@@ -3,6 +3,7 @@
 #include "../Map/Map.hpp"
 #include "../Types.hpp"
 #include "Object.h"
+#include <array>
 #include <cstddef>
 #include <vector>
 
