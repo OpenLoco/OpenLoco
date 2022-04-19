@@ -1,7 +1,10 @@
 #pragma once
 
+#include "../Map/Map.hpp"
 #include "../Types.hpp"
 #include "Object.h"
+#include <cstddef>
+#include <vector>
 
 namespace OpenLoco
 {
@@ -20,8 +23,10 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::trackStation;
 
+        using CargoOffset = std::array<Map::Pos3, 2>;
+
         string_id name;
-        uint8_t var_02;
+        uint8_t drawStyle; // 0x02
         uint8_t var_03;
         uint16_t track_pieces;      // 0x04
         uint16_t build_cost_factor; // 0x06
@@ -31,19 +36,17 @@ namespace OpenLoco
         uint8_t flags; // 0x0C
         uint8_t var_0D;
         uint32_t image; // 0x0E
-        uint8_t pad_12[0x22 - 0x12];
+        uint32_t var_12[4];
         uint8_t num_compatible; // 0x22
         uint8_t mods[7];
-        uint16_t designed_year; // 0x2A
-        uint16_t obsolete_year; // 0x2C
-        uint8_t var_2E[16];
-        uint8_t var_3E[16];
-        uint8_t var_4E[16];
-        uint8_t var_5E[16];
+        uint16_t designed_year;            // 0x2A
+        uint16_t obsolete_year;            // 0x2C
+        std::byte* cargoOffsetBytes[4][4]; // 0x2E
         uint8_t pad_6E[0xAC - 0x6E];
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        std::vector<CargoOffset> getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const;
     };
 #pragma pack(pop)
 
@@ -51,5 +54,27 @@ namespace OpenLoco
     {
         constexpr uint32_t preview_image = 0;
         constexpr uint32_t preview_image_windows = 1;
+        // These are relative to var_12
+        // var_12 is the imageIds per sequenceIndex (for start/middle/end of the platform)
+        namespace Style0
+        {
+            constexpr uint32_t straightBackNE = 0;
+            constexpr uint32_t straightFrontNE = 1;
+            constexpr uint32_t straightCanopyNE = 2;
+            constexpr uint32_t straightCanopyTranslucentNE = 3;
+            constexpr uint32_t straightBackSE = 4;
+            constexpr uint32_t straightFrontSE = 5;
+            constexpr uint32_t straightCanopySE = 6;
+            constexpr uint32_t straightCanopyTranslucentSE = 7;
+            constexpr uint32_t diagonalNE0 = 8;
+            constexpr uint32_t diagonalNE3 = 9;
+            constexpr uint32_t diagonalNE1 = 10;
+            constexpr uint32_t diagonalCanopyNE1 = 11;
+            constexpr uint32_t diagonalCanopyTranslucentNE1 = 12;
+            constexpr uint32_t diagonalSE1 = 13;
+            constexpr uint32_t diagonalSE2 = 14;
+            constexpr uint32_t diagonalSE3 = 15;
+            constexpr uint32_t diagonalCanopyTranslucentSE3 = 16;
+        }
     }
 }

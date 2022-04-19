@@ -2,6 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "ObjectManager.h"
+#include <cassert>
 
 namespace OpenLoco
 {
@@ -28,5 +29,32 @@ namespace OpenLoco
     {
         Ui::Point rowPosition = { x, y };
         ObjectManager::drawGenericDescription(context, rowPosition, designed_year, obsolete_year);
+    }
+
+    std::vector<TrainStationObject::CargoOffset> TrainStationObject::getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const
+    {
+        assert(rotation < 4 && nibble < 4);
+
+        const auto* bytes = cargoOffsetBytes[rotation][nibble];
+        uint8_t z = *reinterpret_cast<const uint8_t*>(bytes);
+        bytes++;
+        std::vector<CargoOffset> result;
+        while (*bytes != static_cast<std::byte>(0xFF))
+        {
+            result.push_back({
+                Map::Pos3{
+                    *reinterpret_cast<const int8_t*>(bytes),
+                    *reinterpret_cast<const int8_t*>(bytes + 1),
+                    z,
+                },
+                Map::Pos3{
+                    *reinterpret_cast<const int8_t*>(bytes + 2),
+                    *reinterpret_cast<const int8_t*>(bytes + 3),
+                    z,
+                },
+            });
+            bytes += 4;
+        }
+        return result;
     }
 }

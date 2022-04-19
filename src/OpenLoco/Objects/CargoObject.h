@@ -8,6 +8,7 @@ namespace OpenLoco
 {
     namespace CargoObjectFlags
     {
+        constexpr uint8_t unk0 = (1 << 0);
         constexpr uint8_t refit = (1 << 1);
         constexpr uint8_t unk2 = (1 << 2);
     }
@@ -25,8 +26,8 @@ namespace OpenLoco
         string_id unit_name_plural;     // 0xA
         uint32_t unit_inline_sprite;    // 0xC
         std::uint8_t pad_10[0x12 - 0x10];
-        uint8_t flags; // 0x12
-        std::uint8_t pad_13;
+        uint8_t flags;                 // 0x12
+        uint8_t numPlatformVariations; // 0x13
         uint8_t var_14;
         uint8_t premiumDays;       // 0x15
         uint8_t maxNonPremiumDays; // 0x16
@@ -43,4 +44,10 @@ namespace OpenLoco
 #pragma pack(pop)
 
     static_assert(sizeof(CargoObject) == 0x1F);
+    namespace Cargo::ImageIds
+    {
+        constexpr uint32_t inlineSprite = 0;
+        // There are numPlatformVariations sprites after this one
+        constexpr uint32_t stationPlatformBegin = 1;
+    }
 }
