@@ -427,7 +427,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        uint8_t tileBaseZ;                   // 0x34
+        Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         uint8_t var_38;
@@ -464,7 +464,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        uint8_t tileBaseZ;                   // 0x34
+        Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         uint8_t var_38;
@@ -511,7 +511,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        uint8_t tileBaseZ;                   // 0x34
+        Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         uint8_t var_38;
@@ -566,7 +566,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        uint8_t tileBaseZ;                   // 0x34
+        Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         uint8_t var_38;
