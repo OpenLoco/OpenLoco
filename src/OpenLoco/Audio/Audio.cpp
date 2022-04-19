@@ -825,6 +825,19 @@ namespace OpenLoco::Audio
         }
     }
 
+    void stopVehicleNoise(EntityId head)
+    {
+        Vehicles::Vehicle train(head);
+        for (auto& vc : _vehicleChannels)
+        {
+            if (vc.getId() == train.veh2->id
+                || vc.getId() == train.tail->id)
+            {
+                vc.stop();
+            }
+        }
+    }
+
     static constexpr auto kAmbientMinVolume = -3500;
     static constexpr auto kAmbientVolumeChangePerTick = 100;
     static constexpr auto kAmbientNumWaterTilesForOcean = 60;

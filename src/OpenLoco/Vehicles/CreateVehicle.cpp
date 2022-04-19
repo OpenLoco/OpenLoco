@@ -689,7 +689,7 @@ namespace OpenLoco::Vehicles
             {
                 // Cleanup and delete base vehicle before exit.
                 RoutingManager::freeRoutingHandle(_head->routingHandle);
-                OrderManager::sub_470334(_head);
+                OrderManager::freeOrders(_head);
                 MessageManager::removeAllSubjectRefs(enumValue(_head->id), MessageItemArgumentType::vehicle);
                 auto veh1 = _head->nextVehicleComponent();
                 if (veh1 == nullptr)

@@ -89,8 +89,9 @@ namespace OpenLoco::VehicleManager
             nextVeh = train.veh2->nextVehicleComponent();
         }
 
+        Audio::stopVehicleNoise(head.id);
         Vehicles::RoutingManager::freeRoutingHandle(head.routingHandle);
-        Vehicles::OrderManager::sub_470334(&head);
+        Vehicles::OrderManager::freeOrders(&head);
         MessageManager::removeAllSubjectRefs(enumValue(head.id), MessageItemArgumentType::vehicle);
         const auto companyId = head.owner;
         EntityManager::freeEntity(train.tail);
@@ -228,7 +229,7 @@ namespace OpenLoco::Vehicles::OrderManager
 
     // 0x00470334
     // Remove vehicle ?orders?
-    void sub_470334(VehicleHead* const head)
+    void freeOrders(VehicleHead* const head)
     {
         sub_470795(head->orderTableOffset, head->sizeOfOrderTable * -1);
         auto length = numOrders() - head->orderTableOffset - head->sizeOfOrderTable;

@@ -21,7 +21,7 @@ namespace OpenLoco::VehicleManager
 
 namespace OpenLoco::Vehicles::OrderManager
 {
-    void sub_470334(VehicleHead* const head);
+    void freeOrders(VehicleHead* const head);
 }
 
 namespace OpenLoco::Vehicles::RoutingManager
