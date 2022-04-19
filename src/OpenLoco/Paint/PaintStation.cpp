@@ -224,7 +224,7 @@ namespace OpenLoco::Paint
     // 0x00411AC6
     static void paintTrainStationStyle0DiagonalTrack0NE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
         Map::Pos3 bbOffset = Map::Pos3{ 2, 2, 8 } + heightOffset;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
         session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE0, heightOffset, bbOffset, bbSize);
@@ -233,7 +233,7 @@ namespace OpenLoco::Paint
     // 0x00411B09
     static void paintTrainStationStyle0DiagonalTrack1NE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
         // Platform
         {
             Map::Pos3 bbOffset = Map::Pos3{ 6, 6, 8 } + heightOffset;
@@ -258,7 +258,7 @@ namespace OpenLoco::Paint
     // 0x00411BA8
     static void paintTrainStationStyle0DiagonalTrack3NE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
         Map::Pos3 bbOffset = Map::Pos3{ 2, 2, 8 } + heightOffset;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
         session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalNE3, heightOffset, bbOffset, bbSize);
@@ -273,7 +273,7 @@ namespace OpenLoco::Paint
     // 0x00411BED
     static void paintTrainStationStyle0DiagonalTrack1SE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
         Map::Pos3 bbOffset = Map::Pos3{ 28, 34, 8 } + heightOffset;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
         session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalSE1, heightOffset, bbOffset, bbSize);
@@ -282,7 +282,7 @@ namespace OpenLoco::Paint
     // 0x00411C30
     static void paintTrainStationStyle0DiagonalTrack2SE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
         Map::Pos3 bbOffset = Map::Pos3{ 34, 28, 8 } + heightOffset;
         Map::Pos3 bbSize = Map::Pos3{ 2, 2, 3 };
         session.addToPlotList4FD150(imageBase + TrainStation::ImageIds::Style0::diagonalSE2, heightOffset, bbOffset, bbSize);
@@ -291,7 +291,7 @@ namespace OpenLoco::Paint
     // 0x00411C73
     static void paintTrainStationStyle0DiagonalTrack3SE(PaintSession& session, const Map::StationElement& elStation, const uint32_t imageBase, const uint32_t imageTranslucentBase)
     {
-        const Map::Pos3 heightOffset(0, 0, elStation.baseZ() * 4);
+        const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
         Map::Pos3 bbOffset = Map::Pos3{ 0, 0, 26 } + heightOffset;
         Map::Pos3 bbSize = Map::Pos3{ 30, 30, 1 };
         session.addToPlotList4FD180(imageBase + TrainStation::ImageIds::Style0::diagonalSE3, 1, heightOffset, bbOffset, bbSize);
