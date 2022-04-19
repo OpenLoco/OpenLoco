@@ -23,10 +23,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::trackStation;
 
-        struct CargoOffset
-        {
-            Map::Pos3 offsets[2];
-        };
+        using CargoOffset = std::array<Map::Pos3, 2>;
 
         string_id name;
         uint8_t drawStyle; // 0x02
@@ -57,7 +54,7 @@ namespace OpenLoco
     {
         constexpr uint32_t preview_image = 0;
         constexpr uint32_t preview_image_windows = 1;
-        // These are relative to to var_12
+        // These are relative to var_12
         // var_12 is the imageIds per sequenceIndex (for start/middle/end of the platform)
         namespace Style0
         {

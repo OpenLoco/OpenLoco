@@ -2,6 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "ObjectManager.h"
+#include <cassert>
 
 namespace OpenLoco
 {
@@ -32,6 +33,8 @@ namespace OpenLoco
 
     std::vector<TrainStationObject::CargoOffset> TrainStationObject::getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const
     {
+        assert(rotation < 4 && nibble < 4);
+
         const auto* bytes = cargoOffsetBytes[rotation][nibble];
         uint8_t z = *reinterpret_cast<const uint8_t*>(bytes);
         bytes++;

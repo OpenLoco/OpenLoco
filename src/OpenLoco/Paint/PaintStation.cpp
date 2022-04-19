@@ -83,7 +83,7 @@ namespace OpenLoco::Paint
                 {
                     if (flags & (1 << 2))
                     {
-                        offset = cargoOffsets[i].offsets[1];
+                        offset = cargoOffsets[i][1];
                     }
                     else
                     {
@@ -94,7 +94,7 @@ namespace OpenLoco::Paint
                 {
                     if (flags & (1 << 3))
                     {
-                        offset = cargoOffsets[i].offsets[0];
+                        offset = cargoOffsets[i][0];
                     }
                     else
                     {
