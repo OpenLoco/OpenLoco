@@ -213,7 +213,7 @@ namespace OpenLoco::Map::TileManager
         // If the element is in the quadrant with the slope, raise its height
         if (quad > 0)
         {
-            return quad;
+            return quad / 2;
         }
         return 0;
     }
