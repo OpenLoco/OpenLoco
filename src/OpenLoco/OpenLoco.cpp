@@ -261,7 +261,7 @@ namespace OpenLoco
 
     static void sub_4062D1()
     {
-        call(0x004062D1);
+        call(0x004062D1); // calls getTime then sub_4062E0 unused Dead code
     }
 
     static void sub_406417()
@@ -281,7 +281,7 @@ namespace OpenLoco
 
     static void sub_4062E0()
     {
-        call(0x004062E0);
+        call(0x004062E0); // getTime unused Dead code
     }
 
     static bool sub_4034FC(int32_t& a, int32_t& b)
