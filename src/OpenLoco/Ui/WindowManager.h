@@ -163,6 +163,7 @@ namespace OpenLoco::Ui::Windows
         bool rotate(Window* self);
         void removeConstructionGhosts();
         void registerHooks();
+        uint16_t getLastSelectedMods();
     }
 
     namespace DragVehiclePart

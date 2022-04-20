@@ -562,6 +562,11 @@ namespace OpenLoco::Ui::Windows::Construction
         Overhead::removeTrackModsGhost();
     }
 
+    uint16_t getLastSelectedMods()
+    {
+        return _lastSelectedMods;
+    }
+
     namespace Common
     {
         struct TabInformation

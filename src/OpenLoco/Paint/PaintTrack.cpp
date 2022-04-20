@@ -8,6 +8,7 @@
 #include "../Objects/TrackExtraObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Ui.h"
+#include "../Ui/WindowManager.h"
 #include "Paint.h"
 
 using namespace OpenLoco::Interop;
@@ -85,16 +86,25 @@ namespace OpenLoco::Paint
         }
 
         session.setItemType(Ui::ViewportInteraction::InteractionItem::trackExtra);
+        const auto ghostMods = Ui::Windows::Construction::getLastSelectedMods();
         for (auto mod = 0; mod < 4; ++mod)
         {
-            if (!elTrack.hasMod(mod))
+            const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
+            if (elTrack.hasMod(mod))
+            {
+                _trackExtraImageId = _trackImageId1 + trackExtraObj->image;
+            }
+            else if (elTrack.hasGhostMods() && ghostMods & (1 << mod))
+            {
+                _trackExtraImageId = Gfx::applyGhostToImage(trackExtraObj->image);
+            }
+            else
             {
                 continue;
             }
 
             session.setTrackModId(mod);
-            const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
-            _trackExtraImageId = _trackImageId1 + trackExtraObj->image;
+
             const auto trackExtraPaintFunc = _trackExtraPaintModes[trackExtraObj->is_overhead][elTrack.trackId()][rotation];
             registers regs;
             regs.esi = X86Pointer(&elTrack);
@@ -103,7 +113,6 @@ namespace OpenLoco::Paint
             regs.dx = height;
             call(trackExtraPaintFunc, regs);
         }
-        // 0x0049B836 do track mods
     }
 
     void registerTrackHooks()

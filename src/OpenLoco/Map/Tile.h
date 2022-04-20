@@ -417,6 +417,7 @@ namespace OpenLoco::Map
         uint8_t unkDirection() const { return _type & 0x03; }
         uint8_t trackId() const { return _4 & 0x3F; } // _4
         bool hasBridge() const { return (_4 & 0x80) != 0; }
+        bool hasGhostMods() const { return (_4 & 0x40) != 0; }
         uint8_t trackObjectId() const { return _5 >> 4; }  // _5u
         uint8_t sequenceIndex() const { return _5 & 0xF; } // _5l
         bool has_6_10() const { return (_6 & 0x10) != 0; }
