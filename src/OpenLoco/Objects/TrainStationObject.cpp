@@ -47,7 +47,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if (var_02 >= 1)
+        if (drawStyle >= 1)
         {
             return false;
         }
@@ -71,7 +71,7 @@ namespace OpenLoco
         image = 0;
         std::fill(std::begin(var_12), std::end(var_12), 0);
         std::fill(std::begin(mods), std::end(mods), 0);
-        std::fill(std::begin(cargoOffsetBytes), std::end(cargoOffsetBytes), nullptr);
+        std::fill(&cargoOffsetBytes[0][0], &cargoOffsetBytes[0][0] + sizeof(cargoOffsetBytes) / sizeof(std::byte*), nullptr);
         std::fill(std::begin(var_6E), std::end(var_6E), 0);
     }
 
