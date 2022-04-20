@@ -448,13 +448,13 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
 
-                if (vehicle->getTrackLoc() == interest.loc && vehicle->getVar2C().track == tad)
+                if (vehicle->getTrackLoc() == interest.loc && vehicle->getTrackAndDirection().track == tad)
                 {
                     _routingTransformData = 1;
                     break;
                 }
 
-                if (vehicle->getTrackLoc() == nextLoc && vehicle->getVar2C().track == backwardTaD)
+                if (vehicle->getTrackLoc() == nextLoc && vehicle->getTrackAndDirection().track == backwardTaD)
                 {
                     _routingTransformData = 1;
                     break;
