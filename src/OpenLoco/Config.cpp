@@ -34,12 +34,12 @@ namespace OpenLoco::Config
 
     static void setDefaultsLegacyConfig()
     {
-        if (_totalPhysicalMemory <= 0x4000000)
+        if (_totalPhysicalMemory <= (64 * 1024 * 1024)) // 64 MB
         {
             _config->soundQuality = 0;
             _config->vehiclesMinScale = 1;
         }
-        else if (_totalPhysicalMemory <= 0x8000000)
+        else if (_totalPhysicalMemory <= 128 * 1024 * 1024) // 128 MB
         {
             _config->soundQuality = 1;
             _config->vehiclesMinScale = 1;
