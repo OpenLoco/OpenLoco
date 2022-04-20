@@ -7,11 +7,8 @@
 #include "../Ui.h"
 #include "Paint.h"
 #include "PaintSignal.h"
-<<<<<<< HEAD
 #include "PaintStation.h"
-=======
 #include "PaintTrack.h"
->>>>>>> 4c5e643f (Add base of paintTrack)
 #include "PaintTree.h"
 
 using namespace OpenLoco::Interop;

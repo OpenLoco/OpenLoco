@@ -5,6 +5,7 @@
 #include "../Map/Map.hpp"
 #include "../Map/Tile.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/TrackExtraObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Ui.h"
 #include "Paint.h"
@@ -14,9 +15,11 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Paint
 {
     static loco_global<uint32_t, 0x001135F26> _trackBaseImageId;
+    static loco_global<uint32_t, 0x001135F2E> _trackExtraImageId;
     static loco_global<uint32_t, 0x001135F32> _trackImageId1;
     static loco_global<uint32_t, 0x001135F36> _trackImageId2;
     static loco_global<uint32_t** [1], 0x004FFB7C> _trackPaintModes;
+    static loco_global<uint32_t** [2], 0x004FFB80> _trackExtraPaintModes;
     static loco_global<uint8_t, 0x00113605E> _trackVar1B;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
 
@@ -41,11 +44,11 @@ namespace OpenLoco::Paint
             if (elTrack.sequenceIndex() == 0 || isRight)
             {
                 session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                //const auto imageId = Gfx::recolour(getHeightMarkerImage(isRight, elTrack.trackId(), height), Colour::blue);
-                //const Map::Pos3 offset(16, 16, height + getHeightMarkerOffset(isRight, elTrack.trackId()) + 8);
-                //const Map::Pos3 bbOffset(1000, 1000, 1087);
-                //const Map::Pos3 bbSize(1, 1, 0);
-                //session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
+                // const auto imageId = Gfx::recolour(getHeightMarkerImage(isRight, elTrack.trackId(), height), Colour::blue);
+                // const Map::Pos3 offset(16, 16, height + getHeightMarkerOffset(isRight, elTrack.trackId()) + 8);
+                // const Map::Pos3 bbOffset(1000, 1000, 1087);
+                // const Map::Pos3 bbSize(1, 1, 0);
+                // session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
             }
         }
 
@@ -74,6 +77,31 @@ namespace OpenLoco::Paint
             regs.ecx = rotation;
             regs.dx = height;
             call(trackPaintFunc, regs);
+        }
+
+        if (session.getContext()->zoom_level > 0)
+        {
+            return;
+        }
+
+        session.setItemType(Ui::ViewportInteraction::InteractionItem::trackExtra);
+        for (auto mod = 0; mod < 4; ++mod)
+        {
+            if (!elTrack.hasMod(mod))
+            {
+                continue;
+            }
+
+            session.setTrackModId(mod);
+            const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
+            _trackExtraImageId = _trackImageId1 + trackExtraObj->image;
+            const auto trackExtraPaintFunc = _trackExtraPaintModes[trackExtraObj->is_overhead][elTrack.trackId()][rotation];
+            registers regs;
+            regs.esi = X86Pointer(&elTrack);
+            regs.ebp = elTrack.sequenceIndex();
+            regs.ecx = rotation;
+            regs.dx = height;
+            call(trackExtraPaintFunc, regs);
         }
         // 0x0049B836 do track mods
     }
