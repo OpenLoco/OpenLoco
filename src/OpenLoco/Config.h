@@ -175,6 +175,7 @@ namespace OpenLoco::Config
         KeyboardShortcut shortcuts[Input::ShortcutManager::kCount];
         bool displayLockedVehicles = false;
         bool buildLockedVehicles = false;
+        bool invertRightMouseViewPan = false;
     };
 
     LocoConfig& get();

@@ -1,5 +1,6 @@
 22.04+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1457] Added option to invert right-mouse panning the game view.
 - Fix: [#1463] Crash when opening the build window under certain situations.
 
 22.04 (2022-04-12)
@@ -19,7 +20,7 @@
 - Fix: [#1434] Can set 0 or more than 80 towns in scenario editor.
 - Fix: [#1449] Autopay tooltip was formatted poorly.
 - Fix: [#1450] Some strings were erroneously referenced in the language files.
-- Fix: [#1453] Vehicle modify button image disapears for certain company colours.
+- Fix: [#1453] Vehicle modify button image disappears for certain company colours.
 
 22.03.1 (2022-03-08)
 ------------------------------------------------------------------------

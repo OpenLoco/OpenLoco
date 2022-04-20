@@ -1,5 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
+#include "../Config.h"
 #include "../Console.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
@@ -804,8 +805,12 @@ namespace OpenLoco::Input
 
                     if (!window->viewportIsFocusedOnEntity())
                     {
-                        window->viewportConfigurations[0].saved_view_x += dragOffset.x << (vp->zoom + 1);
-                        window->viewportConfigurations[0].saved_view_y += dragOffset.y << (vp->zoom + 1);
+                        auto invert = Config::getNew().invertRightMouseViewPan ? -1 : 1;
+                        auto offsetX = dragOffset.x << (vp->zoom + 1);
+                        auto offsetY = dragOffset.y << (vp->zoom + 1);
+
+                        window->viewportConfigurations[0].saved_view_x += offsetX * invert;
+                        window->viewportConfigurations[0].saved_view_y += offsetY * invert;
                     }
                     else
                     {

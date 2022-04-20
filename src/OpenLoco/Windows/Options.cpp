@@ -1727,24 +1727,27 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 edge_scrolling = 10,
                 zoom_to_cursor,
+                invertRightMouseViewPan,
                 customize_keys
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Controls::Widx::edge_scrolling) | (1 << Controls::Widx::customize_keys) | (1 << Controls::Widx::zoom_to_cursor);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Controls::Widx::edge_scrolling) | (1 << Controls::Widx::customize_keys) | (1 << Controls::Widx::zoom_to_cursor) | (1 << Controls::Widx::invertRightMouseViewPan);
 
-        static const Ui::Size _window_size = { 366, 99 };
+        static const Ui::Size _window_size = { 366, 114 };
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_controls),
             makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::scroll_screen_edge, StringIds::scroll_screen_edge_tip),
             makeWidget({ 10, 64 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
-            makeWidget({ 26, 79 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip),
+            makeWidget({ 10, 79 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::invert_right_mouse_dragging, StringIds::tooltip_invert_right_mouse_dragging),
+            makeWidget({ 26, 94 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::customise_keys, StringIds::customise_keys_tip),
             widgetEnd(),
         };
 
         static void edgeScrollingMouseUp(Window* w);
         static void zoomToCursorMouseUp(Window* w);
+        static void invertRightMouseViewPan(Window* w);
         static void openKeyboardShortcuts();
 
         static WindowEventList _events;
@@ -1765,7 +1768,7 @@ namespace OpenLoco::Ui::Windows::Options
             w->widgets[Common::Widx::close_button].left = w->width - 15;
             w->widgets[Common::Widx::close_button].right = w->width - 15 + 12;
 
-            w->activatedWidgets &= ~(1 << Widx::edge_scrolling | 1 << Widx::zoom_to_cursor);
+            w->activatedWidgets &= ~(1 << Widx::edge_scrolling | 1 << Widx::zoom_to_cursor | 1 << Widx::invertRightMouseViewPan);
             if (Config::get().edgeScrolling)
             {
                 w->activatedWidgets |= (1 << Widx::edge_scrolling);
@@ -1773,6 +1776,10 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::getNew().zoomToCursor)
             {
                 w->activatedWidgets |= (1 << Widx::zoom_to_cursor);
+            }
+            if (Config::getNew().invertRightMouseViewPan)
+            {
+                w->activatedWidgets |= (1 << Widx::invertRightMouseViewPan);
             }
 
             sub_4C13BE(w);
@@ -1814,6 +1821,10 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::zoom_to_cursor:
                     zoomToCursorMouseUp(w);
                     break;
+
+                case Widx::invertRightMouseViewPan:
+                    invertRightMouseViewPan(w);
+                    break;
             }
         }
 
@@ -1831,6 +1842,15 @@ namespace OpenLoco::Ui::Windows::Options
         {
             auto& cfg = OpenLoco::Config::getNew();
             cfg.zoomToCursor = !cfg.zoomToCursor;
+            Config::write();
+
+            w->invalidate();
+        }
+
+        static void invertRightMouseViewPan(Window* w)
+        {
+            auto& cfg = OpenLoco::Config::getNew();
+            cfg.invertRightMouseViewPan = !cfg.invertRightMouseViewPan;
             Config::write();
 
             w->invalidate();
