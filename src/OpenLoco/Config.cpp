@@ -13,7 +13,7 @@ namespace OpenLoco::Config
 {
     static loco_global<LocoConfig, 0x0050AEB4> _config;
     static loco_global<uint8_t, 0x0050AEAD> _50AEAD;
-    static loco_global<uint32_t, 0x0113E21C> _113E21C;
+    static loco_global<uint32_t, 0x0113E21C> _totalPhysicalMemory;
     static NewConfig _new_config;
     static YAML::Node _config_yaml;
 
@@ -34,20 +34,20 @@ namespace OpenLoco::Config
 
     static void setDefaultsLegacyConfig()
     {
-        if (_113E21C > 0x4000000)
+        if (_totalPhysicalMemory <= (64 * 1024 * 1024)) // 64 MB
+        {
+            _config->soundQuality = 0;
+            _config->vehiclesMinScale = 1;
+        }
+        else if (_totalPhysicalMemory <= 128 * 1024 * 1024) // 128 MB
         {
             _config->soundQuality = 1;
             _config->vehiclesMinScale = 1;
         }
-        else if (_113E21C > 0x8000000)
+        else
         {
             _config->soundQuality = 2;
             _config->vehiclesMinScale = 2;
-        }
-        else
-        {
-            _config->soundQuality = 0;
-            _config->vehiclesMinScale = 1;
         }
         _config->maxVehicleSounds = _defaultMaxVehicleSounds[_config->soundQuality];
         _config->maxSoundInstances = _defaultMaxSoundInstances[_config->soundQuality];
