@@ -240,6 +240,46 @@ namespace OpenLoco::Gfx
         std::copy(elements.begin(), elements.end(), _g1Elements.get());
     }
 
+    // 0x004949BC
+    void initialiseCharacterWidths()
+    {
+        struct FontEntry
+        {
+            int16_t offset;
+            int8_t widthFudge;
+        };
+        constexpr std::array<FontEntry, 4> fonts = {
+            FontEntry{ Font::medium_normal, -1 },
+            FontEntry{ Font::medium_bold, -1 },
+            FontEntry{ Font::small, -1 },
+            FontEntry{ Font::large, 1 },
+        };
+
+        for (const auto& font : fonts)
+        {
+            // Supported character range is from 32 -> 255
+            for (auto i = 0; i < 224; ++i)
+            {
+                auto c = i + 32;
+                // TODO: Use an indirection to convert from character to imageId
+                auto* element = getG1Element(ImageIds::characters_medium_normal_space + i + font.offset);
+                if (element == nullptr)
+                {
+                    continue;
+                }
+                auto width = element->width + font.widthFudge;
+                // Characters from 123 to 150 are unused
+                // Unsure why this zeros it out though since a negative width isn't an issue
+                if (c >= '{' && c <= '\u0096')
+                {
+                    width = 0;
+                }
+                _characterWidths[font.offset + i] = width;
+            }
+        }
+        // Vanilla setup scrolling text related globals here (unused)
+    }
+
     // 0x00447485
     // edi: context
     // ebp: fill
