@@ -40,8 +40,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 #define commonWidgets(frameWidth, frameHeight, frameType)                                                                                                            \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, frameType, WindowColour::primary),                                                                             \
         makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 2, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk),                                                   \
-        makeWidget({ 180, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk),                                                 \
+        makeWidget({ 2, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk),                                          \
+        makeWidget({ 180, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk),                                        \
         makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::buttonWithImage, WindowColour::primary),                                                        \
         makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::buttonWithImage, WindowColour::primary)
 
