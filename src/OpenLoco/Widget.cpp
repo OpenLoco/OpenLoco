@@ -343,7 +343,7 @@ namespace OpenLoco::Ui
             flags |= 0x20;
         }
 
-        if (content == -2)
+        if (content == kContentUnk)
         {
             flags |= 0x10;
             Gfx::fillRectInset(*context, l, t, r, b, colour.u8(), flags);
@@ -357,7 +357,7 @@ namespace OpenLoco::Ui
 
         Gfx::fillRectInset(*context, l, t, r, b, colour.u8(), flags);
 
-        if (content == Widget::contentNull)
+        if (content == kContentNull)
         {
             return;
         }
@@ -368,7 +368,7 @@ namespace OpenLoco::Ui
     // 0x004CABFE
     void Widget::drawTab(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated)
     {
-        if (content == Widget::contentNull)
+        if (content == kContentNull)
         {
             return;
         }
@@ -423,7 +423,7 @@ namespace OpenLoco::Ui
         if (activated)
         {
             flags |= 0x20;
-            if (content == -2)
+            if (content == kContentUnk)
             {
                 // 0x004CABE8
 
@@ -436,7 +436,7 @@ namespace OpenLoco::Ui
             Gfx::fillRectInset(*context, l, t, r, b, colour.u8(), flags);
         }
 
-        if (content == Widget::contentNull)
+        if (content == kContentNull)
         {
             return;
         }
@@ -447,7 +447,7 @@ namespace OpenLoco::Ui
     // 0x004CAC5F
     void Widget::drawButtonWithColour(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated, bool hovered)
     {
-        if (content == Widget::contentNull)
+        if (content == kContentNull)
         {
             return;
         }
@@ -501,7 +501,7 @@ namespace OpenLoco::Ui
     // 0x004CB1BE
     void Widget::draw_13(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated)
     {
-        if (content == Widget::contentNull)
+        if (content == kContentNull)
         {
             return;
         }
@@ -562,7 +562,7 @@ namespace OpenLoco::Ui
     // 0x4CB2D6
     void Widget::draw_15(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool disabled)
     {
-        if (content == Widget::contentNull || content == -2)
+        if (content == kContentNull || content == kContentUnk)
         {
             return;
         }
@@ -890,7 +890,7 @@ namespace OpenLoco::Ui
     // 0x004CB080
     void Widget::draw_27_label(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool disabled)
     {
-        if (content == Widget::contentNull)
+        if (content == kContentNull)
         {
             return;
         }
@@ -985,21 +985,21 @@ namespace OpenLoco::Ui
             isActivated = Input::isPressed(w->type, w->number, index);
         }
 
-        if (imageId == Widget::contentNull)
+        if (imageId == kContentNull)
         {
             return;
         }
 
         if (isActivated)
         {
-            if (imageId != -2)
+            if (imageId != kContentUnk)
             {
                 Gfx::drawImage(ctx, pos.x, pos.y, imageId);
             }
         }
         else
         {
-            if (imageId != -2)
+            if (imageId != kContentUnk)
             {
                 Gfx::drawImage(ctx, pos.x, pos.y + 1, imageId);
             }

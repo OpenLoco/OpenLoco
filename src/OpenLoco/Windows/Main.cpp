@@ -18,7 +18,7 @@ namespace OpenLoco::Ui::Windows::Main
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 0, 0 }, WidgetType::viewport, WindowColour::primary, 0xFFFFFFFE),
+        makeWidget({ 0, 0 }, { 0, 0 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk),
         widgetEnd(),
     };
 
