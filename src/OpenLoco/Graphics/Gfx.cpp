@@ -1417,7 +1417,7 @@ namespace OpenLoco::Gfx
     }
 
     // 0x00448D90
-    void drawImagePaletteSet(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
+    static void drawImagePaletteSet(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
     {
         _50B860 = palette;
         registers regs;
