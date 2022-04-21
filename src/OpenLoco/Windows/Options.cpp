@@ -888,7 +888,7 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
             makeWidget({ 34, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
             makeWidget({ 58, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
-            makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::wt_5, WindowColour::secondary, -1, StringIds::set_volume_tip),
+            makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::wt_5, WindowColour::secondary, Widget::contentNull, StringIds::set_volume_tip),
             makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg2_stringid),
             makeWidget({ 183, 108 }, { 173, 12 }, WidgetType::button, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip),
             widgetEnd(),

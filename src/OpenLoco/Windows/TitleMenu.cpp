@@ -113,12 +113,12 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, StringIds::null, StringIds::title_menu_new_game),
-        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, StringIds::null, StringIds::title_menu_load_game),
-        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, StringIds::null, StringIds::title_menu_show_tutorial),
-        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, StringIds::null, StringIds::title_menu_scenario_editor),
-        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, WidgetType::buttonWithImage, WindowColour::secondary, StringIds::null, StringIds::title_menu_chat_tooltip),
-        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, WidgetType::none, WindowColour::secondary, StringIds::null, StringIds::title_multiplayer_toggle_tooltip),
+        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::contentNull, StringIds::title_menu_new_game),
+        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::contentNull, StringIds::title_menu_load_game),
+        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::contentNull, StringIds::title_menu_show_tutorial),
+        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::contentNull, StringIds::title_menu_scenario_editor),
+        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::contentNull, StringIds::title_menu_chat_tooltip),
+        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, WidgetType::none, WindowColour::secondary, Widget::contentNull, StringIds::title_multiplayer_toggle_tooltip),
         widgetEnd(),
     };
 

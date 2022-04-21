@@ -83,7 +83,7 @@ namespace OpenLoco::Ui::Windows::Station
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, 0xFFFFFFFE),
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::contentNull, StringIds::move_main_view_to_show_this),
             widgetEnd(),
         };
 

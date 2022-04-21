@@ -20,9 +20,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 {
     Widget widgets[] = {
         commonWidgets(138, 167, StringIds::stringid_2),
-        makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_signal_type),
-        makeWidget({ 27, 110 }, { 40, 40 }, WidgetType::buttonWithImage, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_signal_both_directions),
-        makeWidget({ 71, 110 }, { 40, 40 }, WidgetType::buttonWithImage, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_signal_single_direction),
+        makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::contentNull, StringIds::tooltip_select_signal_type),
+        makeWidget({ 27, 110 }, { 40, 40 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::contentNull, StringIds::tooltip_signal_both_directions),
+        makeWidget({ 71, 110 }, { 40, 40 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::contentNull, StringIds::tooltip_signal_single_direction),
         widgetEnd(),
     };
 

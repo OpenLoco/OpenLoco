@@ -87,9 +87,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         Widget widgets[] = {
             commonWidgets(600, 197, StringIds::title_industries),
-            makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_name),
-            makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_status),
-            makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_production_transported),
+            makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::contentNull, StringIds::sort_industry_name),
+            makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::contentNull, StringIds::sort_industry_status),
+            makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::contentNull, StringIds::sort_industry_production_transported),
             makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
