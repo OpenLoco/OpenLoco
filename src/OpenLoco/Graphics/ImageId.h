@@ -127,7 +127,8 @@ namespace OpenLoco
         constexpr ImageId withIndex(ImageIndex index) const
         {
             ImageId result = *this;
-            result._index = index;
+            result._index &= ~kMaskIndex;
+            result._index |= index;
             return result;
         }
 
