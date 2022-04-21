@@ -226,7 +226,7 @@ namespace OpenLoco::Ui
 
     void Widget::sub_4CADE8(Gfx::Context* context, const Window* window, AdvancedColour colour, bool enabled, bool disabled, bool activated)
     {
-        Ui::Point placeForImage{ left + window->x, top + window->y };
+        Ui::Point placeForImage(left + window->x, top + window->y);
         const bool isColourSet = image & Widget::imageIdColourSet;
         ImageId imageId = ImageId::fromUInt32(image & ~Widget::imageIdColourSet);
         if (type == WidgetType::wt_6 || type == WidgetType::toolbarTab || type == WidgetType::tab || type == WidgetType::wt_4)
@@ -274,7 +274,7 @@ namespace OpenLoco::Ui
             assert(false);
         }
 
-        if (!isColourSet)
+        if (!isColourSet && imageId.hasPrimary())
         {
             imageId = imageId.withPrimary(colour.c());
         }
@@ -389,19 +389,16 @@ namespace OpenLoco::Ui
             return;
         }
 
+        const bool isColourSet = image & Widget::imageIdColourSet;
         // TODO: Remove addedImage addition
-        uint32_t addedImage = image + 2;
+        ImageId imageId = ImageId::fromUInt32(image & ~Widget::imageIdColourSet).withIndexOffset(2);
 
-        if ((addedImage & Widget::imageIdColourSet) == 0)
+        if (!isColourSet && imageId.hasPrimary())
         {
-            addedImage |= enumValue(colour.c()) << 19;
-        }
-        else
-        {
-            addedImage &= ~Widget::imageIdColourSet;
+            imageId = imageId.withPrimary(colour.c());
         }
 
-        Gfx::drawImage(context, window->x + left, window->y + top, addedImage);
+        Gfx::drawImage(*context, Ui::Point(window->x + left, window->y + top), imageId);
     }
 
     // 0x004CACD4
@@ -451,34 +448,27 @@ namespace OpenLoco::Ui
             return;
         }
 
-        uint32_t addedImage = image;
+        const bool isColourSet = image & Widget::imageIdColourSet;
+        // TODO: Remove addition
+        ImageId imageId = ImageId::fromUInt32(image & ~Widget::imageIdColourSet);
 
-        if (enabled)
+        if (enabled && activated && hovered)
         {
-            // TODO: Remove addedImage addition
-            addedImage += 2;
-
-            if (!activated)
-            {
-                addedImage -= 1;
-
-                if (!hovered)
-                {
-                    addedImage -= 1;
-                }
-            }
+            // TODO: Remove addition
+            imageId = imageId.withIndexOffset(2);
+        }
+        else if (enabled && !activated && hovered)
+        {
+            // TODO: Remove addition
+            imageId = imageId.withIndexOffset(1);
         }
 
-        if ((addedImage & Widget::imageIdColourSet) == 0)
+        if (!isColourSet && imageId.hasPrimary())
         {
-            addedImage |= enumValue(colour.c()) << 19;
-        }
-        else
-        {
-            addedImage &= ~Widget::imageIdColourSet;
+            imageId = imageId.withPrimary(colour.c());
         }
 
-        Gfx::drawImage(context, window->x + left, window->y + top, addedImage);
+        Gfx::drawImage(*context, Ui::Point(window->x + left, window->y + top), imageId);
     }
 
     // 0x004CB164
