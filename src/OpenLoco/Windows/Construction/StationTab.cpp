@@ -28,7 +28,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 {
     Widget widgets[] = {
         commonWidgets(138, 190, StringIds::stringid_2),
-        makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_station_type),
+        makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_station_type),
         makeWidget({ 35, 60 }, { 68, 68 }, WidgetType::wt_3, WindowColour::secondary),
         makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
         widgetEnd(),
