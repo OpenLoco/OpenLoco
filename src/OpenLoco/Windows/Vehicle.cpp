@@ -2390,7 +2390,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         ss << ControlCodes::inline_sprite_str;
                         ss.write(reinterpret_cast<const char*>(&cargoObj->unit_inline_sprite), 4);
                     }
-                    // Additional cargo stuff
                     break;
                 }
                 case Vehicles::OrderType::RouteThrough:
