@@ -3,6 +3,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/TrainStationObject.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "EntityManager.h"
@@ -54,9 +55,114 @@ namespace OpenLoco
     // 0x004408C2
     void Exhaust::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004408C2, regs);
+        const auto* steamObj = getObject();
+        if (steamObj->flags & SteamObjectFlags::unk0)
+        {
+            const auto res = var_32 + 7000;
+            var_32 = static_cast<uint16_t>(res);
+            auto newPos = position;
+            newPos.x += res / (std::numeric_limits<uint16_t>::max() + 1);
+            if (newPos.x != position.x)
+            {
+                invalidateSprite();
+                moveTo(newPos);
+                invalidateSprite();
+            }
+        }
+        var_28++;
+        if (var_28 < steamObj->var_04)
+        {
+            return;
+        }
+        var_28 = 0;
+        var_26++;
+
+        auto unk1 = steamObj->var_12;
+        auto* unk2 = steamObj->var_16;
+        if (objectId & (1 << 7))
+        {
+            unk1 = steamObj->var_14;
+            unk2 = steamObj->var_1A;
+        }
+
+        if (var_26 >= unk1)
+        {
+            invalidateSprite();
+            EntityManager::freeEntity(this);
+            return;
+        }
+
+        auto newPos = position;
+        newPos.z += unk2[var_26 * 2 + 1];
+        invalidateSprite();
+        moveTo(newPos);
+        invalidateSprite();
+
+        if (!(steamObj->flags & SteamObjectFlags::unk1))
+        {
+            return;
+        }
+
+        const auto tile = Map::TileManager::get(position);
+        const auto lowZ = (position.z / Map::kSmallZStep) - 3;
+        const auto highZ = lowZ + 6;
+        for (const auto& el : tile)
+        {
+            if (el.isFlag5() || el.isGhost())
+            {
+                continue;
+            }
+            if (lowZ < el.baseZ() && highZ > el.baseZ())
+            {
+                invalidateSprite();
+                EntityManager::freeEntity(this);
+                return;
+            }
+
+            auto* elTrack = el.as<Map::TrackElement>();
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+            if (!elTrack->hasStationElement())
+            {
+                continue;
+            }
+            auto* elStation = elTrack->next()->as<Map::StationElement>();
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+            if (elStation->isFlag5() || elStation->isGhost())
+            {
+                continue;
+            }
+
+            const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
+            if (stationObj->flags & TrainStationFlags::unk1)
+            {
+                continue;
+            }
+
+            if (elStation->multiTileIndex() == 0)
+            {
+                continue;
+            }
+
+            const auto cmpZ = elTrack->baseZ() + 7;
+            if (lowZ >= cmpZ)
+            {
+                continue;
+            }
+            if (highZ <= cmpZ)
+            {
+                continue;
+            }
+
+            invalidateSprite();
+            EntityManager::freeEntity(this);
+            return;
+        }
     }
 
     // 0x0044080C

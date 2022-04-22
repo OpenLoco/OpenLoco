@@ -59,10 +59,10 @@ namespace OpenLoco
     struct Exhaust : MiscBase
     {
         uint8_t pad_24[0x26 - 0x24];
-        int16_t var_26;
+        uint16_t var_26;
         int16_t var_28;
         uint8_t pad_2A[0x32 - 0x2A];
-        int16_t var_32;
+        uint16_t var_32;
         int16_t var_34;
         int16_t var_36;
         uint8_t pad_38[0x49 - 0x38];

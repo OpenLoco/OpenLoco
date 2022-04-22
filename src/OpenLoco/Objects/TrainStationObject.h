@@ -17,6 +17,7 @@ namespace OpenLoco
     namespace TrainStationFlags
     {
         constexpr uint8_t recolourable = 1 << 0;
+        constexpr uint8_t unk1 = 1 << 1; // Has no canopy??
     }
 
 #pragma pack(push, 1)
