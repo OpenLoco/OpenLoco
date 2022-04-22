@@ -160,7 +160,7 @@ namespace OpenLoco::Vehicles
 
     struct OrderRingView
     {
-    private:
+    public:
         struct Iterator
         {
         private:
@@ -186,6 +186,16 @@ namespace OpenLoco::Vehicles
             {
                 Iterator res = *this;
                 ++(*this);
+                return res;
+            }
+
+            Iterator operator+(int32_t amount) const
+            {
+                Iterator res = *this;
+                while (amount-- != 0)
+                {
+                    res++;
+                }
                 return res;
             }
 
@@ -227,6 +237,7 @@ namespace OpenLoco::Vehicles
             using iterator_category = std::forward_iterator_tag;
         };
 
+    private:
         uint32_t _beginTableOffset;
         uint32_t _currentOrderOffset;
 

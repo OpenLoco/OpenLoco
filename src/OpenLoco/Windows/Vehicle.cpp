@@ -2344,7 +2344,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return Vehicles::OrderRingView(head->orderTableOffset);
         }
 
-        static std::pair<Map::Pos3, std::string> sub_470B76(const Vehicles::Order& order, uint8_t orderNum)
+        static std::pair<Map::Pos3, std::string> sub_470B76(const Vehicles::OrderRingView::Iterator& order, uint8_t orderNum)
         {
             std::stringstream ss;
             ss << ControlCodes::inline_sprite_str;
@@ -2354,22 +2354,56 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             Map::Pos3 pos{};
 
-            switch (order.getType())
+            switch (order->getType())
             {
                 case Vehicles::OrderType::StopAt:
+                {
+                    auto* stopAt = order->as<Vehicles::OrderStopAt>();
                     // 0x00470B7D
-                    auto* station = StationManager::get(order.as<Vehicles::OrderRouteThrough>()->getStation());
+                    auto* station = StationManager::get(stopAt->getStation());
                     pos = Map::Pos3{ station->x, station->y, station->z } + Map::Pos3{ 0, 0, 30 };
+                    ss << ControlCodes::colour_white;
+                    for (auto nextOrder = order + 1; nextOrder != order; ++nextOrder)
+                    {
+                        if (!nextOrder->hasFlag(Vehicles::OrderFlags::HasCargo))
+                        {
+                            break;
+                        }
+                        auto* unload = nextOrder->as<Vehicles::OrderUnloadAll>();
+                        auto* waitFor = nextOrder->as<Vehicles::OrderWaitFor>();
+                        const CargoObject* cargoObj = nullptr;
+                        if (unload != nullptr)
+                        {
+                            ss << " - ";
+                            cargoObj = ObjectManager::get<CargoObject>(unload->getCargo());
+                        }
+                        else if (waitFor != nullptr)
+                        {
+                            ss << " + ";
+                            cargoObj = ObjectManager::get<CargoObject>(waitFor->getCargo());
+                        }
+                        else
+                        {
+                            // Not possible
+                            break;
+                        }
+                        ss << ControlCodes::inline_sprite_str;
+                        ss << reinterpret_cast<const char*>(&cargoObj->unit_inline_sprite);
+                    }
                     // Additional cargo stuff
                     break;
+                }
                 case Vehicles::OrderType::RouteThrough:
+                {
+
                     // 0x00470C25
-                    auto* station = StationManager::get(order.as<Vehicles::OrderRouteThrough>()->getStation());
+                    auto* station = StationManager::get(order->as<Vehicles::OrderRouteThrough>()->getStation());
                     pos = Map::Pos3{ station->x, station->y, station->z } + Map::Pos3{ 0, 0, 30 };
                     break;
+                }
                 case Vehicles::OrderType::RouteWaypoint:
                     // 0x00470C6F
-                    pos = order.as<Vehicles::OrderRouteWaypoint>()->getWaypoint() + Map::Pos3{ 16, 16, 8 };
+                    pos = order->as<Vehicles::OrderRouteWaypoint>()->getWaypoint() + Map::Pos3{ 16, 16, 8 };
                     break;
                 case Vehicles::OrderType::End:
                 case Vehicles::OrderType::UnloadAll:
@@ -2451,7 +2485,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     continue;
                 }
 
-                auto [loc, str] = sub_470B76(*order, i);
+                auto [loc, str] = sub_470B76(order, i);
                 const auto pos = gameToScreen(loc, WindowManager::getCurrentRotation());
                 auto stringWidth = Gfx::getStringWidth(str.c_str());
                 for (auto zoom = 0; zoom < 4; ++zoom)
