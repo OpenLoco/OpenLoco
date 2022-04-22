@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _constructionZ = newPosition.z;
             _constructionRotation = trackSize.rotationEnd;
             _byte_522096 = 0;
-            _byte_1136066 = 0;
+            _constructionArrowFrameNum = 0;
             if (_lastSelectedTrackPiece >= 9)
             {
                 _lastSelectedTrackPiece = 0;
@@ -290,7 +290,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _constructionZ = newPosition.z;
         _constructionRotation = trackSize.rotationEnd;
         _byte_522096 = 0;
-        _byte_1136066 = 0;
+        _constructionArrowFrameNum = 0;
         if (_lastSelectedTrackPiece >= 9)
         {
             _lastSelectedTrackPiece = 0;
@@ -1795,17 +1795,17 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
             }
         }
-        _byte_1136066 = _byte_1136066 - 1;
-        if (_byte_1136066 == 0xFF)
+        _constructionArrowFrameNum = _constructionArrowFrameNum - 1;
+        if (_constructionArrowFrameNum == 0xFF)
         {
-            _byte_1136066 = 5;
+            _constructionArrowFrameNum = 5;
             _byte_522096 = _byte_522096 ^ (1 << 0);
             _constructionArrowPos = Map::Pos3(_x, _y, _constructionZ);
             _constructionArrowDirection = _constructionRotation;
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_02);
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
             if (_byte_522096 & (1 << 0))
             {
-                Input::setMapSelectionFlags(Input::MapSelectionFlags::unk_02);
+                Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstructionArrow);
             }
             Map::TileManager::mapInvalidateTileFull(Map::Pos2(_x, _y));
         }
@@ -1922,7 +1922,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _y = mapPos.y;
             _constructionZ = height;
             _byte_522096 = 0;
-            _byte_1136066 = 0;
+            _constructionArrowFrameNum = 0;
 
             activateSelectedConstructionWidgets();
             auto window = WindowManager::find(WindowType::construction);
@@ -2322,7 +2322,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void onToolUpdateTrack(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
     {
         Map::TileManager::mapInvalidateMapSelectionTiles();
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
 
         Pos2 constructPos;
         int16_t constructHeight = 0;
@@ -2347,7 +2347,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _makeJunction = 0;
         }
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
 
         _constructionArrowPos = Map::Pos3(constructPos.x, constructPos.y, constructHeight);
@@ -2419,7 +2419,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         int16_t constructHeight = getMaxConstructHeightFromExistingSelection();
         _word_1136000 = constructHeight;
 
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
 
         Pos2 constructPos;
         const auto junctionRes = tryMakeJunction(x, y);

@@ -552,7 +552,7 @@ namespace OpenLoco::Ui::Windows::Construction
         if (_byte_522096 & (1 << 0))
         {
             Map::TileManager::mapInvalidateTileFull(Map::Pos2(_x, _y));
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_02);
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
             _byte_522096 = _byte_522096 & ~(1 << 0);
         }
         Construction::removeTrackGhosts();
