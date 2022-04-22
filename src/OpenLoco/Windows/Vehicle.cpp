@@ -2350,7 +2350,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             ss << ControlCodes::inline_sprite_str;
             // TODO: remove addition
             auto imageId = Gfx::recolour(ImageIds::number_circle_00 + orderNum, Colour::white);
-            ss << reinterpret_cast<const char*>(&imageId);
+            ss.write(reinterpret_cast<const char*>(&imageId), 4);
 
             Map::Pos3 pos{};
 
@@ -2388,7 +2388,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                             break;
                         }
                         ss << ControlCodes::inline_sprite_str;
-                        ss << reinterpret_cast<const char*>(&cargoObj->unit_inline_sprite);
+                        ss.write(reinterpret_cast<const char*>(&cargoObj->unit_inline_sprite), 4);
                     }
                     // Additional cargo stuff
                     break;
@@ -2410,6 +2410,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Vehicles::OrderType::WaitFor:
                     return { {}, {} };
             }
+            ss << "\0";
             return { pos, ss.str() };
         }
 
