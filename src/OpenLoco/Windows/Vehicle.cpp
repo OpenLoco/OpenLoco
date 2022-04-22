@@ -2409,7 +2409,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Vehicles::OrderType::WaitFor:
                     return { {}, {} };
             }
-            ss << "\0";
+            ss << std::endl;
             return { pos, ss.str() };
         }
 
