@@ -972,7 +972,7 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_sprite_stringid = 1287;
     constexpr string_id menu_nosprite_stringid = 1288;
     constexpr string_id menu_sprite_stringid_construction = 1289;
-
+    constexpr string_id local_authority_refuses_permission = 1290;
     constexpr string_id title_towns = 1291;
     constexpr string_id title_build_new_towns = 1292;
     constexpr string_id title_build_new_buildings = 1293;
@@ -1102,6 +1102,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_station = 1447;
     constexpr string_id tooltip_station_cargo = 1448;
     constexpr string_id tooltip_station_cargo_ratings = 1449;
+    constexpr string_id demolition_not_allowed = 1450;
 
     constexpr string_id vehicle_too_long = 1452;
     constexpr string_id tooltip_build_or_move_headquarters = 1453;

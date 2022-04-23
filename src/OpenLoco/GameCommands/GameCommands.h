@@ -30,6 +30,7 @@ namespace OpenLoco::GameCommands
         constexpr uint8_t flag_4 = 1 << 4; // 0x10
         constexpr uint8_t flag_5 = 1 << 5; // 0x20
         constexpr uint8_t flag_6 = 1 << 6; // 0x40
+        constexpr uint8_t flag_7 = 1 << 7; // 0x80
     }
 
     enum class GameCommand : uint8_t
@@ -1754,6 +1755,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/ChangeLandMaterial.cpp
     void changeLandMaterial(registers& regs);
+
+    // Defined in GameCommands/RemoveBuilding.cpp
+    void removeBuilding(registers& regs);
 
     const Map::Pos3& getPosition();
     void setPosition(const Map::Pos3& pos);
