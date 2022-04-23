@@ -10,7 +10,10 @@
 #include "../../Objects/BridgeObject.h"
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/RoadObject.h"
+#include "../../Objects/TrackExtraObject.h"
 #include "../../Objects/TrackObject.h"
+#include "../../Paint/Paint.h"
+#include "../../Paint/PaintTile.h"
 #include "../../Station.h"
 #include "../../Ui/Dropdown.h"
 #include "../../Widget.h"
@@ -2537,26 +2540,124 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A0AE5
-    void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh)
+    void drawTrack(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::Context& context)
     {
+        addr<0x00E3F0BC, uint16_t>() = 0; // This is the viewflags
+        auto* session = Paint::allocateSession(context, 0);
+
+        const auto backupSelectionFlags = Input::getMapSelectionFlags();
+        const auto backupConstructionArrowPos = _constructionArrowPos;
+        const auto backupConstructionArrowDir = _constructionArrowDirection;
+
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_02);
+        if (_byte_522096 & (1 << 1))
+        {
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::unk_02);
+            _constructionArrowPos = pos;
+            _constructionArrowDirection = direction;
+        }
+
+        const auto* trackObj = ObjectManager::get<TrackObject>(trackType);
+        // Remove any none compatible track mods
+        for (auto mod = 0; mod < 4; ++mod)
+        {
+            if (selectedMods & (1 << mod))
+            {
+                const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
+                if ((trackExtraObj->track_pieces & _trackPieceToFlags[trackPieceId]) != _trackPieceToFlags[trackPieceId])
+                {
+                    selectedMods &= ~(1 << mod);
+                }
+            }
+        }
+
+        const auto& trackPieces = TrackData::getTrackPiece(trackPieceId);
+        const auto trackDirection = direction & 3;
+
+        Map::TileElement backupTileElements[5] = {};
+        Map::TrackElement previewTrackTileElement = {};
+        // Surface, highTypeFlag, 0xF quads, lastTile, 255 base/clear.
+        Map::TileElement previewSideTrackTileElement = *reinterpret_cast<Map::TileElement*>({ 0x80, 0x8F, 255, 255, 0, 0, 0, 0 });
+
+        for (const auto& trackPiece : trackPieces)
+        {
+            const auto pieceOffset = Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackDirection), trackPiece.z };
+            // const auto quarterTile = trackPiece.var_08.rotate(trackDirection);
+            const auto trackPos = pos + pieceOffset;
+            const auto baseZ = trackPos.z / kSmallZStep;
+            const auto clearZ = baseZ + (trackPiece.var_07 + 32) / kSmallZStep;
+
+            const auto centreTileCoords = Map::TilePos2{ trackPos };
+            const auto eastTileCoords = centreTileCoords + Map::offsets[1];
+            const auto westTileCoords = centreTileCoords - Map::offsets[1];
+            const auto northTileCoords = centreTileCoords + Map::offsets[3];
+            const auto southTileCoords = centreTileCoords - Map::offsets[3];
+
+            // Copy map elements which will be replaced with temporary ones containing track
+            backupTileElements[0] = *Map::TileManager::get(centreTileCoords)[0];
+            backupTileElements[1] = *Map::TileManager::get(eastTileCoords)[0];
+            backupTileElements[2] = *Map::TileManager::get(westTileCoords)[0];
+            backupTileElements[3] = *Map::TileManager::get(northTileCoords)[0];
+            backupTileElements[4] = *Map::TileManager::get(southTileCoords)[0];
+
+            // Set the temporary track element
+            previewTrackTileElement.setType<Map::TrackElement>();
+            previewTrackTileElement.setDirection(trackDirection);
+            previewTrackTileElement.setLastFlag(true);
+            previewTrackTileElement.setQuads(quarterTile);
+            previewTrackTileElement.setBaseZ(baseZ);
+            previewTrackTileElement.setClearZ(clearZ);
+            previewTrackTileElement.setSequenceIndex(trackPiece.index);
+            previewTrackTileElement.setTrackObject(trackType);
+            previewTrackTileElement.setTrackId(trackPieceId);
+            previewTrackTileElement.setBridgeId(0);
+            previewTrackTileElement.setHasBridge(false);
+            previewTrackTileElement.setOwner(CompanyManager::getControllingId());
+            previewTrackTileElement.setMods(selectedMods);
+
+            // Replace map elements with temp ones
+            *Map::TileManager::get(centreTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewTrackTileElement);
+            *Map::TileManager::get(eastTileCoords)[0] = previewSideTrackTileElement;
+            *Map::TileManager::get(westTileCoords)[0] = previewSideTrackTileElement;
+            *Map::TileManager::get(northTileCoords)[0] = previewSideTrackTileElement;
+            *Map::TileManager::get(southTileCoords)[0] = previewSideTrackTileElement;
+
+            // Draw this map tile
+            Paint::paintTileElements(*session, trackPos);
+
+            // Restore map elements
+            *Map::TileManager::get(centreTileCoords)[0] = backupTileElements[0];
+            *Map::TileManager::get(eastTileCoords)[0] = backupTileElements[1];
+            *Map::TileManager::get(westTileCoords)[0] = backupTileElements[2];
+            *Map::TileManager::get(northTileCoords)[0] = backupTileElements[3];
+            *Map::TileManager::get(southTileCoords)[0] = backupTileElements[4];
+        }
+
+        session->arrangeStructs();
+        session->drawStructs();
+
+        Input::setMapSelectionFlags(backupSelectionFlags);
+        _constructionArrowPos = backupConstructionArrowPos;
+        _constructionArrowDirection = backupConstructionArrowDir;
+
         registers regs;
-        regs.ax = x;
-        regs.cx = y;
-        regs.edi = selectedMods << 16 | di;
-        regs.bh = bh;
-        regs.edx = colour << 16 | trackPieceId << 8 | trackType;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.edi = selectedMods << 16 | pos.z;
+        regs.bh = direction;
+        regs.edx = trackPieceId << 8 | trackType;
         call(0x004A0AE5, regs);
     }
 
     // 0x00478F1F
-    void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh)
+    void drawRoad(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::Context& context)
     {
         registers regs;
-        regs.ax = x;
-        regs.cx = y;
-        regs.edi = selectedMods << 16 | di;
-        regs.bh = bh;
-        regs.edx = colour << 16 | trackPieceId << 8 | trackType;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.edi = selectedMods << 16 | pos.z;
+        regs.bh = direction;
+        regs.edx = trackPieceId << 8 | trackType;
         call(0x00478F1F, regs);
     }
 
@@ -2593,11 +2694,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         pos.y -= height;
         clipped->x += pos.x;
         clipped->y += pos.y;
-        _dword_E0C3E0 = clipped;
 
         _byte_522095 = _byte_522095 | (1 << 1);
 
-        drawTrack(0x2000, 0x2000, _word_1135FD8, 0x1E0, _byte_1136077, _lastSelectedTrackPieceId, _word_1135FD6, _byte_1136078);
+        drawTrack(Map::Pos3(256 * Map::tile_size, 256 * Map::tile_size, 120 * Map::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
@@ -2614,11 +2714,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         pos.y -= height;
         clipped->x += pos.x;
         clipped->y += pos.y;
-        _dword_E0C3E0 = clipped;
 
         _byte_522095 = _byte_522095 | (1 << 1);
 
-        drawRoad(0x2000, 0x2000, _word_1135FD8, 0x1E0, _byte_1136077, _lastSelectedTrackPieceId, _word_1135FD6, _byte_1136078);
+        drawRoad(Map::Pos3(256 * Map::tile_size, 256 * Map::tile_size, 120 * Map::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
