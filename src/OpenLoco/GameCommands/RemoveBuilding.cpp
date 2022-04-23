@@ -45,7 +45,7 @@ namespace OpenLoco::GameCommands
             if (elBuilding == nullptr)
                 continue;
 
-            if (elBuilding->baseZ() != pos.z / 4)
+            if (elBuilding->baseZ() != pos.z / Map::kSmallZStep)
                 continue;
 
             const auto* buildingObj = elBuilding->getObject();
@@ -86,7 +86,7 @@ namespace OpenLoco::GameCommands
                     if (subElBuilding == nullptr)
                         continue;
 
-                    if (subElBuilding->baseZ() != pos.z / 4)
+                    if (subElBuilding->baseZ() != pos.z / Map::kSmallZStep)
                         continue;
 
                     if (flags & GameCommands::Flags::apply)
