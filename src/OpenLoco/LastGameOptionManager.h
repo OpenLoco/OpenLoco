@@ -35,6 +35,10 @@ namespace OpenLoco::LastGameOptionManager
     uint8_t getLastLand();
     void setLastLand(uint8_t last);
 
+    // 0x00525FC5
+    uint8_t getLastTrackType();
+    void setLastTrackType(uint8_t last);
+
     // 0x00525FC7
     uint8_t getLastIndustry();
     void setLastIndustry(uint8_t last);

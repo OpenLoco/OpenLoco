@@ -7,6 +7,7 @@
 #include "../Economy/Expenditures.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
 #include "../MessageManager.h"
@@ -45,8 +46,7 @@ namespace OpenLoco::Vehicles
     static loco_global<int16_t, 0x01136250> _backupX;
     static loco_global<int16_t, 0x01136254> _backupY;
     static loco_global<uint8_t, 0x01136258> _backupZ;
-    static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
-    static loco_global<uint8_t, 0x00525FC5> _525FC5;
+    static loco_global<EntityId, 0x0113642A> _113642A;                   // used by build window and others
     static loco_global<uint32_t, 0x00525FB8> _orderTableLength;          // total used length of _987C5C
     static loco_global<uint8_t[Limits::kMaxOrders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
 

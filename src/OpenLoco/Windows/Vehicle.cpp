@@ -8,6 +8,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../LabelFrame.h"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
@@ -206,7 +207,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
     }
 
-    static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint8_t, 0x00525FB0> _pickupDirection; // direction that the ghost points
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<EntityId, 0x01136156> _dragVehicleHead;
@@ -3412,7 +3412,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 case TransportMode::road:
                 {
-                    auto roadObjId = head.trackType == 0xFF ? _525FC5 : head.trackType;
+                    auto roadObjId = head.trackType == LastGameOptionManager::kNoLastOption ? LastGameOptionManager::getLastTrackType() : head.trackType;
                     auto roadObj = ObjectManager::get<RoadObject>(roadObjId);
                     image = roadObj->image + (isPlaced ? 32 : 33);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;

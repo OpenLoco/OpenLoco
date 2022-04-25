@@ -74,6 +74,16 @@ namespace OpenLoco::LastGameOptionManager
         getGameState().lastLandOption = last;
     }
 
+    // 0x00525FC5
+    uint8_t getLastTrackType()
+    {
+        return getGameState().lastTrackTypeOption;
+    }
+    void setLastTrackType(uint8_t last)
+    {
+        getGameState().lastTrackTypeOption = last;
+    }
+
     // 0x00525FC7
     uint8_t getLastIndustry()
     {

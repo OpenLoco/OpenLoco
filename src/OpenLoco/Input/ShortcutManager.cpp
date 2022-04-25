@@ -340,11 +340,10 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<uint8_t, 0x00525FAA> last_railroad_option;
-        if (last_railroad_option == 0xFF)
+        if (LastGameOptionManager::getLastRailRoad() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::Construction::openWithFlags(*last_railroad_option);
+        Windows::Construction::openWithFlags(LastGameOptionManager::getLastRailRoad());
     }
 
     // 0x004BF24F
@@ -353,11 +352,10 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
-        loco_global<uint8_t, 0x00525FAB> last_road_option;
-        if (last_road_option == 0xFF)
+        if (LastGameOptionManager::getLastRoad() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::Construction::openWithFlags(*last_road_option);
+        Windows::Construction::openWithFlags(LastGameOptionManager::getLastRoad());
     }
 
     // 0x004BF276

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Interop/Interop.hpp"
+#include "../../LastGameOptionManager.h"
 #include "../../Map/TileManager.h"
 #include "../../Objects/VehicleObject.h"
 #include "../../Ui/WindowManager.h"
@@ -20,11 +21,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t[8], 0x0525F8A> _scenarioTrackMods;
     static loco_global<uint8_t[8], 0x0525F9A> _scenarioRoadStations;
     static loco_global<uint8_t[8], 0x0525FA2> _scenarioRoadMods;
-    static loco_global<uint8_t, 0x00525FAA> _lastRailroadOption;
-    static loco_global<uint8_t, 0x00525FAB> _lastRoadOption;
-    static loco_global<uint8_t, 0x00525FAC> _lastAirport;
-    static loco_global<uint8_t, 0x00525FAD> _lastShipPort;
-    static loco_global<uint8_t, 0x00525FAE> _byte_525FAE;
+    static loco_global<bool, 0x00525FAE> _trafficHandedness; // boolean true for right false for left
     static loco_global<Gfx::Context*, 0x00E0C3E0> _dword_E0C3E0;
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;

@@ -807,8 +807,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window->widgets[Common::Widx::view_menu].left = baseWidget.left + 14 + (baseWidget.width() * 3);
         }
 
-        if (last_port_option == 0 && addr<0x00525FAC, int8_t>() != -1 && addr<0x00525FAD, int8_t>() == -1)
+        if (last_port_option == 0
+            && LastGameOptionManager::getLastAirport() != LastGameOptionManager::kNoLastOption
+            && LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
+        {
             last_port_option = 1;
+        }
 
         window->widgets[Common::Widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave);
         window->widgets[Widx::cheats_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
@@ -835,17 +839,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         else
             window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
 
-        if (LastGameOptionManager::getLastRoad() != 0xFF)
+        if (LastGameOptionManager::getLastRoad() != LastGameOptionManager::kNoLastOption)
             window->widgets[Common::Widx::road_menu].type = WidgetType::toolbarTab;
         else
             window->widgets[Common::Widx::road_menu].type = WidgetType::none;
 
-        if (LastGameOptionManager::getLastRailRoad() != 0xFF)
+        if (LastGameOptionManager::getLastRailRoad() != LastGameOptionManager::kNoLastOption)
             window->widgets[Common::Widx::railroad_menu].type = WidgetType::toolbarTab;
         else
             window->widgets[Common::Widx::railroad_menu].type = WidgetType::none;
 
-        if (addr<0x00525FAC, int8_t>() != -1 || addr<0x00525FAD, int8_t>() != -1)
+        if (LastGameOptionManager::getLastAirport() != LastGameOptionManager::kNoLastOption || LastGameOptionManager::getLastShipPort() != LastGameOptionManager::kNoLastOption)
             window->widgets[Common::Widx::port_menu].type = WidgetType::toolbarTab;
         else
             window->widgets[Common::Widx::port_menu].type = WidgetType::none;

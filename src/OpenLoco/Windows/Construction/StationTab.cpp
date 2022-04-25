@@ -133,11 +133,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             if (_byte_1136063 & (1 << 7))
             {
-                _lastAirport = selectedStation;
+                LastGameOptionManager::setLastAirport(selectedStation);
             }
             else if (_byte_1136063 & (1 << 6))
             {
-                _lastShipPort = selectedStation;
+                LastGameOptionManager::setLastShipPort(selectedStation);
             }
             else if (_trackType & (1 << 7))
             {

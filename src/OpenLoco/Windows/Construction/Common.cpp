@@ -164,13 +164,13 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshDockList(_stationList);
 
-        if (_lastShipPort == 0xFF)
+        if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
         {
             _lastSelectedStationType = _stationList[0];
         }
         else
         {
-            _lastSelectedStationType = _lastShipPort;
+            _lastSelectedStationType = LastGameOptionManager::getLastShipPort();
         }
 
         return nonTrackWindow();
@@ -190,13 +190,13 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshAirportList(_stationList);
 
-        if (_lastAirport == 0xFF)
+        if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
         {
             _lastSelectedStationType = _stationList[0];
         }
         else
         {
-            _lastSelectedStationType = _lastAirport;
+            _lastSelectedStationType = LastGameOptionManager::getLastAirport();
         }
 
         return nonTrackWindow();
@@ -1024,17 +1024,17 @@ namespace OpenLoco::Ui::Windows::Construction
                 newTrackType &= ~(1 << 7);
                 auto roadObj = ObjectManager::get<RoadObject>(newTrackType);
                 if (!(roadObj->flags & Flags12::unk_01))
-                    _lastRoadOption = trackType;
+                    LastGameOptionManager::setLastRoad(trackType);
                 else
-                    _lastRailroadOption = trackType;
+                    LastGameOptionManager::setLastRailRoad(trackType);
             }
             else
             {
                 auto trackObj = ObjectManager::get<TrackObject>(newTrackType);
                 if (!(trackObj->flags & Flags22::unk_02))
-                    _lastRailroadOption = trackType;
+                    LastGameOptionManager::setLastRailRoad(trackType);
                 else
-                    _lastRoadOption = trackType;
+                    LastGameOptionManager::setLastRoad(trackType);
             }
             WindowManager::invalidate(WindowType::topToolbar, 0);
         }

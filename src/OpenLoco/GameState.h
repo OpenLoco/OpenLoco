@@ -62,7 +62,7 @@ namespace OpenLoco
         uint32_t var_1A4;                                                        // 0x0001A4 (0x00525FBC)
         uint32_t var_1A8;                                                        // 0x0001A8 (0x00525FC0)
         uint8_t var_1AC;                                                         // 0x0001AC (0x00525FC4)
-        uint8_t var_1AD;                                                         // 0x0001AD (0x00525FC5)
+        uint8_t lastTrackTypeOption;                                             // 0x0001AD (0x00525FC5)
         uint8_t loanInterestRate;                                                // 0x0001AE (0x00525FC6)
         uint8_t lastIndustryOption;                                              // 0x0001AF (0x00525FC7)
         uint8_t lastBuildingOption;                                              // 0x0001B0 (0x00525FC8)
