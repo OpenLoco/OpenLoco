@@ -339,7 +339,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             window->maxHeight = Messages::maxWindowSize.height;
             window->flags |= WindowFlags::resizable;
 
-            window->owner = CompanyManager::getPlayerCompany()->id();
+            window->owner = CompanyManager::getControllingId();
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0A);
 

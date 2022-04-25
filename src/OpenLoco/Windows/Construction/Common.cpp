@@ -1078,7 +1078,7 @@ namespace OpenLoco::Ui::Windows::Construction
             setDisabledWidgets(window);
 
             window->initScrollWidgets();
-            window->owner = CompanyManager::getPlayerCompany()->id();
+            window->owner = CompanyManager::getControllingId();
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0D);

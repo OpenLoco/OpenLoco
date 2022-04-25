@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (messageSubType == MessageCriticality::majorCompany)
             {
-                if (news->companyId != CompanyManager::getPlayerCompany()->id())
+                if (news->companyId != CompanyManager::getControllingId())
                 {
                     messageSubType = MessageCriticality::majorCompetitor;
                 }
@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (messageSubType == MessageCriticality::minorCompany)
             {
-                if (news->companyId != CompanyManager::getPlayerCompany()->id())
+                if (news->companyId != CompanyManager::getControllingId())
                 {
                     messageSubType = MessageCriticality::minorCompetitor;
                 }
@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             Audio::SoundId soundId = Audio::SoundId::notification;
 
-            if (news->companyId == CompanyId::null || news->companyId == CompanyManager::getPlayerCompany()->id())
+            if (news->companyId == CompanyId::null || news->companyId == CompanyManager::getControllingId())
             {
                 soundId = mtd.sound;
             }

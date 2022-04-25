@@ -972,7 +972,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->frame_no = 0;
             _terraformGhostPlaced = 0;
             _lastTreeCost = 0x80000000;
-            window->owner = CompanyManager::getPlayerCompany()->id();
+            window->owner = CompanyManager::getControllingId();
             window->var_846 = 0xFFFF;
             window->savedView.mapX = 0;
             _treeClusterType = PlantTrees::treeCluster::none;

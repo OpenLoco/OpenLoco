@@ -544,15 +544,15 @@ namespace OpenLoco
             CompanyManager::updateOwnerStatus();
             sub_46E388();
 
-            _updatingCompanyId = getGameState().playerCompanies[1];
+            _updatingCompanyId = CompanyManager::getSecondaryPlayerId();
             sub_4317BD();
         }
         else
         {
-            _updatingCompanyId = getGameState().playerCompanies[1];
+            _updatingCompanyId = CompanyManager::getSecondaryPlayerId();
             auto eax = sub_4317BD();
 
-            _updatingCompanyId = getGameState().playerCompanies[0];
+            _updatingCompanyId = CompanyManager::getControllingId();
             if (!isTitleMode())
             {
                 auto edx = gPrng().srand_0();
