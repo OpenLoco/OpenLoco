@@ -5,6 +5,11 @@
 
 namespace OpenLoco::LastGameOptionManager
 {
+    constexpr uint8_t kNoLastWallOption = 0xFF;
+    constexpr uint8_t kNoLastTreeOption = 0xFF;
+    constexpr uint8_t kNoLastRoadOption = 0xFF;
+    constexpr uint8_t kNoLastLandOption = 0xFF;
+
     // 0x00525FAF
     VehicleType getLastVehicleType();
     void setLastVehicleType(VehicleType& last);

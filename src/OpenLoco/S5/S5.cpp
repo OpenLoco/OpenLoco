@@ -6,6 +6,7 @@
 #include "../Entities/EntityManager.h"
 #include "../Game.h"
 #include "../GameException.hpp"
+#include "../GameStateManagers/LastGameOptionManager.h"
 #include "../Gui.h"
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
@@ -528,8 +529,8 @@ namespace OpenLoco::S5
     void sub_4BAEC4() // TerraformConfig
     {
         addr<0x001136496, uint8_t>() = 2;
-        addr<0x00525FB1, uint8_t>() = 255;
-        addr<0x00525FCA, uint8_t>() = 255;
+        LastGameOptionManager::setLastTreeOption(LastGameOptionManager::kNoLastTreeOption);
+        LastGameOptionManager::setLastWallOption(LastGameOptionManager::kNoLastWallOption);
     }
 
     // 0x00441FA7

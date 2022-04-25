@@ -3,6 +3,7 @@
 #include "../Date.h"
 #include "../Economy/Economy.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameStateManagers/LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../IndustryManager.h"
@@ -31,7 +32,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
     static loco_global<uint8_t, 0x00E0C3C9> _industryLastPlacedId;
     static loco_global<uint8_t, 0x00E0C3DA> _industryGhostType;
     static loco_global<uint8_t, 0x00E0C3DB> _industryGhostId;
-    static loco_global<uint8_t, 0x00525FC7> _lastSelectedIndustry;
     static loco_global<Utility::prng, 0x00525E20> _prng;
     static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
     static loco_global<uint32_t, 0x00E0C398> _dword_E0C398;
@@ -572,7 +572,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     void reset()
     {
-        _lastSelectedIndustry = 0xFF;
+        LastGameOptionManager::setLastIndustryOption(0xFF);
     }
 
     namespace NewIndustries
@@ -708,7 +708,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 if (index < 0)
                 {
                     self->rowHover = rowInfo;
-                    _lastSelectedIndustry = static_cast<uint8_t>(rowInfo);
+                    LastGameOptionManager::setLastIndustryOption(rowInfo);
 
                     int32_t pan = (self->width >> 1) + self->x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
@@ -1102,13 +1102,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->var_83C = industryCount;
             auto rowHover = -1;
 
-            if (_lastSelectedIndustry != 0xFF)
+            auto lastIndustryOption = LastGameOptionManager::getLastIndustryOption();
+            if (lastIndustryOption != 0xFF)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
-                    if (_lastSelectedIndustry == self->rowInfo[i])
+                    if (lastIndustryOption == self->rowInfo[i])
                     {
-                        rowHover = _lastSelectedIndustry;
+                        rowHover = lastIndustryOption;
                         break;
                     }
                 }

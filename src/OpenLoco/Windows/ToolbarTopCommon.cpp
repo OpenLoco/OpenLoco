@@ -4,6 +4,7 @@
 #include "../Config.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameStateManagers/LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -27,8 +28,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
-    static loco_global<uint8_t, 0x00525FAB> last_road_option;
-
     static loco_global<uint32_t, 0x009C86F8> zoom_ticks;
 
     static loco_global<uint8_t, 0x009C870C> last_town_option;
@@ -43,22 +42,24 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
-        if (self->widgets[Widx::road_menu].type != WidgetType::none && last_road_option != 0xFF)
+        auto lastRoadOption = LastGameOptionManager::getLastRoadOption();
+
+        if (self->widgets[Widx::road_menu].type != WidgetType::none && lastRoadOption != LastGameOptionManager::kNoLastRoadOption)
         {
             uint32_t x = self->widgets[Widx::road_menu].left + self->x;
             uint32_t y = self->widgets[Widx::road_menu].top + self->y;
             uint32_t fgImage = 0;
 
             // Figure out what icon to show on the button face.
-            bool isRoad = last_road_option & (1 << 7);
+            bool isRoad = lastRoadOption & (1 << 7);
             if (isRoad)
             {
-                auto obj = ObjectManager::get<RoadObject>(last_road_option & ~(1 << 7));
+                auto obj = ObjectManager::get<RoadObject>(lastRoadOption & ~(1 << 7));
                 fgImage = Gfx::recolour(obj->image, companyColour);
             }
             else
             {
-                auto obj = ObjectManager::get<TrackObject>(last_road_option);
+                auto obj = ObjectManager::get<TrackObject>(lastRoadOption);
                 fgImage = Gfx::recolour(obj->image, companyColour);
             }
 
@@ -176,7 +177,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void terraformMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
-        auto land = ObjectManager::get<LandObject>(addr<0x00525FB6, uint8_t>());
+        auto land = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLandOption());
         auto water = ObjectManager::get<WaterObject>();
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
@@ -228,7 +229,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
 
-            if (objIndex == last_road_option)
+            if (objIndex == LastGameOptionManager::getLastRoadOption())
                 highlighted_item = i;
         }
 

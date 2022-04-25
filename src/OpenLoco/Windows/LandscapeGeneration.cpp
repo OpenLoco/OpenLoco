@@ -1,4 +1,5 @@
 #include "../Audio/Audio.h"
+#include "../GameStateManagers/LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -25,8 +26,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     static const uint8_t rowHeight = 22; // CJK: 22
 
     static loco_global<uint16_t, 0x00525FB2> seaLevel;
-
-    static loco_global<uint8_t, 0x00525FB6> primaryLandObjectIndex;
 
     static loco_global<uint8_t, 0x00526247> industryFlags;
 
@@ -92,7 +91,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             // Land tab
             {
-                auto land = ObjectManager::get<LandObject>(*primaryLandObjectIndex);
+                auto land = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLandOption());
                 const uint32_t imageId = land->var_16 + Land::ImageIds::toolbar_terraform_land;
                 Widget::drawTab(window, context, imageId, widx::tab_land);
             }

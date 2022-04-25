@@ -65,7 +65,7 @@
     <ClCompile Include="Interop\Hooks.cpp" />
     <ClCompile Include="Interop\Interop.cpp" />
     <ClCompile Include="Intro.cpp" />
-    <ClCompile Include="GameStateManagers\LastGameOption.cpp" />
+    <ClCompile Include="GameStateManagers\LastGameOptionManager.cpp" />
     <ClCompile Include="Localisation\Conversion.cpp" />
     <ClCompile Include="Localisation\LanguageFiles.cpp" />
     <ClCompile Include="Localisation\Languages.cpp" />
@@ -283,7 +283,7 @@
     <ClInclude Include="Interop\Interop.hpp" />
     <ClInclude Include="Intro.h" />
     <ClInclude Include="LabelFrame.h" />
-    <ClInclude Include="GameStateManagers\LastGameOption.h" />
+    <ClInclude Include="GameStateManagers\LastGameOptionManager.h" />
     <ClInclude Include="Limits.h" />
     <ClInclude Include="Localisation\ArgsWrapper.hpp" />
     <ClInclude Include="Localisation\Conversion.h" />
