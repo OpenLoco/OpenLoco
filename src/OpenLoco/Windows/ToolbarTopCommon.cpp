@@ -4,12 +4,12 @@
 #include "../Config.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
-#include "../LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
@@ -42,9 +42,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
-        auto lastRoadOption = LastGameOptionManager::getLastRoadOption();
+        auto lastRoadOption = LastGameOptionManager::getLastRoad();
 
-        if (self->widgets[Widx::road_menu].type != WidgetType::none && lastRoadOption != LastGameOptionManager::kNoLastRoadOption)
+        if (self->widgets[Widx::road_menu].type != WidgetType::none && lastRoadOption != LastGameOptionManager::kNoLastOption)
         {
             uint32_t x = self->widgets[Widx::road_menu].left + self->x;
             uint32_t y = self->widgets[Widx::road_menu].top + self->y;
@@ -177,7 +177,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void terraformMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
-        auto land = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLandOption());
+        auto land = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLand());
         auto water = ObjectManager::get<WaterObject>();
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
@@ -229,7 +229,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
 
-            if (objIndex == LastGameOptionManager::getLastRoadOption())
+            if (objIndex == LastGameOptionManager::getLastRoad())
                 highlighted_item = i;
         }
 

@@ -4,12 +4,12 @@
 #include "../Entities/EntityManager.h"
 #include "../Game.h"
 #include "../GameCommands/GameCommands.h"
-#include "../LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
 #include "../MultiPlayer.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
 
-            if (objIndex == LastGameOptionManager::getLastRailRoadOption())
+            if (objIndex == LastGameOptionManager::getLastRailRoad())
                 highlighted_item = i;
         }
 
@@ -691,7 +691,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint32_t fg_image = 0;
 
             // Figure out what icon to show on the button face.
-            uint8_t ebx = LastGameOptionManager::getLastRailRoadOption();
+            uint8_t ebx = LastGameOptionManager::getLastRailRoad();
             if ((ebx & (1 << 7)) != 0)
             {
                 ebx = ebx & ~(1 << 7);
@@ -835,12 +835,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         else
             window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);
 
-        if (LastGameOptionManager::getLastRoadOption() != 0xFF)
+        if (LastGameOptionManager::getLastRoad() != 0xFF)
             window->widgets[Common::Widx::road_menu].type = WidgetType::toolbarTab;
         else
             window->widgets[Common::Widx::road_menu].type = WidgetType::none;
 
-        if (LastGameOptionManager::getLastRailRoadOption() != 0xFF)
+        if (LastGameOptionManager::getLastRailRoad() != 0xFF)
             window->widgets[Common::Widx::railroad_menu].type = WidgetType::toolbarTab;
         else
             window->widgets[Common::Widx::railroad_menu].type = WidgetType::none;

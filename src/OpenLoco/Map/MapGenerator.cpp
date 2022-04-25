@@ -1,6 +1,6 @@
 #include "MapGenerator.h"
-#include "../LastGameOptionManager.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
@@ -444,9 +444,9 @@ namespace OpenLoco::Map::MapGenerator
                 return landObjectIdx;
             }
         }
-        if (LastGameOptionManager::getLastLandOption() != LastGameOptionManager::kNoLastLandOption)
+        if (LastGameOptionManager::getLastLand() != LastGameOptionManager::kNoLastOption)
         {
-            return LastGameOptionManager::getLastLandOption();
+            return LastGameOptionManager::getLastLand();
         }
         return std::nullopt;
     }

@@ -5,18 +5,15 @@
 
 namespace OpenLoco::LastGameOptionManager
 {
-    constexpr uint8_t kNoLastWallOption = 0xFF;
-    constexpr uint8_t kNoLastTreeOption = 0xFF;
-    constexpr uint8_t kNoLastRoadOption = 0xFF;
-    constexpr uint8_t kNoLastLandOption = 0xFF;
+    constexpr uint8_t kNoLastOption = 0xFF;
 
     // 0x00525FAA
-    uint8_t getLastRailRoadOption();
-    void setLastRailRoadOption(uint8_t last);
+    uint8_t getLastRailRoad();
+    void setLastRailRoad(uint8_t last);
 
     // 0x00525FAB
-    uint8_t getLastRoadOption();
-    void setLastRoadOption(uint8_t last);
+    uint8_t getLastRoad();
+    void setLastRoad(uint8_t last);
 
     // 0x00525FAC
     uint8_t getLastAirport();
@@ -31,16 +28,16 @@ namespace OpenLoco::LastGameOptionManager
     void setLastVehicleType(VehicleType& last);
 
     // 0x00525FB1
-    uint8_t getLastTreeOption();
-    void setLastTreeOption(uint8_t last);
+    uint8_t getLastTree();
+    void setLastTree(uint8_t last);
 
     // 0x00525FB6
-    uint8_t getLastLandOption();
-    void setLastLandOption(uint8_t last);
+    uint8_t getLastLand();
+    void setLastLand(uint8_t last);
 
     // 0x00525FC7
-    uint8_t getLastIndustryOption();
-    void setLastIndustryOption(uint8_t last);
+    uint8_t getLastIndustry();
+    void setLastIndustry(uint8_t last);
 
     // 0x00525FC8
     uint8_t getLastBuildingOption();
@@ -51,8 +48,8 @@ namespace OpenLoco::LastGameOptionManager
     void setLastMiscBuildingOption(uint8_t last);
 
     // 0x00525FCA
-    uint8_t getLastWallOption();
-    void setLastWallOption(uint8_t last);
+    uint8_t getLastWall();
+    void setLastWall(uint8_t last);
 
     // 0x0052622C
     uint8_t getLastBuildVehiclesOption();

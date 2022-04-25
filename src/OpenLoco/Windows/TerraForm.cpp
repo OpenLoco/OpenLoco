@@ -2,11 +2,11 @@
 #include "../CompanyManager.h"
 #include "../Economy/Economy.h"
 #include "../GameCommands/GameCommands.h"
-#include "../LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Map.hpp"
@@ -197,13 +197,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->var_83C = treeCount;
             auto rowHover = -1;
 
-            if (LastGameOptionManager::getLastTreeOption() != LastGameOptionManager::kNoLastTreeOption)
+            if (LastGameOptionManager::getLastTree() != LastGameOptionManager::kNoLastOption)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
-                    if (LastGameOptionManager::getLastTreeOption() == self->rowInfo[i])
+                    if (LastGameOptionManager::getLastTree() == self->rowInfo[i])
                     {
-                        rowHover = LastGameOptionManager::getLastTreeOption();
+                        rowHover = LastGameOptionManager::getLastTree();
                         break;
                     }
                 }
@@ -727,7 +727,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (index < 0)
                 {
                     self->rowHover = rowInfo;
-                    LastGameOptionManager::setLastTreeOption(static_cast<uint8_t>(rowInfo));
+                    LastGameOptionManager::setLastTree(static_cast<uint8_t>(rowInfo));
 
                     updateTreeColours(self);
 
@@ -2068,13 +2068,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->var_83C = wallCount;
             auto rowHover = -1;
 
-            if (LastGameOptionManager::getLastTreeOption() != LastGameOptionManager::kNoLastTreeOption)
+            if (LastGameOptionManager::getLastWall() != LastGameOptionManager::kNoLastOption)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
-                    if (LastGameOptionManager::getLastWallOption() == self->rowInfo[i])
+                    if (LastGameOptionManager::getLastWall() == self->rowInfo[i])
                     {
-                        rowHover = LastGameOptionManager::getLastWallOption();
+                        rowHover = LastGameOptionManager::getLastWall();
                         break;
                     }
                 }
@@ -2345,7 +2345,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (index < 0)
                 {
                     self->rowHover = rowInfo;
-                    LastGameOptionManager::setLastWallOption(static_cast<uint8_t>(rowInfo));
+                    LastGameOptionManager::setLastWall(static_cast<uint8_t>(rowInfo));
 
                     int32_t pan = (self->width >> 1) + self->x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
@@ -2602,7 +2602,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             // Adjust Land Tab
             {
-                auto landObj = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLandOption());
+                auto landObj = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLand());
                 uint32_t imageId = landObj->var_16 + Land::ImageIds::toolbar_terraform_land;
 
                 Widget::drawTab(self, context, imageId, widx::tab_adjust_land);

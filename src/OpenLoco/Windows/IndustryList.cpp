@@ -3,12 +3,12 @@
 #include "../Date.h"
 #include "../Economy/Economy.h"
 #include "../GameCommands/GameCommands.h"
-#include "../LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Map.hpp"
@@ -572,7 +572,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     void reset()
     {
-        LastGameOptionManager::setLastIndustryOption(0xFF);
+        LastGameOptionManager::setLastIndustry(0xFF);
     }
 
     namespace NewIndustries
@@ -708,7 +708,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 if (index < 0)
                 {
                     self->rowHover = rowInfo;
-                    LastGameOptionManager::setLastIndustryOption(rowInfo);
+                    LastGameOptionManager::setLastIndustry(rowInfo);
 
                     int32_t pan = (self->width >> 1) + self->x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
@@ -1102,7 +1102,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->var_83C = industryCount;
             auto rowHover = -1;
 
-            auto lastIndustryOption = LastGameOptionManager::getLastIndustryOption();
+            auto lastIndustryOption = LastGameOptionManager::getLastIndustry();
             if (lastIndustryOption != 0xFF)
             {
                 for (auto i = 0; i < self->var_83C; i++)

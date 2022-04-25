@@ -1,11 +1,11 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
 #include "../GameCommands/GameCommands.h"
-#include "../LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
@@ -1347,7 +1347,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
                 lastSelectedBuilding = LastGameOptionManager::getLastBuildingOption();
 
-            if (lastSelectedBuilding != 0xFF)
+            if (lastSelectedBuilding != LastGameOptionManager::kNoLastOption)
             {
                 for (auto i = 0; i <= self->var_83C; i++)
                 {

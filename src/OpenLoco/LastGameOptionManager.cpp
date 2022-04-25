@@ -4,21 +4,21 @@
 namespace OpenLoco::LastGameOptionManager
 {
     // 0x00525FAA
-    uint8_t getLastRailRoadOption()
+    uint8_t getLastRailRoad()
     {
         return getGameState().lastRailroadOption;
     }
-    void setLastRailRoadOption(uint8_t last)
+    void setLastRailRoad(uint8_t last)
     {
         getGameState().lastRailroadOption = last;
     }
 
     // 0x00525FAB
-    uint8_t getLastRoadOption()
+    uint8_t getLastRoad()
     {
         return getGameState().lastRoadOption;
     }
-    void setLastRoadOption(uint8_t last)
+    void setLastRoad(uint8_t last)
     {
         getGameState().lastRoadOption = last;
     }
@@ -55,31 +55,31 @@ namespace OpenLoco::LastGameOptionManager
     }
 
     // 0x00525FB1
-    uint8_t getLastTreeOption()
+    uint8_t getLastTree()
     {
         return getGameState().lastTreeOption;
     }
-    void setLastTreeOption(uint8_t last)
+    void setLastTree(uint8_t last)
     {
         getGameState().lastTreeOption = last;
     }
 
     // 0x00525FB6
-    uint8_t getLastLandOption()
+    uint8_t getLastLand()
     {
         return getGameState().lastLandOption;
     }
-    void setLastLandOption(uint8_t last)
+    void setLastLand(uint8_t last)
     {
         getGameState().lastLandOption = last;
     }
 
     // 0x00525FC7
-    uint8_t getLastIndustryOption()
+    uint8_t getLastIndustry()
     {
         return getGameState().lastIndustryOption;
     }
-    void setLastIndustryOption(uint8_t last)
+    void setLastIndustry(uint8_t last)
     {
         getGameState().lastIndustryOption = last;
     }
@@ -105,11 +105,11 @@ namespace OpenLoco::LastGameOptionManager
     }
 
     // 0x00525FCA
-    uint8_t getLastWallOption()
+    uint8_t getLastWall()
     {
         return getGameState().lastWallOption;
     }
-    void setLastWallOption(uint8_t last)
+    void setLastWall(uint8_t last)
     {
         getGameState().lastWallOption = last;
     }

@@ -1,9 +1,9 @@
 #include "ShortcutManager.h"
 #include "../CompanyManager.h"
 #include "../GameCommands/GameCommands.h"
-#include "../LastGameOptionManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
 #include "../S5/S5.h"
 #include "../StationManager.h"
@@ -366,8 +366,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<uint8_t, 0x00525FAC> have_airports;
-        if (have_airports == 0xFF)
+        if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
             return;
 
         Windows::Construction::openWithFlags(1 << 31);
@@ -379,8 +378,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<uint8_t, 0x00525FAD> have_ship_ports;
-        if (have_ship_ports == 0xFF)
+        if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
             return;
 
         Windows::Construction::openWithFlags(1 << 30);
@@ -392,11 +390,10 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
-        if (last_build_vehicles_option == 0xFF)
+        if (LastGameOptionManager::getLastBuildVehiclesOption() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::BuildVehicle::open(last_build_vehicles_option, 1 << 31);
+        Windows::BuildVehicle::open(LastGameOptionManager::getLastBuildVehiclesOption(), 1 << 31);
     }
 
     // 0x004BF2D1

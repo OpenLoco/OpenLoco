@@ -1,9 +1,9 @@
 #include "../Audio/Audio.h"
-#include "../LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             // Land tab
             {
-                auto land = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLandOption());
+                auto land = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLand());
                 const uint32_t imageId = land->var_16 + Land::ImageIds::toolbar_terraform_land;
                 Widget::drawTab(window, context, imageId, widx::tab_land);
             }
