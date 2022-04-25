@@ -20,7 +20,6 @@ namespace OpenLoco::GameCommands
 {
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
     static loco_global<uint8_t, 0x00508F08> game_command_nest_level;
-    static loco_global<CompanyId[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00508F17> paused_state;
 
     static uint16_t _gameCommandFlags;
@@ -176,7 +175,7 @@ namespace OpenLoco::GameCommands
             return loc_4313C6(esi, regs);
         }
 
-        if (commandRequiresUnpausingGame(command, flags) && _updatingCompanyId == _player_company[0])
+        if (commandRequiresUnpausingGame(command, flags) && _updatingCompanyId == CompanyManager::getControllingId())
         {
             if (getPauseFlags() & 1)
             {
@@ -199,7 +198,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (_updatingCompanyId == _player_company[0] && isNetworked())
+        if (_updatingCompanyId == CompanyManager::getControllingId() && isNetworked())
         {
             assert(false);
             registers fnRegs = regs;
@@ -305,7 +304,7 @@ namespace OpenLoco::GameCommands
         // Apply to company money
         CompanyManager::applyPaymentToCompany(CompanyManager::getUpdatingCompanyId(), ebx, getExpenditureType());
 
-        if (ebx != 0 && _updatingCompanyId == _player_company[0])
+        if (ebx != 0 && _updatingCompanyId == CompanyManager::getControllingId())
         {
             // Add flying cost text
             CompanyManager::spendMoneyEffect(getPosition() + Map::Pos3{ 0, 0, 24 }, _updatingCompanyId, ebx);
@@ -320,7 +319,7 @@ namespace OpenLoco::GameCommands
         if (game_command_nest_level != 0)
             return GameCommands::FAILURE;
 
-        if (_updatingCompanyId != _player_company[0])
+        if (_updatingCompanyId != CompanyManager::getControllingId())
             return GameCommands::FAILURE;
 
         if (_gameCommandFlags & Flags::flag_3)
@@ -354,7 +353,7 @@ namespace OpenLoco::GameCommands
                     return GameCommands::FAILURE;
                 }
 
-                case ElementType::road: //0x1C
+                case ElementType::road: // 0x1C
                 {
                     auto& roadElement = tile->get<RoadElement>();
 
