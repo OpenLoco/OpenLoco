@@ -4080,6 +4080,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
             if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
+                if (Input::hasKeyModifier(Input::KeyModifier::shift))
+                {
+                    GameCommands::do12(head.head, 1);
+                }
+
                 Input::toolCancel();
                 self.callOnMouseUp(Common::widx::tabMain);
             }
@@ -4114,6 +4119,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
             if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
+                if (Input::hasKeyModifier(Input::KeyModifier::shift))
+                {
+                    GameCommands::do12(head.head, 1);
+                }
+
                 Input::toolCancel();
                 self.callOnMouseUp(Common::widx::tabMain);
             }
