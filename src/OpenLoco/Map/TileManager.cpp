@@ -12,6 +12,7 @@
 #include "../TownManager.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"
+#include "QuarterTile.h"
 
 using namespace OpenLoco::Interop;
 
@@ -149,6 +150,20 @@ namespace OpenLoco::Map::TileManager
         }
     }
 
+    // 0x004616D6
+    TileElement* insertElement(ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
+    {
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.bl = baseZ;
+        regs.bh = occupiedQuads;
+        call(0x004616D6, regs);
+        TileElement* el = X86Pointer<TileElement>(regs.esi);
+        el->setType(type);
+        return el;
+    }
+
     TileElement** getElementIndex()
     {
         return _tiles.get();
@@ -198,7 +213,7 @@ namespace OpenLoco::Map::TileManager
         // If the element is in the quadrant with the slope, raise its height
         if (quad > 0)
         {
-            return quad;
+            return quad / 2;
         }
         return 0;
     }
@@ -438,6 +453,24 @@ namespace OpenLoco::Map::TileManager
             exitWithError(4370, StringIds::null);
             return;
         }
+    }
+
+    // 0x00461393
+    bool checkFreeElementsAndReorganise()
+    {
+        return !(call(0x00461393) & Interop::X86_FLAG_CARRY);
+    }
+
+    // 0x00462926
+    bool canConstructAt(const Map::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt)
+    {
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dl = baseZ;
+        regs.dh = clearZ;
+        regs.bl = qt.getBaseQuarterOccupied() | (qt.getZQuarterOccupied() << 4);
+        return !(call(0x00462926, regs) & Interop::X86_FLAG_CARRY);
     }
 
     // TODO: Return std::optional

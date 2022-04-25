@@ -38,6 +38,7 @@
     <ClCompile Include="GameCommands\ChangeLoan.cpp" />
     <ClCompile Include="GameCommands\Cheat.cpp" />
     <ClCompile Include="GameCommands\ChangeCompanyColour.cpp" />
+    <ClCompile Include="GameCommands\CreateTree.cpp" />
     <ClCompile Include="GameCommands\GameCommands.cpp" />
     <ClCompile Include="GameCommands\LoadSaveQuit.cpp" />
     <ClCompile Include="GameCommands\RemoveTree.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="Map\AnimationManager.h" />
     <ClInclude Include="Map\Map.hpp" />
     <ClInclude Include="Map\MapGenerator.h" />
+    <ClInclude Include="Map\QuarterTile.h" />
     <ClInclude Include="Map\Tile.h" />
     <ClInclude Include="Map\TileLoop.hpp" />
     <ClInclude Include="Map\TileManager.h" />

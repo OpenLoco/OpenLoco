@@ -110,6 +110,8 @@ namespace OpenLoco::Scenario
     Season nextSeason(Season season);
     void initialiseSnowLine();
     void updateSnowLine(int32_t currentDayOfYear);
+    uint8_t getSnowLine();
+
     void reset();
     void sub_4748D4();
     void eraseLandscape();

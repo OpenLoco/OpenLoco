@@ -5,6 +5,11 @@
 #include <cstdint>
 #include <tuple>
 
+namespace OpenLoco::Map
+{
+    class QuarterTile;
+}
+
 namespace OpenLoco::Map::TileManager
 {
     constexpr size_t maxElements = 0x6C000;
@@ -18,9 +23,17 @@ namespace OpenLoco::Map::TileManager
     Tile get(coord_t x, coord_t y);
     void setElements(stdx::span<TileElement> elements);
     void removeElement(TileElement& element);
+    TileElement* insertElement(ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
+    template<typename TileT>
+    TileT* insertElement(const Pos2& pos, const uint8_t baseZ, const uint8_t occupiedQuads)
+    {
+        return insertElement(TileT::kElementType, pos, baseZ, occupiedQuads)->template as<TileT>();
+    }
     TileHeight getHeight(const Pos2& pos);
     void updateTilePointers();
     void reorganise();
+    bool checkFreeElementsAndReorganise();
+    bool canConstructAt(const Map::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt);
     uint16_t setMapSelectionTiles(const Map::Pos2& loc, const uint8_t selectionType);
     uint16_t setMapSelectionSingleTile(const Map::Pos2& loc, bool setQuadrant = false);
     void mapInvalidateSelectionRect();
