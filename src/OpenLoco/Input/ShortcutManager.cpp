@@ -1,6 +1,7 @@
 #include "ShortcutManager.h"
 #include "../CompanyManager.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameStateManagers/LastGameOptionManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
@@ -404,8 +405,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<VehicleType, 0x00525FAF> last_vehicles_option;
-        Windows::VehicleList::open(CompanyManager::getControllingId(), *last_vehicles_option);
+        Windows::VehicleList::open(CompanyManager::getControllingId(), LastGameOptionManager::getLastVehicleType());
     }
 
     // 0x004BF2F0

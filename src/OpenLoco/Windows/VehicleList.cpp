@@ -1,6 +1,7 @@
 #include "../CompanyManager.h"
 #include "../Date.h"
 #include "../Entities/EntityManager.h"
+#include "../GameStateManagers/LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -26,8 +27,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
-    static loco_global<VehicleType, 0x00525FAF> _lastVehiclesOption;
-
     static const Ui::Size window_size = { 550, 213 };
     static const Ui::Size max_dimensions = { 550, 1200 };
     static const Ui::Size min_dimensions = { 220, 160 };
@@ -825,9 +824,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->rowHeight = row_heights[tabIndex];
         self->frame_no = 0;
 
-        if (CompanyManager::getControllingId() == CompanyId(self->number) && _lastVehiclesOption != type)
+        if (CompanyManager::getControllingId() == CompanyId(self->number) && LastGameOptionManager::getLastVehicleType() != type)
         {
-            *_lastVehiclesOption = type;
+            LastGameOptionManager::setLastVehicleType(type);
             WindowManager::invalidate(WindowType::topToolbar);
         }
 

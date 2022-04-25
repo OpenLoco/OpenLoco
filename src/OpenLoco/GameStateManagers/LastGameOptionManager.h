@@ -3,7 +3,7 @@
 #include "../Types.hpp"
 #include <cstdint>
 
-namespace OpenLoco
+namespace OpenLoco::LastGameOptionManager
 {
     // 0x00525FAF
     VehicleType getLastVehicleType();

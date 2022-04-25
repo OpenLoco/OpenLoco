@@ -1,7 +1,7 @@
-#include "./LastGameOption.h"
 #include "../GameState.h"
+#include "./LastGameOption.h"
 
-namespace OpenLoco
+namespace OpenLoco::LastGameOptionManager
 {
     // 0x00525FAF
     VehicleType getLastVehicleType()
