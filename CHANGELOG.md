@@ -1,6 +1,7 @@
 22.04+ (???)
 ------------------------------------------------------------------------
 - Feature: [#1457] Added option to invert right-mouse panning the game view.
+- Feature: [#1484] Hold shift when placing a vehicle to start it immediately.
 - Fix: [#293] Menu screen and other window corruption when many objects loaded.
 - Fix: [#1463] Crash when opening the build window under certain situations.
 
