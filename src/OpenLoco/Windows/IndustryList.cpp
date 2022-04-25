@@ -572,7 +572,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     void reset()
     {
-        LastGameOptionManager::setLastIndustry(0xFF);
+        LastGameOptionManager::setLastIndustry(LastGameOptionManager::kNoLastOption);
     }
 
     namespace NewIndustries
@@ -1103,7 +1103,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             auto rowHover = -1;
 
             auto lastIndustryOption = LastGameOptionManager::getLastIndustry();
-            if (lastIndustryOption != 0xFF)
+            if (lastIndustryOption != LastGameOptionManager::kNoLastOption)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
