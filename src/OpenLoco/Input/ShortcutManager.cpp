@@ -1,7 +1,7 @@
 #include "ShortcutManager.h"
 #include "../CompanyManager.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameStateManagers/LastGameOptionManager.h"
+#include "../LastGameOptionManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"

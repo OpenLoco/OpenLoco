@@ -6,7 +6,7 @@
 #include "../Entities/EntityManager.h"
 #include "../Game.h"
 #include "../GameException.hpp"
-#include "../GameStateManagers/LastGameOptionManager.h"
+#include "../LastGameOptionManager.h"
 #include "../Gui.h"
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"

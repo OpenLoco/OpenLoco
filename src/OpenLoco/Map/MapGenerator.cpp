@@ -1,5 +1,5 @@
 #include "MapGenerator.h"
-#include "../GameStateManagers/LastGameOptionManager.h"
+#include "../LastGameOptionManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/LandObject.h"

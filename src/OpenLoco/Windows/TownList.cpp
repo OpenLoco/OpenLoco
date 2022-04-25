@@ -1,7 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameStateManagers/LastGameOptionManager.h"
+#include "../LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"

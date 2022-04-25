@@ -4,7 +4,7 @@
 #include "../Entities/EntityManager.h"
 #include "../Game.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameStateManagers/LastGameOptionManager.h"
+#include "../LastGameOptionManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
