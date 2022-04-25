@@ -1,7 +1,6 @@
 #include "../../Audio/Audio.h"
 #include "../../CompanyManager.h"
 #include "../../GameCommands/GameCommands.h"
-#include "../../GameState.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Industry.h"
 #include "../../Input.h"
@@ -628,7 +627,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         self->draw(context);
         Common::drawTabs(self, context);
 
-        auto company = CompanyManager::get(getGameState().playerCompanies[0]);
+        auto company = CompanyManager::getPlayerCompany();
         auto companyColour = company->mainColours.primary;
         int16_t xPos = self->widgets[widx::image].left + self->x;
         int16_t yPos = self->widgets[widx::image].top + self->y;

@@ -1,7 +1,6 @@
 #include "../../Audio/Audio.h"
 #include "../../CompanyManager.h"
 #include "../../GameCommands/GameCommands.h"
-#include "../../GameState.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
@@ -1582,7 +1581,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 Dropdown::setHighlightedItem(i);
 
             auto bridgeObj = ObjectManager::get<BridgeObject>(bridge);
-            auto company = CompanyManager::get(getGameState().playerCompanies[0]);
+            auto company = CompanyManager::getPlayerCompany();
             auto companyColour = company->mainColours.primary;
             auto imageId = Gfx::recolour(bridgeObj->image, companyColour);
 
@@ -2574,7 +2573,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto bridgeObj = ObjectManager::get<BridgeObject>(_lastSelectedBridge);
                 if (bridgeObj != nullptr)
                 {
-                    auto company = CompanyManager::get(getGameState().playerCompanies[0]);
+                    auto company = CompanyManager::getPlayerCompany();
                     auto imageId = Gfx::recolour(bridgeObj->image, company->mainColours.primary);
                     auto x = self->x + self->widgets[widx::bridge].left + 2;
                     auto y = self->y + self->widgets[widx::bridge].top + 1;

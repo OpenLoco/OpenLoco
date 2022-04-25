@@ -3,7 +3,6 @@
 #include "../Config.h"
 #include "../Date.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -340,7 +339,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             window->maxHeight = Messages::maxWindowSize.height;
             window->flags |= WindowFlags::resizable;
 
-            window->owner = getGameState().playerCompanies[0];
+            window->owner = CompanyManager::getPlayerCompany()->id();
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0A);
 

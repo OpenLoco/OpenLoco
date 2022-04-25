@@ -1,7 +1,6 @@
 #include "../../Audio/Audio.h"
 #include "../../CompanyManager.h"
 #include "../../GameCommands/GameCommands.h"
-#include "../../GameState.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
@@ -502,7 +501,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 x = 0x2000;
                 y = 0x2000;
 
-                auto company = CompanyManager::get(getGameState().playerCompanies[0]);
+                auto company = CompanyManager::getPlayerCompany();
                 auto companyColour = company->mainColours.primary;
                 _byte_522095 = _byte_522095 | (1 << 0);
 

@@ -1,6 +1,6 @@
 #include "../../Audio/Audio.h"
+#include "../../CompanyManager.h"
 #include "../../Config.h"
-#include "../../GameState.h"
 #include "../../Graphics/Colour.h"
 #include "../../Interop/Interop.hpp"
 #include "../../Message.h"
@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (messageSubType == MessageCriticality::majorCompany)
             {
-                if (news->companyId != getGameState().playerCompanies[0])
+                if (news->companyId != CompanyManager::getPlayerCompany()->id())
                 {
                     messageSubType = MessageCriticality::majorCompetitor;
                 }
@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (messageSubType == MessageCriticality::minorCompany)
             {
-                if (news->companyId != getGameState().playerCompanies[0])
+                if (news->companyId != CompanyManager::getPlayerCompany()->id())
                 {
                     messageSubType = MessageCriticality::minorCompetitor;
                 }
@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             Audio::SoundId soundId = Audio::SoundId::notification;
 
-            if (news->companyId == CompanyId::null || news->companyId == getGameState().playerCompanies[0])
+            if (news->companyId == CompanyId::null || news->companyId == CompanyManager::getPlayerCompany()->id())
             {
                 soundId = mtd.sound;
             }

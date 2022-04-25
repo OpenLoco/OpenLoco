@@ -2,7 +2,6 @@
 #include "../Entities/Entity.h"
 #include "../Entities/EntityManager.h"
 #include "../Game.h"
-#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -516,7 +515,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                 if (!isEditorMode() && !isSandboxMode())
                 {
-                    auto company = CompanyManager::get(getGameState().playerCompanies[0]);
+                    auto company = CompanyManager::getPlayerCompany();
                     colour = company->mainColours.primary;
                 }
 

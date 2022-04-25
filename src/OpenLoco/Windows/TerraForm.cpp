@@ -2,7 +2,6 @@
 #include "../CompanyManager.h"
 #include "../Economy/Economy.h"
 #include "../GameCommands/GameCommands.h"
-#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -973,7 +972,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->frame_no = 0;
             _terraformGhostPlaced = 0;
             _lastTreeCost = 0x80000000;
-            window->owner = getGameState().playerCompanies[0];
+            window->owner = CompanyManager::getPlayerCompany()->id();
             window->var_846 = 0xFFFF;
             window->savedView.mapX = 0;
             _treeClusterType = PlantTrees::treeCluster::none;
