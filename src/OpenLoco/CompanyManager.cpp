@@ -31,8 +31,6 @@ using namespace OpenLoco::Ui;
 namespace OpenLoco::CompanyManager
 {
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
-    static loco_global<uint8_t, 0x00526214> _companyCompetitionDelay;
-    static loco_global<uint8_t, 0x00525FB7> _companyMaxCompeting;
     static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
@@ -87,6 +85,46 @@ namespace OpenLoco::CompanyManager
     void setUpdatingCompanyId(CompanyId id)
     {
         _updatingCompanyId = id;
+    }
+
+    // 0x00525FB7
+    uint8_t getMaxCompetingCompanies()
+    {
+        return getGameState().maxCompetingCompanies;
+    }
+    void setMaxCompetingCompanies(uint8_t competingCompanies)
+    {
+        getGameState().maxCompetingCompanies = competingCompanies;
+    }
+
+    // 0x00526214
+    uint8_t getCompetitorStartDelay()
+    {
+        return getGameState().competitorStartDelay;
+    }
+    void setCompetitorStartDelay(uint8_t competetorStartDelay)
+    {
+        getGameState().competitorStartDelay = competetorStartDelay;
+    }
+
+    // 0x0052621A
+    uint16_t getMaxLoanSize()
+    {
+        return getGameState().maxLoanSize;
+    }
+    void setMaxLoanSize(uint16_t loanSize)
+    {
+        getGameState().maxLoanSize = loanSize;
+    }
+
+    // 0x00526218
+    uint16_t getStartingLoanSize()
+    {
+        return getGameState().startingLoanSize;
+    }
+    void setStartingLoanSize(uint16_t loanSize)
+    {
+        getGameState().startingLoanSize = loanSize;
     }
 
     FixedVector<Company, Limits::kMaxCompanies> companies()
@@ -301,7 +339,7 @@ namespace OpenLoco::CompanyManager
     // 0x004306D1
     static void produceCompanies()
     {
-        if (_companyCompetitionDelay == 0 && _companyMaxCompeting != 0)
+        if (getCompetitorStartDelay() == 0 && getMaxCompetingCompanies() != 0)
         {
             int32_t companies_active = 0;
             for (const auto& company : companies())
@@ -313,7 +351,7 @@ namespace OpenLoco::CompanyManager
             auto& prng = gPrng();
             if (prng.randNext(16) == 0)
             {
-                if (prng.randNext(_companyMaxCompeting) + 1 > companies_active)
+                if (prng.randNext(getMaxCompetingCompanies()) + 1 > companies_active)
                 {
                     createAiCompany();
                 }

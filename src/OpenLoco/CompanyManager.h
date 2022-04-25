@@ -14,6 +14,18 @@ namespace OpenLoco::CompanyManager
     CompanyId getUpdatingCompanyId();
     void setUpdatingCompanyId(CompanyId id);
 
+    uint8_t getMaxCompetingCompanies();
+    void setMaxCompetingCompanies(uint8_t competingCompanies);
+
+    uint8_t getCompetitorStartDelay();
+    void setCompetitorStartDelay(uint8_t competetorStartDelay);
+
+    uint16_t getMaxLoanSize();
+    void setMaxLoanSize(uint16_t loanSize);
+
+    uint16_t getStartingLoanSize();
+    void setStartingLoanSize(uint16_t loanSize);
+
     FixedVector<Company, Limits::kMaxCompanies> companies();
     Company* get(CompanyId id);
     CompanyId getControllingId();
