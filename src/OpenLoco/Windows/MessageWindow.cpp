@@ -28,7 +28,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 {
     static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<CompanyId, 0x00525E3C> _playerCompany;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
 
     namespace Common
@@ -340,7 +339,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             window->maxHeight = Messages::maxWindowSize.height;
             window->flags |= WindowFlags::resizable;
 
-            window->owner = _playerCompany;
+            window->owner = CompanyManager::getControllingId();
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0A);
 

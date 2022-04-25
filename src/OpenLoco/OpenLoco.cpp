@@ -94,7 +94,6 @@ namespace OpenLoco
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-    static loco_global<CompanyId[2], 0x00525E3C> _playerCompanies;
     static loco_global<int16_t, 0x00525F62> _525F62;
 
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
@@ -545,15 +544,15 @@ namespace OpenLoco
             CompanyManager::updateOwnerStatus();
             sub_46E388();
 
-            _updatingCompanyId = _playerCompanies[1];
+            _updatingCompanyId = CompanyManager::getSecondaryPlayerId();
             sub_4317BD();
         }
         else
         {
-            _updatingCompanyId = _playerCompanies[1];
+            _updatingCompanyId = CompanyManager::getSecondaryPlayerId();
             auto eax = sub_4317BD();
 
-            _updatingCompanyId = _playerCompanies[0];
+            _updatingCompanyId = CompanyManager::getControllingId();
             if (!isTitleMode())
             {
                 auto edx = gPrng().srand_0();
@@ -1029,10 +1028,10 @@ namespace OpenLoco
                     }
 
                     // clang-format off
-                    if (today.month == MonthId::january ||
-                        today.month == MonthId::april ||
-                        today.month == MonthId::july ||
-                        today.month == MonthId::october)
+					if (today.month == MonthId::january ||
+						today.month == MonthId::april ||
+						today.month == MonthId::july ||
+						today.month == MonthId::october)
                     // clang-format on
                     {
                         CompanyManager::updateQuarterly();

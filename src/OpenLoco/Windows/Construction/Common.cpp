@@ -738,7 +738,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049EFEF
         static void drawRoadTabs(Window* self, Gfx::Context* context)
         {
-            auto company = CompanyManager::get(_playerCompany);
+            auto company = CompanyManager::getPlayerCompany();
             auto companyColour = company->mainColours.primary;
             auto roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
             // Construction Tab
@@ -812,7 +812,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049ED40
         static void drawTrackTabs(Window* self, Gfx::Context* context)
         {
-            auto company = CompanyManager::get(_playerCompany);
+            auto company = CompanyManager::getPlayerCompany();
             auto companyColour = company->mainColours.primary;
             auto trackObj = ObjectManager::get<TrackObject>(_trackType);
             // Construction Tab
@@ -1078,7 +1078,7 @@ namespace OpenLoco::Ui::Windows::Construction
             setDisabledWidgets(window);
 
             window->initScrollWidgets();
-            window->owner = _playerCompany;
+            window->owner = CompanyManager::getControllingId();
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0D);

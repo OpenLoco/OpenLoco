@@ -1,4 +1,5 @@
 #include "../../Audio/Audio.h"
+#include "../../CompanyManager.h"
 #include "../../Config.h"
 #include "../../Graphics/Colour.h"
 #include "../../Interop/Interop.hpp"
@@ -67,7 +68,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (messageSubType == MessageCriticality::majorCompany)
             {
-                if (news->companyId != _playerCompany)
+                if (news->companyId != CompanyManager::getControllingId())
                 {
                     messageSubType = MessageCriticality::majorCompetitor;
                 }
@@ -75,7 +76,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (messageSubType == MessageCriticality::minorCompany)
             {
-                if (news->companyId != _playerCompany)
+                if (news->companyId != CompanyManager::getControllingId())
                 {
                     messageSubType = MessageCriticality::minorCompetitor;
                 }
@@ -119,7 +120,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             Audio::SoundId soundId = Audio::SoundId::notification;
 
-            if (news->companyId == CompanyId::null || news->companyId == _playerCompany)
+            if (news->companyId == CompanyId::null || news->companyId == CompanyManager::getControllingId())
             {
                 soundId = mtd.sound;
             }

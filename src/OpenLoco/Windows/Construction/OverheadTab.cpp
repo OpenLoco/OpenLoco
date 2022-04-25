@@ -501,7 +501,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 x = 0x2000;
                 y = 0x2000;
 
-                auto company = CompanyManager::get(_playerCompany);
+                auto company = CompanyManager::getPlayerCompany();
                 auto companyColour = company->mainColours.primary;
                 _byte_522095 = _byte_522095 | (1 << 0);
 

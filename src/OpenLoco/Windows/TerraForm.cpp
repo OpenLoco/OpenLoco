@@ -32,7 +32,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 {
     static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<CompanyId, 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00525FB1> _lastSelectedTree;
     static loco_global<uint8_t, 0x00525FB6> _grassLand;
     static loco_global<uint8_t, 0x00525FCA> _lastSelectedWall;
@@ -973,7 +972,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->frame_no = 0;
             _terraformGhostPlaced = 0;
             _lastTreeCost = 0x80000000;
-            window->owner = _player_company;
+            window->owner = CompanyManager::getControllingId();
             window->var_846 = 0xFFFF;
             window->savedView.mapX = 0;
             _treeClusterType = PlantTrees::treeCluster::none;
