@@ -4051,6 +4051,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Error::open(StringIds::cant_place_string_id_here, StringIds::null);
         }
 
+        static void pickupToolPlacementSuccess(Window& self, EntityId vehicleHead)
+        {
+            if (Input::hasKeyModifier(Input::KeyModifier::shift))
+            {
+                GameCommands::do12(vehicleHead, 1);
+            }
+            Input::toolCancel();
+            self.callOnMouseUp(Common::widx::tabMain);
+        }
+
         // 0x004B2E18
         static void pickupToolDownAir(Window& self, const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
         {
@@ -4080,13 +4090,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
             if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
-                if (Input::hasKeyModifier(Input::KeyModifier::shift))
-                {
-                    GameCommands::do12(head.head, 1);
-                }
-
-                Input::toolCancel();
-                self.callOnMouseUp(Common::widx::tabMain);
+                pickupToolPlacementSuccess(self, head.head);
             }
         }
 
@@ -4119,13 +4123,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
             if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
-                if (Input::hasKeyModifier(Input::KeyModifier::shift))
-                {
-                    GameCommands::do12(head.head, 1);
-                }
-
-                Input::toolCancel();
-                self.callOnMouseUp(Common::widx::tabMain);
+                pickupToolPlacementSuccess(self, head.head);
             }
         }
 
@@ -4159,13 +4157,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
             if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
-                if (Input::hasKeyModifier(Input::KeyModifier::shift))
-                {
-                    GameCommands::do12(head.head, 1);
-                }
-
-                Input::toolCancel();
-                self.callOnMouseUp(Common::widx::tabMain);
+                pickupToolPlacementSuccess(self, head.head);
             }
         }
 
