@@ -4094,6 +4094,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head.name);
             args.push(head.ordinalNumber);
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
+
             auto result = GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply);
             pickupToolPlacementCommandCallback(result, self, head.head);
         }
