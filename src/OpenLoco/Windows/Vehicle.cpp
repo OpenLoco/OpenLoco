@@ -4125,10 +4125,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head.name);
             args.push(head.ordinalNumber);
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
-            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
-            {
-                pickupToolPlacementCommandCallback(self, head.head);
-            }
+
+            auto result = GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply);
+            pickupToolPlacementCommandCallback(result, self, head.head);
         }
 
         // 0x004B2C95
@@ -4159,10 +4158,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head.name);
             args.push(head.ordinalNumber);
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
-            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
-            {
-                pickupToolPlacementCommandCallback(self, head.head);
-            }
+
+            auto result = GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply);
+            pickupToolPlacementCommandCallback(result, self, head.head);
         }
 
         // 0x004B2C74
