@@ -135,8 +135,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         std::fill(std::begin(_scenarioTrainStations), std::end(_scenarioTrainStations), 0xFF);
         std::fill(std::begin(_scenarioTrackMods), std::end(_scenarioTrackMods), 0xFF);
 
-        _lastAirport = 0xFF;
-        _lastShipPort = 0xFF;
+        LastGameOptionManager::setLastAirport(LastGameOptionManager::kNoLastOption);
+        LastGameOptionManager::setLastShipPort(LastGameOptionManager::kNoLastOption);
         _pickupDirection = 0;
     }
 
@@ -727,7 +727,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
             window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
 
-            if (_byte_525FAE == 0)
+            if (_trafficHandedness == 0)
                 window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_left_turnaround;
         }
 

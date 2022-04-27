@@ -5,6 +5,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
@@ -33,8 +34,6 @@ namespace OpenLoco::Ui::Windows::TownList
     static loco_global<uint8_t, 0x01135C64> _buildingGhostRotation;
     static loco_global<uint8_t, 0x01135C65> _buildingVariation;
     static loco_global<uint8_t, 0x01135C66> _townSize;
-    static loco_global<uint8_t, 0x00525FC8> _lastSelectedBuilding;
-    static loco_global<uint8_t, 0x00525FC9> _lastSelectedMiscBuilding;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
 
@@ -583,8 +582,8 @@ namespace OpenLoco::Ui::Windows::TownList
     // 0x00496B50
     void reset()
     {
-        _lastSelectedBuilding = 0xFF;
-        _lastSelectedMiscBuilding = 0xFF;
+        LastGameOptionManager::setLastBuildingOption(0xFF);
+        LastGameOptionManager::setLastMiscBuildingOption(0xFF);
         _buildingRotation = 2;
         _townSize = 3;
     }
@@ -1261,9 +1260,9 @@ namespace OpenLoco::Ui::Windows::TownList
                     self->rowHover = rowInfo;
 
                     if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
-                        _lastSelectedMiscBuilding = static_cast<uint8_t>(rowInfo);
+                        LastGameOptionManager::setLastBuildingOption(static_cast<uint8_t>(rowInfo));
                     else
-                        _lastSelectedBuilding = static_cast<uint8_t>(rowInfo);
+                        LastGameOptionManager::setLastBuildingOption(static_cast<uint8_t>(rowInfo));
 
                     updateBuildingColours(self);
 
@@ -1344,11 +1343,11 @@ namespace OpenLoco::Ui::Windows::TownList
             self->var_83C = buildingCount;
             auto rowHover = -1;
 
-            auto lastSelectedBuilding = _lastSelectedBuilding;
+            auto lastSelectedBuilding = LastGameOptionManager::getLastBuildingOption();
             if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
-                lastSelectedBuilding = _lastSelectedMiscBuilding;
+                lastSelectedBuilding = LastGameOptionManager::getLastBuildingOption();
 
-            if (lastSelectedBuilding != 0xFF)
+            if (lastSelectedBuilding != LastGameOptionManager::kNoLastOption)
             {
                 for (auto i = 0; i <= self->var_83C; i++)
                 {

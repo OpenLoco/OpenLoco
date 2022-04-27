@@ -3,6 +3,7 @@
 #include "../GameCommands/GameCommands.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
 #include "../S5/S5.h"
 #include "../StationManager.h"
@@ -339,11 +340,10 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<uint8_t, 0x00525FAA> last_railroad_option;
-        if (last_railroad_option == 0xFF)
+        if (LastGameOptionManager::getLastRailRoad() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::Construction::openWithFlags(*last_railroad_option);
+        Windows::Construction::openWithFlags(LastGameOptionManager::getLastRailRoad());
     }
 
     // 0x004BF24F
@@ -352,11 +352,10 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
-        loco_global<uint8_t, 0x00525FAB> last_road_option;
-        if (last_road_option == 0xFF)
+        if (LastGameOptionManager::getLastRoad() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::Construction::openWithFlags(*last_road_option);
+        Windows::Construction::openWithFlags(LastGameOptionManager::getLastRoad());
     }
 
     // 0x004BF276
@@ -365,8 +364,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<uint8_t, 0x00525FAC> have_airports;
-        if (have_airports == 0xFF)
+        if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
             return;
 
         Windows::Construction::openWithFlags(1 << 31);
@@ -378,8 +376,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<uint8_t, 0x00525FAD> have_ship_ports;
-        if (have_ship_ports == 0xFF)
+        if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
             return;
 
         Windows::Construction::openWithFlags(1 << 30);
@@ -391,11 +388,10 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
-        if (last_build_vehicles_option == 0xFF)
+        if (LastGameOptionManager::getLastBuildVehiclesOption() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::BuildVehicle::open(last_build_vehicles_option, 1 << 31);
+        Windows::BuildVehicle::open(LastGameOptionManager::getLastBuildVehiclesOption(), 1 << 31);
     }
 
     // 0x004BF2D1
@@ -404,8 +400,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<VehicleType, 0x00525FAF> last_vehicles_option;
-        Windows::VehicleList::open(CompanyManager::getControllingId(), *last_vehicles_option);
+        Windows::VehicleList::open(CompanyManager::getControllingId(), LastGameOptionManager::getLastVehicleType());
     }
 
     // 0x004BF2F0

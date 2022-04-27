@@ -8,6 +8,7 @@
 #include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Map.hpp"
@@ -31,7 +32,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
     static loco_global<uint8_t, 0x00E0C3C9> _industryLastPlacedId;
     static loco_global<uint8_t, 0x00E0C3DA> _industryGhostType;
     static loco_global<uint8_t, 0x00E0C3DB> _industryGhostId;
-    static loco_global<uint8_t, 0x00525FC7> _lastSelectedIndustry;
     static loco_global<Utility::prng, 0x00525E20> _prng;
     static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
     static loco_global<uint32_t, 0x00E0C398> _dword_E0C398;
@@ -572,7 +572,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     void reset()
     {
-        _lastSelectedIndustry = 0xFF;
+        LastGameOptionManager::setLastIndustry(LastGameOptionManager::kNoLastOption);
     }
 
     namespace NewIndustries
@@ -708,7 +708,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 if (index < 0)
                 {
                     self->rowHover = rowInfo;
-                    _lastSelectedIndustry = static_cast<uint8_t>(rowInfo);
+                    LastGameOptionManager::setLastIndustry(rowInfo);
 
                     int32_t pan = (self->width >> 1) + self->x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
@@ -1102,13 +1102,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->var_83C = industryCount;
             auto rowHover = -1;
 
-            if (_lastSelectedIndustry != 0xFF)
+            auto lastIndustryOption = LastGameOptionManager::getLastIndustry();
+            if (lastIndustryOption != LastGameOptionManager::kNoLastOption)
             {
                 for (auto i = 0; i < self->var_83C; i++)
                 {
-                    if (_lastSelectedIndustry == self->rowInfo[i])
+                    if (lastIndustryOption == self->rowInfo[i])
                     {
-                        rowHover = _lastSelectedIndustry;
+                        rowHover = lastIndustryOption;
                         break;
                     }
                 }

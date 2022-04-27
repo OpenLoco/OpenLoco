@@ -1,5 +1,6 @@
 #include "MapGenerator.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
@@ -24,7 +25,6 @@ using namespace OpenLoco::Map::MapGenerator;
 namespace OpenLoco::Map::MapGenerator
 {
     static loco_global<uint8_t*, 0x00F00160> _heightMap;
-    static loco_global<uint8_t, 0x00525FB6> _primaryLandObjectIndex;
 
     struct Point
     {
@@ -444,9 +444,9 @@ namespace OpenLoco::Map::MapGenerator
                 return landObjectIdx;
             }
         }
-        if (*_primaryLandObjectIndex != 0xFF)
+        if (LastGameOptionManager::getLastLand() != LastGameOptionManager::kNoLastOption)
         {
-            return *_primaryLandObjectIndex;
+            return LastGameOptionManager::getLastLand();
         }
         return std::nullopt;
     }

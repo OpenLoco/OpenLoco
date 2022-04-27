@@ -10,6 +10,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
@@ -30,7 +31,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 {
-    static loco_global<uint8_t, 0x00525FAB> last_road_option;
     static loco_global<uint8_t, 0x009C870C> last_town_option;
 
     namespace Widx
@@ -292,7 +292,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             window->widgets[Common::Widx::terraform_menu].type = WidgetType::toolbarTab;
             window->widgets[Widx::map_generation_menu].type = WidgetType::toolbarTab;
             window->widgets[Common::Widx::towns_menu].type = WidgetType::toolbarTab;
-            if (last_road_option != 0xFF)
+            if (LastGameOptionManager::getLastRoad() != LastGameOptionManager::kNoLastOption)
             {
                 window->widgets[Common::Widx::road_menu].type = WidgetType::toolbarTab;
             }
