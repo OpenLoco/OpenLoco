@@ -1,3 +1,4 @@
+#include "../CompanyManager.h"
 #include "../Economy/Economy.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
@@ -22,16 +23,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     static const Ui::Size companiesWindowSize = { 366, 327 };
     static const Ui::Size otherWindowSize = { 366, 217 };
 
-    static loco_global<uint8_t, 0x00525FB7> maxCompetingCompanies;
-
     static loco_global<uint8_t, 0x00525FC6> loanInterestRate;
 
-    static loco_global<uint8_t, 0x00526214> competitorStartDelay;
     static loco_global<uint8_t, 0x00526215> preferredAIIntelligence;
     static loco_global<uint8_t, 0x00526216> preferredAIAggressiveness;
     static loco_global<uint8_t, 0x00526217> preferredAICompetitiveness;
-    static loco_global<uint16_t, 0x00526218> startingLoanSize;
-    static loco_global<uint16_t, 0x0052621A> maxLoanSize;
 
     static loco_global<Scenario::ObjectiveType, 0x00526230> objectiveType;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
@@ -696,22 +692,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             switch (widgetIndex)
             {
                 case widx::max_competing_companies_down:
-                    *maxCompetingCompanies = std::max<int8_t>(*maxCompetingCompanies - 1, Scenario::min_competing_companies);
+                    CompanyManager::setMaxCompetingCompanies(std::max<int8_t>(CompanyManager::getMaxCompetingCompanies() - 1, Scenario::min_competing_companies));
                     self->invalidate();
                     break;
 
                 case widx::max_competing_companies_up:
-                    *maxCompetingCompanies = std::min<uint8_t>(*maxCompetingCompanies + 1, Scenario::max_competing_companies);
+                    CompanyManager::setMaxCompetingCompanies(std::min<uint8_t>(CompanyManager::getMaxCompetingCompanies() + 1, Scenario::max_competing_companies));
                     self->invalidate();
                     break;
 
                 case widx::delay_before_competing_companies_start_down:
-                    *competitorStartDelay = std::max<int8_t>(*competitorStartDelay - 1, Scenario::min_competitor_start_delay);
+                    CompanyManager::setCompetitorStartDelay(std::max<int8_t>(CompanyManager::getCompetitorStartDelay() - 1, Scenario::min_competitor_start_delay));
                     self->invalidate();
                     break;
 
                 case widx::delay_before_competing_companies_start_up:
-                    *competitorStartDelay = std::min<uint8_t>(*competitorStartDelay + 1, Scenario::max_competitor_start_delay);
+                    CompanyManager::setCompetitorStartDelay(std::min<uint8_t>(CompanyManager::getCompetitorStartDelay() + 1, Scenario::max_competitor_start_delay));
                     self->invalidate();
                     break;
 
@@ -808,8 +804,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            commonFormatArgs[0] = *maxCompetingCompanies;
-            commonFormatArgs[1] = *competitorStartDelay;
+            commonFormatArgs[0] = CompanyManager::getMaxCompetingCompanies();
+            commonFormatArgs[1] = CompanyManager::getCompetitorStartDelay();
 
             self->widgets[widx::preferred_intelligence].text = preferenceLabelIds[*preferredAIIntelligence];
             self->widgets[widx::preferred_aggressiveness].text = preferenceLabelIds[*preferredAIAggressiveness];
@@ -890,23 +886,23 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             switch (widgetIndex)
             {
                 case widx::starting_loan_down:
-                    *startingLoanSize = std::max<int16_t>(*startingLoanSize - 50, Scenario::min_start_loan_units);
+                    CompanyManager::setStartingLoanSize(std::max<int16_t>(CompanyManager::getStartingLoanSize() - 50, Scenario::min_start_loan_units));
                     break;
 
                 case widx::starting_loan_up:
-                    *startingLoanSize = std::min<uint16_t>(*startingLoanSize + 50, Scenario::max_start_loan_units);
-                    if (*startingLoanSize > *maxLoanSize)
-                        *maxLoanSize = *startingLoanSize;
+                    CompanyManager::setStartingLoanSize(std::min<uint16_t>(CompanyManager::getStartingLoanSize() + 50, Scenario::max_start_loan_units));
+                    if (CompanyManager::getStartingLoanSize() > CompanyManager::getMaxLoanSize())
+                        CompanyManager::setMaxLoanSize(CompanyManager::getStartingLoanSize());
                     break;
 
                 case widx::max_loan_size_down:
-                    *maxLoanSize = std::max<int16_t>(*maxLoanSize - 50, Scenario::min_loan_size_units);
-                    if (*startingLoanSize > *maxLoanSize)
-                        *startingLoanSize = *maxLoanSize;
+                    CompanyManager::setMaxLoanSize(std::max<int16_t>(CompanyManager::getMaxLoanSize() - 50, Scenario::min_loan_size_units));
+                    if (CompanyManager::getStartingLoanSize() > CompanyManager::getMaxLoanSize())
+                        CompanyManager::setStartingLoanSize((CompanyManager::getMaxLoanSize()));
                     break;
 
                 case widx::max_loan_size_up:
-                    *maxLoanSize = std::min<uint16_t>(*maxLoanSize + 50, Scenario::max_loan_size_units);
+                    CompanyManager::setMaxLoanSize(std::min<uint16_t>(CompanyManager::getMaxLoanSize() + 50, Scenario::max_loan_size_units));
                     break;
 
                 case widx::loan_interest_rate_down:
@@ -937,7 +933,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0046E306
         static uint32_t getLoanSizeInCurrency()
         {
-            uint64_t loanSizeInCurrency = Economy::getInflationAdjustedCost(*startingLoanSize, 0, 8) / 100 * 100;
+            uint64_t loanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8) / 100 * 100;
             return static_cast<uint32_t>(loanSizeInCurrency);
         }
 
@@ -949,7 +945,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
             *(uint32_t*)&commonFormatArgs[0] = loanSizeInCurrency;
 
-            uint64_t maxLoanSizeInCurrency = Economy::getInflationAdjustedCost(*maxLoanSize, 0, 8) / 100 * 100;
+            uint64_t maxLoanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8) / 100 * 100;
             *(uint32_t*)&commonFormatArgs[2] = static_cast<uint32_t>(maxLoanSizeInCurrency);
 
             *(uint32_t*)&commonFormatArgs[4] = *loanInterestRate;
