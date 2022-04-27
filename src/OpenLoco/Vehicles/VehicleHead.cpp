@@ -13,7 +13,6 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
-#include "../Map/Track/Track.h"
 #include "../Math/Bound.hpp"
 #include "../Math/Trigonometry.hpp"
 #include "../MessageManager.h"
@@ -3218,16 +3217,9 @@ namespace OpenLoco::Vehicles
     // 0x004AC1C2
     bool VehicleHead::sub_4AC1C2()
     {
-        Track::TrackConnections connections{};
-        connections.size = 0;
-        const auto [nextPos, rotation] = Map::Track::getTrackConnectionEnd(getTrackLoc(), var_2C.track._data);
-        Map::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
-        if (connections.size != 1)
-        {
-            return false;
-        }
-        TrackAndDirection::_TrackAndDirection tad((connections.data[0] & 0x1FF) >> 3, connections.data[0] & 0x7);
-        return sub_4A2A58(nextPos, tad, owner, trackType) & (1 << 1);
+        registers regs;
+        regs.esi = X86Pointer(this);
+        return call(0x004AC1C2, regs) & X86_FLAG_CARRY;
     }
 
     // 0x004AC0A3
