@@ -106,4 +106,118 @@ namespace OpenLoco::ScenarioManager
     {
         getGameState().scenarioTicks2 = ticks;
     }
+
+    namespace Objective
+    {
+        // 0x00526230
+        Scenario::ObjectiveType getObjectiveType()
+        {
+            return getGameState().objectiveType;
+        }
+
+        void setObjectiveType(Scenario::ObjectiveType type)
+        {
+            getGameState().objectiveType = type;
+        }
+
+        // 0x00526231
+        uint8_t getObjectiveFlags()
+        {
+            return getGameState().objectiveFlags;
+        }
+        void setObjectiveFlags(uint8_t flags)
+        {
+            getGameState().objectiveFlags = flags;
+        }
+
+        // 0x00526232
+        uint32_t getObjectiveCompanyValue()
+        {
+            return getGameState().objectiveCompanyValue;
+        }
+        void setObjectiveCompanyValue(uint32_t value)
+        {
+            getGameState().objectiveCompanyValue = value;
+        }
+
+        // 0x00526236
+        uint32_t getObjectiveMonthlyVehicleProfit()
+        {
+            return getGameState().objectiveMonthlyVehicleProfit;
+        }
+        void setObjectiveMonthlyVehicleProfit(uint32_t profit)
+        {
+            getGameState().objectiveMonthlyVehicleProfit = profit;
+        }
+
+        // 0x0052623A
+        uint8_t getObjectivePerformanceIndex()
+        {
+            return getGameState().objectivePerformanceIndex;
+        }
+        void setObjectivePerformanceIndex(uint8_t performanceIndex)
+        {
+            getGameState().objectivePerformanceIndex = performanceIndex;
+        }
+
+        // 0x0052623B
+        uint8_t getObjectiveDeliveredCargoType()
+        {
+            return getGameState().objectiveDeliveredCargoType;
+        }
+        void setObjectiveDeliveredCargoType(uint8_t cargoType)
+        {
+            getGameState().objectiveDeliveredCargoType = cargoType;
+        }
+
+        // 0x0052623C
+        uint32_t getObjectiveDeliveredCargoAmount()
+        {
+            return getGameState().objectiveDeliveredCargoAmount;
+        }
+        void setObjectiveDeliveredCargoAmount(uint32_t cargo)
+        {
+            getGameState().objectiveDeliveredCargoAmount = cargo;
+        }
+
+        // 0x00526240
+        uint8_t getObjectiveTimeLimitYears()
+        {
+            return getGameState().objectiveTimeLimitYears;
+        }
+        void setObjectiveTimeLimitYears(uint8_t years)
+        {
+            getGameState().objectiveTimeLimitYears = years;
+        }
+
+        // 0x00526241
+        uint16_t getObjectiveTimeLimitUntilYear()
+        {
+            return getGameState().objectiveTimeLimitUntilYear;
+        }
+        void setObjectiveTimeLimitUntilYear(uint16_t year)
+        {
+            getGameState().objectiveTimeLimitUntilYear = year;
+        }
+
+        // 0x00526243
+        uint16_t getObjectiveMonthsInChallenge()
+        {
+            return getGameState().objectiveMonthsInChallenge;
+        }
+        void setObjectiveMonthsInChallenge(uint16_t months)
+        {
+            getGameState().objectiveMonthsInChallenge = months;
+        }
+
+        // 0x00526245
+        uint16_t getObjectiveCompletedChallengeInMonths()
+        {
+            return getGameState().objectiveCompletedChallengeInMonths;
+        }
+        void setObjectiveCompletedChallengeInMonths(uint16_t months)
+        {
+            getGameState().objectiveCompletedChallengeInMonths = months;
+        }
+    }
 }

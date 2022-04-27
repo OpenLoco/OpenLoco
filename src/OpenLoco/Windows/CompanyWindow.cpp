@@ -19,6 +19,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Scenario.h"
+#include "../ScenarioManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
@@ -2284,11 +2285,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Challenge
     {
-        static loco_global<uint8_t, 0x00526231> objectiveFlags;
-        static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
-        static loco_global<uint16_t, 0x00526243> objectiveMonthsInChallenge;
-        static loco_global<uint16_t, 0x00526245> objectiveCompletedChallengeInMonths;
-
         const Ui::Size windowSize = { 320, 182 };
 
         static Widget widgets[] = {
@@ -2357,8 +2353,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challengeFlags & CompanyFlags::challengeCompleted) != 0)
             {
-                uint16_t years = objectiveCompletedChallengeInMonths / 12;
-                uint16_t months = objectiveCompletedChallengeInMonths % 12;
+                uint16_t years = ScenarioManager::Objective::getObjectiveCompletedChallengeInMonths() / 12;
+                uint16_t months = ScenarioManager::Objective::getObjectiveCompletedChallengeInMonths() % 12;
 
                 auto args = FormatArguments::common(years, months);
                 Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
@@ -2373,8 +2369,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challengeFlags & CompanyFlags::challengeBeatenByOpponent) != 0)
             {
-                uint16_t years = objectiveCompletedChallengeInMonths / 12;
-                uint16_t months = objectiveCompletedChallengeInMonths % 12;
+                uint16_t years = ScenarioManager::Objective::getObjectiveCompletedChallengeInMonths() / 12;
+                uint16_t months = ScenarioManager::Objective::getObjectiveCompletedChallengeInMonths() % 12;
 
                 FormatArguments args{};
                 args.push(CompanyManager::getOpponent()->ownerName);
@@ -2391,10 +2387,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y = Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
             }
 
-            if ((objectiveFlags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+            if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
             {
                 // time limited challenge
-                uint16_t monthsLeft = objectiveTimeLimitYears * 12 - objectiveMonthsInChallenge;
+                uint16_t monthsLeft = ScenarioManager::Objective::getObjectiveTimeLimitYears() * 12 - ScenarioManager::Objective::getObjectiveMonthsInChallenge();
                 uint16_t years = monthsLeft / 12;
                 uint16_t months = monthsLeft % 12;
 

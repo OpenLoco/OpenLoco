@@ -42,16 +42,6 @@ namespace OpenLoco::Scenario
 
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
 
-    static loco_global<ObjectiveType, 0x00526230> objectiveType;
-    static loco_global<uint8_t, 0x00526231> objectiveFlags;
-    static loco_global<uint32_t, 0x00526232> objectiveCompanyValue;
-    static loco_global<uint32_t, 0x00526236> objectiveMonthlyVehicleProfit;
-    static loco_global<uint8_t, 0x0052623A> objectivePerformanceIndex;
-    static loco_global<uint8_t, 0x0052623B> objectiveDeliveredCargoType;
-    static loco_global<uint32_t, 0x0052623C> objectiveDeliveredCargoAmount;
-    static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
-    static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
-
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
 
@@ -423,7 +413,7 @@ namespace OpenLoco::Scenario
     // 0x004384E9
     void formatChallengeArguments(FormatArguments& args)
     {
-        switch (objectiveType)
+        switch (ScenarioManager::Objective::getObjectiveType())
         {
             case Scenario::ObjectiveType::companyValue:
                 args.push(StringIds::achieve_a_company_value_of);
@@ -457,20 +447,20 @@ namespace OpenLoco::Scenario
             }
         }
 
-        if ((objectiveFlags & Scenario::ObjectiveFlags::beTopCompany) != 0)
+        if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::beTopCompany) != 0)
         {
             args.push(StringIds::and_be_the_top_performing_company);
         }
-        if ((objectiveFlags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
+        if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
         {
             args.push(StringIds::and_be_one_of_the_top_3_performing_companies);
         }
-        if ((objectiveFlags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+        if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
         {
             if (isTitleMode() || isEditorMode())
             {
                 args.push(StringIds::within_years);
-                args.push<uint16_t>(*objectiveTimeLimitYears);
+                args.push<uint16_t>(ScenarioManager::Objective::getObjectiveTimeLimitYears());
             }
             else
             {

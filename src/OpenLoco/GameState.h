@@ -87,7 +87,7 @@ namespace OpenLoco
         uint8_t lastBuildVehiclesOption;                                         // 0x000414 (0x0052622C)
         uint8_t numberOfIndustries;                                              // 0x000415 (0x0052622D)
         uint16_t var_416;                                                        // 0x000416 (0x0052622E)
-        uint8_t objectiveType;                                                   // 0x000418 (0x00526230)
+        Scenario::ObjectiveType objectiveType;                                   // 0x000418 (0x00526230)
         uint8_t objectiveFlags;                                                  // 0x000419 (0x00526231)
         uint32_t objectiveCompanyValue;                                          // 0x00041A (0x00526232)
         uint32_t objectiveMonthlyVehicleProfit;                                  // 0x00041E (0x00526236)
