@@ -226,61 +226,60 @@ namespace OpenLoco::Ui
 
     void Widget::sub_4CADE8(Gfx::Context* context, const Window* window, AdvancedColour colour, bool enabled, bool disabled, bool activated)
     {
-        int16_t xPlaceForImage = left + window->x;
-        int16_t yPlaceForImage = top + window->y;
-        uint32_t imageId = image;
+        Ui::Point placeForImage(left + window->x, top + window->y);
+        const bool isColourSet = image & Widget::imageIdColourSet;
+        ImageId imageId = ImageId::fromUInt32(image & ~Widget::imageIdColourSet);
         if (type == WidgetType::wt_6 || type == WidgetType::toolbarTab || type == WidgetType::tab || type == WidgetType::wt_4)
         {
             if (activated)
             {
                 // TODO: remove image addition
-                imageId++;
+                imageId = imageId.withIndexOffset(1);
             }
         }
 
         if (disabled)
         {
-            if (imageId & (1 << 31))
+            // TODO: this is odd most likely this is another flag like Widget::imageIdColourSet
+            if (imageId.hasSecondary())
             {
                 return;
             }
 
-            imageId &= 0x7FFFF;
+            // No colour applied image
+            const auto pureImage = ImageId{ imageId.getIndex() };
             uint8_t c;
             if (colour.isTranslucent())
             {
                 c = Colours::getShade(colour.c(), 4);
-                Gfx::drawImageSolid(context, xPlaceForImage + 1, yPlaceForImage + 1, imageId, c);
+                Gfx::drawImageSolid(*context, placeForImage + Ui::Point{ 1, 1 }, pureImage, c);
                 c = Colours::getShade(colour.c(), 2);
-                Gfx::drawImageSolid(context, xPlaceForImage, yPlaceForImage, imageId, c);
+                Gfx::drawImageSolid(*context, placeForImage, pureImage, c);
             }
             else
             {
                 c = Colours::getShade(colour.c(), 6);
-                Gfx::drawImageSolid(context, xPlaceForImage + 1, yPlaceForImage + 1, imageId, c);
+                Gfx::drawImageSolid(*context, placeForImage + Ui::Point{ 1, 1 }, pureImage, c);
                 c = Colours::getShade(colour.c(), 4);
-                Gfx::drawImageSolid(context, xPlaceForImage, yPlaceForImage, imageId, c);
+                Gfx::drawImageSolid(*context, placeForImage, pureImage, c);
             }
 
             return;
         }
 
-        if (imageId & (1 << 31))
+        // TODO: this is odd most likely this is another flag like Widget::imageIdColourSet
+        if (imageId.hasSecondary())
         {
             // 0x4CAE5F
             assert(false);
         }
 
-        if ((imageId & Widget::imageIdColourSet) == 0)
+        if (!isColourSet && imageId.hasPrimary())
         {
-            imageId |= enumValue(colour.c()) << 19;
-        }
-        else
-        {
-            imageId &= ~Widget::imageIdColourSet;
+            imageId = imageId.withPrimary(colour.c());
         }
 
-        Gfx::drawImage(context, xPlaceForImage, yPlaceForImage, imageId);
+        Gfx::drawImage(*context, placeForImage, imageId);
     }
 
     // 0x004CAB58
@@ -390,19 +389,16 @@ namespace OpenLoco::Ui
             return;
         }
 
+        const bool isColourSet = image & Widget::imageIdColourSet;
         // TODO: Remove addedImage addition
-        uint32_t addedImage = image + 2;
+        ImageId imageId = ImageId::fromUInt32(image & ~Widget::imageIdColourSet).withIndexOffset(2);
 
-        if ((addedImage & Widget::imageIdColourSet) == 0)
+        if (!isColourSet && imageId.hasPrimary())
         {
-            addedImage |= enumValue(colour.c()) << 19;
-        }
-        else
-        {
-            addedImage &= ~Widget::imageIdColourSet;
+            imageId = imageId.withPrimary(colour.c());
         }
 
-        Gfx::drawImage(context, window->x + left, window->y + top, addedImage);
+        Gfx::drawImage(*context, Ui::Point(window->x + left, window->y + top), imageId);
     }
 
     // 0x004CACD4
@@ -452,34 +448,27 @@ namespace OpenLoco::Ui
             return;
         }
 
-        uint32_t addedImage = image;
+        const bool isColourSet = image & Widget::imageIdColourSet;
+        // TODO: Remove addition
+        ImageId imageId = ImageId::fromUInt32(image & ~Widget::imageIdColourSet);
 
-        if (enabled)
+        if (enabled && activated && hovered)
         {
-            // TODO: Remove addedImage addition
-            addedImage += 2;
-
-            if (!activated)
-            {
-                addedImage -= 1;
-
-                if (!hovered)
-                {
-                    addedImage -= 1;
-                }
-            }
+            // TODO: Remove addition
+            imageId = imageId.withIndexOffset(2);
+        }
+        else if (enabled && !activated && hovered)
+        {
+            // TODO: Remove addition
+            imageId = imageId.withIndexOffset(1);
         }
 
-        if ((addedImage & Widget::imageIdColourSet) == 0)
+        if (!isColourSet && imageId.hasPrimary())
         {
-            addedImage |= enumValue(colour.c()) << 19;
-        }
-        else
-        {
-            addedImage &= ~Widget::imageIdColourSet;
+            imageId = imageId.withPrimary(colour.c());
         }
 
-        Gfx::drawImage(context, window->x + left, window->y + top, addedImage);
+        Gfx::drawImage(*context, Ui::Point(window->x + left, window->y + top), imageId);
     }
 
     // 0x004CB164

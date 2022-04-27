@@ -5,6 +5,7 @@
 #include "../Types.hpp"
 #include "../Ui/Rect.h"
 #include "../Ui/Types.hpp"
+#include "ImageId.h"
 #include <cstdint>
 
 namespace OpenLoco
@@ -240,8 +241,9 @@ namespace OpenLoco::Gfx
     void drawRectInset(Gfx::Context& context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags);
     void drawLine(Gfx::Context& context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
     void drawImage(Gfx::Context* context, int16_t x, int16_t y, uint32_t image);
-    void drawImageSolid(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t palette_index);
-    void drawImagePaletteSet(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t* palette);
+    void drawImage(Gfx::Context& context, const Ui::Point& pos, const ImageId& image);
+    void drawImageSolid(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
+    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette);
     [[nodiscard]] uint32_t recolour(uint32_t image);
     [[nodiscard]] uint32_t recolour(uint32_t image, Colour colour);
     [[nodiscard]] uint32_t recolour(uint32_t image, ExtColour colour);

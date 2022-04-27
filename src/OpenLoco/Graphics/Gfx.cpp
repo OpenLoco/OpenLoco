@@ -46,6 +46,7 @@ namespace OpenLoco::Gfx
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
     static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
+    loco_global<uint32_t, 0x00E04324> _E04324;
 
     static PaletteIndex_t _textColours[8] = { 0 };
 
@@ -694,20 +695,20 @@ namespace OpenLoco::Gfx
                 case ControlCodes::inline_sprite_str:
                 {
                     uint32_t image = ((uint32_t*)str)[0];
-                    uint32_t imageId = image & 0x7FFFF;
+                    ImageId imageId{ image & 0x7FFFF };
                     str += 4;
 
                     if ((_currentFontFlags & TextDrawFlags::inset) != 0)
                     {
-                        Gfx::drawImageSolid(context, pos.x, pos.y, imageId, _textColours[3]);
-                        Gfx::drawImageSolid(context, pos.x + 1, pos.y + 1, imageId, _textColours[1]);
+                        Gfx::drawImageSolid(*context, pos, imageId, _textColours[3]);
+                        Gfx::drawImageSolid(*context, pos + Ui::Point{ 1, 1 }, imageId, _textColours[1]);
                     }
                     else
                     {
                         Gfx::drawImage(context, pos.x, pos.y, image);
                     }
 
-                    pos.x += _g1Elements[imageId].width;
+                    pos.x += _g1Elements[imageId.getIndex()].width;
                     break;
                 }
 
@@ -773,7 +774,8 @@ namespace OpenLoco::Gfx
                         // When offscreen in the y dimension there is no requirement to keep pos.x correct
                         if (chr >= 32)
                         {
-                            Gfx::drawImagePaletteSet(context, pos.x, pos.y, 1116 + chr - 32 + _currentFontSpriteBase, _textColours);
+                            _E04324 = 0x20000000;
+                            Gfx::drawImagePaletteSet(*context, pos, ImageId(1116 + chr - 32 + _currentFontSpriteBase), PaletteMap{ _textColours });
                             pos.x += _characterWidths[chr - 32 + _currentFontSpriteBase];
                         }
                         else
@@ -1358,6 +1360,7 @@ namespace OpenLoco::Gfx
         redrawScreenRect(Rect::fromLTRB(left, top, right, bottom));
     }
 
+    // 0x00448C79
     void drawImage(Gfx::Context* context, int16_t x, int16_t y, uint32_t image)
     {
         registers regs;
@@ -1366,6 +1369,11 @@ namespace OpenLoco::Gfx
         regs.ebx = image;
         regs.edi = X86Pointer(context);
         call(0x00448C79, regs);
+    }
+
+    void drawImage(Gfx::Context& context, const Ui::Point& pos, const ImageId& image)
+    {
+        drawImage(&context, pos.x, pos.y, image.toUInt32());
     }
 
     uint32_t recolour(uint32_t image)
@@ -1398,27 +1406,31 @@ namespace OpenLoco::Gfx
     }
 
     loco_global<uint8_t*, 0x0050B860> _50B860;
-    loco_global<uint32_t, 0x00E04324> _E04324;
 
-    void drawImageSolid(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t palette_index)
+    void drawImageSolid(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
     {
         uint8_t palette[256];
-        memset(palette, palette_index, 256);
+        memset(palette, paletteIndex, 256);
         palette[0] = 0;
 
-        drawImagePaletteSet(context, x, y, image, palette);
+        drawImagePaletteSet(context, pos, image, PaletteMap{ palette });
     }
 
-    void drawImagePaletteSet(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
+    // 0x00448D90
+    static void drawImagePaletteSet(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
     {
         _50B860 = palette;
-        _E04324 = 0x20000000;
         registers regs;
         regs.cx = x;
         regs.dx = y;
         regs.ebx = image;
         regs.edi = X86Pointer(context);
         call(0x00448D90, regs);
+    }
+
+    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette)
+    {
+        drawImagePaletteSet(&context, pos.x, pos.y, image.toUInt32(), palette.data());
     }
 
     // 0x004CEC50
