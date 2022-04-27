@@ -19,6 +19,7 @@
 #include "../Objects/TreeObject.h"
 #include "../Objects/WallObject.h"
 #include "../Objects/WaterObject.h"
+#include "../Scenario.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
@@ -509,8 +510,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             _lastTreeCost = placeTreeGhost(*placementArgs);
         }
 
-        static loco_global<uint8_t, 0x00525FB4> _currentSnowLine;
-
         // 0x004BDF19
         static std::optional<uint8_t> getRandomTreeTypeFromSurface(const Map::TilePos2& loc, bool unk)
         {
@@ -532,7 +531,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             uint16_t mustTreeFlags = 0;
-            if (surface->baseZ() - 4 > _currentSnowLine)
+            if (surface->baseZ() - 4 > Scenario::getCurrentSnowLine())
             {
                 mustTreeFlags |= TreeObjectFlags::hasSnowVariation;
             }

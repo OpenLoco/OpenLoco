@@ -41,9 +41,6 @@ namespace OpenLoco::Scenario
 
     static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
 
-    static loco_global<uint8_t, 0x00525FB4> _currentSnowLine;
-    static loco_global<Season, 0x00525FB5> _currentSeason;
-
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
 
     static loco_global<ObjectiveType, 0x00526230> objectiveType;
@@ -98,7 +95,7 @@ namespace OpenLoco::Scenario
             season = nextSeason(season);
         }
 
-        _currentSeason = season;
+        setCurrentSeason(season);
     }
 
     // 0x00496A18
@@ -113,13 +110,13 @@ namespace OpenLoco::Scenario
 
         updateSeason(currentDayOfYear, climateObj);
 
-        if (_currentSeason == Season::winter)
+        if (getCurrentSeason() == Season::winter)
         {
-            _currentSnowLine = climateObj->winterSnowLine;
+            setCurrentSnowLine(climateObj->winterSnowLine);
         }
         else
         {
-            _currentSnowLine = climateObj->summerSnowLine;
+            setCurrentSnowLine(climateObj->summerSnowLine);
         }
     }
 
@@ -132,21 +129,36 @@ namespace OpenLoco::Scenario
 
         updateSeason(currentDayOfYear, climateObj);
 
-        if (_currentSeason == Season::winter)
+        if (getCurrentSeason() == Season::winter)
         {
-            if (_currentSnowLine != climateObj->winterSnowLine)
-                _currentSnowLine--;
+            if (getCurrentSnowLine() != climateObj->winterSnowLine)
+                setCurrentSnowLine(getCurrentSnowLine() - 1);
         }
         else
         {
-            if (_currentSnowLine != climateObj->summerSnowLine)
-                _currentSnowLine++;
+            if (getCurrentSnowLine() != climateObj->summerSnowLine)
+                setCurrentSnowLine(getCurrentSnowLine() + 1);
         }
     }
 
-    uint8_t getSnowLine()
+    // 0x00525FB4
+    uint8_t getCurrentSnowLine()
     {
-        return _currentSnowLine;
+        return getGameState().currentSnowLine;
+    }
+    void setCurrentSnowLine(uint8_t snowline)
+    {
+        getGameState().currentSnowLine = snowline;
+    }
+
+    // 0x00525FB5
+    Season getCurrentSeason()
+    {
+        return getGameState().currentSeason;
+    }
+    void setCurrentSeason(Season season)
+    {
+        getGameState().currentSeason = season;
     }
 
     // 0x00475988
@@ -257,7 +269,7 @@ namespace OpenLoco::Scenario
 
         _scenario_ticks = 0;
         _52622E = 0;
-        _currentSeason = Season::winter;
+        setCurrentSeason(Season::winter);
 
         CompanyManager::determineAvailableVehicles();
 
