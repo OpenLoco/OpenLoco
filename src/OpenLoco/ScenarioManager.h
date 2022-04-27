@@ -101,6 +101,5 @@ namespace OpenLoco::ScenarioManager
         // 0x00526245
         uint16_t getObjectiveCompletedChallengeInMonths();
         void setObjectiveCompletedChallengeInMonths(uint16_t months);
-
     }
 }

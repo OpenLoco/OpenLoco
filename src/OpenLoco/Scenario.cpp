@@ -417,18 +417,18 @@ namespace OpenLoco::Scenario
         {
             case Scenario::ObjectiveType::companyValue:
                 args.push(StringIds::achieve_a_company_value_of);
-                args.push(*objectiveCompanyValue);
+                args.push(ScenarioManager::Objective::getObjectiveCompanyValue());
                 break;
 
             case Scenario::ObjectiveType::vehicleProfit:
                 args.push(StringIds::achieve_a_monthly_profit_from_vehicles_of);
-                args.push(*objectiveMonthlyVehicleProfit);
+                args.push(ScenarioManager::Objective::getObjectiveMonthlyVehicleProfit());
                 break;
 
             case Scenario::ObjectiveType::performanceIndex:
             {
                 args.push(StringIds::achieve_a_performance_index_of);
-                int16_t performanceIndex = objectivePerformanceIndex * 10;
+                int16_t performanceIndex = ScenarioManager::Objective::getObjectivePerformanceIndex() * 10;
                 formatPerformanceIndex(performanceIndex, args);
                 break;
             }
@@ -437,12 +437,12 @@ namespace OpenLoco::Scenario
             {
                 args.push(StringIds::deliver);
                 CargoObject* cargoObject = _50D15C;
-                if (objectiveDeliveredCargoType != 0xFF)
+                if (ScenarioManager::Objective::getObjectiveDeliveredCargoType() != 0xFF)
                 {
-                    cargoObject = ObjectManager::get<CargoObject>(objectiveDeliveredCargoType);
+                    cargoObject = ObjectManager::get<CargoObject>(ScenarioManager::Objective::getObjectiveDeliveredCargoType());
                 }
                 args.push(cargoObject->unit_name_plural);
-                args.push(*objectiveDeliveredCargoAmount);
+                args.push(ScenarioManager::Objective::getObjectiveDeliveredCargoAmount());
                 break;
             }
         }
@@ -465,7 +465,7 @@ namespace OpenLoco::Scenario
             else
             {
                 args.push(StringIds::by_the_end_of);
-                args.push(*objectiveTimeLimitUntilYear);
+                args.push(ScenarioManager::Objective::getObjectiveTimeLimitUntilYear());
             }
         }
 

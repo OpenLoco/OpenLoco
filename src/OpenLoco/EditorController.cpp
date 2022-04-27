@@ -1,5 +1,6 @@
 #include "EditorController.h"
 #include "Audio/Audio.h"
+#include "CompanyManager.h"
 #include "Config.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -82,17 +83,17 @@ namespace OpenLoco::EditorController
             Game::sub_46DB4C(); // draw preview map
         }
 
-        options.maxCompetingCompanies = gameState.maxCompetingCompanies;
-        options.competitorStartDelay = gameState.competitorStartDelay;
+        options.maxCompetingCompanies = CompanyManager::getMaxCompetingCompanies();
+        options.competitorStartDelay = CompanyManager::getCompetitorStartDelay();
         gameState.numberOfIndustries = options.numberOfIndustries;
-        options.objectiveType = gameState.objectiveType;
-        options.objectiveFlags = gameState.objectiveFlags;
-        options.objectiveCompanyValue = gameState.objectiveCompanyValue;
-        options.objectiveMonthlyVehicleProfit = gameState.objectiveMonthlyVehicleProfit;
-        options.objectivePerformanceIndex = gameState.objectivePerformanceIndex;
-        options.objectiveDeliveredCargoType = gameState.objectiveDeliveredCargoType;
-        options.objectiveDeliveredCargoAmount = gameState.objectiveDeliveredCargoAmount;
-        options.objectiveTimeLimitYears = gameState.objectiveTimeLimitYears;
+        options.objectiveType = enumValue(ScenarioManager::Objective::getObjectiveType());
+        options.objectiveFlags = ScenarioManager::Objective::getObjectiveFlags();
+        options.objectiveCompanyValue = ScenarioManager::Objective::getObjectiveCompanyValue();
+        options.objectiveMonthlyVehicleProfit = ScenarioManager::Objective::getObjectiveMonthlyVehicleProfit();
+        options.objectivePerformanceIndex = ScenarioManager::Objective::getObjectivePerformanceIndex();
+        options.objectiveDeliveredCargoType = ScenarioManager::Objective::getObjectiveDeliveredCargoType();
+        options.objectiveDeliveredCargoAmount = ScenarioManager::Objective::getObjectiveDeliveredCargoAmount();
+        options.objectiveTimeLimitYears = ScenarioManager::Objective::getObjectiveTimeLimitYears();
 
         options.objectiveDeliveredCargo = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::cargo, options.objectiveDeliveredCargoType });
         options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, options.objectiveDeliveredCargoType });
