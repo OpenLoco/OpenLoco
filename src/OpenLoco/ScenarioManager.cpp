@@ -92,7 +92,6 @@ namespace OpenLoco::ScenarioManager
     {
         return getGameState().scenarioTicks;
     }
-
     void setScenarioTicks(uint32_t ticks)
     {
         getGameState().scenarioTicks = ticks;
@@ -103,7 +102,6 @@ namespace OpenLoco::ScenarioManager
     {
         return getGameState().scenarioTicks2;
     }
-
     void setScenarioTicks2(uint32_t ticks)
     {
         getGameState().scenarioTicks2 = ticks;
