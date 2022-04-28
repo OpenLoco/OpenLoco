@@ -14,6 +14,7 @@
 #include "../Localisation/StringManager.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
+#include "../ScenarioManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
@@ -661,8 +662,8 @@ namespace OpenLoco::S5
 
             if (flags & LoadFlags::titleSequence)
             {
-                addr<0x00525F5E, uint32_t>()--; // _scenario_ticks
-                addr<0x00525F64, uint32_t>()--; // _scenario_ticks2
+                ScenarioManager::setScenarioTicks(ScenarioManager::getScenarioTicks() - 1);
+                ScenarioManager::setScenarioTicks2(ScenarioManager::getScenarioTicks2() - 1);
                 addr<0x0050BF6C, uint8_t>() = 1;
             }
 

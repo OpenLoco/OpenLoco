@@ -24,6 +24,7 @@
 #include "Objects/ScenarioTextObject.h"
 #include "Platform/Platform.h"
 #include "S5/S5.h"
+#include "ScenarioManager.h"
 #include "StationManager.h"
 #include "Title.h"
 #include "TownManager.h"
@@ -38,8 +39,6 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Scenario
 {
     static loco_global<CargoObject*, 0x0050D15C> _50D15C;
-
-    static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
 
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
 
@@ -267,7 +266,7 @@ namespace OpenLoco::Scenario
 
         setDayProgression(0);
 
-        _scenario_ticks = 0;
+        ScenarioManager::setScenarioTicks(0);
         _52622E = 0;
         setCurrentSeason(Season::winter);
 

@@ -50,4 +50,8 @@ namespace OpenLoco::ScenarioManager
     // 0x00525F5E
     uint32_t getScenarioTicks();
     void setScenarioTicks(uint32_t ticks);
+
+    // 0x00525F64
+    uint32_t getScenarioTicks2();
+    void setScenarioTicks2(uint32_t ticks);
 }

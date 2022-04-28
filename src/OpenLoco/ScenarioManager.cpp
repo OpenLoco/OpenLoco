@@ -92,9 +92,18 @@ namespace OpenLoco::ScenarioManager
     {
         return getGameState().scenarioTicks;
     }
-
     void setScenarioTicks(uint32_t ticks)
     {
         getGameState().scenarioTicks = ticks;
+    }
+
+    // 0x00525F64
+    uint32_t getScenarioTicks2()
+    {
+        return getGameState().scenarioTicks2;
+    }
+    void setScenarioTicks2(uint32_t ticks)
+    {
+        getGameState().scenarioTicks2 = ticks;
     }
 }
