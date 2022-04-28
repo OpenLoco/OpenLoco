@@ -2,6 +2,7 @@
 
 #include "Core/FileSystem.hpp"
 #include "Localisation/FormatArguments.hpp"
+#include "Map/Map.hpp"
 #include <cstdint>
 
 namespace OpenLoco
@@ -112,8 +113,8 @@ namespace OpenLoco::Scenario
     void updateSnowLine(int32_t currentDayOfYear);
 
     // 0x00525FB4
-    uint8_t getCurrentSnowLine();
-    void setCurrentSnowLine(uint8_t snowline);
+    Map::SmallZ getCurrentSnowLine();
+    void setCurrentSnowLine(Map::SmallZ snowline);
 
     // 0x00525FB5
     Season getCurrentSeason();

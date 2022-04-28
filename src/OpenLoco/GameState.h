@@ -55,7 +55,7 @@ namespace OpenLoco
         uint8_t pickupDirection;                                                 // 0x000198 (0x00525FB0)
         uint8_t lastTreeOption;                                                  // 0x000199 (0x00525FB1)
         uint16_t seaLevel;                                                       // 0x00019A (0x00525FB2)
-        uint8_t currentSnowLine;                                                 // 0x00019C (0x00525FB4)
+        Map::SmallZ currentSnowLine;                                             // 0x00019C (0x00525FB4)
         Scenario::Season currentSeason;                                          // 0x00019D (0x00525FB5)
         uint8_t lastLandOption;                                                  // 0x00019E (0x00525FB6)
         uint8_t maxCompetingCompanies;                                           // 0x00019F (0x00525FB7)

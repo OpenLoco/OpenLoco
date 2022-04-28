@@ -142,11 +142,11 @@ namespace OpenLoco::Scenario
     }
 
     // 0x00525FB4
-    uint8_t getCurrentSnowLine()
+    Map::SmallZ getCurrentSnowLine()
     {
         return getGameState().currentSnowLine;
     }
-    void setCurrentSnowLine(uint8_t snowline)
+    void setCurrentSnowLine(Map::SmallZ snowline)
     {
         getGameState().currentSnowLine = snowline;
     }
