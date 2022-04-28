@@ -1,4 +1,4 @@
-#include "ScenarioObjective.h"
+#include "./ScenarioObjective.h"
 #include "./GameState.h"
 
 namespace OpenLoco::Scenario
