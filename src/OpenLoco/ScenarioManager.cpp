@@ -1,6 +1,6 @@
-#include "./ScenarioManager.h"
-#include "./GameState.h"
-#include "./Interop/Interop.hpp"
+#include "ScenarioManager.h"
+#include "GameState.h"
+#include "Interop/Interop.hpp"
 
 using namespace OpenLoco::Interop;
 

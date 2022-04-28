@@ -19,7 +19,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Scenario.h"
-#include "../ScenarioManager.h"
+#include "../ScenarioObjective.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"

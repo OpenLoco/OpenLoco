@@ -1,7 +1,7 @@
 #pragma once
 
-#include "./Objects/Object.h"
-#include "./Scenario.h"
+#include "Objects/Object.h"
+#include "Scenario.h"
 
 #include <cstddef>
 #include <cstdint>

@@ -11,7 +11,6 @@
 #include "../Objects/ScenarioTextObject.h"
 #include "../S5/S5.h"
 #include "../Scenario.h"
-#include "../ScenarioManager.h"
 #include "../ScenarioObjective.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
@@ -389,8 +388,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043FCED
         static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
-            auto objectiveFlags = Scenario::getObjective().flags;
-
             switch (widgetIndex)
             {
                 case Common::widx::tab_challenge:
@@ -401,22 +398,20 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
 
                 case check_be_top_company:
-                    objectiveFlags ^= Scenario::ObjectiveFlags::beTopCompany;
+                    Scenario::getObjective().flags ^= Scenario::ObjectiveFlags::beTopCompany;
                     self->invalidate();
                     break;
 
                 case check_be_within_top_three_companies:
-                    objectiveFlags ^= Scenario::ObjectiveFlags::beWithinTopThreeCompanies;
+                    Scenario::getObjective().flags ^= Scenario::ObjectiveFlags::beWithinTopThreeCompanies;
                     self->invalidate();
                     break;
 
                 case check_time_limit:
-                    objectiveFlags ^= Scenario::ObjectiveFlags::withinTimeLimit;
+                    Scenario::getObjective().flags ^= Scenario::ObjectiveFlags::withinTimeLimit;
                     self->invalidate();
                     break;
             }
-
-            Scenario::getObjective().flags = objectiveFlags;
         }
 
         // 0x0043FB0C
