@@ -11,7 +11,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
 #include "Ui/WindowManager.h"
 
 #include <vector>

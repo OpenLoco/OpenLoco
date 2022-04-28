@@ -6,7 +6,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
 #include "../MessageManager.h"
-#include "../Scenario.h"
+#include "../Scenario/Scenario.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Types.hpp"

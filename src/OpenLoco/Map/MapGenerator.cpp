@@ -5,7 +5,7 @@
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../S5/S5.h"
-#include "../Scenario.h"
+#include "../Scenario/Scenario.h"
 #include "../Ui/ProgressBar.h"
 #include "../Ui/WindowManager.h"
 #include "Tile.h"

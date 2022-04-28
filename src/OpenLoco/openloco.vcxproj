@@ -135,8 +135,9 @@
     <ClCompile Include="Platform\Platform.Windows.cpp" />
     <ClCompile Include="S5\S5.cpp" />
     <ClCompile Include="S5\SawyerStream.cpp" />
-    <ClCompile Include="Scenario.cpp" />
-    <ClCompile Include="ScenarioManager.cpp" />
+    <ClCompile Include="Scenario\ScenarioObjective.cpp" />
+    <ClCompile Include="Scenario\Scenario.cpp" />
+    <ClCompile Include="Scenario\ScenarioManager.cpp" />
     <ClCompile Include="Station.cpp" />
     <ClCompile Include="StationManager.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -364,8 +365,9 @@
     <ClInclude Include="S5\Limits.h" />
     <ClInclude Include="S5\S5.h" />
     <ClInclude Include="S5\SawyerStream.h" />
-    <ClInclude Include="Scenario.h" />
-    <ClInclude Include="ScenarioManager.h" />
+    <ClInclude Include="Scenario\ScenarioObjective.h" />
+    <ClInclude Include="Scenario\Scenario.h" />
+    <ClInclude Include="Scenario\ScenarioManager.h" />
     <ClInclude Include="Speed.hpp" />
     <ClInclude Include="Station.h" />
     <ClInclude Include="StationManager.h" />

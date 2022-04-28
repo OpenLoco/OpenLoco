@@ -5,7 +5,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
-#include "../Scenario.h"
+#include "../Scenario/Scenario.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 

@@ -1,35 +1,36 @@
-#include "Scenario.h"
-#include "Audio/Audio.h"
-#include "CompanyManager.h"
-#include "Date.h"
-#include "Economy/Economy.h"
-#include "Entities/EntityManager.h"
-#include "Environment.h"
-#include "Game.h"
-#include "GameException.hpp"
-#include "GameState.h"
-#include "Graphics/Gfx.h"
-#include "Gui.h"
-#include "IndustryManager.h"
-#include "Interop/Interop.hpp"
-#include "Localisation/StringIds.h"
-#include "Map/AnimationManager.h"
-#include "Map/MapGenerator.h"
-#include "Map/TileManager.h"
-#include "Map/WaveManager.h"
-#include "MultiPlayer.h"
-#include "Objects/CargoObject.h"
-#include "Objects/ClimateObject.h"
-#include "Objects/ObjectManager.h"
-#include "Objects/ScenarioTextObject.h"
-#include "Platform/Platform.h"
-#include "S5/S5.h"
-#include "ScenarioManager.h"
-#include "StationManager.h"
-#include "Title.h"
-#include "TownManager.h"
-#include "Ui/WindowManager.h"
-#include "Windows/Construction/Construction.h"
+#include "./Scenario.h"
+#include "../Audio/Audio.h"
+#include "../CompanyManager.h"
+#include "../Date.h"
+#include "../Economy/Economy.h"
+#include "../Entities/EntityManager.h"
+#include "../Environment.h"
+#include "../Game.h"
+#include "../GameException.hpp"
+#include "../GameState.h"
+#include "../Graphics/Gfx.h"
+#include "../Gui.h"
+#include "../IndustryManager.h"
+#include "../Interop/Interop.hpp"
+#include "../Localisation/StringIds.h"
+#include "../Map/AnimationManager.h"
+#include "../Map/MapGenerator.h"
+#include "../Map/TileManager.h"
+#include "../Map/WaveManager.h"
+#include "../MultiPlayer.h"
+#include "../Objects/CargoObject.h"
+#include "../Objects/ClimateObject.h"
+#include "../Objects/ObjectManager.h"
+#include "../Objects/ScenarioTextObject.h"
+#include "../Platform/Platform.h"
+#include "../S5/S5.h"
+#include "../StationManager.h"
+#include "../Title.h"
+#include "../TownManager.h"
+#include "../Ui/WindowManager.h"
+#include "../Windows/Construction/Construction.h"
+#include "./ScenarioManager.h"
+#include "./ScenarioObjective.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
@@ -375,8 +376,8 @@ namespace OpenLoco::Scenario
         initialiseSnowLine();
         sub_4748D4();
         std::fill(std::begin(gameState.recordSpeed), std::end(gameState.recordSpeed), 0_mph);
-        gameState.objectiveTimeLimitUntilYear = gameState.objectiveTimeLimitYears - 1 + gameState.currentYear;
-        gameState.objectiveMonthsInChallenge = 0;
+        getObjective().timeLimitUntilYear = getObjective().timeLimitUntilYear - 1 + gameState.currentYear;
+        getObjective().monthsInChallenge = 0;
         call(0x0049B546);
         gameState.lastMapWindowFlags = 0;
 
@@ -413,22 +414,22 @@ namespace OpenLoco::Scenario
     // 0x004384E9
     void formatChallengeArguments(FormatArguments& args)
     {
-        switch (ScenarioManager::Objective::getObjectiveType())
+        switch (Scenario::getObjective().type)
         {
             case Scenario::ObjectiveType::companyValue:
                 args.push(StringIds::achieve_a_company_value_of);
-                args.push(ScenarioManager::Objective::getObjectiveCompanyValue());
+                args.push(Scenario::getObjective().companyValue);
                 break;
 
             case Scenario::ObjectiveType::vehicleProfit:
                 args.push(StringIds::achieve_a_monthly_profit_from_vehicles_of);
-                args.push(ScenarioManager::Objective::getObjectiveMonthlyVehicleProfit());
+                args.push(Scenario::getObjective().monthlyVehicleProfit);
                 break;
 
             case Scenario::ObjectiveType::performanceIndex:
             {
                 args.push(StringIds::achieve_a_performance_index_of);
-                int16_t performanceIndex = ScenarioManager::Objective::getObjectivePerformanceIndex() * 10;
+                int16_t performanceIndex = Scenario::getObjective().performanceIndex * 10;
                 formatPerformanceIndex(performanceIndex, args);
                 break;
             }
@@ -437,35 +438,35 @@ namespace OpenLoco::Scenario
             {
                 args.push(StringIds::deliver);
                 CargoObject* cargoObject = _50D15C;
-                if (ScenarioManager::Objective::getObjectiveDeliveredCargoType() != 0xFF)
+                if (Scenario::getObjective().deliveredCargoType != 0xFF)
                 {
-                    cargoObject = ObjectManager::get<CargoObject>(ScenarioManager::Objective::getObjectiveDeliveredCargoType());
+                    cargoObject = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
                 }
                 args.push(cargoObject->unit_name_plural);
-                args.push(ScenarioManager::Objective::getObjectiveDeliveredCargoAmount());
+                args.push(Scenario::getObjective().deliveredCargoAmount);
                 break;
             }
         }
 
-        if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::beTopCompany) != 0)
+        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beTopCompany) != 0)
         {
             args.push(StringIds::and_be_the_top_performing_company);
         }
-        if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
+        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
         {
             args.push(StringIds::and_be_one_of_the_top_3_performing_companies);
         }
-        if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
         {
             if (isTitleMode() || isEditorMode())
             {
                 args.push(StringIds::within_years);
-                args.push<uint16_t>(ScenarioManager::Objective::getObjectiveTimeLimitYears());
+                args.push<uint16_t>(Scenario::getObjective().timeLimitYears);
             }
             else
             {
                 args.push(StringIds::by_the_end_of);
-                args.push(ScenarioManager::Objective::getObjectiveTimeLimitUntilYear());
+                args.push(Scenario::getObjective().timeLimitUntilYear);
             }
         }
 

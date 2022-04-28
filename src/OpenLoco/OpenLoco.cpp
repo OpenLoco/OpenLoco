@@ -55,8 +55,8 @@
 #include "Platform/Crash.h"
 #include "Platform/Platform.h"
 #include "S5/S5.h"
-#include "Scenario.h"
-#include "ScenarioManager.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioManager.h"
 #include "StationManager.h"
 #include "Title.h"
 #include "TownManager.h"
@@ -1015,7 +1015,7 @@ namespace OpenLoco
                 if (today.month != yesterday.month)
                 {
                     // End of every month
-                    ScenarioManager::Objective::setObjectiveMonthsInChallenge(ScenarioManager::Objective::getObjectiveMonthsInChallenge() + 1);
+                    Scenario::getObjective().monthsInChallenge++;
                     TownManager::updateMonthly();
                     IndustryManager::updateMonthly();
                     CompanyManager::updateMonthly1();

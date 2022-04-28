@@ -10,7 +10,7 @@
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../S5/S5.h"
-#include "../Scenario.h"
+#include "../Scenario/Scenario.h"
 #include "../TownManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"

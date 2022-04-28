@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Objects/Object.h"
-#include "Scenario.h"
+#include "../Objects/Object.h"
+#include "./Scenario.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -55,51 +55,4 @@ namespace OpenLoco::ScenarioManager
     // 0x00525F64
     uint32_t getScenarioTicks2();
     void setScenarioTicks2(uint32_t ticks);
-
-    namespace Objective
-    {
-        // 0x00526230
-        Scenario::ObjectiveType getObjectiveType();
-        void setObjectiveType(Scenario::ObjectiveType type);
-
-        // 0x00526231
-        uint8_t getObjectiveFlags();
-        void setObjectiveFlags(uint8_t flags);
-
-        // 0x00526232
-        uint32_t getObjectiveCompanyValue();
-        void setObjectiveCompanyValue(uint32_t value);
-
-        // 0x00526236
-        uint32_t getObjectiveMonthlyVehicleProfit();
-        void setObjectiveMonthlyVehicleProfit(uint32_t profit);
-
-        // 0x0052623A
-        uint8_t getObjectivePerformanceIndex();
-        void setObjectivePerformanceIndex(uint8_t performanceIndex);
-
-        // 0x0052623B
-        uint8_t getObjectiveDeliveredCargoType();
-        void setObjectiveDeliveredCargoType(uint8_t cargoType);
-
-        // 0x0052623C
-        uint32_t getObjectiveDeliveredCargoAmount();
-        void setObjectiveDeliveredCargoAmount(uint32_t cargo);
-
-        // 0x00526240
-        uint8_t getObjectiveTimeLimitYears();
-        void setObjectiveTimeLimitYears(uint8_t years);
-
-        // 0x00526241
-        uint16_t getObjectiveTimeLimitUntilYear();
-        void setObjectiveTimeLimitUntilYear(uint16_t year);
-
-        // 0x00526243
-        uint16_t getObjectiveMonthsInChallenge();
-        void setObjectiveMonthsInChallenge(uint16_t months);
-
-        // 0x00526245
-        uint16_t getObjectiveCompletedChallengeInMonths();
-        void setObjectiveCompletedChallengeInMonths(uint16_t months);
-    }
 }

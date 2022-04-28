@@ -10,8 +10,9 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/ScenarioTextObject.h"
 #include "../S5/S5.h"
-#include "../Scenario.h"
-#include "../ScenarioManager.h"
+#include "../Scenario/Scenario.h"
+#include "../Scenario/ScenarioManager.h"
+#include "../Scenario/ScenarioObjective.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
@@ -231,13 +232,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             switch (widgetIndex)
             {
                 case widx::objective_type_btn:
-                    ScenarioManager::Objective::setObjectiveType(static_cast<Scenario::ObjectiveType>(itemIndex));
+                    Scenario::getObjective().type = static_cast<Scenario::ObjectiveType>(itemIndex);
                     self->invalidate();
                     break;
 
                 case widx::objective_cargo_btn:
                 {
-                    ScenarioManager::Objective::setObjectiveDeliveredCargoType(cargoByDropdownIndex[itemIndex]);
+                    Scenario::getObjective().deliveredCargoType = cargoByDropdownIndex[itemIndex];
                     self->invalidate();
                 }
             }
@@ -256,24 +257,24 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     for (size_t i = 0; i < std::size(objectiveTypeLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, objectiveTypeLabelIds[i]);
 
-                    Dropdown::setItemSelected(enumValue(ScenarioManager::Objective::getObjectiveType()));
+                    Dropdown::setItemSelected(enumValue(Scenario::getObjective().type));
                     break;
                 }
 
                 case widx::objective_value_down:
                 {
-                    switch (ScenarioManager::Objective::getObjectiveType())
+                    switch (Scenario::getObjective().type)
                     {
                         case Scenario::ObjectiveType::companyValue:
-                            ScenarioManager::Objective::setObjectiveCompanyValue(std::max<uint32_t>(ScenarioManager::Objective::getObjectiveCompanyValue() - 100000, Scenario::min_objective_company_value));
+                            Scenario::getObjective().companyValue = std::max<uint32_t>(Scenario::getObjective().companyValue - 100000, Scenario::min_objective_company_value);
                             break;
 
                         case Scenario::ObjectiveType::vehicleProfit:
-                            ScenarioManager::Objective::setObjectiveMonthlyVehicleProfit(std::max<uint32_t>(ScenarioManager::Objective::getObjectiveMonthlyVehicleProfit() - 1000, Scenario::min_objective_monthly_profit_from_vehicles));
+                            Scenario::getObjective().monthlyVehicleProfit = std::max<uint32_t>(Scenario::getObjective().monthlyVehicleProfit - 1000, Scenario::min_objective_monthly_profit_from_vehicles);
                             break;
 
                         case Scenario::ObjectiveType::performanceIndex:
-                            ScenarioManager::Objective::setObjectivePerformanceIndex(std::max<uint8_t>(ScenarioManager::Objective::getObjectivePerformanceIndex() - 5, Scenario::min_objective_performance_index));
+                            Scenario::getObjective().performanceIndex = std::max<uint8_t>(Scenario::getObjective().performanceIndex - 5, Scenario::min_objective_performance_index);
                             break;
 
                         case Scenario::ObjectiveType::cargoDelivery:
@@ -287,10 +288,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                                 stepSize = 10000;
 
                             // Round off cargo to the nearest multiple of the step size.
-                            uint16_t cargoFactor = (ScenarioManager::Objective::getObjectiveDeliveredCargoAmount() - stepSize) / stepSize;
+                            uint16_t cargoFactor = (Scenario::getObjective().deliveredCargoAmount - stepSize) / stepSize;
                             uint32_t newDeliveredCargoAmount = cargoFactor * stepSize;
 
-                            ScenarioManager::Objective::setObjectiveDeliveredCargoAmount(std::max<uint32_t>(newDeliveredCargoAmount, Scenario::min_objective_delivered_cargo));
+                            Scenario::getObjective().deliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, Scenario::min_objective_delivered_cargo);
                             break;
                         }
                     }
@@ -301,18 +302,18 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::objective_value_up:
                 {
-                    switch (ScenarioManager::Objective::getObjectiveType())
+                    switch (Scenario::getObjective().type)
                     {
                         case Scenario::ObjectiveType::companyValue:
-                            ScenarioManager::Objective::setObjectiveCompanyValue(std::min<uint32_t>(ScenarioManager::Objective::getObjectiveCompanyValue() + 100000, Scenario::max_objective_company_value));
+                            Scenario::getObjective().companyValue = std::min<uint32_t>(Scenario::getObjective().companyValue + 100000, Scenario::max_objective_company_value);
                             break;
 
                         case Scenario::ObjectiveType::vehicleProfit:
-                            ScenarioManager::Objective::setObjectiveMonthlyVehicleProfit(std::min<uint32_t>(ScenarioManager::Objective::getObjectiveMonthlyVehicleProfit() + 1000, Scenario::max_objective_monthly_profit_from_vehicles));
+                            Scenario::getObjective().monthlyVehicleProfit = std::min<uint32_t>(Scenario::getObjective().monthlyVehicleProfit + 1000, Scenario::max_objective_monthly_profit_from_vehicles);
                             break;
 
                         case Scenario::ObjectiveType::performanceIndex:
-                            ScenarioManager::Objective::setObjectivePerformanceIndex(std::min<uint8_t>(ScenarioManager::Objective::getObjectivePerformanceIndex() + 5, Scenario::max_objective_performance_index));
+                            Scenario::getObjective().performanceIndex = std::min<uint8_t>(Scenario::getObjective().performanceIndex + 5, Scenario::max_objective_performance_index);
                             break;
 
                         case Scenario::ObjectiveType::cargoDelivery:
@@ -326,10 +327,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                                 stepSize = 10000;
 
                             // Round off cargo to the nearest multiple of the step size.
-                            uint16_t cargoFactor = (ScenarioManager::Objective::getObjectiveDeliveredCargoAmount() + stepSize) / stepSize;
+                            uint16_t cargoFactor = (Scenario::getObjective().deliveredCargoAmount + stepSize) / stepSize;
                             uint32_t newDeliveredCargoAmount = cargoFactor * stepSize;
 
-                            ScenarioManager::Objective::setObjectiveDeliveredCargoAmount(std::max<uint32_t>(newDeliveredCargoAmount, Scenario::min_objective_delivered_cargo));
+                            Scenario::getObjective().deliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, Scenario::min_objective_delivered_cargo);
                             break;
                         }
                     }
@@ -361,7 +362,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                         Dropdown::add(dropdownIndex, StringIds::dropdown_stringid, cargoObject->name);
                         cargoByDropdownIndex[dropdownIndex] = cargoIdx;
 
-                        if (cargoIdx == ScenarioManager::Objective::getObjectiveDeliveredCargoType())
+                        if (cargoIdx == Scenario::getObjective().deliveredCargoType)
                             Dropdown::setItemSelected(dropdownIndex);
 
                         dropdownIndex++;
@@ -371,14 +372,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::time_limit_value_down:
                 {
-                    ScenarioManager::Objective::setObjectiveTimeLimitYears(std::max<uint8_t>(ScenarioManager::Objective::getObjectiveTimeLimitYears() - 1, Scenario::min_objective_year_limit));
+                    Scenario::getObjective().timeLimitYears = std::max<uint8_t>(Scenario::getObjective().timeLimitYears - 1, Scenario::min_objective_year_limit);
                     self->invalidate();
                     break;
                 }
 
                 case widx::time_limit_value_up:
                 {
-                    ScenarioManager::Objective::setObjectiveTimeLimitYears(std::min<uint8_t>(ScenarioManager::Objective::getObjectiveTimeLimitYears() + 1, Scenario::max_objective_year_limit));
+                    Scenario::getObjective().timeLimitYears = std::min<uint8_t>(Scenario::getObjective().timeLimitYears + 1, Scenario::max_objective_year_limit);
                     self->invalidate();
                     break;
                 }
@@ -388,7 +389,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043FCED
         static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
-            auto objectiveFlags = ScenarioManager::Objective::getObjectiveFlags();
+            auto objectiveFlags = Scenario::getObjective().flags;
 
             switch (widgetIndex)
             {
@@ -415,7 +416,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
             }
 
-            ScenarioManager::Objective::setObjectiveFlags(objectiveFlags);
+            Scenario::getObjective().flags = objectiveFlags;
         }
 
         // 0x0043FB0C
@@ -423,35 +424,35 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            widgets[widx::objective_type].text = objectiveTypeLabelIds[enumValue(ScenarioManager::Objective::getObjectiveType())];
+            widgets[widx::objective_type].text = objectiveTypeLabelIds[enumValue(Scenario::getObjective().type)];
             widgets[widx::objective_cargo].type = WidgetType::none;
             widgets[widx::objective_cargo_btn].type = WidgetType::none;
             widgets[widx::time_limit_value].type = WidgetType::none;
             widgets[widx::time_limit_value_down].type = WidgetType::none;
             widgets[widx::time_limit_value_up].type = WidgetType::none;
 
-            switch (ScenarioManager::Objective::getObjectiveType())
+            switch (Scenario::getObjective().type)
             {
                 case Scenario::ObjectiveType::companyValue:
-                    *(int32_t*)&*commonFormatArgs = ScenarioManager::Objective::getObjectiveCompanyValue();
+                    *(int32_t*)&*commonFormatArgs = Scenario::getObjective().companyValue;
                     widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
                 case Scenario::ObjectiveType::vehicleProfit:
-                    *(int32_t*)&*commonFormatArgs = ScenarioManager::Objective::getObjectiveMonthlyVehicleProfit();
+                    *(int32_t*)&*commonFormatArgs = Scenario::getObjective().monthlyVehicleProfit;
                     widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
                 case Scenario::ObjectiveType::performanceIndex:
-                    *(int16_t*)&*commonFormatArgs = ScenarioManager::Objective::getObjectivePerformanceIndex() * 10;
+                    *(int16_t*)&*commonFormatArgs = Scenario::getObjective().performanceIndex * 10;
                     widgets[widx::objective_value].text = StringIds::challenge_performance_index;
                     break;
 
                 case Scenario::ObjectiveType::cargoDelivery:
-                    *(int32_t*)&*commonFormatArgs = ScenarioManager::Objective::getObjectiveDeliveredCargoAmount();
+                    *(int32_t*)&*commonFormatArgs = Scenario::getObjective().deliveredCargoAmount;
                     widgets[widx::objective_value].text = StringIds::challenge_delivered_cargo;
 
-                    auto cargo = ObjectManager::get<CargoObject>(ScenarioManager::Objective::getObjectiveDeliveredCargoType());
+                    auto cargo = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
                     widgets[widx::objective_cargo].text = cargo->name;
                     widgets[widx::objective_cargo].type = WidgetType::combobox;
                     widgets[widx::objective_cargo_btn].type = WidgetType::button;
@@ -460,20 +461,20 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self->activatedWidgets &= ~((1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit));
 
-            if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::beTopCompany)
+            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beTopCompany)
                 != 0)
                 self->activatedWidgets |= 1 << widx::check_be_top_company;
 
-            if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
+            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
                 self->activatedWidgets |= 1 << widx::check_be_within_top_three_companies;
 
-            if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
             {
                 self->activatedWidgets |= 1 << widx::check_time_limit;
                 widgets[widx::time_limit_value].type = WidgetType::textbox;
                 widgets[widx::time_limit_value_down].type = WidgetType::button;
                 widgets[widx::time_limit_value_up].type = WidgetType::button;
-                commonFormatArgs[3] = ScenarioManager::Objective::getObjectiveTimeLimitYears();
+                commonFormatArgs[3] = Scenario::getObjective().timeLimitYears;
             }
         }
 

@@ -24,7 +24,7 @@
 #include "../Objects/RoadStationObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
-#include "../ScenarioManager.h"
+#include "../Scenario/ScenarioManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"

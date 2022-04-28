@@ -6,7 +6,8 @@
 #include "Map/Animation.h"
 #include "Map/Wave.h"
 #include "Message.h"
-#include "Scenario.h"
+#include "Scenario/Scenario.h"
+#include "Scenario/ScenarioObjective.h"
 #include "Station.h"
 #include "Town.h"
 
@@ -87,17 +88,7 @@ namespace OpenLoco
         uint8_t lastBuildVehiclesOption;                                         // 0x000414 (0x0052622C)
         uint8_t numberOfIndustries;                                              // 0x000415 (0x0052622D)
         uint16_t var_416;                                                        // 0x000416 (0x0052622E)
-        Scenario::ObjectiveType objectiveType;                                   // 0x000418 (0x00526230)
-        uint8_t objectiveFlags;                                                  // 0x000419 (0x00526231)
-        uint32_t objectiveCompanyValue;                                          // 0x00041A (0x00526232)
-        uint32_t objectiveMonthlyVehicleProfit;                                  // 0x00041E (0x00526236)
-        uint8_t objectivePerformanceIndex;                                       // 0x000422 (0x0052623A)
-        uint8_t objectiveDeliveredCargoType;                                     // 0x000423 (0x0052623B)
-        uint32_t objectiveDeliveredCargoAmount;                                  // 0x000424 (0x0052623C)
-        uint8_t objectiveTimeLimitYears;                                         // 0x000428 (0x00526240)
-        uint16_t objectiveTimeLimitUntilYear;                                    // 0x000429 (0x00526241)
-        uint16_t objectiveMonthsInChallenge;                                     // 0x00042B (0x00526243)
-        uint16_t objectiveCompletedChallengeInMonths;                            // 0x00042D (0x00526245)
+        Scenario::Objective scenarioObjective;                                   // 0x000418 (0x00526230)
         uint8_t industryFlags;                                                   // 0x00042F (0x00526247)
         uint16_t forbiddenVehiclesPlayers;                                       // 0x000430 (0x00526248)
         uint16_t forbiddenVehiclesCompetitors;                                   // 0x000432 (0x0052624A)

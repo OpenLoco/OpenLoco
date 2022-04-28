@@ -24,7 +24,7 @@
 #include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
-#include "../Scenario.h"
+#include "../Scenario/Scenario.h"
 #include "../Station.h"
 #include "../StationManager.h"
 #include "../Title.h"
@@ -110,7 +110,7 @@ static uint32_t STDCALL lib_timeGetTime()
     return Platform::getTime();
 }
 
-//typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
+// typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
 FORCE_ALIGN_ARG_POINTER
 static long STDCALL fn_DirectSoundEnumerateA(void* pDSEnumCallback, void* pContext)
 {
@@ -136,7 +136,7 @@ static void STDCALL fn_407b26()
     return;
 }
 
-///region Progress bar
+/// region Progress bar
 
 static void CDECL fn_4080bb(char* lpWindowName, uint32_t a1)
 {
@@ -159,7 +159,7 @@ static void CDECL fn_4081ad(int32_t wParam)
     Console::log("SendMessage(PBM_SETPOS, %d)", wParam);
 }
 
-///endregion
+/// endregion
 
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)

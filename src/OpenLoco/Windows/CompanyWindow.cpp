@@ -18,8 +18,8 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
-#include "../Scenario.h"
-#include "../ScenarioManager.h"
+#include "../Scenario/Scenario.h"
+#include "../Scenario/ScenarioManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
@@ -2353,8 +2353,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challengeFlags & CompanyFlags::challengeCompleted) != 0)
             {
-                uint16_t years = ScenarioManager::Objective::getObjectiveCompletedChallengeInMonths() / 12;
-                uint16_t months = ScenarioManager::Objective::getObjectiveCompletedChallengeInMonths() % 12;
+                uint16_t years = Scenario::getObjective().completedChallengeInMonths / 12;
+                uint16_t months = Scenario::getObjective().completedChallengeInMonths % 12;
 
                 auto args = FormatArguments::common(years, months);
                 Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
@@ -2369,8 +2369,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challengeFlags & CompanyFlags::challengeBeatenByOpponent) != 0)
             {
-                uint16_t years = ScenarioManager::Objective::getObjectiveCompletedChallengeInMonths() / 12;
-                uint16_t months = ScenarioManager::Objective::getObjectiveCompletedChallengeInMonths() % 12;
+                uint16_t years = Scenario::getObjective().completedChallengeInMonths / 12;
+                uint16_t months = Scenario::getObjective().completedChallengeInMonths % 12;
 
                 FormatArguments args{};
                 args.push(CompanyManager::getOpponent()->ownerName);
@@ -2387,10 +2387,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y = Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
             }
 
-            if ((ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
             {
                 // time limited challenge
-                uint16_t monthsLeft = ScenarioManager::Objective::getObjectiveTimeLimitYears() * 12 - ScenarioManager::Objective::getObjectiveMonthsInChallenge();
+                uint16_t monthsLeft = Scenario::getObjective().timeLimitYears * 12 - Scenario::getObjective().monthsInChallenge;
                 uint16_t years = monthsLeft / 12;
                 uint16_t months = monthsLeft % 12;
 

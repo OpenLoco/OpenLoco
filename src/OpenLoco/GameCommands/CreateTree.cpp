@@ -8,7 +8,7 @@
 #include "../Objects/TreeObject.h"
 #include "../OpenLoco.h"
 #include "../S5/S5.h"
-#include "../Scenario.h"
+#include "../Scenario/Scenario.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"

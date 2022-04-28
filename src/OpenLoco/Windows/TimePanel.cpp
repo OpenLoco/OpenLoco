@@ -12,7 +12,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
-#include "../ScenarioManager.h"
+#include "../Scenario/ScenarioObjective.h"
 #include "../Ui.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
@@ -346,9 +346,9 @@ namespace OpenLoco::Ui::Windows::TimePanel
             args.push(StringIds::challenge_progress);
             args.push<uint16_t>(playerCompany->challengeProgress);
 
-            if (ScenarioManager::Objective::getObjectiveFlags() & Scenario::ObjectiveFlags::withinTimeLimit)
+            if (Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit)
             {
-                uint16_t monthsLeft = (ScenarioManager::Objective::getObjectiveTimeLimitYears() * 12 - ScenarioManager::Objective::getObjectiveMonthsInChallenge());
+                uint16_t monthsLeft = (Scenario::getObjective().timeLimitYears * 12 - Scenario::getObjective().monthsInChallenge);
                 uint16_t yearsLeft = monthsLeft / 12;
                 monthsLeft = monthsLeft % 12;
                 args.push(StringIds::challenge_time_left);
