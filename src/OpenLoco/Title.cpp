@@ -11,7 +11,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "Scenario/Scenario.h"
+#include "Scenario.h"
 #include "Ui/WindowManager.h"
 
 #include <vector>
@@ -52,7 +52,7 @@ namespace OpenLoco::Title
 
     // Explicit deduction guide (not needed as of C++20)
     template<class... Ts>
-    overloaded(Ts...)->overloaded<Ts...>;
+    overloaded(Ts...) -> overloaded<Ts...>;
 
     static const TitleSequence _titleSequence = {
         MoveStep{ 231, 160 },

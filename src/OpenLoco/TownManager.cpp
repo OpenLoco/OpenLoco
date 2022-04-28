@@ -8,7 +8,7 @@
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
-#include "Scenario/ScenarioManager.h"
+#include "ScenarioManager.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
 

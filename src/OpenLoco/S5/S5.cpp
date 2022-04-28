@@ -14,7 +14,7 @@
 #include "../Localisation/StringManager.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
-#include "../Scenario/ScenarioManager.h"
+#include "../ScenarioManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"

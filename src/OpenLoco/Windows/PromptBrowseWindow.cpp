@@ -11,7 +11,7 @@
 #include "../OpenLoco.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
-#include "../Scenario/Scenario.h"
+#include "../Scenario.h"
 #include "../Ui.h"
 #include "../Ui/TextInput.h"
 #include "../Ui/WindowManager.h"

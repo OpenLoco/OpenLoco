@@ -4,7 +4,7 @@
 #include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "../Limits.h"
-#include "../Scenario/ScenarioManager.h"
+#include "../ScenarioManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Prng.hpp"
 #include "../ViewportManager.h"

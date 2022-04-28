@@ -11,9 +11,9 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
 #include "S5/S5.h"
-#include "Scenario/Scenario.h"
-#include "Scenario/ScenarioManager.h"
-#include "Scenario/ScenarioObjective.h"
+#include "Scenario.h"
+#include "ScenarioManager.h"
+#include "ScenarioObjective.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 

@@ -2,7 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
-#include "../Scenario/ScenarioManager.h"
+#include "../ScenarioManager.h"
 
 namespace OpenLoco
 {

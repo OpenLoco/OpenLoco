@@ -12,7 +12,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
-#include "../Scenario/ScenarioObjective.h"
+#include "../ScenarioObjective.h"
 #include "../Ui.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"

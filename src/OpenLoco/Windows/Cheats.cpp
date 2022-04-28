@@ -12,7 +12,7 @@
 #include "../Math/Bound.hpp"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
-#include "../Scenario/Scenario.h"
+#include "../Scenario.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"

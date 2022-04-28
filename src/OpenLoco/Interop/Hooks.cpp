@@ -24,7 +24,7 @@
 #include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
-#include "../Scenario/Scenario.h"
+#include "../Scenario.h"
 #include "../Station.h"
 #include "../StationManager.h"
 #include "../Title.h"

@@ -6,8 +6,8 @@
 #include "Map/Animation.h"
 #include "Map/Wave.h"
 #include "Message.h"
-#include "Scenario/Scenario.h"
-#include "Scenario/ScenarioObjective.h"
+#include "Scenario.h"
+#include "ScenarioObjective.h"
 #include "Station.h"
 #include "Town.h"
 

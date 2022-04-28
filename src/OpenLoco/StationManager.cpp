@@ -9,7 +9,7 @@
 #include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
 #include "OpenLoco.h"
-#include "Scenario/ScenarioManager.h"
+#include "ScenarioManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
