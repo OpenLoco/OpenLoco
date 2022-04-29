@@ -229,6 +229,7 @@ namespace OpenLoco::Ui
         Ui::Point placeForImage(left + window->x, top + window->y);
         const bool isColourSet = image & Widget::imageIdColourSet;
         ImageId imageId = ImageId::fromUInt32(image & ~Widget::imageIdColourSet);
+
         if (type == WidgetType::wt_6 || type == WidgetType::toolbarTab || type == WidgetType::tab || type == WidgetType::wt_4)
         {
             if (activated)
@@ -274,7 +275,7 @@ namespace OpenLoco::Ui
             assert(false);
         }
 
-        if (!isColourSet && imageId.hasPrimary())
+        if (!isColourSet)
         {
             imageId = imageId.withPrimary(colour.c());
         }
