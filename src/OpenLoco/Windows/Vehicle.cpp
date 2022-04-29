@@ -2344,12 +2344,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return Vehicles::OrderRingView(head->orderTableOffset);
         }
 
-        static std::pair<Map::Pos3, std::string> sub_470B76(const Vehicles::OrderRingView::Iterator& order, uint8_t orderNum)
+        // 0x00470B76
+        static std::pair<Map::Pos3, std::string> generateOrderUiStringAndLoc(const Vehicles::OrderRingView::Iterator& order, uint8_t orderNum)
         {
             std::stringstream ss;
             ss << ControlCodes::inline_sprite_str;
-            // TODO: remove addition
-            auto imageId = Gfx::recolour(ImageIds::number_circle_00 + orderNum, Colour::white);
+
+            auto imageId = Gfx::recolour(ImageIds::getNumberCircle(orderNum), Colour::white);
             ss.write(reinterpret_cast<const char*>(&imageId), 4);
 
             Map::Pos3 pos{};
@@ -2485,7 +2486,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     continue;
                 }
 
-                auto [loc, str] = sub_470B76(order, i);
+                auto [loc, str] = generateOrderUiStringAndLoc(order, i);
                 const auto pos = gameToScreen(loc, WindowManager::getCurrentRotation());
                 auto stringWidth = Gfx::getStringWidth(str.c_str());
                 for (auto zoom = 0; zoom < 4; ++zoom)
