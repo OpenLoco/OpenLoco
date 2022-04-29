@@ -25,6 +25,7 @@
 #include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
+#include "ScenarioObjective.h"
 #include "StationManager.h"
 #include "Title.h"
 #include "TownManager.h"
@@ -41,16 +42,6 @@ namespace OpenLoco::Scenario
     static loco_global<CargoObject*, 0x0050D15C> _50D15C;
 
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
-
-    static loco_global<ObjectiveType, 0x00526230> objectiveType;
-    static loco_global<uint8_t, 0x00526231> objectiveFlags;
-    static loco_global<uint32_t, 0x00526232> objectiveCompanyValue;
-    static loco_global<uint32_t, 0x00526236> objectiveMonthlyVehicleProfit;
-    static loco_global<uint8_t, 0x0052623A> objectivePerformanceIndex;
-    static loco_global<uint8_t, 0x0052623B> objectiveDeliveredCargoType;
-    static loco_global<uint32_t, 0x0052623C> objectiveDeliveredCargoAmount;
-    static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
-    static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
 
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
@@ -385,8 +376,8 @@ namespace OpenLoco::Scenario
         initialiseSnowLine();
         sub_4748D4();
         std::fill(std::begin(gameState.recordSpeed), std::end(gameState.recordSpeed), 0_mph);
-        gameState.objectiveTimeLimitUntilYear = gameState.objectiveTimeLimitYears - 1 + gameState.currentYear;
-        gameState.objectiveMonthsInChallenge = 0;
+        getObjective().timeLimitUntilYear = getObjective().timeLimitUntilYear - 1 + gameState.currentYear;
+        getObjective().monthsInChallenge = 0;
         call(0x0049B546);
         gameState.lastMapWindowFlags = 0;
 
@@ -423,22 +414,22 @@ namespace OpenLoco::Scenario
     // 0x004384E9
     void formatChallengeArguments(FormatArguments& args)
     {
-        switch (objectiveType)
+        switch (Scenario::getObjective().type)
         {
             case Scenario::ObjectiveType::companyValue:
                 args.push(StringIds::achieve_a_company_value_of);
-                args.push(*objectiveCompanyValue);
+                args.push(Scenario::getObjective().companyValue);
                 break;
 
             case Scenario::ObjectiveType::vehicleProfit:
                 args.push(StringIds::achieve_a_monthly_profit_from_vehicles_of);
-                args.push(*objectiveMonthlyVehicleProfit);
+                args.push(Scenario::getObjective().monthlyVehicleProfit);
                 break;
 
             case Scenario::ObjectiveType::performanceIndex:
             {
                 args.push(StringIds::achieve_a_performance_index_of);
-                int16_t performanceIndex = objectivePerformanceIndex * 10;
+                int16_t performanceIndex = Scenario::getObjective().performanceIndex * 10;
                 formatPerformanceIndex(performanceIndex, args);
                 break;
             }
@@ -447,35 +438,35 @@ namespace OpenLoco::Scenario
             {
                 args.push(StringIds::deliver);
                 CargoObject* cargoObject = _50D15C;
-                if (objectiveDeliveredCargoType != 0xFF)
+                if (Scenario::getObjective().deliveredCargoType != 0xFF)
                 {
-                    cargoObject = ObjectManager::get<CargoObject>(objectiveDeliveredCargoType);
+                    cargoObject = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
                 }
                 args.push(cargoObject->unit_name_plural);
-                args.push(*objectiveDeliveredCargoAmount);
+                args.push(Scenario::getObjective().deliveredCargoAmount);
                 break;
             }
         }
 
-        if ((objectiveFlags & Scenario::ObjectiveFlags::beTopCompany) != 0)
+        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beTopCompany) != 0)
         {
             args.push(StringIds::and_be_the_top_performing_company);
         }
-        if ((objectiveFlags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
+        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
         {
             args.push(StringIds::and_be_one_of_the_top_3_performing_companies);
         }
-        if ((objectiveFlags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
         {
             if (isTitleMode() || isEditorMode())
             {
                 args.push(StringIds::within_years);
-                args.push<uint16_t>(*objectiveTimeLimitYears);
+                args.push<uint16_t>(Scenario::getObjective().timeLimitYears);
             }
             else
             {
                 args.push(StringIds::by_the_end_of);
-                args.push(*objectiveTimeLimitUntilYear);
+                args.push(Scenario::getObjective().timeLimitUntilYear);
             }
         }
 

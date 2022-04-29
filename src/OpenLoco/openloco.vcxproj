@@ -135,6 +135,7 @@
     <ClCompile Include="Platform\Platform.Windows.cpp" />
     <ClCompile Include="S5\S5.cpp" />
     <ClCompile Include="S5\SawyerStream.cpp" />
+    <ClCompile Include="ScenarioObjective.cpp" />
     <ClCompile Include="Scenario.cpp" />
     <ClCompile Include="ScenarioManager.cpp" />
     <ClCompile Include="Station.cpp" />
@@ -364,6 +365,7 @@
     <ClInclude Include="S5\Limits.h" />
     <ClInclude Include="S5\S5.h" />
     <ClInclude Include="S5\SawyerStream.h" />
+    <ClInclude Include="ScenarioObjective.h" />
     <ClInclude Include="Scenario.h" />
     <ClInclude Include="ScenarioManager.h" />
     <ClInclude Include="Speed.hpp" />

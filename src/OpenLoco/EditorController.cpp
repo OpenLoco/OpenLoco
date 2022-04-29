@@ -1,5 +1,6 @@
 #include "EditorController.h"
 #include "Audio/Audio.h"
+#include "CompanyManager.h"
 #include "Config.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -12,6 +13,7 @@
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "ScenarioManager.h"
+#include "ScenarioObjective.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 
@@ -82,17 +84,17 @@ namespace OpenLoco::EditorController
             Game::sub_46DB4C(); // draw preview map
         }
 
-        options.maxCompetingCompanies = gameState.maxCompetingCompanies;
-        options.competitorStartDelay = gameState.competitorStartDelay;
+        options.maxCompetingCompanies = CompanyManager::getMaxCompetingCompanies();
+        options.competitorStartDelay = CompanyManager::getCompetitorStartDelay();
         gameState.numberOfIndustries = options.numberOfIndustries;
-        options.objectiveType = gameState.objectiveType;
-        options.objectiveFlags = gameState.objectiveFlags;
-        options.objectiveCompanyValue = gameState.objectiveCompanyValue;
-        options.objectiveMonthlyVehicleProfit = gameState.objectiveMonthlyVehicleProfit;
-        options.objectivePerformanceIndex = gameState.objectivePerformanceIndex;
-        options.objectiveDeliveredCargoType = gameState.objectiveDeliveredCargoType;
-        options.objectiveDeliveredCargoAmount = gameState.objectiveDeliveredCargoAmount;
-        options.objectiveTimeLimitYears = gameState.objectiveTimeLimitYears;
+        options.objectiveType = enumValue(Scenario::getObjective().type);
+        options.objectiveFlags = Scenario::getObjective().flags;
+        options.objectiveCompanyValue = Scenario::getObjective().companyValue;
+        options.objectiveMonthlyVehicleProfit = Scenario::getObjective().monthlyVehicleProfit;
+        options.objectivePerformanceIndex = Scenario::getObjective().performanceIndex;
+        options.objectiveDeliveredCargoType = Scenario::getObjective().deliveredCargoType;
+        options.objectiveDeliveredCargoAmount = Scenario::getObjective().deliveredCargoAmount;
+        options.objectiveTimeLimitYears = Scenario::getObjective().timeLimitYears;
 
         options.objectiveDeliveredCargo = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::cargo, options.objectiveDeliveredCargoType });
         options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, options.objectiveDeliveredCargoType });

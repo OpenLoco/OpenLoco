@@ -12,6 +12,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
+#include "../ScenarioObjective.h"
 #include "../Ui.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
@@ -66,10 +67,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void onUpdate(Window* w);
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
-    static loco_global<uint8_t, 0x00526231> objectiveFlags;
-
-    static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
-    static loco_global<uint16_t, 0x00526243> objectiveMonthsInChallenge;
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
 
@@ -349,9 +346,9 @@ namespace OpenLoco::Ui::Windows::TimePanel
             args.push(StringIds::challenge_progress);
             args.push<uint16_t>(playerCompany->challengeProgress);
 
-            if (objectiveFlags & 4)
+            if (Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit)
             {
-                uint16_t monthsLeft = (*objectiveTimeLimitYears * 12 - objectiveMonthsInChallenge);
+                uint16_t monthsLeft = (Scenario::getObjective().timeLimitYears * 12 - Scenario::getObjective().monthsInChallenge);
                 uint16_t yearsLeft = monthsLeft / 12;
                 monthsLeft = monthsLeft % 12;
                 args.push(StringIds::challenge_time_left);
