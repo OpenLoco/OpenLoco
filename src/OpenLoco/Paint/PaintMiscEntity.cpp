@@ -50,8 +50,8 @@ namespace OpenLoco::Paint
         }
         const auto* steamObject = exhaustEntity->getObject();
 
-        uint8_t* edi = (exhaustEntity->objectId & 0x80) == 0 ? steamObject->var_16 : steamObject->var_1A;
-        uint32_t imageId = edi[2 * exhaustEntity->var_26];
+        const auto& frameInfo = steamObject->getFramesInfo(exhaustEntity->isSubObjType1());
+        uint32_t imageId = frameInfo.second[exhaustEntity->frameNum].imageOffset;
         imageId = imageId + steamObject->baseImageId + steamObject->var_0A;
 
         if ((steamObject->flags & SteamObjectFlags::unk3) == 0)
