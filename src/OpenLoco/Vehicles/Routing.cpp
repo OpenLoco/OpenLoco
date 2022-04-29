@@ -489,7 +489,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        if (sub_48963F(interest.loc, interest.tad(), interest.trackType, (1ULL << 31) | (0xA)) & (1 << 0))
+        if (getSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31)) & (1 << 0))
         {
             addr<0x001135F88, uint16_t>() |= (1 << 0);
         }

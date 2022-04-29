@@ -3220,7 +3220,7 @@ namespace OpenLoco::Vehicles
     {
         Track::TrackConnections connections{};
         connections.size = 0;
-        const auto [nextPos, rotation] = Map::Track::getTrackConnectionEnd(getTrackLoc(), var_2C.track._data);
+        const auto [nextPos, rotation] = Map::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
         Map::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
         if (connections.size != 1)
         {
