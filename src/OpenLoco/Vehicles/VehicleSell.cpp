@@ -87,7 +87,7 @@ namespace OpenLoco::Vehicles
                     }
                     else
                     {
-                        VehicleManager::placeDownVehicle(head, placeArgs->pos.x, placeArgs->pos.y, placeArgs->pos.z, placeArgs->tad, placeArgs->subPosition);
+                        VehicleManager::placeDownVehicle(head, placeArgs->pos.x, placeArgs->pos.y, placeArgs->pos.z / Map::kSmallZStep, placeArgs->tad, placeArgs->subPosition);
                     }
                 }
             }
