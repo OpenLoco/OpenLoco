@@ -1754,8 +1754,29 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args);
     static void sub_4A193B();
 
+    static void updateConstructionArrow()
+    {
+        _constructionArrowFrameNum = _constructionArrowFrameNum - 1;
+        if (_constructionArrowFrameNum == 0xFF)
+        {
+            _constructionArrowFrameNum = 5;
+            _byte_522096 = _byte_522096 ^ (1 << 0);
+            _constructionArrowPos = Map::Pos3(_x, _y, _constructionZ);
+            _constructionArrowDirection = _constructionRotation;
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
+            if (_byte_522096 & (1 << 0))
+            {
+                Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstructionArrow);
+            }
+            Map::TileManager::mapInvalidateTileFull(Map::Pos2(_x, _y));
+        }
+    }
+
     // 0x0049FD66
-    static void sub_49FD66()
+    // Places/removes the ghost, gets price, resets active widgets, updates the construction arrow
+    // Ideally only constructin arrow should be updated here the reason for doing the rest every update
+    // instead of only in toolUpdate is unknown (but probably just to catch edge cases)
+    static void updateConstruction()
     {
         if (_constructionHover != 0)
         {
@@ -1795,20 +1816,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
             }
         }
-        _constructionArrowFrameNum = _constructionArrowFrameNum - 1;
-        if (_constructionArrowFrameNum == 0xFF)
-        {
-            _constructionArrowFrameNum = 5;
-            _byte_522096 = _byte_522096 ^ (1 << 0);
-            _constructionArrowPos = Map::Pos3(_x, _y, _constructionZ);
-            _constructionArrowDirection = _constructionRotation;
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
-            if (_byte_522096 & (1 << 0))
-            {
-                Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstructionArrow);
-            }
-            Map::TileManager::mapInvalidateTileFull(Map::Pos2(_x, _y));
-        }
+        updateConstructionArrow();
     }
 
     // 0x0049DCA2
@@ -1828,7 +1836,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (Input::isToolActive(WindowType::construction, self->number))
                 Input::toolCancel();
         }
-        sub_49FD66();
+        updateConstruction();
     }
 
     // Simplified TileManager::getHeight that only considers flat height
