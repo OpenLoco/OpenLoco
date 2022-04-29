@@ -57,7 +57,7 @@ namespace OpenLoco::Vehicles
                 std::optional<PlaceDown> placeArgs;
                 if (head->tileX != -1)
                 {
-                    PlaceDown args{ head->id, head->getTrackLoc(), head->var_2C, head->subPosition };
+                    PlaceDown args{ head->id, head->getTrackLoc(), head->trackAndDirection, head->subPosition };
                     placeArgs = args;
                     switch (head->mode)
                     {
