@@ -1413,6 +1413,8 @@ namespace OpenLoco::Gfx
         memset(palette, paletteIndex, 256);
         palette[0] = 0;
 
+        // Set the image primary flag to tell drawImagePaletteSet to recolour with the palette. TODO: This should be refactored out when drawImagePaletteSet implemented
+        _E04324 = 0x20000000;
         drawImagePaletteSet(context, pos, image, PaletteMap{ palette });
     }
 
