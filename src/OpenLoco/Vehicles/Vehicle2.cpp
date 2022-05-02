@@ -240,7 +240,7 @@ namespace OpenLoco::Vehicles
                     }
                 }
                 const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
-                ebp += ((power * 2048) * std::abs(manualSpeed)) / (totalWeight * 40);
+                ebp += ((power * 2048) * manualSpeed) / (totalWeight * 40);
             }
             else
             {
@@ -255,7 +255,7 @@ namespace OpenLoco::Vehicles
         if (speedAdjustment < 0.0_mph)
         {
             auto minSpeed = 5.0_mph;
-            if (train.head->var_0C & Flags0C::manualControl || !isOnRackRail)
+            if ((train.head->var_0C & Flags0C::manualControl) || !isOnRackRail)
             {
                 minSpeed = 0.0_mph;
             }
