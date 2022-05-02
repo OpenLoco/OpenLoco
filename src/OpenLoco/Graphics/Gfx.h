@@ -144,6 +144,7 @@ namespace OpenLoco::Gfx
     Context& screenContext();
 
     void loadG1();
+    void initialiseCharacterWidths();
     void clear(Context& context, uint32_t fill);
     void clearSingle(Context& context, uint8_t paletteId);
 

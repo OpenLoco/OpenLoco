@@ -98,13 +98,6 @@ static void CDECL fn_4054a3(const PaletteEntry* palette, int32_t index, int32_t 
 }
 
 FORCE_ALIGN_ARG_POINTER
-static bool STDCALL fn_4054b9()
-{
-    STUB();
-    return true;
-}
-
-FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_timeGetTime()
 {
     return Platform::getTime();
@@ -492,7 +485,6 @@ static void registerNoWin32Hooks()
     writeJmp(0x40447f, (void*)&fn_40447f);
     writeJmp(0x404b68, (void*)&fn_404b68);
     writeJmp(0x404e8c, (void*)&getNumDSoundDevices);
-    writeJmp(0x4054b9, (void*)&fn_4054b9);
     writeJmp(0x4064fa, (void*)&fn0);
     writeJmp(0x4054a3, (void*)&fn_4054a3);
     writeJmp(0x4072ec, (void*)&fn0);
