@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Map/Map.hpp"
 #include "../Core/Span.hpp"
+#include "../Map/Map.hpp"
 #include "../Types.hpp"
 #include "Object.h"
 #include <array>
