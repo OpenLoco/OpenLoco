@@ -87,15 +87,7 @@ namespace OpenLoco::EditorController
         options.maxCompetingCompanies = CompanyManager::getMaxCompetingCompanies();
         options.competitorStartDelay = CompanyManager::getCompetitorStartDelay();
         gameState.numberOfIndustries = options.numberOfIndustries;
-        options.objective.type = Scenario::getObjective().type;
-        options.objective.flags = Scenario::getObjective().flags;
-        options.objective.companyValue = Scenario::getObjective().companyValue;
-        options.objective.monthlyVehicleProfit = Scenario::getObjective().monthlyVehicleProfit;
-        options.objective.performanceIndex = Scenario::getObjective().performanceIndex;
-        options.objective.deliveredCargoType = Scenario::getObjective().deliveredCargoType;
-        options.objective.deliveredCargoAmount = Scenario::getObjective().deliveredCargoAmount;
-        options.objective.timeLimitYears = Scenario::getObjective().timeLimitYears;
-
+        options.objective = Scenario::getObjective();
         options.objectiveDeliveredCargo = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::cargo, options.objective.deliveredCargoType });
         options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, options.objective.deliveredCargoType });
     }
