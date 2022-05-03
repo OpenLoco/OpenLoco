@@ -17,93 +17,93 @@ namespace OpenLoco::Map::TrackData
     }
 
     const std::array<PreviewTrack, 1> trackPiece0 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFF) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 4> trackPiece1 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1001, 0b0000}, 0, generateConnections(0x07) },
-        PreviewTrack{ 1, 0, 32, 0, 0, QuarterTile{ 0b0100, 0b0000}, PreviewTrackFlags::diagonal, generateConnections(0x80) },
-        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0001, 0b0000}, PreviewTrackFlags::diagonal, generateConnections(0x08) },
-        PreviewTrack{ 3, -32, 32, 0, 0, QuarterTile{ 0b0110, 0b0000}, 0, generateConnections(0x70) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1001, 0b0000 }, 0, generateConnections(0x07) },
+        PreviewTrack{ 1, 0, 32, 0, 0, QuarterTile{ 0b0100, 0b0000 }, PreviewTrackFlags::diagonal, generateConnections(0x80) },
+        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0001, 0b0000 }, PreviewTrackFlags::diagonal, generateConnections(0x08) },
+        PreviewTrack{ 3, -32, 32, 0, 0, QuarterTile{ 0b0110, 0b0000 }, 0, generateConnections(0x70) },
     };
     const std::array<PreviewTrack, 1> trackPiece2 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0111, 0b0000}, 0, generateConnections(0xF8) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0111, 0b0000 }, 0, generateConnections(0xF8) },
     };
     const std::array<PreviewTrack, 1> trackPiece3 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1011, 0b0000}, 0, generateConnections(0x3E) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1011, 0b0000 }, 0, generateConnections(0x3E) },
     };
     const std::array<PreviewTrack, 4> trackPiece4 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0111, 0b0000}, 0, generateConnections(0xF8) },
-        PreviewTrack{ 1, 0, -32, 0, 0, QuarterTile{ 0b1000, 0b0000}, PreviewTrackFlags::diagonal, generateConnections(0x02) },
-        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0010, 0b0000}, 0, generateConnections(0x70) },
-        PreviewTrack{ 3, -32, -32, 0, 0, QuarterTile{ 0b0111, 0b0000}, 0, generateConnections(0xF8) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0111, 0b0000 }, 0, generateConnections(0xF8) },
+        PreviewTrack{ 1, 0, -32, 0, 0, QuarterTile{ 0b1000, 0b0000 }, PreviewTrackFlags::diagonal, generateConnections(0x02) },
+        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0010, 0b0000 }, 0, generateConnections(0x70) },
+        PreviewTrack{ 3, -32, -32, 0, 0, QuarterTile{ 0b0111, 0b0000 }, 0, generateConnections(0xF8) },
     };
     const std::array<PreviewTrack, 4> trackPiece5 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1011, 0b0000}, 0, generateConnections(0x3E) },
-        PreviewTrack{ 1, 0, 32, 0, 0, QuarterTile{ 0b0100, 0b0000}, PreviewTrackFlags::diagonal, generateConnections(0x80) },
-        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0001, 0b0000}, 0, generateConnections(0x1C) },
-        PreviewTrack{ 3, -32, 32, 0, 0, QuarterTile{ 0b1011, 0b0000}, 0, generateConnections(0x3E) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1011, 0b0000 }, 0, generateConnections(0x3E) },
+        PreviewTrack{ 1, 0, 32, 0, 0, QuarterTile{ 0b0100, 0b0000 }, PreviewTrackFlags::diagonal, generateConnections(0x80) },
+        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0001, 0b0000 }, 0, generateConnections(0x1C) },
+        PreviewTrack{ 3, -32, 32, 0, 0, QuarterTile{ 0b1011, 0b0000 }, 0, generateConnections(0x3E) },
     };
     const std::array<PreviewTrack, 5> trackPiece6 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFF) },
-        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b0111, 0b0000}, 0, generateConnections(0xF8) },
-        PreviewTrack{ 2, -32, -32, 0, 0, QuarterTile{ 0b1101, 0b0000}, 0, generateConnections(0x8F) },
-        PreviewTrack{ 3, -64, -32, 0, 0, QuarterTile{ 0b0111, 0b0000}, 0, generateConnections(0xF8) },
-        PreviewTrack{ 4, -64, -64, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFF) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFF) },
+        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b0111, 0b0000 }, 0, generateConnections(0xF8) },
+        PreviewTrack{ 2, -32, -32, 0, 0, QuarterTile{ 0b1101, 0b0000 }, 0, generateConnections(0x8F) },
+        PreviewTrack{ 3, -64, -32, 0, 0, QuarterTile{ 0b0111, 0b0000 }, 0, generateConnections(0xF8) },
+        PreviewTrack{ 4, -64, -64, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 5> trackPiece7 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFF) },
-        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b1011, 0b0000}, 0, generateConnections(0x3E) },
-        PreviewTrack{ 2, -32, 32, 0, 0, QuarterTile{ 0b1110, 0b0000}, 0, generateConnections(0xE3) },
-        PreviewTrack{ 3, -64, 32, 0, 0, QuarterTile{ 0b1011, 0b0000}, 0, generateConnections(0x3E) },
-        PreviewTrack{ 4, -64, 64, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFF) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFF) },
+        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b1011, 0b0000 }, 0, generateConnections(0x3E) },
+        PreviewTrack{ 2, -32, 32, 0, 0, QuarterTile{ 0b1110, 0b0000 }, 0, generateConnections(0xE3) },
+        PreviewTrack{ 3, -64, 32, 0, 0, QuarterTile{ 0b1011, 0b0000 }, 0, generateConnections(0x3E) },
+        PreviewTrack{ 4, -64, 64, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 5> trackPiece8 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFF) },
-        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b0111, 0b0000}, 0, generateConnections(0xF8) },
-        PreviewTrack{ 2, -32, -32, 0, 0, QuarterTile{ 0b1000, 0b0000}, 0, generateConnections(0x02) },
-        PreviewTrack{ 3, -64, 0, 0, 0, QuarterTile{ 0b0010, 0b0000}, PreviewTrackFlags::diagonal, generateConnections(0x20) },
-        PreviewTrack{ 4, -64, -32, 0, 0, QuarterTile{ 0b0011, 0b0000}, 0, generateConnections(0x1C) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFF) },
+        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b0111, 0b0000 }, 0, generateConnections(0xF8) },
+        PreviewTrack{ 2, -32, -32, 0, 0, QuarterTile{ 0b1000, 0b0000 }, 0, generateConnections(0x02) },
+        PreviewTrack{ 3, -64, 0, 0, 0, QuarterTile{ 0b0010, 0b0000 }, PreviewTrackFlags::diagonal, generateConnections(0x20) },
+        PreviewTrack{ 4, -64, -32, 0, 0, QuarterTile{ 0b0011, 0b0000 }, 0, generateConnections(0x1C) },
     };
     const std::array<PreviewTrack, 5> trackPiece9 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFF) },
-        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b1011, 0b0000}, 0, generateConnections(0x3E) },
-        PreviewTrack{ 2, -32, 32, 0, 0, QuarterTile{ 0b0100, 0b0000}, 0, generateConnections(0x80) },
-        PreviewTrack{ 3, -64, 0, 0, 0, QuarterTile{ 0b0001, 0b0000}, PreviewTrackFlags::diagonal, generateConnections(0x08) },
-        PreviewTrack{ 4, -64, 32, 0, 0, QuarterTile{ 0b0110, 0b0000}, 0, generateConnections(0x70) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFF) },
+        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b1011, 0b0000 }, 0, generateConnections(0x3E) },
+        PreviewTrack{ 2, -32, 32, 0, 0, QuarterTile{ 0b0100, 0b0000 }, 0, generateConnections(0x80) },
+        PreviewTrack{ 3, -64, 0, 0, 0, QuarterTile{ 0b0001, 0b0000 }, PreviewTrackFlags::diagonal, generateConnections(0x08) },
+        PreviewTrack{ 4, -64, 32, 0, 0, QuarterTile{ 0b0110, 0b0000 }, 0, generateConnections(0x70) },
     };
     const std::array<PreviewTrack, 5> trackPiece10 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1001, 0b0000}, 0, generateConnections(0x07) },
-        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b0001, 0b0000}, 0, generateConnections(0x08) },
-        PreviewTrack{ 2, 0, 32, 0, 0, QuarterTile{ 0b0100, 0b0000}, PreviewTrackFlags::diagonal, generateConnections(0x80) },
-        PreviewTrack{ 3, -32, 32, 0, 0, QuarterTile{ 0b1110, 0b0000}, 0, generateConnections(0xE3) },
-        PreviewTrack{ 4, -64, 32, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFF) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1001, 0b0000 }, 0, generateConnections(0x07) },
+        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b0001, 0b0000 }, 0, generateConnections(0x08) },
+        PreviewTrack{ 2, 0, 32, 0, 0, QuarterTile{ 0b0100, 0b0000 }, PreviewTrackFlags::diagonal, generateConnections(0x80) },
+        PreviewTrack{ 3, -32, 32, 0, 0, QuarterTile{ 0b1110, 0b0000 }, 0, generateConnections(0xE3) },
+        PreviewTrack{ 4, -64, 32, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 5> trackPiece11 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1001, 0b0000}, 0, generateConnections(0x07) },
-        PreviewTrack{ 1, 0, 32, 0, 0, QuarterTile{ 0b0100, 0b0000}, 0, generateConnections(0x80) },
-        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0001, 0b0000}, PreviewTrackFlags::diagonal, generateConnections(0x08) },
-        PreviewTrack{ 3, -32, 32, 0, 0, QuarterTile{ 0b1011, 0b0000}, 0, generateConnections(0x3E) },
-        PreviewTrack{ 4, -32, 64, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFF) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1001, 0b0000 }, 0, generateConnections(0x07) },
+        PreviewTrack{ 1, 0, 32, 0, 0, QuarterTile{ 0b0100, 0b0000 }, 0, generateConnections(0x80) },
+        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0001, 0b0000 }, PreviewTrackFlags::diagonal, generateConnections(0x08) },
+        PreviewTrack{ 3, -32, 32, 0, 0, QuarterTile{ 0b1011, 0b0000 }, 0, generateConnections(0x3E) },
+        PreviewTrack{ 4, -32, 64, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 4> trackPiece12 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xF9) },
-        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b0110, 0b0000}, 0, generateConnections(0x60) },
-        PreviewTrack{ 2, -32, -32, 0, 0, QuarterTile{ 0b1001, 0b0000}, 0, generateConnections(0x06) },
-        PreviewTrack{ 3, -64, -32, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0x9F) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xF9) },
+        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b0110, 0b0000 }, 0, generateConnections(0x60) },
+        PreviewTrack{ 2, -32, -32, 0, 0, QuarterTile{ 0b1001, 0b0000 }, 0, generateConnections(0x06) },
+        PreviewTrack{ 3, -64, -32, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0x9F) },
     };
     const std::array<PreviewTrack, 4> trackPiece13 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0x3F) },
-        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b1001, 0b0000}, 0, generateConnections(0x0C) },
-        PreviewTrack{ 2, -32, 32, 0, 0, QuarterTile{ 0b0110, 0b0000}, 0, generateConnections(0xC0) },
-        PreviewTrack{ 3, -64, 32, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xF3) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0x3F) },
+        PreviewTrack{ 1, -32, 0, 0, 0, QuarterTile{ 0b1001, 0b0000 }, 0, generateConnections(0x0C) },
+        PreviewTrack{ 2, -32, 32, 0, 0, QuarterTile{ 0b0110, 0b0000 }, 0, generateConnections(0xC0) },
+        PreviewTrack{ 3, -64, 32, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xF3) },
     };
     const std::array<PreviewTrack, 2> trackPiece14 = {
-        PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b1111, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0xFF) },
+        PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b1111, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0xFF) },
         PreviewTrack{ 1, -32, 0, 0, 16, QuarterTile{ 0b1111, 0b1100 }, PreviewTrackFlags::unk4, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 2> trackPiece15 = {
         PreviewTrack{ 0, 0, 0, -16, 16, QuarterTile{ 0b1111, 0b0011 }, PreviewTrackFlags::unk4, generateConnections(0xFF) },
-        PreviewTrack{ 1, -32, 0, -16, 16, QuarterTile{ 0b1111, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0xFF) },
+        PreviewTrack{ 1, -32, 0, -16, 16, QuarterTile{ 0b1111, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 1> trackPiece16 = {
         PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b1111, 0b1100 }, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk2, generateConnections(0xFF) },
@@ -112,76 +112,76 @@ namespace OpenLoco::Map::TrackData
         PreviewTrack{ 0, 0, 0, -16, 16, QuarterTile{ 0b1111, 0b0011 }, PreviewTrackFlags::unk1 | PreviewTrackFlags::unk0, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 4> trackPiece18 = {
-        PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b0111, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0xF8) },
-        PreviewTrack{ 1, 0, -32, 0, 16, QuarterTile{ 0b1000, 0b0000}, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x02) },
-        PreviewTrack{ 2, -32, 0, 0, 16, QuarterTile{ 0b0010, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0x70) },
+        PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b0111, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0xF8) },
+        PreviewTrack{ 1, 0, -32, 0, 16, QuarterTile{ 0b1000, 0b0000 }, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x02) },
+        PreviewTrack{ 2, -32, 0, 0, 16, QuarterTile{ 0b0010, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x70) },
         PreviewTrack{ 3, -32, -32, 0, 16, QuarterTile{ 0b0111, 0b0110 }, PreviewTrackFlags::unk4, generateConnections(0xF8) },
     };
     const std::array<PreviewTrack, 4> trackPiece19 = {
-        PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b1011, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0x3E) },
-        PreviewTrack{ 1, 0, 32, 0, 16, QuarterTile{ 0b0100, 0b0000}, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x80) },
-        PreviewTrack{ 2, -32, 0, 0, 16, QuarterTile{ 0b0001, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0x1C) },
+        PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b1011, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x3E) },
+        PreviewTrack{ 1, 0, 32, 0, 16, QuarterTile{ 0b0100, 0b0000 }, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x80) },
+        PreviewTrack{ 2, -32, 0, 0, 16, QuarterTile{ 0b0001, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x1C) },
         PreviewTrack{ 3, -32, 32, 0, 16, QuarterTile{ 0b1011, 0b1001 }, PreviewTrackFlags::unk4, generateConnections(0x3E) },
     };
     const std::array<PreviewTrack, 4> trackPiece20 = {
         PreviewTrack{ 0, 0, 0, -16, 16, QuarterTile{ 0b0111, 0b0011 }, PreviewTrackFlags::unk4, generateConnections(0xF8) },
-        PreviewTrack{ 1, 0, -32, -16, 16, QuarterTile{ 0b1000, 0b0000}, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x02) },
-        PreviewTrack{ 2, -32, 0, -16, 16, QuarterTile{ 0b0010, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0x70) },
-        PreviewTrack{ 3, -32, -32, -16, 16, QuarterTile{ 0b0111, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0xF8) },
+        PreviewTrack{ 1, 0, -32, -16, 16, QuarterTile{ 0b1000, 0b0000 }, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x02) },
+        PreviewTrack{ 2, -32, 0, -16, 16, QuarterTile{ 0b0010, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x70) },
+        PreviewTrack{ 3, -32, -32, -16, 16, QuarterTile{ 0b0111, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0xF8) },
     };
     const std::array<PreviewTrack, 4> trackPiece21 = {
         PreviewTrack{ 0, 0, 0, -16, 16, QuarterTile{ 0b1011, 0b0011 }, PreviewTrackFlags::unk4, generateConnections(0x3E) },
-        PreviewTrack{ 1, 0, 32, -16, 16, QuarterTile{ 0b0100, 0b0000}, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x80) },
-        PreviewTrack{ 2, -32, 0, -16, 16, QuarterTile{ 0b0001, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0x1C) },
-        PreviewTrack{ 3, -32, 32, -16, 16, QuarterTile{ 0b1011, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0x3E) },
+        PreviewTrack{ 1, 0, 32, -16, 16, QuarterTile{ 0b0100, 0b0000 }, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x80) },
+        PreviewTrack{ 2, -32, 0, -16, 16, QuarterTile{ 0b0001, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x1C) },
+        PreviewTrack{ 3, -32, 32, -16, 16, QuarterTile{ 0b1011, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x3E) },
     };
     const std::array<PreviewTrack, 4> trackPiece22 = {
         PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b0111, 0b0100 }, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk2, generateConnections(0xF8) },
-        PreviewTrack{ 1, 0, -32, 16, 0, QuarterTile{ 0b1000, 0b0000}, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x02) },
-        PreviewTrack{ 2, -32, 0, 16, 0, QuarterTile{ 0b0010, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0x70) },
+        PreviewTrack{ 1, 0, -32, 16, 0, QuarterTile{ 0b1000, 0b0000 }, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x02) },
+        PreviewTrack{ 2, -32, 0, 16, 0, QuarterTile{ 0b0010, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x70) },
         PreviewTrack{ 3, -32, -32, 16, 16, QuarterTile{ 0b0110, 0b0111 }, PreviewTrackFlags::unk2 | PreviewTrackFlags::unk1, generateConnections(0xF8) },
     };
     const std::array<PreviewTrack, 4> trackPiece23 = {
         PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b1011, 0b1000 }, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk2, generateConnections(0x3E) },
-        PreviewTrack{ 1, 0, 32, 16, 0, QuarterTile{ 0b0100, 0b0000}, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x80) },
-        PreviewTrack{ 2, -32, 0, 16, 0, QuarterTile{ 0b0001, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0x1C) },
+        PreviewTrack{ 1, 0, 32, 16, 0, QuarterTile{ 0b0100, 0b0000 }, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x80) },
+        PreviewTrack{ 2, -32, 0, 16, 0, QuarterTile{ 0b0001, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x1C) },
         PreviewTrack{ 3, -32, 32, 16, 16, QuarterTile{ 0b1011, 0b1001 }, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk0, generateConnections(0x3E) },
     };
     const std::array<PreviewTrack, 4> trackPiece24 = {
         PreviewTrack{ 0, 0, 0, -16, 16, QuarterTile{ 0b0111, 0b0011 }, PreviewTrackFlags::unk1 | PreviewTrackFlags::unk0, generateConnections(0xF8) },
-        PreviewTrack{ 1, 0, -32, -16, 0, QuarterTile{ 0b1000, 0b0000}, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x02) },
-        PreviewTrack{ 2, -32, 0, -16, 0, QuarterTile{ 0b0010, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0x70) },
+        PreviewTrack{ 1, 0, -32, -16, 0, QuarterTile{ 0b1000, 0b0000 }, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x02) },
+        PreviewTrack{ 2, -32, 0, -16, 0, QuarterTile{ 0b0010, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x70) },
         PreviewTrack{ 3, -32, -32, -32, 16, QuarterTile{ 0b0111, 0b0001 }, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk0, generateConnections(0xF8) },
     };
     const std::array<PreviewTrack, 4> trackPiece25 = {
         PreviewTrack{ 0, 0, 0, -16, 16, QuarterTile{ 0b1011, 0b0011 }, PreviewTrackFlags::unk1 | PreviewTrackFlags::unk0, generateConnections(0x3E) },
-        PreviewTrack{ 1, 0, 32, -16, 0, QuarterTile{ 0b0100, 0b0000}, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x80) },
-        PreviewTrack{ 2, -32, 0, -16, 0, QuarterTile{ 0b0001, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0x1C) },
+        PreviewTrack{ 1, 0, 32, -16, 0, QuarterTile{ 0b0100, 0b0000 }, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x80) },
+        PreviewTrack{ 2, -32, 0, -16, 0, QuarterTile{ 0b0001, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x1C) },
         PreviewTrack{ 3, -32, 32, -32, 16, QuarterTile{ 0b1011, 0b0010 }, PreviewTrackFlags::unk2 | PreviewTrackFlags::unk1, generateConnections(0x3E) },
     };
     const std::array<PreviewTrack, 1> trackPiece26 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0110, 0b0000}, 0, generateConnections(0xE0) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0110, 0b0000 }, 0, generateConnections(0xE0) },
     };
     const std::array<PreviewTrack, 1> trackPiece27 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1001, 0b0000}, 0, generateConnections(0x0E) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1001, 0b0000 }, 0, generateConnections(0x0E) },
     };
     const std::array<PreviewTrack, 1> trackPiece28 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0010, 0b0000}, 0, generateConnections(0x20) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0010, 0b0000 }, 0, generateConnections(0x20) },
     };
     const std::array<PreviewTrack, 1> trackPiece29 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0x8D) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0x8D) },
     };
     const std::array<PreviewTrack, 1> trackPiece30 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0x63) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0x63) },
     };
     const std::array<PreviewTrack, 1> trackPiece31 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0001, 0b0000}, 0, generateConnections(0x08) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0001, 0b0000 }, 0, generateConnections(0x08) },
     };
     const std::array<PreviewTrack, 1> trackPiece32 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0x77) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0x77) },
     };
     const std::array<PreviewTrack, 1> trackPiece33 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xDD) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xDD) },
     };
     const std::array<PreviewTrack, 1> trackPiece34 = {
         PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b0110, 0b1100 }, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk2, generateConnections(0xE0) },
@@ -196,22 +196,22 @@ namespace OpenLoco::Map::TrackData
         PreviewTrack{ 0, 0, 0, -16, 16, QuarterTile{ 0b1001, 0b0011 }, PreviewTrackFlags::unk1 | PreviewTrackFlags::unk0, generateConnections(0x0E) },
     };
     const std::array<PreviewTrack, 1> trackPiece38 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFD) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFD) },
     };
     const std::array<PreviewTrack, 1> trackPiece39 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0x7F) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0x7F) },
     };
     const std::array<PreviewTrack, 1> trackPiece40 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xF7) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xF7) },
     };
     const std::array<PreviewTrack, 1> trackPiece41 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xDF) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xDF) },
     };
     const std::array<PreviewTrack, 1> trackPiece42 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0011, 0b0000}, 0, generateConnections(0x38) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0011, 0b0000 }, 0, generateConnections(0x38) },
     };
     const std::array<PreviewTrack, 1> trackPiece43 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0011, 0b0000}, 0, generateConnections(0x38) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0011, 0b0000 }, 0, generateConnections(0x38) },
     };
 
     // 0x004F73D8, 0x004F78F8
@@ -263,33 +263,33 @@ namespace OpenLoco::Map::TrackData
     } };
 
     const std::array<PreviewTrack, 1> roadPiece0 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xFF) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 1> roadPiece1 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0xF8) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0xF8) },
     };
     const std::array<PreviewTrack, 1> roadPiece2 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000}, 0, generateConnections(0x3E) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1111, 0b0000 }, 0, generateConnections(0x3E) },
     };
     const std::array<PreviewTrack, 4> roadPiece3 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0111, 0b0000}, 0, generateConnections(0xF8) },
-        PreviewTrack{ 1, 0, -32, 0, 0, QuarterTile{ 0b1000, 0b0000}, PreviewTrackFlags::diagonal, generateConnections(0x02) },
-        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0010, 0b0000}, 0, generateConnections(0x70) },
-        PreviewTrack{ 3, -32, -32, 0, 0, QuarterTile{ 0b0111, 0b0000}, 0, generateConnections(0xF8) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0111, 0b0000 }, 0, generateConnections(0xF8) },
+        PreviewTrack{ 1, 0, -32, 0, 0, QuarterTile{ 0b1000, 0b0000 }, PreviewTrackFlags::diagonal, generateConnections(0x02) },
+        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0010, 0b0000 }, 0, generateConnections(0x70) },
+        PreviewTrack{ 3, -32, -32, 0, 0, QuarterTile{ 0b0111, 0b0000 }, 0, generateConnections(0xF8) },
     };
     const std::array<PreviewTrack, 4> roadPiece4 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1011, 0b0000}, 0, generateConnections(0x3E) },
-        PreviewTrack{ 1, 0, 32, 0, 0, QuarterTile{ 0b0100, 0b0000}, PreviewTrackFlags::diagonal, generateConnections(0x80) },
-        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0001, 0b0000}, 0, generateConnections(0x1C) },
-        PreviewTrack{ 3, -32, 32, 0, 0, QuarterTile{ 0b1011, 0b0000}, 0, generateConnections(0x3E) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b1011, 0b0000 }, 0, generateConnections(0x3E) },
+        PreviewTrack{ 1, 0, 32, 0, 0, QuarterTile{ 0b0100, 0b0000 }, PreviewTrackFlags::diagonal, generateConnections(0x80) },
+        PreviewTrack{ 2, -32, 0, 0, 0, QuarterTile{ 0b0001, 0b0000 }, 0, generateConnections(0x1C) },
+        PreviewTrack{ 3, -32, 32, 0, 0, QuarterTile{ 0b1011, 0b0000 }, 0, generateConnections(0x3E) },
     };
     const std::array<PreviewTrack, 2> roadPiece5 = {
-        PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b1111, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0xFF) },
+        PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b1111, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0xFF) },
         PreviewTrack{ 1, -32, 0, 0, 16, QuarterTile{ 0b1111, 0b1100 }, PreviewTrackFlags::unk4, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 2> roadPiece6 = {
         PreviewTrack{ 0, 0, 0, -16, 16, QuarterTile{ 0b1111, 0b0011 }, PreviewTrackFlags::unk4, generateConnections(0xFF) },
-        PreviewTrack{ 1, -32, 0, -16, 16, QuarterTile{ 0b1111, 0b0000}, PreviewTrackFlags::unk4, generateConnections(0xFF) },
+        PreviewTrack{ 1, -32, 0, -16, 16, QuarterTile{ 0b1111, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 1> roadPiece7 = {
         PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b1111, 0b1100 }, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk2, generateConnections(0xFF) },
@@ -298,7 +298,7 @@ namespace OpenLoco::Map::TrackData
         PreviewTrack{ 0, 0, 0, -16, 16, QuarterTile{ 0b1111, 0b0011 }, PreviewTrackFlags::unk1 | PreviewTrackFlags::unk0, generateConnections(0xFF) },
     };
     const std::array<PreviewTrack, 1> roadPiece9 = {
-        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0011, 0b0000}, 0, generateConnections(0x38) },
+        PreviewTrack{ 0, 0, 0, 0, 0, QuarterTile{ 0b0011, 0b0000 }, 0, generateConnections(0x38) },
     };
 
     // 0x004F6D1C, 0x004F6F1C
