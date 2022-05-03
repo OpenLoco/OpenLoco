@@ -348,7 +348,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
             if (Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit)
             {
-                uint16_t monthsLeft = (Scenario::getObjective().timeLimitYears * 12 - Scenario::getObjective().monthsInChallenge);
+                uint16_t monthsLeft = (Scenario::getObjective().timeLimitYears * 12 - Scenario::getObjective2().monthsInChallenge);
                 uint16_t yearsLeft = monthsLeft / 12;
                 monthsLeft = monthsLeft % 12;
                 args.push(StringIds::challenge_time_left);

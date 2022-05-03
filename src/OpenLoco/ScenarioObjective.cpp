@@ -7,4 +7,9 @@ namespace OpenLoco::Scenario
     {
         return getGameState().scenarioObjective;
     }
+
+    Objective2& getObjective2()
+    {
+        return getGameState().scenarioObjective2;
+    }
 }
