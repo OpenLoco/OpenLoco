@@ -223,6 +223,8 @@ namespace OpenLoco
         if (_gameSpeed != speed)
         {
             _gameSpeed = speed;
+            if (isPaused())
+                paused_state = 0;
             WindowManager::invalidate(WindowType::timeToolbar);
         }
     }
