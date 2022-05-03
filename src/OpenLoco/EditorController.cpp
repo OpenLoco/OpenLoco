@@ -87,17 +87,9 @@ namespace OpenLoco::EditorController
         options.maxCompetingCompanies = CompanyManager::getMaxCompetingCompanies();
         options.competitorStartDelay = CompanyManager::getCompetitorStartDelay();
         gameState.numberOfIndustries = options.numberOfIndustries;
-        options.objectiveType = enumValue(Scenario::getObjective().type);
-        options.objectiveFlags = Scenario::getObjective().flags;
-        options.objectiveCompanyValue = Scenario::getObjective().companyValue;
-        options.objectiveMonthlyVehicleProfit = Scenario::getObjective().monthlyVehicleProfit;
-        options.objectivePerformanceIndex = Scenario::getObjective().performanceIndex;
-        options.objectiveDeliveredCargoType = Scenario::getObjective().deliveredCargoType;
-        options.objectiveDeliveredCargoAmount = Scenario::getObjective().deliveredCargoAmount;
-        options.objectiveTimeLimitYears = Scenario::getObjective().timeLimitYears;
-
-        options.objectiveDeliveredCargo = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::cargo, options.objectiveDeliveredCargoType });
-        options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, options.objectiveDeliveredCargoType });
+        options.objective = Scenario::getObjective();
+        options.objectiveDeliveredCargo = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::cargo, options.objective.deliveredCargoType });
+        options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, options.objective.deliveredCargoType });
     }
 
     // 0x0043EE25
@@ -180,14 +172,14 @@ namespace OpenLoco::EditorController
                     break;
                 }
 
-                const auto cargoId = S5::getOptions().objectiveDeliveredCargoType;
+                const auto cargoId = S5::getOptions().objective.deliveredCargoType;
                 if (ObjectManager::get<CargoObject>(cargoId) == nullptr)
                 {
                     for (size_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
                     {
                         if (ObjectManager::get<CargoObject>(i) != nullptr)
                         {
-                            S5::getOptions().objectiveDeliveredCargoType = static_cast<uint8_t>(i);
+                            S5::getOptions().objective.deliveredCargoType = static_cast<uint8_t>(i);
                             break;
                         }
                     }
