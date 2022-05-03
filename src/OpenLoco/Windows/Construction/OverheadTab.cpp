@@ -498,8 +498,6 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
                 const auto previewPos = Map::Pos3(256 * Map::tile_size, 256 * Map::tile_size, 116 * Map::kSmallZStep);
 
-                auto company = CompanyManager::getPlayerCompany();
-                auto companyColour = company->mainColours.primary;
                 _byte_522095 = _byte_522095 | (1 << 0);
 
                 if (_trackType & (1 << 7))
