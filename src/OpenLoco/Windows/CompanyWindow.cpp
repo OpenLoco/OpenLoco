@@ -2353,8 +2353,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challengeFlags & CompanyFlags::challengeCompleted) != 0)
             {
-                uint16_t years = Scenario::getObjective2().completedChallengeInMonths / 12;
-                uint16_t months = Scenario::getObjective2().completedChallengeInMonths % 12;
+                uint16_t years = Scenario::getObjectiveProgress().completedChallengeInMonths / 12;
+                uint16_t months = Scenario::getObjectiveProgress().completedChallengeInMonths % 12;
 
                 auto args = FormatArguments::common(years, months);
                 Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
@@ -2369,8 +2369,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challengeFlags & CompanyFlags::challengeBeatenByOpponent) != 0)
             {
-                uint16_t years = Scenario::getObjective2().completedChallengeInMonths / 12;
-                uint16_t months = Scenario::getObjective2().completedChallengeInMonths % 12;
+                uint16_t years = Scenario::getObjectiveProgress().completedChallengeInMonths / 12;
+                uint16_t months = Scenario::getObjectiveProgress().completedChallengeInMonths % 12;
 
                 FormatArguments args{};
                 args.push(CompanyManager::getOpponent()->ownerName);
@@ -2390,7 +2390,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
             {
                 // time limited challenge
-                uint16_t monthsLeft = Scenario::getObjective().timeLimitYears * 12 - Scenario::getObjective2().monthsInChallenge;
+                uint16_t monthsLeft = Scenario::getObjective().timeLimitYears * 12 - Scenario::getObjectiveProgress().monthsInChallenge;
                 uint16_t years = monthsLeft / 12;
                 uint16_t months = monthsLeft % 12;
 

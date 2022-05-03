@@ -22,13 +22,13 @@ namespace OpenLoco::Scenario
     Objective& getObjective();
 
 #pragma pack(push, 1)
-    struct Objective2
+    struct ObjectiveProgress
     {
         uint16_t timeLimitUntilYear;         // 0x000429 (0x00526241)
         uint16_t monthsInChallenge;          // 0x00042B (0x00526243)
         uint16_t completedChallengeInMonths; // 0x00042D (0x00526245)
     };
 #pragma pack(pop)
-    static_assert(sizeof(Objective2) == 0x6);
-    Objective2& getObjective2();
+    static_assert(sizeof(ObjectiveProgress) == 0x6);
+    ObjectiveProgress& getObjectiveProgress();
 }

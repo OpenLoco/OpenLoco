@@ -8,8 +8,8 @@ namespace OpenLoco::Scenario
         return getGameState().scenarioObjective;
     }
 
-    Objective2& getObjective2()
+    ObjectiveProgress& getObjectiveProgress()
     {
-        return getGameState().scenarioObjective2;
+        return getGameState().scenarioObjectiveProgress;
     }
 }
