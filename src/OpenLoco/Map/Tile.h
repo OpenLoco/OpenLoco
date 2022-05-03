@@ -199,6 +199,16 @@ namespace OpenLoco::Map
         uint8_t _7;       // 0x7 either variation or industry depending on high type flag
 
     public:
+        SurfaceElement() = default;
+        SurfaceElement(Map::SmallZ baseZ, Map::SmallZ clearZ, uint8_t quarterTile, bool highTypeFlag)
+        {
+            setType(kElementType);
+            setBaseZ(baseZ);
+            setClearZ(clearZ);
+            _flags = quarterTile;
+            setHighTypeFlag(highTypeFlag);
+        }
+
         bool isSlopeDoubleHeight() const { return _slope & SurfaceSlope::double_height; }
         uint8_t slopeCorners() const { return _slope & 0x0F; }
         uint8_t slope() const { return _slope & 0x1F; }
@@ -399,6 +409,9 @@ namespace OpenLoco::Map
         uint8_t _7;
 
     public:
+        TrackElement() = default;
+        TrackElement(Map::SmallZ baseZ, Map::SmallZ clearZ, uint8_t direction, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods);
+
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         bool hasSignal() const { return (_type & 0x40) != 0; }
         uint8_t unkDirection() const { return _type & 0x03; }

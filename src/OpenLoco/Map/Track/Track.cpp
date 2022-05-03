@@ -314,3 +314,19 @@ namespace OpenLoco::Map::Track
         }
     }
 }
+
+namespace OpenLoco::Map
+{
+    TrackElement::TrackElement(Map::SmallZ baseZ, Map::SmallZ clearZ, uint8_t direction, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods)
+    {
+        setType(Map::ElementType::track);
+        setBaseZ(baseZ);
+        setClearZ(clearZ);
+        _type |= direction & 0x3;
+        _flags = quarterTile & 0xF;
+        _4 = (trackId & 0x3F) | (bridge ? 0x80 : 0);
+        _5 = (sequenceIndex & 0xF) | ((trackObjId & 0xF) << 4);
+        _6 = bridge ? (*bridge << 5) : 0;
+        _7 = enumValue(owner) | (mods << 4);
+    }
+}

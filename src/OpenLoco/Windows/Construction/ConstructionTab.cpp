@@ -2575,9 +2575,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto trackDirection = direction & 3;
 
         Map::TileElement backupTileElements[5] = {};
-        Map::TrackElement previewTrackTileElement = {};
-        // Surface, highTypeFlag, 0xF quads, lastTile, 255 base/clear.
-        Map::TileElement previewSideTrackTileElement = *reinterpret_cast<Map::TileElement*>({ 0x80, 0x8F, 255, 255, 0, 0, 0, 0 });
+
+        Map::SurfaceElement previewSideSurfaceTileElement{ 255, 255, 0xF, true };
+        previewSideSurfaceTileElement.setLastFlag(true);
 
         for (const auto& trackPiece : trackPieces)
         {
@@ -2601,26 +2601,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             backupTileElements[4] = *Map::TileManager::get(southTileCoords)[0];
 
             // Set the temporary track element
-            previewTrackTileElement.setType<Map::TrackElement>();
-            previewTrackTileElement.setDirection(trackDirection);
-            previewTrackTileElement.setLastFlag(true);
-            previewTrackTileElement.setQuads(quarterTile);
-            previewTrackTileElement.setBaseZ(baseZ);
-            previewTrackTileElement.setClearZ(clearZ);
-            previewTrackTileElement.setSequenceIndex(trackPiece.index);
-            previewTrackTileElement.setTrackObject(trackType);
-            previewTrackTileElement.setTrackId(trackPieceId);
-            previewTrackTileElement.setBridgeId(0);
-            previewTrackTileElement.setHasBridge(false);
-            previewTrackTileElement.setOwner(CompanyManager::getControllingId());
-            previewTrackTileElement.setMods(selectedMods);
+            Map::TrackElement newTrackEl(baseZ, clearZ, trackDirection, quarterTile, trackPiece.index, trackType, trackPieceId, std::nullopt, CompanyManager::getControllingId(), selectedMods);
+            newTrackEl.setLastFlag(true);
 
             // Replace map elements with temp ones
-            *Map::TileManager::get(centreTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewTrackTileElement);
-            *Map::TileManager::get(eastTileCoords)[0] = previewSideTrackTileElement;
-            *Map::TileManager::get(westTileCoords)[0] = previewSideTrackTileElement;
-            *Map::TileManager::get(northTileCoords)[0] = previewSideTrackTileElement;
-            *Map::TileManager::get(southTileCoords)[0] = previewSideTrackTileElement;
+            *Map::TileManager::get(centreTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&newTrackEl);
+            *Map::TileManager::get(eastTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
+            *Map::TileManager::get(westTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
+            *Map::TileManager::get(northTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
+            *Map::TileManager::get(southTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
 
             // Draw this map tile
             Paint::paintTileElements(*session, trackPos);
