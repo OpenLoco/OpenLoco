@@ -411,7 +411,7 @@ namespace OpenLoco::Paint
         mapLoc.x &= 0xFFE0;
         mapLoc.y &= 0xFFE0;
 
-        const auto direction = directionFlipXAxis(rotation);
+        constexpr auto direction = directionFlipXAxis(rotation);
         constexpr std::array<Map::Pos2, 5> additionalQuadrants = {
             Math::Vector::rotate(Map::Pos2{ -32, 32 }, direction),
             Math::Vector::rotate(Map::Pos2{ 0, 32 }, direction),
