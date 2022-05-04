@@ -2628,14 +2628,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         Input::setMapSelectionFlags(backupSelectionFlags);
         _constructionArrowPos = backupConstructionArrowPos;
         _constructionArrowDirection = backupConstructionArrowDir;
-
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.edi = selectedMods << 16 | pos.z;
-        regs.bh = direction;
-        regs.edx = trackPieceId << 8 | trackType;
-        call(0x004A0AE5, regs);
     }
 
     // 0x00478F1F
