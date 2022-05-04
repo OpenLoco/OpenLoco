@@ -24,6 +24,7 @@ namespace OpenLoco::Vehicles
 
     namespace Flags0C // commands?
     {
+        constexpr uint8_t unk_0 = 1 << 0;
         constexpr uint8_t commandStop = 1 << 1; // commanded to stop??
         constexpr uint8_t sorted = 1 << 3;      // vehicle list
         constexpr uint8_t unk_5 = 1 << 5;
@@ -495,6 +496,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_73;               // 0x73 (bit 0 = broken down, bit 1 = still powered)
 
         bool update();
+        bool sub_4A9F20();
         currency32_t totalRecentProfit() const
         {
             return profit[0] + profit[1] + profit[2] + profit[3];
@@ -581,7 +583,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_46; // 0x46 roll
         uint8_t var_47;
         VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
-        uint8_t pad_52[0x54 - 0x52];
+        uint16_t var_52;
         uint8_t bodyIndex; // 0x54
         uint8_t pad_55;
         uint32_t creationDay; // 0x56
@@ -598,6 +600,7 @@ namespace OpenLoco::Vehicles
     public:
         uint16_t getPlaneType();
         bool update();
+        bool isOnRackRail();
 
     private:
         void updateRoll();
