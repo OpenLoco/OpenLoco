@@ -35,8 +35,8 @@ namespace OpenLoco::Ui::ViewportInteraction
         : object(ps.entity)
         , type(ps.type)
         , modId(ps.modId)
+        , pos(ps.mapPos)
     {
-        pos = Pos2{ ps.map_x, ps.map_y };
     }
 
     static bool getStationArguments(InteractionArg& interaction);

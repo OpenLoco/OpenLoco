@@ -153,8 +153,8 @@ namespace OpenLoco::Paint
         psString->colour = colour;
 
         const auto& vpPos = Map::gameToScreen(Map::Pos3(getSpritePosition(), z), currentRotation);
-        psString->x = vpPos.x + xOffset;
-        psString->y = vpPos.y;
+        psString->vpPos.x = vpPos.x + xOffset;
+        psString->vpPos.y = vpPos.y;
 
         attachStringStruct(*psString);
         return psString;
@@ -299,7 +299,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045E779
-    AttachedPaintStruct* PaintSession::attachToPrevious(uint32_t imageId, const Map::Pos2& offset)
+    AttachedPaintStruct* PaintSession::attachToPrevious(uint32_t imageId, const Ui::Point& offset)
     {
         if (_lastPS == nullptr)
         {
@@ -311,8 +311,7 @@ namespace OpenLoco::Paint
             return nullptr;
         }
         attached->imageId = imageId;
-        attached->x = offset.x;
-        attached->y = offset.y;
+        attached->vpPos = offset;
         attached->next = (*_lastPS)->attachedPS;
         (*_lastPS)->attachedPS = attached;
         return attached;
@@ -497,8 +496,8 @@ namespace OpenLoco::Paint
         }
 
         ps->imageId = imageId;
-        ps->x = vpPos.x;
-        ps->y = vpPos.y;
+        ps->vpPos.x = vpPos.x;
+        ps->vpPos.y = vpPos.y;
         ps->bounds.xEnd = rotBoundBoxSize.x + rotBoundBoxOffset.x + getSpritePosition().x;
         ps->bounds.yEnd = rotBoundBoxSize.y + rotBoundBoxOffset.y + getSpritePosition().y;
         ps->bounds.zEnd = rotBoundBoxSize.z + rotBoundBoxOffset.z;
@@ -510,8 +509,7 @@ namespace OpenLoco::Paint
         ps->children = nullptr;
         ps->type = _itemType;
         ps->modId = _trackModId;
-        ps->map_x = _mapPosition->x;
-        ps->map_y = _mapPosition->y;
+        ps->mapPos = _mapPosition;
         ps->tileElement = reinterpret_cast<Map::TileElement*>(*_currentItem);
         return ps;
     }
@@ -754,6 +752,7 @@ namespace OpenLoco::Paint
         }
     }
 
+    // 0x00447A5F
     static bool isSpriteInteractedWithPaletteSet(Gfx::Context* context, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMap& paletteMap)
     {
         static loco_global<const uint8_t*, 0x0050B860> _paletteMap;
@@ -769,21 +768,16 @@ namespace OpenLoco::Paint
     }
 
     // 0x00447A0E
-    static bool isSpriteInteractedWith(Gfx::Context* context, uint32_t imageId, const Ui::Point& coords)
+    static bool isSpriteInteractedWith(Gfx::Context* context, ImageId imageId, const Ui::Point& coords)
     {
         static loco_global<bool, 0x00E40114> _interactionResult;
         static loco_global<uint32_t, 0x00E04324> _interactionFlags;
         _interactionResult = false;
         auto paletteMap = Gfx::PaletteMap::getDefault();
-        imageId &= ~Gfx::ImageIdFlags::translucent;
-        if (imageId & Gfx::ImageIdFlags::remap)
+        if (imageId.hasPrimary())
         {
             _interactionFlags = Gfx::ImageIdFlags::remap;
-            ExtColour index = static_cast<ExtColour>((imageId >> 19) & 0x7F);
-            if (imageId & Gfx::ImageIdFlags::remap2)
-            {
-                index = static_cast<ExtColour>((imageId >> 19) & 0x1F);
-            }
+            ExtColour index = imageId.hasSecondary() ? static_cast<ExtColour>(imageId.getPrimary()) : imageId.getRemap();
             if (auto pm = Gfx::getPaletteMapForColour(index))
             {
                 paletteMap = *pm;
@@ -793,7 +787,7 @@ namespace OpenLoco::Paint
         {
             _interactionFlags = 0;
         }
-        return isSpriteInteractedWithPaletteSet(context, imageId, coords, paletteMap);
+        return isSpriteInteractedWithPaletteSet(context, imageId.getIndex(), coords, paletteMap);
     }
 
     // 0x0045EDFC
@@ -848,7 +842,7 @@ namespace OpenLoco::Paint
             while (nextPS != nullptr)
             {
                 ps = nextPS;
-                if (isSpriteInteractedWith(getContext(), ps->imageId, { ps->x, ps->y }))
+                if (isSpriteInteractedWith(getContext(), ImageId::fromUInt32(ps->imageId), ps->vpPos))
                 {
                     if (isPSSpriteTypeInFilter(ps->type, flags))
                     {
@@ -860,7 +854,7 @@ namespace OpenLoco::Paint
 
             for (auto* attachedPS = ps->attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
             {
-                if (isSpriteInteractedWith(getContext(), attachedPS->imageId, { static_cast<int16_t>(attachedPS->x + ps->x), static_cast<int16_t>(attachedPS->y + ps->y) }))
+                if (isSpriteInteractedWith(getContext(), ImageId::fromUInt32(attachedPS->imageId), attachedPS->vpPos + ps->vpPos))
                 {
                     if (isPSSpriteTypeInFilter(ps->type, flags))
                     {
