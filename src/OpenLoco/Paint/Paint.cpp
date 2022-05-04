@@ -752,6 +752,12 @@ namespace OpenLoco::Paint
         }
     }
 
+    // 0x0045EA23
+    void PaintSession::drawStructs()
+    {
+        call(0x0045EA23);
+    }
+
     // 0x00447A5F
     static bool isSpriteInteractedWithPaletteSet(Gfx::Context* context, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMap& paletteMap)
     {
