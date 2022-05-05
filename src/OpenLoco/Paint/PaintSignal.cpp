@@ -165,16 +165,16 @@ namespace OpenLoco::Paint
             const auto imageRotationOffset = ((trackRotation & 0x3) << 1) | (trackRotation >= 12 ? 1 : 0);
             const auto imageOffset = imageRotationOffset + signalObj->image + (side.frame() << 3);
 
-            uint32_t imageId = imageOffset;
+            ImageId imageId{ imageOffset };
             if (isGhost)
             {
                 session.setItemType(InteractionItem::noInteraction);
-                imageId = Gfx::applyGhostToImage(imageOffset).toUInt32();
+                imageId = Gfx::applyGhostToImage(imageOffset);
             }
             Map::Pos3 offset(offsetAndBBoffset.offset.x, offsetAndBBoffset.offset.y, getSignalHeightOffset(isRight, trackId) + height);
             Map::Pos3 bbOffset(offsetAndBBoffset.boundingOffset.x, offsetAndBBoffset.boundingOffset.y, offset.z + 4);
             Map::Pos3 bbSize(1, 1, 14);
-            session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
+            session.addToPlotListAsParent(imageId.toUInt32(), offset, bbOffset, bbSize);
 
             if (signalObj->flags & TrainSignalObjectFlags::hasLights)
             {
@@ -182,25 +182,25 @@ namespace OpenLoco::Paint
                 {
                     const auto lightOffset = side.hasRedLight2() ? TrainSignal::ImageIds::redLights2 : TrainSignal::ImageIds::redLights;
                     const auto lightImageOffset = imageRotationOffset + signalObj->image + lightOffset;
-                    imageId = lightImageOffset;
+                    imageId = ImageId{ lightImageOffset };
                     if (isGhost)
                     {
                         session.setItemType(InteractionItem::noInteraction);
-                        imageId = Gfx::applyGhostToImage(imageOffset).toUInt32();
+                        imageId = Gfx::applyGhostToImage(imageOffset);
                     }
-                    session.addToPlotListAsChild(imageId, offset, bbOffset, bbSize);
+                    session.addToPlotListAsChild(imageId.toUInt32(), offset, bbOffset, bbSize);
                 }
                 if (side.hasGreenLight())
                 {
                     const auto lightOffset = side.hasGreenLight2() ? TrainSignal::ImageIds::greenLights2 : TrainSignal::ImageIds::greenLights;
                     const auto lightImageOffset = imageRotationOffset + signalObj->image + lightOffset;
-                    imageId = lightImageOffset;
+                    imageId = ImageId{ lightImageOffset };
                     if (isGhost)
                     {
                         session.setItemType(InteractionItem::noInteraction);
-                        imageId = Gfx::applyGhostToImage(imageOffset).toUInt32();
+                        imageId = Gfx::applyGhostToImage(imageOffset);
                     }
-                    session.addToPlotListAsChild(imageId, offset, bbOffset, bbSize);
+                    session.addToPlotListAsChild(imageId.toUInt32(), offset, bbOffset, bbSize);
                 }
             }
         }
@@ -209,11 +209,11 @@ namespace OpenLoco::Paint
             if (session.getViewFlags() & (1 << 4) && session.getContext()->zoom_level == 0)
             {
                 session.setItemType(InteractionItem::noInteraction);
-                const auto imageId = Gfx::recolour(getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedAvocadoGreen);
+                const auto imageId = ImageId{ getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedAvocadoGreen };
                 const Map::Pos3 offset(0, 0, height + getOneWayArrowHeightOffset(!isRight, trackId) + 2);
                 const Map::Pos3 bbOffset(15, 15, offset.z + 16);
                 const Map::Pos3 bbSize(1, 1, 0);
-                session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
+                session.addToPlotListAsParent(imageId.toUInt32(), offset, bbOffset, bbSize);
             }
         }
     }
