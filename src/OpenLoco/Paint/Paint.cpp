@@ -161,7 +161,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD130
-    PaintStruct* PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotListAsParent(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize)
     {
         return addToPlotListAsParent(imageId, offset, offset, boundBoxSize);
     }
@@ -213,7 +213,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD140
-    PaintStruct* PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotListAsParent(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
         _lastPS = nullptr;
 
@@ -227,10 +227,10 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD150
-    void PaintSession::addToPlotList4FD150(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    void PaintSession::addToPlotList4FD150(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
         registers regs;
-        regs.ebx = imageId;
+        regs.ebx = imageId.toUInt32();
         // regs.al = offset.x;
         // regs.cl = offset.y;
         regs.dx = offset.z;
@@ -246,10 +246,10 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD200
-    void PaintSession::addToPlotList4FD200(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    void PaintSession::addToPlotList4FD200(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
         registers regs;
-        regs.ebx = imageId;
+        regs.ebx = imageId.toUInt32();
         regs.al = offset.x;
         regs.cl = offset.y;
         regs.dx = offset.z;
@@ -265,7 +265,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD1E0
-    PaintStruct* PaintSession::addToPlotListAsChild(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotListAsChild(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
         if (*_lastPS == nullptr)
         {
@@ -281,10 +281,10 @@ namespace OpenLoco::Paint
         return ps;
     }
 
-    void PaintSession::addToPlotList4FD180(uint32_t imageId, uint32_t ecx, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    void PaintSession::addToPlotList4FD180(ImageId imageId, uint32_t ecx, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
         registers regs;
-        regs.ebx = imageId;
+        regs.ebx = imageId.toUInt32();
         regs.ecx = ecx;
         regs.dx = offset.z;
         regs.di = boundBoxSize.x;
@@ -299,7 +299,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045E779
-    AttachedPaintStruct* PaintSession::attachToPrevious(uint32_t imageId, const Ui::Point& offset)
+    AttachedPaintStruct* PaintSession::attachToPrevious(ImageId imageId, const Ui::Point& offset)
     {
         if (_lastPS == nullptr)
         {
@@ -467,9 +467,9 @@ namespace OpenLoco::Paint
         }
     }
 
-    PaintStruct* PaintSession::createNormalPaintStruct(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::createNormalPaintStruct(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
-        auto* const g1 = Gfx::getG1Element(imageId);
+        auto* const g1 = Gfx::getG1Element(imageId.getIndex());
         if (g1 == nullptr)
         {
             return nullptr;
@@ -842,7 +842,7 @@ namespace OpenLoco::Paint
             while (nextPS != nullptr)
             {
                 ps = nextPS;
-                if (isSpriteInteractedWith(getContext(), ImageId::fromUInt32(ps->imageId), ps->vpPos))
+                if (isSpriteInteractedWith(getContext(), ps->imageId, ps->vpPos))
                 {
                     if (isPSSpriteTypeInFilter(ps->type, flags))
                     {
@@ -854,7 +854,7 @@ namespace OpenLoco::Paint
 
             for (auto* attachedPS = ps->attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
             {
-                if (isSpriteInteractedWith(getContext(), ImageId::fromUInt32(attachedPS->imageId), attachedPS->vpPos + ps->vpPos))
+                if (isSpriteInteractedWith(getContext(), attachedPS->imageId, attachedPS->vpPos + ps->vpPos))
                 {
                     if (isPSSpriteTypeInFilter(ps->type, flags))
                     {

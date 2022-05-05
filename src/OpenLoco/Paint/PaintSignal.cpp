@@ -174,7 +174,7 @@ namespace OpenLoco::Paint
             Map::Pos3 offset(offsetAndBBoffset.offset.x, offsetAndBBoffset.offset.y, getSignalHeightOffset(isRight, trackId) + height);
             Map::Pos3 bbOffset(offsetAndBBoffset.boundingOffset.x, offsetAndBBoffset.boundingOffset.y, offset.z + 4);
             Map::Pos3 bbSize(1, 1, 14);
-            session.addToPlotListAsParent(imageId.toUInt32(), offset, bbOffset, bbSize);
+            session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
 
             if (signalObj->flags & TrainSignalObjectFlags::hasLights)
             {
@@ -188,7 +188,7 @@ namespace OpenLoco::Paint
                         session.setItemType(InteractionItem::noInteraction);
                         imageId = Gfx::applyGhostToImage(imageOffset);
                     }
-                    session.addToPlotListAsChild(imageId.toUInt32(), offset, bbOffset, bbSize);
+                    session.addToPlotListAsChild(imageId, offset, bbOffset, bbSize);
                 }
                 if (side.hasGreenLight())
                 {
@@ -200,7 +200,7 @@ namespace OpenLoco::Paint
                         session.setItemType(InteractionItem::noInteraction);
                         imageId = Gfx::applyGhostToImage(imageOffset);
                     }
-                    session.addToPlotListAsChild(imageId.toUInt32(), offset, bbOffset, bbSize);
+                    session.addToPlotListAsChild(imageId, offset, bbOffset, bbSize);
                 }
             }
         }
@@ -213,7 +213,7 @@ namespace OpenLoco::Paint
                 const Map::Pos3 offset(0, 0, height + getOneWayArrowHeightOffset(!isRight, trackId) + 2);
                 const Map::Pos3 bbOffset(15, 15, offset.z + 16);
                 const Map::Pos3 bbSize(1, 1, 0);
-                session.addToPlotListAsParent(imageId.toUInt32(), offset, bbOffset, bbSize);
+                session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
             }
         }
     }

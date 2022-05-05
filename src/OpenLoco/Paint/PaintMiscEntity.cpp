@@ -56,11 +56,11 @@ namespace OpenLoco::Paint
 
         if ((steamObject->flags & SteamObjectFlags::unk3) == 0)
         {
-            session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, exhaustEntity->position.z }, { 1, 1, 0 });
+            session.addToPlotListAsParent(imageId, { 0, 0, exhaustEntity->position.z }, { 1, 1, 0 });
         }
         else
         {
-            session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, exhaustEntity->position.z }, { -12, -12, exhaustEntity->position.z }, { 24, 24, 0 });
+            session.addToPlotListAsParent(imageId, { 0, 0, exhaustEntity->position.z }, { -12, -12, exhaustEntity->position.z }, { 24, 24, 0 });
         }
     }
 
@@ -122,7 +122,7 @@ namespace OpenLoco::Paint
 
         const auto imageId = ImageId{ kVehicleCrashParticleImageIds.at(particle->crashedSpriteBase).at(particle->frame / 256), particle->colourScheme };
 
-        session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, particle->position.z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x0044051C
@@ -157,7 +157,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < kExplosionCloudImageIds.size());
         const auto imageId = ImageId{ kExplosionCloudImageIds.at(particle->frame / 256) };
-        session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, particle->position.z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x00440557
@@ -202,7 +202,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < kSplashImageIds.size());
         const auto imageId = ImageId{ kSplashImageIds.at(particle->frame / 256) };
-        session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, particle->position.z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x00440592
@@ -250,7 +250,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < kFireballImageIds.size());
         const auto imageId = ImageId{ kFireballImageIds.at(particle->frame / 256) };
-        session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, particle->position.z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x004404A6
@@ -277,7 +277,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < kExplosionSmokeImageIds.size());
         const auto imageId = ImageId{ kExplosionSmokeImageIds.at(particle->frame / 256) };
-        session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, particle->position.z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x004404E1
@@ -306,7 +306,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < kSmokeImageIds.size());
         const auto imageId = ImageId{ kSmokeImageIds.at(particle->frame / 256) };
-        session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, particle->position.z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x00440325
