@@ -41,20 +41,20 @@ namespace OpenLoco::Paint
         constexpr uint16_t all = _58 | _5C | _60 | _64 | _68 | _6C | _70 | _74 | _78;
     }
 
+    // Used by both AttachedPaintStruct and PaintStruct
+    namespace PaintStructFlags
+    {
+        constexpr uint8_t hasMaskedImage = (1 << 0);
+    }
+
 #pragma pack(push, 1)
     /* size 0x12 */
     struct AttachedPaintStruct
     {
-        uint32_t imageId; // 0x00
-        union
-        {
-            uint32_t tertiaryColour; // 0x04 maybe unused in loco
-            // If masked imageId is maskedId
-            uint32_t colourImageId; // 0x04
-        };
-        int16_t x;     // 0x08
-        int16_t y;     // 0x0A
-        uint8_t flags; // 0x0C
+        uint32_t imageId;       // 0x00
+        uint32_t maskedImageId; // 0x04
+        Ui::Point vpPos;        // 0x08
+        uint8_t flags;          // 0x0C
         uint8_t pad_0D;
         AttachedPaintStruct* next; // 0x0E
     };
@@ -64,8 +64,7 @@ namespace OpenLoco::Paint
     {
         string_id stringId;      // 0x00
         PaintStringStruct* next; // 0x02
-        int16_t x;               // 0x06
-        int16_t y;               // 0x08
+        Ui::Point vpPos;         // 0x06
         uint16_t args[8];        // 0x0A
         const int8_t* yOffsets;  // 0x1A
         uint16_t colour;         // 0x1E
@@ -77,7 +76,7 @@ namespace OpenLoco::Paint
         uint16_t x;    // 0x08
         uint16_t y;    // 0x0A
         uint16_t z;    // 0x0C
-        uint16_t zEnd; // 0x0E
+        uint16_t zEnd; // 0x0E NOTE: This order is important!
         uint16_t xEnd; // 0x10
         uint16_t yEnd; // 0x12
     };
@@ -91,18 +90,12 @@ namespace OpenLoco::Paint
 
     struct PaintStruct
     {
-        uint32_t imageId; // 0x00
-        union
-        {
-            uint32_t tertiaryColour; // 0x04
-            // If masked image_id is masked_id
-            uint32_t colourImageId; // 0x04
-        };
-        PaintStructBoundBox bounds; // 0x08
-        int16_t x;                  // 0x14
-        int16_t y;                  // 0x16
-        uint16_t quadrantIndex;     // 0x18
-        uint8_t flags;
+        uint32_t imageId;                              // 0x00
+        uint32_t maskedImageId;                        // 0x04
+        PaintStructBoundBox bounds;                    // 0x08
+        Ui::Point vpPos;                               // 0x14
+        uint16_t quadrantIndex;                        // 0x18
+        uint8_t flags;                                 // 0x1A
         uint8_t quadrantFlags;                         // 0x1B
         AttachedPaintStruct* attachedPS;               // 0x1C
         PaintStruct* children;                         // 0x20
@@ -110,8 +103,7 @@ namespace OpenLoco::Paint
         Ui::ViewportInteraction::InteractionItem type; // 0x28
         uint8_t modId;                                 // 0x29 used for track mods and signal sides
         uint16_t pad_2A;
-        coord_t map_x; // 0x2C
-        coord_t map_y; // 0x2E
+        Map::Pos2 mapPos; // 0x2C
         union
         {
             Map::TileElement* tileElement; // 0x30 (or entity pointer)
@@ -192,7 +184,7 @@ namespace OpenLoco::Paint
         void resetTileColumn(const Ui::Point& pos);
         void resetTunnels();
 
-        /*      
+        /*
          * @param amount    @<eax>
          * @param stringId  @<bx>
          * @param z         @<dx>
@@ -203,7 +195,7 @@ namespace OpenLoco::Paint
          */
         PaintStringStruct* addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour);
 
-        /*      
+        /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
          * @param offset_x @<al>
@@ -215,7 +207,7 @@ namespace OpenLoco::Paint
          */
         PaintStruct* addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize);
 
-        /*      
+        /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
          * @param offset_x @<al>
@@ -230,7 +222,7 @@ namespace OpenLoco::Paint
          */
         PaintStruct* addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
-        /*      
+        /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
          * @param offset_z @<dx>
@@ -243,7 +235,7 @@ namespace OpenLoco::Paint
          */
         void addToPlotList4FD150(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
-        /*      
+        /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
          * @param offset_x @<al>
@@ -258,7 +250,7 @@ namespace OpenLoco::Paint
          */
         PaintStruct* addToPlotListAsChild(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
-        /*      
+        /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
          * @param ecx @<ecx>
@@ -272,7 +264,7 @@ namespace OpenLoco::Paint
          */
         void addToPlotList4FD180(uint32_t imageId, uint32_t ecx, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
-        /*      
+        /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
          * @param offset_x @<al>
@@ -286,12 +278,12 @@ namespace OpenLoco::Paint
          * @param boundBoxOffset_z @<0xE3F0A4>
          */
         void addToPlotList4FD200(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
-        /*      
+        /*
          * @param imageId  @<ebx>
          * @param offset_x @<ax>
          * @param offset_y @<cx>
          */
-        AttachedPaintStruct* attachToPrevious(uint32_t imageId, const Map::Pos2& offset);
+        AttachedPaintStruct* attachToPrevious(uint32_t imageId, const Ui::Point& offset);
 
     private:
         void generateTilesAndEntities(GenerationParameters&& p);
@@ -343,14 +335,14 @@ namespace OpenLoco::Paint
         uint16_t viewFlags;      // new field set from 0x00E3F0BC
 
         // From OpenRCT2 equivalent fields not found yet or new
-        //AttachedPaintStruct* unkF1AD2C;              // no equivalent
-        //PaintStruct* woodenSupportsPrependTo;
-        //uint8_t verticalTunnelHeight;
-        //const Map::TileElement* surfaceElement;
-        //Map::TileElement* pathElementOnSameHeight;
-        //Map::TileElement* trackElementOnSameHeight;
-        //uint8_t unk141E9DB;
-        //uint32_t trackColours[4];
+        // AttachedPaintStruct* unkF1AD2C;              // no equivalent
+        // PaintStruct* woodenSupportsPrependTo;
+        // uint8_t verticalTunnelHeight;
+        // const Map::TileElement* surfaceElement;
+        // Map::TileElement* pathElementOnSameHeight;
+        // Map::TileElement* trackElementOnSameHeight;
+        // uint8_t unk141E9DB;
+        // uint32_t trackColours[4];
         template<typename T>
         T* allocatePaintStruct()
         {
