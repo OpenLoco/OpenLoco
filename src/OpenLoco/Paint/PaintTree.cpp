@@ -39,33 +39,31 @@ namespace OpenLoco::Paint
 
         const uint8_t altSeason = elTree.hasSnow() ? 1 : 0;
         bool hasImage2 = false;
-        uint32_t imageId2 = 0;
+        uint32_t imageIndex2 = 0;
+        uint8_t treeWilt = 0;
         if (elTree.unk7l() != 7)
         {
             hasImage2 = true;
 
-            uint32_t edx = (elTree.unk7l()) + 1;
             season = _50076A[season];
-
+            treeWilt = elTree.unk7l() + 1;
             auto image2Season = elTree.season();
 
             if (_500770[image2Season])
             {
                 image2Season = season;
                 season = elTree.season();
-                edx = 8 - edx;
+                treeWilt = 8 - treeWilt;
             }
-            // Unlikely to do anything as no remap flag set
-            edx = edx << 26;
-            imageId2 = edx | (treeFrameNum + treeObj->sprites[altSeason][image2Season]);
+            imageIndex2 = treeFrameNum + treeObj->sprites[altSeason][image2Season];
         }
 
-        const auto seasonBaseImageId = treeObj->sprites[altSeason][season];
+        const auto seasonBaseImageIndex = treeObj->sprites[altSeason][season];
 
-        std::optional<uint32_t> shadowImageId = std::nullopt;
+        std::optional<ImageId> shadowImageId = std::nullopt;
         if (treeObj->flags & TreeObjectFlags::hasShadow)
         {
-            shadowImageId = Gfx::recolourTranslucent(treeObj->shadowImageOffset + treeFrameNum + seasonBaseImageId, ExtColour::unk32);
+            shadowImageId = ImageId{ treeObj->shadowImageOffset + treeFrameNum + seasonBaseImageIndex }.withTranslucency(ExtColour::unk32);
         }
 
         const uint8_t quadrant = (elTree.quadrant() + session.getRotation()) % 4;
@@ -73,36 +71,42 @@ namespace OpenLoco::Paint
 
         const int16_t boundBoxSizeZ = std::min(elTree.clearZ() - elTree.baseZ(), 32) * Map::kSmallZStep - 3;
 
-        uint32_t imageId1 = treeFrameNum + seasonBaseImageId;
-
-        if (treeObj->colours != 0)
-        {
-            // No vanilla object has this property set
-            const auto colour = static_cast<Colour>(elTree.colour());
-            imageId2 = Gfx::recolour(imageId2, colour);
-            imageId1 = Gfx::recolour(imageId1, colour);
-        }
+        const uint32_t imageIndex1 = treeFrameNum + seasonBaseImageIndex;
+        ImageId imageId1{};
+        ImageId imageId2{};
 
         if (elTree.isGhost())
         {
             session.setItemType(InteractionItem::noInteraction);
-            imageId2 = Gfx::applyGhostToImage(imageId2).toUInt32();
-            imageId1 = Gfx::applyGhostToImage(imageId1).toUInt32();
+            imageId2 = Gfx::applyGhostToImage(imageIndex2);
+            imageId1 = Gfx::applyGhostToImage(imageIndex1);
+        }
+        else if (treeObj->colours != 0)
+        {
+            // No vanilla object has this property set
+            const auto colour = static_cast<Colour>(elTree.colour());
+            imageId2 = ImageId{ imageIndex2, colour }.withTreeWilt(treeWilt);
+            imageId1 = ImageId{ imageIndex1, colour };
+        }
+        else
+        {
+            imageId1 = ImageId{ imageIndex1 };
+            imageId2 = ImageId{ imageIndex2 }.withTreeWilt(treeWilt);
         }
 
         if (shadowImageId)
         {
             if (session.getContext()->zoom_level <= 1)
             {
-                session.addToPlotListAsParent(*shadowImageId, imageOffset, imageOffset, { 18, 18, 1 });
+                session.addToPlotListAsParent(shadowImageId->toUInt32(), imageOffset, imageOffset, { 18, 18, 1 });
             }
         }
 
-        session.addToPlotListAsParent(imageId1, imageOffset, imageOffset + Map::Pos3(0, 0, 2), { 2, 2, boundBoxSizeZ });
+        session.addToPlotListAsParent(imageId1.toUInt32(), imageOffset, imageOffset + Map::Pos3(0, 0, 2), { 2, 2, boundBoxSizeZ });
 
         if (hasImage2)
         {
-            session.addToPlotListAsChild(imageId2, imageOffset, imageOffset + Map::Pos3(0, 0, 2), { 2, 2, boundBoxSizeZ });
+            session.addToPlotListAsChild(imageId2.toUInt32(), imageOffset, imageOffset + Map::Pos3(0, 0, 2), { 2, 2, boundBoxSizeZ });
         }
     }
 }
