@@ -86,8 +86,8 @@ namespace OpenLoco::Paint
         if (elTree.isGhost())
         {
             session.setItemType(InteractionItem::noInteraction);
-            imageId2 = Gfx::applyGhostToImage(imageId2);
-            imageId1 = Gfx::applyGhostToImage(imageId1);
+            imageId2 = Gfx::applyGhostToImage(imageId2).toUInt32();
+            imageId1 = Gfx::applyGhostToImage(imageId1).toUInt32();
         }
 
         if (shadowImageId)

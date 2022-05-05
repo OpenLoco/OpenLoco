@@ -169,7 +169,7 @@ namespace OpenLoco::Paint
             if (isGhost)
             {
                 session.setItemType(InteractionItem::noInteraction);
-                imageId = Gfx::applyGhostToImage(imageOffset);
+                imageId = Gfx::applyGhostToImage(imageOffset).toUInt32();
             }
             Map::Pos3 offset(offsetAndBBoffset.offset.x, offsetAndBBoffset.offset.y, getSignalHeightOffset(isRight, trackId) + height);
             Map::Pos3 bbOffset(offsetAndBBoffset.boundingOffset.x, offsetAndBBoffset.boundingOffset.y, offset.z + 4);
@@ -186,7 +186,7 @@ namespace OpenLoco::Paint
                     if (isGhost)
                     {
                         session.setItemType(InteractionItem::noInteraction);
-                        imageId = Gfx::applyGhostToImage(imageOffset);
+                        imageId = Gfx::applyGhostToImage(imageOffset).toUInt32();
                     }
                     session.addToPlotListAsChild(imageId, offset, bbOffset, bbSize);
                 }
@@ -198,7 +198,7 @@ namespace OpenLoco::Paint
                     if (isGhost)
                     {
                         session.setItemType(InteractionItem::noInteraction);
-                        imageId = Gfx::applyGhostToImage(imageOffset);
+                        imageId = Gfx::applyGhostToImage(imageOffset).toUInt32();
                     }
                     session.addToPlotListAsChild(imageId, offset, bbOffset, bbSize);
                 }

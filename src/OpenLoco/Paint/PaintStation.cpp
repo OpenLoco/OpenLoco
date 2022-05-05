@@ -391,7 +391,7 @@ namespace OpenLoco::Paint
         if (elStation.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            imageIdbase = Gfx::applyGhostToImage(stationObj->var_12[elStation.multiTileIndex()]);
+            imageIdbase = Gfx::applyGhostToImage(stationObj->var_12[elStation.multiTileIndex()]).toUInt32();
             imageIdTranslucentBase = Gfx::recolourTranslucent(stationObj->var_12[elStation.multiTileIndex()], ExtColour::unk2F);
         }
         else

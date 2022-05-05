@@ -87,7 +87,7 @@ namespace OpenLoco::Paint
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::applyGhostToImage(imageId);
+                    imageId = Gfx::applyGhostToImage(imageId).toUInt32();
                 }
                 else if (bogie->var_0C & Flags0C::unk_5)
                 {
@@ -133,7 +133,7 @@ namespace OpenLoco::Paint
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::applyGhostToImage(imageId);
+                    imageId = Gfx::applyGhostToImage(imageId).toUInt32();
                 }
                 else
                 {
@@ -157,7 +157,7 @@ namespace OpenLoco::Paint
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::applyGhostToImage(imageId);
+                    imageId = Gfx::applyGhostToImage(imageId).toUInt32();
                 }
                 else
                 {
@@ -428,7 +428,7 @@ namespace OpenLoco::Paint
         uint32_t imageId = 0;
         if (body->getFlags38() & Flags38::isGhost)
         {
-            imageId = Gfx::applyGhostToImage(bodyImage);
+            imageId = Gfx::applyGhostToImage(bodyImage).toUInt32();
         }
         else if (body->var_0C & Flags0C::unk_5)
         {
