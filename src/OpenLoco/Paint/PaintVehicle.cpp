@@ -83,15 +83,16 @@ namespace OpenLoco::Paint
                 {
                     yawIndex &= 0xF;
                 }
-                auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.flatImageIds;
+                const auto imageIndex = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.flatImageIds;
+                ImageId imageId{};
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::applyGhostToImage(imageId).toUInt32();
+                    imageId = Gfx::applyGhostToImage(imageIndex);
                 }
                 else if (bogie->var_0C & Flags0C::unk_5)
                 {
-                    imageId = Gfx::recolour(imageId, ExtColour::unk74);
+                    imageId = ImageId(imageIndex, ExtColour::unk74);
                 }
                 else if (bogie->getTransportMode() == TransportMode::air)
                 {
@@ -103,24 +104,24 @@ namespace OpenLoco::Paint
                         return;
                     }
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::recolourTranslucent(imageId, ExtColour::unk32);
-                    session.addToPlotList4FD200(imageId, { 0, 0, bogie->position.z }, { 8, 8, static_cast<coord_t>(bogie->position.z + 6) }, { 48, 48, 2 });
+                    imageId = ImageId(imageIndex).withTranslucency(ExtColour::unk32);
+                    session.addToPlotList4FD200(imageId.toUInt32(), { 0, 0, bogie->position.z }, { 8, 8, static_cast<coord_t>(bogie->position.z + 6) }, { 48, 48, 2 });
                     return;
                 }
                 else
                 {
-                    imageId = Gfx::recolour2(imageId, bogie->colourScheme);
+                    imageId = ImageId(imageIndex, bogie->colourScheme);
                 }
 
                 if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
                     // larger sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -9, -9, static_cast<coord_t>(bogie->position.z + 3) }, { 18, 18, 5 });
+                    session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, bogie->position.z }, { -9, -9, static_cast<coord_t>(bogie->position.z + 3) }, { 18, 18, 5 });
                 }
                 else
                 {
                     // smaller sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
+                    session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
                 }
                 break;
             }
@@ -129,41 +130,43 @@ namespace OpenLoco::Paint
             case Pitch::down12deg:
             case Pitch::down10deg:
             {
-                auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.gentleImageIds;
+                const auto imageIndex = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.gentleImageIds;
+                ImageId imageId{};
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::applyGhostToImage(imageId).toUInt32();
+                    imageId = Gfx::applyGhostToImage(imageIndex);
                 }
                 else
                 {
-                    imageId = Gfx::recolour2(imageId, bogie->colourScheme);
+                    imageId = ImageId(imageIndex, bogie->colourScheme);
                 }
                 if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
                     // larger sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -8, -8, static_cast<coord_t>(bogie->position.z + 3) }, { 16, 16, 1 });
+                    session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, bogie->position.z }, { -8, -8, static_cast<coord_t>(bogie->position.z + 3) }, { 16, 16, 1 });
                 }
                 else
                 {
                     // smaller sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
+                    session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
                 }
                 break;
             }
             default:
             {
-                auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.steepImageIds;
+                const auto imageIndex = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.steepImageIds;
+                ImageId imageId{};
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = Gfx::applyGhostToImage(imageId).toUInt32();
+                    imageId = Gfx::applyGhostToImage(imageIndex);
                 }
                 else
                 {
-                    imageId = Gfx::recolour2(imageId, bogie->colourScheme);
+                    imageId = ImageId(imageIndex, bogie->colourScheme);
                 }
-                session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
+                session.addToPlotListAsParent(imageId.toUInt32(), { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
                 break;
             }
         }
@@ -175,9 +178,9 @@ namespace OpenLoco::Paint
         {
             yaw &= 0x1F;
         }
-        uint32_t imageId = (yaw >> _503F20[sprite.var_0B]) * sprite.numFramesPerRotation;
-        imageId += sprite.flatImageId;
-        return imageId;
+        uint32_t imageIndex = (yaw >> _503F20[sprite.var_0B]) * sprite.numFramesPerRotation;
+        imageIndex += sprite.flatImageId;
+        return imageIndex;
     }
 
     static uint32_t paintBodyPitchUp12Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
@@ -187,9 +190,9 @@ namespace OpenLoco::Paint
             return paintBodyPitchDefault(sprite, yaw);
         }
         auto imageOffset = sprite.flags & BodySpriteFlags::rotationalSymmetry ? 4 : 8;
-        uint32_t imageId = ((yaw >> _503F20[sprite.var_0C]) + imageOffset) * sprite.numFramesPerRotation;
-        imageId += sprite.gentleImageId;
-        return imageId;
+        uint32_t imageIndex = ((yaw >> _503F20[sprite.var_0C]) + imageOffset) * sprite.numFramesPerRotation;
+        imageIndex += sprite.gentleImageId;
+        return imageIndex;
     }
 
     static uint32_t paintBodyPitchDown12Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
@@ -252,9 +255,9 @@ namespace OpenLoco::Paint
             return paintBodyPitchUp12Deg(sprite, yaw);
         }
         auto imageOffset = sprite.flags & BodySpriteFlags::rotationalSymmetry ? 4 : 8;
-        uint32_t imageId = ((yaw >> _503F20[sprite.var_0C]) + imageOffset) * sprite.numFramesPerRotation;
-        imageId += sprite.steepImageId;
-        return imageId;
+        uint32_t imageIndex = ((yaw >> _503F20[sprite.var_0C]) + imageOffset) * sprite.numFramesPerRotation;
+        imageIndex += sprite.steepImageId;
+        return imageIndex;
     }
 
     static uint32_t paintBodyPitchDown25Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
@@ -312,15 +315,15 @@ namespace OpenLoco::Paint
     }
 
     // Adds roll/animation and cargo
-    static uint32_t getBodyImage(const uint32_t imageId, const VehicleBody* body)
+    static uint32_t getBodyImageIndex(const uint32_t imageIndex, const VehicleBody* body)
     {
-        return imageId + body->var_46 + body->var_47;
+        return imageIndex + body->var_46 + body->var_47;
     }
 
-    static uint32_t getBrakingImage(const uint32_t imageId, const VehicleObjectBodySprite& sprite)
+    static uint32_t getBrakingImageIndex(const uint32_t imageIndex, const VehicleObjectBodySprite& sprite)
     {
         // Braking image is the last frame for a rotation
-        return imageId + sprite.numFramesPerRotation - 1;
+        return imageIndex + sprite.numFramesPerRotation - 1;
     }
 
     // 0x004B103C
@@ -346,47 +349,47 @@ namespace OpenLoco::Paint
             pitch = kReversePitch[static_cast<uint8_t>(body->sprite_pitch)];
         }
 
-        uint32_t pitchImageId;
+        uint32_t pitchImageIndex;
         switch (pitch)
         {
             case Pitch::flat:
-                pitchImageId = paintBodyPitchDefault(sprite, yaw);
+                pitchImageIndex = paintBodyPitchDefault(sprite, yaw);
                 break;
             case Pitch::up12deg:
-                pitchImageId = paintBodyPitchUp12Deg(sprite, yaw);
+                pitchImageIndex = paintBodyPitchUp12Deg(sprite, yaw);
                 break;
             case Pitch::down12deg:
-                pitchImageId = paintBodyPitchDown12Deg(sprite, yaw);
+                pitchImageIndex = paintBodyPitchDown12Deg(sprite, yaw);
                 break;
             case Pitch::up6deg:
-                pitchImageId = paintBodyPitchUp6Deg(sprite, yaw);
+                pitchImageIndex = paintBodyPitchUp6Deg(sprite, yaw);
                 break;
             case Pitch::down6deg:
-                pitchImageId = paintBodyPitchDown6Deg(sprite, yaw);
+                pitchImageIndex = paintBodyPitchDown6Deg(sprite, yaw);
                 break;
             case Pitch::up25deg:
-                pitchImageId = paintBodyPitchUp25Deg(sprite, yaw);
+                pitchImageIndex = paintBodyPitchUp25Deg(sprite, yaw);
                 break;
             case Pitch::down25deg:
-                pitchImageId = paintBodyPitchDown25Deg(sprite, yaw);
+                pitchImageIndex = paintBodyPitchDown25Deg(sprite, yaw);
                 break;
             case Pitch::up18deg:
-                pitchImageId = paintBodyPitchUp18Deg(sprite, yaw);
+                pitchImageIndex = paintBodyPitchUp18Deg(sprite, yaw);
                 break;
             case Pitch::down18deg:
-                pitchImageId = paintBodyPitchDown18Deg(sprite, yaw);
+                pitchImageIndex = paintBodyPitchDown18Deg(sprite, yaw);
                 break;
             default:
-                pitchImageId = paintBodyPitchDefault(sprite, yaw);
+                pitchImageIndex = paintBodyPitchDefault(sprite, yaw);
                 break;
         }
 
-        uint32_t bodyImage = getBodyImage(pitchImageId, body);
+        uint32_t bodyImageIndex = getBodyImageIndex(pitchImageIndex, body);
 
-        std::optional<uint32_t> brakingImage = {};
+        std::optional<uint32_t> brakingImageIndex = {};
         if (sprite.flags & BodySpriteFlags::hasBrakingLights)
         {
-            brakingImage = getBrakingImage(pitchImageId, sprite);
+            brakingImageIndex = getBrakingImageIndex(pitchImageIndex, sprite);
         }
 
         Map::Pos3 offsets = { 0, 0, body->position.z };
@@ -425,29 +428,29 @@ namespace OpenLoco::Paint
             };
         }
 
-        uint32_t imageId = 0;
+        ImageId imageId{};
         if (body->getFlags38() & Flags38::isGhost)
         {
-            imageId = Gfx::applyGhostToImage(bodyImage).toUInt32();
+            imageId = Gfx::applyGhostToImage(bodyImageIndex);
         }
         else if (body->var_0C & Flags0C::unk_5)
         {
-            imageId = Gfx::recolour(bodyImage, ExtColour::unk74);
+            imageId = ImageId(bodyImageIndex, ExtColour::unk74);
         }
         else
         {
-            imageId = Gfx::recolour2(bodyImage, body->colourScheme);
+            imageId = ImageId(bodyImageIndex, body->colourScheme);
         }
-        session.addToPlotList4FD200(imageId, offsets, boundBoxOffsets, boundBoxSize);
+        session.addToPlotList4FD200(imageId.toUInt32(), offsets, boundBoxOffsets, boundBoxSize);
 
-        if (brakingImage)
+        if (brakingImageIndex)
         {
             Vehicle train(body->head);
             if (train.veh2->var_5B != 0
                 && !(body->getFlags38() & Flags38::isGhost)
                 && !(body->var_0C & Flags0C::unk_5))
             {
-                session.attachToPrevious(*brakingImage, { 0, 0 });
+                session.attachToPrevious(ImageId{ *brakingImageIndex }.toUInt32(), { 0, 0 });
             }
         }
     }
