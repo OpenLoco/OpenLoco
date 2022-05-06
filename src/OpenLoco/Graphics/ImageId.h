@@ -16,20 +16,25 @@ namespace OpenLoco
     {
     private:
         // clang-format off
-        static constexpr uint32_t kMaskIndex       = 0b00000000000001111111111111111111;
-        static constexpr uint32_t kMaskRemap       = 0b00000111111110000000000000000000;
-        static constexpr uint32_t kMaskPrimary     = 0b00000000111110000000000000000000;
-        static constexpr uint32_t kMaskSecondary   = 0b00011111000000000000000000000000;
-        static constexpr uint32_t kFlagPrimary     = 0b00100000000000000000000000000000;
-        static constexpr uint32_t kFlagBlend       = 0b01000000000000000000000000000000;
-        static constexpr uint32_t kFlagSecondary   = 0b10000000000000000000000000000000;
-        static constexpr uint32_t kShiftRemap      = 19;
-        static constexpr uint32_t kShiftPrimary    = 19;
-        static constexpr uint32_t kShiftSecondary  = 24;
-        static constexpr uint32_t kIndexUndefined  = 0b00000000000001111111111111111111;
-        static constexpr uint32_t kValueUndefined  = kIndexUndefined;
+        static constexpr uint32_t kMaskIndex        = 0b00000000000001111111111111111111;
+        static constexpr uint32_t kMaskRemap        = 0b00000011111110000000000000000000;
+        static constexpr uint32_t kMaskTranslucent  = 0b00000111111110000000000000000000;
+        static constexpr uint32_t kMaskPrimary      = 0b00000000111110000000000000000000;
+        static constexpr uint32_t kMaskSecondary    = 0b00011111000000000000000000000000;
+        static constexpr uint32_t kMaskTreeWilt     = 0b00011100000000000000000000000000;
+        static constexpr uint32_t kFlagPrimary      = 0b00100000000000000000000000000000;
+        static constexpr uint32_t kFlagBlend        = 0b01000000000000000000000000000000;
+        static constexpr uint32_t kFlagSecondary    = 0b10000000000000000000000000000000;
+        static constexpr uint32_t kShiftRemap       = 19;
+        static constexpr uint32_t kShiftPrimary     = 19;
+        static constexpr uint32_t kShiftTranslucent = 19;
+        static constexpr uint32_t kShiftSecondary   = 24;
+        static constexpr uint32_t kShiftTreeWilt    = 26;
+        static constexpr uint32_t kIndexUndefined   = 0b00000000000001111111111111111111;
+        static constexpr uint32_t kValueUndefined   = kIndexUndefined;
         // clang-format on
 
+        // Tree wilt can be used with NONE and PRIMARY
         // NONE = No remap
         // BLENDED = No source copy, remap destination only (glass)
         // PRIMARY | BLENDED = Destination is blended with source (water)
@@ -94,9 +99,14 @@ namespace OpenLoco
             return _index & kFlagSecondary;
         }
 
+        constexpr bool hasTreeWilt() const
+        {
+            return !isBlended() && (getTreeWilt() != 0);
+        }
+
         constexpr bool isRemap() const
         {
-            return (_index & kFlagPrimary) && !(_index & kFlagSecondary);
+            return hasPrimary() && !hasSecondary() && !isBlended();
         }
 
         constexpr bool isBlended() const
@@ -107,6 +117,11 @@ namespace OpenLoco
         constexpr ImageIndex getIndex() const
         {
             return _index & kMaskIndex;
+        }
+
+        constexpr ExtColour getTransluceny() const
+        {
+            return static_cast<ExtColour>((_index & kMaskTranslucent) >> kShiftTranslucent);
         }
 
         constexpr ExtColour getRemap() const
@@ -122,6 +137,11 @@ namespace OpenLoco
         constexpr Colour getSecondary() const
         {
             return static_cast<Colour>((_index & kMaskSecondary) >> kShiftSecondary);
+        }
+
+        constexpr uint8_t getTreeWilt() const
+        {
+            return (_index & kMaskTreeWilt) >> kShiftTreeWilt;
         }
 
         constexpr ImageId withIndex(ImageIndex index) const
@@ -142,9 +162,18 @@ namespace OpenLoco
         constexpr ImageId withRemap(ExtColour paletteId) const
         {
             ImageId result = *this;
-            result._index &= ~(kMaskPrimary | kMaskSecondary | kFlagSecondary | kFlagBlend);
+            result._index &= ~(kMaskRemap | kFlagSecondary | kFlagBlend);
             result._index |= enumValue(paletteId) << kShiftRemap;
             result._index |= kFlagPrimary;
+            return result;
+        }
+
+        // Can be used withRemap or withPrimary or with None
+        constexpr ImageId withTreeWilt(uint8_t wilt) const
+        {
+            ImageId result = *this;
+            result._index &= ~(kMaskTreeWilt | kFlagSecondary | kFlagBlend);
+            result._index |= wilt << kShiftTreeWilt;
             return result;
         }
 
