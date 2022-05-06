@@ -145,6 +145,7 @@ namespace OpenLoco::Gfx
 
     void loadG1();
     void initialiseCharacterWidths();
+    void initialiseTreeWiltPaletteMap();
     void clear(Context& context, uint32_t fill);
     void clearSingle(Context& context, uint8_t paletteId);
 
