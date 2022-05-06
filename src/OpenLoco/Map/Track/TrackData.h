@@ -3,6 +3,7 @@
 #include "../../Core/Span.hpp"
 #include "../../Types.hpp"
 #include "../Map.hpp"
+#include "../QuarterTile.h"
 #include <array>
 #include <cstddef>
 #include <cstdlib>
@@ -13,12 +14,12 @@ namespace OpenLoco::Map::TrackData
 
     struct PreviewTrack
     {
-        uint8_t index; // 0x00
-        int16_t x;     // 0x01
-        int16_t y;     // 0x03
-        int16_t z;     // 0x05
-        uint8_t var_07;
-        uint8_t var_08;
+        uint8_t index;                      // 0x00
+        int16_t x;                          // 0x01
+        int16_t y;                          // 0x03
+        int16_t z;                          // 0x05
+        uint8_t clearZ;                     // 0x07
+        QuarterTile subTileClearance;       // 0x08
         uint8_t flags;                      // 0x09
         ConnectionsByRotation connectFlags; // From 0x004F78F8 & 0x004F6F1C
     };
