@@ -139,7 +139,7 @@ namespace OpenLoco::Map::TrackData
         PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b0111, 0b0100 }, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk2, generateConnections(0xF8) },
         PreviewTrack{ 1, 0, -32, 16, 0, QuarterTile{ 0b1000, 0b0000 }, PreviewTrackFlags::diagonal | PreviewTrackFlags::unk4, generateConnections(0x02) },
         PreviewTrack{ 2, -32, 0, 16, 0, QuarterTile{ 0b0010, 0b0000 }, PreviewTrackFlags::unk4, generateConnections(0x70) },
-        PreviewTrack{ 3, -32, -32, 16, 16, QuarterTile{ 0b0110, 0b0111 }, PreviewTrackFlags::unk2 | PreviewTrackFlags::unk1, generateConnections(0xF8) },
+        PreviewTrack{ 3, -32, -32, 16, 16, QuarterTile{ 0b0111, 0b0110 }, PreviewTrackFlags::unk2 | PreviewTrackFlags::unk1, generateConnections(0xF8) },
     };
     const std::array<PreviewTrack, 4> trackPiece23 = {
         PreviewTrack{ 0, 0, 0, 0, 16, QuarterTile{ 0b1011, 0b1000 }, PreviewTrackFlags::unk3 | PreviewTrackFlags::unk2, generateConnections(0x3E) },
