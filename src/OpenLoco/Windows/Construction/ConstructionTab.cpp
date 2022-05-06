@@ -2582,10 +2582,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         for (const auto& trackPiece : trackPieces)
         {
             const auto pieceOffset = Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackDirection), trackPiece.z };
-            const auto quarterTile = trackPiece.var_08; //.rotate(trackDirection);
+            const auto quarterTile = trackPiece.subTileClearance.rotate(trackDirection);
             const auto trackPos = pos + pieceOffset;
             const auto baseZ = trackPos.z / kSmallZStep;
-            const auto clearZ = baseZ + (trackPiece.var_07 + 32) / kSmallZStep;
+            const auto clearZ = baseZ + (trackPiece.clearZ + 32) / kSmallZStep;
 
             const auto centreTileCoords = Map::TilePos2{ trackPos };
             const auto eastTileCoords = centreTileCoords + Map::offsets[1];
@@ -2601,7 +2601,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             backupTileElements[4] = *Map::TileManager::get(southTileCoords)[0];
 
             // Set the temporary track element
-            Map::TrackElement newTrackEl(baseZ, clearZ, trackDirection, quarterTile /*.getBaseQuarterOccupied()*/, trackPiece.index, trackType, trackPieceId, std::nullopt, CompanyManager::getControllingId(), selectedMods);
+            Map::TrackElement newTrackEl(baseZ, clearZ, trackDirection, quarterTile.getBaseQuarterOccupied(), trackPiece.index, trackType, trackPieceId, std::nullopt, CompanyManager::getControllingId(), selectedMods);
             newTrackEl.setLastFlag(true);
 
             // Replace map elements with temp ones
