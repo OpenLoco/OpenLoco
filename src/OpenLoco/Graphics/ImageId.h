@@ -1,4 +1,5 @@
 #include "Colour.h"
+#include <cassert>
 
 namespace OpenLoco
 {
@@ -162,6 +163,7 @@ namespace OpenLoco
         constexpr ImageId withRemap(ExtColour paletteId) const
         {
             ImageId result = *this;
+            assert(enumValue(paletteId) <= 0x7F); // If larger then it eats into treeWilt
             result._index &= ~(kMaskRemap | kFlagSecondary | kFlagBlend);
             result._index |= enumValue(paletteId) << kShiftRemap;
             result._index |= kFlagPrimary;
