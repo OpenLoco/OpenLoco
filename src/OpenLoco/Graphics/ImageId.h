@@ -120,7 +120,7 @@ namespace OpenLoco
             return _index & kMaskIndex;
         }
 
-        constexpr ExtColour getTransluceny() const
+        constexpr ExtColour getTranslucency() const
         {
             return static_cast<ExtColour>((_index & kMaskTranslucent) >> kShiftTranslucent);
         }
