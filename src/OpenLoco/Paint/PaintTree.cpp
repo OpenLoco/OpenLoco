@@ -13,7 +13,7 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 namespace OpenLoco::Paint
 {
     constexpr std::array<uint8_t, 6> _50076A = { 3, 0, 1, 2, 1, 4 };
-    constexpr std::array<bool, 5> _500770 = { true, true, false, false, true };
+    constexpr std::array<bool, 6> _500770 = { true, true, false, false, true, true };
     constexpr std::array<Map::Pos2, 4> kTreeQuadrantOffset = {
         Map::Pos2{ 7, 7 },
         Map::Pos2{ 7, 23 },
@@ -24,6 +24,11 @@ namespace OpenLoco::Paint
     // 0x004BAEDA
     void paintTree(PaintSession& session, const Map::TreeElement& elTree)
     {
+        //registers regs;
+        //regs.esi = X86Pointer(&elTree);
+        //regs.ecx = (session.getRotation() + elTree.data()[0]) & 0x3;
+        //regs.dx = elTree.baseHeight();
+        //call(0x004BAEDA, regs);
         session.setItemType(InteractionItem::tree);
 
         const auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
@@ -44,11 +49,11 @@ namespace OpenLoco::Paint
 
             auto image2Season = elTree.season();
 
-            if (!_500770[season])
+            if (_500770[image2Season])
             {
                 image2Season = season;
                 season = elTree.season();
-                edx = (~edx) & 0b111;
+                edx = 8 - edx;
             }
             // Unlikely to do anything as no remap flag set
             edx = edx << 26;
