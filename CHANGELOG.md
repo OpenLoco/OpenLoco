@@ -1,10 +1,11 @@
-22.04+ (???)
+22.05 (2022-05-08)
 ------------------------------------------------------------------------
 - Feature: [#1457] Added option to invert right-mouse panning the game view.
 - Feature: [#1484] Hold shift when placing a vehicle to start it immediately.
 - Fix: [#293] Menu screen and other window corruption when many objects loaded.
 - Fix: [#1463] Crash when opening the build window under certain situations.
-- Fix: [#1499] Trees have a subtle wilt effect that was missing. Certain trees displayed the wrong image for certain seasons.
+- Fix: [#1499] Trees are missing their wilt effects.
+- Fix: [#1499] Certain trees display the wrong image for certain seasons.
 
 22.04 (2022-04-12)
 ------------------------------------------------------------------------
