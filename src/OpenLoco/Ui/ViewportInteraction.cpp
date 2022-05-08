@@ -32,11 +32,11 @@ using namespace OpenLoco::Map;
 namespace OpenLoco::Ui::ViewportInteraction
 {
     InteractionArg::InteractionArg(const Paint::PaintStruct& ps)
-        : object(ps.entity)
+        : pos(ps.mapPos)
+        , object(ps.entity)
         , type(ps.type)
         , modId(ps.modId)
     {
-        pos = Pos2{ ps.map_x, ps.map_y };
     }
 
     static bool getStationArguments(InteractionArg& interaction);

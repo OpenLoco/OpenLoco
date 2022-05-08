@@ -405,6 +405,7 @@ namespace OpenLoco
         Gfx::loadG1();
         Ui::ProgressBar::setProgress(220);
         Gfx::initialiseCharacterWidths();
+        Gfx::initialiseTreeWiltPaletteMap();
         Ui::ProgressBar::setProgress(235);
         Ui::ProgressBar::setProgress(250);
         Ui::initialiseCursors();
@@ -1010,7 +1011,7 @@ namespace OpenLoco
                 if (today.month != yesterday.month)
                 {
                     // End of every month
-                    Scenario::getObjective().monthsInChallenge++;
+                    Scenario::getObjectiveProgress().monthsInChallenge++;
                     TownManager::updateMonthly();
                     IndustryManager::updateMonthly();
                     CompanyManager::updateMonthly1();

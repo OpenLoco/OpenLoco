@@ -1313,6 +1313,14 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t smoke_10 = 3475;
     constexpr uint32_t smoke_11 = 3476;
 
+    constexpr uint32_t tree_wilt_palette_map_1 = 3479; // Map zero is use no wilting
+    constexpr uint32_t tree_wilt_palette_map_2 = 3480;
+    constexpr uint32_t tree_wilt_palette_map_3 = 3481;
+    constexpr uint32_t tree_wilt_palette_map_4 = 3482;
+    constexpr uint32_t tree_wilt_palette_map_5 = 3483;
+    constexpr uint32_t tree_wilt_palette_map_6 = 3484;
+    constexpr uint32_t tree_wilt_palette_map_7 = 3485;
+
     constexpr uint32_t tab_object_settings = 3505;
     constexpr uint32_t tab_object_audio = 3506;
     constexpr uint32_t tab_object_currency = 3507;

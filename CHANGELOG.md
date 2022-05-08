@@ -4,6 +4,7 @@
 - Feature: [#1484] Hold shift when placing a vehicle to start it immediately.
 - Fix: [#293] Menu screen and other window corruption when many objects loaded.
 - Fix: [#1463] Crash when opening the build window under certain situations.
+- Fix: [#1499] Trees have a subtle wilt effect that was missing. Certain trees displayed the wrong image for certain seasons.
 - Change: [#1494] Changing game speed unpauses the game if the game is paused.
 
 22.04 (2022-04-12)

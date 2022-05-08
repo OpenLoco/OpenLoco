@@ -57,7 +57,8 @@ namespace OpenLoco::Paint
                 {
                     variation = 0;
                 }
-                if (i > cargoOffsets.size())
+                // TODO: Investigate if updateCargoDistribution should cap to prevent this ever being hit
+                if (i >= cargoOffsets.size())
                 {
                     break;
                 }

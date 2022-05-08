@@ -3,6 +3,7 @@
 #include "../Core/FileSystem.hpp"
 #include "../EditorController.h"
 #include "../Objects/Object.h"
+#include "../ScenarioObjective.h"
 #include "Limits.h"
 #include <cstdint>
 #include <memory>
@@ -103,14 +104,7 @@ namespace OpenLoco::S5
         uint8_t preview[128][128];                            // 0x18A
         uint8_t maxCompetingCompanies;                        // 0x418A
         uint8_t competitorStartDelay;                         // 0x418B
-        uint8_t objectiveType;                                // 0x418C
-        uint8_t objectiveFlags;                               // 0x418D
-        uint32_t objectiveCompanyValue;                       // 0x418E
-        uint32_t objectiveMonthlyVehicleProfit;               // 0x4192
-        uint8_t objectivePerformanceIndex;                    // 0x4196
-        uint8_t objectiveDeliveredCargoType;                  // 0x4197
-        uint32_t objectiveDeliveredCargoAmount;               // 0x4198
-        uint8_t objectiveTimeLimitYears;                      // 0x419C
+        Scenario::Objective objective;                        // 0x418C
         ObjectHeader objectiveDeliveredCargo;                 // 0x419D
         ObjectHeader currency;                                // 0x41AD
 
@@ -144,14 +138,16 @@ namespace OpenLoco::S5
     static_assert(0x009C8714 + offsetof(Options, numberOfIndustries) == 0x009C889D);
     static_assert(0x009C8714 + offsetof(Options, scenarioName) == 0x009C873E);
     static_assert(0x009C8714 + offsetof(Options, scenarioDetails) == 0x009C877E);
-    static_assert(0x009C8714 + offsetof(Options, objectiveType) == 0x009CC8A0);
-    static_assert(0x009C8714 + offsetof(Options, objectiveFlags) == 0x009CC8A1);
-    static_assert(0x009C8714 + offsetof(Options, objectiveCompanyValue) == 0x009CC8A2);
-    static_assert(0x009C8714 + offsetof(Options, objectiveMonthlyVehicleProfit) == 0x009CC8A6);
-    static_assert(0x009C8714 + offsetof(Options, objectivePerformanceIndex) == 0x009CC8AA);
-    static_assert(0x009C8714 + offsetof(Options, objectiveDeliveredCargoType) == 0x009CC8AB);
-    static_assert(0x009C8714 + offsetof(Options, objectiveDeliveredCargoAmount) == 0x009CC8AC);
-    static_assert(0x009C8714 + offsetof(Options, objectiveTimeLimitYears) == 0x009CC8B0);
+
+    static_assert(0x009C8714 + offsetof(Options, objective.type) == 0x009CC8A0);
+    static_assert(0x009C8714 + offsetof(Options, objective.flags) == 0x009CC8A1);
+    static_assert(0x009C8714 + offsetof(Options, objective.companyValue) == 0x009CC8A2);
+    static_assert(0x009C8714 + offsetof(Options, objective.monthlyVehicleProfit) == 0x009CC8A6);
+    static_assert(0x009C8714 + offsetof(Options, objective.performanceIndex) == 0x009CC8AA);
+    static_assert(0x009C8714 + offsetof(Options, objective.deliveredCargoType) == 0x009CC8AB);
+    static_assert(0x009C8714 + offsetof(Options, objective.deliveredCargoAmount) == 0x009CC8AC);
+    static_assert(0x009C8714 + offsetof(Options, objective.timeLimitYears) == 0x009CC8B0);
+
     static_assert(0x009C8714 + offsetof(Options, objectiveDeliveredCargo) == 0x009CC8B1);
     static_assert(0x009C8714 + offsetof(Options, currency) == 0x009CC8C1);
 

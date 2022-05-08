@@ -281,6 +281,12 @@ namespace OpenLoco::Gfx
         // Vanilla setup scrolling text related globals here (unused)
     }
 
+    // 0x00452336
+    void initialiseTreeWiltPaletteMap()
+    {
+        call(0x00452336);
+    }
+
     // 0x00447485
     // edi: context
     // ebp: fill
