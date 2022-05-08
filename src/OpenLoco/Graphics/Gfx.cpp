@@ -1406,6 +1406,60 @@ namespace OpenLoco::Gfx
         redrawScreenRect(Rect::fromLTRB(left, top, right, bottom));
     }
 
+    std::optional<PaletteMap> getPaletteMapFromImage(const ImageId image)
+    {
+        // No remapping required so use default palette map
+        if (!image.hasPrimary() && !image.isBlended())
+        {
+            return std::nullopt; // Will use default
+        }
+
+        if (image.hasSecondary())
+        {
+            // A secondary paletteMap is made up by combinging bits from two palettes.
+            PaletteMap customMap = PaletteMap::getDefault();
+            const auto primaryMap = getPaletteMapForColour(Colours::toExt(image.getPrimary()));
+            const auto secondaryMap = getPaletteMapForColour(Colours::toExt(image.getSecondary()));
+            if (!primaryMap || !secondaryMap)
+            {
+                assert(false);
+            }
+            // Remap sections are split into two bits for primary
+            customMap.copy(PaletteIndex::primaryRemap0, *primaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
+            customMap.copy(PaletteIndex::primaryRemap3, *primaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
+            customMap.copy(PaletteIndex::secondaryRemap0, *secondaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
+            customMap.copy(PaletteIndex::secondaryRemap3, *secondaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
+
+            // TODO: Investigate if this can be simplified by just copying the primary map in full to begin with
+            // then it would only need to fill in the secondary remap section
+            return customMap;
+        }
+        else
+        {
+            if (image.isBlended())
+            {
+                return getPaletteMapForColour(image.getTranslucency());
+            }
+            else
+            {
+                // For primary flagged images
+                return getPaletteMapForColour(image.getRemap());
+            }
+        }
+    }
+
+    std::optional<G1Element> getTreeWiltForImage(const ImageId image)
+    {
+        if (image.hasTreeWilt())
+        {
+            return image.getTreeWilt();
+        }
+        else
+        {
+            return std::nullopt;
+        }
+    }
+
     // 0x00448C79
     void drawImage(Gfx::Context* context, int16_t x, int16_t y, uint32_t image)
     {
