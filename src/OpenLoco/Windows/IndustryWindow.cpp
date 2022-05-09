@@ -595,7 +595,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 Gfx::drawRect(*context, self->x + 41, yPos, 239, 1, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));
 
-                Gfx::drawString_494C78(*context, self->x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
+                Gfx::drawStringRight(*context, self->x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }

@@ -852,7 +852,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto xPos = self->x + 3 + self->width - 17;
                 auto yPos = self->y + self->height - 13;
-                Gfx::drawString_494C78(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+                Gfx::drawStringRight(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;

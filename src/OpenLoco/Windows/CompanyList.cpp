@@ -1583,7 +1583,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
                     auto x = self->widgets[widx::tab_values].left + self->x + 28;
                     auto y = self->widgets[widx::tab_values].top + self->y + 14 + 1;
-                    Gfx::drawString_494C78(*context, x, y, Colour::black, StringIds::currency_symbol);
+                    Gfx::drawStringRight(*context, x, y, Colour::black, StringIds::currency_symbol);
                 }
             }
 
@@ -1599,7 +1599,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
                     auto x = self->widgets[widx::tab_payment_rates].left + self->x + 28;
                     auto y = self->widgets[widx::tab_payment_rates].top + self->y + 14 + 1;
-                    Gfx::drawString_494C78(*context, x, y, Colour::black, StringIds::currency_symbol);
+                    Gfx::drawStringRight(*context, x, y, Colour::black, StringIds::currency_symbol);
                 }
             }
 

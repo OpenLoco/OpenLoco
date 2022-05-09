@@ -184,7 +184,7 @@ namespace OpenLoco::Gfx
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
-    void drawString_494C78(
+    void drawStringRight(
         Context& context,
         int16_t x,
         int16_t y,

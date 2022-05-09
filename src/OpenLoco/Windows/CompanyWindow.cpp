@@ -1826,7 +1826,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     auto args = FormatArguments::common(StringIds::currency48, expenditures);
 
-                    Gfx::drawString_494C78(
+                    Gfx::drawStringRight(
                         *context,
                         x,
                         y,
@@ -1852,7 +1852,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             y += 4;
 
-            Gfx::drawString_494C78(*context, x, y, Colour::black, mainFormat, &args);
+            Gfx::drawStringRight(*context, x, y, Colour::black, mainFormat, &args);
 
             Gfx::fillRect(*context, x - expenditureColumnWidth + 10, y - 2, x, y - 2, enumValue(Colour::darkGreen));
         }

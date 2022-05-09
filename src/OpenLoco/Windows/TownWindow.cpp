@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::Town
                 const uint16_t xPos = 39;
                 Gfx::drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));
 
-                Gfx::drawString_494C78(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
+                Gfx::drawStringRight(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }

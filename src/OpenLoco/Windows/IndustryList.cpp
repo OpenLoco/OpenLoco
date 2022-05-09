@@ -663,7 +663,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto yPos = self->y + self->height - 13;
                 widthOffset = 138;
 
-                Gfx::drawString_494C78(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+                Gfx::drawStringRight(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
 
             auto xPos = self->x + 3;

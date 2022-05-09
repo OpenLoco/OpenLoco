@@ -513,7 +513,7 @@ namespace OpenLoco::Ui::Windows::Station
                 const auto& widget = self.widgets[widx::scrollview];
                 auto xPos = widget.width() - 14;
 
-                Gfx::drawString_494C78(context, xPos, y, AdvancedColour(Colour::black).outline(), cargoStr, &args);
+                Gfx::drawStringRight(context, xPos, y, AdvancedColour(Colour::black).outline(), cargoStr, &args);
                 y += 10;
                 if (cargo.origin != StationId(self.number))
                 {
@@ -522,7 +522,7 @@ namespace OpenLoco::Ui::Windows::Station
                     args2.push(originStation->name);
                     args2.push(originStation->town);
 
-                    Gfx::drawString_494C78(context, xPos, y, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, &args2);
+                    Gfx::drawStringRight(context, xPos, y, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, &args2);
                     y += 10;
                 }
                 y += 2;
