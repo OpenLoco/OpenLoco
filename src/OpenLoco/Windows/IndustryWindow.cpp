@@ -453,7 +453,7 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 origin.x += 4;
                 origin.y += 10;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::received_cargo);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::received_cargo);
 
                 auto cargoNumber = 0;
                 for (const auto& receivedCargoType : industryObj->required_cargo_type)
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // Draw Last Months produced cargo stats
             if (industry->canProduceCargo())
             {
-                Gfx::drawString_494B3F(*context, origin.x, origin.y, Colour::black, StringIds::produced_cargo);
+                Gfx::drawStringLeft(*context, origin.x, origin.y, Colour::black, StringIds::produced_cargo);
                 origin.y += 10;
                 origin.x += 4;
 
@@ -582,7 +582,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 int16_t x = self->x + 2;
                 int16_t y = self->y - 24 + 68;
 
-                Gfx::drawString_494B3F(*context, x, y, Colour::black, StringIds::production_graph_label, &args);
+                Gfx::drawStringLeft(*context, x, y, Colour::black, StringIds::production_graph_label, &args);
             }
 
             // Draw Y label and grid lines.

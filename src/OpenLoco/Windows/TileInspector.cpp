@@ -126,12 +126,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
         {
             auto args = FormatArguments::common(StringIds::tile_inspector_x_coord);
             auto& widget = self->widgets[widx::xPos];
-            Gfx::drawString_494B3F(*context, self->x + widget.left - 15, self->y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawStringLeft(*context, self->x + widget.left - 15, self->y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
         {
             auto args = FormatArguments::common(StringIds::tile_inspector_y_coord);
             auto& widget = self->widgets[widx::yPos];
-            Gfx::drawString_494B3F(*context, self->x + widget.left - 15, self->y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawStringLeft(*context, self->x + widget.left - 15, self->y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         // Coord X/Y values
@@ -139,13 +139,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
             FormatArguments args = {};
             args.push<int16_t>(_currentPosition.x);
             auto& widget = self->widgets[widx::xPos];
-            Gfx::drawString_494B3F(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            Gfx::drawStringLeft(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
         {
             FormatArguments args = {};
             args.push<int16_t>(_currentPosition.y);
             auto& widget = self->widgets[widx::yPos];
-            Gfx::drawString_494B3F(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            Gfx::drawStringLeft(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
 
         // Selected element details
@@ -341,7 +341,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 args.push(elementName);
             }
 
-            Gfx::drawString_494B3F(context, 0, yPos, Colour::black, formatString, &args);
+            Gfx::drawStringLeft(context, 0, yPos, Colour::black, formatString, &args);
             rowNum++;
             yPos += self.rowHeight;
         }

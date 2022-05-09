@@ -976,7 +976,7 @@ namespace OpenLoco::Gfx
     // dx: y
     // esi: args
     // edi: context
-    void drawString_494B3F(
+    void drawStringLeft(
         Context& context,
         int16_t x,
         int16_t y,
@@ -1002,7 +1002,7 @@ namespace OpenLoco::Gfx
      * @param stringId  @<bx>
      * @param args @<edi>
      */
-    void drawString_494B3F(
+    void drawStringLeft(
         Context& context,
         Point* origin,
         AdvancedColour colour,

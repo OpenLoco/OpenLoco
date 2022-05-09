@@ -719,11 +719,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         yPos = self->widgets[widx::image].bottom + self->y + 29;
         Ui::Point origin = { xPos, yPos };
 
-        Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::catchment_area_accepts);
+        Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::catchment_area_accepts);
 
         if (_constructingStationAcceptedCargoTypes == 0)
         {
-            Gfx::drawString_494B3F(*context, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
+            Gfx::drawStringLeft(*context, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {
@@ -748,11 +748,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         yPos = self->widgets[widx::image].bottom + self->y + 49;
         origin = { xPos, yPos };
 
-        Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::catchment_area_produces);
+        Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::catchment_area_produces);
 
         if (_constructingStationProducedCargoTypes == 0)
         {
-            Gfx::drawString_494B3F(*context, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
+            Gfx::drawStringLeft(*context, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {

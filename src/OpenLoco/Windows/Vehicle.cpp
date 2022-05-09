@@ -1571,7 +1571,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push(vehicleObj->name);
                 x += 2;
                 y = pos.y + (self.rowHeight / 2) - 6;
-                Gfx::drawString_494B3F(context, x, y, Colour::black, carStr, &args);
+                Gfx::drawStringLeft(context, x, y, Colour::black, carStr, &args);
 
                 pos.y += self.rowHeight;
             }
@@ -1829,7 +1829,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push<uint32_t>(cargoQty);
             args.push(station->name);
             args.push(station->town);
-            Gfx::drawString_494B3F(context, x, y, Colour::black, strFormat, &args);
+            Gfx::drawStringLeft(context, x, y, Colour::black, strFormat, &args);
             y += 10;
         }
 
@@ -1876,7 +1876,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     {
                         FormatArguments args{};
                         args.push<string_id>(StringIds::cargo_empty);
-                        Gfx::drawString_494B3F(context, width, cargoTextHeight + 5, Colour::black, strFormat, &args);
+                        Gfx::drawStringLeft(context, width, cargoTextHeight + 5, Colour::black, strFormat, &args);
                     }
                 }
 
@@ -2190,7 +2190,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto args = FormatArguments();
                 args.push<uint32_t>(veh1->lastIncome.day);
                 // Last income on: {DATE DMY}
-                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::last_income_on_date, &args);
+                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::last_income_on_date, &args);
                 pos.y += 10;
                 for (int i = 0; i < 4; i++)
                 {
@@ -2218,7 +2218,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             else
             {
                 // Last income: N/A"
-                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::last_income_na);
+                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::last_income_na);
                 pos.y += 10;
             }
 
@@ -2229,7 +2229,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Last journey average speed: {VELOCITY}
                 auto args = FormatArguments();
                 args.push(head->lastAverageSpeed);
-                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::last_journey_average_speed, &args);
+                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::last_journey_average_speed, &args);
                 pos.y += 10 + 5;
             }
 
@@ -2237,7 +2237,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Monthly Running Cost: {CURRENCY32}
                 auto args = FormatArguments();
                 args.push(head->calculateRunningCost());
-                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_running_cost, &args);
+                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_running_cost, &args);
                 pos.y += 10;
             }
 
@@ -2246,7 +2246,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto args = FormatArguments();
                 auto monthlyProfit = (train.veh2->totalRecentProfit()) / 4;
                 args.push(monthlyProfit);
-                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_profit, &args);
+                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_profit, &args);
                 pos.y += 10 + 5;
             }
 
@@ -2255,7 +2255,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto args = FormatArguments();
                 args.push(train.head->totalRefundCost);
                 pos.y = self->y + self->height - 14;
-                Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::sale_value_of_vehicle, &args);
+                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::sale_value_of_vehicle, &args);
             }
         }
 
@@ -3245,7 +3245,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void sub_4B4A58(Window& self, Gfx::Context& context, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
         {
             Ui::Point loc = { 8, static_cast<int16_t>(y - 1) };
-            Gfx::drawString_494B3F(context, &loc, Colour::black, strFormat, &args);
+            Gfx::drawStringLeft(context, &loc, Colour::black, strFormat, &args);
             if (order.hasFlag(Vehicles::OrderFlags::HasNumber))
             {
                 if (Input::isToolActive(self.type, self.number))
@@ -3272,7 +3272,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto rowNum = 0;
             if (head->sizeOfOrderTable == 1)
             {
-                Gfx::drawString_494B3F(context, 8, 0, Colour::black, StringIds::no_route_defined);
+                Gfx::drawStringLeft(context, 8, 0, Colour::black, StringIds::no_route_defined);
                 rowNum++; // Used to move down the text
             }
 
@@ -3320,7 +3320,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 sub_4B4A58(self, context, strFormat, args, order, y);
                 if (head->currentOrder + head->orderTableOffset == order.getOffset())
                 {
-                    Gfx::drawString_494B3F(context, 1, y - 1, Colour::black, StringIds::orders_current_order);
+                    Gfx::drawStringLeft(context, 1, y - 1, Colour::black, StringIds::orders_current_order);
                 }
 
                 rowNum++;
@@ -3342,7 +3342,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             loc.y -= 1;
             auto args = FormatArguments::common(orderString[0]);
-            Gfx::drawString_494B3F(context, &loc, Colour::black, strFormat, &args);
+            Gfx::drawStringLeft(context, &loc, Colour::black, strFormat, &args);
         }
 
         static void initEvents()

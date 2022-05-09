@@ -652,7 +652,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             string_id footerStringId = self->var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
             args = FormatArguments::common(footerStringId, self->var_83C);
-            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawStringLeft(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
         }
 
         static constexpr std::array<string_id, 3> typeToFilterStringIds{

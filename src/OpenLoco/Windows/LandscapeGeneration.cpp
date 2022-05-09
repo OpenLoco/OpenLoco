@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::draw(window, context);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::start_year].top,
@@ -375,35 +375,35 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::draw(window, context);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::generator].top,
                 Colour::black,
                 StringIds::generator);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::sea_level].top,
                 Colour::black,
                 StringIds::sea_level);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::min_land_height].top,
                 Colour::black,
                 StringIds::min_land_height);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::topography_style].top,
                 Colour::black,
                 StringIds::topography_style);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::hill_density].top,
@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Gfx::fillRectInset(context, 329, yPos + 6, 339, yPos + 15, window.getColour(WindowColour::secondary).u8(), flags);
 
                 // Draw triangle (knob).
-                Gfx::drawString_494B3F(context, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
+                Gfx::drawStringLeft(context, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
 
                 yPos += rowHeight;
             }
@@ -757,56 +757,56 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::draw(window, context);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::number_of_forests].top,
                 Colour::black,
                 StringIds::number_of_forests);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::min_forest_radius].top,
                 Colour::black,
                 StringIds::min_forest_radius);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::max_forest_radius].top,
                 Colour::black,
                 StringIds::max_forest_radius);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::min_forest_density].top,
                 Colour::black,
                 StringIds::min_forest_density);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::max_forest_density].top,
                 Colour::black,
                 StringIds::max_forest_density);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::number_random_trees].top,
                 Colour::black,
                 StringIds::number_random_trees);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::min_altitude_for_trees].top,
                 Colour::black,
                 StringIds::min_altitude_for_trees);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::max_altitude_for_trees].top,
@@ -995,14 +995,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::draw(window, context);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::number_of_towns].top,
                 Colour::black,
                 StringIds::number_of_towns);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::max_town_size].top,
@@ -1136,7 +1136,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::draw(window, context);
 
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 window->x + 10,
                 window->y + window->widgets[widx::num_industries].top,

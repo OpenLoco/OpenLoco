@@ -122,11 +122,11 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
             // Draw checkmark if track is enabled.
             if (config.enabledMusic[i])
-                Gfx::drawString_494B3F(context, 2, y, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
+                Gfx::drawStringLeft(context, 2, y, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
 
             // Draw track name.
             string_id music_title_id = Audio::getMusicInfo(i)->titleId;
-            Gfx::drawString_494B3F(context, 15, y, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
+            Gfx::drawStringLeft(context, 15, y, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
 
             y += rowHeight;
         }

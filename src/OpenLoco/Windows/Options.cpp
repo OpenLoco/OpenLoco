@@ -628,26 +628,26 @@ namespace OpenLoco::Ui::Windows::Options
 
             int16_t x = w->x + 10;
             int16_t y = w->y + Display::_widgets[Display::Widx::screen_mode].top + 1;
-            drawString_494B3F(*context, x, y, Colour::black, StringIds::options_screen_mode, nullptr);
+            drawStringLeft(*context, x, y, Colour::black, StringIds::options_screen_mode, nullptr);
 
             y = w->y + Display::_widgets[Display::Widx::display_resolution].top + 1;
-            drawString_494B3F(*context, x, y, Colour::black, StringIds::display_resolution, nullptr);
+            drawStringLeft(*context, x, y, Colour::black, StringIds::display_resolution, nullptr);
 
             y = w->y + Display::_widgets[Display::Widx::construction_marker].top + 1;
-            drawString_494B3F(*context, x, y, Colour::black, StringIds::construction_marker, nullptr);
+            drawStringLeft(*context, x, y, Colour::black, StringIds::construction_marker, nullptr);
 
             y = w->y + Display::_widgets[Display::Widx::vehicles_min_scale].top + 1;
-            drawString_494B3F(*context, x, y, Colour::black, StringIds::vehicles_min_scale, nullptr);
+            drawStringLeft(*context, x, y, Colour::black, StringIds::vehicles_min_scale, nullptr);
 
             y = w->y + Display::_widgets[Display::Widx::station_names_min_scale].top + 1;
-            drawString_494B3F(*context, x, y, Colour::black, StringIds::station_names_min_scale, nullptr);
+            drawStringLeft(*context, x, y, Colour::black, StringIds::station_names_min_scale, nullptr);
 
             y = w->y + Display::_widgets[Display::Widx::display_scale].top + 1;
-            drawString_494B3F(*context, x, y, Colour::black, StringIds::window_scale_factor, nullptr);
+            drawStringLeft(*context, x, y, Colour::black, StringIds::window_scale_factor, nullptr);
 
             int scale = (int)(Config::getNew().scaleFactor * 100);
             auto& scale_widget = w->widgets[Widx::display_scale];
-            drawString_494B3F(*context, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, Colour::black, StringIds::scale_formatted, &scale);
+            drawStringLeft(*context, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, Colour::black, StringIds::scale_formatted, &scale);
         }
 
         static void applyScreenModeRestrictions(Window* w)
@@ -967,9 +967,9 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::drawTabs(w, context);
 
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::currently_playing_btn].top, Colour::black, StringIds::currently_playing, nullptr);
+            Gfx::drawStringLeft(*context, w->x + 10, w->y + w->widgets[Widx::currently_playing_btn].top, Colour::black, StringIds::currently_playing, nullptr);
 
-            Gfx::drawString_494B3F(*context, w->x + 183, w->y + w->widgets[Widx::volume].top + 7, Colour::black, StringIds::volume, nullptr);
+            Gfx::drawStringLeft(*context, w->x + 183, w->y + w->widgets[Widx::volume].top + 7, Colour::black, StringIds::volume, nullptr);
 
             Gfx::drawImage(context, w->x + w->widgets[Widx::volume].left, w->y + w->widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w->getColour(WindowColour::secondary).c()));
 
@@ -1364,11 +1364,11 @@ namespace OpenLoco::Ui::Windows::Options
             w->draw(context);
             Common::drawTabs(w, context);
 
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::language].top + 1, Colour::black, StringIds::options_language, nullptr);
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::distance_speed].top + 1, Colour::black, StringIds::distance_and_speed, nullptr);
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::heights].top + 1, Colour::black, StringIds::heights, nullptr);
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::currency].top + 1, Colour::black, StringIds::current_game_currency, nullptr);
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::preferred_currency].top + 1, Colour::black, StringIds::new_game_currency, nullptr);
+            Gfx::drawStringLeft(*context, w->x + 10, w->y + w->widgets[Widx::language].top + 1, Colour::black, StringIds::options_language, nullptr);
+            Gfx::drawStringLeft(*context, w->x + 10, w->y + w->widgets[Widx::distance_speed].top + 1, Colour::black, StringIds::distance_and_speed, nullptr);
+            Gfx::drawStringLeft(*context, w->x + 10, w->y + w->widgets[Widx::heights].top + 1, Colour::black, StringIds::heights, nullptr);
+            Gfx::drawStringLeft(*context, w->x + 10, w->y + w->widgets[Widx::currency].top + 1, Colour::black, StringIds::current_game_currency, nullptr);
+            Gfx::drawStringLeft(*context, w->x + 10, w->y + w->widgets[Widx::preferred_currency].top + 1, Colour::black, StringIds::new_game_currency, nullptr);
         }
 
         static void onMouseUp(Window* w, WidgetIndex_t wi)
@@ -1998,7 +1998,7 @@ namespace OpenLoco::Ui::Windows::Options
             FormatArguments args = {};
             args.push(stringId);
             args.push(value);
-            drawString_494B3F(*context, w->x + widget.left + 1, w->y + widget.top + 1, Colour::black, StringIds::black_stringid, &args);
+            drawStringLeft(*context, w->x + widget.left + 1, w->y + widget.top + 1, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x004C1282
@@ -2014,10 +2014,10 @@ namespace OpenLoco::Ui::Windows::Options
 
             FormatArguments args = {};
             args.push(StringIds::buffer_2039);
-            Gfx::drawString_494B3F(*context, w->x + 10, w->y + w->widgets[Widx::change_btn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
+            Gfx::drawStringLeft(*context, w->x + 10, w->y + w->widgets[Widx::change_btn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
 
             auto y = w->y + w->widgets[Widx::autosave_frequency].top + 1;
-            drawString_494B3F(*context, w->x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
+            drawStringLeft(*context, w->x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
 
             auto freq = Config::getNew().autosaveFrequency;
             string_id stringId;
@@ -2036,7 +2036,7 @@ namespace OpenLoco::Ui::Windows::Options
             drawDropdownContent(w, context, Widx::autosave_frequency, stringId, freq);
 
             y = w->y + w->widgets[Widx::autosave_amount].top + 1;
-            drawString_494B3F(*context, w->x + 10, y, Colour::black, StringIds::autosave_amount, nullptr);
+            drawStringLeft(*context, w->x + 10, y, Colour::black, StringIds::autosave_amount, nullptr);
 
             auto scale = Config::getNew().autosaveAmount;
             drawDropdownContent(w, context, Widx::autosave_amount, StringIds::int_32, scale);

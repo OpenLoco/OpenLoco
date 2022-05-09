@@ -1149,7 +1149,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         FormatArguments args{};
                         args.push(vehicleObj->name);
                         half = (window.rowHeight - 10) / 2;
-                        Gfx::drawString_494B3F(context, x + 3, y + half, Colour::black, colouredString, &args);
+                        Gfx::drawStringLeft(context, x + 3, y + half, Colour::black, colouredString, &args);
                     }
                 }
                 break;

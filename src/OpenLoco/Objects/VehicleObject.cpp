@@ -51,20 +51,20 @@ namespace OpenLoco
         {
             FormatArguments args{};
             args.push(power);
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
+            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
             rowPosition.y += descriptionRowHeight;
         }
 
         {
             FormatArguments args{};
             args.push(weight);
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_weight, &args);
+            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_weight, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(speed);
-            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_max_speed, &args);
+            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_max_speed, &args);
         }
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         // Clear buffer

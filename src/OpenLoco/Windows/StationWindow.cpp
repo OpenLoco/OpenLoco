@@ -537,7 +537,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 auto args = FormatArguments();
                 args.push(StringIds::nothing_waiting);
-                Gfx::drawString_494B3F(context, 1, 0, Colour::black, StringIds::black_stringid, &args);
+                Gfx::drawStringLeft(context, 1, 0, Colour::black, StringIds::black_stringid, &args);
             }
         }
 
@@ -704,7 +704,7 @@ namespace OpenLoco::Ui::Windows::Station
                 drawRatingBar(&self, &context, 100, y, amount, colour);
 
                 uint16_t percent = rating / 2;
-                Gfx::drawString_494B3F(context, 201, y, Colour::black, StringIds::station_cargo_rating_percent, &percent);
+                Gfx::drawStringLeft(context, 201, y, Colour::black, StringIds::station_cargo_rating_percent, &percent);
                 y += 10;
                 cargoId++;
             }

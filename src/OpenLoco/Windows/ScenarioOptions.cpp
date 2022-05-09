@@ -204,7 +204,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             const int16_t xPos = window->x + 5;
             int16_t yPos = window->y + widgets[widx::check_time_limit].bottom + 10;
-            Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::challenge_label);
+            Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::challenge_label);
 
             FormatArguments args = {};
             OpenLoco::Scenario::formatChallengeArguments(args);
@@ -602,49 +602,49 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::max_competing_companies].top + 1;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::max_competing_companies);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::max_competing_companies);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::delay_before_competing_companies_start].top + 1;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::delay_before_competing_companies_start);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::delay_before_competing_companies_start);
             }
 
             {
                 const int16_t xPos = window->x + 15;
                 int16_t yPos = window->y + widgets[widx::preferred_intelligence].top - 14;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::selection_of_competing_companies);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::selection_of_competing_companies);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_intelligence].top + 1;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::preferred_intelligence);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::preferred_intelligence);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_aggressiveness].top + 1;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::preferred_aggressiveness);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::preferred_aggressiveness);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_competitiveness].top + 1;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::preferred_competitiveness);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::preferred_competitiveness);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::competitor_forbid_trains].top - 12;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::forbid_competing_companies_from_using);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::forbid_competing_companies_from_using);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::player_forbid_trains].top - 12;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::forbid_player_companies_from_using);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::forbid_player_companies_from_using);
             }
         }
 
@@ -858,19 +858,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::starting_loan].top + 1;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::starting_loan);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::starting_loan);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::max_loan_size].top + 1;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::max_loan_size);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::max_loan_size);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::loan_interest_rate].top + 1;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::loan_interest_rate);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::loan_interest_rate);
             }
         }
 
@@ -1001,13 +1001,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::scenario_group].top + 1;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::scenario_group);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::scenario_group);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::change_details_btn].top + 1;
-                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::scenario_details);
+                Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::scenario_details);
             }
 
             {

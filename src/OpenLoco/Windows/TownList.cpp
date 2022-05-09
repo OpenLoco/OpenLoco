@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 args.push(StringIds::status_towns_plural);
             args.push(self->var_83C);
 
-            Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0049A27F
@@ -635,9 +635,9 @@ namespace OpenLoco::Ui::Windows::TownList
             self->draw(context);
             Common::drawTabs(self, context);
 
-            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
+            Gfx::drawStringLeft(*context, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
 
-            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::select_town_size);
+            Gfx::drawStringLeft(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::select_town_size);
         }
 
         // 0x0049A675

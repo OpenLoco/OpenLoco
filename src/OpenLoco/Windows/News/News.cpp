@@ -592,7 +592,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             y = self->y + 1;
             origin = { x, y };
 
-            Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::news_date, &news->date);
+            Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::news_date, &news->date);
 
             self->drawViewports(context);
 
@@ -673,7 +673,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             origin.x = self->x + 4;
             origin.y = self->y + 5;
 
-            Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::news_date, &news->date);
+            Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::news_date, &news->date);
 
             self->drawViewports(context);
 

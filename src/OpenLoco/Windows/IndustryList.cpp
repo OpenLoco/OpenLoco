@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 args.push(StringIds::status_num_industries_plural);
             args.push(self->var_83C);
 
-            Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x00457EC4

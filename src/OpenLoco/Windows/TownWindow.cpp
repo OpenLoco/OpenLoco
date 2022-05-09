@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             uint16_t xPos = self->x + 4;
             uint16_t yPos = self->y + 46;
-            Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
+            Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
             xPos += 4;
             yPos += 14;
