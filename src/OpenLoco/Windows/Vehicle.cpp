@@ -943,7 +943,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     strFormat = StringIds::black_stringid;
                 }
 
-                Gfx::drawString_494BBF(
+                Gfx::drawStringLeftClipped(
                     *context,
                     self->x + self->widgets[widx::status].left - 1,
                     self->y + self->widgets[widx::status].top - 1,
@@ -1509,7 +1509,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     str = StringIds::vehicle_details_total_power_and_weight;
                 }
-                Gfx::drawString_494BBF(*context, pos.x, pos.y, self->width - 6, Colour::black, str, &args);
+                Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 6, Colour::black, str, &args);
                 pos.y += 10;
             }
 
@@ -1523,7 +1523,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     str = StringIds::vehicle_details_max_speed_and_rack_rail_and_reliability;
                 }
-                Gfx::drawString_494BBF(*context, pos.x, pos.y, self->width - 16, Colour::black, str, &args);
+                Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 16, Colour::black, str, &args);
             }
         }
 
@@ -1802,14 +1802,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             head->generateCargoTotalString(buffer);
             FormatArguments args = {};
             args.push<string_id>(StringIds::buffer_1250);
-            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 25, self->width - 15, Colour::black, StringIds::total_stringid, &args);
+            Gfx::drawStringLeftClipped(*context, self->x + 3, self->y + self->height - 25, self->width - 15, Colour::black, StringIds::total_stringid, &args);
 
             // draw cargo capacity
             buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             head->generateCargoCapacityString(buffer);
             args = {};
             args.push<string_id>(StringIds::buffer_1250);
-            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 15, Colour::black, StringIds::vehicle_capacity_stringid, &args);
+            Gfx::drawStringLeftClipped(*context, self->x + 3, self->y + self->height - 13, self->width - 15, Colour::black, StringIds::vehicle_capacity_stringid, &args);
         }
 
         // based on 0x004B40C7
@@ -3158,7 +3158,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Location at bottom left edge of window
                 Ui::Point loc{ static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 13) };
 
-                Gfx::drawString_494BBF(*context, loc.x, loc.y, self->width - 14, Colour::black, StringIds::route_click_on_waypoint);
+                Gfx::drawStringLeftClipped(*context, loc.x, loc.y, self->width - 14, Colour::black, StringIds::route_click_on_waypoint);
             }
         }
 

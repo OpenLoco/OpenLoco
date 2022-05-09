@@ -545,7 +545,7 @@ namespace OpenLoco::Ui
         }
 
         int width = widget->right - widget->left - 2;
-        Gfx::drawString_494BBF(*context, x, y, width, colour, string, _commonFormatArgs);
+        Gfx::drawStringLeftClipped(*context, x, y, width, colour, string, _commonFormatArgs);
     }
 
     // 0x4CB2D6

@@ -130,7 +130,7 @@ namespace OpenLoco::Ui::Windows::Station
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0048E4D4
@@ -397,7 +397,7 @@ namespace OpenLoco::Ui::Windows::Station
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width();
 
-            Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::buffer_1250);
+            Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::buffer_1250);
         }
 
         // 0x0048EB0B
@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
-                Gfx::drawString_494BBF(context, 1, y, 98, Colour::black, StringIds::wcolour2_stringid, &cargoObj->name);
+                Gfx::drawStringLeftClipped(context, 1, y, 98, Colour::black, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
                 auto colour = Colour::green;

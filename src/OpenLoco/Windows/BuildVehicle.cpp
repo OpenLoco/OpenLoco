@@ -937,7 +937,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            Gfx::drawString_494BBF(*context, x, y, window->width - 186, Colour::black, bottomLeftMessage, &args);
+            Gfx::drawStringLeftClipped(*context, x, y, window->width - 186, Colour::black, bottomLeftMessage, &args);
         }
 
         if (window->rowHover == -1)

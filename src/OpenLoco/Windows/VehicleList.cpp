@@ -666,7 +666,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             string_id filter = typeToFilterStringIds[self->var_88A];
             args = FormatArguments::common(filter);
             auto* widget = &self->widgets[Widx::filter_type];
-            Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawStringLeftClipped(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         auto* widget = &self->widgets[Widx::cargo_type];
@@ -708,7 +708,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (filterActive)
         {
             // Draw filter text as prepared
-            Gfx::drawString_494BBF(*context, xPos, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawStringLeftClipped(*context, xPos, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
     }
 
@@ -772,7 +772,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 // Draw status
                 yPos += 2;
-                Gfx::drawString_494BBF(context, 1, yPos, 308, AdvancedColour(Colour::black).outline(), format, &args);
+                Gfx::drawStringLeftClipped(context, 1, yPos, 308, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             auto vehicle = Vehicles::Vehicle(*head);
@@ -788,7 +788,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 }
 
                 auto args = FormatArguments::common(profit);
-                Gfx::drawString_494BBF(context, 310, yPos, 98, AdvancedColour(Colour::black).outline(), format, &args);
+                Gfx::drawStringLeftClipped(context, 310, yPos, 98, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             // Vehicle age
@@ -799,14 +799,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
                     format = StringIds::vehicle_list_age_year;
 
                 auto args = FormatArguments::common(age);
-                Gfx::drawString_494BBF(context, 410, yPos, 63, AdvancedColour(Colour::black).outline(), format, &args);
+                Gfx::drawStringLeftClipped(context, 410, yPos, 63, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             // Vehicle reliability
             {
                 int16_t reliability = vehicle.veh2->reliability;
                 auto args = FormatArguments::common(reliability);
-                Gfx::drawString_494BBF(context, 475, yPos, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, &args);
+                Gfx::drawStringLeftClipped(context, 475, yPos, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, &args);
             }
 
             yPos += self.rowHeight - 2;

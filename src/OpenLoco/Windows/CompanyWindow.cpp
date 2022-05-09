@@ -248,7 +248,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 CompanyManager::getOwnerStatus(CompanyId(self->number), args);
 
                 auto& widget = self->widgets[widx::unk_11];
-                Gfx::drawString_494BBF(
+                Gfx::drawStringLeftClipped(
                     *context,
                     self->x + widget.left - 1,
                     self->y + widget.top - 1,
@@ -787,7 +787,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             {
                 auto args = FormatArguments::common(company->ownerName);
-                Gfx::drawString_494BBF(*context, x, y, 213, Colour::black, StringIds::owner_label, &args);
+                Gfx::drawStringLeftClipped(*context, x, y, 213, Colour::black, StringIds::owner_label, &args);
                 y += 10;
             }
 

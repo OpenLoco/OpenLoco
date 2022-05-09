@@ -857,7 +857,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - xPos;
-            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
+            Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
         }
 
         static void drawTreeThumb(TreeObject* treeObj, Gfx::Context* clipped)
@@ -2414,7 +2414,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19;
 
-            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
+            Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
         }
 
         // 0x004BC11C

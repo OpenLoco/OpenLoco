@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(imageId);
                     args.push(company->name);
 
-                    Gfx::drawString_494BBF(context, 0, yBottom - 1, 173, Colour::black, stringId, &args);
+                    Gfx::drawStringLeftClipped(context, 0, yBottom - 1, 173, Colour::black, stringId, &args);
                 }
 
                 {
@@ -502,7 +502,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.rewind();
                     args.push(ownerStatus);
 
-                    Gfx::drawString_494BBF(context, 175, yBottom + 7, 208, Colour::black, stringId, &args);
+                    Gfx::drawStringLeftClipped(context, 175, yBottom + 7, 208, Colour::black, stringId, &args);
                 }
 
                 auto performanceStringId = StringIds::performance_index;
@@ -523,7 +523,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(performanceStringId);
                     formatPerformanceIndex(company->performanceIndex, args);
 
-                    Gfx::drawString_494BBF(context, 385, yBottom - 1, 143, Colour::black, stringId, &args);
+                    Gfx::drawStringLeftClipped(context, 385, yBottom - 1, 143, Colour::black, stringId, &args);
                 }
 
                 {
@@ -532,7 +532,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(StringIds::company_value_currency);
                     args.push(company->companyValueHistory[0]);
 
-                    Gfx::drawString_494BBF(context, 530, yBottom - 1, 98, Colour::black, stringId, &args);
+                    Gfx::drawStringLeftClipped(context, 530, yBottom - 1, 98, Colour::black, stringId, &args);
                 }
             }
         }
@@ -1042,7 +1042,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto args = FormatArguments();
                 args.push(cargo->name);
 
-                Gfx::drawString_494BBF(*context, x + 6, y, 94, Colour::black, stringId, &args);
+                Gfx::drawStringLeftClipped(*context, x + 6, y, 94, Colour::black, stringId, &args);
 
                 y += 10;
                 cargoCount++;
@@ -1657,7 +1657,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto args = FormatArguments();
                 args.push(company.name);
 
-                Gfx::drawString_494BBF(*context, x + 6, y, 94, Colour::black, stringId, &args);
+                Gfx::drawStringLeftClipped(*context, x + 6, y, 94, Colour::black, stringId, &args);
 
                 y += 10;
                 companyCount++;

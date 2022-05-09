@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::Town
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::status_town_population, &args);
+            Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::status_town_population, &args);
         }
 
         // 0x00499079
@@ -553,7 +553,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(rating);
                 args.push(rank);
 
-                Gfx::drawString_494BBF(*context, xPos, yPos, self->width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
+                Gfx::drawStringLeftClipped(*context, xPos, yPos, self->width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
 
                 yPos += 10;
             }

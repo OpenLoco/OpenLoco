@@ -1030,7 +1030,7 @@ namespace OpenLoco::Gfx
     // esi: args
     // edi: context
     // bp: width
-    void drawString_494BBF(
+    void drawStringLeftClipped(
         Context& context,
         int16_t x,
         int16_t y,

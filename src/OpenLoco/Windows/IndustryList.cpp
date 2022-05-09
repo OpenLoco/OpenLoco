@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     args.push(industry->name);
                     args.push(industry->town);
 
-                    Gfx::drawString_494BBF(context, 0, yPos, 198, Colour::black, text_colour_id, &args);
+                    Gfx::drawStringLeftClipped(context, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Industry Status
                 {
@@ -424,7 +424,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     auto args = FormatArguments();
                     args.push(StringIds::buffer_1250);
 
-                    Gfx::drawString_494BBF(context, 200, yPos, 238, Colour::black, text_colour_id, &args);
+                    Gfx::drawStringLeftClipped(context, 200, yPos, 238, Colour::black, text_colour_id, &args);
                 }
                 // Industry Production Delivered
                 {
@@ -439,7 +439,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     auto args = FormatArguments();
                     args.push<uint16_t>(productionTransported);
 
-                    Gfx::drawString_494BBF(context, 440, yPos, 138, Colour::black, StringIds::production_transported_percent, &args);
+                    Gfx::drawStringLeftClipped(context, 440, yPos, 138, Colour::black, StringIds::production_transported_percent, &args);
                 }
                 yPos += rowHeight;
             }
@@ -628,7 +628,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto xPos = self->x + 3;
                 auto yPos = self->y + self->height - 13;
                 auto width = self->width - 19;
-                Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::no_industry_available);
+                Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::no_industry_available);
                 return;
             }
 
@@ -670,7 +670,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - widthOffset;
 
-            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &industryObj->name);
+            Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &industryObj->name);
         }
 
         // 0x0045843A

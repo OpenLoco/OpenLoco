@@ -995,7 +995,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::change_name_btn].top + 1;
                 int16_t width = widgets[widx::change_name_btn].left - 20;
-                Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::scenario_name_stringid, &*commonFormatArgs);
+                Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::scenario_name_stringid, &*commonFormatArgs);
             }
 
             {
