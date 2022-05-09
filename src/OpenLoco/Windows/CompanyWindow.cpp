@@ -1804,7 +1804,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 format = StringIds::black_stringid;
             }
 
-            Gfx::drawStringUnderline(
+            Gfx::drawStringRightUnderline(
                 *context,
                 x,
                 y,
