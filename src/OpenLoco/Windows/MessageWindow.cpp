@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(StringIds::buffer_2039);
 
                     auto width = self.widgets[widx::scrollview].width() - 14;
-                    Gfx::drawString_495224(context, 0, height + 6, width, Colour::black, stringId, &args);
+                    Gfx::drawStringLeftWrapped(context, 0, height + 6, width, Colour::black, stringId, &args);
                     height += messageHeight;
                 }
             }

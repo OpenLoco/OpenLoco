@@ -1058,7 +1058,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         auto x = window->widgets[widx::scrollview_vehicle_selection].right + window->x + 2;
         auto y = window->widgets[widx::scrollview_vehicle_preview].bottom + window->y + 2;
-        Gfx::drawString_495224(*context, x, y, 180, Colour::black, StringIds::buffer_1250);
+        Gfx::drawStringLeftWrapped(*context, x, y, 180, Colour::black, StringIds::buffer_1250);
     }
 
     // 0x4C3307
@@ -1088,7 +1088,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     auto widget = window.widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
                     auto y = (window.rowHeight - 10) / 2;
-                    Gfx::drawString_495224(context, 3, y, width, Colour::black, defaultMessage, &args);
+                    Gfx::drawStringLeftWrapped(context, 3, y, width, Colour::black, defaultMessage, &args);
                 }
                 else
                 {

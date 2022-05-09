@@ -155,7 +155,7 @@ namespace OpenLoco::Gfx
 
     Ui::Point drawString(Context& context, int16_t x, int16_t y, AdvancedColour colour, void* str);
 
-    int16_t drawString_495224(
+    int16_t drawStringLeftWrapped(
         Context& context,
         int16_t x,
         int16_t y,

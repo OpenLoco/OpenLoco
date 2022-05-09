@@ -459,17 +459,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Company
         {
             auto args = getStringPtrFormatArgs(saveInfo.company);
-            y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::window_browse_company, &args);
+            y = Gfx::drawStringLeftWrapped(context, x, y, maxWidth, Colour::black, StringIds::window_browse_company, &args);
         }
 
         // Owner
         {
             auto args = getStringPtrFormatArgs(saveInfo.owner);
-            y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::owner_label, &args);
+            y = Gfx::drawStringLeftWrapped(context, x, y, maxWidth, Colour::black, StringIds::owner_label, &args);
         }
 
         // Date
-        y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::window_browse_date, &saveInfo.date);
+        y = Gfx::drawStringLeftWrapped(context, x, y, maxWidth, Colour::black, StringIds::window_browse_date, &saveInfo.date);
 
         // Challenge progress
         auto flags = saveInfo.challengeFlags;
@@ -486,7 +486,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     progress = saveInfo.challenge_progress;
                 }
             }
-            Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, stringId, &progress);
+            Gfx::drawStringLeftWrapped(context, x, y, maxWidth, Colour::black, stringId, &progress);
         }
     }
 

@@ -947,7 +947,7 @@ namespace OpenLoco::Gfx
     // dx: y
     // esi: args
     // edi: context
-    int16_t drawString_495224(
+    int16_t drawStringLeftWrapped(
         Context& context,
         int16_t x,
         int16_t y,

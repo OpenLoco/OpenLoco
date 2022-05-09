@@ -209,7 +209,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             FormatArguments args = {};
             OpenLoco::Scenario::formatChallengeArguments(args);
             yPos += 10;
-            Gfx::drawString_495224(*context, xPos, yPos, window->width - 10, Colour::black, StringIds::challenge_value, &args);
+            Gfx::drawStringLeftWrapped(*context, xPos, yPos, window->width - 10, Colour::black, StringIds::challenge_value, &args);
         }
 
         static const string_id objectiveTypeLabelIds[] = {
@@ -1021,7 +1021,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     commonFormatArgs[0] = stex->details;
 
                 auto& target = window->widgets[widx::change_details_btn];
-                Gfx::drawString_495224(*context, window->x + 16, window->y + 12 + target.top, target.left - 26, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
+                Gfx::drawStringLeftWrapped(*context, window->x + 16, window->y + 12 + target.top, target.left - 26, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
             }
         }
 

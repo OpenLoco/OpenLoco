@@ -74,7 +74,7 @@ namespace OpenLoco
 
         if (strlen(buffer) != 0)
         {
-            Gfx::drawString_495224(context, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
+            Gfx::drawStringLeftWrapped(context, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
         }
     }
 

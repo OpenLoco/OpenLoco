@@ -2337,7 +2337,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             int16_t y = self->y + 47;
             // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
-            y = Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::buffer_2039);
+            y = Gfx::drawStringLeftWrapped(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::buffer_2039);
             y += 5;
             Gfx::drawString_494B3F(*context, self->x + 5, y, Colour::black, StringIds::challenge_label);
             y += 10;
@@ -2345,7 +2345,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 FormatArguments args = {};
                 Scenario::formatChallengeArguments(args);
-                y = Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::challenge_value, &args);
+                y = Gfx::drawStringLeftWrapped(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::challenge_value, &args);
                 y += 5;
             }
 
@@ -2357,13 +2357,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 uint16_t months = Scenario::getObjectiveProgress().completedChallengeInMonths % 12;
 
                 auto args = FormatArguments::common(years, months);
-                Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
+                Gfx::drawStringLeftWrapped(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
                 return;
             }
 
             if ((playerCompany->challengeFlags & CompanyFlags::challengeFailed) != 0)
             {
-                Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::failed_you_failed_to_complete_the_challenge);
+                Gfx::drawStringLeftWrapped(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::failed_you_failed_to_complete_the_challenge);
                 return;
             }
 
@@ -2377,14 +2377,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.skip(2);
                 args.push(years);
                 args.push(months);
-                Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::beaten_by_other_player_completed_in_years_months, &args);
+                Gfx::drawStringLeftWrapped(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::beaten_by_other_player_completed_in_years_months, &args);
                 return;
             }
 
             {
                 FormatArguments args{};
                 args.push<uint16_t>(playerCompany->challengeProgress);
-                y = Gfx::drawString_495224(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
+                y = Gfx::drawStringLeftWrapped(*context, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
             }
 
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
@@ -2395,7 +2395,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 uint16_t months = monthsLeft % 12;
 
                 auto args = FormatArguments::common(years, months);
-                Gfx::drawString_495224(*context, self->x + 5, y, self->width + 10, Colour::black, StringIds::time_remaining_years_months, &args);
+                Gfx::drawStringLeftWrapped(*context, self->x + 5, y, self->width + 10, Colour::black, StringIds::time_remaining_years_months, &args);
                 return;
             }
         }

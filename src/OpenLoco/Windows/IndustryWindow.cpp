@@ -473,7 +473,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         }
                         args.push<uint32_t>(industry->required_cargo_quantity[cargoNumber]);
 
-                        origin.y = Gfx::drawString_495224(*context, origin.x, origin.y, 290, Colour::black, StringIds::black_stringid, &args);
+                        origin.y = Gfx::drawStringLeftWrapped(*context, origin.x, origin.y, 290, Colour::black, StringIds::black_stringid, &args);
                     }
                     cargoNumber++;
                 }
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         args.push<uint32_t>(industry->produced_cargo_quantity[cargoNumber]);
                         args.push<uint16_t>(industry->produced_cargo_transported[cargoNumber]);
 
-                        origin.y = Gfx::drawString_495224(*context, origin.x, origin.y, 290, Colour::black, StringIds::transported_cargo, &args);
+                        origin.y = Gfx::drawStringLeftWrapped(*context, origin.x, origin.y, 290, Colour::black, StringIds::transported_cargo, &args);
                     }
                     cargoNumber++;
                 }
