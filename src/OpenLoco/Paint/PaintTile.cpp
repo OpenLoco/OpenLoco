@@ -39,7 +39,7 @@ namespace OpenLoco::Paint
 
         session.setEntityPosition(loc2);
         session.setItemType(InteractionItem::noInteraction);
-        session.addToPlotListAsParent(ImageIds::blank_tile, { 0, 0, 16 }, { 32, 32, 255 });
+        session.addToPlotListAsParent(ImageIds::blank_tile, { 0, 0, 16 }, { 32, 32, -1 });
     }
 
     // 0x00461EA7
@@ -77,7 +77,7 @@ namespace OpenLoco::Paint
         };
         const auto imageId = Gfx::recolour(kConstructionArrowImages[dirIndex], Colour::yellow);
         session.setItemType(InteractionItem::noInteraction);
-        session.addToPlotListAsParent(imageId, { 0, 0, _constructionArrowLocation->z }, Map::Pos3(0, 0, _constructionArrowLocation->z + 10), { 32, 32, 255 });
+        session.addToPlotListAsParent(imageId, { 0, 0, _constructionArrowLocation->z }, Map::Pos3(0, 0, _constructionArrowLocation->z + 10), { 32, 32, -1 });
     }
 
     // 0x004792E7 streetlights?
