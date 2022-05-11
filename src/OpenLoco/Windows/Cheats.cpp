@@ -221,7 +221,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Add cash step label and value
             {
                 auto& widget = self->widgets[Widx::cash_step_value];
-                Gfx::drawString_494B3F(
+                Gfx::drawStringLeft(
                     *context,
                     self->x + 10,
                     self->y + widget.top,
@@ -230,7 +230,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 auto args = FormatArguments::common();
                 args.push(_cashIncreaseStep);
-                Gfx::drawString_494B3F(
+                Gfx::drawStringLeft(
                     *context,
                     self->x + widget.left + 1,
                     self->y + widget.top,
@@ -242,7 +242,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Loan label and value
             {
                 auto& widget = self->widgets[Widx::loan_value];
-                Gfx::drawString_494B3F(
+                Gfx::drawStringLeft(
                     *context,
                     self->x + 10,
                     self->y + widget.top,
@@ -253,7 +253,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 auto args = FormatArguments::common();
                 args.push(company->currentLoan);
 
-                Gfx::drawString_494B3F(
+                Gfx::drawStringLeft(
                     *context,
                     self->x + widget.left + 1,
                     self->y + widget.top,
@@ -265,7 +265,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Add year label and value
             {
                 auto& widget = self->widgets[Widx::year_step_value];
-                Gfx::drawString_494B3F(
+                Gfx::drawStringLeft(
                     *context,
                     self->x + 10,
                     self->y + widget.top,
@@ -274,7 +274,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 auto args = FormatArguments::common();
                 args.push(_date.year);
-                Gfx::drawString_494B3F(
+                Gfx::drawStringLeft(
                     *context,
                     self->x + widget.left + 1,
                     self->y + widget.top,
@@ -286,7 +286,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Add month label and value
             {
                 auto& widget = self->widgets[Widx::month_step_value];
-                Gfx::drawString_494B3F(
+                Gfx::drawStringLeft(
                     *context,
                     self->x + 10,
                     self->y + widget.top,
@@ -295,7 +295,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 auto args = FormatArguments::common();
                 args.push((string_id)OpenLoco::StringManager::monthToString(_date.month).second);
-                Gfx::drawString_494B3F(
+                Gfx::drawStringLeft(
                     *context,
                     self->x + widget.left + 1,
                     self->y + widget.top,
@@ -307,7 +307,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Add day label and value
             {
                 auto& widget = self->widgets[Widx::day_step_value];
-                Gfx::drawString_494B3F(
+                Gfx::drawStringLeft(
                     *context,
                     self->x + 10,
                     self->y + widget.top,
@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 auto args = FormatArguments::common();
                 args.push(_date.day + 1); // +1 since days in game are 0-based, but IRL they are 1-based
-                Gfx::drawString_494B3F(
+                Gfx::drawStringLeft(
                     *context,
                     self->x + widget.left + 1,
                     self->y + widget.top,
@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Draw current company name
             auto company = CompanyManager::get(_targetCompanyId);
             auto& widget = self->widgets[Widx::target_company_dropdown];
-            Gfx::drawString_494B3F(
+            Gfx::drawStringLeft(
                 *context,
                 self->x + widget.left,
                 self->y + widget.top,

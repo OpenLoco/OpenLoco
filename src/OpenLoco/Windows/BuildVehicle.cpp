@@ -937,7 +937,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            Gfx::drawString_494BBF(*context, x, y, window->width - 186, Colour::black, bottomLeftMessage, &args);
+            Gfx::drawStringLeftClipped(*context, x, y, window->width - 186, Colour::black, bottomLeftMessage, &args);
         }
 
         if (window->rowHover == -1)
@@ -1058,7 +1058,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         auto x = window->widgets[widx::scrollview_vehicle_selection].right + window->x + 2;
         auto y = window->widgets[widx::scrollview_vehicle_preview].bottom + window->y + 2;
-        Gfx::drawString_495224(*context, x, y, 180, Colour::black, StringIds::buffer_1250);
+        Gfx::drawStringLeftWrapped(*context, x, y, 180, Colour::black, StringIds::buffer_1250);
     }
 
     // 0x4C3307
@@ -1088,7 +1088,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     auto widget = window.widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
                     auto y = (window.rowHeight - 10) / 2;
-                    Gfx::drawString_495224(context, 3, y, width, Colour::black, defaultMessage, &args);
+                    Gfx::drawStringLeftWrapped(context, 3, y, width, Colour::black, defaultMessage, &args);
                 }
                 else
                 {
@@ -1149,7 +1149,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         FormatArguments args{};
                         args.push(vehicleObj->name);
                         half = (window.rowHeight - 10) / 2;
-                        Gfx::drawString_494B3F(context, x + 3, y + half, Colour::black, colouredString, &args);
+                        Gfx::drawStringLeft(context, x + 3, y + half, Colour::black, colouredString, &args);
                     }
                 }
                 break;

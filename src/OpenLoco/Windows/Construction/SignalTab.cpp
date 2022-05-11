@@ -314,7 +314,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             auto args = FormatArguments();
             args.push(trainSignalObject->var_0C);
 
-            Gfx::drawString_495224(*context, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
+            Gfx::drawStringLeftWrapped(*context, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
         }
 
         auto imageId = trainSignalObject->image;

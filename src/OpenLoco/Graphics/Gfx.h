@@ -155,7 +155,7 @@ namespace OpenLoco::Gfx
 
     Ui::Point drawString(Context& context, int16_t x, int16_t y, AdvancedColour colour, void* str);
 
-    int16_t drawString_495224(
+    int16_t drawStringLeftWrapped(
         Context& context,
         int16_t x,
         int16_t y,
@@ -163,20 +163,20 @@ namespace OpenLoco::Gfx
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
-    void drawString_494B3F(
+    void drawStringLeft(
         Context& context,
         int16_t x,
         int16_t y,
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
-    void drawString_494B3F(
+    void drawStringLeft(
         Context& context,
         Ui::Point* origin,
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
-    void drawString_494BBF(
+    void drawStringLeftClipped(
         Context& context,
         int16_t x,
         int16_t y,
@@ -184,14 +184,14 @@ namespace OpenLoco::Gfx
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
-    void drawString_494C78(
+    void drawStringRight(
         Context& context,
         int16_t x,
         int16_t y,
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
-    void drawStringUnderline(
+    void drawStringRightUnderline(
         Context& context,
         int16_t x,
         int16_t y,

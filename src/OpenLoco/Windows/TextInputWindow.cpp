@@ -242,7 +242,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
 
         position = { inputSession.xOffset, 1 };
-        Gfx::drawString_494B3F(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
+        Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
 
         if ((inputSession.cursorFrame % 32) >= 16)
         {
@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { inputSession.xOffset, 1 };
-        Gfx::drawString_494B3F(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
+        Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
         Gfx::fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9));
     }
 

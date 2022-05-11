@@ -191,7 +191,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(baseStringId);
             formatter.push(buffer);
 
-            Gfx::drawString_494B3F(context, 0, yPos - 1, Colour::black, format, &formatter);
+            Gfx::drawStringLeft(context, 0, yPos - 1, Colour::black, format, &formatter);
             yPos += rowHeight;
         }
     }

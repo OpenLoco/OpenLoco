@@ -279,12 +279,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             auto args = FormatArguments();
             args.push(StringIds::buffer_2039);
-            y = Gfx::drawString_495224(*context, x, y, 170, Colour::black, StringIds::black_stringid, &args);
+            y = Gfx::drawStringLeftWrapped(*context, x, y, 170, Colour::black, StringIds::black_stringid, &args);
 
             // Challenge header
             y += 5;
             auto origin = Ui::Point(x, y);
-            Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::challenge_label, nullptr);
+            Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::challenge_label, nullptr);
 
             // Challenge text
             str = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
@@ -293,20 +293,20 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             y += 10;
             args = FormatArguments();
             args.push(StringIds::buffer_1250);
-            y = Gfx::drawString_495224(*context, x, y, 170, Colour::black, StringIds::challenge_value, &args);
+            y = Gfx::drawStringLeftWrapped(*context, x, y, 170, Colour::black, StringIds::challenge_value, &args);
 
             // Start year
             y += 5;
             args = FormatArguments();
             args.push(scenarioInfo->startYear);
-            Gfx::drawString_494B3F(*context, x, y, Colour::black, StringIds::challenge_start_date, &args);
+            Gfx::drawStringLeft(*context, x, y, Colour::black, StringIds::challenge_start_date, &args);
 
             // Competing companies
             y += 10;
             args = FormatArguments();
             args.push<uint16_t>(scenarioInfo->numCompetingCompanies);
             string_id competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
-            y = Gfx::drawString_495224(*context, x, y, 170, Colour::black, competitionStringId, &args);
+            y = Gfx::drawStringLeftWrapped(*context, x, y, 170, Colour::black, competitionStringId, &args);
 
             if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)
                 return;
@@ -315,7 +315,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args = FormatArguments();
             args.push<uint16_t>(scenarioInfo->competingCompanyDelay);
             competitionStringId = scenarioInfo->numCompetingCompanies == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
-            Gfx::drawString_494B3F(*context, x, y, Colour::black, competitionStringId, &args);
+            Gfx::drawStringLeft(*context, x, y, Colour::black, competitionStringId, &args);
         }
     }
 

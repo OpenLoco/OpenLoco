@@ -536,7 +536,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         args.push(_112C1C5[type]);
         args.push(ObjectManager::getMaxObjects(static_cast<ObjectType>(type)));
 
-        Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 12, Colour::black, 2038, &args);
+        Gfx::drawStringLeft(*context, self->x + 3, self->y + self->height - 12, Colour::black, 2038, &args);
 
         if (self->rowHover == -1)
             return;

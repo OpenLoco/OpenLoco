@@ -545,7 +545,7 @@ namespace OpenLoco::Ui
         }
 
         int width = widget->right - widget->left - 2;
-        Gfx::drawString_494BBF(*context, x, y, width, colour, string, _commonFormatArgs);
+        Gfx::drawStringLeftClipped(*context, x, y, width, colour, string, _commonFormatArgs);
     }
 
     // 0x4CB2D6
@@ -565,7 +565,7 @@ namespace OpenLoco::Ui
             colour = colour.FD();
         }
 
-        drawString_494B3F(*context, window->x + left + 1, window->y + top, colour, text, _commonFormatArgs);
+        drawStringLeft(*context, window->x + left + 1, window->y + top, colour, text, _commonFormatArgs);
     }
 
     // 0x4CB29C
@@ -891,7 +891,7 @@ namespace OpenLoco::Ui
             colour = colour.inset();
         }
 
-        Gfx::drawString_494B3F(*context, window->x + left + 14, window->y + top, colour, text, _commonFormatArgs);
+        Gfx::drawStringLeft(*context, window->x + left + 14, window->y + top, colour, text, _commonFormatArgs);
     }
 
     // 0x004CA679

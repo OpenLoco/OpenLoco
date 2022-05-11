@@ -604,7 +604,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour::black, stringId, &args);
+            Gfx::drawStringLeftClipped(*context, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -650,7 +650,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour::black, stringId, &args);
+            Gfx::drawStringLeftClipped(*context, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -717,7 +717,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour::black, stringId, &args);
+            Gfx::drawStringLeftClipped(*context, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -767,7 +767,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour::black, stringId, &args);
+            Gfx::drawStringLeftClipped(*context, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -796,7 +796,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawString_494BBF(*context, x + 6, *y, 94, Colour::black, stringId, &args);
+            Gfx::drawStringLeftClipped(*context, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -992,7 +992,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto y = self->y + self->widgets[widx::statusBar].top - 1;
         auto width = self->widgets[widx::statusBar].width();
 
-        Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
+        Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
     }
 
     // 0x0046BF0F based on

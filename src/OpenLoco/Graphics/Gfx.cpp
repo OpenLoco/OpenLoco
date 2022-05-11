@@ -947,7 +947,7 @@ namespace OpenLoco::Gfx
     // dx: y
     // esi: args
     // edi: context
-    int16_t drawString_495224(
+    int16_t drawStringLeftWrapped(
         Context& context,
         int16_t x,
         int16_t y,
@@ -976,7 +976,7 @@ namespace OpenLoco::Gfx
     // dx: y
     // esi: args
     // edi: context
-    void drawString_494B3F(
+    void drawStringLeft(
         Context& context,
         int16_t x,
         int16_t y,
@@ -1002,7 +1002,7 @@ namespace OpenLoco::Gfx
      * @param stringId  @<bx>
      * @param args @<edi>
      */
-    void drawString_494B3F(
+    void drawStringLeft(
         Context& context,
         Point* origin,
         AdvancedColour colour,
@@ -1030,7 +1030,7 @@ namespace OpenLoco::Gfx
     // esi: args
     // edi: context
     // bp: width
-    void drawString_494BBF(
+    void drawStringLeftClipped(
         Context& context,
         int16_t x,
         int16_t y,
@@ -1057,7 +1057,7 @@ namespace OpenLoco::Gfx
     // dx: y
     // esi: args
     // edi: context
-    void drawString_494C78(
+    void drawStringRight(
         Context& context,
         int16_t x,
         int16_t y,
@@ -1082,7 +1082,7 @@ namespace OpenLoco::Gfx
     // dx: y
     // esi: args
     // edi: context
-    void drawStringUnderline(
+    void drawStringRightUnderline(
         Context& context,
         int16_t x,
         int16_t y,
