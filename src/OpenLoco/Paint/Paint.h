@@ -73,12 +73,12 @@ namespace OpenLoco::Paint
 
     struct PaintStructBoundBox
     {
-        uint16_t x;    // 0x08
-        uint16_t y;    // 0x0A
-        uint16_t z;    // 0x0C
-        uint16_t zEnd; // 0x0E NOTE: This order is important!
-        uint16_t xEnd; // 0x10
-        uint16_t yEnd; // 0x12
+        int16_t x;    // 0x08
+        int16_t y;    // 0x0A
+        int16_t z;    // 0x0C
+        int16_t zEnd; // 0x0E NOTE: This order is important!
+        int16_t xEnd; // 0x10
+        int16_t yEnd; // 0x12
     };
 
     namespace QuadrantFlags
