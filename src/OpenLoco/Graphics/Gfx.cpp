@@ -7,6 +7,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/LanguageFiles.h"
+#include "../Localisation/StringManager.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Stream.hpp"
@@ -999,14 +1000,8 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00494B3F, regs);
+        Point origin = { x, y };
+        drawStringLeft(context, &origin, colour, stringId, args);
     }
 
     /**
@@ -1024,17 +1019,14 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = origin->x;
-        regs.dx = origin->y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00494B3F, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-        origin->x = regs.cx;
-        origin->y = regs.dx;
+        _currentFontSpriteBase = Font::medium_bold;
+        auto point = Gfx::drawString(context, origin->x, origin->y, colour, buffer);
+
+        origin->x = point.x;
+        origin->y = point.y;
     }
 
     // 0x00494BBF
