@@ -376,7 +376,7 @@ namespace OpenLoco::Scenario
         initialiseSnowLine();
         sub_4748D4();
         std::fill(std::begin(gameState.recordSpeed), std::end(gameState.recordSpeed), 0_mph);
-        getObjectiveProgress().timeLimitUntilYear = getObjectiveProgress().timeLimitUntilYear - 1 + gameState.currentYear;
+        getObjectiveProgress().timeLimitUntilYear = getObjective().timeLimitYears - 1 + gameState.currentYear;
         getObjectiveProgress().monthsInChallenge = 0;
         call(0x0049B546);
         gameState.lastMapWindowFlags = 0;

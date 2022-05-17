@@ -1,6 +1,7 @@
 22.05+ (???)
 ------------------------------------------------------------------------
 - Fix: [#1505] Graphical glitch at edge of map making void have highest precedence when drawing.
+- Fix: [#1508] Immediate failure of scenarios due to incorrect setting of time limit.
 
 22.05 (2022-05-08)
 ------------------------------------------------------------------------
