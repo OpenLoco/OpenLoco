@@ -38,6 +38,19 @@ namespace OpenLoco::Gfx
     static loco_global<Context, 0x0050B884> _screenContext;
 
     static loco_global<G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + G1ExpectedCount::kObjects], 0x9E2424> _g1Elements;
+    // 0x009DA3E0
+    // Originally 0x009DA3E0 was an array of the image data pointers setup within 0x00452336
+    // We have removed that step and instead work directly on the images.
+    static constexpr std::array<uint32_t, 8> _treeWiltImages = {
+        ImageIds::null,
+        ImageIds::tree_wilt_palette_map_1,
+        ImageIds::tree_wilt_palette_map_2,
+        ImageIds::tree_wilt_palette_map_3,
+        ImageIds::tree_wilt_palette_map_4,
+        ImageIds::tree_wilt_palette_map_5,
+        ImageIds::tree_wilt_palette_map_6,
+        ImageIds::tree_wilt_palette_map_7,
+    };
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
     static loco_global<uint32_t[147], 0x050B8C8> _paletteToG1Offset;
@@ -47,6 +60,7 @@ namespace OpenLoco::Gfx
     static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
     static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
     loco_global<uint32_t, 0x00E04324> _E04324;
+    loco_global<const uint8_t*, 0x009DA3D8> _treeWiltImageData;
 
     static PaletteIndex_t _textColours[8] = { 0 };
 
@@ -1406,7 +1420,7 @@ namespace OpenLoco::Gfx
         redrawScreenRect(Rect::fromLTRB(left, top, right, bottom));
     }
 
-    std::optional<PaletteMap> getPaletteMapFromImage(const ImageId image)
+    static std::optional<PaletteMap> getPaletteMapFromImage(const ImageId image)
     {
         // No remapping required so use default palette map
         if (!image.hasPrimary() && !image.isBlended())
@@ -1448,11 +1462,17 @@ namespace OpenLoco::Gfx
         }
     }
 
-    std::optional<G1Element> getTreeWiltForImage(const ImageId image)
+    static std::optional<const G1Element*> getTreeWiltImageFromImage(const ImageId image)
     {
         if (image.hasTreeWilt())
         {
-            return image.getTreeWilt();
+            const auto wilt = image.getTreeWilt();
+            const auto* wiltImage = getG1Element(_treeWiltImages[wilt]);
+            if (wiltImage == nullptr)
+            {
+                return std::nullopt;
+            }
+            return wiltImage;
         }
         else
         {
@@ -1463,17 +1483,26 @@ namespace OpenLoco::Gfx
     // 0x00448C79
     void drawImage(Gfx::Context* context, int16_t x, int16_t y, uint32_t image)
     {
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.ebx = image;
-        regs.edi = X86Pointer(context);
-        call(0x00448C79, regs);
+        drawImage(*context, { x, y }, ImageId::fromUInt32(image));
     }
 
+    // 0x00448C79
     void drawImage(Gfx::Context& context, const Ui::Point& pos, const ImageId& image)
     {
-        drawImage(&context, pos.x, pos.y, image.toUInt32());
+        const auto treeWiltImage = getTreeWiltImageFromImage(image);
+        const auto palette = getPaletteMapFromImage(image);
+        // Set the image flag to tell drawImagePaletteSet to recolour/blend with the palette. TODO: This should be refactored out when drawImagePaletteSet implemented
+        _E04324 = image.toUInt32() & 0x60000000;
+        // Set the tree wilt image pointer for drawImagePaletteSet. TODO: refactor out when drawImagePaletteSet implemented
+        _treeWiltImageData = treeWiltImage.has_value() ? (*treeWiltImage)->offset : nullptr;
+        if (!palette.has_value())
+        {
+            drawImagePaletteSet(context, pos, image, PaletteMap::getDefault());
+        }
+        else
+        {
+            drawImagePaletteSet(context, pos, image, *palette);
+        }
     }
 
     uint32_t recolour(uint32_t image)

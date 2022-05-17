@@ -103,7 +103,7 @@ static uint32_t STDCALL lib_timeGetTime()
     return Platform::getTime();
 }
 
-//typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
+// typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
 FORCE_ALIGN_ARG_POINTER
 static long STDCALL fn_DirectSoundEnumerateA(void* pDSEnumCallback, void* pContext)
 {
@@ -129,7 +129,7 @@ static void STDCALL fn_407b26()
     return;
 }
 
-///region Progress bar
+/// region Progress bar
 
 static void CDECL fn_4080bb(char* lpWindowName, uint32_t a1)
 {
@@ -152,7 +152,7 @@ static void CDECL fn_4081ad(int32_t wParam)
     Console::log("SendMessage(PBM_SETPOS, %d)", wParam);
 }
 
-///endregion
+/// endregion
 
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
@@ -863,6 +863,17 @@ void OpenLoco::Interop::registerHooks()
 
             auto* entity = reinterpret_cast<EntityBase*>(regs.esi);
             EntityManager::freeEntity(entity);
+
+            regs = backup;
+            return 0;
+        });
+
+    registerHook(
+        0x00448C79,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            Gfx::Context* context = X86Pointer<Gfx::Context>(regs.edi);
+            Gfx::drawImage(*context, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
 
             regs = backup;
             return 0;
