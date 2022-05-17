@@ -1,4 +1,4 @@
-22.05+ (???)
+22.05.1 (2022-05-17)
 ------------------------------------------------------------------------
 - Fix: [#1504] Trains can get stuck on slopes under certain conditions causing a build up of negative speed.
 - Fix: [#1505] Graphical glitch at edge of map making void have highest precedence when drawing.
