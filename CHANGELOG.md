@@ -1,5 +1,6 @@
 22.05+ (???)
 ------------------------------------------------------------------------
+- Fix: [#1504] Trains can get stuck on slopes under certain conditions causing a build up of negative speed.
 - Fix: [#1505] Graphical glitch at edge of map making void have highest precedence when drawing.
 - Fix: [#1508] Immediate failure of scenarios due to incorrect setting of time limit.
 
