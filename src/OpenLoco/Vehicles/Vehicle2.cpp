@@ -250,7 +250,15 @@ namespace OpenLoco::Vehicles
         }
         const auto speedSquare = toSpeed16(currentSpeed).getRaw() * toSpeed16(currentSpeed).getRaw();
         ebp -= speedSquare;
-        const auto speedAdjustment = std::min(Speed32(ebp), 0.5_mph);
+
+        auto speedAdjustment = std::min(Speed32(ebp), 0.5_mph);
+        // Vanilla did some funky maths that interpreted signed speeds as unsigned
+        // to behave similar we will set the speedAdjustment to 0.5_mph when negative speed
+        if (currentSpeed < 0.0_mph)
+        {
+            speedAdjustment = 0.5_mph;
+        }
+
         auto newSpeed = speedAdjustment + currentSpeed;
         if (speedAdjustment < 0.0_mph)
         {
@@ -267,7 +275,16 @@ namespace OpenLoco::Vehicles
 
         if (!(train.head->var_0C & Flags0C::manualControl))
         {
-            newSpeed = std::min(newSpeed, *vehicleUpdate_var_1136134);
+            // Vanilla did some funky maths that interpreted signed speeds as unsigned
+            // to behave similar we always take the vehicleUpdate_var_1136134 on negative speed
+            if (newSpeed < 0.0_mph)
+            {
+                newSpeed = *vehicleUpdate_var_1136134;
+            }
+            else
+            {
+                newSpeed = std::min(newSpeed, *vehicleUpdate_var_1136134);
+            }
         }
         currentSpeed = newSpeed;
 
