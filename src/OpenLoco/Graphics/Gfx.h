@@ -60,7 +60,7 @@ namespace OpenLoco::Gfx
         int16_t x_offset; // 0x08
         int16_t y_offset; // 0x0A
         uint16_t flags;   // 0x0C
-        int16_t unused;   // 0x0E
+        int16_t zoomOffset;   // 0x0E
     };
 
     // A version that can be 64-bit when ready...
@@ -72,7 +72,7 @@ namespace OpenLoco::Gfx
         int16_t x_offset = 0;
         int16_t y_offset = 0;
         uint16_t flags = 0;
-        int16_t unused = 0;
+        int16_t zoomOffset = 0;
 
         G1Element() = default;
         G1Element(const G1Element32& src)
@@ -82,7 +82,7 @@ namespace OpenLoco::Gfx
             , x_offset(src.x_offset)
             , y_offset(src.y_offset)
             , flags(src.flags)
-            , unused(src.unused)
+            , zoomOffset(src.zoomOffset)
         {
         }
     };
@@ -255,7 +255,7 @@ namespace OpenLoco::Gfx
     void drawImage(Gfx::Context* context, int16_t x, int16_t y, uint32_t image);
     void drawImage(Gfx::Context& context, const Ui::Point& pos, const ImageId& image);
     void drawImageSolid(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
-    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette);
+    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, std::optional<const G1Element*> treeWiltImage);
     [[nodiscard]] uint32_t recolour(uint32_t image);
     [[nodiscard]] uint32_t recolour(uint32_t image, Colour colour);
     [[nodiscard]] uint32_t recolour(uint32_t image, ExtColour colour);

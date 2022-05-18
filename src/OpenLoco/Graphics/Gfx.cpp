@@ -1,6 +1,7 @@
 #include "Gfx.h"
 #include "../Config.h"
 #include "../Console.h"
+#include "../Drawing/DrawSprite.h"
 #include "../Drawing/SoftwareDrawingEngine.h"
 #include "../Environment.h"
 #include "../Input.h"
@@ -835,7 +836,7 @@ namespace OpenLoco::Gfx
                         if (chr >= 32)
                         {
                             _E04324 = 0x20000000;
-                            Gfx::drawImagePaletteSet(*context, pos, ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()), PaletteMap{ _textColours });
+                            Gfx::drawImagePaletteSet(*context, pos, ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()), PaletteMap{ _textColours }, {});
                             pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
                         }
                         else
@@ -1497,11 +1498,11 @@ namespace OpenLoco::Gfx
         _treeWiltImageData = treeWiltImage.has_value() ? (*treeWiltImage)->offset : nullptr;
         if (!palette.has_value())
         {
-            drawImagePaletteSet(context, pos, image, PaletteMap::getDefault());
+            drawImagePaletteSet(context, pos, image, PaletteMap::getDefault(), treeWiltImage);
         }
         else
         {
-            drawImagePaletteSet(context, pos, image, *palette);
+            drawImagePaletteSet(context, pos, image, *palette, treeWiltImage);
         }
     }
 
@@ -1544,7 +1545,7 @@ namespace OpenLoco::Gfx
 
         // Set the image primary flag to tell drawImagePaletteSet to recolour with the palette. TODO: This should be refactored out when drawImagePaletteSet implemented
         _E04324 = 0x20000000;
-        drawImagePaletteSet(context, pos, image, PaletteMap{ palette });
+        drawImagePaletteSet(context, pos, image, PaletteMap{ palette }, {});
     }
 
     // 0x00448D90
@@ -1559,9 +1560,204 @@ namespace OpenLoco::Gfx
         call(0x00448D90, regs);
     }
 
-    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette)
+    static void drawSpriteToBuffer(Gfx::Context& context, DrawSpriteArgs& args)
     {
-        drawImagePaletteSet(&context, pos.x, pos.y, image.toUInt32(), palette.data());
+        if (args.sourceImage.flags & G1ElementFlags::isRLECompressed)
+        {
+            // call(0x0044933B, regs);
+        }
+        else if (!(args.sourceImage.flags & G1ElementFlags::unk1))
+        {
+            drawSpriteToBufferBMP(context, args);
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
+    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, std::optional<const G1Element*> treeWiltImage)
+    {
+        auto dispPos{ pos };
+
+        const auto* element = getG1Element(image.getIndex());
+        if (element == nullptr)
+        {
+            return;
+        }
+        // Limit test space for now.
+        if (element->flags & G1ElementFlags::isRLECompressed)
+        {
+            // Set the image flag to tell drawImagePaletteSet to recolour/blend with the palette. TODO: This should be refactored out when drawImagePaletteSet implemented
+            _E04324 = image.toUInt32() & 0x60000000;
+            // Set the tree wilt image pointer for drawImagePaletteSet. TODO: refactor out when drawImagePaletteSet implemented
+            _treeWiltImageData = treeWiltImage.has_value() ? (*treeWiltImage)->offset : nullptr;
+            drawImagePaletteSet(&context, pos.x, pos.y, image.toUInt32(), palette.data());
+            return;
+        }
+        if (context.zoom_level > 0 && (element->flags & G1ElementFlags::hasZoomSprites))
+        {
+            auto zoomedContext{ context };
+            zoomedContext.bits = context.bits;
+            zoomedContext.x = context.x >> 1;
+            zoomedContext.y = context.y >> 1;
+            zoomedContext.height = context.height >> 1;
+            zoomedContext.width = context.width >> 1;
+            zoomedContext.pitch = context.pitch;
+            zoomedContext.zoom_level = context.zoom_level - 1;
+
+            const auto zoomCoords = Ui::Point(dispPos.x >> 1, dispPos.y >> 1);
+            drawImagePaletteSet(
+                zoomedContext, zoomCoords, image.withIndexOffset(-element->zoomOffset), palette, treeWiltImage);
+            return;
+        }
+
+        if (context.zoom_level > 0 && (element->flags & G1ElementFlags::noZoomDraw))
+        {
+            return;
+        }
+
+        // Its used super often so we will define it to a separate variable.
+        const auto zoomLevel = context.zoom_level;
+        uint32_t zoomMask = 0xFFFFFFFF;
+        switch (zoomLevel)
+        {
+            default:
+                break;
+            case 1:
+                zoomMask = 0xFFFFFFFF;
+                break;
+            case 2:
+                zoomMask = 0xFFFFFFFE;
+                break;
+            case 3:
+                zoomMask = 0xFFFFFFFC;
+                break;
+            case 4:
+                zoomMask = 0xFFFFFFF8;
+                break;
+        }
+
+        if (zoomLevel > 0 && element->flags & G1ElementFlags::isRLECompressed)
+        {
+            dispPos.x -= ~zoomMask;
+            dispPos.y -= ~zoomMask;
+        }
+
+        // This will be the height of the drawn image
+        int32_t height = element->height;
+
+        // This is the start y coordinate on the destination
+        int16_t destStartY = dispPos.y + element->y_offset;
+
+        // For whatever reason the RLE version does not use
+        // the zoom mask on the y coordinate but does on x.
+        if (element->flags & G1ElementFlags::isRLECompressed)
+        {
+            destStartY -= context.y;
+        }
+        else
+        {
+            destStartY = (destStartY & zoomMask) - context.y;
+        }
+        // This is the start y coordinate on the source
+        int32_t sourceStartY = 0;
+
+        if (destStartY < 0)
+        {
+            // If the destination y is negative reduce the height of the
+            // image as we will cut off the bottom
+            height += destStartY;
+            // If the image is no longer visible nothing to draw
+            if (height <= 0)
+            {
+                return;
+            }
+            // The source image will start a further up the image
+            sourceStartY -= destStartY;
+            // The destination start is now reset to 0
+            destStartY = 0;
+        }
+        else
+        {
+            if ((element->flags & G1ElementFlags::isRLECompressed) && zoomLevel > 0)
+            {
+                sourceStartY -= destStartY & ~zoomMask;
+                height += destStartY & ~zoomMask;
+            }
+        }
+
+        int32_t destEndY = destStartY + height;
+
+        if (destEndY > context.height)
+        {
+            // If the destination y is outside of the drawing
+            // image reduce the height of the image
+            height -= destEndY - context.height;
+        }
+        // If the image no longer has anything to draw
+        if (height <= 0)
+            return;
+
+        destStartY = destStartY >> zoomLevel;
+
+        // This will be the width of the drawn image
+        int32_t width = element->width;
+
+        // This is the source start x coordinate
+        int32_t sourceStartX = 0;
+        // This is the destination start x coordinate
+        int16_t destStartX = ((dispPos.x + element->x_offset + ~zoomMask) & zoomMask) - context.x;
+
+        if (destStartX < 0)
+        {
+            // If the destination is negative reduce the width
+            // image will cut off the side
+            width += destStartX;
+            // If there is no image to draw
+            if (width <= 0)
+            {
+                return;
+            }
+            // The source start will also need to cut off the side
+            sourceStartX -= destStartX;
+            // Reset the destination to 0
+            destStartX = 0;
+        }
+        else
+        {
+            if ((element->flags & G1ElementFlags::isRLECompressed) && zoomLevel > 0)
+            {
+                sourceStartX -= destStartX & ~zoomMask;
+            }
+        }
+
+        int32_t destEndX = destStartX + width;
+
+        if (destEndX > context.width)
+        {
+            // If the destination x is outside of the drawing area
+            // reduce the image width.
+            width -= destEndX - context.width;
+            // If there is no image to draw.
+            if (width <= 0)
+                return;
+        }
+
+        destStartX = destStartX >> zoomLevel;
+
+        uint8_t* destPointer = context.bits;
+        // Move the pointer to the start point of the destination
+        destPointer += ((context.width >> zoomLevel) + context.pitch) * destStartY + destStartX;
+
+        // Set the image flag to tell drawImagePaletteSet to recolour/blend with the palette. TODO: This should be refactored out when drawImagePaletteSet implemented
+        _E04324 = image.toUInt32() & 0x60000000;
+        // Set the tree wilt image pointer for drawImagePaletteSet. TODO: refactor out when drawImagePaletteSet implemented
+        _treeWiltImageData = treeWiltImage.has_value() ? (*treeWiltImage)->offset : nullptr;
+        _50B860 = palette.data();
+
+        DrawSpriteArgs args(image, palette, *element, sourceStartX, sourceStartY, width, height, destPointer);
+        drawSpriteToBuffer(context, args);
     }
 
     // 0x004CEC50

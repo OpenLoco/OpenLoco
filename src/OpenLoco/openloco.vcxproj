@@ -25,6 +25,9 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Date.cpp" />
+    <ClCompile Include="Drawing\DrawSprite.cpp" />
+    <ClCompile Include="Drawing\DrawSpriteBMP.cpp" />
+    <ClCompile Include="Drawing\DrawSpriteRLE.cpp" />
     <ClCompile Include="Drawing\FPSCounter.cpp" />
     <ClCompile Include="Drawing\SoftwareDrawingEngine.cpp" />
     <ClCompile Include="Economy\Economy.cpp" />
@@ -257,6 +260,7 @@
     <ClInclude Include="Core\Span.hpp" />
     <ClInclude Include="Core\Variant.hpp" />
     <ClInclude Include="Date.h" />
+    <ClInclude Include="Drawing\DrawSprite.h" />
     <ClInclude Include="Drawing\FPSCounter.h" />
     <ClInclude Include="Drawing\SoftwareDrawingEngine.h" />
     <ClInclude Include="Economy\Currency.h" />
