@@ -1463,7 +1463,7 @@ namespace OpenLoco::Gfx
         }
     }
 
-    static std::optional<const G1Element*> getTreeWiltImageFromImage(const ImageId image)
+    static const G1Element* getTreeWiltImageFromImage(const ImageId image)
     {
         if (image.hasTreeWilt())
         {
@@ -1471,13 +1471,13 @@ namespace OpenLoco::Gfx
             const auto* wiltImage = getG1Element(_treeWiltImages[wilt]);
             if (wiltImage == nullptr)
             {
-                return std::nullopt;
+                return nullptr;
             }
             return wiltImage;
         }
         else
         {
-            return std::nullopt;
+            return nullptr;
         }
     }
 
@@ -1490,12 +1490,9 @@ namespace OpenLoco::Gfx
     // 0x00448C79
     void drawImage(Gfx::Context& context, const Ui::Point& pos, const ImageId& image)
     {
-        const auto treeWiltImage = getTreeWiltImageFromImage(image);
+        const auto* treeWiltImage = getTreeWiltImageFromImage(image);
         const auto palette = getPaletteMapFromImage(image);
-        // Set the image flag to tell drawImagePaletteSet to recolour/blend with the palette. TODO: This should be refactored out when drawImagePaletteSet implemented
-        _E04324 = image.toUInt32() & 0x60000000;
-        // Set the tree wilt image pointer for drawImagePaletteSet. TODO: refactor out when drawImagePaletteSet implemented
-        _treeWiltImageData = treeWiltImage.has_value() ? (*treeWiltImage)->offset : nullptr;
+
         if (!palette.has_value())
         {
             drawImagePaletteSet(context, pos, image, PaletteMap::getDefault(), treeWiltImage);
@@ -1576,7 +1573,7 @@ namespace OpenLoco::Gfx
         }
     }
 
-    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, std::optional<const G1Element*> treeWiltImage)
+    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* treeWiltImage)
     {
         auto dispPos{ pos };
 
@@ -1591,7 +1588,7 @@ namespace OpenLoco::Gfx
             // Set the image flag to tell drawImagePaletteSet to recolour/blend with the palette. TODO: This should be refactored out when drawImagePaletteSet implemented
             _E04324 = image.toUInt32() & 0x60000000;
             // Set the tree wilt image pointer for drawImagePaletteSet. TODO: refactor out when drawImagePaletteSet implemented
-            _treeWiltImageData = treeWiltImage.has_value() ? (*treeWiltImage)->offset : nullptr;
+            _treeWiltImageData = treeWiltImage != nullptr ? treeWiltImage->offset : nullptr;
             drawImagePaletteSet(&context, pos.x, pos.y, image.toUInt32(), palette.data());
             return;
         }
@@ -1625,15 +1622,12 @@ namespace OpenLoco::Gfx
             default:
                 break;
             case 1:
-                zoomMask = 0xFFFFFFFF;
-                break;
-            case 2:
                 zoomMask = 0xFFFFFFFE;
                 break;
-            case 3:
+            case 2:
                 zoomMask = 0xFFFFFFFC;
                 break;
-            case 4:
+            case 3:
                 zoomMask = 0xFFFFFFF8;
                 break;
         }
@@ -1750,13 +1744,7 @@ namespace OpenLoco::Gfx
         // Move the pointer to the start point of the destination
         destPointer += ((context.width >> zoomLevel) + context.pitch) * destStartY + destStartX;
 
-        // Set the image flag to tell drawImagePaletteSet to recolour/blend with the palette. TODO: This should be refactored out when drawImagePaletteSet implemented
-        _E04324 = image.toUInt32() & 0x60000000;
-        // Set the tree wilt image pointer for drawImagePaletteSet. TODO: refactor out when drawImagePaletteSet implemented
-        _treeWiltImageData = treeWiltImage.has_value() ? (*treeWiltImage)->offset : nullptr;
-        _50B860 = palette.data();
-
-        DrawSpriteArgs args(image, palette, *element, sourceStartX, sourceStartY, width, height, destPointer);
+        DrawSpriteArgs args(image, palette, *element, sourceStartX, sourceStartY, width, height, destPointer, treeWiltImage);
         drawSpriteToBuffer(context, args);
     }
 

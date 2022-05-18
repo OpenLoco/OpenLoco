@@ -1,7 +1,11 @@
+#pragma once
+#include "../Graphics/ImageId.h"
+
 namespace OpenLoco::Gfx
 {
     struct PaletteMap;
     struct G1Element;
+    struct Context;
 }
 
 namespace OpenLoco::Drawing
@@ -16,9 +20,10 @@ namespace OpenLoco::Drawing
         int32_t width;
         int32_t height;
         uint8_t* destinationBits;
+        const Gfx::G1Element* treeWiltImage;
         DrawSpriteArgs(
             ImageId _image, const Gfx::PaletteMap& _palMap, const Gfx::G1Element& _sourceImage, int32_t _srcX, int32_t _srcY, int32_t _width,
-            int32_t _height, uint8_t* _destinationBits)
+            int32_t _height, uint8_t* _destinationBits, const Gfx::G1Element* _treeWiltImage)
             : image(_image)
             , palMap(_palMap)
             , sourceImage(_sourceImage)
@@ -27,6 +32,7 @@ namespace OpenLoco::Drawing
             , width(_width)
             , height(_height)
             , destinationBits(_destinationBits)
+            , treeWiltImage(_treeWiltImage)
         {
         }
     };
@@ -53,6 +59,12 @@ namespace OpenLoco::Drawing
      * Whether to use the pixel value of the destination image for blending.
      * This is used for any image that filters the target image, e.g. glass or water.
      */
-    constexpr DrawBlendOp BLEND_DST = 2 << 2;
+    constexpr DrawBlendOp BLEND_DST = 1 << 2;
 
+    /**
+     * Whether to use the tree wilt image to prevent draws on certain parts of the image.
+     */
+    constexpr DrawBlendOp BLEND_TREEWILT = 1 << 3;
+
+    DrawBlendOp getDrawBlendOp(const DrawSpriteArgs& args);
 }

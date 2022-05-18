@@ -5,12 +5,16 @@ namespace OpenLoco::Drawing
 {
 
     template<DrawBlendOp TBlendOp>
-    bool BlitPixel(const uint8_t* src, uint8_t* dst, const Gfx::PaletteMap& paletteMap)
+    bool BlitPixel(const uint8_t src, uint8_t& dst, const Gfx::PaletteMap& paletteMap, const uint8_t treeWilt)
     {
+        if (treeWilt == 0)
+        {
+            return false;
+        }
         if constexpr (TBlendOp & BLEND_TRANSPARENT)
         {
             // Ignore transparent pixels
-            if (*src == 0)
+            if (src == 0)
             {
                 return false;
             }
@@ -18,7 +22,7 @@ namespace OpenLoco::Drawing
 
         if constexpr (((TBlendOp & BLEND_SRC) != 0) && ((TBlendOp & BLEND_DST) != 0))
         {
-            auto pixel = paletteMap.blend(*src, *dst);
+            auto pixel = paletteMap.blend(src, dst);
             if constexpr (TBlendOp & BLEND_TRANSPARENT)
             {
                 if (pixel == 0)
@@ -26,12 +30,12 @@ namespace OpenLoco::Drawing
                     return false;
                 }
             }
-            *dst = pixel;
+            dst = pixel;
             return true;
         }
         else if constexpr ((TBlendOp & BLEND_SRC) != 0)
         {
-            auto pixel = paletteMap[*src];
+            auto pixel = paletteMap[src];
             if constexpr (TBlendOp & BLEND_TRANSPARENT)
             {
                 if (pixel == 0)
@@ -39,12 +43,12 @@ namespace OpenLoco::Drawing
                     return false;
                 }
             }
-            *dst = pixel;
+            dst = pixel;
             return true;
         }
         else if constexpr ((TBlendOp & BLEND_DST) != 0)
         {
-            auto pixel = paletteMap[*dst];
+            auto pixel = paletteMap[dst];
             if constexpr (TBlendOp & BLEND_TRANSPARENT)
             {
                 if (pixel == 0)
@@ -52,12 +56,12 @@ namespace OpenLoco::Drawing
                     return false;
                 }
             }
-            *dst = pixel;
+            dst = pixel;
             return true;
         }
         else
         {
-            *dst = *src;
+            dst = src;
             return true;
         }
     }
@@ -66,8 +70,9 @@ namespace OpenLoco::Drawing
     static void DrawBMPSprite(Gfx::Context& context, const DrawSpriteArgs& args)
     {
         auto& g1 = args.sourceImage;
-        auto src = g1.offset + ((static_cast<size_t>(g1.width) * args.srcY) + args.srcX);
-        auto dst = args.destinationBits;
+        const auto* src = g1.offset + ((static_cast<size_t>(g1.width) * args.srcY) + args.srcX);
+        const auto* treeWilt = args.treeWiltImage != nullptr ? args.treeWiltImage->offset + ((static_cast<size_t>(g1.width) * args.srcY) + args.srcX) : nullptr;
+        auto* dst = args.destinationBits;
         auto& paletteMap = args.palMap;
         auto width = args.width;
         auto height = args.height;
@@ -75,16 +80,35 @@ namespace OpenLoco::Drawing
         size_t srcLineWidth = g1.width << zoomLevel;
         size_t dstLineWidth = (static_cast<size_t>(context.width) >> zoomLevel) + context.pitch;
         uint8_t zoom = 1 << zoomLevel;
-        for (; height > 0; height -= zoom)
+        if (treeWilt != nullptr)
         {
-            auto nextSrc = src + srcLineWidth;
-            auto nextDst = dst + dstLineWidth;
-            for (int32_t widthRemaining = width; widthRemaining > 0; widthRemaining -= zoom, src += zoom, dst++)
+            for (; height > 0; height -= zoom)
             {
-                BlitPixel<TBlendOp>(src, dst, paletteMap);
+                auto nextSrc = src + srcLineWidth;
+                auto nextDst = dst + dstLineWidth;
+                auto nextTreeWilt = treeWilt + srcLineWidth;
+                for (int32_t widthRemaining = width; widthRemaining > 0; widthRemaining -= zoom, src += zoom, treeWilt += zoom, dst++)
+                {
+                    BlitPixel<TBlendOp>(*src, *dst, paletteMap, *treeWilt);
+                }
+                src = nextSrc;
+                dst = nextDst;
+                treeWilt = nextTreeWilt;
             }
-            src = nextSrc;
-            dst = nextDst;
+        }
+        else
+        {
+            for (; height > 0; height -= zoom)
+            {
+                auto nextSrc = src + srcLineWidth;
+                auto nextDst = dst + dstLineWidth;
+                for (int32_t widthRemaining = width; widthRemaining > 0; widthRemaining -= zoom, src += zoom, dst++)
+                {
+                    BlitPixel<TBlendOp>(*src, *dst, paletteMap, 0xFF);
+                }
+                src = nextSrc;
+                dst = nextDst;
+            }
         }
     }
 
