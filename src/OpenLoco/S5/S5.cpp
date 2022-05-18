@@ -23,6 +23,9 @@
 #include "../Vehicles/Orders.h"
 #include "../ViewportManager.h"
 #include "SawyerStream.h"
+#include <fstream>
+#include <iomanip>
+#include <sstream>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
@@ -491,12 +494,21 @@ namespace OpenLoco::S5
     }
 
     // 0x00473BC7
-    static void object_create_identifier_name(char* dst, const ObjectHeader& header)
+    static void objectCreateIdentifierName(char* dst, const ObjectHeader& header)
     {
-        registers regs;
-        regs.edi = X86Pointer(dst);
-        regs.ebp = X86Pointer(&header);
-        call(0x00473BC7, regs);
+        for (auto& c : header.name)
+        {
+            if (c != ' ')
+            {
+                *dst++ = c;
+            }
+        }
+        *dst++ = '/';
+        *dst = '\0';
+        std::stringstream ss;
+        ss << std::uppercase << std::setfill('0') << std::hex << std::setw(8) << header.flags << std::setw(8) << header.checksum;
+        const auto flagsChecksum = ss.str();
+        strcat(dst, flagsChecksum.c_str());
     }
 
     // 0x00444D76
@@ -504,7 +516,7 @@ namespace OpenLoco::S5
     {
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
         StringManager::formatString(buffer, sizeof(buffer), StringIds::missing_object_data_id_x);
-        object_create_identifier_name(strchr(buffer, 0), header);
+        objectCreateIdentifierName(strchr(buffer, 0), header);
         _loadErrorCode = 255;
         _loadErrorMessage = StringIds::buffer_2040;
     }
