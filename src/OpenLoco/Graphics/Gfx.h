@@ -88,6 +88,16 @@ namespace OpenLoco::Gfx
     };
 
 #pragma pack(pop)
+    namespace G1ElementFlags
+    {
+        constexpr uint16_t hasTransparancy = 1 << 0; // Image data contains transparent sections (when not set data is plain bmp)
+        constexpr uint16_t unk1 = 1 << 1;            // Unknown function not used on any entry
+        constexpr uint16_t isRLECompressed = 1 << 2; // Image data is encoded using CS's form of run length encoding
+        constexpr uint16_t isR8G8B8Palette = 1 << 3; // Image data is a sequence of palette entries R8G8B8
+        constexpr uint16_t hasZoomSprites = 1 << 4;  // Use a different sprite for higher zoom levels
+        constexpr uint16_t noZoomDraw = 1 << 5;      // Does not get drawn at higher zoom levels (only zoom 0)
+    }
+
     namespace ImageIdFlags
     {
         constexpr uint32_t remap = 1 << 29;
