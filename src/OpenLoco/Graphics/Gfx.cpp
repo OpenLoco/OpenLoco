@@ -1545,8 +1545,16 @@ namespace OpenLoco::Gfx
     }
 
     template<uint8_t TZoomLevel, bool TIsRLE>
-    static void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMap& palette, const G1Element* treeWiltImage)
+    static std::optional<DrawSpritePosArgs> getDrawImagePosArgs(Gfx::Context& context, const Ui::Point& pos, const G1Element& element)
     {
+        if constexpr (TZoomLevel > 0)
+        {
+            if (element.flags & G1ElementFlags::noZoomDraw)
+            {
+                return std::nullopt;
+            }
+        }
+
         auto dispPos{ pos };
         // Its used super often so we will define it to a separate variable.
         constexpr auto zoomMask = static_cast<uint32_t>(0xFFFFFFFFULL << TZoomLevel);
@@ -1584,7 +1592,7 @@ namespace OpenLoco::Gfx
             // If the image is no longer visible nothing to draw
             if (height <= 0)
             {
-                return;
+                return std::nullopt;
             }
             // The source image will start a further up the image
             srcY -= dstTop;
@@ -1610,7 +1618,7 @@ namespace OpenLoco::Gfx
         }
         // If the image no longer has anything to draw
         if (height <= 0)
-            return;
+            return std::nullopt;
 
         dstTop = dstTop >> TZoomLevel;
 
@@ -1630,7 +1638,7 @@ namespace OpenLoco::Gfx
             // If there is no image to draw
             if (width <= 0)
             {
-                return;
+                return std::nullopt;
             }
             // The source start will also need to cut off the side
             srcX -= dstLeft;
@@ -1654,14 +1662,24 @@ namespace OpenLoco::Gfx
             width -= dstRight - context.width;
             // If there is no image to draw.
             if (width <= 0)
-                return;
+                return std::nullopt;
         }
 
         dstLeft = dstLeft >> TZoomLevel;
 
-        const DrawSpriteArgs args(palette, element, { srcX, srcY }, { dstLeft, dstTop }, Ui::Size(width, height), treeWiltImage);
-        const auto op = Drawing::getDrawBlendOp(image, args);
-        Drawing::drawSpriteToBuffer<TZoomLevel, TIsRLE>(context, args, op);
+        return DrawSpritePosArgs{ Ui::Point32{ srcX, srcY }, Ui::Point32{ dstLeft, dstTop }, Ui::Size(width, height) };
+    }
+
+    template<uint8_t TZoomLevel, bool TIsRLE>
+    static void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMap& palette, const G1Element* treeWiltImage)
+    {
+        auto args = getDrawImagePosArgs<TZoomLevel, TIsRLE>(context, pos, element);
+        if (args.has_value())
+        {
+            const DrawSpriteArgs fullArgs{ palette, element, args->srcPos, args->dstPos, args->size, treeWiltImage };
+            const auto op = Drawing::getDrawBlendOp(image, fullArgs);
+            Drawing::drawSpriteToBuffer<TZoomLevel, TIsRLE>(context, fullArgs, op);
+        }
     }
 
     // 0x00448D90
@@ -1687,11 +1705,6 @@ namespace OpenLoco::Gfx
             const auto zoomCoords = Ui::Point(pos.x >> 1, pos.y >> 1);
             drawImagePaletteSet(
                 zoomedContext, zoomCoords, image.withIndexOffset(-element->zoomOffset), palette, treeWiltImage);
-            return;
-        }
-
-        if (context.zoom_level > 0 && (element->flags & G1ElementFlags::noZoomDraw))
-        {
             return;
         }
 

@@ -11,6 +11,12 @@ namespace OpenLoco::Gfx
 
 namespace OpenLoco::Drawing
 {
+    struct DrawSpritePosArgs
+    {
+        Ui::Point32 srcPos;
+        Ui::Point32 dstPos;
+        Ui::Size size;
+    };
     struct DrawSpriteArgs
     {
         const Gfx::PaletteMap& palMap;
