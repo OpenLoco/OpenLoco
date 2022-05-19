@@ -1814,5 +1814,5 @@ namespace OpenLoco::StringIds
     constexpr string_id invert_right_mouse_dragging = 2251;
     constexpr string_id tooltip_invert_right_mouse_dragging = 2252;
     constexpr string_id cash_popup_rendering = 2253;
-    constexpr string_id cash_popup_rendering_tip = 2254;
+    constexpr string_id tooltip_cash_popup_rendering = 2254;
 }

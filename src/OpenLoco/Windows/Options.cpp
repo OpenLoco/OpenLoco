@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Windows::Options
             makeDropdownWidgets({ 235, 196 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 211 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
             makeWidget({ 10, 227 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
-            makeWidget({ 10, 243 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::cash_popup_rendering_tip),
+            makeWidget({ 10, 243 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering),
             widgetEnd(),
         };
 
