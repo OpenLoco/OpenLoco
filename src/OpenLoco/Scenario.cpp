@@ -30,7 +30,6 @@
 #include "Title.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
-#include "Vehicles/VehicleManager.h"
 #include "Windows/Construction/Construction.h"
 
 using namespace OpenLoco::Interop;
@@ -256,7 +255,7 @@ namespace OpenLoco::Scenario
         setDayProgression(0);
 
         ScenarioManager::setScenarioTicks(0);
-        VehicleManager::setVehiclePreviewRotationFrame(0);
+        Ui::WindowManager::setVehiclePreviewRotationFrame(0);
         setCurrentSeason(Season::winter);
 
         CompanyManager::determineAvailableVehicles();

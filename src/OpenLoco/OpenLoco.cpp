@@ -65,7 +65,6 @@
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
-#include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
@@ -748,7 +747,7 @@ namespace OpenLoco
                         }
                     }
 
-                    VehicleManager::setVehiclePreviewRotationFrame(VehicleManager::getVehiclePreviewRotationFrame() + numUpdates);
+                    Ui::WindowManager::setVehiclePreviewRotationFrame(Ui::WindowManager::getVehiclePreviewRotationFrame() + numUpdates);
 
                     if (isPaused())
                     {

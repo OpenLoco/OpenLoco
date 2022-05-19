@@ -3,8 +3,8 @@
 #include "../Graphics/Gfx.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Ui/WindowManager.h"
 #include "../Utility/Numeric.hpp"
-#include "../Vehicles/VehicleManager.h"
 #include "CargoObject.h"
 #include "ObjectManager.h"
 
@@ -32,8 +32,8 @@ namespace OpenLoco
     void VehicleObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
         // Rotation
-        uint8_t unk1 = VehicleManager::getVehiclePreviewRotationFrameUnk1();
-        uint8_t unk2 = VehicleManager::getVehiclePreviewRotationFrameUnk2();
+        uint8_t unk1 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk1();
+        uint8_t unk2 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk2();
 
         drawVehicle(&context, this, unk1, unk2, Ui::Point{ x, y } + Ui::Point{ 0, 19 });
     }

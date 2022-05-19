@@ -1166,8 +1166,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
 
                 // Rotation
-                uint8_t unk1 = VehicleManager::getVehiclePreviewRotationFrameUnk1();
-                uint8_t unk2 = VehicleManager::getVehiclePreviewRotationFrameUnk2();
+                uint8_t unk1 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk1();
+                uint8_t unk2 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk2();
                 drawVehicleOverview(&context, window.rowHover, CompanyManager::getControllingId(), unk1, unk2, { 90, 37 });
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);

@@ -17,12 +17,6 @@ namespace OpenLoco::VehicleManager
 {
     void determineAvailableVehicles(Company& company);
     void deleteTrain(Vehicles::VehicleHead& head);
-
-    uint16_t getVehiclePreviewRotationFrame();
-    void setVehiclePreviewRotationFrame(uint16_t);
-
-    uint8_t getVehiclePreviewRotationFrameUnk1();
-    uint8_t getVehiclePreviewRotationFrameUnk2();
 }
 
 namespace OpenLoco::Vehicles::OrderManager

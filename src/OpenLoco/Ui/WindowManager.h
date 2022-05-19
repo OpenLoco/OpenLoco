@@ -69,6 +69,13 @@ namespace OpenLoco::Ui::WindowManager
 
     void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int16_t dX, int16_t dY);
     void viewportSetVisibility(ViewportVisibility flags);
+
+    // 0x0052622E
+    uint16_t getVehiclePreviewRotationFrame();
+    void setVehiclePreviewRotationFrame(uint16_t);
+
+    uint8_t getVehiclePreviewRotationFrameUnk1();
+    uint8_t getVehiclePreviewRotationFrameUnk2();
 }
 
 namespace OpenLoco::Vehicles
