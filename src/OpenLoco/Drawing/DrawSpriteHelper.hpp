@@ -8,9 +8,12 @@ namespace OpenLoco::Drawing
     template<DrawBlendOp TBlendOp>
     bool BlitPixel(const uint8_t src, uint8_t& dst, const Gfx::PaletteMap& paletteMap, const uint8_t treeWilt)
     {
-        if (treeWilt == 0)
+        if constexpr ((TBlendOp & BLEND_TREEWILT) != 0)
         {
-            return false;
+            if (treeWilt == 0)
+            {
+                return false;
+            }
         }
         if constexpr (TBlendOp & BLEND_TRANSPARENT)
         {

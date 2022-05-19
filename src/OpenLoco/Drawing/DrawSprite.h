@@ -37,8 +37,6 @@ namespace OpenLoco::Drawing
         }
     };
 
-    void drawSpriteToBufferBMP(Gfx::Context& context, const DrawSpriteArgs& args);
-
     using DrawBlendOp = uint8_t;
 
     constexpr DrawBlendOp BLEND_NONE = 0;
@@ -67,4 +65,7 @@ namespace OpenLoco::Drawing
     constexpr DrawBlendOp BLEND_TREEWILT = 1 << 3;
 
     DrawBlendOp getDrawBlendOp(const DrawSpriteArgs& args);
+    void drawSprite2(Gfx::Context& context, const DrawSpriteArgs& args, const DrawBlendOp op);
+    template<DrawBlendOp op>
+    void drawSprite2(Gfx::Context& context, const DrawSpriteArgs& args);
 }

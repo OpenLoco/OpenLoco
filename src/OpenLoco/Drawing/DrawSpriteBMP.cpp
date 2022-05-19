@@ -9,7 +9,6 @@ namespace OpenLoco::Drawing
     {
         auto& g1 = args.sourceImage;
         const auto* src = g1.offset + ((static_cast<size_t>(g1.width) * args.srcY) + args.srcX);
-        const auto* treeWilt = args.treeWiltImage != nullptr ? args.treeWiltImage->offset + ((static_cast<size_t>(g1.width) * args.srcY) + args.srcX) : nullptr;
         auto* dst = args.destinationBits;
         auto& paletteMap = args.palMap;
         auto width = args.width;
@@ -18,8 +17,9 @@ namespace OpenLoco::Drawing
         size_t srcLineWidth = g1.width << zoomLevel;
         size_t dstLineWidth = (static_cast<size_t>(context.width) >> zoomLevel) + context.pitch;
         uint8_t zoom = 1 << zoomLevel;
-        if (treeWilt != nullptr)
+        if constexpr ((TBlendOp & BLEND_TREEWILT) != 0)
         {
+            const auto* treeWilt = args.treeWiltImage != nullptr ? args.treeWiltImage->offset + ((static_cast<size_t>(g1.width) * args.srcY) + args.srcX) : nullptr;
             for (; height > 0; height -= zoom)
             {
                 auto nextSrc = src + srcLineWidth;
@@ -50,45 +50,54 @@ namespace OpenLoco::Drawing
         }
     }
 
-    /**
-     * Copies a sprite onto the buffer. There is no compression used on the sprite
-     * image.
-     *  rct2: 0x0067A690
-     * @param imageId Only flags are used.
-     */
-    void drawSpriteToBufferBMP(Gfx::Context& context, const DrawSpriteArgs& args)
+    template<>
+    void drawSprite2<BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST>(Gfx::Context& context, const DrawSpriteArgs& args)
     {
-        auto imageId = args.image;
-
-        // Image uses the palette pointer to remap the colours of the image
-        if (imageId.hasPrimary())
-        {
-            if (imageId.isBlended())
-            {
-                // Copy non-transparent bitmap data but blend src and dst pixel using the palette map.
-                DrawBMPSprite<BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST>(context, args);
-            }
-            else
-            {
-                // Copy non-transparent bitmap data but re-colour using the palette map.
-                DrawBMPSprite<BLEND_TRANSPARENT | BLEND_SRC>(context, args);
-            }
-        }
-        else if (imageId.isBlended())
-        {
-            // Image is only a transparency mask. Just colour the pixels using the palette map.
-            // Used for glass.
-            DrawBMPSprite<BLEND_TRANSPARENT | BLEND_DST>(context, args);
-        }
-        else if (!(args.sourceImage.flags & Gfx::G1ElementFlags::hasTransparancy))
-        {
-            // Copy raw bitmap data to target
-            DrawBMPSprite<BLEND_NONE>(context, args);
-        }
-        else
-        {
-            // Copy raw bitmap data to target but exclude transparent pixels
-            DrawBMPSprite<BLEND_TRANSPARENT>(context, args);
-        }
+        DrawBMPSprite<BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST>(context, args);
+    }
+    template<>
+    void drawSprite2<BLEND_TRANSPARENT | BLEND_SRC>(Gfx::Context& context, const DrawSpriteArgs& args)
+    {
+        DrawBMPSprite<BLEND_TRANSPARENT | BLEND_SRC>(context, args);
+    }
+    template<>
+    void drawSprite2<BLEND_TRANSPARENT | BLEND_DST>(Gfx::Context& context, const DrawSpriteArgs& args)
+    {
+        DrawBMPSprite<BLEND_TRANSPARENT | BLEND_DST>(context, args);
+    }
+    template<>
+    void drawSprite2<BLEND_NONE>(Gfx::Context& context, const DrawSpriteArgs& args)
+    {
+        DrawBMPSprite<BLEND_NONE>(context, args);
+    }
+    template<>
+    void drawSprite2<BLEND_TRANSPARENT>(Gfx::Context& context, const DrawSpriteArgs& args)
+    {
+        DrawBMPSprite<BLEND_TRANSPARENT>(context, args);
+    }
+    template<>
+    void drawSprite2<BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST | BLEND_TREEWILT>(Gfx::Context& context, const DrawSpriteArgs& args)
+    {
+        DrawBMPSprite<BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST | BLEND_TREEWILT>(context, args);
+    }
+    template<>
+    void drawSprite2<BLEND_TRANSPARENT | BLEND_SRC | BLEND_TREEWILT>(Gfx::Context& context, const DrawSpriteArgs& args)
+    {
+        DrawBMPSprite<BLEND_TRANSPARENT | BLEND_SRC | BLEND_TREEWILT>(context, args);
+    }
+    template<>
+    void drawSprite2<BLEND_TRANSPARENT | BLEND_DST | BLEND_TREEWILT>(Gfx::Context& context, const DrawSpriteArgs& args)
+    {
+        DrawBMPSprite<BLEND_TRANSPARENT | BLEND_DST | BLEND_TREEWILT>(context, args);
+    }
+    template<>
+    void drawSprite2<BLEND_NONE | BLEND_TREEWILT>(Gfx::Context& context, const DrawSpriteArgs& args)
+    {
+        DrawBMPSprite<BLEND_NONE | BLEND_TREEWILT>(context, args);
+    }
+    template<>
+    void drawSprite2<BLEND_TRANSPARENT | BLEND_TREEWILT>(Gfx::Context& context, const DrawSpriteArgs& args)
+    {
+        DrawBMPSprite<BLEND_TRANSPARENT | BLEND_TREEWILT>(context, args);
     }
 }

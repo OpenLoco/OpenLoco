@@ -1559,18 +1559,8 @@ namespace OpenLoco::Gfx
 
     static void drawSpriteToBuffer(Gfx::Context& context, DrawSpriteArgs& args)
     {
-        if (args.sourceImage.flags & G1ElementFlags::isRLECompressed)
-        {
-            // call(0x0044933B, regs);
-        }
-        else if (!(args.sourceImage.flags & G1ElementFlags::unk1))
-        {
-            drawSpriteToBufferBMP(context, args);
-        }
-        else
-        {
-            assert(false);
-        }
+        const auto op = Drawing::getDrawBlendOp(args);
+        Drawing::drawSprite2(context, args, op);
     }
 
     void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* treeWiltImage)
