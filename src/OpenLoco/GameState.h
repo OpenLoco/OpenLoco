@@ -87,7 +87,7 @@ namespace OpenLoco
         uint32_t var_410;                                                        // 0x000410 (0x00526228)
         uint8_t lastBuildVehiclesOption;                                         // 0x000414 (0x0052622C)
         uint8_t numberOfIndustries;                                              // 0x000415 (0x0052622D)
-        uint16_t var_416;                                                        // 0x000416 (0x0052622E)
+        uint16_t vehiclePreviewRotationFrame;                                    // 0x000416 (0x0052622E)
         Scenario::Objective scenarioObjective;                                   // 0x000418 (0x00526230)
         Scenario::ObjectiveProgress scenarioObjectiveProgress;                   // 0x000429 (0x00526241)
         uint8_t industryFlags;                                                   // 0x00042F (0x00526247)

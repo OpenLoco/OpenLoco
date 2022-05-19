@@ -40,9 +40,6 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Scenario
 {
     static loco_global<CargoObject*, 0x0050D15C> _50D15C;
-
-    static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
-
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
 
@@ -258,7 +255,7 @@ namespace OpenLoco::Scenario
         setDayProgression(0);
 
         ScenarioManager::setScenarioTicks(0);
-        _52622E = 0;
+        Ui::WindowManager::setVehiclePreviewRotationFrame(0);
         setCurrentSeason(Season::winter);
 
         CompanyManager::determineAvailableVehicles();

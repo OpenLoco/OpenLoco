@@ -746,7 +746,9 @@ namespace OpenLoco
                             case State::scrollRight: break;
                         }
                     }
-                    addr<0x0052622E, int16_t>() += numUpdates;
+
+                    Ui::WindowManager::setVehiclePreviewRotationFrame(Ui::WindowManager::getVehiclePreviewRotationFrame() + numUpdates);
+
                     if (isPaused())
                     {
                         numUpdates = 0;

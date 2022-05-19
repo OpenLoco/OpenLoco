@@ -63,7 +63,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static loco_global<uint16_t, 0x0052334A> _52334A;
     static loco_global<uint16_t, 0x0052334C> _52334C;
-    static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
     static loco_global<tabPosition[36], 0x0112C21C> _tabInformation;

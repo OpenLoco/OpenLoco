@@ -5,6 +5,7 @@
 #include "../Console.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
+#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
@@ -2003,6 +2004,25 @@ namespace OpenLoco::Ui::WindowManager
     void setCurrentRotation(int32_t value)
     {
         _gCurrentRotation = value;
+    }
+
+    // 0x0052622E
+    uint16_t getVehiclePreviewRotationFrame()
+    {
+        return getGameState().vehiclePreviewRotationFrame;
+    }
+    void setVehiclePreviewRotationFrame(uint16_t vehiclePreviewRotationFrame)
+    {
+        getGameState().vehiclePreviewRotationFrame = vehiclePreviewRotationFrame;
+    }
+
+    uint8_t getVehiclePreviewRotationFrameUnk1()
+    {
+        return getVehiclePreviewRotationFrame() & 0x3F;
+    }
+    uint8_t getVehiclePreviewRotationFrameUnk2()
+    {
+        return ((getVehiclePreviewRotationFrame() + 2) / 4) & 0x3F;
     }
 }
 
