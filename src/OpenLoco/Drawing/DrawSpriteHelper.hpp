@@ -6,16 +6,14 @@ namespace OpenLoco::Drawing
 {
 
     template<DrawBlendOp TBlendOp>
-    bool BlitPixel(const uint8_t src, uint8_t& dst, const Gfx::PaletteMap& paletteMap, const uint8_t treeWilt)
+    bool blitPixel(uint8_t src, uint8_t& dst, const Gfx::PaletteMap& paletteMap, const uint8_t treeWilt)
     {
-        if constexpr ((TBlendOp & BLEND_TREEWILT) != 0)
+        if constexpr ((TBlendOp & BlendOp::treeWilt) != 0)
         {
-            if (treeWilt == 0)
-            {
-                return false;
-            }
+            // TreeWilt is either 0 or 0xFF
+            src &= treeWilt;
         }
-        if constexpr (TBlendOp & BLEND_TRANSPARENT)
+        if constexpr (TBlendOp & BlendOp::transparent)
         {
             // Ignore transparent pixels
             if (src == 0)
@@ -24,10 +22,10 @@ namespace OpenLoco::Drawing
             }
         }
 
-        if constexpr (((TBlendOp & BLEND_SRC) != 0) && ((TBlendOp & BLEND_DST) != 0))
+        if constexpr (((TBlendOp & BlendOp::src) != 0) && ((TBlendOp & BlendOp::dst) != 0))
         {
             auto pixel = paletteMap.blend(src, dst);
-            if constexpr (TBlendOp & BLEND_TRANSPARENT)
+            if constexpr (TBlendOp & BlendOp::transparent)
             {
                 if (pixel == 0)
                 {
@@ -37,10 +35,10 @@ namespace OpenLoco::Drawing
             dst = pixel;
             return true;
         }
-        else if constexpr ((TBlendOp & BLEND_SRC) != 0)
+        else if constexpr ((TBlendOp & BlendOp::src) != 0)
         {
             auto pixel = paletteMap[src];
-            if constexpr (TBlendOp & BLEND_TRANSPARENT)
+            if constexpr (TBlendOp & BlendOp::transparent)
             {
                 if (pixel == 0)
                 {
@@ -50,10 +48,10 @@ namespace OpenLoco::Drawing
             dst = pixel;
             return true;
         }
-        else if constexpr ((TBlendOp & BLEND_DST) != 0)
+        else if constexpr ((TBlendOp & BlendOp::dst) != 0)
         {
             auto pixel = paletteMap[dst];
-            if constexpr (TBlendOp & BLEND_TRANSPARENT)
+            if constexpr (TBlendOp & BlendOp::transparent)
             {
                 if (pixel == 0)
                 {

@@ -6,30 +6,32 @@
 
 namespace OpenLoco::Drawing
 {
-    template<DrawBlendOp TBlendOp>
-    static void drawBMPSprite(Gfx::Context& context, const DrawSpriteArgs& args)
+    template<DrawBlendOp TBlendOp, uint8_t TZoomLevel>
+    inline void drawBMPSprite(Gfx::Context& context, const DrawSpriteArgs& args)
     {
-        auto& g1 = args.sourceImage;
-        const auto* src = g1.offset + ((static_cast<size_t>(g1.width) * args.srcY) + args.srcX);
-        auto* dst = args.destinationBits;
-        auto& paletteMap = args.palMap;
-        auto width = args.width;
-        auto height = args.height;
-        auto zoomLevel = context.zoom_level;
-        size_t srcLineWidth = g1.width << zoomLevel;
-        size_t dstLineWidth = (static_cast<size_t>(context.width) >> zoomLevel) + context.pitch;
-        uint8_t zoom = 1 << zoomLevel;
-        if constexpr ((TBlendOp & BLEND_TREEWILT) != 0)
+        const auto& g1 = args.sourceImage;
+        const auto* src = g1.offset + ((static_cast<size_t>(g1.width) * args.srcPos.y) + args.srcPos.x);
+        const auto& paletteMap = args.palMap;
+        const int32_t width = args.size.width;
+        int32_t height = args.size.height;
+        const size_t srcLineWidth = g1.width << TZoomLevel;
+        const size_t dstLineWidth = (static_cast<size_t>(context.width) >> TZoomLevel) + context.pitch;
+        auto* dst = context.bits;
+        // Move the pointer to the start point of the destination
+        dst += dstLineWidth * args.dstPos.y + args.dstPos.x;
+
+        constexpr auto zoom = 1 << TZoomLevel;
+        if constexpr ((TBlendOp & BlendOp::treeWilt) != 0)
         {
-            const auto* treeWilt = args.treeWiltImage != nullptr ? args.treeWiltImage->offset + ((static_cast<size_t>(g1.width) * args.srcY) + args.srcX) : nullptr;
+            const auto* treeWilt = args.treeWiltImage->offset + ((static_cast<size_t>(g1.width) * args.srcPos.y) + args.srcPos.x);
             for (; height > 0; height -= zoom)
             {
-                auto nextSrc = src + srcLineWidth;
-                auto nextDst = dst + dstLineWidth;
-                auto nextTreeWilt = treeWilt + srcLineWidth;
+                auto* nextSrc = src + srcLineWidth;
+                auto* nextDst = dst + dstLineWidth;
+                auto* nextTreeWilt = treeWilt + srcLineWidth;
                 for (int32_t widthRemaining = width; widthRemaining > 0; widthRemaining -= zoom, src += zoom, treeWilt += zoom, dst++)
                 {
-                    BlitPixel<TBlendOp>(*src, *dst, paletteMap, *treeWilt);
+                    blitPixel<TBlendOp>(*src, *dst, paletteMap, *treeWilt);
                 }
                 src = nextSrc;
                 dst = nextDst;
@@ -40,11 +42,11 @@ namespace OpenLoco::Drawing
         {
             for (; height > 0; height -= zoom)
             {
-                auto nextSrc = src + srcLineWidth;
-                auto nextDst = dst + dstLineWidth;
+                auto* nextSrc = src + srcLineWidth;
+                auto* nextDst = dst + dstLineWidth;
                 for (int32_t widthRemaining = width; widthRemaining > 0; widthRemaining -= zoom, src += zoom, dst++)
                 {
-                    BlitPixel<TBlendOp>(*src, *dst, paletteMap, 0xFF);
+                    blitPixel<TBlendOp>(*src, *dst, paletteMap, 0xFF);
                 }
                 src = nextSrc;
                 dst = nextDst;

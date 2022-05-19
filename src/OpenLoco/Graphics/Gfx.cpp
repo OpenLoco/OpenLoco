@@ -1544,17 +1544,129 @@ namespace OpenLoco::Gfx
         drawImagePaletteSet(context, pos, image.withPrimary(Colour::black), PaletteMap{ palette }, {});
     }
 
-    static void drawSpriteToBuffer(Gfx::Context& context, DrawSpriteArgs& args)
+    template<uint8_t TZoomLevel, bool TIsRLE>
+    static void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMap& palette, const G1Element* treeWiltImage)
     {
-        const auto op = Drawing::getDrawBlendOp(args);
-        Drawing::drawSprite2(context, args, op, args.sourceImage.flags & G1ElementFlags::isRLECompressed);
+        auto dispPos{ pos };
+        // Its used super often so we will define it to a separate variable.
+        constexpr auto zoomMask = static_cast<uint32_t>(0xFFFFFFFFULL << TZoomLevel);
+
+        if constexpr (TZoomLevel > 0 && TIsRLE)
+        {
+            dispPos.x -= ~zoomMask;
+            dispPos.y -= ~zoomMask;
+        }
+
+        // This will be the height of the drawn image
+        auto height = element.height;
+
+        // This is the start y coordinate on the destination
+        auto dstTop = dispPos.y + element.y_offset;
+
+        // For whatever reason the RLE version does not use
+        // the zoom mask on the y coordinate but does on x.
+        if constexpr (TIsRLE)
+        {
+            dstTop -= context.y;
+        }
+        else
+        {
+            dstTop = (dstTop & zoomMask) - context.y;
+        }
+        // This is the start y coordinate on the source
+        auto srcY = 0;
+
+        if (dstTop < 0)
+        {
+            // If the destination y is negative reduce the height of the
+            // image as we will cut off the bottom
+            height += dstTop;
+            // If the image is no longer visible nothing to draw
+            if (height <= 0)
+            {
+                return;
+            }
+            // The source image will start a further up the image
+            srcY -= dstTop;
+            // The destination start is now reset to 0
+            dstTop = 0;
+        }
+        else
+        {
+            if constexpr (TZoomLevel > 0 && TIsRLE)
+            {
+                srcY -= dstTop & ~zoomMask;
+                height += dstTop & ~zoomMask;
+            }
+        }
+
+        auto dstBottom = dstTop + height;
+
+        if (dstBottom > context.height)
+        {
+            // If the destination y is outside of the drawing
+            // image reduce the height of the image
+            height -= dstBottom - context.height;
+        }
+        // If the image no longer has anything to draw
+        if (height <= 0)
+            return;
+
+        dstTop = dstTop >> TZoomLevel;
+
+        // This will be the width of the drawn image
+        auto width = element.width;
+
+        // This is the source start x coordinate
+        auto srcX = 0;
+        // This is the destination start x coordinate
+        int32_t dstLeft = ((dispPos.x + element.x_offset + ~zoomMask) & zoomMask) - context.x;
+
+        if (dstLeft < 0)
+        {
+            // If the destination is negative reduce the width
+            // image will cut off the side
+            width += dstLeft;
+            // If there is no image to draw
+            if (width <= 0)
+            {
+                return;
+            }
+            // The source start will also need to cut off the side
+            srcX -= dstLeft;
+            // Reset the destination to 0
+            dstLeft = 0;
+        }
+        else
+        {
+            if constexpr (TZoomLevel > 0 && TIsRLE)
+            {
+                srcX -= dstLeft & ~zoomMask;
+            }
+        }
+
+        const auto dstRight = dstLeft + width;
+
+        if (dstRight > context.width)
+        {
+            // If the destination x is outside of the drawing area
+            // reduce the image width.
+            width -= dstRight - context.width;
+            // If there is no image to draw.
+            if (width <= 0)
+                return;
+        }
+
+        dstLeft = dstLeft >> TZoomLevel;
+
+        const DrawSpriteArgs args(palette, element, { srcX, srcY }, { dstLeft, dstTop }, Ui::Size(width, height), treeWiltImage);
+        const auto op = Drawing::getDrawBlendOp(image, args);
+        Drawing::drawSpriteToBuffer<TZoomLevel, TIsRLE>(context, args, op);
     }
 
     // 0x00448D90
     void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* treeWiltImage)
     {
-        auto dispPos{ pos };
-
         const auto* element = getG1Element(image.getIndex());
         if (element == nullptr)
         {
@@ -1572,7 +1684,7 @@ namespace OpenLoco::Gfx
             zoomedContext.pitch = context.pitch;
             zoomedContext.zoom_level = context.zoom_level - 1;
 
-            const auto zoomCoords = Ui::Point(dispPos.x >> 1, dispPos.y >> 1);
+            const auto zoomCoords = Ui::Point(pos.x >> 1, pos.y >> 1);
             drawImagePaletteSet(
                 zoomedContext, zoomCoords, image.withIndexOffset(-element->zoomOffset), palette, treeWiltImage);
             return;
@@ -1583,138 +1695,43 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        // Its used super often so we will define it to a separate variable.
-        const auto zoomLevel = context.zoom_level;
-        uint32_t zoomMask = 0xFFFFFFFF;
-        switch (zoomLevel)
+        const bool isRLE = element->flags & G1ElementFlags::isRLECompressed;
+        if (isRLE)
         {
-            default:
-                break;
-            case 1:
-                zoomMask = 0xFFFFFFFE;
-                break;
-            case 2:
-                zoomMask = 0xFFFFFFFC;
-                break;
-            case 3:
-                zoomMask = 0xFFFFFFF8;
-                break;
-        }
-
-        if (zoomLevel > 0 && element->flags & G1ElementFlags::isRLECompressed)
-        {
-            dispPos.x -= ~zoomMask;
-            dispPos.y -= ~zoomMask;
-        }
-
-        // This will be the height of the drawn image
-        int32_t height = element->height;
-
-        // This is the start y coordinate on the destination
-        int16_t destStartY = dispPos.y + element->y_offset;
-
-        // For whatever reason the RLE version does not use
-        // the zoom mask on the y coordinate but does on x.
-        if (element->flags & G1ElementFlags::isRLECompressed)
-        {
-            destStartY -= context.y;
+            switch (context.zoom_level)
+            {
+                default:
+                    drawImagePaletteSet<0, true>(context, pos, image, *element, palette, treeWiltImage);
+                    break;
+                case 1:
+                    drawImagePaletteSet<1, true>(context, pos, image, *element, palette, treeWiltImage);
+                    break;
+                case 2:
+                    drawImagePaletteSet<2, true>(context, pos, image, *element, palette, treeWiltImage);
+                    break;
+                case 3:
+                    drawImagePaletteSet<3, true>(context, pos, image, *element, palette, treeWiltImage);
+                    break;
+            }
         }
         else
         {
-            destStartY = (destStartY & zoomMask) - context.y;
-        }
-        // This is the start y coordinate on the source
-        int32_t sourceStartY = 0;
-
-        if (destStartY < 0)
-        {
-            // If the destination y is negative reduce the height of the
-            // image as we will cut off the bottom
-            height += destStartY;
-            // If the image is no longer visible nothing to draw
-            if (height <= 0)
+            switch (context.zoom_level)
             {
-                return;
-            }
-            // The source image will start a further up the image
-            sourceStartY -= destStartY;
-            // The destination start is now reset to 0
-            destStartY = 0;
-        }
-        else
-        {
-            if ((element->flags & G1ElementFlags::isRLECompressed) && zoomLevel > 0)
-            {
-                sourceStartY -= destStartY & ~zoomMask;
-                height += destStartY & ~zoomMask;
+                default:
+                    drawImagePaletteSet<0, false>(context, pos, image, *element, palette, treeWiltImage);
+                    break;
+                case 1:
+                    drawImagePaletteSet<1, false>(context, pos, image, *element, palette, treeWiltImage);
+                    break;
+                case 2:
+                    drawImagePaletteSet<2, false>(context, pos, image, *element, palette, treeWiltImage);
+                    break;
+                case 3:
+                    drawImagePaletteSet<3, false>(context, pos, image, *element, palette, treeWiltImage);
+                    break;
             }
         }
-
-        int32_t destEndY = destStartY + height;
-
-        if (destEndY > context.height)
-        {
-            // If the destination y is outside of the drawing
-            // image reduce the height of the image
-            height -= destEndY - context.height;
-        }
-        // If the image no longer has anything to draw
-        if (height <= 0)
-            return;
-
-        destStartY = destStartY >> zoomLevel;
-
-        // This will be the width of the drawn image
-        int32_t width = element->width;
-
-        // This is the source start x coordinate
-        int32_t sourceStartX = 0;
-        // This is the destination start x coordinate
-        int16_t destStartX = ((dispPos.x + element->x_offset + ~zoomMask) & zoomMask) - context.x;
-
-        if (destStartX < 0)
-        {
-            // If the destination is negative reduce the width
-            // image will cut off the side
-            width += destStartX;
-            // If there is no image to draw
-            if (width <= 0)
-            {
-                return;
-            }
-            // The source start will also need to cut off the side
-            sourceStartX -= destStartX;
-            // Reset the destination to 0
-            destStartX = 0;
-        }
-        else
-        {
-            if ((element->flags & G1ElementFlags::isRLECompressed) && zoomLevel > 0)
-            {
-                sourceStartX -= destStartX & ~zoomMask;
-            }
-        }
-
-        int32_t destEndX = destStartX + width;
-
-        if (destEndX > context.width)
-        {
-            // If the destination x is outside of the drawing area
-            // reduce the image width.
-            width -= destEndX - context.width;
-            // If there is no image to draw.
-            if (width <= 0)
-                return;
-        }
-
-        destStartX = destStartX >> zoomLevel;
-
-        uint8_t* destPointer = context.bits;
-        // Move the pointer to the start point of the destination
-        destPointer += ((context.width >> zoomLevel) + context.pitch) * destStartY + destStartX;
-
-        DrawSpriteArgs args(image, palette, *element, sourceStartX, sourceStartY, width, height, destPointer, treeWiltImage);
-        drawSpriteToBuffer(context, args);
     }
 
     // 0x004CEC50
