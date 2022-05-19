@@ -23,7 +23,6 @@
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
-#include "../Vehicles/VehicleManager.h"
 #include "../Widget.h"
 #include <algorithm>
 
