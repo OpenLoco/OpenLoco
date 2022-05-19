@@ -4,6 +4,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Utility/Numeric.hpp"
+#include "../Vehicles/VehicleManager.h"
 #include "CargoObject.h"
 #include "ObjectManager.h"
 
@@ -11,8 +12,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
-
     // 0x004B7733
     static void drawVehicle(Gfx::Context* context, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Ui::Point offset)
     {
@@ -33,8 +32,8 @@ namespace OpenLoco
     void VehicleObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
         // Rotation
-        uint8_t unk1 = _52622E & 0x3F;
-        uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
+        uint8_t unk1 = VehicleManager::getVehiclePreviewRotationFrameUnk1();
+        uint8_t unk2 = VehicleManager::getVehiclePreviewRotationFrameUnk2();
 
         drawVehicle(&context, this, unk1, unk2, Ui::Point{ x, y } + Ui::Point{ 0, 19 });
     }

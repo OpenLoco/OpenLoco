@@ -23,6 +23,7 @@
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
+#include "../Vehicles/VehicleManager.h"
 #include "../Widget.h"
 #include <algorithm>
 
@@ -232,7 +233,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static std::array<uint16_t, 6> _scrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
-    static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
     static WindowEventList _events;
 
@@ -1165,8 +1165,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     break;
                 }
 
-                uint8_t unk1 = _52622E & 0x3F;
-                uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
+                // Rotation
+                uint8_t unk1 = VehicleManager::getVehiclePreviewRotationFrameUnk1();
+                uint8_t unk2 = VehicleManager::getVehiclePreviewRotationFrameUnk2();
                 drawVehicleOverview(&context, window.rowHover, CompanyManager::getControllingId(), unk1, unk2, { 90, 37 });
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);

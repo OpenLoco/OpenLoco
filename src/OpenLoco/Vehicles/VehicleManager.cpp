@@ -13,6 +13,26 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::VehicleManager
 {
+    // something to do with animation/rotation of vehicle in build window???
+    // 0x0052622E
+    uint16_t getVehiclePreviewRotationFrame()
+    {
+        return getGameState().vehiclePreviewRotationFrame;
+    }
+    void setVehiclePreviewRotationFrame(uint16_t vehiclePreviewRotationFrame)
+    {
+        getGameState().vehiclePreviewRotationFrame = vehiclePreviewRotationFrame;
+    }
+
+    uint8_t getVehiclePreviewRotationFrameUnk1()
+    {
+        return VehicleManager::getVehiclePreviewRotationFrame() & 0x3F;
+    }
+    uint8_t getVehiclePreviewRotationFrameUnk2()
+    {
+        return ((VehicleManager::getVehiclePreviewRotationFrame() + 2) / 4) & 0x3F;
+    }
+
     // 0x004C3A0C
     void determineAvailableVehicles(Company& company)
     {
