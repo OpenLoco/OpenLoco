@@ -261,6 +261,7 @@
     <ClInclude Include="Core\Variant.hpp" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="Drawing\DrawSprite.h" />
+    <ClInclude Include="Drawing\DrawSpriteHelper.hpp" />
     <ClInclude Include="Drawing\FPSCounter.h" />
     <ClInclude Include="Drawing\SoftwareDrawingEngine.h" />
     <ClInclude Include="Economy\Currency.h" />
