@@ -8,8 +8,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::TextInput
 {
-    static loco_global<int32_t, 0x0112C876> _currentFontSpriteBase;
-
     // Common code from 0x0044685C, 0x004CE910
     bool InputSession::handleInput(uint32_t charCode, uint32_t keyCode)
     {
@@ -87,7 +85,7 @@ namespace OpenLoco::Ui::TextInput
     {
         std::string cursorStr = buffer.substr(0, cursorPosition);
 
-        _currentFontSpriteBase = Font::medium_bold;
+        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
         auto stringWidth = Gfx::getStringWidth(buffer.c_str());
         auto cursorX = Gfx::getStringWidth(cursorStr.c_str());
 
@@ -114,7 +112,7 @@ namespace OpenLoco::Ui::TextInput
     {
         std::string cursorStr = buffer.substr(0, cursorPosition);
 
-        _currentFontSpriteBase = Font::medium_bold;
+        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
         auto stringWidth = Gfx::getStringWidth(buffer.c_str());
         auto cursorX = Gfx::getStringWidth(cursorStr.c_str());
 

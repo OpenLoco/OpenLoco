@@ -24,8 +24,6 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
 
-    static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
-
     static char _text[512];          // 0x01136D90
     static uint16_t _lineBreakCount; // 0x01136F90
 
@@ -66,11 +64,12 @@ namespace OpenLoco::Ui::Windows::ToolTip
     {
         StringManager::formatString(_text, stringId, &args);
 
-        gCurrentFontSpriteBase = Font::medium_bold;
+        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
         int16_t strWidth = Gfx::getStringWidthNewLined(_text);
         strWidth = std::max<int16_t>(strWidth, 196);
 
-        gCurrentFontSpriteBase = Font::medium_bold;
+        // same method called 3 lines up?
+        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
 
         auto [wrappedWidth, breakCount] = Gfx::wrapString(_text, strWidth + 1);
         _lineBreakCount = breakCount;

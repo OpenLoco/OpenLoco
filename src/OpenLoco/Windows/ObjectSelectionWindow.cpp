@@ -66,7 +66,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
     static loco_global<tabPosition[36], 0x0112C21C> _tabInformation;
-    static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
 
     static void initEvents();
 
@@ -615,11 +614,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if (_50D144[i] & (1 << 0))
             {
                 auto x = 2;
-                _currentFontSpriteBase = Font::m2;
+                Gfx::setCurrentFontSpriteBase(Font::m2);
 
                 if (textColour != ControlCodes::window_colour_2)
                 {
-                    _currentFontSpriteBase = Font::m1;
+                    Gfx::setCurrentFontSpriteBase(Font::m1);
                 }
 
                 auto checkColour = self.getColour(WindowColour::secondary).opaque();
@@ -635,7 +634,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             char buffer[512]{};
             buffer[0] = textColour;
             strncpy(&buffer[1], object._name, 510);
-            _currentFontSpriteBase = Font::medium_bold;
+            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
 
             Gfx::drawString(context, 15, y, Colour::black, buffer);
             y += rowHeight;

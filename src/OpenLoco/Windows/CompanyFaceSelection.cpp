@@ -21,7 +21,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
     static loco_global<CompanyId, 0x9C68F2> _9C68F2; // Use in a game command??
     static loco_global<uint16_t, 0x112C1C1> _numberCompetitorObjects;
-    static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<CompetitorObject*, 0x0050D15C> _loadedObject; // This could be any type of object
     static loco_global<int32_t, 0x0113E72C> _cursorX;
 
@@ -266,11 +265,11 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             std::string name(object.second._name);
             name.insert(0, 1, inlineColour);
 
-            _currentFontSpriteBase = Font::medium_bold;
+            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
             AdvancedColour stringColour = Colour::black;
             if (isInUseCompetitor(object.first))
             {
-                _currentFontSpriteBase = Font::m1;
+                Gfx::setCurrentFontSpriteBase(Font::m1);
                 stringColour = self.getColour(WindowColour::secondary).opaque().inset();
             }
             Gfx::drawString(context, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));

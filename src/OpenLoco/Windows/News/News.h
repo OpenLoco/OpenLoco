@@ -17,7 +17,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     static loco_global<uint32_t, 0x00525CDC> _dword_525CDC;
     static loco_global<uint16_t, 0x00525CE0> _word_525CE0;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
-    static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> byte_112CC04;
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
