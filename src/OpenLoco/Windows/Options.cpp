@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Display
     {
-        static const Ui::Size _window_size = { 400, 250 };
+        static const Ui::Size _window_size = { 400, 266 };
 
         namespace Widx
         {
@@ -191,6 +191,7 @@ namespace OpenLoco::Ui::Windows::Options
                 construction_marker_btn,
                 landscape_smoothing,
                 gridlines_on_landscape,
+                cash_popup_rendering,
             };
         }
 
@@ -203,18 +204,19 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 111 }, { 174, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
             makeWidget({ 10, 127 }, { 174, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
 
-            makeWidget({ 4, 150 }, { 392, 96 }, WidgetType::groupbox, WindowColour::secondary, StringIds::frame_map_rendering),
+            makeWidget({ 4, 150 }, { 392, 112 }, WidgetType::groupbox, WindowColour::secondary, StringIds::frame_map_rendering),
             makeDropdownWidgets({ 235, 164 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
             makeDropdownWidgets({ 235, 180 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
             makeDropdownWidgets({ 235, 196 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 211 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
             makeWidget({ 10, 227 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
+            makeWidget({ 10, 243 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::cash_popup_rendering_tip),
             widgetEnd(),
         };
 
         static WindowEventList _events;
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::show_fps) | (1 << Widx::uncap_fps) | (1 << Display::Widx::landscape_smoothing) | (1 << Display::Widx::gridlines_on_landscape) | (1 << Display::Widx::vehicles_min_scale) | (1 << Display::Widx::vehicles_min_scale_btn) | (1 << Display::Widx::station_names_min_scale) | (1 << Display::Widx::station_names_min_scale_btn) | (1 << Display::Widx::construction_marker) | (1 << Display::Widx::construction_marker_btn) | (1 << Display::Widx::display_scale_up_btn) | (1 << Display::Widx::display_scale_down_btn);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::show_fps) | (1 << Widx::uncap_fps) | (1 << Widx::cash_popup_rendering) | (1 << Display::Widx::landscape_smoothing) | (1 << Display::Widx::gridlines_on_landscape) | (1 << Display::Widx::vehicles_min_scale) | (1 << Display::Widx::vehicles_min_scale_btn) | (1 << Display::Widx::station_names_min_scale) | (1 << Display::Widx::station_names_min_scale_btn) | (1 << Display::Widx::construction_marker) | (1 << Display::Widx::construction_marker_btn) | (1 << Display::Widx::display_scale_up_btn) | (1 << Display::Widx::display_scale_down_btn);
 
         // 0x004BFB8C
         static void onMouseUp(Window* w, WidgetIndex_t wi)
@@ -294,6 +296,14 @@ namespace OpenLoco::Ui::Windows::Options
                     }
 
                     return;
+                }
+
+                case Widx::cash_popup_rendering:
+                {
+                    auto& cfg = OpenLoco::Config::getNew();
+                    cfg.cashPopupRendering = !cfg.cashPopupRendering;
+                    Config::write();
+                    w->invalidate();
                 }
             }
         }
@@ -600,6 +610,12 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w->activatedWidgets |= (1 << Widx::gridlines_on_landscape);
             }
+
+            w->activatedWidgets &= ~(1 << Widx::cash_popup_rendering);
+            if (Config::getNew().cashPopupRendering)
+                w->activatedWidgets |= (1 << Widx::cash_popup_rendering);
+            else
+                w->activatedWidgets &= ~(1 << Widx::cash_popup_rendering);
 
             if (Config::getNew().scaleFactor <= OpenLoco::Ui::ScaleFactor::min)
                 w->disabledWidgets |= (1 << Widx::display_scale_down_btn);

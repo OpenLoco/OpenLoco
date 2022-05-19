@@ -2305,3 +2305,5 @@ strings:
   2250: "{SMALLFONT}{COLOUR BLACK}While dragging, paint landscape instead of changing elevation"
   2251: "Invert right mouse dragging"
   2252: "{SMALLFONT}{COLOUR BLACK}When enabled, panning the main game view will have inverted movement"
+  2253: "Show cash popups"
+  2254: "{SMALLFONT}{COLOUR BLACK}Toggle visibility of cash popups from construction and vehicles on/off"

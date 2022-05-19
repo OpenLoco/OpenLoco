@@ -188,6 +188,8 @@ namespace OpenLoco::Config
             _new_config.buildLockedVehicles = config["buildLockedVehicles"].as<bool>();
         if (config["invertRightMouseViewPan"])
             _new_config.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>();
+        if (config["cashPopupRendering"])
+            _new_config.cashPopupRendering = config["cashPopupRendering"].as<bool>();
 
         auto& scNode = config["shortcuts"];
         readShortcutConfig(scNode);
@@ -246,6 +248,7 @@ namespace OpenLoco::Config
         node["displayLockedVehicles"] = _new_config.displayLockedVehicles;
         node["buildLockedVehicles"] = _new_config.buildLockedVehicles;
         node["invertRightMouseViewPan"] = _new_config.invertRightMouseViewPan;
+        node["cashPopupRendering"] = _new_config.cashPopupRendering;
 
         // Shortcuts
         const auto& shortcuts = _new_config.shortcuts;
