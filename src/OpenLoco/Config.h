@@ -176,6 +176,7 @@ namespace OpenLoco::Config
         bool displayLockedVehicles = false;
         bool buildLockedVehicles = false;
         bool invertRightMouseViewPan = false;
+        bool cashPopupRendering = true;
     };
 
     LocoConfig& get();

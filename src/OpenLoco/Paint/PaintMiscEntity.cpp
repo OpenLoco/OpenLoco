@@ -1,5 +1,6 @@
 #include "PaintMiscEntity.h"
 #include "../CompanyManager.h"
+#include "../Config.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
 #include "../Interop/Interop.hpp"
@@ -82,6 +83,11 @@ namespace OpenLoco::Paint
     // 0x00440400
     static void paintWindowCurrencyEntity(PaintSession& session, MoneyEffect* moneyEffect)
     {
+        if (!Config::getNew().cashPopupRendering)
+        {
+            return;
+        }
+
         Gfx::Context* context = session.getContext();
         if (context->zoom_level > 1)
         {
