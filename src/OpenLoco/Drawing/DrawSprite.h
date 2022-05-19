@@ -65,7 +65,6 @@ namespace OpenLoco::Drawing
     constexpr DrawBlendOp BLEND_TREEWILT = 1 << 3;
 
     DrawBlendOp getDrawBlendOp(const DrawSpriteArgs& args);
-    void drawSprite2(Gfx::Context& context, const DrawSpriteArgs& args, const DrawBlendOp op);
-    template<DrawBlendOp op>
-    void drawSprite2(Gfx::Context& context, const DrawSpriteArgs& args);
+
+    void drawSprite2(Gfx::Context& context, const DrawSpriteArgs& args, const DrawBlendOp op, bool isRLE);
 }

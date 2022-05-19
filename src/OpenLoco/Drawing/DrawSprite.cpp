@@ -1,5 +1,7 @@
 #include "DrawSprite.h"
 #include "../Graphics/Gfx.h"
+#include "DrawSpriteBMP.hpp"
+#include "DrawSpriteRLE.hpp"
 
 namespace OpenLoco::Drawing
 {
@@ -43,40 +45,74 @@ namespace OpenLoco::Drawing
         }
         return op;
     }
-    void drawSprite2(Gfx::Context& context, const DrawSpriteArgs& args, const DrawBlendOp op)
+
+    void drawSprite2(Gfx::Context& context, const DrawSpriteArgs& args, const DrawBlendOp op, bool isRLE)
     {
-        switch (op)
+        if (!isRLE)
         {
-            case BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST:
-                drawSprite2<BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST>(context, args);
-                break;
-            case BLEND_TRANSPARENT | BLEND_SRC:
-                drawSprite2<BLEND_TRANSPARENT | BLEND_SRC>(context, args);
-                break;
-            case BLEND_TRANSPARENT | BLEND_DST:
-                drawSprite2<BLEND_TRANSPARENT | BLEND_DST>(context, args);
-                break;
-            case BLEND_NONE:
-                drawSprite2<BLEND_NONE>(context, args);
-                break;
-            case BLEND_TRANSPARENT:
-                drawSprite2<BLEND_TRANSPARENT>(context, args);
-                break;
-            case BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST | BLEND_TREEWILT:
-                drawSprite2<BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST | BLEND_TREEWILT>(context, args);
-                break;
-            case BLEND_TRANSPARENT | BLEND_SRC | BLEND_TREEWILT:
-                drawSprite2<BLEND_TRANSPARENT | BLEND_SRC | BLEND_TREEWILT>(context, args);
-                break;
-            case BLEND_TRANSPARENT | BLEND_DST | BLEND_TREEWILT:
-                drawSprite2<BLEND_TRANSPARENT | BLEND_DST | BLEND_TREEWILT>(context, args);
-                break;
-            case BLEND_NONE | BLEND_TREEWILT:
-                drawSprite2<BLEND_NONE | BLEND_TREEWILT>(context, args);
-                break;
-            case BLEND_TRANSPARENT | BLEND_TREEWILT:
-                drawSprite2<BLEND_TRANSPARENT | BLEND_TREEWILT>(context, args);
-                break;
+            switch (op)
+            {
+                case BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST:
+                    drawBMPSprite<BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST>(context, args);
+                    break;
+                case BLEND_TRANSPARENT | BLEND_SRC:
+                    drawBMPSprite<BLEND_TRANSPARENT | BLEND_SRC>(context, args);
+                    break;
+                case BLEND_TRANSPARENT | BLEND_DST:
+                    drawBMPSprite<BLEND_TRANSPARENT | BLEND_DST>(context, args);
+                    break;
+                case BLEND_NONE:
+                    drawBMPSprite<BLEND_NONE>(context, args);
+                    break;
+                case BLEND_TRANSPARENT:
+                    drawBMPSprite<BLEND_TRANSPARENT>(context, args);
+                    break;
+                case BLEND_TRANSPARENT | BLEND_SRC | BLEND_TREEWILT:
+                    drawBMPSprite<BLEND_TRANSPARENT | BLEND_SRC | BLEND_TREEWILT>(context, args);
+                    break;
+                case BLEND_NONE | BLEND_TREEWILT:
+                    drawBMPSprite<BLEND_NONE | BLEND_TREEWILT>(context, args);
+                    break;
+                case BLEND_TRANSPARENT | BLEND_TREEWILT:
+                    drawBMPSprite<BLEND_TRANSPARENT | BLEND_TREEWILT>(context, args);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+        }
+        else
+        {
+            switch (op)
+            {
+                case BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST:
+                    drawRLESprite<BLEND_TRANSPARENT | BLEND_SRC | BLEND_DST>(context, args);
+                    break;
+                case BLEND_TRANSPARENT | BLEND_SRC:
+                    drawRLESprite<BLEND_TRANSPARENT | BLEND_SRC>(context, args);
+                    break;
+                case BLEND_TRANSPARENT | BLEND_DST:
+                    drawRLESprite<BLEND_TRANSPARENT | BLEND_DST>(context, args);
+                    break;
+                case BLEND_NONE:
+                    drawRLESprite<BLEND_NONE>(context, args);
+                    break;
+                case BLEND_TRANSPARENT:
+                    drawRLESprite<BLEND_TRANSPARENT>(context, args);
+                    break;
+                case BLEND_TRANSPARENT | BLEND_SRC | BLEND_TREEWILT:
+                    drawRLESprite<BLEND_TRANSPARENT | BLEND_SRC | BLEND_TREEWILT>(context, args);
+                    break;
+                case BLEND_NONE | BLEND_TREEWILT:
+                    drawRLESprite<BLEND_NONE | BLEND_TREEWILT>(context, args);
+                    break;
+                case BLEND_TRANSPARENT | BLEND_TREEWILT:
+                    drawRLESprite<BLEND_TRANSPARENT | BLEND_TREEWILT>(context, args);
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
         }
     }
 }

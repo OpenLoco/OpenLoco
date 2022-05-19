@@ -835,8 +835,8 @@ namespace OpenLoco::Gfx
                         // When offscreen in the y dimension there is no requirement to keep pos.x correct
                         if (chr >= 32)
                         {
-                            _E04324 = 0x20000000;
-                            Gfx::drawImagePaletteSet(*context, pos, ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()), PaletteMap{ _textColours }, {});
+                            // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
+                            Gfx::drawImagePaletteSet(*context, pos, ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()).withPrimary(Colour::black), PaletteMap{ _textColours }, {});
                             pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
                         }
                         else
@@ -1540,29 +1540,17 @@ namespace OpenLoco::Gfx
         memset(palette, paletteIndex, 256);
         palette[0] = 0;
 
-        // Set the image primary flag to tell drawImagePaletteSet to recolour with the palette. TODO: This should be refactored out when drawImagePaletteSet implemented
-        _E04324 = 0x20000000;
-        drawImagePaletteSet(context, pos, image, PaletteMap{ palette }, {});
-    }
-
-    // 0x00448D90
-    static void drawImagePaletteSet(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
-    {
-        _50B860 = palette;
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.ebx = image;
-        regs.edi = X86Pointer(context);
-        call(0x00448D90, regs);
+        // Set the image primary flag to tell drawImagePaletteSet to recolour with the palette (Colour::black is not actually used)
+        drawImagePaletteSet(context, pos, image.withPrimary(Colour::black), PaletteMap{ palette }, {});
     }
 
     static void drawSpriteToBuffer(Gfx::Context& context, DrawSpriteArgs& args)
     {
         const auto op = Drawing::getDrawBlendOp(args);
-        Drawing::drawSprite2(context, args, op);
+        Drawing::drawSprite2(context, args, op, args.sourceImage.flags & G1ElementFlags::isRLECompressed);
     }
 
+    // 0x00448D90
     void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* treeWiltImage)
     {
         auto dispPos{ pos };
@@ -1572,16 +1560,7 @@ namespace OpenLoco::Gfx
         {
             return;
         }
-        // Limit test space for now.
-        if (element->flags & G1ElementFlags::isRLECompressed)
-        {
-            // Set the image flag to tell drawImagePaletteSet to recolour/blend with the palette. TODO: This should be refactored out when drawImagePaletteSet implemented
-            _E04324 = image.toUInt32() & 0x60000000;
-            // Set the tree wilt image pointer for drawImagePaletteSet. TODO: refactor out when drawImagePaletteSet implemented
-            _treeWiltImageData = treeWiltImage != nullptr ? treeWiltImage->offset : nullptr;
-            drawImagePaletteSet(&context, pos.x, pos.y, image.toUInt32(), palette.data());
-            return;
-        }
+
         if (context.zoom_level > 0 && (element->flags & G1ElementFlags::hasZoomSprites))
         {
             auto zoomedContext{ context };
