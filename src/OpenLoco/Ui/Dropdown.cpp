@@ -27,7 +27,6 @@ namespace OpenLoco::Ui::Dropdown
     static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
     static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
     static loco_global<int32_t, 0x00523372> _pressedWidgetIndex;
-    static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _byte_112CC04;
     static loco_global<uint8_t, 0x01136F94> _windowDropdownOnpaintCellX;
     static loco_global<uint8_t, 0x01136F96> _windowDropdownOnpaintCellY;
@@ -178,11 +177,11 @@ namespace OpenLoco::Ui::Dropdown
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
-            _currentFontSpriteBase = Font::medium_bold;
+            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
 
             Gfx::clipString(width, _byte_112CC04);
 
-            _currentFontSpriteBase = Font::m1;
+            Gfx::setCurrentFontSpriteBase(Font::m1);
 
             Gfx::drawString(*context, x, y, colour, _byte_112CC04);
         }
@@ -359,7 +358,7 @@ namespace OpenLoco::Ui::Dropdown
 
                 StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
 
-                _currentFontSpriteBase = Font::medium_bold;
+                Gfx::setCurrentFontSpriteBase(Font::medium_bold);
 
                 auto stringWidth = Gfx::getMaxStringWidth(_byte_112CC04);
 

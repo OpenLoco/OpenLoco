@@ -25,7 +25,6 @@ namespace OpenLoco::Ui::Windows::TextInput
     static Ui::TextInput::InputSession inputSession;
 
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
-    static loco_global<int32_t, 0x0112C876> _currentFontSpriteBase;
 
     static WindowEventList _events;
 

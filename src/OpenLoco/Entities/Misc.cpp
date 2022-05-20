@@ -124,8 +124,6 @@ namespace OpenLoco
         return t;
     }
 
-    static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
-
     // 0x004FADD0
     constexpr Map::Pos2 _wiggleAmounts[] = {
         { 1, -1 },
@@ -238,7 +236,7 @@ namespace OpenLoco
             char buffer[255] = {};
             auto args = FormatArguments::common(amount);
             StringManager::formatString(buffer, strFormat, &args);
-            _currentFontSpriteBase = Font::medium_bold;
+            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
             m->offsetX = -Gfx::getStringWidth(buffer) / 2;
             m->wiggle = 0;
         }

@@ -20,7 +20,6 @@ namespace OpenLoco::Ui::Windows::Error
     static loco_global<char[512], 0x009C64B3> _byte_9C64B3;
     static loco_global<uint16_t, 0x009C66B3> _word_9C66B3;
     static loco_global<CompanyId, 0x009C68EC> _errorCompetitorId;
-    static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
     static loco_global<int32_t, 0x0113E72C> _cursorX;
     static loco_global<int32_t, 0x0113E730> _cursorY;
 
@@ -97,7 +96,7 @@ namespace OpenLoco::Ui::Windows::Error
 
         if (buffer != &_byte_9C64B3[0])
         {
-            gCurrentFontSpriteBase = Font::medium_bold;
+            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
             int16_t strWidth;
             {
                 strWidth = Gfx::getStringWidthNewLined(&_byte_9C64B3[0]);
@@ -105,7 +104,7 @@ namespace OpenLoco::Ui::Windows::Error
 
             strWidth = std::min<int16_t>(strWidth, 196);
 
-            gCurrentFontSpriteBase = Font::medium_bold;
+            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
             {
                 uint16_t breakLineCount = 0;
                 std::tie(strWidth, breakLineCount) = Gfx::wrapString(&_byte_9C64B3[0], strWidth);

@@ -31,7 +31,6 @@ namespace OpenLoco::Ui
         return (this->bottom - this->top) + 1;
     }
 
-    static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[1], 0x112C826> _commonFormatArgs;
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
@@ -601,7 +600,7 @@ namespace OpenLoco::Ui
         int16_t width = right - left - 4 - 14;
         int16_t x = left + window->x + 2 + (width / 2);
 
-        _currentFontSpriteBase = Font::medium_bold;
+        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
         width = Gfx::clipString(width - 8, stringBuffer);
 
         x -= width / 2;
@@ -623,7 +622,7 @@ namespace OpenLoco::Ui
         int16_t width = right - left - 4 - 14;
         x = x + (width / 2);
 
-        _currentFontSpriteBase = Font::medium_bold;
+        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
         int16_t stringWidth = Gfx::clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
@@ -641,7 +640,7 @@ namespace OpenLoco::Ui
         int16_t width = right - left - 4 - 14;
         x = x + (width / 2);
 
-        _currentFontSpriteBase = Font::medium_bold;
+        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
         int16_t stringWidth = Gfx::clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
@@ -795,7 +794,7 @@ namespace OpenLoco::Ui
 
         const auto* scroll_area = &window->scrollAreas[scrollview_index];
 
-        _currentFontSpriteBase = Font::medium_bold;
+        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
         if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarVisible)
         {
             draw_hscroll(context, window, this, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
@@ -871,7 +870,7 @@ namespace OpenLoco::Ui
 
         if (activated)
         {
-            _currentFontSpriteBase = Font::medium_bold;
+            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
             Gfx::drawString(*context, window->x + left, window->y + top, colour.opaque(), _strCheckmark);
         }
     }
