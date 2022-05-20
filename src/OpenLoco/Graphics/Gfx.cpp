@@ -56,7 +56,7 @@ namespace OpenLoco::Gfx
     static loco_global<uint32_t[147], 0x050B8C8> _paletteToG1Offset;
 
     static loco_global<uint16_t, 0x112C824> _currentFontFlags;
-    static loco_global<int32_t, 0x0112C876> _currentFontSpriteBase;
+    static loco_global<int16_t, 0x0112C876> _currentFontSpriteBase;
     static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
     static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
     loco_global<uint32_t, 0x00E04324> _E04324;
@@ -428,7 +428,7 @@ namespace OpenLoco::Gfx
     {
         uint16_t width = 0;
         const uint8_t* str = reinterpret_cast<const uint8_t*>(buffer);
-        int16_t fontSpriteBase = getCurrentFontSpriteBase();
+        auto fontSpriteBase = getCurrentFontSpriteBase();
 
         while (*str != (uint8_t)0)
         {
@@ -518,7 +518,7 @@ namespace OpenLoco::Gfx
         uint16_t width = 0;
         uint16_t maxWidth = 0;
         const uint8_t* str = reinterpret_cast<const uint8_t*>(buffer);
-        int16_t fontSpriteBase = getCurrentFontSpriteBase();
+        auto fontSpriteBase = getCurrentFontSpriteBase();
 
         while (*str != (uint8_t)0)
         {
@@ -1594,11 +1594,11 @@ namespace OpenLoco::Gfx
     }
 
     // 0x0112C876
-    int32_t getCurrentFontSpriteBase()
+    int16_t getCurrentFontSpriteBase()
     {
         return _currentFontSpriteBase;
     }
-    void setCurrentFontSpriteBase(int32_t base)
+    void setCurrentFontSpriteBase(int16_t base)
     {
         _currentFontSpriteBase = base;
     }

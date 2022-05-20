@@ -68,7 +68,6 @@ namespace OpenLoco::Ui::Windows::ToolTip
         int16_t strWidth = Gfx::getStringWidthNewLined(_text);
         strWidth = std::max<int16_t>(strWidth, 196);
 
-        // same method called 3 lines up?
         Gfx::setCurrentFontSpriteBase(Font::medium_bold);
 
         auto [wrappedWidth, breakCount] = Gfx::wrapString(_text, strWidth + 1);
