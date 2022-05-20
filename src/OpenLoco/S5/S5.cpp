@@ -444,7 +444,11 @@ namespace OpenLoco::S5
             file->saveDetails = std::make_unique<SaveDetails>();
             fs.readChunk(file->saveDetails.get(), sizeof(file->saveDetails));
         }
-
+        if (file->header.type == S5Type::scenario)
+        {
+            file->landscapeOptions = std::make_unique<S5::Options>();
+            fs.readChunk(&*file->landscapeOptions, sizeof(S5::Options));
+        }
         // Read packed objects
         if (file->header.numPackedObjects > 0)
         {
@@ -473,6 +477,25 @@ namespace OpenLoco::S5
             _loadErrorMessage = StringIds::new_objects_installed_successfully;
             // Throws!
             Game::returnToTitle();
+        }
+        else if (file->header.type == S5Type::scenario)
+        {
+            // Load required objects
+            fs.readChunk(file->requiredObjects, sizeof(file->requiredObjects));
+
+            // Load game state up to just before companies
+            fs.readChunk(&file->gameState, sizeof(file->gameState));
+            // Load game state towns industry and stations
+            fs.readChunk(&file->gameState.towns, sizeof(file->gameState));
+            // Load the rest of gamestate after animations
+            fs.readChunk(&file->gameState.animations, sizeof(file->gameState));
+            fixState(file->gameState);
+
+            // Load tile elements
+            auto tileElements = fs.readChunk();
+            auto numTileElements = tileElements.size() / sizeof(TileElement);
+            file->tileElements.resize(numTileElements);
+            std::memcpy(file->tileElements.data(), tileElements.data(), numTileElements * sizeof(TileElement));
         }
         else
         {
