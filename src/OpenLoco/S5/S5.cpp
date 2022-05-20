@@ -490,12 +490,21 @@ namespace OpenLoco::S5
             // Load the rest of gamestate after animations
             fs.readChunk(&file->gameState.animations, sizeof(file->gameState));
             fixState(file->gameState);
+            CompanyManager::reset();
 
-            // Load tile elements
-            auto tileElements = fs.readChunk();
-            auto numTileElements = tileElements.size() / sizeof(TileElement);
-            file->tileElements.resize(numTileElements);
-            std::memcpy(file->tileElements.data(), tileElements.data(), numTileElements * sizeof(TileElement));
+            if (file->gameState.flags & (1 << 0))
+            {
+                // Load tile elements
+                auto tileElements = fs.readChunk();
+                auto numTileElements = tileElements.size() / sizeof(TileElement);
+                file->tileElements.resize(numTileElements);
+                std::memcpy(file->tileElements.data(), tileElements.data(), numTileElements * sizeof(TileElement));
+            }
+            else
+            {
+                Map::TileManager::initialise();
+                Scenario::sub_46115C();
+            }
         }
         else
         {
@@ -611,9 +620,12 @@ namespace OpenLoco::S5
             }
 #endif
 
-            if (file->header.type == S5Type::scenario)
+            if (!(flags & LoadFlags::scenario))
             {
-                throw LoadException("File is a scenario, not a saved game", StringIds::error_file_contains_invalid_data);
+                if (file->header.type == S5Type::scenario)
+                {
+                    throw LoadException("File is a scenario, not a saved game", StringIds::error_file_contains_invalid_data);
+                }
             }
 
             if ((file->header.flags & S5Flags::isRaw) || (file->header.flags & S5Flags::isDump))
@@ -628,7 +640,7 @@ namespace OpenLoco::S5
                     throw LoadException("Not a two player saved game", StringIds::error_file_is_not_two_player_save);
                 }
             }
-            else
+            else if (!(flags & LoadFlags::scenario))
             {
                 if (file->header.type != S5Type::savedGame)
                 {
@@ -658,6 +670,11 @@ namespace OpenLoco::S5
             _gameState = file->gameState;
             TileManager::setElements(stdx::span<Map::TileElement>(reinterpret_cast<Map::TileElement*>(file->tileElements.data()), file->tileElements.size()));
 
+            if (flags & LoadFlags::scenario)
+            {
+                EntityManager::reset();
+            }
+
             EntityManager::resetSpatialIndex();
             CompanyManager::updateColours();
             call(0x004748FA);
@@ -665,6 +682,11 @@ namespace OpenLoco::S5
             IndustryManager::createAllMapAnimations();
             Audio::resetSoundObjects();
 
+            if (flags & LoadFlags::scenario)
+            {
+                _gameState->var_014A = 0;
+                return true;
+            }
             if (!(flags & LoadFlags::titleSequence))
             {
                 clearScreenFlag(ScreenFlags::title);
