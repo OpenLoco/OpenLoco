@@ -1,6 +1,7 @@
 #include "TreeObject.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
+#include "../Interop/Interop.hpp"
 
 namespace OpenLoco
 {
@@ -64,5 +65,65 @@ namespace OpenLoco
     uint8_t TreeObject::getTreeGrowthDisplayOffset() const
     {
         return treeGrowth[growth];
+    }
+
+    // 0x004BE24D
+    bool TreeObject::validate() const
+    {
+        if (cost_index > 32)
+        {
+            return false;
+        }
+
+        // 230/256 = ~90%
+        if (-clear_cost_factor > build_cost_factor * 230 / 256)
+        {
+            return false;
+        }
+
+        switch (num_rotations)
+        {
+            default:
+                return false;
+            case 1:
+            case 2:
+            case 4:
+                break;
+        }
+        if (growth < 1 || growth > 8)
+        {
+            return false;
+        }
+
+        if (height < var_02)
+        {
+            return false;
+        }
+
+        return var_05 >= var_04;
+    }
+
+    // 0x004BE144
+    void TreeObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    {
+        Interop::registers regs;
+        regs.esi = Interop::X86Pointer(this);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
+        Interop::call(0x004BE144, regs);
+    }
+
+    // 0x004BE231
+    void TreeObject::unload()
+    {
+        name = 0;
+        for (auto& spriteSeason : sprites)
+        {
+            for (auto& sprite : spriteSeason)
+            {
+                sprite = 0;
+            }
+        }
+        shadowImageOffset = 0;
     }
 }

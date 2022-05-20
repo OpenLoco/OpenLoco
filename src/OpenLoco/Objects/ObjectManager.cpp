@@ -669,6 +669,12 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<DockObject*>(&obj)->validate();
             case ObjectType::vehicle:
                 return reinterpret_cast<VehicleObject*>(&obj)->validate();
+            case ObjectType::tree:
+                return reinterpret_cast<TreeObject*>(&obj)->validate();
+            case ObjectType::snow:
+                return reinterpret_cast<SnowObject*>(&obj)->validate();
+            case ObjectType::climate:
+                return reinterpret_cast<ClimateObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -755,6 +761,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::vehicle:
                 reinterpret_cast<VehicleObject*>(&obj)->unload();
+                break;
+            case ObjectType::tree:
+                reinterpret_cast<TreeObject*>(&obj)->unload();
+                break;
+            case ObjectType::snow:
+                reinterpret_cast<SnowObject*>(&obj)->unload();
+                break;
+            case ObjectType::climate:
+                reinterpret_cast<ClimateObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -857,6 +872,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::vehicle:
                 reinterpret_cast<VehicleObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::tree:
+                reinterpret_cast<TreeObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::snow:
+                reinterpret_cast<SnowObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::climate:
+                reinterpret_cast<ClimateObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
