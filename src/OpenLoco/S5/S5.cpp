@@ -489,6 +489,7 @@ namespace OpenLoco::S5
             fs.readChunk(&file->gameState.towns, sizeof(file->gameState));
             // Load the rest of gamestate after animations
             fs.readChunk(&file->gameState.animations, sizeof(file->gameState));
+            file->gameState.fixFlags |= S5FixFlags::fixFlag1;
             fixState(file->gameState);
             CompanyManager::reset();
 
@@ -499,11 +500,6 @@ namespace OpenLoco::S5
                 auto numTileElements = tileElements.size() / sizeof(TileElement);
                 file->tileElements.resize(numTileElements);
                 std::memcpy(file->tileElements.data(), tileElements.data(), numTileElements * sizeof(TileElement));
-            }
-            else
-            {
-                Map::TileManager::initialise();
-                Scenario::sub_46115C();
             }
         }
         else
@@ -668,8 +664,19 @@ namespace OpenLoco::S5
             ObjectManager::reloadAll();
 
             _gameState = file->gameState;
-            TileManager::setElements(stdx::span<Map::TileElement>(reinterpret_cast<Map::TileElement*>(file->tileElements.data()), file->tileElements.size()));
-
+            if (flags & LoadFlags::scenario)
+            {
+                _activeOptions = *file->landscapeOptions;
+            }
+            if (file->gameState.flags & (1 << 0))
+            {
+                TileManager::setElements(stdx::span<Map::TileElement>(reinterpret_cast<Map::TileElement*>(file->tileElements.data()), file->tileElements.size()));
+            }
+            else
+            {
+                Map::TileManager::initialise();
+                Scenario::sub_46115C();
+            }
             if (flags & LoadFlags::scenario)
             {
                 EntityManager::reset();
