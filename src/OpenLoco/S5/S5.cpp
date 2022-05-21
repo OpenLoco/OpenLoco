@@ -397,7 +397,7 @@ namespace OpenLoco::S5
         {
             // Shift data after companies to correct location
             auto src = reinterpret_cast<uint8_t*>(&state) + 0x49EA24;
-            auto dst = src + 0x1C20;
+            auto dst = src + 0x1C20; // std::size(Company::cargoUnitsDistanceHistory) * std::size(state.companies)
             for (size_t i = 0; i < 0x40E200; i++)
             {
                 *--dst = *--src;
@@ -411,6 +411,7 @@ namespace OpenLoco::S5
                     *--dst = *--src;
                 }
 
+                // Make space for cargoUnitsDistanceHistory
                 for (size_t j = 0; j < 480; j++)
                 {
                     *--dst = 0;
