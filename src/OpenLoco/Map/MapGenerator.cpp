@@ -625,6 +625,14 @@ namespace OpenLoco::Map::MapGenerator
     // 0x004BDA49
     static void generateTrees()
     {
+        const auto& options = S5::getOptions();
+        const auto numForests = options.numberOfForests;
+        for (auto i = 0; i < numForests; ++i)
+        {
+
+            const auto randRadius = gPrng().randNext(255) * std::max(options.maxForestRadius - options.minForestRadius, 0) + options.minForestRadius;
+
+        }
         call(0x004BDA49);
     }
 
