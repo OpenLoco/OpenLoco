@@ -82,6 +82,7 @@
     <ClCompile Include="Map\Track\SubpositionData.cpp" />
     <ClCompile Include="Map\Track\Track.cpp" />
     <ClCompile Include="Map\Track\TrackData.cpp" />
+    <ClCompile Include="Map\Tree.cpp" />
     <ClCompile Include="Map\WaveManager.cpp" />
     <ClCompile Include="Math\Trigonometry.cpp" />
     <ClCompile Include="Math\Vector.cpp" />
@@ -308,6 +309,7 @@
     <ClInclude Include="Map\Track\SubpositionData.h" />
     <ClInclude Include="Map\Track\Track.h" />
     <ClInclude Include="Map\Track\TrackData.h" />
+    <ClInclude Include="Map\Tree.h" />
     <ClInclude Include="Map\Wave.h" />
     <ClInclude Include="Map\WaveManager.h" />
     <ClInclude Include="Math\Bound.hpp" />
