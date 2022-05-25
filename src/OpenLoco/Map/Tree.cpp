@@ -1,12 +1,15 @@
 #include "Tree.h"
+#include "../GameCommands/GameCommands.h"
+#include "../Math/Trigonometry.hpp"
+#include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/TreeObject.h"
 #include "../Scenario.h"
+#include "../Ui.h"
 #include "TileManager.h"
 
 namespace OpenLoco::Map
 {
-
     // 0x004BDF19
     std::optional<uint8_t> getRandomTreeTypeFromSurface(const Map::TilePos2& loc, bool unk)
     {
@@ -89,7 +92,8 @@ namespace OpenLoco::Map
         return { selectableTrees[rng.randNext(selectableTrees.size() - 1)] };
     }
 
-    bool OpenLoco::Map::placeTreeCluster(const Map::TilePos2& centreLoc, const uint16_t range, const uint16_t density, std::optional<uint8_t> treeType)
+    // 0x004BDC67 (when treeType is nullopt) & 0x004BDDC6 (when treeType is set)
+    bool placeTreeCluster(const Map::TilePos2& centreLoc, const uint16_t range, const uint16_t density, std::optional<uint8_t> treeType)
     {
         const auto numPlacements = (range * range * density) / 8192;
         uint16_t numErrors = 0;
@@ -105,17 +109,20 @@ namespace OpenLoco::Map
 
             GameCommands::TreePlacementArgs args;
             Map::Pos2 newLoc = randomOffset + centreLoc;
-            args.quadrant = ViewportInteraction::getQuadrantFromPos(newLoc);
+            args.quadrant = Ui::ViewportInteraction::getQuadrantFromPos(newLoc);
             args.pos = Map::Pos2(newLoc.x & 0xFFE0, newLoc.y & 0xFFE0);
             // Note: this is not the same as the randomDirection above as it is the trees rotation
             args.rotation = rng.randNext(3);
             args.colour = Colour::black;
-            auto type = getTreeType(newLoc, false);
-            if (!type)
+            if (!treeType.has_value())
+            {
+                treeType = getRandomTreeTypeFromSurface(newLoc, false);
+            }
+            if (!treeType)
             {
                 continue;
             }
-            args.type = *type;
+            args.type = *treeType;
             args.buildImmediately = true;
             args.requiresFullClearance = true;
 

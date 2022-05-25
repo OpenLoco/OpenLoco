@@ -12,6 +12,7 @@
 #include "../Map/Map.hpp"
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
+#include "../Map/Tree.h"
 #include "../Math/Trigonometry.hpp"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
@@ -510,60 +511,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             _lastTreeCost = placeTreeGhost(*placementArgs);
         }
 
-        
-
-        // 0x004BDC67 & 0x004BDDC6
-        template<typename TTreeTypeFunc>
-        static bool clusterToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density, TTreeTypeFunc&& getTreeType)
-        {
-            const auto numPlacements = (range * range * density) / 8192;
-            uint16_t numErrors = 0;
-            for (auto i = 0; i < numPlacements; ++i)
-            {
-                // Choose a random offset in a circle
-                auto& rng = gPrng();
-                auto randomMagnitude = rng.randNext(std::numeric_limits<uint16_t>::max()) * range / 65536;
-                auto randomDirection = rng.randNext(Math::Trigonometry::directionPrecisionHigh - 1);
-                Map::Pos2 randomOffset(
-                    Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
-                    Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));
-
-                GameCommands::TreePlacementArgs args;
-                Map::Pos2 newLoc = randomOffset + baseArgs.pos;
-                args.quadrant = ViewportInteraction::getQuadrantFromPos(newLoc);
-                args.pos = Map::Pos2(newLoc.x & 0xFFE0, newLoc.y & 0xFFE0);
-                // Note: this is not the same as the randomDirection above as it is the trees rotation
-                args.rotation = rng.randNext(3);
-                args.colour = Colour::black;
-                auto type = getTreeType(newLoc, false);
-                if (!type)
-                {
-                    continue;
-                }
-                args.type = *type;
-                args.buildImmediately = true;
-                args.requiresFullClearance = true;
-
-                // First query if we can place a tree at this location; skip if we can't.
-                auto queryRes = doCommand(args, 0);
-                if (queryRes == GameCommands::FAILURE)
-                {
-                    numErrors++;
-                    continue;
-                }
-
-                // Actually place the tree
-                doCommand(args, GameCommands::Flags::apply);
-            }
-
-            // Have we placed any trees?
-            if (numErrors < numPlacements)
-                return true;
-
-            Error::open(StringIds::cant_plant_this_here, StringIds::empty);
-            return false;
-        }
-
         // 0x004BBB20
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
@@ -590,10 +537,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (isEditorMode())
                             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
 
-                        if (clusterToolDown(*placementArgs, 320, 3, [type = placementArgs->type](const Map::TilePos2&, bool) { return std::optional<uint8_t>(type); }))
+                        if (Map::placeTreeCluster(placementArgs->pos, 320, 3, placementArgs->type))
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
                             Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                        }
+                        else
+                        {
+                            Error::open(StringIds::cant_plant_this_here, StringIds::empty);
                         }
 
                         if (isEditorMode())
@@ -605,10 +556,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (isEditorMode())
                             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
 
-                        if (clusterToolDown(*placementArgs, 384, 4, getRandomTreeTypeFromSurface))
+                        if (Map::placeTreeCluster(placementArgs->pos, 384, 4, std::nullopt))
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
                             Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                        }
+                        else
+                        {
+                            Error::open(StringIds::cant_plant_this_here, StringIds::empty);
                         }
 
                         if (isEditorMode())
