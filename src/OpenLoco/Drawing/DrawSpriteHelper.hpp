@@ -16,7 +16,7 @@ namespace OpenLoco::Drawing
         if constexpr (TBlendOp & BlendOp::transparent)
         {
             // Ignore transparent pixels
-            if (src == 0)
+            if (src == PaletteIndex::transparent)
             {
                 return false;
             }
@@ -27,7 +27,7 @@ namespace OpenLoco::Drawing
             auto pixel = paletteMap.blend(src, dst);
             if constexpr (TBlendOp & BlendOp::transparent)
             {
-                if (pixel == 0)
+                if (pixel == PaletteIndex::transparent)
                 {
                     return false;
                 }
@@ -40,7 +40,7 @@ namespace OpenLoco::Drawing
             auto pixel = paletteMap[src];
             if constexpr (TBlendOp & BlendOp::transparent)
             {
-                if (pixel == 0)
+                if (pixel == PaletteIndex::transparent)
                 {
                     return false;
                 }
@@ -53,7 +53,7 @@ namespace OpenLoco::Drawing
             auto pixel = paletteMap[dst];
             if constexpr (TBlendOp & BlendOp::transparent)
             {
-                if (pixel == 0)
+                if (pixel == PaletteIndex::transparent)
                 {
                     return false;
                 }
