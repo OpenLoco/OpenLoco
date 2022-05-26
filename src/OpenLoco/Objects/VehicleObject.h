@@ -1,4 +1,6 @@
 #pragma once
+
+#include "../Core/Span.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Speed.hpp"
 #include "Object.h"
@@ -214,7 +216,7 @@ namespace OpenLoco
         vehicle_object_bogie_sprite bogie_sprites[2];         // 0xB4
         uint16_t power;                                       // 0xD8
         Speed16 speed;                                        // 0xDA
-        uint16_t rack_speed;                                  // 0xDC
+        Speed16 rack_speed;                                   // 0xDC
         uint16_t weight;                                      // 0xDE
         uint16_t flags;                                       // 0xE0
         uint8_t max_primary_cargo;                            // 0xE2 size is relative to the first primary_cargo_types
@@ -242,6 +244,9 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, const int16_t width) const;
         void getCargoString(char* buffer) const;
+        bool validate() const;
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void unload();
     };
 #pragma pack(pop)
     static_assert(sizeof(VehicleObject) == 0x15E);

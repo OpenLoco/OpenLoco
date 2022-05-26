@@ -645,6 +645,30 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<TrainSignalObject*>(&obj)->validate();
             case ObjectType::levelCrossing:
                 return reinterpret_cast<LevelCrossingObject*>(&obj)->validate();
+            case ObjectType::streetLight:
+                return reinterpret_cast<StreetLightObject*>(&obj)->validate();
+            case ObjectType::tunnel:
+                return reinterpret_cast<TunnelObject*>(&obj)->validate();
+            case ObjectType::bridge:
+                return reinterpret_cast<BridgeObject*>(&obj)->validate();
+            case ObjectType::trackStation:
+                return reinterpret_cast<TrainStationObject*>(&obj)->validate();
+            case ObjectType::trackExtra:
+                return reinterpret_cast<TrackExtraObject*>(&obj)->validate();
+            case ObjectType::track:
+                return reinterpret_cast<TrackObject*>(&obj)->validate();
+            case ObjectType::roadStation:
+                return reinterpret_cast<RoadStationObject*>(&obj)->validate();
+            case ObjectType::roadExtra:
+                return reinterpret_cast<RoadExtraObject*>(&obj)->validate();
+            case ObjectType::road:
+                return reinterpret_cast<RoadObject*>(&obj)->validate();
+            case ObjectType::airport:
+                return reinterpret_cast<AirportObject*>(&obj)->validate();
+            case ObjectType::dock:
+                return reinterpret_cast<DockObject*>(&obj)->validate();
+            case ObjectType::vehicle:
+                return reinterpret_cast<VehicleObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -695,6 +719,42 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::levelCrossing:
                 reinterpret_cast<LevelCrossingObject*>(&obj)->unload();
+                break;
+            case ObjectType::streetLight:
+                reinterpret_cast<StreetLightObject*>(&obj)->unload();
+                break;
+            case ObjectType::tunnel:
+                reinterpret_cast<TunnelObject*>(&obj)->unload();
+                break;
+            case ObjectType::bridge:
+                reinterpret_cast<BridgeObject*>(&obj)->unload();
+                break;
+            case ObjectType::trackStation:
+                reinterpret_cast<TrainStationObject*>(&obj)->unload();
+                break;
+            case ObjectType::trackExtra:
+                reinterpret_cast<TrackExtraObject*>(&obj)->unload();
+                break;
+            case ObjectType::track:
+                reinterpret_cast<TrackObject*>(&obj)->unload();
+                break;
+            case ObjectType::roadStation:
+                reinterpret_cast<RoadStationObject*>(&obj)->unload();
+                break;
+            case ObjectType::roadExtra:
+                reinterpret_cast<RoadExtraObject*>(&obj)->unload();
+                break;
+            case ObjectType::road:
+                reinterpret_cast<RoadObject*>(&obj)->unload();
+                break;
+            case ObjectType::airport:
+                reinterpret_cast<AirportObject*>(&obj)->unload();
+                break;
+            case ObjectType::dock:
+                reinterpret_cast<DockObject*>(&obj)->unload();
+                break;
+            case ObjectType::vehicle:
+                reinterpret_cast<VehicleObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -761,6 +821,42 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::levelCrossing:
                 reinterpret_cast<LevelCrossingObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::streetLight:
+                reinterpret_cast<StreetLightObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::tunnel:
+                reinterpret_cast<TunnelObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::bridge:
+                reinterpret_cast<BridgeObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::trackStation:
+                reinterpret_cast<TrainStationObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::trackExtra:
+                reinterpret_cast<TrackExtraObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::track:
+                reinterpret_cast<TrackObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::roadStation:
+                reinterpret_cast<RoadStationObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::roadExtra:
+                reinterpret_cast<RoadExtraObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::road:
+                reinterpret_cast<RoadObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::airport:
+                reinterpret_cast<AirportObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::dock:
+                reinterpret_cast<DockObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::vehicle:
+                reinterpret_cast<VehicleObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;

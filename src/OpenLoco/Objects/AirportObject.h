@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "../Types.hpp"
 #include "Object.h"
 
@@ -47,16 +48,18 @@ namespace OpenLoco
         };
 
         string_id name;
-        uint16_t build_cost_factor; // 0x02
-        uint16_t sell_cost_factor;  // 0x04
-        uint8_t cost_index;         //0x06
+        int16_t build_cost_factor; // 0x02
+        int16_t sell_cost_factor;  // 0x04
+        uint8_t cost_index;        //0x06
         uint8_t var_07;
         uint32_t image; // 0x08
-        uint8_t pad_0C[0x10 - 0x0C];
+        uint32_t var_0C;
         uint16_t allowed_plane_types; // 0x10
         uint8_t num_sprite_sets;      // 0x12
         uint8_t num_tiles;            // 0x13
-        uint8_t pad_14[0xA0 - 0x14];
+        uint8_t pad_14[0x1C - 0x14];
+        uint32_t var_1C[32];
+        uint32_t var_9C;
         uint32_t large_tiles;        // 0xA0
         int8_t min_x;                // 0xA4
         int8_t min_y;                // 0xA5
@@ -72,6 +75,11 @@ namespace OpenLoco
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        bool validate() const;
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void unload();
     };
 #pragma pack(pop)
+
+    static_assert(sizeof(AirportObject) == 0xBA);
 }

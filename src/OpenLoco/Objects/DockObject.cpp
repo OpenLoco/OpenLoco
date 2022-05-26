@@ -1,6 +1,7 @@
 #include "DockObject.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
+#include "../Interop/Interop.hpp"
 #include "ObjectManager.h"
 
 namespace OpenLoco
@@ -18,5 +19,40 @@ namespace OpenLoco
     {
         Ui::Point rowPosition = { x, y };
         ObjectManager::drawGenericDescription(context, rowPosition, designed_year, obsolete_year);
+    }
+
+    // 0x00490EED
+    bool DockObject::validate() const
+    {
+        if (cost_index > 32)
+        {
+            return false;
+        }
+
+        if (-sell_cost_factor > build_cost_factor)
+        {
+            return false;
+        }
+
+        return build_cost_factor > 0;
+    }
+
+    // 0x00490E49
+    void DockObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    {
+        Interop::registers regs;
+        regs.esi = Interop::X86Pointer(this);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
+        Interop::call(0x00490E49, regs);
+    }
+
+    // 0x00490EC9
+    void DockObject::unload()
+    {
+        name = 0;
+        image = 0;
+        var_0C = 0;
+        std::fill(std::begin(var_1C), std::end(var_1C), 0);
     }
 }

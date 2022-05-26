@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "../Types.hpp"
 #include "Object.h"
 
@@ -19,6 +20,12 @@ namespace OpenLoco
         uint32_t image; // 0x02
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        // 0x004697FC
+        bool validate() const { return true; }
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void unload();
     };
 #pragma pack(pop)
+
+    static_assert(sizeof(TunnelObject) == 0x6);
 }

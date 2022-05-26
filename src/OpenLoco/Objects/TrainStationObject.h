@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "../Map/Map.hpp"
 #include "../Types.hpp"
 #include "Object.h"
@@ -29,10 +30,10 @@ namespace OpenLoco
         string_id name;
         uint8_t drawStyle; // 0x02
         uint8_t var_03;
-        uint16_t track_pieces;      // 0x04
-        uint16_t build_cost_factor; // 0x06
-        uint16_t sell_cost_factor;  // 0x08
-        uint8_t cost_index;         // 0x0A
+        uint16_t track_pieces;     // 0x04
+        int16_t build_cost_factor; // 0x06
+        int16_t sell_cost_factor;  // 0x08
+        uint8_t cost_index;        // 0x0A
         uint8_t var_0B;
         uint8_t flags; // 0x0C
         uint8_t var_0D;
@@ -43,13 +44,17 @@ namespace OpenLoco
         uint16_t designed_year;            // 0x2A
         uint16_t obsolete_year;            // 0x2C
         std::byte* cargoOffsetBytes[4][4]; // 0x2E
-        uint8_t pad_6E[0xAC - 0x6E];
+        uint32_t var_6E[16];
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        bool validate() const;
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void unload();
         std::vector<CargoOffset> getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const;
     };
 #pragma pack(pop)
+    static_assert(sizeof(TrainStationObject) == 0xAE);
 
     namespace TrainStation::ImageIds
     {

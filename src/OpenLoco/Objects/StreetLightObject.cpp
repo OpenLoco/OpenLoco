@@ -1,5 +1,6 @@
 #include "StreetLightObject.h"
 #include "../Graphics/Gfx.h"
+#include "../Interop/Interop.hpp"
 
 namespace OpenLoco
 {
@@ -18,5 +19,22 @@ namespace OpenLoco
             imgPosition.x += 20;
             imgPosition.y += descriptionRowHeight;
         }
+    }
+
+    // 0x00477F19
+    void StreetLightObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    {
+        Interop::registers regs;
+        regs.esi = Interop::X86Pointer(this);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
+        Interop::call(0x00477F19, regs);
+    }
+
+    // 0x00477F52
+    void StreetLightObject::unload()
+    {
+        name = 0;
+        image = 0;
     }
 }
