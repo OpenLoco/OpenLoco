@@ -3,6 +3,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/TrainStationObject.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "EntityManager.h"
@@ -54,9 +55,109 @@ namespace OpenLoco
     // 0x004408C2
     void Exhaust::update()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004408C2, regs);
+        const auto* steamObj = getObject();
+        if (steamObj->flags & SteamObjectFlags::applyWind)
+        {
+            // Wind is applied by applying a slight modification (~1 in 10 ticks a pixel change) to the x component of the exhaust
+            const auto res = windProgress + 7000;
+            windProgress = static_cast<uint16_t>(res);
+            auto newPos = position;
+            newPos.x += res / (std::numeric_limits<uint16_t>::max() + 1);
+            if (newPos.x != position.x)
+            {
+                invalidateSprite();
+                moveTo(newPos);
+                invalidateSprite();
+            }
+        }
+        stationaryProgress++;
+        if (stationaryProgress < steamObj->numStationaryTicks)
+        {
+            return;
+        }
+        stationaryProgress = 0;
+        frameNum++;
+
+        auto [totalNumFrames, frameInfo] = steamObj->getFramesInfo(isSubObjType1());
+
+        if (frameNum >= totalNumFrames)
+        {
+            invalidateSprite();
+            EntityManager::freeEntity(this);
+            return;
+        }
+
+        auto newPos = position;
+        newPos.z += frameInfo[frameNum].height;
+        invalidateSprite();
+        moveTo(newPos);
+        invalidateSprite();
+
+        if (!(steamObj->flags & SteamObjectFlags::disperseOnCollision))
+        {
+            return;
+        }
+
+        const auto tile = Map::TileManager::get(position);
+        const auto lowZ = (position.z / Map::kSmallZStep) - 3;
+        const auto highZ = lowZ + 6;
+        for (const auto& el : tile)
+        {
+            if (el.isFlag5() || el.isGhost())
+            {
+                continue;
+            }
+            if (lowZ < el.baseZ() && highZ > el.baseZ())
+            {
+                invalidateSprite();
+                EntityManager::freeEntity(this);
+                return;
+            }
+
+            auto* elTrack = el.as<Map::TrackElement>();
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+            if (!elTrack->hasStationElement())
+            {
+                continue;
+            }
+            auto* elStation = elTrack->next()->as<Map::StationElement>();
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+            if (elStation->isFlag5() || elStation->isGhost())
+            {
+                continue;
+            }
+
+            const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
+            if (stationObj->flags & TrainStationFlags::unk1)
+            {
+                continue;
+            }
+
+            if (elStation->multiTileIndex() == 0)
+            {
+                continue;
+            }
+
+            const auto cmpZ = elTrack->baseZ() + 7;
+            if (lowZ >= cmpZ)
+            {
+                continue;
+            }
+            if (highZ <= cmpZ)
+            {
+                continue;
+            }
+
+            invalidateSprite();
+            EntityManager::freeEntity(this);
+            return;
+        }
     }
 
     // 0x0044080C
@@ -84,9 +185,9 @@ namespace OpenLoco
             _exhaust->var_09 = obj->var_06;
             _exhaust->var_15 = obj->var_07;
             _exhaust->setSubType(MiscEntityType::exhaust);
-            _exhaust->var_26 = 0;
-            _exhaust->var_28 = 0;
-            _exhaust->var_32 = 0;
+            _exhaust->frameNum = 0;
+            _exhaust->stationaryProgress = 0;
+            _exhaust->windProgress = 0;
             _exhaust->var_34 = 0;
             _exhaust->var_36 = 0;
         }

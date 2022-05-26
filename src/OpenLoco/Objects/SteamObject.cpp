@@ -18,10 +18,10 @@ namespace OpenLoco
     {
         name = 0;
         baseImageId = 0;
-        var_12 = 0;
-        var_14 = 0;
-        var_16 = nullptr;
-        var_1A = nullptr;
+        totalNumFramesType0 = 0;
+        totalNumFramesType1 = 0;
+        frameInfoType0 = nullptr;
+        frameInfoType1 = nullptr;
         var_05 = 0;
         var_06 = 0;
         var_07 = 0;
