@@ -675,6 +675,12 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<SnowObject*>(&obj)->validate();
             case ObjectType::climate:
                 return reinterpret_cast<ClimateObject*>(&obj)->validate();
+            case ObjectType::hillShapes:
+                return reinterpret_cast<HillShapesObject*>(&obj)->validate();
+            case ObjectType::building:
+                return reinterpret_cast<BuildingObject*>(&obj)->validate();
+            case ObjectType::scaffolding:
+                return reinterpret_cast<ScaffoldingObject*>(&obj)->validate();
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
                 auto objectProc = objectProcTable[static_cast<size_t>(type)];
@@ -770,6 +776,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::climate:
                 reinterpret_cast<ClimateObject*>(&obj)->unload();
+                break;
+            case ObjectType::hillShapes:
+                reinterpret_cast<HillShapesObject*>(&obj)->unload();
+                break;
+            case ObjectType::building:
+                reinterpret_cast<BuildingObject*>(&obj)->unload();
+                break;
+            case ObjectType::scaffolding:
+                reinterpret_cast<ScaffoldingObject*>(&obj)->unload();
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -881,6 +896,15 @@ namespace OpenLoco::ObjectManager
                 break;
             case ObjectType::climate:
                 reinterpret_cast<ClimateObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::hillShapes:
+                reinterpret_cast<HillShapesObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::building:
+                reinterpret_cast<BuildingObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::scaffolding:
+                reinterpret_cast<ScaffoldingObject*>(&obj)->load(handle, data);
                 break;
             default:
                 auto objectProcTable = (const uintptr_t*)0x004FE1C8;
