@@ -310,8 +310,7 @@ namespace OpenLoco::Scenario
         Audio::pauseSound();
         static loco_global<char[512], 0x00112CE04> scenarioFilename;
         std::strncpy(&*scenarioFilename, fullPath.u8string().c_str(), std::size(scenarioFilename));
-        auto flags = call(0x00442837);
-        return (flags & Interop::X86_FLAG_CARRY) == 0;
+        return S5::load(fullPath, S5::LoadFlags::scenario);
     }
 
     void start()

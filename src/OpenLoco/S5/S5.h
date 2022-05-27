@@ -411,6 +411,7 @@ namespace OpenLoco::S5
     {
         constexpr uint32_t titleSequence = 1 << 0;
         constexpr uint32_t twoPlayer = 1 << 1;
+        constexpr uint32_t scenario = 1 << 2;
     }
 
     namespace SaveFlags
