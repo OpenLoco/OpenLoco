@@ -93,7 +93,7 @@ namespace OpenLoco::Map
     }
 
     // 0x004BDC67 (when treeType is nullopt) & 0x004BDDC6 (when treeType is set)
-    bool placeTreeCluster(const Map::TilePos2& centreLoc, const uint16_t range, const uint16_t density, std::optional<uint8_t> treeType)
+    bool placeTreeCluster(const Map::TilePos2& centreLoc, const uint16_t range, const uint16_t density, const std::optional<uint8_t> treeType)
     {
         const auto numPlacements = (range * range * density) / 8192;
         uint16_t numErrors = 0;
@@ -114,15 +114,19 @@ namespace OpenLoco::Map
             // Note: this is not the same as the randomDirection above as it is the trees rotation
             args.rotation = rng.randNext(3);
             args.colour = Colour::black;
-            if (!treeType.has_value())
+
+            // If not set by the caller then a random tree type is selected based on the surface type
+            std::optional<uint8_t> randTreeType = treeType;
+            if (!randTreeType.has_value())
             {
-                treeType = getRandomTreeTypeFromSurface(newLoc, false);
+                randTreeType = getRandomTreeTypeFromSurface(newLoc, false);
+                // It is possible that there are no valid tree types for the surface
+                if (!randTreeType.has_value())
+                {
+                    continue;
+                }
             }
-            if (!treeType)
-            {
-                continue;
-            }
-            args.type = *treeType;
+            args.type = *randTreeType;
             args.buildImmediately = true;
             args.requiresFullClearance = true;
 
