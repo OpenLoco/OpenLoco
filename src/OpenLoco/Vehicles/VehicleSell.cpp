@@ -105,7 +105,7 @@ namespace OpenLoco::Vehicles
             }
             GameCommands::setPosition(head->position);
         }
-        return refundCost;
+        return -refundCost;
     }
 
     // 0x004AED34
