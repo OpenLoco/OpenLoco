@@ -681,14 +681,17 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<BuildingObject*>(&obj)->validate();
             case ObjectType::scaffolding:
                 return reinterpret_cast<ScaffoldingObject*>(&obj)->validate();
+            case ObjectType::industry:
+                return reinterpret_cast<IndustryObject*>(&obj)->validate();
+            case ObjectType::region:
+                return reinterpret_cast<RegionObject*>(&obj)->validate();
+            case ObjectType::competitor:
+                return reinterpret_cast<CompetitorObject*>(&obj)->validate();
+            case ObjectType::scenarioText:
+                return reinterpret_cast<ScenarioTextObject*>(&obj)->validate();
             default:
-                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-                auto objectProc = objectProcTable[static_cast<size_t>(type)];
-
-                registers regs;
-                regs.al = enumValue(ObjectProcedure::validate);
-                regs.esi = X86Pointer(&obj);
-                return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+                assert(false);
+                return false;
         }
     }
 
@@ -786,14 +789,20 @@ namespace OpenLoco::ObjectManager
             case ObjectType::scaffolding:
                 reinterpret_cast<ScaffoldingObject*>(&obj)->unload();
                 break;
+            case ObjectType::industry:
+                reinterpret_cast<IndustryObject*>(&obj)->unload();
+                break;
+            case ObjectType::region:
+                reinterpret_cast<RegionObject*>(&obj)->unload();
+                break;
+            case ObjectType::competitor:
+                reinterpret_cast<CompetitorObject*>(&obj)->unload();
+                break;
+            case ObjectType::scenarioText:
+                reinterpret_cast<ScenarioTextObject*>(&obj)->unload();
+                break;
             default:
-                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-                auto objectProc = objectProcTable[static_cast<size_t>(type)];
-
-                registers regs;
-                regs.al = enumValue(ObjectProcedure::unload);
-                regs.esi = X86Pointer(&obj);
-                call(objectProc, regs);
+                assert(false);
                 break;
         }
     }
@@ -906,16 +915,20 @@ namespace OpenLoco::ObjectManager
             case ObjectType::scaffolding:
                 reinterpret_cast<ScaffoldingObject*>(&obj)->load(handle, data);
                 break;
+            case ObjectType::industry:
+                reinterpret_cast<IndustryObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::region:
+                reinterpret_cast<RegionObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::competitor:
+                reinterpret_cast<CompetitorObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::scenarioText:
+                reinterpret_cast<ScenarioTextObject*>(&obj)->load(handle, data);
+                break;
             default:
-                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-                auto objectProc = objectProcTable[static_cast<size_t>(handle.type)];
-
-                registers regs;
-                regs.al = static_cast<uint8_t>(ObjectProcedure::load);
-                regs.esi = X86Pointer(&obj);
-                regs.ebx = handle.id;
-                regs.ecx = enumValue(handle.type);
-                call(objectProc, regs);
+                assert(false);
                 break;
         }
     }

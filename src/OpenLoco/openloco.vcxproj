@@ -109,6 +109,7 @@
     <ClCompile Include="Objects\RoadStationObject.cpp" />
     <ClCompile Include="Objects\RockObject.cpp" />
     <ClCompile Include="Objects\ScaffoldingObject.cpp" />
+    <ClCompile Include="Objects\ScenarioTextObject.cpp" />
     <ClCompile Include="Objects\SnowObject.cpp" />
     <ClCompile Include="Objects\SoundObject.cpp" />
     <ClCompile Include="Objects\SteamObject.cpp" />
