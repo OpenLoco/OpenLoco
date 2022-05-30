@@ -972,17 +972,68 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.bp = width;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00495224, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-        return regs.dx;
+        _currentFontSpriteBase = Font::medium_bold;
+        auto wrapResult = wrapString(buffer, width);
+        auto breakCount = wrapResult.second;
+
+        // wrapString might change the font due to formatting codes
+        uint16_t lineHeight = 0; // _112D404
+        if (_currentFontSpriteBase <= Font::medium_bold)
+            lineHeight = 10;
+        else if (_currentFontSpriteBase == Font::small)
+            lineHeight = 6;
+        else if (_currentFontSpriteBase == Font::large)
+            lineHeight = 18;
+
+        _currentFontFlags = 0;
+        int16_t leftoverHeight = breakCount * (lineHeight / 2);
+        Ui::Point point = { x, y };
+        char* ptr = buffer;
+        while (true)
+        {
+        // Draw current chunk
+        draw:
+            point = Gfx::drawString(context, point.x, point.y, colour, ptr);
+
+            // Traverse the buffer for the next chunk
+            while (true)
+            {
+                ptr++;
+                if (*ptr == '\0')
+                {
+                    point.y += lineHeight;
+                    leftoverHeight -= (lineHeight) / 2;
+                    if (leftoverHeight < 0)
+                        return point.y;
+                    else
+                        goto draw;
+                }
+
+                if (*ptr >= ' ')
+                    continue;
+
+                if (*ptr < ControlCodes::newline)
+                {
+                    // Skip argument
+                    ptr++;
+                    continue;
+                }
+
+                if (*ptr <= ControlCodes::window_colour_4)
+                    continue;
+
+                // Skip arguments
+                ptr += 2;
+
+                if (*ptr == ControlCodes::inline_sprite_str)
+                    ptr += 2;
+            }
+
+            return point.y;
+        }
     }
 
     // 0x00494B3F
