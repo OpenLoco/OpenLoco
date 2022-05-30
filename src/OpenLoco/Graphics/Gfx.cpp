@@ -1195,14 +1195,16 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00494DE8, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
+
+        _currentFontSpriteBase = Font::medium_bold;
+        uint16_t width = getStringWidth(buffer);
+
+        if (x - (width / 2) < 0)
+            return;
+
+        Gfx::drawString(context, x - (width / 2), y, colour, buffer);
     }
 
     // 0x00494C36
