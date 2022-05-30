@@ -1174,14 +1174,18 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00494D78, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
+
+        _currentFontSpriteBase = Font::medium_bold;
+        uint16_t width = getStringWidth(buffer);
+
+        drawString(context, x, y, colour, buffer);
+
+        // Draw underline
+        drawRect(context, x, y + 11, width, 1, _textColours[1]);
+        if (_textColours[2] != 0)
+            drawRect(context, x, y + 12, width, 1, _textColours[2]);
     }
 
     // 0x00494DE8
