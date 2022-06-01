@@ -52,8 +52,7 @@ namespace OpenLoco::Paint
         const auto* steamObject = exhaustEntity->getObject();
 
         const auto& frameInfo = steamObject->getFramesInfo(exhaustEntity->isSubObjType1());
-        uint32_t imageId = frameInfo.second[exhaustEntity->frameNum].imageOffset;
-        imageId = imageId + steamObject->baseImageId + steamObject->var_0A;
+        const auto imageId = ImageId{ frameInfo.second[exhaustEntity->frameNum].imageOffset + steamObject->baseImageId + steamObject->var_0A };
 
         if ((steamObject->flags & SteamObjectFlags::unk3) == 0)
         {
@@ -120,8 +119,8 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < 12);
         assert((particle->crashedSpriteBase) < 5);
-        uint32_t imageId = kVehicleCrashParticleImageIds.at(particle->crashedSpriteBase).at(particle->frame / 256);
-        imageId = Gfx::recolour2(imageId, particle->colourScheme);
+
+        const auto imageId = ImageId{ kVehicleCrashParticleImageIds.at(particle->crashedSpriteBase).at(particle->frame / 256), particle->colourScheme };
 
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
@@ -157,7 +156,7 @@ namespace OpenLoco::Paint
         };
 
         assert(static_cast<size_t>(particle->frame / 256) < kExplosionCloudImageIds.size());
-        uint32_t imageId = kExplosionCloudImageIds.at(particle->frame / 256);
+        const auto imageId = ImageId{ kExplosionCloudImageIds.at(particle->frame / 256) };
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
@@ -202,7 +201,7 @@ namespace OpenLoco::Paint
         };
 
         assert(static_cast<size_t>(particle->frame / 256) < kSplashImageIds.size());
-        uint32_t imageId = kSplashImageIds.at(particle->frame / 256);
+        const auto imageId = ImageId{ kSplashImageIds.at(particle->frame / 256) };
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
@@ -250,7 +249,7 @@ namespace OpenLoco::Paint
         };
 
         assert(static_cast<size_t>(particle->frame / 256) < kFireballImageIds.size());
-        uint32_t imageId = kFireballImageIds.at(particle->frame / 256);
+        const auto imageId = ImageId{ kFireballImageIds.at(particle->frame / 256) };
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
@@ -277,7 +276,7 @@ namespace OpenLoco::Paint
         };
 
         assert(static_cast<size_t>(particle->frame / 256) < kExplosionSmokeImageIds.size());
-        uint32_t imageId = kExplosionSmokeImageIds.at(particle->frame / 256);
+        const auto imageId = ImageId{ kExplosionSmokeImageIds.at(particle->frame / 256) };
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
@@ -306,7 +305,7 @@ namespace OpenLoco::Paint
         };
 
         assert(static_cast<size_t>(particle->frame / 256) < kSmokeImageIds.size());
-        uint32_t imageId = kSmokeImageIds.at(particle->frame / 256);
+        const auto imageId = ImageId{ kSmokeImageIds.at(particle->frame / 256) };
         session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 

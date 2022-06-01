@@ -86,15 +86,15 @@ namespace OpenLoco::Gfx
     }
 
     // 0x004FFAE8
-    uint32_t applyGhostToImage(uint32_t imageId)
+    ImageId applyGhostToImage(uint32_t imageIndex)
     {
         if (Config::get().constructionMarker)
         {
-            return Gfx::recolourTranslucent(imageId, ExtColour::unk31);
+            return ImageId(imageIndex).withTranslucency(ExtColour::unk31);
         }
         else
         {
-            return Gfx::recolour(imageId, ExtColour::unk2C);
+            return ImageId(imageIndex, ExtColour::unk2C);
         }
     }
 
