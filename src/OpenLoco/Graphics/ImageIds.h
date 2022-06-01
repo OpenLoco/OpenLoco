@@ -1445,4 +1445,78 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t scenario_completed_tick = 3629;
     constexpr uint32_t owner_jailed = 3630;
 
+    constexpr uint32_t getNumberCircle(uint8_t num)
+    {
+        constexpr uint32_t numbers[64] = {
+            number_circle_00,
+            number_circle_01,
+            number_circle_02,
+            number_circle_03,
+            number_circle_04,
+            number_circle_05,
+            number_circle_06,
+            number_circle_07,
+            number_circle_08,
+            number_circle_09,
+            number_circle_10,
+            number_circle_11,
+            number_circle_12,
+            number_circle_13,
+            number_circle_14,
+            number_circle_15,
+            number_circle_16,
+            number_circle_17,
+            number_circle_18,
+            number_circle_19,
+            number_circle_20,
+            number_circle_21,
+            number_circle_22,
+            number_circle_23,
+            number_circle_24,
+            number_circle_25,
+            number_circle_26,
+            number_circle_27,
+            number_circle_28,
+            number_circle_29,
+            number_circle_30,
+            number_circle_31,
+            number_circle_32,
+            number_circle_33,
+            number_circle_34,
+            number_circle_35,
+            number_circle_36,
+            number_circle_37,
+            number_circle_38,
+            number_circle_39,
+            number_circle_40,
+            number_circle_41,
+            number_circle_42,
+            number_circle_43,
+            number_circle_44,
+            number_circle_45,
+            number_circle_46,
+            number_circle_47,
+            number_circle_48,
+            number_circle_49,
+            number_circle_50,
+            number_circle_51,
+            number_circle_52,
+            number_circle_53,
+            number_circle_54,
+            number_circle_55,
+            number_circle_56,
+            number_circle_57,
+            number_circle_58,
+            number_circle_59,
+            number_circle_60,
+            number_circle_61,
+            number_circle_62,
+            number_circle_63,
+        };
+        if (num > sizeof(numbers) / sizeof(numbers[0]))
+        {
+            return number_circle_00;
+        }
+        return numbers[num];
+    }
 }
