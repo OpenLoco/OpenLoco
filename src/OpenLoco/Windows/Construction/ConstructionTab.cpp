@@ -2633,6 +2633,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x00478F1F
     void drawRoad(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::Context& context)
     {
+        static loco_global<Gfx::Context*, 0x00E0C3E0> _dword_E0C3E0;
+        _dword_E0C3E0 = &context;
         registers regs;
         regs.ax = pos.x;
         regs.cx = pos.y;
