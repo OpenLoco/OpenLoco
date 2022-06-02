@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "../Types.hpp"
 #include "Object.h"
 #include <array>
@@ -29,9 +30,12 @@ namespace OpenLoco
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        bool validate() const;
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void unload();
     };
-    static_assert(sizeof(CompetitorObject) == 0x38);
 #pragma pack(pop)
+    static_assert(sizeof(CompetitorObject) == 0x38);
 
     [[nodiscard]] string_id aiRatingToLevel(const uint8_t rating);
 }

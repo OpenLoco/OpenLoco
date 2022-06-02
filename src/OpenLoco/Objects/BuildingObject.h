@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "../Graphics/Colour.h"
 #include "../Types.hpp"
 #include "Object.h"
@@ -24,11 +25,12 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::building;
 
-        string_id name;
-        uint8_t pad_02[0x07 - 0x02];
-        uint8_t numVariations;    //0x7
-        uint8_t* varationHeights; // 0x8
-        uint8_t pad_0C[0x10 - 0x0C];
+        string_id name;               // 0x0
+        uint32_t image;               // 0x2
+        uint8_t var_06;               // 0x6
+        uint8_t numVariations;        // 0x7
+        uint8_t* varationHeights;     // 0x8
+        uint32_t var_0C;              // 0xC
         uint8_t* variationsArr10[32]; // 0x10
         uint32_t colours;             // 0x90
         uint16_t designedYear;        // 0x94
@@ -45,11 +47,15 @@ namespace OpenLoco
         int16_t demolishRatingReduction;
         uint8_t var_AC;
         uint8_t var_AD;
+        uint32_t var_AE[4];
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         void drawBuilding(Gfx::Context* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const;
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        bool validate() const;
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void unload();
     };
 #pragma pack(pop)
-    static_assert(sizeof(BuildingObject) == 0xAE);
+    static_assert(sizeof(BuildingObject) == 0xBE);
 }

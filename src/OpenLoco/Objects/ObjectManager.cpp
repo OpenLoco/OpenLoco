@@ -669,14 +669,29 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<DockObject*>(&obj)->validate();
             case ObjectType::vehicle:
                 return reinterpret_cast<VehicleObject*>(&obj)->validate();
+            case ObjectType::tree:
+                return reinterpret_cast<TreeObject*>(&obj)->validate();
+            case ObjectType::snow:
+                return reinterpret_cast<SnowObject*>(&obj)->validate();
+            case ObjectType::climate:
+                return reinterpret_cast<ClimateObject*>(&obj)->validate();
+            case ObjectType::hillShapes:
+                return reinterpret_cast<HillShapesObject*>(&obj)->validate();
+            case ObjectType::building:
+                return reinterpret_cast<BuildingObject*>(&obj)->validate();
+            case ObjectType::scaffolding:
+                return reinterpret_cast<ScaffoldingObject*>(&obj)->validate();
+            case ObjectType::industry:
+                return reinterpret_cast<IndustryObject*>(&obj)->validate();
+            case ObjectType::region:
+                return reinterpret_cast<RegionObject*>(&obj)->validate();
+            case ObjectType::competitor:
+                return reinterpret_cast<CompetitorObject*>(&obj)->validate();
+            case ObjectType::scenarioText:
+                return reinterpret_cast<ScenarioTextObject*>(&obj)->validate();
             default:
-                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-                auto objectProc = objectProcTable[static_cast<size_t>(type)];
-
-                registers regs;
-                regs.al = enumValue(ObjectProcedure::validate);
-                regs.esi = X86Pointer(&obj);
-                return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+                assert(false);
+                return false;
         }
     }
 
@@ -756,14 +771,38 @@ namespace OpenLoco::ObjectManager
             case ObjectType::vehicle:
                 reinterpret_cast<VehicleObject*>(&obj)->unload();
                 break;
+            case ObjectType::tree:
+                reinterpret_cast<TreeObject*>(&obj)->unload();
+                break;
+            case ObjectType::snow:
+                reinterpret_cast<SnowObject*>(&obj)->unload();
+                break;
+            case ObjectType::climate:
+                reinterpret_cast<ClimateObject*>(&obj)->unload();
+                break;
+            case ObjectType::hillShapes:
+                reinterpret_cast<HillShapesObject*>(&obj)->unload();
+                break;
+            case ObjectType::building:
+                reinterpret_cast<BuildingObject*>(&obj)->unload();
+                break;
+            case ObjectType::scaffolding:
+                reinterpret_cast<ScaffoldingObject*>(&obj)->unload();
+                break;
+            case ObjectType::industry:
+                reinterpret_cast<IndustryObject*>(&obj)->unload();
+                break;
+            case ObjectType::region:
+                reinterpret_cast<RegionObject*>(&obj)->unload();
+                break;
+            case ObjectType::competitor:
+                reinterpret_cast<CompetitorObject*>(&obj)->unload();
+                break;
+            case ObjectType::scenarioText:
+                reinterpret_cast<ScenarioTextObject*>(&obj)->unload();
+                break;
             default:
-                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-                auto objectProc = objectProcTable[static_cast<size_t>(type)];
-
-                registers regs;
-                regs.al = enumValue(ObjectProcedure::unload);
-                regs.esi = X86Pointer(&obj);
-                call(objectProc, regs);
+                assert(false);
                 break;
         }
     }
@@ -858,16 +897,38 @@ namespace OpenLoco::ObjectManager
             case ObjectType::vehicle:
                 reinterpret_cast<VehicleObject*>(&obj)->load(handle, data);
                 break;
+            case ObjectType::tree:
+                reinterpret_cast<TreeObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::snow:
+                reinterpret_cast<SnowObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::climate:
+                reinterpret_cast<ClimateObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::hillShapes:
+                reinterpret_cast<HillShapesObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::building:
+                reinterpret_cast<BuildingObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::scaffolding:
+                reinterpret_cast<ScaffoldingObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::industry:
+                reinterpret_cast<IndustryObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::region:
+                reinterpret_cast<RegionObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::competitor:
+                reinterpret_cast<CompetitorObject*>(&obj)->load(handle, data);
+                break;
+            case ObjectType::scenarioText:
+                reinterpret_cast<ScenarioTextObject*>(&obj)->load(handle, data);
+                break;
             default:
-                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-                auto objectProc = objectProcTable[static_cast<size_t>(handle.type)];
-
-                registers regs;
-                regs.al = static_cast<uint8_t>(ObjectProcedure::load);
-                regs.esi = X86Pointer(&obj);
-                regs.ebx = handle.id;
-                regs.ecx = enumValue(handle.type);
-                call(objectProc, regs);
+                assert(false);
                 break;
         }
     }

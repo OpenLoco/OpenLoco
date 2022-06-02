@@ -102,4 +102,104 @@ namespace OpenLoco
         regs.ebp = X86Pointer(this);
         call(0x00458C7F, regs);
     }
+
+    // 0x0045926F
+    bool IndustryObject::validate() const
+    {
+        if (var_1E == 0)
+        {
+            return false;
+        }
+        if (var_1F == 0 || var_1F > 31)
+        {
+            return false;
+        }
+
+        if (var_BD < var_BC)
+        {
+            return false;
+        }
+
+        if (var_CE == 0 || var_CE > 32)
+        {
+            return false;
+        }
+
+        // 230/256 = ~90%
+        if (-clearCostFactor > cost_factor * 230 / 256)
+        {
+            return false;
+        }
+
+        if (var_E8 > 8)
+        {
+            return false;
+        }
+        switch (var_E9)
+        {
+            case 1:
+            case 2:
+            case 4:
+                break;
+            default:
+                return false;
+        }
+
+        if (var_EA != 0xFF && var_EA > 7)
+        {
+            return false;
+        }
+
+        if (var_EC > 8)
+        {
+            return false;
+        }
+
+        if (var_D6 > 100)
+        {
+            return false;
+        }
+        return var_DA <= 100;
+    }
+
+    // 0x00458CD9
+    void IndustryObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    {
+        Interop::registers regs;
+        regs.esi = Interop::X86Pointer(this);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
+        Interop::call(0x00458CD9, regs);
+    }
+
+    // 0x0045919D
+    void IndustryObject::unload()
+    {
+        name = 0;
+        var_02 = 0;
+        nameClosingDown = 0;
+        nameUpProduction = 0;
+        nameDownProduction = 0;
+        nameSingular = 0;
+        namePlural = 0;
+
+        var_0E = 0;
+        var_12 = 0;
+        var_16 = 0;
+        var_1A = 0;
+        var_20 = 0;
+        var_24 = 0;
+        std::fill(std::begin(var_28), std::end(var_28), 0);
+        var_38 = 0;
+        std::fill(std::begin(var_3C), std::end(var_3C), 0);
+        var_BE = 0;
+        std::fill(std::begin(produced_cargo_type), std::end(produced_cargo_type), 0);
+        std::fill(std::begin(required_cargo_type), std::end(required_cargo_type), 0);
+        var_ED = 0;
+        var_EE = 0;
+        var_EF = 0;
+        var_F0 = 0;
+        var_F1 = 0;
+        var_F2 = 0;
+    }
 }

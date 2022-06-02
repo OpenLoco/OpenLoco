@@ -94,6 +94,7 @@
     <ClCompile Include="Objects\BridgeObject.cpp" />
     <ClCompile Include="Objects\BuildingObject.cpp" />
     <ClCompile Include="Objects\CargoObject.cpp" />
+    <ClCompile Include="Objects\ClimateObject.cpp" />
     <ClCompile Include="Objects\CompetitorObject.cpp" />
     <ClCompile Include="Objects\CurrencyObject.cpp" />
     <ClCompile Include="Objects\DockObject.cpp" />
@@ -109,6 +110,7 @@
     <ClCompile Include="Objects\RoadStationObject.cpp" />
     <ClCompile Include="Objects\RockObject.cpp" />
     <ClCompile Include="Objects\ScaffoldingObject.cpp" />
+    <ClCompile Include="Objects\ScenarioTextObject.cpp" />
     <ClCompile Include="Objects\SnowObject.cpp" />
     <ClCompile Include="Objects\SoundObject.cpp" />
     <ClCompile Include="Objects\SteamObject.cpp" />

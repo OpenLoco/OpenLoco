@@ -1,6 +1,7 @@
 #include "CompetitorObject.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
+#include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 
@@ -46,6 +47,43 @@ namespace OpenLoco
 
             Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_competitiveness, &args);
         }
+    }
+
+    // 0x00434D24
+    bool CompetitorObject::validate() const
+    {
+        if (!(emotions & (1 << 0)))
+        {
+            return false;
+        }
+        if (intelligence < 1 || intelligence > 9)
+        {
+            return false;
+        }
+        if (aggressiveness < 1 || aggressiveness > 9)
+        {
+            return false;
+        }
+        return competitiveness >= 1 && competitiveness <= 9;
+    }
+
+    // 0x00434CA0
+    void CompetitorObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    {
+        Interop::registers regs;
+        regs.esi = Interop::X86Pointer(this);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
+        Interop::call(0x00434CA0, regs);
+    }
+
+    // 0x00434D08
+    void CompetitorObject::unload()
+    {
+        var_00 = 0;
+        var_02 = 0;
+
+        std::fill(std::begin(images), std::end(images), 0);
     }
 
     static std::array<string_id, 10> aiRatingToLevelArray = {

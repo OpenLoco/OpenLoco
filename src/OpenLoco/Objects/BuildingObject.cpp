@@ -37,4 +37,37 @@ namespace OpenLoco
         Ui::Point rowPosition = { x, y };
         ObjectManager::drawGenericDescription(context, rowPosition, designedYear, obsoleteYear);
     }
+
+    // 0x0042DE1E
+    bool BuildingObject::validate() const
+    {
+        if ((var_06 == 0) || (var_06 > 63))
+        {
+            return false;
+        }
+        return (numVariations != 0) && (numVariations <= 31);
+    }
+
+    // 0x0042DBE8
+    void BuildingObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    {
+        Interop::registers regs;
+        regs.esi = Interop::X86Pointer(this);
+        regs.ebx = handle.id;
+        regs.ecx = enumValue(handle.type);
+        Interop::call(0x0042DBE8, regs);
+    }
+
+    // 0x0042DDC4
+    void BuildingObject::unload()
+    {
+        name = 0;
+        image = 0;
+        varationHeights = nullptr;
+        var_0C = 0;
+        std::fill(std::begin(variationsArr10), std::end(variationsArr10), nullptr);
+        std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
+        std::fill(std::begin(var_A4), std::end(var_A4), 0);
+        std::fill(std::begin(var_AE), std::end(var_AE), 0);
+    }
 }

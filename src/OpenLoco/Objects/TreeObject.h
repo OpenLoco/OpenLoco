@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "../Types.hpp"
 #include "Object.h"
 #include <array>
@@ -41,15 +42,20 @@ namespace OpenLoco
         uint8_t var_3C;
         uint8_t season_state; // 0x3D (index for sprites, seasons + dying)
         uint8_t var_3E;
-        uint8_t cost_index;         // 0x3F
-        uint16_t build_cost_factor; // 0x40
-        uint16_t clear_cost_factor; // 0x42
-        uint32_t colours;           // 0x44
-        int16_t rating;             // 0x48
+        uint8_t cost_index;        // 0x3F
+        int16_t build_cost_factor; // 0x40
+        int16_t clear_cost_factor; // 0x42
+        uint32_t colours;          // 0x44
+        int16_t rating;            // 0x48
         uint16_t var_4A;
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         uint8_t getTreeGrowthDisplayOffset() const;
+        bool validate() const;
+        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void unload();
     };
 #pragma pack(pop)
+
+    static_assert(sizeof(TreeObject) == 0x4C);
 }
