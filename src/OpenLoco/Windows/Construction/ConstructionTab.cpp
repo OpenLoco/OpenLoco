@@ -1774,7 +1774,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     // 0x0049FD66
     // Places/removes the ghost, gets price, resets active widgets, updates the construction arrow
-    // Ideally only constructin arrow should be updated here the reason for doing the rest every update
+    // Ideally only construction arrow should be updated here the reason for doing the rest every update
     // instead of only in toolUpdate is unknown (but probably just to catch edge cases)
     static void updateConstruction()
     {
