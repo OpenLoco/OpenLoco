@@ -45,7 +45,7 @@ namespace OpenLoco::Input
     {
         constexpr uint8_t enable = 1 << 0;
         constexpr uint8_t enableConstruct = (1 << 1);
-        constexpr uint8_t unk_02 = 1 << 2;
+        constexpr uint8_t enableConstructionArrow = 1 << 2;
         constexpr uint8_t unk_03 = 1 << 3;
         constexpr uint8_t unk_04 = 1 << 4; // Vehicle orders?
         constexpr uint8_t catchmentArea = 1 << 5;

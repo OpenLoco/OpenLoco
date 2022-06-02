@@ -47,7 +47,7 @@ namespace OpenLoco::Paint
     {
         static loco_global<Map::Pos3, 0x00F24942> _constructionArrowLocation;
         static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::unk_02))
+        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow))
         {
             return;
         }

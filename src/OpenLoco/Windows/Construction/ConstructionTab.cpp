@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _constructionZ = newPosition.z;
             _constructionRotation = trackSize.rotationEnd;
             _byte_522096 = 0;
-            _byte_1136066 = 0;
+            _constructionArrowFrameNum = 0;
             if (_lastSelectedTrackPiece >= 9)
             {
                 _lastSelectedTrackPiece = 0;
@@ -290,7 +290,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _constructionZ = newPosition.z;
         _constructionRotation = trackSize.rotationEnd;
         _byte_522096 = 0;
-        _byte_1136066 = 0;
+        _constructionArrowFrameNum = 0;
         if (_lastSelectedTrackPiece >= 9)
         {
             _lastSelectedTrackPiece = 0;
@@ -1748,10 +1748,75 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    static void sub_49FD66()
+    static std::optional<GameCommands::RoadPlacementArgs> getRoadPlacementArgs(const Map::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation);
+    static std::optional<GameCommands::TrackPlacementArgs> getTrackPlacementArgs(const Map::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation);
+    static uint32_t placeRoadGhost(const GameCommands::RoadPlacementArgs& args);
+    static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args);
+    static void sub_4A193B();
+
+    static void updateConstructionArrow()
     {
-        registers regs;
-        call(0x0049FD66, regs);
+        _constructionArrowFrameNum = _constructionArrowFrameNum - 1;
+        if (_constructionArrowFrameNum == 0xFF)
+        {
+            _constructionArrowFrameNum = 5;
+            _byte_522096 = _byte_522096 ^ (1 << 0);
+            _constructionArrowPos = Map::Pos3(_x, _y, _constructionZ);
+            _constructionArrowDirection = _constructionRotation;
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
+            if (_byte_522096 & (1 << 0))
+            {
+                Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstructionArrow);
+            }
+            Map::TileManager::mapInvalidateTileFull(Map::Pos2(_x, _y));
+        }
+    }
+
+    // 0x0049FD66
+    // Places/removes the ghost, gets price, resets active widgets, updates the construction arrow
+    // Ideally only construction arrow should be updated here the reason for doing the rest every update
+    // instead of only in toolUpdate is unknown (but probably just to catch edge cases)
+    static void updateConstruction()
+    {
+        if (_constructionHover != 0)
+        {
+            return;
+        }
+        if (!(_byte_522096 & (1 << 1)))
+        {
+            if (_trackType & (1 << 7))
+            {
+
+                auto args = getRoadPlacementArgs(Map::Pos3(_x, _y, _constructionZ), _lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+                if (args)
+                {
+                    _trackCost = placeRoadGhost(*args);
+                    _byte_1136076 = _byte_1136073;
+                    sub_4A193B();
+                    activateSelectedConstructionWidgets();
+                }
+                else
+                {
+                    removeTrackGhosts();
+                }
+            }
+            else
+            {
+                auto args = getTrackPlacementArgs(Map::Pos3(_x, _y, _constructionZ), _lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+                if (args)
+                {
+                    _trackCost = placeTrackGhost(*args);
+                    _byte_1136076 = _byte_1136073;
+                    sub_4A193B();
+                    activateSelectedConstructionWidgets();
+                }
+                else
+                {
+                    removeTrackGhosts();
+                }
+            }
+        }
+        updateConstructionArrow();
     }
 
     // 0x0049DCA2
@@ -1771,7 +1836,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (Input::isToolActive(WindowType::construction, self->number))
                 Input::toolCancel();
         }
-        sub_49FD66();
+        updateConstruction();
     }
 
     // Simplified TileManager::getHeight that only considers flat height
@@ -1865,7 +1930,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _y = mapPos.y;
             _constructionZ = height;
             _byte_522096 = 0;
-            _byte_1136066 = 0;
+            _constructionArrowFrameNum = 0;
 
             activateSelectedConstructionWidgets();
             auto window = WindowManager::find(WindowType::construction);
@@ -2265,7 +2330,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void onToolUpdateTrack(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
     {
         Map::TileManager::mapInvalidateMapSelectionTiles();
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
 
         Pos2 constructPos;
         int16_t constructHeight = 0;
@@ -2290,7 +2355,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _makeJunction = 0;
         }
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
 
         _constructionArrowPos = Map::Pos3(constructPos.x, constructPos.y, constructHeight);
@@ -2362,7 +2427,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         int16_t constructHeight = getMaxConstructHeightFromExistingSelection();
         _word_1136000 = constructHeight;
 
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
 
         Pos2 constructPos;
         const auto junctionRes = tryMakeJunction(x, y);

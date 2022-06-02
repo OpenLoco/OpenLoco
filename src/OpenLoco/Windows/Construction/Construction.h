@@ -83,7 +83,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x01136063> _byte_1136063;
     static loco_global<uint8_t, 0x01136064> _constructionRotation;
     static loco_global<uint8_t, 0x01136065> _byte_1136065;
-    static loco_global<uint8_t, 0x01136066> _byte_1136066;
+    static loco_global<uint8_t, 0x01136066> _constructionArrowFrameNum;
     static loco_global<uint8_t, 0x01136067> _lastSelectedTrackPiece;
     static loco_global<uint8_t, 0x01136068> _lastSelectedTrackGradient;
     static loco_global<uint8_t, 0x0113606E> _lastSelectedTrackModSection;
