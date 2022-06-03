@@ -6,12 +6,12 @@ namespace OpenLoco::Drawing
 {
 
     template<DrawBlendOp TBlendOp>
-    bool blitPixel(uint8_t src, uint8_t& dst, const Gfx::PaletteMap& paletteMap, const uint8_t treeWilt)
+    bool blitPixel(uint8_t src, uint8_t& dst, const Gfx::PaletteMap& paletteMap, const uint8_t noiseMask)
     {
-        if constexpr ((TBlendOp & BlendOp::treeWilt) != 0)
+        if constexpr ((TBlendOp & BlendOp::noiseMask) != 0)
         {
-            // TreeWilt is either 0 or 0xFF
-            src &= treeWilt;
+            // noiseMask is either 0 or 0xFF
+            src &= noiseMask;
         }
         if constexpr (TBlendOp & BlendOp::transparent)
         {

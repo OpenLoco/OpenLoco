@@ -42,15 +42,15 @@ namespace OpenLoco::Gfx
     // 0x009DA3E0
     // Originally 0x009DA3E0 was an array of the image data pointers setup within 0x00452336
     // We have removed that step and instead work directly on the images.
-    static constexpr std::array<uint32_t, 8> _treeWiltImages = {
+    static constexpr std::array<uint32_t, 8> _noiseMaskImages = {
         ImageIds::null,
-        ImageIds::tree_wilt_palette_map_1,
-        ImageIds::tree_wilt_palette_map_2,
-        ImageIds::tree_wilt_palette_map_3,
-        ImageIds::tree_wilt_palette_map_4,
-        ImageIds::tree_wilt_palette_map_5,
-        ImageIds::tree_wilt_palette_map_6,
-        ImageIds::tree_wilt_palette_map_7,
+        ImageIds::noise_mask_1,
+        ImageIds::noise_mask_2,
+        ImageIds::noise_mask_3,
+        ImageIds::noise_mask_4,
+        ImageIds::noise_mask_5,
+        ImageIds::noise_mask_6,
+        ImageIds::noise_mask_7,
     };
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
@@ -61,7 +61,7 @@ namespace OpenLoco::Gfx
     static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
     static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
     loco_global<uint32_t, 0x00E04324> _E04324;
-    loco_global<const uint8_t*, 0x009DA3D8> _treeWiltImageData;
+    loco_global<const uint8_t*, 0x009DA3D8> _noiseMaskImageData;
 
     static PaletteIndex_t _textColours[8] = { 0 };
 
@@ -297,7 +297,7 @@ namespace OpenLoco::Gfx
     }
 
     // 0x00452336
-    void initialiseTreeWiltPaletteMap()
+    void initialiseNoiseMaskMap()
     {
         call(0x00452336);
     }
@@ -1463,17 +1463,17 @@ namespace OpenLoco::Gfx
         }
     }
 
-    static const G1Element* getTreeWiltImageFromImage(const ImageId image)
+    static const G1Element* getNoiseMaskImageFromImage(const ImageId image)
     {
-        if (image.hasTreeWilt())
+        if (image.hasNoiseMask())
         {
-            const auto wilt = image.getTreeWilt();
-            const auto* wiltImage = getG1Element(_treeWiltImages[wilt]);
-            if (wiltImage == nullptr)
+            const auto noise = image.getNoiseMask();
+            const auto* noiseImage = getG1Element(_noiseMaskImages[noise]);
+            if (noiseImage == nullptr)
             {
                 return nullptr;
             }
-            return wiltImage;
+            return noiseImage;
         }
         else
         {
@@ -1490,16 +1490,16 @@ namespace OpenLoco::Gfx
     // 0x00448C79
     void drawImage(Gfx::Context& context, const Ui::Point& pos, const ImageId& image)
     {
-        const auto* treeWiltImage = getTreeWiltImageFromImage(image);
+        const auto* noiseImage = getNoiseMaskImageFromImage(image);
         const auto palette = getPaletteMapFromImage(image);
 
         if (!palette.has_value())
         {
-            drawImagePaletteSet(context, pos, image, PaletteMap::getDefault(), treeWiltImage);
+            drawImagePaletteSet(context, pos, image, PaletteMap::getDefault(), noiseImage);
         }
         else
         {
-            drawImagePaletteSet(context, pos, image, *palette, treeWiltImage);
+            drawImagePaletteSet(context, pos, image, *palette, noiseImage);
         }
     }
 
@@ -1671,19 +1671,19 @@ namespace OpenLoco::Gfx
     }
 
     template<uint8_t TZoomLevel, bool TIsRLE>
-    static void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMap& palette, const G1Element* treeWiltImage)
+    static void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMap& palette, const G1Element* noiseImage)
     {
         auto args = getDrawImagePosArgs<TZoomLevel, TIsRLE>(context, pos, element);
         if (args.has_value())
         {
-            const DrawSpriteArgs fullArgs{ palette, element, args->srcPos, args->dstPos, args->size, treeWiltImage };
+            const DrawSpriteArgs fullArgs{ palette, element, args->srcPos, args->dstPos, args->size, noiseImage };
             const auto op = Drawing::getDrawBlendOp(image, fullArgs);
             Drawing::drawSpriteToBuffer<TZoomLevel, TIsRLE>(context, fullArgs, op);
         }
     }
 
     // 0x00448D90
-    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* treeWiltImage)
+    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* noiseImage)
     {
         const auto* element = getG1Element(image.getIndex());
         if (element == nullptr)
@@ -1704,7 +1704,7 @@ namespace OpenLoco::Gfx
 
             const auto zoomCoords = Ui::Point(pos.x >> 1, pos.y >> 1);
             drawImagePaletteSet(
-                zoomedContext, zoomCoords, image.withIndexOffset(-element->zoomOffset), palette, treeWiltImage);
+                zoomedContext, zoomCoords, image.withIndexOffset(-element->zoomOffset), palette, noiseImage);
             return;
         }
 
@@ -1714,16 +1714,16 @@ namespace OpenLoco::Gfx
             switch (context.zoom_level)
             {
                 default:
-                    drawImagePaletteSet<0, true>(context, pos, image, *element, palette, treeWiltImage);
+                    drawImagePaletteSet<0, true>(context, pos, image, *element, palette, noiseImage);
                     break;
                 case 1:
-                    drawImagePaletteSet<1, true>(context, pos, image, *element, palette, treeWiltImage);
+                    drawImagePaletteSet<1, true>(context, pos, image, *element, palette, noiseImage);
                     break;
                 case 2:
-                    drawImagePaletteSet<2, true>(context, pos, image, *element, palette, treeWiltImage);
+                    drawImagePaletteSet<2, true>(context, pos, image, *element, palette, noiseImage);
                     break;
                 case 3:
-                    drawImagePaletteSet<3, true>(context, pos, image, *element, palette, treeWiltImage);
+                    drawImagePaletteSet<3, true>(context, pos, image, *element, palette, noiseImage);
                     break;
             }
         }
@@ -1732,16 +1732,16 @@ namespace OpenLoco::Gfx
             switch (context.zoom_level)
             {
                 default:
-                    drawImagePaletteSet<0, false>(context, pos, image, *element, palette, treeWiltImage);
+                    drawImagePaletteSet<0, false>(context, pos, image, *element, palette, noiseImage);
                     break;
                 case 1:
-                    drawImagePaletteSet<1, false>(context, pos, image, *element, palette, treeWiltImage);
+                    drawImagePaletteSet<1, false>(context, pos, image, *element, palette, noiseImage);
                     break;
                 case 2:
-                    drawImagePaletteSet<2, false>(context, pos, image, *element, palette, treeWiltImage);
+                    drawImagePaletteSet<2, false>(context, pos, image, *element, palette, noiseImage);
                     break;
                 case 3:
-                    drawImagePaletteSet<3, false>(context, pos, image, *element, palette, treeWiltImage);
+                    drawImagePaletteSet<3, false>(context, pos, image, *element, palette, noiseImage);
                     break;
             }
         }
