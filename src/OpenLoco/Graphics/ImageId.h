@@ -104,7 +104,7 @@ namespace OpenLoco
 
         constexpr bool hasNoiseMask() const
         {
-            return !isBlended() && (getNoiseMask() != 0);
+            return !isBlended() && !hasSecondary() && (getNoiseMask() != 0);
         }
 
         constexpr bool isRemap() const
