@@ -403,7 +403,7 @@ namespace OpenLoco
         Gfx::loadG1();
         Ui::ProgressBar::setProgress(220);
         Gfx::initialiseCharacterWidths();
-        Gfx::initialiseTreeWiltPaletteMap();
+        Gfx::initialiseNoiseMaskMap();
         Ui::ProgressBar::setProgress(235);
         Ui::ProgressBar::setProgress(250);
         Ui::initialiseCursors();

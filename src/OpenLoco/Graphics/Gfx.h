@@ -155,7 +155,7 @@ namespace OpenLoco::Gfx
 
     void loadG1();
     void initialiseCharacterWidths();
-    void initialiseTreeWiltPaletteMap();
+    void initialiseNoiseMaskMap();
     void clear(Context& context, uint32_t fill);
     void clearSingle(Context& context, uint8_t paletteId);
 
@@ -255,7 +255,7 @@ namespace OpenLoco::Gfx
     void drawImage(Gfx::Context* context, int16_t x, int16_t y, uint32_t image);
     void drawImage(Gfx::Context& context, const Ui::Point& pos, const ImageId& image);
     void drawImageSolid(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
-    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* treeWiltImage);
+    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* noiseImage);
     [[nodiscard]] uint32_t recolour(uint32_t image);
     [[nodiscard]] uint32_t recolour(uint32_t image, Colour colour);
     [[nodiscard]] uint32_t recolour(uint32_t image, ExtColour colour);

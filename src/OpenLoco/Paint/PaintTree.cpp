@@ -40,20 +40,20 @@ namespace OpenLoco::Paint
         const uint8_t altSeason = elTree.hasSnow() ? 1 : 0;
         bool hasImage2 = false;
         uint32_t imageIndex2 = 0;
-        uint8_t treeWilt = 0;
+        uint8_t noiseMask = 0;
         if (elTree.unk7l() != 7)
         {
             hasImage2 = true;
 
             season = _50076A[season];
-            treeWilt = elTree.unk7l() + 1;
+            noiseMask = elTree.unk7l() + 1;
             auto image2Season = elTree.season();
 
             if (_500770[image2Season])
             {
                 image2Season = season;
                 season = elTree.season();
-                treeWilt = 8 - treeWilt;
+                noiseMask = 8 - noiseMask;
             }
             imageIndex2 = treeFrameNum + treeObj->sprites[altSeason][image2Season];
         }
@@ -85,13 +85,13 @@ namespace OpenLoco::Paint
         {
             // No vanilla object has this property set
             const auto colour = static_cast<Colour>(elTree.colour());
-            imageId2 = ImageId{ imageIndex2, colour }.withTreeWilt(treeWilt);
+            imageId2 = ImageId{ imageIndex2, colour }.withNoiseMask(noiseMask);
             imageId1 = ImageId{ imageIndex1, colour };
         }
         else
         {
             imageId1 = ImageId{ imageIndex1 };
-            imageId2 = ImageId{ imageIndex2 }.withTreeWilt(treeWilt);
+            imageId2 = ImageId{ imageIndex2 }.withNoiseMask(noiseMask);
         }
 
         if (shadowImageId)

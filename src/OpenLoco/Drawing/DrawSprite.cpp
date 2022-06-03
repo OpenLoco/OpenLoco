@@ -39,10 +39,10 @@ namespace OpenLoco::Drawing
             // Copy raw bitmap data to target but exclude transparent pixels
             op = BlendOp::transparent;
         }
-        // Vanilla did not handle tree wilt for rle compressed images
-        if (args.treeWiltImage != nullptr && !(args.sourceImage.flags & Gfx::G1ElementFlags::isRLECompressed))
+        // Vanilla did not handle noise image for rle compressed images
+        if (args.noiseImage != nullptr && !(args.sourceImage.flags & Gfx::G1ElementFlags::isRLECompressed))
         {
-            op |= BlendOp::treeWilt;
+            op |= BlendOp::noiseMask;
         }
         return op;
     }
@@ -69,14 +69,14 @@ namespace OpenLoco::Drawing
                 case BlendOp::transparent:
                     drawBMPSprite<BlendOp::transparent, TZoomLevel>(context, args);
                     break;
-                case BlendOp::transparent | BlendOp::src | BlendOp::treeWilt:
-                    drawBMPSprite<BlendOp::transparent | BlendOp::src | BlendOp::treeWilt, TZoomLevel>(context, args);
+                case BlendOp::transparent | BlendOp::src | BlendOp::noiseMask:
+                    drawBMPSprite<BlendOp::transparent | BlendOp::src | BlendOp::noiseMask, TZoomLevel>(context, args);
                     break;
-                case BlendOp::none | BlendOp::treeWilt:
-                    drawBMPSprite<BlendOp::none | BlendOp::treeWilt, TZoomLevel>(context, args);
+                case BlendOp::none | BlendOp::noiseMask:
+                    drawBMPSprite<BlendOp::none | BlendOp::noiseMask, TZoomLevel>(context, args);
                     break;
-                case BlendOp::transparent | BlendOp::treeWilt:
-                    drawBMPSprite<BlendOp::transparent | BlendOp::treeWilt, TZoomLevel>(context, args);
+                case BlendOp::transparent | BlendOp::noiseMask:
+                    drawBMPSprite<BlendOp::transparent | BlendOp::noiseMask, TZoomLevel>(context, args);
                     break;
                 default:
                     assert(false);

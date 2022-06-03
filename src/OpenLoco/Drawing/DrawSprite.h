@@ -24,15 +24,15 @@ namespace OpenLoco::Drawing
         Ui::Point32 srcPos;
         Ui::Point32 dstPos;
         Ui::Size size;
-        const Gfx::G1Element* treeWiltImage;
+        const Gfx::G1Element* noiseImage;
         DrawSpriteArgs(
-            const Gfx::PaletteMap& _palMap, const Gfx::G1Element& _sourceImage, const Ui::Point32& _srcPos, const Ui::Point32& _dstPos, const Ui::Size& _size, const Gfx::G1Element* _treeWiltImage)
+            const Gfx::PaletteMap& _palMap, const Gfx::G1Element& _sourceImage, const Ui::Point32& _srcPos, const Ui::Point32& _dstPos, const Ui::Size& _size, const Gfx::G1Element* _noiseImage)
             : palMap(_palMap)
             , sourceImage(_sourceImage)
             , srcPos(_srcPos)
             , dstPos(_dstPos)
             , size(_size)
-            , treeWiltImage(_treeWiltImage)
+            , noiseImage(_noiseImage)
         {
         }
     };
@@ -62,9 +62,9 @@ namespace OpenLoco::Drawing
         constexpr DrawBlendOp dst = 1 << 2;
 
         /**
-         * Whether to use the tree wilt image to prevent draws on certain parts of the image.
+         * Whether to use the noise image to prevent draws on certain parts of the image.
          */
-        constexpr DrawBlendOp treeWilt = 1 << 3;
+        constexpr DrawBlendOp noiseMask = 1 << 3;
     }
 
     DrawBlendOp getDrawBlendOp(const ImageId image, const DrawSpriteArgs& args);

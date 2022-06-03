@@ -1313,13 +1313,13 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t smoke_10 = 3475;
     constexpr uint32_t smoke_11 = 3476;
 
-    constexpr uint32_t tree_wilt_palette_map_1 = 3479; // Map zero is use no wilting
-    constexpr uint32_t tree_wilt_palette_map_2 = 3480;
-    constexpr uint32_t tree_wilt_palette_map_3 = 3481;
-    constexpr uint32_t tree_wilt_palette_map_4 = 3482;
-    constexpr uint32_t tree_wilt_palette_map_5 = 3483;
-    constexpr uint32_t tree_wilt_palette_map_6 = 3484;
-    constexpr uint32_t tree_wilt_palette_map_7 = 3485;
+    constexpr uint32_t noise_mask_1 = 3479; // mask zero is use no masking
+    constexpr uint32_t noise_mask_2 = 3480;
+    constexpr uint32_t noise_mask_3 = 3481;
+    constexpr uint32_t noise_mask_4 = 3482;
+    constexpr uint32_t noise_mask_5 = 3483;
+    constexpr uint32_t noise_mask_6 = 3484;
+    constexpr uint32_t noise_mask_7 = 3485;
 
     constexpr uint32_t tab_object_settings = 3505;
     constexpr uint32_t tab_object_audio = 3506;

@@ -21,21 +21,21 @@ namespace OpenLoco::Drawing
         dst += dstLineWidth * args.dstPos.y + args.dstPos.x;
 
         constexpr auto zoom = 1 << TZoomLevel;
-        if constexpr ((TBlendOp & BlendOp::treeWilt) != 0)
+        if constexpr ((TBlendOp & BlendOp::noiseMask) != 0)
         {
-            const auto* treeWilt = args.treeWiltImage->offset + ((static_cast<size_t>(g1.width) * args.srcPos.y) + args.srcPos.x);
+            const auto* noiseMask = args.noiseImage->offset + ((static_cast<size_t>(g1.width) * args.srcPos.y) + args.srcPos.x);
             for (; height > 0; height -= zoom)
             {
                 auto* nextSrc = src + srcLineWidth;
                 auto* nextDst = dst + dstLineWidth;
-                auto* nextTreeWilt = treeWilt + srcLineWidth;
-                for (int32_t widthRemaining = width; widthRemaining > 0; widthRemaining -= zoom, src += zoom, treeWilt += zoom, dst++)
+                auto* nextNoiseMask = noiseMask + srcLineWidth;
+                for (int32_t widthRemaining = width; widthRemaining > 0; widthRemaining -= zoom, src += zoom, noiseMask += zoom, dst++)
                 {
-                    blitPixel<TBlendOp>(*src, *dst, paletteMap, *treeWilt);
+                    blitPixel<TBlendOp>(*src, *dst, paletteMap, *noiseMask);
                 }
                 src = nextSrc;
                 dst = nextDst;
-                treeWilt = nextTreeWilt;
+                noiseMask = nextNoiseMask;
             }
         }
         else

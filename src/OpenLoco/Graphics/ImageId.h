@@ -24,7 +24,7 @@ namespace OpenLoco
         static constexpr uint32_t kMaskTranslucent  = 0b00000111111110000000000000000000;
         static constexpr uint32_t kMaskPrimary      = 0b00000000111110000000000000000000;
         static constexpr uint32_t kMaskSecondary    = 0b00011111000000000000000000000000;
-        static constexpr uint32_t kMaskTreeWilt     = 0b00011100000000000000000000000000;
+        static constexpr uint32_t kMaskNoiseMask     = 0b00011100000000000000000000000000;
         static constexpr uint32_t kFlagPrimary      = 0b00100000000000000000000000000000;
         static constexpr uint32_t kFlagBlend        = 0b01000000000000000000000000000000;
         static constexpr uint32_t kFlagSecondary    = 0b10000000000000000000000000000000;
@@ -32,12 +32,12 @@ namespace OpenLoco
         static constexpr uint32_t kShiftPrimary     = 19;
         static constexpr uint32_t kShiftTranslucent = 19;
         static constexpr uint32_t kShiftSecondary   = 24;
-        static constexpr uint32_t kShiftTreeWilt    = 26;
+        static constexpr uint32_t kShiftNoiseMask    = 26;
         static constexpr uint32_t kIndexUndefined   = 0b00000000000001111111111111111111;
         static constexpr uint32_t kValueUndefined   = kIndexUndefined;
         // clang-format on
 
-        // Tree wilt can be used with NONE and PRIMARY
+        // Noise mask can be used with NONE and PRIMARY
         // NONE = No remap
         // BLENDED = No source copy, remap destination only (glass)
         // PRIMARY | BLENDED = Destination is blended with source (water)
@@ -102,9 +102,9 @@ namespace OpenLoco
             return _index & kFlagSecondary;
         }
 
-        constexpr bool hasTreeWilt() const
+        constexpr bool hasNoiseMask() const
         {
-            return !isBlended() && (getTreeWilt() != 0);
+            return !isBlended() && !hasSecondary() && (getNoiseMask() != 0);
         }
 
         constexpr bool isRemap() const
@@ -142,9 +142,9 @@ namespace OpenLoco
             return static_cast<Colour>((_index & kMaskSecondary) >> kShiftSecondary);
         }
 
-        constexpr uint8_t getTreeWilt() const
+        constexpr uint8_t getNoiseMask() const
         {
-            return (_index & kMaskTreeWilt) >> kShiftTreeWilt;
+            return (_index & kMaskNoiseMask) >> kShiftNoiseMask;
         }
 
         constexpr ImageId withIndex(ImageIndex index) const
@@ -165,7 +165,7 @@ namespace OpenLoco
         constexpr ImageId withRemap(ExtColour paletteId) const
         {
             ImageId result = *this;
-            assert(enumValue(paletteId) <= 0x7F); // If larger then it eats into treeWilt
+            assert(enumValue(paletteId) <= 0x7F); // If larger then it eats into noiseMask
             result._index &= ~(kMaskRemap | kFlagSecondary | kFlagBlend);
             result._index |= enumValue(paletteId) << kShiftRemap;
             result._index |= kFlagPrimary;
@@ -173,11 +173,11 @@ namespace OpenLoco
         }
 
         // Can be used withRemap or withPrimary or with None
-        constexpr ImageId withTreeWilt(uint8_t wilt) const
+        constexpr ImageId withNoiseMask(uint8_t noise) const
         {
             ImageId result = *this;
-            result._index &= ~(kMaskTreeWilt | kFlagSecondary | kFlagBlend);
-            result._index |= wilt << kShiftTreeWilt;
+            result._index &= ~(kMaskNoiseMask | kFlagSecondary | kFlagBlend);
+            result._index |= noise << kShiftNoiseMask;
             return result;
         }
 
