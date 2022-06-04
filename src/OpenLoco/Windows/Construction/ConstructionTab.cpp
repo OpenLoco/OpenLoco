@@ -2549,10 +2549,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto backupConstructionArrowPos = _constructionArrowPos;
         const auto backupConstructionArrowDir = _constructionArrowDirection;
 
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_02);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
         if (_byte_522096 & (1 << 1))
         {
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::unk_02);
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstructionArrow);
             _constructionArrowPos = pos;
             _constructionArrowDirection = direction;
         }
