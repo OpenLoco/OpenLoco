@@ -63,8 +63,8 @@ namespace OpenLoco::Paint
         if (elTrack.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            _trackImageId1 = Gfx::applyGhostToImage(_trackImageId1);
-            _trackImageId2 = Gfx::applyGhostToImage(_trackImageId2);
+            _trackImageId1 = Gfx::applyGhostToImage(_trackImageId1).toUInt32();
+            _trackImageId2 = Gfx::applyGhostToImage(_trackImageId2).toUInt32();
         }
 
         _trackBaseImageId |= _trackImageId1;
@@ -96,7 +96,7 @@ namespace OpenLoco::Paint
             }
             else if (elTrack.hasGhostMods() && ghostMods & (1 << mod))
             {
-                _trackExtraImageId = Gfx::applyGhostToImage(trackExtraObj->image);
+                _trackExtraImageId = Gfx::applyGhostToImage(trackExtraObj->image).toUInt32();
             }
             else
             {
@@ -105,7 +105,7 @@ namespace OpenLoco::Paint
 
             session.setTrackModId(mod);
 
-            const auto trackExtraPaintFunc = _trackExtraPaintModes[trackExtraObj->is_overhead][elTrack.trackId()][rotation];
+            const auto trackExtraPaintFunc = _trackExtraPaintModes[trackExtraObj->paintStyle][elTrack.trackId()][rotation];
             registers regs;
             regs.esi = X86Pointer(&elTrack);
             regs.ebp = elTrack.sequenceIndex();
