@@ -244,9 +244,14 @@ namespace OpenLoco::Vehicles::OrderManager
     // Remove vehicle ?orders?
     void freeOrders(VehicleHead* const head)
     {
-        sub_470795(head->orderTableOffset, head->sizeOfOrderTable * -1);
-        auto length = numOrders() - head->orderTableOffset - head->sizeOfOrderTable;
-        memmove(&orders()[head->orderTableOffset], &orders()[head->sizeOfOrderTable + head->orderTableOffset], length);
+        // Copy the offset as it will get modified during sub_470795
+        const auto offset = head->orderTableOffset;
+        const auto size = head->sizeOfOrderTable;
+
+        sub_470795(offset, -size);
+
+        // Fold orders table left to remove empty orders
+        std::rotate(&orders()[offset], &orders()[offset + size], &orders()[numOrders()]);
 
         numOrders() -= head->sizeOfOrderTable;
     }
