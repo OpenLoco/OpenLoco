@@ -654,8 +654,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         uint8_t rotation;
         uint8_t roadId;
 
-        auto x = _x;
-        auto y = _y;
+        const uint16_t x = _x;
+        const uint16_t y = _y;
 
         if (!road)
         {
@@ -829,8 +829,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         uint8_t rotation;
         uint8_t trackId;
-        auto x = _x;
-        auto y = _y;
+        const uint16_t x = _x;
+        const uint16_t y = _y;
 
         if (!track)
         {

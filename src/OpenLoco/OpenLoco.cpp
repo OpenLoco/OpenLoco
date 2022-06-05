@@ -876,7 +876,7 @@ namespace OpenLoco
         if (_50C197 != 0)
         {
             auto title = StringIds::error_unable_to_load_saved_game;
-            auto message = _50C198;
+            string_id message = _50C198;
             if (_50C197 == -2)
             {
                 title = _50C198;

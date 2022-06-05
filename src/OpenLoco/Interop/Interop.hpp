@@ -53,8 +53,8 @@ namespace OpenLoco::Interop
 
 #pragma pack(push, 1)
     /**
-    * x86 register structure, only used for easy interop to Locomotion code.
-    */
+     * x86 register structure, only used for easy interop to Locomotion code.
+     */
     struct registers
     {
         union
@@ -140,17 +140,17 @@ namespace OpenLoco::Interop
     }
 
     /**
-    * Returns the flags register
-    *
-    * Flags register is as follows:
-    * 0bSZ0A_0P0C_0000_0000
-    * S = Signed flag
-    * Z = Zero flag
-    * C = Carry flag
-    * A = Adjust flag
-    * P = Parity flag
-    * All other bits are undefined.
-    */
+     * Returns the flags register
+     *
+     * Flags register is as follows:
+     * 0bSZ0A_0P0C_0000_0000
+     * S = Signed flag
+     * Z = Zero flag
+     * C = Carry flag
+     * A = Adjust flag
+     * P = Parity flag
+     * All other bits are undefined.
+     */
     int32_t call(int32_t address);
     int32_t call(int32_t address, registers& registers);
 
@@ -171,6 +171,8 @@ namespace OpenLoco::Interop
         {
             _Myptr = &(addr<TAddress, T>());
         }
+
+        loco_global(const loco_global<T, TAddress>&) = delete; // Do not copy construct a loco global
 
         operator reference()
         {

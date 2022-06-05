@@ -117,7 +117,7 @@ namespace OpenLoco::Title
         Scenario::sub_46115C();
         if (Intro::state() == Intro::State::none)
         {
-            auto backupWord = _525F62;
+            uint16_t backupWord = _525F62;
             auto titlePath = Environment::getPath(Environment::PathId::title);
             clearScreenFlag(ScreenFlags::networked);
             S5::load(titlePath, S5::LoadFlags::titleSequence);
