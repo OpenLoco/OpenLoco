@@ -331,6 +331,9 @@ namespace OpenLoco::Paint
         _quadrantFrontIndex = 0;
         _lastPaintString = 0;
         _paintStringHead = 0;
+
+        addr<0x00E3F0BC, uint16_t>() = viewportFlags; // Remove when all users of 0x00E3F0BC implemented
+        viewFlags = viewportFlags;
     }
 
     // 0x0045A6CA
@@ -750,6 +753,12 @@ namespace OpenLoco::Paint
         {
             psCache = arrangeStructsHelper(psCache, quadrantIndex & 0xFFFF, 0, currentRotation);
         }
+    }
+
+    // 0x0045EA23
+    void PaintSession::drawStructs()
+    {
+        call(0x0045EA23);
     }
 
     // 0x00447A5F

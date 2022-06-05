@@ -496,26 +496,20 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 clipped->x += screenPos.x;
                 clipped->y += screenPos.y;
 
-                _dword_E0C3E0 = &*clipped;
+                const auto previewPos = Map::Pos3(256 * Map::tile_size, 256 * Map::tile_size, 116 * Map::kSmallZStep);
 
-                x = 0x2000;
-                y = 0x2000;
-
-                auto company = CompanyManager::getPlayerCompany();
-                auto companyColour = company->mainColours.primary;
                 _byte_522095 = _byte_522095 | (1 << 0);
 
                 if (_trackType & (1 << 7))
                 {
                     uint8_t trackType = _trackType & ~(1 << 7);
-                    Construction::drawRoad(x, y, _lastSelectedMods, 0x1D0, trackType, 0, enumValue(companyColour), WindowManager::getCurrentRotation());
+                    Construction::drawRoad(previewPos, _lastSelectedMods, trackType, 0, WindowManager::getCurrentRotation(), *clipped);
                 }
                 else
                 {
-                    Construction::drawTrack(x, y, _lastSelectedMods, 0x1D0, _trackType, 0, enumValue(companyColour), WindowManager::getCurrentRotation());
+                    Construction::drawTrack(previewPos, _lastSelectedMods, _trackType, 0, WindowManager::getCurrentRotation(), *clipped);
                 }
                 _byte_522095 = _byte_522095 & ~(1 << 0);
-                _dword_E0C3E0 = nullptr;
             }
         }
 

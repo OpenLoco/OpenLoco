@@ -10,7 +10,10 @@
 #include "../../Objects/BridgeObject.h"
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/RoadObject.h"
+#include "../../Objects/TrackExtraObject.h"
 #include "../../Objects/TrackObject.h"
+#include "../../Paint/Paint.h"
+#include "../../Paint/PaintTile.h"
 #include "../../Station.h"
 #include "../../Ui/Dropdown.h"
 #include "../../Widget.h"
@@ -2537,26 +2540,108 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A0AE5
-    void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh)
+    void drawTrack(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::Context& context)
     {
-        registers regs;
-        regs.ax = x;
-        regs.cx = y;
-        regs.edi = selectedMods << 16 | di;
-        regs.bh = bh;
-        regs.edx = colour << 16 | trackPieceId << 8 | trackType;
-        call(0x004A0AE5, regs);
+        const uint16_t backupViewFlags = addr<0x00E3F0BC, uint16_t>(); // After all users of 0x00E3F0BC implemented this is not required
+        auto* session = Paint::allocateSession(context, 0);
+
+        const auto backupSelectionFlags = Input::getMapSelectionFlags();
+        const Map::Pos3 backupConstructionArrowPos = _constructionArrowPos;
+        const uint8_t backupConstructionArrowDir = _constructionArrowDirection;
+
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
+        if (_byte_522095 & (1 << 1))
+        {
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstructionArrow);
+            _constructionArrowPos = pos;
+            _constructionArrowDirection = direction;
+        }
+
+        const auto* trackObj = ObjectManager::get<TrackObject>(trackType);
+        // Remove any none compatible track mods
+        for (auto mod = 0; mod < 4; ++mod)
+        {
+            if (selectedMods & (1 << mod))
+            {
+                const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
+                if ((trackExtraObj->track_pieces & _trackPieceToFlags[trackPieceId]) != _trackPieceToFlags[trackPieceId])
+                {
+                    selectedMods &= ~(1 << mod);
+                }
+            }
+        }
+
+        const auto& trackPieces = TrackData::getTrackPiece(trackPieceId);
+        const auto trackDirection = direction & 3;
+
+        Map::TileElement backupTileElements[5] = {};
+
+        Map::SurfaceElement previewSideSurfaceTileElement{ 255, 255, 0xF, true };
+        previewSideSurfaceTileElement.setLastFlag(true);
+
+        for (const auto& trackPiece : trackPieces)
+        {
+            const auto pieceOffset = Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackDirection), trackPiece.z };
+            const auto quarterTile = trackPiece.subTileClearance.rotate(trackDirection);
+            const auto trackPos = pos + pieceOffset;
+            const auto baseZ = trackPos.z / kSmallZStep;
+            const auto clearZ = baseZ + (trackPiece.clearZ + 32) / kSmallZStep;
+
+            const auto centreTileCoords = Map::TilePos2{ trackPos };
+            const auto eastTileCoords = centreTileCoords + Map::offsets[1];
+            const auto westTileCoords = centreTileCoords - Map::offsets[1];
+            const auto northTileCoords = centreTileCoords + Map::offsets[3];
+            const auto southTileCoords = centreTileCoords - Map::offsets[3];
+
+            // Copy map elements which will be replaced with temporary ones containing track
+            backupTileElements[0] = *Map::TileManager::get(centreTileCoords)[0];
+            backupTileElements[1] = *Map::TileManager::get(eastTileCoords)[0];
+            backupTileElements[2] = *Map::TileManager::get(westTileCoords)[0];
+            backupTileElements[3] = *Map::TileManager::get(northTileCoords)[0];
+            backupTileElements[4] = *Map::TileManager::get(southTileCoords)[0];
+
+            // Set the temporary track element
+            Map::TrackElement newTrackEl(baseZ, clearZ, trackDirection, quarterTile.getBaseQuarterOccupied(), trackPiece.index, trackType, trackPieceId, std::nullopt, CompanyManager::getControllingId(), selectedMods);
+            newTrackEl.setLastFlag(true);
+
+            // Replace map elements with temp ones
+            *Map::TileManager::get(centreTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&newTrackEl);
+            *Map::TileManager::get(eastTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
+            *Map::TileManager::get(westTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
+            *Map::TileManager::get(northTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
+            *Map::TileManager::get(southTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
+
+            // Draw this map tile
+            Paint::paintTileElements(*session, trackPos);
+
+            // Restore map elements
+            *Map::TileManager::get(centreTileCoords)[0] = backupTileElements[0];
+            *Map::TileManager::get(eastTileCoords)[0] = backupTileElements[1];
+            *Map::TileManager::get(westTileCoords)[0] = backupTileElements[2];
+            *Map::TileManager::get(northTileCoords)[0] = backupTileElements[3];
+            *Map::TileManager::get(southTileCoords)[0] = backupTileElements[4];
+        }
+
+        session->arrangeStructs();
+        session->drawStructs();
+
+        Input::setMapSelectionFlags(backupSelectionFlags);
+        _constructionArrowPos = backupConstructionArrowPos;
+        _constructionArrowDirection = backupConstructionArrowDir;
+        Paint::allocateSession(context, backupViewFlags); // After all users of 0x00E3F0BC implemented this is not required
     }
 
     // 0x00478F1F
-    void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh)
+    void drawRoad(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::Context& context)
     {
+        static loco_global<Gfx::Context*, 0x00E0C3E0> _dword_E0C3E0;
+        _dword_E0C3E0 = &context;
         registers regs;
-        regs.ax = x;
-        regs.cx = y;
-        regs.edi = selectedMods << 16 | di;
-        regs.bh = bh;
-        regs.edx = colour << 16 | trackPieceId << 8 | trackType;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.edi = selectedMods << 16 | pos.z;
+        regs.bh = direction;
+        regs.edx = trackPieceId << 8 | trackType;
         call(0x00478F1F, regs);
     }
 
@@ -2593,11 +2678,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         pos.y -= height;
         clipped->x += pos.x;
         clipped->y += pos.y;
-        _dword_E0C3E0 = clipped;
 
         _byte_522095 = _byte_522095 | (1 << 1);
 
-        drawTrack(0x2000, 0x2000, _word_1135FD8, 0x1E0, _byte_1136077, _lastSelectedTrackPieceId, _word_1135FD6, _byte_1136078);
+        drawTrack(Map::Pos3(256 * Map::tile_size, 256 * Map::tile_size, 120 * Map::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
@@ -2614,11 +2698,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         pos.y -= height;
         clipped->x += pos.x;
         clipped->y += pos.y;
-        _dword_E0C3E0 = clipped;
 
         _byte_522095 = _byte_522095 | (1 << 1);
 
-        drawRoad(0x2000, 0x2000, _word_1135FD8, 0x1E0, _byte_1136077, _lastSelectedTrackPieceId, _word_1135FD6, _byte_1136078);
+        drawRoad(Map::Pos3(256 * Map::tile_size, 256 * Map::tile_size, 120 * Map::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 

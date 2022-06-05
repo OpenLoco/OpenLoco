@@ -12,6 +12,7 @@ using namespace OpenLoco::Map::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction
 {
+    static loco_global<uint16_t[44], 0x004F891C> _trackPieceToFlags; // Roll into TrackData?
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<uint8_t, 0x00522096> _byte_522096;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
@@ -22,7 +23,6 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t[8], 0x0525F9A> _scenarioRoadStations;
     static loco_global<uint8_t[8], 0x0525FA2> _scenarioRoadMods;
     static loco_global<bool, 0x00525FAE> _trafficHandedness; // boolean true for right false for left
-    static loco_global<Gfx::Context*, 0x00E0C3E0> _dword_E0C3E0;
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
@@ -221,8 +221,8 @@ namespace OpenLoco::Ui::Windows::Construction
         void activateSelectedConstructionWidgets();
         void tabReset(Window* self);
         void initEvents();
-        void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
-        void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
+        void drawTrack(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::Context& context);
+        void drawRoad(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::Context& context);
         void removeTrackGhosts();
         void previousTrackPiece(Window* self);
         void nextTrackPiece(Window* self);
