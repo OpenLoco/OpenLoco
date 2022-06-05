@@ -1259,19 +1259,37 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.edi = X86Pointer(&context);
-        regs.esi = X86Pointer(args);
-        regs.cx = origin.x;
-        regs.dx = origin.y;
-        regs.bp = width;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        call(0x00494ECF, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-        origin.x = regs.cx;
-        origin.y = regs.dx;
-        return regs.ax;
+        _currentFontSpriteBase = Font::medium_bold;
+        auto wrapResult = wrapString(buffer, width);
+        auto breakCount = wrapResult.second;
+
+        // wrapString might change the font due to formatting codes
+        uint16_t lineHeight = 0; // _112D404
+        if (_currentFontSpriteBase <= Font::medium_bold)
+            lineHeight = 10;
+        else if (_currentFontSpriteBase == Font::small)
+            lineHeight = 6;
+        else if (_currentFontSpriteBase == Font::large)
+            lineHeight = 18;
+
+        _currentFontFlags = 0;
+        Ui::Point point = origin;
+        const char* ptr = buffer;
+
+        for (auto i = 0; ptr != nullptr && i <= breakCount; i++)
+        {
+            _currentFontSpriteBase = Font::medium_bold;
+            uint16_t width = getStringWidth(ptr);
+
+            Gfx::drawString(context, point.x - (width / 2), point.y, colour, const_cast<char*>(ptr));
+            ptr = advanceToNextLine(ptr);
+            point.y += lineHeight;
+        }
+
+        return point.y;
     }
 
     // 0x00494E33
