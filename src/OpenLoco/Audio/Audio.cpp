@@ -1103,7 +1103,7 @@ namespace OpenLoco::Audio
             // Choose a track to play, unless we have requested one track in particular.
             if (_currentSong == kNoSong || !requestedSong)
             {
-                auto trackToExclude = _lastSong;
+                uint8_t trackToExclude = _lastSong;
                 _lastSong = _currentSong;
                 _currentSong = chooseNextMusicTrack(trackToExclude);
             }

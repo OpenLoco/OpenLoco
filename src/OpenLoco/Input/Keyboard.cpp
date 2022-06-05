@@ -161,7 +161,7 @@ namespace OpenLoco::Input
     {
         if (text != nullptr && text[0] != '\0')
         {
-            auto index = _keyQueueLastWrite;
+            uint32_t index = _keyQueueLastWrite;
             _keyQueue[index].charCode = text[0];
         }
     }

@@ -43,7 +43,7 @@ namespace OpenLoco::Vehicles
         vehicleUpdate_backBogieHasMoved = vehicleUpdate_frontBogieHasMoved;
         vehicleUpdate_frontBogieHasMoved = hasMoved;
 
-        const auto stash1136130 = vehicleUpdate_var_1136130;
+        const int32_t stash1136130 = vehicleUpdate_var_1136130;
         if (var_5E != 0)
         {
             auto unk = var_5E;
