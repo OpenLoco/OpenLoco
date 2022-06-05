@@ -955,6 +955,39 @@ namespace OpenLoco::Gfx
         return loopNewline(&context, origin, (uint8_t*)str);
     }
 
+    static const char* advanceToNextLine(const char* buffer)
+    {
+        // Traverse the buffer for the next line
+        const char* ptr = buffer;
+        while (true)
+        {
+            ptr++;
+            if (*ptr == '\0')
+                return ++ptr;
+
+            if (*ptr >= ' ')
+                continue;
+
+            if (*ptr < ControlCodes::newline)
+            {
+                // Skip argument
+                ptr++;
+                continue;
+            }
+
+            if (*ptr <= ControlCodes::window_colour_4)
+                continue;
+
+            // Skip arguments
+            ptr += 2;
+
+            if (*ptr == ControlCodes::inline_sprite_str)
+                ptr += 2;
+        }
+
+        return nullptr;
+    }
+
     // 0x00495224
     // al: colour
     // bp: width
@@ -989,51 +1022,17 @@ namespace OpenLoco::Gfx
             lineHeight = 18;
 
         _currentFontFlags = 0;
-        int16_t leftoverHeight = breakCount * (lineHeight / 2);
         Ui::Point point = { x, y };
-        char* ptr = buffer;
-        while (true)
+        const char* ptr = buffer;
+
+        for (auto i = 0; ptr != nullptr && i <= breakCount; i++)
         {
-        // Draw current chunk
-        draw:
-            point = Gfx::drawString(context, point.x, point.y, colour, ptr);
-
-            // Traverse the buffer for the next chunk
-            while (true)
-            {
-                ptr++;
-                if (*ptr == '\0')
-                {
-                    point.y += lineHeight;
-                    leftoverHeight -= (lineHeight) / 2;
-                    if (leftoverHeight < 0)
-                        return point.y;
-                    else
-                        goto draw;
-                }
-
-                if (*ptr >= ' ')
-                    continue;
-
-                if (*ptr < ControlCodes::newline)
-                {
-                    // Skip argument
-                    ptr++;
-                    continue;
-                }
-
-                if (*ptr <= ControlCodes::window_colour_4)
-                    continue;
-
-                // Skip arguments
-                ptr += 2;
-
-                if (*ptr == ControlCodes::inline_sprite_str)
-                    ptr += 2;
-            }
-
-            return point.y;
+            Gfx::drawString(context, point.x, point.y, colour, const_cast<char*>(ptr));
+            ptr = advanceToNextLine(ptr);
+            point.y += lineHeight;
         }
+
+        return point.y;
     }
 
     // 0x00494B3F
