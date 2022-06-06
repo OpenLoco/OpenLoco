@@ -127,6 +127,7 @@ namespace OpenLoco::Map::TileManager
     // 0x00461760
     void removeElement(TileElement& element)
     {
+        // This is used to indicate if the caller can still use this pointer
         if (&element == *_F00158)
         {
             if (element.isLast())

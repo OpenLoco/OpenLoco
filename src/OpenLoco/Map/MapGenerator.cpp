@@ -627,12 +627,13 @@ namespace OpenLoco::Map::MapGenerator
     static void generateTrees()
     {
         const auto& options = S5::getOptions();
-        const auto numForests = options.numberOfForests;
-        for (auto i = 0; i < numForests; ++i)
+
+        // Place forests
+        for (auto i = 0; i < options.numberOfForests; ++i)
         {
-            const auto randRadius = gPrng().randNext(255) * std::max(options.maxForestRadius - options.minForestRadius, 0) + options.minForestRadius;
+            const auto randRadius = ((gPrng().randNext(255) * std::max(options.maxForestRadius - options.minForestRadius, 0)) / 255 + options.minForestRadius) * tile_size;
             const auto randLoc = Map::TilePos2(gPrng().randNext(map_rows), gPrng().randNext(map_columns));
-            const auto randDensity = gPrng().randNext(15) * std::max(options.maxForestDensity - options.minForestDensity, 0) + options.minForestDensity;
+            const auto randDensity = (gPrng().randNext(15) * std::max(options.maxForestDensity - options.minForestDensity, 0)) / 15 + options.minForestDensity;
             placeTreeCluster(randLoc, randRadius, randDensity, std::nullopt);
 
             if (TileManager::numFreeElements() < 0x36000)
@@ -641,12 +642,63 @@ namespace OpenLoco::Map::MapGenerator
             }
         }
 
+        // Place a number of random trees
         for (auto i = 0; i < options.numberRandomTrees; ++i)
         {
+            const auto randLoc = Map::Pos2(gPrng().randNext(map_width), gPrng().randNext(map_height));
+            placeRandomTree(randLoc, std::nullopt);
         }
 
-        // cull min /max altitude trees
-        call(0x004BDA49);
+        // Cull trees that are too high / low
+        uint32_t randMask = gPrng().randNext();
+        uint32_t i = 0;
+        std::vector<TileElement*> toBeRemoved;
+        for (auto& loc : TilePosRangeView({}, { map_rows - 1, map_columns - 1 }))
+        {
+            auto tile = TileManager::get(loc);
+            for (auto& el : tile)
+            {
+                auto* elTree = el.as<TreeElement>();
+                if (elTree == nullptr)
+                {
+                    continue;
+                }
+
+                if (elTree->baseHeight() / kMicroToSmallZStep <= options.minAltitudeForTrees)
+                {
+                    if (elTree->baseHeight() / kMicroToSmallZStep != options.minAltitudeForTrees
+                        || (randMask & (1 << i)))
+                    {
+                        toBeRemoved.push_back(&el);
+                        i++;
+                        i %= 32;
+                        break;
+                    }
+                }
+
+                if (elTree->baseHeight() / kMicroToSmallZStep >= options.maxAltitudeForTrees)
+                {
+                    if (elTree->baseHeight() / kMicroToSmallZStep != options.maxAltitudeForTrees
+                        || (randMask & (1 << i)))
+                    {
+                        toBeRemoved.push_back(&el);
+                        i++;
+                        i %= 32;
+                        break;
+                    }
+                }
+            }
+
+            // Remove in reverse order to prevent pointer invalidation
+            for (auto elIter = std::rbegin(toBeRemoved); elIter != std::rend(toBeRemoved); ++elIter)
+            {
+                TileManager::removeElement(**elIter);
+            }
+            toBeRemoved.clear();
+        }
+
+        // Update season of trees?
+        call(0x004BE0C7);
     }
 
     // 0x00496BBC
