@@ -11,6 +11,7 @@
 #include "Tile.h"
 #include "TileLoop.hpp"
 #include "TileManager.h"
+#include "Tree.h"
 #include <cassert>
 #include <cstdint>
 #include <random>
@@ -629,10 +630,22 @@ namespace OpenLoco::Map::MapGenerator
         const auto numForests = options.numberOfForests;
         for (auto i = 0; i < numForests; ++i)
         {
-
             const auto randRadius = gPrng().randNext(255) * std::max(options.maxForestRadius - options.minForestRadius, 0) + options.minForestRadius;
+            const auto randLoc = Map::TilePos2(gPrng().randNext(map_rows), gPrng().randNext(map_columns));
+            const auto randDensity = gPrng().randNext(15) * std::max(options.maxForestDensity - options.minForestDensity, 0) + options.minForestDensity;
+            placeTreeCluster(randLoc, randRadius, randDensity, std::nullopt);
 
+            if (TileManager::numFreeElements() < 0x36000)
+            {
+                break;
+            }
         }
+
+        for (auto i = 0; i < options.numberRandomTrees; ++i)
+        {
+        }
+
+        // cull min /max altitude trees
         call(0x004BDA49);
     }
 

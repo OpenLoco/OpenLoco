@@ -101,6 +101,11 @@ namespace OpenLoco::Map::TileManager
         return _elementsEnd;
     }
 
+    uint32_t numFreeElements()
+    {
+        return maxElements - (_elementsEnd - _elements);
+    }
+
     void setElements(stdx::span<TileElement> elements)
     {
         TileElement* dst = _elements;
