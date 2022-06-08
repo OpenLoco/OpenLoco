@@ -221,5 +221,9 @@ namespace OpenLoco::Ui
         uint8_t getQuadrantFromPos(const Map::Pos2& loc);
         uint8_t getSideFromPos(const Map::Pos2& loc);
         std::optional<std::pair<Map::Pos2, Ui::Viewport*>> getSurfaceLocFromUi(const Point& screenCoords);
+
+        // 0x0113600C
+        Ui::Point getViewportInteractionPoint();
+        void setViewportInteractionPoint(Ui::Point point);
     }
 }

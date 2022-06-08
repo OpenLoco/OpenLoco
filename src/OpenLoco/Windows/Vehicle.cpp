@@ -3529,12 +3529,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x00427595
         static std::optional<GameCommands::VehicleWaterPlacementArgs> getVehicleWaterPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
         {
-            static loco_global<int16_t, 0x0113600C> _113600C;
-            static loco_global<int16_t, 0x0113600E> _113600E;
-
-            _113600C = x;
-            _113600E = y;
-
+            ViewportInteraction::setViewportInteractionPoint({ x, y });
             auto pos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
             if (!pos)
             {
@@ -3681,12 +3676,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x00426F0B
         static std::optional<GameCommands::VehicleAirPlacementArgs> getVehicleAirPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
         {
-            static loco_global<int16_t, 0x0113600C> _113600C;
-            static loco_global<int16_t, 0x0113600E> _113600E;
-
-            _113600C = x;
-            _113600E = y;
-
+            ViewportInteraction::setViewportInteractionPoint({ x, y });
             auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::station);
             auto* elStation = static_cast<Map::StationElement*>(res.first.object);
             if (res.first.type != ViewportInteraction::InteractionItem::airport)
@@ -3863,11 +3853,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x00478415
         static std::optional<GameCommands::VehiclePlacementArgs> getRoadAtCursor(const int16_t x, const int16_t y)
         {
-            static loco_global<int16_t, 0x0113600C> _113600C;
-            static loco_global<int16_t, 0x0113600E> _113600E;
-
-            _113600C = x;
-            _113600E = y;
+            ViewportInteraction::setViewportInteractionPoint({ x, y });
             auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::roadAndTram);
             if (interaction.type != ViewportInteraction::InteractionItem::road)
             {
@@ -3968,11 +3954,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004A40C5
         static std::optional<GameCommands::VehiclePlacementArgs> getTrackAtCursor(const int16_t x, const int16_t y)
         {
-            static loco_global<int16_t, 0x0113600C> _113600C;
-            static loco_global<int16_t, 0x0113600E> _113600E;
-
-            _113600C = x;
-            _113600E = y;
+            ViewportInteraction::setViewportInteractionPoint({ x, y });
             auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::track);
             if (interaction.type != ViewportInteraction::InteractionItem::track)
             {
