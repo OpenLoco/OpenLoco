@@ -21,6 +21,7 @@ namespace OpenLoco::Vehicles
     void orderSkip(OpenLoco::Interop::registers& regs);
     void cloneVehicle(OpenLoco::Interop::registers& regs);
     void rename(OpenLoco::Interop::registers& regs);
+    void vehiclePickupWater(OpenLoco::Interop::registers& regs);
 
     namespace Flags0C // commands?
     {
@@ -165,6 +166,8 @@ namespace OpenLoco::Vehicles
     uint8_t getSignalState(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
     void sub_4A2AD7(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     uint8_t sub_4A2A58(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+
+    void playPickupSound(Vehicles::Vehicle2* veh2);
 
     struct VehicleBase : EntityBase
     {
