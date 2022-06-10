@@ -605,6 +605,7 @@ namespace OpenLoco::Vehicles
         uint16_t getPlaneType();
         bool update();
         bool isOnRackRail();
+        void carComponent_sub_4AF16A();
 
     private:
         void updateRoll();
