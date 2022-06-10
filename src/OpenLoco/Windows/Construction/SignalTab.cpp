@@ -135,8 +135,6 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     {
         static loco_global<Viewport*, 0x01135F52> _1135F52;
 
-        ViewportInteraction::setViewportInteractionPoint({ x, y });
-
         auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track));
         _1135F52 = viewport;
 

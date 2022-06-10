@@ -1167,16 +1167,4 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         return getQuadrantFromPos(loc);
     }
-
-    // 0x0113600C
-    Ui::Point getViewportInteractionPoint()
-    {
-        static loco_global<Ui::Point, 0x0113600C> _113600C;
-        return _113600C;
-    }
-    void setViewportInteractionPoint(Ui::Point point)
-    {
-        static loco_global<Ui::Point, 0x0113600C> _113600C;
-        _113600C = point;
-    }
 }
