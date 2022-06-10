@@ -133,10 +133,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
     static std::optional<GameCommands::SignalPlacementArgs> getSignalPlacementArgsFromCursor(const int16_t x, const int16_t y, const bool isBothDirectons)
     {
-        static loco_global<Ui::Point, 0x0113600C> _113600C;
         static loco_global<Viewport*, 0x01135F52> _1135F52;
-
-        _113600C = { x, y };
 
         auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track));
         _1135F52 = viewport;

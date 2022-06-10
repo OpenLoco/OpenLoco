@@ -280,8 +280,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A5550
     static void onToolDownAirport(const int16_t x, const int16_t y)
     {
-        static loco_global<Ui::Point, 0x0113600C> _113600C;
-        _113600C = Point(x, y);
         removeConstructionGhosts();
 
         const auto args = getAirportPlacementArgsFromCursor(x, y);
@@ -420,8 +418,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A55AB
     static void onToolDownDock(const int16_t x, const int16_t y)
     {
-        static loco_global<Ui::Point, 0x0113600C> _113600C;
-        _113600C = Point(x, y);
         removeConstructionGhosts();
 
         const auto args = getDockPlacementArgsFromCursor(x, y);
@@ -466,8 +462,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A548F
     static void onToolDownRoadStation(const int16_t x, const int16_t y)
     {
-        static loco_global<Ui::Point, 0x0113600C> _113600C;
-        _113600C = Point(x, y);
         removeConstructionGhosts();
 
         const auto args = getRoadStationPlacementArgsFromCursor(x, y);
@@ -515,8 +509,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A5390
     static void onToolDownTrackStation(const int16_t x, const int16_t y)
     {
-        static loco_global<Ui::Point, 0x0113600C> _113600C;
-        _113600C = Point(x, y);
         removeConstructionGhosts();
 
         const auto args = getTrackStationPlacementArgsFromCursor(x, y);
