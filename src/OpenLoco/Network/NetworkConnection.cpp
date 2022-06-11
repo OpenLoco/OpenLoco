@@ -170,6 +170,7 @@ std::optional<Packet> NetworkConnection::takeNextPacket()
 void NetworkConnection::logPacket(const Packet& packet, bool sent, bool resend)
 {
 #if defined(DEBUG)
+#ifdef LOG_PACKETS
     auto szDirection = sent ? "SENT" : "RECV";
     auto seq = static_cast<int32_t>(packet.header.sequence);
     auto bytes = static_cast<int32_t>(packet.header.dataSize);
@@ -194,5 +195,6 @@ void NetworkConnection::logPacket(const Packet& packet, bool sent, bool resend)
         auto kind = getPacketKindString(packet.header.kind);
         Console::log("[%s] #%4d | %s (%d bytes)", szDirection, seq, kind, bytes);
     }
+#endif
 #endif
 }
