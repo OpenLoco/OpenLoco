@@ -76,6 +76,8 @@ namespace OpenLoco::Network
         void onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet) override;
 
     public:
+        ~NetworkClient() override;
+
         NetworkClientStatus getStatus() const;
         uint32_t getLocalTick() const;
 

@@ -10,6 +10,11 @@
 using namespace OpenLoco;
 using namespace OpenLoco::Network;
 
+NetworkClient::~NetworkClient()
+{
+    close();
+}
+
 NetworkClientStatus NetworkClient::getStatus() const
 {
     return _status;
