@@ -217,6 +217,35 @@ namespace OpenLoco::Network
             return compareSockets(&_address, &other2._address) == 0;
         }
 
+    private:
+#if defined(__MINGW32__)
+        static const char* inet_ntop(int af, const void* src, char* dst, socklen_t len)
+        {
+            if (af == AF_INET)
+            {
+                struct sockaddr_in in;
+                std::memset(&in, 0, sizeof(in));
+                in.sin_family = AF_INET;
+                std::memcpy(&in.sin_addr, src, sizeof(in_addr));
+                getnameinfo(reinterpret_cast<sockaddr*>(&in), sizeof(sockaddr_in), dst, len, NULL, 0, NI_NUMERICHOST);
+                return dst;
+            }
+            else if (af == AF_INET6)
+            {
+                struct sockaddr_in6 in;
+                std::memset(&in, 0, sizeof(in));
+                in.sin6_family = AF_INET6;
+                std::memcpy(&in.sin6_addr, src, sizeof(in_addr6));
+                getnameinfo(reinterpret_cast<sockaddr*>(&in), sizeof(sockaddr_in6), dst, len, NULL, 0, NI_NUMERICHOST);
+                return dst;
+            }
+            else
+            {
+                throw std::invalid_argument("Invalid protocol");
+            }
+        }
+#endif
+
         static int compareSockets(const sockaddr* x, const sockaddr* y)
         {
 #define CMP(a, b) \
