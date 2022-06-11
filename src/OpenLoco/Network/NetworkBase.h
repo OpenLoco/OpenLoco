@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Network.h"
+#include "Packet.h"
 #include "Socket.h"
 #include <cstdint>
 #include <memory>

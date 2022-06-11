@@ -2,6 +2,7 @@
 
 #include "../Core/Optional.hpp"
 #include "Network.h"
+#include "Packet.h"
 #include "Socket.h"
 #include <cassert>
 #include <cstdint>
@@ -37,6 +38,7 @@ namespace OpenLoco::Network
         void receiveAcknowledgePacket(sequence_t sequence);
         void sendAcknowledgePacket(sequence_t sequence);
         void resendUndeliveredPackets();
+        void sendPacket(PacketKind kind, size_t dataSize, const void* packetData);
         void logPacket(const Packet& packet, bool sent, bool resend);
 
     public:
@@ -52,16 +54,7 @@ namespace OpenLoco::Network
         template<typename T>
         void sendPacket(const T& packetData)
         {
-            auto dataSize = packetData.size();
-            assert(dataSize <= maxPacketDataSize);
-
-            Packet packet;
-            packet.header.kind = T::kind;
-            packet.header.sequence = _sendSequence++;
-            packet.header.dataSize = static_cast<uint16_t>(dataSize);
-            std::memcpy(packet.data, &packetData, packet.header.dataSize);
-
-            sendPacket(packet);
+            sendPacket(T::kind, packetData.size(), &packetData);
         }
     };
 }

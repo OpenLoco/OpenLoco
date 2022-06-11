@@ -383,7 +383,7 @@ namespace OpenLoco::Network
             listen(protocol, "", port);
         }
 
-        void listen(Protocol protocol, const std::string& address, uint16_t port)
+        void listen(Protocol protocol, const std::string& address, uint16_t port) override
         {
             if (_status != SocketStatus::closed)
             {

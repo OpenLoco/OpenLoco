@@ -81,6 +81,19 @@ void NetworkConnection::receivePacket(const Packet& packet)
     }
 }
 
+void NetworkConnection::sendPacket(PacketKind kind, size_t dataSize, const void* packetData)
+{
+    assert(dataSize <= maxPacketDataSize);
+
+    Packet packet;
+    packet.header.kind = kind;
+    packet.header.sequence = _sendSequence++;
+    packet.header.dataSize = static_cast<uint16_t>(dataSize);
+    std::memcpy(packet.data, packetData, packet.header.dataSize);
+
+    sendPacket(packet);
+}
+
 void NetworkConnection::sendPacket(const Packet& packet)
 {
     if (packet.header.kind != PacketKind::ack)

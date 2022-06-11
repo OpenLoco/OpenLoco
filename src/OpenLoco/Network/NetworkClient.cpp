@@ -30,7 +30,7 @@ void NetworkClient::connect(std::string_view host, port_t port)
     auto szHost = std::string(host);
     _serverEndpoint = Socket::resolve(Protocol::any, szHost, port);
 
-    _sockets.push_back(std::move(Socket::createUdp()));
+    _sockets.push_back(Socket::createUdp());
     auto& socket = _sockets.back();
     _serverConnection = std::make_unique<NetworkConnection>(socket.get(), _serverEndpoint->clone());
 
@@ -58,6 +58,7 @@ void NetworkClient::onClose()
     }
     else if (_status == NetworkClientStatus::connecting)
     {
+        endStatus("Failed to connect to server");
         _status = NetworkClientStatus::closed;
     }
 }
@@ -105,6 +106,12 @@ void NetworkClient::processReceivedPackets()
         while (auto packet = _serverConnection->takeNextPacket())
         {
             onReceivePacketFromServer(*packet);
+
+            // A packet handler may close the connection
+            if (_serverConnection == nullptr)
+            {
+                return;
+            }
         }
         _serverConnection->update();
     }

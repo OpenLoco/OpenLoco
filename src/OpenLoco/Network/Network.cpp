@@ -44,7 +44,7 @@ namespace OpenLoco::Network
 
         try
         {
-            auto& cmdlineOptions = getCommandLineOptions();
+            const auto& cmdlineOptions = getCommandLineOptions();
             auto& bind = cmdlineOptions.bind;
             auto port = cmdlineOptions.port.value_or(defaultPort);
 
@@ -120,7 +120,7 @@ namespace OpenLoco::Network
         Console::log("Player #%d: %s", static_cast<int>(client), szMessage.c_str());
     }
 
-    void queueGameCommand(CompanyId company, OpenLoco::Interop::registers regs)
+    void queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)
     {
         // TEMP debug code
         if (regs.esi == 73)
