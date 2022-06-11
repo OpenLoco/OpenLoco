@@ -6,6 +6,7 @@
 #include "../OpenLoco.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
+#include "../ScenarioManager.h"
 #include "../Utility/Stream.hpp"
 #include "../Utility/String.hpp"
 #include "NetworkConnection.h"
@@ -151,7 +152,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
     // Append extra state
     ExtraState extra;
     extra.gameCommandIndex = _gameCommandIndex;
-    extra.tick = scenarioTicks();
+    extra.tick = ScenarioManager::getScenarioTicks();
     ms.write(&extra, sizeof(extra));
 
     RequestStateResponse response;

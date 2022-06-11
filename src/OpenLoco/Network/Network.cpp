@@ -5,6 +5,7 @@
 #include "../GameState.h"
 #include "../Graphics/Gfx.h"
 #include "../OpenLoco.h"
+#include "../ScenarioManager.h"
 #include "NetworkClient.h"
 #include "NetworkServer.h"
 #include "Socket.h"
@@ -182,6 +183,6 @@ namespace OpenLoco::Network
         {
             return _client->getLocalTick();
         }
-        return scenarioTicks();
+        return ScenarioManager::getScenarioTicks();
     }
 }
