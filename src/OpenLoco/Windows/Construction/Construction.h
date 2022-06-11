@@ -15,7 +15,6 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t[44], 0x004F891C> _trackPieceToFlags; // Roll into TrackData?
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<uint8_t, 0x00522096> _byte_522096;
-    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint8_t[8], 0x0525F72> _scenarioSignals;
     static loco_global<uint8_t[8], 0x0525F7A> _scenarioBridges;
     static loco_global<uint8_t[8], 0x0525F82> _scenarioTrainStations;

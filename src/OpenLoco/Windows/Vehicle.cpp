@@ -4561,7 +4561,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
     {
         if (Input::isToolActive(WindowType::vehicle))
         {
-            if (Input::getToolWidgetIndex() == Main::widx::pickup || Input::getToolWidgetIndex() == Details::widx::pickup)
+            if (WindowManager::getToolWidgetIndex() == Main::widx::pickup || WindowManager::getToolWidgetIndex() == Details::widx::pickup)
             {
                 _pickupDirection = _pickupDirection ^ 1;
                 return true;

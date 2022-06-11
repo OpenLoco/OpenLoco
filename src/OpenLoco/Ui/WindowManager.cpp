@@ -45,7 +45,9 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<Gfx::RenderTarget, 0x0050B884> _screenRT;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
+    static loco_global<Ui::CursorId, 0x00523393> _currentToolCursor;
+    static loco_global<int16_t, 0x00523394> _toolWidgetIndex;
+
     static loco_global<uint8_t, 0x005233B6> _currentModalType;
     static loco_global<uint32_t, 0x00523508> _523508;
     static loco_global<int32_t, 0x00525330> _cursorWheel;
@@ -2024,6 +2026,46 @@ namespace OpenLoco::Ui::WindowManager
     uint8_t getVehiclePreviewRotationFrameUnk2()
     {
         return ((getVehiclePreviewRotationFrame() + 2) / 4) & 0x3F;
+    }
+
+    // 0x00523390
+    WindowNumber_t getToolWindowNumber()
+    {
+        return _toolWindowNumber;
+    }
+    void setToolWindowNumber(WindowNumber_t number)
+    {
+        _toolWindowNumber = number;
+    }
+
+    // 0x00523392
+    WindowType getToolWindowType()
+    {
+        return _toolWindowType;
+    }
+    void setToolWindowType(WindowType type)
+    {
+        _toolWindowType = type;
+    }
+
+    // 0x00523393
+    CursorId getCurrentToolCursor()
+    {
+        return _currentToolCursor;
+    }
+    void setCurrentToolCursor(CursorId cursorId)
+    {
+        _currentToolCursor = cursorId;
+    }
+
+    // 0x00523394
+    int16_t getToolWidgetIndex()
+    {
+        return _toolWidgetIndex;
+    }
+    void setToolWidgetIndex(int16_t index)
+    {
+        _toolWidgetIndex = index;
     }
 }
 

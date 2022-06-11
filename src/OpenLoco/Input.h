@@ -92,7 +92,6 @@ namespace OpenLoco::Input
     bool toolSet(Ui::Window* w, int16_t widgetIndex, Ui::CursorId cursorId);
     void toolCancel();
     void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
-    int16_t getToolWidgetIndex();
 
     void enqueueText(const char* text);
     void enqueueKey(uint32_t key);

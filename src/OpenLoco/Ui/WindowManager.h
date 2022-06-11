@@ -91,6 +91,22 @@ namespace OpenLoco::Ui::WindowManager
 
     uint8_t getVehiclePreviewRotationFrameUnk1();
     uint8_t getVehiclePreviewRotationFrameUnk2();
+
+    // 0x00523390
+    Ui::WindowNumber_t getToolWindowNumber();
+    void setToolWindowNumber(Ui::WindowNumber_t);
+
+    // 0x00523392
+    Ui::WindowType getToolWindowType();
+    void setToolWindowType(Ui::WindowType);
+
+    // 0x00523393
+    Ui::CursorId getCurrentToolCursor();
+    void setCurrentToolCursor(Ui::CursorId index);
+
+    // 0x00523394
+    int16_t getToolWidgetIndex();
+    void setToolWidgetIndex(int16_t index);
 }
 
 namespace OpenLoco::Vehicles

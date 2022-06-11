@@ -28,8 +28,6 @@ using namespace OpenLoco::Map::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction
 {
-    static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
-
     static Window* nonTrackWindow()
     {
         auto window = WindowManager::find(WindowType::construction);
@@ -1015,7 +1013,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             if (isNetworkHost())
             {
-                auto window = WindowManager::find(_toolWindowType, _toolWindowNumber);
+                auto window = WindowManager::find(WindowManager::getToolWindowType(), WindowManager::getToolWindowNumber());
                 if (window != nullptr)
                     Input::toolCancel();
             }
