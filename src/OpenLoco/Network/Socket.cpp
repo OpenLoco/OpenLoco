@@ -290,6 +290,32 @@ namespace OpenLoco::Network
         static void resolveAddress(
             Protocol protocol, const std::string& address, uint16_t port, sockaddr_storage* ss, socklen_t* ss_len)
         {
+            std::string error;
+            if (protocol == Protocol::any)
+            {
+                // Prioritise resolving IPv4 addresses
+                if (tryResolveAddress(Protocol::ipv4, address, port, ss, ss_len, error))
+                {
+                    return;
+                }
+                if (tryResolveAddress(Protocol::ipv6, address, port, ss, ss_len, error))
+                {
+                    return;
+                }
+            }
+            else
+            {
+                if (tryResolveAddress(protocol, address, port, ss, ss_len, error))
+                {
+                    return;
+                }
+            }
+            throw SocketException(error);
+        }
+
+    private:
+        static bool tryResolveAddress(Protocol protocol, const std::string& address, uint16_t port, sockaddr_storage* ss, socklen_t* ss_len, std::string& outError)
+        {
             std::string serviceName = std::to_string(port);
 
             addrinfo hints = {};
@@ -304,17 +330,20 @@ namespace OpenLoco::Network
             if (errorcode != 0)
             {
                 auto msg = gai_strerror(errorcode);
-                throw SocketException("Unable to resolve address: " + std::to_string(errorcode) + "  " + msg);
+                outError = "Unable to resolve address: " + std::to_string(errorcode) + "  " + msg;
+                return false;
             }
 
             if (result == nullptr)
             {
-                throw SocketException("Unable to resolve address");
+                outError = "Unable to resolve address";
+                return false;
             }
 
             std::memcpy(ss, result->ai_addr, result->ai_addrlen);
             *ss_len = static_cast<socklen_t>(result->ai_addrlen);
             freeaddrinfo(result);
+            return true;
         }
     };
 
