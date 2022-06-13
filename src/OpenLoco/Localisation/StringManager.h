@@ -113,7 +113,7 @@ namespace OpenLoco
 
 namespace OpenLoco
 {
-    enum class MonthId : uint8_t;
+    enum class Month : uint8_t;
 }
 
 namespace OpenLoco::StringManager
@@ -127,5 +127,5 @@ namespace OpenLoco::StringManager
     string_id isTownName(string_id stringId);
     string_id toTownName(string_id stringId);
     string_id fromTownName(string_id stringId);
-    std::pair<string_id, string_id> monthToString(MonthId month);
+    std::pair<string_id, string_id> monthToString(Month month);
 }

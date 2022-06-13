@@ -1024,10 +1024,10 @@ namespace OpenLoco
                     }
 
                     // clang-format off
-					if (today.month == MonthId::january ||
-						today.month == MonthId::april ||
-						today.month == MonthId::july ||
-						today.month == MonthId::october)
+					if (today.month == Month::January ||
+						today.month == Month::April ||
+						today.month == Month::July ||
+						today.month == Month::October)
                     // clang-format on
                     {
                         CompanyManager::updateQuarterly();

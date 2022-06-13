@@ -67,22 +67,22 @@ namespace OpenLoco::StringManager
         { 31, StringIds::day_31st },
     };
 
-    static std::map<MonthId, std::pair<string_id, string_id>> month_to_string = {
-        { MonthId::january, { StringIds::month_short_january, StringIds::month_long_january } },
-        { MonthId::february, { StringIds::month_short_february, StringIds::month_long_february } },
-        { MonthId::march, { StringIds::month_short_march, StringIds::month_long_march } },
-        { MonthId::april, { StringIds::month_short_april, StringIds::month_long_april } },
-        { MonthId::may, { StringIds::month_short_may, StringIds::month_long_may } },
-        { MonthId::june, { StringIds::month_short_june, StringIds::month_long_june } },
-        { MonthId::july, { StringIds::month_short_july, StringIds::month_long_july } },
-        { MonthId::august, { StringIds::month_short_august, StringIds::month_long_august } },
-        { MonthId::september, { StringIds::month_short_september, StringIds::month_long_september } },
-        { MonthId::october, { StringIds::month_short_october, StringIds::month_long_october } },
-        { MonthId::november, { StringIds::month_short_november, StringIds::month_long_november } },
-        { MonthId::december, { StringIds::month_short_december, StringIds::month_long_december } },
+    static std::map<Month, std::pair<string_id, string_id>> month_to_string = {
+        { Month::January, { StringIds::month_short_january, StringIds::month_long_january } },
+        { Month::February, { StringIds::month_short_february, StringIds::month_long_february } },
+        { Month::March, { StringIds::month_short_march, StringIds::month_long_march } },
+        { Month::April, { StringIds::month_short_april, StringIds::month_long_april } },
+        { Month::May, { StringIds::month_short_may, StringIds::month_long_may } },
+        { Month::June, { StringIds::month_short_june, StringIds::month_long_june } },
+        { Month::July, { StringIds::month_short_july, StringIds::month_long_july } },
+        { Month::August, { StringIds::month_short_august, StringIds::month_long_august } },
+        { Month::September, { StringIds::month_short_september, StringIds::month_long_september } },
+        { Month::October, { StringIds::month_short_october, StringIds::month_long_october } },
+        { Month::November, { StringIds::month_short_november, StringIds::month_long_november } },
+        { Month::December, { StringIds::month_short_december, StringIds::month_long_december } },
     };
 
-    std::pair<string_id, string_id> monthToString(MonthId month)
+    std::pair<string_id, string_id> monthToString(Month month)
     {
         return month_to_string[month];
     }
@@ -211,7 +211,7 @@ namespace OpenLoco::StringManager
     // 0x00495DC7
     static char* formatRawDateMYAbbrev(uint32_t totalDays, char* buffer)
     {
-        auto month = static_cast<MonthId>(totalDays % 12);
+        auto month = static_cast<Month>(totalDays % 12);
         string_id month_string = month_to_string[month].first;
         buffer = formatString(buffer, month_string, nullptr);
 

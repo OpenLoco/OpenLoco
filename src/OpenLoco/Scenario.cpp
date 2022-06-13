@@ -240,10 +240,10 @@ namespace OpenLoco::Scenario
     // 0x0049685C
     void initialiseDate(uint16_t year)
     {
-        initialiseDate(year, MonthId::january, 1);
+        initialiseDate(year, Month::January, 1);
     }
 
-    void initialiseDate(uint16_t year, MonthId month, uint8_t day)
+    void initialiseDate(uint16_t year, Month month, uint8_t day)
     {
         // NB: this base value was already 1800 in Locomotion.
         auto date = Date(year, month, day);

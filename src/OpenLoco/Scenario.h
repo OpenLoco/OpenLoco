@@ -7,7 +7,7 @@
 
 namespace OpenLoco
 {
-    enum class MonthId : uint8_t;
+    enum class Month : uint8_t;
 }
 
 namespace OpenLoco::Scenario
@@ -129,7 +129,7 @@ namespace OpenLoco::Scenario
     void generateLandscape();
     void initialiseDate(uint16_t year);
 
-    void initialiseDate(uint16_t year, OpenLoco::MonthId month, uint8_t day);
+    void initialiseDate(uint16_t year, OpenLoco::Month month, uint8_t day);
 
     /**
      * Loads the given scenario file, but does not initialise any game state.

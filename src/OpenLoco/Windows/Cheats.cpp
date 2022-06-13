@@ -414,11 +414,11 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
 
                 case Widx::month_step_decrease:
-                    _date.month = static_cast<MonthId>(std::max<int8_t>(0, (static_cast<int8_t>(_date.month) - timeStepSize)));
+                    _date.month = static_cast<Month>(std::max<int8_t>(0, (static_cast<int8_t>(_date.month) - timeStepSize)));
                     break;
 
                 case Widx::month_step_increase:
-                    _date.month = static_cast<MonthId>(std::min<int8_t>(11, (static_cast<int8_t>(_date.month) + timeStepSize)));
+                    _date.month = static_cast<Month>(std::min<int8_t>(11, (static_cast<int8_t>(_date.month) + timeStepSize)));
                     break;
 
                 case Widx::day_step_decrease:
