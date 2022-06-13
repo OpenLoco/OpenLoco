@@ -3,12 +3,12 @@
 #include "./Scenario.h"
 #include <cstdint>
 
-namespace OpenLoco::Scenario
+namespace OpenLoco::Scenario::Objective
 {
 #pragma pack(push, 1)
     struct Objective
     {
-        Scenario::ObjectiveType type;  // 0x000418 (0x00526230)
+        Scenario::Objective::Type type;  // 0x000418 (0x00526230)
         uint8_t flags;                 // 0x000419 (0x00526231)
         uint32_t companyValue;         // 0x00041A (0x00526232)
         uint32_t monthlyVehicleProfit; // 0x00041E (0x00526236)

@@ -1,7 +1,7 @@
 #include "./ScenarioObjective.h"
 #include "./GameState.h"
 
-namespace OpenLoco::Scenario
+namespace OpenLoco::Scenario::Objective
 {
     Objective& getObjective()
     {

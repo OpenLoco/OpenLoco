@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             commonFormatArgs[0] = S5::getOptions().scenarioStartYear;
 
-            if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) == 0)
+            if ((S5::getOptions().scenarioFlags & Scenario::Flags::kLandscapeGenerationDone) == 0)
             {
                 window->activatedWidgets |= (1 << widx::generate_when_game_starts);
                 window->disabledWidgets |= (1 << widx::generate_now);
@@ -226,13 +226,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             switch (widgetIndex)
             {
                 case widx::start_year_up:
-                    if (options.scenarioStartYear + 1 <= Scenario::max_year)
+                    if (options.scenarioStartYear + 1 <= Scenario::kMaxYear)
                         options.scenarioStartYear += 1;
                     window->invalidate();
                     break;
 
                 case widx::start_year_down:
-                    if (options.scenarioStartYear - 1 >= Scenario::min_year)
+                    if (options.scenarioStartYear - 1 >= Scenario::kMinYear)
                         options.scenarioStartYear -= 1;
                     window->invalidate();
                     break;
@@ -257,9 +257,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::generate_when_game_starts:
-                    if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) == 0)
+                    if ((S5::getOptions().scenarioFlags & Scenario::Flags::kLandscapeGenerationDone) == 0)
                     {
-                        S5::getOptions().scenarioFlags |= Scenario::Flags::landscapeGenerationDone;
+                        S5::getOptions().scenarioFlags |= Scenario::Flags::kLandscapeGenerationDone;
                         Scenario::generateLandscape();
                     }
                     else
@@ -527,19 +527,19 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             switch (widgetIndex)
             {
                 case widx::sea_level_up:
-                    *seaLevel = std::min<int8_t>(*seaLevel + 1, Scenario::max_sea_level);
+                    *seaLevel = std::min<int8_t>(*seaLevel + 1, Scenario::kMaxSeaLevel);
                     break;
 
                 case widx::sea_level_down:
-                    *seaLevel = std::max<int8_t>(Scenario::min_sea_level, *seaLevel - 1);
+                    *seaLevel = std::max<int8_t>(Scenario::kMinSeaLevel, *seaLevel - 1);
                     break;
 
                 case widx::min_land_height_up:
-                    options.minLandHeight = std::min<int8_t>(options.minLandHeight + 1, Scenario::max_base_land_height);
+                    options.minLandHeight = std::min<int8_t>(options.minLandHeight + 1, Scenario::kMaxBaseLanHeight);
                     break;
 
                 case widx::min_land_height_down:
-                    options.minLandHeight = std::max<int8_t>(Scenario::min_base_land_height, options.minLandHeight - 1);
+                    options.minLandHeight = std::max<int8_t>(Scenario::kMinBaseLandHeight, options.minLandHeight - 1);
                     break;
 
                 case widx::generator_btn:
@@ -567,11 +567,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 }
 
                 case widx::hill_density_up:
-                    options.hillDensity = std::min<int8_t>(options.hillDensity + 1, Scenario::max_hill_density);
+                    options.hillDensity = std::min<int8_t>(options.hillDensity + 1, Scenario::kMaxHillDensity);
                     break;
 
                 case widx::hill_density_down:
-                    options.hillDensity = std::max<int8_t>(Scenario::min_hill_density, options.hillDensity - 1);
+                    options.hillDensity = std::max<int8_t>(Scenario::kMinHillDensity, options.hillDensity - 1);
                     break;
 
                 default:
@@ -601,7 +601,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::hillsEdgeOfMap:
-                    S5::getOptions().scenarioFlags ^= Scenario::Flags::hillsEdgeOfMap;
+                    S5::getOptions().scenarioFlags ^= Scenario::Flags::kHillsEdgeOfMap;
                     window->invalidate();
                     break;
             }
@@ -662,7 +662,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
             window->widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
-            if ((options.scenarioFlags & Scenario::Flags::hillsEdgeOfMap) != 0)
+            if ((options.scenarioFlags & Scenario::Flags::kHillsEdgeOfMap) != 0)
                 window->activatedWidgets |= (1 << widx::hillsEdgeOfMap);
             else
                 window->activatedWidgets &= ~(1 << widx::hillsEdgeOfMap);
@@ -823,92 +823,92 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 case widx::number_of_forests_up:
                 {
-                    options.numberOfForests = std::min<int16_t>(options.numberOfForests + 10, Scenario::max_num_forests);
+                    options.numberOfForests = std::min<int16_t>(options.numberOfForests + 10, Scenario::kMaxNumForests);
                     break;
                 }
                 case widx::number_of_forests_down:
                 {
-                    options.numberOfForests = std::max<int16_t>(Scenario::min_num_forests, options.numberOfForests - 10);
+                    options.numberOfForests = std::max<int16_t>(Scenario::kMinNumForests, options.numberOfForests - 10);
                     break;
                 }
                 case widx::min_forest_radius_up:
                 {
-                    options.minForestRadius = std::min<int16_t>(options.minForestRadius + 1, Scenario::max_forest_radius);
+                    options.minForestRadius = std::min<int16_t>(options.minForestRadius + 1, Scenario::kMaxForestRadius);
                     if (options.minForestRadius > options.maxForestRadius)
                         options.maxForestRadius = options.minForestRadius;
                     break;
                 }
                 case widx::min_forest_radius_down:
                 {
-                    options.minForestRadius = std::max<int8_t>(Scenario::min_forest_radius, options.minForestRadius - 1);
+                    options.minForestRadius = std::max<int8_t>(Scenario::kMinForestRadius, options.minForestRadius - 1);
                     break;
                 }
                 case widx::max_forest_radius_up:
                 {
-                    options.maxForestRadius = std::clamp<int8_t>(options.maxForestRadius + 1, Scenario::min_forest_radius, Scenario::max_forest_radius);
+                    options.maxForestRadius = std::clamp<int8_t>(options.maxForestRadius + 1, Scenario::kMinForestRadius, Scenario::kMaxForestRadius);
                     break;
                 }
                 case widx::max_forest_radius_down:
                 {
-                    options.maxForestRadius = std::clamp<int8_t>(options.maxForestRadius - 1, Scenario::min_forest_radius, Scenario::max_forest_radius);
+                    options.maxForestRadius = std::clamp<int8_t>(options.maxForestRadius - 1, Scenario::kMinForestRadius, Scenario::kMaxForestRadius);
                     if (options.maxForestRadius < options.minForestRadius)
                         options.minForestRadius = options.maxForestRadius;
                     break;
                 }
                 case widx::min_forest_density_up:
                 {
-                    options.minForestDensity = std::min<int8_t>(options.minForestDensity + 1, Scenario::max_forest_density);
+                    options.minForestDensity = std::min<int8_t>(options.minForestDensity + 1, Scenario::kMaxForestDensity);
                     if (options.minForestDensity > options.maxForestDensity)
                         options.maxForestDensity = options.minForestDensity;
                     break;
                 }
                 case widx::min_forest_density_down:
                 {
-                    options.minForestDensity = std::max<int8_t>(Scenario::min_forest_density, options.minForestDensity - 1);
+                    options.minForestDensity = std::max<int8_t>(Scenario::kMinForestDensity, options.minForestDensity - 1);
                     break;
                 }
                 case widx::max_forest_density_up:
                 {
-                    options.maxForestDensity = std::min<int8_t>(options.maxForestDensity + 1, Scenario::max_forest_density);
+                    options.maxForestDensity = std::min<int8_t>(options.maxForestDensity + 1, Scenario::kMaxForestDensity);
                     break;
                 }
                 case widx::max_forest_density_down:
                 {
-                    options.maxForestDensity = std::max<int8_t>(Scenario::min_forest_density, options.maxForestDensity - 1);
+                    options.maxForestDensity = std::max<int8_t>(Scenario::kMinForestDensity, options.maxForestDensity - 1);
                     if (options.maxForestDensity < options.minForestDensity)
                         options.minForestDensity = options.maxForestDensity;
                     break;
                 }
                 case widx::number_random_trees_up:
                 {
-                    options.numberRandomTrees = std::min<int16_t>(options.numberRandomTrees + 25, Scenario::max_num_trees);
+                    options.numberRandomTrees = std::min<int16_t>(options.numberRandomTrees + 25, Scenario::kMaxNumTrees);
                     break;
                 }
                 case widx::number_random_trees_down:
                 {
-                    options.numberRandomTrees = std::max<int16_t>(Scenario::min_num_trees, options.numberRandomTrees - 25);
+                    options.numberRandomTrees = std::max<int16_t>(Scenario::kMinNumTrees, options.numberRandomTrees - 25);
                     break;
                 }
                 case widx::min_altitude_for_trees_up:
                 {
-                    options.minAltitudeForTrees = std::min<int8_t>(options.minAltitudeForTrees + 1, Scenario::max_altitude_trees);
+                    options.minAltitudeForTrees = std::min<int8_t>(options.minAltitudeForTrees + 1, Scenario::kMaxAltitudeTrees);
                     if (options.minAltitudeForTrees > options.maxAltitudeForTrees)
                         options.maxAltitudeForTrees = options.minAltitudeForTrees;
                     break;
                 }
                 case widx::min_altitude_for_trees_down:
                 {
-                    options.minAltitudeForTrees = std::max<int8_t>(Scenario::min_altitude_trees, options.minAltitudeForTrees - 1);
+                    options.minAltitudeForTrees = std::max<int8_t>(Scenario::kMinAltitudeTrees, options.minAltitudeForTrees - 1);
                     break;
                 }
                 case widx::max_altitude_for_trees_up:
                 {
-                    options.maxAltitudeForTrees = std::min<int8_t>(options.maxAltitudeForTrees + 1, Scenario::max_altitude_trees);
+                    options.maxAltitudeForTrees = std::min<int8_t>(options.maxAltitudeForTrees + 1, Scenario::kMaxAltitudeTrees);
                     break;
                 }
                 case widx::max_altitude_for_trees_down:
                 {
-                    options.maxAltitudeForTrees = std::max<int8_t>(Scenario::min_altitude_trees, options.maxAltitudeForTrees - 1);
+                    options.maxAltitudeForTrees = std::max<int8_t>(Scenario::kMinAltitudeTrees, options.maxAltitudeForTrees - 1);
                     if (options.maxAltitudeForTrees < options.minAltitudeForTrees)
                         options.minAltitudeForTrees = options.maxAltitudeForTrees;
                     break;
@@ -1193,12 +1193,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::check_allow_industries_close_down:
-                    *industryFlags ^= Scenario::IndustryFlags::disallowIndustriesCloseDown;
+                    *industryFlags ^= Scenario::IndustryFlags::kDisallowIndustriesCloseDown;
                     window->invalidate();
                     break;
 
                 case widx::check_allow_industries_start_up:
-                    *industryFlags ^= Scenario::IndustryFlags::disallowIndustriesStartUp;
+                    *industryFlags ^= Scenario::IndustryFlags::kDisallowIndustriesStartUp;
                     window->invalidate();
                     break;
             }
@@ -1212,9 +1212,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
 
             window->activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
-            if (!(industryFlags & Scenario::IndustryFlags::disallowIndustriesCloseDown))
+            if (!(industryFlags & Scenario::IndustryFlags::kDisallowIndustriesCloseDown))
                 window->activatedWidgets |= 1 << widx::check_allow_industries_close_down;
-            if (!(industryFlags & Scenario::IndustryFlags::disallowIndustriesStartUp))
+            if (!(industryFlags & Scenario::IndustryFlags::kDisallowIndustriesStartUp))
                 window->activatedWidgets |= 1 << widx::check_allow_industries_start_up;
         }
 

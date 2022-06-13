@@ -1011,7 +1011,7 @@ namespace OpenLoco
                 if (today.month != yesterday.month)
                 {
                     // End of every month
-                    Scenario::getObjectiveProgress().monthsInChallenge++;
+                    Scenario::Objective::getObjectiveProgress().monthsInChallenge++;
                     TownManager::updateMonthly();
                     IndustryManager::updateMonthly();
                     CompanyManager::updateMonthly1();

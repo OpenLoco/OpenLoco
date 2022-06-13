@@ -104,7 +104,7 @@ namespace OpenLoco::S5
         uint8_t preview[128][128];                            // 0x18A
         uint8_t maxCompetingCompanies;                        // 0x418A
         uint8_t competitorStartDelay;                         // 0x418B
-        Scenario::Objective objective;                        // 0x418C
+        Scenario::Objective::Objective objective;             // 0x418C
         ObjectHeader objectiveDeliveredCargo;                 // 0x419D
         ObjectHeader currency;                                // 0x41AD
 

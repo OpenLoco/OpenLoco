@@ -55,15 +55,15 @@ namespace OpenLoco::Scenario
     {
         switch (season)
         {
-            case Season::autumn:
-                return Season::winter;
-            case Season::winter:
-                return Season::spring;
-            case Season::spring:
-                return Season::summer;
-            case Season::summer:
+            case Season::Autumn:
+                return Season::Winter;
+            case Season::Winter:
+                return Season::Spring;
+            case Season::Spring:
+                return Season::Summer;
+            case Season::Summer:
             default:
-                return Season::autumn;
+                return Season::Autumn;
         }
     }
 
@@ -97,7 +97,7 @@ namespace OpenLoco::Scenario
 
         updateSeason(currentDayOfYear, climateObj);
 
-        if (getCurrentSeason() == Season::winter)
+        if (getCurrentSeason() == Season::Winter)
         {
             setCurrentSnowLine(climateObj->winterSnowLine);
         }
@@ -116,7 +116,7 @@ namespace OpenLoco::Scenario
 
         updateSeason(currentDayOfYear, climateObj);
 
-        if (getCurrentSeason() == Season::winter)
+        if (getCurrentSeason() == Season::Winter)
         {
             if (getCurrentSnowLine() != climateObj->winterSnowLine)
                 setCurrentSnowLine(getCurrentSnowLine() - 1);
@@ -220,7 +220,7 @@ namespace OpenLoco::Scenario
     // 0x0043EDAD
     void eraseLandscape()
     {
-        S5::getOptions().scenarioFlags &= ~(Scenario::Flags::landscapeGenerationDone);
+        S5::getOptions().scenarioFlags &= ~(Scenario::Flags::kLandscapeGenerationDone);
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         reset();
         S5::getOptions().madeAnyChanges = 0;
@@ -256,7 +256,7 @@ namespace OpenLoco::Scenario
 
         ScenarioManager::setScenarioTicks(0);
         Ui::WindowManager::setVehiclePreviewRotationFrame(0);
-        setCurrentSeason(Season::winter);
+        setCurrentSeason(Season::Winter);
 
         CompanyManager::determineAvailableVehicles();
 
@@ -326,7 +326,7 @@ namespace OpenLoco::Scenario
         Audio::resetMusic();
 
         auto& gameState = getGameState();
-        if (gameState.flags & Flags::landscapeGenerationDone)
+        if (gameState.flags & Flags::kLandscapeGenerationDone)
         {
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)
@@ -374,8 +374,8 @@ namespace OpenLoco::Scenario
         initialiseSnowLine();
         sub_4748D4();
         std::fill(std::begin(gameState.recordSpeed), std::end(gameState.recordSpeed), 0_mph);
-        getObjectiveProgress().timeLimitUntilYear = getObjective().timeLimitYears - 1 + gameState.currentYear;
-        getObjectiveProgress().monthsInChallenge = 0;
+        Objective::getObjectiveProgress().timeLimitUntilYear = Objective::getObjective().timeLimitYears - 1 + gameState.currentYear;
+        Objective::getObjectiveProgress().monthsInChallenge = 0;
         call(0x0049B546);
         gameState.lastMapWindowFlags = 0;
 
@@ -412,59 +412,59 @@ namespace OpenLoco::Scenario
     // 0x004384E9
     void formatChallengeArguments(FormatArguments& args)
     {
-        switch (Scenario::getObjective().type)
+        switch (Scenario::Objective::getObjective().type)
         {
-            case Scenario::ObjectiveType::companyValue:
+            case Scenario::Objective::Type::CompanyValue:
                 args.push(StringIds::achieve_a_company_value_of);
-                args.push(Scenario::getObjective().companyValue);
+                args.push(Scenario::Objective::getObjective().companyValue);
                 break;
 
-            case Scenario::ObjectiveType::vehicleProfit:
+            case Scenario::Objective::Type::VehicleProfit:
                 args.push(StringIds::achieve_a_monthly_profit_from_vehicles_of);
-                args.push(Scenario::getObjective().monthlyVehicleProfit);
+                args.push(Scenario::Objective::getObjective().monthlyVehicleProfit);
                 break;
 
-            case Scenario::ObjectiveType::performanceIndex:
+            case Scenario::Objective::Type::PerformanceIndex:
             {
                 args.push(StringIds::achieve_a_performance_index_of);
-                int16_t performanceIndex = Scenario::getObjective().performanceIndex * 10;
+                int16_t performanceIndex = Scenario::Objective::getObjective().performanceIndex * 10;
                 formatPerformanceIndex(performanceIndex, args);
                 break;
             }
 
-            case Scenario::ObjectiveType::cargoDelivery:
+            case Scenario::Objective::Type::CargoDelivery:
             {
                 args.push(StringIds::deliver);
                 CargoObject* cargoObject = _50D15C;
-                if (Scenario::getObjective().deliveredCargoType != 0xFF)
+                if (Scenario::Objective::getObjective().deliveredCargoType != 0xFF)
                 {
-                    cargoObject = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
+                    cargoObject = ObjectManager::get<CargoObject>(Scenario::Objective::getObjective().deliveredCargoType);
                 }
                 args.push(cargoObject->unit_name_plural);
-                args.push(Scenario::getObjective().deliveredCargoAmount);
+                args.push(Scenario::Objective::getObjective().deliveredCargoAmount);
                 break;
             }
         }
 
-        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beTopCompany) != 0)
+        if ((Scenario::Objective::getObjective().flags & Scenario::Objective::Flags::kBeTopCompany) != 0)
         {
             args.push(StringIds::and_be_the_top_performing_company);
         }
-        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
+        if ((Scenario::Objective::getObjective().flags & Scenario::Objective::Flags::kBeWithinTopThreeCompanies) != 0)
         {
             args.push(StringIds::and_be_one_of_the_top_3_performing_companies);
         }
-        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+        if ((Scenario::Objective::getObjective().flags & Scenario::Objective::Flags::kWithinTimeLimit) != 0)
         {
             if (isTitleMode() || isEditorMode())
             {
                 args.push(StringIds::within_years);
-                args.push<uint16_t>(Scenario::getObjective().timeLimitYears);
+                args.push<uint16_t>(Scenario::Objective::getObjective().timeLimitYears);
             }
             else
             {
                 args.push(StringIds::by_the_end_of);
-                args.push(Scenario::getObjectiveProgress().timeLimitUntilYear);
+                args.push(Scenario::Objective::getObjectiveProgress().timeLimitUntilYear);
             }
         }
 

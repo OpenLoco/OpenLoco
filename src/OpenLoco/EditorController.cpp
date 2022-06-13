@@ -77,17 +77,17 @@ namespace OpenLoco::EditorController
             StringManager::formatString(options.scenarioName, StringIds::unnamed);
         }
 
-        options.scenarioFlags &= ~Scenario::Flags::landscapeGenerationDone;
+        options.scenarioFlags &= ~Scenario::Flags::kLandscapeGenerationDone;
         if (addr<0x00525E28, uint32_t>() & 1)
         {
-            options.scenarioFlags |= Scenario::Flags::landscapeGenerationDone;
+            options.scenarioFlags |= Scenario::Flags::kLandscapeGenerationDone;
             Game::sub_46DB4C(); // draw preview map
         }
 
         options.maxCompetingCompanies = CompanyManager::getMaxCompetingCompanies();
         options.competitorStartDelay = CompanyManager::getCompetitorStartDelay();
         gameState.numberOfIndustries = options.numberOfIndustries;
-        options.objective = Scenario::getObjective();
+        options.objective = Scenario::Objective::getObjective();
         options.objectiveDeliveredCargo = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::cargo, options.objective.deliveredCargoType });
         options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, options.objective.deliveredCargoType });
     }
@@ -155,7 +155,7 @@ namespace OpenLoco::EditorController
                 S5::sub_4BAEC4();
                 S5::getOptions().editorStep = Step::landscapeEditor;
                 LandscapeGeneration::open();
-                if (S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone)
+                if (S5::getOptions().scenarioFlags & Scenario::Flags::kLandscapeGenerationDone)
                 {
                     if ((addr<0x00525E28, uint32_t>() & 1) == 0)
                     {

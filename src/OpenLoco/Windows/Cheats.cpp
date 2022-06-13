@@ -406,7 +406,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
 
                 case Widx::year_step_decrease:
-                    _date.year = std::max<int32_t>(OpenLoco::Scenario::min_year, _date.year - timeStepSize);
+                    _date.year = std::max<int32_t>(OpenLoco::Scenario::kMinYear, _date.year - timeStepSize);
                     break;
 
                 case Widx::year_step_increase:
