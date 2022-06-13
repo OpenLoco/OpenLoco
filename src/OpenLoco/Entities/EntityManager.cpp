@@ -302,7 +302,7 @@ namespace OpenLoco::EntityManager
     // 0x004A8826
     void updateVehicles()
     {
-        if (Game::hasFlags(1u << 0) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::kLandscapeGenerationDone) && !isEditorMode())
         {
             for (auto v : VehicleList())
             {
@@ -314,7 +314,7 @@ namespace OpenLoco::EntityManager
     // 0x004402F4
     void updateMiscEntities()
     {
-        if (getGameState().flags & (1u << 0))
+        if (getGameState().flags & GameStateFlags::kLandscapeGenerationDone)
         {
             for (auto* misc : EntityList<EntityListIterator<MiscBase>, EntityListType::misc>())
             {

@@ -275,7 +275,7 @@ namespace OpenLoco::CompanyManager
     {
         // Original network logic removed
         auto& gameState = getGameState();
-        gameState.flags |= Scenario::Flags::kPreferredOwnerName;
+        gameState.flags |= GameStateFlags::kPreferredOwnerName;
         auto competitorId = selectNewCompetitor(-1);
         gameState.playerCompanies[0] = createCompany(competitorId, true);
         gameState.playerCompanies[1] = CompanyId::null;

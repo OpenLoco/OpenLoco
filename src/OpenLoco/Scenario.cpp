@@ -326,7 +326,7 @@ namespace OpenLoco::Scenario
         Audio::resetMusic();
 
         auto& gameState = getGameState();
-        if (gameState.flags & Flags::kLandscapeGenerationDone)
+        if (gameState.flags & GameStateFlags::kLandscapeGenerationDone)
         {
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)

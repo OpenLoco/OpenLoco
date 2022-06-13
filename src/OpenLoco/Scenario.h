@@ -16,7 +16,6 @@ namespace OpenLoco::Scenario
     {
         constexpr uint16_t kLandscapeGenerationDone = (1 << 0);
         constexpr uint16_t kHillsEdgeOfMap = (1 << 1);
-        constexpr uint16_t kPreferredOwnerName = (1 << 2);
     }
 
     namespace IndustryFlags

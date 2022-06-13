@@ -13,6 +13,13 @@
 
 namespace OpenLoco
 {
+    namespace GameStateFlags
+    {
+        constexpr uint32_t kLandscapeGenerationDone = (1 << 0);
+        constexpr uint32_t kUnknown0 = (1 << 1);
+        constexpr uint32_t kPreferredOwnerName = (1 << 2);
+    }
+
 #pragma pack(push, 1)
     struct GameState
     {

@@ -65,7 +65,7 @@ namespace OpenLoco::Map::TileManager
             *element = *reinterpret_cast<TileElement*>(&defaultElement);
         }
         updateTilePointers();
-        getGameState().flags |= (1u << 0);
+        getGameState().flags |= GameStateFlags::kLandscapeGenerationDone;
     }
 
     stdx::span<TileElement> getElements()
