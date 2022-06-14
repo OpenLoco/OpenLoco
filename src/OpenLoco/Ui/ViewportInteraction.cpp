@@ -387,15 +387,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             auto train = Vehicles::Vehicle(*v);
             checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *train.veh2, targetPosition);
-            for (auto car : train.cars)
-            {
-                for (auto carComponent : car)
-                {
-                    checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *carComponent.front, targetPosition);
-                    checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *carComponent.back, targetPosition);
-                    checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *carComponent.body, targetPosition);
-                }
-            }
+            train.cars.applyToComponents([&nearestDistance, &nearestVehicle, &targetPosition](auto& component) {
+                checkAndSetNearestVehicle(nearestDistance, nearestVehicle, component, targetPosition);
+            });
         }
 
         if (nearestDistance <= 32 && nearestVehicle != nullptr)

@@ -147,27 +147,13 @@ namespace OpenLoco::Vehicles
         }
 
         Vehicle train(head);
-        for (auto& car : train.cars)
-        {
-            for (auto& carComponent : car)
+        train.cars.applyToComponents([](auto& component) {
+            if (component.var_5E != 0)
             {
-                if (carComponent.front->var_5E != 0)
-                {
-                    carComponent.front->var_5E++;
-                    carComponent.front->var_5E &= 0x3F;
-                }
-                if (carComponent.back->var_5E != 0)
-                {
-                    carComponent.back->var_5E++;
-                    carComponent.back->var_5E &= 0x3F;
-                }
-                if (carComponent.body->var_5E != 0)
-                {
-                    carComponent.body->var_5E++;
-                    carComponent.body->var_5E &= 0x3F;
-                }
+                component.var_5E++;
+                component.var_5E &= 0x3F;
             }
-        }
+        });
 
         bool isOnRackRail = true; // Note has been inverted
         uint8_t dh = 0;
@@ -177,12 +163,9 @@ namespace OpenLoco::Vehicles
             auto* frontBogie = car.front;
             if (shouldSetVar5E(train, *frontBogie))
             {
-                for (auto& carComponent : car)
-                {
-                    carComponent.front->var_5E = 1;
-                    carComponent.back->var_5E = 1;
-                    carComponent.body->var_5E = 1;
-                }
+                car.applyToComponents([](auto& component) {
+                    component.var_5E = 1;
+                });
             }
 
             if (frontBogie->var_5E != 0)
@@ -329,15 +312,7 @@ namespace OpenLoco::Vehicles
                 invalidateSprite();
                 train.veh1->invalidateSprite();
                 train.tail->invalidateSprite();
-                for (auto& car : train.cars)
-                {
-                    for (auto& carComponent : car)
-                    {
-                        carComponent.front->invalidateSprite();
-                        carComponent.back->invalidateSprite();
-                        carComponent.body->invalidateSprite();
-                    }
-                }
+                train.cars.applyToComponents([](auto& component) { component.invalidateSprite(); });
             }
 
             var_5B = 7;
@@ -355,15 +330,7 @@ namespace OpenLoco::Vehicles
                 invalidateSprite();
                 train.veh1->invalidateSprite();
                 train.tail->invalidateSprite();
-                for (auto& car : train.cars)
-                {
-                    for (auto& carComponent : car)
-                    {
-                        carComponent.front->invalidateSprite();
-                        carComponent.back->invalidateSprite();
-                        carComponent.body->invalidateSprite();
-                    }
-                }
+                train.cars.applyToComponents([](auto& component) { component.invalidateSprite(); });
             }
             return true;
         }

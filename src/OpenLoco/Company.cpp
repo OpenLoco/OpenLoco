@@ -398,12 +398,7 @@ namespace OpenLoco
                 {
                     colour = vehicleColours[vehObject->colour_type - 1];
                 }
-                for (auto& carComponent : car)
-                {
-                    carComponent.front->colourScheme = colour;
-                    carComponent.back->colourScheme = colour;
-                    carComponent.body->colourScheme = colour;
-                }
+                car.applyToComponents([colour](auto& component) { component.colourScheme = colour; });
             }
         }
         Gfx::invalidateScreen();
