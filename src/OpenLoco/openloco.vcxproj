@@ -335,6 +335,7 @@
     <ClInclude Include="Network\NetworkClient.h" />
     <ClInclude Include="Network\NetworkConnection.h" />
     <ClInclude Include="Network\NetworkServer.h" />
+    <ClInclude Include="Network\Packet.h" />
     <ClInclude Include="Network\Socket.h" />
     <ClInclude Include="Network\Network.h" />
     <ClInclude Include="Objects\AirportObject.h" />

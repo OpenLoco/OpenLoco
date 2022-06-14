@@ -71,6 +71,7 @@ void NetworkServer::onClose()
 {
     clearScreenFlag(ScreenFlags::networked);
     clearScreenFlag(ScreenFlags::networkHost);
+    Console::log("Server closed");
 }
 
 Client* NetworkServer::findClient(const INetworkEndpoint& endpoint)
