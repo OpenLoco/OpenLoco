@@ -1,9 +1,10 @@
 #include "../Company.h"
+#include "../Core/Optional.hpp"
 #include "../Graphics/Colour.h"
 #include "../Localisation/StringManager.h"
 #include "../Window.h"
 #include <cstdlib>
-#include <vector>
+#include <optional>
 
 enum format_arg_type
 {
@@ -79,4 +80,48 @@ namespace OpenLoco::Ui::Dropdown
     CompanyId getCompanyIdFromSelection(int16_t itemIndex);
     uint16_t getItemArgument(const uint8_t index, const uint8_t argument);
     uint16_t getItemsPerRow(uint8_t itemCount);
+
+    using DropdownItemId = int32_t;
+
+    class Builder
+    {
+    private:
+        Window* _window{};
+        WidgetIndex_t _widgetIndex{};
+        std::vector<std::tuple<std::optional<DropdownItemId>, string_id>> _items;
+        std::optional<DropdownItemId> _highlightedId;
+
+    public:
+        Builder& below(Window& window, WidgetIndex_t widgetIndex);
+        Builder& item(DropdownItemId id, string_id text);
+        Builder& separator();
+        Builder& highlight(DropdownItemId id);
+        void show();
+
+        template<typename T>
+        Builder& item(T id, string_id text)
+        {
+            item(static_cast<int32_t>(id), text);
+            return *this;
+        }
+
+        template<typename T>
+        Builder& highlight(T id)
+        {
+            highlight(static_cast<int32_t>(id));
+            return *this;
+        }
+    };
+
+    Builder create();
+    std::optional<DropdownItemId> getSelectedItem(int32_t index);
+
+    template<typename T>
+    std::optional<T> getSelectedItem(int32_t index)
+    {
+        auto result = getSelectedItem(index);
+        if (result)
+            return static_cast<T>(*result);
+        return std::nullopt;
+    }
 }
