@@ -649,6 +649,14 @@ namespace OpenLoco::Vehicles
         VehicleBody* body = nullptr;
         CarComponent(VehicleBase*& component);
         CarComponent() = default;
+
+        template<typename TFunc>
+        void applyToComponents(TFunc&& func) const
+        {
+            func(*front);
+            func(*back);
+            func(*body);
+        }
     };
 
     struct Car : public CarComponent
@@ -855,5 +863,21 @@ namespace OpenLoco::Vehicles
         {
         }
         Vehicle(EntityId _head);
+
+        template<typename TFunc>
+        void applyToComponents(TFunc&& func) const
+        {
+            func(*head);
+            func(*veh1);
+            func(*veh2);
+            for (auto& car : cars)
+            {
+                for (auto& carComponent : car)
+                {
+                    carComponent.applyToComponents(func);
+                }
+            }
+            func(*tail);
+        }
     };
 }

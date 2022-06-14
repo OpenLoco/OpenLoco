@@ -45,20 +45,7 @@ namespace OpenLoco::GameCommands
         head->liftUpVehicle();
 
         // Clear ghost flag on primary vehicle pieces and all car components.
-        train.head->var_38 &= ~(Vehicles::Flags38::isGhost);
-        train.veh1->var_38 &= ~(Vehicles::Flags38::isGhost);
-        train.veh2->var_38 &= ~(Vehicles::Flags38::isGhost);
-        train.tail->var_38 &= ~(Vehicles::Flags38::isGhost);
-
-        for (auto& car : train.cars)
-        {
-            for (auto& component : car)
-            {
-                component.front->var_38 &= ~(Vehicles::Flags38::isGhost);
-                component.back->var_38 &= ~(Vehicles::Flags38::isGhost);
-                component.body->var_38 &= ~(Vehicles::Flags38::isGhost);
-            }
-        }
+        train.applyToComponents([](auto& component) { component.var_38 &= ~Vehicles::Flags38::isGhost; });
 
         head->var_0C |= Vehicles::Flags0C::commandStop;
 
