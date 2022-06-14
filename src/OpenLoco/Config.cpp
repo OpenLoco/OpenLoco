@@ -156,6 +156,13 @@ namespace OpenLoco::Config
                 audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>();
         }
 
+        auto& networkNode = config["network"];
+        if (networkNode && networkNode.IsMap())
+        {
+            auto& networkConfig = _new_config.network;
+            networkConfig.enabled = networkNode["enabled"] && networkNode["enabled"].as<bool>();
+        }
+
         if (config["loco_install_path"])
             _new_config.locoInstallPath = config["loco_install_path"].as<std::string>();
         if (config["last_save_path"])
@@ -231,6 +238,12 @@ namespace OpenLoco::Config
         }
         audioNode["play_title_music"] = audioConfig.playTitleMusic;
         node["audio"] = audioNode;
+
+        // Network
+        const auto& networkConfig = _new_config.network;
+        auto networkNode = node["network"];
+        networkNode["enabled"] = networkConfig.enabled;
+        node["network"] = networkNode;
 
         node["loco_install_path"] = _new_config.locoInstallPath;
         node["last_save_path"] = _new_config.lastSavePath;

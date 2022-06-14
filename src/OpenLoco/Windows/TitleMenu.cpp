@@ -198,6 +198,9 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         window->widgets[Widx::scenario_editor_btn].right = btn_main_size * 4 - 1;
         window->widgets[Widx::chat_btn].type = Ui::WidgetType::none;
 
+        auto& config = Config::getNew();
+        window->widgets[Widx::multiplayer_toggle_btn].type = config.network.enabled ? WidgetType::buttonWithImage : WidgetType::none;
+
         if (OpenLoco::isNetworked())
         {
             window->widgets[Widx::tutorial_btn].type = Ui::WidgetType::none;

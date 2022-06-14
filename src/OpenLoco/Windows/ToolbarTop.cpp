@@ -73,19 +73,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         widgetEnd(),
     };
 
-    namespace LoadSaveDropdownIndex
+    enum class LoadSaveDropdownId
     {
-        constexpr size_t loadGame = 0;
-        constexpr size_t saveGame = 1;
-        constexpr size_t separator1 = 2;
-        constexpr size_t about = 3;
-        constexpr size_t options = 4;
-        constexpr size_t screenshot = 5;
-        constexpr size_t separator2 = 6;
-        constexpr size_t server = 7;
-        constexpr size_t separator3 = 8;
-        constexpr size_t quitToMenu = 9;
-        constexpr size_t quitToDesktop = 10;
+        loadGame,
+        saveGame,
+        about,
+        options,
+        screenshot,
+        server,
+        quitToMenu,
+        quitToDesktop
     };
 
     static WindowEventList _events;
@@ -133,35 +130,41 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x0043B0F7
     static void loadsaveMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
-        Dropdown::add(LoadSaveDropdownIndex::loadGame, StringIds::menu_load_game);
-        Dropdown::add(LoadSaveDropdownIndex::saveGame, StringIds::menu_save_game);
-        Dropdown::addSeparator(LoadSaveDropdownIndex::separator1);
-        Dropdown::add(LoadSaveDropdownIndex::about, StringIds::menu_about);
-        Dropdown::add(LoadSaveDropdownIndex::options, StringIds::options);
-        Dropdown::add(LoadSaveDropdownIndex::screenshot, StringIds::menu_screenshot);
+        auto d = Dropdown::create()
+                     .below(*window, widgetIndex)
+                     .item(LoadSaveDropdownId::loadGame, StringIds::menu_load_game)
+                     .item(LoadSaveDropdownId::saveGame, StringIds::menu_save_game)
+                     .separator()
+                     .item(LoadSaveDropdownId::about, StringIds::menu_about)
+                     .item(LoadSaveDropdownId::options, StringIds::options)
+                     .item(LoadSaveDropdownId::screenshot, StringIds::menu_screenshot);
 
-        Dropdown::addSeparator(LoadSaveDropdownIndex::separator2);
-        if (isNetworked())
+        auto& newConfig = Config::getNew();
+        if (newConfig.network.enabled)
         {
-            if (isNetworkHost())
+            d.separator();
+            if (isNetworked())
             {
-                Dropdown::add(LoadSaveDropdownIndex::server, StringIds::closeServer);
+                if (isNetworkHost())
+                {
+                    d.item(LoadSaveDropdownId::server, StringIds::closeServer);
+                }
+                else
+                {
+                    d.item(LoadSaveDropdownId::server, StringIds::disconnect);
+                }
             }
             else
             {
-                Dropdown::add(LoadSaveDropdownIndex::server, StringIds::disconnect);
+                d.item(LoadSaveDropdownId::server, StringIds::startServer);
             }
         }
-        else
-        {
-            Dropdown::add(LoadSaveDropdownIndex::server, StringIds::startServer);
-        }
-        Dropdown::addSeparator(LoadSaveDropdownIndex::separator3);
 
-        Dropdown::add(LoadSaveDropdownIndex::quitToMenu, StringIds::menu_quit_to_menu);
-        Dropdown::add(LoadSaveDropdownIndex::quitToDesktop, StringIds::menu_exit_openloco);
-        Dropdown::showBelow(window, widgetIndex, 11, 0);
-        Dropdown::setHighlightedItem(LoadSaveDropdownIndex::saveGame);
+        d.separator()
+            .item(LoadSaveDropdownId::quitToMenu, StringIds::menu_quit_to_menu)
+            .item(LoadSaveDropdownId::quitToDesktop, StringIds::menu_exit_openloco)
+            .highlight(LoadSaveDropdownId::saveGame)
+            .show();
     }
 
     // 0x0043B1C4
@@ -222,43 +225,44 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x0043B154
     static void loadsaveMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
-        if (itemIndex == -1)
-            itemIndex = Dropdown::getHighlightedItem();
+        auto id = Dropdown::getSelectedItem<LoadSaveDropdownId>(itemIndex);
+        if (!id)
+            return;
 
-        switch (itemIndex)
+        switch (*id)
         {
-            case LoadSaveDropdownIndex::loadGame:
+            case LoadSaveDropdownId::loadGame:
                 // Load game
                 GameCommands::do_21(0, 0);
                 break;
 
-            case LoadSaveDropdownIndex::saveGame:
+            case LoadSaveDropdownId::saveGame:
                 // Save game
                 prepareSaveGame();
                 break;
 
-            case LoadSaveDropdownIndex::about:
+            case LoadSaveDropdownId::about:
                 About::open();
                 break;
 
-            case LoadSaveDropdownIndex::options:
+            case LoadSaveDropdownId::options:
                 Options::open();
                 break;
 
-            case LoadSaveDropdownIndex::screenshot:
+            case LoadSaveDropdownId::screenshot:
                 takeScreenshot();
                 break;
 
-            case LoadSaveDropdownIndex::server:
+            case LoadSaveDropdownId::server:
                 startOrCloseServer();
                 break;
 
-            case LoadSaveDropdownIndex::quitToMenu:
+            case LoadSaveDropdownId::quitToMenu:
                 // Return to title screen
                 GameCommands::do_21(0, 1);
                 break;
 
-            case LoadSaveDropdownIndex::quitToDesktop:
+            case LoadSaveDropdownId::quitToDesktop:
                 // Exit to desktop
                 GameCommands::do_21(0, 2);
                 break;

@@ -155,10 +155,16 @@ namespace OpenLoco::Config
         uint8_t modifiers;
     };
 
+    struct Network
+    {
+        bool enabled{};
+    };
+
     struct NewConfig
     {
         Display display;
         Audio audio;
+        Network network;
         std::string locoInstallPath;
         std::string lastSavePath;
         std::string language = "en-GB";
