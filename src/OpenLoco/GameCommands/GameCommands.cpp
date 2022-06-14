@@ -109,7 +109,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::createPort,                   nullptr,                   0x00493AA7, true  },
         { GameCommand::removePort,                   nullptr,                   0x00494570, true  },
         { GameCommand::vehiclePlaceWater,            nullptr,                   0x0042773C, true  },
-        { GameCommand::vehiclePickupWater,           nullptr,                   0x004279CC, true  },
+        { GameCommand::vehiclePickupWater,           Vehicles::vehiclePickupWater, 0x004279CC, true  },
         { GameCommand::vehicleRefit,                 nullptr,                   0x0042F6DB, false },
         { GameCommand::changeCompanyFace,            nullptr,                   0x00435506, false },
         { GameCommand::clearLand,                    nullptr,                   0x00469CCB, true  },
