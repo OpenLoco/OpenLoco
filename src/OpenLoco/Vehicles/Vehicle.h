@@ -742,6 +742,15 @@ namespace OpenLoco::Vehicles
         {
         }
         Car() = default;
+
+        template<typename TFunc>
+        void applyToComponents(TFunc&& func) const
+        {
+            for (auto& carComponent : *this)
+            {
+                carComponent.applyToComponents(func);
+            }
+        }
     };
 
     struct Vehicle
@@ -850,6 +859,15 @@ namespace OpenLoco::Vehicles
             {
             }
             Cars() = default;
+
+            template<typename TFunc>
+            void applyToComponents(TFunc&& func) const
+            {
+                for (auto& car : *this)
+                {
+                    car.applyToComponents(func);
+                }
+            }
         };
 
         VehicleHead* head;
@@ -870,13 +888,7 @@ namespace OpenLoco::Vehicles
             func(*head);
             func(*veh1);
             func(*veh2);
-            for (auto& car : cars)
-            {
-                for (auto& carComponent : car)
-                {
-                    carComponent.applyToComponents(func);
-                }
-            }
+            cars.applyToComponents(func);
             func(*tail);
         }
     };
