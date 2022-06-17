@@ -1,4 +1,5 @@
 #include "NetworkClient.h"
+#include "../Config.h"
 #include "../Console.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Platform/Platform.h"
@@ -35,7 +36,7 @@ void NetworkClient::connect(std::string_view host, port_t port)
     _serverConnection = std::make_unique<NetworkConnection>(socket.get(), _serverEndpoint->clone());
 
     auto szHostIpAddress = _serverEndpoint->getIpAddress();
-    Console::log("Resolved endpoint for %s:%d", szHostIpAddress.c_str(), defaultPort);
+    Console::log("Resolved endpoint for %s:%d", szHostIpAddress.c_str(), port);
 
     beginReceivePacketLoop();
 
@@ -178,9 +179,10 @@ void NetworkClient::onReceivePacketFromServer(const Packet& packet)
 
 void NetworkClient::sendConnectPacket()
 {
+    const auto& config = Config::get();
     ConnectPacket packet;
-    std::strncpy(packet.name, "Ted", sizeof(packet.name));
-    packet.version = networkVersion;
+    std::strncpy(packet.name, config.preferredName, sizeof(packet.name));
+    packet.version = kNetworkVersion;
     _serverConnection->sendPacket(packet);
 }
 

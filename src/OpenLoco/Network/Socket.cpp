@@ -62,8 +62,6 @@
 
 namespace OpenLoco::Network
 {
-    constexpr auto CONNECT_TIMEOUT = std::chrono::milliseconds(3000);
-
 // RAII WSA initialisation needed for Windows
 #ifdef _WIN32
     class WSA
@@ -104,13 +102,13 @@ namespace OpenLoco::Network
         }
     };
 
-    static bool InitialiseWSA()
+    static bool initialiseWSA()
     {
         static WSA wsa;
         return wsa.initialise();
     }
 #else
-    static bool InitialiseWSA()
+    static bool initialiseWSA()
     {
         return true;
     }
@@ -612,13 +610,13 @@ namespace OpenLoco::Network
     {
         std::unique_ptr<IUdpSocket> createUdp()
         {
-            InitialiseWSA();
+            initialiseWSA();
             return std::make_unique<UdpSocket>();
         }
 
         std::unique_ptr<INetworkEndpoint> resolve(Protocol protocol, const std::string& address, uint16_t port)
         {
-            InitialiseWSA();
+            initialiseWSA();
             sockaddr_storage ss{};
             socklen_t ss_len;
             BaseSocket::resolveAddress(protocol, address, port, &ss, &ss_len);

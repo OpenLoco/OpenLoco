@@ -4,8 +4,8 @@
 
 using namespace OpenLoco::Network;
 
-constexpr uint32_t redeliverTimeout = 1000;
-constexpr uint32_t connectionTimeout = 15000;
+constexpr uint32_t kRedeliverTimeout = 1000;
+constexpr uint32_t kConnectionTimeout = 15000;
 
 NetworkConnection::NetworkConnection(IUdpSocket* socket, std::unique_ptr<INetworkEndpoint> endpoint)
     : _socket(socket)
@@ -26,7 +26,7 @@ uint32_t NetworkConnection::getTime()
 bool NetworkConnection::hasTimedOut() const
 {
     auto durationSinceLastPacket = getTime() - _timeOfLastReceivedPacket;
-    if (durationSinceLastPacket > connectionTimeout)
+    if (durationSinceLastPacket > kConnectionTimeout)
     {
         return true;
     }
@@ -83,7 +83,7 @@ void NetworkConnection::receivePacket(const Packet& packet)
 
 void NetworkConnection::sendPacket(PacketKind kind, size_t dataSize, const void* packetData)
 {
-    assert(dataSize <= maxPacketDataSize);
+    assert(dataSize <= kMaxPacketDataSize);
 
     Packet packet;
     packet.header.kind = kind;
@@ -134,7 +134,7 @@ void NetworkConnection::resendUndeliveredPackets()
 {
     std::unique_lock<std::mutex> lk(_sentPacketsSync);
     auto now = getTime();
-    auto timestamp = now - redeliverTimeout;
+    auto timestamp = now - kRedeliverTimeout;
 
     for (size_t i = 0; i < _sentPackets.size(); i++)
     {

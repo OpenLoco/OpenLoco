@@ -9,7 +9,7 @@
 
 namespace OpenLoco::Network
 {
-    typedef uint16_t sequence_t;
+    using sequence_t = uint16_t;
 
 #pragma pack(push, 1)
     enum class PacketKind : uint16_t
@@ -34,25 +34,25 @@ namespace OpenLoco::Network
         uint16_t dataSize{};
     };
 
-    constexpr uint16_t maxPacketDataSize = maxPacketSize - sizeof(PacketHeader);
+    constexpr uint16_t kMaxPacketDataSize = kMaxPacketSize - sizeof(PacketHeader);
 
     struct Packet
     {
         PacketHeader header;
-        uint8_t data[maxPacketDataSize]{};
+        uint8_t data[kMaxPacketDataSize]{};
 
         template<typename T>
-        const T* Cast() const
+        const T* cast() const
         {
             return reinterpret_cast<const T*>(data);
         }
 
         template<PacketKind TKind, typename T>
-        const T* As() const
+        const T* as() const
         {
             if (header.kind == TKind && header.dataSize >= sizeof(T))
             {
-                return Cast<T>();
+                return cast<T>();
             }
             return nullptr;
         }
@@ -120,9 +120,9 @@ namespace OpenLoco::Network
         uint16_t index{};
         uint32_t offset{};
         uint32_t dataSize{};
-        uint8_t data[maxPacketDataSize - 14]{};
+        uint8_t data[kMaxPacketDataSize - 14]{};
     };
-    static_assert(sizeof(RequestStateResponseChunk) == maxPacketDataSize);
+    static_assert(sizeof(RequestStateResponseChunk) == kMaxPacketDataSize);
 
     /**
      * Extra state on top of S5 that we want to send over network
@@ -146,7 +146,7 @@ namespace OpenLoco::Network
             return std::string_view(text, length);
         }
     };
-    static_assert(sizeof(SendChatMessage) <= maxPacketDataSize);
+    static_assert(sizeof(SendChatMessage) <= kMaxPacketDataSize);
 
     struct ReceiveChatMessage
     {
@@ -162,7 +162,7 @@ namespace OpenLoco::Network
             return std::string_view(text, length);
         }
     };
-    static_assert(sizeof(SendChatMessage) <= maxPacketDataSize);
+    static_assert(sizeof(SendChatMessage) <= kMaxPacketDataSize);
 
     struct GameCommandPacket
     {

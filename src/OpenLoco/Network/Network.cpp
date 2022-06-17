@@ -46,7 +46,7 @@ namespace OpenLoco::Network
         {
             const auto& cmdlineOptions = getCommandLineOptions();
             auto& bind = cmdlineOptions.bind;
-            auto port = cmdlineOptions.port.value_or(defaultPort);
+            auto port = cmdlineOptions.port.value_or(kDefaultPort);
 
             _server = std::make_unique<NetworkServer>();
             _server->listen(bind, port);
@@ -65,7 +65,7 @@ namespace OpenLoco::Network
 
     void joinServer(std::string_view host)
     {
-        joinServer(host, defaultPort);
+        joinServer(host, kDefaultPort);
     }
 
     void joinServer(std::string_view host, port_t port)

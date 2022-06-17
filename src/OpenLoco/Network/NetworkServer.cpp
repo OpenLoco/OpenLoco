@@ -14,7 +14,7 @@
 using namespace OpenLoco;
 using namespace OpenLoco::Network;
 
-constexpr uint32_t pingInterval = 30;
+constexpr uint32_t kPingInterval = 30;
 
 NetworkServer::~NetworkServer()
 {
@@ -63,7 +63,7 @@ void NetworkServer::listen(const std::string& bind, port_t port)
         {
             ipAddress = '[' + ipAddress + ']';
         }
-        Console::log("Listening for incoming connections on %s:%d...", ipAddress.c_str(), defaultPort);
+        Console::log("Listening for incoming connections on %s:%d...", ipAddress.c_str(), port);
     }
 }
 
@@ -108,7 +108,7 @@ void NetworkServer::onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetwork
     auto client = findClient(*endpoint);
     if (client == nullptr)
     {
-        auto connectPacket = packet.As<PacketKind::connect, ConnectPacket>();
+        auto connectPacket = packet.as<PacketKind::connect, ConnectPacket>();
         if (connectPacket != nullptr)
         {
             auto conn = std::make_unique<NetworkConnection>(&socket, std::move(endpoint));
@@ -129,13 +129,13 @@ void NetworkServer::onReceivePacketFromClient(Client& client, const Packet& pack
     switch (packet.header.kind)
     {
         case PacketKind::requestState:
-            onReceiveStateRequestPacket(client, *packet.Cast<RequestStatePacket>());
+            onReceiveStateRequestPacket(client, *packet.cast<RequestStatePacket>());
             break;
         case PacketKind::sendChatMessage:
-            onReceiveSendChatMessagePacket(client, *packet.Cast<SendChatMessage>());
+            onReceiveSendChatMessagePacket(client, *packet.cast<SendChatMessage>());
             break;
         case PacketKind::gameCommand:
-            onReceiveGameCommandPacket(client, *packet.Cast<GameCommandPacket>());
+            onReceiveGameCommandPacket(client, *packet.cast<GameCommandPacket>());
             break;
         default:
             break;
@@ -144,7 +144,7 @@ void NetworkServer::onReceivePacketFromClient(Client& client, const Packet& pack
 
 void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestStatePacket& request)
 {
-    constexpr uint16_t chunkSize = 4000;
+    constexpr uint16_t kChunkSize = 4000;
 
     // Dump S5 data to stream
     MemoryStream ms;
@@ -159,7 +159,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
     RequestStateResponse response;
     response.cookie = request.cookie;
     response.totalSize = ms.getLength();
-    response.numChunks = static_cast<uint16_t>((ms.getLength() + (chunkSize - 1)) / chunkSize);
+    response.numChunks = static_cast<uint16_t>((ms.getLength() + (kChunkSize - 1)) / kChunkSize);
     client.connection->sendPacket(response);
 
     uint32_t offset = 0;
@@ -171,7 +171,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
         chunk.cookie = request.cookie;
         chunk.index = index;
         chunk.offset = offset;
-        chunk.dataSize = std::min<uint32_t>(chunkSize, remaining - offset);
+        chunk.dataSize = std::min<uint32_t>(kChunkSize, remaining - offset);
         std::memcpy(chunk.data, reinterpret_cast<const uint8_t*>(ms.data()) + offset, chunk.dataSize);
 
         client.connection->sendPacket(chunk);
@@ -215,7 +215,7 @@ void NetworkServer::removedTimedOutClients()
 void NetworkServer::sendPings()
 {
     auto now = Platform::getTime();
-    if (now - _lastPing > pingInterval)
+    if (now - _lastPing > kPingInterval)
     {
         _lastPing = now;
 
@@ -260,7 +260,7 @@ void NetworkServer::processIncomingConnections()
         // The connect packet should be the first one
         while (auto packet = conn->takeNextPacket())
         {
-            if (auto connectPacket = packet->As<PacketKind::connect, ConnectPacket>())
+            if (auto connectPacket = packet->as<PacketKind::connect, ConnectPacket>())
             {
                 createNewClient(std::move(conn), *connectPacket);
                 break;

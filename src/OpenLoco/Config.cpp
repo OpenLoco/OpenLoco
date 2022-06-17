@@ -163,6 +163,8 @@ namespace OpenLoco::Config
             networkConfig.enabled = networkNode["enabled"] && networkNode["enabled"].as<bool>();
         }
 
+        if (config["allow_multiple_instances"])
+            _new_config.allowMultipleInstances = config["allow_multiple_instances"].as<bool>();
         if (config["loco_install_path"])
             _new_config.locoInstallPath = config["loco_install_path"].as<std::string>();
         if (config["last_save_path"])
@@ -245,6 +247,7 @@ namespace OpenLoco::Config
         networkNode["enabled"] = networkConfig.enabled;
         node["network"] = networkNode;
 
+        node["allow_multiple_instances"] = _new_config.allowMultipleInstances;
         node["loco_install_path"] = _new_config.locoInstallPath;
         node["last_save_path"] = _new_config.lastSavePath;
         node["language"] = _new_config.language;

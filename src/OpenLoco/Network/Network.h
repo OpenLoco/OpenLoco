@@ -11,12 +11,12 @@ namespace OpenLoco::Interop
 
 namespace OpenLoco::Network
 {
-    typedef uint32_t client_id_t;
-    typedef uint16_t port_t;
+    using client_id_t = uint32_t;
+    using port_t = uint16_t;
 
-    constexpr port_t defaultPort = 11754;
-    constexpr uint16_t maxPacketSize = 4096;
-    constexpr uint16_t networkVersion = 1;
+    constexpr port_t kDefaultPort = 11754;
+    constexpr uint16_t kMaxPacketSize = 4096;
+    constexpr uint16_t kNetworkVersion = 1;
 
     void openServer();
     void joinServer(std::string_view host);

@@ -343,9 +343,10 @@ namespace OpenLoco
     // 0x00441400
     static void startupChecks()
     {
-        if (isAlreadyRunning("Locomotion"))
+        const auto& config = Config::getNew();
+        if (!config.allowMultipleInstances && isAlreadyRunning("Locomotion"))
         {
-            // exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
+            exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
         }
 
         // Originally the game would check that all the game
