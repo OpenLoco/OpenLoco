@@ -1433,7 +1433,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::repositionTabs(self);
 
             self->widgets[widx::carList].right = self->width - 26;
-            self->widgets[widx::carList].bottom = self->height - 24;
+            self->widgets[widx::carList].bottom = self->height - 38;
 
             self->widgets[widx::buildNew].right = self->width - 2;
             self->widgets[widx::buildNew].left = self->width - 25;
@@ -1500,7 +1500,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             OpenLoco::Vehicles::Vehicle train{ *head };
-            Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 23) };
+            Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 36) };
 
             {
                 FormatArguments args{};
@@ -1512,7 +1512,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     str = StringIds::vehicle_details_total_power_and_weight;
                 }
                 Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 6, Colour::black, str, &args);
-                pos.y += 10;
+                pos.y += 12;
             }
 
             {
@@ -1526,6 +1526,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     str = StringIds::vehicle_details_max_speed_and_rack_rail_and_reliability;
                 }
                 Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 16, Colour::black, str, &args);
+                pos.y += 12;
+            }
+
+            {
+                // draw car count
+                auto count = head->getCarCount();
+                FormatArguments args = {};
+                args.push<uint32_t>(count);
+                Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 16, Colour::black, StringIds::vehicle_car_count_stringid, &args);
             }
         }
 
@@ -1775,7 +1784,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             widgets[Common::widx::closeButton].left = self->width - 15;
             widgets[Common::widx::closeButton].right = self->width - 3;
             widgets[widx::cargoList].right = self->width - 26;
-            widgets[widx::cargoList].bottom = self->height - 26;
+            widgets[widx::cargoList].bottom = self->height - 27;
             widgets[widx::refit].right = self->width - 2;
             widgets[widx::refit].left = self->width - 25;
             widgets[widx::refit].type = WidgetType::buttonWithImage;

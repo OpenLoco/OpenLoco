@@ -2310,3 +2310,4 @@ strings:
   2255: "Start Server"
   2256: "Close Server"
   2257: "Disconnect"
+  2258: "{COLOUR WINDOW_2}Number of cars: {COLOUR BLACK}{INT32}"
