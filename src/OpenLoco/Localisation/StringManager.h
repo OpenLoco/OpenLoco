@@ -3,6 +3,7 @@
 #include "../Types.hpp"
 #include <cstddef>
 #include <cstdint>
+#include <string_view>
 #include <utility>
 
 #ifdef small
@@ -119,6 +120,7 @@ namespace OpenLoco
 namespace OpenLoco::StringManager
 {
     void reset();
+    void setString(string_id id, std::string_view value);
     const char* getString(string_id id);
     char* formatString(char* buffer, string_id id, const void* args = nullptr);
     char* formatString(char* buffer, size_t bufferLen, string_id id, const void* args = nullptr);

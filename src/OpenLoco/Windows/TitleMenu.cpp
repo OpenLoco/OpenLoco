@@ -1,3 +1,5 @@
+#include "../Config.h"
+#include "../Console.h"
 #include "../EditorController.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
@@ -10,6 +12,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
 #include "../MultiPlayer.h"
+#include "../Network/Network.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
@@ -19,6 +22,7 @@
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
+#include <string_view>
 
 using namespace OpenLoco::Interop;
 
@@ -118,7 +122,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_show_tutorial),
         makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_scenario_editor),
         makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_chat_tooltip),
-        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, WidgetType::none, WindowColour::secondary, Widget::kContentNull, StringIds::title_multiplayer_toggle_tooltip),
+        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_multiplayer_toggle_tooltip),
         widgetEnd(),
     };
 
@@ -131,7 +135,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void sub_4391E2();
     static void sub_43910A();
     static void sub_439163(Ui::Window* callingWindow, WidgetIndex_t callingWidget);
-    static void sub_439102();
+    static void showMultiplayer(Window* window);
+    static void multiplayerConnect(std::string_view host);
     static void sub_46E328();
 
     static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
@@ -164,7 +169,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             &_events);
 
         window->widgets = _widgets;
-        window->enabledWidgets = (1 << Widx::scenario_list_btn) | (1 << Widx::load_game_btn) | (1 << Widx::tutorial_btn) | (1 << Widx::scenario_editor_btn) | (1 << Widx::chat_btn);
+        window->enabledWidgets = (1 << Widx::scenario_list_btn) | (1 << Widx::load_game_btn) | (1 << Widx::tutorial_btn) | (1 << Widx::scenario_editor_btn) | (1 << Widx::chat_btn) | (1 << Widx::multiplayer_toggle_btn);
 
         window->initScrollWidgets();
 
@@ -192,6 +197,9 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         window->widgets[Widx::scenario_editor_btn].left = btn_main_size * 3;
         window->widgets[Widx::scenario_editor_btn].right = btn_main_size * 4 - 1;
         window->widgets[Widx::chat_btn].type = Ui::WidgetType::none;
+
+        auto& config = Config::getNew();
+        window->widgets[Widx::multiplayer_toggle_btn].type = config.network.enabled ? WidgetType::buttonWithImage : WidgetType::none;
 
         if (OpenLoco::isNetworked())
         {
@@ -325,7 +333,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 sub_439163(window, widgetIndex);
                 break;
             case Widx::multiplayer_toggle_btn:
-                sub_439102();
+                showMultiplayer(window);
                 break;
         }
     }
@@ -362,6 +370,9 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             case Widx::chat_btn:
                 sub_43918F(input);
                 break;
+            case Widx::multiplayer_toggle_btn:
+                multiplayerConnect(input);
+                break;
         }
     }
 
@@ -373,9 +384,20 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         return fallback;
     }
 
-    static void sub_439102()
+    static void showMultiplayer(Window* window)
     {
-        call(0x0046e639); // window_multiplayer::open
+        auto& cfg = Config::get();
+        StringManager::setString(StringIds::buffer_2039, Utility::nullTerminatedView(cfg.lastHost));
+        TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, Widx::multiplayer_toggle_btn, nullptr);
+    }
+
+    static void multiplayerConnect(std::string_view host)
+    {
+        auto& cfg = Config::get();
+        auto szHost = std::string(host);
+        Utility::strcpy_safe(cfg.lastHost, szHost.c_str());
+
+        Network::joinServer(host);
     }
 
     // 0x0043CB9F
@@ -482,12 +504,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         {
             window->invalidate();
             return;
-        }
-
-        auto multiplayer = WindowManager::find(WindowType::multiplayer);
-        if (multiplayer == nullptr)
-        {
-            call(0x0046e639); // window_multiplayer::open
         }
 
         window->invalidate();

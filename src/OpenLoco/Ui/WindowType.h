@@ -66,6 +66,7 @@ namespace OpenLoco::Ui
         titleOptions = 56,
         tileInspector = 57,
         cheats = 58,
+        networkStatus = 59,
 
         undefined = 255
     };

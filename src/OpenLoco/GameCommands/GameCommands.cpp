@@ -5,6 +5,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
+#include "../Network/Network.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
@@ -184,6 +185,29 @@ namespace OpenLoco::GameCommands
             return loc_4313C6(esi, regs);
         }
 
+        auto isGhost = (flags & Flags::flag_6) != 0;
+        if (!isGhost && Network::isConnected())
+        {
+            // For network games, we need to delay the command apply processing
+            // Just return the result without applying for now
+            registers copyRegs = regs;
+            copyRegs.esi = static_cast<int32_t>(command);
+            Network::queueGameCommand(_updatingCompanyId, copyRegs);
+
+            copyRegs.bx &= ~Flags::apply;
+            return loc_4313C6(esi, copyRegs);
+        }
+
+        return doCommandForReal(command, _updatingCompanyId, regs);
+    }
+
+    uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& regs)
+    {
+        _updatingCompanyId = company;
+
+        uint16_t flags = regs.bx;
+        uint32_t esi = static_cast<uint32_t>(command);
+
         if (commandRequiresUnpausingGame(command, flags) && _updatingCompanyId == CompanyManager::getControllingId())
         {
             if (getPauseFlags() & 1)
@@ -209,9 +233,9 @@ namespace OpenLoco::GameCommands
 
         if (_updatingCompanyId == CompanyManager::getControllingId() && isNetworked())
         {
-            assert(false);
-            registers fnRegs = regs;
-            call(0x0046E34A, fnRegs); // some network stuff. Untested
+            // assert(false);
+            // registers fnRegs = regs;
+            // call(0x0046E34A, fnRegs); // some network stuff. Untested
         }
 
         return loc_4313C6(esi, regs);

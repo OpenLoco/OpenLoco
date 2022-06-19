@@ -102,6 +102,13 @@ namespace OpenLoco::StringManager
         return str;
     }
 
+    void setString(string_id id, std::string_view value)
+    {
+        auto* dst = _strings[id];
+        std::memcpy(dst, value.data(), value.size());
+        dst[value.size()] = '\0';
+    }
+
     static char* formatInt32Grouped(int32_t value, char* buffer)
     {
         registers regs;

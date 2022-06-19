@@ -50,6 +50,7 @@
 #include "Map/WaveManager.h"
 #include "MessageManager.h"
 #include "MultiPlayer.h"
+#include "Network/Network.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Platform/Crash.h"
@@ -342,7 +343,8 @@ namespace OpenLoco
     // 0x00441400
     static void startupChecks()
     {
-        if (isAlreadyRunning("Locomotion"))
+        const auto& config = Config::getNew();
+        if (!config.allowMultipleInstances && isAlreadyRunning("Locomotion"))
         {
             exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
         }
@@ -449,7 +451,24 @@ namespace OpenLoco
     static void launchGame()
     {
         const auto& cmdLineOptions = getCommandLineOptions();
-        if (!cmdLineOptions.path.empty())
+        if (cmdLineOptions.action == CommandLineAction::host)
+        {
+            Network::openServer();
+            loadFile(cmdLineOptions.path);
+        }
+        else if (cmdLineOptions.action == CommandLineAction::join)
+        {
+            Title::start();
+            if (cmdLineOptions.port)
+            {
+                Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
+            }
+            else
+            {
+                Network::joinServer(cmdLineOptions.address);
+            }
+        }
+        else if (!cmdLineOptions.path.empty())
         {
             loadFile(cmdLineOptions.path);
         }
@@ -699,6 +718,8 @@ namespace OpenLoco
                 Input::handleKeyboard();
                 Audio::updateSounds();
 
+                Network::update();
+
                 addr<0x0050C1AE, int32_t>()++;
                 if (Intro::isActive())
                 {
@@ -765,6 +786,13 @@ namespace OpenLoco
                     }
 
                     sub_46FFCA();
+
+                    // Catch up to server (usually after we have just joined the game)
+                    auto numTicksBehind = Network::getServerTick() - ScenarioManager::getScenarioTicks();
+                    if (numTicksBehind > 4)
+                    {
+                        numUpdates = 4;
+                    }
 
                     tickLogic(numUpdates);
 
@@ -849,8 +877,12 @@ namespace OpenLoco
     // 0x0046ABCB
     static void tickLogic()
     {
+        if (!Network::shouldProcessTick(ScenarioManager::getScenarioTicks() + 1))
+            return;
+
         ScenarioManager::setScenarioTicks(ScenarioManager::getScenarioTicks() + 1);
         ScenarioManager::setScenarioTicks2(ScenarioManager::getScenarioTicks2() + 1);
+        Network::processGameCommands(ScenarioManager::getScenarioTicks());
 
         addr<0x00525FCC, uint32_t>() = gPrng().srand_0();
         addr<0x00525FD0, uint32_t>() = gPrng().srand_1();

@@ -8,6 +8,8 @@ namespace OpenLoco
     enum class CommandLineAction
     {
         none,
+        host,
+        join,
         uncompress,
         simulate,
         help,
@@ -18,9 +20,12 @@ namespace OpenLoco
     struct CommandLineOptions
     {
         CommandLineAction action;
+        std::string address;
         std::string path;
         std::optional<int32_t> ticks;
         std::string outputPath;
+        std::string bind;
+        std::optional<uint16_t> port{};
     };
 
     std::optional<CommandLineOptions> parseCommandLine(int argc, const char** argv);

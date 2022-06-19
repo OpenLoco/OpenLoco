@@ -12,6 +12,7 @@
 #include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
 #include "../MultiPlayer.h"
+#include "../Network/Network.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
@@ -72,6 +73,18 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         widgetEnd(),
     };
 
+    enum class LoadSaveDropdownId
+    {
+        loadGame,
+        saveGame,
+        about,
+        options,
+        screenshot,
+        server,
+        quitToMenu,
+        quitToDesktop
+    };
+
     static WindowEventList _events;
 
     static void onMouseDown(Window* window, WidgetIndex_t widgetIndex);
@@ -117,17 +130,41 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x0043B0F7
     static void loadsaveMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
-        Dropdown::add(0, StringIds::menu_load_game);
-        Dropdown::add(1, StringIds::menu_save_game);
-        Dropdown::add(2, 0);
-        Dropdown::add(3, StringIds::menu_about);
-        Dropdown::add(4, StringIds::options);
-        Dropdown::add(5, StringIds::menu_screenshot);
-        Dropdown::add(6, 0);
-        Dropdown::add(7, StringIds::menu_quit_to_menu);
-        Dropdown::add(8, StringIds::menu_exit_openloco);
-        Dropdown::showBelow(window, widgetIndex, 9, 0);
-        Dropdown::setHighlightedItem(1);
+        auto d = Dropdown::create()
+                     .below(*window, widgetIndex)
+                     .item(LoadSaveDropdownId::loadGame, StringIds::menu_load_game)
+                     .item(LoadSaveDropdownId::saveGame, StringIds::menu_save_game)
+                     .separator()
+                     .item(LoadSaveDropdownId::about, StringIds::menu_about)
+                     .item(LoadSaveDropdownId::options, StringIds::options)
+                     .item(LoadSaveDropdownId::screenshot, StringIds::menu_screenshot);
+
+        auto& newConfig = Config::getNew();
+        if (newConfig.network.enabled)
+        {
+            d.separator();
+            if (isNetworked())
+            {
+                if (isNetworkHost())
+                {
+                    d.item(LoadSaveDropdownId::server, StringIds::closeServer);
+                }
+                else
+                {
+                    d.item(LoadSaveDropdownId::server, StringIds::disconnect);
+                }
+            }
+            else
+            {
+                d.item(LoadSaveDropdownId::server, StringIds::startServer);
+            }
+        }
+
+        d.separator()
+            .item(LoadSaveDropdownId::quitToMenu, StringIds::menu_quit_to_menu)
+            .item(LoadSaveDropdownId::quitToDesktop, StringIds::menu_exit_openloco)
+            .highlight(LoadSaveDropdownId::saveGame)
+            .show();
     }
 
     // 0x0043B1C4
@@ -167,45 +204,65 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             Error::open(StringIds::error_game_save_failed, StringIds::null);
     }
 
+    static void takeScreenshot()
+    {
+        loco_global<uint8_t, 0x00508F16> screenshot_countdown;
+        screenshot_countdown = 10;
+    }
+
+    static void startOrCloseServer()
+    {
+        if (isNetworked())
+        {
+            Network::close();
+        }
+        else
+        {
+            Network::openServer();
+        }
+    }
+
     // 0x0043B154
     static void loadsaveMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
-        if (itemIndex == -1)
-            itemIndex = Dropdown::getHighlightedItem();
+        auto id = Dropdown::getSelectedItem<LoadSaveDropdownId>(itemIndex);
+        if (!id)
+            return;
 
-        switch (itemIndex)
+        switch (*id)
         {
-            case 0:
+            case LoadSaveDropdownId::loadGame:
                 // Load game
                 GameCommands::do_21(0, 0);
                 break;
 
-            case 1:
+            case LoadSaveDropdownId::saveGame:
                 // Save game
                 prepareSaveGame();
                 break;
 
-            case 3:
+            case LoadSaveDropdownId::about:
                 About::open();
                 break;
 
-            case 4:
+            case LoadSaveDropdownId::options:
                 Options::open();
                 break;
 
-            case 5:
-            {
-                loco_global<uint8_t, 0x00508F16> screenshot_countdown;
-                screenshot_countdown = 10;
+            case LoadSaveDropdownId::screenshot:
+                takeScreenshot();
                 break;
-            }
 
-            case 7:
+            case LoadSaveDropdownId::server:
+                startOrCloseServer();
+                break;
+
+            case LoadSaveDropdownId::quitToMenu:
                 // Return to title screen
                 GameCommands::do_21(0, 1);
                 break;
 
-            case 8:
+            case LoadSaveDropdownId::quitToDesktop:
                 // Exit to desktop
                 GameCommands::do_21(0, 2);
                 break;

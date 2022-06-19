@@ -4,6 +4,7 @@
 #include <cctype>
 #include <cstring>
 #include <string>
+#include <string_view>
 
 namespace OpenLoco::Utility
 {
@@ -119,5 +120,18 @@ namespace OpenLoco::Utility
     int sprintf_safe(char (&dest)[N], const char* fmt, Args&&... args)
     {
         return std::snprintf(dest, N, fmt, std::forward<Args>(args)...);
+    }
+
+    template<size_t N>
+    std::string_view nullTerminatedView(const char (&src)[N])
+    {
+        for (size_t i = 0; i < N; i++)
+        {
+            if (src[i] == '\0')
+            {
+                return std::string_view(src, N);
+            }
+        }
+        return std::string_view(src, N);
     }
 }

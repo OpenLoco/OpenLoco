@@ -44,6 +44,14 @@ namespace OpenLoco::Ui::Dropdown
     static loco_global<std::byte[40][bytes_per_item], 0x0113D9E0> _dropdownItemArgs2;
     static loco_global<CompanyId[40], 0x00113DB20> _menuOptions;
 
+    static std::vector<std::optional<DropdownItemId>> _dropdownIds;
+    static bool _dropdownUseDefault;
+
+    void addSeparator(size_t index)
+    {
+        add(index, 0);
+    }
+
     void add(size_t index, string_id title)
     {
         assert(index < std::numeric_limits<uint8_t>::max());
@@ -915,5 +923,88 @@ namespace OpenLoco::Ui::Dropdown
     uint16_t getItemsPerRow(uint8_t itemCount)
     {
         return _appropriateImageDropdownItemsPerRow[itemCount];
+    }
+
+    Builder& Builder::below(Window& window, WidgetIndex_t widgetIndex)
+    {
+        _window = &window;
+        _widgetIndex = widgetIndex;
+        return *this;
+    }
+
+    Builder& Builder::item(DropdownItemId id, string_id text)
+    {
+        _items.emplace_back(id, text);
+        return *this;
+    }
+
+    Builder& Builder::separator()
+    {
+        _items.emplace_back(std::nullopt, StringIds::empty);
+        return *this;
+    }
+
+    Builder& Builder::highlight(DropdownItemId id)
+    {
+        _highlightedId = id;
+        return *this;
+    }
+
+    void Builder::show()
+    {
+        if (_window == nullptr)
+            throw std::invalid_argument("Window and widget index not set");
+
+        _dropdownIds.clear();
+
+        size_t index{};
+        std::optional<size_t> highlightedIndex;
+        for (const auto& item : _items)
+        {
+            auto& id = std::get<0>(item);
+            if (id)
+            {
+                auto& text = std::get<1>(item);
+                Dropdown::add(index, text);
+
+                if (id == _highlightedId)
+                    highlightedIndex = index;
+            }
+            else
+            {
+                Dropdown::addSeparator(index);
+            }
+            _dropdownIds.push_back(id);
+            index++;
+        }
+
+        showBelow(_window, _widgetIndex, _items.size(), 0);
+        if (highlightedIndex)
+        {
+            Dropdown::setHighlightedItem(*highlightedIndex);
+            _dropdownUseDefault = true;
+        }
+        else
+        {
+            _dropdownUseDefault = false;
+        }
+    }
+
+    Builder create()
+    {
+        return Builder();
+    }
+
+    std::optional<DropdownItemId> getSelectedItem(int32_t index)
+    {
+        if (index == -1 && _dropdownUseDefault)
+        {
+            index = Dropdown::getHighlightedItem();
+        }
+        if (index >= 0 && static_cast<size_t>(index) < _dropdownIds.size())
+        {
+            return _dropdownIds[index];
+        }
+        return std::nullopt;
     }
 }

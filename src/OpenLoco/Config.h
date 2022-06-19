@@ -155,10 +155,16 @@ namespace OpenLoco::Config
         uint8_t modifiers;
     };
 
+    struct Network
+    {
+        bool enabled{};
+    };
+
     struct NewConfig
     {
         Display display;
         Audio audio;
+        Network network;
         std::string locoInstallPath;
         std::string lastSavePath;
         std::string language = "en-GB";
@@ -177,6 +183,7 @@ namespace OpenLoco::Config
         bool buildLockedVehicles = false;
         bool invertRightMouseViewPan = false;
         bool cashPopupRendering = true;
+        bool allowMultipleInstances = false;
     };
 
     LocoConfig& get();
