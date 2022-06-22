@@ -2305,15 +2305,7 @@ namespace OpenLoco::Vehicles
         var_58 = 0;
 
         Vehicle train(head);
-        for (auto& car : train.cars)
-        {
-            for (auto& carComponent : car)
-            {
-                carComponent.front->var_5F |= Flags5F::unk_0;
-                carComponent.back->var_5F |= Flags5F::unk_0;
-                carComponent.body->var_5F |= Flags5F::unk_0;
-            }
-        }
+        train.cars.applyToComponents([](auto& component) { component.var_5F |= Flags5F::unk_0; });
     }
 
     // 0x00426CA4
@@ -2761,15 +2753,7 @@ namespace OpenLoco::Vehicles
         cargoTransferTimeout = 10;
 
         Vehicle train(head);
-        for (auto& car : train.cars)
-        {
-            for (auto& carComponent : car)
-            {
-                carComponent.front->var_5F |= Flags5F::unk_0;
-                carComponent.back->var_5F |= Flags5F::unk_0;
-                carComponent.body->var_5F |= Flags5F::unk_0;
-            }
-        }
+        train.cars.applyToComponents([](auto& component) { component.var_5F |= Flags5F::unk_0; });
     }
     // 0x004B9A2A
     void VehicleHead::updateUnloadCargo()

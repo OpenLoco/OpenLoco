@@ -61,20 +61,9 @@ namespace OpenLoco::GameCommands
                     continue;
 
                 Vehicles::Vehicle train(*vehicle);
-                train.head->owner = ourCompanyId;
-                train.veh1->owner = ourCompanyId;
-                train.veh2->owner = ourCompanyId;
-                train.tail->owner = ourCompanyId;
-
-                for (auto& car : train.cars)
-                {
-                    for (auto& component : car)
-                    {
-                        component.front->owner = ourCompanyId;
-                        component.body->owner = ourCompanyId;
-                        component.back->owner = ourCompanyId;
-                    }
-                }
+                train.applyToComponents([ourCompanyId](Vehicles::VehicleBase& component) {
+                    component.owner = ourCompanyId;
+                });
             }
 
             return 0;

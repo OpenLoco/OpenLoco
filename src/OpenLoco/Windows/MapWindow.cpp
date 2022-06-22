@@ -1163,13 +1163,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             for (auto& car : train.cars)
             {
                 auto colour = getVehicleColour(widgetIndex, train, car);
-
-                for (auto& carComponent : car)
-                {
-                    drawVehicleOnMap(context, carComponent.front, colour);
-                    drawVehicleOnMap(context, carComponent.back, colour);
-                    drawVehicleOnMap(context, carComponent.body, colour);
-                }
+                car.applyToComponents([context, colour](auto& component) { drawVehicleOnMap(context, &component, colour); });
             }
 
             if (widgetIndex == widx::tabRoutes)
