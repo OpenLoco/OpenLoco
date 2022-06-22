@@ -1403,6 +1403,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             { VehicleType::ship, InterfaceSkin::ImageIds::build_additional_ship },
         };
 
+        constexpr auto vehicleDetailsOffset = 2;
+        constexpr auto vehicleDetailsLineHeight = 12;
+        constexpr auto vehicleDetailsTextHeight2Lines = vehicleDetailsOffset + vehicleDetailsLineHeight * 2;
+        constexpr auto vehicleDetailsTextHeight3Lines = vehicleDetailsOffset + vehicleDetailsLineHeight * 3;
+
+        static auto getVehicleDetailsHeight(uint32_t carCount)
+        {
+            return carCount > 1 ? vehicleDetailsTextHeight3Lines : vehicleDetailsTextHeight2Lines;
+        }
+
         // 0x004B3300
         static void prepareDraw(Window* self)
         {
@@ -1433,7 +1443,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::repositionTabs(self);
 
             self->widgets[widx::carList].right = self->width - 26;
-            self->widgets[widx::carList].bottom = self->height - 38;
+            self->widgets[widx::carList].bottom = self->height - getVehicleDetailsHeight(head->getCarCount());
 
             self->widgets[widx::buildNew].right = self->width - 2;
             self->widgets[widx::buildNew].left = self->width - 25;
@@ -1500,7 +1510,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             OpenLoco::Vehicles::Vehicle train{ *head };
-            Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 36) };
+            Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - getVehicleDetailsHeight(head->getCarCount()) + vehicleDetailsOffset) };
 
             {
                 FormatArguments args{};
@@ -1512,10 +1522,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     str = StringIds::vehicle_details_total_power_and_weight;
                 }
                 Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 6, Colour::black, str, &args);
-                pos.y += 12;
             }
 
             {
+                pos.y += vehicleDetailsLineHeight;
                 FormatArguments args{};
                 args.push<uint16_t>(train.veh2->maxSpeed == kSpeed16Null ? 0 : train.veh2->maxSpeed.getRaw());
                 args.push<uint16_t>(train.veh2->rackRailMaxSpeed == kSpeed16Null ? 0 : train.veh2->rackRailMaxSpeed.getRaw());
@@ -1526,15 +1536,17 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     str = StringIds::vehicle_details_max_speed_and_rack_rail_and_reliability;
                 }
                 Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 16, Colour::black, str, &args);
-                pos.y += 12;
             }
 
             {
                 // draw car count
-                auto count = head->getCarCount();
-                FormatArguments args = {};
-                args.push<uint32_t>(count);
-                Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 16, Colour::black, StringIds::vehicle_car_count_stringid, &args);
+                if (head->getCarCount() > 1)
+                {
+                    pos.y += vehicleDetailsLineHeight;
+                    FormatArguments args = {};
+                    args.push<uint32_t>(head->getCarCount());
+                    Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 16, Colour::black, StringIds::vehicle_car_count_stringid, &args);
+                }
             }
         }
 
