@@ -1,6 +1,7 @@
 22.05.1+ (???)
 ------------------------------------------------------------------------
 - Feature: [#1273] Added option to toggle visibility of cash pop-ups.
+- Feature: [#1543] For multi-car vehicles, show the car count in vehicle details window.
 - Fix: [#1510] No music in game.
 
 22.05.1 (2022-05-17)
