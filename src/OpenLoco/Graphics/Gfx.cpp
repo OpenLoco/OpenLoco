@@ -1291,7 +1291,6 @@ namespace OpenLoco::Gfx
 
         for (auto i = 0; ptr != nullptr && i <= breakCount; i++)
         {
-            _currentFontSpriteBase = Font::medium_bold;
             uint16_t lineWidth = getStringWidth(ptr);
 
             Gfx::drawString(context, point.x - (lineWidth / 2), point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
