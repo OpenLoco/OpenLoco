@@ -758,7 +758,6 @@ namespace OpenLoco::Ui::Windows::Industry
             TextInput::openTextInput(self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
         }
 
-
         // 0x00455CC7
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
