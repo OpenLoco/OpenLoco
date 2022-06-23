@@ -1009,6 +1009,11 @@ namespace OpenLoco::Gfx
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
         _currentFontSpriteBase = Font::medium_bold;
+        // Setup the text colours (FIXME: This should be a separate function)
+        char empty[1] = "";
+        Gfx::drawString(context, context.x, context.y, colour, empty);
+
+        _currentFontSpriteBase = Font::medium_bold;
         auto wrapResult = wrapString(buffer, width);
         auto breakCount = wrapResult.second;
 
@@ -1027,7 +1032,7 @@ namespace OpenLoco::Gfx
 
         for (auto i = 0; ptr != nullptr && i <= breakCount; i++)
         {
-            Gfx::drawString(context, point.x, point.y, colour, const_cast<char*>(ptr));
+            Gfx::drawString(context, point.x, point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
             ptr = advanceToNextLine(ptr);
             point.y += lineHeight;
         }
@@ -1259,6 +1264,11 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
+        _currentFontSpriteBase = Font::medium_bold;
+        // Setup the text colours (FIXME: This should be a separate function)
+        char empty[1] = "";
+        Gfx::drawString(context, context.x, context.y, colour, empty);
+
         char buffer[256];
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
@@ -1282,9 +1292,9 @@ namespace OpenLoco::Gfx
         for (auto i = 0; ptr != nullptr && i <= breakCount; i++)
         {
             _currentFontSpriteBase = Font::medium_bold;
-            uint16_t width = getStringWidth(ptr);
+            uint16_t lineWidth = getStringWidth(ptr);
 
-            Gfx::drawString(context, point.x - (width / 2), point.y, colour, const_cast<char*>(ptr));
+            Gfx::drawString(context, point.x - (lineWidth / 2), point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
             ptr = advanceToNextLine(ptr);
             point.y += lineHeight;
         }
