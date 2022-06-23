@@ -64,7 +64,6 @@ namespace OpenLoco::Ui::Windows::TownList
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_misc_buildings)
 
         static void prepareDraw(Window* self);
-        static void repositionTabs(Window* self);
         static void drawTabs(Window* self, Gfx::Context* context);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void initEvents();
@@ -137,7 +136,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self->widgets[widx::sort_town_population].text = self->sortMode == SortMode::Population ? StringIds::table_header_population_desc : StringIds::table_header_population;
             self->widgets[widx::sort_town_stations].text = self->sortMode == SortMode::Stations ? StringIds::table_header_stations_desc : StringIds::table_header_stations;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings, Widget::defaultTabWidth);
         }
 
         // 0x0049A0F8
@@ -624,7 +623,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             Common::prepareDraw(self);
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings, Widget::defaultTabWidth);
 
             self->widgets[widx::current_size].text = townSizeNames[_townSize - 1];
         }
@@ -841,7 +840,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
                 self->widgets[Common::widx::caption].text = StringIds::title_build_new_misc_buildings;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings, Widget::defaultTabWidth);
         }
 
         // 0x0049A9C2
@@ -1480,25 +1479,6 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self->widgets[Common::widx::close_button].left = self->width - 15;
             self->widgets[Common::widx::close_button].right = self->width - 3;
-        }
-
-        // 0x0049B004 and 0x0049B00A
-        static void repositionTabs(Window* self)
-        {
-            int16_t new_tab_x = self->widgets[widx::tab_town_list].left;
-            int16_t tab_width = self->widgets[widx::tab_town_list].right - new_tab_x;
-
-            for (auto& tabInfo : tabInformationByTabOffset)
-            {
-                if (self->isDisabled(tabInfo.widgetIndex))
-                    continue;
-
-                Widget& tab = self->widgets[tabInfo.widgetIndex];
-
-                tab.left = new_tab_x;
-                new_tab_x += tab_width;
-                tab.right = new_tab_x++;
-            }
         }
 
         // 0x0049B054

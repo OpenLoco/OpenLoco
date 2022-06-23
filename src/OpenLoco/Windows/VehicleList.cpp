@@ -512,29 +512,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
         return type_to_widx[tabIndex];
     }
 
-    // 0x4C2865
-    static void setTransportTypeTabs(Window* self)
-    {
-        auto disabledWidgets = self->disabledWidgets >> Widx::tab_trains;
-        auto widget = self->widgets + Widx::tab_trains;
-        auto tabWidth = widget->right - widget->left;
-        auto tabX = widget->left;
-        for (auto i = 0; i <= Widx::tab_ships - Widx::tab_trains; ++i, ++widget)
-        {
-            if (disabledWidgets & (1ULL << i))
-            {
-                widget->type = WidgetType::none;
-            }
-            else
-            {
-                widget->type = WidgetType::tab;
-                widget->left = tabX;
-                widget->right = tabX + tabWidth;
-                tabX += tabWidth + 1;
-            }
-        }
-    }
-
     // 0x004C1F88
     static void prepareDraw(Window* self)
     {
@@ -619,7 +596,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         };
         self->widgets[Widx::cargo_type_btn].tooltip = filterTooltipByType[self->var_88A];
 
-        setTransportTypeTabs(self);
+        Widget::leftAlignTabs(self, Widx::tab_trains, Widx::tab_ships, Widget::defaultTabWidth);
     }
 
     // 0x004C211C

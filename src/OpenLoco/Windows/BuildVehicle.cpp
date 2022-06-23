@@ -239,7 +239,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void setTrackTypeTabs(Ui::Window* window);
     static void resetTrackTypeTabSelection(Ui::Window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
-    static void setTransportTypeTabs(Ui::Window* window);
     static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset);
     static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId company, Ui::Point loc);
     static void drawTransportTypeTabs(Ui::Window* window, Gfx::Context* context);
@@ -910,7 +909,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window->widgets[widx::scrollview_vehicle_selection].right = width - 187;
         window->widgets[widx::scrollview_vehicle_selection].bottom = height - 14;
 
-        setTransportTypeTabs(window);
+        Widget::leftAlignTabs(window, widx::tab_build_new_trains, widx::tab_build_new_ships, Widget::defaultTabWidth);
     }
 
     // 0x4C2F23
@@ -1337,29 +1336,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         // The window number doesn't really matter as there is only one top toolbar
         WindowManager::invalidate(WindowType::topToolbar, 0);
-    }
-
-    // 0x4C2865 common for build vehicle window and vehicle list
-    static void setTransportTypeTabs(Ui::Window* window)
-    {
-        auto disabledWidgets = window->disabledWidgets >> widx::tab_build_new_trains;
-        auto widget = window->widgets + widx::tab_build_new_trains;
-        auto tabWidth = widget->right - widget->left;
-        auto tabX = widget->left;
-        for (auto i = 0; i <= widx::tab_build_new_ships - widx::tab_build_new_trains; ++i, ++widget)
-        {
-            if (disabledWidgets & (1ULL << i))
-            {
-                widget->type = WidgetType::none;
-            }
-            else
-            {
-                widget->type = WidgetType::tab;
-                widget->left = tabX;
-                widget->right = tabX + tabWidth;
-                tabX += tabWidth + 1;
-            }
-        }
     }
 
     // 0x4C2BFD

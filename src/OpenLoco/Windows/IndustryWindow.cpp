@@ -57,7 +57,6 @@ namespace OpenLoco::Ui::Windows::Industry
         static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input);
         static void update(Window* self);
         static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex);
-        static void repositionTabs(Window* self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::Context* context);
         static void setDisabledWidgets(Window* self);
@@ -125,7 +124,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported, Widget::defaultTabWidth);
         }
 
         // 0x00455C22
@@ -355,7 +354,7 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             Common::prepareDraw(self);
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported, Widget::defaultTabWidth);
         }
 
         // 0x0045654F
@@ -395,7 +394,7 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             Common::prepareDraw(self);
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported, Widget::defaultTabWidth);
         }
 
         // 0x004565FF
@@ -433,7 +432,7 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             Common::prepareDraw(self);
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported, Widget::defaultTabWidth);
         }
 
         // 0x00456705
@@ -759,22 +758,6 @@ namespace OpenLoco::Ui::Windows::Industry
             TextInput::openTextInput(self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
         }
 
-        // 0x00456A5E, 0x00456A64
-        static void repositionTabs(Window* self)
-        {
-            int16_t xPos = self->widgets[widx::tab_industry].left;
-            const int16_t tabWidth = self->widgets[widx::tab_industry].right - xPos;
-
-            for (uint8_t i = widx::tab_industry; i <= widx::tab_transported; i++)
-            {
-                if (self->isDisabled(i))
-                    continue;
-
-                self->widgets[i].left = xPos;
-                self->widgets[i].right = xPos + tabWidth;
-                xPos = self->widgets[i].right + 1;
-            }
-        }
 
         // 0x00455CC7
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
