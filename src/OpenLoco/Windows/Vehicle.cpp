@@ -1403,14 +1403,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             { VehicleType::ship, InterfaceSkin::ImageIds::build_additional_ship },
         };
 
-        constexpr auto vehicleDetailsOffset = 2;
-        constexpr auto vehicleDetailsLineHeight = 12;
-        constexpr auto vehicleDetailsTextHeight2Lines = vehicleDetailsOffset + vehicleDetailsLineHeight * 2;
-        constexpr auto vehicleDetailsTextHeight3Lines = vehicleDetailsOffset + vehicleDetailsLineHeight * 3;
+        constexpr auto kVehicleDetailsOffset = 2;
+        constexpr auto kVehicleDetailsLineHeight = 12;
+        constexpr auto kVehicleDetailsTextHeight2Lines = kVehicleDetailsOffset + kVehicleDetailsLineHeight * 2;
+        constexpr auto kVehicleDetailsTextHeight3Lines = kVehicleDetailsOffset + kVehicleDetailsLineHeight * 3;
 
         static auto getVehicleDetailsHeight(uint32_t carCount)
         {
-            return carCount > 1 ? vehicleDetailsTextHeight3Lines : vehicleDetailsTextHeight2Lines;
+            return carCount > 1 ? kVehicleDetailsTextHeight3Lines : kVehicleDetailsTextHeight2Lines;
         }
 
         // 0x004B3300
@@ -1510,7 +1510,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             OpenLoco::Vehicles::Vehicle train{ *head };
-            Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - getVehicleDetailsHeight(head->getCarCount()) + vehicleDetailsOffset) };
+            Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - getVehicleDetailsHeight(head->getCarCount()) + kVehicleDetailsOffset) };
 
             {
                 FormatArguments args{};
@@ -1525,7 +1525,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             {
-                pos.y += vehicleDetailsLineHeight;
+                pos.y += kVehicleDetailsLineHeight;
                 FormatArguments args{};
                 args.push<uint16_t>(train.veh2->maxSpeed == kSpeed16Null ? 0 : train.veh2->maxSpeed.getRaw());
                 args.push<uint16_t>(train.veh2->rackRailMaxSpeed == kSpeed16Null ? 0 : train.veh2->rackRailMaxSpeed.getRaw());
@@ -1542,7 +1542,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // draw car count
                 if (head->getCarCount() > 1)
                 {
-                    pos.y += vehicleDetailsLineHeight;
+                    pos.y += kVehicleDetailsLineHeight;
                     FormatArguments args = {};
                     args.push<uint32_t>(head->getCarCount());
                     Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 16, Colour::black, StringIds::vehicle_car_count_stringid, &args);
