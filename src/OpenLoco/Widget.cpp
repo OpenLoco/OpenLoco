@@ -997,22 +997,16 @@ namespace OpenLoco::Ui
         }
     }
 
-    void Widget::leftAlignTabs(Window* const window, uint8_t firstTabIndex, uint8_t lastTabIndex, uint16_t tabWidth)
+    void Widget::leftAlignTabs(Window& window, uint8_t firstTabIndex, uint8_t lastTabIndex, uint16_t tabWidth)
     {
-        int16_t xPos = window->widgets[firstTabIndex].left;
+        int16_t xPos = window.widgets[firstTabIndex].left;
         for (uint8_t i = firstTabIndex; i <= lastTabIndex; i++)
         {
-            if (window->isDisabled(i))
+            if (window.isDisabled(i) == false)
             {
-                window->widgets[i].type = WidgetType::none;
-            }
-
-            else
-            {
-                window->widgets[i].type = WidgetType::tab;
-                window->widgets[i].left = xPos;
-                window->widgets[i].right = xPos + tabWidth;
-                xPos = window->widgets[i].right + 1;
+                window.widgets[i].left = xPos;
+                window.widgets[i].right = xPos + tabWidth;
+                xPos = window.widgets[i].right + 1;
 
             }
         }

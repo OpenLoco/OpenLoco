@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self->widgets[widx::sort_town_population].text = self->sortMode == SortMode::Population ? StringIds::table_header_population_desc : StringIds::table_header_population;
             self->widgets[widx::sort_town_stations].text = self->sortMode == SortMode::Stations ? StringIds::table_header_stations_desc : StringIds::table_header_stations;
 
-            Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings, Widget::defaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings, Widget::kDefaultTabWidth);
         }
 
         // 0x0049A0F8
@@ -623,7 +623,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             Common::prepareDraw(self);
 
-            Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings, Widget::defaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings, Widget::kDefaultTabWidth);
 
             self->widgets[widx::current_size].text = townSizeNames[_townSize - 1];
         }
@@ -840,7 +840,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
                 self->widgets[Common::widx::caption].text = StringIds::title_build_new_misc_buildings;
 
-            Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings, Widget::defaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings, Widget::kDefaultTabWidth);
         }
 
         // 0x0049A9C2

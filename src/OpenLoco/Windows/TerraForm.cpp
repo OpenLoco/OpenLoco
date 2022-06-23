@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->widgets[widx::plant_cluster_selected].right = self->width - 2;
             self->widgets[widx::plant_cluster_random].right = self->width - 2;
 
-            Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls, Widget::defaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls, Widget::kDefaultTabWidth);
         }
 
         // 0x004BB8C9
@@ -1038,7 +1038,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls, Widget::defaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls, Widget::kDefaultTabWidth);
         }
 
         // 0x004BC5E7
@@ -1540,7 +1540,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 self->widgets[widx::land_material].image = landObj->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
             }
 
-            Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls, Widget::defaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls, Widget::kDefaultTabWidth);
         }
 
         // 0x004BC909
@@ -1825,7 +1825,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls, Widget::defaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls, Widget::kDefaultTabWidth);
         }
 
         // 0x004BCCFF
@@ -2266,7 +2266,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
 
-            Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls, Widget::defaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls, Widget::kDefaultTabWidth);
         }
 
         // 0x004BC0C2

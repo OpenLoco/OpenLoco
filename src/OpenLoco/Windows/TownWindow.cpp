@@ -124,7 +124,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            Widget::leftAlignTabs(self, Common::widx::tab_town, Common::widx::tab_company_ratings, Widget::defaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_town, Common::widx::tab_company_ratings, Widget::kDefaultTabWidth);
         }
 
         // 0x00498FFE

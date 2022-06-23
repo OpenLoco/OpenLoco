@@ -449,7 +449,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         self->disabledWidgets = disabledWidgets;
 
-        Widget::leftAlignTabs(self, widx::tabOverall, widx::tabOwnership, Widget::defaultTabWidth);
+        Widget::leftAlignTabs(*self, widx::tabOverall, widx::tabOwnership, Widget::kDefaultTabWidth);
     }
 
     // 0x0046D0E0

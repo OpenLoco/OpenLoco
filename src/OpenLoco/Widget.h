@@ -41,8 +41,8 @@ namespace OpenLoco::Ui
         static void drawTab(Window* w, Gfx::Context* ctx, int32_t imageId, WidgetIndex_t index);
 
         //typical tab width, to be used in most (all?) cases
-        static const uint16_t defaultTabWidth = 30;
-        static void leftAlignTabs(Window* const window, uint8_t firstTabIndex, uint8_t lastTabIndex, uint16_t tabWidth);
+        static constexpr uint16_t kDefaultTabWidth = 30;
+        static void leftAlignTabs(Window& window, uint8_t firstTabIndex, uint8_t lastTabIndex, uint16_t tabWidth);
 
         void draw(Gfx::Context* context, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
 
