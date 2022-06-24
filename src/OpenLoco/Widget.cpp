@@ -999,8 +999,8 @@ namespace OpenLoco::Ui
 
     void Widget::leftAlignTabs(Window& window, uint8_t firstTabIndex, uint8_t lastTabIndex, uint16_t tabWidth)
     {
-        int16_t xPos = window.widgets[firstTabIndex].left;
-        for (uint8_t i = firstTabIndex; i <= lastTabIndex; i++)
+        auto xPos = window.widgets[firstTabIndex].left;
+        for (auto i = firstTabIndex; i <= lastTabIndex; i++)
         {
             if (window.isDisabled(i))
             {

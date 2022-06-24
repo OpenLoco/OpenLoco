@@ -909,7 +909,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window->widgets[widx::scrollview_vehicle_selection].right = width - 187;
         window->widgets[widx::scrollview_vehicle_selection].bottom = height - 14;
 
-        Widget::leftAlignTabs(*window, widx::tab_build_new_trains, widx::tab_build_new_ships, Widget::kDefaultTabWidth);
+        Widget::leftAlignTabs(*window, widx::tab_build_new_trains, widx::tab_build_new_ships);
     }
 
     // 0x4C2F23

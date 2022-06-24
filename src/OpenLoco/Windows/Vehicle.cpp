@@ -903,7 +903,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets[widx::centreViewport].bottom = self->widgets[widx::viewport].bottom - 1;
             self->widgets[widx::centreViewport].left = self->widgets[widx::viewport].right - 1 - 23;
             self->widgets[widx::centreViewport].top = self->widgets[widx::viewport].bottom - 1 - 23;
-            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 0x004B226D
@@ -1429,7 +1429,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets[Common::widx::caption].right = self->width - 2;
             self->widgets[Common::widx::closeButton].left = self->width - 15;
             self->widgets[Common::widx::closeButton].right = self->width - 3;
-            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
 
             self->widgets[widx::carList].right = self->width - 26;
             self->widgets[widx::carList].bottom = self->height - 24;
@@ -1784,7 +1784,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 widgets[widx::cargoList].right = self->width - 26 + 22;
             }
 
-            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 004B3F0D
@@ -2168,7 +2168,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets[Common::widx::closeButton].left = self->width - 15;
             self->widgets[Common::widx::closeButton].right = self->width - 3;
 
-            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 0x004B576C
@@ -3202,7 +3202,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 self->disabledWidgets &= ~((1 << widx::orderUp) | (1 << widx::orderDown));
             }
-            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 0x004B4866

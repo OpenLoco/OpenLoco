@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::Windows::StationList
         window->widgets[widx::sort_accepts].text = window->sortMode == SortMode::CargoAccepted ? StringIds::table_header_accepts_desc : StringIds::table_header_accepts;
 
         // Reposition tabs
-        Widget::leftAlignTabs(*window, widx::tab_all_stations, widx::tab_ship_ports, Widget::kDefaultTabWidth);
+        Widget::leftAlignTabs(*window, widx::tab_all_stations, widx::tab_ship_ports);
     }
 
     // 0x0049157F

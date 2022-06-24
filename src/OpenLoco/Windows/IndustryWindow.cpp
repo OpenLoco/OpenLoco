@@ -124,7 +124,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
         // 0x00455C22
@@ -354,7 +354,7 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             Common::prepareDraw(self);
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
         // 0x0045654F
@@ -394,7 +394,7 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             Common::prepareDraw(self);
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
         // 0x004565FF
@@ -432,7 +432,7 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             Common::prepareDraw(self);
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
         // 0x00456705

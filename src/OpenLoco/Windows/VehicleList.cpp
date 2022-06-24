@@ -596,7 +596,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         };
         self->widgets[Widx::cargo_type_btn].tooltip = filterTooltipByType[self->var_88A];
 
-        Widget::leftAlignTabs(*self, Widx::tab_trains, Widx::tab_ships, Widget::kDefaultTabWidth);
+        Widget::leftAlignTabs(*self, Widx::tab_trains, Widx::tab_ships);
     }
 
     // 0x004C211C

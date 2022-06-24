@@ -2377,7 +2377,7 @@ namespace OpenLoco::Ui::Windows::Options
             w->disabledWidgets |= 1 << Common::Widx::tab_regional;
         }
 
-        Widget::leftAlignTabs(*w, Common::Widx::tab_display, Common::Widx::tab_miscellaneous, Widget::kDefaultTabWidth);
+        Widget::leftAlignTabs(*w, Common::Widx::tab_display, Common::Widx::tab_miscellaneous);
     }
 
     static void sub_4C1519()

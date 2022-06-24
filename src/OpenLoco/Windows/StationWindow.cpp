@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
         }
 
         // 0x0048E470
@@ -350,7 +350,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->widgets[widx::station_catchment].right = self->width - 2;
             self->widgets[widx::station_catchment].left = self->width - 25;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
 
             self->activatedWidgets &= ~(1 << widx::station_catchment);
             if (StationId(self->number) == _lastSelectedStation)
@@ -597,7 +597,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->widgets[widx::status_bar].bottom = self->height - 3;
             self->widgets[widx::status_bar].right = self->width - 14;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings, Widget::kDefaultTabWidth);
+            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
         }
 
         // 0x0048ED24
