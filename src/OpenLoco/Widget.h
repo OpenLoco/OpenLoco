@@ -40,7 +40,7 @@ namespace OpenLoco::Ui
         static void drawViewportCentreButton(Gfx::Context* context, const Window* window, const WidgetIndex_t widgetIndex);
         static void drawTab(Window* w, Gfx::Context* ctx, int32_t imageId, WidgetIndex_t index);
 
-        //typical tab width, to be used in most (all?) cases
+        // typical tab width, to be used in most (all?) cases
         static constexpr uint16_t kDefaultTabWidth = 30;
         static void leftAlignTabs(Window& window, uint8_t firstTabIndex, uint8_t lastTabIndex, uint16_t tabWidth);
 

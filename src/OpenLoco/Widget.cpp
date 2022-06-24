@@ -1007,7 +1007,6 @@ namespace OpenLoco::Ui
                 window.widgets[i].left = xPos;
                 window.widgets[i].right = xPos + tabWidth;
                 xPos = window.widgets[i].right + 1;
-
             }
         }
     }

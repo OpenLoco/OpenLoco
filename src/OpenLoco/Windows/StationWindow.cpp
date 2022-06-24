@@ -878,7 +878,6 @@ namespace OpenLoco::Ui::Windows::Station
             TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
         }
 
-
         // 0x0048E520
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
