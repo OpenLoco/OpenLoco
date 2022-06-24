@@ -1821,4 +1821,5 @@ namespace OpenLoco::StringIds
     constexpr string_id startServer = 2255;
     constexpr string_id closeServer = 2256;
     constexpr string_id disconnect = 2257;
+    constexpr string_id vehicle_car_count_stringid = 2258;
 }

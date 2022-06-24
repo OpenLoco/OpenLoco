@@ -346,6 +346,12 @@ namespace OpenLoco::Vehicles
         return totalLength;
     }
 
+    uint32_t VehicleHead::getCarCount() const
+    {
+        Vehicle train(head);
+        return train.cars.size();
+    }
+
     // 0x004B8FA2
     // esi : self
     // ax  : vehicleTypeId
