@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Core/BitSet.hpp"
 #include "Core/Span.hpp"
+#include "Limits.h"
 #include "Map/Tile.h"
 #include "Map/TileLoop.hpp"
 #include "Types.hpp"
@@ -44,8 +46,8 @@ namespace OpenLoco
         int16_t var_DB;
         int16_t var_DD;
         uint8_t var_DF;
-        CompanyId owner;     // 0xE0
-        uint32_t var_E1[32]; // 0xE1 stations bit set
+        CompanyId owner;                     // 0xE0
+        BitSet<Limits::kMaxStations> var_E1; // 0xE1 stations bit set
         StationId producedCargoStatsStation[2][4];
         uint8_t producedCargoStatsRating[2][4];
         uint8_t pad_179[0x189 - 0x179];

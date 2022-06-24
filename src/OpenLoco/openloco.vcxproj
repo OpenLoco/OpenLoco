@@ -262,6 +262,7 @@
     <ClInclude Include="ConfigConvert.hpp" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Console.h" />
+    <ClInclude Include="Core\BitSet.hpp" />
     <ClInclude Include="Core\FileSystem.hpp" />
     <ClInclude Include="Core\LocoFixedVector.hpp" />
     <ClInclude Include="Core\Optional.hpp" />
