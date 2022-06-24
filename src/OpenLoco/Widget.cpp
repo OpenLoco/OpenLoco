@@ -1002,7 +1002,12 @@ namespace OpenLoco::Ui
         int16_t xPos = window.widgets[firstTabIndex].left;
         for (uint8_t i = firstTabIndex; i <= lastTabIndex; i++)
         {
-            if (window.isDisabled(i) == false)
+            if (window.isDisabled(i))
+            {
+                window.widgets[i].type = WidgetType::none;
+            }
+
+            else
             {
                 window.widgets[i].type = WidgetType::tab;
                 window.widgets[i].left = xPos;
