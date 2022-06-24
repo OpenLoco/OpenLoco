@@ -344,6 +344,8 @@ namespace OpenLoco::Vehicles
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
         void sub_4AF7A4();
+        uint32_t getVehicleTotalLength() const;
+        float getVehicleTotalDisplayLength() const;
 
     private:
         void updateDrivingSounds();
@@ -373,7 +375,6 @@ namespace OpenLoco::Vehicles
         std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
         std::pair<uint32_t, Map::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge);
         bool updateWater();
-        uint32_t getVehicleTotalLength();
         void tryCreateInitialMovementSound();
         void setStationVisitedTypes();
         void checkIfAtOrderStation();

@@ -53,7 +53,12 @@ namespace OpenLoco
             Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
             rowPosition.y += descriptionRowHeight;
         }
-
+        {
+            FormatArguments args{};
+            args.push<uint32_t>(getDisplayLength());
+            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_length, &args);
+            rowPosition.y += descriptionRowHeight;
+        }
         {
             FormatArguments args{};
             args.push(weight);
@@ -360,5 +365,28 @@ namespace OpenLoco
         sound.engine1.soundObjectId = 0;
 
         std::fill(std::begin(startSounds), std::end(startSounds), 0);
+    }
+
+    // 0x004B9780
+    uint32_t VehicleObject::getLength() const
+    {
+        auto length = 0;
+        for (auto i = 0; i < var_04; ++i)
+        {
+            if (var_24[i].body_sprite_ind == 0xFF)
+            {
+                continue;
+            }
+
+            auto unk = var_24[i].body_sprite_ind & (VehicleObject::kMaxBodySprites - 1);
+            length += bodySprites[unk].bogey_position * 2;
+        }
+        return length;
+    }
+
+    float VehicleObject::getDisplayLength() const
+    {
+        return (float)getLength() / 4 / 32 * 100;
+        ;
     }
 }
