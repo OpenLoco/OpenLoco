@@ -92,6 +92,42 @@ namespace OpenLoco::Map
         return { selectableTrees[rng.randNext(selectableTrees.size() - 1)] };
     }
 
+    bool placeRandomTree(const Map::Pos2& pos, std::optional<uint8_t> treeType)
+    {
+        GameCommands::TreePlacementArgs args;
+        args.quadrant = Ui::ViewportInteraction::getQuadrantFromPos(pos);
+        args.pos = Map::Pos2(pos.x & 0xFFE0, pos.y & 0xFFE0);
+        // Note: this is not the same as the randomDirection above as it is the trees rotation
+        args.rotation = gPrng().randNext(3);
+        args.colour = Colour::black;
+
+        // If not set by the caller then a random tree type is selected based on the surface type
+        std::optional<uint8_t> randTreeType = treeType;
+        if (!randTreeType.has_value())
+        {
+            randTreeType = getRandomTreeTypeFromSurface(args.pos, false);
+            // It is possible that there are no valid tree types for the surface
+            if (!randTreeType.has_value())
+            {
+                return false;
+            }
+        }
+        args.type = *randTreeType;
+        args.buildImmediately = true;
+        args.requiresFullClearance = true;
+
+        // First query if we can place a tree at this location; skip if we can't.
+        auto queryRes = doCommand(args, 0);
+        if (queryRes == GameCommands::FAILURE)
+        {
+            return false;
+        }
+
+        // Actually place the tree
+        doCommand(args, GameCommands::Flags::apply);
+        return true;
+    }
+
     // 0x004BDC67 (when treeType is nullopt) & 0x004BDDC6 (when treeType is set)
     bool placeTreeCluster(const Map::TilePos2& centreLoc, const uint16_t range, const uint16_t density, const std::optional<uint8_t> treeType)
     {
@@ -107,39 +143,10 @@ namespace OpenLoco::Map
                 Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
                 Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));
 
-            GameCommands::TreePlacementArgs args;
-            Map::Pos2 newLoc = randomOffset + centreLoc;
-            args.quadrant = Ui::ViewportInteraction::getQuadrantFromPos(newLoc);
-            args.pos = Map::Pos2(newLoc.x & 0xFFE0, newLoc.y & 0xFFE0);
-            // Note: this is not the same as the randomDirection above as it is the trees rotation
-            args.rotation = rng.randNext(3);
-            args.colour = Colour::black;
-
-            // If not set by the caller then a random tree type is selected based on the surface type
-            std::optional<uint8_t> randTreeType = treeType;
-            if (!randTreeType.has_value())
-            {
-                randTreeType = getRandomTreeTypeFromSurface(newLoc, false);
-                // It is possible that there are no valid tree types for the surface
-                if (!randTreeType.has_value())
-                {
-                    continue;
-                }
-            }
-            args.type = *randTreeType;
-            args.buildImmediately = true;
-            args.requiresFullClearance = true;
-
-            // First query if we can place a tree at this location; skip if we can't.
-            auto queryRes = doCommand(args, 0);
-            if (queryRes == GameCommands::FAILURE)
+            if (!placeRandomTree(randomOffset + centreLoc, treeType))
             {
                 numErrors++;
-                continue;
             }
-
-            // Actually place the tree
-            doCommand(args, GameCommands::Flags::apply);
         }
 
         // Have we placed any trees?

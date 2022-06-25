@@ -101,6 +101,11 @@ namespace OpenLoco::Map::TileManager
         return _elementsEnd;
     }
 
+    uint32_t numFreeElements()
+    {
+        return maxElements - (_elementsEnd - _elements);
+    }
+
     void setElements(stdx::span<TileElement> elements)
     {
         TileElement* dst = _elements;
@@ -122,6 +127,7 @@ namespace OpenLoco::Map::TileManager
     // 0x00461760
     void removeElement(TileElement& element)
     {
+        // This is used to indicate if the caller can still use this pointer
         if (&element == *_F00158)
         {
             if (element.isLast())

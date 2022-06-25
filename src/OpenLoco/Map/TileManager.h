@@ -17,6 +17,7 @@ namespace OpenLoco::Map::TileManager
     void initialise();
     stdx::span<TileElement> getElements();
     TileElement* getElementsEnd();
+    uint32_t numFreeElements();
     TileElement** getElementIndex();
     Tile get(TilePos2 pos);
     Tile get(Pos2 pos);
