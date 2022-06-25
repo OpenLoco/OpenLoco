@@ -145,6 +145,14 @@ namespace OpenLoco
         }
     }
 
+    // 0x004534BD
+    void Industry::updateDaily()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x004534BD, regs);
+    }
+
     // 0x0045329B
     void Industry::sub_45329B(const Pos2& pos)
     {
