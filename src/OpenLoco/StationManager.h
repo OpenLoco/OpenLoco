@@ -5,6 +5,7 @@
 #include "Station.h"
 #include <array>
 #include <cstddef>
+#include <vector>
 
 namespace OpenLoco::StationManager
 {
@@ -19,4 +20,5 @@ namespace OpenLoco::StationManager
     void zeroUnused();
     void registerHooks();
     uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const Map::Pos2& pos, const Map::TilePos2& size);
+    uint16_t deliverCargoToStations(const std::vector<StationId>& stations, const uint8_t cargoType, const uint8_t cargoQty);
 }

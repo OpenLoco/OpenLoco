@@ -420,6 +420,42 @@ namespace OpenLoco::StationManager
         }
     }
 
+    static uint16_t deliverCargoToStations(const std::vector<std::pair<StationId, uint8_t>>& foundStations, const uint8_t cargoType, const uint8_t cargoQty)
+    {
+        if (foundStations.empty())
+        {
+            return 0;
+        }
+
+        const auto ratingTotal = std::accumulate(foundStations.begin(), foundStations.end(), 0, [](const int32_t a, const std::pair<StationId, uint8_t>& b) { return a + b.second * b.second; });
+        if (ratingTotal == 0)
+        {
+            return 0;
+        }
+
+        uint16_t cargoQtyDelivered = 0;
+        for (const auto& [stationId, rating] : foundStations)
+        {
+            auto* station = get(stationId);
+            if (station == nullptr)
+            {
+                continue;
+            }
+
+            const auto defaultShare = (rating * rating * cargoQty) / ratingTotal;
+            const auto alternateShare = (rating * cargoQty) / 256;
+            auto share = std::min(defaultShare, alternateShare);
+            if (rating > 66)
+            {
+                share++;
+            }
+            cargoQtyDelivered += share;
+            station->deliverCargoToStation(cargoType, share);
+        }
+
+        return std::min<uint16_t>(cargoQtyDelivered, cargoQty);
+    }
+
     // 0x0042F2FE
     uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const Map::Pos2& pos, const Map::TilePos2& size)
     {
@@ -476,38 +512,24 @@ namespace OpenLoco::StationManager
             searchOffset.x = 0;
         }
 
-        if (foundStations.empty())
-        {
-            return 0;
-        }
+        return deliverCargoToStations(foundStations, cargoType, cargoQty);
+    }
 
-        const auto ratingTotal = std::accumulate(foundStations.begin(), foundStations.end(), 0, [](const int32_t a, const std::pair<StationId, uint8_t>& b) { return a + b.second * b.second; });
-        if (ratingTotal == 0)
-        {
-            return 0;
-        }
-
-        uint16_t cargoQtyDelivered = 0;
-        for (const auto& [stationId, rating] : foundStations)
+    // 0x0042F2BF
+    uint16_t deliverCargoToStations(const std::vector<StationId>& stations, const uint8_t cargoType, const uint8_t cargoQty)
+    {
+        std::vector<std::pair<StationId, uint8_t>> foundStations;
+        for (auto stationId : stations)
         {
             auto* station = get(stationId);
             if (station == nullptr)
             {
                 continue;
             }
-
-            const auto defaultShare = (rating * rating * cargoQty) / ratingTotal;
-            const auto alternateShare = (rating * cargoQty) / 256;
-            auto share = std::min(defaultShare, alternateShare);
-            if (rating > 66)
-            {
-                share++;
-            }
-            cargoQtyDelivered += share;
-            station->deliverCargoToStation(cargoType, share);
+            foundStations.push_back(std::make_pair(stationId, station->cargoStats[cargoType].rating));
         }
 
-        return std::min<uint16_t>(cargoQtyDelivered, cargoQty);
+        return deliverCargoToStations(foundStations, cargoType, cargoQty);
     }
 
     void registerHooks()

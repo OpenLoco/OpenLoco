@@ -46,16 +46,19 @@ namespace OpenLoco
         int16_t var_DB;
         int16_t var_DD;
         uint8_t var_DF;
-        CompanyId owner;                     // 0xE0
-        BitSet<Limits::kMaxStations> var_E1; // 0xE1 stations bit set
-        StationId producedCargoStatsStation[2][4];
-        uint8_t producedCargoStatsRating[2][4];
-        uint8_t pad_179[0x189 - 0x179];
+        CompanyId owner;                           // 0xE0
+        BitSet<Limits::kMaxStations> var_E1;       // 0xE1 stations bit set
+        StationId producedCargoStatsStation[2][4]; // 0x161
+        uint8_t producedCargoStatsRating[2][4];    // 0x171
+        uint16_t var_179[2];
+        uint16_t var_17D[2];
+        uint16_t var_181[2];
+        uint16_t var_185[2];
         uint16_t produced_cargo_quantity[2]; // 0x189
         uint16_t var_18D[3];
         uint16_t required_cargo_quantity[3]; // 0x193
         uint16_t var_199[3];
-        uint8_t pad_19F[0x1A3 - 0x19F];
+        uint16_t var_19F[2];
         uint16_t produced_cargo_max[2];        // 0x1A3 (produced_cargo_quantity / 8)
         uint8_t produced_cargo_transported[2]; // 0x1A7 (%)
         uint8_t historySize[2];                // 0x1A9 (<= 20 * 12)
