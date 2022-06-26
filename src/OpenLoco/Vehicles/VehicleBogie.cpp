@@ -149,4 +149,13 @@ namespace OpenLoco::Vehicles
         call(0x004AA97A, regs);
         return regs.dl != 1;
     }
+
+    // 0x004AF16A
+    void VehicleBogie::carComponent_sub_4AF16A()
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+
+        call(0x004AF16A, regs);
+    }
 }
