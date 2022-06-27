@@ -92,7 +92,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void initEvents();
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void repositionTabs(Window* self);
         static void drawTabs(Window* self, Gfx::Context* context);
         static void prepareDraw(Window* self);
         static void onUpdate(Window* self);
@@ -688,7 +687,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->widgets[widx::plant_cluster_selected].right = self->width - 2;
             self->widgets[widx::plant_cluster_random].right = self->width - 2;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
         // 0x004BB8C9
@@ -1039,7 +1038,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
         // 0x004BC5E7
@@ -1541,7 +1540,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 self->widgets[widx::land_material].image = landObj->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
             }
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
         // 0x004BC909
@@ -1826,7 +1825,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
         // 0x004BCCFF
@@ -2267,7 +2266,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
         // 0x004BC0C2
@@ -2412,27 +2411,6 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case Common::widx::tab_plant_trees:
                     Common::switchTab(self, widgetIndex);
                     break;
-            }
-        }
-
-        // 0x004BCF29, 0x004BCF2F
-        static void repositionTabs(Window* self)
-        {
-            int16_t xPos = self->widgets[widx::tab_clear_area].left;
-            const int16_t tabWidth = self->widgets[widx::tab_clear_area].right - xPos;
-
-            for (uint8_t i = widx::tab_clear_area; i <= widx::tab_build_walls; i++)
-            {
-                if (self->isDisabled(i))
-                {
-                    self->widgets[i].type = WidgetType::none;
-                    continue;
-                }
-
-                self->widgets[i].type = WidgetType::tab;
-                self->widgets[i].left = xPos;
-                self->widgets[i].right = xPos + tabWidth;
-                xPos = self->widgets[i].right + 1;
             }
         }
 

@@ -94,7 +94,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void switchTabWidgets(Window* self);
         static void drawCompanySelect(const Window* const self, Gfx::Context* const context);
         static void drawTabs(Window* self, Gfx::Context* context);
-        static void repositionTabs(Window* self);
     }
 
     namespace Status
@@ -181,7 +180,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_status, Common::widx::tab_challenge);
         }
 
         // 0x00432055
@@ -712,7 +711,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_status, Common::widx::tab_challenge);
         }
 
         static void drawAIdetails(Gfx::Context& context, const int32_t x, int32_t& y, const OpenLoco::Company& company)
@@ -1281,7 +1280,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[Common::widx::company_select].right = self->width - 3;
             self->widgets[Common::widx::company_select].left = self->width - 28;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_status, Common::widx::tab_challenge);
 
             // Set company's main colour
             self->widgets[widx::main_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
@@ -1656,7 +1655,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 self->widgets[widx::loan_autopay].type = WidgetType::none;
             }
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_status, Common::widx::tab_challenge);
         }
 
         // 0x004333D0
@@ -2133,7 +2132,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[Common::widx::close_button].left = self->width - 15;
             self->widgets[Common::widx::close_button].right = self->width - 3;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_status, Common::widx::tab_challenge);
         }
 
         // 0x00433ACD
@@ -2321,7 +2320,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[Common::widx::company_select].left = self->width - 28;
             self->widgets[Common::widx::company_select].type = WidgetType::none;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_status, Common::widx::tab_challenge);
         }
 
         // 0x00433DEB
@@ -2771,23 +2770,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     imageId += challengeTabImageIds[0];
 
                 Widget::drawTab(self, context, imageId, widx::tab_challenge);
-            }
-        }
-
-        // 0x004343BC
-        static void repositionTabs(Window* self)
-        {
-            int16_t xPos = self->widgets[widx::tab_status].left;
-            const int16_t tabWidth = self->widgets[widx::tab_status].right - xPos;
-
-            for (uint8_t i = widx::tab_status; i <= widx::tab_challenge; i++)
-            {
-                if (self->isDisabled(i))
-                    continue;
-
-                self->widgets[i].left = xPos;
-                self->widgets[i].right = xPos + tabWidth;
-                xPos = self->widgets[i].right + 1;
             }
         }
     }

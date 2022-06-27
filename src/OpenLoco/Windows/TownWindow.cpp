@@ -59,7 +59,6 @@ namespace OpenLoco::Ui::Windows::Town
         static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input);
         static void update(Window* self);
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
-        static void repositionTabs(Window* self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::Context* context);
         static void initEvents();
@@ -125,7 +124,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_town, Common::widx::tab_company_ratings);
         }
 
         // 0x00498FFE
@@ -677,23 +676,6 @@ namespace OpenLoco::Ui::Windows::Town
             commonFormatArgs[8] = town->name;
 
             TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs);
-        }
-
-        // 0x004999A7, 0x004999AD
-        static void repositionTabs(Window* self)
-        {
-            int16_t xPos = self->widgets[widx::tab_town].left;
-            const int16_t tabWidth = self->widgets[widx::tab_town].right - xPos;
-
-            for (uint8_t i = widx::tab_town; i <= widx::tab_company_ratings; i++)
-            {
-                if (self->isDisabled(i))
-                    continue;
-
-                self->widgets[i].left = xPos;
-                self->widgets[i].right = xPos + tabWidth;
-                xPos = self->widgets[i].right + 1;
-            }
         }
 
         // 0x004991BC

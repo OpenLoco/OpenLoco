@@ -442,21 +442,8 @@ namespace OpenLoco::Ui::Windows::StationList
         window->widgets[widx::sort_total_waiting].text = window->sortMode == SortMode::TotalUnitsWaiting ? StringIds::table_header_total_waiting_desc : StringIds::table_header_total_waiting;
         window->widgets[widx::sort_accepts].text = window->sortMode == SortMode::CargoAccepted ? StringIds::table_header_accepts_desc : StringIds::table_header_accepts;
 
-        // Reposition tabs (0x00491A39 / 0x00491A3F)
-        int16_t new_tab_x = window->widgets[widx::tab_all_stations].left;
-        int16_t tab_width = window->widgets[widx::tab_all_stations].right - new_tab_x;
-
-        for (auto& tabInfo : tabInformationByType)
-        {
-            if (window->isDisabled(tabInfo.widgetIndex))
-                continue;
-
-            Widget& tab = window->widgets[tabInfo.widgetIndex];
-
-            tab.left = new_tab_x;
-            new_tab_x += tab_width;
-            tab.right = new_tab_x++;
-        }
+        // Reposition tabs
+        Widget::leftAlignTabs(*window, widx::tab_all_stations, widx::tab_ship_ports);
     }
 
     // 0x0049157F

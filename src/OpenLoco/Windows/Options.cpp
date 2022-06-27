@@ -2377,16 +2377,7 @@ namespace OpenLoco::Ui::Windows::Options
             w->disabledWidgets |= 1 << Common::Widx::tab_regional;
         }
 
-        int x = w->widgets[Common::Widx::tab_display].left;
-        for (int i = Common::Widx::tab_display; i <= Common::Widx::tab_miscellaneous; i++)
-        {
-            if (!w->isDisabled(i))
-            {
-                w->widgets[i].left = x;
-                w->widgets[i].right = x + 30;
-                x += 31;
-            }
-        }
+        Widget::leftAlignTabs(*w, Common::Widx::tab_display, Common::Widx::tab_miscellaneous);
     }
 
     static void sub_4C1519()

@@ -60,7 +60,6 @@ namespace OpenLoco::Ui::Windows::Station
         static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input);
         static void update(Window* self);
         static void renameStationPrompt(Window* self, WidgetIndex_t widgetIndex);
-        static void repositionTabs(Window* self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::Context* context);
         static void enableRenameByCaption(Window* self);
@@ -108,7 +107,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
         }
 
         // 0x0048E470
@@ -351,7 +350,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->widgets[widx::station_catchment].right = self->width - 2;
             self->widgets[widx::station_catchment].left = self->width - 25;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
 
             self->activatedWidgets &= ~(1 << widx::station_catchment);
             if (StationId(self->number) == _lastSelectedStation)
@@ -598,7 +597,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->widgets[widx::status_bar].bottom = self->height - 3;
             self->widgets[widx::status_bar].right = self->width - 14;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
         }
 
         // 0x0048ED24
@@ -877,23 +876,6 @@ namespace OpenLoco::Ui::Windows::Station
             args.push(station->town);
 
             TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
-        }
-
-        // 0x0048EF82, 0x0048EF88
-        static void repositionTabs(Window* self)
-        {
-            int16_t xPos = self->widgets[widx::tab_station].left;
-            const int16_t tabWidth = self->widgets[widx::tab_station].right - xPos;
-
-            for (uint8_t i = widx::tab_station; i <= widx::tab_cargo_ratings; i++)
-            {
-                if (self->isDisabled(i))
-                    continue;
-
-                self->widgets[i].left = xPos;
-                self->widgets[i].right = xPos + tabWidth;
-                xPos = self->widgets[i].right + 1;
-            }
         }
 
         // 0x0048E520

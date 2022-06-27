@@ -406,30 +406,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
         return args;
     }
 
-    // 0x0046D223
-    static void leftAlignTabs(Window* self, uint8_t firstTabIndex, uint8_t lastTabIndex)
-    {
-        auto disabledWidgets = self->disabledWidgets;
-        auto pos = self->widgets[firstTabIndex].left;
-        auto tabWidth = self->widgets[firstTabIndex].right - pos;
-
-        for (auto index = firstTabIndex; index <= lastTabIndex; index++)
-        {
-            self->widgets[index].type = WidgetType::none;
-
-            if (!(disabledWidgets & (1ULL << index)))
-            {
-                self->widgets[index].type = WidgetType::tab;
-
-                self->widgets[index].left = pos;
-                pos += tabWidth;
-
-                self->widgets[index].right = pos;
-                pos++;
-            }
-        }
-    }
-
     // 0x0046B6BF
     static void prepareDraw(Window* self)
     {
@@ -473,7 +449,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         self->disabledWidgets = disabledWidgets;
 
-        leftAlignTabs(self, widx::tabOverall, widx::tabOwnership);
+        Widget::leftAlignTabs(*self, widx::tabOverall, widx::tabOwnership);
     }
 
     // 0x0046D0E0

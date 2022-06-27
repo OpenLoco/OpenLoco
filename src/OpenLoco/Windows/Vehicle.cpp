@@ -84,7 +84,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void textInput(Window* const self, const WidgetIndex_t callingWidget, const char* const input);
         static void renameVehicle(Window* const self, const WidgetIndex_t widgetIndex);
         static void switchTab(Window* const self, const WidgetIndex_t widgetIndex);
-        static void repositionTabs(Window* const self);
         static void setCaptionEnableState(Window* const self);
         static void onPickup(Window* const self, const WidgetIndex_t pickupWidx);
         static void event8(Window* const self);
@@ -904,7 +903,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets[widx::centreViewport].bottom = self->widgets[widx::viewport].bottom - 1;
             self->widgets[widx::centreViewport].left = self->widgets[widx::viewport].right - 1 - 23;
             self->widgets[widx::centreViewport].top = self->widgets[widx::viewport].bottom - 1 - 23;
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 0x004B226D
@@ -1440,7 +1439,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets[Common::widx::caption].right = self->width - 2;
             self->widgets[Common::widx::closeButton].left = self->width - 15;
             self->widgets[Common::widx::closeButton].right = self->width - 3;
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
 
             self->widgets[widx::carList].right = self->width - 26;
             self->widgets[widx::carList].bottom = self->height - getVehicleDetailsHeight(head->getCarCount());
@@ -1806,7 +1805,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 widgets[widx::cargoList].right = self->width - 26 + 22;
             }
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 004B3F0D
@@ -2190,7 +2189,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets[Common::widx::closeButton].left = self->width - 15;
             self->widgets[Common::widx::closeButton].right = self->width - 3;
 
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 0x004B576C
@@ -3224,7 +3223,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 self->disabledWidgets &= ~((1 << widx::orderUp) | (1 << widx::orderDown));
             }
-            Common::repositionTabs(self);
+            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 0x004B4866
@@ -4327,23 +4326,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
-        }
-
-        // 0x004B5ECD
-        static void repositionTabs(Window* const self)
-        {
-            int16_t xPos = self->widgets[widx::tabMain].left;
-            const int16_t tabWidth = self->widgets[widx::tabMain].right - xPos;
-
-            for (uint8_t i = widx::tabMain; i <= widx::tabRoute; i++)
-            {
-                if (self->isDisabled(i))
-                    continue;
-
-                self->widgets[i].left = xPos;
-                self->widgets[i].right = xPos + tabWidth;
-                xPos = self->widgets[i].right + 1;
-            }
         }
 
         // 0x004B1E94
