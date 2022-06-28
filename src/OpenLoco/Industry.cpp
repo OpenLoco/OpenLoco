@@ -3,6 +3,7 @@
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/TileManager.h"
+#include "Math/Bound.hpp"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
@@ -141,6 +142,106 @@ namespace OpenLoco
                     sub_453354();
                     break;
                 }
+            }
+        }
+    }
+
+    // 0x004534BD
+    void Industry::updateDaily()
+    {
+        if (flags & IndustryFlags::flag_01)
+        {
+            return;
+        }
+
+        auto* indObj = getObject();
+
+        uint16_t production = 0;
+        if (indObj->flags & IndustryObjectFlags::requires_all_cargo)
+        {
+            production = std::numeric_limits<uint16_t>::max();
+            for (auto i = 0; i < 3; ++i)
+            {
+                if (indObj->required_cargo_type[i] != 0xFF)
+                {
+                    production = std::min(production, var_199[i]);
+                }
+            }
+            if (production != 0)
+            {
+                for (auto i = 0; i < 3; ++i)
+                {
+                    if (indObj->required_cargo_type[i] != 0xFF)
+                    {
+                        var_199[i] -= production;
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (auto i = 0; i < 3; ++i)
+            {
+                if (indObj->required_cargo_type[i] != 0xFF)
+                {
+                    production = Math::Bound::add(production, var_199[i]);
+                    var_199[i] = 0;
+                }
+            }
+        }
+        if (production != 0)
+        {
+            for (auto i = 0; i < 2; ++i)
+            {
+                if (indObj->produced_cargo_type[i] != 0xFF)
+                {
+                    var_181[i] = Math::Bound::add(var_181[i], production);
+                }
+            }
+        }
+
+        for (auto i = 0; i < 3; ++i)
+        {
+            // Lose a 16th of required cargo if requires_all_cargo and not equally satisfied
+            var_199[i] -= Math::Bound::add(var_199[i], 15) / 16;
+        }
+
+        for (auto i = 0; i < 2; ++i)
+        {
+            if (indObj->produced_cargo_type[i] == 0xFF)
+            {
+                continue;
+            }
+
+            uint16_t ax = (var_179[i] * var_DF) / 256;
+            if (ax < var_17D[i])
+            {
+                var_17D[i]--;
+            }
+            else if (ax > var_17D[i])
+            {
+                var_17D[i]++;
+            }
+
+            var_181[i] = Math::Bound::add(var_17D[i], var_181[i]);
+
+            if (var_181[i] >= 8)
+            {
+                const auto max = std::min<uint16_t>(var_181[i], 255);
+                var_181[i] -= max;
+                var_185[i] = Math::Bound::add(var_185[i], max);
+
+                std::vector<StationId> stations;
+                for (auto stationId : producedCargoStatsStation[i])
+                {
+                    if (stationId != StationId::null)
+                    {
+                        stations.push_back(stationId);
+                    }
+                }
+
+                const auto remainingCargo = StationManager::deliverCargoToStations(stations, indObj->produced_cargo_type[i], max);
+                var_19F[i] = Math::Bound::add(remainingCargo, var_19F[i]);
             }
         }
     }

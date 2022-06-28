@@ -54,7 +54,14 @@ namespace OpenLoco::IndustryManager
     // 0x00453487
     void updateDaily()
     {
-        call(0x00453487);
+        if (Game::hasFlags(1u << 0))
+        {
+            CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+            for (auto& industry : industries())
+            {
+                industry.updateDaily();
+            }
+        }
     }
 
     // 0x0045383B
