@@ -8,7 +8,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static loco_global<uint8_t[3], 0x005215B5> _unk_5215B5;
     static loco_global<uint32_t, 0x00523338> _cursorX2;
     static loco_global<uint32_t, 0x0052333C> _cursorY2;
     static loco_global<uint32_t, 0x00525CD0> _dword_525CD0;

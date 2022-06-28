@@ -7,6 +7,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/LanguageFiles.h"
+#include "../Localisation/StringManager.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Stream.hpp"
@@ -954,6 +955,39 @@ namespace OpenLoco::Gfx
         return loopNewline(&context, origin, (uint8_t*)str);
     }
 
+    static const char* advanceToNextLine(const char* buffer)
+    {
+        // Traverse the buffer for the next line
+        const char* ptr = buffer;
+        while (true)
+        {
+            ptr++;
+            if (*ptr == '\0')
+                return ++ptr;
+
+            if (*ptr >= ' ')
+                continue;
+
+            if (*ptr < ControlCodes::newline)
+            {
+                // Skip argument
+                ptr++;
+                continue;
+            }
+
+            if (*ptr <= ControlCodes::window_colour_4)
+                continue;
+
+            // Skip arguments
+            ptr += 2;
+
+            if (*ptr == ControlCodes::inline_sprite_str)
+                ptr += 2;
+        }
+
+        return nullptr;
+    }
+
     // 0x00495224
     // al: colour
     // bp: width
@@ -971,17 +1005,39 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.bp = width;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00495224, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-        return regs.dx;
+        _currentFontSpriteBase = Font::medium_bold;
+        // Setup the text colours (FIXME: This should be a separate function)
+        char empty[1] = "";
+        Gfx::drawString(context, context.x, context.y, colour, empty);
+
+        _currentFontSpriteBase = Font::medium_bold;
+        auto wrapResult = wrapString(buffer, width);
+        auto breakCount = wrapResult.second;
+
+        // wrapString might change the font due to formatting codes
+        uint16_t lineHeight = 0; // _112D404
+        if (_currentFontSpriteBase <= Font::medium_bold)
+            lineHeight = 10;
+        else if (_currentFontSpriteBase == Font::small)
+            lineHeight = 6;
+        else if (_currentFontSpriteBase == Font::large)
+            lineHeight = 18;
+
+        _currentFontFlags = 0;
+        Ui::Point point = { x, y };
+        const char* ptr = buffer;
+
+        for (auto i = 0; ptr != nullptr && i <= breakCount; i++)
+        {
+            Gfx::drawString(context, point.x, point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
+            ptr = advanceToNextLine(ptr);
+            point.y += lineHeight;
+        }
+
+        return point.y;
     }
 
     // 0x00494B3F
@@ -999,14 +1055,8 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00494B3F, regs);
+        Point origin = { x, y };
+        drawStringLeft(context, &origin, colour, stringId, args);
     }
 
     /**
@@ -1024,17 +1074,14 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = origin->x;
-        regs.dx = origin->y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00494B3F, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
-        origin->x = regs.cx;
-        origin->y = regs.dx;
+        _currentFontSpriteBase = Font::medium_bold;
+        auto point = Gfx::drawString(context, origin->x, origin->y, colour, buffer);
+
+        origin->x = point.x;
+        origin->y = point.y;
     }
 
     // 0x00494BBF
@@ -1054,15 +1101,13 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        regs.bp = width;
-        call(0x00494BBF, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
+
+        _currentFontSpriteBase = Font::medium_bold;
+        clipString(width, buffer);
+
+        Gfx::drawString(context, x, y, colour, buffer);
     }
 
     // 0x00494C78
@@ -1080,14 +1125,13 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00494C78, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
+
+        _currentFontSpriteBase = Font::medium_bold;
+        uint16_t width = getStringWidth(buffer);
+
+        Gfx::drawString(context, x - width, y, colour, buffer);
     }
 
     // 0x00494CB2
@@ -1105,14 +1149,18 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00494CB2, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
+
+        _currentFontSpriteBase = Font::medium_bold;
+        uint16_t width = getStringWidth(buffer);
+
+        drawString(context, x - width, y, colour, buffer);
+
+        // Draw underline
+        drawRect(context, x - width, y + 11, width, 1, _textColours[1]);
+        if (_textColours[2] != 0)
+            drawRect(context, x - width, y + 12, width, 1, _textColours[2]);
     }
 
     // 0x00494D78
@@ -1130,14 +1178,18 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00494D78, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
+
+        _currentFontSpriteBase = Font::medium_bold;
+        uint16_t width = getStringWidth(buffer);
+
+        drawString(context, x, y, colour, buffer);
+
+        // Draw underline
+        drawRect(context, x, y + 11, width, 1, _textColours[1]);
+        if (_textColours[2] != 0)
+            drawRect(context, x, y + 12, width, 1, _textColours[2]);
     }
 
     // 0x00494DE8
@@ -1155,14 +1207,16 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = X86Pointer(args);
-        regs.edi = X86Pointer(&context);
-        call(0x00494DE8, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
+
+        _currentFontSpriteBase = Font::medium_bold;
+        uint16_t width = getStringWidth(buffer);
+
+        if (x - (width / 2) < 0)
+            return;
+
+        Gfx::drawString(context, x - (width / 2), y, colour, buffer);
     }
 
     // 0x00494C36
@@ -1182,15 +1236,13 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.edi = X86Pointer(&context);
-        regs.esi = X86Pointer(args);
-        regs.ebx = stringId;
-        regs.cx = x;
-        regs.dx = y;
-        regs.al = colour.u8();
-        regs.bp = width;
-        call(0x00494C36, regs);
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
+
+        _currentFontSpriteBase = Font::medium_bold;
+        width = clipString(width, buffer);
+
+        Gfx::drawString(context, x - (width / 2), y, colour, buffer);
     }
 
     /**
@@ -1212,19 +1264,41 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        registers regs;
-        regs.edi = X86Pointer(&context);
-        regs.esi = X86Pointer(args);
-        regs.cx = origin.x;
-        regs.dx = origin.y;
-        regs.bp = width;
-        regs.al = colour.u8();
-        regs.bx = stringId;
-        call(0x00494ECF, regs);
+        _currentFontSpriteBase = Font::medium_bold;
+        // Setup the text colours (FIXME: This should be a separate function)
+        char empty[1] = "";
+        Gfx::drawString(context, context.x, context.y, colour, empty);
 
-        origin.x = regs.cx;
-        origin.y = regs.dx;
-        return regs.ax;
+        char buffer[256];
+        StringManager::formatString(buffer, std::size(buffer), stringId, args);
+
+        _currentFontSpriteBase = Font::medium_bold;
+        auto wrapResult = wrapString(buffer, width);
+        auto breakCount = wrapResult.second;
+
+        // wrapString might change the font due to formatting codes
+        uint16_t lineHeight = 0; // _112D404
+        if (_currentFontSpriteBase <= Font::medium_bold)
+            lineHeight = 10;
+        else if (_currentFontSpriteBase == Font::small)
+            lineHeight = 6;
+        else if (_currentFontSpriteBase == Font::large)
+            lineHeight = 18;
+
+        _currentFontFlags = 0;
+        Ui::Point point = origin;
+        const char* ptr = buffer;
+
+        for (auto i = 0; ptr != nullptr && i <= breakCount; i++)
+        {
+            uint16_t lineWidth = getStringWidth(ptr);
+
+            Gfx::drawString(context, point.x - (lineWidth / 2), point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
+            ptr = advanceToNextLine(ptr);
+            point.y += lineHeight;
+        }
+
+        return point.y;
     }
 
     // 0x00494E33

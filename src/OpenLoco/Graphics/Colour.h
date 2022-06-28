@@ -254,22 +254,19 @@ namespace OpenLoco
             return *this;
         }
         constexpr bool isOpaque() const { return !isTranslucent(); }
-        constexpr AdvancedColour FF()
+        static constexpr AdvancedColour FF()
         {
-            _c = static_cast<Colour>(ff);
-            return *this;
+            return AdvancedColour(static_cast<Colour>(ff));
         }
         constexpr bool isFF() const { return enumValue(_c) == ff; }
-        constexpr AdvancedColour FE()
+        static constexpr AdvancedColour FE()
         {
-            _c = static_cast<Colour>(fe);
-            return *this;
+            return AdvancedColour(static_cast<Colour>(fe));
         }
         constexpr bool isFE() const { return enumValue(_c) == fe; }
-        constexpr AdvancedColour FD()
+        static constexpr AdvancedColour FD()
         {
-            _c = static_cast<Colour>(fd);
-            return *this;
+            return AdvancedColour(static_cast<Colour>(fd));
         }
         constexpr bool isFD() const { return enumValue(_c) == fd; }
     };
