@@ -30,13 +30,13 @@ namespace OpenLoco::VehicleManager
         call(0x004279CC, regs);
     }
 
-    // 0x004AF0B2
+    // 0x00426B29
     void vehiclePickupAir(EntityId head, uint8_t flags)
     {
         registers regs;
         regs.di = enumValue(head);
         regs.bl = flags;
-        call(0x004AF0B2, regs);
+        call(0x00426B29, regs);
     }
 
     // 0x004B05E4
