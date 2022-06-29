@@ -267,6 +267,14 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x004AF7A4
+    void VehicleHead::sub_4AF7A4()
+    {
+        registers regs{};
+        regs.esi = X86Pointer(this);
+        call(0x004AF7A4, regs);
+    }
+
     // 0x004B90F0
     // eax : newVehicleTypeId
     // ebx : sourceVehicleTypeId;

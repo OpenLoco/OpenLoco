@@ -22,7 +22,7 @@ namespace OpenLoco::VehicleManager
     }
 
     // 0x004279CC
-    static void vehiclePickupWater(EntityId head, uint8_t flags)
+    void vehiclePickupWater(EntityId head, uint8_t flags)
     {
         registers regs;
         regs.di = enumValue(head);
@@ -30,17 +30,30 @@ namespace OpenLoco::VehicleManager
         call(0x004279CC, regs);
     }
 
-    // 0x004AF0B2
-    static void vehiclePickupAir(EntityId head, uint8_t flags)
+    // 0x00426B29
+    void vehiclePickupAir(EntityId head, uint8_t flags)
     {
         registers regs;
         regs.di = enumValue(head);
         regs.bl = flags;
-        call(0x004AF0B2, regs);
+        call(0x00426B29, regs);
+    }
+
+    // 0x004B05E4
+    void placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& unk1, const uint16_t unk2)
+    {
+        registers regs{};
+        regs.esi = X86Pointer(head);
+        regs.ax = x;
+        regs.cx = y;
+        regs.bx = unk2;
+        regs.dl = baseZ;
+        regs.ebp = unk1.track._data;
+        call(0x004B05E4, regs);
     }
 
     // 0x004AEFB5
-    static void deleteCar(Vehicles::Car& car)
+    void deleteCar(Vehicles::Car& car)
     {
         registers regs;
         regs.esi = X86Pointer(car.front);
@@ -231,9 +244,14 @@ namespace OpenLoco::Vehicles::OrderManager
     // Remove vehicle ?orders?
     void freeOrders(VehicleHead* const head)
     {
-        sub_470795(head->orderTableOffset, head->sizeOfOrderTable * -1);
-        auto length = numOrders() - head->orderTableOffset - head->sizeOfOrderTable;
-        memmove(&orders()[head->orderTableOffset], &orders()[head->sizeOfOrderTable + head->orderTableOffset], length);
+        // Copy the offset as it will get modified during sub_470795
+        const auto offset = head->orderTableOffset;
+        const auto size = head->sizeOfOrderTable;
+
+        sub_470795(offset, -size);
+
+        // Fold orders table left to remove empty orders
+        std::rotate(&orders()[offset], &orders()[offset + size], &orders()[numOrders()]);
 
         numOrders() -= head->sizeOfOrderTable;
     }

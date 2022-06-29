@@ -619,36 +619,16 @@ namespace OpenLoco::Vehicles
         return { head };
     }
 
-    static void sub_4AF7A4(VehicleHead* const veh0)
-    {
-        registers regs{};
-        regs.esi = X86Pointer(veh0);
-        call(0x004AF7A4, regs);
-    }
-
-    // 0x004B05E4
-    static void placeDownVehicle(VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const TrackAndDirection unk1, const uint16_t unk2)
-    {
-        registers regs{};
-        regs.esi = X86Pointer(head);
-        regs.ax = x;
-        regs.cx = y;
-        regs.bx = unk2;
-        regs.dl = baseZ;
-        regs.ebp = unk1.track._data;
-        call(0x004B05E4, regs);
-    }
-
     // 0x004AE6DE
     static void updateWholeVehicle(VehicleHead* const head)
     {
-        sub_4AF7A4(head);
+        head->sub_4AF7A4();
         auto company = CompanyManager::get(_updatingCompanyId);
         company->recalculateTransportCounts();
 
         if (_backupVeh0 != reinterpret_cast<VehicleHead*>(-1))
         {
-            placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
+            VehicleManager::placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
         }
 
         Ui::WindowManager::invalidate(Ui::WindowType::vehicleList, enumValue(head->owner));
@@ -772,7 +752,7 @@ namespace OpenLoco::Vehicles
                 Vehicle bkupTrain(*veh0backup);
                 if (!bkupTrain.cars.empty())
                 {
-                    placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
+                    VehicleManager::placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
                 }
                 return FAILURE;
             }

@@ -179,6 +179,7 @@
     <ClCompile Include="Vehicles\VehicleHead.cpp" />
     <ClCompile Include="Vehicles\VehicleManager.cpp" />
     <ClCompile Include="Vehicles\VehiclePickupWater.cpp" />
+    <ClCompile Include="Vehicles\VehicleSell.cpp" />
     <ClCompile Include="Vehicles\VehicleTail.cpp" />
     <ClCompile Include="Version.cpp">
       <!-- Define git information -->
