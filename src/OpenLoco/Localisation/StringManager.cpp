@@ -692,4 +692,9 @@ namespace OpenLoco::StringManager
         assert(isTownName(stringId));
         return string_id(stringId - kTownNamesStart);
     }
+
+    int32_t internalLengthToComma1DP(const int32_t length)
+    {
+        return length * 100 / 4 / 32;
+    }
 }

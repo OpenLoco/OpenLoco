@@ -322,34 +322,14 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
-    // 0x004B9780
-    // used by road vehicles only maybe??
-    static uint32_t getVehicleTypeLength(const uint16_t vehicleTypeId)
-    {
-        auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
-        auto length = 0;
-        for (auto i = 0; i < vehObject->var_04; ++i)
-        {
-            if (vehObject->var_24[i].body_sprite_ind == 0xFF)
-            {
-                continue;
-            }
-
-            auto unk = vehObject->var_24[i].body_sprite_ind & (VehicleObject::kMaxBodySprites - 1);
-            length += vehObject->bodySprites[unk].bogey_position * 2;
-        }
-        return length;
-    }
-
     // 0x004B97B7
-    // used by road vehicles only maybe??
-    uint32_t VehicleHead::getVehicleTotalLength() // TODO: const
+    uint32_t VehicleHead::getVehicleTotalLength() const
     {
         auto totalLength = 0;
         Vehicle train(head);
         for (const auto& car : train.cars)
         {
-            totalLength += getVehicleTypeLength(car.body->objectId);
+            totalLength += car.body->getObject()->getLength();
         }
         return totalLength;
     }
@@ -418,7 +398,7 @@ namespace OpenLoco::Vehicles
         }
 
         auto curTotalLength = getVehicleTotalLength();
-        auto additionalNewLength = getVehicleTypeLength(vehicleTypeId);
+        auto additionalNewLength = ObjectManager::get<VehicleObject>(vehicleTypeId)->getLength();
         if (curTotalLength + additionalNewLength > kMaxVehicleLength)
         {
             GameCommands::setErrorText(StringIds::vehicle_too_long);

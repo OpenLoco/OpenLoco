@@ -1317,6 +1317,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_power, &args);
             }
 
+            if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
+            {
+                FormatArguments args{};
+                args.push<uint32_t>(StringManager::internalLengthToComma1DP(vehicleObj->getLength()));
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_length, &args);
+            }
+
             {
                 FormatArguments args{};
                 args.push(vehicleObj->weight);
@@ -1407,9 +1414,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr auto kVehicleDetailsTextHeight2Lines = kVehicleDetailsOffset + kVehicleDetailsLineHeight * 2;
         constexpr auto kVehicleDetailsTextHeight3Lines = kVehicleDetailsOffset + kVehicleDetailsLineHeight * 3;
 
-        static auto getVehicleDetailsHeight(uint32_t carCount)
+        static auto getVehicleDetailsHeight(const OpenLoco::TransportMode transportMode)
         {
-            return carCount > 1 ? kVehicleDetailsTextHeight3Lines : kVehicleDetailsTextHeight2Lines;
+            return transportMode == TransportMode::rail || transportMode == TransportMode::road ? kVehicleDetailsTextHeight3Lines : kVehicleDetailsTextHeight2Lines;
         }
 
         // 0x004B3300
@@ -1442,7 +1449,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
 
             self->widgets[widx::carList].right = self->width - 26;
-            self->widgets[widx::carList].bottom = self->height - getVehicleDetailsHeight(head->getCarCount());
+            self->widgets[widx::carList].bottom = self->height - getVehicleDetailsHeight(head->getTransportMode());
 
             self->widgets[widx::buildNew].right = self->width - 2;
             self->widgets[widx::buildNew].left = self->width - 25;
@@ -1509,7 +1516,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             OpenLoco::Vehicles::Vehicle train{ *head };
-            Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - getVehicleDetailsHeight(head->getCarCount()) + kVehicleDetailsOffset) };
+            Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - getVehicleDetailsHeight(head->getTransportMode()) + kVehicleDetailsOffset) };
 
             {
                 FormatArguments args{};
@@ -1538,14 +1545,17 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             {
-                // draw car count
-                if (head->getCarCount() > 1)
+                // Draw car count and vehicle length
+                pos.y += kVehicleDetailsLineHeight;
+                FormatArguments args = {};
+                string_id str = StringIds::vehicle_length;
+                args.push<uint32_t>(StringManager::internalLengthToComma1DP(head->getVehicleTotalLength()));
+                if (train.veh2->mode == TransportMode::rail && head->getCarCount() > 1)
                 {
-                    pos.y += kVehicleDetailsLineHeight;
-                    FormatArguments args = {};
+                    str = StringIds::vehicle_car_count_and_length;
                     args.push<uint32_t>(head->getCarCount());
-                    Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 16, Colour::black, StringIds::vehicle_car_count_stringid, &args);
                 }
+                Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self->width - 16, Colour::black, str, &args);
             }
         }
 
