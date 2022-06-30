@@ -1320,7 +1320,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
             {
                 FormatArguments args{};
-                args.push<uint32_t>(vehicleObj->getDisplayLength());
+                args.push<uint32_t>(StringManager::internalLengthToComma1DP(vehicleObj->getLength()));
                 buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_length, &args);
             }
 
@@ -1549,7 +1549,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 pos.y += kVehicleDetailsLineHeight;
                 FormatArguments args = {};
                 string_id str = StringIds::vehicle_length;
-                args.push<uint32_t>(head->getVehicleTotalDisplayLength());
+                args.push<uint32_t>(StringManager::internalLengthToComma1DP(head->getVehicleTotalLength()));
                 if (train.veh2->mode == TransportMode::rail && head->getCarCount() > 1)
                 {
                     str = StringIds::vehicle_car_count_and_length;

@@ -55,7 +55,7 @@ namespace OpenLoco
         }
         {
             FormatArguments args{};
-            args.push<uint32_t>(getDisplayLength());
+            args.push<uint32_t>(StringManager::internalLengthToComma1DP(getLength()));
             Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_length, &args);
             rowPosition.y += descriptionRowHeight;
         }
@@ -382,11 +382,5 @@ namespace OpenLoco
             length += bodySprites[unk].bogey_position * 2;
         }
         return length;
-    }
-
-    float VehicleObject::getDisplayLength() const
-    {
-        return (float)getLength() / 4 / 32 * 100;
-        ;
     }
 }

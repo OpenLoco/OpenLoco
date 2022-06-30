@@ -130,4 +130,5 @@ namespace OpenLoco::StringManager
     string_id toTownName(string_id stringId);
     string_id fromTownName(string_id stringId);
     std::pair<string_id, string_id> monthToString(MonthId month);
+    int32_t internalLengthToComma1DP(const int32_t length);
 }

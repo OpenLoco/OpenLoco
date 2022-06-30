@@ -345,7 +345,6 @@ namespace OpenLoco::Vehicles
         void applyBreakdownToTrain();
         void sub_4AF7A4();
         uint32_t getVehicleTotalLength() const;
-        float getVehicleTotalDisplayLength() const;
 
     private:
         void updateDrivingSounds();

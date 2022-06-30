@@ -248,7 +248,6 @@ namespace OpenLoco
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();
         uint32_t getLength() const;
-        float getDisplayLength() const;
     };
 #pragma pack(pop)
     static_assert(sizeof(VehicleObject) == 0x15E);

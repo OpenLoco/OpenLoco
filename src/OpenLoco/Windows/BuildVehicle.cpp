@@ -1035,7 +1035,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         {
             FormatArguments args{};
-            args.push<uint32_t>(vehicleObj->getDisplayLength());
+            args.push<uint32_t>(StringManager::internalLengthToComma1DP(vehicleObj->getLength()));
             buffer = StringManager::formatString(buffer, StringIds::stats_length, &args);
         }
         {

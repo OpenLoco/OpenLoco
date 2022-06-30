@@ -334,11 +334,6 @@ namespace OpenLoco::Vehicles
         return totalLength;
     }
 
-    float VehicleHead::getVehicleTotalDisplayLength() const
-    {
-        return (float)getVehicleTotalLength() / 4 / 32 * 100;
-    }
-
     uint32_t VehicleHead::getCarCount() const
     {
         Vehicle train(head);
