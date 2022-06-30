@@ -1,4 +1,4 @@
-22.05.1+ (???)
+22.06 (2022-06-30)
 ------------------------------------------------------------------------
 - Feature: [#1273] Added option to toggle visibility of cash pop-ups.
 - Feature: [#1433] For tracked vehicles, show the length in the vehicle details window and object selection.
