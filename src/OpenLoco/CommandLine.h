@@ -19,7 +19,7 @@ namespace OpenLoco
 
     struct CommandLineOptions
     {
-        CommandLineAction action;
+        CommandLineAction action = CommandLineAction::none;
         std::string address;
         std::string path;
         std::optional<int32_t> ticks;
