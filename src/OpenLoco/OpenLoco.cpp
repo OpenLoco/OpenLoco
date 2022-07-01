@@ -264,9 +264,9 @@ namespace OpenLoco
         call(0x004062D1); // calls getTime then sub_4062E0 unused Dead code
     }
 
-    static void sub_406417()
+    static void sub_406417(void* ptr)
     {
-        ((void (*)())0x00406417)();
+        ((void (*)(void*))0x00406417)(ptr);
     }
 
     static void sub_40567E()
@@ -1171,7 +1171,7 @@ namespace OpenLoco
         CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 #endif
         sub_4062D1();
-        sub_406417();
+        sub_406417(nullptr);
 
 #ifdef _READ_REGISTRY_
         constexpr auto INSTALL_REG_KEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{77F45E76-E897-42CA-A9FE-5F56817D875C}";
