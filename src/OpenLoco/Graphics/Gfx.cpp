@@ -961,21 +961,21 @@ namespace OpenLoco::Gfx
         const char* ptr = buffer;
         while (true)
         {
-            ptr++;
-            if (*ptr == '\0')
-                return ++ptr;
+            const auto chr = *ptr++;
+            if (chr == '\0')
+                return ptr;
 
-            if (*ptr >= ' ')
+            if (chr >= ' ')
                 continue;
 
-            if (*ptr < ControlCodes::newline)
+            if (chr < ControlCodes::newline)
             {
                 // Skip argument
                 ptr++;
                 continue;
             }
 
-            if (*ptr <= ControlCodes::window_colour_4)
+            if (chr <= ControlCodes::window_colour_4)
                 continue;
 
             // Skip arguments
