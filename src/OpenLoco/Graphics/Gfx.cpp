@@ -1340,6 +1340,55 @@ namespace OpenLoco::Gfx
 
     std::pair<uint16_t, uint16_t> wrapString(const char* buffer, uint16_t stringWidth)
     {
+        std::vector<std::string> wrap;
+        auto font = *_currentFontSpriteBase;
+        auto maxWidth = 0;
+
+        for (auto* ptr = buffer; *ptr != '\0'; ++ptr)
+        {
+            auto* startLine = ptr;
+            auto lineWidth = 0;
+            auto lastWordLineWith = lineWidth;
+            const char* wordStart = nullptr;
+            if (*ptr != ' ')
+            {
+                wordStart = ptr;
+            }
+            switch (*ptr)
+            {
+                case ControlCodes::newline:
+                    std::string line;
+                    line.assign(startLine, startLine - ptr);
+                    wrap.push_back(line);
+                    maxWidth = std::max(maxWidth, lineWidth);
+                    break;
+                case ControlCodes::move_x:
+                    lineWidth = *ptr++;
+                    break;
+                case ControlCodes::font_small:
+                    font = Font::small;
+                    break;
+                case ControlCodes::font_large:
+                    font = Font::large;
+                    break;
+                case ControlCodes::font_bold:
+                    font = Font::medium_bold;
+                    break;
+                case ControlCodes::font_regular:
+                    font = Font::medium_normal;
+                    break;
+                case ControlCodes::inline_sprite_str:
+                    uint32_t image = *reinterpret_cast<const uint32_t*>(ptr);
+                    ImageId imageId{ image & 0x7FFFF };
+                    auto* el = Gfx::getG1Element(imageId.getIndex());
+                    if (el != nullptr)
+                    {
+                        potentialWidth += el->width;
+                    }
+                    ptr += 4;
+                    break;
+            }
+        }
         // gfx_wrap_string
         registers regs;
         regs.esi = X86Pointer(buffer);
