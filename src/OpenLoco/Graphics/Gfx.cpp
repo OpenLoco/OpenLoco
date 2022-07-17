@@ -1030,7 +1030,7 @@ namespace OpenLoco::Gfx
         Ui::Point point = { x, y };
         const char* ptr = buffer;
 
-        for (auto i = 0; ptr != nullptr && i <= breakCount; i++)
+        for (auto i = 0; ptr != nullptr && i < breakCount; i++)
         {
             Gfx::drawString(context, point.x, point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
             ptr = advanceToNextLine(ptr);
@@ -1289,7 +1289,7 @@ namespace OpenLoco::Gfx
         Ui::Point point = origin;
         const char* ptr = buffer;
 
-        for (auto i = 0; ptr != nullptr && i <= breakCount; i++)
+        for (auto i = 0; ptr != nullptr && i < breakCount; i++)
         {
             uint16_t lineWidth = getStringWidth(ptr);
 
@@ -1338,64 +1338,99 @@ namespace OpenLoco::Gfx
         return regs.cx;
     }
 
-    std::pair<uint16_t, uint16_t> wrapString(const char* buffer, uint16_t stringWidth)
+    std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth)
     {
-        std::vector<std::string> wrap;
+        std::vector<const char*> wrap;
         auto font = *_currentFontSpriteBase;
-        auto maxWidth = 0;
+        uint16_t maxWidth = 0;
 
-        for (auto* ptr = buffer; *ptr != '\0'; ++ptr)
+        for (auto* ptr = buffer; *ptr != '\0';)
         {
             auto* startLine = ptr;
-            auto lineWidth = 0;
+            uint16_t lineWidth = 0;
             auto lastWordLineWith = lineWidth;
-            const char* wordStart = nullptr;
-            if (*ptr != ' ')
+            char* wordStart = ptr;
+            for (; *ptr != '\0' && lineWidth < stringWidth; ++ptr)
             {
-                wordStart = ptr;
-            }
-            switch (*ptr)
-            {
-                case ControlCodes::newline:
-                    std::string line;
-                    line.assign(startLine, startLine - ptr);
-                    wrap.push_back(line);
-                    maxWidth = std::max(maxWidth, lineWidth);
-                    break;
-                case ControlCodes::move_x:
-                    lineWidth = *ptr++;
-                    break;
-                case ControlCodes::font_small:
-                    font = Font::small;
-                    break;
-                case ControlCodes::font_large:
-                    font = Font::large;
-                    break;
-                case ControlCodes::font_bold:
-                    font = Font::medium_bold;
-                    break;
-                case ControlCodes::font_regular:
-                    font = Font::medium_normal;
-                    break;
-                case ControlCodes::inline_sprite_str:
-                    uint32_t image = *reinterpret_cast<const uint32_t*>(ptr);
-                    ImageId imageId{ image & 0x7FFFF };
-                    auto* el = Gfx::getG1Element(imageId.getIndex());
-                    if (el != nullptr)
+                bool endLine = false;
+                if (*ptr == ' ')
+                {
+                    wordStart = ptr;
+                    lastWordLineWith = lineWidth;
+                }
+                switch (*ptr)
+                {
+                    case ControlCodes::newline:
                     {
-                        potentialWidth += el->width;
+                        *ptr = '\0';
+                        wrap.push_back(startLine);
+                        ptr++;
+                        maxWidth = std::max(maxWidth, lineWidth);
+                        endLine = true;
+                        break;
                     }
-                    ptr += 4;
+                    case ControlCodes::move_x:
+                        lineWidth = *ptr++;
+                        break;
+                    case ControlCodes::font_small:
+                        font = Font::small;
+                        break;
+                    case ControlCodes::font_large:
+                        font = Font::large;
+                        break;
+                    case ControlCodes::font_bold:
+                        font = Font::medium_bold;
+                        break;
+                    case ControlCodes::font_regular:
+                        font = Font::medium_normal;
+                        break;
+                    case ControlCodes::inline_sprite_str:
+                    {
+                        uint32_t image = *reinterpret_cast<const uint32_t*>(ptr);
+                        ImageId imageId{ image & 0x7FFFF };
+                        auto* el = Gfx::getG1Element(imageId.getIndex());
+                        if (el != nullptr)
+                        {
+                            lineWidth += el->width;
+                        }
+                        ptr += 4;
+                        break;
+                    }
+                    default:
+                        if (*ptr > 32)
+                        {
+                            lineWidth += _characterWidths[font + (*ptr - 32)];
+                        }
+                        break;
+                }
+                if (endLine)
+                {
                     break;
+                }
+            }
+            if (lineWidth >= stringWidth || *ptr == '\0')
+            {
+                if (startLine == wordStart)
+                {
+                    wrap.push_back(startLine);
+                    maxWidth = std::max(maxWidth, lineWidth);
+                }
+                else
+                {
+                    wrap.push_back(startLine);
+                    maxWidth = std::max(maxWidth, lastWordLineWith);
+                    *wordStart = '\0';
+                    ptr = wordStart + 1;
+                }
             }
         }
         // gfx_wrap_string
-        registers regs;
-        regs.esi = X86Pointer(buffer);
-        regs.di = stringWidth;
-        call(0x00495301, regs);
+        // registers regs;
+        // regs.esi = X86Pointer(buffer);
+        // regs.di = stringWidth;
+        // call(0x00495301, regs);
 
-        return std::make_pair(regs.cx, regs.di);
+        return std::make_pair(maxWidth, static_cast<uint16_t>(wrap.size()));
     }
 
     // 0x004474BA
