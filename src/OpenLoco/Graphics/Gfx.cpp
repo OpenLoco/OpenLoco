@@ -1015,7 +1015,7 @@ namespace OpenLoco::Gfx
 
         _currentFontSpriteBase = Font::medium_bold;
         auto wrapResult = wrapString(buffer, width);
-        auto breakCount = wrapResult.second;
+        auto breakCount = wrapResult.second + 1;
 
         // wrapString might change the font due to formatting codes
         uint16_t lineHeight = 0; // _112D404
@@ -1274,7 +1274,7 @@ namespace OpenLoco::Gfx
 
         _currentFontSpriteBase = Font::medium_bold;
         auto wrapResult = wrapString(buffer, width);
-        auto breakCount = wrapResult.second;
+        auto breakCount = wrapResult.second + 1;
 
         // wrapString might change the font due to formatting codes
         uint16_t lineHeight = 0; // _112D404
@@ -1338,6 +1338,9 @@ namespace OpenLoco::Gfx
         return regs.cx;
     }
 
+    // 0x00495301
+    // Note: Returned break count is -1. TODO: Refactor out this -1.
+    // @return maxWidth @<cx> (breakCount-1) @<di>
     std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth)
     {
         std::vector<const char*> wrap;
@@ -1349,68 +1352,87 @@ namespace OpenLoco::Gfx
             auto* startLine = ptr;
             uint16_t lineWidth = 0;
             auto lastWordLineWith = lineWidth;
-            char* wordStart = ptr;
+            auto* wordStart = ptr;
             for (; *ptr != '\0' && lineWidth < stringWidth; ++ptr)
             {
-                bool endLine = false;
-                if (*ptr == ' ')
+                if (*ptr >= ControlCodes::noArgBegin && *ptr < ControlCodes::noArgEnd)
                 {
-                    wordStart = ptr;
-                    lastWordLineWith = lineWidth;
-                }
-                switch (*ptr)
-                {
-                    case ControlCodes::newline:
+                    bool forceEndl = false;
+                    switch (*ptr)
                     {
-                        *ptr = '\0';
-                        wrap.push_back(startLine);
-                        ptr++;
-                        maxWidth = std::max(maxWidth, lineWidth);
-                        endLine = true;
+                        case ControlCodes::newline:
+                        {
+                            *ptr = '\0';
+                            forceEndl = true;
+                            ++ptr; // Skip over '\0' when forcing a new line
+                            wrap.push_back(startLine);
+                            maxWidth = std::max(maxWidth, lineWidth);
+                            break;
+                        }
+                        case ControlCodes::font_small:
+                            font = Font::small;
+                            break;
+                        case ControlCodes::font_large:
+                            font = Font::large;
+                            break;
+                        case ControlCodes::font_bold:
+                            font = Font::medium_bold;
+                            break;
+                        case ControlCodes::font_regular:
+                            font = Font::medium_normal;
+                            break;
+                    }
+                    if (forceEndl)
+                    {
                         break;
                     }
-                    case ControlCodes::move_x:
-                        lineWidth = *ptr++;
-                        break;
-                    case ControlCodes::font_small:
-                        font = Font::small;
-                        break;
-                    case ControlCodes::font_large:
-                        font = Font::large;
-                        break;
-                    case ControlCodes::font_bold:
-                        font = Font::medium_bold;
-                        break;
-                    case ControlCodes::font_regular:
-                        font = Font::medium_normal;
-                        break;
-                    case ControlCodes::inline_sprite_str:
-                    {
-                        uint32_t image = *reinterpret_cast<const uint32_t*>(ptr);
-                        ImageId imageId{ image & 0x7FFFF };
-                        auto* el = Gfx::getG1Element(imageId.getIndex());
-                        if (el != nullptr)
-                        {
-                            lineWidth += el->width;
-                        }
-                        ptr += 4;
-                        break;
-                    }
-                    default:
-                        if (*ptr > 32)
-                        {
-                            lineWidth += _characterWidths[font + (*ptr - 32)];
-                        }
-                        break;
                 }
-                if (endLine)
+                else if (*ptr >= ControlCodes::oneArgBegin && *ptr < ControlCodes::oneArgEnd)
                 {
-                    break;
+                    switch (*ptr)
+                    {
+                        case ControlCodes::move_x:
+                            lineWidth = static_cast<uint8_t>(ptr[1]);
+                            break;
+                    }
+                    ptr += 1;
+                }
+                else if (*ptr >= ControlCodes::twoArgBegin && *ptr < ControlCodes::twoArgEnd)
+                {
+                    ptr += 2;
+                }
+                else if (*ptr >= ControlCodes::fourArgBegin && *ptr < ControlCodes::fourArgEnd)
+                {
+                    switch (*ptr)
+                    {
+
+                        case ControlCodes::inline_sprite_str:
+                        {
+                            uint32_t image = *reinterpret_cast<const uint32_t*>(ptr);
+                            ImageId imageId{ image & 0x7FFFF };
+                            auto* el = Gfx::getG1Element(imageId.getIndex());
+                            if (el != nullptr)
+                            {
+                                lineWidth += el->width;
+                            }
+                            break;
+                        }
+                    }
+                    ptr += 4;
+                }
+                else
+                {
+                    if (*ptr == ' ')
+                    {
+                        wordStart = ptr;
+                        lastWordLineWith = lineWidth;
+                    }
+                    lineWidth += _characterWidths[font + (static_cast<uint8_t>(*ptr) - 32)];
                 }
             }
             if (lineWidth >= stringWidth || *ptr == '\0')
             {
-                if (startLine == wordStart)
+                if (startLine == wordStart || (*ptr == '\0' && lineWidth < stringWidth))
                 {
                     wrap.push_back(startLine);
                     maxWidth = std::max(maxWidth, lineWidth);
@@ -1424,13 +1446,8 @@ namespace OpenLoco::Gfx
                 }
             }
         }
-        // gfx_wrap_string
-        // registers regs;
-        // regs.esi = X86Pointer(buffer);
-        // regs.di = stringWidth;
-        // call(0x00495301, regs);
 
-        return std::make_pair(maxWidth, static_cast<uint16_t>(wrap.size()));
+        return std::make_pair(maxWidth, static_cast<uint16_t>(wrap.size()) - 1);
     }
 
     // 0x004474BA
