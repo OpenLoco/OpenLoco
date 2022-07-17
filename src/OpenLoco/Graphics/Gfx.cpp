@@ -1343,7 +1343,8 @@ namespace OpenLoco::Gfx
     // @return maxWidth @<cx> (breakCount-1) @<di>
     std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth)
     {
-        std::vector<const char*> wrap;
+        // std::vector<const char*> wrap; TODO: refactor to return pointers to line starts
+        uint16_t wrapCount = 0;
         auto font = *_currentFontSpriteBase;
         uint16_t maxWidth = 0;
 
@@ -1365,7 +1366,8 @@ namespace OpenLoco::Gfx
                             *ptr = '\0';
                             forceEndl = true;
                             ++ptr; // Skip over '\0' when forcing a new line
-                            wrap.push_back(startLine);
+                            wrapCount++;
+                            // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
                             maxWidth = std::max(maxWidth, lineWidth);
                             break;
                         }
@@ -1434,20 +1436,21 @@ namespace OpenLoco::Gfx
             {
                 if (startLine == wordStart || (*ptr == '\0' && lineWidth < stringWidth))
                 {
-                    wrap.push_back(startLine);
+                    // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
                     maxWidth = std::max(maxWidth, lineWidth);
                 }
                 else
                 {
-                    wrap.push_back(startLine);
+                    // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
                     maxWidth = std::max(maxWidth, lastWordLineWith);
                     *wordStart = '\0';
                     ptr = wordStart + 1;
                 }
+                wrapCount++;
             }
         }
 
-        return std::make_pair(maxWidth, static_cast<uint16_t>(wrap.size()) - 1);
+        return std::make_pair(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0));
     }
 
     // 0x004474BA
