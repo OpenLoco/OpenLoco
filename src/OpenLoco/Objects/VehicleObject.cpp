@@ -184,14 +184,14 @@ namespace OpenLoco
     // 0x004B8B23
     bool VehicleObject::validate() const
     {
-        //if (cost_index > 32)
-        //{
-        //    return false;
-        //}
-        //if (run_cost_index > 32)
-        //{
-        //    return false;
-        //}
+        if (cost_index > 32)
+        {
+            return false;
+        }
+        if (run_cost_index > 32)
+        {
+            return false;
+        }
 
         if (cost_factor <= 0)
         {
@@ -229,10 +229,10 @@ namespace OpenLoco
             return false;
         }
 
-        //if (rack_speed > speed)
-        //{
-        //    return false;
-        //}
+        if (rack_speed > speed)
+        {
+            return false;
+        }
 
         for (const auto& bodySprite : bodySprites)
         {
