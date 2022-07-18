@@ -1,6 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
+#include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../LastGameOptionManager.h"
@@ -26,8 +27,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     static const uint8_t rowHeight = 22; // CJK: 22
 
     static loco_global<uint16_t, 0x00525FB2> seaLevel;
-
-    static loco_global<uint8_t, 0x00526247> industryFlags;
 
     static constexpr size_t maxLandObjects = ObjectManager::getMaxObjects(ObjectType::land);
 
@@ -1193,12 +1192,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::check_allow_industries_close_down:
-                    *industryFlags ^= Scenario::IndustryFlags::disallowIndustriesCloseDown;
+                    IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesCloseDown);
                     window->invalidate();
                     break;
 
                 case widx::check_allow_industries_start_up:
-                    *industryFlags ^= Scenario::IndustryFlags::disallowIndustriesStartUp;
+                    IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesStartUp);
                     window->invalidate();
                     break;
             }
@@ -1212,9 +1211,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
 
             window->activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
-            if (!(industryFlags & Scenario::IndustryFlags::disallowIndustriesCloseDown))
+            if (!(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown))
                 window->activatedWidgets |= 1 << widx::check_allow_industries_close_down;
-            if (!(industryFlags & Scenario::IndustryFlags::disallowIndustriesStartUp))
+            if (!(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesStartUp))
                 window->activatedWidgets |= 1 << widx::check_allow_industries_start_up;
         }
 

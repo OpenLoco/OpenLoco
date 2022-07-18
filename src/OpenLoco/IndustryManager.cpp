@@ -13,6 +13,12 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::IndustryManager
 {
     static auto& rawIndustries() { return getGameState().industries; }
+    uint8_t getFlags() { return getGameState().industryFlags; }
+
+    void setFlags(const uint8_t flags)
+    {
+        getGameState().industryFlags = flags;
+    }
 
     // 0x00453214
     void reset()
