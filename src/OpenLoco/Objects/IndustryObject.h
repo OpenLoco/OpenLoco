@@ -18,6 +18,8 @@ namespace OpenLoco
         constexpr uint32_t mines = 1 << 14;
         constexpr uint32_t can_be_founded_by_user = 1 << 16;
         constexpr uint32_t requires_all_cargo = 1 << 17;
+        constexpr uint32_t unk18 = 1 << 18;
+        constexpr uint32_t unk19 = 1 << 19;
         constexpr uint32_t flag_28 = 1 << 28;
     }
 #pragma pack(push, 1)

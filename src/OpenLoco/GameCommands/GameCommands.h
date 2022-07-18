@@ -1244,11 +1244,11 @@ namespace OpenLoco::GameCommands
     };
 
     // Remove industry
-    inline bool do_48(uint8_t flags, uint8_t industryId)
+    inline bool do_48(uint8_t flags, IndustryId industryId)
     {
         registers regs;
         regs.bl = flags;
-        regs.dx = industryId;
+        regs.dx = enumValue(industryId);
         return doCommand(GameCommand::removeIndustry, regs) != FAILURE;
     }
 

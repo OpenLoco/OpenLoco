@@ -1,9 +1,11 @@
 #include "Industry.h"
+#include "GameCommands/GameCommands.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/TileManager.h"
 #include "Math/Bound.hpp"
+#include "MessageManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
@@ -244,6 +246,50 @@ namespace OpenLoco
                 var_19F[i] = Math::Bound::add(remainingCargo, var_19F[i]);
             }
         }
+    }
+
+    // 0x00453868
+    void Industry::updateMonthly()
+    {
+        if (flags & IndustryFlags::flag_01)
+        {
+            return;
+        }
+
+        if (flags & IndustryFlags::closingDown && var_17D[0] == 0 && var_17D[1] == 0)
+        {
+            GameCommands::do_48(GameCommands::Flags::apply, id());
+            return;
+        }
+        const auto* indObj = getObject();
+        if (under_construction == 0xFF
+            && !(flags & IndustryFlags::closingDown)
+            && indObj->required_cargo_type[0] == 0xFF)
+        {
+            if (indObj->flags & IndustryObjectFlags::unk18
+                && produced_cargo_transported[0] > 70
+                && gPrng().randNext(31) == 0
+                && var_179[0] < 100
+                && var_179[1] < 100)
+            {
+                var_179[0] = std::min(100, var_179[0] * 2);
+                var_179[1] = std::min(100, var_179[1] * 2);
+                MessageManager::post(MessageType::industryProductionUp, CompanyId::null, enumValue(id()), 0xFFFF);
+            }
+            else if (indObj->flags & IndustryObjectFlags::unk19
+                && ((produced_cargo_transported[0] > 50
+                    && var_179[0] > 20
+                    && gPrng().randNext(31) == 0)
+                    || (produced_cargo_transported[0] <= 50
+                        && var_179[0] > 10
+                        && gPrng().randNext(15) == 0)))
+            {
+                var_179[0] /= 2;
+                var_179[1] /= 2;
+                MessageManager::post(MessageType::industryProductionDown, CompanyId::null, enumValue(id()), 0xFFFF);
+            }
+        }
+        // 0x00453A3C
     }
 
     // 0x0045329B

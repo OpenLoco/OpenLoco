@@ -29,9 +29,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
     static loco_global<currency32_t, 0x00E0C39C> dword_E0C39C;
     static loco_global<bool, 0x00E0C3D9> _industryGhostPlaced;
     static loco_global<Map::Pos2, 0x00E0C3C2> _industryGhostPos;
-    static loco_global<uint8_t, 0x00E0C3C9> _industryLastPlacedId;
+    static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
     static loco_global<uint8_t, 0x00E0C3DA> _industryGhostType;
-    static loco_global<uint8_t, 0x00E0C3DB> _industryGhostId;
+    static loco_global<IndustryId, 0x00E0C3DB> _industryGhostId;
     static loco_global<Utility::prng, 0x00525E20> _prng;
     static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
     static loco_global<uint32_t, 0x00E0C398> _dword_E0C398;

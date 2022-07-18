@@ -70,10 +70,27 @@ namespace OpenLoco::IndustryManager
         }
     }
 
+    // 0x00459659
+    static void tryCreateNewIndustriesMonthly()
+    {
+        call(0x00459659);
+    }
+
     // 0x0045383B
     void updateMonthly()
     {
-        call(0x0045383B);
+        if (Game::hasFlags(1u << 0))
+        {
+            CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+            tryCreateNewIndustriesMonthly();
+
+            for (auto& industry : industries())
+            {
+                industry.updateMonthly();
+            }
+
+            Ui::WindowManager::invalidate(Ui::WindowType::industry);
+        }
     }
 
     // 0x00459D2D
