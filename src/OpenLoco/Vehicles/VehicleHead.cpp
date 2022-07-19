@@ -2644,8 +2644,8 @@ namespace OpenLoco::Vehicles
                         continue;
                     }
 
-                    industry->var_199[i] = Math::Bound::add(industry->var_199[i], cargo.qty);
-                    industry->var_18D[i] = Math::Bound::add(industry->var_18D[i], cargo.qty);
+                    industry->receivedCargoQuantityDailyTotal[i] = Math::Bound::add(industry->receivedCargoQuantityDailyTotal[i], cargo.qty);
+                    industry->receivedCargoQuantityMonthlyTotal[i] = Math::Bound::add(industry->receivedCargoQuantityMonthlyTotal[i], cargo.qty);
                 }
 
                 if (!(industry->history_min_production[0] & (1ULL << cargo.type)))

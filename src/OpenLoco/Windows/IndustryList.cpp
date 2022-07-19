@@ -248,13 +248,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if (industryObj->producesCargo())
             {
-                productionTransported = industry.produced_cargo_transported[0];
+                productionTransported = industry.producedCargoPercentTransportedPreviousMonth[0];
                 if (industryObj->produced_cargo_type[1] != 0xFF)
                 {
-                    productionTransported = industry.produced_cargo_transported[1];
+                    productionTransported = industry.producedCargoPercentTransportedPreviousMonth[1];
                     if (industryObj->produced_cargo_type[0] != 0xFF)
                     {
-                        productionTransported += industry.produced_cargo_transported[0];
+                        productionTransported += industry.producedCargoPercentTransportedPreviousMonth[0];
                         productionTransported /= 2;
                     }
                 }
