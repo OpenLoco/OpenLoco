@@ -76,7 +76,7 @@ namespace OpenLoco
         uint8_t var_F0;
         uint8_t var_F1;
         uint8_t var_F2;
-        uint8_t pad_F3;
+        uint8_t var_F3;
 
         bool requiresCargo() const;
         bool producesCargo() const;

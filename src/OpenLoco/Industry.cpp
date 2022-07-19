@@ -1,5 +1,7 @@
 #include "Industry.h"
+#include "Date.h"
 #include "GameCommands/GameCommands.h"
+#include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
@@ -261,6 +263,7 @@ namespace OpenLoco
             GameCommands::do_48(GameCommands::Flags::apply, id());
             return;
         }
+        bool hasEvent = false;
         const auto* indObj = getObject();
         if (under_construction == 0xFF
             && !(flags & IndustryFlags::closingDown)
@@ -275,21 +278,83 @@ namespace OpenLoco
                 var_179[0] = std::min(100, var_179[0] * 2);
                 var_179[1] = std::min(100, var_179[1] * 2);
                 MessageManager::post(MessageType::industryProductionUp, CompanyId::null, enumValue(id()), 0xFFFF);
+                hasEvent = true;
             }
-            else if (indObj->flags & IndustryObjectFlags::unk19
-                && ((produced_cargo_transported[0] > 50
-                    && var_179[0] > 20
-                    && gPrng().randNext(31) == 0)
-                    || (produced_cargo_transported[0] <= 50
-                        && var_179[0] > 10
-                        && gPrng().randNext(15) == 0)))
+            else if (indObj->flags & IndustryObjectFlags::unk19 && ((produced_cargo_transported[0] > 50 && var_179[0] > 20 && gPrng().randNext(31) == 0) || (produced_cargo_transported[0] <= 50 && var_179[0] > 10 && gPrng().randNext(15) == 0)))
             {
                 var_179[0] /= 2;
                 var_179[1] /= 2;
                 MessageManager::post(MessageType::industryProductionDown, CompanyId::null, enumValue(id()), 0xFFFF);
+                hasEvent = true;
             }
         }
-        // 0x00453A3C
+        if (!hasEvent
+            && !(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown)
+            && under_construction == 0xFF
+            && !(flags & IndustryFlags::closingDown))
+        {
+            if ((getCurrentYear() > indObj->obsoleteYear
+                 && prng.randNext(0xFFFF) < 102)
+                || (indObj->var_F3 != 0
+                    && indObj->var_F3 > prng.randNext(0xFFFF)))
+            {
+                flags |= IndustryFlags::closingDown;
+                var_179[0] = 0;
+                var_179[1] = 0;
+                MessageManager::post(MessageType::industryClosingDown, CompanyId::null, enumValue(id()), 0xFFFF);
+            }
+        }
+
+        if (historySize[0] == std::size(history_1))
+        {
+            std::rotate(std::begin(history_1), std::begin(history_1) + 1, std::end(history_1));
+        }
+        else
+        {
+            historySize[0]++;
+        }
+        const auto newValue = std::min<uint32_t>(var_185[0], 12750u) / 50;
+        history_1[historySize[0] - 1] = newValue;
+
+        if (historySize[1] == std::size(history_2))
+        {
+            std::rotate(std::begin(history_2), std::begin(history_2) + 1, std::end(history_2));
+        }
+        else
+        {
+            historySize[1]++;
+        }
+        const auto newValue2 = std::min<uint32_t>(var_185[1], 12750u) / 50;
+        history_2[historySize[1] - 1] = newValue2;
+
+        produced_cargo_quantity[0] = var_185[0];
+        var_185[0] = 0;
+        produced_cargo_max[0] = var_19F[0];
+        var_19F[0] = 0;
+        auto transported = std::min(produced_cargo_quantity[0], produced_cargo_max[0]);
+        if (produced_cargo_quantity[0] != 0)
+        {
+            transported = (transported * 100) / produced_cargo_quantity[0];
+        }
+        produced_cargo_transported[0] = transported;
+
+        produced_cargo_quantity[1] = var_185[1];
+        var_185[1] = 0;
+        produced_cargo_max[1] = var_19F[1];
+        var_19F[1] = 0;
+        auto transported2 = std::min(produced_cargo_quantity[1], produced_cargo_max[1]);
+        if (produced_cargo_quantity[1] != 0)
+        {
+            transported2 = (transported2 * 100) / produced_cargo_quantity[1];
+        }
+        produced_cargo_transported[1] = transported2;
+
+        required_cargo_quantity[0] = var_18D[0];
+        required_cargo_quantity[1] = var_18D[1];
+        required_cargo_quantity[2] = var_18D[2];
+        var_18D[0] = 0;
+        var_18D[1] = 0;
+        var_18D[2] = 0;
     }
 
     // 0x0045329B
