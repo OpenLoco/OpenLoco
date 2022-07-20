@@ -1404,7 +1404,6 @@ namespace OpenLoco::Gfx
                 {
                     switch (*ptr)
                     {
-
                         case ControlCodes::inline_sprite_str:
                         {
                             uint32_t image = *reinterpret_cast<const uint32_t*>(ptr);
