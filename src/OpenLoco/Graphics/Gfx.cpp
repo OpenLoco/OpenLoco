@@ -965,24 +965,21 @@ namespace OpenLoco::Gfx
             if (chr == '\0')
                 return ptr;
 
-            if (chr >= ' ')
-                continue;
-
-            if (chr < ControlCodes::newline)
+            if (chr >= ControlCodes::oneArgBegin && chr < ControlCodes::oneArgEnd)
             {
                 // Skip argument
                 ptr++;
-                continue;
             }
-
-            if (chr <= ControlCodes::window_colour_4)
-                continue;
-
-            // Skip arguments
-            ptr += 2;
-
-            if (*ptr == ControlCodes::inline_sprite_str)
+            else if (chr >= ControlCodes::twoArgBegin && chr < ControlCodes::twoArgEnd)
+            {
+                // Skip argument
                 ptr += 2;
+            }
+            else if (chr >= ControlCodes::fourArgBegin && chr < ControlCodes::fourArgEnd)
+            {
+                // Skip argument
+                ptr += 4;
+            }
         }
 
         return nullptr;
