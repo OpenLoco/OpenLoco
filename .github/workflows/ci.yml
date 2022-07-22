@@ -56,11 +56,55 @@ jobs:
           name: OpenLoco-${{ runner.os }}-Win32
           path: artifacts
           if-no-files-found: error
-  ubuntu:
-    name: Ubuntu i686
+  bionic32:
+    name: Ubuntu bionic i686
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: openloco/openloco:1-bionic32
+    container: openloco/openloco:2-bionic32
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [g++, clang++]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install GCC problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
+      - name: Build OpenLoco
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp -DPNG_LIBRARY=/usr/lib/i386-linux-gnu/libpng16.so -DPNG_PNG_INCLUDE_DIR=/usr/include -DZLIB_LIBRARY=/usr/lib/i386-linux-gnu/libz.so
+          ninja -k0
+  focal32:
+    name: Ubuntu focal i686
+    runs-on: ubuntu-latest
+    needs: check-code-formatting
+    container: openloco/openloco:2-focal32
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [g++, clang++]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install GCC problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
+      - name: Build OpenLoco
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp -DPNG_LIBRARY=/usr/lib/i386-linux-gnu/libpng16.so -DPNG_PNG_INCLUDE_DIR=/usr/include -DZLIB_LIBRARY=/usr/lib/i386-linux-gnu/libz.so
+          ninja -k0
+  jammy32:
+    name: Ubuntu jammy i686
+    runs-on: ubuntu-latest
+    needs: check-code-formatting
+    container: openloco/openloco:2-jammy32
     strategy:
       fail-fast: false
       matrix:
@@ -82,7 +126,7 @@ jobs:
     name: Fedora i686 MinGW32
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: openloco/openloco:1-mingw32
+    container: openloco/openloco:2-mingw32
     steps:
       - name: Checkout
         uses: actions/checkout@v3
