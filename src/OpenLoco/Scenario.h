@@ -19,7 +19,6 @@ namespace OpenLoco::Scenario
         constexpr uint16_t preferredOwnerName = (1 << 2);
     }
 
-
     namespace ObjectiveFlags
     {
         constexpr uint8_t beTopCompany = (1 << 0);
