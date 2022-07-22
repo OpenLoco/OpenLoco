@@ -4,7 +4,10 @@
 #include "GameState.h"
 #include "Interop/Interop.hpp"
 #include "Math/Vector.hpp"
+#include "Objects/BuildingObject.h"
 #include "Objects/IndustryObject.h"
+#include "Objects/ObjectManager.h"
+#include "OpenLoco.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 
@@ -68,6 +71,66 @@ namespace OpenLoco::IndustryManager
                 industry.updateDaily();
             }
         }
+    }
+
+    // 0x0047EA42
+    static uint8_t getMostCommonBuildingCargoType()
+    {
+        // First generate a count of all the different cargo based on what building could generate
+        std::array<uint32_t, 32> cargoCounts{};
+        for (size_t buildObjId = 0; buildObjId < ObjectManager::getMaxObjects(ObjectType::building); ++buildObjId)
+        {
+            const auto* buildObj = ObjectManager::get<BuildingObject>(buildObjId);
+            if (buildObj == nullptr)
+            {
+                continue;
+            }
+            if (!(buildObj->flags & BuildingObjectFlags::misc_building)
+                && buildObj->producedQuantity[0] != 0)
+            {
+                cargoCounts[buildObj->producedCargoType[0]]++;
+            }
+        }
+        // Then pick the most common
+        auto maxEl = std::max_element(std::begin(cargoCounts), std::end(cargoCounts));
+        if (*maxEl != 0)
+        {
+            return std::distance(std::begin(cargoCounts), maxEl);
+        }
+
+        // If none are common pick any valid cargo object
+        for (size_t cargoObjId = 0; cargoObjId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoObjId)
+        {
+            const auto* cargoObj = ObjectManager::get<CargoObject>(cargoObjId);
+            if (cargoObj == nullptr)
+            {
+                continue;
+            }
+            return cargoObjId;
+        }
+
+        // This should really be an error!
+        return 0;
+    }
+
+    // 0x0045960E
+    static bool canCargoTypeBeProducedInWorld(uint8_t cargoType)
+    {
+        if (cargoType == getMostCommonBuildingCargoType())
+        {
+            return true;
+        }
+
+        for (auto& industry : industries())
+        {
+            const auto* indObj = industry.getObject();
+            auto res = std::find(std::begin(indObj->produced_cargo_type), std::end(indObj->produced_cargo_type), cargoType);
+            if (res != std::end(indObj->produced_cargo_type))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // 0x00459659
