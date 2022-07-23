@@ -1,5 +1,6 @@
 #include "IndustryManager.h"
 #include "CompanyManager.h"
+#include "Date.h"
 #include "Game.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
@@ -133,10 +134,73 @@ namespace OpenLoco::IndustryManager
         return false;
     }
 
+    static bool canIndustryObjBeCreated(const IndustryObject& indObj)
+    {
+        if (getCurrentYear() < indObj.designedYear)
+        {
+            return false;
+        }
+
+        if (getCurrentYear() >= indObj.obsoleteYear)
+        {
+            return false;
+        }
+
+        // If industry is a self producer i.e. no requirements to produce
+        if (indObj.required_cargo_type[0] == 0xFF)
+        {
+            return true;
+        }
+
+        if (indObj.flags & IndustryObjectFlags::requires_all_cargo)
+        {
+            // All required cargo must be producable in world
+            for (auto i = 0; i < 3; ++i)
+            {
+                if (!canCargoTypeBeProducedInWorld(indObj.required_cargo_type[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else
+        {
+            // At least one required cargo must be producable in world
+            for (auto i = 0; i < 3; ++i)
+            {
+                if (canCargoTypeBeProducedInWorld(indObj.required_cargo_type[i]))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     // 0x00459659
     static void tryCreateNewIndustriesMonthly()
     {
-        call(0x00459659);
+        if (getFlags() & Flags::disallowIndustriesStartUp)
+        {
+            return;
+        }
+
+        for (size_t indObjId = 0; indObjId < ObjectManager::getMaxObjects(ObjectType::industry); ++indObjId)
+        {
+            auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
+            if (indObj == nullptr)
+            {
+                continue;
+            }
+
+            if (!canIndustryObjBeCreated(*indObj))
+            {
+                continue;
+            }
+
+            // 0x00459722
+        }
     }
 
     // 0x0045383B
