@@ -77,45 +77,43 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
 
 # Set some compiler features
 if (MSVC)
-    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} /W4")
+    list(APPEND COMMON_COMPILE_OPTIONS /W4)
 else ()
-    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter -Wtype-limits")
+    list(APPEND COMMON_COMPILE_OPTIONS -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter -Wtype-limits)
 endif ()
 
 if (STRICT)
     if (MSVC)
-        set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} /WX")
+        list(APPEND COMMON_COMPILE_OPTIONS /WX)
     else ()
-        set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -Werror")
+        list(APPEND COMMON_COMPILE_OPTIONS -Werror)
     endif ()
 endif ()
 
 if (NOT MSVC)
     # Poke some holes in -Wall:
-    set(COMMON_COMPILE_OPTIONS
-    "${COMMON_COMPILE_OPTIONS} \
-    -Wno-unknown-pragmas \
-    -Wno-unused-private-field \
-    ")
+    list(APPEND COMMON_COMPILE_OPTIONS
+    -Wno-unknown-pragmas
+    -Wno-unused-private-field
+    )
 
     # Set warnings common to supported compilers
-    set(COMMON_COMPILE_OPTIONS
-    "${COMMON_COMPILE_OPTIONS} \
-    -Waddress \
-    -Warray-bounds \
-    -Wchar-subscripts \
-    -Wenum-compare \
-    -Wformat \
-    -Wignored-qualifiers \
-    -Winit-self \
-    -Wmissing-declarations \
-    -Wnon-virtual-dtor \
-    -Wnull-dereference \
-    -Wstrict-aliasing \
-    -Wstrict-overflow=1 \
-    -Wundef \
-    -Wunreachable-code \
-    ")
+    list(APPEND COMMON_COMPILE_OPTIONS
+    -Waddress
+    -Warray-bounds
+    -Wchar-subscripts
+    -Wenum-compare
+    -Wformat
+    -Wignored-qualifiers
+    -Winit-self
+    -Wmissing-declarations
+    -Wnon-virtual-dtor
+    -Wnull-dereference
+    -Wstrict-aliasing
+    -Wstrict-overflow=1
+    -Wundef
+    -Wunreachable-code
+    )
 else ()
     # Disable the following warnings on MSVC
     #   4068: unknown pragma
@@ -129,20 +127,19 @@ else ()
     #   4221: nonstandard extension used : 'identifier' : cannot be initialized using address of automatic variable
     #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
     #   4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
-    set(COMMON_COMPILE_OPTIONS
-    "${COMMON_COMPILE_OPTIONS} \
-    /wd4068 \
-    /wd4091 \
-    /wd4100 \
-    /wd4132 \
-    /wd4200 \
-    /wd4201 \
-    /wd4204 \
-    /wd4206 \
-    /wd4221 \
-    /wd4244 \
-    /wd4245 \
-    ")
+    list(APPEND COMMON_COMPILE_OPTIONS
+    /wd4068
+    /wd4091
+    /wd4100
+    /wd4132
+    /wd4200
+    /wd4201
+    /wd4204
+    /wd4206
+    /wd4221
+    /wd4244
+    /wd4245
+    )
 endif ()
 
 set(OBJ_FORMAT "elf32-i386")
@@ -198,7 +195,7 @@ if (UNIX)
 endif (UNIX)
 
 set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
-set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -DDEBUG=${DEBUG_LEVEL}")
+list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
 
 # add source files
 file(GLOB_RECURSE OLOCO_SOURCES "src/*.cpp")
@@ -228,18 +225,19 @@ endfunction ()
 function (ADD_CHECK_CXX_FLAG _CXXFLAGS _CACHE_VAR _FLAG)
     CHECK_CXX_COMPILER_FLAG("${_FLAG}" "${_CACHE_VAR}")
     if (${_CACHE_VAR})
-        set(${_CXXFLAGS} "${_FLAG} ${${_CXXFLAGS}}" PARENT_SCOPE)
+        set(${_CXXFLAGS} "${_FLAG}" PARENT_SCOPE)
     else ()
         message(STATUS "Unsupported CXXFLAG: ${_FLAG}")
     endif ()
 endfunction ()
 
-ADD_CHECK_CXX_COMPILER_FLAG(COMMON_COMPILE_OPTIONS CXX_WARN_NON_VIRTUAL_DTOR -Wnon-virtual-dtor)
-ADD_CHECK_CXX_FLAG(COMMON_COMPILE_OPTIONS CXX_WNO_CLOBBERED -Wno-clobbered)
+ADD_CHECK_CXX_COMPILER_FLAG(CXX_WARN_NON_VIRTUAL_DTOR CXX_WARN_NON_VIRTUAL_DTOR_CACHE -Wnon-virtual-dtor)
+ADD_CHECK_CXX_FLAG(CXX_WNO_CLOBBERED CXX_WNO_CLOBBERED_CACHE -Wno-clobbered)
+list(APPEND COMMON_COMPILE_OPTIONS ${CXX_WARN_NON_VIRTUAL_DTOR})
+list(APPEND COMMON_COMPILE_OPTIONS ${CXX_WNO_CLOBBERED})
 
 # set necessary flags to compile code as is
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${TARGET_M} -std=gnu99 ${COMMON_COMPILE_OPTIONS} -Wimplicit")
-set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS}")
+list(APPEND COMMON_COMPILE_OPTIONS ${TARGET_M})
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
 
@@ -296,7 +294,7 @@ else ()
     endif ()
 endif ()
 
-target_compile_definitions(${PROJECT} PUBLIC ${COMMON_COMPILE_OPTIONS})
+target_compile_options(${PROJECT} PUBLIC ${COMMON_COMPILE_OPTIONS})
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT} Threads::Threads)
 target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
