@@ -75,10 +75,11 @@
     auto result = OpenLoco::Utility::toUtf16(user_dir.string());
     return result;
 }
-#endif // USE_BREAKPAD
 
 // Using non-null pipe name here lets breakpad try setting OOP crash handling
 constexpr const wchar_t* PipeName = L"openloco-bpad";
+
+#endif // USE_BREAKPAD
 
 CExceptionHandler crashInit()
 {
