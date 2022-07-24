@@ -57,7 +57,7 @@ jobs:
           path: artifacts
           if-no-files-found: error
   ubuntu:
-    name: Ubuntu ${{ matrix.distro }} i686
+    name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
     runs-on: ubuntu-latest
     needs: check-code-formatting
     container: openloco/openloco:2-${{ matrix.distro }}32
