@@ -303,7 +303,11 @@ add_subdirectory(src/Thirdparty/yaml-cpp)
 
 target_compile_options(${PROJECT} PUBLIC ${COMMON_COMPILE_OPTIONS})
 # compilers often get confused about our memory access patterns, disable some of the warnings
-target_compile_options(${PROJECT} PUBLIC -Wno-stringop-overflow -Wno-stringop-overread -Wno-array-bounds -Wno-stringop-truncation)
+target_compile_options(${PROJECT} PUBLIC -Wno-array-bounds)
+# clang does not understand following options and errors with -Wunknown-warning-option
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+    target_compile_options(${PROJECT} PUBLIC -Wno-stringop-overflow -Wno-stringop-overread -Wno-stringop-truncation)
+endif ()
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT} Threads::Threads)
