@@ -332,6 +332,9 @@ endif()
 
 if (MINGW)
     target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
+    # someone at yaml-cpp forgot to expose this as a target definition:
+    # https://github.com/jbeder/yaml-cpp/blob/c73ee34704c512ebe915b283645aefa9f424a22f/CMakeLists.txt#L49
+    target_compile_definitions(${PROJECT} PRIVATE YAML_CPP_STATIC_DEFINE)
     target_link_libraries(${PROJECT} imm32 winmm version)
     # newer GCC gets confused about our use of hardcoded address shenanigans
 else ()
