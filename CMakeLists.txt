@@ -388,10 +388,11 @@ endif ()
 # - GCC 8 does not support -Wno-pragma-once-outside-header
 # - Other compilers status unknown
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-	add_library(${PROJECT}-headers-check OBJECT ${OLOCO_HEADERS})
+    add_library(${PROJECT}-headers-check OBJECT ${OLOCO_HEADERS})
     set_target_properties(${PROJECT}-headers-check PROPERTIES LINKER_LANGUAGE CXX)
-	set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
-    add_definitions("-x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable")
+    set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
+    target_compile_options(${PROJECT}-headers-check PUBLIC ${COMMON_COMPILE_OPTIONS})
+    target_compile_options(${PROJECT}-headers-check PUBLIC -x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable)
 else ()
     # Dummy target to ease invocation
     add_custom_target(${PROJECT}-headers-check)
