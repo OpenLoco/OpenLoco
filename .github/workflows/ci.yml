@@ -125,8 +125,8 @@ jobs:
           mkdir build
           cd build
           export LD_LIBRARY_PATH=/usr/osxcross/lib:$LD_LIBRARY_PATH
-          cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/osxcross_toolchain.cmake -DVCPKG_TARGET_TRIPLET=x86-osx
-          make -j$(getconf _NPROCESSORS_ONLN)
+          cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/osxcross_toolchain.cmake -DVCPKG_TARGET_TRIPLET=x86-osx -G Ninja
+          ninja -k0
           tar -cvzf ../openloco.tar.gz openloco.app
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
