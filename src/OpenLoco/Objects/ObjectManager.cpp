@@ -1,5 +1,6 @@
 #include "ObjectManager.h"
 #include "../Audio/Audio.h"
+#include "../Console.h"
 #include "../Core/FileSystem.hpp"
 #include "../Environment.h"
 #include "../Graphics/Colour.h"
@@ -1081,10 +1082,15 @@ namespace OpenLoco::ObjectManager
             {
                 result.success = false;
                 result.problemObject = header;
-                unloadAll();
-                break;
+                std::string str(header.getName());
+                Console::error("Failed to load: %s", str.c_str());
+                // Could break early here but we want to list all of the failed objects
             }
             index++;
+        }
+        if (result.success == false)
+        {
+            unloadAll();
         }
         return result;
     }
