@@ -309,6 +309,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     target_compile_options(${PROJECT} PUBLIC -Wno-stringop-overflow -Wno-stringop-overread -Wno-stringop-truncation)
 endif ()
 
+target_include_directories(${PROJECT} PUBLIC ${SDL2_INCLUDE_DIRS})
+
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT} Threads::Threads)
 target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
