@@ -411,6 +411,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
     target_compile_options(${PROJECT}-headers-check PUBLIC ${COMMON_COMPILE_OPTIONS})
     target_compile_options(${PROJECT}-headers-check PUBLIC -x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable)
+    target_include_directories(${PROJECT} PUBLIC ${SDL2_INCLUDE_DIRS})
 else ()
     # Dummy target to ease invocation
     add_custom_target(${PROJECT}-headers-check)
