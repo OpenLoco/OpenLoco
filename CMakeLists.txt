@@ -198,8 +198,8 @@ set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in
 list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
 
 # add source files
-file(GLOB_RECURSE OLOCO_SOURCES "src/*.cpp")
-file(GLOB_RECURSE OLOCO_HEADERS "src/*.h" "src/*.hpp")
+file(GLOB_RECURSE OLOCO_SOURCES "src/OpenLoco/*.cpp")
+file(GLOB_RECURSE OLOCO_HEADERS "src/OpenLoco/*.h" "src/OpenLoco/*.hpp")
 
 if (APPLE)
     file(GLOB_RECURSE OLOCO_MM_SOURCES "src/*.mm")
@@ -260,8 +260,7 @@ else()
 	find_package(OpenAL CONFIG REQUIRED)
 	set(OPENAL_LIBRARIES OpenAL::OpenAL)
 endif()
-find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
-include_directories(${YAML_CPP_INCLUDE_DIR})
+include_directories(src/Thirdparty/yaml-cpp/include)
 set(YAML_CPP_LIBRARIES yaml-cpp)
 
 # breakpad is also required
@@ -293,6 +292,14 @@ else ()
         set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
     endif ()
 endif ()
+
+set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "")
+set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "")
+set(YAML_BUILD_SHARED_LIBS OFF CACHE BOOL "")
+set(YAML_CPP_INSTALL OFF CACHE BOOL "")
+set(YAML_CPP_FORMAT_SOURCE OFF CACHE BOOL "")
+
+add_subdirectory(src/Thirdparty/yaml-cpp)
 
 target_compile_options(${PROJECT} PUBLIC ${COMMON_COMPILE_OPTIONS})
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
