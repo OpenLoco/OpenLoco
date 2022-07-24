@@ -57,14 +57,15 @@ jobs:
           path: artifacts
           if-no-files-found: error
   ubuntu:
-    name: Ubuntu i686
+    name: Ubuntu ${{ matrix.distro }} i686
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: openloco/openloco:1-bionic32
+    container: openloco/openloco:2-${{ matrix.distro }}32
     strategy:
       fail-fast: false
       matrix:
         compiler: [g++, clang++]
+        distro: [focal, jammy]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -83,7 +84,7 @@ jobs:
     name: Fedora i686 MinGW32
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: openloco/openloco:1-mingw32
+    container: openloco/openloco:2-mingw32
     steps:
       - name: Checkout
         uses: actions/checkout@v3
