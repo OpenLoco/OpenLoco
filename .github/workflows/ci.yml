@@ -70,6 +70,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          submodules: true
       - name: Install GCC problem matcher
         uses: ammaraskar/gcc-problem-matcher@master
       - name: Build OpenLoco
@@ -88,6 +89,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          submodules: true
       - name: Install GCC problem matcher
         uses: ammaraskar/gcc-problem-matcher@master
       - name: Build OpenLoco
@@ -106,6 +108,9 @@ jobs:
           fetch-depth: 0
       - name: Install GCC problem matcher
         uses: ammaraskar/gcc-problem-matcher@master
+      - name: Checkout submodules
+        run: |
+          git submodule update --init --recursive
       - name: Install dependencies
         env:
           dependency_ver: 1.5.0
