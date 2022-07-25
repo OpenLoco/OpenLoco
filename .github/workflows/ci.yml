@@ -78,7 +78,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp -DPNG_LIBRARY=/usr/lib/i386-linux-gnu/libpng16.so -DPNG_PNG_INCLUDE_DIR=/usr/include -DZLIB_LIBRARY=/usr/lib/i386-linux-gnu/libz.so
+          cmake .. -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -DPNG_LIBRARY=/usr/lib/i386-linux-gnu/libpng16.so -DPNG_PNG_INCLUDE_DIR=/usr/include -DZLIB_LIBRARY=/usr/lib/i386-linux-gnu/libz.so
           ninja -k0
   fedora:
     name: Fedora shared=${{ matrix.build_shared_libs }} i686 MinGW32
