@@ -198,8 +198,8 @@ set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in
 list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
 
 # add source files
-file(GLOB_RECURSE OLOCO_SOURCES "src/*.cpp")
-file(GLOB_RECURSE OLOCO_HEADERS "src/*.h" "src/*.hpp")
+file(GLOB_RECURSE OLOCO_SOURCES "src/OpenLoco/*.cpp")
+file(GLOB_RECURSE OLOCO_HEADERS "src/OpenLoco/*.h" "src/OpenLoco/*.hpp")
 
 if (APPLE)
     file(GLOB_RECURSE OLOCO_MM_SOURCES "src/*.mm")
@@ -260,8 +260,7 @@ else()
 	find_package(OpenAL CONFIG REQUIRED)
 	set(OPENAL_LIBRARIES OpenAL::OpenAL)
 endif()
-find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
-include_directories(${YAML_CPP_INCLUDE_DIR})
+include_directories(src/Thirdparty/yaml-cpp/include)
 set(YAML_CPP_LIBRARIES yaml-cpp)
 
 # breakpad is also required
@@ -294,7 +293,24 @@ else ()
     endif ()
 endif ()
 
+set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "")
+set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "")
+set(YAML_BUILD_SHARED_LIBS OFF CACHE BOOL "")
+set(YAML_CPP_INSTALL OFF CACHE BOOL "")
+set(YAML_CPP_FORMAT_SOURCE OFF CACHE BOOL "")
+
+add_subdirectory(src/Thirdparty/yaml-cpp)
+
 target_compile_options(${PROJECT} PUBLIC ${COMMON_COMPILE_OPTIONS})
+# compilers often get confused about our memory access patterns, disable some of the warnings
+target_compile_options(${PROJECT} PUBLIC -Wno-array-bounds)
+# clang does not understand following options and errors with -Wunknown-warning-option
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+    target_compile_options(${PROJECT} PUBLIC -Wno-stringop-overflow -Wno-stringop-overread -Wno-stringop-truncation)
+endif ()
+
+target_include_directories(${PROJECT} PUBLIC ${SDL2_INCLUDE_DIRS})
+
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT} Threads::Threads)
 target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
@@ -316,9 +332,11 @@ endif()
 
 if (MINGW)
     target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
+    # someone at yaml-cpp forgot to expose this as a target definition:
+    # https://github.com/jbeder/yaml-cpp/blob/c73ee34704c512ebe915b283645aefa9f424a22f/CMakeLists.txt#L49
+    target_compile_definitions(${PROJECT} PRIVATE YAML_CPP_STATIC_DEFINE)
     target_link_libraries(${PROJECT} imm32 winmm version)
     # newer GCC gets confused about our use of hardcoded address shenanigans
-    target_compile_options(${PROJECT} PUBLIC -Wno-stringop-overflow -Wno-stringop-overread -Wno-array-bounds -Wno-stringop-truncation)
 else ()
     if (MSVC)
         target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
@@ -393,6 +411,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
     target_compile_options(${PROJECT}-headers-check PUBLIC ${COMMON_COMPILE_OPTIONS})
     target_compile_options(${PROJECT}-headers-check PUBLIC -x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable)
+    target_include_directories(${PROJECT}-headers-check PUBLIC ${SDL2_INCLUDE_DIRS})
 else ()
     # Dummy target to ease invocation
     add_custom_target(${PROJECT}-headers-check)

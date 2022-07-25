@@ -69,13 +69,13 @@ Releases are currently provided for Windows and macOS (32-bit only).
 
 ## 4.1 Building prerequisites
 
-Regardless of platform, the following libraries/dependencies are required:
+The following libraries/dependencies are required:
 - [libpng](http://www.libpng.org/pub/png/libpng.html)
 - [libzip](https://libzip.org)
 - [OpenAL](https://www.openal.org/)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-- [breakpad](https://github.com/google/breakpad)
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp) (included as submodule for Linux builds)
+- [breakpad](https://github.com/google/breakpad) (only required on Windows)
 
 ### Windows
 - 7 / 8 / 10
@@ -83,7 +83,7 @@ Regardless of platform, the following libraries/dependencies are required:
   - Desktop development with C++
   - Dependencies are managed with [vcpkg](https://github.com/Microsoft/vcpkg)
 
-### Linux / macOS
+### Linux
 - cmake
 - make or ninja
 - 32-bit versions of the libraries mentioned above
@@ -109,14 +109,18 @@ To install dependencies, you need to have vcpkg installed and in the root direct
 3. Run `cmake .. -A Win32 "-DCMAKE_TOOLCHAIN_FILE=<vcpkg_root>/scripts/buildsystems/vcpkg.cmake"`
 4. Run `cmake --build .`
 
-### Linux / macOS:
+### Linux:
+Due to issues with yaml-cpp package, for Linux we bundle our own copy via git submodule. Make sure you have cloned repository recursively.
+
 The standard CMake build procedure is to install the required libraries, then:
 ```
 mkdir build
 cd build
-CXXFLAGS="-m32" cmake ..
-make
+CXXFLAGS="-m32" cmake .. -G Ninja # remember the usual cmake options, e.g. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+ninja
 ```
+
+Note that installing some packages can be problematic on desktop AMD64 distributions, you can use our docker images for compilation.
 
 Running the game will need the data directory from the root of the source code next to the binary. Assuming you're in `$SRC/build`, 
 ```
@@ -124,6 +128,11 @@ ln -s ../data
 OR
 cp -r ../data ./data 
 ```
+
+### MacOS
+
+For technical reasons OpenLoco can only be built as 32-bit x86 application, for which Apple dropped support in Mac OS 10.15. We can't provide MacOS builds at this time.
+
 ---
 
 # 5 Licence
