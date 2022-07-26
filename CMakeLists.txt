@@ -273,8 +273,10 @@ endif ()
 # builds without need for -fno-omit-frame-pointer
 if (MSVC)
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "/Oy- /Od")
+    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Hooks.cpp" PROPERTIES COMPILE_FLAGS "/Oy- /Od")
 else ()
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
+    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Hooks.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
 endif ()
 
 if (NOT CMAKE_CXX_STANDARD)
