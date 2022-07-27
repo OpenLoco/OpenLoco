@@ -241,13 +241,13 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
     return data;
 }
 
-static bool CDECL fn_FindNextFile(Session* data, FindFileData* out)
+static uint32_t CDECL fn_FindNextFile(Session* data, FindFileData* out)
 {
     STUB();
 
     if (data->fileList.size() == 0)
     {
-        return false;
+        return 0;
     }
 
     Utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
@@ -262,7 +262,7 @@ static bool CDECL fn_FindNextFile(Session* data, FindFileData* out)
 
     data->fileList.erase(data->fileList.begin());
 
-    return true;
+    return 1;
 }
 
 static void CDECL fn_FindClose(Session* data)
