@@ -1450,6 +1450,8 @@ namespace OpenLoco::Gfx
             }
         }
 
+        // Note that this is always the font used in the last line.
+        // TODO: refactor to pair up with each line, and to not use a global.
         _currentFontSpriteBase = font;
         return std::make_pair(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0));
     }
