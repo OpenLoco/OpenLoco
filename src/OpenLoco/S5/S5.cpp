@@ -453,33 +453,20 @@ namespace OpenLoco::S5
         // Read packed objects
         if (file->header.numPackedObjects > 0)
         {
-            bool objectInstalled = false;
             for (auto i = 0; i < file->header.numPackedObjects; ++i)
             {
                 ObjectHeader object;
                 fs.read(&object, sizeof(ObjectHeader));
-                if (ObjectManager::tryInstallObject(object, fs.readChunk()))
-                {
-                    objectInstalled = true;
-                }
-            }
-
-            if (objectInstalled)
-            {
-                ObjectManager::loadIndex();
+                auto unownedObjectData = fs.readChunk();
+                std::vector<uint8_t> objectData;
+                objectData.resize(unownedObjectData.size());
+                std::copy(std::begin(unownedObjectData), std::end(unownedObjectData), std::begin(objectData));
+                file->packedObjects.push_back(std::make_pair(object, std::move(objectData)));
             }
             // 0x004420B2
         }
 
-        if (file->header.type == S5Type::objects)
-        {
-            addr<0x00525F62, uint16_t>() = 0;
-            _loadErrorCode = 254;
-            _loadErrorMessage = StringIds::new_objects_installed_successfully;
-            // Throws!
-            Game::returnToTitle();
-        }
-        else if (file->header.type == S5Type::scenario)
+        if (file->header.type == S5Type::scenario)
         {
             // Load required objects
             fs.readChunk(file->requiredObjects, sizeof(file->requiredObjects));
@@ -492,7 +479,6 @@ namespace OpenLoco::S5
             fs.readChunk(&file->gameState.animations, sizeof(file->gameState));
             file->gameState.fixFlags |= S5FixFlags::fixFlag1;
             fixState(file->gameState);
-            CompanyManager::reset();
 
             if (file->gameState.flags & (1 << 0))
             {
@@ -616,7 +602,29 @@ namespace OpenLoco::S5
                 }
             }
 #endif
-
+            if (!file->packedObjects.empty())
+            {
+                bool objectInstalled = false;
+                for (auto [object, data] : file->packedObjects)
+                {
+                    if (ObjectManager::tryInstallObject(object, data))
+                    {
+                        objectInstalled = true;
+                    }
+                }
+                if (objectInstalled)
+                {
+                    ObjectManager::loadIndex();
+                }
+            }
+            if (file->header.type == S5Type::objects)
+            {
+                addr<0x00525F62, uint16_t>() = 0;
+                _loadErrorCode = 254;
+                _loadErrorMessage = StringIds::new_objects_installed_successfully;
+                // Throws!
+                Game::returnToTitle();
+            }
             if (!(flags & LoadFlags::scenario))
             {
                 if (file->header.type == S5Type::scenario)
@@ -680,6 +688,7 @@ namespace OpenLoco::S5
             }
             if (flags & LoadFlags::scenario)
             {
+                CompanyManager::reset();
                 EntityManager::reset();
             }
 
