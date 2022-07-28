@@ -1025,6 +1025,8 @@ namespace OpenLoco::Gfx
 
         _currentFontFlags = 0;
         Ui::Point point = { x, y };
+        point.y -= (lineHeight / 2) * (breakCount - 1);
+
         const char* ptr = buffer;
 
         for (auto i = 0; ptr != nullptr && i < breakCount; i++)
@@ -1284,6 +1286,8 @@ namespace OpenLoco::Gfx
 
         _currentFontFlags = 0;
         Ui::Point point = origin;
+        point.y -= (lineHeight / 2) * (breakCount - 1);
+
         const char* ptr = buffer;
 
         for (auto i = 0; ptr != nullptr && i < breakCount; i++)
@@ -1446,6 +1450,7 @@ namespace OpenLoco::Gfx
             }
         }
 
+        _currentFontSpriteBase = font;
         return std::make_pair(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0));
     }
 
