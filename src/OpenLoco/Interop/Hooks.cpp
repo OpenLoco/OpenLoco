@@ -241,13 +241,13 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
     return data;
 }
 
-static bool CDECL fn_FindNextFile(Session* data, FindFileData* out)
+static uint32_t CDECL fn_FindNextFile(Session* data, FindFileData* out)
 {
     STUB();
 
     if (data->fileList.size() == 0)
     {
-        return false;
+        return 0;
     }
 
     Utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
@@ -262,7 +262,7 @@ static bool CDECL fn_FindNextFile(Session* data, FindFileData* out)
 
     data->fileList.erase(data->fileList.begin());
 
-    return true;
+    return 1;
 }
 
 static void CDECL fn_FindClose(Session* data)
@@ -360,15 +360,15 @@ static void* STDCALL lib_OpenMutexA(uint32_t dwDesiredAccess, bool bInheritHandl
     return nullptr;
 }
 
-static bool STDCALL lib_DeleteFileA(char* lpFileName)
+static uint32_t STDCALL lib_DeleteFileA(char* lpFileName)
 {
     Console::log("DeleteFileA(%s)", lpFileName);
 
-    return false;
+    return 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
-static bool STDCALL lib_WriteFile(
+static uint32_t STDCALL lib_WriteFile(
     FILE* hFile,
     char* buffer,
     size_t nNumberOfBytesToWrite,
@@ -378,7 +378,7 @@ static bool STDCALL lib_WriteFile(
     *lpNumberOfBytesWritten = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile);
     Console::logVerbose("WriteFile(%s)", buffer);
 
-    return true;
+    return 1;
 }
 
 #define GENERIC_READ 0x80000000
@@ -425,7 +425,7 @@ static int32_t STDCALL lib_CreateFileA(
 }
 
 FORCE_ALIGN_ARG_POINTER
-static bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttributes)
+static uint32_t STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttributes)
 {
     // FILE_ATTRIBUTE_NORMAL = 0x80
     assert(dwFileAttributes == 0x80);
@@ -450,7 +450,7 @@ static void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitial
 }
 
 FORCE_ALIGN_ARG_POINTER
-static bool STDCALL lib_CloseHandle(void* hObject)
+static uint32_t STDCALL lib_CloseHandle(void* hObject)
 {
     auto file = (FILE*)hObject;
 
