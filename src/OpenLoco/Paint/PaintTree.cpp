@@ -24,11 +24,11 @@ namespace OpenLoco::Paint
     // 0x004BAEDA
     void paintTree(PaintSession& session, const Map::TreeElement& elTree)
     {
-        //registers regs;
-        //regs.esi = X86Pointer(&elTree);
-        //regs.ecx = (session.getRotation() + elTree.data()[0]) & 0x3;
-        //regs.dx = elTree.baseHeight();
-        //call(0x004BAEDA, regs);
+        // registers regs;
+        // regs.esi = X86Pointer(&elTree);
+        // regs.ecx = (session.getRotation() + elTree.data()[0]) & 0x3;
+        // regs.dx = elTree.baseHeight();
+        // call(0x004BAEDA, regs);
         session.setItemType(InteractionItem::tree);
 
         const auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());

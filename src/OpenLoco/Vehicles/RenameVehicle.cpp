@@ -17,7 +17,7 @@ namespace OpenLoco::Vehicles
     static loco_global<EntityId, 0x0113621D> _113621D;
 
     /**
-     * 0x004B6572 
+     * 0x004B6572
      * Rename vehicle - calls 3 times with part of the buffers (each 12 bytes long), in each cycle first without apply flag, second with apply flag.
      * The vehicle name is up to 31 characters long (no more characters were taken during the game play).
      *

@@ -50,7 +50,7 @@ namespace OpenLoco
         string_id name;
         int16_t build_cost_factor; // 0x02
         int16_t sell_cost_factor;  // 0x04
-        uint8_t cost_index;        //0x06
+        uint8_t cost_index;        // 0x06
         uint8_t var_07;
         uint32_t image; // 0x08
         uint32_t var_0C;

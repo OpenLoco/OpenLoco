@@ -13,7 +13,7 @@ namespace OpenLoco
 {
     namespace CompanyFlags
     {
-        constexpr uint32_t unk0 = (1 << 0);                      //0x01
+        constexpr uint32_t unk0 = (1 << 0);                      // 0x01
         constexpr uint32_t sorted = (1 << 3);                    // 0x08
         constexpr uint32_t increasedPerformance = (1 << 4);      // 0x10
         constexpr uint32_t decreasedPerformance = (1 << 5);      // 0x20

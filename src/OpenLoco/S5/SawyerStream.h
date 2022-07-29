@@ -19,7 +19,7 @@ namespace OpenLoco
     /**
      * Provides a more efficient implementation than std::vector for allocating and
      * pushing bytes to a buffer.
-     * 
+     *
      * In particular, for Windows, HeapAlloc is used for a direct memory block from the OS
      * which is not initialised (even in debug builds). It vastly reduces the time needed
      * to load / save S5 files in debug builds.
