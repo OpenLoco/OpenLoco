@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 """A wrapper script around clang-format, suitable for linting multiple files
 and to use for continuous integration.
 
@@ -87,6 +88,39 @@ class UnexpectedError(Exception):
         self.formatted_traceback = traceback.format_exc()
         self.exc = exc
 
+def run_clang_format_version(args):
+    invocation = [args.clang_format_executable, "--version"]
+
+    encoding_py3 = {}
+    if sys.version_info[0] >= 3:
+        encoding_py3['encoding'] = 'utf-8'
+
+    try:
+	    proc = subprocess.Popen(
+            invocation,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
+            **encoding_py3)
+    except OSError as exc:
+        raise DiffError(str(exc))
+    proc_stdout = proc.stdout
+    proc_stderr = proc.stderr
+    if sys.version_info[0] < 3:
+        # make the pipes compatible with Python 3,
+        # reading lines should output unicode
+        encoding = 'utf-8'
+        proc_stdout = codecs.getreader(encoding)(proc_stdout)
+        proc_stderr = codecs.getreader(encoding)(proc_stderr)
+    # hopefully the stderr pipe won't get full and block the process
+    outs = list(proc_stdout.readlines())
+    errs = list(proc_stderr.readlines())
+    proc.wait()
+    if proc.returncode:
+        raise DiffError("clang-format exited with status {}: '{}'".format(
+            proc.returncode, file), errs)
+    print(outs[0])
+    return
 
 def run_clang_format_diff_wrapper(args, file):
     try:
@@ -106,12 +140,36 @@ def run_clang_format_diff(args, file):
     except IOError as exc:
         raise DiffError(str(exc))
     invocation = [args.clang_format_executable, file]
+
+    # Use of utf-8 to decode the process output.
+    #
+    # Hopefully, this is the correct thing to do.
+    #
+    # It's done due to the following assumptions (which may be incorrect):
+    # - clang-format will returns the bytes read from the files as-is,
+    #   without conversion, and it is already assumed that the files use utf-8.
+    # - if the diagnostics were internationalized, they would use utf-8:
+    #   > Adding Translations to Clang
+    #   >
+    #   > Not possible yet!
+    #   > Diagnostic strings should be written in UTF-8,
+    #   > the client can translate to the relevant code page if needed.
+    #   > Each translation completely replaces the format string
+    #   > for the diagnostic.
+    #   > -- http://clang.llvm.org/docs/InternalsManual.html#internals-diag-translation
+    #
+    # It's not pretty, due to Python 2 & 3 compatibility.
+    encoding_py3 = {}
+    if sys.version_info[0] >= 3:
+        encoding_py3['encoding'] = 'utf-8'
+
     try:
         proc = subprocess.Popen(
             invocation,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            universal_newlines=True)
+            universal_newlines=True,
+            **encoding_py3)
     except OSError as exc:
         raise DiffError(str(exc))
     proc_stdout = proc.stdout
@@ -197,6 +255,10 @@ def main():
         help='run recursively over directories')
     parser.add_argument('files', metavar='file', nargs='+')
     parser.add_argument(
+        '-q',
+        '--quiet',
+        action='store_true')
+    parser.add_argument(
         '-j',
         metavar='N',
         type=int,
@@ -218,6 +280,8 @@ def main():
         ' from recursive search')
 
     args = parser.parse_args()
+
+    run_clang_format_version(args)
 
     # use default signal handling, like diff return SIGINT value on ^C
     # https://bugs.python.org/issue14229#msg156446
@@ -286,7 +350,8 @@ def main():
             sys.stderr.writelines(errs)
             if outs == []:
                 continue
-            print_diff(outs, use_color=colored_stdout)
+            if not args.quiet:
+                print_diff(outs, use_color=colored_stdout)
             if retcode == ExitStatus.SUCCESS:
                 retcode = ExitStatus.DIFF
     return retcode

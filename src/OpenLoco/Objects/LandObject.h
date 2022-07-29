@@ -28,7 +28,7 @@ namespace OpenLoco
         uint8_t cost_index; // 0x02
         uint8_t var_03;
         uint8_t var_04;
-        uint8_t flags; //0x05
+        uint8_t flags; // 0x05
         uint8_t var_06;
         uint8_t var_07;
         int8_t cost_factor; // 0x08

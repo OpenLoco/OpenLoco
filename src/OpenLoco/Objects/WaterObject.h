@@ -18,7 +18,7 @@ namespace OpenLoco
         string_id name;
         uint8_t cost_index; // 0x02
         uint8_t var_03;
-        int8_t cost_factor; //0x04
+        int8_t cost_factor; // 0x04
         uint8_t var_05;
         uint32_t image; // 0x06
         uint32_t var_0A;
