@@ -58,18 +58,21 @@ using namespace OpenLoco;
 #pragma warning(disable : 4505) // unreferenced local function has been removed.
 
 #ifdef _NO_LOCO_WIN32_
+FORCE_ALIGN_ARG_POINTER
 static void STDCALL fn_40447f()
 {
     STUB();
     return;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void STDCALL fn_404b68(int a0, int a1, int a2, int a3)
 {
     STUB();
     return;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static int STDCALL getNumDSoundDevices()
 {
     STUB();
@@ -111,18 +114,21 @@ static long STDCALL fn_DirectSoundEnumerateA(void* pDSEnumCallback, void* pConte
     return 0;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void STDCALL fn_4078be()
 {
     STUB();
     return;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void STDCALL fn_4078fe()
 {
     STUB();
     return;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void STDCALL fn_407b26()
 {
     STUB();
@@ -131,22 +137,26 @@ static void STDCALL fn_407b26()
 
 /// region Progress bar
 
+FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_4080bb(char* lpWindowName, uint32_t a1)
 {
     Console::log("Create progress bar");
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_408163()
 {
     Console::log("Destroy progress bar");
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_40817b(uint16_t arg0)
 {
     Console::log("SendMessage(PBM_SETRANGE, %d)", arg0);
     Console::log("SendMessage(PBM_SETSTEP, %d)", 1);
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_4081ad(int32_t wParam)
 {
     Console::log("SendMessage(PBM_SETPOS, %d)", wParam);
@@ -241,6 +251,7 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
     return data;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FindNextFile(Session* data, FindFileData* out)
 {
     STUB();
@@ -265,6 +276,7 @@ static uint32_t CDECL fn_FindNextFile(Session* data, FindFileData* out)
     return 1;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_FindClose(Session* data)
 {
     STUB();
@@ -273,31 +285,37 @@ static void CDECL fn_FindClose(Session* data)
 }
 #endif // _NO_LOCO_WIN32_
 
+FORCE_ALIGN_ARG_POINTER
 [[maybe_unused]] static void CDECL fnc0(void)
 {
     STUB();
 }
 
+FORCE_ALIGN_ARG_POINTER
 [[maybe_unused]] static void CDECL fnc1(int i1)
 {
     STUB();
 }
 
+FORCE_ALIGN_ARG_POINTER
 [[maybe_unused]] static void CDECL fnc2(int i1, int i2)
 {
     STUB();
 }
 
+FORCE_ALIGN_ARG_POINTER
 [[maybe_unused]] static void STDCALL fn0()
 {
     return;
 }
 
+FORCE_ALIGN_ARG_POINTER
 [[maybe_unused]] static void STDCALL fn1(int i1)
 {
     return;
 }
 
+FORCE_ALIGN_ARG_POINTER
 [[maybe_unused]] static void STDCALL fn2(int i1, int i2)
 {
     STUB();
@@ -322,6 +340,7 @@ static void CDECL fn_free(void* block)
 }
 
 #ifdef _NO_LOCO_WIN32_
+FORCE_ALIGN_ARG_POINTER
 static void STDCALL fn_dump(uint32_t address)
 {
     Console::log("Missing hook: 0x%x", address);
@@ -333,6 +352,7 @@ enum
     DSERR_NODRIVER = 0x88780078,
 };
 
+FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_DirectSoundCreate(void* lpGuid, void* ppDS, void* pUnkOuter)
 {
     Console::log("lib_DirectSoundCreate(%lx, %lx, %lx)", (uintptr_t)lpGuid, (uintptr_t)ppDS, (uintptr_t)pUnkOuter);
@@ -347,12 +367,14 @@ static uint32_t STDCALL lib_CreateRectRgn(int x1, int y1, int x2, int y2)
     return 0;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_GetUpdateRgn(uintptr_t hWnd, uintptr_t hRgn, bool bErase)
 {
     Console::log("GetUpdateRgn(%lx, %lx, %d)", hWnd, hRgn, bErase);
     return 0;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void* STDCALL lib_OpenMutexA(uint32_t dwDesiredAccess, bool bInheritHandle, char* lpName)
 {
     Console::log("OpenMutexA(0x%x, %d, %s)", dwDesiredAccess, bInheritHandle, lpName);
@@ -360,6 +382,7 @@ static void* STDCALL lib_OpenMutexA(uint32_t dwDesiredAccess, bool bInheritHandl
     return nullptr;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_DeleteFileA(char* lpFileName)
 {
     Console::log("DeleteFileA(%s)", lpFileName);
@@ -442,6 +465,7 @@ static uint32_t STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFile
     return !ec;
 }
 
+FORCE_ALIGN_ARG_POINTER
 static void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitialOwner, char* lpName)
 {
     Console::log("CreateMutexA(0x%lx, %d, %s)", lmMutexAttributes, bInitialOwner, lpName);
