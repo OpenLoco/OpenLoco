@@ -13,6 +13,7 @@
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
 #include "../MultiPlayer.h"
+#include "../OpenLoco.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"

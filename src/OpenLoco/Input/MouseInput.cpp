@@ -10,6 +10,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
+#include "../OpenLoco.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"

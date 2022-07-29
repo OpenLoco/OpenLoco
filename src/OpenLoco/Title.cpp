@@ -2,6 +2,7 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Core/Variant.hpp"
+#include "Environment.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "Gui.h"

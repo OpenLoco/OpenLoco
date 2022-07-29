@@ -5,6 +5,7 @@
 #include "../Interop/Interop.hpp"
 #include "../LastGameOptionManager.h"
 #include "../Localisation/StringIds.h"
+#include "../OpenLoco.h"
 #include "../S5/S5.h"
 #include "../StationManager.h"
 #include "../TownManager.h"

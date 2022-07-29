@@ -7,6 +7,15 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Map::Track
 {
+    void TrackConnections::push_back(uint16_t value)
+    {
+        if (size + 1 < std::size(data))
+        {
+            data[size++] = value;
+            data[size] = 0xFFFF;
+        }
+    }
+
     static loco_global<uint32_t, 0x00525FC0> _525FC0;
     static loco_global<uint8_t, 0x0112C2EE> _112C2EE;
     static loco_global<uint8_t, 0x0112C2ED> _112C2ED;

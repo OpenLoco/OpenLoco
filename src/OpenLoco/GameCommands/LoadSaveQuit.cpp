@@ -1,5 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../Game.h"
+#include "../OpenLoco.h"
 #include "../Tutorial.h"
 #include "../Ui/WindowManager.h"
 #include "../Ui/WindowType.h"

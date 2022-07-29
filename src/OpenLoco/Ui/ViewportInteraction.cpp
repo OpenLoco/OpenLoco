@@ -16,6 +16,7 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/TreeObject.h"
 #include "../Objects/WallObject.h"
+#include "../OpenLoco.h"
 #include "../Paint/Paint.h"
 #include "../StationManager.h"
 #include "../TownManager.h"

@@ -4,6 +4,7 @@
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/TreeObject.h"
+#include "../OpenLoco.h"
 #include "../Scenario.h"
 #include "../Ui.h"
 #include "TileManager.h"

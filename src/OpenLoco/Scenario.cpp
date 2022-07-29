@@ -22,6 +22,7 @@
 #include "Objects/ClimateObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
+#include "OpenLoco.h"
 #include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"

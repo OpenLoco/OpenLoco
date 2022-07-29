@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Environment.h"
 #include "../Location.hpp"
 #include "../Map/Map.hpp"
 #include "../Types.hpp"
@@ -12,6 +11,11 @@
 namespace OpenLoco::Vehicles
 {
     struct Vehicle2or6;
+}
+
+namespace OpenLoco::Environment
+{
+    enum class PathId : uint8_t;
 }
 
 namespace OpenLoco::Audio

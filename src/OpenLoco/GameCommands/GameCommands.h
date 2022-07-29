@@ -12,6 +12,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco
 {
     enum ExpenditureType : uint8_t;
+    enum class GameSpeed : uint8_t;
 }
 
 namespace OpenLoco::Vehicles

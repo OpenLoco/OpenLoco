@@ -14,6 +14,7 @@
 #include "../Localisation/StringManager.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
+#include "../OpenLoco.h"
 #include "../ScenarioManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"

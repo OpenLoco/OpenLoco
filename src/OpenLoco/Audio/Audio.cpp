@@ -12,6 +12,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/SoundObject.h"
 #include "../Objects/TreeObject.h"
+#include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Stream.hpp"
 #include "../Vehicles/Vehicle.h"
