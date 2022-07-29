@@ -1,7 +1,9 @@
 22.07+ (???)
 ------------------------------------------------------------------------
+- Fix: [#1557] Vehicle capacity texts are corrupted.
 - Fix: [#1578] Clang-compiled openloco does not list scenarios.
 - Fix: [#1583] Newspaper text line height is wrong.
+- Technical: [#1565] Any missing objects are now listed in the dev console when encountered.
 
 22.06.1 (2022-07-01)
 ------------------------------------------------------------------------
