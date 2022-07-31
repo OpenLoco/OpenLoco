@@ -7,6 +7,7 @@
 #include "../Viewport.hpp"
 #include "../Window.h"
 #include <cstddef>
+#include <functional>
 
 namespace OpenLoco::Ui::WindowManager
 {

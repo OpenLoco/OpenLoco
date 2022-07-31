@@ -16,6 +16,7 @@
 #include "../Objects/SoundObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
+#include "../OpenLoco.h"
 #include "../Station.h"
 #include "../Types.hpp"
 #include "../Ui/WindowManager.h"

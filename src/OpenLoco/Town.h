@@ -3,6 +3,7 @@
 #include "Company.h"
 #include "LabelFrame.h"
 #include "Map/Tile.h"
+#include "Utility/Prng.hpp"
 #include <limits>
 
 namespace OpenLoco

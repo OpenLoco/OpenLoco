@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../Core/Optional.hpp"
-#include "../OpenLoco.h"
 #include "../Types.hpp"
 #include "../Ui/Rect.h"
 #include "../Ui/Types.hpp"

@@ -20,6 +20,7 @@
 #include "../Objects/TreeObject.h"
 #include "../Objects/WallObject.h"
 #include "../Objects/WaterObject.h"
+#include "../OpenLoco.h"
 #include "../Scenario.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"

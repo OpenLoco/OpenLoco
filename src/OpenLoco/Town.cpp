@@ -1,6 +1,7 @@
 #include "Town.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
+#include "OpenLoco.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include <algorithm>

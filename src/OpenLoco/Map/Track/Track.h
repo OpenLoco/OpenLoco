@@ -1,5 +1,6 @@
 #include "../../Types.hpp"
 #include "../Map.hpp"
+#include <utility>
 
 namespace OpenLoco::Map::Track
 {
@@ -7,14 +8,7 @@ namespace OpenLoco::Map::Track
     {
         uint32_t size;
         uint16_t data[16];
-        void push_back(uint16_t value)
-        {
-            if (size + 1 < std::size(data))
-            {
-                data[size++] = value;
-                data[size] = 0xFFFF;
-            }
-        }
+        void push_back(uint16_t value);
         uint16_t pop_back()
         {
             return data[--size];

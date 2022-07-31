@@ -9,6 +9,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
 #include "../Objects/BuildingObject.h"
+#include "../OpenLoco.h"
 #include "../TownManager.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"

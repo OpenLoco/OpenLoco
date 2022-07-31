@@ -3,6 +3,7 @@
 #include "../MessageManager.h"
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
+#include "../OpenLoco.h"
 #include "../Tutorial.h"
 #include "Vehicle.h"
 

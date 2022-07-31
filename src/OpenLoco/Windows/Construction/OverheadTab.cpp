@@ -10,6 +10,7 @@
 #include "../../Objects/RoadObject.h"
 #include "../../Objects/TrackExtraObject.h"
 #include "../../Objects/TrackObject.h"
+#include "../../OpenLoco.h"
 #include "../../Ui/Dropdown.h"
 #include "../../Widget.h"
 #include "Construction.h"

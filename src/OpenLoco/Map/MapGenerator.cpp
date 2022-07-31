@@ -4,6 +4,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../OpenLoco.h"
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Ui/ProgressBar.h"

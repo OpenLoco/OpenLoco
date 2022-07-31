@@ -8,6 +8,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../OpenLoco.h"
 #include "../S5/SawyerStream.h"
 #include "../Ui.h"
 #include "../Ui/ProgressBar.h"

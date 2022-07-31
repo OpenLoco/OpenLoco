@@ -12,6 +12,7 @@
 #include "../Objects/CurrencyObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../OpenLoco.h"
 #include "../S5/S5.h"
 #include "../Ui.h"
 #include "../Ui/Dropdown.h"

@@ -2,6 +2,7 @@
 #include "../Config.h"
 #include "../Console.h"
 #include "../GameCommands/GameCommands.h"
+#include "../OpenLoco.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
 #include "../Ui/WindowManager.h"

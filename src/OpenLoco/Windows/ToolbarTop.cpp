@@ -19,6 +19,7 @@
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Objects/WaterObject.h"
+#include "../OpenLoco.h"
 #include "../S5/S5.h"
 #include "../StationManager.h"
 #include "../TownManager.h"

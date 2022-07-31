@@ -5,6 +5,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
 #include "../Objects/BuildingObject.h"
+#include "../OpenLoco.h"
 #include "../S5/S5.h"
 #include "../TownManager.h"
 #include "GameCommands.h"

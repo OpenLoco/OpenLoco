@@ -8,6 +8,7 @@
 #include "../Math/Trigonometry.hpp"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
+#include "../OpenLoco.h"
 #include "../ScenarioManager.h"
 #include "Vehicle.h"
 #include <cassert>

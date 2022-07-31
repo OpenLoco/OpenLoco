@@ -2,6 +2,7 @@
 #include "../Config.h"
 #include "../Console.h"
 #include "../Core/FileSystem.hpp"
+#include "../Environment.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"

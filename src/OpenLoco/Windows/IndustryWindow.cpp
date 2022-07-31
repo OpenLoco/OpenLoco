@@ -17,6 +17,7 @@
 #include "../Objects/IndustryObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"

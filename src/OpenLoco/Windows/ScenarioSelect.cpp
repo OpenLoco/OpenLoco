@@ -8,6 +8,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/ObjectManager.h"
+#include "../OpenLoco.h"
 #include "../Scenario.h"
 #include "../ScenarioManager.h"
 #include "../Ui/ScrollView.h"

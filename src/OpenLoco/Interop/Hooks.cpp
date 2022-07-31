@@ -21,6 +21,7 @@
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
 #include "../Map/WaveManager.h"
+#include "../OpenLoco.h"
 #include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
