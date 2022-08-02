@@ -1,5 +1,4 @@
 #include "ObjectManager.h"
-#include "../Audio/Audio.h"
 #include "../Console.h"
 #include "../Core/FileSystem.hpp"
 #include "../Environment.h"
@@ -8,10 +7,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
-#include "../OpenLoco.h"
 #include "../S5/SawyerStream.h"
-#include "../Ui.h"
-#include "../Ui/ProgressBar.h"
 #include "../Utility/Numeric.hpp"
 #include "../Utility/Stream.hpp"
 #include "AirportObject.h"
@@ -27,6 +23,7 @@
 #include "InterfaceSkinObject.h"
 #include "LandObject.h"
 #include "LevelCrossingObject.h"
+#include "ObjectIndex.h"
 #include "RegionObject.h"
 #include "RoadExtraObject.h"
 #include "RoadObject.h"
@@ -48,7 +45,6 @@
 #include "VehicleObject.h"
 #include "WallObject.h"
 #include "WaterObject.h"
-#include <iterator>
 #include <vector>
 
 using namespace OpenLoco::Interop;
@@ -126,45 +122,6 @@ namespace OpenLoco::ObjectManager
     }
     */
 
-    ObjectIndexEntry ObjectIndexEntry::read(std::byte** ptr)
-    {
-        ObjectIndexEntry entry{};
-
-        entry._header = (ObjectHeader*)*ptr;
-        *ptr += sizeof(ObjectHeader);
-
-        entry._filename = (char*)*ptr;
-        *ptr += strlen(entry._filename) + 1;
-
-        // decoded_chunk_size
-        // ObjectHeader2* h2 = (ObjectHeader2*)ptr;
-        *ptr += sizeof(ObjectHeader2);
-
-        entry._name = (char*)*ptr;
-        *ptr += strlen(entry._name) + 1;
-
-        // ObjectHeader3* h3 = (ObjectHeader3*)ptr;
-        *ptr += sizeof(ObjectHeader3);
-
-        uint8_t* countA = (uint8_t*)*ptr;
-        *ptr += sizeof(uint8_t);
-        for (int n = 0; n < *countA; n++)
-        {
-            // header* subh = (header*)ptr;
-            *ptr += sizeof(ObjectHeader);
-        }
-
-        uint8_t* countB = (uint8_t*)*ptr;
-        *ptr += sizeof(uint8_t);
-        for (int n = 0; n < *countB; n++)
-        {
-            // header* subh = (header*)ptr;
-            *ptr += sizeof(ObjectHeader);
-        }
-
-        return entry;
-    }
-
     // 0x00471B95
     void freeScenarioText()
     {
@@ -205,13 +162,6 @@ namespace OpenLoco::ObjectManager
         return std::nullopt;
     }
 
-    // 0x004720EB
-    // Returns std::nullopt if not loaded
-    std::optional<LoadedObjectHandle> findIndex(const ObjectIndexEntry& object)
-    {
-        return findIndex(*object._header);
-    }
-
     // 0x0047237D
     void reloadAll()
     {
@@ -226,7 +176,7 @@ namespace OpenLoco::ObjectManager
         drawPreview,
     };
 
-    static bool callObjectValidate(const ObjectType type, Object& obj)
+    bool callObjectValidate(const ObjectType type, Object& obj)
     {
         switch (type)
         {
@@ -553,8 +503,6 @@ namespace OpenLoco::ObjectManager
         throw std::runtime_error("Object not loaded at this index");
     }
 
-    bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data);
-
     // 0x00471BC5
     static bool load(const ObjectHeader& header, LoadedObjectId id)
     {
@@ -733,7 +681,7 @@ namespace OpenLoco::ObjectManager
         return checksum == object.checksum;
     }
 
-    static bool partialLoad(const ObjectHeader& header, stdx::span<uint8_t> objectData)
+    bool partialLoad(const ObjectHeader& header, stdx::span<uint8_t> objectData)
     {
         auto type = header.getType();
         size_t index = 0;

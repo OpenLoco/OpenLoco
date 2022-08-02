@@ -13,6 +13,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
 #include "../Map/TileManager.h"
+#include "../Objects/ObjectIndex.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../ScenarioManager.h"

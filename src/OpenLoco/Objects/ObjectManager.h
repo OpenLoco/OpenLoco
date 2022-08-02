@@ -4,12 +4,6 @@
 #include "../Core/Span.hpp"
 #include "../Ui/Types.hpp"
 #include "Object.h"
-#include <cstddef>
-#include <cstdint>
-#include <cstdio>
-#include <cstring>
-#include <limits>
-#include <string_view>
 #include <vector>
 
 namespace OpenLoco
@@ -145,20 +139,6 @@ namespace OpenLoco::ObjectManager
         uint8_t pad_07[0x5];
     };
 
-    struct ObjectIndexEntry
-    {
-        ObjectHeader* _header;
-        char* _filename;
-        char* _name;
-
-        static ObjectIndexEntry read(std::byte** ptr);
-    };
-
-    struct ObjIndexPair
-    {
-        int16_t index;
-        ObjectIndexEntry object;
-    };
 #pragma pack(pop)
 
     struct LoadObjectsResult
@@ -167,19 +147,14 @@ namespace OpenLoco::ObjectManager
         ObjectHeader problemObject;
     };
 
-    uint32_t getNumInstalledObjects();
-    std::vector<std::pair<uint32_t, ObjectIndexEntry>> getAvailableObjects(ObjectType type);
     void freeScenarioText();
     void getScenarioText(ObjectHeader& object);
     std::optional<LoadedObjectHandle> findIndex(const ObjectHeader& header);
-    std::optional<LoadedObjectHandle> findIndex(const ObjectIndexEntry& object);
     void reloadAll();
-    ObjIndexPair getActiveObject(ObjectType objectType, uint8_t* edi);
     ObjectHeader& getHeader(const LoadedObjectHandle& handle);
     std::vector<ObjectHeader> getHeaders();
 
     LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects);
-    bool tryInstallObject(const ObjectHeader& object, stdx::span<const uint8_t> data);
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();
@@ -188,6 +163,11 @@ namespace OpenLoco::ObjectManager
     // Unloads and frees the entry
     void unload(const ObjectHeader& header);
     bool load(const ObjectHeader& header);
+    bool partialLoad(const ObjectHeader& header, stdx::span<uint8_t> objectData);
+
+    bool callObjectValidate(const ObjectType type, Object& obj);
+
+    bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data);
 
     size_t getByteLength(const LoadedObjectHandle& handle);
 

@@ -1,8 +1,9 @@
-#include <cstdint>
+#pragma once
+
+#include < cstdint>
 #include <cstring>
 #include <limits>
 #include <string_view>
-#pragma once
 
 namespace OpenLoco
 {

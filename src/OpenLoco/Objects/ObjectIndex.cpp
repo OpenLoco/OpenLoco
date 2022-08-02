@@ -1,7 +1,9 @@
+#include "ObjectIndex.h"
 #include "../Environment.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
+#include "../OpenLoco.h"
 #include "../S5/SawyerStream.h"
 #include "../Ui.h"
 #include "../Ui/ProgressBar.h"
@@ -420,6 +422,68 @@ namespace OpenLoco::ObjectManager
         return list;
     }
 
+    static void permutateObjectFilename(std::string& filename)
+    {
+        auto* firstChar = filename.c_str();
+        auto* endChar = &filename[filename.size()];
+        auto* c = endChar;
+        do
+        {
+            c--;
+            if (c == firstChar)
+            {
+                filename = "00000000";
+                break;
+            }
+            if (*c < '0')
+            {
+                *c = '/';
+            }
+            if (*c == '9')
+            {
+                *c = '@';
+            }
+            if (*c == 'Z')
+            {
+                *c = '/';
+            }
+            *c = *c + 1;
+        } while (*c == '0');
+    }
+
+    // All object files are based on their internal object header name but
+    // there is a chance of a name collision this function works out if the name
+    // is possible and if not permutates the name until it is valid.
+    static fs::path findObjectPath(std::string& filename)
+    {
+        auto objPath = Environment::getPath(Environment::PathId::objects);
+
+        bool permutateName = false;
+        do
+        {
+            if (permutateName)
+            {
+                permutateObjectFilename(filename);
+            }
+            objPath.replace_filename(filename);
+            objPath.replace_extension(".DAT");
+            permutateName = true;
+        } while (fs::exists(objPath));
+        return objPath;
+    }
+
+    static void sanatiseObjectFilename(std::string& filename)
+    {
+        // Trim string at first space (note this copies vanilla but maybe shouldn't)
+        auto space = filename.find_first_of(' ');
+        if (space != std::string::npos)
+        {
+            filename = filename.substr(0, space);
+        }
+        // Make filename uppercase
+        std::transform(std::begin(filename), std::end(filename), std::begin(filename), toupper);
+    }
+
     // 0x0047285C
     static bool installObject(const ObjectHeader& objectHeader)
     {
@@ -456,68 +520,6 @@ namespace OpenLoco::ObjectManager
         const auto objects = getAvailableObjects(objectHeader.getType());
         auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return *obj.second._header == objectHeader; });
         return res != std::end(objects);
-    }
-
-    static void permutateObjectFilename(std::string& filename)
-    {
-        auto* firstChar = filename.c_str();
-        auto* endChar = &filename[filename.size()];
-        auto* c = endChar;
-        do
-        {
-            c--;
-            if (c == firstChar)
-            {
-                filename = "00000000";
-                break;
-            }
-            if (*c < '0')
-            {
-                *c = '/';
-            }
-            if (*c == '9')
-            {
-                *c = '@';
-            }
-            if (*c == 'Z')
-            {
-                *c = '/';
-            }
-            *c = *c + 1;
-        } while (*c == '0');
-    }
-
-    static void sanatiseObjectFilename(std::string& filename)
-    {
-        // Trim string at first space (note this copies vanilla but maybe shouldn't)
-        auto space = filename.find_first_of(' ');
-        if (space != std::string::npos)
-        {
-            filename = filename.substr(0, space);
-        }
-        // Make filename uppercase
-        std::transform(std::begin(filename), std::end(filename), std::begin(filename), toupper);
-    }
-
-    // All object files are based on their internal object header name but
-    // there is a chance of a name collision this function works out if the name
-    // is possible and if not permutates the name until it is valid.
-    static fs::path findObjectPath(std::string& filename)
-    {
-        auto objPath = Environment::getPath(Environment::PathId::objects);
-
-        bool permutateName = false;
-        do
-        {
-            if (permutateName)
-            {
-                permutateObjectFilename(filename);
-            }
-            objPath.replace_filename(filename);
-            objPath.replace_extension(".DAT");
-            permutateName = true;
-        } while (fs::exists(objPath));
-        return objPath;
     }
 
     // 0x00472687 based on
@@ -581,5 +583,44 @@ namespace OpenLoco::ObjectManager
         }
 
         return { -1, ObjectIndexEntry{} };
+    }
+
+    ObjectIndexEntry ObjectIndexEntry::read(std::byte** ptr)
+    {
+        ObjectIndexEntry entry{};
+
+        entry._header = (ObjectHeader*)*ptr;
+        *ptr += sizeof(ObjectHeader);
+
+        entry._filename = (char*)*ptr;
+        *ptr += strlen(entry._filename) + 1;
+
+        // decoded_chunk_size
+        // ObjectHeader2* h2 = (ObjectHeader2*)ptr;
+        *ptr += sizeof(ObjectHeader2);
+
+        entry._name = (char*)*ptr;
+        *ptr += strlen(entry._name) + 1;
+
+        // ObjectHeader3* h3 = (ObjectHeader3*)ptr;
+        *ptr += sizeof(ObjectHeader3);
+
+        uint8_t* countA = (uint8_t*)*ptr;
+        *ptr += sizeof(uint8_t);
+        for (int n = 0; n < *countA; n++)
+        {
+            // header* subh = (header*)ptr;
+            *ptr += sizeof(ObjectHeader);
+        }
+
+        uint8_t* countB = (uint8_t*)*ptr;
+        *ptr += sizeof(uint8_t);
+        for (int n = 0; n < *countB; n++)
+        {
+            // header* subh = (header*)ptr;
+            *ptr += sizeof(ObjectHeader);
+        }
+
+        return entry;
     }
 }
