@@ -23,6 +23,8 @@ namespace OpenLoco::ObjectManager
 
     uint32_t getNumInstalledObjects();
 
+    void loadIndex();
+
     std::vector<std::pair<uint32_t, ObjectIndexEntry>> getAvailableObjects(ObjectType type);
     bool tryInstallObject(const ObjectHeader& object, stdx::span<const uint8_t> data);
     ObjIndexPair getActiveObject(ObjectType objectType, uint8_t* edi);

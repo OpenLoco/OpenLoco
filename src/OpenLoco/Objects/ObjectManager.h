@@ -61,8 +61,6 @@ namespace OpenLoco
 
 namespace OpenLoco::ObjectManager
 {
-    void loadIndex();
-
     constexpr size_t getMaxObjects(ObjectType type)
     {
         // 0x004FE250
