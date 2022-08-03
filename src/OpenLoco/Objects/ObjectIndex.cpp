@@ -4,7 +4,6 @@
 #include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
 #include "../OpenLoco.h"
-#include "../S5/SawyerStream.h"
 #include "../Ui.h"
 #include "../Ui/ProgressBar.h"
 #include "../Utility/Numeric.hpp"
@@ -20,7 +19,6 @@ namespace OpenLoco::ObjectManager
     static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
     static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
     static loco_global<bool, 0x0112A17E> _customObjectsInIndex;
-    static loco_global<uint32_t, 0x0050D154> _totalNumImages;
     static loco_global<std::byte*, 0x0050D158> _50D158;
     static loco_global<std::byte[0x2002], 0x0112A17F> _112A17F;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
@@ -422,151 +420,11 @@ namespace OpenLoco::ObjectManager
         return list;
     }
 
-    static void permutateObjectFilename(std::string& filename)
-    {
-        auto* firstChar = filename.c_str();
-        auto* endChar = &filename[filename.size()];
-        auto* c = endChar;
-        do
-        {
-            c--;
-            if (c == firstChar)
-            {
-                filename = "00000000";
-                break;
-            }
-            if (*c < '0')
-            {
-                *c = '/';
-            }
-            if (*c == '9')
-            {
-                *c = '@';
-            }
-            if (*c == 'Z')
-            {
-                *c = '/';
-            }
-            *c = *c + 1;
-        } while (*c == '0');
-    }
-
-    // All object files are based on their internal object header name but
-    // there is a chance of a name collision this function works out if the name
-    // is possible and if not permutates the name until it is valid.
-    static fs::path findObjectPath(std::string& filename)
-    {
-        auto objPath = Environment::getPath(Environment::PathId::objects);
-
-        bool permutateName = false;
-        do
-        {
-            if (permutateName)
-            {
-                permutateObjectFilename(filename);
-            }
-            objPath.replace_filename(filename);
-            objPath.replace_extension(".DAT");
-            permutateName = true;
-        } while (fs::exists(objPath));
-        return objPath;
-    }
-
-    static void sanatiseObjectFilename(std::string& filename)
-    {
-        // Trim string at first space (note this copies vanilla but maybe shouldn't)
-        auto space = filename.find_first_of(' ');
-        if (space != std::string::npos)
-        {
-            filename = filename.substr(0, space);
-        }
-        // Make filename uppercase
-        std::transform(std::begin(filename), std::end(filename), std::begin(filename), toupper);
-    }
-
-    // 0x0047285C
-    static bool installObject(const ObjectHeader& objectHeader)
-    {
-        // Prepare progress bar
-        char caption[512];
-        auto* str = StringManager::formatString(caption, sizeof(caption), StringIds::installing_new_data);
-        // Convert object name to string so it is properly terminated
-        std::string objectname(objectHeader.getName());
-        strcat(str, objectname.c_str());
-        Ui::ProgressBar::begin(caption);
-        Ui::ProgressBar::setProgress(50);
-        Ui::processMessagesMini();
-
-        // Get new file path
-        std::string filename = objectname;
-        sanatiseObjectFilename(filename);
-        auto objPath = findObjectPath(filename);
-
-        // Create new file and output object file
-        Ui::ProgressBar::setProgress(180);
-        SawyerStreamWriter stream(objPath);
-        writePackedObjects(stream, { objectHeader });
-
-        // Free file
-        stream.close();
-        Ui::ProgressBar::setProgress(240);
-        Ui::ProgressBar::setProgress(255);
-        Ui::ProgressBar::end();
-        return true;
-    }
-
-    static bool isObjectInstalled(const ObjectHeader& objectHeader)
+    bool isObjectInstalled(const ObjectHeader& objectHeader)
     {
         const auto objects = getAvailableObjects(objectHeader.getType());
         auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return *obj.second._header == objectHeader; });
         return res != std::end(objects);
-    }
-
-    // 0x00472687 based on
-    bool tryInstallObject(const ObjectHeader& objectHeader, stdx::span<const uint8_t> data)
-    {
-        unloadAll();
-        if (!computeObjectChecksum(objectHeader, data))
-        {
-            return false;
-        }
-        // Copy the object into Loco freeable memory (required for when partialLoad loads the object)
-        uint8_t* objectData = static_cast<uint8_t*>(malloc(data.size()));
-        if (objectData == nullptr)
-        {
-            return false;
-        }
-        std::copy(std::begin(data), std::end(data), objectData);
-
-        auto* obj = reinterpret_cast<Object*>(objectData);
-        if (!callObjectValidate(objectHeader.getType(), *obj))
-        {
-            return false;
-        }
-
-        if (_totalNumImages >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
-        {
-            // Free objectData?
-            return false;
-        }
-
-        // Warning this saves a copy of the objectData pointer and must be unloaded prior to exiting this function
-        if (!partialLoad(objectHeader, stdx::span(objectData, data.size())))
-        {
-            return false;
-        }
-
-        // Object already installed so no need to install it
-        if (isObjectInstalled(objectHeader))
-        {
-            unloadAll();
-            return false;
-        }
-
-        bool result = installObject(objectHeader);
-
-        unloadAll();
-        return result;
     }
 
     // 0x00472AFE

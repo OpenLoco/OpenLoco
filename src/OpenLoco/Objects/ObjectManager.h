@@ -161,11 +161,8 @@ namespace OpenLoco::ObjectManager
     // Unloads and frees the entry
     void unload(const ObjectHeader& header);
     bool load(const ObjectHeader& header);
-    bool partialLoad(const ObjectHeader& header, stdx::span<uint8_t> objectData);
 
-    bool callObjectValidate(const ObjectType type, Object& obj);
-
-    bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data);
+    bool tryInstallObject(const ObjectHeader& object, stdx::span<const uint8_t> data);
 
     size_t getByteLength(const LoadedObjectHandle& handle);
 
