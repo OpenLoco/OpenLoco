@@ -168,22 +168,6 @@ namespace OpenLoco::S5
         return saveDetails;
     }
 
-    static constexpr SawyerEncoding getBestEncodingForObjectType(ObjectType type)
-    {
-        switch (type)
-        {
-            case ObjectType::competitor:
-                return SawyerEncoding::uncompressed;
-            default:
-                return SawyerEncoding::runLengthSingle;
-            case ObjectType::currency:
-                return SawyerEncoding::runLengthMulti;
-            case ObjectType::townNames:
-            case ObjectType::scenarioText:
-                return SawyerEncoding::rotate;
-        }
-    }
-
     /**
      * Removes all tile elements that have the ghost flag set.
      * Assumes all elements are organised in tile order.
