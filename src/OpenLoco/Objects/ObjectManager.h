@@ -147,7 +147,7 @@ namespace OpenLoco::ObjectManager
 
     void freeScenarioText();
     void getScenarioText(ObjectHeader& object);
-    std::optional<LoadedObjectHandle> findIndex(const ObjectHeader& header);
+    std::optional<LoadedObjectHandle> findObjectHandle(const ObjectHeader& header);
     void reloadAll();
     ObjectHeader& getHeader(const LoadedObjectHandle& handle);
     std::vector<ObjectHeader> getHeaders();

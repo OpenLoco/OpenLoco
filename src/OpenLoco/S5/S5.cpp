@@ -184,36 +184,6 @@ namespace OpenLoco::S5
         }
     }
 
-    // 0x00472633
-    // 0x004722FF
-    static void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects)
-    {
-        // TODO at some point, change this to just pack the object file directly from
-        //      disc rather than using the in-memory version. This then avoids having
-        //      to unload the object temporarily to save the S5.
-        for (const auto& header : packedObjects)
-        {
-            auto index = ObjectManager::findIndex(header);
-            if (index)
-            {
-                // Unload the object so that the object data is restored to
-                // its original file state
-                ObjectManager::unload(*index);
-
-                auto encodingType = getBestEncodingForObjectType(header.getType());
-                auto* obj = ObjectManager::getAny(*index);
-                auto objSize = ObjectManager::getByteLength(*index);
-
-                fs.write(header);
-                fs.writeChunk(encodingType, obj, objSize);
-            }
-            else
-            {
-                throw std::runtime_error("Unable to pack object: object not loaded");
-            }
-        }
-    }
-
     /**
      * Removes all tile elements that have the ghost flag set.
      * Assumes all elements are organised in tile order.
@@ -354,7 +324,7 @@ namespace OpenLoco::S5
             }
             if (file.header.numPackedObjects != 0)
             {
-                writePackedObjects(fs, packedObjects);
+                ObjectManager::writePackedObjects(fs, packedObjects);
             }
             fs.writeChunk(SawyerEncoding::rotate, file.requiredObjects, sizeof(file.requiredObjects));
 

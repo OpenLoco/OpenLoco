@@ -140,7 +140,7 @@ namespace OpenLoco::ObjectManager
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
-    std::optional<LoadedObjectHandle> findIndex(const ObjectHeader& header)
+    std::optional<LoadedObjectHandle> findObjectHandle(const ObjectHeader& header)
     {
         if ((header.flags & 0xFF) != 0xFF)
         {
@@ -618,7 +618,7 @@ namespace OpenLoco::ObjectManager
     // 0x00471FF8
     void unload(const ObjectHeader& header)
     {
-        auto handle = findIndex(header);
+        auto handle = findObjectHandle(header);
         if (!handle)
         {
             return;
@@ -871,16 +871,16 @@ namespace OpenLoco::ObjectManager
         //      to unload the object temporarily to save the S5.
         for (const auto& header : packedObjects)
         {
-            auto index = ObjectManager::findIndex(header);
-            if (index)
+            auto handle = ObjectManager::findObjectHandle(header);
+            if (handle)
             {
                 // Unload the object so that the object data is restored to
                 // its original file state
-                ObjectManager::unload(*index);
+                ObjectManager::unload(*handle);
 
                 auto encodingType = getBestEncodingForObjectType(header.getType());
-                auto obj = ObjectManager::getAny(*index);
-                auto objSize = ObjectManager::getByteLength(*index);
+                auto obj = ObjectManager::getAny(*handle);
+                auto objSize = ObjectManager::getByteLength(*handle);
 
                 fs.write(header);
                 fs.writeChunk(encodingType, obj, objSize);

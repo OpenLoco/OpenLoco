@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
 
         // Check if current currency object needs to be changed.
-        auto isLoaded = ObjectManager::findIndex(scenarioInfo->currency);
+        auto isLoaded = ObjectManager::findObjectHandle(scenarioInfo->currency);
         if (!isLoaded)
         {
             // Swap out the currency object and reload
