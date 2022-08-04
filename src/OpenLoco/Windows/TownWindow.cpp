@@ -15,7 +15,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"

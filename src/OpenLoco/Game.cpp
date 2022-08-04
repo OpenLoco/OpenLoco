@@ -12,6 +12,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
+#include "SceneManager.h"
 #include "Title.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"

@@ -16,6 +16,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../ScenarioManager.h"
+#include "../SceneManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"

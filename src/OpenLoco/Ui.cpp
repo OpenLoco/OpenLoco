@@ -40,7 +40,7 @@
 #include "Interop/Interop.hpp"
 #include "Intro.h"
 #include "MultiPlayer.h"
-#include "OpenLoco.h"
+#include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"

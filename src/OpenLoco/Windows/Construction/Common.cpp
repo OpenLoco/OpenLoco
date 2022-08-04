@@ -17,7 +17,7 @@
 #include "../../Objects/TrackObject.h"
 #include "../../Objects/TrainSignalObject.h"
 #include "../../Objects/TrainStationObject.h"
-#include "../../OpenLoco.h"
+#include "../../SceneManager.h"
 #include "../../StationManager.h"
 #include "../../Widget.h"
 #include "Construction.h"

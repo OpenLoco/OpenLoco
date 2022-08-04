@@ -8,7 +8,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "EntityTweener.h"
 

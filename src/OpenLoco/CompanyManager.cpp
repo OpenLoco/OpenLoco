@@ -20,6 +20,7 @@
 #include "OpenLoco.h"
 #include "Scenario.h"
 #include "ScenarioManager.h"
+#include "SceneManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"

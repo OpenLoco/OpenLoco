@@ -58,6 +58,7 @@
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "ScenarioManager.h"
+#include "SceneManager.h"
 #include "StationManager.h"
 #include "Title.h"
 #include "TownManager.h"
@@ -88,10 +89,6 @@ namespace OpenLoco
     loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
     loco_global<uint32_t, 0x0050C19E> last_tick_time;
     loco_global<uint8_t, 0x00508F08> game_command_nest_level;
-    loco_global<uint16_t, 0x00508F12> _screen_age;
-    loco_global<uint16_t, 0x00508F14> _screenFlags;
-    loco_global<uint8_t, 0x00508F17> paused_state;
-    loco_global<GameSpeed, 0x00508F1A> _gameSpeed;
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
@@ -113,119 +110,6 @@ namespace OpenLoco
     std::string getVersionInfo()
     {
         return version;
-    }
-
-    void resetScreenAge()
-    {
-        _screen_age = 0;
-    }
-
-    uint16_t getScreenAge()
-    {
-        return _screen_age;
-    }
-
-    uint16_t getScreenFlags()
-    {
-        return _screenFlags;
-    }
-
-    void setAllScreenFlags(uint16_t newScreenFlags)
-    {
-        _screenFlags = newScreenFlags;
-    }
-
-    void setScreenFlag(uint16_t value)
-    {
-        *_screenFlags |= value;
-    }
-
-    void clearScreenFlag(uint16_t value)
-    {
-        *_screenFlags &= ~value;
-    }
-
-    bool isEditorMode()
-    {
-        return (getScreenFlags() & ScreenFlags::editor) != 0;
-    }
-
-    bool isTitleMode()
-    {
-        return (getScreenFlags() & ScreenFlags::title) != 0;
-    }
-
-    bool isNetworked()
-    {
-        return (getScreenFlags() & ScreenFlags::networked) != 0;
-    }
-
-    bool isNetworkHost()
-    {
-        return (getScreenFlags() & ScreenFlags::networkHost) != 0;
-    }
-
-    bool isProgressBarActive()
-    {
-        return (getScreenFlags() & ScreenFlags::progressBarActive) != 0;
-    }
-
-    bool isInitialised()
-    {
-        return (getScreenFlags() & ScreenFlags::initialised) != 0;
-    }
-
-    bool isDriverCheatEnabled()
-    {
-        return (getScreenFlags() & ScreenFlags::driverCheatEnabled) != 0;
-    }
-
-    bool isSandboxMode()
-    {
-        return (getScreenFlags() & ScreenFlags::sandboxMode) != 0;
-    }
-
-    bool isPauseOverrideEnabled()
-    {
-        return (getScreenFlags() & ScreenFlags::pauseOverrideEnabled) != 0;
-    }
-
-    bool isPaused()
-    {
-        return paused_state != 0;
-    }
-
-    uint8_t getPauseFlags()
-    {
-        return paused_state;
-    }
-
-    void setPauseFlag(uint8_t value)
-    {
-        *paused_state |= value;
-    }
-
-    void unsetPauseFlag(uint8_t value)
-    {
-        *paused_state &= ~(value);
-    }
-
-    GameSpeed getGameSpeed()
-    {
-        return _gameSpeed;
-    }
-
-    // 0x00439A70 (speed: 0)
-    // 0x00439A93 (speed: 1)
-    // 0x00439AB6 (speed: 2)
-    void setGameSpeed(const GameSpeed speed)
-    {
-        assert(speed <= GameSpeed::MAX);
-        if (_gameSpeed != speed)
-        {
-            _gameSpeed = speed;
-            WindowManager::invalidate(WindowType::timeToolbar);
-        }
     }
 
     Utility::prng& gPrng()
@@ -775,11 +659,11 @@ namespace OpenLoco
                         numUpdates = 0;
                     }
                     uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
-                    _screen_age = std::min(0xFFFF, (int32_t)_screen_age + var_F253A0);
-                    if (_gameSpeed != GameSpeed::Normal)
+                    setScreenAge(std::min(0xFFFF, (int32_t)getScreenAge() + var_F253A0));
+                    if (getGameSpeed() != GameSpeed::Normal)
                     {
                         numUpdates *= 3;
-                        if (_gameSpeed != GameSpeed::FastForward)
+                        if (getGameSpeed() != GameSpeed::FastForward)
                         {
                             numUpdates *= 3;
                         }

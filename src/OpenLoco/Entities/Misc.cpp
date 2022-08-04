@@ -4,7 +4,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/TrainStationObject.h"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "EntityManager.h"

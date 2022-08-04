@@ -148,6 +148,7 @@
     <ClCompile Include="ScenarioObjective.cpp" />
     <ClCompile Include="Scenario.cpp" />
     <ClCompile Include="ScenarioManager.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Station.cpp" />
     <ClCompile Include="StationManager.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -394,6 +395,7 @@
     <ClInclude Include="ScenarioObjective.h" />
     <ClInclude Include="Scenario.h" />
     <ClInclude Include="ScenarioManager.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Speed.hpp" />
     <ClInclude Include="Station.h" />
     <ClInclude Include="StationManager.h" />

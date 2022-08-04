@@ -4,7 +4,7 @@
 #include "../../Localisation/StringIds.h"
 #include "../../Message.h"
 #include "../../MessageManager.h"
-#include "../../OpenLoco.h"
+#include "../../SceneManager.h"
 #include "../../Widget.h"
 #include "News.h"
 

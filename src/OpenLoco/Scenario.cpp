@@ -27,6 +27,7 @@
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "ScenarioObjective.h"
+#include "SceneManager.h"
 #include "StationManager.h"
 #include "Title.h"
 #include "TownManager.h"

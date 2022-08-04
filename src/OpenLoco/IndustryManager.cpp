@@ -5,7 +5,7 @@
 #include "Interop/Interop.hpp"
 #include "Math/Vector.hpp"
 #include "Objects/IndustryObject.h"
-#include "OpenLoco.h"
+#include "SceneManager.h"
 #include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;

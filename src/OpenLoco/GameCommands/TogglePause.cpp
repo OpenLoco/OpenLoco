@@ -1,6 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../GameException.hpp"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Ui/WindowType.h"
 #include "GameCommands.h"

@@ -37,7 +37,7 @@
 #include "../Objects/VehicleObject.h"
 #include "../Objects/WallObject.h"
 #include "../Objects/WaterObject.h"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 #include "../Window.h"

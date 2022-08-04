@@ -9,7 +9,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "../StationManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"

@@ -12,7 +12,7 @@
 #include "../Objects/BuildingObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "../Town.h"
 #include "../TownManager.h"
 #include "../Ui/Dropdown.h"

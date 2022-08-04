@@ -6,7 +6,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
