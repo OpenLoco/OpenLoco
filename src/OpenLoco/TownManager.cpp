@@ -7,8 +7,8 @@
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
-#include "OpenLoco.h"
 #include "ScenarioManager.h"
+#include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
 

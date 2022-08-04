@@ -24,7 +24,7 @@
 #include "../Objects/TrackExtraObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Objects/WaterObject.h"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "../StationManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"

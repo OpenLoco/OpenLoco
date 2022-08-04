@@ -9,7 +9,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
-#include "OpenLoco.h"
+#include "SceneManager.h"
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"

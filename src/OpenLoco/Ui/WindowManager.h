@@ -1,13 +1,27 @@
 #pragma once
 
-#include "../Company.h"
-#include "../Graphics/Gfx.h"
 #include "../Localisation/StringManager.h"
-#include "../Map/Tile.h"
-#include "../Viewport.hpp"
+#include "../Map/Map.hpp"
 #include "../Window.h"
 #include <cstddef>
 #include <functional>
+#include <string_view>
+
+namespace OpenLoco::Gfx
+{
+    struct Context;
+}
+namespace OpenLoco::Ui
+{
+    struct Viewport;
+    struct Window;
+}
+namespace OpenLoco::Map
+{
+    struct TrackElement;
+    struct RoadElement;
+    struct TreeElement;
+}
 
 namespace OpenLoco::Ui::WindowManager
 {

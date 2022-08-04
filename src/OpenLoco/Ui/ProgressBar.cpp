@@ -2,7 +2,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringManager.h"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "WindowManager.h"
 
 using namespace OpenLoco::Interop;

@@ -15,7 +15,7 @@
 #include "../Network/Network.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
-#include "../OpenLoco.h"
+#include "../SceneManager.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Ui/Dropdown.h"

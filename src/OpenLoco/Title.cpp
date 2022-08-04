@@ -13,6 +13,7 @@
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "Scenario.h"
+#include "SceneManager.h"
 #include "Ui/WindowManager.h"
 
 #include <vector>

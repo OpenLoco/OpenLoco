@@ -2,7 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
-#include "OpenLoco.h"
+#include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
