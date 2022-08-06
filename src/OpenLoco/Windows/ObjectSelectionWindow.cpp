@@ -19,6 +19,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/LevelCrossingObject.h"
+#include "../Objects/ObjectIndex.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RegionObject.h"
 #include "../Objects/RoadExtraObject.h"

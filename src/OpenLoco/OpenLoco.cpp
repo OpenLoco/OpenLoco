@@ -51,6 +51,7 @@
 #include "MessageManager.h"
 #include "MultiPlayer.h"
 #include "Network/Network.h"
+#include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Platform/Crash.h"

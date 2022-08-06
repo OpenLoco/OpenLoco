@@ -109,6 +109,7 @@
     <ClCompile Include="Objects\InterfaceSkinObject.cpp" />
     <ClCompile Include="Objects\LandObject.cpp" />
     <ClCompile Include="Objects\LevelCrossingObject.cpp" />
+    <ClCompile Include="Objects\ObjectIndex.cpp" />
     <ClCompile Include="Objects\ObjectManager.cpp" />
     <ClCompile Include="Objects\RegionObject.cpp" />
     <ClCompile Include="Objects\RoadExtraObject.cpp" />
@@ -356,6 +357,7 @@
     <ClInclude Include="Objects\LandObject.h" />
     <ClInclude Include="Objects\LevelCrossingObject.h" />
     <ClInclude Include="Objects\Object.h" />
+    <ClInclude Include="Objects\ObjectIndex.h" />
     <ClInclude Include="Objects\ObjectManager.h" />
     <ClInclude Include="Objects\RegionObject.h" />
     <ClInclude Include="Objects\RoadExtraObject.h" />

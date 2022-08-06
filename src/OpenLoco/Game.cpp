@@ -9,7 +9,7 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
-#include "Objects/ObjectManager.h"
+#include "Objects/ObjectIndex.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "SceneManager.h"

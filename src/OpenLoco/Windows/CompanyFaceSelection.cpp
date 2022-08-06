@@ -10,6 +10,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/InterfaceSkinObject.h"
+#include "../Objects/ObjectIndex.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
@@ -68,7 +69,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         _inUseCompetitors.clear();
         for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
         {
-            auto competitorId = ObjectManager::findIndex(object.second);
+            auto competitorId = ObjectManager::findObjectHandle(*object.second._header);
             if (competitorId)
             {
                 auto res = std::find(takenCompetitorIds.begin(), takenCompetitorIds.end(), competitorId->id);
