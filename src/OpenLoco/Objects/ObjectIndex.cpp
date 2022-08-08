@@ -268,34 +268,45 @@ namespace OpenLoco::ObjectManager
     static void createIndex(const ObjectFolderState& currentState)
     {
         Ui::processMessagesMini();
+        std::cout << "createIndex()" << std::endl;
         const auto progressString = _isFirstTime ? StringIds::starting_for_the_first_time : StringIds::checking_object_files;
         Ui::ProgressBar::begin(progressString);
 
         // Reset
+        std::cout << "A" << std::endl;
         reloadAll();
+        std::cout << "B" << std::endl;
         if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
         {
+            std::cout << "C" << std::endl;
             free(*_installedObjectList);
         }
 
+        std::cout << "D" << std::endl;
         // Prepare initial object list buffer (we will grow this as required)
         size_t bufferSize = 0x4000;
         _installedObjectList = static_cast<std::byte*>(malloc(bufferSize));
         if (_installedObjectList == nullptr)
         {
+            std::cout << "E" << std::endl;
             _installedObjectList = reinterpret_cast<std::byte*>(-1);
             exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
+            std::cout << "F" << std::endl;
             return;
         }
 
+        std::cout << "G" << std::endl;
         _installedObjectCount = 0;
         // Create new index by iterating all DAT files and processing
         IndexHeader header{};
         uint8_t progress = 0;      // Progress is used for the ProgressBar Ui element
         size_t usedBufferSize = 0; // Keep track of used space to allow for growth and for final sizing
+        std::cout << "H" << std::endl;
         const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
+        std::cout << "I" << std::endl;
         for (const auto& file : fs::directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
         {
+            std::cout << "J " << file.path() << std::endl;
             if (!file.is_regular_file())
             {
                 continue;
@@ -331,16 +342,21 @@ namespace OpenLoco::ObjectManager
             }
 
             addObjectToIndex(file.path(), usedBufferSize);
+            std::cout << "K" << std::endl;
         }
 
+        std::cout << "L" << std::endl;
         // New index creation completed. Reset and save result.
         reloadAll();
         header.fileSize = usedBufferSize;
         header.numObjects = _installedObjectCount;
         header.state = currentState;
+        std::cout << "M" << std::endl;
         saveIndex(header);
 
+        std::cout << "N" << std::endl;
         Ui::ProgressBar::end();
+        std::cout << "O" << std::endl;
     }
 
     static bool tryLoadIndex(const ObjectFolderState& currentState)
