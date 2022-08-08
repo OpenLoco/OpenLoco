@@ -4,16 +4,6 @@ env:
   OPENLOCO_BUILD_SERVER: GitHub
   OPENLOCO_VERSION: 22.06.1
 jobs:
-  check-code-formatting:
-    name: Check code formatting
-    runs-on: ubuntu-latest
-    container:
-      image: openrct2/openrct2-build:8-format
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Run clang-format
-        run: scripts/check-code-formatting.sh
   windows:
     name: Windows
     runs-on: windows-latest
@@ -56,49 +46,3 @@ jobs:
           name: OpenLoco-${{ runner.os }}-Win32
           path: artifacts
           if-no-files-found: error
-  ubuntu:
-    name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
-    runs-on: ubuntu-latest
-    needs: check-code-formatting
-    container: openloco/openloco:2-${{ matrix.distro }}32
-    strategy:
-      fail-fast: false
-      matrix:
-        compiler: [g++, clang++]
-        distro: [focal, jammy]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          submodules: true
-      - name: Install GCC problem matcher
-        uses: ammaraskar/gcc-problem-matcher@master
-      - name: Build OpenLoco
-        run: |
-          mkdir build
-          cd build
-          cmake .. -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -DPNG_LIBRARY=/usr/lib/i386-linux-gnu/libpng16.so -DPNG_PNG_INCLUDE_DIR=/usr/include -DZLIB_LIBRARY=/usr/lib/i386-linux-gnu/libz.so
-          ninja -k0
-  fedora:
-    name: Fedora shared=${{ matrix.build_shared_libs }} i686 MinGW32
-    runs-on: ubuntu-latest
-    needs: check-code-formatting
-    container: openloco/openloco:2-mingw32
-    strategy:
-      fail-fast: false
-      matrix:
-        build_shared_libs: [on, off]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          submodules: true
-      - name: Install GCC problem matcher
-        uses: ammaraskar/gcc-problem-matcher@master
-      - name: Build OpenLoco
-        run: |
-          cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -DPNG_LIBRARY=/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll -DPNG_PNG_INCLUDE_DIR=/usr/i686-w64-mingw32/sys-root/mingw/include -DBUILD_SHARED_LIBS=${{ matrix.build_shared_libs }}
-          cd build
-          ninja -k0

@@ -1,23 +1,9 @@
 version: '2'
 services:
-  openloco-gcc32:
-    image: openloco/openloco:ubuntu-i686
-    working_dir: /openloco/bin.gcc
-    volumes:
-      - .:/openloco
-    entrypoint: bash
-    command: -c "cmake ../ -G Ninja -DCMAKE_BUILD_TYPE=release && ninja -k0"
-  openloco-clang32:
-    image: openloco/openloco:ubuntu-i686
-    working_dir: /openloco/bin.clang
-    volumes:
-      - .:/openloco
-    entrypoint: bash
-    command: -c "cmake ../ -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release && ninja -k0"
   openloco-mingw32:
-    image: openloco/openloco:fedora-mingw32
+    image: openloco/openloco:2-mingw32
     working_dir: /openloco/bin.mingw32
     volumes:
       - .:/openloco
     entrypoint: bash
-    command: -c "cmake ../ -G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DBOOST_ROOT=/usr/i686-w64-mingw32/sys-root/mingw/ && ninja -k0"
+    command: -c "cmake ../ -G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -DPNG_LIBRARY=/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll -DPNG_PNG_INCLUDE_DIR=/usr/i686-w64-mingw32/sys-root/mingw/include -DBOOST_ROOT=/usr/i686-w64-mingw32/sys-root/mingw/ -DBUILD_SHARED_LIBS=ON && ninja -k0"
