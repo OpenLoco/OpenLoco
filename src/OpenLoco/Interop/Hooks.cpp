@@ -498,8 +498,10 @@ static void registerMemoryHooks()
     // Hook Locomotion's alloc / free routines so that we don't
     // allocate a block in one module and freeing it in another.
     writeJmp(0x4d1401, (void*)&fn_malloc);
+    writeJmp(0x406bf7, (void*)&fn_malloc);
     writeJmp(0x4D1B28, (void*)&fn_realloc);
     writeJmp(0x4D1355, (void*)&fn_free);
+    writeJmp(0x406c12, (void*)&fn_free);
 }
 
 #ifdef _NO_LOCO_WIN32_
