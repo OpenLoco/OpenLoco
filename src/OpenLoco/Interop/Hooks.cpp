@@ -500,6 +500,7 @@ static void registerMemoryHooks()
     writeJmp(0x4d1401, (void*)&fn_malloc);
     writeJmp(0x406bf7, (void*)&fn_malloc);
     writeJmp(0x4D1B28, (void*)&fn_realloc);
+    writeJmp(0x406C02, (void*)&fn_realloc);
     writeJmp(0x4D1355, (void*)&fn_free);
     writeJmp(0x406c12, (void*)&fn_free);
 }
