@@ -4,6 +4,7 @@
 - Fix: [#1578] Clang-compiled openloco does not list scenarios.
 - Fix: [#1583] Newspaper text line height is wrong.
 - Technical: [#1565] Any missing objects are now listed in the dev console when encountered.
+- Technical: [#1600] Allow running OpenLoco through Wine on Apple Silicon Macs
 
 22.06.1 (2022-07-01)
 ------------------------------------------------------------------------
