@@ -123,9 +123,9 @@ namespace OpenLoco::Ui
             void* events[29];
             struct
             {
-                void (*onClose)(Window*);
-                void (*onMouseUp)(Window*, WidgetIndex_t);
-                void (*onResize)(Window*);
+                void (*onClose)(Window&);
+                void (*onMouseUp)(Window&, WidgetIndex_t);
+                void (*onResize)(Window&);
                 void (*event_03)(Window*, WidgetIndex_t); // mouse_over?
                 void (*onMouseDown)(Window*, WidgetIndex_t);
                 void (*onDropdown)(Window*, WidgetIndex_t, int16_t);
@@ -144,7 +144,7 @@ namespace OpenLoco::Ui
                 void (*scrollMouseDrag)(Ui::Window*, int16_t x, int16_t y, uint8_t scrollIndex);
                 void (*scrollMouseOver)(Ui::Window* window, int16_t x, int16_t y, uint8_t scrollIndex);
                 void (*textInput)(Window*, WidgetIndex_t, const char*);
-                void (*viewportRotate)(Window*);
+                void (*viewportRotate)(Window&);
                 uint32_t event_22;
                 std::optional<FormatArguments> (*tooltip)(Window*, WidgetIndex_t);
                 Ui::CursorId (*cursor)(Window*, int16_t, int16_t, int16_t, Ui::CursorId);

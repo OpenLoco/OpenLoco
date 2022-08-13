@@ -87,7 +87,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_payment_rates),                       \
         makeRemapWidget({ 189, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_speed_records)
 
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
         static void onUpdate(Window* self);
         static void prepareDraw(Window* self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -138,12 +138,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         };
 
         // 0x004360A2
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_company_list:
@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case Common::widx::tab_values:
                 case Common::widx::tab_payment_rates:
                 case Common::widx::tab_speed_records:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case sort_name:
@@ -162,24 +162,24 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case sort_value:
                 {
                     auto sortMode = widgetIndex - widx::sort_name;
-                    if (self->sortMode == sortMode)
+                    if (self.sortMode == sortMode)
                         return;
 
-                    self->sortMode = sortMode;
-                    self->invalidate();
-                    self->var_83C = 0;
-                    self->rowHover = -1;
+                    self.sortMode = sortMode;
+                    self.invalidate();
+                    self.var_83C = 0;
+                    self.rowHover = -1;
 
-                    Common::refreshCompanyList(self);
+                    Common::refreshCompanyList(&self);
                     break;
                 }
             }
         }
 
         // 0x004363CB
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(minWindowSize, maxWindowSize);
+            self.setSize(minWindowSize, maxWindowSize);
         }
 
         // 0x00437BA0
@@ -646,9 +646,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x004366D7
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x00436490
@@ -737,9 +737,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x004369FB
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x004367B4
@@ -828,9 +828,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x00436D1F
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x00436AD8
@@ -919,9 +919,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x00437043
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x00436DFC
@@ -1010,9 +1010,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x0043737D
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x00437949
@@ -1213,9 +1213,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x00437591
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x0043745A
@@ -1306,12 +1306,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         };
 
         // 0x0043667B
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_company_list:
@@ -1321,7 +1321,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case Common::widx::tab_values:
                 case Common::widx::tab_payment_rates:
                 case Common::widx::tab_speed_records:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }

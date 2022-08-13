@@ -239,12 +239,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043DC58
-        static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(window);
+                    WindowManager::close(&window);
                     break;
 
                 case Common::widx::tab_options:
@@ -252,7 +252,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_forests:
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
-                    Common::switchTab(window, widgetIndex);
+                    Common::switchTab(&window, widgetIndex);
                     break;
 
                 case widx::generate_when_game_starts:
@@ -583,12 +583,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E14E
-        static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(window);
+                    WindowManager::close(&window);
                     break;
 
                 case Common::widx::tab_options:
@@ -596,12 +596,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_forests:
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
-                    Common::switchTab(window, widgetIndex);
+                    Common::switchTab(&window, widgetIndex);
                     break;
 
                 case widx::hillsEdgeOfMap:
                     S5::getOptions().scenarioFlags ^= Scenario::Flags::hillsEdgeOfMap;
-                    window->invalidate();
+                    window.invalidate();
                     break;
             }
         }
@@ -922,12 +922,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E655
-        static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(window);
+                    WindowManager::close(&window);
                     break;
 
                 case Common::widx::tab_options:
@@ -935,7 +935,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_forests:
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
-                    Common::switchTab(window, widgetIndex);
+                    Common::switchTab(&window, widgetIndex);
                     break;
             }
         }
@@ -1068,12 +1068,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043EBCA
-        static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(window);
+                    WindowManager::close(&window);
                     break;
 
                 case Common::widx::tab_options:
@@ -1081,7 +1081,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_forests:
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
-                    Common::switchTab(window, widgetIndex);
+                    Common::switchTab(&window, widgetIndex);
                     break;
             }
         }
@@ -1175,12 +1175,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043EBCA
-        static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(window);
+                    WindowManager::close(&window);
                     break;
 
                 case Common::widx::tab_options:
@@ -1188,17 +1188,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_forests:
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
-                    Common::switchTab(window, widgetIndex);
+                    Common::switchTab(&window, widgetIndex);
                     break;
 
                 case widx::check_allow_industries_close_down:
                     IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesCloseDown);
-                    window->invalidate();
+                    window.invalidate();
                     break;
 
                 case widx::check_allow_industries_start_up:
                     IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesStartUp);
-                    window->invalidate();
+                    window.invalidate();
                     break;
             }
         }

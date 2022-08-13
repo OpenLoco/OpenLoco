@@ -496,27 +496,27 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D3F6
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Common::widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
 
             case Common::widx::tab_construction:
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(self, widgetIndex);
+                Common::switchTab(&self, widgetIndex);
                 break;
 
             case widx::construct:
-                constructTrack(self, widgetIndex);
+                constructTrack(&self, widgetIndex);
                 break;
 
             case widx::remove:
-                removeTrack(self, widgetIndex);
+                removeTrack(&self, widgetIndex);
                 break;
 
             case widx::rotate_90:
@@ -531,7 +531,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
                 removeConstructionGhosts();
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
-                Input::toolSet(self, widx::construct, CursorId::crosshair);
+                Input::toolSet(&self, widx::construct, CursorId::crosshair);
                 Input::setFlag(Input::Flags::flag6);
 
                 _constructionHover = 1;
@@ -1451,14 +1451,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DAA5
-    static void onResize(Window* self)
+    static void onResize(Window& self)
     {
-        self->enabledWidgets &= ~(1 << widx::construct);
+        self.enabledWidgets &= ~(1 << widx::construct);
 
         if (_constructionHover != 1)
-            self->enabledWidgets |= (1 << widx::construct);
+            self.enabledWidgets |= (1 << widx::construct);
 
-        auto disabledWidgets = self->disabledWidgets;
+        auto disabledWidgets = self.disabledWidgets;
         disabledWidgets &= (1 << Common::widx::tab_construction | 1 << Common::widx::tab_overhead | 1 << Common::widx::tab_signal | 1 << Common::widx::tab_station);
         uint8_t trackType = _trackType;
 
@@ -1468,7 +1468,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (_lastSelectedTrackPiece == 0xFF)
             {
-                disableUnusedRoadPieces(self, disabledWidgets);
+                disableUnusedRoadPieces(&self, disabledWidgets);
                 return;
             }
             switch (_lastSelectedTrackPiece)
@@ -1483,7 +1483,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 case TrackPiece::s_bend_to_dual_track:
                 case TrackPiece::s_bend_to_single_track:
                 {
-                    disableUnusedRoadPieces(self, disabledWidgets);
+                    disableUnusedRoadPieces(&self, disabledWidgets);
                     break;
                 }
 
@@ -1494,7 +1494,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 case TrackPiece::turnaround:
                 {
                     disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
-                    disableUnusedRoadPieces(self, disabledWidgets);
+                    disableUnusedRoadPieces(&self, disabledWidgets);
                     break;
                 }
             }
@@ -1504,13 +1504,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto trackObj = ObjectManager::get<TrackObject>(trackType);
             if (_lastSelectedTrackPiece == 0xFF)
             {
-                disableUnusedTrackPieces(self, *trackObj, disabledWidgets);
+                disableUnusedTrackPieces(&self, *trackObj, disabledWidgets);
                 return;
             }
             switch (_lastSelectedTrackPiece)
             {
                 case TrackPiece::straight:
-                    disableUnusedTrackPieces(self, *trackObj, disabledWidgets);
+                    disableUnusedTrackPieces(&self, *trackObj, disabledWidgets);
                     break;
 
                 case TrackPiece::left_hand_curve_very_small:
@@ -1526,14 +1526,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 case TrackPiece::turnaround:
                 {
                     disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::slope_down) | (1 << widx::slope_up) | (1 << widx::steep_slope_up);
-                    disableUnusedTrackPieces(self, *trackObj, disabledWidgets);
+                    disableUnusedTrackPieces(&self, *trackObj, disabledWidgets);
                     break;
                 }
 
                 case TrackPiece::left_hand_curve_small:
                 case TrackPiece::right_hand_curve_small:
                 {
-                    disableTrackSlopes(self, *trackObj, disabledWidgets);
+                    disableTrackSlopes(&self, *trackObj, disabledWidgets);
                     break;
                 }
             }
@@ -1934,12 +1934,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             activateSelectedConstructionWidgets();
             auto window = WindowManager::find(WindowType::construction);
 
-            if (window == nullptr)
-                return;
 
             _byte_508F09 = _byte_508F09 | (1 << 0);
 
-            onMouseUp(window, widx::construct);
+            onMouseUp(*window, widx::construct);
 
             _byte_508F09 = _byte_508F09 & ~(1 << 0);
 
@@ -1973,7 +1971,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 return;
             }
 
-            onMouseUp(window, widx::rotate_90);
+            onMouseUp(*window, widx::rotate_90);
 
             Audio::playSound(Audio::SoundId::error, int32_t(Input::getMouseLocation().x));
 

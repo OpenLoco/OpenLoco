@@ -263,16 +263,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         // 0x004B5D88
         // 0x004B32F9
-        static void createViewport(Window* const self)
+        static void createViewport(Window& self)
         {
-            if (self->currentTab != (Common::widx::tabMain - Common::widx::tabMain))
+            if (self.currentTab != (Common::widx::tabMain - Common::widx::tabMain))
             {
                 return;
             }
 
-            self->callPrepareDraw();
+            self.callPrepareDraw();
 
-            auto vehHead = Common::getVehicle(self);
+            auto vehHead = Common::getVehicle(&self);
             if (vehHead == nullptr)
             {
                 return;
@@ -282,8 +282,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // If picked up no need for viewport drawn
             if (vehHead->tileX == -1)
             {
-                self->viewportRemove(0);
-                self->invalidate();
+                self.viewportRemove(0);
+                self.invalidate();
                 return;
             }
 
@@ -304,18 +304,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 targetThing,
                 (1 << 15) | (1 << 14),
                 ZoomLevel::full,
-                static_cast<int8_t>(self->viewports[0]->getRotation()),
+                static_cast<int8_t>(self.viewports[0]->getRotation()),
                 0
             };
 
             uint16_t flags = 0;
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                if (self->savedView == view)
+                if (self.savedView == view)
                     return;
 
-                flags = self->viewports[0]->flags;
-                self->viewportRemove(0);
+                flags = self.viewports[0]->flags;
+                self.viewportRemove(0);
                 ViewportManager::collectGarbage();
             }
             else
@@ -324,24 +324,24 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     flags |= ViewportFlags::gridlines_on_landscape;
             }
 
-            self->savedView = view;
+            self.savedView = view;
 
             // 0x004B5E88 start
-            if (self->viewports[0] == nullptr)
+            if (self.viewports[0] == nullptr)
             {
-                auto widget = &self->widgets[widx::viewport];
-                auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
+                auto widget = &self.widgets[widx::viewport];
+                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
-                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, targetThing);
-                self->invalidate();
-                self->flags |= WindowFlags::viewportNoScrolling;
+                ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, targetThing);
+                self.invalidate();
+                self.flags |= WindowFlags::viewportNoScrolling;
             }
             // 0x004B5E88 end
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                self->viewports[0]->flags = flags;
-                self->invalidate();
+                self.viewports[0]->flags = flags;
+                self.invalidate();
             }
         }
 
@@ -459,32 +459,32 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B24D1
-        static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::closeButton:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
                 case Common::widx::caption:
-                    Common::renameVehicle(self, widgetIndex);
+                    Common::renameVehicle(&self, widgetIndex);
                     break;
                 case Common::widx::tabMain:
                 case Common::widx::tabDetails:
                 case Common::widx::tabCargo:
                 case Common::widx::tabFinances:
                 case Common::widx::tabRoute:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
                 case widx::pickup:
-                    Common::onPickup(self, widx::pickup);
+                    Common::onPickup(&self, widx::pickup);
                     break;
                 case widx::changeDirection:
-                    onChangeDirection(self);
+                    onChangeDirection(&self);
                     break;
                 case widx::passSignal:
                     GameCommands::setErrorTitle(StringIds::cant_pass_signal_at_danger);
-                    GameCommands::do_4(EntityId(self->number));
+                    GameCommands::do_4(EntityId(self.number));
                     break;
             }
         }
@@ -531,40 +531,40 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3210
-        static void onResize(Window* const self)
+        static void onResize(Window& self)
         {
-            Common::setCaptionEnableState(self);
-            self->setSize(minWindowSize, maxWindowSize);
+            Common::setCaptionEnableState(&self);
+            self.setSize(minWindowSize, maxWindowSize);
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                auto head = Common::getVehicle(self);
+                auto head = Common::getVehicle(&self);
                 if (head == nullptr)
                 {
                     return;
                 }
-                uint16_t newWidth = self->width - 30;
+                uint16_t newWidth = self.width - 30;
                 if (head->owner != CompanyManager::getControllingId())
                     newWidth += 22;
 
-                uint16_t newHeight = self->height - 59;
+                uint16_t newHeight = self.height - 59;
                 if (head->var_0C & Vehicles::Flags0C::manualControl && head->owner == CompanyManager::getControllingId())
                 {
                     newWidth -= 27;
                 }
 
-                auto& viewport = self->viewports[0];
+                auto& viewport = self.viewports[0];
                 if (newWidth != viewport->width || newHeight != viewport->height)
                 {
-                    self->invalidate();
+                    self.invalidate();
                     viewport->width = newWidth;
                     viewport->height = newHeight;
                     viewport->view_width = newWidth << viewport->zoom;
                     viewport->view_height = newHeight << viewport->zoom;
-                    self->savedView.clear();
+                    self.savedView.clear();
                 }
             }
-            createViewport(self);
+            createViewport(&self);
         }
 
         // 0x004B274B
@@ -1058,29 +1058,29 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3823
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::closeButton:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
                 case Common::widx::caption:
-                    Common::renameVehicle(self, widgetIndex);
+                    Common::renameVehicle(&self, widgetIndex);
                     break;
                 case Common::widx::tabMain:
                 case Common::widx::tabDetails:
                 case Common::widx::tabCargo:
                 case Common::widx::tabFinances:
                 case Common::widx::tabRoute:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
                 case widx::pickup:
-                    Common::onPickup(self, widx::pickup);
+                    Common::onPickup(&self, widx::pickup);
                     break;
                 case widx::remove:
                 {
-                    auto head = Common::getVehicle(self);
+                    auto head = Common::getVehicle(&self);
                     if (head == nullptr)
                     {
                         break;
@@ -1097,10 +1097,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3D73
-        static void onResize(Window* const self)
+        static void onResize(Window& self)
         {
-            Common::setCaptionEnableState(self);
-            self->setSize(minWindowSize, maxWindowSize);
+            Common::setCaptionEnableState(&self);
+            self.setSize(minWindowSize, maxWindowSize);
         }
 
         static void onMouseDown(Window* const self, const WidgetIndex_t widgetIndex)
@@ -1917,12 +1917,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B41BD
-        static void onMouseUp(Window* const self, const WidgetIndex_t i)
+        static void onMouseUp(Window& self, const WidgetIndex_t i)
         {
             switch (i)
             {
                 case Common::widx::closeButton:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tabMain:
@@ -1930,11 +1930,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Common::widx::tabCargo:
                 case Common::widx::tabFinances:
                 case Common::widx::tabRoute:
-                    Common::switchTab(self, i);
+                    Common::switchTab(&self, i);
                     break;
 
                 case Common::widx::caption:
-                    Common::renameVehicle(self, i);
+                    Common::renameVehicle(&self, i);
                     break;
             }
         }
@@ -2143,10 +2143,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4621
-        static void onResize(Window* const self)
+        static void onResize(Window& self)
         {
-            Common::setCaptionEnableState(self);
-            self->setSize(minWindowSize, maxWindowSize);
+            Common::setCaptionEnableState(&self);
+            self.setSize(minWindowSize, maxWindowSize);
         }
 
         static void initEvents()
@@ -2292,22 +2292,22 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5945
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::closeButton:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
                 case Common::widx::caption:
-                    Common::renameVehicle(self, widgetIndex);
+                    Common::renameVehicle(&self, widgetIndex);
                     break;
                 case Common::widx::tabMain:
                 case Common::widx::tabDetails:
                 case Common::widx::tabCargo:
                 case Common::widx::tabFinances:
                 case Common::widx::tabRoute:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
@@ -2335,10 +2335,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B59AF
-        static void onResize(Window* const self)
+        static void onResize(Window& self)
         {
-            Common::setCaptionEnableState(self);
-            self->setSize(minWindowSize, maxWindowSize);
+            Common::setCaptionEnableState(&self);
+            self.setSize(minWindowSize, maxWindowSize);
         }
 
         static void initEvents()
@@ -2540,9 +2540,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B509B
-        static void close(Window* const self)
+        static void close(Window& self)
         {
-            if (Input::isToolActive(self->type, self->number))
+            if (Input::isToolActive(self.type, self.number))
             {
                 Input::toolCancel();
             }
@@ -2621,9 +2621,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4B43
-        static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
         {
-            auto* head = Common::getVehicle(self);
+            auto* head = Common::getVehicle(&self);
             if (head == nullptr)
             {
                 return;
@@ -2631,34 +2631,34 @@ namespace OpenLoco::Ui::Windows::Vehicle
             switch (widgetIndex)
             {
                 case Common::widx::closeButton:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
                 case Common::widx::caption:
-                    Common::renameVehicle(self, widgetIndex);
+                    Common::renameVehicle(&self, widgetIndex);
                     break;
                 case Common::widx::tabMain:
                 case Common::widx::tabDetails:
                 case Common::widx::tabCargo:
                 case Common::widx::tabFinances:
                 case Common::widx::tabRoute:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
                 case widx::orderDelete:
                 {
 
-                    onOrderDelete(head, self->var_842);
-                    if (self->var_842 == -1)
+                    onOrderDelete(head, self.var_842);
+                    if (self.var_842 == -1)
                     {
                         return;
                     }
 
                     // Refresh selection (check if we are now at no order selected)
-                    auto* order = getOrderTable(head).atIndex(self->var_842);
+                    auto* order = getOrderTable(head).atIndex(self.var_842);
 
                     // If no order selected anymore
                     if (order == nullptr)
                     {
-                        self->var_842 = -1;
+                        self.var_842 = -1;
                     }
                     break;
                 }
@@ -2690,29 +2690,29 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
                 case widx::orderSkip:
                     GameCommands::setErrorTitle(StringIds::empty);
-                    GameCommands::do_37(EntityId(self->number));
+                    GameCommands::do_37(EntityId(self.number));
                     break;
                 case widx::orderUp:
-                    if (onOrderMove(head, self->var_842, orderUpCommand))
+                    if (onOrderMove(head, self.var_842, orderUpCommand))
                     {
-                        if (self->var_842 <= 0)
+                        if (self.var_842 <= 0)
                         {
                             return;
                         }
-                        self->var_842--;
+                        self.var_842--;
                     }
                     break;
                 case widx::orderDown:
-                    if (onOrderMove(head, self->var_842, orderDownCommand))
+                    if (onOrderMove(head, self.var_842, orderDownCommand))
                     {
-                        if (self->var_842 < 0)
+                        if (self.var_842 < 0)
                         {
                             return;
                         }
-                        auto* order = getOrderTable(head).atIndex(self->var_842);
+                        auto* order = getOrderTable(head).atIndex(self.var_842);
                         if (order != nullptr)
                         {
-                            self->var_842++;
+                            self.var_842++;
                         }
                     }
                     break;
@@ -2720,10 +2720,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B564E
-        static void onResize(Window* const self)
+        static void onResize(Window& self)
         {
-            Common::setCaptionEnableState(self);
-            self->setSize(minWindowSize, maxWindowSize);
+            Common::setCaptionEnableState(&self);
+            self.setSize(minWindowSize, maxWindowSize);
         }
 
         // 0x004B4DD3

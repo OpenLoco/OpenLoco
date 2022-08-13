@@ -149,33 +149,33 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00499079
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameTownPrompt(self, widgetIndex);
+                    Common::renameTownPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_town:
                 case Common::widx::tab_population:
                 case Common::widx::tab_company_ratings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 // 0x0049932D
                 case widx::centre_on_viewport:
-                    self->viewportCentreMain();
+                    self.viewportCentreMain();
                     break;
 
                 // 0x004990B9
                 case widx::expand_town:
                 {
-                    auto town = TownManager::get(TownId(self->number));
+                    auto town = TownManager::get(TownId(self.number));
 
                     const uint32_t ebx = (town->numBuildings >> 3) + 5;
                     const int16_t currentYear = getCurrentYear();
@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Windows::Town
                 case widx::demolish_town:
                 {
                     GameCommands::setErrorTitle(StringIds::cant_remove_town);
-                    bool success = GameCommands::do_50(self->number);
+                    bool success = GameCommands::do_50(self.number);
                     if (!success)
                         break;
 
@@ -220,31 +220,31 @@ namespace OpenLoco::Ui::Windows::Town
             }
         }
 
-        static void initViewport(Window* self);
+        static void initViewport(Window& self);
 
         // 0x004993A5
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->setSize(Ui::Size(192, 161), Ui::Size(600, 440));
+            self.setSize(Ui::Size(192, 161), Ui::Size(600, 440));
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                uint16_t newWidth = self->width - 30;
+                uint16_t newWidth = self.width - 30;
                 if (!isEditorMode() && !isSandboxMode())
                     newWidth += 22;
 
-                uint16_t newHeight = self->height - 59;
+                uint16_t newHeight = self.height - 59;
 
-                auto& viewport = self->viewports[0];
+                auto& viewport = self.viewports[0];
                 if (newWidth != viewport->width || newHeight != viewport->height)
                 {
                     viewport->width = newWidth;
                     viewport->height = newHeight;
                     viewport->view_width = newWidth << viewport->zoom;
                     viewport->view_height = newHeight << viewport->zoom;
-                    self->savedView.clear();
+                    self.savedView.clear();
                 }
             }
 
@@ -252,15 +252,15 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00499A87
-        static void initViewport(Window* self)
+        static void initViewport(Window& self)
         {
-            if (self->currentTab != 0)
+            if (self.currentTab != 0)
                 return;
 
-            self->callPrepareDraw();
+            self.callPrepareDraw();
 
             // Figure out the town's position on the map.
-            auto town = TownManager::get(TownId(self->number));
+            auto town = TownManager::get(TownId(self.number));
             int16_t tileZ = Map::TileManager::getHeight({ town->x, town->y }).landHeight;
 
             // Compute views.
@@ -268,18 +268,18 @@ namespace OpenLoco::Ui::Windows::Town
                 town->x,
                 town->y,
                 ZoomLevel::quarter,
-                static_cast<int8_t>(self->viewports[0]->getRotation()),
+                static_cast<int8_t>(self.viewports[0]->getRotation()),
                 tileZ,
             };
 
             uint16_t flags = 0;
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                if (self->savedView == view)
+                if (self.savedView == view)
                     return;
 
-                flags = self->viewports[0]->flags;
-                self->viewportRemove(0);
+                flags = self.viewports[0]->flags;
+                self.viewportRemove(0);
                 ViewportManager::collectGarbage();
             }
             else
@@ -288,25 +288,25 @@ namespace OpenLoco::Ui::Windows::Town
                     flags |= ViewportFlags::gridlines_on_landscape;
             }
 
-            self->savedView = view;
+            self.savedView = view;
 
             // 0x00499B39 start
-            if (self->viewports[0] == nullptr)
+            if (self.viewports[0] == nullptr)
             {
-                auto widget = &self->widgets[widx::viewport];
+                auto widget = &self.widgets[widx::viewport];
                 auto tile = Map::Pos3({ town->x, town->y, tileZ });
-                auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
+                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
-                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, tile);
-                self->invalidate();
-                self->flags |= WindowFlags::viewportNoScrolling;
+                ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
+                self.invalidate();
+                self.flags |= WindowFlags::viewportNoScrolling;
             }
             // 0x00499B39 end
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                self->viewports[0]->flags = flags;
-                self->invalidate();
+                self.viewports[0]->flags = flags;
+                self.invalidate();
             }
         }
 
@@ -369,7 +369,7 @@ namespace OpenLoco::Ui::Windows::Town
         window->activatedWidgets = 0;
         window->disabledWidgets = 0;
         window->initScrollWidgets();
-        Town::initViewport(window);
+        Town::initViewport(*window);
 
         return window;
     }
@@ -461,32 +461,32 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004996AC
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameTownPrompt(self, widgetIndex);
+                    Common::renameTownPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_town:
                 case Common::widx::tab_population:
                 case Common::widx::tab_company_ratings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
 
         // 0x004996F6
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->setSize(Ui::Size(299, 172), Ui::Size(299, 327));
+            self.setSize(Ui::Size(299, 172), Ui::Size(299, 327));
         }
 
         static void initEvents()
@@ -559,32 +559,32 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004998E7
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameTownPrompt(self, widgetIndex);
+                    Common::renameTownPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_town:
                 case Common::widx::tab_population:
                 case Common::widx::tab_company_ratings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
 
         // 0x00499936
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->setSize(Ui::Size(340, 208), Ui::Size(340, 208));
+            self.setSize(Ui::Size(340, 208), Ui::Size(340, 208));
         }
 
         static void initEvents()

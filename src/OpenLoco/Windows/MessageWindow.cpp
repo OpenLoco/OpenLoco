@@ -83,26 +83,26 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static WindowEventList events;
 
         // 0x0042A6F5
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_messages:
                 case Common::widx::tab_settings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
 
         // 0x0042A95A
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            auto scrollview = self->widgets[widx::scrollview];
-            auto scrollarea = self->scrollAreas[0];
+            auto scrollview = self.widgets[widx::scrollview];
+            auto scrollarea = self.scrollAreas[0];
 
             auto y = scrollarea.contentHeight - scrollview.height() - 1;
             y = std::max(0, y);
@@ -110,8 +110,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (y < scrollarea.contentOffsetY)
             {
                 scrollarea.contentOffsetY = y;
-                Ui::ScrollView::updateThumbs(self, widx::scrollview);
-                self->invalidate();
+                Ui::ScrollView::updateThumbs(&self, widx::scrollview);
+                self.invalidate();
             }
         }
 
@@ -411,17 +411,17 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static WindowEventList events;
 
         // 0x0042AA84
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_messages:
                 case Common::widx::tab_settings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }

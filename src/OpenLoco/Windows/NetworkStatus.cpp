@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         Gfx::invalidateScreen();
     }
 
-    static void onClose(Ui::Window* window)
+    static void onClose(Ui::Window& window)
     {
         if (_cbClose)
         {
@@ -87,12 +87,12 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         }
     }
 
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::closeBtn:
-                WindowManager::close(window);
+                WindowManager::close(&window);
                 break;
         }
     }

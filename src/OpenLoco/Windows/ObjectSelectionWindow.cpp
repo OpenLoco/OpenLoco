@@ -650,7 +650,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004737BA
-    static void onMouseUp(Window* self, WidgetIndex_t w)
+    static void onMouseUp(Window& self, WidgetIndex_t w)
     {
         switch (w)
         {
@@ -661,8 +661,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case widx::tabArea:
             {
                 int clickedTab = -1;
-                int y = widgets[widx::panel].top + self->y - 26;
-                int x = self->x + 3;
+                int y = widgets[widx::panel].top + self.y - 26;
+                int x = self.x + 3;
 
                 for (int row = 0; row < 2; row++)
                 {
@@ -687,24 +687,24 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     }
                 }
 
-                if (clickedTab != -1 && self->currentTab != clickedTab)
+                if (clickedTab != -1 && self.currentTab != clickedTab)
                 {
-                    sub_4731EE(self, static_cast<ObjectType>(clickedTab));
-                    self->rowHover = -1;
-                    self->object = nullptr;
-                    self->scrollAreas[0].contentWidth = 0;
+                    sub_4731EE(&self, static_cast<ObjectType>(clickedTab));
+                    self.rowHover = -1;
+                    self.object = nullptr;
+                    self.scrollAreas[0].contentWidth = 0;
                     ObjectManager::freeScenarioText();
-                    auto objIndex = sub_472BBC(self);
+                    auto objIndex = sub_472BBC(&self);
 
                     if (objIndex.index != -1)
                     {
-                        self->rowHover = objIndex.index;
-                        self->object = reinterpret_cast<std::byte*>(objIndex.object._header);
+                        self.rowHover = objIndex.index;
+                        self.object = reinterpret_cast<std::byte*>(objIndex.object._header);
 
                         ObjectManager::getScenarioText(*objIndex.object._header);
                     }
 
-                    self->invalidate();
+                    self.invalidate();
                 }
 
                 break;
@@ -712,19 +712,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             case widx::advancedButton:
             {
-                self->var_856 ^= 1;
-                int currentTab = self->currentTab;
-                sub_473154(self);
+                self.var_856 ^= 1;
+                int currentTab = self.currentTab;
+                sub_473154(&self);
 
-                if ((self->var_856 & 1) == 0)
+                if ((self.var_856 & 1) == 0)
                 {
                     if (_4FE384[currentTab] & 1 << 1)
                     {
                         currentTab = _tabInformation[0].index;
                     }
                 }
-                sub_4731EE(self, static_cast<ObjectType>(currentTab));
-                self->invalidate();
+                sub_4731EE(&self, static_cast<ObjectType>(currentTab));
+                self.invalidate();
 
                 break;
             }
@@ -861,7 +861,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004739DD
-    static void onClose(Window* self)
+    static void onClose(Window& self)
     {
         if (!isEditorMode())
             return;

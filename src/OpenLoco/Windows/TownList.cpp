@@ -223,19 +223,19 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A27F
-        static void onMouseUp(Ui::Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_town_list:
                 case Common::widx::tab_build_town:
                 case Common::widx::tab_build_buildings:
                 case Common::widx::tab_build_misc_buildings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::sort_town_name:
@@ -244,15 +244,15 @@ namespace OpenLoco::Ui::Windows::TownList
                 case widx::sort_town_stations:
                 {
                     auto sortMode = widgetIndex - widx::sort_town_name;
-                    if (self->sortMode == sortMode)
+                    if (self.sortMode == sortMode)
                         return;
 
-                    self->sortMode = sortMode;
-                    self->invalidate();
-                    self->var_83C = 0;
-                    self->rowHover = -1;
+                    self.sortMode = sortMode;
+                    self.invalidate();
+                    self.var_83C = 0;
+                    self.rowHover = -1;
 
-                    Common::refreshTownList(self);
+                    Common::refreshTownList(&self);
                     break;
                 }
             }
@@ -640,19 +640,19 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A675
-        static void onMouseUp(Ui::Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_town_list:
                 case Common::widx::tab_build_town:
                 case Common::widx::tab_build_buildings:
                 case Common::widx::tab_build_misc_buildings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
@@ -744,15 +744,15 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A844
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x0049A7C7
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
-            if (Input::isToolActive(self->type, self->number))
+            if (Input::isToolActive(self.type, self.number))
                 Input::toolCancel();
         }
 
@@ -865,19 +865,19 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB31
-        static void onMouseUp(Ui::Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_town_list:
                 case Common::widx::tab_build_town:
                 case Common::widx::tab_build_buildings:
                 case Common::widx::tab_build_misc_buildings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::rotate_object:
@@ -885,7 +885,7 @@ namespace OpenLoco::Ui::Windows::TownList
                         _buildingRotation++;
                     else
                         _buildingRotation = 0;
-                    self->invalidate();
+                    self.invalidate();
                     break;
             }
         }
@@ -1149,14 +1149,14 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AF98
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->invalidate();
-            Ui::Size minWindowSize = { self->minWidth, self->minHeight };
-            Ui::Size maxWindowSize = { self->maxWidth, self->maxHeight };
-            bool hasResized = self->setSize(minWindowSize, maxWindowSize);
+            self.invalidate();
+            Ui::Size minWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size maxWindowSize = { self.maxWidth, self.maxHeight };
+            bool hasResized = self.setSize(minWindowSize, maxWindowSize);
             if (hasResized)
-                updateActiveThumb(self);
+                updateActiveThumb(&self);
         }
 
         // 0x0049AE83
@@ -1298,9 +1298,9 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ABC5
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
-            if (Input::isToolActive(self->type, self->number))
+            if (Input::isToolActive(self.type, self.number))
                 Input::toolCancel();
         }
 

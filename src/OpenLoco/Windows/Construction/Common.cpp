@@ -976,7 +976,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049DD14
-        void onClose(Window* self)
+        void onClose(Window& self)
         {
             removeConstructionGhosts();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);

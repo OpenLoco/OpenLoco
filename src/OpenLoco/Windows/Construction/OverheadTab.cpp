@@ -35,19 +35,19 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     WindowEventList events;
 
     // 0x0049EBD1
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Common::widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
 
             case Common::widx::tab_construction:
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(self, widgetIndex);
+                Common::switchTab(&self, widgetIndex);
                 break;
 
             case widx::checkbox_1:
@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 // TODO: & ~(1 << 7) added to prevent crashing when selecting/deselecting overhead wires for trams
                 _scenarioTrackMods[_trackType & ~(1 << 7)] = _lastSelectedMods;
 
-                self->invalidate();
+                self.invalidate();
                 break;
             }
         }

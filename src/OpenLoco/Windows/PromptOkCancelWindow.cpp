@@ -109,18 +109,18 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x004470FD
-    static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::closeButton:
             case widx::cancelButton:
-                WindowManager::close(self->type);
+                WindowManager::close(self.type);
                 break;
 
             case widx::okButton:
                 _result = 1;
-                WindowManager::close(self->type);
+                WindowManager::close(self.type);
                 break;
         }
     }

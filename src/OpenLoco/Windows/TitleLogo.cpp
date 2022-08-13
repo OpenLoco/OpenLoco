@@ -26,7 +26,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
 
     static WindowEventList _events;
 
-    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
     static void draw(Ui::Window* window, Gfx::Context* context);
 
     Window* open()
@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     // 0x004392AD
-    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {

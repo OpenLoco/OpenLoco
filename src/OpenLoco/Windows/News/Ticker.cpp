@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     WindowEventList events;
 
     // 0x00429EA2
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         if (widgetIndex != 0)
             return;
@@ -35,25 +35,25 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto activeMessageIndex = MessageManager::getActiveIndex();
         MessageManager::setActiveIndex(MessageId::null);
 
-        WindowManager::close(self);
+        WindowManager::close(&self);
         open(activeMessageIndex);
     }
 
     // 0x00429FE4
-    static void onResize(Window* self)
+    static void onResize(Window& self)
     {
         auto y = Ui::height() - windowSize.height + 1;
         auto x = Ui::width() - windowSize.width - 27;
         auto height = windowSize.height - 1;
 
-        if (y != self->y || x != self->x || windowSize.width != self->width || height != self->height)
+        if (y != self.y || x != self.x || windowSize.width != self.width || height != self.height)
         {
-            self->invalidate();
-            self->y = y;
-            self->x = x;
-            self->width = windowSize.width;
-            self->height = height;
-            self->invalidate();
+            self.invalidate();
+            self.y = y;
+            self.x = x;
+            self.width = windowSize.width;
+            self.height = height;
+            self.invalidate();
         }
     }
 

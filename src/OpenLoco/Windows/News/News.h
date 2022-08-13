@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         extern WindowEventList events;
 
         void initEvents();
-        void initViewport(Window* self);
+        void initViewport(Window& self);
     }
 
     namespace News2

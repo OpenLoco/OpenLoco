@@ -76,12 +76,12 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     }
 
     // 0x004BE821
-    static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::close:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 return;
         }
     }

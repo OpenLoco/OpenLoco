@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
     static void prepareDraw(Window* window);
     static void draw(Ui::Window* window, Gfx::Context* context);
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
     static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index);
     static Ui::CursorId onCursor(Ui::Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395A4
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {

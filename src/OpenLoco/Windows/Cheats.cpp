@@ -326,19 +326,19 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(self->type);
+                    WindowManager::close(self.type);
                     break;
 
                 case Common::Widx::tab_finances:
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case Widx::cash_step_apply:
@@ -348,7 +348,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 case Widx::loan_clear:
                     GameCommands::do_81(CheatCommand::clearLoan);
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::loan_value);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::loan_value);
                     break;
 
                 case Widx::date_change_apply:
@@ -521,19 +521,19 @@ namespace OpenLoco::Ui::Windows::Cheats
                 &company->name);
         }
 
-        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(self->type);
+                    WindowManager::close(self.type);
                     break;
 
                 case Common::Widx::tab_finances:
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case Widx::acquire_company_assets_button:
@@ -666,19 +666,19 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(self, context);
         }
 
-        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(self->type);
+                    WindowManager::close(self.type);
                     break;
 
                 case Common::Widx::tab_finances:
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case Widx::reliablity_all_to_zero:
@@ -703,16 +703,16 @@ namespace OpenLoco::Ui::Windows::Cheats
                     // if we don't want to display locked vehicles, there is no reason to allow building them
                     if (Config::getNew().displayLockedVehicles)
                     {
-                        self->disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
+                        self.disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
                     }
                     else
                     {
                         Config::getNew().buildLockedVehicles = false;
-                        self->disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
+                        self.disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
                     }
 
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_display_locked_vehicles);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_build_locked_vehicles);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_display_locked_vehicles);
                     WindowManager::invalidate(WindowType::buildVehicle);
                     break;
 
@@ -720,7 +720,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     if (Config::getNew().displayLockedVehicles)
                     {
                         Config::getNew().buildLockedVehicles = !Config::getNew().buildLockedVehicles;
-                        WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
+                        WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_build_locked_vehicles);
                         WindowManager::invalidate(WindowType::buildVehicle);
                     }
                     break;
@@ -785,19 +785,19 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(self, context);
         }
 
-        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(self->type);
+                    WindowManager::close(self.type);
                     break;
 
                 case Common::Widx::tab_finances:
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case Widx::ratings_all_min_10pct:

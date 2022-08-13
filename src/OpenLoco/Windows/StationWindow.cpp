@@ -133,53 +133,53 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E4D4
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameStationPrompt(self, widgetIndex);
+                    Common::renameStationPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_station:
                 case Common::widx::tab_cargo:
                 case Common::widx::tab_cargo_ratings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 // 0x0049932D
                 case widx::centre_on_viewport:
-                    self->viewportCentreMain();
+                    self.viewportCentreMain();
                     break;
             }
         }
 
-        static void initViewport(Window* self);
+        static void initViewport(Window& self);
 
         // 0x0048E70B
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(&self);
 
-            self->setSize(windowSize, Common::maxWindowSize);
+            self.setSize(windowSize, Common::maxWindowSize);
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                uint16_t newWidth = self->height - 8;
-                uint16_t newHeight = self->height - 59;
+                uint16_t newWidth = self.height - 8;
+                uint16_t newHeight = self.height - 59;
 
-                auto& viewport = self->viewports[0];
+                auto& viewport = self.viewports[0];
                 if (newWidth != viewport->width || newHeight != viewport->height)
                 {
                     viewport->width = newWidth;
                     viewport->height = newHeight;
                     viewport->view_width = newWidth << viewport->zoom;
                     viewport->view_height = newHeight << viewport->zoom;
-                    self->savedView.clear();
+                    self.savedView.clear();
                 }
             }
 
@@ -187,15 +187,15 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048F11B
-        static void initViewport(Window* self)
+        static void initViewport(Window& self)
         {
-            if (self->currentTab != 0)
+            if (self.currentTab != 0)
                 return;
 
-            self->callPrepareDraw();
+            self.callPrepareDraw();
 
             // Figure out the station's position on the map.
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
 
             // Compute views.
 
@@ -203,19 +203,19 @@ namespace OpenLoco::Ui::Windows::Station
                 station->x,
                 station->y,
                 ZoomLevel::half,
-                static_cast<int8_t>(self->viewports[0]->getRotation()),
+                static_cast<int8_t>(self.viewports[0]->getRotation()),
                 station->z,
             };
             view.flags |= (1 << 14);
 
             uint16_t flags = 0;
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                if (self->savedView == view)
+                if (self.savedView == view)
                     return;
 
-                flags = self->viewports[0]->flags;
-                self->viewportRemove(0);
+                flags = self.viewports[0]->flags;
+                self.viewportRemove(0);
                 ViewportManager::collectGarbage();
             }
             else
@@ -226,25 +226,25 @@ namespace OpenLoco::Ui::Windows::Station
             // Remove station names from viewport
             flags |= ViewportFlags::station_names_displayed;
 
-            self->savedView = view;
+            self.savedView = view;
 
             // 0x0048F1CB start
-            if (self->viewports[0] == nullptr)
+            if (self.viewports[0] == nullptr)
             {
-                auto widget = &self->widgets[widx::viewport];
+                auto widget = &self.widgets[widx::viewport];
                 auto tile = Map::Pos3({ station->x, station->y, station->z });
-                auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
+                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
-                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, tile);
-                self->invalidate();
-                self->flags |= WindowFlags::viewportNoScrolling;
+                ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
+                self.invalidate();
+                self.flags |= WindowFlags::viewportNoScrolling;
             }
             // 0x0048F1CB end
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                self->viewports[0]->flags = flags;
-                self->invalidate();
+                self.viewports[0]->flags = flags;
+                self.invalidate();
             }
         }
 
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::Station
         window->activatedWidgets = 0;
         window->disabledWidgets = 0;
         window->initScrollWidgets();
-        Station::initViewport(window);
+        Station::initViewport(*window);
 
         return window;
     }
@@ -400,27 +400,27 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB0B
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameStationPrompt(self, widgetIndex);
+                    Common::renameStationPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_station:
                 case Common::widx::tab_cargo:
                 case Common::widx::tab_cargo_ratings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::station_catchment:
                 {
-                    StationId windowNumber = StationId(self->number);
+                    StationId windowNumber = StationId(self.number);
                     if (windowNumber == _lastSelectedStation)
                         windowNumber = StationId::null;
 
@@ -431,11 +431,11 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EBB7
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(&self);
 
-            self->setSize(Common::minWindowSize, Common::maxWindowSize);
+            self.setSize(Common::minWindowSize, Common::maxWindowSize);
         }
 
         // 0x0048EB64
@@ -541,9 +541,9 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EC21
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
-            if (StationId(self->number) == _lastSelectedStation)
+            if (StationId(self.number) == _lastSelectedStation)
             {
                 showStationCatchment(StationId::null);
             }
@@ -608,32 +608,32 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE1A
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameStationPrompt(self, widgetIndex);
+                    Common::renameStationPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_station:
                 case Common::widx::tab_cargo:
                 case Common::widx::tab_cargo_ratings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
 
         // 0x0048EE97
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(&self);
 
-            self->setSize(windowSize, maxWindowSize);
+            self.setSize(windowSize, maxWindowSize);
         }
 
         // 0x0048EE4A

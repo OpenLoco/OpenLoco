@@ -374,36 +374,36 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close:
-                WindowManager::close(self->type);
+                WindowManager::close(self.type);
                 break;
 
             case widx::select:
-                activateMapSelectionTool(self);
+                activateMapSelectionTool(&self);
                 break;
 
             case widx::xPosDecrease:
                 _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, Map::map_columns);
-                self->invalidate();
+                self.invalidate();
                 break;
 
             case widx::xPosIncrease:
                 _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, Map::map_columns);
-                self->invalidate();
+                self.invalidate();
                 break;
 
             case widx::yPosDecrease:
                 _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, Map::map_rows);
-                self->invalidate();
+                self.invalidate();
                 break;
 
             case widx::yPosIncrease:
                 _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, Map::map_rows);
-                self->invalidate();
+                self.invalidate();
                 break;
         }
     }
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         self.invalidate();
     }
 
-    static void onClose(Window* self)
+    static void onClose(Window& self)
     {
         Input::toolCancel();
     }

@@ -831,12 +831,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2409
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
 
             case Widx::tab_trains:
@@ -847,7 +847,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             case Widx::tab_ships:
             {
                 auto vehicleType = VehicleType(widgetIndex - Widx::tab_trains);
-                switchTab(self, vehicleType);
+                switchTab(&self, vehicleType);
                 break;
             }
 
@@ -857,12 +857,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
             case Widx::sort_reliability:
             {
                 auto sortMode = widgetIndex - Widx::sort_name;
-                if (self->sortMode == sortMode)
+                if (self.sortMode == sortMode)
                     return;
 
-                self->sortMode = sortMode;
-                self->invalidate();
-                refreshVehicleList(self);
+                self.sortMode = sortMode;
+                self.invalidate();
+                refreshVehicleList(&self);
                 break;
             }
         }

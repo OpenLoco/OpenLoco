@@ -161,23 +161,23 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B8E6
-    static void onClose(Window* self)
+    static void onClose(Window& self)
     {
-        _lastMapWindowSize = Ui::Size(self->width, self->height);
-        _lastMapWindowVar88A = self->var_88A;
-        _lastMapWindowVar88C = self->var_88C;
-        _lastMapWindowFlags = self->flags | WindowFlags::flag_31;
+        _lastMapWindowSize = Ui::Size(self.width, self.height);
+        _lastMapWindowVar88A = self.var_88A;
+        _lastMapWindowVar88C = self.var_88C;
+        _lastMapWindowFlags = self.flags | WindowFlags::flag_31;
 
         free(_dword_F253A8);
     }
 
     // 0x0046B8CF
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::closeButton:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
 
             case widx::tabOverall:
@@ -189,28 +189,28 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto tabIndex = widgetIndex - widx::tabOverall;
 
-                if (tabIndex == self->currentTab)
+                if (tabIndex == self.currentTab)
                     return;
 
-                self->currentTab = tabIndex;
-                self->frame_no = 0;
-                self->var_854 = 0;
+                self.currentTab = tabIndex;
+                self.frame_no = 0;
+                self.var_854 = 0;
                 break;
             }
         }
     }
 
     // 0x0046B9F7
-    static void onResize(Window* self)
+    static void onResize(Window& self)
     {
-        self->flags |= WindowFlags::resizable;
-        self->minWidth = 350;
-        self->maxWidth = 800;
-        self->maxHeight = 800;
+        self.flags |= WindowFlags::resizable;
+        self.minWidth = 350;
+        self.maxWidth = 800;
+        self.maxHeight = 800;
 
-        Ui::Size minWindowSize = { self->minWidth, self->minHeight };
-        Ui::Size maxWindowSize = { self->maxWidth, self->maxHeight };
-        self->setSize(minWindowSize, maxWindowSize);
+        Ui::Size minWindowSize = { self.minWidth, self.minHeight };
+        Ui::Size maxWindowSize = { self.maxWidth, self.maxHeight };
+        self.setSize(minWindowSize, maxWindowSize);
     }
 
     // 0x0046C544

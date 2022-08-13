@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 
     static WindowEventList _events;
 
-    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
     static void draw(Ui::Window* window, Gfx::Context* context);
 
     Window* open()
@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         Gfx::drawStringCentredWrapped(*context, origin, window->width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
     }
 
-    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
     {
         if (Intro::isActive())
         {

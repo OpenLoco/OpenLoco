@@ -918,7 +918,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->onClose(this);
+        eventHandlers->onClose(*this);
     }
 
     void Window::callOnPeriodicUpdate()
@@ -1130,7 +1130,7 @@ namespace OpenLoco::Ui
         if (eventHandlers->onMouseUp == nullptr)
             return;
 
-        if (isInteropEvent(eventHandlers->onMouseUp))
+        if (isInteropEvent(&eventHandlers->onMouseUp))
         {
             registers regs;
             regs.edx = widgetIndex;
@@ -1143,7 +1143,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->onMouseUp(this, widgetIndex);
+        eventHandlers->onMouseUp(*this, widgetIndex);
     }
 
     Ui::Window* Window::callOnResize()
@@ -1159,7 +1159,7 @@ namespace OpenLoco::Ui
             return (Window*)regs.esi;
         }
 
-        eventHandlers->onResize(this);
+        eventHandlers->onResize(*this);
         return this;
     }
 
@@ -1325,7 +1325,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        this->eventHandlers->viewportRotate(this);
+        this->eventHandlers->viewportRotate(*this);
     }
 
     std::optional<FormatArguments> Window::callTooltip(int16_t widget_index)

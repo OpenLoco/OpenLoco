@@ -386,7 +386,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043FCED
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -394,22 +394,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
                 case Common::widx::tab_scenario:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case check_be_top_company:
                     Scenario::getObjective().flags ^= Scenario::ObjectiveFlags::beTopCompany;
-                    self->invalidate();
+                    self.invalidate();
                     break;
 
                 case check_be_within_top_three_companies:
                     Scenario::getObjective().flags ^= Scenario::ObjectiveFlags::beWithinTopThreeCompanies;
-                    self->invalidate();
+                    self.invalidate();
                     break;
 
                 case check_time_limit:
                     Scenario::getObjective().flags ^= Scenario::ObjectiveFlags::withinTimeLimit;
-                    self->invalidate();
+                    self.invalidate();
                     break;
             }
         }
@@ -743,7 +743,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F60C
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -751,7 +751,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
                 case Common::widx::tab_scenario:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::competitor_forbid_trains:
@@ -767,7 +767,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     if (newForbiddenVehicles != 0b111111)
                     {
                         *forbiddenVehiclesCompetitors = newForbiddenVehicles;
-                        self->invalidate();
+                        self.invalidate();
                     }
                     break;
                 }
@@ -785,7 +785,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     if (newForbiddenVehicles != 0b111111)
                     {
                         *forbiddenVehiclesPlayers = newForbiddenVehicles;
-                        self->invalidate();
+                        self.invalidate();
                     }
                     break;
                 }
@@ -910,7 +910,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self->invalidate();
         }
 
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -918,7 +918,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
                 case Common::widx::tab_scenario:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
@@ -1059,7 +1059,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F11F
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1067,7 +1067,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
                 case Common::widx::tab_scenario:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::change_name_btn:
@@ -1075,7 +1075,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, S5::getOptions().scenarioName, 512);
 
-                    TextInput::openTextInput(self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
+                    TextInput::openTextInput(&self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
                     break;
                 }
 
@@ -1084,7 +1084,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, S5::getOptions().scenarioDetails, 512);
 
-                    TextInput::openTextInput(self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
+                    TextInput::openTextInput(&self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
                     break;
                 }
             }

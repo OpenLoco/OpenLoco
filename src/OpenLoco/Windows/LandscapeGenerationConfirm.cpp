@@ -49,18 +49,18 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     }
 
     // 0x004C18E4
-    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close_button:
             case widx::button_cancel:
-                WindowManager::close(window);
+                WindowManager::close(&window);
                 break;
 
             case widx::button_ok:
-                uint32_t status = window->var_846;
-                WindowManager::close(window);
+                uint32_t status = window.var_846;
+                WindowManager::close(&window);
 
                 if (status == 0)
                     Scenario::generateLandscape();

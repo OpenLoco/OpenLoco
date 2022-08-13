@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
     static WindowEventList _events;
 
-    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
     static void prepareDraw(Ui::Window* self);
     static void draw(Ui::Window* window, Gfx::Context* context);
 
@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     // 0x00439268
-    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
     {
         if (Intro::isActive())
         {

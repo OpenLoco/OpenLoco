@@ -169,35 +169,35 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x0044647C
-    static void onClose(Window*)
+    static void onClose(Window&)
     {
         _files.clear();
         freeFileDetails();
     }
 
     // 0x004467F6
-    static void onResize(Window* window)
+    static void onResize(Window& window)
     {
-        window->capSize(400, 300, 640, 800);
+        window.capSize(400, 300, 640, 800);
     }
 
     // 0x00446465
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close_button:
                 _currentDirectory.clear();
                 _savePath[0] = '\0';
-                WindowManager::close(window);
+                WindowManager::close(&window);
                 break;
             case widx::parent_button:
                 upOneLevel();
-                window->var_85A = -1;
-                window->invalidate();
+                window.var_85A = -1;
+                window.invalidate();
                 break;
             case widx::ok_button:
-                processFileForLoadSave(window);
+                processFileForLoadSave(&window);
                 break;
         }
     }

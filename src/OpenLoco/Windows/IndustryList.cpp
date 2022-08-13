@@ -150,17 +150,17 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457EC4
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_industry_list:
                 case Common::widx::tab_new_industry:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::sort_industry_name:
@@ -168,15 +168,15 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 case widx::sort_industry_production_transported:
                 {
                     auto sortMode = widgetIndex - widx::sort_industry_name;
-                    if (self->sortMode == sortMode)
+                    if (self.sortMode == sortMode)
                         return;
 
-                    self->sortMode = sortMode;
-                    self->invalidate();
-                    self->var_83C = 0;
-                    self->rowHover = -1;
+                    self.sortMode = sortMode;
+                    self.invalidate();
+                    self.var_83C = 0;
+                    self.rowHover = -1;
 
-                    Common::refreshIndustryList(self);
+                    Common::refreshIndustryList(&self);
                     break;
                 }
             }
@@ -674,17 +674,17 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045843A
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_industry_list:
                 case Common::widx::tab_new_industry:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
@@ -1047,9 +1047,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045845F
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
-            if (Input::isToolActive(self->type, self->number))
+            if (Input::isToolActive(self.type, self.number))
                 Input::toolCancel();
         }
 
@@ -1150,14 +1150,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004589E8
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->invalidate();
-            Ui::Size minWindowSize = { self->minWidth, self->minHeight };
-            Ui::Size maxWindowSize = { self->maxWidth, self->maxHeight };
-            bool hasResized = self->setSize(minWindowSize, maxWindowSize);
+            self.invalidate();
+            Ui::Size minWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size maxWindowSize = { self.maxWidth, self.maxHeight };
+            bool hasResized = self.setSize(minWindowSize, maxWindowSize);
             if (hasResized)
-                updateActiveThumb(self);
+                updateActiveThumb(&self);
         }
 
         static void initEvents()

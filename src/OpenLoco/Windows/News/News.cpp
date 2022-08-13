@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         WindowEventList events;
 
         // 0x00429BB7
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429209
-        void initViewport(Window* self)
+        void initViewport(Window& self)
         {
             SavedView view;
             view.mapX = -1;
@@ -291,22 +291,22 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     if (news->itemSubjects[0] != 0xFFFF)
                     {
-                        view = getView(self, news, news->itemSubjects[0], itemType, &selectable);
+                        view = getView(&self, news, news->itemSubjects[0], itemType, &selectable);
                     }
                 }
             }
 
-            self->widgets[Common::widx::viewport1].type = WidgetType::none;
-            self->widgets[Common::widx::viewport1Button].type = WidgetType::none;
+            self.widgets[Common::widx::viewport1].type = WidgetType::none;
+            self.widgets[Common::widx::viewport1Button].type = WidgetType::none;
 
             if (!view.isEmpty())
             {
-                self->widgets[Common::widx::viewport1].type = WidgetType::viewport;
+                self.widgets[Common::widx::viewport1].type = WidgetType::viewport;
             }
 
             if (selectable)
             {
-                self->widgets[Common::widx::viewport1Button].type = WidgetType::buttonWithImage;
+                self.widgets[Common::widx::viewport1Button].type = WidgetType::buttonWithImage;
             }
 
             uint32_t ecx = view.surfaceZ << 16 | view.rotation << 8 | (uint8_t)view.zoomLevel;
@@ -322,52 +322,52 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 _dword_525CD0 = ecx;
                 _dword_525CD4 = edx;
-                self->viewportRemove(0);
-                self->invalidate();
+                self.viewportRemove(0);
+                self.invalidate();
 
-                self->widgets[Common::widx::viewport1].left = 6;
-                self->widgets[Common::widx::viewport1].right = 353;
-                self->widgets[Common::widx::viewport1Button].left = 4;
-                self->widgets[Common::widx::viewport1Button].right = 355;
+                self.widgets[Common::widx::viewport1].left = 6;
+                self.widgets[Common::widx::viewport1].right = 353;
+                self.widgets[Common::widx::viewport1Button].left = 4;
+                self.widgets[Common::widx::viewport1Button].right = 355;
 
                 if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
                 {
-                    self->widgets[Common::widx::viewport1].left = 6;
-                    self->widgets[Common::widx::viewport1].right = 173;
-                    self->widgets[Common::widx::viewport1Button].left = 4;
-                    self->widgets[Common::widx::viewport1Button].right = 175;
+                    self.widgets[Common::widx::viewport1].left = 6;
+                    self.widgets[Common::widx::viewport1].right = 173;
+                    self.widgets[Common::widx::viewport1Button].left = 4;
+                    self.widgets[Common::widx::viewport1Button].right = 175;
                 }
 
                 if (edx != 0xFFFFFFFF)
                 {
-                    int16_t x = self->widgets[Common::widx::viewport1].left + 1 + self->x;
-                    int16_t y = self->widgets[Common::widx::viewport1].top + 1 + self->y;
+                    int16_t x = self.widgets[Common::widx::viewport1].left + 1 + self.x;
+                    int16_t y = self.widgets[Common::widx::viewport1].top + 1 + self.y;
                     Ui::Point origin = { x, y };
 
-                    uint16_t viewportWidth = self->widgets[Common::widx::viewport1].width();
+                    uint16_t viewportWidth = self.widgets[Common::widx::viewport1].width();
                     uint16_t viewportHeight = 62;
                     Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
                     if (mtd.hasFlag(MessageTypeFlags::unk1))
                     {
-                        x = self->widgets[Common::widx::viewport1].left + self->x;
-                        y = self->widgets[Common::widx::viewport1].top + self->y;
+                        x = self.widgets[Common::widx::viewport1].left + self.x;
+                        y = self.widgets[Common::widx::viewport1].top + self.y;
                         origin = { x, y };
 
-                        viewportWidth = self->widgets[Common::widx::viewport1].width() + 2;
+                        viewportWidth = self.widgets[Common::widx::viewport1].width() + 2;
                         viewportHeight = 64;
                         viewportSize = { viewportWidth, viewportHeight };
                     }
 
                     if (view.isThingView())
                     {
-                        ViewportManager::create(self, 0, origin, viewportSize, view.zoomLevel, view.thingId);
+                        ViewportManager::create(&self, 0, origin, viewportSize, view.zoomLevel, view.thingId);
                     }
                     else
                     {
-                        ViewportManager::create(self, 0, origin, viewportSize, view.zoomLevel, view.getPos());
+                        ViewportManager::create(&self, 0, origin, viewportSize, view.zoomLevel, view.getPos());
                     }
-                    self->invalidate();
+                    self.invalidate();
                 }
             }
 
@@ -387,22 +387,22 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     if (news->itemSubjects[1] != 0xFFFF)
                     {
-                        view = getView(self, news, news->itemSubjects[1], itemType, &selectable);
+                        view = getView(&self, news, news->itemSubjects[1], itemType, &selectable);
                     }
                 }
             }
 
-            self->widgets[Common::widx::viewport2].type = WidgetType::none;
-            self->widgets[Common::widx::viewport2Button].type = WidgetType::none;
+            self.widgets[Common::widx::viewport2].type = WidgetType::none;
+            self.widgets[Common::widx::viewport2Button].type = WidgetType::none;
 
             if (!view.isEmpty())
             {
-                self->widgets[Common::widx::viewport2].type = WidgetType::viewport;
+                self.widgets[Common::widx::viewport2].type = WidgetType::viewport;
             }
 
             if (selectable)
             {
-                self->widgets[Common::widx::viewport2Button].type = WidgetType::buttonWithImage;
+                self.widgets[Common::widx::viewport2Button].type = WidgetType::buttonWithImage;
             }
 
             ecx = view.surfaceZ << 16 | view.rotation << 8 | (uint8_t)view.zoomLevel;
@@ -418,38 +418,38 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 _dword_525CD8 = ecx;
                 _dword_525CDC = edx;
-                self->viewportRemove(1);
-                self->invalidate();
+                self.viewportRemove(1);
+                self.invalidate();
 
-                self->widgets[Common::widx::viewport2].left = 186;
-                self->widgets[Common::widx::viewport2].right = 353;
-                self->widgets[Common::widx::viewport2Button].left = 184;
-                self->widgets[Common::widx::viewport2Button].right = 355;
+                self.widgets[Common::widx::viewport2].left = 186;
+                self.widgets[Common::widx::viewport2].right = 353;
+                self.widgets[Common::widx::viewport2Button].left = 184;
+                self.widgets[Common::widx::viewport2Button].right = 355;
 
                 if (edx != 0xFFFFFFFF)
                 {
-                    int16_t x = self->widgets[Common::widx::viewport2].left + 1 + self->x;
-                    int16_t y = self->widgets[Common::widx::viewport2].top + 1 + self->y;
+                    int16_t x = self.widgets[Common::widx::viewport2].left + 1 + self.x;
+                    int16_t y = self.widgets[Common::widx::viewport2].top + 1 + self.y;
                     Ui::Point origin = { x, y };
 
-                    uint16_t viewportWidth = self->widgets[Common::widx::viewport2].width();
+                    uint16_t viewportWidth = self.widgets[Common::widx::viewport2].width();
                     uint16_t viewportHeight = 62;
                     Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
                     if (mtd.hasFlag(MessageTypeFlags::unk1))
                     {
-                        x = self->widgets[Common::widx::viewport2].left + self->x;
-                        y = self->widgets[Common::widx::viewport2].top + self->y;
+                        x = self.widgets[Common::widx::viewport2].left + self.x;
+                        y = self.widgets[Common::widx::viewport2].top + self.y;
                         origin = { x, y };
 
-                        viewportWidth = self->widgets[Common::widx::viewport2].width() + 2;
+                        viewportWidth = self.widgets[Common::widx::viewport2].width() + 2;
                         viewportHeight = 64;
                         viewportSize = { viewportWidth, viewportHeight };
                     }
 
-                    ViewportManager::create(self, 1, origin, viewportSize, view.zoomLevel, view.getPos());
+                    ViewportManager::create(&self, 1, origin, viewportSize, view.zoomLevel, view.getPos());
 
-                    self->invalidate();
+                    self.invalidate();
                 }
             }
         }

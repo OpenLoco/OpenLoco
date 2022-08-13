@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
     static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onUpdate(Window* window);
@@ -605,12 +605,12 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491785
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close_button:
-                WindowManager::close(window);
+                WindowManager::close(&window);
                 break;
 
             case tab_all_stations:
@@ -619,23 +619,23 @@ namespace OpenLoco::Ui::Windows::StationList
             case tab_airports:
             case tab_ship_ports:
             {
-                if (Input::isToolActive(window->type, window->number))
+                if (Input::isToolActive(window.type, window.number))
                     Input::toolCancel();
 
-                window->currentTab = widgetIndex - widx::tab_all_stations;
-                window->frame_no = 0;
+                window.currentTab = widgetIndex - widx::tab_all_stations;
+                window.frame_no = 0;
 
-                window->invalidate();
+                window.invalidate();
 
-                window->var_83C = 0;
-                window->rowHover = -1;
+                window.var_83C = 0;
+                window.rowHover = -1;
 
-                refreshStationList(window);
+                refreshStationList(&window);
 
-                window->callOnResize();
-                window->callPrepareDraw();
-                window->initScrollWidgets();
-                window->moveInsideScreenEdges();
+                window.callOnResize();
+                window.callPrepareDraw();
+                window.initScrollWidgets();
+                window.moveInsideScreenEdges();
                 break;
             }
 
@@ -645,15 +645,15 @@ namespace OpenLoco::Ui::Windows::StationList
             case sort_accepts:
             {
                 auto sort_mode = widgetIndex - widx::sort_name;
-                if (window->sortMode == sort_mode)
+                if (window.sortMode == sort_mode)
                     return;
 
-                window->sortMode = sort_mode;
-                window->invalidate();
-                window->var_83C = 0;
-                window->rowHover = -1;
+                window.sortMode = sort_mode;
+                window.invalidate();
+                window.var_83C = 0;
+                window.rowHover = -1;
 
-                refreshStationList(window);
+                refreshStationList(&window);
                 break;
             }
         }

@@ -42,7 +42,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void draw(Ui::Window* window, Gfx::Context* context);
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
     static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onUpdate(Window* window);
@@ -139,12 +139,12 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1757
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close:
-                WindowManager::close(window->type);
+                WindowManager::close(window.type);
                 break;
         }
     }

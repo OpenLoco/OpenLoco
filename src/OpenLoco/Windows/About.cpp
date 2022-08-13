@@ -60,12 +60,12 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     // 0x0043B4AF
-    static void onMouseUp(Ui::Window* const window, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close:
-                WindowManager::close(window->type);
+                WindowManager::close(window.type);
                 break;
 
             case widx::music_acknowledgements_btn:

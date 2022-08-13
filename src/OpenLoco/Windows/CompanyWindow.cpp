@@ -265,16 +265,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432244
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameCompanyPrompt(self, widgetIndex);
+                    Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_status:
@@ -283,21 +283,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::centre_on_viewport:
-                    self->viewportCentreMain();
+                    self.viewportCentreMain();
                     break;
 
                 case widx::face:
-                    CompanyFaceSelection::open(CompanyId(self->number));
+                    CompanyFaceSelection::open(CompanyId(self.number));
                     break;
 
                 case widx::change_owner_name:
                 {
-                    auto company = CompanyManager::get(CompanyId(self->number));
-                    TextInput::openTextInput(self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->ownerName, widgetIndex, nullptr);
+                    auto company = CompanyManager::get(CompanyId(self.number));
+                    TextInput::openTextInput(&self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->ownerName, widgetIndex, nullptr);
                     break;
                 }
             }
@@ -375,27 +375,27 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432724
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(&self);
 
-            self->setSize(Status::windowSize, Ui::Size(640, 400));
+            self.setSize(Status::windowSize, Ui::Size(640, 400));
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                Ui::Size proposedDims(self->width - 123, self->height - 59);
-                auto& viewport = self->viewports[0];
+                Ui::Size proposedDims(self.width - 123, self.height - 59);
+                auto& viewport = self.viewports[0];
                 if (proposedDims.width != viewport->width || proposedDims.height != viewport->height)
                 {
                     viewport->width = proposedDims.width;
                     viewport->height = proposedDims.height;
                     viewport->view_width = proposedDims.width << viewport->zoom;
                     viewport->view_height = proposedDims.height << viewport->zoom;
-                    self->savedView.clear();
+                    self.savedView.clear();
                 }
             }
 
-            self->callViewportRotate();
+            self.callViewportRotate();
         }
 
         static void sub_434336(Window* self, const SavedView& view)
@@ -451,16 +451,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x004327C8
-        static void viewportRotate(Window* self)
+        static void viewportRotate(Window& self)
         {
-            if (self->currentTab != 0)
+            if (self.currentTab != 0)
             {
                 return;
             }
 
-            self->callPrepareDraw();
+            self.callPrepareDraw();
 
-            const auto& company = CompanyManager::get(CompanyId(self->number));
+            const auto& company = CompanyManager::get(CompanyId(self.number));
 
             if (company->observationThing == EntityId::null)
             {
@@ -476,7 +476,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     }
 
                     // loc_43410A
-                    int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
+                    int8_t rotation = static_cast<int8_t>(self.viewports[0]->getRotation());
                     SavedView view(
                         company->observationX,
                         company->observationY,
@@ -485,30 +485,30 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         static_cast<int16_t>(tileZ + 16));
                     view.flags |= (1 << 14);
 
-                    if (self->viewports[0] == nullptr)
+                    if (self.viewports[0] == nullptr)
                     {
-                        noViewportPresent(self, view);
+                        noViewportPresent(&self, view);
                         return;
                     }
 
-                    if (self->savedView.isThingView() || self->savedView.rotation != view.rotation || self->savedView.zoomLevel != view.zoomLevel)
+                    if (self.savedView.isThingView() || self.savedView.rotation != view.rotation || self.savedView.zoomLevel != view.zoomLevel)
                     {
-                        if (self->savedView != view)
+                        if (self.savedView != view)
                         {
-                            differentViewportSettings(self, view);
+                            differentViewportSettings(&self, view);
                             return;
                         }
                         return;
                     }
 
-                    self->savedView = view;
-                    self->viewportCentreOnTile(view.getPos());
+                    self.savedView = view;
+                    self.viewportCentreOnTile(view.getPos());
                     return;
                 }
                 // Not observing anything at all?
                 else
                 {
-                    invalidViewport(self);
+                    invalidViewport(&self);
                 }
             }
             else
@@ -518,18 +518,18 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 auto* vehicle = thing->asBase<Vehicles::VehicleBase>();
                 if (vehicle == nullptr)
                 {
-                    invalidViewport(self);
+                    invalidViewport(&self);
                     return;
                 }
                 if (!vehicle->isVehicleHead() || (vehicle->position.x == Location::null))
                 {
-                    invalidViewport(self);
+                    invalidViewport(&self);
                     return;
                 }
 
                 Vehicles::Vehicle train(vehicle->getHead());
 
-                int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
+                int8_t rotation = static_cast<int8_t>(self.viewports[0]->getRotation());
                 SavedView view(
                     train.cars.firstCar.body->id,
                     0xC000,
@@ -537,15 +537,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     rotation,
                     0);
 
-                if (self->viewports[0] == nullptr)
+                if (self.viewports[0] == nullptr)
                 {
-                    noViewportPresent(self, view);
+                    noViewportPresent(&self, view);
                     return;
                 }
 
-                if (self->savedView != view)
+                if (self.savedView != view)
                 {
-                    differentViewportSettings(self, view);
+                    differentViewportSettings(&self, view);
                     return;
                 }
             }
@@ -631,7 +631,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         // Allow setting company owner name if no preferred owner name has been set.
         if ((Config::get().flags & Config::Flags::usePreferredOwnerName) == 0)
-            Status::onMouseUp(self, Status::widx::change_owner_name);
+            Status::onMouseUp(*self, Status::widx::change_owner_name);
 
         return self;
     }
@@ -834,16 +834,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432BDD
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameCompanyPrompt(self, widgetIndex);
+                    Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_status:
@@ -852,11 +852,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::centre_on_viewport:
-                    self->viewportCentreMain();
+                    self.viewportCentreMain();
                     break;
             }
         }
@@ -1034,11 +1034,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432D9F
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
-            self->setSize(windowSize);
-            self->callViewportRotate();
+            Common::enableRenameByCaption(&self);
+            self.setSize(windowSize);
+            self.callViewportRotate();
         }
 
         static void sub_434377(Window* self, const SavedView& view)
@@ -1058,21 +1058,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432E08
-        static void viewportRotate(Window* self)
+        static void viewportRotate(Window& self)
         {
-            if (self->currentTab != Common::tab_details - Common::tab_status)
+            if (self.currentTab != Common::tab_details - Common::tab_status)
                 return;
 
-            self->callPrepareDraw();
-            auto company = CompanyManager::get(CompanyId(self->number));
+            self.callPrepareDraw();
+            auto company = CompanyManager::get(CompanyId(self.number));
             if (company->headquartersX == -1)
             {
                 // If headquarters not placed destroy the viewport
-                self->viewportRemove(0);
-                self->invalidate();
+                self.viewportRemove(0);
+                self.invalidate();
                 return;
             }
-            int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
+            int8_t rotation = static_cast<int8_t>(self.viewports[0]->getRotation());
             Map::Pos3 loc = {
                 static_cast<coord_t>(company->headquartersX + 32),
                 static_cast<coord_t>(company->headquartersY + 32),
@@ -1088,17 +1088,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             view.flags |= (1 << 14);
 
             uint16_t vpFlags = 0;
-            if (self->viewports[0] == nullptr)
+            if (self.viewports[0] == nullptr)
             {
                 if (Config::get().flags & Config::Flags::gridlinesOnLandscape)
                 {
                     vpFlags |= ViewportFlags::gridlines_on_landscape;
                 }
             }
-            else if (self->savedView != view)
+            else if (self.savedView != view)
             {
-                vpFlags = self->viewports[0]->flags;
-                self->viewportRemove(0);
+                vpFlags = self.viewports[0]->flags;
+                self.viewportRemove(0);
                 ViewportManager::collectGarbage();
             }
             else
@@ -1106,12 +1106,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            self->savedView = view;
-            sub_434377(self, view);
-            if (self->viewports[0] != nullptr)
+            self.savedView = view;
+            sub_434377(&self, view);
+            if (self.viewports[0] != nullptr)
             {
-                self->viewports[0]->flags = vpFlags;
-                self->invalidate();
+                self.viewports[0]->flags = vpFlags;
+                self.invalidate();
             }
         }
 
@@ -1369,16 +1369,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433032
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameCompanyPrompt(self, widgetIndex);
+                    Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_status:
@@ -1387,7 +1387,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::check_steam_locomotives:
@@ -1402,12 +1402,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::check_ships:
                     // customVehicleColoursSet reserves first bit for main colour scheme even though it can't be changed, so skip it.
                     const auto vehicleType = widgetIndex - widx::check_steam_locomotives + 1;
-                    const auto company = CompanyManager::get(CompanyId(self->number));
+                    const auto company = CompanyManager::get(CompanyId(self.number));
                     const auto newMode = (company->customVehicleColoursSet & (1 << vehicleType)) == 0 ? 1 : 0;
 
                     GameCommands::setErrorTitle(StringIds::error_cant_change_colour_scheme);
 
-                    GameCommands::do_19(0, newMode, vehicleType, 1, CompanyId(self->number));
+                    GameCommands::do_19(0, newMode, vehicleType, 1, CompanyId(self.number));
 
                     break;
             }
@@ -1555,10 +1555,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433279
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
-            self->setSize(windowSize);
+            Common::enableRenameByCaption(&self);
+            self.setSize(windowSize);
         }
 
         static void initEvents()
@@ -1895,16 +1895,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433819
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameCompanyPrompt(self, widgetIndex);
+                    Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_status:
@@ -1913,12 +1913,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::loan_autopay:
                 {
-                    auto company = CompanyManager::get(CompanyId(self->number));
+                    auto company = CompanyManager::get(CompanyId(self.number));
                     company->challengeFlags ^= CompanyFlags::autopayLoan;
                     break;
                 }
@@ -2036,10 +2036,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x004339B7
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
-            self->setSize(windowSize);
+            Common::enableRenameByCaption(&self);
+            self.setSize(windowSize);
         }
 
         static void initEvents()
@@ -2194,16 +2194,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433BE6
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameCompanyPrompt(self, widgetIndex);
+                    Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_status:
@@ -2212,7 +2212,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
@@ -2249,12 +2249,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C97
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(&self);
 
             uint16_t cargoHeight = 0;
-            const auto company = CompanyManager::get(CompanyId(self->number));
+            const auto company = CompanyManager::get(CompanyId(self.number));
             for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(company->cargoDelivered)); i++)
             {
                 auto cargo = ObjectManager::get<CargoObject>(i);
@@ -2266,7 +2266,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             const uint16_t windowHeight = std::max<int16_t>(cargoHeight, 50) + 62;
 
-            self->setSize({ windowSize.width, windowHeight });
+            self.setSize({ windowSize.width, windowHeight });
         }
 
         static void initEvents()
@@ -2400,16 +2400,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433FFE
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameCompanyPrompt(self, widgetIndex);
+                    Common::renameCompanyPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_status:
@@ -2418,7 +2418,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case Common::widx::tab_finances:
                 case Common::widx::tab_cargo_delivered:
                 case Common::widx::tab_challenge:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
@@ -2441,9 +2441,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00434048
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize);
+            self.setSize(windowSize);
         }
 
         static void initEvents()

@@ -83,7 +83,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
     static void prepareDraw(Ui::Window* window);
     static void draw(Ui::Window* window, Gfx::Context* context);
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onUpdate(Ui::Window* window);
 
     /**
@@ -258,12 +258,12 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     // 0x004CE8B6
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::close:
-                WindowManager::close(window);
+                WindowManager::close(&window);
                 break;
             case Widx::ok:
                 inputSession.sanitizeInput();
@@ -272,7 +272,7 @@ namespace OpenLoco::Ui::Windows::TextInput
                 {
                     caller->callTextInput(_callingWidget, inputSession.buffer.c_str());
                 }
-                WindowManager::close(window);
+                WindowManager::close(&window);
                 break;
         }
     }

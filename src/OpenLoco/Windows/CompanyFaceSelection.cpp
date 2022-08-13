@@ -112,18 +112,18 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x004352A4
-    static void onClose(Window* const self)
+    static void onClose(Window& self)
     {
         ObjectManager::freeScenarioText();
     }
 
     // 0x435299
-    static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
         }
     }

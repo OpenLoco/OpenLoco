@@ -37,26 +37,26 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     WindowEventList events;
 
     // 0x0049E228
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Common::widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
 
             case Common::widx::tab_construction:
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(self, widgetIndex);
+                Common::switchTab(&self, widgetIndex);
                 break;
 
             case widx::rotate:
                 _constructionRotation++;
                 _constructionRotation = _constructionRotation & 3;
                 _stationCost = 0x80000000;
-                self->invalidate();
+                self.invalidate();
                 break;
         }
     }

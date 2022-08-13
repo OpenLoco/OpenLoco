@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
     static void draw(Ui::Window* self, Gfx::Context* context);
     static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex);
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
     static void resetShortcuts(Window* self);
     static std::optional<FormatArguments> tooltip(Window*, WidgetIndex_t);
     static void getScrollSize(Ui::Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
@@ -197,16 +197,16 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE821
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 return;
 
             case Widx::reset_keys_btn:
-                resetShortcuts(self);
+                resetShortcuts(&self);
                 return;
         }
     }

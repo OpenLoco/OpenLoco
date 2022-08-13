@@ -96,8 +96,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void drawTabs(Window* self, Gfx::Context* context);
         static void prepareDraw(Window* self);
         static void onUpdate(Window* self);
-        static void onResize(Window* self, uint8_t height);
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
+        static void onResize(Window& self, uint8_t height);
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
         static void sub_4A69DD();
 
         namespace GhostPlaced
@@ -225,7 +225,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void removeTreeGhost();
 
         // 0x004BBB0A
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
             removeTreeGhost();
             Ui::Windows::hideGridlines();
@@ -245,12 +245,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBAB5
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_adjust_land:
@@ -258,14 +258,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case Common::widx::tab_build_walls:
                 case Common::widx::tab_clear_area:
                 case Common::widx::tab_plant_trees:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::rotate_object:
                 {
                     _treeRotation++;
                     _treeRotation = _treeRotation & 3;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
 
@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         _treeClusterType = treeCluster::none;
                     else
                         _treeClusterType = treeCluster::selected;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
 
@@ -285,20 +285,20 @@ namespace OpenLoco::Ui::Windows::Terraform
                         _treeClusterType = treeCluster::none;
                     else
                         _treeClusterType = treeCluster::random;
-                    self->invalidate();
+                    self.invalidate();
                 }
             }
         }
 
         // 0x004BBFBD
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->invalidate();
-            Ui::Size minWindowSize = { self->minWidth, self->minHeight };
-            Ui::Size maxWindowSize = { self->maxWidth, self->maxHeight };
-            bool hasResized = self->setSize(minWindowSize, maxWindowSize);
+            self.invalidate();
+            Ui::Size minWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size maxWindowSize = { self.maxWidth, self.maxHeight };
+            bool hasResized = self.setSize(minWindowSize, maxWindowSize);
             if (hasResized)
-                updateActiveThumb(self);
+                updateActiveThumb(&self);
         }
 
         // 0x004BBAEA
@@ -914,7 +914,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static WindowEventList events;
 
         // 0x004BC671
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
             Ui::Windows::hideGridlines();
         }
@@ -929,7 +929,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC7C6
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
             Common::onResize(self, 105);
         }
@@ -1109,7 +1109,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static WindowEventList events;
 
         // 0x004BC9D1
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
             Ui::Windows::hideGridlines();
         }
@@ -1140,7 +1140,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCBF8
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
             if (isEditorMode())
             {
@@ -1623,7 +1623,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static WindowEventList events;
 
         // 0x004BCDAE
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
             Ui::Windows::hideGridlines();
         }
@@ -1639,7 +1639,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCEB4
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
             Common::onResize(self, 115);
         }
@@ -1967,7 +1967,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void removeWallGhost();
 
         // 0x004BC21C
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
             removeWallGhost();
             Ui::Windows::hideGridlines();
@@ -1985,14 +1985,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC44B
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->invalidate();
-            Ui::Size minWindowSize = { self->minWidth, self->minHeight };
-            Ui::Size maxWindowSize = { self->maxWidth, self->maxHeight };
-            bool hasResized = self->setSize(minWindowSize, maxWindowSize);
+            self.invalidate();
+            Ui::Size minWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size maxWindowSize = { self.maxWidth, self.maxHeight };
+            bool hasResized = self.setSize(minWindowSize, maxWindowSize);
             if (hasResized)
-                updateActiveThumb(self);
+                updateActiveThumb(&self);
         }
 
         // 0x004BC23D
@@ -2368,9 +2368,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             { BuildWalls::widgets, widx::tab_build_walls, &BuildWalls::events, BuildWalls::enabledWidgets, BuildWalls::holdableWidgets },
         };
 
-        static void onResize(Window* self, uint8_t height)
+        static void onResize(Window& self, uint8_t height)
         {
-            self->flags |= WindowFlags::resizable;
+            self.flags |= WindowFlags::resizable;
 
             /*auto width = 130;
             if (isEditorMode())
@@ -2379,7 +2379,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             // CHANGE: width set to 161 to include building walls tab
             uint16_t width = 161;
             Ui::Size windowSize = { width, height };
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x004BC78A, 0x004BCB0B
@@ -2397,12 +2397,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCD82
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_adjust_land:
@@ -2410,7 +2410,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case Common::widx::tab_build_walls:
                 case Common::widx::tab_clear_area:
                 case Common::widx::tab_plant_trees:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }

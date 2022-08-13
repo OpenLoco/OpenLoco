@@ -456,13 +456,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A17E
-    void onResize(Window* window)
+    void onResize(Window& window)
     {
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)
-            window->setDisabledWidgetsAndInvalidate(Widx::zoom_menu | Widx::rotate_menu);
+            window.setDisabledWidgetsAndInvalidate(Widx::zoom_menu | Widx::rotate_menu);
         else
-            window->setDisabledWidgetsAndInvalidate(0);
+            window.setDisabledWidgetsAndInvalidate(0);
     }
 
     void rightAlignTabs(Window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs)

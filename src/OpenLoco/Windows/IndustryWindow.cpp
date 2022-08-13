@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void drawTabs(Window* self, Gfx::Context* context);
         static void setDisabledWidgets(Window* self);
         static void draw(Window* self, Gfx::Context* context);
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
         static void initEvents();
     }
 
@@ -151,34 +151,35 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00455C86
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameIndustryPrompt(self, widgetIndex);
+                    Common::renameIndustryPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_industry:
                 case Common::widx::tab_production:
                 case Common::widx::tab_production_2:
                 case Common::widx::tab_transported:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 // 0x00455EA2
                 case widx::centre_on_viewport:
-                    self->viewportCentreMain();
+                    self.viewportCentreMain();
                     break;
 
                 // 0x00455E59
                 case widx::demolish_industry:
                 {
-                    bool success = GameCommands::do_48(GameCommands::Flags::apply, static_cast<IndustryId>(self->number));
+                    bool success = GameCommands::do_48(GameCommands::Flags::apply, static_cast<IndustryId>(self.number));
+                    
                     if (!success)
                         break;
 
@@ -188,29 +189,29 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        static void initViewport(Window* self);
+        static void initViewport(Window& self);
 
         // 0x00455F1A
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(minWindowSize, maxWindowSize);
+            self.setSize(minWindowSize, maxWindowSize);
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                uint16_t newWidth = self->width - 30;
+                uint16_t newWidth = self.width - 30;
                 if (!isEditorMode() && !isSandboxMode())
                     newWidth += 22;
 
-                uint16_t newHeight = self->height - 59;
+                uint16_t newHeight = self.height - 59;
 
-                auto& viewport = self->viewports[0];
+                auto& viewport = self.viewports[0];
                 if (newWidth != viewport->width || newHeight != viewport->height)
                 {
                     viewport->width = newWidth;
                     viewport->height = newHeight;
                     viewport->view_width = newWidth << viewport->zoom;
                     viewport->view_height = newHeight << viewport->zoom;
-                    self->savedView.clear();
+                    self.savedView.clear();
                 }
             }
 
@@ -218,15 +219,15 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00456C36
-        static void initViewport(Window* self)
+        static void initViewport(Window& self)
         {
-            if (self->currentTab != Common::widx::tab_industry - Common::widx::tab_industry)
+            if (self.currentTab != Common::widx::tab_industry - Common::widx::tab_industry)
                 return;
 
-            self->callPrepareDraw();
+            self.callPrepareDraw();
 
             // Figure out the industry's position on the map.
-            auto industry = IndustryManager::get(IndustryId(self->number));
+            auto industry = IndustryManager::get(IndustryId(self.number));
             int16_t tileZ = Map::TileManager::getHeight({ industry->x, industry->y }).landHeight;
 
             // Compute views.
@@ -234,19 +235,19 @@ namespace OpenLoco::Ui::Windows::Industry
                 industry->x,
                 industry->y,
                 ZoomLevel::quarter,
-                static_cast<int8_t>(self->viewports[0]->getRotation()),
+                static_cast<int8_t>(self.viewports[0]->getRotation()),
                 tileZ,
             };
             // view.flags |= (1 << 14);
 
             uint16_t flags = 0;
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                if (self->savedView == view)
+                if (self.savedView == view)
                     return;
 
-                flags = self->viewports[0]->flags;
-                self->viewportRemove(0);
+                flags = self.viewports[0]->flags;
+                self.viewportRemove(0);
                 ViewportManager::collectGarbage();
             }
             else
@@ -255,23 +256,23 @@ namespace OpenLoco::Ui::Windows::Industry
                     flags |= ViewportFlags::gridlines_on_landscape;
             }
 
-            self->savedView = view;
+            self.savedView = view;
 
-            if (self->viewports[0] == nullptr)
+            if (self.viewports[0] == nullptr)
             {
-                auto widget = &self->widgets[widx::viewport];
+                auto widget = &self.widgets[widx::viewport];
                 auto tile = Map::Pos3({ industry->x, industry->y, tileZ });
-                auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
+                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
-                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, tile);
-                self->invalidate();
-                self->flags |= WindowFlags::viewportNoScrolling;
+                ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
+                self.invalidate();
+                self.flags |= WindowFlags::viewportNoScrolling;
             }
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                self->viewports[0]->flags = flags;
-                self->invalidate();
+                self.viewports[0]->flags = flags;
+                self.invalidate();
             }
         }
 
@@ -336,7 +337,7 @@ namespace OpenLoco::Ui::Windows::Industry
         Common::setDisabledWidgets(window);
 
         window->initScrollWidgets();
-        Industry::initViewport(window);
+        Industry::initViewport(*window);
 
         return window;
     }
@@ -359,10 +360,10 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x0045654F
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
             {
-                self->setSize(minWindowSize, maxWindowSize);
+                self.setSize(minWindowSize, maxWindowSize);
             }
         }
 
@@ -399,10 +400,10 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x004565FF
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
             {
-                self->setSize(minWindowSize, maxWindowSize);
+                self.setSize(minWindowSize, maxWindowSize);
             }
         }
 
@@ -515,10 +516,10 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x004569C2
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
             {
-                self->setSize(windowSize, windowSize);
+                self.setSize(windowSize, windowSize);
             }
         }
 
@@ -660,23 +661,23 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x004565B5, 0x00456505
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameIndustryPrompt(self, widgetIndex);
+                    Common::renameIndustryPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_industry:
                 case Common::widx::tab_production:
                 case Common::widx::tab_production_2:
                 case Common::widx::tab_transported:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }

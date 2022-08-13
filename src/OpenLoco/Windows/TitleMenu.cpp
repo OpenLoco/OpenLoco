@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void multiplayerConnect(std::string_view host);
     static void sub_46E328();
 
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
     static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
     static void onUpdate(Window* window);
@@ -309,7 +309,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x00439094
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         if (Intro::isActive())
         {
@@ -330,10 +330,10 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 sub_43910A();
                 break;
             case Widx::chat_btn:
-                sub_439163(window, widgetIndex);
+                sub_439163(&window, widgetIndex);
                 break;
             case Widx::multiplayer_toggle_btn:
-                showMultiplayer(window);
+                showMultiplayer(&window);
                 break;
         }
     }

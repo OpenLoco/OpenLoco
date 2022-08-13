@@ -38,7 +38,7 @@ namespace OpenLoco::Ui::Windows::Options
     static loco_global<void*, 0x011364A0> __11364A0;
     static loco_global<uint16_t, 0x0112C185> _112C185;
 
-    static void onClose(Window* w)
+    static void onClose(Window& w)
     {
         free(__11364A0);
     }
@@ -221,12 +221,12 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::show_fps) | (1 << Widx::uncap_fps) | (1 << Widx::cash_popup_rendering) | (1 << Display::Widx::landscape_smoothing) | (1 << Display::Widx::gridlines_on_landscape) | (1 << Display::Widx::vehicles_min_scale) | (1 << Display::Widx::vehicles_min_scale_btn) | (1 << Display::Widx::station_names_min_scale) | (1 << Display::Widx::station_names_min_scale_btn) | (1 << Display::Widx::construction_marker) | (1 << Display::Widx::construction_marker_btn) | (1 << Display::Widx::display_scale_up_btn) | (1 << Display::Widx::display_scale_down_btn);
 
         // 0x004BFB8C
-        static void onMouseUp(Window* w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(w);
+                    WindowManager::close(&w);
                     return;
 
                 case Common::Widx::tab_display:
@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(&w, wi);
                     return;
 
                 case Widx::show_fps:
@@ -305,7 +305,7 @@ namespace OpenLoco::Ui::Windows::Options
                     auto& cfg = OpenLoco::Config::getNew();
                     cfg.cashPopupRendering = !cfg.cashPopupRendering;
                     Config::write();
-                    w->invalidate();
+                    w.invalidate();
                 }
             }
         }
@@ -768,12 +768,12 @@ namespace OpenLoco::Ui::Windows::Options
             Common::drawTabs(w, context);
         }
 
-        static void onMouseUp(Window* w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(w);
+                    WindowManager::close(&w);
                     return;
 
                 case Common::Widx::tab_display:
@@ -782,11 +782,11 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(&w, wi);
                     return;
 
                 case Widx::play_title_music:
-                    playTitleMusicOnMouseUp(w);
+                    playTitleMusicOnMouseUp(&w);
                     return;
             }
         }
@@ -995,12 +995,12 @@ namespace OpenLoco::Ui::Windows::Options
             Gfx::drawImage(context, w->x + w->widgets[Widx::volume].left + x, w->y + w->widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w->getColour(WindowColour::secondary).c()));
         }
 
-        static void onMouseUp(Window* w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(w);
+                    WindowManager::close(&w);
                     return;
 
                 case Common::Widx::tab_display:
@@ -1009,19 +1009,19 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(&w, wi);
                     return;
 
                 case Widx::music_controls_stop:
-                    stopMusic(w);
+                    stopMusic(&w);
                     return;
 
                 case Widx::music_controls_play:
-                    playMusic(w);
+                    playMusic(&w);
                     return;
 
                 case Widx::music_controls_next:
-                    playNextSong(w);
+                    playNextSong(&w);
                     return;
 
                 case Widx::edit_selection:
@@ -1389,12 +1389,12 @@ namespace OpenLoco::Ui::Windows::Options
             Gfx::drawStringLeft(*context, w->x + 10, w->y + w->widgets[Widx::preferred_currency].top + 1, Colour::black, StringIds::new_game_currency, nullptr);
         }
 
-        static void onMouseUp(Window* w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(w);
+                    WindowManager::close(&w);
                     return;
 
                 case Common::Widx::tab_display:
@@ -1403,15 +1403,15 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(&w, wi);
                     return;
 
                 case Widx::preferred_currency_for_new_games:
-                    preferredCurrencyNewGameMouseUp(w);
+                    preferredCurrencyNewGameMouseUp(&w);
                     return;
 
                 case Widx::preferred_currency_always:
-                    preferredCurrencyAlwaysMouseUp(w);
+                    preferredCurrencyAlwaysMouseUp(&w);
                     return;
             }
         }
@@ -1811,12 +1811,12 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C114A
-        static void onMouseUp(Window* w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(w);
+                    WindowManager::close(&w);
                     return;
 
                 case Common::Widx::tab_display:
@@ -1825,7 +1825,7 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(&w, wi);
                     return;
 
                 case Widx::customize_keys:
@@ -1833,15 +1833,15 @@ namespace OpenLoco::Ui::Windows::Options
                     break;
 
                 case Widx::edge_scrolling:
-                    edgeScrollingMouseUp(w);
+                    edgeScrollingMouseUp(&w);
                     break;
 
                 case Widx::zoom_to_cursor:
-                    zoomToCursorMouseUp(w);
+                    zoomToCursorMouseUp(&w);
                     break;
 
                 case Widx::invertRightMouseViewPan:
-                    invertRightMouseViewPan(w);
+                    invertRightMouseViewPan(&w);
                     break;
             }
         }
@@ -2145,12 +2145,12 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C12D2
-        static void onMouseUp(Window* w, WidgetIndex_t wi)
+        static void onMouseUp(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(w);
+                    WindowManager::close(&w);
                     return;
 
                 case Common::Widx::tab_display:
@@ -2159,35 +2159,35 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(&w, wi);
                     return;
 
                 case Widx::enableCheatsToolbarButton:
-                    enableCheatsToolbarButtonMouseUp(w);
+                    enableCheatsToolbarButtonMouseUp(&w);
                     break;
 
                 case Widx::disable_vehicle_breakdowns:
-                    disableVehicleBreakdownsMouseUp(w);
+                    disableVehicleBreakdownsMouseUp(&w);
                     break;
 
                 case Widx::trainsReverseAtSignals:
-                    trainsReverseAtSignalsMouseUp(w);
+                    trainsReverseAtSignalsMouseUp(&w);
                     break;
 
                 case Widx::disableAICompanies:
-                    disableAICompaniesMouseUp(w);
+                    disableAICompaniesMouseUp(&w);
                     break;
 
                 case Widx::export_plugin_objects:
-                    exportPluginObjectsMouseUp(w);
+                    exportPluginObjectsMouseUp(&w);
                     break;
 
                 case Widx::use_preferred_owner_name:
-                    usePreferredOwnerNameMouseUp(w);
+                    usePreferredOwnerNameMouseUp(&w);
                     break;
 
                 case Widx::change_btn:
-                    changePreferredName(w);
+                    changePreferredName(&w);
                     break;
             }
         }
