@@ -131,7 +131,7 @@ namespace OpenLoco::Input
                 auto main = WindowManager::getMainWindow();
                 auto cursor = getMouseLocation();
 
-                Windows::ToolTip::update(main, 0, tutStringId, cursor.x, cursor.y);
+                Windows::ToolTip::update(*main, 0, tutStringId, cursor.x, cursor.y);
                 break;
             }
 

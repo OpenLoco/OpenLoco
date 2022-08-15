@@ -129,7 +129,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x4352BB
-    static void getScrollSize(Window* const self, const uint32_t scrollIndex, uint16_t* const scrollWidth, uint16_t* const scrollHeight)
+    static void getScrollSize(Window& self, const uint32_t scrollIndex, uint16_t* const scrollWidth, uint16_t* const scrollHeight)
     {
         *scrollHeight = _numberCompetitorObjects * rowHeight;
     }
@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00435314
-    static void scrollMouseDown(Window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
+    static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
         const auto objIndex = getObjectFromSelection(y);
 
@@ -164,13 +164,13 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         {
             return;
         }
-        self->invalidate();
+        self.invalidate();
         Audio::playSound(Audio::SoundId::clickDown, _cursorX);
         GameCommands::setErrorTitle(StringIds::cant_select_face);
-        const auto result = GameCommands::do_65(*objIndex.object._header, self->owner);
+        const auto result = GameCommands::do_65(*objIndex.object._header, self.owner);
         if (result)
         {
-            WindowManager::close(self);
+            WindowManager::close(&self);
         }
     }
 

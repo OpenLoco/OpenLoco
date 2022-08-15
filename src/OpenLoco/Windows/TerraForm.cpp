@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::Context* context);
         static void prepareDraw(Window* self);
-        static void onUpdate(Window* self);
+        static void onUpdate(Window& self);
         static void onResize(Window& self, uint8_t height);
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
         static void sub_4A69DD();
@@ -302,17 +302,17 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBAEA
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
-            if (widgetIndex == widx::object_colour && self->rowHover != -1)
+            if (widgetIndex == widx::object_colour && self.rowHover != -1)
             {
-                auto obj = ObjectManager::get<TreeObject>(self->rowHover);
-                Dropdown::showColour(self, &self->widgets[widgetIndex], obj->colours, _treeColour, self->getColour(WindowColour::secondary));
+                auto obj = ObjectManager::get<TreeObject>(self.rowHover);
+                Dropdown::showColour(&self, &self.widgets[widgetIndex], obj->colours, _treeColour, self.getColour(WindowColour::secondary));
             }
         }
 
         // 0x004BBAF5
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::object_colour)
                 return;
@@ -320,17 +320,17 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
 
             _treeColour = static_cast<Colour>(Dropdown::getHighlightedItem());
-            self->invalidate();
+            self.invalidate();
         }
 
         // 0x004BBDA5
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::toolActive))
-                WindowManager::close(self);
+                WindowManager::close(&self);
 
             if (_toolWindowType != WindowType::terraform)
-                WindowManager::close(self);
+                WindowManager::close(&self);
 
             if (!Input::hasFlag(Input::Flags::flag5))
             {
@@ -338,41 +338,41 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto xPos = cursor.x;
                 auto yPos = cursor.y;
                 Window* activeWindow = WindowManager::findAt(xPos, yPos);
-                if (activeWindow == self)
+                if (activeWindow == &self)
                 {
-                    xPos -= self->x;
+                    xPos -= self.x;
                     xPos += 26;
-                    yPos -= self->y;
+                    yPos -= self.y;
 
-                    if ((yPos < 42) || (xPos <= self->width))
+                    if ((yPos < 42) || (xPos <= self.width))
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
-                        WidgetIndex_t activeWidget = self->findWidgetAt(xPos, yPos);
+                        WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self->savedView.mapX += 1;
-                            if (self->savedView.mapX >= 8)
+                            self.savedView.mapX += 1;
+                            if (self.savedView.mapX >= 8)
                             {
-                                auto y = std::min(self->scrollAreas[0].contentHeight - 1 + 60, 562);
+                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 562);
                                 if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 358);
                                 }
-                                self->minWidth = windowSize.width;
-                                self->minHeight = y;
-                                self->maxWidth = windowSize.width;
-                                self->maxHeight = y;
+                                self.minWidth = windowSize.width;
+                                self.minHeight = y;
+                                self.maxWidth = windowSize.width;
+                                self.maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self->minWidth = windowSize.width;
-                                    self->minHeight = windowSize.height;
-                                    self->maxWidth = windowSize.width;
-                                    self->maxHeight = windowSize.height;
+                                    self.minWidth = windowSize.width;
+                                    self.minHeight = windowSize.height;
+                                    self.maxWidth = windowSize.width;
+                                    self.maxHeight = windowSize.height;
                                 }
                             }
                         }
@@ -380,29 +380,29 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 else
                 {
-                    self->savedView.mapX = 0;
+                    self.savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self->minWidth = windowSize.width;
-                        self->minHeight = windowSize.height;
-                        self->maxWidth = windowSize.width;
-                        self->maxHeight = windowSize.height;
+                        self.minWidth = windowSize.width;
+                        self.minHeight = windowSize.height;
+                        self.maxWidth = windowSize.width;
+                        self.maxHeight = windowSize.height;
                     }
                 }
             }
-            self->frame_no++;
+            self.frame_no++;
 
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->currentTab + Common::widx::tab_clear_area);
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::terraform, self.number, self.currentTab + Common::widx::tab_clear_area);
         }
 
         // 0x004BBEDF
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            if (self->var_846 != 0xFFFF)
+            if (self.var_846 != 0xFFFF)
             {
-                self->var_846 = -1;
-                self->invalidate();
+                self.var_846 = -1;
+                self.invalidate();
             }
         }
         // 0x004BD297 (bits of)
@@ -574,9 +574,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBEC1
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = (self->var_83C + 8) / 9;
+            *scrollHeight = (self.var_83C + 8) / 9;
             if (*scrollHeight == 0)
                 *scrollHeight += 1;
             *scrollHeight *= rowHeight;
@@ -588,29 +588,29 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBF3B
-        static void scrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             int16_t xPos = (x / columnWidth);
             int16_t yPos = (y / rowHeight) * 5;
             auto index = getRowIndex(x, y);
 
-            for (auto i = 0; i < self->var_83C; i++)
+            for (auto i = 0; i < self.var_83C; i++)
             {
-                auto rowInfo = self->rowInfo[i];
+                auto rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
                 {
-                    self->rowHover = rowInfo;
+                    self.rowHover = rowInfo;
                     LastGameOptionManager::setLastTree(static_cast<uint8_t>(rowInfo));
 
-                    updateTreeColours(self);
+                    updateTreeColours(&self);
 
-                    int32_t pan = (self->width >> 1) + self->x;
+                    int32_t pan = (self.width >> 1) + self.x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
-                    self->savedView.mapX = -16;
+                    self.savedView.mapX = -16;
                     _lastTreeCost = 0x80000000;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
             }
@@ -935,7 +935,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC65C
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -945,7 +945,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (_adjustToolSize < 1)
                         _adjustToolSize = 1;
                     _clearAreaToolSize = _adjustToolSize;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
 
@@ -955,7 +955,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (_adjustToolSize > 10)
                         _adjustToolSize = 10;
                     _clearAreaToolSize = _adjustToolSize;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
             }
@@ -1193,13 +1193,13 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC9A7
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case widx::land_material:
                 {
-                    showDropdown(self, widgetIndex);
+                    showDropdown(&self, widgetIndex);
                     break;
                 }
 
@@ -1209,7 +1209,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (_adjustToolSize < 0)
                         _adjustToolSize = 0;
                     _adjustLandToolSize = _adjustToolSize;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
 
@@ -1219,27 +1219,27 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (_adjustToolSize > 10)
                         _adjustToolSize = 10;
                     _adjustLandToolSize = _adjustToolSize;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
 
                 case widx::paint_mode:
                 {
                     isPaintMode = !isPaintMode;
-                    tabReset(self);
+                    tabReset(&self);
                 }
             }
         }
 
         // 0x004BC9C6
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::land_material)
                 return;
             if (itemIndex == -1)
                 return;
             _lastSelectedLand = Dropdown::getItemArgument(itemIndex, 2);
-            self->invalidate();
+            self.invalidate();
         }
 
         // 0x00468DFD
@@ -1645,7 +1645,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCD9D
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1655,7 +1655,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (_adjustToolSize < 1)
                         _adjustToolSize = 1;
                     _adjustWaterToolSize = _adjustToolSize;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
 
@@ -1665,7 +1665,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (_adjustToolSize > 10)
                         _adjustToolSize = 10;
                     _adjustWaterToolSize = _adjustToolSize;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
             }
@@ -1996,13 +1996,13 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC23D
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::toolActive))
-                WindowManager::close(self);
+                WindowManager::close(&self);
 
             if (_toolWindowType != WindowType::terraform)
-                WindowManager::close(self);
+                WindowManager::close(&self);
 
             if (!Input::hasFlag(Input::Flags::flag5))
             {
@@ -2010,41 +2010,41 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto xPos = cursor.x;
                 auto yPos = cursor.y;
                 Window* activeWindow = WindowManager::findAt(xPos, yPos);
-                if (activeWindow == self)
+                if (activeWindow == &self)
                 {
-                    xPos -= self->x;
+                    xPos -= self.x;
                     xPos += 26;
-                    yPos -= self->y;
+                    yPos -= self.y;
 
-                    if ((yPos < 42) || (xPos <= self->width))
+                    if ((yPos < 42) || (xPos <= self.width))
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
-                        WidgetIndex_t activeWidget = self->findWidgetAt(xPos, yPos);
+                        WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self->savedView.mapX += 1;
-                            if (self->savedView.mapX >= 8)
+                            self.savedView.mapX += 1;
+                            if (self.savedView.mapX >= 8)
                             {
-                                auto y = std::min(self->scrollAreas[0].contentHeight - 1 + 60, 562);
+                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 562);
                                 if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 358);
                                 }
-                                self->minWidth = windowSize.width;
-                                self->minHeight = y;
-                                self->maxWidth = windowSize.width;
-                                self->maxHeight = y;
+                                self.minWidth = windowSize.width;
+                                self.minHeight = y;
+                                self.maxWidth = windowSize.width;
+                                self.maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self->minWidth = windowSize.width;
-                                    self->minHeight = windowSize.height;
-                                    self->maxWidth = windowSize.width;
-                                    self->maxHeight = windowSize.height;
+                                    self.minWidth = windowSize.width;
+                                    self.minHeight = windowSize.height;
+                                    self.maxWidth = windowSize.width;
+                                    self.maxHeight = windowSize.height;
                                 }
                             }
                         }
@@ -2052,29 +2052,29 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 else
                 {
-                    self->savedView.mapX = 0;
+                    self.savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self->minWidth = windowSize.width;
-                        self->minHeight = windowSize.height;
-                        self->maxWidth = windowSize.width;
-                        self->maxHeight = windowSize.height;
+                        self.minWidth = windowSize.width;
+                        self.minHeight = windowSize.height;
+                        self.maxWidth = windowSize.width;
+                        self.maxHeight = windowSize.height;
                     }
                 }
             }
-            self->frame_no++;
+            self.frame_no++;
 
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->currentTab + Common::widx::tab_clear_area);
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::terraform, self.number, self.currentTab + Common::widx::tab_clear_area);
         }
 
         // 0x004BC377
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            if (self->var_846 != 0xFFFF)
+            if (self.var_846 != 0xFFFF)
             {
-                self->var_846 = -1;
-                self->invalidate();
+                self.var_846 = -1;
+                self.invalidate();
             }
         }
 
@@ -2192,9 +2192,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC359
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = (self->var_83C + 9) / 10;
+            *scrollHeight = (self.var_83C + 9) / 10;
             if (*scrollHeight == 0)
                 *scrollHeight += 1;
             *scrollHeight *= rowHeight;
@@ -2206,26 +2206,26 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC3D3
-        static void scrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             int16_t xPos = (x / 40);
             int16_t yPos = (y / rowHeight) * 10;
             auto index = getRowIndex(x, y);
 
-            for (auto i = 0; i < self->var_83C; i++)
+            for (auto i = 0; i < self.var_83C; i++)
             {
-                auto rowInfo = self->rowInfo[i];
+                auto rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
                 {
-                    self->rowHover = rowInfo;
+                    self.rowHover = rowInfo;
                     LastGameOptionManager::setLastWall(static_cast<uint8_t>(rowInfo));
 
-                    int32_t pan = (self->width >> 1) + self->x;
+                    int32_t pan = (self.width >> 1) + self.x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
-                    self->savedView.mapX = -16;
-                    self->invalidate();
+                    self.savedView.mapX = -16;
+                    self.invalidate();
                     break;
                 }
             }
@@ -2383,17 +2383,17 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC78A, 0x004BCB0B
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::toolActive))
-                WindowManager::close(self);
+                WindowManager::close(&self);
 
             if (_toolWindowType != WindowType::terraform)
-                WindowManager::close(self);
+                WindowManager::close(&self);
 
-            self->frame_no++;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->currentTab + Common::widx::tab_clear_area);
+            self.frame_no++;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::terraform, self.number, self.currentTab + Common::widx::tab_clear_area);
         }
 
         // 0x004BCD82

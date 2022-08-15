@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         makeRemapWidget({ 189, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_speed_records)
 
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
-        static void onUpdate(Window* self);
+        static void onUpdate(Window& self);
         static void prepareDraw(Window* self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void refreshCompanyList(Window* self);
@@ -310,54 +310,54 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004362C0
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no++;
+            self.frame_no++;
 
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::companyList, self->number, self->currentTab + Common::widx::tab_company_list);
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::companyList, self.number, self.currentTab + Common::widx::tab_company_list);
 
             _word_9C68C7++;
 
             // Add three companies every tick.
-            updateCompanyList(self);
-            updateCompanyList(self);
-            updateCompanyList(self);
+            updateCompanyList(&self);
+            updateCompanyList(&self);
+            updateCompanyList(&self);
         }
 
         // 0x004362F7
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            self->flags |= WindowFlags::notScrollView;
+            self.flags |= WindowFlags::notScrollView;
         }
 
         // 0x004362FF
-        static void event_09(Window* self)
+        static void event_09(Window& self)
         {
-            if (!(self->flags & WindowFlags::notScrollView))
+            if (!(self.flags & WindowFlags::notScrollView))
                 return;
 
-            if (self->rowHover == -1)
+            if (self.rowHover == -1)
                 return;
 
-            self->rowHover = -1;
-            self->invalidate();
+            self.rowHover = -1;
+            self.invalidate();
         }
 
         // 0x00436321
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = self->var_83C * rowHeight;
+            *scrollHeight = self.var_83C * rowHeight;
         }
 
         // 0x004363A0
-        static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
-            if (currentRow > self->var_83C)
+            if (currentRow > self.var_83C)
                 return;
 
-            CompanyId currentCompany = CompanyId(self->rowInfo[currentRow]);
+            CompanyId currentCompany = CompanyId(self.rowInfo[currentRow]);
             if (currentCompany == CompanyId::null)
                 return;
 
@@ -1362,16 +1362,16 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437570
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no++;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::townList, self->number, self->currentTab + Common::widx::tab_company_list);
+            self.frame_no++;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_company_list);
 
-            auto x = self->width - 104 + self->x;
-            auto y = self->y + 52;
+            auto x = self.width - 104 + self.x;
+            auto y = self.y + 52;
 
-            switch (self->currentTab + widx::tab_company_list)
+            switch (self.currentTab + widx::tab_company_list)
             {
                 case widx::tab_cargo_distance:
                 case widx::tab_cargo_units:
@@ -1379,13 +1379,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case widx::tab_values:
                 {
                     _word_9C68C7++;
-                    setLegendHover(self, x, y);
+                    setLegendHover(&self, x, y);
                     break;
                 }
                 case widx::tab_payment_rates:
                 {
                     _word_9C68C7++;
-                    CargoPaymentRates::setLegendHover(self, x, y);
+                    CargoPaymentRates::setLegendHover(&self, x, y);
                     break;
                 }
                 case widx::tab_speed_records:

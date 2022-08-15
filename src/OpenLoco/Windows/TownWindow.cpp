@@ -57,7 +57,7 @@ namespace OpenLoco::Ui::Windows::Town
         // Defined at the bottom of this file.
         static void prepareDraw(Window* self);
         static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input);
-        static void update(Window* self);
+        static void update(Window& self);
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::Context* context);
@@ -662,11 +662,11 @@ namespace OpenLoco::Ui::Windows::Town
             GameCommands::do_46(0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
-        static void update(Window* self)
+        static void update(Window& self)
         {
-            self->frame_no++;
-            self->callPrepareDraw();
-            WindowManager::invalidate(WindowType::station, self->number);
+            self.frame_no++;
+            self.callPrepareDraw();
+            WindowManager::invalidate(WindowType::station, self.number);
         }
 
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex)

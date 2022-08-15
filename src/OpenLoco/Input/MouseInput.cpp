@@ -1665,7 +1665,7 @@ namespace OpenLoco::Input
             }
             else
             {
-                Ui::Windows::ToolTip::update(window, widgetIndex, tooltipStringId, x, y);
+                Ui::Windows::ToolTip::update(*window, widgetIndex, tooltipStringId, x, y);
             }
         }
 

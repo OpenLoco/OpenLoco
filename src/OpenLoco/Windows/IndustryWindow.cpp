@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // Defined at the bottom of this file.
         static void prepareDraw(Window* self);
         static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input);
-        static void update(Window* self);
+        static void update(Window& self);
         static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::Context* context);
@@ -733,11 +733,11 @@ namespace OpenLoco::Ui::Windows::Industry
             GameCommands::do_79(IndustryId(0), 0, buffer[6], buffer[7], buffer[8]);
         }
 
-        static void update(Window* self)
+        static void update(Window& self)
         {
-            self->frame_no++;
-            self->callPrepareDraw();
-            WindowManager::invalidate(WindowType::industry, self->number);
+            self.frame_no++;
+            self.callPrepareDraw();
+            WindowManager::invalidate(WindowType::industry, self.number);
         }
 
         // 0x00455D81

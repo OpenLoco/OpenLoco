@@ -49,9 +49,9 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
     static void resetShortcuts(Window* self);
     static std::optional<FormatArguments> tooltip(Window*, WidgetIndex_t);
-    static void getScrollSize(Ui::Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void getScrollSize(Ui::Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index);
 
     static void initEvents()
     {
@@ -227,9 +227,9 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE84E
-    static void getScrollSize(Ui::Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = self->rowCount * rowHeight;
+        *scrollHeight = self.rowCount * rowHeight;
     }
 
     // 0x004BE853
@@ -248,11 +248,11 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE87B
-    static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto row = y / rowHeight;
 
-        if (row >= self->rowCount)
+        if (row >= self.rowCount)
             return;
 
         EditKeyboardShortcut::open(row);

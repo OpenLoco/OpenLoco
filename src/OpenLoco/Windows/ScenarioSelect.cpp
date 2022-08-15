@@ -403,7 +403,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443EA6
-    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -414,49 +414,49 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             case widx::tab4:
             {
                 uint8_t selectedCategory = widgetIndex - widx::tab0;
-                if (self->currentTab == selectedCategory)
+                if (self.currentTab == selectedCategory)
                     return;
 
-                self->currentTab = selectedCategory;
+                self.currentTab = selectedCategory;
 
                 auto& config = Config::get();
                 config.scenarioSelectedTab = selectedCategory;
                 Config::write();
 
-                self->info = 0xFFFFFFFF;
-                self->invalidate();
-                self->callOnResize();
-                self->callPrepareDraw();
-                self->initScrollWidgets();
-                self->invalidate();
+                self.info = 0xFFFFFFFF;
+                self.invalidate();
+                self.callOnResize();
+                self.callPrepareDraw();
+                self.initScrollWidgets();
+                self.invalidate();
 
-                initList(self);
+                initList(&self);
                 break;
             }
         }
     }
 
     // 0x00443EF6
-    static void getScrollSize(Window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Window& self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
-        *scrollHeight = ScenarioManager::getScenarioCountByCategory(self->currentTab) * rowHeight;
+        *scrollHeight = ScenarioManager::getScenarioCountByCategory(self.currentTab) * rowHeight;
     }
 
     // 0x00443F32
-    static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self->currentTab);
+        auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self.currentTab);
 
         auto index = y / rowHeight;
         if (index > scenarioCount)
             return;
 
-        auto* scenarioInfo = ScenarioManager::getNthScenarioFromCategory(self->currentTab, index);
+        auto* scenarioInfo = ScenarioManager::getNthScenarioFromCategory(self.currentTab, index);
         if (scenarioInfo == nullptr)
             return;
 
         // Mouse click sound
-        Audio::playSound(Audio::SoundId::clickDown, self->x + (self->width / 2));
+        Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
 
         if (isNetworked())
         {

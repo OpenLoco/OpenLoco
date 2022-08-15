@@ -365,7 +365,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             return std::max<int32_t>(0, std::min<int32_t>(getMonthTotalDay(date.year, date.month) - 1, date.day));
         }
 
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
@@ -397,12 +397,12 @@ namespace OpenLoco::Ui::Windows::Cheats
             {
                 case Widx::cash_step_decrease:
                     _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep - cashStepSize, 0);
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::cash_step_value);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::cash_step_value);
                     break;
 
                 case Widx::cash_step_increase:
                     _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep + cashStepSize, 0);
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::cash_step_value);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::cash_step_value);
                     break;
 
                 case Widx::year_step_decrease:
@@ -434,11 +434,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidate(WindowType::cheats);
         }
 
-        static void onUpdate(Window* const self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_finances);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_finances);
         }
 
         static void initEvents()
@@ -566,13 +566,13 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == Widx::target_company_dropdown)
-                Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
         }
 
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
                 return;
@@ -580,15 +580,15 @@ namespace OpenLoco::Ui::Windows::Cheats
             if (widgetIndex == Widx::target_company_dropdown)
             {
                 _targetCompanyId = Dropdown::getCompanyIdFromSelection(itemIndex);
-                self->invalidate();
+                self.invalidate();
             }
         }
 
-        static void onUpdate(Window* const self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_finances);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_finances);
         }
 
         static void initEvents()
@@ -727,11 +727,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onUpdate(Window* const self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_vehicles);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_vehicles);
         }
 
         static void initEvents()
@@ -830,11 +830,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onUpdate(Window* const self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_towns);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_towns);
         }
 
         static void initEvents()

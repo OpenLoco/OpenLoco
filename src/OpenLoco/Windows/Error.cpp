@@ -28,7 +28,7 @@ namespace OpenLoco::Ui::Windows::Error
         static WindowEventList events;
 
         static void draw(Ui::Window* self, Gfx::Context* context);
-        static void onPeriodicUpdate(Ui::Window* self);
+        static void onPeriodicUpdate(Ui::Window& self);
         static void initEvents();
     }
     namespace Error
@@ -253,12 +253,12 @@ namespace OpenLoco::Ui::Windows::Error
         }
 
         // 0x00431E1B
-        static void onPeriodicUpdate(Ui::Window* self)
+        static void onPeriodicUpdate(Ui::Window& self)
         {
-            self->var_846++;
-            if (self->var_846 >= 7)
+            self.var_846++;
+            if (self.var_846 >= 7)
             {
-                WindowManager::close(self);
+                WindowManager::close(&self);
             }
         }
 

@@ -88,8 +88,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static WindowEventList _events;
 
-    static void onMouseDown(Window* window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex);
+    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
     static void prepareDraw(Window* window);
     static void draw(Window* window, Gfx::Context* context);
 
@@ -651,86 +651,86 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043A071
-    static void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Common::Widx::loadsave_menu:
-                loadsaveMenuMouseDown(window, widgetIndex);
+                loadsaveMenuMouseDown(&window, widgetIndex);
                 break;
 
             case Common::Widx::audio_menu:
-                audioMenuMouseDown(window, widgetIndex);
+                audioMenuMouseDown(&window, widgetIndex);
                 break;
 
             case Widx::cheats_menu:
-                cheatsMenuMouseDown(window, widgetIndex);
+                cheatsMenuMouseDown(&window, widgetIndex);
                 break;
 
             case Common::Widx::railroad_menu:
-                railroadMenuMouseDown(window, widgetIndex);
+                railroadMenuMouseDown(&window, widgetIndex);
                 break;
 
             case Common::Widx::port_menu:
-                portMenuMouseDown(window, widgetIndex);
+                portMenuMouseDown(&window, widgetIndex);
                 break;
 
             case Common::Widx::build_vehicles_menu:
-                buildVehiclesMenuMouseDown(window, widgetIndex);
+                buildVehiclesMenuMouseDown(&window, widgetIndex);
                 break;
 
             case Common::Widx::vehicles_menu:
-                vehiclesMenuMouseDown(window, widgetIndex);
+                vehiclesMenuMouseDown(&window, widgetIndex);
                 break;
 
             case Common::Widx::stations_menu:
-                stationsMenuMouseDown(window, widgetIndex);
+                stationsMenuMouseDown(&window, widgetIndex);
                 break;
 
             default:
-                Common::onMouseDown(window, widgetIndex);
+                Common::onMouseDown(&window, widgetIndex);
                 break;
         }
     }
 
-    static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         switch (widgetIndex)
         {
             case Common::Widx::loadsave_menu:
-                loadsaveMenuDropdown(window, widgetIndex, itemIndex);
+                loadsaveMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             case Common::Widx::audio_menu:
-                audioMenuDropdown(window, widgetIndex, itemIndex);
+                audioMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             case Widx::cheats_menu:
-                cheatsMenuDropdown(window, widgetIndex, itemIndex);
+                cheatsMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             case Common::Widx::railroad_menu:
-                railroadMenuDropdown(window, widgetIndex, itemIndex);
+                railroadMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             case Common::Widx::port_menu:
-                portMenuDropdown(window, widgetIndex, itemIndex);
+                portMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             case Common::Widx::build_vehicles_menu:
-                buildVehiclesMenuDropdown(window, widgetIndex, itemIndex);
+                buildVehiclesMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             case Common::Widx::vehicles_menu:
-                vehiclesMenuDropdown(window, widgetIndex, itemIndex);
+                vehiclesMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             case Common::Widx::stations_menu:
-                stationsMenuDropdown(window, widgetIndex, itemIndex);
+                stationsMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             default:
-                Common::onDropdown(window, widgetIndex, itemIndex);
+                Common::onDropdown(&window, widgetIndex, itemIndex);
                 break;
         }
     }

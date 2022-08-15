@@ -139,34 +139,34 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429D2C
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
             uint16_t height = _word_525CE0 + 4;
 
-            _word_525CE0 = std::min(height, self->height);
+            _word_525CE0 = std::min(height, self.height);
 
-            height = Ui::height() - _word_525CE0 - self->y;
-            auto width = (Ui::width() / 2) - (windowSize.width / 2) - self->x;
+            height = Ui::height() - _word_525CE0 - self.y;
+            auto width = (Ui::width() / 2) - (windowSize.width / 2) - self.x;
 
             if (width != 0 || height != 0)
             {
-                self->invalidate();
-                self->y += height;
-                self->x += width;
+                self.invalidate();
+                self.y += height;
+                self.x += width;
 
-                if (self->viewports[0] != nullptr)
+                if (self.viewports[0] != nullptr)
                 {
-                    self->viewports[0]->x += width;
-                    self->viewports[0]->y += height;
+                    self.viewports[0]->x += width;
+                    self.viewports[0]->y += height;
                 }
 
-                if (self->viewports[1] != nullptr)
+                if (self.viewports[1] != nullptr)
                 {
-                    self->viewports[1]->x += width;
-                    self->viewports[1]->y += height;
+                    self.viewports[1]->x += width;
+                    self.viewports[1]->y += height;
                 }
 
-                self->invalidate();
+                self.invalidate();
             }
         }
 

@@ -450,7 +450,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
     }
 
-    void onUpdate(Window* window)
+    void onUpdate(Window& window)
     {
         zoom_ticks++;
     }

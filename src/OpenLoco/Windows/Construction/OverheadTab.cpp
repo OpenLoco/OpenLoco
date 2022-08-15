@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EBFC
-    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -77,13 +77,13 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             {
                 uint8_t modCount = 3;
 
-                auto widget = self->widgets[widx::track];
-                auto xPos = widget.left + self->x;
-                auto yPos = widget.top + self->y;
+                auto widget = self.widgets[widx::track];
+                auto xPos = widget.left + self.x;
+                auto yPos = widget.top + self.y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
-                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), modCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), modCount, (1 << 7));
 
                 Dropdown::add(0, StringIds::single_section);
                 Dropdown::add(1, StringIds::block_section);
@@ -96,14 +96,14 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             case widx::image:
             {
                 Input::toolCancel();
-                Input::toolSet(self, widgetIndex, CursorId::crosshair);
+                Input::toolSet(&self, widgetIndex, CursorId::crosshair);
                 break;
             }
         }
     }
 
     // 0x0049EC09
-    static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::track_dropdown)
             return;
@@ -111,14 +111,14 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         if (itemIndex != -1)
         {
             _lastSelectedTrackModSection = itemIndex;
-            self->invalidate();
+            self.invalidate();
         }
     }
 
     // 0x0049ECD1
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        Common::onUpdate(self, (1 << 5));
+        Common::onUpdate(&self, (1 << 5));
     }
 
     static std::optional<GameCommands::RoadModsPlacementArgs> getRoadModsPlacementArgsFromCursor(const int16_t x, const int16_t y)

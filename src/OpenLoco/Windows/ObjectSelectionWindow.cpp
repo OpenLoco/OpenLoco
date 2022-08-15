@@ -732,9 +732,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004738ED
-    static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = _tabObjectCounts[self->currentTab] * rowHeight;
+        *scrollHeight = _tabObjectCounts[self.currentTab] * rowHeight;
     }
 
     // 0x00473900
@@ -793,16 +793,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473948
-    static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto objIndex = getObjectFromSelection(self, y);
+        auto objIndex = getObjectFromSelection(&self, y);
         auto index = objIndex.index;
         auto object = objIndex.object._header;
 
         if (index == -1)
             return;
 
-        self->invalidate();
+        self.invalidate();
         Audio::playSound(Audio::SoundId::clickDown, Input::getMouseLocation().x);
 
         auto type = objIndex.object._header->getType();
@@ -874,9 +874,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473A04
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        WindowManager::invalidateWidget(WindowType::objectSelection, self->number, widx::objectImage);
+        WindowManager::invalidateWidget(WindowType::objectSelection, self.number, widx::objectImage);
     }
 
     static void initEvents()

@@ -60,12 +60,12 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void prepareDraw(Window* window);
     static void draw(Ui::Window* self, Gfx::Context* context);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void textInput(Window* w, WidgetIndex_t widgetIndex, const char* str);
-    static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index);
+    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index);
     static Ui::CursorId onCursor(Window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onUpdate(Window* w);
+    static void onUpdate(Window& w);
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
 
@@ -278,23 +278,23 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x043992E
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::map_chat_menu:
-                mapMouseDown(window, widgetIndex);
+                mapMouseDown(&window, widgetIndex);
                 break;
         }
     }
 
     // 0x439939
-    static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index)
+    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index)
     {
         switch (widgetIndex)
         {
             case Widx::map_chat_menu:
-                mapDropdown(w, widgetIndex, item_index);
+                mapDropdown(&w, widgetIndex, item_index);
                 break;
         }
     }
@@ -387,18 +387,18 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439AD9
-    static void onUpdate(Window* w)
+    static void onUpdate(Window& w)
     {
-        w->var_854 += 1;
-        if (w->var_854 >= 24)
+        w.var_854 += 1;
+        if (w.var_854 >= 24)
         {
-            w->var_854 = 0;
+            w.var_854 = 0;
         }
 
-        w->var_856 += 1;
-        if (w->var_856 >= 60)
+        w.var_856 += 1;
+        if (w.var_856 >= 60)
         {
-            w->var_856 = 0;
+            w.var_856 = 0;
         }
 
         if (_50A004 & (1 << 1))

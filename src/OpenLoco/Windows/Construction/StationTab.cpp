@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E249
-    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -86,12 +86,12 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 while (_stationList[stationCount] != 0xFF)
                     stationCount++;
 
-                auto widget = self->widgets[widx::station];
-                auto xPos = widget.left + self->x;
-                auto yPos = widget.top + self->y;
+                auto widget = self.widgets[widx::station];
+                auto xPos = widget.left + self.x;
+                auto yPos = widget.top + self.y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
-                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), stationCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), stationCount, (1 << 7));
 
                 if (_byte_1136063 & (1 << 7))
                 {
@@ -114,14 +114,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             case widx::image:
             {
                 Input::toolCancel();
-                Input::toolSet(self, widgetIndex, CursorId::placeStation);
+                Input::toolSet(&self, widgetIndex, CursorId::placeStation);
                 break;
             }
         }
     }
 
     // 0x0049E256
-    static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex == widx::station_dropdown)
         {
@@ -149,14 +149,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 _scenarioTrainStations[_trackType] = selectedStation;
             }
 
-            self->invalidate();
+            self.invalidate();
         }
     }
 
     // 0x0049E437
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        Common::onUpdate(self, (1 << 3));
+        Common::onUpdate(&self, (1 << 3));
     }
 
     // 0x0049FF4B

@@ -347,16 +347,16 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void scrollMouseDown(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+    static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
     {
-        auto index = y / self->rowHeight;
-        if (index >= self->rowCount)
+        auto index = y / self.rowHeight;
+        if (index >= self.rowCount)
             return;
 
-        if (self->var_842 != index)
+        if (self.var_842 != index)
         {
-            self->var_842 = index;
-            self->invalidate();
+            self.var_842 = index;
+            self.invalidate();
             return;
         }
     }
@@ -408,7 +408,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void getScrollSize(Ui::Window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Ui::Window& self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
         if (_currentPosition == TilePos2(0, 0))
         {
@@ -416,7 +416,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
         }
 
-        *scrollHeight = self->rowCount * self->rowHeight;
+        *scrollHeight = self.rowCount * self.rowHeight;
     }
 
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)

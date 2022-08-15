@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
         registerHook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::Windows::ToolTip::update((Ui::Window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
+                Ui::Windows::ToolTip::update((Ui::Window&)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
                 return 0;
             });
     }
@@ -139,15 +139,15 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C9216
-    void update(Ui::Window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
+    void update(Ui::Window& window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
     {
         WindowManager::close(WindowType::tooltip, 0);
 
-        _tooltipWindowType = window->type;
-        _tooltipWindowNumber = window->number;
+        _tooltipWindowType = window.type;
+        _tooltipWindowNumber = window.number;
         _tooltipWidgetIndex = widgetIndex;
 
-        auto toolArgs = window->callTooltip(widgetIndex);
+        auto toolArgs = window.callTooltip(widgetIndex);
         if (!toolArgs)
         {
             return;
@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
         _currentTooltipStringId = stringId;
 
-        common(window, widgetIndex, stringId, cursorX, cursorY, *toolArgs);
+        common(&window, widgetIndex, stringId, cursorX, cursorY, *toolArgs);
     }
 
     // 0x004C9397
@@ -196,7 +196,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C94FF
-    static void update(Ui::Window* window)
+    static void update(Ui::Window& window)
     {
         if (_52336E == false)
         {

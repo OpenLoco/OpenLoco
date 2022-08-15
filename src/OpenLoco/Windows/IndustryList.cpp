@@ -183,13 +183,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458172
-        static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
-            if (currentRow > self->var_83C)
+            if (currentRow > self.var_83C)
                 return;
 
-            const auto currentIndustry = IndustryId(self->rowInfo[currentRow]);
+            const auto currentIndustry = IndustryId(self.rowInfo[currentRow]);
             if (currentIndustry == IndustryId::null)
                 return;
 
@@ -350,17 +350,17 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004580AE
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no++;
+            self.frame_no++;
 
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::industryList, self->number, self->currentTab + Common::widx::tab_industry_list);
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::industryList, self.number, self.currentTab + Common::widx::tab_industry_list);
 
             // Add three industries every tick.
-            updateIndustryList(self);
-            updateIndustryList(self);
-            updateIndustryList(self);
+            updateIndustryList(&self);
+            updateIndustryList(&self);
+            updateIndustryList(&self);
         }
 
         // 0x00457EE8
@@ -372,9 +372,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458108
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = rowHeight * self->var_83C;
+            *scrollHeight = rowHeight * self.var_83C;
         }
 
         // 0x00457D2A
@@ -459,22 +459,22 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004580DE
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            self->flags |= WindowFlags::notScrollView;
+            self.flags |= WindowFlags::notScrollView;
         }
 
         // 0x004580E6
-        static void event_09(Window* self)
+        static void event_09(Window& self)
         {
-            if ((self->flags & WindowFlags::notScrollView) == 0)
+            if ((self.flags & WindowFlags::notScrollView) == 0)
                 return;
 
-            if (self->rowHover == -1)
+            if (self.rowHover == -1)
                 return;
 
-            self->rowHover = -1;
-            self->invalidate();
+            self.rowHover = -1;
+            self.invalidate();
         }
 
         // 0x00457FCA
@@ -695,27 +695,27 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458966
-        static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             int16_t xPos = (x / rowHeight);
             int16_t yPos = (y / rowHeight) * 5;
             auto index = getRowIndex(x, y);
 
-            for (auto i = 0; i < self->var_83C; i++)
+            for (auto i = 0; i < self.var_83C; i++)
             {
-                auto rowInfo = self->rowInfo[i];
+                auto rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
                 {
-                    self->rowHover = rowInfo;
+                    self.rowHover = rowInfo;
                     LastGameOptionManager::setLastIndustry(rowInfo);
 
-                    int32_t pan = (self->width >> 1) + self->x;
+                    int32_t pan = (self.width >> 1) + self.x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
-                    self->savedView.mapX = -16;
+                    self.savedView.mapX = -16;
                     dword_E0C39C = 0x80000000;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
             }
@@ -786,7 +786,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004585B8
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::flag5))
             {
@@ -794,41 +794,41 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto xPos = cursor.x;
                 auto yPos = cursor.y;
                 Window* activeWindow = WindowManager::findAt(xPos, yPos);
-                if (activeWindow == self)
+                if (activeWindow == &self)
                 {
-                    xPos -= self->x;
+                    xPos -= self.x;
                     xPos += 26;
-                    yPos -= self->y;
+                    yPos -= self.y;
 
-                    if ((yPos < 42) || (xPos <= self->width))
+                    if ((yPos < 42) || (xPos <= self.width))
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
-                        WidgetIndex_t activeWidget = self->findWidgetAt(xPos, yPos);
+                        WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self->savedView.mapX += 1;
-                            if (self->savedView.mapX >= 8)
+                            self.savedView.mapX += 1;
+                            if (self.savedView.mapX >= 8)
                             {
-                                auto y = std::min(self->scrollAreas[0].contentHeight - 1 + 60, 500);
+                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 276);
                                 }
-                                self->minWidth = window_size.width;
-                                self->minHeight = y;
-                                self->maxWidth = window_size.width;
-                                self->maxHeight = y;
+                                self.minWidth = window_size.width;
+                                self.minHeight = y;
+                                self.maxWidth = window_size.width;
+                                self.maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self->minWidth = window_size.width;
-                                    self->minHeight = window_size.height;
-                                    self->maxWidth = window_size.width;
-                                    self->maxHeight = window_size.height;
+                                    self.minWidth = window_size.width;
+                                    self.minHeight = window_size.height;
+                                    self.maxWidth = window_size.width;
+                                    self.maxHeight = window_size.height;
                                 }
                             }
                         }
@@ -836,23 +836,23 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 }
                 else
                 {
-                    self->savedView.mapX = 0;
+                    self.savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self->minWidth = window_size.width;
-                        self->minHeight = window_size.height;
-                        self->maxWidth = window_size.width;
-                        self->maxHeight = window_size.height;
+                        self.minWidth = window_size.width;
+                        self.minHeight = window_size.height;
+                        self.maxWidth = window_size.width;
+                        self.maxHeight = window_size.height;
                     }
                 }
             }
-            self->frame_no++;
+            self.frame_no++;
 
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::industryList, self->number, self->currentTab + Common::widx::tab_industry_list);
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::industryList, self.number, self.currentTab + Common::widx::tab_industry_list);
 
-            if (!Input::isToolActive(self->type, self->number))
-                WindowManager::close(self);
+            if (!Input::isToolActive(self.type, self.number))
+                WindowManager::close(&self);
         }
 
         // 0x00458455
@@ -864,9 +864,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004586EA
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = (4 + self->var_83C) / 5;
+            *scrollHeight = (4 + self.var_83C) / 5;
             if (*scrollHeight == 0)
                 *scrollHeight += 1;
             *scrollHeight *= rowHeight;
@@ -917,11 +917,11 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458708
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            if (self->var_846 != 0xFFFF)
-                self->var_846 = 0xFFFF;
-            self->invalidate();
+            if (self.var_846 != 0xFFFF)
+                self.var_846 = 0xFFFF;
+            self.invalidate();
         }
 
         // 0x00458C09

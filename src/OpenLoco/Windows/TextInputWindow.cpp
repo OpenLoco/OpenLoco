@@ -84,7 +84,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     static void prepareDraw(Ui::Window* window);
     static void draw(Ui::Window* window, Gfx::Context* context);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onUpdate(Ui::Window* window);
+    static void onUpdate(Ui::Window& window);
 
     /**
      * 0x004CE523
@@ -278,12 +278,12 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     // 0x004CE8FA
-    static void onUpdate(Ui::Window* window)
+    static void onUpdate(Ui::Window& window)
     {
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame % 16) == 0)
         {
-            window->invalidate();
+            window.invalidate();
         }
     }
 

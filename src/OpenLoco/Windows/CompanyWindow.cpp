@@ -304,17 +304,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432283
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == Common::widx::company_select)
-                Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
         }
 
         // 0x0043228E
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
-                Common::switchCompany(self, itemIndex);
+                Common::switchCompany(&self, itemIndex);
         }
 
         // 0x004325DF
@@ -367,11 +367,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043270A
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self->number);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidate(WindowType::company, self.number);
         }
 
         // 0x00432724
@@ -862,26 +862,26 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432C08
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::company_select:
-                    Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
                     break;
 
                 case widx::build_hq:
-                    Input::toolSet(self, widgetIndex, CursorId::placeHQ);
+                    Input::toolSet(&self, widgetIndex, CursorId::placeHQ);
                     Input::setFlag(Input::Flags::flag6);
                     break;
             }
         }
 
         // 0x00432C19
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
-                Common::switchCompany(self, itemIndex);
+                Common::switchCompany(&self, itemIndex);
         }
 
         // 0x00432C24
@@ -1026,11 +1026,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0432D85
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self->number);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidate(WindowType::company, self.number);
         }
 
         // 0x00432D9F
@@ -1414,12 +1414,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433067
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::company_select:
-                    Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
                     break;
 
                 case main_colour_scheme:
@@ -1434,7 +1434,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case main_colour_aircraft:
                 case main_colour_ships:
                 {
-                    auto* company = CompanyManager::get(CompanyId(self->number));
+                    auto* company = CompanyManager::get(CompanyId(self.number));
                     Colour selectedColour;
                     if (widgetIndex != main_colour_scheme)
                     {
@@ -1444,8 +1444,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     else
                         selectedColour = company->mainColours.primary;
 
-                    auto availableColours = 0x7FFFFFFF & ~(CompanyManager::competingColourMask(CompanyId(self->number)));
-                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary));
+                    auto availableColours = 0x7FFFFFFF & ~(CompanyManager::competingColourMask(CompanyId(self.number)));
+                    Dropdown::showColour(&self, &self.widgets[widgetIndex], availableColours, selectedColour, self.getColour(WindowColour::secondary));
                     break;
                 }
 
@@ -1461,7 +1461,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case secondary_colour_aircraft:
                 case secondary_colour_ships:
                 {
-                    auto* company = CompanyManager::get(CompanyId(self->number));
+                    auto* company = CompanyManager::get(CompanyId(self.number));
                     Colour selectedColour;
                     if (widgetIndex != secondary_colour_scheme)
                     {
@@ -1472,7 +1472,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         selectedColour = company->mainColours.secondary;
 
                     auto availableColours = 0x7FFFFFFF;
-                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary));
+                    Dropdown::showColour(&self, &self.widgets[widgetIndex], availableColours, selectedColour, self.getColour(WindowColour::secondary));
                     break;
                 }
             }
@@ -1488,12 +1488,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043309D
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::company_select:
-                    Common::switchCompany(self, itemIndex);
+                    Common::switchCompany(&self, itemIndex);
                     break;
 
                 case widx::main_colour_scheme:
@@ -1516,7 +1516,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::main_colour_scheme;
 
-                    GameCommands::do_19(0, colour, vehicleType, 0, CompanyId(self->number));
+                    GameCommands::do_19(0, colour, vehicleType, 0, CompanyId(self.number));
                     break;
                 }
 
@@ -1540,18 +1540,18 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
 
-                    GameCommands::do_19(1, colour, vehicleType, 0, CompanyId(self->number));
+                    GameCommands::do_19(1, colour, vehicleType, 0, CompanyId(self.number));
                     break;
                 }
             }
         }
 
         // 0x0043325F
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self->number);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidate(WindowType::company, self.number);
         }
 
         // 0x00433279
@@ -1931,19 +1931,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043383E
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
             switch (widgetIndex)
             {
                 case Common::widx::company_select:
-                    Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
                     break;
 
                 case widx::loan_decrease:
                 {
-                    auto company = CompanyManager::get(CompanyId(self->number));
+                    auto company = CompanyManager::get(CompanyId(self.number));
                     if (company->currentLoan == 0)
                         return;
 
@@ -1958,7 +1958,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::loan_increase:
                 {
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = CompanyManager::get(CompanyId(self->number))->currentLoan + calculateStepSize(*_clickRepeatTicks);
+                    args.newLoan = CompanyManager::get(CompanyId(self.number))->currentLoan + calculateStepSize(*_clickRepeatTicks);
 
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -2002,20 +2002,20 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433868
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
             {
-                Common::switchCompany(self, itemIndex);
-                scrollToLatestData(self);
-                self->invalidate();
+                Common::switchCompany(&self, itemIndex);
+                scrollToLatestData(&self);
+                self.invalidate();
             }
         }
 
         // 0x0043386F
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            const auto& company = CompanyManager::get(CompanyId(self->number));
+            const auto& company = CompanyManager::get(CompanyId(self.number));
             *scrollWidth = company->numExpenditureMonths * expenditureColumnWidth;
         }
 
@@ -2028,11 +2028,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043399D
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self->number);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidate(WindowType::company, self.number);
         }
 
         // 0x004339B7
@@ -2218,10 +2218,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C0B
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == Common::widx::company_select)
-                Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
         }
 
         // 0x00433C16
@@ -2234,18 +2234,18 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C21
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == Common::widx::company_select)
-                Common::switchCompany(self, itemIndex);
+                Common::switchCompany(&self, itemIndex);
         }
 
         // 0x00433C7D
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self->number);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidate(WindowType::company, self.number);
         }
 
         // 0x00433C97
@@ -2433,11 +2433,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043402E
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidate(WindowType::company, self->number);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidate(WindowType::company, self.number);
         }
 
         // 0x00434048

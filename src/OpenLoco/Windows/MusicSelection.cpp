@@ -41,11 +41,11 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static void draw(Ui::Window* window, Gfx::Context* context);
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
-    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onUpdate(Window* window);
+    static void onUpdate(Window& window);
     static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
 
     static void initEvents()
@@ -133,7 +133,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C176C
-    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = rowHeight * Audio::kNumMusicTracks;
     }
@@ -150,10 +150,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1799
-    static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentTrack = y / rowHeight;
-        if (currentTrack > window->rowCount)
+        if (currentTrack > window.rowCount)
             return;
 
         auto& config = Config::get();
@@ -172,7 +172,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
         Config::write();
         Audio::revalidateCurrentTrack();
-        window->invalidate();
+        window.invalidate();
     }
 
     // 0x004C1771
@@ -187,12 +187,12 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C17E3
-    static void onUpdate(Window* window)
+    static void onUpdate(Window& window)
     {
         auto optionsWindow = WindowManager::find(WindowType::options);
         if (optionsWindow == nullptr || optionsWindow->currentTab != Options::tab_offset_music)
         {
-            WindowManager::close(window);
+            WindowManager::close(&window);
             return;
         }
     }

@@ -65,11 +65,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void initEvents();
 
         // 0x00440082
-        static void update(Window* window)
+        static void update(Window& window)
         {
-            window->frame_no++;
-            window->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::scenarioOptions, window->number, window->currentTab + widx::tab_challenge);
+            window.frame_no++;
+            window.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::scenarioOptions, window.number, window.currentTab + widx::tab_challenge);
         }
 
         // 0x004400A4
@@ -223,7 +223,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static int16_t cargoByDropdownIndex[maxCargoObjects] = { -1 };
 
         // 0x0043FD51
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
                 return;
@@ -232,26 +232,26 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             {
                 case widx::objective_type_btn:
                     Scenario::getObjective().type = static_cast<Scenario::ObjectiveType>(itemIndex);
-                    self->invalidate();
+                    self.invalidate();
                     break;
 
                 case widx::objective_cargo_btn:
                 {
                     Scenario::getObjective().deliveredCargoType = cargoByDropdownIndex[itemIndex];
-                    self->invalidate();
+                    self.invalidate();
                 }
             }
         }
 
         // 0x0043FD14
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case widx::objective_type_btn:
                 {
-                    Widget& target = self->widgets[widx::objective_type];
-                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), std::size(objectiveTypeLabelIds), 0x80);
+                    Widget& target = self.widgets[widx::objective_type];
+                    Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(objectiveTypeLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(objectiveTypeLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, objectiveTypeLabelIds[i]);
@@ -295,7 +295,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                         }
                     }
 
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
 
@@ -334,7 +334,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                         }
                     }
 
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
 
@@ -348,8 +348,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                             numCargoObjects++;
                     }
 
-                    Widget& target = self->widgets[widx::objective_cargo];
-                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), numCargoObjects, 0x80);
+                    Widget& target = self.widgets[widx::objective_cargo];
+                    Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), numCargoObjects, 0x80);
 
                     uint16_t dropdownIndex = 0;
                     for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
@@ -372,14 +372,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case widx::time_limit_value_down:
                 {
                     Scenario::getObjective().timeLimitYears = std::max<uint8_t>(Scenario::getObjective().timeLimitYears - 1, Scenario::min_objective_year_limit);
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
 
                 case widx::time_limit_value_up:
                 {
                     Scenario::getObjective().timeLimitYears = std::min<uint8_t>(Scenario::getObjective().timeLimitYears + 1, Scenario::max_objective_year_limit);
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
             }
@@ -656,7 +656,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         // 0x0043F67C
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
                 return;
@@ -676,38 +676,38 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
             }
 
-            self->invalidate();
+            self.invalidate();
         }
 
         // 0x0043F639
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case widx::max_competing_companies_down:
                     CompanyManager::setMaxCompetingCompanies(std::max<int8_t>(CompanyManager::getMaxCompetingCompanies() - 1, Scenario::min_competing_companies));
-                    self->invalidate();
+                    self.invalidate();
                     break;
 
                 case widx::max_competing_companies_up:
                     CompanyManager::setMaxCompetingCompanies(std::min<uint8_t>(CompanyManager::getMaxCompetingCompanies() + 1, Scenario::max_competing_companies));
-                    self->invalidate();
+                    self.invalidate();
                     break;
 
                 case widx::delay_before_competing_companies_start_down:
                     CompanyManager::setCompetitorStartDelay(std::max<int8_t>(CompanyManager::getCompetitorStartDelay() - 1, Scenario::min_competitor_start_delay));
-                    self->invalidate();
+                    self.invalidate();
                     break;
 
                 case widx::delay_before_competing_companies_start_up:
                     CompanyManager::setCompetitorStartDelay(std::min<uint8_t>(CompanyManager::getCompetitorStartDelay() + 1, Scenario::max_competitor_start_delay));
-                    self->invalidate();
+                    self.invalidate();
                     break;
 
                 case widx::preferred_intelligence_btn:
                 {
-                    Widget& target = self->widgets[widx::preferred_intelligence];
-                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
+                    Widget& target = self.widgets[widx::preferred_intelligence];
+                    Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
@@ -718,8 +718,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::preferred_aggressiveness_btn:
                 {
-                    Widget& target = self->widgets[widx::preferred_aggressiveness];
-                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
+                    Widget& target = self.widgets[widx::preferred_aggressiveness];
+                    Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
@@ -730,8 +730,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::preferred_competitiveness_btn:
                 {
-                    Widget& target = self->widgets[widx::preferred_competitiveness];
-                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
+                    Widget& target = self.widgets[widx::preferred_competitiveness];
+                    Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
@@ -874,7 +874,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -907,7 +907,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
             }
 
-            self->invalidate();
+            self.invalidate();
         }
 
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
@@ -1034,22 +1034,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         // 0x0043F14B
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == widx::scenario_group_btn && itemIndex != -1)
             {
                 S5::getOptions().difficulty = itemIndex;
-                self->invalidate();
+                self.invalidate();
             }
         }
 
         // 0x0043F140
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == widx::scenario_group_btn)
             {
-                Widget& target = self->widgets[widx::scenario_group];
-                Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), std::size(scenarioGroupLabelIds), 0x80);
+                Widget& target = self.widgets[widx::scenario_group];
+                Dropdown::show(self.x + target.left, self.y + target.top, target.width() - 4, target.height(), self.getColour(WindowColour::secondary), std::size(scenarioGroupLabelIds), 0x80);
 
                 for (size_t i = 0; i < std::size(scenarioGroupLabelIds); i++)
                     Dropdown::add(i, StringIds::dropdown_stringid, scenarioGroupLabelIds[i]);

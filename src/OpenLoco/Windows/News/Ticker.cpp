@@ -58,26 +58,26 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429EEB
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
         auto window = WindowManager::findAtAlt(_cursorX2, _cursorY2);
 
-        if (window == self)
+        if (window == &self)
         {
-            self->var_852 = 12;
+            self.var_852 = 12;
         }
 
-        if (self->var_852 != 0)
+        if (self.var_852 != 0)
         {
             if (!isPaused())
             {
-                self->var_852--;
+                self.var_852--;
             }
         }
 
-        self->invalidate();
+        self.invalidate();
 
-        if (self->var_852 == 0 && !isPaused())
+        if (self.var_852 == 0 && !isPaused())
         {
             _word_525CE0 = _word_525CE0 + 2;
 
@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         MessageManager::setActiveIndex(MessageId::null);
 
-        WindowManager::close(self);
+        WindowManager::close(&self);
     }
 
     // 0x004950EF

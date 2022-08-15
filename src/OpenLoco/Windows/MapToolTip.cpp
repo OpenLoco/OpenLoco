@@ -107,9 +107,9 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     }
 
     // 0x004CF13B
-    static void update(Window* self)
+    static void update(Window& self)
     {
-        self->invalidate();
+        self.invalidate();
     }
 
     // 0x004CF010

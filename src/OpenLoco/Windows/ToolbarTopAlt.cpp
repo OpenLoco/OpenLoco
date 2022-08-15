@@ -64,8 +64,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
     static WindowEventList _events;
 
-    static void onMouseDown(Window* window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex);
+    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
     static void prepareDraw(Window* window);
 
     static void initEvents()
@@ -230,47 +230,47 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D541
-    static void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Common::Widx::loadsave_menu:
-                loadsaveMenuMouseDown(window, widgetIndex);
+                loadsaveMenuMouseDown(&window, widgetIndex);
                 break;
 
             case Common::Widx::audio_menu:
-                audioMenuMouseDown(window, widgetIndex);
+                audioMenuMouseDown(&window, widgetIndex);
                 break;
 
             case Widx::map_generation_menu:
-                mapGenerationMenuMouseDown(window, widgetIndex);
+                mapGenerationMenuMouseDown(&window, widgetIndex);
                 break;
 
             default:
-                Common::onMouseDown(window, widgetIndex);
+                Common::onMouseDown(&window, widgetIndex);
                 break;
         }
     }
 
     // 0x0043D5A6
-    static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         switch (widgetIndex)
         {
             case Common::Widx::loadsave_menu:
-                loadsaveMenuDropdown(window, widgetIndex, itemIndex);
+                loadsaveMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             case Common::Widx::audio_menu:
-                audioMenuDropdown(window, widgetIndex, itemIndex);
+                audioMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             case Widx::map_generation_menu:
-                mapGenerationMenuDropdown(window, widgetIndex, itemIndex);
+                mapGenerationMenuDropdown(&window, widgetIndex, itemIndex);
                 break;
 
             default:
-                Common::onDropdown(window, widgetIndex, itemIndex);
+                Common::onDropdown(&window, widgetIndex, itemIndex);
                 break;
         }
     }

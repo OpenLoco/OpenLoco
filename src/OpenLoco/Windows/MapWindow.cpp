@@ -340,18 +340,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static uint16_t mapFrameNumber = 0;
 
     // 0x0046BA5B
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        self->frame_no++;
-        self->callPrepareDraw();
+        self.frame_no++;
+        self.callPrepareDraw();
 
-        WindowManager::invalidateWidget(WindowType::map, self->number, self->currentTab + widx::tabOverall);
+        WindowManager::invalidateWidget(WindowType::map, self.number, self.currentTab + widx::tabOverall);
 
         mapFrameNumber++;
 
-        if (getCurrentRotation() != self->var_846)
+        if (getCurrentRotation() != self.var_846)
         {
-            self->var_846 = getCurrentRotation();
+            self.var_846 = getCurrentRotation();
             clearMap();
         }
 
@@ -359,22 +359,22 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         while (i > 0)
         {
-            sub_46C544(self);
+            sub_46C544(&self);
             i--;
         }
 
-        self->invalidate();
+        self.invalidate();
 
-        auto x = self->x + self->width - 104;
-        auto y = self->y + 44;
+        auto x = self.x + self.width - 104;
+        auto y = self.y + 44;
 
-        setHoverItemTab(self, x, y);
+        setHoverItemTab(&self, x, y);
     }
 
     // 0x0046B9E7
-    static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        self->callPrepareDraw();
+        self.callPrepareDraw();
         *scrollWidth = map_columns * 2;
         *scrollHeight = map_rows * 2;
     }
@@ -392,7 +392,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B97C
-    static void scrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void scrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
         auto pos = mapWindowPosToLocation({ x, y });
 

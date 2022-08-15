@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static void prepareDraw(Window* self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void onUpdate(Window* self);
+        static void onUpdate(Window& self);
         static void drawTabs(Window* self, Gfx::Context* context);
         static void initEvents();
     }
@@ -116,32 +116,32 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A847
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            self->flags |= WindowFlags::notScrollView;
+            self.flags |= WindowFlags::notScrollView;
         }
 
         // 0x0042A84F
-        static void event_09(Window* self)
+        static void event_09(Window& self)
         {
-            if (!(self->flags & WindowFlags::notScrollView))
+            if (!(self.flags & WindowFlags::notScrollView))
                 return;
 
-            if (self->rowHover == -1)
+            if (self.rowHover == -1)
                 return;
 
-            self->rowHover = -1;
-            self->invalidate();
+            self.rowHover = -1;
+            self.invalidate();
         }
 
         // 0x0042A871
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = _messageCount * messageHeight;
         }
 
         // 0x0042A8B9
-        static void scrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             auto messageIndex = y / messageHeight;
 
@@ -168,7 +168,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             NewsWindow::open(MessageId(messageIndex));
 
-            int32_t pan = self->width / 2 + self->x;
+            int32_t pan = self.width / 2 + self.x;
             Audio::playSound(Audio::SoundId::clickDown, pan);
         }
 
@@ -427,7 +427,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AA9F
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -444,14 +444,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 case widx::advice:
                 case widx::advice_dropdown:
                 {
-                    auto widget = self->widgets[widgetIndex - 1];
-                    auto xPos = widget.left + self->x;
-                    auto yPos = widget.top + self->y;
+                    auto widget = self.widgets[widgetIndex - 1];
+                    auto xPos = widget.left + self.x;
+                    auto yPos = widget.top + self.y;
                     auto width = widget.width() - 2;
                     auto height = widget.height() + 2;
                     auto flags = 1 << 7;
 
-                    Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), 3, flags);
+                    Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), 3, flags);
 
                     Dropdown::add(0, StringIds::dropdown_stringid, StringIds::message_off);
                     Dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);
@@ -466,7 +466,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AAAC
-        static void onDropdown(Window* self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -662,11 +662,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A826 and 0x0042AB6A
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no++;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::messages, self->number, self->currentTab + Common::widx::tab_messages);
+            self.frame_no++;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::messages, self.number, self.currentTab + Common::widx::tab_messages);
         }
 
         static void initEvents()

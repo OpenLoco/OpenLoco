@@ -140,9 +140,9 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void sub_46E328();
 
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
-    static void onUpdate(Window* window);
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
+    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    static void onUpdate(Window& window);
     static void onTextInput(Window* window, WidgetIndex_t widgetIndex, const char* input);
     static Ui::CursorId onCursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static void draw(Ui::Window* window, Gfx::Context* context);
@@ -339,19 +339,19 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004390D1
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         sub_46E328();
         switch (widgetIndex)
         {
             case Widx::tutorial_btn:
-                sub_439112(window);
+                sub_439112(&window);
                 break;
         }
     }
 
     // 0x004390DD
-    static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         sub_46E328();
         switch (widgetIndex)
@@ -484,28 +484,28 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004391F9
-    static void onUpdate(Window* window)
+    static void onUpdate(Window& window)
     {
-        window->var_846++;
+        window.var_846++;
 
         if (Intro::isActive())
         {
-            window->invalidate();
+            window.invalidate();
             return;
         }
 
         if (!MultiPlayer::hasFlag(MultiPlayer::flags::flag_8) && !MultiPlayer::hasFlag(MultiPlayer::flags::flag_9))
         {
-            window->invalidate();
+            window.invalidate();
             return;
         }
 
         if (addr<0x0050C1AE, int32_t>() < 20)
         {
-            window->invalidate();
+            window.invalidate();
             return;
         }
 
-        window->invalidate();
+        window.invalidate();
     }
 }

@@ -62,11 +62,11 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static void prepareDraw(Window* window);
     static void draw(Ui::Window* window, Gfx::Context* context);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index);
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
+    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index);
     static Ui::CursorId onCursor(Ui::Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onUpdate(Window* w);
+    static void onUpdate(Window& w);
 
     // 0x43AA4C
     static void playerMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
@@ -284,18 +284,18 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395B1
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::player:
-                playerMouseDown(window, widgetIndex);
+                playerMouseDown(&window, widgetIndex);
                 break;
         }
     }
 
     // 0x004395BC
-    static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index)
+    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index)
     {
         switch (widgetIndex)
         {
@@ -368,12 +368,12 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x00439670
-    static void onUpdate(Window* w)
+    static void onUpdate(Window& w)
     {
-        w->var_854++;
-        if (w->var_854 >= 24)
+        w.var_854++;
+        if (w.var_854 >= 24)
         {
-            w->var_854 = 0;
+            w.var_854 = 0;
         }
 
         if (_50A004 & (1 << 0))

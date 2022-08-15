@@ -934,7 +934,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->onPeriodicUpdate(this);
+        eventHandlers->onPeriodicUpdate(*this);
     }
 
     void Window::callUpdate()
@@ -950,7 +950,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->onUpdate(this);
+        eventHandlers->onUpdate(*this);
     }
 
     void Window::call_8()
@@ -966,7 +966,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->event_08(this);
+        eventHandlers->event_08(*this);
     }
 
     void Window::call_9()
@@ -982,7 +982,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->event_09(this);
+        eventHandlers->event_09(*this);
     }
 
     void Window::callToolUpdate(int16_t widget_index, int16_t xPos, int16_t yPos)
@@ -1178,7 +1178,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->event_03(this, widget_index);
+        eventHandlers->event_03(*this, widget_index);
     }
 
     void Window::callOnMouseDown(Ui::WidgetIndex_t widget_index)
@@ -1196,7 +1196,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->onMouseDown(this, widget_index);
+        eventHandlers->onMouseDown(*this, widget_index);
     }
 
     void Window::callOnDropdown(Ui::WidgetIndex_t widget_index, int16_t item_index)
@@ -1214,7 +1214,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->onDropdown(this, widget_index, item_index);
+        eventHandlers->onDropdown(*this, widget_index, item_index);
     }
 
     void Window::callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
@@ -1233,7 +1233,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->getScrollSize(this, scrollIndex, scrollWidth, scrollHeight);
+        eventHandlers->getScrollSize(*this, scrollIndex, scrollWidth, scrollHeight);
     }
 
     void Window::callScrollMouseDown(int16_t xPos, int16_t yPos, uint8_t scroll_index)
@@ -1252,7 +1252,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        this->eventHandlers->scrollMouseDown(this, xPos, yPos, scroll_index);
+        this->eventHandlers->scrollMouseDown(*this, xPos, yPos, scroll_index);
     }
 
     void Window::callScrollMouseDrag(int16_t xPos, int16_t yPos, uint8_t scroll_index)
@@ -1271,7 +1271,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        this->eventHandlers->scrollMouseDrag(this, xPos, yPos, scroll_index);
+        this->eventHandlers->scrollMouseDrag(*this, xPos, yPos, scroll_index);
     }
 
     void Window::callScrollMouseOver(int16_t xPos, int16_t yPos, uint8_t scroll_index)

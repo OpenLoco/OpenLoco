@@ -167,9 +167,9 @@ namespace OpenLoco::Ui::Dropdown
         static WindowEventList events;
 
         // 0x004CD015
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->invalidate();
+            self.invalidate();
         }
 
         static void dropdownFormatArgsToFormatArgs(uint8_t itemIndex, FormatArguments args)

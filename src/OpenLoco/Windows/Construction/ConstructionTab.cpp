@@ -1608,7 +1608,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D42F
-    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -1662,9 +1662,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 removeConstructionGhosts();
                 _trackCost = 0x80000000;
 
-                if (self->widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_s_bend_dual_track_left)
+                if (self.widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_s_bend_dual_track_left)
                     _lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
-                else if (self->widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_left_turnaround || self->widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_right_turnaround)
+                else if (self.widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_left_turnaround || self.widgets[widx::s_bend_dual_track_left].image == ImageIds::construction_right_turnaround)
                     _lastSelectedTrackPiece = TrackPiece::turnaround;
                 else
                     _lastSelectedTrackPiece = TrackPiece::s_bend_to_single_track;
@@ -1679,9 +1679,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 removeConstructionGhosts();
                 _trackCost = 0x80000000;
 
-                if (self->widgets[widx::s_bend_dual_track_right].image == ImageIds::construction_s_bend_dual_track_right)
+                if (self.widgets[widx::s_bend_dual_track_right].image == ImageIds::construction_s_bend_dual_track_right)
                     _lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
-                else if (self->widgets[widx::s_bend_dual_track_right].image == ImageIds::construction_left_turnaround)
+                else if (self.widgets[widx::s_bend_dual_track_right].image == ImageIds::construction_left_turnaround)
                     _lastSelectedTrackPiece = TrackPiece::turnaround;
                 else
                     _lastSelectedTrackPiece = TrackPiece::s_bend_to_single_track;
@@ -1712,28 +1712,28 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             case widx::bridge_dropdown:
             {
-                bridgeDropdown(self);
+                bridgeDropdown(&self);
                 break;
             }
 
             case widx::construct:
             {
                 if (*_clickRepeatTicks >= 40)
-                    constructTrack(self, widgetIndex);
+                    constructTrack(&self, widgetIndex);
                 break;
             }
 
             case widx::remove:
             {
                 if (*_clickRepeatTicks >= 40)
-                    removeTrack(self, widgetIndex);
+                    removeTrack(&self, widgetIndex);
                 break;
             }
         }
     }
 
     // 0x0049D4EA
-    static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex == widx::bridge_dropdown)
         {
@@ -1823,20 +1823,20 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DCA2
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        self->frame_no++;
-        self->callPrepareDraw();
-        WindowManager::invalidate(WindowType::construction, self->number);
+        self.frame_no++;
+        self.callPrepareDraw();
+        WindowManager::invalidate(WindowType::construction, self.number);
 
         if (_constructionHover == 1)
         {
-            if (!Input::isToolActive(WindowType::construction, self->number) || _toolWidgetIndex != widx::construct)
-                WindowManager::close(self);
+            if (!Input::isToolActive(WindowType::construction, self.number) || _toolWidgetIndex != widx::construct)
+                WindowManager::close(&self);
         }
         if (_constructionHover == 0)
         {
-            if (Input::isToolActive(WindowType::construction, self->number))
+            if (Input::isToolActive(WindowType::construction, self.number))
                 Input::toolCancel();
         }
         updateConstruction();

@@ -869,20 +869,20 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2434
-    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
     {
         if (widgetIndex == Widx::company_select)
-            Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+            Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
 
         else if (widgetIndex == Widx::filter_type_btn)
         {
-            Widget dropdown = self->widgets[Widx::filter_type];
-            Dropdown::show(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary), 3, 0x80);
+            Widget dropdown = self.widgets[Widx::filter_type];
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::stopping_at_station);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::transporting_cargo);
-            Dropdown::setItemSelected(self->var_88A);
+            Dropdown::setItemSelected(self.var_88A);
         }
         else if (widgetIndex == Widx::cargo_type_btn)
         {
@@ -900,14 +900,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 args.push(cargoId);
                 Dropdown::add(index, StringIds::carrying_cargoid_sprite, args);
 
-                if (index == self->var_88C)
+                if (index == self.var_88C)
                     selectedIndex = index;
 
                 index++;
             }
 
-            Widget dropdown = self->widgets[Widx::cargo_type];
-            Dropdown::showText(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary), index, 0);
+            Widget dropdown = self.widgets[Widx::cargo_type];
+            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), index, 0);
             if (selectedIndex != -1)
                 Dropdown::setItemSelected(selectedIndex);
         }
@@ -948,23 +948,23 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->invalidate();
     }
 
-    static void onDropdown(Ui::Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex == Widx::company_select)
-            return onCompanyDropdown(self, itemIndex);
+            return onCompanyDropdown(&self, itemIndex);
 
         if (widgetIndex == filter_type_btn && itemIndex != -1)
         {
-            if (self->var_88A != itemIndex)
+            if (self.var_88A != itemIndex)
             {
-                self->var_88A = itemIndex;
-                self->var_88C = -1;
+                self.var_88A = itemIndex;
+                self.var_88C = -1;
             }
         }
 
         else if (widgetIndex == cargo_type_btn && itemIndex != -1)
         {
-            self->var_88C = Dropdown::getItemArgument(itemIndex, 3);
+            self.var_88C = Dropdown::getItemArgument(itemIndex, 3);
         }
     }
 
@@ -977,40 +977,40 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C260B
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        self->frame_no++;
-        self->callPrepareDraw();
+        self.frame_no++;
+        self.callPrepareDraw();
 
-        auto widgetIndex = getTabFromType(static_cast<VehicleType>(self->currentTab));
-        WindowManager::invalidateWidget(WindowType::vehicleList, self->number, widgetIndex);
+        auto widgetIndex = getTabFromType(static_cast<VehicleType>(self.currentTab));
+        WindowManager::invalidateWidget(WindowType::vehicleList, self.number, widgetIndex);
 
-        updateVehicleList(self);
-        updateVehicleList(self);
-        updateVehicleList(self);
+        updateVehicleList(&self);
+        updateVehicleList(&self);
+        updateVehicleList(&self);
 
-        self->invalidate();
+        self.invalidate();
     }
 
     // 0x004C2640
-    static void event_08(Window* self)
+    static void event_08(Window& self)
     {
-        self->flags |= WindowFlags::notScrollView;
+        self.flags |= WindowFlags::notScrollView;
     }
 
     // 0x004C2648
-    static void event_09(Window* self)
+    static void event_09(Window& self)
     {
-        if (self->flags & WindowFlags::notScrollView)
+        if (self.flags & WindowFlags::notScrollView)
         {
-            self->rowHover = -1;
+            self.rowHover = -1;
         }
     }
 
     // 0x004C265B
-    static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = self->var_83C * self->rowHeight;
+        *scrollHeight = self.var_83C * self.rowHeight;
     }
 
     // 0x004C266D
@@ -1091,13 +1091,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C27C0
-    static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        uint16_t currentRow = y / self->rowHeight;
-        if (currentRow >= self->var_83C)
+        uint16_t currentRow = y / self.rowHeight;
+        if (currentRow >= self.var_83C)
             return;
 
-        EntityId currentVehicleId = EntityId(self->rowInfo[currentRow]);
+        EntityId currentVehicleId = EntityId(self.rowInfo[currentRow]);
         if (currentVehicleId == EntityId::null)
             return;
 
@@ -1114,26 +1114,26 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2820
-    static void onResize(Window* self)
+    static void onResize(Window& self)
     {
-        self->flags |= WindowFlags::resizable;
+        self.flags |= WindowFlags::resizable;
 
-        self->minWidth = min_dimensions.width;
-        self->minHeight = min_dimensions.height;
+        self.minWidth = min_dimensions.width;
+        self.minHeight = min_dimensions.height;
 
-        self->maxWidth = max_dimensions.width;
-        self->maxHeight = max_dimensions.height;
+        self.maxWidth = max_dimensions.width;
+        self.maxHeight = max_dimensions.height;
 
-        if (self->width < self->minWidth)
+        if (self.width < self.minWidth)
         {
-            self->width = self->minWidth;
-            self->invalidate();
+            self.width = self.minWidth;
+            self.invalidate();
         }
 
-        if (self->height < self->minHeight)
+        if (self.height < self.minHeight)
         {
-            self->height = self->minHeight;
-            self->invalidate();
+            self.height = self.minHeight;
+            self.invalidate();
         }
     }
 

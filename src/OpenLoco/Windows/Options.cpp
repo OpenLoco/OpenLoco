@@ -477,44 +477,44 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004BFBB7
-        static void onMouseDown(Window* w, WidgetIndex_t wi)
+        static void onMouseDown(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Widx::screen_mode_btn:
-                    screenModeMouseDown(w, wi);
+                    screenModeMouseDown(&w, wi);
                     break;
                 case Widx::display_resolution_btn:
-                    resolutionMouseDown(w, wi);
+                    resolutionMouseDown(&w, wi);
                     break;
                 case Widx::construction_marker_btn:
-                    constructionMarkerMouseDown(w, wi);
+                    constructionMarkerMouseDown(&w, wi);
                     break;
                 case Widx::vehicles_min_scale_btn:
-                    vehicleZoomMouseDown(w, wi);
+                    vehicleZoomMouseDown(&w, wi);
                     break;
                 case Widx::station_names_min_scale_btn:
-                    stationNamesScaleMouseDown(w, wi);
+                    stationNamesScaleMouseDown(&w, wi);
                     break;
                 case Widx::display_scale_down_btn:
-                    displayScaleMouseDown(w, wi, -OpenLoco::Ui::ScaleFactor::step);
+                    displayScaleMouseDown(&w, wi, -OpenLoco::Ui::ScaleFactor::step);
                     break;
                 case Widx::display_scale_up_btn:
-                    displayScaleMouseDown(w, wi, OpenLoco::Ui::ScaleFactor::step);
+                    displayScaleMouseDown(&w, wi, OpenLoco::Ui::ScaleFactor::step);
                     break;
             }
         }
 
         // 0x004BFBE8
-        static void onDropdown(Window* w, WidgetIndex_t wi, int16_t item_index)
+        static void onDropdown(Window& w, WidgetIndex_t wi, int16_t item_index)
         {
             switch (wi)
             {
                 case Widx::screen_mode_btn:
-                    screenModeDropdown(w, item_index);
+                    screenModeDropdown(&w, item_index);
                     break;
                 case Widx::display_resolution_btn:
-                    resolutionDropdown(w, item_index);
+                    resolutionDropdown(&w, item_index);
                     break;
                 case Widx::construction_marker_btn:
                     constructionMarkerDropdown(item_index);
@@ -529,11 +529,11 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C01F5
-        static void onUpdate(Window* w)
+        static void onUpdate(Window& w)
         {
-            w->frame_no += 1;
-            w->callPrepareDraw();
-            WindowManager::invalidateWidget(w->type, w->number, w->currentTab + 4);
+            w.frame_no += 1;
+            w.callPrepareDraw();
+            WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
         // 0x004BFA04
@@ -791,22 +791,22 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static void onMouseDown(Window* w, WidgetIndex_t wi)
+        static void onMouseDown(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Widx::audio_device_btn:
-                    audioDeviceMouseDown(w);
+                    audioDeviceMouseDown(&w);
                     break;
             }
         }
 
-        static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
                 case Widx::audio_device_btn:
-                    audioDeviceDropdown(window, itemIndex);
+                    audioDeviceDropdown(&window, itemIndex);
                     break;
             }
         }
@@ -859,11 +859,11 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C04E0
-        static void onUpdate(Window* w)
+        static void onUpdate(Window& w)
         {
-            w->frame_no += 1;
-            w->callPrepareDraw();
-            WindowManager::invalidateWidget(w->type, w->number, w->currentTab + 4);
+            w.frame_no += 1;
+            w.callPrepareDraw();
+            WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
         static void initEvents()
@@ -1031,32 +1031,32 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C06F2
-        static void onMouseDown(Window* w, WidgetIndex_t wi)
+        static void onMouseDown(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Widx::music_playlist_btn:
-                    musicPlaylistMouseDown(w);
+                    musicPlaylistMouseDown(&w);
                     break;
                 case Widx::currently_playing_btn:
-                    currentlyPlayingMouseDown(w);
+                    currentlyPlayingMouseDown(&w);
                     break;
                 case Widx::volume:
-                    volumeMouseDown(w);
+                    volumeMouseDown(&w);
                     break;
             }
         }
 
         // 0x004C070D
-        static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
                 case Widx::music_playlist_btn:
-                    musicPlaylistDropdown(window, itemIndex);
+                    musicPlaylistDropdown(&window, itemIndex);
                     break;
                 case Widx::currently_playing_btn:
-                    currentlyPlayingDropdown(window, itemIndex);
+                    currentlyPlayingDropdown(&window, itemIndex);
                     break;
             }
         }
@@ -1240,11 +1240,11 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C0A37
-        static void onUpdate(Window* w)
+        static void onUpdate(Window& w)
         {
-            w->frame_no += 1;
-            w->callPrepareDraw();
-            WindowManager::invalidateWidget(w->type, w->number, w->currentTab + 4);
+            w.frame_no += 1;
+            w.callPrepareDraw();
+            WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
         static void initEvents()
@@ -1417,51 +1417,51 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004BFBB7
-        static void onMouseDown(Window* w, WidgetIndex_t wi)
+        static void onMouseDown(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Widx::language_btn:
-                    languageMouseDown(w);
+                    languageMouseDown(&w);
                     break;
                 case Widx::heights_btn:
-                    heightsLabelsMouseDown(w);
+                    heightsLabelsMouseDown(&w);
                     break;
                 case Widx::distance_speed_btn:
-                    distanceSpeedMouseDown(w);
+                    distanceSpeedMouseDown(&w);
                     break;
                 case Widx::currency_btn:
-                    currencyMouseDown(w);
+                    currencyMouseDown(&w);
                     break;
                 case Widx::preferred_currency_btn:
-                    preferredCurrencyMouseDown(w);
+                    preferredCurrencyMouseDown(&w);
                     break;
             }
         }
 
         // 0x004C0C4A
-        static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
                 case Widx::language_btn:
-                    languageDropdown(window, itemIndex);
+                    languageDropdown(&window, itemIndex);
                     break;
 
                 case Widx::heights_btn:
-                    heightsLabelsDropdown(window, itemIndex);
+                    heightsLabelsDropdown(&window, itemIndex);
                     break;
 
                 case Widx::distance_speed_btn:
-                    distanceSpeedDropdown(window, itemIndex);
+                    distanceSpeedDropdown(&window, itemIndex);
                     break;
 
                 case Widx::currency_btn:
-                    currencyDropdown(window, itemIndex);
+                    currencyDropdown(&window, itemIndex);
                     break;
 
                 case Widx::preferred_currency_btn:
-                    preferredCurrencyDropdown(window, itemIndex);
+                    preferredCurrencyDropdown(&window, itemIndex);
                     break;
             }
         }
@@ -1718,11 +1718,11 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C1195
-        static void onUpdate(Window* w)
+        static void onUpdate(Window& w)
         {
-            w->frame_no += 1;
-            w->callPrepareDraw();
-            WindowManager::invalidateWidget(w->type, w->number, w->currentTab + 4);
+            w.frame_no += 1;
+            w.callPrepareDraw();
+            WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
         static void initEvents()
@@ -1881,11 +1881,11 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C1195
-        static void onUpdate(Window* w)
+        static void onUpdate(Window& w)
         {
-            w->frame_no += 1;
-            w->callPrepareDraw();
-            WindowManager::invalidateWidget(w->type, w->number, w->currentTab + 4);
+            w.frame_no += 1;
+            w.callPrepareDraw();
+            WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
         static void initEvents()
@@ -2192,28 +2192,28 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static void onMouseDown(Window* w, WidgetIndex_t wi)
+        static void onMouseDown(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
             {
                 case Widx::autosave_frequency_btn:
-                    showAutosaveFrequencyDropdown(w, Widx::autosave_frequency);
+                    showAutosaveFrequencyDropdown(&w, Widx::autosave_frequency);
                     break;
                 case Widx::autosave_amount_down_btn:
-                    changeAutosaveAmount(w, -1);
+                    changeAutosaveAmount(&w, -1);
                     break;
                 case Widx::autosave_amount_up_btn:
-                    changeAutosaveAmount(w, 1);
+                    changeAutosaveAmount(&w, 1);
                     break;
             }
         }
 
-        static void onDropdown(Window* w, WidgetIndex_t wi, int16_t item_index)
+        static void onDropdown(Window& w, WidgetIndex_t wi, int16_t item_index)
         {
             switch (wi)
             {
                 case Widx::autosave_frequency_btn:
-                    handleAutosaveFrequencyDropdown(w, item_index);
+                    handleAutosaveFrequencyDropdown(&w, item_index);
                     break;
             }
         }
@@ -2331,11 +2331,11 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C139C
-        static void onUpdate(Window* w)
+        static void onUpdate(Window& w)
         {
-            w->frame_no += 1;
-            w->callPrepareDraw();
-            WindowManager::invalidateWidget(w->type, w->number, w->currentTab + 4);
+            w.frame_no += 1;
+            w.callPrepareDraw();
+            WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
         static void initEvents()

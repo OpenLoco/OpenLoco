@@ -203,29 +203,29 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004467E1
-    static void onUpdate(Ui::Window* window)
+    static void onUpdate(Ui::Window& window)
     {
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame & 0x0F) == 0)
         {
-            window->invalidate();
+            window.invalidate();
         }
     }
 
     // 0x004464A1
-    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = window->rowHeight * static_cast<uint16_t>(_files.size());
+        *scrollHeight = window.rowHeight * static_cast<uint16_t>(_files.size());
     }
 
     // 0x004464F7
-    static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
-        auto index = size_t(y / self->rowHeight);
+        auto index = size_t(y / self.rowHeight);
         if (index >= _files.size())
             return;
 
-        Audio::playSound(Audio::SoundId::clickDown, self->x + (self->width / 2));
+        Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
 
         auto& entry = _files[index];
 
@@ -233,8 +233,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (Input::state() == Input::State::scrollLeft && fs::is_directory(entry))
         {
             changeDirectory(entry);
-            self->var_85A = -1;
-            self->invalidate();
+            self.var_85A = -1;
+            self.invalidate();
             return;
         }
 
@@ -244,15 +244,15 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             // Copy the selected filename without extension to text input buffer.
             inputSession.buffer = entry.stem().u8string();
             inputSession.cursorPosition = inputSession.buffer.length();
-            self->invalidate();
+            self.invalidate();
 
             // Continue processing for load/save.
-            processFileForLoadSave(self);
+            processFileForLoadSave(&self);
         }
         // Clicking a file, with right mouse button
         else
         {
-            processFileForDelete(self, entry);
+            processFileForDelete(&self, entry);
         }
     }
 

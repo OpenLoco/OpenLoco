@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E669
-    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -57,13 +57,13 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 while (_signalList[signalCount] != 0xFF)
                     signalCount++;
 
-                auto widget = self->widgets[widx::signal];
-                auto xPos = widget.left + self->x;
-                auto yPos = widget.top + self->y;
+                auto widget = self.widgets[widx::signal];
+                auto xPos = widget.left + self.x;
+                auto yPos = widget.top + self.y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
-                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), signalCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), signalCount, (1 << 7));
 
                 for (auto signalIndex = 0; signalIndex < signalCount; signalIndex++)
                 {
@@ -82,7 +82,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _isSignalBothDirections = 1;
                 Input::toolCancel();
-                Input::toolSet(self, widgetIndex, CursorId::placeSignal);
+                Input::toolSet(&self, widgetIndex, CursorId::placeSignal);
                 break;
             }
 
@@ -90,14 +90,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _isSignalBothDirections = 0;
                 Input::toolCancel();
-                Input::toolSet(self, widgetIndex, CursorId::placeSignal);
+                Input::toolSet(&self, widgetIndex, CursorId::placeSignal);
                 break;
             }
         }
     }
 
     // 0x0049E67C
-    static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::signal_dropdown)
             return;
@@ -106,14 +106,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         {
             _lastSelectedSignal = _signalList[itemIndex];
             _scenarioSignals[_trackType] = _signalList[itemIndex];
-            self->invalidate();
+            self.invalidate();
         }
     }
 
     // 0x0049E76F
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        Common::onUpdate(self, (1 << 2));
+        Common::onUpdate(&self, (1 << 2));
     }
 
     // Reverse direction map?

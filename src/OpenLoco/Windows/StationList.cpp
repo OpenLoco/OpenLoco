@@ -96,15 +96,15 @@ namespace OpenLoco::Ui::Windows::StationList
     static Ui::CursorId cursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static void draw(Ui::Window* window, Gfx::Context* context);
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
-    static void event_08(Window* window);
-    static void event_09(Window* window);
-    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void event_08(Window& window);
+    static void event_09(Window& window);
+    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onUpdate(Window* window);
+    static void onUpdate(Window& window);
     static void prepareDraw(Ui::Window* window);
     static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
 
@@ -373,22 +373,22 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049196F
-    static void event_08(Window* window)
+    static void event_08(Window& window)
     {
-        window->flags |= WindowFlags::notScrollView;
+        window.flags |= WindowFlags::notScrollView;
     }
 
     // 0x00491977
-    static void event_09(Window* window)
+    static void event_09(Window& window)
     {
-        if ((window->flags & WindowFlags::notScrollView) == 0)
+        if ((window.flags & WindowFlags::notScrollView) == 0)
             return;
 
-        if (window->rowHover == -1)
+        if (window.rowHover == -1)
             return;
 
-        window->rowHover = -1;
-        window->invalidate();
+        window.rowHover = -1;
+        window.invalidate();
     }
 
     // 0x00491344
@@ -561,7 +561,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004917BB
-    static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::company_select)
             return;
@@ -581,27 +581,27 @@ namespace OpenLoco::Ui::Windows::StationList
         if (company->name == StringIds::empty)
             return;
 
-        window->number = enumValue(companyId);
-        window->owner = companyId;
-        window->sortMode = 0;
-        window->rowCount = 0;
+        window.number = enumValue(companyId);
+        window.owner = companyId;
+        window.sortMode = 0;
+        window.rowCount = 0;
 
-        refreshStationList(window);
+        refreshStationList(&window);
 
-        window->var_83C = 0;
-        window->rowHover = -1;
+        window.var_83C = 0;
+        window.rowHover = -1;
 
-        window->callOnResize();
-        window->callPrepareDraw();
-        window->initScrollWidgets();
-        window->invalidate();
+        window.callOnResize();
+        window.callPrepareDraw();
+        window.initScrollWidgets();
+        window.invalidate();
     }
 
     // 0x004917B0
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         if (widgetIndex == widx::company_select)
-            Dropdown::populateCompanySelect(window, &window->widgets[widgetIndex]);
+            Dropdown::populateCompanySelect(&window, &window.widgets[widgetIndex]);
     }
 
     // 0x00491785
@@ -660,13 +660,13 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491A0C
-    static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentRow = y / rowHeight;
-        if (currentRow > window->var_83C)
+        if (currentRow > window.var_83C)
             return;
 
-        const auto currentStation = StationId(window->rowInfo[currentRow]);
+        const auto currentStation = StationId(window.rowInfo[currentRow]);
         if (currentStation == StationId::null)
             return;
 
@@ -692,23 +692,23 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049193F
-    static void onUpdate(Window* window)
+    static void onUpdate(Window& window)
     {
-        window->frame_no++;
+        window.frame_no++;
 
-        window->callPrepareDraw();
-        WindowManager::invalidateWidget(WindowType::stationList, window->number, window->currentTab + 4);
+        window.callPrepareDraw();
+        WindowManager::invalidateWidget(WindowType::stationList, window.number, window.currentTab + 4);
 
         // Add three stations every tick.
-        updateStationList(window);
-        updateStationList(window);
-        updateStationList(window);
+        updateStationList(&window);
+        updateStationList(&window);
+        updateStationList(&window);
     }
 
     // 0x00491999
-    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = rowHeight * window->var_83C;
+        *scrollHeight = rowHeight * window.var_83C;
     }
 
     // 0x00491841

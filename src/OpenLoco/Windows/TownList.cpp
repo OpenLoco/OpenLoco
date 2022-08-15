@@ -259,13 +259,13 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A56D
-        static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
-            if (currentRow > self->var_83C)
+            if (currentRow > self.var_83C)
                 return;
 
-            int16_t currentTown = self->rowInfo[currentRow];
+            int16_t currentTown = self.rowInfo[currentRow];
             if (currentTown == -1)
                 return;
 
@@ -418,42 +418,42 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A4A0
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no++;
+            self.frame_no++;
 
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::townList, self->number, self->currentTab + Common::widx::tab_town_list);
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
 
             // Add three towns every tick.
-            updateTownList(self);
-            updateTownList(self);
-            updateTownList(self);
+            updateTownList(&self);
+            updateTownList(&self);
+            updateTownList(&self);
         }
 
         // 0x0049A4D0
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            self->flags |= WindowFlags::notScrollView;
+            self.flags |= WindowFlags::notScrollView;
         }
 
         // 0x0049A4D8
-        static void event_09(Window* self)
+        static void event_09(Window& self)
         {
-            if (!(self->flags & WindowFlags::notScrollView))
+            if (!(self.flags & WindowFlags::notScrollView))
                 return;
 
-            if (self->rowHover == -1)
+            if (self.rowHover == -1)
                 return;
 
-            self->rowHover = -1;
-            self->invalidate();
+            self.rowHover = -1;
+            self.invalidate();
         }
 
         // 0x0049A4FA
-        static void getScrollSize(Ui::Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = rowHeight * self->var_83C;
+            *scrollHeight = rowHeight * self.var_83C;
         }
 
         // 0x00491841
@@ -658,19 +658,19 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A7F2
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no++;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::townList, self->number, self->currentTab + Common::widx::tab_town_list);
-            if ((!Input::hasFlag(Input::Flags::toolActive)) || self->type != _toolWindowType || self->number != _toolWindowNumber)
+            self.frame_no++;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
+            if ((!Input::hasFlag(Input::Flags::toolActive)) || self.type != _toolWindowType || self.number != _toolWindowNumber)
             {
-                WindowManager::close(self);
+                WindowManager::close(&self);
             }
         }
 
         // 0x0049A697
-        static void onDropdown(Window* self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::select_size)
                 return;
@@ -678,7 +678,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 itemIndex++;
                 _townSize = itemIndex;
-                self->invalidate();
+                self.invalidate();
             }
         }
 
@@ -737,10 +737,10 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A690
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == widx::select_size)
-                populateTownSizeSelect(self, &self->widgets[widgetIndex]);
+                populateTownSizeSelect(&self, &self.widgets[widgetIndex]);
         }
 
         // 0x0049A844
@@ -891,7 +891,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AD51
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::flag5))
             {
@@ -899,40 +899,40 @@ namespace OpenLoco::Ui::Windows::TownList
                 auto xPos = cursor.x;
                 auto yPos = cursor.y;
                 Window* activeWindow = WindowManager::findAt(xPos, yPos);
-                if (activeWindow == self)
+                if (activeWindow == &self)
                 {
-                    xPos -= self->x;
+                    xPos -= self.x;
                     xPos += 26;
-                    yPos -= self->y;
+                    yPos -= self.y;
 
-                    if ((yPos < 42) || (xPos <= self->width))
+                    if ((yPos < 42) || (xPos <= self.width))
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
-                        WidgetIndex_t activeWidget = self->findWidgetAt(xPos, yPos);
+                        WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
                         if (activeWidget > Common::widx::panel)
                         {
-                            self->savedView.mapX += 1;
-                            if (self->savedView.mapX >= 8)
+                            self.savedView.mapX += 1;
+                            if (self.savedView.mapX >= 8)
                             {
-                                auto y = std::min(self->scrollAreas[0].contentHeight - 1 + 60, 500);
+                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 276);
                                 }
-                                self->minWidth = windowSize.width;
-                                self->minHeight = y;
-                                self->maxWidth = windowSize.width;
-                                self->maxHeight = y;
+                                self.minWidth = windowSize.width;
+                                self.minHeight = y;
+                                self.maxWidth = windowSize.width;
+                                self.maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self->minWidth = windowSize.width;
-                                    self->minHeight = windowSize.height;
-                                    self->maxWidth = windowSize.width;
-                                    self->maxHeight = windowSize.height;
+                                    self.minWidth = windowSize.width;
+                                    self.minHeight = windowSize.height;
+                                    self.maxWidth = windowSize.width;
+                                    self.maxHeight = windowSize.height;
                                 }
                             }
                         }
@@ -940,26 +940,26 @@ namespace OpenLoco::Ui::Windows::TownList
                 }
                 else
                 {
-                    self->savedView.mapX = 0;
+                    self.savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self->minWidth = windowSize.width;
-                        self->minHeight = windowSize.height;
-                        self->maxWidth = windowSize.width;
-                        self->maxHeight = windowSize.height;
+                        self.minWidth = windowSize.width;
+                        self.minHeight = windowSize.height;
+                        self.maxWidth = windowSize.width;
+                        self.maxHeight = windowSize.height;
                     }
                 }
             }
-            self->frame_no++;
+            self.frame_no++;
 
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::townList, self->number, self->currentTab + Common::widx::tab_town_list);
-            if (!Input::isToolActive(self->type, self->number))
-                WindowManager::close(self);
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
+            if (!Input::isToolActive(self.type, self.number))
+                WindowManager::close(&self);
         }
 
         // 0x0049AB59
-        static void onDropdown(Window* self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::object_colour)
                 return;
@@ -967,7 +967,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 return;
 
             _buildingColour = static_cast<Colour>(Dropdown::getItemArgument(itemIndex, 2));
-            self->invalidate();
+            self.invalidate();
         }
 
         // 0x0049B37F
@@ -1115,12 +1115,12 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AB52
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == widx::object_colour)
             {
-                auto obj = ObjectManager::get<BuildingObject>(self->rowHover);
-                Dropdown::showColour(self, &self->widgets[widgetIndex], obj->colours, _buildingColour, self->getColour(WindowColour::secondary));
+                auto obj = ObjectManager::get<BuildingObject>(self.rowHover);
+                Dropdown::showColour(&self, &self.widgets[widgetIndex], obj->colours, _buildingColour, self.getColour(WindowColour::secondary));
             }
         }
 
@@ -1160,9 +1160,9 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AE83
-        static void getScrollSize(Ui::Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = (4 + self->var_83C) / 5;
+            *scrollHeight = (4 + self.var_83C) / 5;
             if (*scrollHeight == 0)
                 *scrollHeight += 1;
             *scrollHeight *= rowHeight;
@@ -1244,35 +1244,35 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AEFD
-        static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             int16_t xPos = (x / 112);
             int16_t yPos = (y / 112) * 5;
             auto index = getRowIndex(x, y);
 
-            for (auto i = 0; i < self->var_83C; i++)
+            for (auto i = 0; i < self.var_83C; i++)
             {
-                auto rowInfo = self->rowInfo[i];
+                auto rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
                 {
-                    self->rowHover = rowInfo;
+                    self.rowHover = rowInfo;
 
-                    if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
+                    if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
                         LastGameOptionManager::setLastBuildingOption(static_cast<uint8_t>(rowInfo));
                     else
                         LastGameOptionManager::setLastBuildingOption(static_cast<uint8_t>(rowInfo));
 
-                    updateBuildingColours(self);
+                    updateBuildingColours(&self);
 
-                    int32_t pan = (self->width >> 1) + self->x;
+                    int32_t pan = (self.width >> 1) + self.x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
 
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
-                    self->savedView.mapX = -16;
+                    self.savedView.mapX = -16;
                     dword_1135C34 = GameCommands::FAILURE;
                     _buildingVariation = 0;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
             }
@@ -1305,12 +1305,12 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AEA1
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            if (self->var_846 != 0xFFFF)
+            if (self.var_846 != 0xFFFF)
             {
-                self->var_846 = 0xFFFF;
-                self->invalidate();
+                self.var_846 = 0xFFFF;
+                self.invalidate();
             }
         }
 

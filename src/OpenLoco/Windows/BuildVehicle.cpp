@@ -714,45 +714,45 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3923
-    static void onPeriodicUpdate(Window* window)
+    static void onPeriodicUpdate(Window& window)
     {
-        sub_4B92A5(window);
+        sub_4B92A5(&window);
     }
 
     // 0x4C377B
-    static void onUpdate(Window* window)
+    static void onUpdate(Window& window)
     {
-        window->frame_no++;
-        window->callPrepareDraw();
+        window.frame_no++;
+        window.callPrepareDraw();
 
-        WindowManager::invalidateWidget(WindowType::buildVehicle, window->number, window->currentTab + 4);
-        WindowManager::invalidateWidget(WindowType::buildVehicle, window->number, (window->currentSecondaryTab & 0xFF) + 10);
-        WindowManager::invalidateWidget(WindowType::buildVehicle, window->number, 19);
+        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, window.currentTab + 4);
+        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, (window.currentSecondaryTab & 0xFF) + 10);
+        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, 19);
     }
 
     // 0x4C37B9
-    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = window->var_83C * window->rowHeight;
+        *scrollHeight = window.var_83C * window.rowHeight;
     }
 
     // 0x4C384B
-    static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         if (scroll_index != scrollIdx::vehicle_selection)
         {
             return;
         }
 
-        auto scrollItem = y / window->rowHeight;
-        if (scrollItem >= window->var_83C)
+        auto scrollItem = y / window.rowHeight;
+        if (scrollItem >= window.var_83C)
         {
             return;
         }
 
-        auto pan = window->width / 2 + window->x;
+        auto pan = window.width / 2 + window.x;
         Audio::playSound(Audio::SoundId::clickDown, Map::Pos3{ x, y, static_cast<int16_t>(pan) }, pan);
-        auto item = window->rowInfo[scrollItem];
+        auto item = window.rowInfo[scrollItem];
         auto vehicleObj = ObjectManager::get<VehicleObject>(item);
         FormatArguments args{};
         // Skip 5 * 2 bytes
@@ -780,7 +780,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             auto vehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
             Vehicle::Details::open(vehicle);
         }
-        sub_4B92A5(window);
+        sub_4B92A5(&window);
     }
 
     // 0x4C3802
