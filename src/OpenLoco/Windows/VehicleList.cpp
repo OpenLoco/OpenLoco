@@ -969,7 +969,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C24CA
-    static std::optional<FormatArguments> tooltip(Window* self, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_vehicle_list);
@@ -1014,53 +1014,53 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C266D
-    static CursorId cursor(Window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, CursorId fallback)
+    static CursorId cursor(Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, CursorId fallback)
     {
         if (widgetIdx != Widx::scrollview)
             return fallback;
 
-        uint16_t currentIndex = yPos / self->rowHeight;
-        if (currentIndex < self->var_83C && self->rowInfo[currentIndex] != -1)
+        uint16_t currentIndex = yPos / self.rowHeight;
+        if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
             return CursorId::handPointer;
 
         return fallback;
     }
 
     // 0x004C26A4
-    static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         Input::setTooltipTimeout(2000);
 
-        self->flags &= ~WindowFlags::notScrollView;
+        self.flags &= ~WindowFlags::notScrollView;
 
-        uint16_t currentRow = y / self->rowHeight;
-        if (currentRow < self->var_83C)
-            self->rowHover = self->rowInfo[currentRow];
+        uint16_t currentRow = y / self.rowHeight;
+        if (currentRow < self.var_83C)
+            self.rowHover = self.rowInfo[currentRow];
         else
-            self->rowHover = -1;
+            self.rowHover = -1;
 
         string_id tooltipId = StringIds::buffer_337;
-        if (self->rowHover == -1)
+        if (self.rowHover == -1)
             tooltipId = StringIds::null;
 
         char* tooltipBuffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
 
         // Have we already got the right tooltip?
-        if (tooltipBuffer[0] != '\0' && self->widgets[Widx::scrollview].tooltip == tooltipId && self->rowHover == self->var_85C)
+        if (tooltipBuffer[0] != '\0' && self.widgets[Widx::scrollview].tooltip == tooltipId && self.rowHover == self.var_85C)
             return;
 
-        self->widgets[Widx::scrollview].tooltip = tooltipId;
-        self->var_85C = self->rowHover;
+        self.widgets[Widx::scrollview].tooltip = tooltipId;
+        self.var_85C = self.rowHover;
         Ui::Windows::ToolTip::closeAndReset();
 
-        if (self->rowHover == -1)
+        if (self.rowHover == -1)
             return;
 
         // Initialise tooltip buffer.
         char* buffer = StringManager::formatString(tooltipBuffer, StringIds::vehicle_list_tooltip_load);
 
         // Append load to buffer.
-        auto head = EntityManager::get<VehicleHead>(EntityId(self->var_85C));
+        auto head = EntityManager::get<VehicleHead>(EntityId(self.var_85C));
         if (head == nullptr)
         {
             return;

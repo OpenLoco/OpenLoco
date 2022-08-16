@@ -56,8 +56,8 @@ namespace OpenLoco::Ui::Windows::Station
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station_cargo_ratings)
 
         // Defined at the bottom of this file.
-        static void prepareDraw(Window* self);
-        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input);
+        static void prepareDraw(Window& self);
+        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input);
         static void update(Window& self);
         static void renameStationPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -91,23 +91,23 @@ namespace OpenLoco::Ui::Windows::Station
         static WindowEventList events;
 
         // 0x0048E352
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::viewport].right = self->width - 4;
-            self->widgets[widx::viewport].bottom = self->height - 14;
+            self.widgets[widx::viewport].right = self.width - 4;
+            self.widgets[widx::viewport].bottom = self.height - 14;
 
-            self->widgets[widx::status_bar].top = self->height - 12;
-            self->widgets[widx::status_bar].bottom = self->height - 3;
-            self->widgets[widx::status_bar].right = self->width - 14;
+            self.widgets[widx::status_bar].top = self.height - 12;
+            self.widgets[widx::status_bar].bottom = self.height - 3;
+            self.widgets[widx::status_bar].right = self.width - 14;
 
-            self->widgets[widx::centre_on_viewport].right = self->widgets[widx::viewport].right - 1;
-            self->widgets[widx::centre_on_viewport].bottom = self->widgets[widx::viewport].bottom - 1;
-            self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
-            self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
+            self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
+            self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
+            self.widgets[widx::centre_on_viewport].left = self.widgets[widx::viewport].right - 24;
+            self.widgets[widx::centre_on_viewport].top = self.widgets[widx::viewport].bottom - 24;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
+            Widget::leftAlignTabs(self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
         }
 
         // 0x0048E470
@@ -336,25 +336,25 @@ namespace OpenLoco::Ui::Windows::Station
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station_catchment);
 
         // 0x0048E7C0
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 24;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 24;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
-            self->widgets[widx::status_bar].top = self->height - 12;
-            self->widgets[widx::status_bar].bottom = self->height - 3;
-            self->widgets[widx::status_bar].right = self->width - 14;
+            self.widgets[widx::status_bar].top = self.height - 12;
+            self.widgets[widx::status_bar].bottom = self.height - 3;
+            self.widgets[widx::status_bar].right = self.width - 14;
 
-            self->widgets[widx::station_catchment].right = self->width - 2;
-            self->widgets[widx::station_catchment].left = self->width - 25;
+            self.widgets[widx::station_catchment].right = self.width - 2;
+            self.widgets[widx::station_catchment].left = self.width - 25;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
+            Widget::leftAlignTabs(self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
 
-            self->activatedWidgets &= ~(1 << widx::station_catchment);
-            if (StationId(self->number) == _lastSelectedStation)
-                self->activatedWidgets |= (1 << widx::station_catchment);
+            self.activatedWidgets &= ~(1 << widx::station_catchment);
+            if (StationId(self.number) == _lastSelectedStation)
+                self.activatedWidgets |= (1 << widx::station_catchment);
         }
 
         // 0x0048E8DE
@@ -455,7 +455,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB4F
-        static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_cargo_list);
@@ -586,18 +586,18 @@ namespace OpenLoco::Ui::Windows::Station
         static WindowEventList events;
 
         // 0x0048EC3B
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
-            self->widgets[widx::status_bar].top = self->height - 12;
-            self->widgets[widx::status_bar].bottom = self->height - 3;
-            self->widgets[widx::status_bar].right = self->width - 14;
+            self.widgets[widx::status_bar].top = self.height - 12;
+            self.widgets[widx::status_bar].bottom = self.height - 3;
+            self.widgets[widx::status_bar].right = self.width - 14;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
+            Widget::leftAlignTabs(self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
         }
 
         // 0x0048ED24
@@ -649,7 +649,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE73
-        static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_ratings_list);
@@ -790,23 +790,23 @@ namespace OpenLoco::Ui::Windows::Station
         };
 
         // 0x0048E352, 0x0048E7C0 and 0x0048EC3B
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab.
-            self->activatedWidgets &= ~((1ULL << widx::tab_station) | (1ULL << widx::tab_cargo) | (1ULL << widx::tab_cargo_ratings));
-            widx widgetIndex = tabInformationByTabOffset[self->currentTab].widgetIndex;
-            self->activatedWidgets |= (1ULL << widgetIndex);
+            self.activatedWidgets &= ~((1ULL << widx::tab_station) | (1ULL << widx::tab_cargo) | (1ULL << widx::tab_cargo_ratings));
+            widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
+            self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Put station and town name in place.
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
 
             uint32_t stationTypeImages[16] = {
                 StringIds::label_icons_none,
@@ -832,20 +832,20 @@ namespace OpenLoco::Ui::Windows::Station
             args.push(stationTypeImages[(station->flags & 0xF)]);
 
             // Resize common widgets.
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
         }
 
         // 0x0048E5DF
-        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
             if (callingWidget != Common::widx::caption)
                 return;
@@ -853,7 +853,7 @@ namespace OpenLoco::Ui::Windows::Station
             GameCommands::setErrorTitle(StringIds::error_cant_rename_station);
 
             uint32_t* buffer = (uint32_t*)input;
-            GameCommands::do_11(self->number, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_11(self.number, 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_11(0, 2, buffer[3], buffer[4], buffer[5]);
             GameCommands::do_11(0, 0, buffer[6], buffer[7], buffer[8]);
         }

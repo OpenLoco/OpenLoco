@@ -207,9 +207,9 @@ namespace OpenLoco::Ui::Windows::Cheats
         static currency32_t _cashIncreaseStep = 10'000;
         static Date _date;
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
-            self->activatedWidgets = (1 << Common::Widx::tab_finances);
+            self.activatedWidgets = (1 << Common::Widx::tab_finances);
         }
 
         static void draw(Ui::Window* const self, Gfx::Context* const context)
@@ -489,17 +489,17 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static CompanyId _targetCompanyId{};
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
-            self->activatedWidgets = (1 << Common::Widx::tab_companies);
+            self.activatedWidgets = (1 << Common::Widx::tab_companies);
 
             if (_targetCompanyId == CompanyManager::getControllingId())
             {
-                self->disabledWidgets |= (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button);
+                self.disabledWidgets |= (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button);
             }
             else
             {
-                self->disabledWidgets &= ~((1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button));
+                self.disabledWidgets &= ~((1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button));
             }
         }
 
@@ -634,28 +634,28 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred) | (1 << Widx::checkbox_display_locked_vehicles) | (1 << Widx::checkbox_build_locked_vehicles);
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
-            self->activatedWidgets = (1 << Common::Widx::tab_vehicles);
+            self.activatedWidgets = (1 << Common::Widx::tab_vehicles);
 
             if (Config::getNew().displayLockedVehicles)
             {
-                self->activatedWidgets |= (1 << Widx::checkbox_display_locked_vehicles);
-                self->disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
+                self.activatedWidgets |= (1 << Widx::checkbox_display_locked_vehicles);
+                self.disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
             }
             else
             {
-                self->activatedWidgets &= ~(1 << Widx::checkbox_display_locked_vehicles);
-                self->disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
+                self.activatedWidgets &= ~(1 << Widx::checkbox_display_locked_vehicles);
+                self.disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
             }
 
             if (Config::getNew().buildLockedVehicles)
             {
-                self->activatedWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
+                self.activatedWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
             }
             else
             {
-                self->activatedWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
+                self.activatedWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
             }
         }
 
@@ -773,9 +773,9 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::ratings_all_min_10pct) | (1 << Widx::ratings_all_plus_10pct) | (1 << Widx::ratings_all_to_min) | (1 << Widx::ratings_all_to_max);
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
-            self->activatedWidgets = (1 << Common::Widx::tab_towns);
+            self.activatedWidgets = (1 << Common::Widx::tab_towns);
         }
 
         static void draw(Ui::Window* const self, Gfx::Context* const context)

@@ -175,25 +175,25 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x004352C7
-    static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
+    static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
         auto [rowIndex, object] = getObjectFromSelection(y);
-        if (self->rowHover == rowIndex)
+        if (self.rowHover == rowIndex)
         {
             return;
         }
-        self->rowHover = rowIndex;
-        self->object = reinterpret_cast<std::byte*>(object._header);
+        self.rowHover = rowIndex;
+        self.object = reinterpret_cast<std::byte*>(object._header);
         ObjectManager::freeScenarioText();
         if (object._header)
         {
             ObjectManager::getScenarioText(*object._header);
         }
-        self->invalidate();
+        self.invalidate();
     }
 
     // 0x4352B1
-    static std::optional<FormatArguments> tooltip(Window* const self, const WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip(Window& self, const WidgetIndex_t)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -201,9 +201,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x434FE8
-    static void prepareDraw(Window* const self)
+    static void prepareDraw(Window& self)
     {
-        const auto company = CompanyManager::get(self->owner);
+        const auto company = CompanyManager::get(self.owner);
 
         FormatArguments args{};
         args.push(company->name);

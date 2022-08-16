@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             drawTabs(window, context);
         }
 
-        static void prepareDraw(Window* self);
+        static void prepareDraw(Window& self);
 
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
     }
@@ -415,7 +415,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043FB0C
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
@@ -454,18 +454,18 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
             }
 
-            self->activatedWidgets &= ~((1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit));
+            self.activatedWidgets &= ~((1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit));
 
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beTopCompany)
                 != 0)
-                self->activatedWidgets |= 1 << widx::check_be_top_company;
+                self.activatedWidgets |= 1 << widx::check_be_top_company;
 
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
-                self->activatedWidgets |= 1 << widx::check_be_within_top_three_companies;
+                self.activatedWidgets |= 1 << widx::check_be_within_top_three_companies;
 
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
             {
-                self->activatedWidgets |= 1 << widx::check_time_limit;
+                self.activatedWidgets |= 1 << widx::check_time_limit;
                 widgets[widx::time_limit_value].type = WidgetType::textbox;
                 widgets[widx::time_limit_value_down].type = WidgetType::button;
                 widgets[widx::time_limit_value_up].type = WidgetType::button;
@@ -793,22 +793,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F40C
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
             commonFormatArgs[0] = CompanyManager::getMaxCompetingCompanies();
             commonFormatArgs[1] = CompanyManager::getCompetitorStartDelay();
 
-            self->widgets[widx::preferred_intelligence].text = preferenceLabelIds[*preferredAIIntelligence];
-            self->widgets[widx::preferred_aggressiveness].text = preferenceLabelIds[*preferredAIAggressiveness];
-            self->widgets[widx::preferred_competitiveness].text = preferenceLabelIds[*preferredAICompetitiveness];
+            self.widgets[widx::preferred_intelligence].text = preferenceLabelIds[*preferredAIIntelligence];
+            self.widgets[widx::preferred_aggressiveness].text = preferenceLabelIds[*preferredAIAggressiveness];
+            self.widgets[widx::preferred_competitiveness].text = preferenceLabelIds[*preferredAICompetitiveness];
 
-            self->activatedWidgets &= ~((1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships));
+            self.activatedWidgets &= ~((1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships));
 
             // TODO(avgeffen): replace with wicked smart widget-id kerfuffle, someday.
-            self->activatedWidgets |= static_cast<uint64_t>(*forbiddenVehiclesCompetitors) << widx::competitor_forbid_trains;
-            self->activatedWidgets |= static_cast<uint64_t>(*forbiddenVehiclesPlayers) << widx::player_forbid_trains;
+            self.activatedWidgets |= static_cast<uint64_t>(*forbiddenVehiclesCompetitors) << widx::competitor_forbid_trains;
+            self.activatedWidgets |= static_cast<uint64_t>(*forbiddenVehiclesPlayers) << widx::player_forbid_trains;
         }
 
         static void initEvents()
@@ -931,7 +931,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F8CF
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
@@ -1091,7 +1091,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043EF8B
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
@@ -1099,7 +1099,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F156
-        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
             switch (callingWidget)
             {
@@ -1107,7 +1107,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 {
                     strncpy(S5::getOptions().scenarioName, input, sizeof(S5::Options::scenarioName) - 1);
                     S5::getOptions().scenarioName[sizeof(S5::Options::scenarioName) - 1] = '\0';
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
 
@@ -1115,7 +1115,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 {
                     strncpy(S5::getOptions().scenarioDetails, input, sizeof(S5::Options::scenarioDetails) - 1);
                     S5::getOptions().scenarioDetails[sizeof(S5::Options::scenarioDetails) - 1] = '\0';
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
             }
@@ -1151,29 +1151,29 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             { ScenarioTab::widgets, widx::tab_scenario, &ScenarioTab::events, &ScenarioTab::enabledWidgets, &ScenarioTab::holdableWidgets }
         };
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab.
-            self->activatedWidgets &= ~((1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario));
-            widx widgetIndex = tabInformationByTabOffset[self->currentTab].widgetIndex;
-            self->activatedWidgets |= (1ULL << widgetIndex);
+            self.activatedWidgets &= ~((1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario));
+            widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
+            self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Resize common widgets.
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
         }
 
         // 0x0043F16B

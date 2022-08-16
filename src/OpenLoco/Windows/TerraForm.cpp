@@ -617,26 +617,26 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBEF8
-        static void scrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = y;
             auto i = 0;
-            for (; i < self->var_83C; i++)
+            for (; i < self.var_83C; i++)
             {
-                rowInfo = self->rowInfo[i];
+                rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
                 {
-                    self->var_846 = rowInfo;
-                    self->invalidate();
+                    self.var_846 = rowInfo;
+                    self.invalidate();
                     break;
                 }
             }
         }
 
         // 0x004BBB00
-        static std::optional<FormatArguments> tooltip(Window* self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_trees_list);
@@ -2232,27 +2232,27 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC390
-        static void scrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = 0xFFFF;
             auto i = 0;
 
-            for (; i < self->var_83C; i++)
+            for (; i < self.var_83C; i++)
             {
-                rowInfo = self->rowInfo[i];
+                rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
                     break;
             }
-            if (i >= self->var_83C)
+            if (i >= self.var_83C)
                 rowInfo = 0xFFFF;
-            self->var_846 = rowInfo;
-            self->invalidate();
+            self.var_846 = rowInfo;
+            self.invalidate();
         }
 
         // 0x004BC212
-        static std::optional<FormatArguments> tooltip(Window* self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_walls_list);

@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void initEvents();
         static void refreshIndustryList(Window* self);
         static void drawTabs(Window* self, Gfx::Context* context);
-        static void prepareDraw(Window* self);
+        static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
     }
 
@@ -104,31 +104,31 @@ namespace OpenLoco::Ui::Windows::IndustryList
         };
 
         // 0x00457B94
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
             // Reposition header buttons.
-            self->widgets[widx::sort_industry_name].right = std::min(self->width - 4, 203);
+            self.widgets[widx::sort_industry_name].right = std::min(self.width - 4, 203);
 
-            self->widgets[widx::sort_industry_status].left = std::min(self->width - 4, 204);
-            self->widgets[widx::sort_industry_status].right = std::min(self->width - 4, 443);
+            self.widgets[widx::sort_industry_status].left = std::min(self.width - 4, 204);
+            self.widgets[widx::sort_industry_status].right = std::min(self.width - 4, 443);
 
-            self->widgets[widx::sort_industry_production_transported].left = std::min(self->width - 4, 444);
-            self->widgets[widx::sort_industry_production_transported].right = std::min(self->width - 4, 603);
+            self.widgets[widx::sort_industry_production_transported].left = std::min(self.width - 4, 444);
+            self.widgets[widx::sort_industry_production_transported].right = std::min(self.width - 4, 603);
 
             // Set header button captions.
-            self->widgets[widx::sort_industry_name].text = self->sortMode == SortMode::Name ? StringIds::industry_table_header_desc : StringIds::industry_table_header;
-            self->widgets[widx::sort_industry_status].text = self->sortMode == SortMode::Status ? StringIds::industry_table_header_status_desc : StringIds::industry_table_header_status;
-            self->widgets[widx::sort_industry_production_transported].text = self->sortMode == SortMode::ProductionTransported ? StringIds::industry_table_header_production_desc : StringIds::industry_table_header_production;
+            self.widgets[widx::sort_industry_name].text = self.sortMode == SortMode::Name ? StringIds::industry_table_header_desc : StringIds::industry_table_header;
+            self.widgets[widx::sort_industry_status].text = self.sortMode == SortMode::Status ? StringIds::industry_table_header_status_desc : StringIds::industry_table_header_status;
+            self.widgets[widx::sort_industry_production_transported].text = self.sortMode == SortMode::ProductionTransported ? StringIds::industry_table_header_production_desc : StringIds::industry_table_header_production;
 
             if (isEditorMode() || isSandboxMode())
-                self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
+                self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
             else
-                self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
+                self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
         }
 
         // 0x00457CD9
@@ -197,18 +197,18 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458140
-        static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(WindowFlags::notScrollView);
+            self.flags &= ~(WindowFlags::notScrollView);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentIndustry = -1;
 
-            if (currentRow < self->var_83C)
-                currentIndustry = self->rowInfo[currentRow];
+            if (currentRow < self.var_83C)
+                currentIndustry = self.rowInfo[currentRow];
 
-            self->rowHover = currentIndustry;
-            self->invalidate();
+            self.rowHover = currentIndustry;
+            self.invalidate();
         }
 
         // 0x00457A52
@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457EE8
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_industry_list);
@@ -446,13 +446,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458113
-        static Ui::CursorId cursor(Window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
 
             uint16_t currentIndex = yPos / rowHeight;
-            if (currentIndex < self->var_83C && self->rowInfo[currentIndex] != -1)
+            if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
                 return CursorId::handPointer;
 
             return fallback;
@@ -598,22 +598,22 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static WindowEventList events;
 
         // 0x0045819F
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
             if (isEditorMode() || isSandboxMode())
             {
-                self->widgets[Common::widx::caption].text = StringIds::title_build_new_industries;
-                self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
+                self.widgets[Common::widx::caption].text = StringIds::title_build_new_industries;
+                self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
             }
             else
             {
-                self->widgets[Common::widx::caption].text = StringIds::title_fund_new_industries;
-                self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
+                self.widgets[Common::widx::caption].text = StringIds::title_fund_new_industries;
+                self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
             }
         }
 
@@ -722,23 +722,23 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458721
-        static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = 0xFFFF;
             auto i = 0;
 
-            for (; i < self->var_83C; i++)
+            for (; i < self.var_83C; i++)
             {
-                rowInfo = self->rowInfo[i];
+                rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
                     break;
             }
-            if (i >= self->var_83C)
+            if (i >= self.var_83C)
                 rowInfo = 0xFFFF;
-            self->var_846 = rowInfo;
-            self->invalidate();
+            self.var_846 = rowInfo;
+            self.invalidate();
             auto string = StringIds::buffer_337;
 
             if (rowInfo == 0xFFFF)
@@ -746,14 +746,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if (StringManager::getString(StringIds::buffer_337)[0] != '\0')
             {
-                if (string == self->widgets[widx::scrollview].tooltip)
+                if (string == self.widgets[widx::scrollview].tooltip)
                 {
-                    if (rowInfo == self->var_85C)
+                    if (rowInfo == self.var_85C)
                         return;
                 }
             }
-            self->widgets[widx::scrollview].tooltip = string;
-            self->var_85C = rowInfo;
+            self.widgets[widx::scrollview].tooltip = string;
+            self.var_85C = rowInfo;
             ToolTip::closeAndReset();
 
             if (rowInfo == 0xFFFF)
@@ -856,7 +856,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458455
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_new_industry_list);
@@ -1196,30 +1196,30 @@ namespace OpenLoco::Ui::Windows::IndustryList
         };
 
         // 0x00457B94
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab..
-            self->activatedWidgets &= ~((1ULL << tab_industry_list) | (1ULL << tab_new_industry));
-            self->activatedWidgets |= (1ULL << tabInformationByTabOffset[self->currentTab].widgetIndex);
+            self.activatedWidgets &= ~((1ULL << tab_industry_list) | (1ULL << tab_new_industry));
+            self.activatedWidgets |= (1ULL << tabInformationByTabOffset[self.currentTab].widgetIndex);
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
         }
 
         // 0x00457F27

@@ -561,21 +561,21 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049DD39
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(self);
+        Common::prepareDraw(&self);
 
-        self->widgets[widx::rotate].type = WidgetType::none;
+        self.widgets[widx::rotate].type = WidgetType::none;
 
         auto args = FormatArguments();
 
         if (_byte_1136063 & (1 << 7))
         {
-            self->widgets[widx::rotate].type = WidgetType::buttonWithImage;
+            self.widgets[widx::rotate].type = WidgetType::buttonWithImage;
 
             auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
 
-            self->widgets[widx::station].text = airportObj->name;
+            self.widgets[widx::station].text = airportObj->name;
 
             args.push(StringIds::title_airport);
         }
@@ -583,7 +583,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto dockObj = ObjectManager::get<DockObject>(_lastSelectedStationType);
 
-            self->widgets[widx::station].text = dockObj->name;
+            self.widgets[widx::station].text = dockObj->name;
 
             args.push(StringIds::title_ship_port);
         }
@@ -597,7 +597,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             auto roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
-            self->widgets[widx::station].text = roadStationObject->name;
+            self.widgets[widx::station].text = roadStationObject->name;
         }
         else
         {
@@ -607,10 +607,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             auto trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 
-            self->widgets[widx::station].text = trainStationObject->name;
+            self.widgets[widx::station].text = trainStationObject->name;
         }
 
-        Common::repositionTabs(self);
+        Common::repositionTabs(&self);
     }
 
     // 0x0049DE40

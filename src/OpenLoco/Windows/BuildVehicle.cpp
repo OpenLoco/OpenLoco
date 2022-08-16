@@ -784,29 +784,29 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3802
-    static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         if (scroll_index != scrollIdx::vehicle_selection)
         {
             return;
         }
 
-        auto scrollItem = y / window->rowHeight;
+        auto scrollItem = y / window.rowHeight;
         int16_t item = -1;
-        if (scrollItem < window->var_83C)
+        if (scrollItem < window.var_83C)
         {
-            item = window->rowInfo[scrollItem];
+            item = window.rowInfo[scrollItem];
         }
 
-        if (item != -1 && item != window->rowHover)
+        if (item != -1 && item != window.rowHover)
         {
-            window->rowHover = item;
-            window->invalidate();
+            window.rowHover = item;
+            window.invalidate();
         }
     }
 
     // 0x4C370C
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         if (widgetIndex < widx::tab_track_type_0 || widgetIndex >= widx::scrollview_vehicle_selection)
@@ -819,7 +819,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             auto type = _trackTypesForTab[trackTypeTab];
             if (type == 0xFF)
             {
-                if (_transportTypeTabInformation[window->currentTab].type == VehicleType::aircraft)
+                if (_transportTypeTabInformation[window.currentTab].type == VehicleType::aircraft)
                 {
 
                     args.push(StringIds::airport);
@@ -849,20 +849,20 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37CB
-    static Ui::CursorId cursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview_vehicle_selection)
         {
             return fallback;
         }
 
-        auto scrollItem = yPos / window->rowHeight;
-        if (scrollItem >= window->var_83C)
+        auto scrollItem = yPos / window.rowHeight;
+        if (scrollItem >= window.var_83C)
         {
             return fallback;
         }
 
-        if (window->rowInfo[scrollItem] == -1)
+        if (window.rowInfo[scrollItem] == -1)
         {
             return fallback;
         }
@@ -871,45 +871,45 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2E5C
-    static void prepareDraw(Ui::Window* window)
+    static void prepareDraw(Ui::Window& window)
     {
-        if (window->widgets != _widgets)
+        if (window.widgets != _widgets)
         {
-            window->widgets = _widgets;
-            window->initScrollWidgets();
+            window.widgets = _widgets;
+            window.initScrollWidgets();
         }
 
         // Mask off all the tabs
-        auto activeWidgets = window->activatedWidgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_vehicle_selection) | (1 << scrollview_vehicle_preview));
+        auto activeWidgets = window.activatedWidgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_vehicle_selection) | (1 << scrollview_vehicle_preview));
         // Only activate the singular tabs
-        activeWidgets |= 1ULL << _transportTypeTabInformation[window->currentTab].widgetIndex;
-        activeWidgets |= 1ULL << (window->currentSecondaryTab + widx::tab_track_type_0);
+        activeWidgets |= 1ULL << _transportTypeTabInformation[window.currentTab].widgetIndex;
+        activeWidgets |= 1ULL << (window.currentSecondaryTab + widx::tab_track_type_0);
 
-        window->activatedWidgets = activeWidgets;
+        window.activatedWidgets = activeWidgets;
 
-        window->widgets[widx::caption].text = window->currentTab + StringIds::build_trains;
+        window.widgets[widx::caption].text = window.currentTab + StringIds::build_trains;
 
-        auto width = window->width;
-        auto height = window->height;
+        auto width = window.width;
+        auto height = window.height;
 
-        window->widgets[widx::frame].right = width - 1;
-        window->widgets[widx::frame].bottom = height - 1;
+        window.widgets[widx::frame].right = width - 1;
+        window.widgets[widx::frame].bottom = height - 1;
 
-        window->widgets[widx::panel].right = width - 1;
-        window->widgets[widx::panel].bottom = height - 1;
+        window.widgets[widx::panel].right = width - 1;
+        window.widgets[widx::panel].bottom = height - 1;
 
-        window->widgets[widx::caption].right = width - 2;
+        window.widgets[widx::caption].right = width - 2;
 
-        window->widgets[widx::close_button].left = width - 15;
-        window->widgets[widx::close_button].right = width - 3;
+        window.widgets[widx::close_button].left = width - 15;
+        window.widgets[widx::close_button].right = width - 3;
 
-        window->widgets[widx::scrollview_vehicle_preview].right = width - 4;
-        window->widgets[widx::scrollview_vehicle_preview].left = width - 184;
+        window.widgets[widx::scrollview_vehicle_preview].right = width - 4;
+        window.widgets[widx::scrollview_vehicle_preview].left = width - 184;
 
-        window->widgets[widx::scrollview_vehicle_selection].right = width - 187;
-        window->widgets[widx::scrollview_vehicle_selection].bottom = height - 14;
+        window.widgets[widx::scrollview_vehicle_selection].right = width - 187;
+        window.widgets[widx::scrollview_vehicle_selection].bottom = height - 14;
 
-        Widget::leftAlignTabs(*window, widx::tab_build_new_trains, widx::tab_build_new_ships);
+        Widget::leftAlignTabs(window, widx::tab_build_new_trains, widx::tab_build_new_ships);
     }
 
     // 0x4C2F23

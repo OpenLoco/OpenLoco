@@ -54,8 +54,8 @@ namespace OpenLoco::Ui::Windows::Industry
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics)
 
         // Defined at the bottom of this file.
-        static void prepareDraw(Window* self);
-        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input);
+        static void prepareDraw(Window& self);
+        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input);
         static void update(Window& self);
         static void renameIndustryPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -96,36 +96,36 @@ namespace OpenLoco::Ui::Windows::Industry
         static WindowEventList events;
 
         // 0x00455ADD
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::viewport].right = self->width - 26;
-            self->widgets[widx::viewport].bottom = self->height - 14;
+            self.widgets[widx::viewport].right = self.width - 26;
+            self.widgets[widx::viewport].bottom = self.height - 14;
 
-            self->widgets[widx::status_bar].top = self->height - 12;
-            self->widgets[widx::status_bar].bottom = self->height - 3;
-            self->widgets[widx::status_bar].right = self->width - 14;
+            self.widgets[widx::status_bar].top = self.height - 12;
+            self.widgets[widx::status_bar].bottom = self.height - 3;
+            self.widgets[widx::status_bar].right = self.width - 14;
 
-            self->widgets[widx::demolish_industry].right = self->width - 2;
-            self->widgets[widx::demolish_industry].left = self->width - 25;
+            self.widgets[widx::demolish_industry].right = self.width - 2;
+            self.widgets[widx::demolish_industry].left = self.width - 25;
 
             if (isEditorMode() || isSandboxMode())
             {
-                self->widgets[widx::demolish_industry].type = WidgetType::buttonWithImage;
+                self.widgets[widx::demolish_industry].type = WidgetType::buttonWithImage;
             }
             else
             {
-                self->widgets[widx::demolish_industry].type = WidgetType::none;
-                self->widgets[widx::viewport].right += 22;
+                self.widgets[widx::demolish_industry].type = WidgetType::none;
+                self.widgets[widx::viewport].right += 22;
             }
 
-            self->widgets[widx::centre_on_viewport].right = self->widgets[widx::viewport].right - 1;
-            self->widgets[widx::centre_on_viewport].bottom = self->widgets[widx::viewport].bottom - 1;
-            self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
-            self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
+            self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
+            self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
+            self.widgets[widx::centre_on_viewport].left = self.widgets[widx::viewport].right - 24;
+            self.widgets[widx::centre_on_viewport].top = self.widgets[widx::viewport].bottom - 24;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported);
+            Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
         // 0x00455C22
@@ -352,11 +352,11 @@ namespace OpenLoco::Ui::Windows::Industry
         static WindowEventList events;
 
         // 0x00455FD9
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported);
+            Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
         // 0x0045654F
@@ -392,11 +392,11 @@ namespace OpenLoco::Ui::Windows::Industry
         static WindowEventList events;
 
         // 0x0045626F
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported);
+            Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
         // 0x004565FF
@@ -430,11 +430,11 @@ namespace OpenLoco::Ui::Windows::Industry
         static WindowEventList events;
 
         // 0x00456665
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_industry, Common::widx::tab_transported);
+            Widget::leftAlignTabs(self, Common::widx::tab_industry, Common::widx::tab_transported);
         }
 
         // 0x00456705
@@ -682,42 +682,42 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab.
-            self->activatedWidgets &= ~((1ULL << widx::tab_industry) | (1ULL << widx::tab_production) | (1ULL << widx::tab_production_2) | (1ULL << widx::tab_transported));
-            widx widgetIndex = tabInformationByTabOffset[self->currentTab].widgetIndex;
-            self->activatedWidgets |= (1ULL << widgetIndex);
+            self.activatedWidgets &= ~((1ULL << widx::tab_industry) | (1ULL << widx::tab_production) | (1ULL << widx::tab_production_2) | (1ULL << widx::tab_transported));
+            widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
+            self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Put industry name in place.
-            auto industry = IndustryManager::get(IndustryId(self->number));
+            auto industry = IndustryManager::get(IndustryId(self.number));
             auto args = FormatArguments();
             args.push(industry->name);
             args.push(industry->town);
 
             // Resize common widgets.
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
         }
 
         // 0x00455CBC
-        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
             if (callingWidget != Common::widx::caption)
                 return;
@@ -728,7 +728,7 @@ namespace OpenLoco::Ui::Windows::Industry
             GameCommands::setErrorTitle(StringIds::error_cant_rename_industry);
 
             uint32_t* buffer = (uint32_t*)input;
-            GameCommands::do_79(IndustryId(self->number), 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_79(IndustryId(self.number), 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_79(IndustryId(0), 2, buffer[3], buffer[4], buffer[5]);
             GameCommands::do_79(IndustryId(0), 0, buffer[6], buffer[7], buffer[8]);
         }

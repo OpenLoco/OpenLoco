@@ -2489,7 +2489,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D4F5
-    static Ui::CursorId cursor(Window* self, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& self, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
             Input::setTooltipTimeout(2000);
@@ -2497,9 +2497,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049CE79
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(self);
+        Common::prepareDraw(&self);
         auto args = FormatArguments();
         if (_trackType & (1 << 7))
         {
@@ -2530,7 +2530,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 args.push<uint16_t>(bridgeObj->max_height);
             }
         }
-        Common::repositionTabs(self);
+        Common::repositionTabs(&self);
     }
 
     // 0x004A0AE5

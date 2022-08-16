@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         static void setActiveTabs(Window* const self);
-        static void textInput(Window* const self, const WidgetIndex_t callingWidget, const char* const input);
+        static void textInput(Window& self, const WidgetIndex_t callingWidget, const char* const input);
         static void renameVehicle(Window* const self, const WidgetIndex_t widgetIndex);
         static void switchTab(Window* const self, const WidgetIndex_t widgetIndex);
         static void setCaptionEnableState(Window* const self);
@@ -735,11 +735,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B31F2
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t)
         {
             FormatArguments args{};
 
-            auto head = Common::getVehicle(self);
+            auto head = Common::getVehicle(&self);
             if (head == nullptr)
             {
                 return {};
@@ -1259,11 +1259,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B399E
-        static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             Input::setTooltipTimeout(2000);
-            self->flags &= ~WindowFlags::notScrollView;
-            auto car = Common::getCarFromScrollView(self, y);
+            self.flags &= ~WindowFlags::notScrollView;
+            auto car = Common::getCarFromScrollView(&self, y);
             string_id tooltipFormat = StringIds::null;
             EntityId tooltipContent = EntityId::null;
             if (car)
@@ -1271,23 +1271,23 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 tooltipFormat = StringIds::buffer_337;
                 tooltipContent = car->front->id;
             }
-            if (EntityId(self->rowHover) != tooltipContent)
+            if (EntityId(self.rowHover) != tooltipContent)
             {
-                self->rowHover = enumValue(tooltipContent);
-                self->invalidate();
+                self.rowHover = enumValue(tooltipContent);
+                self.invalidate();
             }
 
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
             if (strlen(buffer) != 0)
             {
-                if (self->widgets[widx::carList].tooltip == tooltipFormat && self->var_85C == enumValue(tooltipContent))
+                if (self.widgets[widx::carList].tooltip == tooltipFormat && self.var_85C == enumValue(tooltipContent))
                 {
                     return;
                 }
             }
 
-            self->widgets[widx::carList].tooltip = tooltipFormat;
-            self->var_85C = enumValue(tooltipContent);
+            self.widgets[widx::carList].tooltip = tooltipFormat;
+            self.var_85C = enumValue(tooltipContent);
             ToolTip::closeAndReset();
 
             if (tooltipContent == EntityId::null)
@@ -1360,12 +1360,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3880 TODO: common across 3 tabs
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_vehicle_list);
 
-            auto vehicle = Common::getVehicle(self);
+            auto vehicle = Common::getVehicle(&self);
             if (vehicle == nullptr)
             {
                 return {};
@@ -1375,14 +1375,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3B18
-        static Ui::CursorId cursor(Window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
         {
             if (widgetIdx != widx::carList)
             {
                 return fallback;
             }
 
-            auto head = Common::getVehicle(self);
+            auto head = Common::getVehicle(&self);
             if (head == nullptr)
             {
                 return fallback;
@@ -1392,7 +1392,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return fallback;
             }
 
-            auto selectedCar = Common::getCarFromScrollView(self, y);
+            auto selectedCar = Common::getCarFromScrollView(&self, y);
             if (!selectedCar)
             {
                 return fallback;
@@ -2023,12 +2023,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4339
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_vehicle_list);
 
-            auto vehicle = Common::getVehicle(self);
+            auto vehicle = Common::getVehicle(&self);
             if (vehicle == nullptr)
             {
                 return {};
@@ -2083,35 +2083,35 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4404
-        static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             Input::setTooltipTimeout(2000);
-            self->flags &= ~WindowFlags::notScrollView;
-            auto car = Common::getCarFromScrollView(self, y);
+            self.flags &= ~WindowFlags::notScrollView;
+            auto car = Common::getCarFromScrollView(&self, y);
             string_id tooltipFormat = StringIds::null;
             EntityId tooltipContent = EntityId::null;
             if (car)
             {
                 tooltipFormat = StringIds::buffer_337;
                 tooltipContent = car->front->id;
-                if (EntityId(self->rowHover) != tooltipContent)
+                if (EntityId(self.rowHover) != tooltipContent)
                 {
-                    self->rowHover = enumValue(tooltipContent);
-                    self->invalidate();
+                    self.rowHover = enumValue(tooltipContent);
+                    self.invalidate();
                 }
             }
 
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
             if (*buffer != '\0')
             {
-                if (self->widgets[widx::cargoList].tooltip == tooltipFormat && EntityId(self->var_85C) == tooltipContent)
+                if (self.widgets[widx::cargoList].tooltip == tooltipFormat && EntityId(self.var_85C) == tooltipContent)
                 {
                     return;
                 }
             }
 
-            self->widgets[widx::cargoList].tooltip = tooltipFormat;
-            self->var_85C = enumValue(tooltipContent);
+            self.widgets[widx::cargoList].tooltip = tooltipFormat;
+            self.var_85C = enumValue(tooltipContent);
             ToolTip::closeAndReset();
 
             if (tooltipContent == EntityId::null)
@@ -2313,10 +2313,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5977
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t)
         {
             FormatArguments args{};
-            auto veh0 = Common::getVehicle(self);
+            auto veh0 = Common::getVehicle(&self);
             if (veh0 == nullptr)
             {
                 return {};
@@ -2865,11 +2865,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4D74
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_orders_list);
-            auto head = Common::getVehicle(self);
+            auto head = Common::getVehicle(&self);
             if (head == nullptr)
             {
                 return {};
@@ -3108,26 +3108,26 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B530C
-        static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
-            self->flags &= ~WindowFlags::notScrollView;
+            self.flags &= ~WindowFlags::notScrollView;
             auto item = y / lineHeight;
-            if (self->rowHover != item)
+            if (self.rowHover != item)
             {
-                self->rowHover = item;
-                self->invalidate();
+                self.rowHover = item;
+                self.invalidate();
             }
         }
 
         // 0x004B5339
-        static Ui::CursorId cursor(Window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
         {
             if (widgetIdx != widx::routeList)
             {
                 return fallback;
             }
 
-            if (Input::isToolActive(self->type, self->number))
+            if (Input::isToolActive(self.type, self.number))
             {
                 return CursorId::inwardArrows;
             }
@@ -3525,7 +3525,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B26C0
-        static void textInput(Window* const self, const WidgetIndex_t callingWidget, const char* const input)
+        static void textInput(Window& self, const WidgetIndex_t callingWidget, const char* const input)
         {
             if (callingWidget != widx::caption)
             {
@@ -3539,7 +3539,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             GameCommands::setErrorTitle(StringIds::cant_rename_this_vehicle);
             const uint32_t* buffer = reinterpret_cast<const uint32_t*>(input);
-            GameCommands::do_10(EntityId(self->number), 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_10(EntityId(self.number), 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_10(EntityId(0), 2, buffer[3], buffer[4], buffer[5]);
             GameCommands::do_10(EntityId(0), 0, buffer[6], buffer[7], buffer[8]);
         }

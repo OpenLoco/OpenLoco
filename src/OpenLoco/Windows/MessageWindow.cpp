@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static WindowEventList _events;
 
-        static void prepareDraw(Window* self);
+        static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void onUpdate(Window& self);
         static void drawTabs(Window* self, Gfx::Context* context);
@@ -173,9 +173,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A87C
-        static void scrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
-            self->flags &= ~(WindowFlags::notScrollView);
+            self.flags &= ~(WindowFlags::notScrollView);
 
             auto messageIndex = y / messageHeight;
             auto messageId = 0xFFFF;
@@ -183,15 +183,15 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (messageIndex < _messageCount)
                 messageId = messageIndex;
 
-            if (self->rowHover != messageId)
+            if (self.rowHover != messageId)
             {
-                self->rowHover = messageId;
-                self->invalidate();
+                self.rowHover = messageId;
+                self.invalidate();
             }
         }
 
         // 0x0042A70C
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_message_list);
@@ -199,12 +199,12 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A545
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
         }
 
         // 0x0042A5CC
@@ -578,30 +578,30 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             { Settings::widgets, widx::tab_settings, &Settings::events, Settings::enabledWidgets },
         };
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab..
-            self->activatedWidgets &= ~((1ULL << tab_messages) | (1ULL << tab_settings));
-            self->activatedWidgets |= (1ULL << tabInformationByTabOffset[self->currentTab].widgetIndex);
+            self.activatedWidgets &= ~((1ULL << tab_messages) | (1ULL << tab_settings));
+            self.activatedWidgets |= (1ULL << tabInformationByTabOffset[self.currentTab].widgetIndex);
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
         }
 
         // 0x0042A716

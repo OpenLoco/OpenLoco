@@ -273,21 +273,21 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A532
-        static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(WindowFlags::notScrollView);
+            self.flags &= ~(WindowFlags::notScrollView);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentTown = -1;
 
-            if (currentRow < self->var_83C)
-                currentTown = self->rowInfo[currentRow];
+            if (currentRow < self.var_83C)
+                currentTown = self.rowInfo[currentRow];
 
-            if (self->rowHover == currentTown)
+            if (self.rowHover == currentTown)
                 return;
 
-            self->rowHover = currentTown;
-            self->invalidate();
+            self.rowHover = currentTown;
+            self.invalidate();
         }
 
         // 0x00499EC9
@@ -457,7 +457,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00491841
-        static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_town_list);
@@ -465,13 +465,13 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x004919A4
-        static Ui::CursorId cursor(Window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
 
             uint16_t currentIndex = yPos / rowHeight;
-            if (currentIndex < self->var_83C && self->rowInfo[currentIndex] != -1)
+            if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
                 return CursorId::handPointer;
 
             return fallback;
@@ -1169,7 +1169,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ABBB
-        static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_building_list);
@@ -1279,19 +1279,19 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AEBA
-        static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = y;
             auto i = 0;
-            for (; i < self->var_83C; i++)
+            for (; i < self.var_83C; i++)
             {
-                rowInfo = self->rowInfo[i];
+                rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
                 {
-                    self->var_846 = rowInfo;
-                    self->invalidate();
+                    self.var_846 = rowInfo;
+                    self.invalidate();
                     break;
                 }
             }

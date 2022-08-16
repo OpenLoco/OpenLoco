@@ -361,16 +361,16 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+    static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
     {
-        auto index = y / self->rowHeight;
-        if (index >= self->rowCount)
+        auto index = y / self.rowHeight;
+        if (index >= self.rowCount)
             return;
 
-        if (self->rowHover != index)
+        if (self.rowHover != index)
         {
-            self->rowHover = index;
-            self->invalidate();
+            self.rowHover = index;
+            self.invalidate();
         }
     }
 

@@ -145,10 +145,10 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443995
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
-        self->activatedWidgets &= ~((1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4));
-        self->activatedWidgets |= (1ULL << (self->currentTab + static_cast<uint8_t>(widx::tab0)));
+        self.activatedWidgets &= ~((1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4));
+        self.activatedWidgets |= (1ULL << (self.currentTab + static_cast<uint8_t>(widx::tab0)));
     }
 
     // 0x004439AF
@@ -469,24 +469,24 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443FB2
-    static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self->currentTab);
+        auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self.currentTab);
 
         auto index = y / rowHeight;
         if (index > scenarioCount)
             return;
 
-        auto* scenarioEntry = ScenarioManager::getNthScenarioFromCategory(self->currentTab, index);
+        auto* scenarioEntry = ScenarioManager::getNthScenarioFromCategory(self.currentTab, index);
         if (scenarioEntry == nullptr)
             return;
 
-        self->info = reinterpret_cast<uintptr_t>(scenarioEntry);
-        self->invalidate();
+        self.info = reinterpret_cast<uintptr_t>(scenarioEntry);
+        self.invalidate();
     }
 
     // 0x00444001
-    static std::optional<FormatArguments> tooltip(Window* self, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_scenario_list);

@@ -61,10 +61,10 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void draw(Ui::Window* self, Gfx::Context* context);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void textInput(Window* w, WidgetIndex_t widgetIndex, const char* str);
+    static void textInput(Window& w, WidgetIndex_t widgetIndex, const char* str);
     static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index);
-    static Ui::CursorId onCursor(Window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static Ui::CursorId onCursor(Window& w, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onUpdate(Window& w);
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439944
-    static Ui::CursorId onCursor(Ui::Window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor(Ui::Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIdx)
         {
@@ -313,7 +313,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439955
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         switch (widgetIndex)
@@ -366,7 +366,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439A15
-    static void textInput(Window* w, WidgetIndex_t widgetIndex, const char* str)
+    static void textInput(Window& w, WidgetIndex_t widgetIndex, const char* str)
     {
         switch (widgetIndex)
         {

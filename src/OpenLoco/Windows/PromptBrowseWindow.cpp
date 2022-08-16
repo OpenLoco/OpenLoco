@@ -257,25 +257,25 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004464B1
-    static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void onScrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
         if (WindowManager::getCurrentModalType() != WindowType::fileBrowserPrompt)
             return;
 
-        auto index = y / self->rowHeight;
+        auto index = y / self.rowHeight;
         if (index >= static_cast<uint16_t>(_files.size()))
             return;
 
-        if (self->var_85A == index)
+        if (self.var_85A == index)
             return;
 
-        self->var_85A = index;
-        loadFileDetails(self);
-        self->invalidate();
+        self.var_85A = index;
+        loadFileDetails(&self);
+        self.invalidate();
     }
 
     // 0x004467D7
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -283,48 +283,48 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00445C8F
-    static void prepareDraw(Ui::Window* self)
+    static void prepareDraw(Ui::Window& self)
     {
-        self->widgets[widx::frame].right = self->width - 1;
-        self->widgets[widx::frame].bottom = self->height - 1;
+        self.widgets[widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].bottom = self.height - 1;
 
-        self->widgets[widx::panel].right = self->width - 1;
-        self->widgets[widx::panel].bottom = self->height - 1;
+        self.widgets[widx::panel].right = self.width - 1;
+        self.widgets[widx::panel].bottom = self.height - 1;
 
-        self->widgets[widx::caption].right = self->width - 2;
+        self.widgets[widx::caption].right = self.width - 2;
 
-        self->widgets[widx::close_button].left = self->width - 15;
-        self->widgets[widx::close_button].right = self->width - 3;
+        self.widgets[widx::close_button].left = self.width - 15;
+        self.widgets[widx::close_button].right = self.width - 3;
 
         if (*_type == browse_type::save)
         {
-            self->widgets[widx::ok_button].left = self->width - 86;
-            self->widgets[widx::ok_button].right = self->width - 16;
-            self->widgets[widx::ok_button].top = self->height - 15;
-            self->widgets[widx::ok_button].bottom = self->height - 4;
-            self->widgets[widx::ok_button].type = WidgetType::button;
+            self.widgets[widx::ok_button].left = self.width - 86;
+            self.widgets[widx::ok_button].right = self.width - 16;
+            self.widgets[widx::ok_button].top = self.height - 15;
+            self.widgets[widx::ok_button].bottom = self.height - 4;
+            self.widgets[widx::ok_button].type = WidgetType::button;
 
-            self->widgets[widx::text_filename].right = self->width - 4;
-            self->widgets[widx::text_filename].top = self->height - 31;
-            self->widgets[widx::text_filename].bottom = self->height - 18;
-            self->widgets[widx::text_filename].type = WidgetType::textbox;
+            self.widgets[widx::text_filename].right = self.width - 4;
+            self.widgets[widx::text_filename].top = self.height - 31;
+            self.widgets[widx::text_filename].bottom = self.height - 18;
+            self.widgets[widx::text_filename].type = WidgetType::textbox;
 
-            self->widgets[widx::scrollview].bottom = self->height - 34;
+            self.widgets[widx::scrollview].bottom = self.height - 34;
         }
         else
         {
-            self->widgets[widx::ok_button].type = WidgetType::none;
-            self->widgets[widx::text_filename].type = WidgetType::none;
+            self.widgets[widx::ok_button].type = WidgetType::none;
+            self.widgets[widx::text_filename].type = WidgetType::none;
 
-            self->widgets[widx::scrollview].bottom = self->height - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 4;
         }
 
-        self->widgets[widx::scrollview].right = self->width - 259;
+        self.widgets[widx::scrollview].right = self.width - 259;
         if (*_fileType != BrowseFileType::savedGame)
-            self->widgets[widx::scrollview].right += 122;
+            self.widgets[widx::scrollview].right += 122;
 
-        self->widgets[widx::parent_button].left = self->width - 26;
-        self->widgets[widx::parent_button].right = self->width - 3;
+        self.widgets[widx::parent_button].left = self.width - 26;
+        self.widgets[widx::parent_button].right = self.width - 3;
 
         // Get width of the base 'Folder:' string
         auto args = FormatArguments::common(StringIds::empty);
@@ -334,7 +334,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         const auto folderLabelWidth = Gfx::getStringWidth(folderBuffer);
 
         // We'll ensure the folder width does not reach the parent button.
-        const uint16_t maxWidth = self->widgets[widx::parent_button].left - folderLabelWidth - 10;
+        const uint16_t maxWidth = self.widgets[widx::parent_button].left - folderLabelWidth - 10;
         const std::string nameBuffer = _currentDirectory.u8string();
         strncpy(&_displayFolderBuffer[0], nameBuffer.c_str(), 512);
         uint16_t folderWidth = Gfx::getStringWidth(_displayFolderBuffer);

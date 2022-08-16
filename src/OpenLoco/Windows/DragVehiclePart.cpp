@@ -49,11 +49,11 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     }
 
     // 0x004B62FE
-    static Ui::CursorId cursor(Window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
     {
-        self->height = 0; // Set to zero so that skipped in window find
+        self.height = 0; // Set to zero so that skipped in window find
         Vehicle::Details::scrollDrag(Input::getScrollLastLocation());
-        self->height = 60;
+        self.height = 60;
         return CursorId::dragHand;
     }
 

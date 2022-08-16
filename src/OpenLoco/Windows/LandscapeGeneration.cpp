@@ -120,20 +120,20 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             drawTabs(window, context);
         }
 
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
-            switchTabWidgets(window);
+            switchTabWidgets(&window);
 
-            window->widgets[widx::frame].right = window->width - 1;
-            window->widgets[widx::frame].bottom = window->height - 1;
+            window.widgets[widx::frame].right = window.width - 1;
+            window.widgets[widx::frame].bottom = window.height - 1;
 
-            window->widgets[widx::panel].right = window->width - 1;
-            window->widgets[widx::panel].bottom = window->height - 1;
+            window.widgets[widx::panel].right = window.width - 1;
+            window.widgets[widx::panel].bottom = window.height - 1;
 
-            window->widgets[widx::caption].right = window->width - 2;
+            window.widgets[widx::caption].right = window.width - 2;
 
-            window->widgets[widx::close_button].left = window->width - 15;
-            window->widgets[widx::close_button].right = window->width - 3;
+            window.widgets[widx::close_button].left = window.width - 15;
+            window.widgets[widx::close_button].right = window.width - 3;
         }
 
         static void update(Window& window)
@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043DB76
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
@@ -190,13 +190,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) == 0)
             {
-                window->activatedWidgets |= (1 << widx::generate_when_game_starts);
-                window->disabledWidgets |= (1 << widx::generate_now);
+                window.activatedWidgets |= (1 << widx::generate_when_game_starts);
+                window.disabledWidgets |= (1 << widx::generate_now);
             }
             else
             {
-                window->activatedWidgets &= ~(1 << widx::generate_when_game_starts);
-                window->disabledWidgets &= ~(1 << widx::generate_now);
+                window.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
+                window.disabledWidgets &= ~(1 << widx::generate_now);
             }
         }
 
@@ -649,7 +649,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043DEBF
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
@@ -658,17 +658,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             commonFormatArgs[1] = options.minLandHeight;
             commonFormatArgs[2] = options.hillDensity;
 
-            window->widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
-            window->widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
+            window.widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
+            window.widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
             if ((options.scenarioFlags & Scenario::Flags::hillsEdgeOfMap) != 0)
-                window->activatedWidgets |= (1 << widx::hillsEdgeOfMap);
+                window.activatedWidgets |= (1 << widx::hillsEdgeOfMap);
             else
-                window->activatedWidgets &= ~(1 << widx::hillsEdgeOfMap);
+                window.activatedWidgets &= ~(1 << widx::hillsEdgeOfMap);
         }
 
         // 0x0043E2A2
-        static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_list);
@@ -941,7 +941,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E44F
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
@@ -1087,7 +1087,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043EAEB
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
@@ -1204,17 +1204,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043EAEB
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
             widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
-
-            window->activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
+            window.activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
             if (!(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown))
-                window->activatedWidgets |= 1 << widx::check_allow_industries_close_down;
+                window.activatedWidgets |= 1 << widx::check_allow_industries_close_down;
             if (!(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesStartUp))
-                window->activatedWidgets |= 1 << widx::check_allow_industries_start_up;
+                window.activatedWidgets |= 1 << widx::check_allow_industries_start_up;
         }
 
         static void initEvents()

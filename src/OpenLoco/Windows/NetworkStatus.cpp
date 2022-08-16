@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         }
     }
 
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
         StringManager::setString(StringIds::buffer_1250, _text.c_str());
     }

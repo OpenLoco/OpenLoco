@@ -143,8 +143,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
     static void onUpdate(Window& window);
-    static void onTextInput(Window* window, WidgetIndex_t widgetIndex, const char* input);
-    static Ui::CursorId onCursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
+    static void onTextInput(Window& window, WidgetIndex_t widgetIndex, const char* input);
+    static Ui::CursorId onCursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static void draw(Ui::Window* window, Gfx::Context* context);
     static void prepareDraw(Ui::Window* window);
 
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004390ED
-    static void onTextInput(Window* window, WidgetIndex_t widgetIndex, const char* input)
+    static void onTextInput(Window& window, WidgetIndex_t widgetIndex, const char* input)
     {
         switch (widgetIndex)
         {
@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004390f8
-    static Ui::CursorId onCursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         // Reset tooltip timeout to keep tooltips open.
         addr<0x0052338A, uint16_t>() = 2000;

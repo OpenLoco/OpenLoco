@@ -279,9 +279,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E499
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(self);
+        Common::prepareDraw(&self);
 
         auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
@@ -290,9 +290,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
 
-        self->widgets[widx::signal].text = trainSignalObject->name;
+        self.widgets[widx::signal].text = trainSignalObject->name;
 
-        Common::repositionTabs(self);
+        Common::repositionTabs(&self);
     }
 
     // 0x0049E501

@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window* self);
-        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input);
+        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input);
         static void update(Window& self);
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00499287
-        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
             if (callingWidget != Common::widx::caption)
                 return;
@@ -657,7 +657,7 @@ namespace OpenLoco::Ui::Windows::Town
             GameCommands::setErrorTitle(StringIds::error_cant_rename_town);
 
             uint32_t* buffer = (uint32_t*)input;
-            GameCommands::do_46(self->number, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_46(self.number, 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_46(0, 2, buffer[3], buffer[4], buffer[5]);
             GameCommands::do_46(0, 0, buffer[6], buffer[7], buffer[8]);
         }

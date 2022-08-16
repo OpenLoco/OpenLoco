@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x00447093
-    static void prepareDraw(Window* const self)
+    static void prepareDraw(Window& self)
     {
         // Prepare description string for drawing.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));

@@ -93,7 +93,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
     loco_global<uint16_t[4], 0x112C826> _common_format_args;
 
-    static Ui::CursorId cursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
+    static Ui::CursorId cursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static void draw(Ui::Window* window, Gfx::Context* context);
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
     static void event_08(Window& window);
@@ -103,10 +103,10 @@ namespace OpenLoco::Ui::Windows::StationList
     static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onUpdate(Window& window);
-    static void prepareDraw(Ui::Window* window);
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void prepareDraw(Ui::Window& window);
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex);
 
     static void initEvents()
     {
@@ -360,13 +360,13 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004919A4
-    static Ui::CursorId cursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview)
             return fallback;
 
         uint16_t currentIndex = yPos / rowHeight;
-        if (currentIndex < window->var_83C && window->rowInfo[currentIndex] != -1)
+        if (currentIndex < window.var_83C && window.rowInfo[currentIndex] != -1)
             return CursorId::handPointer;
 
         return fallback;
@@ -392,58 +392,58 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491344
-    static void prepareDraw(Ui::Window* window)
+    static void prepareDraw(Ui::Window& window)
     {
         // Reset active tab.
-        window->activatedWidgets &= ~((1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports));
-        window->activatedWidgets |= (1ULL << tabInformationByType[window->currentTab].widgetIndex);
+        window.activatedWidgets &= ~((1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports));
+        window.activatedWidgets |= (1ULL << tabInformationByType[window.currentTab].widgetIndex);
 
         // Set company name.
-        auto company = CompanyManager::get(CompanyId(window->number));
+        auto company = CompanyManager::get(CompanyId(window.number));
         *_common_format_args = company->name;
 
         // Set window title.
-        window->widgets[widx::caption].text = tabInformationByType[window->currentTab].windowTitleId;
+        window.widgets[widx::caption].text = tabInformationByType[window.currentTab].windowTitleId;
 
         // Resize general window widgets.
-        window->widgets[widx::frame].right = window->width - 1;
-        window->widgets[widx::frame].bottom = window->height - 1;
+        window.widgets[widx::frame].right = window.width - 1;
+        window.widgets[widx::frame].bottom = window.height - 1;
 
-        window->widgets[widx::panel].right = window->width - 1;
-        window->widgets[widx::panel].bottom = window->height - 1;
+        window.widgets[widx::panel].right = window.width - 1;
+        window.widgets[widx::panel].bottom = window.height - 1;
 
-        window->widgets[widx::caption].right = window->width - 2;
+        window.widgets[widx::caption].right = window.width - 2;
 
-        window->widgets[widx::close_button].left = window->width - 15;
-        window->widgets[widx::close_button].right = window->width - 3;
+        window.widgets[widx::close_button].left = window.width - 15;
+        window.widgets[widx::close_button].right = window.width - 3;
 
-        window->widgets[widx::scrollview].right = window->width - 4;
-        window->widgets[widx::scrollview].bottom = window->height - 14;
+        window.widgets[widx::scrollview].right = window.width - 4;
+        window.widgets[widx::scrollview].bottom = window.height - 14;
 
         // Reposition header buttons.
-        window->widgets[widx::sort_name].right = std::min(203, window->width - 4);
+        window.widgets[widx::sort_name].right = std::min(203, window.width - 4);
 
-        window->widgets[widx::sort_status].left = std::min(204, window->width - 4);
-        window->widgets[widx::sort_status].right = std::min(403, window->width - 4);
+        window.widgets[widx::sort_status].left = std::min(204, window.width - 4);
+        window.widgets[widx::sort_status].right = std::min(403, window.width - 4);
 
-        window->widgets[widx::sort_total_waiting].left = std::min(404, window->width - 4);
-        window->widgets[widx::sort_total_waiting].right = std::min(493, window->width - 4);
+        window.widgets[widx::sort_total_waiting].left = std::min(404, window.width - 4);
+        window.widgets[widx::sort_total_waiting].right = std::min(493, window.width - 4);
 
-        window->widgets[widx::sort_accepts].left = std::min(494, window->width - 4);
-        window->widgets[widx::sort_accepts].right = std::min(613, window->width - 4);
+        window.widgets[widx::sort_accepts].left = std::min(494, window.width - 4);
+        window.widgets[widx::sort_accepts].right = std::min(613, window.width - 4);
 
         // Reposition company selection.
-        window->widgets[widx::company_select].left = window->width - 28;
-        window->widgets[widx::company_select].right = window->width - 3;
+        window.widgets[widx::company_select].left = window.width - 28;
+        window.widgets[widx::company_select].right = window.width - 3;
 
         // Set header button captions.
-        window->widgets[widx::sort_name].text = window->sortMode == SortMode::Name ? StringIds::table_header_name_desc : StringIds::table_header_name;
-        window->widgets[widx::sort_status].text = window->sortMode == SortMode::Status ? StringIds::table_header_status_desc : StringIds::table_header_status;
-        window->widgets[widx::sort_total_waiting].text = window->sortMode == SortMode::TotalUnitsWaiting ? StringIds::table_header_total_waiting_desc : StringIds::table_header_total_waiting;
-        window->widgets[widx::sort_accepts].text = window->sortMode == SortMode::CargoAccepted ? StringIds::table_header_accepts_desc : StringIds::table_header_accepts;
+        window.widgets[widx::sort_name].text = window.sortMode == SortMode::Name ? StringIds::table_header_name_desc : StringIds::table_header_name;
+        window.widgets[widx::sort_status].text = window.sortMode == SortMode::Status ? StringIds::table_header_status_desc : StringIds::table_header_status;
+        window.widgets[widx::sort_total_waiting].text = window.sortMode == SortMode::TotalUnitsWaiting ? StringIds::table_header_total_waiting_desc : StringIds::table_header_total_waiting;
+        window.widgets[widx::sort_accepts].text = window.sortMode == SortMode::CargoAccepted ? StringIds::table_header_accepts_desc : StringIds::table_header_accepts;
 
         // Reposition tabs
-        Widget::leftAlignTabs(*window, widx::tab_all_stations, widx::tab_ship_ports);
+        Widget::leftAlignTabs(window, widx::tab_all_stations, widx::tab_ship_ports);
     }
 
     // 0x0049157F
@@ -674,21 +674,21 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004919D1
-    static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        window->flags &= ~(WindowFlags::notScrollView);
+        window.flags &= ~(WindowFlags::notScrollView);
 
         uint16_t currentRow = y / rowHeight;
         int16_t currentStation = -1;
 
-        if (currentRow < window->var_83C)
-            currentStation = window->rowInfo[currentRow];
+        if (currentRow < window.var_83C)
+            currentStation = window.rowInfo[currentRow];
 
-        if (currentStation == window->rowHover)
+        if (currentStation == window.rowHover)
             return;
 
-        window->rowHover = currentStation;
-        window->invalidate();
+        window.rowHover = currentStation;
+        window.invalidate();
     }
 
     // 0x0049193F
@@ -712,7 +712,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491841
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_station_list);

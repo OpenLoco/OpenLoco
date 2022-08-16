@@ -387,16 +387,16 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049E7D3
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(self);
+        Common::prepareDraw(&self);
 
-        self->activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
+        self.activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
 
-        self->widgets[widx::checkbox_1].type = WidgetType::none;
-        self->widgets[widx::checkbox_2].type = WidgetType::none;
-        self->widgets[widx::checkbox_3].type = WidgetType::none;
-        self->widgets[widx::checkbox_4].type = WidgetType::none;
+        self.widgets[widx::checkbox_1].type = WidgetType::none;
+        self.widgets[widx::checkbox_2].type = WidgetType::none;
+        self.widgets[widx::checkbox_3].type = WidgetType::none;
+        self.widgets[widx::checkbox_4].type = WidgetType::none;
 
         if (_trackType & (1 << 7))
         {
@@ -411,7 +411,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 if (_modList[i] != 0xFF)
                 {
                     auto extraName = ObjectManager::get<RoadExtraObject>(_modList[i])->name;
-                    setCheckbox(self, i, extraName);
+                    setCheckbox(&self, i, extraName);
                 }
             }
         }
@@ -427,31 +427,31 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 if (_modList[i] != 0xFF)
                 {
                     auto extraName = ObjectManager::get<TrackExtraObject>(_modList[i])->name;
-                    setCheckbox(self, i, extraName);
+                    setCheckbox(&self, i, extraName);
                 }
             }
         }
 
         // self->activatedWidgets = activatedWidgets;
 
-        self->widgets[widx::image].type = WidgetType::none;
-        self->widgets[widx::track].type = WidgetType::none;
-        self->widgets[widx::track_dropdown].type = WidgetType::none;
+        self.widgets[widx::image].type = WidgetType::none;
+        self.widgets[widx::track].type = WidgetType::none;
+        self.widgets[widx::track_dropdown].type = WidgetType::none;
 
-        self->widgets[widx::image].tooltip = StringIds::null;
+        self.widgets[widx::image].tooltip = StringIds::null;
 
         if (_lastSelectedMods & 0xF)
         {
-            self->widgets[widx::image].type = WidgetType::wt_3;
-            self->widgets[widx::track].type = WidgetType::combobox;
-            self->widgets[widx::track_dropdown].type = WidgetType::button;
+            self.widgets[widx::image].type = WidgetType::wt_3;
+            self.widgets[widx::track].type = WidgetType::combobox;
+            self.widgets[widx::track_dropdown].type = WidgetType::button;
 
-            self->widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
+            self.widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
 
             if (isNetworkHost())
             {
                 if (_toolWindowType == WindowType::construction)
-                    self->widgets[widx::image].tooltip = StringIds::click_track_to_upgrade;
+                    self.widgets[widx::image].tooltip = StringIds::click_track_to_upgrade;
             }
         }
 
@@ -461,9 +461,9 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             StringIds::all_connected_track,
         };
 
-        self->widgets[widx::track].text = modString[_lastSelectedTrackModSection];
+        self.widgets[widx::track].text = modString[_lastSelectedTrackModSection];
 
-        Common::repositionTabs(self);
+        Common::repositionTabs(&self);
     }
 
     // 0x0049EA3E

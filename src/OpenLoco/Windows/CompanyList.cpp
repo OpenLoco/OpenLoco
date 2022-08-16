@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
         static void onUpdate(Window& self);
-        static void prepareDraw(Window* self);
+        static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void refreshCompanyList(Window* self);
         static void drawTabs(Window* self, Gfx::Context* context);
@@ -365,25 +365,25 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436361
-        static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(WindowFlags::notScrollView);
+            self.flags &= ~(WindowFlags::notScrollView);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentCompany = -1;
 
-            if (currentRow < self->var_83C)
-                currentCompany = self->rowInfo[currentRow];
+            if (currentRow < self.var_83C)
+                currentCompany = self.rowInfo[currentRow];
 
-            if (self->rowHover == currentCompany)
+            if (self.rowHover == currentCompany)
                 return;
 
-            self->rowHover = currentCompany;
-            self->invalidate();
+            self.rowHover = currentCompany;
+            self.invalidate();
         }
 
         // 0x004362B6
-        static std::optional<FormatArguments> tooltip(Window* self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_company_list);
@@ -391,43 +391,43 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x0043632C
-        static Ui::CursorId cursor(Window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
 
             uint16_t currentIndex = yPos / rowHeight;
-            if (currentIndex < self->var_83C && self->rowInfo[currentIndex] != -1)
+            if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
                 return CursorId::handPointer;
 
             return fallback;
         }
 
         // 0x00435D07
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
             // Reposition header buttons
-            self->widgets[widx::sort_name].right = std::min(178, self->width - 8);
+            self.widgets[widx::sort_name].right = std::min(178, self.width - 8);
 
-            self->widgets[widx::sort_status].left = std::min(179, self->width - 8);
-            self->widgets[widx::sort_status].right = std::min(388, self->width - 8);
+            self.widgets[widx::sort_status].left = std::min(179, self.width - 8);
+            self.widgets[widx::sort_status].right = std::min(388, self.width - 8);
 
-            self->widgets[widx::sort_performance].left = std::min(389, self->width - 8);
-            self->widgets[widx::sort_performance].right = std::min(533, self->width - 8);
+            self.widgets[widx::sort_performance].left = std::min(389, self.width - 8);
+            self.widgets[widx::sort_performance].right = std::min(533, self.width - 8);
 
-            self->widgets[widx::sort_value].left = std::min(534, self->width - 8);
-            self->widgets[widx::sort_value].right = std::min(633, self->width - 8);
+            self.widgets[widx::sort_value].left = std::min(534, self.width - 8);
+            self.widgets[widx::sort_value].right = std::min(633, self.width - 8);
 
             // Set header button captions
-            self->widgets[widx::sort_name].text = self->sortMode == SortMode::Name ? StringIds::table_header_company_name_desc : StringIds::table_header_company_name;
-            self->widgets[widx::sort_status].text = self->sortMode == SortMode::Status ? StringIds::table_header_company_status_desc : StringIds::table_header_company_status;
-            self->widgets[widx::sort_performance].text = self->sortMode == SortMode::Performance ? StringIds::table_header_company_performance_desc : StringIds::table_header_company_performance;
-            self->widgets[widx::sort_value].text = self->sortMode == SortMode::Value ? StringIds::table_header_company_value_desc : StringIds::table_header_company_value;
+            self.widgets[widx::sort_name].text = self.sortMode == SortMode::Name ? StringIds::table_header_company_name_desc : StringIds::table_header_company_name;
+            self.widgets[widx::sort_status].text = self.sortMode == SortMode::Status ? StringIds::table_header_company_status_desc : StringIds::table_header_company_status;
+            self.widgets[widx::sort_performance].text = self.sortMode == SortMode::Performance ? StringIds::table_header_company_performance_desc : StringIds::table_header_company_performance;
+            self.widgets[widx::sort_value].text = self.sortMode == SortMode::Value ? StringIds::table_header_company_value_desc : StringIds::table_header_company_value;
         }
 
         // 0x00435E56
@@ -1394,30 +1394,30 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436419
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed
-            const auto& tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            const auto& tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab
-            self->activatedWidgets &= ~((1ULL << tab_cargo_distance) | (1ULL << tab_cargo_units) | (1ULL << tab_company_list) | (1ULL << tab_payment_rates) | (1ULL << tab_performance) | (1ULL << tab_speed_records) | (1ULL << tab_values));
-            self->activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self->currentTab].widgetIndex);
+            self.activatedWidgets &= ~((1ULL << tab_cargo_distance) | (1ULL << tab_cargo_units) | (1ULL << tab_company_list) | (1ULL << tab_payment_rates) | (1ULL << tab_performance) | (1ULL << tab_speed_records) | (1ULL << tab_values));
+            self.activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self.currentTab].widgetIndex);
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
         }
 
         // 0x004360FA

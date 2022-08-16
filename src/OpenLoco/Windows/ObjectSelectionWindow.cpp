@@ -229,9 +229,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     // 0x004733AC
-    static void prepareDraw(Ui::Window* self)
+    static void prepareDraw(Ui::Window& self)
     {
-        self->activatedWidgets |= (1 << widx::objectImage);
+        self.activatedWidgets |= (1 << widx::objectImage);
         widgets[widx::closeButton].type = WidgetType::buttonWithImage;
 
         if (isEditorMode())
@@ -239,15 +239,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             widgets[widx::closeButton].type = WidgetType::none;
         }
 
-        self->activatedWidgets &= ~(1 << widx::advancedButton);
+        self.activatedWidgets &= ~(1 << widx::advancedButton);
 
-        if (self->var_856 & (1 << 0))
+        if (self.var_856 & (1 << 0))
         {
-            self->activatedWidgets |= (1 << widx::advancedButton);
+            self.activatedWidgets |= (1 << widx::advancedButton);
         }
 
         auto args = FormatArguments();
-        args.push(_tabDisplayInfo[self->currentTab].name);
+        args.push(_tabDisplayInfo[self.currentTab].name);
     }
 
     static loco_global<uint16_t[40], 0x0112C1C5> _112C1C5;
@@ -738,7 +738,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473900
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_object_list);
@@ -763,15 +763,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x0047390A
-    static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto objIndex = getObjectFromSelection(self, y);
+        auto objIndex = getObjectFromSelection(&self, y);
 
-        if (objIndex.index == self->rowHover || objIndex.index == -1)
+        if (objIndex.index == self.rowHover || objIndex.index == -1)
             return;
 
-        self->rowHover = objIndex.index;
-        self->object = reinterpret_cast<std::byte*>(objIndex.object._header);
+        self.rowHover = objIndex.index;
+        self.object = reinterpret_cast<std::byte*>(objIndex.object._header);
         ObjectManager::freeScenarioText();
 
         if (objIndex.index != -1)
@@ -779,7 +779,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             ObjectManager::getScenarioText(*objIndex.object._header);
         }
 
-        self->invalidate();
+        self.invalidate();
     }
 
     // 0x00473D1D

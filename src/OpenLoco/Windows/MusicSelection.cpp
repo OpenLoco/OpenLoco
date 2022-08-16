@@ -44,9 +44,9 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onUpdate(Window& window);
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex);
 
     static void initEvents()
     {
@@ -176,14 +176,14 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1771
-    static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentTrack = y / rowHeight;
-        if (currentTrack > window->rowCount || currentTrack == window->rowHover)
+        if (currentTrack > window.rowCount || currentTrack == window.rowHover)
             return;
 
-        window->rowHover = currentTrack;
-        window->invalidate();
+        window.rowHover = currentTrack;
+        window.invalidate();
     }
 
     // 0x004C17E3
@@ -198,7 +198,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1762
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
