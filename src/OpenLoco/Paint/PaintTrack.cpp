@@ -10,6 +10,7 @@
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 #include "Paint.h"
+#include "PaintTileDecorations.h"
 
 using namespace OpenLoco::Interop;
 
@@ -39,17 +40,19 @@ namespace OpenLoco::Paint
         }
         const auto height = elTrack.baseZ() * 4;
         const auto rotation = (session.getRotation() + elTrack.unkDirection()) & 0x3;
-        if (session.getViewFlags() & (1 << 3) && session.getContext()->zoom_level == 0)
+        if ((session.getViewFlags() & (1 << 3)) && session.getContext()->zoom_level == 0)
         {
-            const bool isRight = elTrack.isFlag6();
-            if (elTrack.sequenceIndex() == 0 || isRight)
+            const bool isLast = elTrack.isFlag6();
+            const bool isFirstTile = elTrack.sequenceIndex() == 0;
+            if (elTrack.sequenceIndex() == 0 || isLast)
             {
                 session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                // const auto imageId = Gfx::recolour(getHeightMarkerImage(isRight, elTrack.trackId(), height), Colour::blue);
-                // const Map::Pos3 offset(16, 16, height + getHeightMarkerOffset(isRight, elTrack.trackId()) + 8);
-                // const Map::Pos3 bbOffset(1000, 1000, 1087);
-                // const Map::Pos3 bbSize(1, 1, 0);
-                // session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
+                const auto markerHeight = height + getTrackDecorationHeightOffset(isFirstTile, elTrack.trackId()) + 8;
+                const auto imageId = ImageId{ getHeightMarkerImage(markerHeight), Colour::blue };
+                const Map::Pos3 offset(16, 16, markerHeight);
+                const Map::Pos3 bbOffset(1000, 1000, 1087);
+                const Map::Pos3 bbSize(1, 1, 0);
+                session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
             }
         }
 
