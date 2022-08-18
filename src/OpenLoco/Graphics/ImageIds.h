@@ -1014,7 +1014,6 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t music_controls_play = 2384;
     constexpr uint32_t music_controls_next = 2385;
     constexpr uint32_t refit_cargo_button = 2386;
-    constexpr uint32_t tab_vehicle_background = 2387;
     constexpr uint32_t tab = 2387;
     constexpr uint32_t selected_tab = 2388;
 
