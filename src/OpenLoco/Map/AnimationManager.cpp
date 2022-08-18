@@ -92,6 +92,12 @@ namespace OpenLoco::Map::AnimationManager
                 }
                 rawAnimations()[last] = rawAnimations()[i];
             }
+
+            // For vanilla binary compatibility copy the old last entry across all garbage entries
+            auto repCount = numAnimations() - last;
+            std::fill_n(std::next(std::begin(rawAnimations()), last), repCount, rawAnimations()[numAnimations() - 1]);
+            // Above to be deleted when confirmed matching
+
             numAnimations() = last;
         }
     }
