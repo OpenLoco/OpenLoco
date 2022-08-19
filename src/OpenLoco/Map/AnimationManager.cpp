@@ -1,7 +1,9 @@
 #include "AnimationManager.h"
+#include "../Game.h"
 #include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "Animation.h"
+#include <array>
 
 using namespace OpenLoco::Interop;
 
@@ -44,10 +46,60 @@ namespace OpenLoco::Map::AnimationManager
         numAnimations() = 0;
     }
 
+    static bool callUpdateFunction(Animation& anim)
+    {
+        constexpr std::array<uint32_t, 9> _funcs = {
+            0x0048950F,
+            0x00479413,
+            0x004BD528,
+            0x00456E32,
+            0x00456EEB,
+            0x0042E4D4,
+            0x0042E646,
+            0x004939ED,
+            0x004944B6,
+        };
+        registers regs;
+        regs.ax = anim.pos.x;
+        regs.cx = anim.pos.y;
+        regs.dl = anim.baseZ;
+        return call(_funcs[anim.type], regs) & X86_FLAG_CARRY;
+    }
+
     // 0x004612EC
     void update()
     {
-        call(0x004612EC);
+        if (Game::hasFlags(1u << 0))
+        {
+            std::array<bool, Limits::kMaxAnimations> animsToRemove{};
+            for (uint16_t i = 0; i < numAnimations(); ++i)
+            {
+                auto& animation = rawAnimations()[i];
+                animsToRemove[i] = callUpdateFunction(animation);
+            }
+
+            // Remove animations that are no longer required
+            uint16_t last = 0;
+            for (uint16_t i = 0; i < numAnimations(); ++i, ++last)
+            {
+                while (animsToRemove[i] && i < numAnimations())
+                {
+                    ++i;
+                }
+                if (i >= numAnimations())
+                {
+                    break;
+                }
+                rawAnimations()[last] = rawAnimations()[i];
+            }
+
+            // For vanilla binary compatibility copy the old last entry across all garbage entries
+            auto repCount = numAnimations() - last;
+            std::fill_n(std::next(std::begin(rawAnimations()), last), repCount, rawAnimations()[numAnimations() - 1]);
+            // Above to be deleted when confirmed matching
+
+            numAnimations() = last;
+        }
     }
 
     void registerHooks()
