@@ -109,13 +109,13 @@ namespace OpenLoco::Ui
     }
 
     // 0x0045A0B3
-    void Window::drawViewports(Gfx::Context* context)
+    void Window::drawViewports(Gfx::RenderTarget* rt)
     {
         if (viewports[0] != nullptr)
-            viewports[0]->render(context);
+            viewports[0]->render(rt);
 
         if (viewports[1] != nullptr)
-            viewports[1]->render(context);
+            viewports[1]->render(rt);
     }
 
     // 0x0045FCE6
@@ -1381,7 +1381,7 @@ namespace OpenLoco::Ui
         eventHandlers->prepareDraw(*this);
     }
 
-    void Window::callDraw(Gfx::Context* context)
+    void Window::callDraw(Gfx::RenderTarget* rt)
     {
         if (eventHandlers->draw == nullptr)
             return;
@@ -1390,15 +1390,15 @@ namespace OpenLoco::Ui
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            regs.edi = X86Pointer(context);
+            regs.edi = X86Pointer(rt);
             call((int32_t)this->eventHandlers->draw, regs);
             return;
         }
 
-        eventHandlers->draw(*this, context);
+        eventHandlers->draw(*this, rt);
     }
 
-    void Window::callDrawScroll(Gfx::Context* context, uint32_t scrollIndex)
+    void Window::callDrawScroll(Gfx::RenderTarget* rt, uint32_t scrollIndex)
     {
         if (eventHandlers->drawScroll == nullptr)
             return;
@@ -1408,20 +1408,20 @@ namespace OpenLoco::Ui
             registers regs;
             regs.ax = scrollIndex;
             regs.esi = X86Pointer(this);
-            regs.edi = X86Pointer(context);
+            regs.edi = X86Pointer(rt);
             call((int32_t)eventHandlers->drawScroll, regs);
             return;
         }
 
-        eventHandlers->drawScroll(*this, *context, scrollIndex);
+        eventHandlers->drawScroll(*this, *rt, scrollIndex);
     }
 
     // 0x004CA4DF
-    void Window::draw(Gfx::Context* context)
+    void Window::draw(Gfx::RenderTarget* rt)
     {
         if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::noBackground))
         {
-            Gfx::fillRect(*context, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
+            Gfx::fillRect(*rt, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
 
         uint64_t pressed_widget = 0;
@@ -1456,13 +1456,13 @@ namespace OpenLoco::Ui
                 break;
             }
 
-            widget->draw(context, this, pressed_widget, tool_widget, hovered_widget, scrollviewIndex);
+            widget->draw(rt, this, pressed_widget, tool_widget, hovered_widget, scrollviewIndex);
         }
 
         if (this->flags & WindowFlags::whiteBorderMask)
         {
             Gfx::fillRectInset(
-                *context,
+                *rt,
                 this->x,
                 this->y,
                 this->x + this->width - 1,

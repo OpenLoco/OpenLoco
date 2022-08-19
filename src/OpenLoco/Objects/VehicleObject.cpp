@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco
 {
     // 0x004B7733
-    static void drawVehicle(Gfx::Context* context, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Ui::Point offset)
+    static void drawVehicle(Gfx::RenderTarget* rt, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Ui::Point offset)
     {
         // Eventually calls 0x4B777B part of 0x4B7741
         registers regs;
@@ -24,51 +24,51 @@ namespace OpenLoco
         regs.bl = enumValue(Colour::mutedSeaGreen);
         regs.bh = 2;
         regs.ebp = X86Pointer(vehicleObject);
-        regs.edi = X86Pointer(context);
+        regs.edi = X86Pointer(rt);
         call(0x4B7733, regs);
     }
 
     // 0x004B8C52
-    void VehicleObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void VehicleObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         // Rotation
         uint8_t unk1 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk1();
         uint8_t unk2 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk2();
 
-        drawVehicle(&context, this, unk1, unk2, Ui::Point{ x, y } + Ui::Point{ 0, 19 });
+        drawVehicle(&rt, this, unk1, unk2, Ui::Point{ x, y } + Ui::Point{ 0, 19 });
     }
 
     // TODO: Should only be defined in ObjectSelectionWindow
     static const uint8_t descriptionRowHeight = 10;
 
     // 0x004B8C9D
-    void VehicleObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, const int16_t width) const
+    void VehicleObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(context, rowPosition, designed, obsolete);
+        ObjectManager::drawGenericDescription(rt, rowPosition, designed, obsolete);
         if (power != 0 && (mode == TransportMode::road || mode == TransportMode::rail))
         {
             FormatArguments args{};
             args.push(power);
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push<uint32_t>(StringManager::internalLengthToComma1DP(getLength()));
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_length, &args);
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_length, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(weight);
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_weight, &args);
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_weight, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(speed);
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_max_speed, &args);
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_max_speed, &args);
         }
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         // Clear buffer
@@ -78,7 +78,7 @@ namespace OpenLoco
 
         if (strlen(buffer) != 0)
         {
-            Gfx::drawStringLeftWrapped(context, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
+            Gfx::drawStringLeftWrapped(rt, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
         }
     }
 

@@ -127,7 +127,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void resetWindow(Window& self, WidgetIndex_t tabWidgetIndex);
         void switchTab(Window* self, WidgetIndex_t widgetIndex);
         void repositionTabs(Window* self);
-        void drawTabs(Window* self, Gfx::Context* context);
+        void drawTabs(Window* self, Gfx::RenderTarget* rt);
         void initEvents();
         void onClose(Window& self);
         void onUpdate(Window* self, uint8_t flag);
@@ -221,8 +221,8 @@ namespace OpenLoco::Ui::Windows::Construction
         void activateSelectedConstructionWidgets();
         void tabReset(Window* self);
         void initEvents();
-        void drawTrack(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::Context& context);
-        void drawRoad(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::Context& context);
+        void drawTrack(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::RenderTarget& rt);
+        void drawRoad(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::RenderTarget& rt);
         void removeTrackGhosts();
         void previousTrackPiece(Window* self);
         void nextTrackPiece(Window* self);

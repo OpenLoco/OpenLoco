@@ -96,7 +96,7 @@ namespace OpenLoco::Paint
 
         if (shadowImageId)
         {
-            if (session.getContext()->zoom_level <= 1)
+            if (session.getRenderTarget()->zoom_level <= 1)
             {
                 session.addToPlotListAsParent(*shadowImageId, imageOffset, imageOffset, { 18, 18, 1 });
             }

@@ -2533,10 +2533,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A0AE5
-    void drawTrack(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::Context& context)
+    void drawTrack(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::RenderTarget& rt)
     {
         const uint16_t backupViewFlags = addr<0x00E3F0BC, uint16_t>(); // After all users of 0x00E3F0BC implemented this is not required
-        auto* session = Paint::allocateSession(context, 0);
+        auto* session = Paint::allocateSession(rt, 0);
 
         const auto backupSelectionFlags = Input::getMapSelectionFlags();
         const Map::Pos3 backupConstructionArrowPos = _constructionArrowPos;
@@ -2621,14 +2621,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         Input::setMapSelectionFlags(backupSelectionFlags);
         _constructionArrowPos = backupConstructionArrowPos;
         _constructionArrowDirection = backupConstructionArrowDir;
-        Paint::allocateSession(context, backupViewFlags); // After all users of 0x00E3F0BC implemented this is not required
+        Paint::allocateSession(rt, backupViewFlags); // After all users of 0x00E3F0BC implemented this is not required
     }
 
     // 0x00478F1F
-    void drawRoad(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::Context& context)
+    void drawRoad(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::RenderTarget& rt)
     {
-        static loco_global<Gfx::Context*, 0x00E0C3E0> _dword_E0C3E0;
-        _dword_E0C3E0 = &context;
+        static loco_global<Gfx::RenderTarget*, 0x00E0C3E0> _dword_E0C3E0;
+        _dword_E0C3E0 = &rt;
         registers regs;
         regs.ax = pos.x;
         regs.cx = pos.y;
@@ -2639,14 +2639,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D38A and 0x0049D16B
-    static void drawCostString(Window* self, Gfx::Context* context)
+    static void drawCostString(Window* self, Gfx::RenderTarget* rt)
     {
         auto x = self->widgets[widx::construct].mid_x();
         x += self->x;
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
         if (_constructionHover != 1)
-            Gfx::drawStringCentred(*context, x, y, Colour::black, StringIds::build_this);
+            Gfx::drawStringCentred(*rt, x, y, Colour::black, StringIds::build_this);
 
         y += 11;
 
@@ -2656,13 +2656,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 auto args = FormatArguments();
                 args.push<uint32_t>(_trackCost);
-                Gfx::drawStringCentred(*context, x, y, Colour::black, StringIds::build_cost, &args);
+                Gfx::drawStringCentred(*rt, x, y, Colour::black, StringIds::build_cost, &args);
             }
         }
     }
 
     // 0x0049D106
-    static void drawTrackCost(Window* self, Gfx::Context* clipped, Gfx::Context* context, Point pos, uint16_t width, uint16_t height)
+    static void drawTrackCost(Window* self, Gfx::RenderTarget* clipped, Gfx::RenderTarget* rt, Point pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -2678,11 +2678,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
-        drawCostString(self, context);
+        drawCostString(self, rt);
     }
 
     // 0x0049D325
-    static void drawRoadCost(Window* self, Gfx::Context* clipped, Gfx::Context* context, Point pos, uint16_t width, uint16_t height)
+    static void drawRoadCost(Window* self, Gfx::RenderTarget* clipped, Gfx::RenderTarget* rt, Point pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -2698,14 +2698,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
-        drawCostString(self, context);
+        drawCostString(self, rt);
     }
 
     // 0x0049CF36
-    static void draw(Window& self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        self.draw(context);
-        Common::drawTabs(&self, context);
+        self.draw(rt);
+        Common::drawTabs(&self, rt);
 
         if (self.widgets[widx::bridge].type != WidgetType::none)
         {
@@ -2719,7 +2719,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     auto x = self.x + self.widgets[widx::bridge].left + 2;
                     auto y = self.y + self.widgets[widx::bridge].top + 1;
 
-                    Gfx::drawImage(context, x, y, imageId);
+                    Gfx::drawImage(rt, x, y, imageId);
                 }
             }
         }
@@ -2746,7 +2746,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto width = self.widgets[widx::construct].width();
             auto height = self.widgets[widx::construct].height();
 
-            auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
+            auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(x, y, width, height));
             if (clipped)
             {
                 const auto& roadPiece = Map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
@@ -2770,11 +2770,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto pos2D = gameToScreen(pos3D, WindowManager::getCurrentRotation());
 
                 Point pos = { pos2D.x, pos2D.y };
-                drawRoadCost(&self, &*clipped, context, pos, width, height);
+                drawRoadCost(&self, &*clipped, rt, pos, width, height);
             }
             else
             {
-                drawCostString(&self, context);
+                drawCostString(&self, rt);
             }
         }
         else
@@ -2796,7 +2796,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto width = self.widgets[widx::construct].width();
             auto height = self.widgets[widx::construct].height();
 
-            auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
+            auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(x, y, width, height));
             if (clipped)
             {
                 const auto& trackPiece = Map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
@@ -2820,11 +2820,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto pos2D = gameToScreen(pos3D, WindowManager::getCurrentRotation());
 
                 Point pos = { pos2D.x, pos2D.y };
-                drawTrackCost(&self, &*clipped, context, pos, width, height);
+                drawTrackCost(&self, &*clipped, rt, pos, width, height);
             }
             else
             {
-                drawCostString(&self, context);
+                drawCostString(&self, rt);
             }
         }
     }

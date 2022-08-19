@@ -32,7 +32,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
     static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
     static void prepareDraw(Ui::Window& self);
-    static void draw(Ui::Window& window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
 
     Window* open()
     {
@@ -67,15 +67,15 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     // 0x00439236
-    static void draw(Ui::Window& window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         // Draw widgets.
-        window.draw(context);
+        window.draw(rt);
 
         int16_t x = window.x + window.width / 2;
         int16_t y = window.y + window.widgets[Widx::exit_button].top + 8;
         Ui::Point origin = { x, y };
-        Gfx::drawStringCentredWrapped(*context, origin, window.width, Colour::black, StringIds::title_exit_game);
+        Gfx::drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::title_exit_game);
     }
 
     // 0x00439268

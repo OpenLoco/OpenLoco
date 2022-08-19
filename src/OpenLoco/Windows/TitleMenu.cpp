@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void onUpdate(Window& window);
     static void onTextInput(Window& window, WidgetIndex_t widgetIndex, const char* input);
     static Ui::CursorId onCursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::Window& window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
     static void prepareDraw(Ui::Window& window);
 
     // static loco_global<WindowEventList[1], 0x004f9ec8> _events;
@@ -218,10 +218,10 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x00438EC7
-    static void draw(Ui::Window& window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         // Draw widgets.
-        window.draw(context);
+        window.draw(rt);
 
         if (window.widgets[Widx::scenario_list_btn].type != Ui::WidgetType::none)
         {
@@ -234,8 +234,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
             }
 
-            OpenLoco::Gfx::drawImage(context, x, y, image_id);
-            OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_sparkle);
+            OpenLoco::Gfx::drawImage(rt, x, y, image_id);
+            OpenLoco::Gfx::drawImage(rt, x, y, ImageIds::title_menu_sparkle);
         }
 
         if (window.widgets[Widx::load_game_btn].type != Ui::WidgetType::none)
@@ -249,8 +249,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
             }
 
-            OpenLoco::Gfx::drawImage(context, x, y, image_id);
-            OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_save);
+            OpenLoco::Gfx::drawImage(rt, x, y, image_id);
+            OpenLoco::Gfx::drawImage(rt, x, y, ImageIds::title_menu_save);
         }
 
         if (window.widgets[Widx::tutorial_btn].type != Ui::WidgetType::none)
@@ -264,10 +264,10 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
             }
 
-            OpenLoco::Gfx::drawImage(context, x, y, image_id);
+            OpenLoco::Gfx::drawImage(rt, x, y, image_id);
 
             // TODO: base lesson overlay on language
-            OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_lesson_l);
+            OpenLoco::Gfx::drawImage(rt, x, y, ImageIds::title_menu_lesson_l);
         }
 
         if (window.widgets[Widx::scenario_editor_btn].type != Ui::WidgetType::none)
@@ -281,7 +281,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 image_id = globe_construct[((window.var_846 / 2) % globe_construct.size())];
             }
 
-            OpenLoco::Gfx::drawImage(context, x, y, image_id);
+            OpenLoco::Gfx::drawImage(rt, x, y, image_id);
         }
 
         if (window.widgets[Widx::multiplayer_toggle_btn].type != Ui::WidgetType::none)
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 string = StringIds::two_player_mode_connected;
             }
 
-            drawStringCentredClipped(*context, x, y, ww - 4, Colour::black, string, (char*)0x112c826);
+            drawStringCentredClipped(*rt, x, y, ww - 4, Colour::black, string, (char*)0x112c826);
         }
     }
 

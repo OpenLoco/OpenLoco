@@ -165,27 +165,27 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C9397
-    static void draw(Ui::Window& window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         uint16_t x = window.x;
         uint16_t y = window.y;
         uint16_t width = window.width;
         uint16_t height = window.height;
 
-        Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-        Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(ObjectManager::get<InterfaceSkinObject>()->colour_08)));
+        Gfx::drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
+        Gfx::drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(ObjectManager::get<InterfaceSkinObject>()->colour_08)));
 
-        Gfx::drawRect(*context, x, y + 2, 1, height - 4, 0x2000000 | 46);
-        Gfx::drawRect(*context, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-        Gfx::drawRect(*context, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-        Gfx::drawRect(*context, x + 2, y, width - 4, 1, 0x2000000 | 46);
+        Gfx::drawRect(*rt, x, y + 2, 1, height - 4, 0x2000000 | 46);
+        Gfx::drawRect(*rt, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
+        Gfx::drawRect(*rt, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
+        Gfx::drawRect(*rt, x + 2, y, width - 4, 1, 0x2000000 | 46);
 
-        Gfx::drawRect(*context, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-        Gfx::drawRect(*context, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-        Gfx::drawRect(*context, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-        Gfx::drawRect(*context, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(*rt, x + 1, y + 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
-        Gfx::drawStringCentredRaw(*context, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, _text);
+        Gfx::drawStringCentredRaw(*rt, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, _text);
     }
 
     // 0x004C94F7

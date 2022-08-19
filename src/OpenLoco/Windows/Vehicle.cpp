@@ -89,12 +89,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void event8(Window& self);
         static void event9(Window& self);
         static size_t getNumCars(Ui::Window* const self);
-        static void drawTabs(Window* const window, Gfx::Context* const context);
+        static void drawTabs(Window* const window, Gfx::RenderTarget* const rt);
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y);
         static void pickupToolDown(Window& self, const int16_t x, const int16_t y);
         static void pickupToolAbort(Window& self);
         static size_t getNumCars(Ui::Window* const self);
-        static void drawTabs(Window* const window, Gfx::Context* const context);
+        static void drawTabs(Window* const window, Gfx::RenderTarget* const rt);
         static std::optional<Vehicles::Car> getCarFromScrollView(Window* const self, const int16_t y);
         static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);
     }
@@ -907,10 +907,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B226D
-        static void draw(Window& self, Gfx::Context* const context)
+        static void draw(Window& self, Gfx::RenderTarget* const rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
             Widget& pickupButton = self.widgets[widx::pickup];
             if (pickupButton.type != WidgetType::none)
@@ -918,7 +918,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if ((pickupButton.image & 0x20000000) != 0 && !self.isDisabled(widx::pickup))
                 {
                     Gfx::drawImage(
-                        context,
+                        rt,
                         self.x + pickupButton.left,
                         self.y + pickupButton.top,
                         Gfx::recolour(pickupButton.image, CompanyManager::getCompanyColour(self.owner)));
@@ -945,7 +945,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 Gfx::drawStringLeftClipped(
-                    *context,
+                    *rt,
                     self.x + self.widgets[widx::status].left - 1,
                     self.y + self.widgets[widx::status].top - 1,
                     self.widgets[widx::status].width() - 1,
@@ -958,27 +958,27 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (speedWidget.type != WidgetType::none)
             {
                 Gfx::drawImage(
-                    context,
+                    rt,
                     self.x + speedWidget.left,
                     self.y + speedWidget.top + 10,
                     Gfx::recolour(ImageIds::speed_control_track, self.getColour(WindowColour::secondary).c()));
 
                 Gfx::drawStringCentred(
-                    *context,
+                    *rt,
                     self.x + speedWidget.mid_x(),
                     self.y + speedWidget.top + 4,
                     Colour::black,
                     StringIds::tiny_power);
 
                 Gfx::drawStringCentred(
-                    *context,
+                    *rt,
                     self.x + speedWidget.mid_x(),
                     self.y + speedWidget.bottom - 10,
                     Colour::black,
                     StringIds::tiny_brake);
 
                 Gfx::drawImage(
-                    context,
+                    rt,
                     self.x + speedWidget.left + 1,
                     self.y + speedWidget.top + 57 - veh->var_6E,
                     Gfx::recolour(ImageIds::speed_control_thumb, self.getColour(WindowColour::secondary).c()));
@@ -986,8 +986,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (self.viewports[0] != nullptr)
             {
-                self.drawViewports(context);
-                Widget::drawViewportCentreButton(context, &self, widx::centreViewport);
+                self.drawViewports(rt);
+                Widget::drawViewportCentreButton(rt, &self, widx::centreViewport);
             }
             else if (Input::isToolActive(self.type, self.number))
             {
@@ -998,7 +998,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 origin.x = self.x + button.mid_x();
                 origin.y = self.y + button.mid_y();
                 Gfx::drawStringCentredWrapped(
-                    *context,
+                    *rt,
                     origin,
                     button.width() - 6,
                     Colour::black,
@@ -1495,10 +1495,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3542
-        static void draw(Window& self, Gfx::Context* const context)
+        static void draw(Window& self, Gfx::RenderTarget* const rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
             // TODO: identical to main tab (doesn't appear to do anything useful)
             if (self.widgets[widx::pickup].type != WidgetType::none)
@@ -1506,7 +1506,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if ((self.widgets[widx::pickup].image & (1 << 29)) && !self.isDisabled(widx::pickup))
                 {
                     auto image = Gfx::recolour(self.widgets[widx::pickup].image, CompanyManager::getCompanyColour(self.owner));
-                    Gfx::drawImage(context, self.widgets[widx::pickup].left + self.x, self.widgets[widx::pickup].top + self.y, image);
+                    Gfx::drawImage(rt, self.widgets[widx::pickup].left + self.x, self.widgets[widx::pickup].top + self.y, image);
                 }
             }
 
@@ -1527,7 +1527,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     str = StringIds::vehicle_details_total_power_and_weight;
                 }
-                Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self.width - 6, Colour::black, str, &args);
+                Gfx::drawStringLeftClipped(*rt, pos.x, pos.y, self.width - 6, Colour::black, str, &args);
             }
 
             {
@@ -1541,7 +1541,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     str = StringIds::vehicle_details_max_speed_and_rack_rail_and_reliability;
                 }
-                Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self.width - 16, Colour::black, str, &args);
+                Gfx::drawStringLeftClipped(*rt, pos.x, pos.y, self.width - 16, Colour::black, str, &args);
             }
 
             {
@@ -1555,14 +1555,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     str = StringIds::vehicle_car_count_and_length;
                     args.push<uint32_t>(head->getCarCount());
                 }
-                Gfx::drawStringLeftClipped(*context, pos.x, pos.y, self.width - 16, Colour::black, str, &args);
+                Gfx::drawStringLeftClipped(*rt, pos.x, pos.y, self.width - 16, Colour::black, str, &args);
             }
         }
 
         // 0x004B36A3
-        static void drawScroll(Window& self, Gfx::Context& context, const uint32_t i)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t i)
         {
-            Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+            Gfx::clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
             {
@@ -1585,7 +1585,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         top = pos.y - 1;
                         carStr = StringIds::black_stringid;
                     }
-                    Gfx::fillRect(context, 0, top, self.width, bottom, 0x2000030);
+                    Gfx::fillRect(rt, 0, top, self.width, bottom, 0x2000030);
                 }
 
                 int16_t y = pos.y + (self.rowHeight - 22) / 2;
@@ -1596,21 +1596,21 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     al = 12;
                     ah = self.getColour(WindowColour::secondary).u8();
                 }
-                auto x = Common::sub_4B743B(al, ah, 0, y, car.front, &context);
+                auto x = Common::sub_4B743B(al, ah, 0, y, car.front, &rt);
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
                 FormatArguments args{};
                 args.push(vehicleObj->name);
                 x += 2;
                 y = pos.y + (self.rowHeight / 2) - 6;
-                Gfx::drawStringLeft(context, x, y, Colour::black, carStr, &args);
+                Gfx::drawStringLeft(rt, x, y, Colour::black, carStr, &args);
 
                 pos.y += self.rowHeight;
             }
 
             if (EntityId(self.rowHover) == train.tail->id && _dragCarComponent != nullptr)
             {
-                Gfx::fillRect(context, 0, pos.y - 1, self.width, pos.y, 0x2000030);
+                Gfx::fillRect(rt, 0, pos.y - 1, self.width, pos.y, 0x2000030);
             }
         }
 
@@ -1819,10 +1819,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B3F0D
-        static void draw(Ui::Window& self, Gfx::Context* const context)
+        static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
             // draw total cargo
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
@@ -1834,18 +1834,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
             head->generateCargoTotalString(buffer);
             FormatArguments args = {};
             args.push<string_id>(StringIds::buffer_1250);
-            Gfx::drawStringLeftClipped(*context, self.x + 3, self.y + self.height - 25, self.width - 15, Colour::black, StringIds::total_stringid, &args);
+            Gfx::drawStringLeftClipped(*rt, self.x + 3, self.y + self.height - 25, self.width - 15, Colour::black, StringIds::total_stringid, &args);
 
             // draw cargo capacity
             buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             head->generateCargoCapacityString(buffer);
             args = {};
             args.push<string_id>(StringIds::buffer_1250);
-            Gfx::drawStringLeftClipped(*context, self.x + 3, self.y + self.height - 13, self.width - 15, Colour::black, StringIds::vehicle_capacity_stringid, &args);
+            Gfx::drawStringLeftClipped(*rt, self.x + 3, self.y + self.height - 13, self.width - 15, Colour::black, StringIds::vehicle_capacity_stringid, &args);
         }
 
         // based on 0x004B40C7
-        static void drawCargoText(Gfx::Context& context, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, StationId stationId)
+        static void drawCargoText(Gfx::RenderTarget& rt, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, StationId stationId)
         {
             if (cargoQty == 0)
             {
@@ -1861,14 +1861,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push<uint32_t>(cargoQty);
             args.push(station->name);
             args.push(station->town);
-            Gfx::drawStringLeft(context, x, y, Colour::black, strFormat, &args);
+            Gfx::drawStringLeft(rt, x, y, Colour::black, strFormat, &args);
             y += 10;
         }
 
         // 004B3F62
-        static void drawScroll(Window& self, Gfx::Context& context, const uint32_t i)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t i)
         {
-            Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+            Gfx::clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
             auto* head = Common::getVehicle(&self);
             if (head == nullptr)
             {
@@ -1883,13 +1883,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto body = car.body;
                 if (front->id == EntityId(self.rowHover))
                 {
-                    Gfx::fillRect(context, 0, y, self.width, y + self.rowHeight - 1, 0x2000030);
+                    Gfx::fillRect(rt, 0, y, self.width, y + self.rowHeight - 1, 0x2000030);
                     strFormat = StringIds::wcolour2_stringid;
                 }
                 // Get width of the drawing
-                auto width = Common::sub_4B743B(1, 0, 0, y, front, &context);
+                auto width = Common::sub_4B743B(1, 0, 0, y, front, &rt);
                 // Actually draw it
-                width = Common::sub_4B743B(0, 0, 24 - width, (self.rowHeight - 22) / 2 + y, car.front, &context);
+                width = Common::sub_4B743B(0, 0, 24 - width, (self.rowHeight - 22) / 2 + y, car.front, &rt);
 
                 if (body->primaryCargo.type != 0xFF)
                 {
@@ -1901,14 +1901,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         {
                             cargoTextHeight += 5;
                         }
-                        drawCargoText(context, width, cargoTextHeight, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
-                        drawCargoText(context, width, cargoTextHeight, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
+                        drawCargoText(rt, width, cargoTextHeight, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
+                        drawCargoText(rt, width, cargoTextHeight, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
                     }
                     else
                     {
                         FormatArguments args{};
                         args.push<string_id>(StringIds::cargo_empty);
-                        Gfx::drawStringLeft(context, width, cargoTextHeight + 5, Colour::black, strFormat, &args);
+                        Gfx::drawStringLeft(rt, width, cargoTextHeight + 5, Colour::black, strFormat, &args);
                     }
                 }
 
@@ -2203,10 +2203,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B576C
-        static void draw(Ui::Window& self, Gfx::Context* const context)
+        static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
             auto pos = Ui::Point(self.x + 4, self.y + 46);
 
@@ -2222,7 +2222,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto args = FormatArguments();
                 args.push<uint32_t>(veh1->lastIncome.day);
                 // Last income on: {DATE DMY}
-                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::last_income_on_date, &args);
+                Gfx::drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::last_income_on_date, &args);
                 pos.y += 10;
                 for (int i = 0; i < 4; i++)
                 {
@@ -2241,7 +2241,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     args.push<uint16_t>(veh1->lastIncome.cargoAges[i]);
                     args.push<currency32_t>(veh1->lastIncome.cargoProfits[i]);
                     // {STRINGID} transported {INT16} blocks in {INT16} days = {CURRENCY32}
-                    Gfx::drawStringLeftWrapped(*context, pos.x + 4, pos.y, self.width - 12, Colour::black, StringIds::transported_blocks_in_days, &args);
+                    Gfx::drawStringLeftWrapped(*rt, pos.x + 4, pos.y, self.width - 12, Colour::black, StringIds::transported_blocks_in_days, &args);
 
                     // TODO: fix function to take pointer to offset
                     pos.y += 12;
@@ -2250,7 +2250,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             else
             {
                 // Last income: N/A"
-                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::last_income_na);
+                Gfx::drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::last_income_na);
                 pos.y += 10;
             }
 
@@ -2261,7 +2261,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Last journey average speed: {VELOCITY}
                 auto args = FormatArguments();
                 args.push(head->lastAverageSpeed);
-                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::last_journey_average_speed, &args);
+                Gfx::drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::last_journey_average_speed, &args);
                 pos.y += 10 + 5;
             }
 
@@ -2269,7 +2269,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Monthly Running Cost: {CURRENCY32}
                 auto args = FormatArguments();
                 args.push(head->calculateRunningCost());
-                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_running_cost, &args);
+                Gfx::drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_running_cost, &args);
                 pos.y += 10;
             }
 
@@ -2278,7 +2278,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto args = FormatArguments();
                 auto monthlyProfit = (train.veh2->totalRecentProfit()) / 4;
                 args.push(monthlyProfit);
-                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_profit, &args);
+                Gfx::drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_profit, &args);
                 pos.y += 10 + 5;
             }
 
@@ -2287,7 +2287,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto args = FormatArguments();
                 args.push(train.head->totalRefundCost);
                 pos.y = self.y + self.height - 14;
-                Gfx::drawStringLeft(*context, pos.x, pos.y, Colour::black, StringIds::sale_value_of_vehicle, &args);
+                Gfx::drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::sale_value_of_vehicle, &args);
             }
         }
 
@@ -3237,17 +3237,17 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4866
-        static void draw(Window& self, Gfx::Context* const context)
+        static void draw(Window& self, Gfx::RenderTarget* const rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
             if (Input::isToolActive(WindowType::vehicle, self.number))
             {
                 // Location at bottom left edge of window
                 Ui::Point loc{ static_cast<int16_t>(self.x + 3), static_cast<int16_t>(self.y + self.height - 13) };
 
-                Gfx::drawStringLeftClipped(*context, loc.x, loc.y, self.width - 14, Colour::black, StringIds::route_click_on_waypoint);
+                Gfx::drawStringLeftClipped(*rt, loc.x, loc.y, self.width - 14, Colour::black, StringIds::route_click_on_waypoint);
             }
         }
 
@@ -3331,25 +3331,25 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B4A58 based on
-        static void sub_4B4A58(Window& self, Gfx::Context& context, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
+        static void sub_4B4A58(Window& self, Gfx::RenderTarget& rt, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
         {
             Ui::Point loc = { 8, static_cast<int16_t>(y - 1) };
-            Gfx::drawStringLeft(context, &loc, Colour::black, strFormat, &args);
+            Gfx::drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
             if (order.hasFlag(Vehicles::OrderFlags::HasNumber))
             {
                 if (Input::isToolActive(self.type, self.number))
                 {
                     auto imageId = numberCircle[_113646A - 1];
-                    Gfx::drawImage(&context, loc.x + 3, loc.y + 1, Gfx::recolour(imageId, Colour::white));
+                    Gfx::drawImage(&rt, loc.x + 3, loc.y + 1, Gfx::recolour(imageId, Colour::white));
                 }
                 _113646A++;
             }
         }
 
         // 0x004B48BA
-        static void drawScroll(Window& self, Gfx::Context& context, const uint32_t i)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t i)
         {
-            Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+            Gfx::clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
@@ -3361,7 +3361,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto rowNum = 0;
             if (head->sizeOfOrderTable == 1)
             {
-                Gfx::drawStringLeft(context, 8, 0, Colour::black, StringIds::no_route_defined);
+                Gfx::drawStringLeft(rt, 8, 0, Colour::black, StringIds::no_route_defined);
                 rowNum++; // Used to move down the text
             }
 
@@ -3372,13 +3372,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto strFormat = StringIds::black_stringid;
                 if (self.var_842 == rowNum)
                 {
-                    Gfx::fillRect(context, 0, y, self.width, y + 9, enumValue(Colour::darkGreen));
+                    Gfx::fillRect(rt, 0, y, self.width, y + 9, enumValue(Colour::darkGreen));
                     strFormat = StringIds::white_stringid;
                 }
                 if (self.rowHover == rowNum)
                 {
                     strFormat = StringIds::wcolour2_stringid;
-                    Gfx::fillRect(context, 0, y, self.width, y + 9, 0x2000030);
+                    Gfx::fillRect(rt, 0, y, self.width, y + 9, 0x2000030);
                 }
 
                 FormatArguments args{};
@@ -3406,10 +3406,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     }
                 }
 
-                sub_4B4A58(self, context, strFormat, args, order, y);
+                sub_4B4A58(self, rt, strFormat, args, order, y);
                 if (head->currentOrder + head->orderTableOffset == order.getOffset())
                 {
-                    Gfx::drawStringLeft(context, 1, y - 1, Colour::black, StringIds::orders_current_order);
+                    Gfx::drawStringLeft(rt, 1, y - 1, Colour::black, StringIds::orders_current_order);
                 }
 
                 rowNum++;
@@ -3420,18 +3420,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto strFormat = StringIds::black_stringid;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(context, 0, loc.y, self.width, loc.y + lineHeight, enumValue(Colour::darkGreen));
+                Gfx::fillRect(rt, 0, loc.y, self.width, loc.y + lineHeight, enumValue(Colour::darkGreen));
                 strFormat = StringIds::white_stringid;
             }
             if (self.rowHover == rowNum)
             {
                 strFormat = StringIds::wcolour2_stringid;
-                Gfx::fillRect(context, 0, loc.y, self.width, loc.y + lineHeight, 0x2000030);
+                Gfx::fillRect(rt, 0, loc.y, self.width, loc.y + lineHeight, 0x2000030);
             }
 
             loc.y -= 1;
             auto args = FormatArguments::common(orderString[0]);
-            Gfx::drawStringLeft(context, &loc, Colour::black, strFormat, &args);
+            Gfx::drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
         }
 
         static void initEvents()
@@ -4435,7 +4435,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // TODO: Move to a more appropriate file used by many windows
-        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::Context* const pDrawpixelinfo)
+        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::RenderTarget* const pDrawpixelinfo)
         {
             registers regs{};
             regs.al = al;
@@ -4486,7 +4486,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B5F0D
-        static void drawTabs(Window* const self, Gfx::Context* const context)
+        static void drawTabs(Window* const self, Gfx::RenderTarget* const rt)
         {
             auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
 
@@ -4506,7 +4506,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             Widget::drawTab(
                 self,
-                context,
+                rt,
                 Gfx::recolour(skin->img + mainTab.image + frame, CompanyManager::getCompanyColour(self->owner)),
                 widx::tabMain);
 
@@ -4517,7 +4517,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             Widget::drawTab(
                 self,
-                context,
+                rt,
                 skin->img + InterfaceSkin::ImageIds::tab_wrench_frame0 + frame,
                 widx::tabDetails);
 
@@ -4528,7 +4528,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             Widget::drawTab(
                 self,
-                context,
+                rt,
                 skin->img + InterfaceSkin::ImageIds::tab_cargo_delivered_frame0 + frame,
                 widx::tabCargo);
 
@@ -4539,7 +4539,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             Widget::drawTab(
                 self,
-                context,
+                rt,
                 skin->img + InterfaceSkin::ImageIds::tab_routes_frame_0 + frame,
                 widx::tabRoute);
 
@@ -4550,7 +4550,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             Widget::drawTab(
                 self,
-                context,
+                rt,
                 skin->img + InterfaceSkin::ImageIds::tab_finances_frame0 + frame,
                 widx::tabFinances);
         }

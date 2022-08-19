@@ -9,7 +9,7 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct Context;
+        struct RenderTarget;
     }
 
     namespace TrainSignalObjectFlags
@@ -48,7 +48,7 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();
-        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
     static_assert(sizeof(TrainSignalObject) == 0x1E);

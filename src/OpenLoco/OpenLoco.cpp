@@ -312,7 +312,7 @@ namespace OpenLoco
         }
         Title::start();
         Gui::init();
-        Gfx::clear(Gfx::screenContext(), 0x0A0A0A0A);
+        Gfx::clear(Gfx::getScreenRT(), 0x0A0A0A0A);
     }
 
     static void loadFile(const fs::path& path)
@@ -556,7 +556,7 @@ namespace OpenLoco
                 Config::get().var_72 = 16;
                 const auto cursor = Ui::getCursorPos();
                 addr<0x00F2538C, Ui::Point32>() = cursor;
-                Gfx::clear(Gfx::screenContext(), 0);
+                Gfx::clear(Gfx::getScreenRT(), 0);
                 addr<0x00F2539C, int32_t>() = 0;
             }
             else

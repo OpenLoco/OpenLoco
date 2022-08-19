@@ -66,9 +66,9 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         WindowManager::invalidate(WindowType::vehicle, enumValue(*_dragVehicleHead));
     }
 
-    static void draw(Ui::Window& self, Gfx::Context* const context)
+    static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
     {
-        auto clipped = Gfx::clipContext(*context, Ui::Rect(self.x, self.y, self.width, self.height));
+        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(self.x, self.y, self.width, self.height));
         if (clipped)
         {
             Vehicle::Common::sub_4B743B(0, 0, 0, 19, _dragCarComponent, &*clipped);

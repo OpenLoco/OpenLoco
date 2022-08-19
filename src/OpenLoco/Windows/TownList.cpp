@@ -64,7 +64,7 @@ namespace OpenLoco::Ui::Windows::TownList
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_misc_buildings)
 
         static void prepareDraw(Window& self);
-        static void drawTabs(Window* self, Gfx::Context* context);
+        static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void initEvents();
         static void refreshTownList(Window* self);
@@ -140,10 +140,10 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A0F8
-        static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            Gfx::clearSingle(context, shade);
+            Gfx::clearSingle(rt, shade);
 
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
@@ -151,7 +151,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 const auto townId = TownId(self.rowInfo[i]);
 
                 // Skip items outside of view, or irrelevant to the current filter.
-                if (yPos + rowHeight < context.y || yPos >= yPos + rowHeight + context.height || townId == TownId::null)
+                if (yPos + rowHeight < rt.y || yPos >= yPos + rowHeight + rt.height || townId == TownId::null)
                 {
                     yPos += rowHeight;
                     continue;
@@ -162,7 +162,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 // Highlight selection.
                 if (townId == TownId(self.rowHover))
                 {
-                    Gfx::drawRect(context, 0, yPos, self.width, rowHeight, 0x2000030);
+                    Gfx::drawRect(rt, 0, yPos, self.width, rowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
@@ -175,14 +175,14 @@ namespace OpenLoco::Ui::Windows::TownList
                     auto args = FormatArguments();
                     args.push(town->name);
 
-                    Gfx::drawStringLeftClipped(context, 0, yPos, 198, Colour::black, text_colour_id, &args);
+                    Gfx::drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Town Type
                 {
                     auto args = FormatArguments();
                     args.push(town->getTownSizeString());
 
-                    Gfx::drawStringLeftClipped(context, 200, yPos, 278, Colour::black, text_colour_id, &args);
+                    Gfx::drawStringLeftClipped(rt, 200, yPos, 278, Colour::black, text_colour_id, &args);
                 }
                 // Town Population
                 {
@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push(town->population);
 
-                    Gfx::drawStringLeftClipped(context, 280, yPos, 68, Colour::black, text_colour_id, &args);
+                    Gfx::drawStringLeftClipped(rt, 280, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 // Town Stations
                 {
@@ -198,17 +198,17 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push<int32_t>(town->num_stations);
 
-                    Gfx::drawStringLeftClipped(context, 350, yPos, 68, Colour::black, text_colour_id, &args);
+                    Gfx::drawStringLeftClipped(rt, 350, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 yPos += rowHeight;
             }
         }
 
         // 0x0049A0A7
-        static void draw(Ui::Window& self, Gfx::Context* context)
+        static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
             auto args = FormatArguments();
             auto xPos = self.x + 4;
             auto yPos = self.y + self.height - 12;
@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 args.push(StringIds::status_towns_plural);
             args.push(self.var_83C);
 
-            Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0049A27F
@@ -629,14 +629,14 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A627
-        static void draw(Ui::Window& self, Gfx::Context* context)
+        static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
-            Gfx::drawStringLeft(*context, self.x + 3, self.y + self.widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
+            Gfx::drawStringLeft(*rt, self.x + 3, self.y + self.widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
 
-            Gfx::drawStringLeft(*context, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::select_town_size);
+            Gfx::drawStringLeft(*rt, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::select_town_size);
         }
 
         // 0x0049A675
@@ -844,10 +844,10 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A9C2
-        static void draw(Ui::Window& self, Gfx::Context* context)
+        static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
             auto buildingId = self.var_846;
 
@@ -861,7 +861,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             auto buildingObj = ObjectManager::get<BuildingObject>(buildingId);
 
-            Gfx::drawStringLeftClipped(*context, self.x + 3, self.y + self.height - 13, self.width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
+            Gfx::drawStringLeftClipped(*rt, self.x + 3, self.y + self.height - 13, self.width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
         }
 
         // 0x0049AB31
@@ -1177,10 +1177,10 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AA1C
-        static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            Gfx::clearSingle(context, shade);
+            Gfx::clearSingle(rt, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
@@ -1190,17 +1190,17 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        Gfx::drawRectInset(context, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucent_flag);
+                        Gfx::drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(context, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucent_flag | AdvancedColour::outline_flag));
+                    Gfx::drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucent_flag | AdvancedColour::outline_flag));
                 }
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.rowInfo[i]);
 
-                auto clipped = Gfx::clipContext(context, Ui::Rect(xPos + 1, yPos + 1, 110, 110));
+                auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, 110, 110));
                 if (clipped)
                 {
                     auto colour = *_buildingColour;
@@ -1482,7 +1482,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049B054
-        static void drawTabs(Window* self, Gfx::Context* context)
+        static void drawTabs(Window* self, Gfx::RenderTarget* rt)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -1491,7 +1491,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_towns;
 
-                Widget::drawTab(self, context, imageId, widx::tab_town_list);
+                Widget::drawTab(self, rt, imageId, widx::tab_town_list);
             }
 
             // Build New Towns Tab
@@ -1520,7 +1520,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildNewTownsImageIds[0];
 
-                Widget::drawTab(self, context, imageId, widx::tab_build_town);
+                Widget::drawTab(self, rt, imageId, widx::tab_build_town);
             }
 
             // Build New Buildings Tab
@@ -1549,7 +1549,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildBuildingsImageIds[0];
 
-                Widget::drawTab(self, context, imageId, widx::tab_build_buildings);
+                Widget::drawTab(self, rt, imageId, widx::tab_build_buildings);
             }
 
             // Build New Misc Buildings Tab
@@ -1578,7 +1578,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildMiscBuildingsImageIds[0];
 
-                Widget::drawTab(self, context, imageId, widx::tab_build_misc_buildings);
+                Widget::drawTab(self, rt, imageId, widx::tab_build_misc_buildings);
             }
         }
 

@@ -66,7 +66,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void switchTab(Window* window, WidgetIndex_t widgetIndex);
 
         // 0x0043ECA4
-        static void drawTabs(Window* window, Gfx::Context* context)
+        static void drawTabs(Window* window, Gfx::RenderTarget* rt)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -85,39 +85,39 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 else
                     imageId += optionTabImageIds[0];
 
-                Widget::drawTab(window, context, imageId, widx::tab_options);
+                Widget::drawTab(window, rt, imageId, widx::tab_options);
             }
 
             // Land tab
             {
                 auto land = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLand());
                 const uint32_t imageId = land->var_16 + Land::ImageIds::toolbar_terraform_land;
-                Widget::drawTab(window, context, imageId, widx::tab_land);
+                Widget::drawTab(window, rt, imageId, widx::tab_land);
             }
 
             // Forest tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees;
-                Widget::drawTab(window, context, imageId, widx::tab_forests);
+                Widget::drawTab(window, rt, imageId, widx::tab_forests);
             }
 
             // Towns tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                Widget::drawTab(window, context, imageId, widx::tab_towns);
+                Widget::drawTab(window, rt, imageId, widx::tab_towns);
             }
 
             // Industries tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_industries;
-                Widget::drawTab(window, context, imageId, widx::tab_industries);
+                Widget::drawTab(window, rt, imageId, widx::tab_industries);
             }
         }
 
-        static void draw(Window& window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            window.draw(context);
-            drawTabs(&window, context);
+            window.draw(rt);
+            drawTabs(&window, rt);
         }
 
         static void prepareDraw(Window& window)
@@ -169,12 +169,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043DC30
-        static void draw(Window& window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            Common::draw(window, context);
+            Common::draw(window, rt);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::start_year].top,
                 Colour::black,
@@ -370,40 +370,40 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043DF89
-        static void draw(Window& window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            Common::draw(window, context);
+            Common::draw(window, rt);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::generator].top,
                 Colour::black,
                 StringIds::generator);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::sea_level].top,
                 Colour::black,
                 StringIds::sea_level);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::min_land_height].top,
                 Colour::black,
                 StringIds::min_land_height);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::topography_style].top,
                 Colour::black,
                 StringIds::topography_style);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::hill_density].top,
                 Colour::black,
@@ -423,7 +423,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043E01C
-        static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < maxLandObjects; i++)
@@ -434,26 +434,26 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 // Draw tile icon.
                 const uint32_t imageId = landObject->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
-                Gfx::drawImage(&context, 2, yPos + 1, imageId);
+                Gfx::drawImage(&rt, 2, yPos + 1, imageId);
 
                 // Draw land description.
                 commonFormatArgs[0] = landObject->name;
-                Gfx::drawStringLeftClipped(context, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*commonFormatArgs);
+                Gfx::drawStringLeftClipped(rt, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*commonFormatArgs);
 
                 // Draw rectangle.
-                Gfx::fillRectInset(context, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary).u8(), 0b110000);
+                Gfx::fillRectInset(rt, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary).u8(), 0b110000);
 
                 // Draw current distribution setting.
                 const string_id distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
                 commonFormatArgs[0] = distributionId;
-                Gfx::drawStringLeftClipped(context, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
+                Gfx::drawStringLeftClipped(rt, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
 
                 // Draw rectangle (knob).
                 const uint8_t flags = window.rowHover == i ? 0b110000 : 0;
-                Gfx::fillRectInset(context, 329, yPos + 6, 339, yPos + 15, window.getColour(WindowColour::secondary).u8(), flags);
+                Gfx::fillRectInset(rt, 329, yPos + 6, 339, yPos + 15, window.getColour(WindowColour::secondary).u8(), flags);
 
                 // Draw triangle (knob).
-                Gfx::drawStringLeft(context, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
+                Gfx::drawStringLeft(rt, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
 
                 yPos += rowHeight;
             }
@@ -752,61 +752,61 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043E53A
-        static void draw(Window& window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            Common::draw(window, context);
+            Common::draw(window, rt);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::number_of_forests].top,
                 Colour::black,
                 StringIds::number_of_forests);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::min_forest_radius].top,
                 Colour::black,
                 StringIds::min_forest_radius);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::max_forest_radius].top,
                 Colour::black,
                 StringIds::max_forest_radius);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::min_forest_density].top,
                 Colour::black,
                 StringIds::min_forest_density);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::max_forest_density].top,
                 Colour::black,
                 StringIds::max_forest_density);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::number_random_trees].top,
                 Colour::black,
                 StringIds::number_random_trees);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::min_altitude_for_trees].top,
                 Colour::black,
                 StringIds::min_altitude_for_trees);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::max_altitude_for_trees].top,
                 Colour::black,
@@ -990,19 +990,19 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043E9A3
-        static void draw(Window& window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            Common::draw(window, context);
+            Common::draw(window, rt);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::number_of_towns].top,
                 Colour::black,
                 StringIds::number_of_towns);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::max_town_size].top,
                 Colour::black,
@@ -1131,12 +1131,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043EB9D
-        static void draw(Window& window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            Common::draw(window, context);
+            Common::draw(window, rt);
 
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 window.x + 10,
                 window.y + window.widgets[widx::num_industries].top,
                 Colour::black,

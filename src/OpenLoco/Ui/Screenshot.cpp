@@ -92,18 +92,18 @@ namespace OpenLoco::Input
                 palette[i].red = _113ED20[i][2];
             }
             png_set_PLTE(png_ptr, info_ptr, palette, 246);
-            auto& context = Gfx::screenContext();
+            auto& rt = Gfx::getScreenRT();
 
             png_byte transparentIndex = 0;
             png_set_tRNS(png_ptr, info_ptr, &transparentIndex, 1, nullptr);
-            png_set_IHDR(png_ptr, info_ptr, context.width, context.height, 8, PNG_COLOR_TYPE_PALETTE, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+            png_set_IHDR(png_ptr, info_ptr, rt.width, rt.height, 8, PNG_COLOR_TYPE_PALETTE, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
             png_write_info(png_ptr, info_ptr);
 
-            uint8_t* data = context.bits;
-            for (int y = 0; y < context.height; y++)
+            uint8_t* data = rt.bits;
+            for (int y = 0; y < rt.height; y++)
             {
                 png_write_row(png_ptr, data);
-                data += context.pitch + context.width;
+                data += rt.pitch + rt.width;
             }
 
             png_write_end(png_ptr, nullptr);

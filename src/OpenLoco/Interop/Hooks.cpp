@@ -679,7 +679,7 @@ void OpenLoco::Interop::registerHooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto pos = Gfx::drawString(*X86Pointer<Gfx::Context>(regs.edi), regs.cx, regs.dx, static_cast<Colour>(regs.al), X86Pointer<uint8_t>(regs.esi));
+            auto pos = Gfx::drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), regs.cx, regs.dx, static_cast<Colour>(regs.al), X86Pointer<uint8_t>(regs.esi));
             regs = backup;
             regs.cx = pos.x;
             regs.dx = pos.y;
@@ -737,8 +737,8 @@ void OpenLoco::Interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             Ui::Window* window = X86Pointer<Ui::Window>(regs.esi);
-            auto context = X86Pointer<Gfx::Context>(regs.edi);
-            window->draw(context);
+            auto rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
+            window->draw(rt);
             regs = backup;
             return 0;
         });
@@ -900,8 +900,8 @@ void OpenLoco::Interop::registerHooks()
         0x00448C79,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            Gfx::Context* context = X86Pointer<Gfx::Context>(regs.edi);
-            Gfx::drawImage(*context, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
+            Gfx::RenderTarget* rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
+            Gfx::drawImage(*rt, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
 
             regs = backup;
             return 0;

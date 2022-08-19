@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "Graphics/RenderTarget.h"
 #include "Location.hpp"
 #include "Map/Map.hpp"
 #include <string>
@@ -25,7 +26,7 @@ namespace OpenLoco::Ui
 #pragma pack(push, 1)
     struct ScreenInfo
     {
-        Gfx::Context context;
+        Gfx::RenderTarget renderTarget;
         int16_t width;
         int16_t height;
         int16_t width_2;

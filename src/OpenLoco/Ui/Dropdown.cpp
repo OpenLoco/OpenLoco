@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x00494BF6
-        static void sub_494BF6(Window* self, Gfx::Context* context, string_id stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
+        static void sub_494BF6(Window* self, Gfx::RenderTarget* rt, string_id stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
@@ -191,13 +191,13 @@ namespace OpenLoco::Ui::Dropdown
 
             Gfx::setCurrentFontSpriteBase(Font::m1);
 
-            Gfx::drawString(*context, x, y, colour, _byte_112CC04);
+            Gfx::drawString(*rt, x, y, colour, _byte_112CC04);
         }
 
         // 0x004CD00E
-        static void draw(Window& self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
+            self.draw(rt);
             _windowDropdownOnpaintCellX = 0;
             _windowDropdownOnpaintCellY = 0;
 
@@ -209,7 +209,7 @@ namespace OpenLoco::Ui::Dropdown
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
-                        Gfx::drawRect(*context, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
+                        Gfx::drawRect(*rt, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
                     }
 
                     auto args = FormatArguments();
@@ -248,7 +248,7 @@ namespace OpenLoco::Ui::Dropdown
                             auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
                             auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 1;
                             auto width = self.width - 5;
-                            sub_494BF6(&self, context, dropdownItemFormat, x, y, width, colour, args);
+                            sub_494BF6(&self, rt, dropdownItemFormat, x, y, width, colour, args);
                         }
                     }
 
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Dropdown
                         {
                             imageId++;
                         }
-                        Gfx::drawImage(context, x, y, imageId);
+                        Gfx::drawImage(rt, x, y, imageId);
                     }
                 }
                 else
@@ -272,16 +272,16 @@ namespace OpenLoco::Ui::Dropdown
 
                     if (!self.getColour(WindowColour::primary).isTranslucent())
                     {
-                        Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 3));
-                        Gfx::drawRect(*context, x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 7));
+                        Gfx::drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 3));
+                        Gfx::drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 7));
                     }
                     else
                     {
                         uint32_t colour = enumValue(Colours::getTranslucent(self.getColour(WindowColour::primary).c())) | (1 << 25);
                         colour++; // Gets ExtColour::translucentXXX2 highlight
-                        Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, colour);
+                        Gfx::drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++; // Gets ExtColour::translucentXXX0 shadow
-                        Gfx::drawRect(*context, x, y + 1, _dropdownItemWidth - 1, 1, colour);
+                        Gfx::drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, colour);
                     }
                 }
 

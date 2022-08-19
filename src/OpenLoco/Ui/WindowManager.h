@@ -9,7 +9,7 @@
 
 namespace OpenLoco::Gfx
 {
-    struct Context;
+    struct RenderTarget;
 }
 namespace OpenLoco::Ui
 {
@@ -64,7 +64,7 @@ namespace OpenLoco::Ui::WindowManager
     Window* createWindow(WindowType type, Ui::Point origin, Ui::Size size, uint32_t flags, WindowEventList* events);
     Window* createWindowCentred(WindowType type, Ui::Size size, uint32_t flags, WindowEventList* events);
     Window* createWindow(WindowType type, Ui::Size size, uint32_t flags, WindowEventList* events);
-    void drawSingle(Gfx::Context* context, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
+    void drawSingle(Gfx::RenderTarget* rt, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatchUpdateAll();
     void callEvent8OnAllWindows();
     void callEvent9OnAllWindows();
@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::Windows
         }
         namespace Common
         {
-            int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::Context* const pDrawpixelinfo);
+            int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::RenderTarget* const pDrawpixelinfo);
         }
         bool rotate();
     }

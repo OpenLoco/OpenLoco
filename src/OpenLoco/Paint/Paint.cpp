@@ -167,7 +167,7 @@ namespace OpenLoco::Paint
         return addToPlotListAsParent(imageId, offset, offset, boundBoxSize);
     }
 
-    static constexpr bool imageWithinContext(const Ui::viewport_pos& imagePos, const Gfx::G1Element& g1, const Gfx::Context& context)
+    static constexpr bool imageWithinRT(const Ui::viewport_pos& imagePos, const Gfx::G1Element& g1, const Gfx::RenderTarget& rt)
     {
         int32_t left = imagePos.x + g1.x_offset;
         int32_t bottom = imagePos.y + g1.y_offset;
@@ -175,13 +175,13 @@ namespace OpenLoco::Paint
         int32_t right = left + g1.width;
         int32_t top = bottom + g1.height;
 
-        if (right <= context.x)
+        if (right <= rt.x)
             return false;
-        if (top <= context.y)
+        if (top <= rt.y)
             return false;
-        if (left >= context.x + context.width)
+        if (left >= rt.x + rt.width)
             return false;
-        if (bottom >= context.y + context.height)
+        if (bottom >= rt.y + rt.height)
             return false;
         return true;
     }
@@ -261,7 +261,7 @@ namespace OpenLoco::Paint
         addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
         addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
         addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
-        // Similar to addToPlotListAsParent but shrinks the bound box based on the context
+        // Similar to addToPlotListAsParent but shrinks the bound box based on the rt
         call(_4FD200[currentRotation], regs);
     }
 
@@ -318,9 +318,9 @@ namespace OpenLoco::Paint
         return attached;
     }
 
-    void PaintSession::init(Gfx::Context& context, const uint16_t viewportFlags)
+    void PaintSession::init(Gfx::RenderTarget& rt, const uint16_t viewportFlags)
     {
-        _context = &context;
+        _renderTarget = &rt;
         _nextFreePaintStruct = &_paintEntries[0];
         _endOfPaintStructArray = &_paintEntries[3998];
         _lastPS = nullptr;
@@ -338,9 +338,9 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045A6CA
-    PaintSession* allocateSession(Gfx::Context& context, uint16_t viewportFlags)
+    PaintSession* allocateSession(Gfx::RenderTarget& rt, uint16_t viewportFlags)
     {
-        _session.init(context, viewportFlags);
+        _session.init(rt, viewportFlags);
         return &_session;
     }
 
@@ -403,12 +403,12 @@ namespace OpenLoco::Paint
     };
 
     template<uint8_t rotation>
-    GenerationParameters generateParameters(Gfx::Context* context)
+    GenerationParameters generateParameters(Gfx::RenderTarget* rt)
     {
         // TODO: Work out what these constants represent
-        uint16_t numVerticalQuadrants = (context->height + (rotation == 0 ? 1040 : 1056)) >> 5;
+        uint16_t numVerticalQuadrants = (rt->height + (rotation == 0 ? 1040 : 1056)) >> 5;
 
-        auto mapLoc = Ui::viewportCoordToMapCoord(static_cast<int16_t>(context->x & 0xFFE0), static_cast<int16_t>((context->y - 16) & 0xFFE0), 0, rotation);
+        auto mapLoc = Ui::viewportCoordToMapCoord(static_cast<int16_t>(rt->x & 0xFFE0), static_cast<int16_t>((rt->y - 16) & 0xFFE0), 0, rotation);
         if constexpr (rotation & 1)
         {
             mapLoc.y -= 16;
@@ -486,7 +486,7 @@ namespace OpenLoco::Paint
 
         const auto vpPos = Map::gameToScreen(swappedRotCoord, currentRotation);
 
-        if (!imageWithinContext(vpPos, *g1, **_context))
+        if (!imageWithinRT(vpPos, *g1, **_renderTarget))
         {
             return nullptr;
         }
@@ -530,16 +530,16 @@ namespace OpenLoco::Paint
         switch (currentRotation)
         {
             case 0:
-                generateTilesAndEntities(generateParameters<0>(getContext()));
+                generateTilesAndEntities(generateParameters<0>(getRenderTarget()));
                 break;
             case 1:
-                generateTilesAndEntities(generateParameters<1>(getContext()));
+                generateTilesAndEntities(generateParameters<1>(getRenderTarget()));
                 break;
             case 2:
-                generateTilesAndEntities(generateParameters<2>(getContext()));
+                generateTilesAndEntities(generateParameters<2>(getRenderTarget()));
                 break;
             case 3:
-                generateTilesAndEntities(generateParameters<3>(getContext()));
+                generateTilesAndEntities(generateParameters<3>(getRenderTarget()));
                 break;
         }
     }
@@ -764,14 +764,14 @@ namespace OpenLoco::Paint
     }
 
     // 0x00447A5F
-    static bool isSpriteInteractedWithPaletteSet(Gfx::Context* context, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMap& paletteMap)
+    static bool isSpriteInteractedWithPaletteSet(Gfx::RenderTarget* rt, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMap& paletteMap)
     {
         static loco_global<const uint8_t*, 0x0050B860> _paletteMap;
         static loco_global<bool, 0x00E40114> _interactionResult;
         _paletteMap = paletteMap.data();
         registers regs{};
         regs.ebx = imageId;
-        regs.edi = X86Pointer(context);
+        regs.edi = X86Pointer(rt);
         regs.cx = coords.x;
         regs.dx = coords.y;
         call(0x00447A5F, regs);
@@ -779,7 +779,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00447A0E
-    static bool isSpriteInteractedWith(Gfx::Context* context, ImageId imageId, const Ui::Point& coords)
+    static bool isSpriteInteractedWith(Gfx::RenderTarget* rt, ImageId imageId, const Ui::Point& coords)
     {
         static loco_global<bool, 0x00E40114> _interactionResult;
         static loco_global<uint32_t, 0x00E04324> _interactionFlags;
@@ -798,7 +798,7 @@ namespace OpenLoco::Paint
         {
             _interactionFlags = 0;
         }
-        return isSpriteInteractedWithPaletteSet(context, imageId.getIndex(), coords, paletteMap);
+        return isSpriteInteractedWithPaletteSet(rt, imageId.getIndex(), coords, paletteMap);
     }
 
     // 0x0045EDFC
@@ -853,7 +853,7 @@ namespace OpenLoco::Paint
             while (nextPS != nullptr)
             {
                 ps = nextPS;
-                if (isSpriteInteractedWith(getContext(), ps->imageId, ps->vpPos))
+                if (isSpriteInteractedWith(getRenderTarget(), ps->imageId, ps->vpPos))
                 {
                     if (isPSSpriteTypeInFilter(ps->type, flags))
                     {
@@ -865,7 +865,7 @@ namespace OpenLoco::Paint
 
             for (auto* attachedPS = ps->attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
             {
-                if (isSpriteInteractedWith(getContext(), attachedPS->imageId, attachedPS->vpPos + ps->vpPos))
+                if (isSpriteInteractedWith(getRenderTarget(), attachedPS->imageId, attachedPS->vpPos + ps->vpPos))
                 {
                     if (isPSSpriteTypeInFilter(ps->type, flags))
                     {
@@ -889,7 +889,7 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = (*_context)->getDrawableRect();
+        auto rect = (*_renderTarget)->getDrawableRect();
 
         for (auto& station : StationManager::stations())
         {
@@ -898,7 +898,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!station.labelFrame.contains(rect, (*_context)->zoom_level))
+            if (!station.labelFrame.contains(rect, (*_renderTarget)->zoom_level))
             {
                 continue;
             }
@@ -921,11 +921,11 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = (*_context)->getDrawableRect();
+        auto rect = (*_renderTarget)->getDrawableRect();
 
         for (auto& town : TownManager::towns())
         {
-            if (!town.labelFrame.contains(rect, (*_context)->zoom_level))
+            if (!town.labelFrame.contains(rect, (*_renderTarget)->zoom_level))
             {
                 continue;
             }

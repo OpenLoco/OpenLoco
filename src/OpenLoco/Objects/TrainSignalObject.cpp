@@ -69,7 +69,7 @@ namespace OpenLoco
     }
 
     // 0x004899A7
-    void TrainSignalObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void TrainSignalObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto frames = signalFrames[(((num_frames + 2) / 3) - 2)];
         auto frameCount = std::size(frames) - 1;
@@ -79,6 +79,6 @@ namespace OpenLoco
         frameIndex *= 8;
         auto colourImage = image + frameIndex;
 
-        Gfx::drawImage(&context, x, y + 15, colourImage);
+        Gfx::drawImage(&rt, x, y + 15, colourImage);
     }
 }

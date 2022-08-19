@@ -12,7 +12,7 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct Context;
+        struct RenderTarget;
     }
 
     namespace TrainStationFlags
@@ -47,8 +47,8 @@ namespace OpenLoco
         std::byte* cargoOffsetBytes[4][4]; // 0x2E
         uint32_t var_6E[16];
 
-        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
-        void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();

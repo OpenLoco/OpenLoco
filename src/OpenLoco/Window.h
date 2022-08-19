@@ -150,8 +150,8 @@ namespace OpenLoco::Ui
                 Ui::CursorId (*cursor)(Window&, int16_t, int16_t, int16_t, Ui::CursorId);
                 void (*onMove)(Window&, const int16_t x, const int16_t y);
                 void (*prepareDraw)(Window&);
-                void (*draw)(Window&, Gfx::Context*);
-                void (*drawScroll)(Window&, Gfx::Context&, const uint32_t scrollIndex);
+                void (*draw)(Window&, Gfx::RenderTarget*);
+                void (*drawScroll)(Window&, Gfx::RenderTarget&, const uint32_t scrollIndex);
             };
         };
 
@@ -385,7 +385,7 @@ namespace OpenLoco::Ui
         void initScrollWidgets();
         int8_t getScrollDataIndex(WidgetIndex_t index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets);
-        void drawViewports(Gfx::Context* context);
+        void drawViewports(Gfx::RenderTarget* rt);
         void viewportCentreMain();
         void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
@@ -407,7 +407,7 @@ namespace OpenLoco::Ui
         void moveInsideScreenEdges();
         bool moveToCentre();
         WidgetIndex_t findWidgetAt(int16_t xPos, int16_t yPos);
-        void draw(OpenLoco::Gfx::Context* context);
+        void draw(OpenLoco::Gfx::RenderTarget* rt);
 
         void callClose();                                                                              // 0
         void callOnMouseUp(WidgetIndex_t widgetIndex);                                                 // 1
@@ -435,8 +435,8 @@ namespace OpenLoco::Ui
         Ui::CursorId callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback); // 24
         void callOnMove(int16_t xPos, int16_t yPos);                                                   // 25
         void callPrepareDraw();                                                                        // 26
-        void callDraw(Gfx::Context* context);                                                          // 27
-        void callDrawScroll(Gfx::Context* context, uint32_t scrollIndex);                              // 28
+        void callDraw(Gfx::RenderTarget* rt);                                                          // 27
+        void callDrawScroll(Gfx::RenderTarget* rt, uint32_t scrollIndex);                              // 28
 
         WidgetIndex_t firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
         WidgetIndex_t prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);

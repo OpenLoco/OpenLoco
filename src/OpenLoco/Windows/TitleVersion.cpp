@@ -16,7 +16,7 @@ namespace OpenLoco::Ui::Windows::TitleVersion
 
     static Ui::WindowEventList _events;
 
-    static void draw(Ui::Window& window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
 
     Window* open()
     {
@@ -36,9 +36,9 @@ namespace OpenLoco::Ui::Windows::TitleVersion
     }
 
     // 0x00439236
-    static void draw(Ui::Window& window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         auto versionInfo = getVersionInfo();
-        Gfx::drawString(*context, window.x, window.y, AdvancedColour(Colour::white).outline(), (void*)versionInfo.c_str());
+        Gfx::drawString(*rt, window.x, window.y, AdvancedColour(Colour::white).outline(), (void*)versionInfo.c_str());
     }
 }
