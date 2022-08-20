@@ -19,12 +19,6 @@ namespace OpenLoco::Scenario
         constexpr uint16_t preferredOwnerName = (1 << 2);
     }
 
-    namespace IndustryFlags
-    {
-        constexpr uint8_t disallowIndustriesCloseDown = (1 << 0);
-        constexpr uint8_t disallowIndustriesStartUp = (1 << 1);
-    }
-
     namespace ObjectiveFlags
     {
         constexpr uint8_t beTopCompany = (1 << 0);

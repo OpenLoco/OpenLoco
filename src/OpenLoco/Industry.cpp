@@ -1,12 +1,17 @@
 #include "Industry.h"
+#include "Date.h"
+#include "GameCommands/GameCommands.h"
+#include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/TileManager.h"
 #include "Math/Bound.hpp"
+#include "MessageManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
+#include "OpenLoco.h"
 #include "StationManager.h"
 #include "Utility/Numeric.hpp"
 #include <algorithm>
@@ -164,7 +169,7 @@ namespace OpenLoco
             {
                 if (indObj->required_cargo_type[i] != 0xFF)
                 {
-                    production = std::min(production, var_199[i]);
+                    production = std::min(production, receivedCargoQuantityDailyTotal[i]);
                 }
             }
             if (production != 0)
@@ -173,7 +178,7 @@ namespace OpenLoco
                 {
                     if (indObj->required_cargo_type[i] != 0xFF)
                     {
-                        var_199[i] -= production;
+                        receivedCargoQuantityDailyTotal[i] -= production;
                     }
                 }
             }
@@ -184,8 +189,8 @@ namespace OpenLoco
             {
                 if (indObj->required_cargo_type[i] != 0xFF)
                 {
-                    production = Math::Bound::add(production, var_199[i]);
-                    var_199[i] = 0;
+                    production = Math::Bound::add(production, receivedCargoQuantityDailyTotal[i]);
+                    receivedCargoQuantityDailyTotal[i] = 0;
                 }
             }
         }
@@ -203,7 +208,7 @@ namespace OpenLoco
         for (auto i = 0; i < 3; ++i)
         {
             // Lose a 16th of required cargo if requires_all_cargo and not equally satisfied
-            var_199[i] -= Math::Bound::add(var_199[i], 15) / 16;
+            receivedCargoQuantityDailyTotal[i] -= Math::Bound::add(receivedCargoQuantityDailyTotal[i], 15) / 16;
         }
 
         for (auto i = 0; i < 2; ++i)
@@ -213,7 +218,7 @@ namespace OpenLoco
                 continue;
             }
 
-            uint16_t ax = (var_179[i] * var_DF) / 256;
+            uint16_t ax = (productionRate[i] * var_DF) / 256;
             if (ax < var_17D[i])
             {
                 var_17D[i]--;
@@ -229,7 +234,7 @@ namespace OpenLoco
             {
                 const auto max = std::min<uint16_t>(var_181[i], 255);
                 var_181[i] -= max;
-                var_185[i] = Math::Bound::add(var_185[i], max);
+                producedCargoQuantityMonthlyTotal[i] = Math::Bound::add(producedCargoQuantityMonthlyTotal[i], max);
 
                 std::vector<StationId> stations;
                 for (auto stationId : producedCargoStatsStation[i])
@@ -240,10 +245,143 @@ namespace OpenLoco
                     }
                 }
 
-                const auto remainingCargo = StationManager::deliverCargoToStations(stations, indObj->produced_cargo_type[i], max);
-                var_19F[i] = Math::Bound::add(remainingCargo, var_19F[i]);
+                const auto quantityDelivered = StationManager::deliverCargoToStations(stations, indObj->produced_cargo_type[i], max);
+                producedCargoQuantityDeliveredMonthlyTotal[i] = Math::Bound::add(quantityDelivered, producedCargoQuantityDeliveredMonthlyTotal[i]);
             }
         }
+    }
+
+    // 0x00453868
+    void Industry::updateMonthly()
+    {
+        if (flags & IndustryFlags::flag_01)
+        {
+            return;
+        }
+
+        if (flags & IndustryFlags::closingDown && var_17D[0] == 0 && var_17D[1] == 0)
+        {
+            GameCommands::do_48(GameCommands::Flags::apply, id());
+            return;
+        }
+        bool hasEvent = false;
+        const auto* indObj = getObject();
+        if (under_construction == 0xFF
+            && !(flags & IndustryFlags::closingDown)
+            && indObj->required_cargo_type[0] == 0xFF)
+        {
+            if (isMonthlyProductionUp())
+            {
+                productionRate[0] = std::min(100, productionRate[0] * 2);
+                productionRate[1] = std::min(100, productionRate[1] * 2);
+                MessageManager::post(MessageType::industryProductionUp, CompanyId::null, enumValue(id()), 0xFFFF);
+                hasEvent = true;
+            }
+            else if (isMonthlyProductionDown())
+            {
+                productionRate[0] /= 2;
+                productionRate[1] /= 2;
+                MessageManager::post(MessageType::industryProductionDown, CompanyId::null, enumValue(id()), 0xFFFF);
+                hasEvent = true;
+            }
+        }
+        if (!hasEvent
+            && !(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown)
+            && under_construction == 0xFF
+            && !(flags & IndustryFlags::closingDown))
+        {
+            if (isMonthlyProductionClosing())
+            {
+                flags |= IndustryFlags::closingDown;
+                productionRate[0] = 0;
+                productionRate[1] = 0;
+                MessageManager::post(MessageType::industryClosingDown, CompanyId::null, enumValue(id()), 0xFFFF);
+            }
+        }
+
+        if (producedCargoMonthlyHistorySize[0] == std::size(producedCargoMonthlyHistory1))
+        {
+            std::rotate(std::begin(producedCargoMonthlyHistory1), std::begin(producedCargoMonthlyHistory1) + 1, std::end(producedCargoMonthlyHistory1));
+        }
+        else
+        {
+            producedCargoMonthlyHistorySize[0]++;
+        }
+        const auto newValue = std::min<uint32_t>(producedCargoQuantityMonthlyTotal[0], 12750u) / 50;
+        producedCargoMonthlyHistory1[producedCargoMonthlyHistorySize[0] - 1] = newValue;
+
+        if (producedCargoMonthlyHistorySize[1] == std::size(producedCargoMonthlyHistory2))
+        {
+            std::rotate(std::begin(producedCargoMonthlyHistory2), std::begin(producedCargoMonthlyHistory2) + 1, std::end(producedCargoMonthlyHistory2));
+        }
+        else
+        {
+            producedCargoMonthlyHistorySize[1]++;
+        }
+        const auto newValue2 = std::min<uint32_t>(producedCargoQuantityMonthlyTotal[1], 12750u) / 50;
+        producedCargoMonthlyHistory2[producedCargoMonthlyHistorySize[1] - 1] = newValue2;
+
+        producedCargoQuantityPreviousMonth[0] = producedCargoQuantityMonthlyTotal[0];
+        producedCargoQuantityMonthlyTotal[0] = 0;
+        producedCargoQuantityDeliveredPreviousMonth[0] = producedCargoQuantityDeliveredMonthlyTotal[0];
+        producedCargoQuantityDeliveredMonthlyTotal[0] = 0;
+        auto transported = std::min(producedCargoQuantityPreviousMonth[0], producedCargoQuantityDeliveredPreviousMonth[0]);
+        if (producedCargoQuantityPreviousMonth[0] != 0)
+        {
+            transported = (transported * 100) / producedCargoQuantityPreviousMonth[0];
+        }
+        producedCargoPercentTransportedPreviousMonth[0] = transported;
+
+        producedCargoQuantityPreviousMonth[1] = producedCargoQuantityMonthlyTotal[1];
+        producedCargoQuantityMonthlyTotal[1] = 0;
+        producedCargoQuantityDeliveredPreviousMonth[1] = producedCargoQuantityDeliveredMonthlyTotal[1];
+        producedCargoQuantityDeliveredMonthlyTotal[1] = 0;
+        auto transported2 = std::min(producedCargoQuantityPreviousMonth[1], producedCargoQuantityDeliveredPreviousMonth[1]);
+        if (producedCargoQuantityPreviousMonth[1] != 0)
+        {
+            transported2 = (transported2 * 100) / producedCargoQuantityPreviousMonth[1];
+        }
+        producedCargoPercentTransportedPreviousMonth[1] = transported2;
+
+        receivedCargoQuantityPreviousMonth[0] = receivedCargoQuantityMonthlyTotal[0];
+        receivedCargoQuantityPreviousMonth[1] = receivedCargoQuantityMonthlyTotal[1];
+        receivedCargoQuantityPreviousMonth[2] = receivedCargoQuantityMonthlyTotal[2];
+        receivedCargoQuantityMonthlyTotal[0] = 0;
+        receivedCargoQuantityMonthlyTotal[1] = 0;
+        receivedCargoQuantityMonthlyTotal[2] = 0;
+    }
+
+    bool Industry::isMonthlyProductionUp()
+    {
+        auto* indObj = getObject();
+        return indObj->flags & IndustryObjectFlags::unk18
+            && producedCargoPercentTransportedPreviousMonth[0] > 70
+            && gPrng().randNext(31) == 0
+            && productionRate[0] < 100
+            && productionRate[1] < 100;
+    }
+
+    bool Industry::isMonthlyProductionDown()
+    {
+        auto* indObj = getObject();
+        if (!(indObj->flags & IndustryObjectFlags::unk19))
+        {
+            return false;
+        }
+        return (producedCargoPercentTransportedPreviousMonth[0] > 50
+                && productionRate[0] > 20
+                && gPrng().randNext(31) == 0)
+            || (producedCargoPercentTransportedPreviousMonth[0] <= 50
+                && productionRate[0] > 10
+                && gPrng().randNext(15) == 0);
+    }
+
+    bool Industry::isMonthlyProductionClosing()
+    {
+        auto* indObj = getObject();
+        // isObsolete or isTooLowProduction
+        return (getCurrentYear() > indObj->obsoleteYear && prng.randNext(0xFFFF) < 102)
+            || (indObj->var_F3 != 0 && indObj->var_F3 > prng.randNext(0xFFFF));
     }
 
     // 0x0045329B
@@ -296,7 +434,7 @@ namespace OpenLoco
         var_DD = 0;
         if (var_DF < 224)
         {
-            if (produced_cargo_quantity[0] / 8 <= produced_cargo_max[0] || produced_cargo_quantity[1] / 8 <= produced_cargo_max[1])
+            if (producedCargoQuantityPreviousMonth[0] / 8 <= producedCargoQuantityDeliveredPreviousMonth[0] || producedCargoQuantityPreviousMonth[1] / 8 <= producedCargoQuantityDeliveredPreviousMonth[1])
             {
                 if (prng.randBool())
                 {

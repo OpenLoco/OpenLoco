@@ -178,7 +178,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 // 0x00455E59
                 case widx::demolish_industry:
                 {
-                    bool success = GameCommands::do_48(GameCommands::Flags::apply, self->number);
+                    bool success = GameCommands::do_48(GameCommands::Flags::apply, static_cast<IndustryId>(self->number));
                     if (!success)
                         break;
 
@@ -463,7 +463,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         auto cargoObj = ObjectManager::get<CargoObject>(receivedCargoType);
                         auto args = FormatArguments();
 
-                        if (industry->required_cargo_quantity[cargoNumber] == 1)
+                        if (industry->receivedCargoQuantityPreviousMonth[cargoNumber] == 1)
                         {
                             args.push(cargoObj->unit_name_singular);
                         }
@@ -471,7 +471,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         {
                             args.push(cargoObj->unit_name_plural);
                         }
-                        args.push<uint32_t>(industry->required_cargo_quantity[cargoNumber]);
+                        args.push<uint32_t>(industry->receivedCargoQuantityPreviousMonth[cargoNumber]);
 
                         origin.y = Gfx::drawStringLeftWrapped(*context, origin.x, origin.y, 290, Colour::black, StringIds::black_stringid, &args);
                     }
@@ -496,7 +496,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         auto cargoObj = ObjectManager::get<CargoObject>(producedCargoType);
                         auto args = FormatArguments();
 
-                        if (industry->produced_cargo_quantity[cargoNumber] == 1)
+                        if (industry->producedCargoQuantityPreviousMonth[cargoNumber] == 1)
                         {
                             args.push(cargoObj->unit_name_singular);
                         }
@@ -504,8 +504,8 @@ namespace OpenLoco::Ui::Windows::Industry
                         {
                             args.push(cargoObj->unit_name_plural);
                         }
-                        args.push<uint32_t>(industry->produced_cargo_quantity[cargoNumber]);
-                        args.push<uint16_t>(industry->produced_cargo_transported[cargoNumber]);
+                        args.push<uint32_t>(industry->producedCargoQuantityPreviousMonth[cargoNumber]);
+                        args.push<uint16_t>(industry->producedCargoPercentTransportedPreviousMonth[cargoNumber]);
 
                         origin.y = Gfx::drawStringLeftWrapped(*context, origin.x, origin.y, 290, Colour::black, StringIds::transported_cargo, &args);
                     }
@@ -607,7 +607,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // used to select the correct history
             const uint8_t productionTabWidx = self->currentTab + widx::tab_industry;
             const uint8_t productionNum = productionTabWidx - widx::tab_production;
-            for (uint8_t i = industry->historySize[productionNum] - 1; i > 0; i--)
+            for (uint8_t i = industry->producedCargoMonthlyHistorySize[productionNum] - 1; i > 0; i--)
             {
                 const uint16_t xPos = self->x + 41 + i;
                 const uint16_t yPos = self->y + 56;
@@ -626,13 +626,13 @@ namespace OpenLoco::Ui::Windows::Industry
                     Gfx::drawRect(*context, xPos, yPos + 11, 1, self->height - 74, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));
                 }
 
-                const auto history = productionTabWidx == widx::tab_production ? industry->history_1 : industry->history_2;
+                const auto history = productionTabWidx == widx::tab_production ? industry->producedCargoMonthlyHistory1 : industry->producedCargoMonthlyHistory2;
                 // Draw production graph
                 const uint16_t yPos1 = graphBottom - history[i];
                 const uint16_t yPos2 = graphBottom - history[i + 1];
 
                 // Do not draw current segment yet; it may be zeroed.
-                if (i < industry->historySize[productionNum] - 1)
+                if (i < industry->producedCargoMonthlyHistorySize[productionNum] - 1)
                 {
                     if (yPos1 <= graphBottom)
                     {
