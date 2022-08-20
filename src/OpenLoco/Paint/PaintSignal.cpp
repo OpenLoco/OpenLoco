@@ -10,6 +10,7 @@
 #include "../Objects/TrainSignalObject.h"
 #include "../Ui.h"
 #include "Paint.h"
+#include "PaintTileDecorations.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -101,7 +102,6 @@ namespace OpenLoco::Paint
     };
 
     static loco_global<uint8_t[8 * 44], 0x004F87BC> _4F87BC;
-    static loco_global<int8_t[2 * 44], 0x004F86B4> _4F86B4;
 
     static uint8_t getTrackRotation(const bool isRight, const uint8_t trackId, const uint8_t rotation)
     {
@@ -124,18 +124,6 @@ namespace OpenLoco::Paint
         else
         {
             return _4F87BC[trackId * 8 + 2];
-        }
-    }
-
-    static int8_t getOneWayArrowHeightOffset(const bool isRight, const uint8_t trackId)
-    {
-        if (isRight)
-        {
-            return _4F86B4[trackId * 2];
-        }
-        else
-        {
-            return _4F86B4[trackId * 2 + 1];
         }
     }
 
@@ -210,7 +198,7 @@ namespace OpenLoco::Paint
             {
                 session.setItemType(InteractionItem::noInteraction);
                 const auto imageId = ImageId{ getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedAvocadoGreen };
-                const Map::Pos3 offset(0, 0, height + getOneWayArrowHeightOffset(!isRight, trackId) + 2);
+                const Map::Pos3 offset(0, 0, height + getTrackDecorationHeightOffset(!isRight, trackId) + 2);
                 const Map::Pos3 bbOffset(15, 15, offset.z + 16);
                 const Map::Pos3 bbSize(1, 1, 0);
                 session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
