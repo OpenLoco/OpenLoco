@@ -5,6 +5,7 @@
 #include "../Ui/Rect.h"
 #include "../Ui/Types.hpp"
 #include "ImageId.h"
+#include <array>
 #include <cstdint>
 
 namespace OpenLoco
