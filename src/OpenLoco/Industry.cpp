@@ -270,18 +270,14 @@ namespace OpenLoco
             && !(flags & IndustryFlags::closingDown)
             && indObj->required_cargo_type[0] == 0xFF)
         {
-            if (indObj->flags & IndustryObjectFlags::unk18
-                && producedCargoPercentTransportedPreviousMonth[0] > 70
-                && gPrng().randNext(31) == 0
-                && productionRate[0] < 100
-                && productionRate[1] < 100)
+            if (isMonthlyProductionUp())
             {
                 productionRate[0] = std::min(100, productionRate[0] * 2);
                 productionRate[1] = std::min(100, productionRate[1] * 2);
                 MessageManager::post(MessageType::industryProductionUp, CompanyId::null, enumValue(id()), 0xFFFF);
                 hasEvent = true;
             }
-            else if (indObj->flags & IndustryObjectFlags::unk19 && ((producedCargoPercentTransportedPreviousMonth[0] > 50 && productionRate[0] > 20 && gPrng().randNext(31) == 0) || (producedCargoPercentTransportedPreviousMonth[0] <= 50 && productionRate[0] > 10 && gPrng().randNext(15) == 0)))
+            else if (isMonthlyProductionDown())
             {
                 productionRate[0] /= 2;
                 productionRate[1] /= 2;
@@ -294,10 +290,7 @@ namespace OpenLoco
             && under_construction == 0xFF
             && !(flags & IndustryFlags::closingDown))
         {
-            if ((getCurrentYear() > indObj->obsoleteYear
-                 && prng.randNext(0xFFFF) < 102)
-                || (indObj->var_F3 != 0
-                    && indObj->var_F3 > prng.randNext(0xFFFF)))
+            if (isMonthlyProductionClosing())
             {
                 flags |= IndustryFlags::closingDown;
                 productionRate[0] = 0;
@@ -356,6 +349,39 @@ namespace OpenLoco
         receivedCargoQuantityMonthlyTotal[0] = 0;
         receivedCargoQuantityMonthlyTotal[1] = 0;
         receivedCargoQuantityMonthlyTotal[2] = 0;
+    }
+
+    bool Industry::isMonthlyProductionUp()
+    {
+        auto* indObj = getObject();
+        return indObj->flags & IndustryObjectFlags::unk18
+            && producedCargoPercentTransportedPreviousMonth[0] > 70
+            && gPrng().randNext(31) == 0
+            && productionRate[0] < 100
+            && productionRate[1] < 100;
+    }
+
+    bool Industry::isMonthlyProductionDown()
+    {
+        auto* indObj = getObject();
+        if (!(indObj->flags & IndustryObjectFlags::unk19))
+        {
+            return false;
+        }
+        return (producedCargoPercentTransportedPreviousMonth[0] > 50
+                && productionRate[0] > 20
+                && gPrng().randNext(31) == 0)
+            || (producedCargoPercentTransportedPreviousMonth[0] <= 50
+                && productionRate[0] > 10
+                && gPrng().randNext(15) == 0);
+    }
+
+    bool Industry::isMonthlyProductionClosing()
+    {
+        auto* indObj = getObject();
+        // isObsolete or isTooLowProduction
+        return (getCurrentYear() > indObj->obsoleteYear && prng.randNext(0xFFFF) < 102)
+            || (indObj->var_F3 != 0 && indObj->var_F3 > prng.randNext(0xFFFF));
     }
 
     // 0x0045329B

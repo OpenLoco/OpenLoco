@@ -77,6 +77,9 @@ namespace OpenLoco
         void update();
         void updateDaily();
         void updateMonthly();
+        bool isMonthlyProductionUp();
+        bool isMonthlyProductionDown();
+        bool isMonthlyProductionClosing();
         void sub_45329B(const Map::Pos2& pos);
         void sub_453354();
         void sub_454A43(const Map::Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl);
