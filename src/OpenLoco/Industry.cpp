@@ -11,6 +11,7 @@
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
+#include "OpenLoco.h"
 #include "StationManager.h"
 #include "Utility/Numeric.hpp"
 #include <algorithm>
