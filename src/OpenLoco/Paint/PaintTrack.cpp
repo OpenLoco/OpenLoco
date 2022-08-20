@@ -120,6 +120,10 @@ namespace OpenLoco::Paint
 
     void registerTrackHooks()
     {
+        // These ret's are required to patch all the individual trackid paint functions
+        // in vanilla they were jmp's that returned into paintTrack but we can't do that.
+        // This hook can be removed after all of the individual paint functions have been
+        // implemented.
         writeRet(0x004125D8);
         writeRet(0x00412709);
         writeRet(0x0041283A);
