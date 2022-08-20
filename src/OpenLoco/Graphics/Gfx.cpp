@@ -1025,7 +1025,6 @@ namespace OpenLoco::Gfx
 
         _currentFontFlags = 0;
         Ui::Point point = { x, y };
-        point.y -= (lineHeight / 2) * (breakCount - 1);
 
         const char* ptr = buffer;
 
