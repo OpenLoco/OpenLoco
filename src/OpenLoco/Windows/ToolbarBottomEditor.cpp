@@ -38,27 +38,27 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     };
 
     // 0x0043CE21
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
-        self->widgets[widx::next_button].type = WidgetType::buttonWithImage;
-        self->widgets[widx::next_frame].type = WidgetType::wt_3;
+        self.widgets[widx::next_button].type = WidgetType::buttonWithImage;
+        self.widgets[widx::next_frame].type = WidgetType::wt_3;
 
         if (EditorController::canGoBack())
         {
-            self->widgets[widx::previous_button].type = WidgetType::buttonWithImage;
-            self->widgets[widx::previous_frame].type = WidgetType::wt_3;
+            self.widgets[widx::previous_button].type = WidgetType::buttonWithImage;
+            self.widgets[widx::previous_frame].type = WidgetType::wt_3;
         }
         else
         {
-            self->widgets[widx::previous_button].type = WidgetType::none;
-            self->widgets[widx::previous_frame].type = WidgetType::none;
+            self.widgets[widx::previous_button].type = WidgetType::none;
+            self.widgets[widx::previous_frame].type = WidgetType::none;
         }
 
         // 0x0043CDD1
-        self->widgets[widx::next_frame].right = self->width - 1;
-        self->widgets[widx::next_frame].left = self->width - 1 - 2 - 195 - 2;
-        self->widgets[widx::next_button].left = self->widgets[widx::next_frame].left + 2;
-        self->widgets[widx::next_button].right = self->widgets[widx::next_frame].right - 2;
+        self.widgets[widx::next_frame].right = self.width - 1;
+        self.widgets[widx::next_frame].left = self.width - 1 - 2 - 195 - 2;
+        self.widgets[widx::next_button].left = self.widgets[widx::next_frame].left + 2;
+        self.widgets[widx::next_button].right = self.widgets[widx::next_frame].right - 2;
     }
 
     // 0x0043CE65

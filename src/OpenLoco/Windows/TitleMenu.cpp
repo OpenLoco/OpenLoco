@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void onTextInput(Window& window, WidgetIndex_t widgetIndex, const char* input);
     static Ui::CursorId onCursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static void draw(Ui::Window* window, Gfx::Context* context);
-    static void prepareDraw(Ui::Window* window);
+    static void prepareDraw(Ui::Window& window);
 
     // static loco_global<WindowEventList[1], 0x004f9ec8> _events;
 
@@ -181,39 +181,39 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x00438E0B
-    static void prepareDraw(Ui::Window* window)
+    static void prepareDraw(Ui::Window& window)
     {
-        window->disabledWidgets = 0;
-        window->widgets[Widx::tutorial_btn].type = Ui::WidgetType::buttonWithImage;
-        window->widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::buttonWithImage;
+        window.disabledWidgets = 0;
+        window.widgets[Widx::tutorial_btn].type = Ui::WidgetType::buttonWithImage;
+        window.widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::buttonWithImage;
 
         // TODO: add widget::set_origin()
-        window->widgets[Widx::scenario_list_btn].left = 0;
-        window->widgets[Widx::scenario_list_btn].right = btn_main_size - 1;
-        window->widgets[Widx::load_game_btn].left = btn_main_size;
-        window->widgets[Widx::load_game_btn].right = btn_main_size * 2 - 1;
-        window->widgets[Widx::tutorial_btn].left = btn_main_size * 2;
-        window->widgets[Widx::tutorial_btn].right = btn_main_size * 3 - 1;
-        window->widgets[Widx::scenario_editor_btn].left = btn_main_size * 3;
-        window->widgets[Widx::scenario_editor_btn].right = btn_main_size * 4 - 1;
-        window->widgets[Widx::chat_btn].type = Ui::WidgetType::none;
+        window.widgets[Widx::scenario_list_btn].left = 0;
+        window.widgets[Widx::scenario_list_btn].right = btn_main_size - 1;
+        window.widgets[Widx::load_game_btn].left = btn_main_size;
+        window.widgets[Widx::load_game_btn].right = btn_main_size * 2 - 1;
+        window.widgets[Widx::tutorial_btn].left = btn_main_size * 2;
+        window.widgets[Widx::tutorial_btn].right = btn_main_size * 3 - 1;
+        window.widgets[Widx::scenario_editor_btn].left = btn_main_size * 3;
+        window.widgets[Widx::scenario_editor_btn].right = btn_main_size * 4 - 1;
+        window.widgets[Widx::chat_btn].type = Ui::WidgetType::none;
 
         auto& config = Config::getNew();
-        window->widgets[Widx::multiplayer_toggle_btn].type = config.network.enabled ? WidgetType::buttonWithImage : WidgetType::none;
+        window.widgets[Widx::multiplayer_toggle_btn].type = config.network.enabled ? WidgetType::buttonWithImage : WidgetType::none;
 
         if (OpenLoco::isNetworked())
         {
-            window->widgets[Widx::tutorial_btn].type = Ui::WidgetType::none;
-            window->widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::none;
+            window.widgets[Widx::tutorial_btn].type = Ui::WidgetType::none;
+            window.widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::none;
 
-            window->widgets[Widx::scenario_list_btn].left = btn_main_size;
-            window->widgets[Widx::scenario_list_btn].right = btn_main_size * 2 - 1;
-            window->widgets[Widx::load_game_btn].left = btn_main_size * 2;
-            window->widgets[Widx::load_game_btn].right = btn_main_size * 3 - 1;
+            window.widgets[Widx::scenario_list_btn].left = btn_main_size;
+            window.widgets[Widx::scenario_list_btn].right = btn_main_size * 2 - 1;
+            window.widgets[Widx::load_game_btn].left = btn_main_size * 2;
+            window.widgets[Widx::load_game_btn].right = btn_main_size * 3 - 1;
 
-            window->widgets[Widx::chat_btn].type = Ui::WidgetType::buttonWithImage;
+            window.widgets[Widx::chat_btn].type = Ui::WidgetType::buttonWithImage;
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
-            window->widgets[Widx::chat_btn].image = skin->img + InterfaceSkin::ImageIds::phone;
+            window.widgets[Widx::chat_btn].image = skin->img + InterfaceSkin::ImageIds::phone;
         }
     }
 

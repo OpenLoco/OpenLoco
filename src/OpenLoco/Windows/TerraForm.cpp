@@ -94,7 +94,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void initEvents();
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::Context* context);
-        static void prepareDraw(Window* self);
+        static void prepareDraw(Window& self);
         static void onUpdate(Window& self);
         static void onResize(Window& self, uint8_t height);
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
@@ -644,51 +644,51 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BB756
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->activatedWidgets &= ~((1ULL << widx::plant_cluster_selected) | (1ULL << widx::plant_cluster_random));
+            self.activatedWidgets &= ~((1ULL << widx::plant_cluster_selected) | (1ULL << widx::plant_cluster_random));
 
             if (_treeClusterType == treeCluster::selected)
-                self->activatedWidgets |= (1ULL << widx::plant_cluster_selected);
+                self.activatedWidgets |= (1ULL << widx::plant_cluster_selected);
 
             if (_treeClusterType == treeCluster::random)
-                self->activatedWidgets |= (1ULL << widx::plant_cluster_random);
+                self.activatedWidgets |= (1ULL << widx::plant_cluster_random);
 
-            self->widgets[widx::rotate_object].type = WidgetType::none;
-            self->widgets[widx::object_colour].type = WidgetType::none;
+            self.widgets[widx::rotate_object].type = WidgetType::none;
+            self.widgets[widx::object_colour].type = WidgetType::none;
 
-            if (self->rowHover != -1)
+            if (self.rowHover != -1)
             {
-                auto treeObj = ObjectManager::get<TreeObject>(self->rowHover);
+                auto treeObj = ObjectManager::get<TreeObject>(self.rowHover);
                 if (treeObj->name != 0xFFFF)
                 {
                     if (treeObj->num_rotations != 1)
-                        self->widgets[widx::rotate_object].type = WidgetType::buttonWithImage;
+                        self.widgets[widx::rotate_object].type = WidgetType::buttonWithImage;
 
                     if (treeObj->colours != 0)
                     {
-                        self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_treeColour);
-                        self->widgets[widx::object_colour].type = WidgetType::buttonWithColour;
+                        self.widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_treeColour);
+                        self.widgets[widx::object_colour].type = WidgetType::buttonWithColour;
                     }
                 }
             }
 
-            self->widgets[widx::scrollview].right = self->width - 26;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 26;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
-            self->widgets[widx::rotate_object].left = self->width - 25;
-            self->widgets[widx::object_colour].left = self->width - 25;
-            self->widgets[widx::plant_cluster_selected].left = self->width - 25;
-            self->widgets[widx::plant_cluster_random].left = self->width - 25;
+            self.widgets[widx::rotate_object].left = self.width - 25;
+            self.widgets[widx::object_colour].left = self.width - 25;
+            self.widgets[widx::plant_cluster_selected].left = self.width - 25;
+            self.widgets[widx::plant_cluster_random].left = self.width - 25;
 
-            self->widgets[widx::rotate_object].right = self->width - 2;
-            self->widgets[widx::object_colour].right = self->width - 2;
-            self->widgets[widx::plant_cluster_selected].right = self->width - 2;
-            self->widgets[widx::plant_cluster_random].right = self->width - 2;
+            self.widgets[widx::rotate_object].right = self.width - 2;
+            self.widgets[widx::object_colour].right = self.width - 2;
+            self.widgets[widx::plant_cluster_selected].right = self.width - 2;
+            self.widgets[widx::plant_cluster_random].right = self.width - 2;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
+            Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
         // 0x004BB8C9
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        // 0x004BC701
+        // 0x004BC701activatedWidgets
         static void toolDragEnd(Window& self, const WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == Common::widx::panel)
@@ -1031,15 +1031,15 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC555
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->activatedWidgets |= (1ULL << widx::tool_area);
+            self.activatedWidgets |= (1ULL << widx::tool_area);
 
-            self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
+            Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
         // 0x004BC5E7
@@ -1512,36 +1512,36 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC83B
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->activatedWidgets |= (1ULL << widx::tool_area);
+            self.activatedWidgets |= (1ULL << widx::tool_area);
 
             if (isPaintMode)
             {
-                self->activatedWidgets |= (1 << widx::paint_mode);
+                self.activatedWidgets |= (1 << widx::paint_mode);
             }
             else
             {
-                self->activatedWidgets &= ~(1 << widx::paint_mode);
+                self.activatedWidgets &= ~(1 << widx::paint_mode);
             }
 
-            self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            self->widgets[widx::land_material].type = WidgetType::none;
+            self.widgets[widx::land_material].type = WidgetType::none;
 
             // CHANGE: Allows the player to select which material is used in the adjust land tool outside of editor mode.
             if (_adjustToolSize != 0)
             {
-                self->widgets[widx::land_material].type = WidgetType::wt_6;
+                self.widgets[widx::land_material].type = WidgetType::wt_6;
 
                 auto landObj = ObjectManager::get<LandObject>(_lastSelectedLand);
 
-                self->widgets[widx::land_material].image = landObj->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
+                self.widgets[widx::land_material].image = landObj->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
             }
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
+            Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
         // 0x004BC909
@@ -1818,15 +1818,15 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCC6D
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->activatedWidgets |= (1ULL << widx::tool_area);
+            self.activatedWidgets |= (1ULL << widx::tool_area);
 
-            self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
+            Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
         // 0x004BCCFF
@@ -2260,14 +2260,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC029
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
+            Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
 
         // 0x004BC0C2
@@ -2415,30 +2415,30 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab..
-            self->activatedWidgets &= ~((1ULL << tab_adjust_land) | (1ULL << tab_adjust_water) | (1ULL << tab_build_walls) | (1ULL << tab_clear_area) | (1ULL << tab_plant_trees));
-            self->activatedWidgets |= (1ULL << tabInformationByTabOffset[self->currentTab].widgetIndex);
+            self.activatedWidgets &= ~((1ULL << tab_adjust_land) | (1ULL << tab_adjust_water) | (1ULL << tab_build_walls) | (1ULL << tab_clear_area) | (1ULL << tab_plant_trees));
+            self.activatedWidgets |= (1ULL << tabInformationByTabOffset[self.currentTab].widgetIndex);
 
-            self->widgets[widx::frame].right = self->width - 1;
-            self->widgets[widx::frame].bottom = self->height - 1;
+            self.widgets[widx::frame].right = self.width - 1;
+            self.widgets[widx::frame].bottom = self.height - 1;
 
-            self->widgets[widx::panel].right = self->width - 1;
-            self->widgets[widx::panel].bottom = self->height - 1;
+            self.widgets[widx::panel].right = self.width - 1;
+            self.widgets[widx::panel].bottom = self.height - 1;
 
-            self->widgets[widx::caption].right = self->width - 2;
+            self.widgets[widx::caption].right = self.width - 2;
 
-            self->widgets[widx::close_button].left = self->width - 15;
-            self->widgets[widx::close_button].right = self->width - 3;
+            self.widgets[widx::close_button].left = self.width - 15;
+            self.widgets[widx::close_button].right = self.width - 3;
         }
 
         // 0x004BCF7F

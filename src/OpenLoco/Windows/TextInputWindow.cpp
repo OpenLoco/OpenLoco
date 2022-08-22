@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             });
     }
 
-    static void prepareDraw(Ui::Window* window);
+    static void prepareDraw(Ui::Window& window);
     static void draw(Ui::Window* window, Gfx::Context* context);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onUpdate(Ui::Window& window);
@@ -206,7 +206,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      *
      * @param window @<esi>
      */
-    static void prepareDraw(Ui::Window* window)
+    static void prepareDraw(Ui::Window& window)
     {
         _widgets[Widx::title].text = _title;
         memcpy(_commonFormatArgs, _formatArgs, 16);

@@ -57,7 +57,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static WindowEventList _events;
 
-    static void prepareDraw(Window* window);
+    static void prepareDraw(Window& window);
     static void draw(Ui::Window* self, Gfx::Context* context);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x004396A4
-    static void prepareDraw(Window* window)
+    static void prepareDraw(Window& window)
     {
         _widgets[Widx::inner_frame].type = WidgetType::none;
         _widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);

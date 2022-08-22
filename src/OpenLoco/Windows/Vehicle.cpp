@@ -750,70 +750,70 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B1EB5
-        static void prepareDraw(Window* const self)
+        static void prepareDraw(Window& self)
         {
-            if (self->widgets != widgets)
+            if (self.widgets != widgets)
             {
-                self->widgets = widgets;
-                self->initScrollWidgets();
+                self.widgets = widgets;
+                self.initScrollWidgets();
             }
 
-            Common::setActiveTabs(self);
-            auto head = Common::getVehicle(self);
+            Common::setActiveTabs(&self);
+            auto head = Common::getVehicle(&self);
             if (head == nullptr)
             {
                 return;
             }
             Vehicles::Vehicle train(*head);
 
-            self->widgets[widx::stopStart].type = WidgetType::buttonWithImage;
-            self->widgets[widx::pickup].type = WidgetType::buttonWithImage;
-            self->widgets[widx::passSignal].type = WidgetType::buttonWithImage;
-            self->widgets[widx::changeDirection].type = WidgetType::buttonWithImage;
+            self.widgets[widx::stopStart].type = WidgetType::buttonWithImage;
+            self.widgets[widx::pickup].type = WidgetType::buttonWithImage;
+            self.widgets[widx::passSignal].type = WidgetType::buttonWithImage;
+            self.widgets[widx::changeDirection].type = WidgetType::buttonWithImage;
 
             if (head->mode != TransportMode::rail)
             {
-                self->widgets[widx::passSignal].type = WidgetType::none;
+                self.widgets[widx::passSignal].type = WidgetType::none;
             }
 
             if (head->mode == TransportMode::air || head->mode == TransportMode::water)
             {
-                self->widgets[widx::changeDirection].type = WidgetType::none;
+                self.widgets[widx::changeDirection].type = WidgetType::none;
             }
 
-            self->disabledWidgets &= ~interactiveWidgets;
+            self.disabledWidgets &= ~interactiveWidgets;
 
             auto veh1 = train.veh1;
             if (train.cars.empty())
             {
-                self->disabledWidgets |= (1 << widx::pickup);
+                self.disabledWidgets |= (1 << widx::pickup);
             }
 
             if (veh1->var_3C >= 0x3689)
             {
-                self->disabledWidgets |= (1 << widx::pickup) | (1 << widx::changeDirection);
+                self.disabledWidgets |= (1 << widx::pickup) | (1 << widx::changeDirection);
             }
 
             if (head->mode == TransportMode::air || head->mode == TransportMode::water)
             {
                 if (head->status != Vehicles::Status::stopped && head->status != Vehicles::Status::loading && head->tileX != -1)
                 {
-                    self->disabledWidgets |= (1 << widx::pickup);
+                    self.disabledWidgets |= (1 << widx::pickup);
                 }
             }
 
             if (head->tileX == -1)
             {
-                self->disabledWidgets |= (1 << widx::stopStart) | (1 << widx::passSignal) | (1 << widx::changeDirection) | (1 << widx::centreViewport);
-                if (Input::isToolActive(WindowType::vehicle, self->number))
+                self.disabledWidgets |= (1 << widx::stopStart) | (1 << widx::passSignal) | (1 << widx::changeDirection) | (1 << widx::centreViewport);
+                if (Input::isToolActive(WindowType::vehicle, self.number))
                 {
-                    self->disabledWidgets &= ~(1 << widx::changeDirection); //???
+                    self.disabledWidgets &= ~(1 << widx::changeDirection); //???
                 }
             }
 
             if (head->status != Vehicles::Status::waitingAtSignal)
             {
-                self->disabledWidgets |= (1 << widx::passSignal);
+                self.disabledWidgets |= (1 << widx::passSignal);
             }
 
             auto company = CompanyManager::get(head->owner);
@@ -844,66 +844,66 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 stopStartImage = ImageIds::green_flag;
             }
-            self->widgets[widx::stopStart].image = stopStartImage;
+            self.widgets[widx::stopStart].image = stopStartImage;
 
             auto [pickupImage, pickupTooltip] = Common::getPickupImageIdandTooltip(*head, head->isPlaced());
-            self->widgets[widx::pickup].image = Gfx::recolour(pickupImage);
-            self->widgets[widx::pickup].tooltip = pickupTooltip;
+            self.widgets[widx::pickup].image = Gfx::recolour(pickupImage);
+            self.widgets[widx::pickup].tooltip = pickupTooltip;
 
-            self->widgets[widx::speedControl].type = WidgetType::none;
+            self.widgets[widx::speedControl].type = WidgetType::none;
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
-            self->widgets[Common::widx::caption].right = self->width - 2;
-            self->widgets[Common::widx::closeButton].left = self->width - 15;
-            self->widgets[Common::widx::closeButton].right = self->width - 3;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
+            self.widgets[Common::widx::caption].right = self.width - 2;
+            self.widgets[Common::widx::closeButton].left = self.width - 15;
+            self.widgets[Common::widx::closeButton].right = self.width - 3;
 
-            int viewportRight = self->width - 26;
+            int viewportRight = self.width - 26;
             if (head->var_0C & Vehicles::Flags0C::manualControl)
             {
                 if (CompanyManager::isPlayerCompany(head->owner))
                 {
                     viewportRight -= 27;
-                    self->widgets[widx::speedControl].type = WidgetType::wt_5;
+                    self.widgets[widx::speedControl].type = WidgetType::wt_5;
                 }
             }
 
-            self->widgets[widx::viewport].right = viewportRight;
-            self->widgets[widx::viewport].bottom = self->height - 1 - 13;
+            self.widgets[widx::viewport].right = viewportRight;
+            self.widgets[widx::viewport].bottom = self.height - 1 - 13;
 
-            self->widgets[widx::status].top = self->height - 1 - 13 + 2;
-            self->widgets[widx::status].bottom = self->height - 1 - 13 + 2 + 9;
-            self->widgets[widx::status].right = self->width - 14;
+            self.widgets[widx::status].top = self.height - 1 - 13 + 2;
+            self.widgets[widx::status].bottom = self.height - 1 - 13 + 2 + 9;
+            self.widgets[widx::status].right = self.width - 14;
 
-            self->widgets[widx::stopStart].right = self->width - 2;
-            self->widgets[widx::pickup].right = self->width - 2;
-            self->widgets[widx::passSignal].right = self->width - 2;
-            self->widgets[widx::changeDirection].right = self->width - 2;
+            self.widgets[widx::stopStart].right = self.width - 2;
+            self.widgets[widx::pickup].right = self.width - 2;
+            self.widgets[widx::passSignal].right = self.width - 2;
+            self.widgets[widx::changeDirection].right = self.width - 2;
 
-            self->widgets[widx::stopStart].left = self->width - 2 - 23;
-            self->widgets[widx::pickup].left = self->width - 2 - 23;
-            self->widgets[widx::passSignal].left = self->width - 2 - 23;
-            self->widgets[widx::changeDirection].left = self->width - 2 - 23;
+            self.widgets[widx::stopStart].left = self.width - 2 - 23;
+            self.widgets[widx::pickup].left = self.width - 2 - 23;
+            self.widgets[widx::passSignal].left = self.width - 2 - 23;
+            self.widgets[widx::changeDirection].left = self.width - 2 - 23;
 
-            self->widgets[widx::speedControl].left = self->width - 2 - 23 - 26;
-            self->widgets[widx::speedControl].right = self->width - 2 - 23 - 26 + 23;
+            self.widgets[widx::speedControl].left = self.width - 2 - 23 - 26;
+            self.widgets[widx::speedControl].right = self.width - 2 - 23 - 26 + 23;
 
             if (!CompanyManager::isPlayerCompany(head->owner))
             {
-                self->widgets[widx::stopStart].type = WidgetType::none;
-                self->widgets[widx::pickup].type = WidgetType::none;
-                self->widgets[widx::passSignal].type = WidgetType::none;
-                self->widgets[widx::changeDirection].type = WidgetType::none;
-                self->widgets[widx::viewport].right += 22;
+                self.widgets[widx::stopStart].type = WidgetType::none;
+                self.widgets[widx::pickup].type = WidgetType::none;
+                self.widgets[widx::passSignal].type = WidgetType::none;
+                self.widgets[widx::changeDirection].type = WidgetType::none;
+                self.widgets[widx::viewport].right += 22;
             }
 
-            self->widgets[widx::centreViewport].right = self->widgets[widx::viewport].right - 1;
-            self->widgets[widx::centreViewport].bottom = self->widgets[widx::viewport].bottom - 1;
-            self->widgets[widx::centreViewport].left = self->widgets[widx::viewport].right - 1 - 23;
-            self->widgets[widx::centreViewport].top = self->widgets[widx::viewport].bottom - 1 - 23;
-            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
+            self.widgets[widx::centreViewport].right = self.widgets[widx::viewport].right - 1;
+            self.widgets[widx::centreViewport].bottom = self.widgets[widx::viewport].bottom - 1;
+            self.widgets[widx::centreViewport].left = self.widgets[widx::viewport].right - 1 - 23;
+            self.widgets[widx::centreViewport].top = self.widgets[widx::viewport].bottom - 1 - 23;
+            Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 0x004B226D
@@ -1420,17 +1420,17 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3300
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
-            if (self->widgets != widgets)
+            if (self.widgets != widgets)
             {
-                self->widgets = widgets;
-                self->initScrollWidgets();
+                self.widgets = widgets;
+                self.initScrollWidgets();
             }
 
-            Common::setActiveTabs(self);
+            Common::setActiveTabs(&self);
 
-            auto head = Common::getVehicle(self);
+            auto head = Common::getVehicle(&self);
             if (head == nullptr)
             {
                 return;
@@ -1439,59 +1439,59 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head->name);
             args.push(head->ordinalNumber);
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
-            self->widgets[Common::widx::caption].right = self->width - 2;
-            self->widgets[Common::widx::closeButton].left = self->width - 15;
-            self->widgets[Common::widx::closeButton].right = self->width - 3;
-            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
+            self.widgets[Common::widx::caption].right = self.width - 2;
+            self.widgets[Common::widx::closeButton].left = self.width - 15;
+            self.widgets[Common::widx::closeButton].right = self.width - 3;
+            Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
 
-            self->widgets[widx::carList].right = self->width - 26;
-            self->widgets[widx::carList].bottom = self->height - getVehicleDetailsHeight(head->getTransportMode());
+            self.widgets[widx::carList].right = self.width - 26;
+            self.widgets[widx::carList].bottom = self.height - getVehicleDetailsHeight(head->getTransportMode());
 
-            self->widgets[widx::buildNew].right = self->width - 2;
-            self->widgets[widx::buildNew].left = self->width - 25;
-            self->widgets[widx::pickup].right = self->width - 2;
-            self->widgets[widx::pickup].left = self->width - 25;
-            self->widgets[widx::remove].right = self->width - 2;
-            self->widgets[widx::remove].left = self->width - 25;
+            self.widgets[widx::buildNew].right = self.width - 2;
+            self.widgets[widx::buildNew].left = self.width - 25;
+            self.widgets[widx::pickup].right = self.width - 2;
+            self.widgets[widx::pickup].left = self.width - 25;
+            self.widgets[widx::remove].right = self.width - 2;
+            self.widgets[widx::remove].left = self.width - 25;
 
-            self->widgets[widx::buildNew].type = WidgetType::buttonWithImage;
-            self->widgets[widx::pickup].type = WidgetType::buttonWithImage;
-            self->widgets[widx::remove].type = WidgetType::buttonWithImage;
+            self.widgets[widx::buildNew].type = WidgetType::buttonWithImage;
+            self.widgets[widx::pickup].type = WidgetType::buttonWithImage;
+            self.widgets[widx::remove].type = WidgetType::buttonWithImage;
             // Differs to main tab! Unsure why.
             if (head->isPlaced())
             {
-                self->widgets[widx::pickup].type = WidgetType::none;
+                self.widgets[widx::pickup].type = WidgetType::none;
             }
             if (head->owner != CompanyManager::getControllingId())
             {
-                self->widgets[widx::buildNew].type = WidgetType::none;
-                self->widgets[widx::pickup].type = WidgetType::none;
-                self->widgets[widx::remove].type = WidgetType::none;
-                self->widgets[widx::carList].right = self->width - 4;
+                self.widgets[widx::buildNew].type = WidgetType::none;
+                self.widgets[widx::pickup].type = WidgetType::none;
+                self.widgets[widx::remove].type = WidgetType::none;
+                self.widgets[widx::carList].right = self.width - 4;
             }
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto buildImage = skin->img + additionalVehicleButtonByVehicleType.at(head->vehicleType);
 
-            self->widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self->owner)) | Widget::imageIdColourSet;
+            self.widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self.owner)) | Widget::imageIdColourSet;
 
             Vehicles::Vehicle train{ *head };
             if (train.cars.empty())
             {
-                self->disabledWidgets |= 1 << widx::pickup;
+                self.disabledWidgets |= 1 << widx::pickup;
             }
             else
             {
-                self->disabledWidgets &= ~(1ULL << widx::pickup);
+                self.disabledWidgets &= ~(1ULL << widx::pickup);
             }
 
             auto [pickupImage, pickupTooltip] = Common::getPickupImageIdandTooltip(*head, head->isPlaced());
-            self->widgets[widx::pickup].image = Gfx::recolour(pickupImage);
-            self->widgets[widx::pickup].tooltip = pickupTooltip;
+            self.widgets[widx::pickup].image = Gfx::recolour(pickupImage);
+            self.widgets[widx::pickup].tooltip = pickupTooltip;
         }
 
         // 0x004B3542
@@ -1778,17 +1778,17 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B3DDE
-        static void prepareDraw(Window* const self)
+        static void prepareDraw(Window& self)
         {
-            if (self->widgets != widgets)
+            if (self.widgets != widgets)
             {
-                self->widgets = widgets;
-                self->initScrollWidgets();
+                self.widgets = widgets;
+                self.initScrollWidgets();
             }
 
-            Common::setActiveTabs(self);
+            Common::setActiveTabs(&self);
 
-            auto* headVehicle = Common::getVehicle(self);
+            auto* headVehicle = Common::getVehicle(&self);
             if (headVehicle == nullptr)
             {
                 return;
@@ -1797,25 +1797,25 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(headVehicle->name);
             args.push(headVehicle->ordinalNumber);
 
-            widgets[Common::widx::frame].right = self->width - 1;
-            widgets[Common::widx::frame].bottom = self->height - 1;
-            widgets[Common::widx::panel].right = self->width - 1;
-            widgets[Common::widx::panel].bottom = self->height - 1;
-            widgets[Common::widx::caption].right = self->width - 2;
-            widgets[Common::widx::closeButton].left = self->width - 15;
-            widgets[Common::widx::closeButton].right = self->width - 3;
-            widgets[widx::cargoList].right = self->width - 26;
-            widgets[widx::cargoList].bottom = self->height - 27;
-            widgets[widx::refit].right = self->width - 2;
-            widgets[widx::refit].left = self->width - 25;
+            widgets[Common::widx::frame].right = self.width - 1;
+            widgets[Common::widx::frame].bottom = self.height - 1;
+            widgets[Common::widx::panel].right = self.width - 1;
+            widgets[Common::widx::panel].bottom = self.height - 1;
+            widgets[Common::widx::caption].right = self.width - 2;
+            widgets[Common::widx::closeButton].left = self.width - 15;
+            widgets[Common::widx::closeButton].right = self.width - 3;
+            widgets[widx::cargoList].right = self.width - 26;
+            widgets[widx::cargoList].bottom = self.height - 27;
+            widgets[widx::refit].right = self.width - 2;
+            widgets[widx::refit].left = self.width - 25;
             widgets[widx::refit].type = WidgetType::buttonWithImage;
             if (!canRefit(headVehicle))
             {
                 widgets[widx::refit].type = WidgetType::none;
-                widgets[widx::cargoList].right = self->width - 26 + 22;
+                widgets[widx::cargoList].right = self.width - 26 + 22;
             }
 
-            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
+            Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 004B3F0D
@@ -2172,17 +2172,17 @@ namespace OpenLoco::Ui::Windows::Vehicle
     namespace Finances
     {
         // 0x004B56CE
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
-            if (self->widgets != widgets)
+            if (self.widgets != widgets)
             {
-                self->widgets = widgets;
-                self->initScrollWidgets();
+                self.widgets = widgets;
+                self.initScrollWidgets();
             }
 
-            Common::setActiveTabs(self);
+            Common::setActiveTabs(&self);
 
-            auto vehicle = Common::getVehicle(self);
+            auto vehicle = Common::getVehicle(&self);
             if (vehicle == nullptr)
             {
                 return;
@@ -2191,15 +2191,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(vehicle->name);
             args.push(vehicle->ordinalNumber);
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
-            self->widgets[Common::widx::caption].right = self->width - 2;
-            self->widgets[Common::widx::closeButton].left = self->width - 15;
-            self->widgets[Common::widx::closeButton].right = self->width - 3;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
+            self.widgets[Common::widx::caption].right = self.width - 2;
+            self.widgets[Common::widx::closeButton].left = self.width - 15;
+            self.widgets[Common::widx::closeButton].right = self.width - 3;
 
-            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
+            Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 0x004B576C
@@ -3146,16 +3146,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B468C
-        static void prepareDraw(Window* const self)
+        static void prepareDraw(Window& self)
         {
-            if (self->widgets != widgets)
+            if (self.widgets != widgets)
             {
-                self->widgets = widgets;
-                self->initScrollWidgets();
+                self.widgets = widgets;
+                self.initScrollWidgets();
             }
 
-            Common::setActiveTabs(self);
-            auto head = Common::getVehicle(self);
+            Common::setActiveTabs(&self);
+            auto head = Common::getVehicle(&self);
             if (head == nullptr)
             {
                 return;
@@ -3164,76 +3164,76 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head->name);
             args.push(head->ordinalNumber);
 
-            self->widgets[widx::routeList].tooltip = Input::isToolActive(self->type, self->number) ? StringIds::tooltip_route_scrollview_copy : StringIds::tooltip_route_scrollview;
+            self.widgets[widx::routeList].tooltip = Input::isToolActive(self.type, self.number) ? StringIds::tooltip_route_scrollview_copy : StringIds::tooltip_route_scrollview;
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
-            self->widgets[Common::widx::caption].right = self->width - 2;
-            self->widgets[Common::widx::closeButton].left = self->width - 15;
-            self->widgets[Common::widx::closeButton].right = self->width - 3;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
+            self.widgets[Common::widx::caption].right = self.width - 2;
+            self.widgets[Common::widx::closeButton].left = self.width - 15;
+            self.widgets[Common::widx::closeButton].right = self.width - 3;
 
-            self->widgets[widx::routeList].right = self->width - 26;
-            self->widgets[widx::routeList].bottom = self->height - 14;
-            self->widgets[widx::orderForceUnload].right = self->width - 2;
-            self->widgets[widx::orderWait].right = self->width - 2;
-            self->widgets[widx::orderSkip].right = self->width - 2;
-            self->widgets[widx::orderDelete].right = self->width - 2;
-            self->widgets[widx::orderUp].right = self->width - 2;
-            self->widgets[widx::orderDown].right = self->width - 2;
-            self->widgets[widx::orderForceUnload].left = self->width - 25;
-            self->widgets[widx::orderWait].left = self->width - 25;
-            self->widgets[widx::orderSkip].left = self->width - 25;
-            self->widgets[widx::orderDelete].left = self->width - 25;
-            self->widgets[widx::orderUp].left = self->width - 25;
-            self->widgets[widx::orderDown].left = self->width - 25;
+            self.widgets[widx::routeList].right = self.width - 26;
+            self.widgets[widx::routeList].bottom = self.height - 14;
+            self.widgets[widx::orderForceUnload].right = self.width - 2;
+            self.widgets[widx::orderWait].right = self.width - 2;
+            self.widgets[widx::orderSkip].right = self.width - 2;
+            self.widgets[widx::orderDelete].right = self.width - 2;
+            self.widgets[widx::orderUp].right = self.width - 2;
+            self.widgets[widx::orderDown].right = self.width - 2;
+            self.widgets[widx::orderForceUnload].left = self.width - 25;
+            self.widgets[widx::orderWait].left = self.width - 25;
+            self.widgets[widx::orderSkip].left = self.width - 25;
+            self.widgets[widx::orderDelete].left = self.width - 25;
+            self.widgets[widx::orderUp].left = self.width - 25;
+            self.widgets[widx::orderDown].left = self.width - 25;
 
-            self->disabledWidgets |= (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete);
+            self.disabledWidgets |= (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete);
             if (head->sizeOfOrderTable != 1)
             {
-                self->disabledWidgets &= ~((1 << widx::orderSkip) | (1 << widx::orderDelete));
+                self.disabledWidgets &= ~((1 << widx::orderSkip) | (1 << widx::orderDelete));
             }
             if (head->var_4E != 0)
             {
-                self->disabledWidgets &= ~((1 << widx::orderWait) | (1 << widx::orderForceUnload));
+                self.disabledWidgets &= ~((1 << widx::orderWait) | (1 << widx::orderForceUnload));
             }
 
             // Express / local
-            self->activatedWidgets &= ~((1 << widx::expressMode) | (1 << widx::localMode));
+            self.activatedWidgets &= ~((1 << widx::expressMode) | (1 << widx::localMode));
             Vehicles::Vehicle train(*head);
             if (train.veh1->var_48 & (1 << 1))
-                self->activatedWidgets |= (1 << widx::expressMode);
+                self.activatedWidgets |= (1 << widx::expressMode);
             else
-                self->activatedWidgets |= (1 << widx::localMode);
+                self.activatedWidgets |= (1 << widx::localMode);
 
             WidgetType type = head->owner == CompanyManager::getControllingId() ? WidgetType::buttonWithImage : WidgetType::none;
-            self->widgets[widx::orderForceUnload].type = type;
-            self->widgets[widx::orderWait].type = type;
-            self->widgets[widx::orderSkip].type = type;
-            self->widgets[widx::orderDelete].type = type;
-            self->widgets[widx::orderUp].type = type;
-            self->widgets[widx::orderDown].type = type;
+            self.widgets[widx::orderForceUnload].type = type;
+            self.widgets[widx::orderWait].type = type;
+            self.widgets[widx::orderSkip].type = type;
+            self.widgets[widx::orderDelete].type = type;
+            self.widgets[widx::orderUp].type = type;
+            self.widgets[widx::orderDown].type = type;
             if (type == WidgetType::none)
             {
-                self->widgets[widx::routeList].right += 22;
-                self->enabledWidgets &= ~(1 << widx::expressMode | 1 << widx::localMode);
+                self.widgets[widx::routeList].right += 22;
+                self.enabledWidgets &= ~(1 << widx::expressMode | 1 << widx::localMode);
             }
             else
             {
-                self->enabledWidgets |= (1 << widx::expressMode | 1 << widx::localMode);
+                self.enabledWidgets |= (1 << widx::expressMode | 1 << widx::localMode);
             }
 
-            self->widgets[widx::expressMode].right = self->widgets[widx::routeList].right;
-            self->widgets[widx::expressMode].left = (self->widgets[widx::expressMode].right - 3) / 2 + 3;
-            self->widgets[widx::localMode].right = self->widgets[widx::expressMode].left - 1;
+            self.widgets[widx::expressMode].right = self.widgets[widx::routeList].right;
+            self.widgets[widx::expressMode].left = (self.widgets[widx::expressMode].right - 3) / 2 + 3;
+            self.widgets[widx::localMode].right = self.widgets[widx::expressMode].left - 1;
 
-            self->disabledWidgets |= (1 << widx::orderUp) | (1 << widx::orderDown);
-            if (self->var_842 != -1)
+            self.disabledWidgets |= (1 << widx::orderUp) | (1 << widx::orderDown);
+            if (self.var_842 != -1)
             {
-                self->disabledWidgets &= ~((1 << widx::orderUp) | (1 << widx::orderDown));
+                self.disabledWidgets &= ~((1 << widx::orderUp) | (1 << widx::orderDown));
             }
-            Widget::leftAlignTabs(*self, Common::widx::tabMain, Common::widx::tabRoute);
+            Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
         }
 
         // 0x004B4866

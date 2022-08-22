@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::TownList
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_buildings),                        \
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_misc_buildings)
 
-        static void prepareDraw(Window* self);
+        static void prepareDraw(Window& self);
         static void drawTabs(Window* self, Gfx::Context* context);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void initEvents();
@@ -111,32 +111,32 @@ namespace OpenLoco::Ui::Windows::TownList
         };
 
         // 0x00499F53
-        static void prepareDraw(Ui::Window* self)
+        static void prepareDraw(Ui::Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
             // Reposition header buttons
-            self->widgets[widx::sort_town_name].right = std::min(203, self->width - 8);
+            self.widgets[widx::sort_town_name].right = std::min(203, self.width - 8);
 
-            self->widgets[widx::sort_town_type].left = std::min(204, self->width - 8);
-            self->widgets[widx::sort_town_type].right = std::min(283, self->width - 8);
+            self.widgets[widx::sort_town_type].left = std::min(204, self.width - 8);
+            self.widgets[widx::sort_town_type].right = std::min(283, self.width - 8);
 
-            self->widgets[widx::sort_town_population].left = std::min(284, self->width - 8);
-            self->widgets[widx::sort_town_population].right = std::min(353, self->width - 8);
+            self.widgets[widx::sort_town_population].left = std::min(284, self.width - 8);
+            self.widgets[widx::sort_town_population].right = std::min(353, self.width - 8);
 
-            self->widgets[widx::sort_town_stations].left = std::min(354, self->width - 8);
-            self->widgets[widx::sort_town_stations].right = std::min(423, self->width - 8);
+            self.widgets[widx::sort_town_stations].left = std::min(354, self.width - 8);
+            self.widgets[widx::sort_town_stations].right = std::min(423, self.width - 8);
 
             // Set header button captions
-            self->widgets[widx::sort_town_name].text = self->sortMode == SortMode::Name ? StringIds::table_header_name_desc : StringIds::table_header_name;
-            self->widgets[widx::sort_town_type].text = self->sortMode == SortMode::Type ? StringIds::table_header_town_type_desc : StringIds::table_header_town_type;
-            self->widgets[widx::sort_town_population].text = self->sortMode == SortMode::Population ? StringIds::table_header_population_desc : StringIds::table_header_population;
-            self->widgets[widx::sort_town_stations].text = self->sortMode == SortMode::Stations ? StringIds::table_header_stations_desc : StringIds::table_header_stations;
+            self.widgets[widx::sort_town_name].text = self.sortMode == SortMode::Name ? StringIds::table_header_name_desc : StringIds::table_header_name;
+            self.widgets[widx::sort_town_type].text = self.sortMode == SortMode::Type ? StringIds::table_header_town_type_desc : StringIds::table_header_town_type;
+            self.widgets[widx::sort_town_population].text = self.sortMode == SortMode::Population ? StringIds::table_header_population_desc : StringIds::table_header_population;
+            self.widgets[widx::sort_town_stations].text = self.sortMode == SortMode::Stations ? StringIds::table_header_stations_desc : StringIds::table_header_stations;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings);
+            Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings);
         }
 
         // 0x0049A0F8
@@ -619,13 +619,13 @@ namespace OpenLoco::Ui::Windows::TownList
         };
 
         // 0x0049A59A
-        static void prepareDraw(Ui::Window* self)
+        static void prepareDraw(Ui::Window& self)
         {
             Common::prepareDraw(self);
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings);
+            Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings);
 
-            self->widgets[widx::current_size].text = townSizeNames[_townSize - 1];
+            self.widgets[widx::current_size].text = townSizeNames[_townSize - 1];
         }
 
         // 0x0049A627
@@ -812,35 +812,35 @@ namespace OpenLoco::Ui::Windows::TownList
         static WindowEventList events;
 
         // 0x0049A8A6
-        static void prepareDraw(Ui::Window* self)
+        static void prepareDraw(Ui::Window& self)
         {
-            self->widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_buildingColour);
-            self->widgets[widx::object_colour].type = WidgetType::none;
+            self.widgets[widx::object_colour].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, *_buildingColour);
+            self.widgets[widx::object_colour].type = WidgetType::none;
 
-            if (self->rowHover != -1)
+            if (self.rowHover != -1)
             {
-                auto buildingObj = ObjectManager::get<BuildingObject>(self->rowHover);
+                auto buildingObj = ObjectManager::get<BuildingObject>(self.rowHover);
                 if (buildingObj->colours != 0)
-                    self->widgets[widx::object_colour].type = WidgetType::buttonWithColour;
+                    self.widgets[widx::object_colour].type = WidgetType::buttonWithColour;
             }
 
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 26;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 26;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
-            self->widgets[widx::rotate_object].left = self->width - 25;
-            self->widgets[widx::rotate_object].right = self->width - 2;
+            self.widgets[widx::rotate_object].left = self.width - 25;
+            self.widgets[widx::rotate_object].right = self.width - 2;
 
-            self->widgets[widx::object_colour].left = self->width - 21;
-            self->widgets[widx::object_colour].right = self->width - 6;
+            self.widgets[widx::object_colour].left = self.width - 21;
+            self.widgets[widx::object_colour].right = self.width - 6;
 
-            self->widgets[Common::widx::caption].text = StringIds::title_build_new_buildings;
+            self.widgets[Common::widx::caption].text = StringIds::title_build_new_buildings;
 
-            if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
-                self->widgets[Common::widx::caption].text = StringIds::title_build_new_misc_buildings;
+            if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
+                self.widgets[Common::widx::caption].text = StringIds::title_build_new_misc_buildings;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings);
+            Widget::leftAlignTabs(self, Common::widx::tab_town_list, Common::widx::tab_build_misc_buildings);
         }
 
         // 0x0049A9C2
@@ -1455,30 +1455,30 @@ namespace OpenLoco::Ui::Windows::TownList
             { BuildBuildings::widgets, widx::tab_build_misc_buildings, &BuildBuildings::events, BuildBuildings::enabledWidgets },
         };
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed
-            const auto& tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            const auto& tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab
-            self->activatedWidgets &= ~((1ULL << tab_town_list) | (1ULL << tab_build_town) | (1ULL << tab_build_buildings) | (1ULL << tab_build_misc_buildings));
-            self->activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self->currentTab].widgetIndex);
+            self.activatedWidgets &= ~((1ULL << tab_town_list) | (1ULL << tab_build_town) | (1ULL << tab_build_buildings) | (1ULL << tab_build_misc_buildings));
+            self.activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self.currentTab].widgetIndex);
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
         }
 
         // 0x0049B054

@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Windows::Town
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
 
         // Defined at the bottom of this file.
-        static void prepareDraw(Window* self);
+        static void prepareDraw(Window& self);
         static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input);
         static void update(Window& self);
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
@@ -90,41 +90,41 @@ namespace OpenLoco::Ui::Windows::Town
         static WindowEventList events;
 
         // 0x00498EAF
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::viewport].right = self->width - 26;
-            self->widgets[widx::viewport].bottom = self->height - 14;
+            self.widgets[widx::viewport].right = self.width - 26;
+            self.widgets[widx::viewport].bottom = self.height - 14;
 
-            self->widgets[widx::status_bar].top = self->height - 12;
-            self->widgets[widx::status_bar].bottom = self->height - 3;
-            self->widgets[widx::status_bar].right = self->width - 14;
+            self.widgets[widx::status_bar].top = self.height - 12;
+            self.widgets[widx::status_bar].bottom = self.height - 3;
+            self.widgets[widx::status_bar].right = self.width - 14;
 
-            self->widgets[widx::expand_town].right = self->width - 2;
-            self->widgets[widx::expand_town].left = self->width - 25;
+            self.widgets[widx::expand_town].right = self.width - 2;
+            self.widgets[widx::expand_town].left = self.width - 25;
 
-            self->widgets[widx::demolish_town].right = self->width - 2;
-            self->widgets[widx::demolish_town].left = self->width - 25;
+            self.widgets[widx::demolish_town].right = self.width - 2;
+            self.widgets[widx::demolish_town].left = self.width - 25;
 
             if (isEditorMode() || isSandboxMode())
             {
-                self->widgets[widx::expand_town].type = WidgetType::buttonWithImage;
-                self->widgets[widx::demolish_town].type = WidgetType::buttonWithImage;
+                self.widgets[widx::expand_town].type = WidgetType::buttonWithImage;
+                self.widgets[widx::demolish_town].type = WidgetType::buttonWithImage;
             }
             else
             {
-                self->widgets[widx::expand_town].type = WidgetType::none;
-                self->widgets[widx::demolish_town].type = WidgetType::none;
-                self->widgets[widx::viewport].right += 22;
+                self.widgets[widx::expand_town].type = WidgetType::none;
+                self.widgets[widx::demolish_town].type = WidgetType::none;
+                self.widgets[widx::viewport].right += 22;
             }
 
-            self->widgets[widx::centre_on_viewport].right = self->widgets[widx::viewport].right - 1;
-            self->widgets[widx::centre_on_viewport].bottom = self->widgets[widx::viewport].bottom - 1;
-            self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
-            self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
+            self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
+            self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
+            self.widgets[widx::centre_on_viewport].left = self.widgets[widx::viewport].right - 24;
+            self.widgets[widx::centre_on_viewport].top = self.widgets[widx::viewport].bottom - 24;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_town, Common::widx::tab_company_ratings);
+            Widget::leftAlignTabs(self, Common::widx::tab_town, Common::widx::tab_company_ratings);
         }
 
         // 0x00498FFE
@@ -384,7 +384,7 @@ namespace OpenLoco::Ui::Windows::Town
         static WindowEventList events;
 
         // 0x00499469
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
         }
@@ -510,7 +510,7 @@ namespace OpenLoco::Ui::Windows::Town
         static WindowEventList events;
 
         // 0x00499761
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
         }
@@ -614,35 +614,35 @@ namespace OpenLoco::Ui::Windows::Town
             { CompanyRatings::widgets, widx::tab_company_ratings, &CompanyRatings::events, &Common::enabledWidgets }
         };
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab.
-            self->activatedWidgets &= ~((1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings));
-            widx widgetIndex = tabInformationByTabOffset[self->currentTab].widgetIndex;
-            self->activatedWidgets |= (1ULL << widgetIndex);
+            self.activatedWidgets &= ~((1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings));
+            widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
+            self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Put town name in place.
-            commonFormatArgs[0] = TownManager::get(TownId(self->number))->name;
+            commonFormatArgs[0] = TownManager::get(TownId(self.number))->name;
 
             // Resize common widgets.
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
         }
 
         // 0x00499287

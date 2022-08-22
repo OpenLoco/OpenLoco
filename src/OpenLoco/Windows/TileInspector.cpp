@@ -109,12 +109,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return window;
     }
 
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
         if (Input::isToolActive(WindowType::tileInspector))
-            self->activatedWidgets |= (1 << widx::select);
+            self.activatedWidgets |= (1 << widx::select);
         else
-            self->activatedWidgets &= ~(1 << widx::select);
+            self.activatedWidgets &= ~(1 << widx::select);
     }
 
     static void draw(Ui::Window* const self, Gfx::Context* const context)

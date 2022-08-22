@@ -54,9 +54,9 @@ namespace OpenLoco::Ui::Windows::Tutorial
     }
 
     // 0x00439B3D
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
-        self->widgets[Widx::frame].right = self->width - 1;
+        self.widgets[Widx::frame].right = self.width - 1;
     }
 
     // 0x00439B4A
