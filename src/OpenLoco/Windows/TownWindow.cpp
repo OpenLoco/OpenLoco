@@ -128,22 +128,22 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00498FFE
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
-            self->drawViewports(context);
-            Widget::drawViewportCentreButton(context, self, widx::centre_on_viewport);
+            self.draw(context);
+            Common::drawTabs(&self, context);
+            self.drawViewports(context);
+            Widget::drawViewportCentreButton(context, &self, widx::centre_on_viewport);
 
-            auto town = TownManager::get(TownId(self->number));
+            auto town = TownManager::get(TownId(self.number));
 
             auto args = FormatArguments();
             args.push(town->getTownSizeString());
             args.push(town->population);
 
-            const auto& widget = self->widgets[widx::status_bar];
-            const auto x = self->x + widget.left - 1;
-            const auto y = self->y + widget.top - 1;
+            const auto& widget = self.widgets[widx::status_bar];
+            const auto x = self.x + widget.left - 1;
+            const auto y = self.y + widget.top - 1;
             const auto width = widget.width() - 1;
             Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::status_town_population, &args);
         }
@@ -390,26 +390,26 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004994F9
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            auto clipped = Gfx::clipContext(*context, Ui::Rect(self->x, self->y + 44, self->width, self->height - 44));
+            auto clipped = Gfx::clipContext(*context, Ui::Rect(self.x, self.y + 44, self.width, self.height - 44));
             if (!clipped)
                 return;
 
-            auto town = TownManager::get(TownId(self->number));
+            auto town = TownManager::get(TownId(self.number));
 
             // Draw Y label and grid lines.
             int32_t yTick = town->history_min_population;
-            for (int16_t yPos = self->height - 57; yPos >= 14; yPos -= 20)
+            for (int16_t yPos = self.height - 57; yPos >= 14; yPos -= 20)
             {
                 auto args = FormatArguments();
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
-                Gfx::drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));
+                Gfx::drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
                 Gfx::drawStringRight(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
@@ -436,16 +436,16 @@ namespace OpenLoco::Ui::Windows::Town
                         Gfx::drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    Gfx::drawRect(*clipped, xPos, 11, 1, self->height - 66, Colours::getShade(self->getColour(WindowColour::secondary).c(), 4));
+                    Gfx::drawRect(*clipped, xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
                 }
 
                 // Draw population graph
-                uint16_t yPos1 = -town->history[i] + (self->height - 57);
-                uint16_t yPos2 = -town->history[i + 1] + (self->height - 57);
+                uint16_t yPos1 = -town->history[i] + (self.height - 57);
+                uint16_t yPos2 = -town->history[i + 1] + (self.height - 57);
 
                 // Do not draw current segment yet; it may be zeroed.
                 if (i < town->historySize - 1)
-                    Gfx::drawLine(*clipped, xPos, yPos1, xPos + 1, yPos2, Colours::getShade(self->getColour(WindowColour::secondary).c(), 7));
+                    Gfx::drawLine(*clipped, xPos, yPos1, xPos + 1, yPos2, Colours::getShade(self.getColour(WindowColour::secondary).c(), 7));
 
                 month--;
                 if (month < 0)
@@ -516,18 +516,18 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004997F1
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            uint16_t xPos = self->x + 4;
-            uint16_t yPos = self->y + 46;
+            uint16_t xPos = self.x + 4;
+            uint16_t yPos = self.y + 46;
             Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
             xPos += 4;
             yPos += 14;
-            auto town = TownManager::get(TownId(self->number));
+            auto town = TownManager::get(TownId(self.number));
             for (uint8_t i = 0; i < std::size(town->company_ratings); i++)
             {
                 if ((town->companies_with_rating & (1 << i)) == 0)
@@ -552,7 +552,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(rating);
                 args.push(rank);
 
-                Gfx::drawStringLeftClipped(*context, xPos, yPos, self->width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
+                Gfx::drawStringLeftClipped(*context, xPos, yPos, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
 
                 yPos += 10;
             }

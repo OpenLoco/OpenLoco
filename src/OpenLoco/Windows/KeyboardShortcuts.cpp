@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         };
     }
 
-    static void draw(Ui::Window* self, Gfx::Context* context);
+    static void draw(Ui::Window& self, Gfx::Context* context);
     static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex);
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
     static void resetShortcuts(Window* self);
@@ -93,10 +93,10 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE726
-    static void draw(Ui::Window* self, Gfx::Context* context)
+    static void draw(Ui::Window& self, Gfx::Context* context)
     {
         // Draw widgets.
-        self->draw(context);
+        self.draw(context);
     }
 
     static void getBindingString(uint32_t keyCode, char* buffer, const size_t bufferLength)

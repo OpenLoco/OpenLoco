@@ -296,15 +296,15 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E501
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
-        Common::drawTabs(self, context);
+        self.draw(context);
+        Common::drawTabs(&self, context);
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
 
-        auto xPos = self->x + 3;
-        auto yPos = self->y + 63;
+        auto xPos = self.x + 3;
+        auto yPos = self.y + 63;
         auto width = 130;
 
         {
@@ -316,15 +316,15 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto imageId = trainSignalObject->image;
 
-        xPos = self->widgets[widx::both_directions].mid_x() + self->x;
-        yPos = self->widgets[widx::both_directions].bottom + self->y - 4;
+        xPos = self.widgets[widx::both_directions].mid_x() + self.x;
+        yPos = self.widgets[widx::both_directions].bottom + self.y - 4;
 
         Gfx::drawImage(context, xPos - 8, yPos, imageId);
 
         Gfx::drawImage(context, xPos + 8, yPos, imageId + 4);
 
-        xPos = self->widgets[widx::single_direction].mid_x() + self->x;
-        yPos = self->widgets[widx::single_direction].bottom + self->y - 4;
+        xPos = self.widgets[widx::single_direction].mid_x() + self.x;
+        yPos = self.widgets[widx::single_direction].bottom + self.y - 4;
 
         Gfx::drawImage(context, xPos, yPos, imageId);
 
@@ -333,8 +333,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             auto args = FormatArguments();
             args.push<uint32_t>(_signalCost);
 
-            xPos = self->x + 69;
-            yPos = self->widgets[widx::single_direction].bottom + self->y + 5;
+            xPos = self.x + 69;
+            yPos = self.widgets[widx::single_direction].bottom + self.y + 5;
 
             Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }

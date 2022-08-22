@@ -132,19 +132,19 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457CD9
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
             auto args = FormatArguments();
-            auto xPos = self->x + 4;
-            auto yPos = self->y + self->height - 12;
+            auto xPos = self.x + 4;
+            auto yPos = self.y + self.height - 12;
 
-            if (self->var_83C == 1)
+            if (self.var_83C == 1)
                 args.push(StringIds::status_num_industries_singular);
             else
                 args.push(StringIds::status_num_industries_plural);
-            args.push(self->var_83C);
+            args.push(self.var_83C);
 
             Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
@@ -618,25 +618,25 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045826C
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            if (self->var_83C == 0)
+            if (self.var_83C == 0)
             {
-                auto xPos = self->x + 3;
-                auto yPos = self->y + self->height - 13;
-                auto width = self->width - 19;
+                auto xPos = self.x + 3;
+                auto yPos = self.y + self.height - 13;
+                auto width = self.width - 19;
                 Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::no_industry_available);
                 return;
             }
 
-            auto industryObjId = self->var_846;
+            auto industryObjId = self.var_846;
 
             if (industryObjId == 0xFFFF)
             {
-                industryObjId = self->rowHover;
+                industryObjId = self.rowHover;
 
                 if (industryObjId == 0xFFFF)
                     return;
@@ -645,10 +645,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
             auto industryObj = ObjectManager::get<IndustryObject>(industryObjId);
             auto industryCost = 0;
 
-            if (self->var_846 == 0xFFFF)
+            if (self.var_846 == 0xFFFF)
                 industryCost = dword_E0C39C;
 
-            if ((self->var_846 == 0xFFFF && dword_E0C39C == static_cast<currency32_t>(0x80000000)) || self->var_846 != 0xFFFF)
+            if ((self.var_846 == 0xFFFF && dword_E0C39C == static_cast<currency32_t>(0x80000000)) || self.var_846 != 0xFFFF)
             {
                 industryCost = Economy::getInflationAdjustedCost(industryObj->cost_factor, industryObj->cost_index, 3);
             }
@@ -659,16 +659,16 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if (!isEditorMode() && !isSandboxMode())
             {
-                auto xPos = self->x + 3 + self->width - 19;
-                auto yPos = self->y + self->height - 13;
+                auto xPos = self.x + 3 + self.width - 19;
+                auto yPos = self.y + self.height - 13;
                 widthOffset = 138;
 
                 Gfx::drawStringRight(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
 
-            auto xPos = self->x + 3;
-            auto yPos = self->y + self->height - 13;
-            auto width = self->width - 19 - widthOffset;
+            auto xPos = self.x + 3;
+            auto yPos = self.y + self.height - 13;
+            auto width = self.width - 19 - widthOffset;
 
             Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &industryObj->name);
         }

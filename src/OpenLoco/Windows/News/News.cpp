@@ -749,7 +749,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429739
-        static void draw(Ui::Window* self, Gfx::Context* context)
+        static void draw(Ui::Window& self, Gfx::Context* context)
         {
             auto news = MessageManager::get(MessageManager::getActiveIndex());
             const auto& mtd = getMessageTypeDescriptor(news->type);
@@ -758,31 +758,31 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 if (calcDate(news->date).year >= 1945)
                 {
-                    drawLateNews(self, context, news);
+                    drawLateNews(&self, context, news);
 
                     if (calcDate(news->date).year < 1985)
                     {
-                        drawMiddleNews(self, context, news);
+                        drawMiddleNews(&self, context, news);
                     }
                 }
                 else
                 {
-                    drawEarlyNews(self, context, news);
+                    drawEarlyNews(&self, context, news);
                 }
             }
             else
             {
-                drawStationNews(self, context, news);
+                drawStationNews(&self, context, news);
             }
 
             if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
             {
                 if (news->itemSubjects[0] != 0xFFFF)
                 {
-                    auto x = (self->widgets[Common::widx::viewport1Button].left + self->widgets[Common::widx::viewport1Button].right) / 2;
-                    x += self->x;
-                    auto y = self->widgets[Common::widx::viewport1Button].bottom - 7 + self->y;
-                    auto width = self->widgets[Common::widx::viewport1Button].width() - 1;
+                    auto x = (self.widgets[Common::widx::viewport1Button].left + self.widgets[Common::widx::viewport1Button].right) / 2;
+                    x += self.x;
+                    auto y = self.widgets[Common::widx::viewport1Button].bottom - 7 + self.y;
+                    auto width = self.widgets[Common::widx::viewport1Button].width() - 1;
 
                     drawViewportString(context, x, y, width, mtd.argumentTypes[0], news->itemSubjects[0]);
                 }
@@ -791,10 +791,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 if (news->itemSubjects[1] != 0xFFFF)
                 {
-                    auto x = (self->widgets[Common::widx::viewport2Button].left + self->widgets[Common::widx::viewport2Button].right) / 2;
-                    x += self->x;
-                    auto y = self->widgets[Common::widx::viewport2Button].bottom - 7 + self->y;
-                    auto width = self->widgets[Common::widx::viewport2Button].width() - 1;
+                    auto x = (self.widgets[Common::widx::viewport2Button].left + self.widgets[Common::widx::viewport2Button].right) / 2;
+                    x += self.x;
+                    auto y = self.widgets[Common::widx::viewport2Button].bottom - 7 + self.y;
+                    auto width = self.widgets[Common::widx::viewport2Button].width() - 1;
 
                     drawViewportString(context, x, y, width, mtd.argumentTypes[1], news->itemSubjects[1]);
                 }

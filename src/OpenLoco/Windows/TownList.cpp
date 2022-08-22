@@ -205,19 +205,19 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A0A7
-        static void draw(Ui::Window* self, Gfx::Context* context)
+        static void draw(Ui::Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
             auto args = FormatArguments();
-            auto xPos = self->x + 4;
-            auto yPos = self->y + self->height - 12;
+            auto xPos = self.x + 4;
+            auto yPos = self.y + self.height - 12;
 
-            if (self->var_83C == 1)
+            if (self.var_83C == 1)
                 args.push(StringIds::status_towns_singular);
             else
                 args.push(StringIds::status_towns_plural);
-            args.push(self->var_83C);
+            args.push(self.var_83C);
 
             Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
@@ -629,14 +629,14 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A627
-        static void draw(Ui::Window* self, Gfx::Context* context)
+        static void draw(Ui::Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            Gfx::drawStringLeft(*context, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
+            Gfx::drawStringLeft(*context, self.x + 3, self.y + self.widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
 
-            Gfx::drawStringLeft(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::select_town_size);
+            Gfx::drawStringLeft(*context, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::select_town_size);
         }
 
         // 0x0049A675
@@ -844,16 +844,16 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A9C2
-        static void draw(Ui::Window* self, Gfx::Context* context)
+        static void draw(Ui::Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            auto buildingId = self->var_846;
+            auto buildingId = self.var_846;
 
             if (buildingId == 0xFFFF)
             {
-                buildingId = self->rowHover;
+                buildingId = self.rowHover;
 
                 if (buildingId == 0xFFFF)
                     return;
@@ -861,7 +861,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             auto buildingObj = ObjectManager::get<BuildingObject>(buildingId);
 
-            Gfx::drawStringLeftClipped(*context, self->x + 3, self->y + self->height - 13, self->width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
+            Gfx::drawStringLeftClipped(*context, self.x + 3, self.y + self.height - 13, self.width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
         }
 
         // 0x0049AB31

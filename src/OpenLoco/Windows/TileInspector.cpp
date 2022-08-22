@@ -117,49 +117,49 @@ namespace OpenLoco::Ui::Windows::TileInspector
             self.activatedWidgets &= ~(1 << widx::select);
     }
 
-    static void draw(Ui::Window* const self, Gfx::Context* const context)
+    static void draw(Ui::Window& self, Gfx::Context* const context)
     {
         // Draw widgets.
-        self->draw(context);
+        self.draw(context);
 
         // Coord X/Y labels
         {
             auto args = FormatArguments::common(StringIds::tile_inspector_x_coord);
-            auto& widget = self->widgets[widx::xPos];
-            Gfx::drawStringLeft(*context, self->x + widget.left - 15, self->y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            auto& widget = self.widgets[widx::xPos];
+            Gfx::drawStringLeft(*context, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
         {
             auto args = FormatArguments::common(StringIds::tile_inspector_y_coord);
-            auto& widget = self->widgets[widx::yPos];
-            Gfx::drawStringLeft(*context, self->x + widget.left - 15, self->y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            auto& widget = self.widgets[widx::yPos];
+            Gfx::drawStringLeft(*context, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         // Coord X/Y values
         {
             FormatArguments args = {};
             args.push<int16_t>(_currentPosition.x);
-            auto& widget = self->widgets[widx::xPos];
-            Gfx::drawStringLeft(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            auto& widget = self.widgets[widx::xPos];
+            Gfx::drawStringLeft(*context, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
         {
             FormatArguments args = {};
             args.push<int16_t>(_currentPosition.y);
-            auto& widget = self->widgets[widx::yPos];
-            Gfx::drawStringLeft(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            auto& widget = self.widgets[widx::yPos];
+            Gfx::drawStringLeft(*context, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
 
         // Selected element details
-        if (self->var_842 != -1)
+        if (self.var_842 != -1)
         {
-            auto tile = TileManager::get(_currentPosition)[self->var_842];
+            auto tile = TileManager::get(_currentPosition)[self.var_842];
             std::array<uint8_t, 8>& data = tile->rawData();
 
             char buffer[32] = {};
             buffer[0] = ControlCodes::window_colour_2;
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
-            auto widget = self->widgets[widx::detailsGroup];
-            Gfx::drawString(*context, self->x + widget.left + 7, self->y + widget.top + 14, Colour::black, buffer);
+            auto widget = self.widgets[widx::detailsGroup];
+            Gfx::drawString(*context, self.x + widget.left + 7, self.y + widget.top + 14, Colour::black, buffer);
         }
     }
 

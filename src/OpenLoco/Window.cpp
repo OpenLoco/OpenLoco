@@ -1395,7 +1395,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        eventHandlers->draw(this, context);
+        eventHandlers->draw(*this, context);
     }
 
     void Window::callDrawScroll(Gfx::Context* context, uint32_t scrollIndex)

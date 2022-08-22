@@ -906,48 +906,48 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B779
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
-        drawTabs(self, context);
+        self.draw(context);
+        drawTabs(&self, context);
 
         {
-            auto x = self->x + self->width - 104;
-            uint16_t y = self->y + 44;
+            auto x = self.x + self.width - 104;
+            uint16_t y = self.y + 44;
 
-            switch (self->currentTab + widx::tabOverall)
+            switch (self.currentTab + widx::tabOverall)
             {
                 case widx::tabOverall:
-                    drawGraphKeyOverall(self, context, x, &y);
+                    drawGraphKeyOverall(&self, context, x, &y);
                     break;
 
                 case widx::tabVehicles:
-                    drawGraphKeyVehicles(self, context, x, &y);
+                    drawGraphKeyVehicles(&self, context, x, &y);
                     break;
 
                 case widx::tabIndustries:
-                    drawGraphKeyIndustries(self, context, x, &y);
+                    drawGraphKeyIndustries(&self, context, x, &y);
                     break;
 
                 case widx::tabRoutes:
-                    drawGraphKeyRoutes(self, context, x, &y);
+                    drawGraphKeyRoutes(&self, context, x, &y);
                     break;
 
                 case widx::tabOwnership:
-                    drawGraphKeyCompanies(self, context, x, &y);
+                    drawGraphKeyCompanies(&self, context, x, &y);
                     break;
             }
 
-            y -= self->y;
+            y -= self.y;
             y += 14;
             y = std::max(y, static_cast<uint16_t>(92));
 
-            self->minHeight = y;
+            self.minHeight = y;
         }
 
         auto args = FormatArguments();
 
-        switch (self->currentTab + widx::tabOverall)
+        switch (self.currentTab + widx::tabOverall)
         {
             case widx::tabOverall:
             case widx::tabRoutes:
@@ -956,17 +956,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 break;
 
             case widx::tabVehicles:
-                formatVehicleString(self, args);
+                formatVehicleString(&self, args);
                 break;
 
             case widx::tabIndustries:
-                formatIndustryString(self, args);
+                formatIndustryString(&self, args);
                 break;
         }
 
-        auto x = self->x + self->widgets[widx::statusBar].left - 1;
-        auto y = self->y + self->widgets[widx::statusBar].top - 1;
-        auto width = self->widgets[widx::statusBar].width();
+        auto x = self.x + self.widgets[widx::statusBar].left - 1;
+        auto y = self.y + self.widgets[widx::statusBar].top - 1;
+        auto width = self.widgets[widx::statusBar].width();
 
         Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
     }

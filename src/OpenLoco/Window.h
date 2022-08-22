@@ -150,7 +150,7 @@ namespace OpenLoco::Ui
                 Ui::CursorId (*cursor)(Window&, int16_t, int16_t, int16_t, Ui::CursorId);
                 void (*onMove)(Window&, const int16_t x, const int16_t y);
                 void (*prepareDraw)(Window&);
-                void (*draw)(Window*, Gfx::Context*);
+                void (*draw)(Window&, Gfx::Context*);
                 void (*drawScroll)(Window&, Gfx::Context&, const uint32_t scrollIndex);
             };
         };

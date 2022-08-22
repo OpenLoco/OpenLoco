@@ -467,16 +467,16 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EA3E
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
-        Common::drawTabs(self, context);
+        self.draw(context);
+        Common::drawTabs(&self, context);
         if (_lastSelectedMods & 0xF)
         {
-            auto xPos = self->x + self->widgets[widx::image].left + 1;
-            auto yPos = self->y + self->widgets[widx::image].top + 1;
-            auto width = self->widgets[widx::image].width();
-            auto height = self->widgets[widx::image].height();
+            auto xPos = self.x + self.widgets[widx::image].left + 1;
+            auto yPos = self.y + self.widgets[widx::image].top + 1;
+            auto width = self.widgets[widx::image].width();
+            auto height = self.widgets[widx::image].height();
             auto clipped = Gfx::clipContext(*context, Ui::Rect(xPos, yPos, width, height));
             if (clipped)
             {
@@ -486,8 +486,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 auto rotCoord = Math::Vector::rotate(Pos2{ x, y }, WindowManager::getCurrentRotation());
                 Ui::Point screenPos = { static_cast<int16_t>(rotCoord.y - rotCoord.x), static_cast<int16_t>(((rotCoord.x + rotCoord.y) >> 1) - 460) };
 
-                screenPos.x -= (self->widgets[widx::image].width() / 2);
-                screenPos.y -= ((self->widgets[widx::image].width() / 2) + 16);
+                screenPos.x -= (self.widgets[widx::image].width() / 2);
+                screenPos.y -= ((self.widgets[widx::image].width() / 2) + 16);
                 clipped->x += screenPos.x;
                 clipped->y += screenPos.y;
 
@@ -508,8 +508,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
         }
 
-        auto xPos = self->x + 69;
-        auto yPos = self->widgets[widx::image].bottom + self->y + 4;
+        auto xPos = self.x + 69;
+        auto yPos = self.widgets[widx::image].bottom + self.y + 4;
 
         if (_modCost != 0x80000000 && _modCost != 0)
         {

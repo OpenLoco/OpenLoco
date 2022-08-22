@@ -208,10 +208,10 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A5CC
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
         }
 
         // 0x0042A5D7
@@ -500,11 +500,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AA02
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
-            auto yPos = self->widgets[widx::company_major_news].top + self->y;
+            self.draw(context);
+            Common::drawTabs(&self, context);
+            auto yPos = self.widgets[widx::company_major_news].top + self.y;
 
             const string_id newsStringIds[] = {
                 StringIds::company_major_news,
@@ -527,11 +527,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsStringIds[i]);
 
-                    Gfx::drawStringLeft(*context, self->x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
+                    Gfx::drawStringLeft(*context, self.x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
                 }
 
                 {
-                    auto xPos = self->widgets[widx::company_major_news].left + self->x + 1;
+                    auto xPos = self.widgets[widx::company_major_news].left + self.x + 1;
                     auto args = FormatArguments();
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().newsSettings[i])]);
 

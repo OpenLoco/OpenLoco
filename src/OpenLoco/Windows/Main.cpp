@@ -54,9 +54,9 @@ namespace OpenLoco::Ui::Windows::Main
     }
 
     // 0x0043B2E4
-    static void draw(Ui::Window* const window, Gfx::Context* const context)
+    static void draw(Ui::Window& window, Gfx::Context* const context)
     {
-        window->drawViewports(context);
+        window.drawViewports(context);
     }
 
     static void initEvents()

@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::Error
     {
         static WindowEventList events;
 
-        static void draw(Ui::Window* self, Gfx::Context* context);
+        static void draw(Ui::Window& self, Gfx::Context* context);
         static void onPeriodicUpdate(Ui::Window& self);
         static void initEvents();
     }
@@ -204,12 +204,12 @@ namespace OpenLoco::Ui::Windows::Error
     namespace Common
     {
         // 0x00431C05
-        static void draw(Ui::Window* self, Gfx::Context* context)
+        static void draw(Ui::Window& self, Gfx::Context* context)
         {
-            uint16_t x = self->x;
-            uint16_t y = self->y;
-            uint16_t width = self->width;
-            uint16_t height = self->height;
+            uint16_t x = self.x;
+            uint16_t y = self.y;
+            uint16_t width = self.width;
+            uint16_t height = self.height;
             auto skin = ObjectManager::get<InterfaceSkinObject>()->colour_09;
 
             Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
@@ -231,8 +231,8 @@ namespace OpenLoco::Ui::Windows::Error
             }
             else
             {
-                auto xPos = self->widgets[ErrorCompetitor::widx::innerFrame].left + self->x;
-                auto yPos = self->widgets[ErrorCompetitor::widx::innerFrame].top + self->y;
+                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left + self.x;
+                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top + self.y;
 
                 auto company = CompanyManager::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<CompetitorObject>(company->competitorId);
@@ -248,7 +248,7 @@ namespace OpenLoco::Ui::Windows::Error
                     Gfx::drawImage(context, xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                Gfx::drawStringCentredRaw(*context, self->x + 156, self->y + 20, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
+                Gfx::drawStringCentredRaw(*context, self.x + 156, self.y + 20, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
             }
         }
 

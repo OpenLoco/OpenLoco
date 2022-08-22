@@ -111,23 +111,23 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E470
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
-            self->drawViewports(context);
-            Widget::drawViewportCentreButton(context, self, widx::centre_on_viewport);
+            self.draw(context);
+            Common::drawTabs(&self, context);
+            self.drawViewports(context);
+            Widget::drawViewportCentreButton(context, &self, widx::centre_on_viewport);
 
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
             station->getStatusString((char*)buffer);
 
             auto args = FormatArguments();
             args.push(StringIds::buffer_1250);
 
-            const auto& widget = self->widgets[widx::status_bar];
-            const auto x = self->x + widget.left - 1;
-            const auto y = self->y + widget.top - 1;
+            const auto& widget = self.widgets[widx::status_bar];
+            const auto x = self.x + widget.left - 1;
+            const auto y = self.y + widget.top - 1;
             const auto width = widget.width() - 1;
             Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
         }
@@ -358,15 +358,15 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E8DE
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             buffer = StringManager::formatString(buffer, StringIds::accepted_cargo_separator);
 
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
             uint8_t cargoTypeCount = 0;
 
             for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
@@ -391,9 +391,9 @@ namespace OpenLoco::Ui::Windows::Station
 
             *buffer++ = '\0';
 
-            const auto& widget = self->widgets[widx::status_bar];
-            const auto x = self->x + widget.left - 1;
-            const auto y = self->y + widget.top - 1;
+            const auto& widget = self.widgets[widx::status_bar];
+            const auto x = self.x + widget.left - 1;
+            const auto y = self.y + widget.top - 1;
             const auto width = widget.width();
 
             Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::buffer_1250);
@@ -601,10 +601,10 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048ED24
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
         }
 
         // 0x0048EE1A

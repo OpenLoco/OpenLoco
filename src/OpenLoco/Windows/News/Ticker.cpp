@@ -152,9 +152,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429DAA
-    static void draw(Ui::Window* self, Gfx::Context* context)
+    static void draw(Ui::Window& self, Gfx::Context* context)
     {
-        if (self->var_852 != 0)
+        if (self.var_852 != 0)
             return;
 
         if (getPauseFlags() & (1 << 2))
@@ -162,10 +162,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         auto news = MessageManager::get(MessageManager::getActiveIndex());
 
-        auto x = self->x;
-        auto y = self->y;
-        auto width = self->width;
-        auto height = self->height;
+        auto x = self.x;
+        auto y = self.y;
+        auto width = self.width;
+        auto height = self.height;
 
         auto clipped = Gfx::clipContext(*context, { x, y, width, height });
 

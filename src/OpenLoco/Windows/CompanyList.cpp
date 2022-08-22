@@ -431,21 +431,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00435E56
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
             auto args = FormatArguments();
-            if (self->var_83C == 1)
+            if (self.var_83C == 1)
                 args.push(StringIds::company_singular);
             else
                 args.push(StringIds::companies_plural);
 
-            args.push(self->var_83C);
+            args.push(self.var_83C);
 
-            auto xPos = self->x + 3;
-            auto yPos = self->y + self->height - 13;
+            auto xPos = self.x + 3;
+            auto yPos = self.y + self.height - 13;
             Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
@@ -652,15 +652,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436490
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
+            _graphLeft = self.x + 4;
+            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphRight = 520;
-            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
+            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 40;
             _graphYAxisLabelIncrement = 20;
@@ -699,7 +699,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 100;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndLegend(self, context);
+            Common::drawGraphAndLegend(&self, context);
         }
 
         // 0x004361D8
@@ -743,15 +743,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004367B4
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
+            _graphLeft = self.x + 4;
+            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphRight = 525;
-            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
+            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 45;
             _graphYAxisLabelIncrement = 25;
@@ -790,7 +790,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 1000;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndLegend(self, context);
+            Common::drawGraphAndLegend(&self, context);
         }
 
         // 0x00436201
@@ -834,15 +834,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436AD8
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
+            _graphLeft = self.x + 4;
+            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphRight = 545;
-            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
+            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 65;
             _graphYAxisLabelIncrement = 25;
@@ -881,7 +881,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 1000;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndLegend(self, context);
+            Common::drawGraphAndLegend(&self, context);
         }
 
         // 0x00436227
@@ -925,15 +925,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436DFC
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
+            _graphLeft = self.x + 4;
+            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphRight = 570;
-            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
+            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 90;
             _graphYAxisLabelIncrement = 25;
@@ -972,7 +972,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 10000;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndLegend(self, context);
+            Common::drawGraphAndLegend(&self, context);
         }
 
         // 0x0043624D
@@ -1050,15 +1050,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437120
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[Common::widx::panel].top + 14;
+            _graphLeft = self.x + 4;
+            _graphTop = self.y + self.widgets[Common::widx::panel].top + 14;
             _graphRight = 380;
-            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 28;
+            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 28;
             _graphYOffset = 17;
             _graphXOffset = 80;
             _graphYAxisLabelIncrement = 25;
@@ -1095,12 +1095,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD7C = 2;
             _byte_113DD99 = 1;
 
-            Common::drawGraph(self, context);
+            Common::drawGraph(&self, context);
 
-            if (self->var_854 != 0)
+            if (self.var_854 != 0)
             {
                 auto i = 0;
-                while (Utility::bitScanForward(self->var_854) != _graphItemId[i])
+                while (Utility::bitScanForward(self.var_854) != _graphItemId[i])
                 {
                     i++;
                 }
@@ -1112,16 +1112,16 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _dword_113DD8E = _dword_113DD8E | (1 << 2);
 
-                Common::drawGraph(self, context);
+                Common::drawGraph(&self, context);
             }
 
-            auto x = self->width + self->x - 104;
-            auto y = self->y + 52;
+            auto x = self.width + self.x - 104;
+            auto y = self.y + 52;
 
-            drawGraphLegend(self, context, x, y);
+            drawGraphLegend(&self, context, x, y);
 
-            x = self->x + 8;
-            y = self->widgets[Common::widx::panel].top + self->y + 1;
+            x = self.x + 8;
+            y = self.widgets[Common::widx::panel].top + self.y + 1;
 
             auto args = FormatArguments();
             args.push<uint16_t>(100);
@@ -1129,8 +1129,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             Gfx::drawStringLeft(*context, x, y, Colour::black, StringIds::cargo_deliver_graph_title, &args);
 
-            x = self->x + 160;
-            y = self->height + self->y - 13;
+            x = self.x + 160;
+            y = self.height + self.y - 13;
 
             Gfx::drawStringLeft(*context, x, y, Colour::black, StringIds::cargo_transit_time);
         }
@@ -1219,12 +1219,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x0043745A
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            auto y = self->y + 47;
+            auto y = self.y + 47;
 
             for (auto i = 0; i < 3; i++)
             {
@@ -1241,7 +1241,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                         StringIds::water_speed_record,
                     };
 
-                    auto x = self->x + 4;
+                    auto x = self.x + 4;
                     Gfx::drawStringLeft(*context, x, y, Colour::black, string[i], &args);
                 }
                 y += 11;
@@ -1256,10 +1256,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto imageId = competitorObj->images[company->ownerEmotion];
                     imageId = Gfx::recolour(imageId, company->mainColours.primary);
 
-                    auto x = self->x + 4;
+                    auto x = self.x + 4;
                     Gfx::drawImage(context, x, y, imageId);
 
-                    x = self->x + 33;
+                    x = self.x + 33;
                     y += 7;
 
                     auto args = FormatArguments();

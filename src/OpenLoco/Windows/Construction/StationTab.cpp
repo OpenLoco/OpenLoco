@@ -614,15 +614,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049DE40
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
-        Common::drawTabs(self, context);
+        self.draw(context);
+        Common::drawTabs(&self, context);
 
         auto company = CompanyManager::getPlayerCompany();
         auto companyColour = company->mainColours.primary;
-        int16_t xPos = self->widgets[widx::image].left + self->x;
-        int16_t yPos = self->widgets[widx::image].top + self->y;
+        int16_t xPos = self.widgets[widx::image].left + self.x;
+        int16_t yPos = self.widgets[widx::image].top + self.y;
 
         if (_byte_1136063 & (1 << 7))
         {
@@ -671,8 +671,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if (_stationCost != 0x80000000 && _stationCost != 0)
         {
-            xPos = self->x + 69;
-            yPos = self->widgets[widx::image].bottom + self->y + 4;
+            xPos = self.x + 69;
+            yPos = self.widgets[widx::image].bottom + self.y + 4;
 
             auto args = FormatArguments();
             args.push<uint32_t>(_stationCost);
@@ -680,10 +680,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
 
-        xPos = self->x + 3;
-        yPos = self->widgets[widx::image].bottom + self->y + 16;
-        auto width = self->width - 4;
-        Gfx::drawRectInset(*context, xPos, yPos, width, 1, self->getColour(WindowColour::secondary).u8(), (1 << 5));
+        xPos = self.x + 3;
+        yPos = self.widgets[widx::image].bottom + self.y + 16;
+        auto width = self.width - 4;
+        Gfx::drawRectInset(*context, xPos, yPos, width, 1, self.getColour(WindowColour::secondary).u8(), (1 << 5));
 
         if (!(_byte_522096 & (1 << 3)))
             return;
@@ -702,13 +702,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             args.push(station->town);
         }
 
-        xPos = self->x + 69;
-        yPos = self->widgets[widx::image].bottom + self->y + 18;
-        width = self->width - 4;
+        xPos = self.x + 69;
+        yPos = self.widgets[widx::image].bottom + self.y + 18;
+        width = self.width - 4;
         Gfx::drawStringCentredClipped(*context, xPos, yPos, width, Colour::black, StringIds::new_station_buffer, &args);
 
-        xPos = self->x + 2;
-        yPos = self->widgets[widx::image].bottom + self->y + 29;
+        xPos = self.x + 2;
+        yPos = self.widgets[widx::image].bottom + self.y + 29;
         Ui::Point origin = { xPos, yPos };
 
         Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::catchment_area_accepts);
@@ -724,7 +724,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 if (_constructingStationAcceptedCargoTypes & (1 << i))
                 {
-                    auto xPosMax = self->x + self->width - 12;
+                    auto xPosMax = self.x + self.width - 12;
                     if (origin.x <= xPosMax)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
@@ -736,8 +736,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
         }
 
-        xPos = self->x + 2;
-        yPos = self->widgets[widx::image].bottom + self->y + 49;
+        xPos = self.x + 2;
+        yPos = self.widgets[widx::image].bottom + self.y + 49;
         origin = { xPos, yPos };
 
         Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::catchment_area_produces);
@@ -753,7 +753,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 if (_constructingStationProducedCargoTypes & (1 << i))
                 {
-                    auto xPosMax = self->x + self->width - 12;
+                    auto xPosMax = self.x + self.width - 12;
                     if (origin.x <= xPosMax)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);

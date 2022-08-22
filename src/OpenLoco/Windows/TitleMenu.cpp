@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void onUpdate(Window& window);
     static void onTextInput(Window& window, WidgetIndex_t widgetIndex, const char* input);
     static Ui::CursorId onCursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::Context* context);
     static void prepareDraw(Ui::Window& window);
 
     // static loco_global<WindowEventList[1], 0x004f9ec8> _events;
@@ -218,50 +218,50 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x00438EC7
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
         // Draw widgets.
-        window->draw(context);
+        window.draw(context);
 
-        if (window->widgets[Widx::scenario_list_btn].type != Ui::WidgetType::none)
+        if (window.widgets[Widx::scenario_list_btn].type != Ui::WidgetType::none)
         {
-            int16_t x = window->widgets[Widx::scenario_list_btn].left + window->x;
-            int16_t y = window->widgets[Widx::scenario_list_btn].top + window->y;
+            int16_t x = window.widgets[Widx::scenario_list_btn].left + window.x;
+            int16_t y = window.widgets[Widx::scenario_list_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_list_btn))
             {
-                image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
+                image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
             }
 
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
             OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_sparkle);
         }
 
-        if (window->widgets[Widx::load_game_btn].type != Ui::WidgetType::none)
+        if (window.widgets[Widx::load_game_btn].type != Ui::WidgetType::none)
         {
-            int16_t x = window->widgets[Widx::load_game_btn].left + window->x;
-            int16_t y = window->widgets[Widx::load_game_btn].top + window->y;
+            int16_t x = window.widgets[Widx::load_game_btn].left + window.x;
+            int16_t y = window.widgets[Widx::load_game_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::load_game_btn))
             {
-                image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
+                image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
             }
 
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
             OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_save);
         }
 
-        if (window->widgets[Widx::tutorial_btn].type != Ui::WidgetType::none)
+        if (window.widgets[Widx::tutorial_btn].type != Ui::WidgetType::none)
         {
-            int16_t x = window->widgets[Widx::tutorial_btn].left + window->x;
-            int16_t y = window->widgets[Widx::tutorial_btn].top + window->y;
+            int16_t x = window.widgets[Widx::tutorial_btn].left + window.x;
+            int16_t y = window.widgets[Widx::tutorial_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::tutorial_btn))
             {
-                image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
+                image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
             }
 
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
@@ -270,24 +270,24 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_lesson_l);
         }
 
-        if (window->widgets[Widx::scenario_editor_btn].type != Ui::WidgetType::none)
+        if (window.widgets[Widx::scenario_editor_btn].type != Ui::WidgetType::none)
         {
-            int16_t x = window->widgets[Widx::scenario_editor_btn].left + window->x;
-            int16_t y = window->widgets[Widx::scenario_editor_btn].top + window->y;
+            int16_t x = window.widgets[Widx::scenario_editor_btn].left + window.x;
+            int16_t y = window.widgets[Widx::scenario_editor_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_construct_24;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_editor_btn))
             {
-                image_id = globe_construct[((window->var_846 / 2) % globe_construct.size())];
+                image_id = globe_construct[((window.var_846 / 2) % globe_construct.size())];
             }
 
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
         }
 
-        if (window->widgets[Widx::multiplayer_toggle_btn].type != Ui::WidgetType::none)
+        if (window.widgets[Widx::multiplayer_toggle_btn].type != Ui::WidgetType::none)
         {
-            int16_t y = window->widgets[Widx::multiplayer_toggle_btn].top + 3 + window->y;
-            int16_t x = window->width / 2 + window->x;
+            int16_t y = window.widgets[Widx::multiplayer_toggle_btn].top + 3 + window.y;
+            int16_t x = window.width / 2 + window.x;
 
             string_id string = StringIds::single_player_mode;
 

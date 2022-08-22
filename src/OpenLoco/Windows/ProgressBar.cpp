@@ -94,11 +94,11 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     }
     
     // 004CF7A0
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
+        self.draw(context);
 
-        auto clipped = Gfx::clipContext(*context, Ui::Rect(self->x + 2, self->y + 17, self->width - 5, self->height - 19));
+        auto clipped = Gfx::clipContext(*context, Ui::Rect(self.x + 2, self.y + 17, self.width - 5, self.height - 19));
         if (!clipped)
             return;
 

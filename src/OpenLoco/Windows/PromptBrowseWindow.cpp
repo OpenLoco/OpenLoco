@@ -371,27 +371,27 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00445E38
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
-        window->draw(context);
+        window.draw(context);
 
         {
             auto folder = &_displayFolderBuffer[0];
             auto args = getStringPtrFormatArgs(folder);
-            Gfx::drawStringLeft(*context, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, Colour::black, StringIds::window_browse_folder, &args);
+            Gfx::drawStringLeft(*context, window.x + 3, window.y + window.widgets[widx::parent_button].top + 6, Colour::black, StringIds::window_browse_folder, &args);
         }
 
-        auto selectedIndex = window->var_85A;
+        auto selectedIndex = window.var_85A;
         if (selectedIndex != -1)
         {
             auto& selectedFile = _files[selectedIndex];
             if (!fs::is_directory(selectedFile))
             {
-                const auto& widget = window->widgets[widx::scrollview];
+                const auto& widget = window.widgets[widx::scrollview];
 
-                auto width = window->width - widget.right - 8;
-                auto x = window->x + widget.right + 3;
-                auto y = window->y + 45;
+                auto width = window.width - widget.right - 8;
+                auto x = window.x + widget.right + 3;
+                auto y = window.y + 45;
 
                 const std::string nameBuffer = selectedFile.stem().u8string();
                 auto args = getStringPtrFormatArgs(nameBuffer.c_str());
@@ -411,27 +411,27 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     auto saveInfo = *((const S5::SaveDetails**)0x50AEA8);
                     if (saveInfo != (void*)-1)
                     {
-                        drawSavePreview(*window, *context, x, y, width, 201, *saveInfo);
+                        drawSavePreview(window, *context, x, y, width, 201, *saveInfo);
                     }
                 }
                 else if (*_fileType == BrowseFileType::landscape)
                 {
-                    drawLandscapePreview(*window, *context, x, y, width, 129);
+                    drawLandscapePreview(window, *context, x, y, width, 129);
                 }
             }
         }
 
-        const auto& filenameBox = window->widgets[widx::text_filename];
+        const auto& filenameBox = window.widgets[widx::text_filename];
         if (filenameBox.type != WidgetType::none)
         {
             // Draw filename label
-            Gfx::drawStringLeft(*context, window->x + 3, window->y + filenameBox.top + 2, Colour::black, StringIds::window_browse_filename, nullptr);
+            Gfx::drawStringLeft(*context, window.x + 3, window.y + filenameBox.top + 2, Colour::black, StringIds::window_browse_filename, nullptr);
 
             // Clip to text box
-            auto context2 = Gfx::clipContext(*context, Ui::Rect(window->x + filenameBox.left + 1, window->y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
+            auto context2 = Gfx::clipContext(*context, Ui::Rect(window.x + filenameBox.left + 1, window.y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
             if (context2)
             {
-                drawTextInput(window, *context2, inputSession.buffer.c_str(), inputSession.cursorPosition, (inputSession.cursorFrame & 0x10) == 0);
+                drawTextInput(&window, *context2, inputSession.buffer.c_str(), inputSession.cursorPosition, (inputSession.cursorFrame & 0x10) == 0);
             }
         }
     }

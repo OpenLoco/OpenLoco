@@ -907,21 +907,21 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B226D
-        static void draw(Window* const self, Gfx::Context* const context)
+        static void draw(Window& self, Gfx::Context* const context)
         {
-            self->draw(context);
+            self.draw(context);
             Common::drawTabs(self, context);
 
-            Widget& pickupButton = self->widgets[widx::pickup];
+            Widget& pickupButton = self.widgets[widx::pickup];
             if (pickupButton.type != WidgetType::none)
             {
-                if ((pickupButton.image & 0x20000000) != 0 && !self->isDisabled(widx::pickup))
+                if ((pickupButton.image & 0x20000000) != 0 && !self.isDisabled(widx::pickup))
                 {
                     Gfx::drawImage(
                         context,
-                        self->x + pickupButton.left,
-                        self->y + pickupButton.top,
-                        Gfx::recolour(pickupButton.image, CompanyManager::getCompanyColour(self->owner)));
+                        self.x + pickupButton.left,
+                        self.y + pickupButton.top,
+                        Gfx::recolour(pickupButton.image, CompanyManager::getCompanyColour(self.owner)));
                 }
             }
 
@@ -946,57 +946,57 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 Gfx::drawStringLeftClipped(
                     *context,
-                    self->x + self->widgets[widx::status].left - 1,
-                    self->y + self->widgets[widx::status].top - 1,
-                    self->widgets[widx::status].width() - 1,
+                    self.x + self.widgets[widx::status].left - 1,
+                    self.y + self.widgets[widx::status].top - 1,
+                    self.widgets[widx::status].width() - 1,
                     Colour::black,
                     strFormat,
                     &args);
             }
 
-            Widget& speedWidget = self->widgets[widx::speedControl];
+            Widget& speedWidget = self.widgets[widx::speedControl];
             if (speedWidget.type != WidgetType::none)
             {
                 Gfx::drawImage(
                     context,
-                    self->x + speedWidget.left,
-                    self->y + speedWidget.top + 10,
-                    Gfx::recolour(ImageIds::speed_control_track, self->getColour(WindowColour::secondary).c()));
+                    self.x + speedWidget.left,
+                    self.y + speedWidget.top + 10,
+                    Gfx::recolour(ImageIds::speed_control_track, self.getColour(WindowColour::secondary).c()));
 
                 Gfx::drawStringCentred(
                     *context,
-                    self->x + speedWidget.mid_x(),
-                    self->y + speedWidget.top + 4,
+                    self.x + speedWidget.mid_x(),
+                    self.y + speedWidget.top + 4,
                     Colour::black,
                     StringIds::tiny_power);
 
                 Gfx::drawStringCentred(
                     *context,
-                    self->x + speedWidget.mid_x(),
-                    self->y + speedWidget.bottom - 10,
+                    self.x + speedWidget.mid_x(),
+                    self.y + speedWidget.bottom - 10,
                     Colour::black,
                     StringIds::tiny_brake);
 
                 Gfx::drawImage(
                     context,
-                    self->x + speedWidget.left + 1,
-                    self->y + speedWidget.top + 57 - veh->var_6E,
-                    Gfx::recolour(ImageIds::speed_control_thumb, self->getColour(WindowColour::secondary).c()));
+                    self.x + speedWidget.left + 1,
+                    self.y + speedWidget.top + 57 - veh->var_6E,
+                    Gfx::recolour(ImageIds::speed_control_thumb, self.getColour(WindowColour::secondary).c()));
             }
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                self->drawViewports(context);
+                self.drawViewports(context);
                 Widget::drawViewportCentreButton(context, self, widx::centreViewport);
             }
-            else if (Input::isToolActive(self->type, self->number))
+            else if (Input::isToolActive(self.type, self.number))
             {
                 FormatArguments args = {};
                 args.push(StringIds::getVehicleType(veh->vehicleType));
                 Ui::Point origin;
-                Widget& button = self->widgets[widx::viewport];
-                origin.x = self->x + button.mid_x();
-                origin.y = self->y + button.mid_y();
+                Widget& button = self.widgets[widx::viewport];
+                origin.x = self.x + button.mid_x();
+                origin.y = self.y + button.mid_y();
                 Gfx::drawStringCentredWrapped(
                     *context,
                     origin,

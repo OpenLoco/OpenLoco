@@ -104,9 +104,9 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         return window;
     }
 
-    static void draw(Window* const self, Gfx::Context* const context)
+    static void draw(Window& self, Gfx::Context* const context)
     {
-        self->draw(context);
+        self.draw(context);
     }
 
     // 0x0043C3F4

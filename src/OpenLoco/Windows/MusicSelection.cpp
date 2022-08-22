@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static WindowEventList _events;
 
-    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::Context* context);
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
     static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
@@ -91,10 +91,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C165D
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
         // Draw widgets.
-        window->draw(context);
+        window.draw(context);
     }
 
     // 0x004C1663

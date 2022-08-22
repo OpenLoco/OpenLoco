@@ -114,10 +114,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
-            window->draw(context);
-            drawTabs(window, context);
+            window.draw(context);
+            drawTabs(&window, context);
         }
 
         static void prepareDraw(Window& window)
@@ -169,14 +169,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043DC30
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::start_year].top,
+                window.x + 10,
+                window.y + window.widgets[widx::start_year].top,
                 Colour::black,
                 StringIds::start_year);
         }
@@ -370,42 +370,42 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043DF89
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::generator].top,
+                window.x + 10,
+                window.y + window.widgets[widx::generator].top,
                 Colour::black,
                 StringIds::generator);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::sea_level].top,
+                window.x + 10,
+                window.y + window.widgets[widx::sea_level].top,
                 Colour::black,
                 StringIds::sea_level);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::min_land_height].top,
+                window.x + 10,
+                window.y + window.widgets[widx::min_land_height].top,
                 Colour::black,
                 StringIds::min_land_height);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::topography_style].top,
+                window.x + 10,
+                window.y + window.widgets[widx::topography_style].top,
                 Colour::black,
                 StringIds::topography_style);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::hill_density].top,
+                window.x + 10,
+                window.y + window.widgets[widx::hill_density].top,
                 Colour::black,
                 StringIds::hill_density);
         }
@@ -752,63 +752,63 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043E53A
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::number_of_forests].top,
+                window.x + 10,
+                window.y + window.widgets[widx::number_of_forests].top,
                 Colour::black,
                 StringIds::number_of_forests);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::min_forest_radius].top,
+                window.x + 10,
+                window.y + window.widgets[widx::min_forest_radius].top,
                 Colour::black,
                 StringIds::min_forest_radius);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::max_forest_radius].top,
+                window.x + 10,
+                window.y + window.widgets[widx::max_forest_radius].top,
                 Colour::black,
                 StringIds::max_forest_radius);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::min_forest_density].top,
+                window.x + 10,
+                window.y + window.widgets[widx::min_forest_density].top,
                 Colour::black,
                 StringIds::min_forest_density);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::max_forest_density].top,
+                window.x + 10,
+                window.y + window.widgets[widx::max_forest_density].top,
                 Colour::black,
                 StringIds::max_forest_density);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::number_random_trees].top,
+                window.x + 10,
+                window.y + window.widgets[widx::number_random_trees].top,
                 Colour::black,
                 StringIds::number_random_trees);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::min_altitude_for_trees].top,
+                window.x + 10,
+                window.y + window.widgets[widx::min_altitude_for_trees].top,
                 Colour::black,
                 StringIds::min_altitude_for_trees);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::max_altitude_for_trees].top,
+                window.x + 10,
+                window.y + window.widgets[widx::max_altitude_for_trees].top,
                 Colour::black,
                 StringIds::max_altitude_for_trees);
         }
@@ -990,21 +990,21 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043E9A3
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::number_of_towns].top,
+                window.x + 10,
+                window.y + window.widgets[widx::number_of_towns].top,
                 Colour::black,
                 StringIds::number_of_towns);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::max_town_size].top,
+                window.x + 10,
+                window.y + window.widgets[widx::max_town_size].top,
                 Colour::black,
                 StringIds::max_town_size);
         }
@@ -1131,14 +1131,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043EB9D
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::num_industries].top,
+                window.x + 10,
+                window.y + window.widgets[widx::num_industries].top,
                 Colour::black,
                 StringIds::number_of_industries);
         }

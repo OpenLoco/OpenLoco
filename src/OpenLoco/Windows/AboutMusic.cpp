@@ -91,10 +91,10 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043B8B8
-    static void draw(Ui::Window* const window, Gfx::Context* const context)
+    static void draw(Ui::Window& window, Gfx::Context* const context)
     {
         // Draw widgets.
-        window->draw(context);
+        window.draw(context);
     }
 
     // 0x0043B8BE

@@ -94,7 +94,7 @@ namespace OpenLoco::Ui::Windows::StationList
     loco_global<uint16_t[4], 0x112C826> _common_format_args;
 
     static Ui::CursorId cursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::Context* context);
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
     static void event_08(Window& window);
     static void event_09(Window& window);
@@ -537,26 +537,26 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004914D8
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
         // Draw widgets and tabs.
-        window->draw(context);
-        drawTabs(window, context);
+        window.draw(context);
+        drawTabs(&window, context);
 
         // Draw company owner image.
-        auto company = CompanyManager::get(CompanyId(window->number));
+        auto company = CompanyManager::get(CompanyId(window.number));
         auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
         uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
-        uint16_t x = window->x + window->widgets[widx::company_select].left + 1;
-        uint16_t y = window->y + window->widgets[widx::company_select].top + 1;
+        uint16_t x = window.x + window.widgets[widx::company_select].left + 1;
+        uint16_t y = window.y + window.widgets[widx::company_select].top + 1;
         Gfx::drawImage(context, x, y, image);
 
         // TODO: locale-based pluralisation.
-        _common_format_args[0] = window->var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural;
-        _common_format_args[1] = window->var_83C;
+        _common_format_args[0] = window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural;
+        _common_format_args[1] = window.var_83C;
 
         // Draw number of stations.
-        auto origin = Ui::Point(window->x + 4, window->y + window->height - 12);
+        auto origin = Ui::Point(window.x + 4, window.y + window.height - 12);
         Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::black_stringid, &*_common_format_args);
     }
 

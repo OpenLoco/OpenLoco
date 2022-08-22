@@ -152,12 +152,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x004439AF
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        Gfx::drawRectInset(*context, self->x, self->y + 20, self->width, 41, self->getColour(WindowColour::primary).u8(), 0);
+        Gfx::drawRectInset(*context, self.x, self.y + 20, self.width, 41, self.getColour(WindowColour::primary).u8(), 0);
 
         // Draw widgets.
-        self->draw(context);
+        self.draw(context);
 
         static const string_id scenarioGroupIds[] = {
             StringIds::scenario_group_beginner,
@@ -170,23 +170,23 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Draw tab captions.
         for (int i = 0; i < 5; i++)
         {
-            Widget& widget = self->widgets[widx::tab0 + i];
+            Widget& widget = self.widgets[widx::tab0 + i];
             if (widget.type == WidgetType::none)
                 continue;
 
-            const auto offset = self->currentTab == i ? 1 : 0;
-            auto origin = Ui::Point(widget.mid_x() + self->x, widget.mid_y() + self->y - 3 - offset);
+            const auto offset = self.currentTab == i ? 1 : 0;
+            auto origin = Ui::Point(widget.mid_x() + self.x, widget.mid_y() + self.y - 3 - offset);
             const string_id caption = scenarioGroupIds[i];
 
             Gfx::drawStringCentredWrapped(*context, origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, &caption);
         }
 
         // Scenario selected?
-        if (self->info == 0 || self->info == 0xFFFFFFFF)
+        if (self.info == 0 || self.info == 0xFFFFFFFF)
             return;
 
         using namespace ScenarioManager;
-        auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
+        auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self.info);
 
         // Check if current currency object needs to be changed.
         auto isLoaded = ObjectManager::findObjectHandle(scenarioInfo->currency);
@@ -199,9 +199,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             call(0x0046E07B); // load currency gfx
         }
 
-        const int16_t baseX = self->x + self->widgets[widx::list].right + 4;
-        const int16_t baseY = self->y + self->widgets[widx::panel].top + 5;
-        const int16_t colWidth = self->widgets[widx::panel].right - self->widgets[widx::list].right - 6;
+        const int16_t baseX = self.x + self.widgets[widx::list].right + 4;
+        const int16_t baseY = self.y + self.widgets[widx::panel].top + 5;
+        const int16_t colWidth = self.widgets[widx::panel].right - self.widgets[widx::list].right - 6;
 
         int16_t x = baseX, y = baseY;
 
@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Outline for preview image
         {
             x = baseX + 20;
-            Gfx::drawRectInset(*context, x, y, 130, 130, self->getColour(WindowColour::secondary).u8(), 0x30);
+            Gfx::drawRectInset(*context, x, y, 130, 130, self.getColour(WindowColour::secondary).u8(), 0x30);
 
             x += 1;
             y += 1;
@@ -256,7 +256,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             y += 1;
 
             // No preview image -- a placeholder will have to do.
-            auto image = Gfx::recolour(ImageIds::random_map_watermark, self->getColour(WindowColour::secondary).c());
+            auto image = Gfx::recolour(ImageIds::random_map_watermark, self.getColour(WindowColour::secondary).c());
             Gfx::drawImage(context, x, y, image);
 
             x += 64;

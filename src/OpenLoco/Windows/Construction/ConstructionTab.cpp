@@ -2703,12 +2703,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049CF36
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
-        Common::drawTabs(self, context);
+        self.draw(context);
+        Common::drawTabs(&self, context);
 
-        if (self->widgets[widx::bridge].type != WidgetType::none)
+        if (self.widgets[widx::bridge].type != WidgetType::none)
         {
             if (_lastSelectedBridge != 0xFF)
             {
@@ -2717,15 +2717,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     auto company = CompanyManager::getPlayerCompany();
                     auto imageId = Gfx::recolour(bridgeObj->image, company->mainColours.primary);
-                    auto x = self->x + self->widgets[widx::bridge].left + 2;
-                    auto y = self->y + self->widgets[widx::bridge].top + 1;
+                    auto x = self.x + self.widgets[widx::bridge].left + 2;
+                    auto y = self.y + self.widgets[widx::bridge].top + 1;
 
                     Gfx::drawImage(context, x, y, imageId);
                 }
             }
         }
 
-        if (self->widgets[widx::construct].type == WidgetType::none)
+        if (self.widgets[widx::construct].type == WidgetType::none)
             return;
 
         if (_trackType & (1 << 7))
@@ -2742,10 +2742,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _lastSelectedTrackPieceId = road->id;
             _word_1135FD6 = (_lastSelectedBridge << 8) & 0x1F;
 
-            auto x = self->x + self->widgets[widx::construct].left + 1;
-            auto y = self->y + self->widgets[widx::construct].top + 1;
-            auto width = self->widgets[widx::construct].width();
-            auto height = self->widgets[widx::construct].height();
+            auto x = self.x + self.widgets[widx::construct].left + 1;
+            auto y = self.y + self.widgets[widx::construct].top + 1;
+            auto width = self.widgets[widx::construct].width();
+            auto height = self.widgets[widx::construct].height();
 
             auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
             if (clipped)
@@ -2771,11 +2771,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto pos2D = gameToScreen(pos3D, WindowManager::getCurrentRotation());
 
                 Point pos = { pos2D.x, pos2D.y };
-                drawRoadCost(self, &*clipped, context, pos, width, height);
+                drawRoadCost(&self, &*clipped, context, pos, width, height);
             }
             else
             {
-                drawCostString(self, context);
+                drawCostString(&self, context);
             }
         }
         else
@@ -2792,10 +2792,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _lastSelectedTrackPieceId = track->id;
             _word_1135FD6 = (_lastSelectedBridge << 8) & 0x1F;
 
-            auto x = self->x + self->widgets[widx::construct].left + 1;
-            auto y = self->y + self->widgets[widx::construct].top + 1;
-            auto width = self->widgets[widx::construct].width();
-            auto height = self->widgets[widx::construct].height();
+            auto x = self.x + self.widgets[widx::construct].left + 1;
+            auto y = self.y + self.widgets[widx::construct].top + 1;
+            auto width = self.widgets[widx::construct].width();
+            auto height = self.widgets[widx::construct].height();
 
             auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
             if (clipped)
@@ -2821,11 +2821,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto pos2D = gameToScreen(pos3D, WindowManager::getCurrentRotation());
 
                 Point pos = { pos2D.x, pos2D.y };
-                drawTrackCost(self, &*clipped, context, pos, width, height);
+                drawTrackCost(&self, &*clipped, context, pos, width, height);
             }
             else
             {
-                drawCostString(self, context);
+                drawCostString(&self, context);
             }
         }
     }

@@ -195,9 +195,9 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CD00E
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
+            self.draw(context);
             _windowDropdownOnpaintCellX = 0;
             _windowDropdownOnpaintCellY = 0;
 
@@ -207,8 +207,8 @@ namespace OpenLoco::Ui::Dropdown
                 {
                     if (itemCount == _dropdownHighlightedIndex)
                     {
-                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
-                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
+                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
                         Gfx::drawRect(*context, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
                     }
 
@@ -230,7 +230,7 @@ namespace OpenLoco::Ui::Dropdown
                                 }
                             }
 
-                            auto colour = self->getColour(WindowColour::primary).opaque();
+                            auto colour = self.getColour(WindowColour::primary).opaque();
 
                             if (itemCount == _dropdownHighlightedIndex)
                             {
@@ -241,21 +241,21 @@ namespace OpenLoco::Ui::Dropdown
                             {
                                 if (itemCount < 32)
                                 {
-                                    colour = self->getColour(WindowColour::primary).opaque().inset();
+                                    colour = self.getColour(WindowColour::primary).opaque().inset();
                                 }
                             }
 
-                            auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
-                            auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 1;
-                            auto width = self->width - 5;
-                            sub_494BF6(self, context, dropdownItemFormat, x, y, width, colour, args);
+                            auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                            auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 1;
+                            auto width = self.width - 5;
+                            sub_494BF6(&self, context, dropdownItemFormat, x, y, width, colour, args);
                         }
                     }
 
                     if (dropdownItemFormat == (string_id)-2 || dropdownItemFormat == StringIds::null)
                     {
-                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
-                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
+                        auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                        auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
 
                         auto imageId = *(uint32_t*)&args;
                         if (dropdownItemFormat == (string_id)-2 && itemCount == _dropdownHighlightedIndex)
@@ -267,17 +267,17 @@ namespace OpenLoco::Ui::Dropdown
                 }
                 else
                 {
-                    auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
-                    auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 1 + _dropdownItemHeight / 2;
+                    auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
+                    auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 1 + _dropdownItemHeight / 2;
 
-                    if (!self->getColour(WindowColour::primary).isTranslucent())
+                    if (!self.getColour(WindowColour::primary).isTranslucent())
                     {
-                        Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self->getColour(WindowColour::primary).c(), 3));
-                        Gfx::drawRect(*context, x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self->getColour(WindowColour::primary).c(), 7));
+                        Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 3));
+                        Gfx::drawRect(*context, x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 7));
                     }
                     else
                     {
-                        uint32_t colour = enumValue(Colours::getTranslucent(self->getColour(WindowColour::primary).c())) | (1 << 25);
+                        uint32_t colour = enumValue(Colours::getTranslucent(self.getColour(WindowColour::primary).c())) | (1 << 25);
                         colour++; // Gets ExtColour::translucentXXX2 highlight
                         Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++; // Gets ExtColour::translucentXXX0 shadow

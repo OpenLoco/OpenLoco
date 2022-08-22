@@ -102,13 +102,13 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         StringManager::setString(StringIds::buffer_1250, _text.c_str());
     }
 
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
+        self.draw(context);
 
-        uint16_t x = self->x + (self->width / 2);
-        uint16_t y = self->y + (self->height / 2);
-        uint16_t width = self->width;
+        uint16_t x = self.x + (self.width / 2);
+        uint16_t y = self.y + (self.height / 2);
+        uint16_t width = self.width;
         Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::buffer_1250, nullptr);
     }
 

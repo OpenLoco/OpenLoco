@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
     }
 
     // 0x00439B4A
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
         static constexpr string_id titleStringIds[] = {
             StringIds::tutorial_1_title,
@@ -71,12 +71,12 @@ namespace OpenLoco::Ui::Windows::Tutorial
         auto tutorialNumber = OpenLoco::Tutorial::getTutorialNumber();
         auto args = FormatArguments::common(titleStringIds[tutorialNumber]);
 
-        auto& widget = self->widgets[Widx::frame];
-        auto yPos = self->y + widget.top + 4;
-        Gfx::drawStringCentred(*context, self->x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_text, &args);
+        auto& widget = self.widgets[Widx::frame];
+        auto yPos = self.y + widget.top + 4;
+        Gfx::drawStringCentred(*context, self.x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_text, &args);
 
         yPos += 10;
-        Gfx::drawStringCentred(*context, self->x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
+        Gfx::drawStringCentred(*context, self.x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
     }
 
     static void initEvents()

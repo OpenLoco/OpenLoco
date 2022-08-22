@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     static WindowEventList _events;
 
     static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
-    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::Context* context);
 
     Window* open()
     {
@@ -53,9 +53,9 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     // 0x00439298
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
-        Gfx::drawImage(context, window->x, window->y, ImageIds::locomotion_logo);
+        Gfx::drawImage(context, window.x, window.y, ImageIds::locomotion_logo);
     }
 
     // 0x004392AD

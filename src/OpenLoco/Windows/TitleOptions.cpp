@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
     static WindowEventList _events;
 
     static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
-    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::Context* context);
 
     Window* open()
     {
@@ -54,18 +54,18 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedSeaGreen).translucent());
 
         return window;
-    }
+    }   
 
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
         // Draw widgets.
-        window->draw(context);
+        window.draw(context);
 
-        int16_t x = window->x + window->width / 2;
-        int16_t y = window->y + window->widgets[Widx::options_button].top + 2;
+        int16_t x = window.x + window.width / 2;
+        int16_t y = window.y + window.widgets[Widx::options_button].top + 2;
         Ui::Point origin = { x, y };
 
-        Gfx::drawStringCentredWrapped(*context, origin, window->width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
+        Gfx::drawStringCentredWrapped(*context, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
     }
 
     static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)

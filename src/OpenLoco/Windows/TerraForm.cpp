@@ -692,15 +692,15 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BB8C9
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            auto treeId = self->var_846;
+            auto treeId = self.var_846;
             if (treeId == 0xFFFF)
             {
-                treeId = self->rowHover;
+                treeId = self.rowHover;
                 if (treeId == 0xFFFF)
                     return;
             }
@@ -708,7 +708,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto treeObj = ObjectManager::get<TreeObject>(treeId);
 
             uint32_t treeCost = 0x80000000;
-            if (self->var_846 == 0xFFFF)
+            if (self.var_846 == 0xFFFF)
             {
                 treeCost = _lastTreeCost;
                 if (treeCost == 0x80000000)
@@ -725,13 +725,13 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (!isEditorMode())
             {
-                auto xPos = self->x + 3 + self->width - 17;
-                auto yPos = self->y + self->height - 13;
+                auto xPos = self.x + 3 + self.width - 17;
+                auto yPos = self.y + self.height - 13;
                 Gfx::drawStringRight(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
-            auto xPos = self->x + 3;
-            auto yPos = self->y + self->height - 13;
-            auto width = self->width - 19 - xPos;
+            auto xPos = self.x + 3;
+            auto yPos = self.y + self.height - 13;
+            auto width = self.width - 19 - xPos;
             Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
         }
 
@@ -1043,10 +1043,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC5E7
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
             if (_raiseLandCost == 0x80000000)
                 return;
@@ -1054,10 +1054,10 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (_raiseLandCost == 0)
                 return;
 
-            auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
+            auto xPos = self.widgets[widx::tool_area].left + self.widgets[widx::tool_area].right;
             xPos /= 2;
-            xPos += self->x;
-            auto yPos = self->widgets[widx::tool_area].bottom + self->y + 5;
+            xPos += self.x;
+            auto yPos = self.widgets[widx::tool_area].bottom + self.y + 5;
 
             auto args = FormatArguments();
             args.push<uint32_t>(_raiseLandCost);
@@ -1545,20 +1545,20 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC909
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto imgId = skin->img;
-            self->widgets[widx::paint_mode].image = imgId + InterfaceSkin::ImageIds::tab_colour_scheme_frame0;
+            self.widgets[widx::paint_mode].image = imgId + InterfaceSkin::ImageIds::tab_colour_scheme_frame0;
 
-            self->draw(context);
+            self.draw(context);
 
-            Common::drawTabs(self, context);
+            Common::drawTabs(&self, context);
 
-            auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
+            auto xPos = self.widgets[widx::tool_area].left + self.widgets[widx::tool_area].right;
             xPos /= 2;
-            xPos += self->x;
-            auto yPos = self->widgets[widx::tool_area].bottom + self->y + 28;
+            xPos += self.x;
+            auto yPos = self.widgets[widx::tool_area].bottom + self.y + 28;
 
             if (_raiseLandCost != 0x80000000)
             {
@@ -1830,15 +1830,15 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCCFF
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
+            auto xPos = self.widgets[widx::tool_area].left + self.widgets[widx::tool_area].right;
             xPos /= 2;
-            xPos += self->x;
-            auto yPos = self->widgets[widx::tool_area].bottom + self->y + 5;
+            xPos += self.x;
+            auto yPos = self.widgets[widx::tool_area].bottom + self.y + 5;
 
             if (_raiseWaterCost != 0x80000000)
             {
@@ -2271,23 +2271,23 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC0C2
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            auto wallId = self->var_846;
+            auto wallId = self.var_846;
             if (wallId == 0xFFFF)
             {
-                wallId = self->rowHover;
+                wallId = self.rowHover;
                 if (wallId == 0xFFFF)
                     return;
             }
 
             auto wallObj = ObjectManager::get<WallObject>(wallId);
-            auto xPos = self->x + 3;
-            auto yPos = self->y + self->height - 13;
-            auto width = self->width - 19;
+            auto xPos = self.x + 3;
+            auto yPos = self.y + self.height - 13;
+            auto width = self.width - 19;
 
             Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
         }

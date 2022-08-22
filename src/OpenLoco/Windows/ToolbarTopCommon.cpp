@@ -35,19 +35,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     static loco_global<uint8_t[18], 0x0050A006> available_objects;
 
     // 0x00439DE4
-    void draw(Window* self, Gfx::Context* context)
+    void draw(Window& self, Gfx::Context* context)
     {
         // Draw widgets.
-        self->draw(context);
+        self.draw(context);
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
         auto lastRoadOption = LastGameOptionManager::getLastRoad();
 
-        if (self->widgets[Widx::road_menu].type != WidgetType::none && lastRoadOption != LastGameOptionManager::kNoLastOption)
+        if (self.widgets[Widx::road_menu].type != WidgetType::none && lastRoadOption != LastGameOptionManager::kNoLastOption)
         {
-            uint32_t x = self->widgets[Widx::road_menu].left + self->x;
-            uint32_t y = self->widgets[Widx::road_menu].top + self->y;
+            uint32_t x = self.widgets[Widx::road_menu].left + self.x;
+            uint32_t y = self.widgets[Widx::road_menu].top + self.y;
             uint32_t fgImage = 0;
 
             // Figure out what icon to show on the button face.
@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
             y--;
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t bgImage = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self->getColour(WindowColour::tertiary).c());
+            uint32_t bgImage = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self.getColour(WindowColour::tertiary).c());
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Widx::road_menu))
             {
@@ -75,7 +75,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
             Gfx::drawImage(context, x, y, fgImage);
 
-            y = self->widgets[Widx::road_menu].top + self->y;
+            y = self.widgets[Widx::road_menu].top + self.y;
             Gfx::drawImage(context, x, y, bgImage);
         }
     }

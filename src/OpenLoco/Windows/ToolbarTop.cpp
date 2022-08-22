@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void onMouseDown(Window& window, WidgetIndex_t widgetIndex);
     static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
     static void prepareDraw(Window& window);
-    static void draw(Window* window, Gfx::Context* context);
+    static void draw(Window& window, Gfx::Context* context);
 
     // 0x00438B26
     void open()
@@ -736,16 +736,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x00439DE4
-    static void draw(Window* window, Gfx::Context* context)
+    static void draw(Window& window, Gfx::Context* context)
     {
         Common::draw(window, context);
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
-        if (window->widgets[Common::Widx::railroad_menu].type != WidgetType::none)
+        if (window.widgets[Common::Widx::railroad_menu].type != WidgetType::none)
         {
-            uint32_t x = window->widgets[Common::Widx::railroad_menu].left + window->x;
-            uint32_t y = window->widgets[Common::Widx::railroad_menu].top + window->y;
+            uint32_t x = window.widgets[Common::Widx::railroad_menu].left + window.x;
+            uint32_t y = window.widgets[Common::Widx::railroad_menu].top + window.y;
             uint32_t fg_image = 0;
 
             // Figure out what icon to show on the button face.
@@ -763,7 +763,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             }
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->getColour(WindowColour::tertiary).c());
+            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window.getColour(WindowColour::tertiary).c());
 
             y--;
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::railroad_menu))
@@ -774,13 +774,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             Gfx::drawImage(context, x, y, fg_image);
 
-            y = window->widgets[Common::Widx::railroad_menu].top + window->y;
+            y = window.widgets[Common::Widx::railroad_menu].top + window.y;
             Gfx::drawImage(context, x, y, bg_image);
         }
 
         {
-            uint32_t x = window->widgets[Common::Widx::vehicles_menu].left + window->x;
-            uint32_t y = window->widgets[Common::Widx::vehicles_menu].top + window->y;
+            uint32_t x = window.widgets[Common::Widx::vehicles_menu].left + window.x;
+            uint32_t y = window.widgets[Common::Widx::vehicles_menu].top + window.y;
 
             static const uint32_t button_face_image_ids[] = {
                 InterfaceSkin::ImageIds::vehicle_train_frame_0,
@@ -793,7 +793,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
             uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(LastGameOptionManager::getLastVehicleType())], companyColour);
-            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->getColour(WindowColour::quaternary).c());
+            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window.getColour(WindowColour::quaternary).c());
 
             y--;
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::vehicles_menu))
@@ -804,13 +804,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             Gfx::drawImage(context, x, y, fg_image);
 
-            y = window->widgets[Common::Widx::vehicles_menu].top + window->y;
+            y = window.widgets[Common::Widx::vehicles_menu].top + window.y;
             Gfx::drawImage(context, x, y, bg_image);
         }
 
         {
-            uint32_t x = window->widgets[Common::Widx::build_vehicles_menu].left + window->x;
-            uint32_t y = window->widgets[Common::Widx::build_vehicles_menu].top + window->y;
+            uint32_t x = window.widgets[Common::Widx::build_vehicles_menu].left + window.x;
+            uint32_t y = window.widgets[Common::Widx::build_vehicles_menu].top + window.y;
 
             static const uint32_t build_vehicle_images[] = {
                 InterfaceSkin::ImageIds::toolbar_build_vehicle_train,

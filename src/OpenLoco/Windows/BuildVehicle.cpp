@@ -913,15 +913,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2F23
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
-        window->draw(context);
-        drawTransportTypeTabs(window, context);
-        drawTrackTypeTabs(window, context);
+        window.draw(context);
+        drawTransportTypeTabs(&window, context);
+        drawTrackTypeTabs(&window, context);
 
         {
-            auto x = window->x + 2;
-            auto y = window->y + window->height - 13;
+            auto x = window.x + 2;
+            auto y = window.y + window.height - 13;
             auto bottomLeftMessage = StringIds::select_new_vehicle;
             FormatArguments args{};
             if (_buildTargetVehicle != -1)
@@ -935,15 +935,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            Gfx::drawStringLeftClipped(*context, x, y, window->width - 186, Colour::black, bottomLeftMessage, &args);
+            Gfx::drawStringLeftClipped(*context, x, y, window.width - 186, Colour::black, bottomLeftMessage, &args);
         }
 
-        if (window->rowHover == -1)
+        if (window.rowHover == -1)
         {
             return;
         }
 
-        auto vehicleObj = ObjectManager::get<VehicleObject>(window->rowHover);
+        auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
 
         {
@@ -966,7 +966,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             args.push(vehicleObj->designed);
 
             const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-            auto unlocked = company->isVehicleIndexUnlocked(window->rowHover);
+            auto unlocked = company->isVehicleIndexUnlocked(window.rowHover);
             buffer = StringManager::formatString(
                 buffer,
                 unlocked ? StringIds::stats_designed : StringIds::stats_proposed_design,
@@ -1059,8 +1059,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         vehicleObj->getCargoString(buffer);
 
-        auto x = window->widgets[widx::scrollview_vehicle_selection].right + window->x + 2;
-        auto y = window->widgets[widx::scrollview_vehicle_preview].bottom + window->y + 2;
+        auto x = window.widgets[widx::scrollview_vehicle_selection].right + window.x + 2;
+        auto y = window.widgets[widx::scrollview_vehicle_preview].bottom + window.y + 2;
         Gfx::drawStringLeftWrapped(*context, x, y, 180, Colour::black, StringIds::buffer_1250);
     }
 

@@ -92,9 +92,9 @@ namespace OpenLoco::S5
     }
 
     // 0x0045A0B3
-    static void previewWindowDraw(Window* w, Gfx::Context* context)
+    static void previewWindowDraw(Window& w, Gfx::Context* context)
     {
-        for (auto viewport : w->viewports)
+        for (auto viewport : w.viewports)
         {
             if (viewport != nullptr)
             {
