@@ -1119,6 +1119,7 @@ namespace OpenLoco::Audio
             auto buffer = loadMusicSample(mi.pathId);
             if (_channels[enumValue(ChannelId::bgm)].load(*buffer))
             {
+                _channels[enumValue(ChannelId::bgm)].setVolume(Config::get().volume);
                 _musicCurrentChannel = ChannelId::bgm;
                 if (!_channels[enumValue(_musicCurrentChannel)].play(false))
                 {
