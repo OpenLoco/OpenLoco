@@ -600,17 +600,17 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C211C
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
-        drawTabs(self, context);
+        self.draw(context);
+        drawTabs(&self, context);
 
         // Draw company owner image.
-        auto company = CompanyManager::get(CompanyId(self->number));
+        auto company = CompanyManager::get(CompanyId(self.number));
         auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
         uint32_t image = Gfx::recolour(competitorObj->images[company->ownerEmotion], company->mainColours.primary);
-        uint16_t x = self->x + self->widgets[Widx::company_select].left + 1;
-        uint16_t y = self->y + self->widgets[Widx::company_select].top + 1;
+        uint16_t x = self.x + self.widgets[Widx::company_select].left + 1;
+        uint16_t y = self.y + self.widgets[Widx::company_select].top + 1;
         Gfx::drawImage(context, x, y, image);
 
         static constexpr std::pair<string_id, string_id> typeToFooterStringIds[]{
@@ -625,11 +625,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
         FormatArguments args = {};
 
         {
-            auto& footerStringPair = typeToFooterStringIds[self->currentTab];
-            string_id footerStringId = self->var_83C == 1 ? footerStringPair.first : footerStringPair.second;
+            auto& footerStringPair = typeToFooterStringIds[self.currentTab];
+            string_id footerStringId = self.var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
-            args = FormatArguments::common(footerStringId, self->var_83C);
-            Gfx::drawStringLeft(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
+            args = FormatArguments::common(footerStringId, self.var_83C);
+            Gfx::drawStringLeft(*context, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::black_stringid, &args);
         }
 
         static constexpr std::array<string_id, 3> typeToFilterStringIds{
@@ -640,22 +640,22 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         {
             // Show current filter type
-            string_id filter = typeToFilterStringIds[self->var_88A];
+            string_id filter = typeToFilterStringIds[self.var_88A];
             args = FormatArguments::common(filter);
-            auto* widget = &self->widgets[Widx::filter_type];
-            Gfx::drawStringLeftClipped(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            auto* widget = &self.widgets[Widx::filter_type];
+            Gfx::drawStringLeftClipped(*context, self.x + widget->left + 1, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
-        auto* widget = &self->widgets[Widx::cargo_type];
-        auto xPos = self->x + widget->left + 1;
+        auto* widget = &self.widgets[Widx::cargo_type];
+        auto xPos = self.x + widget->left + 1;
         bool filterActive = false;
 
-        if (isStationFilterActive(self, false))
+        if (isStationFilterActive(&self, false))
         {
             filterActive = true;
-            if (self->var_88C != -1)
+            if (self.var_88C != -1)
             {
-                auto station = StationManager::get(StationId(self->var_88C));
+                auto station = StationManager::get(StationId(self.var_88C));
                 args = FormatArguments::common(station->name, station->town);
             }
             else
@@ -664,17 +664,17 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
         }
 
-        else if (isCargoFilterActive(self, false))
+        else if (isCargoFilterActive(&self, false))
         {
             filterActive = true;
-            if (self->var_88C != -1)
+            if (self.var_88C != -1)
             {
                 // Show current cargo
-                auto cargoObj = ObjectManager::get<CargoObject>(self->var_88C);
+                auto cargoObj = ObjectManager::get<CargoObject>(self.var_88C);
                 args = FormatArguments::common(StringIds::carrying_cargoid_sprite, cargoObj->name, cargoObj->unit_inline_sprite);
 
                 // NB: the -9 in the xpos is to compensate for a hack due to the cargo dropdown limitation (only three args per item)
-                xPos = self->x + widget->left - 9;
+                xPos = self.x + widget->left - 9;
             }
             else
             {
@@ -685,7 +685,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (filterActive)
         {
             // Draw filter text as prepared
-            Gfx::drawStringLeftClipped(*context, xPos, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawStringLeftClipped(*context, xPos, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
     }
 
