@@ -85,7 +85,6 @@ namespace OpenLoco::Audio
     static std::vector<Channel> _channels;
     static std::vector<VehicleChannel> _vehicleChannels;
     static std::vector<Channel> _soundFX;
-    static ChannelId _musicCurrentChannel = ChannelId::bgm;
 
     static std::vector<uint32_t> _samples;
     static std::unordered_map<uint16_t, uint32_t> _objectSamples;
@@ -264,7 +263,6 @@ namespace OpenLoco::Audio
         _sourceManager.dispose();
         _bufferManager.dispose();
         _device.close();
-        _musicCurrentChannel = (ChannelId)-1;
         _audioInitialised = 0;
     }
 
@@ -1096,7 +1094,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        if (_musicCurrentChannel != ChannelId::bgm || !_channels[enumValue(_musicCurrentChannel)].isPlaying())
+        if (!_channels[enumValue(ChannelId::bgm)].isPlaying())
         {
             // Not playing, but the 'current song' is last song? It's been requested manually!
             bool requestedSong = _lastSong != kNoSong && _lastSong == _currentSong;
@@ -1120,8 +1118,7 @@ namespace OpenLoco::Audio
             if (_channels[enumValue(ChannelId::bgm)].load(*buffer))
             {
                 _channels[enumValue(ChannelId::bgm)].setVolume(Config::get().volume);
-                _musicCurrentChannel = ChannelId::bgm;
-                if (!_channels[enumValue(_musicCurrentChannel)].play(false))
+                if (!_channels[enumValue(ChannelId::bgm)].play(false))
                 {
                     cfg.musicPlaying = 0;
                 }
@@ -1146,9 +1143,9 @@ namespace OpenLoco::Audio
     // 0x0048AAE8
     void stopBackgroundMusic()
     {
-        if (_audioInitialised && _musicCurrentChannel != static_cast<ChannelId>(-1) && _channels[enumValue(_musicCurrentChannel)].isPlaying())
+        if (_audioInitialised && _channels[enumValue(ChannelId::bgm)].isPlaying())
         {
-            _channels[enumValue(_musicCurrentChannel)].stop();
+            _channels[enumValue(ChannelId::bgm)].stop();
         }
     }
 
