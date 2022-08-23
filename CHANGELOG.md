@@ -1,5 +1,6 @@
 22.07+ (???)
 ------------------------------------------------------------------------
+- Fix: [#729] Audio volume not initialised to config volume.
 - Fix: [#1557] Vehicle capacity texts are corrupted.
 - Fix: [#1578] Clang-compiled openloco does not list scenarios.
 - Fix: [#1583] Newspaper text line height is wrong.
