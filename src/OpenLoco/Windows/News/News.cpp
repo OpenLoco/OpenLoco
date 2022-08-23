@@ -814,7 +814,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     namespace News2
     {
         Widget widgets[] = {
-            commonWidgets(360, 159, WidgetType::wt_5),
+            commonWidgets(360, 159, WidgetType::slider),
             widgetEnd(),
         };
     }

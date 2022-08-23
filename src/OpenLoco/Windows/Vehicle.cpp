@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             commonWidgets(265, 177, StringIds::stringid),
             makeWidget({ 3, 44 }, { 237, 120 }, WidgetType::viewport, WindowColour::secondary),
             makeWidget({ 3, 155 }, { 237, 21 }, WidgetType::wt_13, WindowColour::secondary),
-            makeWidget({ 240, 46 }, { 24, 115 }, WidgetType::wt_5, WindowColour::secondary),
+            makeWidget({ 240, 46 }, { 24, 115 }, WidgetType::slider, WindowColour::secondary),
             makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
             makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::null, StringIds::tooltip_remove_from_track),
             makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
@@ -866,7 +866,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (CompanyManager::isPlayerCompany(head->owner))
                 {
                     viewportRight -= 27;
-                    self->widgets[widx::speedControl].type = WidgetType::wt_5;
+                    self->widgets[widx::speedControl].type = WidgetType::slider;
                 }
             }
 
