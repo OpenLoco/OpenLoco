@@ -92,7 +92,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         strncpy(buffer, _captionString.c_str(), 256);
     }
-    
+
     // 004CF7A0
     static void draw(Window& self, Gfx::Context* context)
     {

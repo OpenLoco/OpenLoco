@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 case widx::demolish_industry:
                 {
                     bool success = GameCommands::do_48(GameCommands::Flags::apply, static_cast<IndustryId>(self.number));
-                    
+
                     if (!success)
                         break;
 

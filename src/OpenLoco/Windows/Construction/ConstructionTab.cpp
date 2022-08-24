@@ -1934,7 +1934,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             activateSelectedConstructionWidgets();
             auto window = WindowManager::find(WindowType::construction);
 
-
             _byte_508F09 = _byte_508F09 | (1 << 0);
 
             onMouseUp(*window, widx::construct);

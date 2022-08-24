@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedSeaGreen).translucent());
 
         return window;
-    }   
+    }
 
     static void draw(Ui::Window& window, Gfx::Context* context)
     {

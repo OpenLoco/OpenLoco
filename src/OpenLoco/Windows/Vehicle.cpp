@@ -1495,7 +1495,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3542
-        static void draw(Window&self, Gfx::Context* const context)
+        static void draw(Window& self, Gfx::Context* const context)
         {
             self.draw(context);
             Common::drawTabs(&self, context);
