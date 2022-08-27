@@ -1,5 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../Economy/Expenditures.h"
+#include "../Entities/EntityManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Types.hpp"
 #include "../Utility/Prng.hpp"
@@ -27,8 +28,12 @@ namespace OpenLoco::GameCommands
     {
         GameCommands::setExpenditureType(ExpenditureType::TrainRunningCosts);
 
-        auto train = Vehicles::Vehicle(headId);
-        auto* head = train.head;
+        auto* head = EntityManager::get<Vehicles::VehicleHead>(headId);
+        if (head == nullptr)
+        {
+            return FAILURE;
+        }
+        auto train = Vehicles::Vehicle(*head);
         auto* veh2 = train.veh2;
 
         GameCommands::setPosition(veh2->position);
