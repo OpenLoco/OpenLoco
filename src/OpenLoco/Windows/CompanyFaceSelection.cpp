@@ -112,24 +112,24 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x004352A4
-    static void onClose(Window* const self)
+    static void onClose(Window& self)
     {
         ObjectManager::freeScenarioText();
     }
 
     // 0x435299
-    static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
         }
     }
 
     // 0x4352BB
-    static void getScrollSize(Window* const self, const uint32_t scrollIndex, uint16_t* const scrollWidth, uint16_t* const scrollHeight)
+    static void getScrollSize(Window& self, const uint32_t scrollIndex, uint16_t* const scrollWidth, uint16_t* const scrollHeight)
     {
         *scrollHeight = _numberCompetitorObjects * rowHeight;
     }
@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00435314
-    static void scrollMouseDown(Window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
+    static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
         const auto objIndex = getObjectFromSelection(y);
 
@@ -164,36 +164,36 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         {
             return;
         }
-        self->invalidate();
+        self.invalidate();
         Audio::playSound(Audio::SoundId::clickDown, _cursorX);
         GameCommands::setErrorTitle(StringIds::cant_select_face);
-        const auto result = GameCommands::do_65(*objIndex.object._header, self->owner);
+        const auto result = GameCommands::do_65(*objIndex.object._header, self.owner);
         if (result)
         {
-            WindowManager::close(self);
+            WindowManager::close(&self);
         }
     }
 
     // 0x004352C7
-    static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
+    static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
         auto [rowIndex, object] = getObjectFromSelection(y);
-        if (self->rowHover == rowIndex)
+        if (self.rowHover == rowIndex)
         {
             return;
         }
-        self->rowHover = rowIndex;
-        self->object = reinterpret_cast<std::byte*>(object._header);
+        self.rowHover = rowIndex;
+        self.object = reinterpret_cast<std::byte*>(object._header);
         ObjectManager::freeScenarioText();
         if (object._header)
         {
             ObjectManager::getScenarioText(*object._header);
         }
-        self->invalidate();
+        self.invalidate();
     }
 
     // 0x4352B1
-    static std::optional<FormatArguments> tooltip(Window* const self, const WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip(Window& self, const WidgetIndex_t)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -201,29 +201,29 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x434FE8
-    static void prepareDraw(Window* const self)
+    static void prepareDraw(Window& self)
     {
-        const auto company = CompanyManager::get(self->owner);
+        const auto company = CompanyManager::get(self.owner);
 
         FormatArguments args{};
         args.push(company->name);
     }
 
     // 0x435003
-    static void draw(Window* const self, Gfx::Context* const context)
+    static void draw(Window& self, Gfx::Context* const context)
     {
-        self->draw(context);
-        if (self->rowHover == -1)
+        self.draw(context);
+        if (self.rowHover == -1)
         {
             return;
         }
 
         {
-            const auto colour = Colours::getShade(self->getColour(WindowColour::secondary).c(), 0);
-            const auto l = self->x + 1 + self->widgets[widx::face_frame].left;
-            const auto t = self->y + 1 + self->widgets[widx::face_frame].top;
-            const auto r = self->x - 1 + self->widgets[widx::face_frame].right;
-            const auto b = self->y - 1 + self->widgets[widx::face_frame].bottom;
+            const auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
+            const auto l = self.x + 1 + self.widgets[widx::face_frame].left;
+            const auto t = self.y + 1 + self.widgets[widx::face_frame].top;
+            const auto r = self.x - 1 + self.widgets[widx::face_frame].right;
+            const auto b = self.y - 1 + self.widgets[widx::face_frame].bottom;
             Gfx::fillRect(*context, l, t, r, b, colour);
 
             const CompetitorObject* competitor = _loadedObject;
@@ -232,12 +232,12 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
 
         {
-            const auto x = self->x + self->widgets[widx::face_frame].mid_x();
-            const auto y = self->y + self->widgets[widx::face_frame].bottom + 3;
-            const auto width = self->width - self->widgets[widx::scrollview].right - 6;
+            const auto x = self.x + self.widgets[widx::face_frame].mid_x();
+            const auto y = self.y + self.widgets[widx::face_frame].bottom + 3;
+            const auto width = self.width - self.widgets[widx::scrollview].right - 6;
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *str++ = ControlCodes::window_colour_2;
-            auto objectPtr = self->object;
+            auto objectPtr = self.object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
             Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::buffer_2039);
         }

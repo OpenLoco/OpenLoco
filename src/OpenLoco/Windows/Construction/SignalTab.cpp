@@ -29,25 +29,25 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     WindowEventList events;
 
     // 0x0049E64E
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Common::widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
 
             case Common::widx::tab_construction:
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(self, widgetIndex);
+                Common::switchTab(&self, widgetIndex);
                 break;
         }
     }
 
     // 0x0049E669
-    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -57,13 +57,13 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 while (_signalList[signalCount] != 0xFF)
                     signalCount++;
 
-                auto widget = self->widgets[widx::signal];
-                auto xPos = widget.left + self->x;
-                auto yPos = widget.top + self->y;
+                auto widget = self.widgets[widx::signal];
+                auto xPos = widget.left + self.x;
+                auto yPos = widget.top + self.y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
-                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), signalCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), signalCount, (1 << 7));
 
                 for (auto signalIndex = 0; signalIndex < signalCount; signalIndex++)
                 {
@@ -82,7 +82,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _isSignalBothDirections = 1;
                 Input::toolCancel();
-                Input::toolSet(self, widgetIndex, CursorId::placeSignal);
+                Input::toolSet(&self, widgetIndex, CursorId::placeSignal);
                 break;
             }
 
@@ -90,14 +90,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _isSignalBothDirections = 0;
                 Input::toolCancel();
-                Input::toolSet(self, widgetIndex, CursorId::placeSignal);
+                Input::toolSet(&self, widgetIndex, CursorId::placeSignal);
                 break;
             }
         }
     }
 
     // 0x0049E67C
-    static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::signal_dropdown)
             return;
@@ -106,14 +106,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         {
             _lastSelectedSignal = _signalList[itemIndex];
             _scenarioSignals[_trackType] = _signalList[itemIndex];
-            self->invalidate();
+            self.invalidate();
         }
     }
 
     // 0x0049E76F
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        Common::onUpdate(self, (1 << 2));
+        Common::onUpdate(&self, (1 << 2));
     }
 
     // Reverse direction map?
@@ -279,9 +279,9 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E499
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(self);
+        Common::prepareDraw(&self);
 
         auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
@@ -290,21 +290,21 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
 
-        self->widgets[widx::signal].text = trainSignalObject->name;
+        self.widgets[widx::signal].text = trainSignalObject->name;
 
-        Common::repositionTabs(self);
+        Common::repositionTabs(&self);
     }
 
     // 0x0049E501
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
-        Common::drawTabs(self, context);
+        self.draw(context);
+        Common::drawTabs(&self, context);
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
 
-        auto xPos = self->x + 3;
-        auto yPos = self->y + 63;
+        auto xPos = self.x + 3;
+        auto yPos = self.y + 63;
         auto width = 130;
 
         {
@@ -316,15 +316,15 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto imageId = trainSignalObject->image;
 
-        xPos = self->widgets[widx::both_directions].mid_x() + self->x;
-        yPos = self->widgets[widx::both_directions].bottom + self->y - 4;
+        xPos = self.widgets[widx::both_directions].mid_x() + self.x;
+        yPos = self.widgets[widx::both_directions].bottom + self.y - 4;
 
         Gfx::drawImage(context, xPos - 8, yPos, imageId);
 
         Gfx::drawImage(context, xPos + 8, yPos, imageId + 4);
 
-        xPos = self->widgets[widx::single_direction].mid_x() + self->x;
-        yPos = self->widgets[widx::single_direction].bottom + self->y - 4;
+        xPos = self.widgets[widx::single_direction].mid_x() + self.x;
+        yPos = self.widgets[widx::single_direction].bottom + self.y - 4;
 
         Gfx::drawImage(context, xPos, yPos, imageId);
 
@@ -333,8 +333,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             auto args = FormatArguments();
             args.push<uint32_t>(_signalCost);
 
-            xPos = self->x + 69;
-            yPos = self->widgets[widx::single_direction].bottom + self->y + 5;
+            xPos = self.x + 69;
+            yPos = self.widgets[widx::single_direction].bottom + self.y + 5;
 
             Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }

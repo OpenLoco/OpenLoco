@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void initEvents();
         static void refreshIndustryList(Window* self);
         static void drawTabs(Window* self, Gfx::Context* context);
-        static void prepareDraw(Window* self);
+        static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
     }
 
@@ -104,63 +104,63 @@ namespace OpenLoco::Ui::Windows::IndustryList
         };
 
         // 0x00457B94
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
             // Reposition header buttons.
-            self->widgets[widx::sort_industry_name].right = std::min(self->width - 4, 203);
+            self.widgets[widx::sort_industry_name].right = std::min(self.width - 4, 203);
 
-            self->widgets[widx::sort_industry_status].left = std::min(self->width - 4, 204);
-            self->widgets[widx::sort_industry_status].right = std::min(self->width - 4, 443);
+            self.widgets[widx::sort_industry_status].left = std::min(self.width - 4, 204);
+            self.widgets[widx::sort_industry_status].right = std::min(self.width - 4, 443);
 
-            self->widgets[widx::sort_industry_production_transported].left = std::min(self->width - 4, 444);
-            self->widgets[widx::sort_industry_production_transported].right = std::min(self->width - 4, 603);
+            self.widgets[widx::sort_industry_production_transported].left = std::min(self.width - 4, 444);
+            self.widgets[widx::sort_industry_production_transported].right = std::min(self.width - 4, 603);
 
             // Set header button captions.
-            self->widgets[widx::sort_industry_name].text = self->sortMode == SortMode::Name ? StringIds::industry_table_header_desc : StringIds::industry_table_header;
-            self->widgets[widx::sort_industry_status].text = self->sortMode == SortMode::Status ? StringIds::industry_table_header_status_desc : StringIds::industry_table_header_status;
-            self->widgets[widx::sort_industry_production_transported].text = self->sortMode == SortMode::ProductionTransported ? StringIds::industry_table_header_production_desc : StringIds::industry_table_header_production;
+            self.widgets[widx::sort_industry_name].text = self.sortMode == SortMode::Name ? StringIds::industry_table_header_desc : StringIds::industry_table_header;
+            self.widgets[widx::sort_industry_status].text = self.sortMode == SortMode::Status ? StringIds::industry_table_header_status_desc : StringIds::industry_table_header_status;
+            self.widgets[widx::sort_industry_production_transported].text = self.sortMode == SortMode::ProductionTransported ? StringIds::industry_table_header_production_desc : StringIds::industry_table_header_production;
 
             if (isEditorMode() || isSandboxMode())
-                self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
+                self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
             else
-                self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
+                self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
         }
 
         // 0x00457CD9
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
             auto args = FormatArguments();
-            auto xPos = self->x + 4;
-            auto yPos = self->y + self->height - 12;
+            auto xPos = self.x + 4;
+            auto yPos = self.y + self.height - 12;
 
-            if (self->var_83C == 1)
+            if (self.var_83C == 1)
                 args.push(StringIds::status_num_industries_singular);
             else
                 args.push(StringIds::status_num_industries_plural);
-            args.push(self->var_83C);
+            args.push(self.var_83C);
 
             Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x00457EC4
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_industry_list:
                 case Common::widx::tab_new_industry:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::sort_industry_name:
@@ -168,28 +168,28 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 case widx::sort_industry_production_transported:
                 {
                     auto sortMode = widgetIndex - widx::sort_industry_name;
-                    if (self->sortMode == sortMode)
+                    if (self.sortMode == sortMode)
                         return;
 
-                    self->sortMode = sortMode;
-                    self->invalidate();
-                    self->var_83C = 0;
-                    self->rowHover = -1;
+                    self.sortMode = sortMode;
+                    self.invalidate();
+                    self.var_83C = 0;
+                    self.rowHover = -1;
 
-                    Common::refreshIndustryList(self);
+                    Common::refreshIndustryList(&self);
                     break;
                 }
             }
         }
 
         // 0x00458172
-        static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
-            if (currentRow > self->var_83C)
+            if (currentRow > self.var_83C)
                 return;
 
-            const auto currentIndustry = IndustryId(self->rowInfo[currentRow]);
+            const auto currentIndustry = IndustryId(self.rowInfo[currentRow]);
             if (currentIndustry == IndustryId::null)
                 return;
 
@@ -197,18 +197,18 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458140
-        static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(WindowFlags::notScrollView);
+            self.flags &= ~(WindowFlags::notScrollView);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentIndustry = -1;
 
-            if (currentRow < self->var_83C)
-                currentIndustry = self->rowInfo[currentRow];
+            if (currentRow < self.var_83C)
+                currentIndustry = self.rowInfo[currentRow];
 
-            self->rowHover = currentIndustry;
-            self->invalidate();
+            self.rowHover = currentIndustry;
+            self.invalidate();
         }
 
         // 0x00457A52
@@ -350,21 +350,21 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004580AE
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no++;
+            self.frame_no++;
 
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::industryList, self->number, self->currentTab + Common::widx::tab_industry_list);
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::industryList, self.number, self.currentTab + Common::widx::tab_industry_list);
 
             // Add three industries every tick.
-            updateIndustryList(self);
-            updateIndustryList(self);
-            updateIndustryList(self);
+            updateIndustryList(&self);
+            updateIndustryList(&self);
+            updateIndustryList(&self);
         }
 
         // 0x00457EE8
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_industry_list);
@@ -372,9 +372,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458108
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = rowHeight * self->var_83C;
+            *scrollHeight = rowHeight * self.var_83C;
         }
 
         // 0x00457D2A
@@ -446,35 +446,35 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458113
-        static Ui::CursorId cursor(Window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
 
             uint16_t currentIndex = yPos / rowHeight;
-            if (currentIndex < self->var_83C && self->rowInfo[currentIndex] != -1)
+            if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
                 return CursorId::handPointer;
 
             return fallback;
         }
 
         // 0x004580DE
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            self->flags |= WindowFlags::notScrollView;
+            self.flags |= WindowFlags::notScrollView;
         }
 
         // 0x004580E6
-        static void event_09(Window* self)
+        static void event_09(Window& self)
         {
-            if ((self->flags & WindowFlags::notScrollView) == 0)
+            if ((self.flags & WindowFlags::notScrollView) == 0)
                 return;
 
-            if (self->rowHover == -1)
+            if (self.rowHover == -1)
                 return;
 
-            self->rowHover = -1;
-            self->invalidate();
+            self.rowHover = -1;
+            self.invalidate();
         }
 
         // 0x00457FCA
@@ -598,45 +598,45 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static WindowEventList events;
 
         // 0x0045819F
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
             if (isEditorMode() || isSandboxMode())
             {
-                self->widgets[Common::widx::caption].text = StringIds::title_build_new_industries;
-                self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
+                self.widgets[Common::widx::caption].text = StringIds::title_build_new_industries;
+                self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
             }
             else
             {
-                self->widgets[Common::widx::caption].text = StringIds::title_fund_new_industries;
-                self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
+                self.widgets[Common::widx::caption].text = StringIds::title_fund_new_industries;
+                self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
             }
         }
 
         // 0x0045826C
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            if (self->var_83C == 0)
+            if (self.var_83C == 0)
             {
-                auto xPos = self->x + 3;
-                auto yPos = self->y + self->height - 13;
-                auto width = self->width - 19;
+                auto xPos = self.x + 3;
+                auto yPos = self.y + self.height - 13;
+                auto width = self.width - 19;
                 Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::no_industry_available);
                 return;
             }
 
-            auto industryObjId = self->var_846;
+            auto industryObjId = self.var_846;
 
             if (industryObjId == 0xFFFF)
             {
-                industryObjId = self->rowHover;
+                industryObjId = self.rowHover;
 
                 if (industryObjId == 0xFFFF)
                     return;
@@ -645,10 +645,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
             auto industryObj = ObjectManager::get<IndustryObject>(industryObjId);
             auto industryCost = 0;
 
-            if (self->var_846 == 0xFFFF)
+            if (self.var_846 == 0xFFFF)
                 industryCost = dword_E0C39C;
 
-            if ((self->var_846 == 0xFFFF && dword_E0C39C == static_cast<currency32_t>(0x80000000)) || self->var_846 != 0xFFFF)
+            if ((self.var_846 == 0xFFFF && dword_E0C39C == static_cast<currency32_t>(0x80000000)) || self.var_846 != 0xFFFF)
             {
                 industryCost = Economy::getInflationAdjustedCost(industryObj->cost_factor, industryObj->cost_index, 3);
             }
@@ -659,32 +659,32 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if (!isEditorMode() && !isSandboxMode())
             {
-                auto xPos = self->x + 3 + self->width - 19;
-                auto yPos = self->y + self->height - 13;
+                auto xPos = self.x + 3 + self.width - 19;
+                auto yPos = self.y + self.height - 13;
                 widthOffset = 138;
 
                 Gfx::drawStringRight(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
 
-            auto xPos = self->x + 3;
-            auto yPos = self->y + self->height - 13;
-            auto width = self->width - 19 - widthOffset;
+            auto xPos = self.x + 3;
+            auto yPos = self.y + self.height - 13;
+            auto width = self.width - 19 - widthOffset;
 
             Gfx::drawStringLeftClipped(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &industryObj->name);
         }
 
         // 0x0045843A
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_industry_list:
                 case Common::widx::tab_new_industry:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
@@ -695,50 +695,50 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458966
-        static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             int16_t xPos = (x / rowHeight);
             int16_t yPos = (y / rowHeight) * 5;
             auto index = getRowIndex(x, y);
 
-            for (auto i = 0; i < self->var_83C; i++)
+            for (auto i = 0; i < self.var_83C; i++)
             {
-                auto rowInfo = self->rowInfo[i];
+                auto rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
                 {
-                    self->rowHover = rowInfo;
+                    self.rowHover = rowInfo;
                     LastGameOptionManager::setLastIndustry(rowInfo);
 
-                    int32_t pan = (self->width >> 1) + self->x;
+                    int32_t pan = (self.width >> 1) + self.x;
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
-                    self->savedView.mapX = -16;
+                    self.savedView.mapX = -16;
                     dword_E0C39C = 0x80000000;
-                    self->invalidate();
+                    self.invalidate();
                     break;
                 }
             }
         }
 
         // 0x00458721
-        static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = 0xFFFF;
             auto i = 0;
 
-            for (; i < self->var_83C; i++)
+            for (; i < self.var_83C; i++)
             {
-                rowInfo = self->rowInfo[i];
+                rowInfo = self.rowInfo[i];
                 index--;
                 if (index < 0)
                     break;
             }
-            if (i >= self->var_83C)
+            if (i >= self.var_83C)
                 rowInfo = 0xFFFF;
-            self->var_846 = rowInfo;
-            self->invalidate();
+            self.var_846 = rowInfo;
+            self.invalidate();
             auto string = StringIds::buffer_337;
 
             if (rowInfo == 0xFFFF)
@@ -746,14 +746,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if (StringManager::getString(StringIds::buffer_337)[0] != '\0')
             {
-                if (string == self->widgets[widx::scrollview].tooltip)
+                if (string == self.widgets[widx::scrollview].tooltip)
                 {
-                    if (rowInfo == self->var_85C)
+                    if (rowInfo == self.var_85C)
                         return;
                 }
             }
-            self->widgets[widx::scrollview].tooltip = string;
-            self->var_85C = rowInfo;
+            self.widgets[widx::scrollview].tooltip = string;
+            self.var_85C = rowInfo;
             ToolTip::closeAndReset();
 
             if (rowInfo == 0xFFFF)
@@ -786,7 +786,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004585B8
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
             if (!Input::hasFlag(Input::Flags::flag5))
             {
@@ -794,41 +794,41 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto xPos = cursor.x;
                 auto yPos = cursor.y;
                 Window* activeWindow = WindowManager::findAt(xPos, yPos);
-                if (activeWindow == self)
+                if (activeWindow == &self)
                 {
-                    xPos -= self->x;
+                    xPos -= self.x;
                     xPos += 26;
-                    yPos -= self->y;
+                    yPos -= self.y;
 
-                    if ((yPos < 42) || (xPos <= self->width))
+                    if ((yPos < 42) || (xPos <= self.width))
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
-                        WidgetIndex_t activeWidget = self->findWidgetAt(xPos, yPos);
+                        WidgetIndex_t activeWidget = self.findWidgetAt(xPos, yPos);
 
                         if (activeWidget > Common::widx::panel)
                         {
-                            self->savedView.mapX += 1;
-                            if (self->savedView.mapX >= 8)
+                            self.savedView.mapX += 1;
+                            if (self.savedView.mapX >= 8)
                             {
-                                auto y = std::min(self->scrollAreas[0].contentHeight - 1 + 60, 500);
+                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
                                 if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 276);
                                 }
-                                self->minWidth = window_size.width;
-                                self->minHeight = y;
-                                self->maxWidth = window_size.width;
-                                self->maxHeight = y;
+                                self.minWidth = window_size.width;
+                                self.minHeight = y;
+                                self.maxWidth = window_size.width;
+                                self.maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self->minWidth = window_size.width;
-                                    self->minHeight = window_size.height;
-                                    self->maxWidth = window_size.width;
-                                    self->maxHeight = window_size.height;
+                                    self.minWidth = window_size.width;
+                                    self.minHeight = window_size.height;
+                                    self.maxWidth = window_size.width;
+                                    self.maxHeight = window_size.height;
                                 }
                             }
                         }
@@ -836,27 +836,27 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 }
                 else
                 {
-                    self->savedView.mapX = 0;
+                    self.savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self->minWidth = window_size.width;
-                        self->minHeight = window_size.height;
-                        self->maxWidth = window_size.width;
-                        self->maxHeight = window_size.height;
+                        self.minWidth = window_size.width;
+                        self.minHeight = window_size.height;
+                        self.maxWidth = window_size.width;
+                        self.maxHeight = window_size.height;
                     }
                 }
             }
-            self->frame_no++;
+            self.frame_no++;
 
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::industryList, self->number, self->currentTab + Common::widx::tab_industry_list);
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::industryList, self.number, self.currentTab + Common::widx::tab_industry_list);
 
-            if (!Input::isToolActive(self->type, self->number))
-                WindowManager::close(self);
+            if (!Input::isToolActive(self.type, self.number))
+                WindowManager::close(&self);
         }
 
         // 0x00458455
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_new_industry_list);
@@ -864,9 +864,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004586EA
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = (4 + self->var_83C) / 5;
+            *scrollHeight = (4 + self.var_83C) / 5;
             if (*scrollHeight == 0)
                 *scrollHeight += 1;
             *scrollHeight *= rowHeight;
@@ -917,11 +917,11 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458708
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            if (self->var_846 != 0xFFFF)
-                self->var_846 = 0xFFFF;
-            self->invalidate();
+            if (self.var_846 != 0xFFFF)
+                self.var_846 = 0xFFFF;
+            self.invalidate();
         }
 
         // 0x00458C09
@@ -1047,9 +1047,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045845F
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
-            if (Input::isToolActive(self->type, self->number))
+            if (Input::isToolActive(self.type, self.number))
                 Input::toolCancel();
         }
 
@@ -1150,14 +1150,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004589E8
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->invalidate();
-            Ui::Size minWindowSize = { self->minWidth, self->minHeight };
-            Ui::Size maxWindowSize = { self->maxWidth, self->maxHeight };
-            bool hasResized = self->setSize(minWindowSize, maxWindowSize);
+            self.invalidate();
+            Ui::Size minWindowSize = { self.minWidth, self.minHeight };
+            Ui::Size maxWindowSize = { self.maxWidth, self.maxHeight };
+            bool hasResized = self.setSize(minWindowSize, maxWindowSize);
             if (hasResized)
-                updateActiveThumb(self);
+                updateActiveThumb(&self);
         }
 
         static void initEvents()
@@ -1196,30 +1196,30 @@ namespace OpenLoco::Ui::Windows::IndustryList
         };
 
         // 0x00457B94
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab..
-            self->activatedWidgets &= ~((1ULL << tab_industry_list) | (1ULL << tab_new_industry));
-            self->activatedWidgets |= (1ULL << tabInformationByTabOffset[self->currentTab].widgetIndex);
+            self.activatedWidgets &= ~((1ULL << tab_industry_list) | (1ULL << tab_new_industry));
+            self.activatedWidgets |= (1ULL << tabInformationByTabOffset[self.currentTab].widgetIndex);
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
         }
 
         // 0x00457F27

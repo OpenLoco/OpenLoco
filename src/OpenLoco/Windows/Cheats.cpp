@@ -207,24 +207,24 @@ namespace OpenLoco::Ui::Windows::Cheats
         static currency32_t _cashIncreaseStep = 10'000;
         static Date _date;
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
-            self->activatedWidgets = (1 << Common::Widx::tab_finances);
+            self.activatedWidgets = (1 << Common::Widx::tab_finances);
         }
 
-        static void draw(Ui::Window* const self, Gfx::Context* const context)
+        static void draw(Ui::Window& self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
             // Add cash step label and value
             {
-                auto& widget = self->widgets[Widx::cash_step_value];
+                auto& widget = self.widgets[Widx::cash_step_value];
                 Gfx::drawStringLeft(
                     *context,
-                    self->x + 10,
-                    self->y + widget.top,
+                    self.x + 10,
+                    self.y + widget.top,
                     Colour::black,
                     StringIds::cheat_amount);
 
@@ -232,8 +232,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                 args.push(_cashIncreaseStep);
                 Gfx::drawStringLeft(
                     *context,
-                    self->x + widget.left + 1,
-                    self->y + widget.top,
+                    self.x + widget.left + 1,
+                    self.y + widget.top,
                     Colour::black,
                     StringIds::cheat_loan_value,
                     &args);
@@ -241,11 +241,11 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             // Loan label and value
             {
-                auto& widget = self->widgets[Widx::loan_value];
+                auto& widget = self.widgets[Widx::loan_value];
                 Gfx::drawStringLeft(
                     *context,
-                    self->x + 10,
-                    self->y + widget.top,
+                    self.x + 10,
+                    self.y + widget.top,
                     Colour::black,
                     StringIds::company_current_loan);
 
@@ -255,8 +255,8 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 Gfx::drawStringLeft(
                     *context,
-                    self->x + widget.left + 1,
-                    self->y + widget.top,
+                    self.x + widget.left + 1,
+                    self.y + widget.top,
                     Colour::black,
                     StringIds::cheat_loan_value,
                     &args);
@@ -264,11 +264,11 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             // Add year label and value
             {
-                auto& widget = self->widgets[Widx::year_step_value];
+                auto& widget = self.widgets[Widx::year_step_value];
                 Gfx::drawStringLeft(
                     *context,
-                    self->x + 10,
-                    self->y + widget.top,
+                    self.x + 10,
+                    self.y + widget.top,
                     Colour::black,
                     StringIds::cheat_year);
 
@@ -276,8 +276,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                 args.push(_date.year);
                 Gfx::drawStringLeft(
                     *context,
-                    self->x + widget.left + 1,
-                    self->y + widget.top,
+                    self.x + widget.left + 1,
+                    self.y + widget.top,
                     Colour::black,
                     StringIds::cheat_year_value,
                     &args);
@@ -285,11 +285,11 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             // Add month label and value
             {
-                auto& widget = self->widgets[Widx::month_step_value];
+                auto& widget = self.widgets[Widx::month_step_value];
                 Gfx::drawStringLeft(
                     *context,
-                    self->x + 10,
-                    self->y + widget.top,
+                    self.x + 10,
+                    self.y + widget.top,
                     Colour::black,
                     StringIds::cheat_month);
 
@@ -297,8 +297,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                 args.push((string_id)OpenLoco::StringManager::monthToString(_date.month).second);
                 Gfx::drawStringLeft(
                     *context,
-                    self->x + widget.left + 1,
-                    self->y + widget.top,
+                    self.x + widget.left + 1,
+                    self.y + widget.top,
                     Colour::black,
                     StringIds::black_stringid,
                     &args);
@@ -306,11 +306,11 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             // Add day label and value
             {
-                auto& widget = self->widgets[Widx::day_step_value];
+                auto& widget = self.widgets[Widx::day_step_value];
                 Gfx::drawStringLeft(
                     *context,
-                    self->x + 10,
-                    self->y + widget.top,
+                    self.x + 10,
+                    self.y + widget.top,
                     Colour::black,
                     StringIds::cheat_day);
 
@@ -318,27 +318,27 @@ namespace OpenLoco::Ui::Windows::Cheats
                 args.push(_date.day + 1); // +1 since days in game are 0-based, but IRL they are 1-based
                 Gfx::drawStringLeft(
                     *context,
-                    self->x + widget.left + 1,
-                    self->y + widget.top,
+                    self.x + widget.left + 1,
+                    self.y + widget.top,
                     Colour::black,
                     StringIds::cheat_day_value,
                     &args);
             }
         }
 
-        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(self->type);
+                    WindowManager::close(self.type);
                     break;
 
                 case Common::Widx::tab_finances:
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case Widx::cash_step_apply:
@@ -348,7 +348,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 case Widx::loan_clear:
                     GameCommands::do_81(CheatCommand::clearLoan);
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::loan_value);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::loan_value);
                     break;
 
                 case Widx::date_change_apply:
@@ -365,7 +365,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             return std::max<int32_t>(0, std::min<int32_t>(getMonthTotalDay(date.year, date.month) - 1, date.day));
         }
 
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
@@ -397,12 +397,12 @@ namespace OpenLoco::Ui::Windows::Cheats
             {
                 case Widx::cash_step_decrease:
                     _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep - cashStepSize, 0);
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::cash_step_value);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::cash_step_value);
                     break;
 
                 case Widx::cash_step_increase:
                     _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep + cashStepSize, 0);
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::cash_step_value);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::cash_step_value);
                     break;
 
                 case Widx::year_step_decrease:
@@ -434,11 +434,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidate(WindowType::cheats);
         }
 
-        static void onUpdate(Window* const self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_finances);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_finances);
         }
 
         static void initEvents()
@@ -489,51 +489,51 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static CompanyId _targetCompanyId{};
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
-            self->activatedWidgets = (1 << Common::Widx::tab_companies);
+            self.activatedWidgets = (1 << Common::Widx::tab_companies);
 
             if (_targetCompanyId == CompanyManager::getControllingId())
             {
-                self->disabledWidgets |= (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button);
+                self.disabledWidgets |= (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button);
             }
             else
             {
-                self->disabledWidgets &= ~((1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button));
+                self.disabledWidgets &= ~((1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button));
             }
         }
 
-        static void draw(Ui::Window* const self, Gfx::Context* const context)
+        static void draw(Ui::Window& self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
             // Draw current company name
             auto company = CompanyManager::get(_targetCompanyId);
-            auto& widget = self->widgets[Widx::target_company_dropdown];
+            auto& widget = self.widgets[Widx::target_company_dropdown];
             Gfx::drawStringLeft(
                 *context,
-                self->x + widget.left,
-                self->y + widget.top,
+                self.x + widget.left,
+                self.y + widget.top,
                 Colour::black,
                 StringIds::black_stringid,
                 &company->name);
         }
 
-        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(self->type);
+                    WindowManager::close(self.type);
                     break;
 
                 case Common::Widx::tab_finances:
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case Widx::acquire_company_assets_button:
@@ -566,13 +566,13 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == Widx::target_company_dropdown)
-                Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(&self, &self.widgets[widgetIndex]);
         }
 
-        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
                 return;
@@ -580,15 +580,15 @@ namespace OpenLoco::Ui::Windows::Cheats
             if (widgetIndex == Widx::target_company_dropdown)
             {
                 _targetCompanyId = Dropdown::getCompanyIdFromSelection(itemIndex);
-                self->invalidate();
+                self.invalidate();
             }
         }
 
-        static void onUpdate(Window* const self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_finances);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_finances);
         }
 
         static void initEvents()
@@ -634,51 +634,51 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred) | (1 << Widx::checkbox_display_locked_vehicles) | (1 << Widx::checkbox_build_locked_vehicles);
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
-            self->activatedWidgets = (1 << Common::Widx::tab_vehicles);
+            self.activatedWidgets = (1 << Common::Widx::tab_vehicles);
 
             if (Config::getNew().displayLockedVehicles)
             {
-                self->activatedWidgets |= (1 << Widx::checkbox_display_locked_vehicles);
-                self->disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
+                self.activatedWidgets |= (1 << Widx::checkbox_display_locked_vehicles);
+                self.disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
             }
             else
             {
-                self->activatedWidgets &= ~(1 << Widx::checkbox_display_locked_vehicles);
-                self->disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
+                self.activatedWidgets &= ~(1 << Widx::checkbox_display_locked_vehicles);
+                self.disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
             }
 
             if (Config::getNew().buildLockedVehicles)
             {
-                self->activatedWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
+                self.activatedWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
             }
             else
             {
-                self->activatedWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
+                self.activatedWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
             }
         }
 
-        static void draw(Ui::Window* const self, Gfx::Context* const context)
+        static void draw(Ui::Window& self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
         }
 
-        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(self->type);
+                    WindowManager::close(self.type);
                     break;
 
                 case Common::Widx::tab_finances:
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case Widx::reliablity_all_to_zero:
@@ -703,16 +703,16 @@ namespace OpenLoco::Ui::Windows::Cheats
                     // if we don't want to display locked vehicles, there is no reason to allow building them
                     if (Config::getNew().displayLockedVehicles)
                     {
-                        self->disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
+                        self.disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
                     }
                     else
                     {
                         Config::getNew().buildLockedVehicles = false;
-                        self->disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
+                        self.disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
                     }
 
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_display_locked_vehicles);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_build_locked_vehicles);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_display_locked_vehicles);
                     WindowManager::invalidate(WindowType::buildVehicle);
                     break;
 
@@ -720,18 +720,18 @@ namespace OpenLoco::Ui::Windows::Cheats
                     if (Config::getNew().displayLockedVehicles)
                     {
                         Config::getNew().buildLockedVehicles = !Config::getNew().buildLockedVehicles;
-                        WindowManager::invalidateWidget(self->type, self->number, Widx::checkbox_build_locked_vehicles);
+                        WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_build_locked_vehicles);
                         WindowManager::invalidate(WindowType::buildVehicle);
                     }
                     break;
             }
         }
 
-        static void onUpdate(Window* const self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_vehicles);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_vehicles);
         }
 
         static void initEvents()
@@ -773,31 +773,31 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::ratings_all_min_10pct) | (1 << Widx::ratings_all_plus_10pct) | (1 << Widx::ratings_all_to_min) | (1 << Widx::ratings_all_to_max);
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
-            self->activatedWidgets = (1 << Common::Widx::tab_towns);
+            self.activatedWidgets = (1 << Common::Widx::tab_towns);
         }
 
-        static void draw(Ui::Window* const self, Gfx::Context* const context)
+        static void draw(Ui::Window& self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
         }
 
-        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::Widx::close_button:
-                    WindowManager::close(self->type);
+                    WindowManager::close(self.type);
                     break;
 
                 case Common::Widx::tab_finances:
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case Widx::ratings_all_min_10pct:
@@ -830,11 +830,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onUpdate(Window* const self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no += 1;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_towns);
+            self.frame_no += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_towns);
         }
 
         static void initEvents()

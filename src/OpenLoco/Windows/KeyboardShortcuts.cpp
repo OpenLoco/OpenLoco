@@ -44,14 +44,14 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         };
     }
 
-    static void draw(Ui::Window* self, Gfx::Context* context);
+    static void draw(Ui::Window& self, Gfx::Context* context);
     static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex);
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
     static void resetShortcuts(Window* self);
-    static std::optional<FormatArguments> tooltip(Window*, WidgetIndex_t);
-    static void getScrollSize(Ui::Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index);
+    static std::optional<FormatArguments> tooltip(Window&, WidgetIndex_t);
+    static void getScrollSize(Ui::Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index);
 
     static void initEvents()
     {
@@ -93,10 +93,10 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE726
-    static void draw(Ui::Window* self, Gfx::Context* context)
+    static void draw(Ui::Window& self, Gfx::Context* context)
     {
         // Draw widgets.
-        self->draw(context);
+        self.draw(context);
     }
 
     static void getBindingString(uint32_t keyCode, char* buffer, const size_t bufferLength)
@@ -197,16 +197,16 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE821
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 return;
 
             case Widx::reset_keys_btn:
-                resetShortcuts(self);
+                resetShortcuts(&self);
                 return;
         }
     }
@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE844
-    static std::optional<FormatArguments> tooltip(Window*, WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip(Window&, WidgetIndex_t)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -227,32 +227,32 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE84E
-    static void getScrollSize(Ui::Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = self->rowCount * rowHeight;
+        *scrollHeight = self.rowCount * rowHeight;
     }
 
     // 0x004BE853
-    static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto row = y / rowHeight;
 
-        if (row >= self->rowCount)
+        if (row >= self.rowCount)
             return;
 
-        if (row != self->rowHover)
+        if (row != self.rowHover)
         {
-            self->rowHover = row;
-            self->invalidate();
+            self.rowHover = row;
+            self.invalidate();
         }
     }
 
     // 0x004BE87B
-    static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto row = y / rowHeight;
 
-        if (row >= self->rowCount)
+        if (row >= self.rowCount)
             return;
 
         EditKeyboardShortcut::open(row);

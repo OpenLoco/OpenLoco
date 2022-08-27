@@ -87,18 +87,18 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     }
 
     // 0x004CF78A
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
         char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         strncpy(buffer, _captionString.c_str(), 256);
     }
 
     // 004CF7A0
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
+        self.draw(context);
 
-        auto clipped = Gfx::clipContext(*context, Ui::Rect(self->x + 2, self->y + 17, self->width - 5, self->height - 19));
+        auto clipped = Gfx::clipContext(*context, Ui::Rect(self.x + 2, self.y + 17, self.width - 5, self.height - 19));
         if (!clipped)
             return;
 

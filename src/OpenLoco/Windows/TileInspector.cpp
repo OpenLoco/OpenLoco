@@ -109,57 +109,57 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return window;
     }
 
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
         if (Input::isToolActive(WindowType::tileInspector))
-            self->activatedWidgets |= (1 << widx::select);
+            self.activatedWidgets |= (1 << widx::select);
         else
-            self->activatedWidgets &= ~(1 << widx::select);
+            self.activatedWidgets &= ~(1 << widx::select);
     }
 
-    static void draw(Ui::Window* const self, Gfx::Context* const context)
+    static void draw(Ui::Window& self, Gfx::Context* const context)
     {
         // Draw widgets.
-        self->draw(context);
+        self.draw(context);
 
         // Coord X/Y labels
         {
             auto args = FormatArguments::common(StringIds::tile_inspector_x_coord);
-            auto& widget = self->widgets[widx::xPos];
-            Gfx::drawStringLeft(*context, self->x + widget.left - 15, self->y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            auto& widget = self.widgets[widx::xPos];
+            Gfx::drawStringLeft(*context, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
         {
             auto args = FormatArguments::common(StringIds::tile_inspector_y_coord);
-            auto& widget = self->widgets[widx::yPos];
-            Gfx::drawStringLeft(*context, self->x + widget.left - 15, self->y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            auto& widget = self.widgets[widx::yPos];
+            Gfx::drawStringLeft(*context, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         // Coord X/Y values
         {
             FormatArguments args = {};
             args.push<int16_t>(_currentPosition.x);
-            auto& widget = self->widgets[widx::xPos];
-            Gfx::drawStringLeft(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            auto& widget = self.widgets[widx::xPos];
+            Gfx::drawStringLeft(*context, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
         {
             FormatArguments args = {};
             args.push<int16_t>(_currentPosition.y);
-            auto& widget = self->widgets[widx::yPos];
-            Gfx::drawStringLeft(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            auto& widget = self.widgets[widx::yPos];
+            Gfx::drawStringLeft(*context, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
 
         // Selected element details
-        if (self->var_842 != -1)
+        if (self.var_842 != -1)
         {
-            auto tile = TileManager::get(_currentPosition)[self->var_842];
+            auto tile = TileManager::get(_currentPosition)[self.var_842];
             std::array<uint8_t, 8>& data = tile->rawData();
 
             char buffer[32] = {};
             buffer[0] = ControlCodes::window_colour_2;
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
-            auto widget = self->widgets[widx::detailsGroup];
-            Gfx::drawString(*context, self->x + widget.left + 7, self->y + widget.top + 14, Colour::black, buffer);
+            auto widget = self.widgets[widx::detailsGroup];
+            Gfx::drawString(*context, self.x + widget.left + 7, self.y + widget.top + 14, Colour::black, buffer);
         }
     }
 
@@ -347,68 +347,68 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void scrollMouseDown(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+    static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
     {
-        auto index = y / self->rowHeight;
-        if (index >= self->rowCount)
+        auto index = y / self.rowHeight;
+        if (index >= self.rowCount)
             return;
 
-        if (self->var_842 != index)
+        if (self.var_842 != index)
         {
-            self->var_842 = index;
-            self->invalidate();
+            self.var_842 = index;
+            self.invalidate();
             return;
         }
     }
 
-    static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+    static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
     {
-        auto index = y / self->rowHeight;
-        if (index >= self->rowCount)
+        auto index = y / self.rowHeight;
+        if (index >= self.rowCount)
             return;
 
-        if (self->rowHover != index)
+        if (self.rowHover != index)
         {
-            self->rowHover = index;
-            self->invalidate();
+            self.rowHover = index;
+            self.invalidate();
         }
     }
 
-    static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close:
-                WindowManager::close(self->type);
+                WindowManager::close(self.type);
                 break;
 
             case widx::select:
-                activateMapSelectionTool(self);
+                activateMapSelectionTool(&self);
                 break;
 
             case widx::xPosDecrease:
                 _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, Map::map_columns);
-                self->invalidate();
+                self.invalidate();
                 break;
 
             case widx::xPosIncrease:
                 _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, Map::map_columns);
-                self->invalidate();
+                self.invalidate();
                 break;
 
             case widx::yPosDecrease:
                 _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, Map::map_rows);
-                self->invalidate();
+                self.invalidate();
                 break;
 
             case widx::yPosIncrease:
                 _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, Map::map_rows);
-                self->invalidate();
+                self.invalidate();
                 break;
         }
     }
 
-    static void getScrollSize(Ui::Window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Ui::Window& self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
         if (_currentPosition == TilePos2(0, 0))
         {
@@ -416,7 +416,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
         }
 
-        *scrollHeight = self->rowCount * self->rowHeight;
+        *scrollHeight = self.rowCount * self.rowHeight;
     }
 
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         self.invalidate();
     }
 
-    static void onClose(Window* self)
+    static void onClose(Window& self)
     {
         Input::toolCancel();
     }

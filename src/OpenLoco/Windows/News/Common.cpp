@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         _dword_525CD8 = 0xFFFFFFFF;
         _dword_525CDC = 0xFFFFFFFF;
 
-        News1::initViewport(window);
+        News1::initViewport(*window);
     }
 
     // 0x00428F8B

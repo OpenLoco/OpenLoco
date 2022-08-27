@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         Gfx::invalidateScreen();
     }
 
-    static void onClose(Ui::Window* window)
+    static void onClose(Ui::Window& window)
     {
         if (_cbClose)
         {
@@ -87,28 +87,28 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         }
     }
 
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::closeBtn:
-                WindowManager::close(window);
+                WindowManager::close(&window);
                 break;
         }
     }
 
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
         StringManager::setString(StringIds::buffer_1250, _text.c_str());
     }
 
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
+        self.draw(context);
 
-        uint16_t x = self->x + (self->width / 2);
-        uint16_t y = self->y + (self->height / 2);
-        uint16_t width = self->width;
+        uint16_t x = self.x + (self.width / 2);
+        uint16_t y = self.y + (self.height / 2);
+        uint16_t width = self.width;
         Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::buffer_1250, nullptr);
     }
 

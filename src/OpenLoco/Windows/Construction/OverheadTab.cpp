@@ -35,19 +35,19 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     WindowEventList events;
 
     // 0x0049EBD1
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Common::widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
 
             case Common::widx::tab_construction:
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(self, widgetIndex);
+                Common::switchTab(&self, widgetIndex);
                 break;
 
             case widx::checkbox_1:
@@ -62,14 +62,14 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 // TODO: & ~(1 << 7) added to prevent crashing when selecting/deselecting overhead wires for trams
                 _scenarioTrackMods[_trackType & ~(1 << 7)] = _lastSelectedMods;
 
-                self->invalidate();
+                self.invalidate();
                 break;
             }
         }
     }
 
     // 0x0049EBFC
-    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -77,13 +77,13 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             {
                 uint8_t modCount = 3;
 
-                auto widget = self->widgets[widx::track];
-                auto xPos = widget.left + self->x;
-                auto yPos = widget.top + self->y;
+                auto widget = self.widgets[widx::track];
+                auto xPos = widget.left + self.x;
+                auto yPos = widget.top + self.y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
-                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), modCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), modCount, (1 << 7));
 
                 Dropdown::add(0, StringIds::single_section);
                 Dropdown::add(1, StringIds::block_section);
@@ -96,14 +96,14 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             case widx::image:
             {
                 Input::toolCancel();
-                Input::toolSet(self, widgetIndex, CursorId::crosshair);
+                Input::toolSet(&self, widgetIndex, CursorId::crosshair);
                 break;
             }
         }
     }
 
     // 0x0049EC09
-    static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::track_dropdown)
             return;
@@ -111,14 +111,14 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         if (itemIndex != -1)
         {
             _lastSelectedTrackModSection = itemIndex;
-            self->invalidate();
+            self.invalidate();
         }
     }
 
     // 0x0049ECD1
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        Common::onUpdate(self, (1 << 5));
+        Common::onUpdate(&self, (1 << 5));
     }
 
     static std::optional<GameCommands::RoadModsPlacementArgs> getRoadModsPlacementArgsFromCursor(const int16_t x, const int16_t y)
@@ -387,16 +387,16 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049E7D3
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(self);
+        Common::prepareDraw(&self);
 
-        self->activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
+        self.activatedWidgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
 
-        self->widgets[widx::checkbox_1].type = WidgetType::none;
-        self->widgets[widx::checkbox_2].type = WidgetType::none;
-        self->widgets[widx::checkbox_3].type = WidgetType::none;
-        self->widgets[widx::checkbox_4].type = WidgetType::none;
+        self.widgets[widx::checkbox_1].type = WidgetType::none;
+        self.widgets[widx::checkbox_2].type = WidgetType::none;
+        self.widgets[widx::checkbox_3].type = WidgetType::none;
+        self.widgets[widx::checkbox_4].type = WidgetType::none;
 
         if (_trackType & (1 << 7))
         {
@@ -411,7 +411,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 if (_modList[i] != 0xFF)
                 {
                     auto extraName = ObjectManager::get<RoadExtraObject>(_modList[i])->name;
-                    setCheckbox(self, i, extraName);
+                    setCheckbox(&self, i, extraName);
                 }
             }
         }
@@ -427,31 +427,31 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 if (_modList[i] != 0xFF)
                 {
                     auto extraName = ObjectManager::get<TrackExtraObject>(_modList[i])->name;
-                    setCheckbox(self, i, extraName);
+                    setCheckbox(&self, i, extraName);
                 }
             }
         }
 
         // self->activatedWidgets = activatedWidgets;
 
-        self->widgets[widx::image].type = WidgetType::none;
-        self->widgets[widx::track].type = WidgetType::none;
-        self->widgets[widx::track_dropdown].type = WidgetType::none;
+        self.widgets[widx::image].type = WidgetType::none;
+        self.widgets[widx::track].type = WidgetType::none;
+        self.widgets[widx::track_dropdown].type = WidgetType::none;
 
-        self->widgets[widx::image].tooltip = StringIds::null;
+        self.widgets[widx::image].tooltip = StringIds::null;
 
         if (_lastSelectedMods & 0xF)
         {
-            self->widgets[widx::image].type = WidgetType::wt_3;
-            self->widgets[widx::track].type = WidgetType::combobox;
-            self->widgets[widx::track_dropdown].type = WidgetType::button;
+            self.widgets[widx::image].type = WidgetType::wt_3;
+            self.widgets[widx::track].type = WidgetType::combobox;
+            self.widgets[widx::track_dropdown].type = WidgetType::button;
 
-            self->widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
+            self.widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
 
             if (isNetworkHost())
             {
                 if (_toolWindowType == WindowType::construction)
-                    self->widgets[widx::image].tooltip = StringIds::click_track_to_upgrade;
+                    self.widgets[widx::image].tooltip = StringIds::click_track_to_upgrade;
             }
         }
 
@@ -461,22 +461,22 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             StringIds::all_connected_track,
         };
 
-        self->widgets[widx::track].text = modString[_lastSelectedTrackModSection];
+        self.widgets[widx::track].text = modString[_lastSelectedTrackModSection];
 
-        Common::repositionTabs(self);
+        Common::repositionTabs(&self);
     }
 
     // 0x0049EA3E
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
-        Common::drawTabs(self, context);
+        self.draw(context);
+        Common::drawTabs(&self, context);
         if (_lastSelectedMods & 0xF)
         {
-            auto xPos = self->x + self->widgets[widx::image].left + 1;
-            auto yPos = self->y + self->widgets[widx::image].top + 1;
-            auto width = self->widgets[widx::image].width();
-            auto height = self->widgets[widx::image].height();
+            auto xPos = self.x + self.widgets[widx::image].left + 1;
+            auto yPos = self.y + self.widgets[widx::image].top + 1;
+            auto width = self.widgets[widx::image].width();
+            auto height = self.widgets[widx::image].height();
             auto clipped = Gfx::clipContext(*context, Ui::Rect(xPos, yPos, width, height));
             if (clipped)
             {
@@ -486,8 +486,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 auto rotCoord = Math::Vector::rotate(Pos2{ x, y }, WindowManager::getCurrentRotation());
                 Ui::Point screenPos = { static_cast<int16_t>(rotCoord.y - rotCoord.x), static_cast<int16_t>(((rotCoord.x + rotCoord.y) >> 1) - 460) };
 
-                screenPos.x -= (self->widgets[widx::image].width() / 2);
-                screenPos.y -= ((self->widgets[widx::image].width() / 2) + 16);
+                screenPos.x -= (self.widgets[widx::image].width() / 2);
+                screenPos.y -= ((self.widgets[widx::image].width() / 2) + 16);
                 clipped->x += screenPos.x;
                 clipped->y += screenPos.y;
 
@@ -508,8 +508,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
         }
 
-        auto xPos = self->x + 69;
-        auto yPos = self->widgets[widx::image].bottom + self->y + 4;
+        auto xPos = self.x + 69;
+        auto yPos = self.widgets[widx::image].bottom + self.y + 4;
 
         if (_modCost != 0x80000000 && _modCost != 0)
         {

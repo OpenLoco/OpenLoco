@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x00447093
-    static void prepareDraw(Window* const self)
+    static void prepareDraw(Window& self)
     {
         // Prepare description string for drawing.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -109,32 +109,32 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x004470FD
-    static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::closeButton:
             case widx::cancelButton:
-                WindowManager::close(self->type);
+                WindowManager::close(self.type);
                 break;
 
             case widx::okButton:
                 _result = 1;
-                WindowManager::close(self->type);
+                WindowManager::close(self.type);
                 break;
         }
     }
 
     // 0x004470AA
-    static void draw(Window* const self, Gfx::Context* const context)
+    static void draw(Window& self, Gfx::Context* const context)
     {
-        self->draw(context);
+        self.draw(context);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
 
-        auto origin = Ui::Point(self->x + self->width / 2, self->y + 41);
-        Gfx::drawStringCentredWrapped(*context, origin, self->width, Colour::black, StringIds::wcolour2_stringid, &args);
+        auto origin = Ui::Point(self.x + self.width / 2, self.y + 41);
+        Gfx::drawStringCentredWrapped(*context, origin, self.width, Colour::black, StringIds::wcolour2_stringid, &args);
     }
 
     static void initEvents()

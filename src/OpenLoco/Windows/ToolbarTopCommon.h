@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         };
     }
 
-    void draw(Window* window, Gfx::Context* context);
+    void draw(Window& window, Gfx::Context* context);
 
     void zoomMenuMouseDown(Window* window, WidgetIndex_t widgetIndex);
     void rotateMenuMouseDown(Window* window, WidgetIndex_t widgetIndex);
@@ -46,8 +46,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void roadMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
     void townsMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
 
-    void onUpdate(Window* window);
-    void onResize(Window* window);
+    void onUpdate(Window& window);
+    void onResize(Window& window);
     void onMouseDown(Window* window, WidgetIndex_t widgetIndex);
     void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
 

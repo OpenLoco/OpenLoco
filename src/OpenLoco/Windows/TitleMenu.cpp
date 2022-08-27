@@ -139,14 +139,14 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void multiplayerConnect(std::string_view host);
     static void sub_46E328();
 
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
-    static void onUpdate(Window* window);
-    static void onTextInput(Window* window, WidgetIndex_t widgetIndex, const char* input);
-    static Ui::CursorId onCursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::Window* window, Gfx::Context* context);
-    static void prepareDraw(Ui::Window* window);
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
+    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    static void onUpdate(Window& window);
+    static void onTextInput(Window& window, WidgetIndex_t widgetIndex, const char* input);
+    static Ui::CursorId onCursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
+    static void draw(Ui::Window& window, Gfx::Context* context);
+    static void prepareDraw(Ui::Window& window);
 
     // static loco_global<WindowEventList[1], 0x004f9ec8> _events;
 
@@ -181,87 +181,87 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x00438E0B
-    static void prepareDraw(Ui::Window* window)
+    static void prepareDraw(Ui::Window& window)
     {
-        window->disabledWidgets = 0;
-        window->widgets[Widx::tutorial_btn].type = Ui::WidgetType::buttonWithImage;
-        window->widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::buttonWithImage;
+        window.disabledWidgets = 0;
+        window.widgets[Widx::tutorial_btn].type = Ui::WidgetType::buttonWithImage;
+        window.widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::buttonWithImage;
 
         // TODO: add widget::set_origin()
-        window->widgets[Widx::scenario_list_btn].left = 0;
-        window->widgets[Widx::scenario_list_btn].right = btn_main_size - 1;
-        window->widgets[Widx::load_game_btn].left = btn_main_size;
-        window->widgets[Widx::load_game_btn].right = btn_main_size * 2 - 1;
-        window->widgets[Widx::tutorial_btn].left = btn_main_size * 2;
-        window->widgets[Widx::tutorial_btn].right = btn_main_size * 3 - 1;
-        window->widgets[Widx::scenario_editor_btn].left = btn_main_size * 3;
-        window->widgets[Widx::scenario_editor_btn].right = btn_main_size * 4 - 1;
-        window->widgets[Widx::chat_btn].type = Ui::WidgetType::none;
+        window.widgets[Widx::scenario_list_btn].left = 0;
+        window.widgets[Widx::scenario_list_btn].right = btn_main_size - 1;
+        window.widgets[Widx::load_game_btn].left = btn_main_size;
+        window.widgets[Widx::load_game_btn].right = btn_main_size * 2 - 1;
+        window.widgets[Widx::tutorial_btn].left = btn_main_size * 2;
+        window.widgets[Widx::tutorial_btn].right = btn_main_size * 3 - 1;
+        window.widgets[Widx::scenario_editor_btn].left = btn_main_size * 3;
+        window.widgets[Widx::scenario_editor_btn].right = btn_main_size * 4 - 1;
+        window.widgets[Widx::chat_btn].type = Ui::WidgetType::none;
 
         auto& config = Config::getNew();
-        window->widgets[Widx::multiplayer_toggle_btn].type = config.network.enabled ? WidgetType::buttonWithImage : WidgetType::none;
+        window.widgets[Widx::multiplayer_toggle_btn].type = config.network.enabled ? WidgetType::buttonWithImage : WidgetType::none;
 
         if (OpenLoco::isNetworked())
         {
-            window->widgets[Widx::tutorial_btn].type = Ui::WidgetType::none;
-            window->widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::none;
+            window.widgets[Widx::tutorial_btn].type = Ui::WidgetType::none;
+            window.widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::none;
 
-            window->widgets[Widx::scenario_list_btn].left = btn_main_size;
-            window->widgets[Widx::scenario_list_btn].right = btn_main_size * 2 - 1;
-            window->widgets[Widx::load_game_btn].left = btn_main_size * 2;
-            window->widgets[Widx::load_game_btn].right = btn_main_size * 3 - 1;
+            window.widgets[Widx::scenario_list_btn].left = btn_main_size;
+            window.widgets[Widx::scenario_list_btn].right = btn_main_size * 2 - 1;
+            window.widgets[Widx::load_game_btn].left = btn_main_size * 2;
+            window.widgets[Widx::load_game_btn].right = btn_main_size * 3 - 1;
 
-            window->widgets[Widx::chat_btn].type = Ui::WidgetType::buttonWithImage;
+            window.widgets[Widx::chat_btn].type = Ui::WidgetType::buttonWithImage;
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
-            window->widgets[Widx::chat_btn].image = skin->img + InterfaceSkin::ImageIds::phone;
+            window.widgets[Widx::chat_btn].image = skin->img + InterfaceSkin::ImageIds::phone;
         }
     }
 
     // 0x00438EC7
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
         // Draw widgets.
-        window->draw(context);
+        window.draw(context);
 
-        if (window->widgets[Widx::scenario_list_btn].type != Ui::WidgetType::none)
+        if (window.widgets[Widx::scenario_list_btn].type != Ui::WidgetType::none)
         {
-            int16_t x = window->widgets[Widx::scenario_list_btn].left + window->x;
-            int16_t y = window->widgets[Widx::scenario_list_btn].top + window->y;
+            int16_t x = window.widgets[Widx::scenario_list_btn].left + window.x;
+            int16_t y = window.widgets[Widx::scenario_list_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_list_btn))
             {
-                image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
+                image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
             }
 
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
             OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_sparkle);
         }
 
-        if (window->widgets[Widx::load_game_btn].type != Ui::WidgetType::none)
+        if (window.widgets[Widx::load_game_btn].type != Ui::WidgetType::none)
         {
-            int16_t x = window->widgets[Widx::load_game_btn].left + window->x;
-            int16_t y = window->widgets[Widx::load_game_btn].top + window->y;
+            int16_t x = window.widgets[Widx::load_game_btn].left + window.x;
+            int16_t y = window.widgets[Widx::load_game_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::load_game_btn))
             {
-                image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
+                image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
             }
 
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
             OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_save);
         }
 
-        if (window->widgets[Widx::tutorial_btn].type != Ui::WidgetType::none)
+        if (window.widgets[Widx::tutorial_btn].type != Ui::WidgetType::none)
         {
-            int16_t x = window->widgets[Widx::tutorial_btn].left + window->x;
-            int16_t y = window->widgets[Widx::tutorial_btn].top + window->y;
+            int16_t x = window.widgets[Widx::tutorial_btn].left + window.x;
+            int16_t y = window.widgets[Widx::tutorial_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::tutorial_btn))
             {
-                image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
+                image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
             }
 
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
@@ -270,24 +270,24 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_lesson_l);
         }
 
-        if (window->widgets[Widx::scenario_editor_btn].type != Ui::WidgetType::none)
+        if (window.widgets[Widx::scenario_editor_btn].type != Ui::WidgetType::none)
         {
-            int16_t x = window->widgets[Widx::scenario_editor_btn].left + window->x;
-            int16_t y = window->widgets[Widx::scenario_editor_btn].top + window->y;
+            int16_t x = window.widgets[Widx::scenario_editor_btn].left + window.x;
+            int16_t y = window.widgets[Widx::scenario_editor_btn].top + window.y;
 
             uint32_t image_id = ImageIds::title_menu_globe_construct_24;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_editor_btn))
             {
-                image_id = globe_construct[((window->var_846 / 2) % globe_construct.size())];
+                image_id = globe_construct[((window.var_846 / 2) % globe_construct.size())];
             }
 
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
         }
 
-        if (window->widgets[Widx::multiplayer_toggle_btn].type != Ui::WidgetType::none)
+        if (window.widgets[Widx::multiplayer_toggle_btn].type != Ui::WidgetType::none)
         {
-            int16_t y = window->widgets[Widx::multiplayer_toggle_btn].top + 3 + window->y;
-            int16_t x = window->width / 2 + window->x;
+            int16_t y = window.widgets[Widx::multiplayer_toggle_btn].top + 3 + window.y;
+            int16_t x = window.width / 2 + window.x;
 
             string_id string = StringIds::single_player_mode;
 
@@ -309,7 +309,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x00439094
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         if (Intro::isActive())
         {
@@ -330,28 +330,28 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 sub_43910A();
                 break;
             case Widx::chat_btn:
-                sub_439163(window, widgetIndex);
+                sub_439163(&window, widgetIndex);
                 break;
             case Widx::multiplayer_toggle_btn:
-                showMultiplayer(window);
+                showMultiplayer(&window);
                 break;
         }
     }
 
     // 0x004390D1
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         sub_46E328();
         switch (widgetIndex)
         {
             case Widx::tutorial_btn:
-                sub_439112(window);
+                sub_439112(&window);
                 break;
         }
     }
 
     // 0x004390DD
-    static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         sub_46E328();
         switch (widgetIndex)
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004390ED
-    static void onTextInput(Window* window, WidgetIndex_t widgetIndex, const char* input)
+    static void onTextInput(Window& window, WidgetIndex_t widgetIndex, const char* input)
     {
         switch (widgetIndex)
         {
@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004390f8
-    static Ui::CursorId onCursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         // Reset tooltip timeout to keep tooltips open.
         addr<0x0052338A, uint16_t>() = 2000;
@@ -484,28 +484,28 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004391F9
-    static void onUpdate(Window* window)
+    static void onUpdate(Window& window)
     {
-        window->var_846++;
+        window.var_846++;
 
         if (Intro::isActive())
         {
-            window->invalidate();
+            window.invalidate();
             return;
         }
 
         if (!MultiPlayer::hasFlag(MultiPlayer::flags::flag_8) && !MultiPlayer::hasFlag(MultiPlayer::flags::flag_9))
         {
-            window->invalidate();
+            window.invalidate();
             return;
         }
 
         if (addr<0x0050C1AE, int32_t>() < 20)
         {
-            window->invalidate();
+            window.invalidate();
             return;
         }
 
-        window->invalidate();
+        window.invalidate();
     }
 }

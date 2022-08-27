@@ -66,24 +66,24 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043BFB0
-    static void onMouseUp(Ui::Window* const window, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::close:
-                WindowManager::close(window->type);
+                WindowManager::close(window.type);
                 break;
         }
     }
 
     // 0x0043BFBB
-    static void getScrollSize(Ui::Window*, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Ui::Window&, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
         *scrollHeight = numSongs * (10 + 10 + 14);
     }
 
     // 0x0043BFC0
-    static std::optional<FormatArguments> tooltip(Ui::Window*, WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip(Ui::Window&, WidgetIndex_t)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_credits_list);
@@ -91,10 +91,10 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043B8B8
-    static void draw(Ui::Window* const window, Gfx::Context* const context)
+    static void draw(Ui::Window& window, Gfx::Context* const context)
     {
         // Draw widgets.
-        window->draw(context);
+        window.draw(context);
     }
 
     // 0x0043B8BE

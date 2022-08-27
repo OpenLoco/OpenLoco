@@ -229,9 +229,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     // 0x004733AC
-    static void prepareDraw(Ui::Window* self)
+    static void prepareDraw(Ui::Window& self)
     {
-        self->activatedWidgets |= (1 << widx::objectImage);
+        self.activatedWidgets |= (1 << widx::objectImage);
         widgets[widx::closeButton].type = WidgetType::buttonWithImage;
 
         if (isEditorMode())
@@ -239,15 +239,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             widgets[widx::closeButton].type = WidgetType::none;
         }
 
-        self->activatedWidgets &= ~(1 << widx::advancedButton);
+        self.activatedWidgets &= ~(1 << widx::advancedButton);
 
-        if (self->var_856 & (1 << 0))
+        if (self.var_856 & (1 << 0))
         {
-            self->activatedWidgets |= (1 << widx::advancedButton);
+            self.activatedWidgets |= (1 << widx::advancedButton);
         }
 
         auto args = FormatArguments();
-        args.push(_tabDisplayInfo[self->currentTab].name);
+        args.push(_tabDisplayInfo[self.currentTab].name);
     }
 
     static loco_global<uint16_t[40], 0x0112C1C5> _112C1C5;
@@ -499,17 +499,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004733F5
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        Gfx::fillRectInset(*context, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->getColour(WindowColour::primary).u8(), 0);
-        self->draw(context);
+        Gfx::fillRectInset(*context, self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary).u8(), 0);
+        self.draw(context);
 
-        drawTabs(self, context);
+        drawTabs(&self, context);
 
         bool doDefault = true;
-        if (self->object != nullptr)
+        if (self.object != nullptr)
         {
-            auto objectPtr = self->object;
+            auto objectPtr = self.object;
             auto var = ObjectManager::ObjectIndexEntry::read(&objectPtr)._header;
             if (var->getType() != ObjectType::townNames && var->getType() != ObjectType::climate)
             {
@@ -520,25 +520,25 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (doDefault)
         {
             auto widget = widgets[widx::objectImage];
-            auto colour = Colours::getShade(self->getColour(WindowColour::secondary).c(), 5);
-            Gfx::drawRect(*context, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
+            auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 5);
+            Gfx::drawRect(*context, self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
-            auto colour = Colours::getShade(self->getColour(WindowColour::secondary).c(), 0);
-            Gfx::drawRect(*context, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
+            auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
+            Gfx::drawRect(*context, self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
         }
 
-        auto type = self->currentTab;
+        auto type = self.currentTab;
 
         auto args = FormatArguments();
         args.push(_112C1C5[type]);
         args.push(ObjectManager::getMaxObjects(static_cast<ObjectType>(type)));
 
-        Gfx::drawStringLeft(*context, self->x + 3, self->y + self->height - 12, Colour::black, 2038, &args);
+        Gfx::drawStringLeft(*context, self.x + 3, self.y + self.height - 12, Colour::black, 2038, &args);
 
-        if (self->rowHover == -1)
+        if (self.rowHover == -1)
             return;
 
         loco_global<void*, 0x0050D15C> _50D15C;
@@ -547,25 +547,25 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         {
-            auto objectPtr = self->object;
+            auto objectPtr = self.object;
 
             drawPreviewImage(
                 ObjectManager::ObjectIndexEntry::read(&objectPtr)._header,
                 context,
-                widgets[widx::objectImage].mid_x() + 1 + self->x,
-                widgets[widx::objectImage].mid_y() + 1 + self->y,
+                widgets[widx::objectImage].mid_x() + 1 + self.x,
+                widgets[widx::objectImage].mid_y() + 1 + self.y,
                 _50D15C);
         }
 
-        auto x = self->widgets[widx::objectImage].mid_x() + self->x;
-        auto y = self->widgets[widx::objectImage].bottom + 3 + self->y;
-        auto width = self->width - self->widgets[widx::scrollview].right - 6;
+        auto x = self.widgets[widx::objectImage].mid_x() + self.x;
+        auto y = self.widgets[widx::objectImage].bottom + 3 + self.y;
+        auto width = self.width - self.widgets[widx::scrollview].right - 6;
 
         {
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
             *buffer++ = ControlCodes::window_colour_2;
-            auto objectPtr = self->object;
+            auto objectPtr = self.object;
 
             strncpy(buffer, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name, 510);
 
@@ -573,13 +573,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         {
-            auto objectPtr = self->object;
+            auto objectPtr = self.object;
 
             drawDescription(
                 ObjectManager::ObjectIndexEntry::read(&objectPtr)._header,
-                self,
+                &self,
                 context,
-                self->widgets[widx::scrollview].right + self->x + 4,
+                self.widgets[widx::scrollview].right + self.x + 4,
                 y + descriptionRowHeight,
                 _50D15C);
         }
@@ -650,7 +650,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004737BA
-    static void onMouseUp(Window* self, WidgetIndex_t w)
+    static void onMouseUp(Window& self, WidgetIndex_t w)
     {
         switch (w)
         {
@@ -661,8 +661,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case widx::tabArea:
             {
                 int clickedTab = -1;
-                int y = widgets[widx::panel].top + self->y - 26;
-                int x = self->x + 3;
+                int y = widgets[widx::panel].top + self.y - 26;
+                int x = self.x + 3;
 
                 for (int row = 0; row < 2; row++)
                 {
@@ -687,24 +687,24 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     }
                 }
 
-                if (clickedTab != -1 && self->currentTab != clickedTab)
+                if (clickedTab != -1 && self.currentTab != clickedTab)
                 {
-                    sub_4731EE(self, static_cast<ObjectType>(clickedTab));
-                    self->rowHover = -1;
-                    self->object = nullptr;
-                    self->scrollAreas[0].contentWidth = 0;
+                    sub_4731EE(&self, static_cast<ObjectType>(clickedTab));
+                    self.rowHover = -1;
+                    self.object = nullptr;
+                    self.scrollAreas[0].contentWidth = 0;
                     ObjectManager::freeScenarioText();
-                    auto objIndex = sub_472BBC(self);
+                    auto objIndex = sub_472BBC(&self);
 
                     if (objIndex.index != -1)
                     {
-                        self->rowHover = objIndex.index;
-                        self->object = reinterpret_cast<std::byte*>(objIndex.object._header);
+                        self.rowHover = objIndex.index;
+                        self.object = reinterpret_cast<std::byte*>(objIndex.object._header);
 
                         ObjectManager::getScenarioText(*objIndex.object._header);
                     }
 
-                    self->invalidate();
+                    self.invalidate();
                 }
 
                 break;
@@ -712,19 +712,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             case widx::advancedButton:
             {
-                self->var_856 ^= 1;
-                int currentTab = self->currentTab;
-                sub_473154(self);
+                self.var_856 ^= 1;
+                int currentTab = self.currentTab;
+                sub_473154(&self);
 
-                if ((self->var_856 & 1) == 0)
+                if ((self.var_856 & 1) == 0)
                 {
                     if (_4FE384[currentTab] & 1 << 1)
                     {
                         currentTab = _tabInformation[0].index;
                     }
                 }
-                sub_4731EE(self, static_cast<ObjectType>(currentTab));
-                self->invalidate();
+                sub_4731EE(&self, static_cast<ObjectType>(currentTab));
+                self.invalidate();
 
                 break;
             }
@@ -732,13 +732,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004738ED
-    static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = _tabObjectCounts[self->currentTab] * rowHeight;
+        *scrollHeight = _tabObjectCounts[self.currentTab] * rowHeight;
     }
 
     // 0x00473900
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_object_list);
@@ -763,15 +763,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x0047390A
-    static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto objIndex = getObjectFromSelection(self, y);
+        auto objIndex = getObjectFromSelection(&self, y);
 
-        if (objIndex.index == self->rowHover || objIndex.index == -1)
+        if (objIndex.index == self.rowHover || objIndex.index == -1)
             return;
 
-        self->rowHover = objIndex.index;
-        self->object = reinterpret_cast<std::byte*>(objIndex.object._header);
+        self.rowHover = objIndex.index;
+        self.object = reinterpret_cast<std::byte*>(objIndex.object._header);
         ObjectManager::freeScenarioText();
 
         if (objIndex.index != -1)
@@ -779,7 +779,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             ObjectManager::getScenarioText(*objIndex.object._header);
         }
 
-        self->invalidate();
+        self.invalidate();
     }
 
     // 0x00473D1D
@@ -793,16 +793,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473948
-    static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto objIndex = getObjectFromSelection(self, y);
+        auto objIndex = getObjectFromSelection(&self, y);
         auto index = objIndex.index;
         auto object = objIndex.object._header;
 
         if (index == -1)
             return;
 
-        self->invalidate();
+        self.invalidate();
         Audio::playSound(Audio::SoundId::clickDown, Input::getMouseLocation().x);
 
         auto type = objIndex.object._header->getType();
@@ -861,7 +861,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004739DD
-    static void onClose(Window* self)
+    static void onClose(Window& self)
     {
         if (!isEditorMode())
             return;
@@ -874,9 +874,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473A04
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        WindowManager::invalidateWidget(WindowType::objectSelection, self->number, widx::objectImage);
+        WindowManager::invalidateWidget(WindowType::objectSelection, self.number, widx::objectImage);
     }
 
     static void initEvents()

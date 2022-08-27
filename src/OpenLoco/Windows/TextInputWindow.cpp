@@ -81,10 +81,10 @@ namespace OpenLoco::Ui::Windows::TextInput
             });
     }
 
-    static void prepareDraw(Ui::Window* window);
-    static void draw(Ui::Window* window, Gfx::Context* context);
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onUpdate(Ui::Window* window);
+    static void prepareDraw(Ui::Window& window);
+    static void draw(Ui::Window& window, Gfx::Context* context);
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
+    static void onUpdate(Ui::Window& window);
 
     /**
      * 0x004CE523
@@ -206,7 +206,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      *
      * @param window @<esi>
      */
-    static void prepareDraw(Ui::Window* window)
+    static void prepareDraw(Ui::Window& window)
     {
         _widgets[Widx::title].text = _title;
         memcpy(_commonFormatArgs, _formatArgs, 16);
@@ -218,18 +218,18 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param window @<esi>
      * @param context @<edi>
      */
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
-        window->draw(context);
+        window.draw(context);
 
         *((string_id*)(&_commonFormatArgs[0])) = _message;
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
-        Ui::Point position = { (int16_t)(window->x + window->width / 2), (int16_t)(window->y + 30) };
-        Gfx::drawStringCentredWrapped(*context, position, window->width - 8, Colour::black, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
+        Ui::Point position = { (int16_t)(window.x + window.width / 2), (int16_t)(window.y + 30) };
+        Gfx::drawStringCentredWrapped(*context, position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[Widx::input];
-        auto clipped = Gfx::clipContext(*context, Ui::Rect(widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2));
+        auto clipped = Gfx::clipContext(*context, Ui::Rect(widget->left + 1 + window.x, widget->top + 1 + window.y, widget->width() - 2, widget->height() - 2));
         if (!clipped)
         {
             return;
@@ -254,16 +254,16 @@ namespace OpenLoco::Ui::Windows::TextInput
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { inputSession.xOffset, 1 };
         Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
-        Gfx::fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9));
+        Gfx::fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9));
     }
 
     // 0x004CE8B6
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::close:
-                WindowManager::close(window);
+                WindowManager::close(&window);
                 break;
             case Widx::ok:
                 inputSession.sanitizeInput();
@@ -272,18 +272,18 @@ namespace OpenLoco::Ui::Windows::TextInput
                 {
                     caller->callTextInput(_callingWidget, inputSession.buffer.c_str());
                 }
-                WindowManager::close(window);
+                WindowManager::close(&window);
                 break;
         }
     }
 
     // 0x004CE8FA
-    static void onUpdate(Ui::Window* window)
+    static void onUpdate(Ui::Window& window)
     {
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame % 16) == 0)
         {
-            window->invalidate();
+            window.invalidate();
         }
     }
 

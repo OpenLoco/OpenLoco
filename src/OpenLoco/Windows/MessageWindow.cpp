@@ -54,9 +54,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static WindowEventList _events;
 
-        static void prepareDraw(Window* self);
+        static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void onUpdate(Window* self);
+        static void onUpdate(Window& self);
         static void drawTabs(Window* self, Gfx::Context* context);
         static void initEvents();
     }
@@ -83,26 +83,26 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static WindowEventList events;
 
         // 0x0042A6F5
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_messages:
                 case Common::widx::tab_settings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
 
         // 0x0042A95A
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            auto scrollview = self->widgets[widx::scrollview];
-            auto scrollarea = self->scrollAreas[0];
+            auto scrollview = self.widgets[widx::scrollview];
+            auto scrollarea = self.scrollAreas[0];
 
             auto y = scrollarea.contentHeight - scrollview.height() - 1;
             y = std::max(0, y);
@@ -110,38 +110,38 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (y < scrollarea.contentOffsetY)
             {
                 scrollarea.contentOffsetY = y;
-                Ui::ScrollView::updateThumbs(self, widx::scrollview);
-                self->invalidate();
+                Ui::ScrollView::updateThumbs(&self, widx::scrollview);
+                self.invalidate();
             }
         }
 
         // 0x0042A847
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            self->flags |= WindowFlags::notScrollView;
+            self.flags |= WindowFlags::notScrollView;
         }
 
         // 0x0042A84F
-        static void event_09(Window* self)
+        static void event_09(Window& self)
         {
-            if (!(self->flags & WindowFlags::notScrollView))
+            if (!(self.flags & WindowFlags::notScrollView))
                 return;
 
-            if (self->rowHover == -1)
+            if (self.rowHover == -1)
                 return;
 
-            self->rowHover = -1;
-            self->invalidate();
+            self.rowHover = -1;
+            self.invalidate();
         }
 
         // 0x0042A871
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = _messageCount * messageHeight;
         }
 
         // 0x0042A8B9
-        static void scrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             auto messageIndex = y / messageHeight;
 
@@ -168,14 +168,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             NewsWindow::open(MessageId(messageIndex));
 
-            int32_t pan = self->width / 2 + self->x;
+            int32_t pan = self.width / 2 + self.x;
             Audio::playSound(Audio::SoundId::clickDown, pan);
         }
 
         // 0x0042A87C
-        static void scrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
-            self->flags &= ~(WindowFlags::notScrollView);
+            self.flags &= ~(WindowFlags::notScrollView);
 
             auto messageIndex = y / messageHeight;
             auto messageId = 0xFFFF;
@@ -183,15 +183,15 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             if (messageIndex < _messageCount)
                 messageId = messageIndex;
 
-            if (self->rowHover != messageId)
+            if (self.rowHover != messageId)
             {
-                self->rowHover = messageId;
-                self->invalidate();
+                self.rowHover = messageId;
+                self.invalidate();
             }
         }
 
         // 0x0042A70C
-        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_message_list);
@@ -199,19 +199,19 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A545
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
         }
 
         // 0x0042A5CC
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
         }
 
         // 0x0042A5D7
@@ -411,23 +411,23 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static WindowEventList events;
 
         // 0x0042AA84
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_messages:
                 case Common::widx::tab_settings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
 
         // 0x0042AA9F
-        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -444,14 +444,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 case widx::advice:
                 case widx::advice_dropdown:
                 {
-                    auto widget = self->widgets[widgetIndex - 1];
-                    auto xPos = widget.left + self->x;
-                    auto yPos = widget.top + self->y;
+                    auto widget = self.widgets[widgetIndex - 1];
+                    auto xPos = widget.left + self.x;
+                    auto yPos = widget.top + self.y;
                     auto width = widget.width() - 2;
                     auto height = widget.height() + 2;
                     auto flags = 1 << 7;
 
-                    Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), 3, flags);
+                    Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), 3, flags);
 
                     Dropdown::add(0, StringIds::dropdown_stringid, StringIds::message_off);
                     Dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);
@@ -466,7 +466,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AAAC
-        static void onDropdown(Window* self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -500,11 +500,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AA02
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
-            auto yPos = self->widgets[widx::company_major_news].top + self->y;
+            self.draw(context);
+            Common::drawTabs(&self, context);
+            auto yPos = self.widgets[widx::company_major_news].top + self.y;
 
             const string_id newsStringIds[] = {
                 StringIds::company_major_news,
@@ -527,11 +527,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsStringIds[i]);
 
-                    Gfx::drawStringLeft(*context, self->x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
+                    Gfx::drawStringLeft(*context, self.x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
                 }
 
                 {
-                    auto xPos = self->widgets[widx::company_major_news].left + self->x + 1;
+                    auto xPos = self.widgets[widx::company_major_news].left + self.x + 1;
                     auto args = FormatArguments();
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().newsSettings[i])]);
 
@@ -578,30 +578,30 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             { Settings::widgets, widx::tab_settings, &Settings::events, Settings::enabledWidgets },
         };
 
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab..
-            self->activatedWidgets &= ~((1ULL << tab_messages) | (1ULL << tab_settings));
-            self->activatedWidgets |= (1ULL << tabInformationByTabOffset[self->currentTab].widgetIndex);
+            self.activatedWidgets &= ~((1ULL << tab_messages) | (1ULL << tab_settings));
+            self.activatedWidgets |= (1ULL << tabInformationByTabOffset[self.currentTab].widgetIndex);
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
         }
 
         // 0x0042A716
@@ -662,11 +662,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A826 and 0x0042AB6A
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no++;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::messages, self->number, self->currentTab + Common::widx::tab_messages);
+            self.frame_no++;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::messages, self.number, self.currentTab + Common::widx::tab_messages);
         }
 
         static void initEvents()

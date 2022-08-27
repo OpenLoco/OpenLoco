@@ -59,14 +59,14 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static loco_global<uint16_t, 0x0050A004> _50A004;
     static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
 
-    static void prepareDraw(Window* window);
-    static void draw(Ui::Window* window, Gfx::Context* context);
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index);
-    static Ui::CursorId onCursor(Ui::Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onUpdate(Window* w);
+    static void prepareDraw(Window& window);
+    static void draw(Ui::Window& window, Gfx::Context* context);
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
+    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index);
+    static Ui::CursorId onCursor(Ui::Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex);
+    static void onUpdate(Window& w);
 
     // 0x43AA4C
     static void playerMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
@@ -198,28 +198,28 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004393E7
-    static void prepareDraw(Window* window)
+    static void prepareDraw(Window& window)
     {
-        window->widgets[Widx::inner_frame].type = WidgetType::none;
+        window.widgets[Widx::inner_frame].type = WidgetType::none;
     }
 
     // 0x43944B
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
         Widget& frame = _widgets[Widx::outer_frame];
-        Gfx::drawRect(*context, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        Gfx::drawRect(*context, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
-        window->draw(context);
+        window.draw(context);
 
-        drawRectInset(*context, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->getColour(WindowColour::secondary).u8(), 0x30);
+        drawRectInset(*context, window.x + frame.left + 1, window.y + frame.top + 1, frame.width() - 2, frame.height() - 2, window.getColour(WindowColour::secondary).u8(), 0x30);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);
         auto image = Gfx::recolour(competitor->images[playerCompany->ownerEmotion], playerCompany->mainColours.primary);
-        Gfx::drawImage(context, window->x + frame.left + 2, window->y + frame.top + 2, image);
+        Gfx::drawImage(context, window.x + frame.left + 2, window.y + frame.top + 2, image);
 
-        auto x = window->x + frame.width() / 2 + 12;
+        auto x = window.x + frame.width() / 2 + 12;
         {
             auto companyValueString = StringIds::player_info_bankrupt;
             if (!(playerCompany->challengeFlags & CompanyFlags::bankrupt))
@@ -234,7 +234,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 }
             }
 
-            auto colour = window->getColour(WindowColour::primary).opaque();
+            auto colour = window.getColour(WindowColour::primary).opaque();
             if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::company_value))
             {
                 colour = Colour::white;
@@ -242,7 +242,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             auto args = FormatArguments();
             args.push(playerCompany->cash.var_00);
             args.push(playerCompany->cash.var_04);
-            Gfx::drawStringCentred(*context, x, window->y + frame.top + 2, colour, companyValueString, &args);
+            Gfx::drawStringCentred(*context, x, window.y + frame.top + 2, colour, companyValueString, &args);
         }
 
         {
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 performanceString = StringIds::player_info_performance_decrease;
             }
 
-            auto colour = window->getColour(WindowColour::primary).opaque();
+            auto colour = window.getColour(WindowColour::primary).opaque();
             if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::performanceIndex))
             {
                 colour = Colour::white;
@@ -265,12 +265,12 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
             auto args = FormatArguments();
             args.push(playerCompany->performanceIndex);
-            Gfx::drawStringCentred(*context, x, window->y + frame.top + 14, colour, performanceString, &args);
+            Gfx::drawStringCentred(*context, x, window.y + frame.top + 14, colour, performanceString, &args);
         }
     }
 
     // 0x004395A4
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -284,18 +284,18 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395B1
-    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Widx::player:
-                playerMouseDown(window, widgetIndex);
+                playerMouseDown(&window, widgetIndex);
                 break;
         }
     }
 
     // 0x004395BC
-    static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index)
+    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index)
     {
         switch (widgetIndex)
         {
@@ -318,7 +318,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395DE
-    static Ui::CursorId onCursor(Ui::Window* window, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor(Ui::Window& window, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIndex)
         {
@@ -331,7 +331,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395F5
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         switch (widgetIndex)
@@ -368,12 +368,12 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x00439670
-    static void onUpdate(Window* w)
+    static void onUpdate(Window& w)
     {
-        w->var_854++;
-        if (w->var_854 >= 24)
+        w.var_854++;
+        if (w.var_854 >= 24)
         {
-            w->var_854 = 0;
+            w.var_854 = 0;
         }
 
         if (_50A004 & (1 << 0))

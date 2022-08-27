@@ -49,11 +49,11 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     }
 
     // 0x004B62FE
-    static Ui::CursorId cursor(Window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
     {
-        self->height = 0; // Set to zero so that skipped in window find
+        self.height = 0; // Set to zero so that skipped in window find
         Vehicle::Details::scrollDrag(Input::getScrollLastLocation());
-        self->height = 60;
+        self.height = 60;
         return CursorId::dragHand;
     }
 
@@ -66,9 +66,9 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         WindowManager::invalidate(WindowType::vehicle, enumValue(*_dragVehicleHead));
     }
 
-    static void draw(Ui::Window* const self, Gfx::Context* const context)
+    static void draw(Ui::Window& self, Gfx::Context* const context)
     {
-        auto clipped = Gfx::clipContext(*context, Ui::Rect(self->x, self->y, self->width, self->height));
+        auto clipped = Gfx::clipContext(*context, Ui::Rect(self.x, self.y, self.width, self.height));
         if (clipped)
         {
             Vehicle::Common::sub_4B743B(0, 0, 0, 19, _dragCarComponent, &*clipped);

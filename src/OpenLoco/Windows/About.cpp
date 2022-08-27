@@ -60,12 +60,12 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     // 0x0043B4AF
-    static void onMouseUp(Ui::Window* const window, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close:
-                WindowManager::close(window->type);
+                WindowManager::close(window.type);
                 break;
 
             case widx::music_acknowledgements_btn:
@@ -75,13 +75,13 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     // 0x0043B2E4
-    static void draw(Ui::Window* const window, Gfx::Context* const context)
+    static void draw(Ui::Window& window, Gfx::Context* const context)
     {
         // Draw widgets.
-        window->draw(context);
+        window.draw(context);
 
-        const int16_t x = window->x + windowSize.width / 2;
-        int16_t y = window->y + 25;
+        const int16_t x = window.x + windowSize.width / 2;
+        int16_t y = window.y + 25;
 
         drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_69, nullptr);
 
@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::About
         drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_70, nullptr);
 
         // Chris Sawyer logo
-        drawImage(context, window->x + 92, window->y + 52, ImageIds::chris_sawyer_logo_small);
+        drawImage(context, window.x + 92, window.y + 52, ImageIds::chris_sawyer_logo_small);
 
         y += 79;
         drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_71, nullptr);

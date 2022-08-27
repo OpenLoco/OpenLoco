@@ -104,13 +104,13 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         return window;
     }
 
-    static void draw(Window* const self, Gfx::Context* const context)
+    static void draw(Window& self, Gfx::Context* const context)
     {
-        self->draw(context);
+        self.draw(context);
     }
 
     // 0x0043C3F4
-    static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     }
 
     // 0x0043C577
-    static void onClose(Window* const self)
+    static void onClose(Window& self)
     {
         unsetPauseFlag(2);
         Audio::unpauseSound();

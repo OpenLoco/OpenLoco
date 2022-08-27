@@ -39,14 +39,14 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static WindowEventList _events;
 
-    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::Context* context);
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
-    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onUpdate(Window* window);
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
+    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onUpdate(Window& window);
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex);
 
     static void initEvents()
     {
@@ -91,10 +91,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C165D
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
         // Draw widgets.
-        window->draw(context);
+        window.draw(context);
     }
 
     // 0x004C1663
@@ -133,27 +133,27 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C176C
-    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = rowHeight * Audio::kNumMusicTracks;
     }
 
     // 0x004C1757
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close:
-                WindowManager::close(window->type);
+                WindowManager::close(window.type);
                 break;
         }
     }
 
     // 0x004C1799
-    static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentTrack = y / rowHeight;
-        if (currentTrack > window->rowCount)
+        if (currentTrack > window.rowCount)
             return;
 
         auto& config = Config::get();
@@ -172,33 +172,33 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
         Config::write();
         Audio::revalidateCurrentTrack();
-        window->invalidate();
+        window.invalidate();
     }
 
     // 0x004C1771
-    static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentTrack = y / rowHeight;
-        if (currentTrack > window->rowCount || currentTrack == window->rowHover)
+        if (currentTrack > window.rowCount || currentTrack == window.rowHover)
             return;
 
-        window->rowHover = currentTrack;
-        window->invalidate();
+        window.rowHover = currentTrack;
+        window.invalidate();
     }
 
     // 0x004C17E3
-    static void onUpdate(Window* window)
+    static void onUpdate(Window& window)
     {
         auto optionsWindow = WindowManager::find(WindowType::options);
         if (optionsWindow == nullptr || optionsWindow->currentTab != Options::tab_offset_music)
         {
-            WindowManager::close(window);
+            WindowManager::close(&window);
             return;
         }
     }
 
     // 0x004C1762
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);

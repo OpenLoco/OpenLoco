@@ -37,26 +37,26 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     WindowEventList events;
 
     // 0x0049E228
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case Common::widx::close_button:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
 
             case Common::widx::tab_construction:
             case Common::widx::tab_overhead:
             case Common::widx::tab_signal:
             case Common::widx::tab_station:
-                Common::switchTab(self, widgetIndex);
+                Common::switchTab(&self, widgetIndex);
                 break;
 
             case widx::rotate:
                 _constructionRotation++;
                 _constructionRotation = _constructionRotation & 3;
                 _stationCost = 0x80000000;
-                self->invalidate();
+                self.invalidate();
                 break;
         }
     }
@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E249
-    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -86,12 +86,12 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 while (_stationList[stationCount] != 0xFF)
                     stationCount++;
 
-                auto widget = self->widgets[widx::station];
-                auto xPos = widget.left + self->x;
-                auto yPos = widget.top + self->y;
+                auto widget = self.widgets[widx::station];
+                auto xPos = widget.left + self.x;
+                auto yPos = widget.top + self.y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
-                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), stationCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), stationCount, (1 << 7));
 
                 if (_byte_1136063 & (1 << 7))
                 {
@@ -114,14 +114,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             case widx::image:
             {
                 Input::toolCancel();
-                Input::toolSet(self, widgetIndex, CursorId::placeStation);
+                Input::toolSet(&self, widgetIndex, CursorId::placeStation);
                 break;
             }
         }
     }
 
     // 0x0049E256
-    static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex == widx::station_dropdown)
         {
@@ -149,14 +149,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 _scenarioTrainStations[_trackType] = selectedStation;
             }
 
-            self->invalidate();
+            self.invalidate();
         }
     }
 
     // 0x0049E437
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        Common::onUpdate(self, (1 << 3));
+        Common::onUpdate(&self, (1 << 3));
     }
 
     // 0x0049FF4B
@@ -561,21 +561,21 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049DD39
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
-        Common::prepareDraw(self);
+        Common::prepareDraw(&self);
 
-        self->widgets[widx::rotate].type = WidgetType::none;
+        self.widgets[widx::rotate].type = WidgetType::none;
 
         auto args = FormatArguments();
 
         if (_byte_1136063 & (1 << 7))
         {
-            self->widgets[widx::rotate].type = WidgetType::buttonWithImage;
+            self.widgets[widx::rotate].type = WidgetType::buttonWithImage;
 
             auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
 
-            self->widgets[widx::station].text = airportObj->name;
+            self.widgets[widx::station].text = airportObj->name;
 
             args.push(StringIds::title_airport);
         }
@@ -583,7 +583,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto dockObj = ObjectManager::get<DockObject>(_lastSelectedStationType);
 
-            self->widgets[widx::station].text = dockObj->name;
+            self.widgets[widx::station].text = dockObj->name;
 
             args.push(StringIds::title_ship_port);
         }
@@ -597,7 +597,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             auto roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
-            self->widgets[widx::station].text = roadStationObject->name;
+            self.widgets[widx::station].text = roadStationObject->name;
         }
         else
         {
@@ -607,22 +607,22 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             auto trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 
-            self->widgets[widx::station].text = trainStationObject->name;
+            self.widgets[widx::station].text = trainStationObject->name;
         }
 
-        Common::repositionTabs(self);
+        Common::repositionTabs(&self);
     }
 
     // 0x0049DE40
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
-        Common::drawTabs(self, context);
+        self.draw(context);
+        Common::drawTabs(&self, context);
 
         auto company = CompanyManager::getPlayerCompany();
         auto companyColour = company->mainColours.primary;
-        int16_t xPos = self->widgets[widx::image].left + self->x;
-        int16_t yPos = self->widgets[widx::image].top + self->y;
+        int16_t xPos = self.widgets[widx::image].left + self.x;
+        int16_t yPos = self.widgets[widx::image].top + self.y;
 
         if (_byte_1136063 & (1 << 7))
         {
@@ -671,8 +671,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if (_stationCost != 0x80000000 && _stationCost != 0)
         {
-            xPos = self->x + 69;
-            yPos = self->widgets[widx::image].bottom + self->y + 4;
+            xPos = self.x + 69;
+            yPos = self.widgets[widx::image].bottom + self.y + 4;
 
             auto args = FormatArguments();
             args.push<uint32_t>(_stationCost);
@@ -680,10 +680,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
 
-        xPos = self->x + 3;
-        yPos = self->widgets[widx::image].bottom + self->y + 16;
-        auto width = self->width - 4;
-        Gfx::drawRectInset(*context, xPos, yPos, width, 1, self->getColour(WindowColour::secondary).u8(), (1 << 5));
+        xPos = self.x + 3;
+        yPos = self.widgets[widx::image].bottom + self.y + 16;
+        auto width = self.width - 4;
+        Gfx::drawRectInset(*context, xPos, yPos, width, 1, self.getColour(WindowColour::secondary).u8(), (1 << 5));
 
         if (!(_byte_522096 & (1 << 3)))
             return;
@@ -702,13 +702,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             args.push(station->town);
         }
 
-        xPos = self->x + 69;
-        yPos = self->widgets[widx::image].bottom + self->y + 18;
-        width = self->width - 4;
+        xPos = self.x + 69;
+        yPos = self.widgets[widx::image].bottom + self.y + 18;
+        width = self.width - 4;
         Gfx::drawStringCentredClipped(*context, xPos, yPos, width, Colour::black, StringIds::new_station_buffer, &args);
 
-        xPos = self->x + 2;
-        yPos = self->widgets[widx::image].bottom + self->y + 29;
+        xPos = self.x + 2;
+        yPos = self.widgets[widx::image].bottom + self.y + 29;
         Ui::Point origin = { xPos, yPos };
 
         Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::catchment_area_accepts);
@@ -724,7 +724,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 if (_constructingStationAcceptedCargoTypes & (1 << i))
                 {
-                    auto xPosMax = self->x + self->width - 12;
+                    auto xPosMax = self.x + self.width - 12;
                     if (origin.x <= xPosMax)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
@@ -736,8 +736,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
         }
 
-        xPos = self->x + 2;
-        yPos = self->widgets[widx::image].bottom + self->y + 49;
+        xPos = self.x + 2;
+        yPos = self.widgets[widx::image].bottom + self.y + 49;
         origin = { xPos, yPos };
 
         Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::catchment_area_produces);
@@ -753,7 +753,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 if (_constructingStationProducedCargoTypes & (1 << i))
                 {
-                    auto xPosMax = self->x + self->width - 12;
+                    auto xPosMax = self.x + self.width - 12;
                     if (origin.x <= xPosMax)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);

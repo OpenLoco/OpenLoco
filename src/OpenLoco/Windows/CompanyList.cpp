@@ -87,9 +87,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_payment_rates),                       \
         makeRemapWidget({ 189, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tab_speed_records)
 
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
-        static void onUpdate(Window* self);
-        static void prepareDraw(Window* self);
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
+        static void onUpdate(Window& self);
+        static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void refreshCompanyList(Window* self);
         static void drawTabs(Window* self, Gfx::Context* context);
@@ -138,12 +138,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         };
 
         // 0x004360A2
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_company_list:
@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case Common::widx::tab_values:
                 case Common::widx::tab_payment_rates:
                 case Common::widx::tab_speed_records:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case sort_name:
@@ -162,24 +162,24 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case sort_value:
                 {
                     auto sortMode = widgetIndex - widx::sort_name;
-                    if (self->sortMode == sortMode)
+                    if (self.sortMode == sortMode)
                         return;
 
-                    self->sortMode = sortMode;
-                    self->invalidate();
-                    self->var_83C = 0;
-                    self->rowHover = -1;
+                    self.sortMode = sortMode;
+                    self.invalidate();
+                    self.var_83C = 0;
+                    self.rowHover = -1;
 
-                    Common::refreshCompanyList(self);
+                    Common::refreshCompanyList(&self);
                     break;
                 }
             }
         }
 
         // 0x004363CB
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(minWindowSize, maxWindowSize);
+            self.setSize(minWindowSize, maxWindowSize);
         }
 
         // 0x00437BA0
@@ -310,54 +310,54 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004362C0
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no++;
+            self.frame_no++;
 
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::companyList, self->number, self->currentTab + Common::widx::tab_company_list);
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::companyList, self.number, self.currentTab + Common::widx::tab_company_list);
 
             _word_9C68C7++;
 
             // Add three companies every tick.
-            updateCompanyList(self);
-            updateCompanyList(self);
-            updateCompanyList(self);
+            updateCompanyList(&self);
+            updateCompanyList(&self);
+            updateCompanyList(&self);
         }
 
         // 0x004362F7
-        static void event_08(Window* self)
+        static void event_08(Window& self)
         {
-            self->flags |= WindowFlags::notScrollView;
+            self.flags |= WindowFlags::notScrollView;
         }
 
         // 0x004362FF
-        static void event_09(Window* self)
+        static void event_09(Window& self)
         {
-            if (!(self->flags & WindowFlags::notScrollView))
+            if (!(self.flags & WindowFlags::notScrollView))
                 return;
 
-            if (self->rowHover == -1)
+            if (self.rowHover == -1)
                 return;
 
-            self->rowHover = -1;
-            self->invalidate();
+            self.rowHover = -1;
+            self.invalidate();
         }
 
         // 0x00436321
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = self->var_83C * rowHeight;
+            *scrollHeight = self.var_83C * rowHeight;
         }
 
         // 0x004363A0
-        static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
-            if (currentRow > self->var_83C)
+            if (currentRow > self.var_83C)
                 return;
 
-            CompanyId currentCompany = CompanyId(self->rowInfo[currentRow]);
+            CompanyId currentCompany = CompanyId(self.rowInfo[currentRow]);
             if (currentCompany == CompanyId::null)
                 return;
 
@@ -365,25 +365,25 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436361
-        static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(WindowFlags::notScrollView);
+            self.flags &= ~(WindowFlags::notScrollView);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentCompany = -1;
 
-            if (currentRow < self->var_83C)
-                currentCompany = self->rowInfo[currentRow];
+            if (currentRow < self.var_83C)
+                currentCompany = self.rowInfo[currentRow];
 
-            if (self->rowHover == currentCompany)
+            if (self.rowHover == currentCompany)
                 return;
 
-            self->rowHover = currentCompany;
-            self->invalidate();
+            self.rowHover = currentCompany;
+            self.invalidate();
         }
 
         // 0x004362B6
-        static std::optional<FormatArguments> tooltip(Window* self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_company_list);
@@ -391,61 +391,61 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x0043632C
-        static Ui::CursorId cursor(Window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
 
             uint16_t currentIndex = yPos / rowHeight;
-            if (currentIndex < self->var_83C && self->rowInfo[currentIndex] != -1)
+            if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
                 return CursorId::handPointer;
 
             return fallback;
         }
 
         // 0x00435D07
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
             // Reposition header buttons
-            self->widgets[widx::sort_name].right = std::min(178, self->width - 8);
+            self.widgets[widx::sort_name].right = std::min(178, self.width - 8);
 
-            self->widgets[widx::sort_status].left = std::min(179, self->width - 8);
-            self->widgets[widx::sort_status].right = std::min(388, self->width - 8);
+            self.widgets[widx::sort_status].left = std::min(179, self.width - 8);
+            self.widgets[widx::sort_status].right = std::min(388, self.width - 8);
 
-            self->widgets[widx::sort_performance].left = std::min(389, self->width - 8);
-            self->widgets[widx::sort_performance].right = std::min(533, self->width - 8);
+            self.widgets[widx::sort_performance].left = std::min(389, self.width - 8);
+            self.widgets[widx::sort_performance].right = std::min(533, self.width - 8);
 
-            self->widgets[widx::sort_value].left = std::min(534, self->width - 8);
-            self->widgets[widx::sort_value].right = std::min(633, self->width - 8);
+            self.widgets[widx::sort_value].left = std::min(534, self.width - 8);
+            self.widgets[widx::sort_value].right = std::min(633, self.width - 8);
 
             // Set header button captions
-            self->widgets[widx::sort_name].text = self->sortMode == SortMode::Name ? StringIds::table_header_company_name_desc : StringIds::table_header_company_name;
-            self->widgets[widx::sort_status].text = self->sortMode == SortMode::Status ? StringIds::table_header_company_status_desc : StringIds::table_header_company_status;
-            self->widgets[widx::sort_performance].text = self->sortMode == SortMode::Performance ? StringIds::table_header_company_performance_desc : StringIds::table_header_company_performance;
-            self->widgets[widx::sort_value].text = self->sortMode == SortMode::Value ? StringIds::table_header_company_value_desc : StringIds::table_header_company_value;
+            self.widgets[widx::sort_name].text = self.sortMode == SortMode::Name ? StringIds::table_header_company_name_desc : StringIds::table_header_company_name;
+            self.widgets[widx::sort_status].text = self.sortMode == SortMode::Status ? StringIds::table_header_company_status_desc : StringIds::table_header_company_status;
+            self.widgets[widx::sort_performance].text = self.sortMode == SortMode::Performance ? StringIds::table_header_company_performance_desc : StringIds::table_header_company_performance;
+            self.widgets[widx::sort_value].text = self.sortMode == SortMode::Value ? StringIds::table_header_company_value_desc : StringIds::table_header_company_value;
         }
 
         // 0x00435E56
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
             auto args = FormatArguments();
-            if (self->var_83C == 1)
+            if (self.var_83C == 1)
                 args.push(StringIds::company_singular);
             else
                 args.push(StringIds::companies_plural);
 
-            args.push(self->var_83C);
+            args.push(self.var_83C);
 
-            auto xPos = self->x + 3;
-            auto yPos = self->y + self->height - 13;
+            auto xPos = self.x + 3;
+            auto yPos = self.y + self.height - 13;
             Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
@@ -646,21 +646,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x004366D7
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x00436490
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
+            _graphLeft = self.x + 4;
+            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphRight = 520;
-            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
+            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 40;
             _graphYAxisLabelIncrement = 20;
@@ -699,7 +699,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 100;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndLegend(self, context);
+            Common::drawGraphAndLegend(&self, context);
         }
 
         // 0x004361D8
@@ -737,21 +737,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x004369FB
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x004367B4
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
+            _graphLeft = self.x + 4;
+            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphRight = 525;
-            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
+            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 45;
             _graphYAxisLabelIncrement = 25;
@@ -790,7 +790,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 1000;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndLegend(self, context);
+            Common::drawGraphAndLegend(&self, context);
         }
 
         // 0x00436201
@@ -828,21 +828,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x00436D1F
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x00436AD8
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
+            _graphLeft = self.x + 4;
+            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphRight = 545;
-            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
+            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 65;
             _graphYAxisLabelIncrement = 25;
@@ -881,7 +881,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 1000;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndLegend(self, context);
+            Common::drawGraphAndLegend(&self, context);
         }
 
         // 0x00436227
@@ -919,21 +919,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x00437043
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x00436DFC
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
+            _graphLeft = self.x + 4;
+            _graphTop = self.y + self.widgets[Common::widx::panel].top + 4;
             _graphRight = 570;
-            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
+            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 90;
             _graphYAxisLabelIncrement = 25;
@@ -972,7 +972,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 10000;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndLegend(self, context);
+            Common::drawGraphAndLegend(&self, context);
         }
 
         // 0x0043624D
@@ -1010,9 +1010,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x0043737D
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x00437949
@@ -1050,15 +1050,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437120
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[Common::widx::panel].top + 14;
+            _graphLeft = self.x + 4;
+            _graphTop = self.y + self.widgets[Common::widx::panel].top + 14;
             _graphRight = 380;
-            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 28;
+            _graphBottom = self.height - self.widgets[Common::widx::panel].top - 28;
             _graphYOffset = 17;
             _graphXOffset = 80;
             _graphYAxisLabelIncrement = 25;
@@ -1095,12 +1095,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD7C = 2;
             _byte_113DD99 = 1;
 
-            Common::drawGraph(self, context);
+            Common::drawGraph(&self, context);
 
-            if (self->var_854 != 0)
+            if (self.var_854 != 0)
             {
                 auto i = 0;
-                while (Utility::bitScanForward(self->var_854) != _graphItemId[i])
+                while (Utility::bitScanForward(self.var_854) != _graphItemId[i])
                 {
                     i++;
                 }
@@ -1112,16 +1112,16 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _dword_113DD8E = _dword_113DD8E | (1 << 2);
 
-                Common::drawGraph(self, context);
+                Common::drawGraph(&self, context);
             }
 
-            auto x = self->width + self->x - 104;
-            auto y = self->y + 52;
+            auto x = self.width + self.x - 104;
+            auto y = self.y + 52;
 
-            drawGraphLegend(self, context, x, y);
+            drawGraphLegend(&self, context, x, y);
 
-            x = self->x + 8;
-            y = self->widgets[Common::widx::panel].top + self->y + 1;
+            x = self.x + 8;
+            y = self.widgets[Common::widx::panel].top + self.y + 1;
 
             auto args = FormatArguments();
             args.push<uint16_t>(100);
@@ -1129,8 +1129,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             Gfx::drawStringLeft(*context, x, y, Colour::black, StringIds::cargo_deliver_graph_title, &args);
 
-            x = self->x + 160;
-            y = self->height + self->y - 13;
+            x = self.x + 160;
+            y = self.height + self.y - 13;
 
             Gfx::drawStringLeft(*context, x, y, Colour::black, StringIds::cargo_transit_time);
         }
@@ -1213,18 +1213,18 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static WindowEventList events;
 
         // 0x00437591
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            self->setSize(windowSize, windowSize);
+            self.setSize(windowSize, windowSize);
         }
 
         // 0x0043745A
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
-            auto y = self->y + 47;
+            auto y = self.y + 47;
 
             for (auto i = 0; i < 3; i++)
             {
@@ -1241,7 +1241,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                         StringIds::water_speed_record,
                     };
 
-                    auto x = self->x + 4;
+                    auto x = self.x + 4;
                     Gfx::drawStringLeft(*context, x, y, Colour::black, string[i], &args);
                 }
                 y += 11;
@@ -1256,10 +1256,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto imageId = competitorObj->images[company->ownerEmotion];
                     imageId = Gfx::recolour(imageId, company->mainColours.primary);
 
-                    auto x = self->x + 4;
+                    auto x = self.x + 4;
                     Gfx::drawImage(context, x, y, imageId);
 
-                    x = self->x + 33;
+                    x = self.x + 33;
                     y += 7;
 
                     auto args = FormatArguments();
@@ -1306,12 +1306,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         };
 
         // 0x0043667B
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_company_list:
@@ -1321,7 +1321,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case Common::widx::tab_values:
                 case Common::widx::tab_payment_rates:
                 case Common::widx::tab_speed_records:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
@@ -1362,16 +1362,16 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437570
-        static void onUpdate(Window* self)
+        static void onUpdate(Window& self)
         {
-            self->frame_no++;
-            self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::townList, self->number, self->currentTab + Common::widx::tab_company_list);
+            self.frame_no++;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_company_list);
 
-            auto x = self->width - 104 + self->x;
-            auto y = self->y + 52;
+            auto x = self.width - 104 + self.x;
+            auto y = self.y + 52;
 
-            switch (self->currentTab + widx::tab_company_list)
+            switch (self.currentTab + widx::tab_company_list)
             {
                 case widx::tab_cargo_distance:
                 case widx::tab_cargo_units:
@@ -1379,13 +1379,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case widx::tab_values:
                 {
                     _word_9C68C7++;
-                    setLegendHover(self, x, y);
+                    setLegendHover(&self, x, y);
                     break;
                 }
                 case widx::tab_payment_rates:
                 {
                     _word_9C68C7++;
-                    CargoPaymentRates::setLegendHover(self, x, y);
+                    CargoPaymentRates::setLegendHover(&self, x, y);
                     break;
                 }
                 case widx::tab_speed_records:
@@ -1394,30 +1394,30 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436419
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed
-            const auto& tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            const auto& tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab
-            self->activatedWidgets &= ~((1ULL << tab_cargo_distance) | (1ULL << tab_cargo_units) | (1ULL << tab_company_list) | (1ULL << tab_payment_rates) | (1ULL << tab_performance) | (1ULL << tab_speed_records) | (1ULL << tab_values));
-            self->activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self->currentTab].widgetIndex);
+            self.activatedWidgets &= ~((1ULL << tab_cargo_distance) | (1ULL << tab_cargo_units) | (1ULL << tab_company_list) | (1ULL << tab_payment_rates) | (1ULL << tab_performance) | (1ULL << tab_speed_records) | (1ULL << tab_values));
+            self.activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self.currentTab].widgetIndex);
 
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
         }
 
         // 0x004360FA

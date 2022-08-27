@@ -169,63 +169,63 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x0044647C
-    static void onClose(Window*)
+    static void onClose(Window&)
     {
         _files.clear();
         freeFileDetails();
     }
 
     // 0x004467F6
-    static void onResize(Window* window)
+    static void onResize(Window& window)
     {
-        window->capSize(400, 300, 640, 800);
+        window.capSize(400, 300, 640, 800);
     }
 
     // 0x00446465
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::close_button:
                 _currentDirectory.clear();
                 _savePath[0] = '\0';
-                WindowManager::close(window);
+                WindowManager::close(&window);
                 break;
             case widx::parent_button:
                 upOneLevel();
-                window->var_85A = -1;
-                window->invalidate();
+                window.var_85A = -1;
+                window.invalidate();
                 break;
             case widx::ok_button:
-                processFileForLoadSave(window);
+                processFileForLoadSave(&window);
                 break;
         }
     }
 
     // 0x004467E1
-    static void onUpdate(Ui::Window* window)
+    static void onUpdate(Ui::Window& window)
     {
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame & 0x0F) == 0)
         {
-            window->invalidate();
+            window.invalidate();
         }
     }
 
     // 0x004464A1
-    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = window->rowHeight * static_cast<uint16_t>(_files.size());
+        *scrollHeight = window.rowHeight * static_cast<uint16_t>(_files.size());
     }
 
     // 0x004464F7
-    static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
-        auto index = size_t(y / self->rowHeight);
+        auto index = size_t(y / self.rowHeight);
         if (index >= _files.size())
             return;
 
-        Audio::playSound(Audio::SoundId::clickDown, self->x + (self->width / 2));
+        Audio::playSound(Audio::SoundId::clickDown, self.x + (self.width / 2));
 
         auto& entry = _files[index];
 
@@ -233,8 +233,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (Input::state() == Input::State::scrollLeft && fs::is_directory(entry))
         {
             changeDirectory(entry);
-            self->var_85A = -1;
-            self->invalidate();
+            self.var_85A = -1;
+            self.invalidate();
             return;
         }
 
@@ -244,38 +244,38 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             // Copy the selected filename without extension to text input buffer.
             inputSession.buffer = entry.stem().u8string();
             inputSession.cursorPosition = inputSession.buffer.length();
-            self->invalidate();
+            self.invalidate();
 
             // Continue processing for load/save.
-            processFileForLoadSave(self);
+            processFileForLoadSave(&self);
         }
         // Clicking a file, with right mouse button
         else
         {
-            processFileForDelete(self, entry);
+            processFileForDelete(&self, entry);
         }
     }
 
     // 0x004464B1
-    static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void onScrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
         if (WindowManager::getCurrentModalType() != WindowType::fileBrowserPrompt)
             return;
 
-        auto index = y / self->rowHeight;
+        auto index = y / self.rowHeight;
         if (index >= static_cast<uint16_t>(_files.size()))
             return;
 
-        if (self->var_85A == index)
+        if (self.var_85A == index)
             return;
 
-        self->var_85A = index;
-        loadFileDetails(self);
-        self->invalidate();
+        self.var_85A = index;
+        loadFileDetails(&self);
+        self.invalidate();
     }
 
     // 0x004467D7
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -283,48 +283,48 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00445C8F
-    static void prepareDraw(Ui::Window* self)
+    static void prepareDraw(Ui::Window& self)
     {
-        self->widgets[widx::frame].right = self->width - 1;
-        self->widgets[widx::frame].bottom = self->height - 1;
+        self.widgets[widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].bottom = self.height - 1;
 
-        self->widgets[widx::panel].right = self->width - 1;
-        self->widgets[widx::panel].bottom = self->height - 1;
+        self.widgets[widx::panel].right = self.width - 1;
+        self.widgets[widx::panel].bottom = self.height - 1;
 
-        self->widgets[widx::caption].right = self->width - 2;
+        self.widgets[widx::caption].right = self.width - 2;
 
-        self->widgets[widx::close_button].left = self->width - 15;
-        self->widgets[widx::close_button].right = self->width - 3;
+        self.widgets[widx::close_button].left = self.width - 15;
+        self.widgets[widx::close_button].right = self.width - 3;
 
         if (*_type == browse_type::save)
         {
-            self->widgets[widx::ok_button].left = self->width - 86;
-            self->widgets[widx::ok_button].right = self->width - 16;
-            self->widgets[widx::ok_button].top = self->height - 15;
-            self->widgets[widx::ok_button].bottom = self->height - 4;
-            self->widgets[widx::ok_button].type = WidgetType::button;
+            self.widgets[widx::ok_button].left = self.width - 86;
+            self.widgets[widx::ok_button].right = self.width - 16;
+            self.widgets[widx::ok_button].top = self.height - 15;
+            self.widgets[widx::ok_button].bottom = self.height - 4;
+            self.widgets[widx::ok_button].type = WidgetType::button;
 
-            self->widgets[widx::text_filename].right = self->width - 4;
-            self->widgets[widx::text_filename].top = self->height - 31;
-            self->widgets[widx::text_filename].bottom = self->height - 18;
-            self->widgets[widx::text_filename].type = WidgetType::textbox;
+            self.widgets[widx::text_filename].right = self.width - 4;
+            self.widgets[widx::text_filename].top = self.height - 31;
+            self.widgets[widx::text_filename].bottom = self.height - 18;
+            self.widgets[widx::text_filename].type = WidgetType::textbox;
 
-            self->widgets[widx::scrollview].bottom = self->height - 34;
+            self.widgets[widx::scrollview].bottom = self.height - 34;
         }
         else
         {
-            self->widgets[widx::ok_button].type = WidgetType::none;
-            self->widgets[widx::text_filename].type = WidgetType::none;
+            self.widgets[widx::ok_button].type = WidgetType::none;
+            self.widgets[widx::text_filename].type = WidgetType::none;
 
-            self->widgets[widx::scrollview].bottom = self->height - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 4;
         }
 
-        self->widgets[widx::scrollview].right = self->width - 259;
+        self.widgets[widx::scrollview].right = self.width - 259;
         if (*_fileType != BrowseFileType::savedGame)
-            self->widgets[widx::scrollview].right += 122;
+            self.widgets[widx::scrollview].right += 122;
 
-        self->widgets[widx::parent_button].left = self->width - 26;
-        self->widgets[widx::parent_button].right = self->width - 3;
+        self.widgets[widx::parent_button].left = self.width - 26;
+        self.widgets[widx::parent_button].right = self.width - 3;
 
         // Get width of the base 'Folder:' string
         auto args = FormatArguments::common(StringIds::empty);
@@ -334,7 +334,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         const auto folderLabelWidth = Gfx::getStringWidth(folderBuffer);
 
         // We'll ensure the folder width does not reach the parent button.
-        const uint16_t maxWidth = self->widgets[widx::parent_button].left - folderLabelWidth - 10;
+        const uint16_t maxWidth = self.widgets[widx::parent_button].left - folderLabelWidth - 10;
         const std::string nameBuffer = _currentDirectory.u8string();
         strncpy(&_displayFolderBuffer[0], nameBuffer.c_str(), 512);
         uint16_t folderWidth = Gfx::getStringWidth(_displayFolderBuffer);
@@ -371,27 +371,27 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00445E38
-    static void draw(Ui::Window* window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::Context* context)
     {
-        window->draw(context);
+        window.draw(context);
 
         {
             auto folder = &_displayFolderBuffer[0];
             auto args = getStringPtrFormatArgs(folder);
-            Gfx::drawStringLeft(*context, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, Colour::black, StringIds::window_browse_folder, &args);
+            Gfx::drawStringLeft(*context, window.x + 3, window.y + window.widgets[widx::parent_button].top + 6, Colour::black, StringIds::window_browse_folder, &args);
         }
 
-        auto selectedIndex = window->var_85A;
+        auto selectedIndex = window.var_85A;
         if (selectedIndex != -1)
         {
             auto& selectedFile = _files[selectedIndex];
             if (!fs::is_directory(selectedFile))
             {
-                const auto& widget = window->widgets[widx::scrollview];
+                const auto& widget = window.widgets[widx::scrollview];
 
-                auto width = window->width - widget.right - 8;
-                auto x = window->x + widget.right + 3;
-                auto y = window->y + 45;
+                auto width = window.width - widget.right - 8;
+                auto x = window.x + widget.right + 3;
+                auto y = window.y + 45;
 
                 const std::string nameBuffer = selectedFile.stem().u8string();
                 auto args = getStringPtrFormatArgs(nameBuffer.c_str());
@@ -411,27 +411,27 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     auto saveInfo = *((const S5::SaveDetails**)0x50AEA8);
                     if (saveInfo != (void*)-1)
                     {
-                        drawSavePreview(*window, *context, x, y, width, 201, *saveInfo);
+                        drawSavePreview(window, *context, x, y, width, 201, *saveInfo);
                     }
                 }
                 else if (*_fileType == BrowseFileType::landscape)
                 {
-                    drawLandscapePreview(*window, *context, x, y, width, 129);
+                    drawLandscapePreview(window, *context, x, y, width, 129);
                 }
             }
         }
 
-        const auto& filenameBox = window->widgets[widx::text_filename];
+        const auto& filenameBox = window.widgets[widx::text_filename];
         if (filenameBox.type != WidgetType::none)
         {
             // Draw filename label
-            Gfx::drawStringLeft(*context, window->x + 3, window->y + filenameBox.top + 2, Colour::black, StringIds::window_browse_filename, nullptr);
+            Gfx::drawStringLeft(*context, window.x + 3, window.y + filenameBox.top + 2, Colour::black, StringIds::window_browse_filename, nullptr);
 
             // Clip to text box
-            auto context2 = Gfx::clipContext(*context, Ui::Rect(window->x + filenameBox.left + 1, window->y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
+            auto context2 = Gfx::clipContext(*context, Ui::Rect(window.x + filenameBox.left + 1, window.y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
             if (context2)
             {
-                drawTextInput(window, *context2, inputSession.buffer.c_str(), inputSession.cursorPosition, (inputSession.cursorFrame & 0x10) == 0);
+                drawTextInput(&window, *context2, inputSession.buffer.c_str(), inputSession.cursorPosition, (inputSession.cursorFrame & 0x10) == 0);
             }
         }
     }

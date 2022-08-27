@@ -56,9 +56,9 @@ namespace OpenLoco::Ui::Windows::Station
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station_cargo_ratings)
 
         // Defined at the bottom of this file.
-        static void prepareDraw(Window* self);
-        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input);
-        static void update(Window* self);
+        static void prepareDraw(Window& self);
+        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input);
+        static void update(Window& self);
         static void renameStationPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::Context* context);
@@ -91,95 +91,95 @@ namespace OpenLoco::Ui::Windows::Station
         static WindowEventList events;
 
         // 0x0048E352
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::viewport].right = self->width - 4;
-            self->widgets[widx::viewport].bottom = self->height - 14;
+            self.widgets[widx::viewport].right = self.width - 4;
+            self.widgets[widx::viewport].bottom = self.height - 14;
 
-            self->widgets[widx::status_bar].top = self->height - 12;
-            self->widgets[widx::status_bar].bottom = self->height - 3;
-            self->widgets[widx::status_bar].right = self->width - 14;
+            self.widgets[widx::status_bar].top = self.height - 12;
+            self.widgets[widx::status_bar].bottom = self.height - 3;
+            self.widgets[widx::status_bar].right = self.width - 14;
 
-            self->widgets[widx::centre_on_viewport].right = self->widgets[widx::viewport].right - 1;
-            self->widgets[widx::centre_on_viewport].bottom = self->widgets[widx::viewport].bottom - 1;
-            self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
-            self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
+            self.widgets[widx::centre_on_viewport].right = self.widgets[widx::viewport].right - 1;
+            self.widgets[widx::centre_on_viewport].bottom = self.widgets[widx::viewport].bottom - 1;
+            self.widgets[widx::centre_on_viewport].left = self.widgets[widx::viewport].right - 24;
+            self.widgets[widx::centre_on_viewport].top = self.widgets[widx::viewport].bottom - 24;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
+            Widget::leftAlignTabs(self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
         }
 
         // 0x0048E470
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
-            self->drawViewports(context);
-            Widget::drawViewportCentreButton(context, self, widx::centre_on_viewport);
+            self.draw(context);
+            Common::drawTabs(&self, context);
+            self.drawViewports(context);
+            Widget::drawViewportCentreButton(context, &self, widx::centre_on_viewport);
 
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
             station->getStatusString((char*)buffer);
 
             auto args = FormatArguments();
             args.push(StringIds::buffer_1250);
 
-            const auto& widget = self->widgets[widx::status_bar];
-            const auto x = self->x + widget.left - 1;
-            const auto y = self->y + widget.top - 1;
+            const auto& widget = self.widgets[widx::status_bar];
+            const auto x = self.x + widget.left - 1;
+            const auto y = self.y + widget.top - 1;
             const auto width = widget.width() - 1;
             Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0048E4D4
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameStationPrompt(self, widgetIndex);
+                    Common::renameStationPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_station:
                 case Common::widx::tab_cargo:
                 case Common::widx::tab_cargo_ratings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 // 0x0049932D
                 case widx::centre_on_viewport:
-                    self->viewportCentreMain();
+                    self.viewportCentreMain();
                     break;
             }
         }
 
-        static void initViewport(Window* self);
+        static void initViewport(Window& self);
 
         // 0x0048E70B
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(&self);
 
-            self->setSize(windowSize, Common::maxWindowSize);
+            self.setSize(windowSize, Common::maxWindowSize);
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                uint16_t newWidth = self->height - 8;
-                uint16_t newHeight = self->height - 59;
+                uint16_t newWidth = self.height - 8;
+                uint16_t newHeight = self.height - 59;
 
-                auto& viewport = self->viewports[0];
+                auto& viewport = self.viewports[0];
                 if (newWidth != viewport->width || newHeight != viewport->height)
                 {
                     viewport->width = newWidth;
                     viewport->height = newHeight;
                     viewport->view_width = newWidth << viewport->zoom;
                     viewport->view_height = newHeight << viewport->zoom;
-                    self->savedView.clear();
+                    self.savedView.clear();
                 }
             }
 
@@ -187,15 +187,15 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048F11B
-        static void initViewport(Window* self)
+        static void initViewport(Window& self)
         {
-            if (self->currentTab != 0)
+            if (self.currentTab != 0)
                 return;
 
-            self->callPrepareDraw();
+            self.callPrepareDraw();
 
             // Figure out the station's position on the map.
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
 
             // Compute views.
 
@@ -203,19 +203,19 @@ namespace OpenLoco::Ui::Windows::Station
                 station->x,
                 station->y,
                 ZoomLevel::half,
-                static_cast<int8_t>(self->viewports[0]->getRotation()),
+                static_cast<int8_t>(self.viewports[0]->getRotation()),
                 station->z,
             };
             view.flags |= (1 << 14);
 
             uint16_t flags = 0;
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                if (self->savedView == view)
+                if (self.savedView == view)
                     return;
 
-                flags = self->viewports[0]->flags;
-                self->viewportRemove(0);
+                flags = self.viewports[0]->flags;
+                self.viewportRemove(0);
                 ViewportManager::collectGarbage();
             }
             else
@@ -226,25 +226,25 @@ namespace OpenLoco::Ui::Windows::Station
             // Remove station names from viewport
             flags |= ViewportFlags::station_names_displayed;
 
-            self->savedView = view;
+            self.savedView = view;
 
             // 0x0048F1CB start
-            if (self->viewports[0] == nullptr)
+            if (self.viewports[0] == nullptr)
             {
-                auto widget = &self->widgets[widx::viewport];
+                auto widget = &self.widgets[widx::viewport];
                 auto tile = Map::Pos3({ station->x, station->y, station->z });
-                auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
+                auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
-                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, tile);
-                self->invalidate();
-                self->flags |= WindowFlags::viewportNoScrolling;
+                ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);
+                self.invalidate();
+                self.flags |= WindowFlags::viewportNoScrolling;
             }
             // 0x0048F1CB end
 
-            if (self->viewports[0] != nullptr)
+            if (self.viewports[0] != nullptr)
             {
-                self->viewports[0]->flags = flags;
-                self->invalidate();
+                self.viewports[0]->flags = flags;
+                self.invalidate();
             }
         }
 
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::Station
         window->activatedWidgets = 0;
         window->disabledWidgets = 0;
         window->initScrollWidgets();
-        Station::initViewport(window);
+        Station::initViewport(*window);
 
         return window;
     }
@@ -336,37 +336,37 @@ namespace OpenLoco::Ui::Windows::Station
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station_catchment);
 
         // 0x0048E7C0
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 24;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 24;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
-            self->widgets[widx::status_bar].top = self->height - 12;
-            self->widgets[widx::status_bar].bottom = self->height - 3;
-            self->widgets[widx::status_bar].right = self->width - 14;
+            self.widgets[widx::status_bar].top = self.height - 12;
+            self.widgets[widx::status_bar].bottom = self.height - 3;
+            self.widgets[widx::status_bar].right = self.width - 14;
 
-            self->widgets[widx::station_catchment].right = self->width - 2;
-            self->widgets[widx::station_catchment].left = self->width - 25;
+            self.widgets[widx::station_catchment].right = self.width - 2;
+            self.widgets[widx::station_catchment].left = self.width - 25;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
+            Widget::leftAlignTabs(self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
 
-            self->activatedWidgets &= ~(1 << widx::station_catchment);
-            if (StationId(self->number) == _lastSelectedStation)
-                self->activatedWidgets |= (1 << widx::station_catchment);
+            self.activatedWidgets &= ~(1 << widx::station_catchment);
+            if (StationId(self.number) == _lastSelectedStation)
+                self.activatedWidgets |= (1 << widx::station_catchment);
         }
 
         // 0x0048E8DE
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
 
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             buffer = StringManager::formatString(buffer, StringIds::accepted_cargo_separator);
 
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
             uint8_t cargoTypeCount = 0;
 
             for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
@@ -391,36 +391,36 @@ namespace OpenLoco::Ui::Windows::Station
 
             *buffer++ = '\0';
 
-            const auto& widget = self->widgets[widx::status_bar];
-            const auto x = self->x + widget.left - 1;
-            const auto y = self->y + widget.top - 1;
+            const auto& widget = self.widgets[widx::status_bar];
+            const auto x = self.x + widget.left - 1;
+            const auto y = self.y + widget.top - 1;
             const auto width = widget.width();
 
             Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::buffer_1250);
         }
 
         // 0x0048EB0B
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameStationPrompt(self, widgetIndex);
+                    Common::renameStationPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_station:
                 case Common::widx::tab_cargo:
                 case Common::widx::tab_cargo_ratings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
 
                 case widx::station_catchment:
                 {
-                    StationId windowNumber = StationId(self->number);
+                    StationId windowNumber = StationId(self.number);
                     if (windowNumber == _lastSelectedStation)
                         windowNumber = StationId::null;
 
@@ -431,31 +431,31 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EBB7
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(&self);
 
-            self->setSize(Common::minWindowSize, Common::maxWindowSize);
+            self.setSize(Common::minWindowSize, Common::maxWindowSize);
         }
 
         // 0x0048EB64
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
             *scrollHeight = 0;
             for (const auto& cargoStats : station->cargoStats)
             {
                 if (cargoStats.quantity != 0)
                 {
                     *scrollHeight += 12;
-                    if (cargoStats.origin != StationId(self->number))
+                    if (cargoStats.origin != StationId(self.number))
                         *scrollHeight += 10;
                 }
             }
         }
 
         // 0x0048EB4F
-        static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_cargo_list);
@@ -541,9 +541,9 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EC21
-        static void onClose(Window* self)
+        static void onClose(Window& self)
         {
-            if (StationId(self->number) == _lastSelectedStation)
+            if (StationId(self.number) == _lastSelectedStation)
             {
                 showStationCatchment(StationId::null);
             }
@@ -586,60 +586,60 @@ namespace OpenLoco::Ui::Windows::Station
         static WindowEventList events;
 
         // 0x0048EC3B
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             Common::prepareDraw(self);
 
-            self->widgets[widx::scrollview].right = self->width - 4;
-            self->widgets[widx::scrollview].bottom = self->height - 14;
+            self.widgets[widx::scrollview].right = self.width - 4;
+            self.widgets[widx::scrollview].bottom = self.height - 14;
 
-            self->widgets[widx::status_bar].top = self->height - 12;
-            self->widgets[widx::status_bar].bottom = self->height - 3;
-            self->widgets[widx::status_bar].right = self->width - 14;
+            self.widgets[widx::status_bar].top = self.height - 12;
+            self.widgets[widx::status_bar].bottom = self.height - 3;
+            self.widgets[widx::status_bar].right = self.width - 14;
 
-            Widget::leftAlignTabs(*self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
+            Widget::leftAlignTabs(self, Common::widx::tab_station, Common::widx::tab_cargo_ratings);
         }
 
         // 0x0048ED24
-        static void draw(Window* self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::Context* context)
         {
-            self->draw(context);
-            Common::drawTabs(self, context);
+            self.draw(context);
+            Common::drawTabs(&self, context);
         }
 
         // 0x0048EE1A
-        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::caption:
-                    Common::renameStationPrompt(self, widgetIndex);
+                    Common::renameStationPrompt(&self, widgetIndex);
                     break;
 
                 case Common::widx::close_button:
-                    WindowManager::close(self);
+                    WindowManager::close(&self);
                     break;
 
                 case Common::widx::tab_station:
                 case Common::widx::tab_cargo:
                 case Common::widx::tab_cargo_ratings:
-                    Common::switchTab(self, widgetIndex);
+                    Common::switchTab(&self, widgetIndex);
                     break;
             }
         }
 
         // 0x0048EE97
-        static void onResize(Window* self)
+        static void onResize(Window& self)
         {
-            Common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(&self);
 
-            self->setSize(windowSize, maxWindowSize);
+            self.setSize(windowSize, maxWindowSize);
         }
 
         // 0x0048EE4A
-        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
             *scrollHeight = 0;
             for (uint8_t i = 0; i < 32; i++)
             {
@@ -649,7 +649,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE73
-        static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_ratings_list);
@@ -790,23 +790,23 @@ namespace OpenLoco::Ui::Windows::Station
         };
 
         // 0x0048E352, 0x0048E7C0 and 0x0048EC3B
-        static void prepareDraw(Window* self)
+        static void prepareDraw(Window& self)
         {
             // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
+            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
+            if (self.widgets != tabWidgets)
             {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
+                self.widgets = tabWidgets;
+                self.initScrollWidgets();
             }
 
             // Activate the current tab.
-            self->activatedWidgets &= ~((1ULL << widx::tab_station) | (1ULL << widx::tab_cargo) | (1ULL << widx::tab_cargo_ratings));
-            widx widgetIndex = tabInformationByTabOffset[self->currentTab].widgetIndex;
-            self->activatedWidgets |= (1ULL << widgetIndex);
+            self.activatedWidgets &= ~((1ULL << widx::tab_station) | (1ULL << widx::tab_cargo) | (1ULL << widx::tab_cargo_ratings));
+            widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
+            self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Put station and town name in place.
-            auto station = StationManager::get(StationId(self->number));
+            auto station = StationManager::get(StationId(self.number));
 
             uint32_t stationTypeImages[16] = {
                 StringIds::label_icons_none,
@@ -832,20 +832,20 @@ namespace OpenLoco::Ui::Windows::Station
             args.push(stationTypeImages[(station->flags & 0xF)]);
 
             // Resize common widgets.
-            self->widgets[Common::widx::frame].right = self->width - 1;
-            self->widgets[Common::widx::frame].bottom = self->height - 1;
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
 
-            self->widgets[Common::widx::caption].right = self->width - 2;
+            self.widgets[Common::widx::caption].right = self.width - 2;
 
-            self->widgets[Common::widx::close_button].left = self->width - 15;
-            self->widgets[Common::widx::close_button].right = self->width - 3;
+            self.widgets[Common::widx::close_button].left = self.width - 15;
+            self.widgets[Common::widx::close_button].right = self.width - 3;
 
-            self->widgets[Common::widx::panel].right = self->width - 1;
-            self->widgets[Common::widx::panel].bottom = self->height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
         }
 
         // 0x0048E5DF
-        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input)
+        static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
             if (callingWidget != Common::widx::caption)
                 return;
@@ -853,17 +853,17 @@ namespace OpenLoco::Ui::Windows::Station
             GameCommands::setErrorTitle(StringIds::error_cant_rename_station);
 
             uint32_t* buffer = (uint32_t*)input;
-            GameCommands::do_11(self->number, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_11(self.number, 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_11(0, 2, buffer[3], buffer[4], buffer[5]);
             GameCommands::do_11(0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
         // 0x0048E6F1
-        static void update(Window* self)
+        static void update(Window& self)
         {
-            self->frame_no++;
-            self->callPrepareDraw();
-            WindowManager::invalidate(WindowType::station, self->number);
+            self.frame_no++;
+            self.callPrepareDraw();
+            WindowManager::invalidate(WindowType::station, self.number);
         }
 
         // 0x0048E5E7

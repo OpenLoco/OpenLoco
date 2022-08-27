@@ -161,23 +161,23 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B8E6
-    static void onClose(Window* self)
+    static void onClose(Window& self)
     {
-        _lastMapWindowSize = Ui::Size(self->width, self->height);
-        _lastMapWindowVar88A = self->var_88A;
-        _lastMapWindowVar88C = self->var_88C;
-        _lastMapWindowFlags = self->flags | WindowFlags::flag_31;
+        _lastMapWindowSize = Ui::Size(self.width, self.height);
+        _lastMapWindowVar88A = self.var_88A;
+        _lastMapWindowVar88C = self.var_88C;
+        _lastMapWindowFlags = self.flags | WindowFlags::flag_31;
 
         free(_dword_F253A8);
     }
 
     // 0x0046B8CF
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
             case widx::closeButton:
-                WindowManager::close(self);
+                WindowManager::close(&self);
                 break;
 
             case widx::tabOverall:
@@ -189,28 +189,28 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto tabIndex = widgetIndex - widx::tabOverall;
 
-                if (tabIndex == self->currentTab)
+                if (tabIndex == self.currentTab)
                     return;
 
-                self->currentTab = tabIndex;
-                self->frame_no = 0;
-                self->var_854 = 0;
+                self.currentTab = tabIndex;
+                self.frame_no = 0;
+                self.var_854 = 0;
                 break;
             }
         }
     }
 
     // 0x0046B9F7
-    static void onResize(Window* self)
+    static void onResize(Window& self)
     {
-        self->flags |= WindowFlags::resizable;
-        self->minWidth = 350;
-        self->maxWidth = 800;
-        self->maxHeight = 800;
+        self.flags |= WindowFlags::resizable;
+        self.minWidth = 350;
+        self.maxWidth = 800;
+        self.maxHeight = 800;
 
-        Ui::Size minWindowSize = { self->minWidth, self->minHeight };
-        Ui::Size maxWindowSize = { self->maxWidth, self->maxHeight };
-        self->setSize(minWindowSize, maxWindowSize);
+        Ui::Size minWindowSize = { self.minWidth, self.minHeight };
+        Ui::Size maxWindowSize = { self.maxWidth, self.maxHeight };
+        self.setSize(minWindowSize, maxWindowSize);
     }
 
     // 0x0046C544
@@ -340,18 +340,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static uint16_t mapFrameNumber = 0;
 
     // 0x0046BA5B
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
-        self->frame_no++;
-        self->callPrepareDraw();
+        self.frame_no++;
+        self.callPrepareDraw();
 
-        WindowManager::invalidateWidget(WindowType::map, self->number, self->currentTab + widx::tabOverall);
+        WindowManager::invalidateWidget(WindowType::map, self.number, self.currentTab + widx::tabOverall);
 
         mapFrameNumber++;
 
-        if (getCurrentRotation() != self->var_846)
+        if (getCurrentRotation() != self.var_846)
         {
-            self->var_846 = getCurrentRotation();
+            self.var_846 = getCurrentRotation();
             clearMap();
         }
 
@@ -359,22 +359,22 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         while (i > 0)
         {
-            sub_46C544(self);
+            sub_46C544(&self);
             i--;
         }
 
-        self->invalidate();
+        self.invalidate();
 
-        auto x = self->x + self->width - 104;
-        auto y = self->y + 44;
+        auto x = self.x + self.width - 104;
+        auto y = self.y + 44;
 
-        setHoverItemTab(self, x, y);
+        setHoverItemTab(&self, x, y);
     }
 
     // 0x0046B9E7
-    static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        self->callPrepareDraw();
+        self.callPrepareDraw();
         *scrollWidth = map_columns * 2;
         *scrollHeight = map_rows * 2;
     }
@@ -392,7 +392,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B97C
-    static void scrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void scrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
         auto pos = mapWindowPosToLocation({ x, y });
 
@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B946
-    static std::optional<FormatArguments> tooltip(Window* self, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_map);
@@ -408,7 +408,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B6BF
-    static void prepareDraw(Window* self)
+    static void prepareDraw(Window& self)
     {
         const string_id captionText[] = {
             StringIds::title_map,
@@ -418,28 +418,28 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::title_map_companies,
         };
 
-        widgets[widx::caption].text = captionText[self->currentTab];
-        auto activatedWidgets = self->activatedWidgets;
+        widgets[widx::caption].text = captionText[self.currentTab];
+        auto activatedWidgets = self.activatedWidgets;
         activatedWidgets &= ~((1ULL << widx::statusBar) | (1ULL << widx::scrollview) | (1ULL << widx::tabOwnership) | (1ULL << widx::tabRoutes) | (1ULL << widx::tabIndustries) | (1ULL << widx::tabVehicles) | (1ULL << widx::tabOverall));
 
-        auto currentWidget = self->currentTab + widx::tabOverall;
+        auto currentWidget = self.currentTab + widx::tabOverall;
         activatedWidgets |= (1ULL << currentWidget);
-        self->activatedWidgets = activatedWidgets;
+        self.activatedWidgets = activatedWidgets;
 
-        self->widgets[widx::frame].right = self->width - 1;
-        self->widgets[widx::frame].bottom = self->height - 1;
-        self->widgets[widx::panel].right = self->width - 1;
-        self->widgets[widx::panel].bottom = self->height - 1;
+        self.widgets[widx::frame].right = self.width - 1;
+        self.widgets[widx::frame].bottom = self.height - 1;
+        self.widgets[widx::panel].right = self.width - 1;
+        self.widgets[widx::panel].bottom = self.height - 1;
 
-        self->widgets[widx::caption].right = self->width - 2;
-        self->widgets[widx::closeButton].left = self->width - 15;
-        self->widgets[widx::closeButton].right = self->width - 3;
-        self->widgets[widx::scrollview].bottom = self->height - 14;
-        self->widgets[widx::scrollview].right = self->width - 108;
+        self.widgets[widx::caption].right = self.width - 2;
+        self.widgets[widx::closeButton].left = self.width - 15;
+        self.widgets[widx::closeButton].right = self.width - 3;
+        self.widgets[widx::scrollview].bottom = self.height - 14;
+        self.widgets[widx::scrollview].right = self.width - 108;
 
-        self->widgets[widx::statusBar].top = self->height - 12;
-        self->widgets[widx::statusBar].bottom = self->height - 3;
-        self->widgets[widx::statusBar].right = self->width - 14;
+        self.widgets[widx::statusBar].top = self.height - 12;
+        self.widgets[widx::statusBar].bottom = self.height - 3;
+        self.widgets[widx::statusBar].right = self.width - 14;
 
         auto disabledWidgets = 0;
 
@@ -448,9 +448,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
             disabledWidgets |= (1 << widx::tabVehicles) | (1 << widx::tabRoutes) | (1 << widx::tabOwnership);
         }
 
-        self->disabledWidgets = disabledWidgets;
+        self.disabledWidgets = disabledWidgets;
 
-        Widget::leftAlignTabs(*self, widx::tabOverall, widx::tabOwnership);
+        Widget::leftAlignTabs(self, widx::tabOverall, widx::tabOwnership);
     }
 
     // 0x0046D0E0
@@ -906,48 +906,48 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B779
-    static void draw(Window* self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::Context* context)
     {
-        self->draw(context);
-        drawTabs(self, context);
+        self.draw(context);
+        drawTabs(&self, context);
 
         {
-            auto x = self->x + self->width - 104;
-            uint16_t y = self->y + 44;
+            auto x = self.x + self.width - 104;
+            uint16_t y = self.y + 44;
 
-            switch (self->currentTab + widx::tabOverall)
+            switch (self.currentTab + widx::tabOverall)
             {
                 case widx::tabOverall:
-                    drawGraphKeyOverall(self, context, x, &y);
+                    drawGraphKeyOverall(&self, context, x, &y);
                     break;
 
                 case widx::tabVehicles:
-                    drawGraphKeyVehicles(self, context, x, &y);
+                    drawGraphKeyVehicles(&self, context, x, &y);
                     break;
 
                 case widx::tabIndustries:
-                    drawGraphKeyIndustries(self, context, x, &y);
+                    drawGraphKeyIndustries(&self, context, x, &y);
                     break;
 
                 case widx::tabRoutes:
-                    drawGraphKeyRoutes(self, context, x, &y);
+                    drawGraphKeyRoutes(&self, context, x, &y);
                     break;
 
                 case widx::tabOwnership:
-                    drawGraphKeyCompanies(self, context, x, &y);
+                    drawGraphKeyCompanies(&self, context, x, &y);
                     break;
             }
 
-            y -= self->y;
+            y -= self.y;
             y += 14;
             y = std::max(y, static_cast<uint16_t>(92));
 
-            self->minHeight = y;
+            self.minHeight = y;
         }
 
         auto args = FormatArguments();
 
-        switch (self->currentTab + widx::tabOverall)
+        switch (self.currentTab + widx::tabOverall)
         {
             case widx::tabOverall:
             case widx::tabRoutes:
@@ -956,17 +956,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 break;
 
             case widx::tabVehicles:
-                formatVehicleString(self, args);
+                formatVehicleString(&self, args);
                 break;
 
             case widx::tabIndustries:
-                formatIndustryString(self, args);
+                formatIndustryString(&self, args);
                 break;
         }
 
-        auto x = self->x + self->widgets[widx::statusBar].left - 1;
-        auto y = self->y + self->widgets[widx::statusBar].top - 1;
-        auto width = self->widgets[widx::statusBar].width();
+        auto x = self.x + self.widgets[widx::statusBar].left - 1;
+        auto y = self.y + self.widgets[widx::statusBar].top - 1;
+        auto width = self.widgets[widx::statusBar].width();
 
         Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
     }

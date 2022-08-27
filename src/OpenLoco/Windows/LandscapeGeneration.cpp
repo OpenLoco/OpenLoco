@@ -114,33 +114,33 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
-            window->draw(context);
-            drawTabs(window, context);
+            window.draw(context);
+            drawTabs(&window, context);
         }
 
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
-            switchTabWidgets(window);
+            switchTabWidgets(&window);
 
-            window->widgets[widx::frame].right = window->width - 1;
-            window->widgets[widx::frame].bottom = window->height - 1;
+            window.widgets[widx::frame].right = window.width - 1;
+            window.widgets[widx::frame].bottom = window.height - 1;
 
-            window->widgets[widx::panel].right = window->width - 1;
-            window->widgets[widx::panel].bottom = window->height - 1;
+            window.widgets[widx::panel].right = window.width - 1;
+            window.widgets[widx::panel].bottom = window.height - 1;
 
-            window->widgets[widx::caption].right = window->width - 2;
+            window.widgets[widx::caption].right = window.width - 2;
 
-            window->widgets[widx::close_button].left = window->width - 15;
-            window->widgets[widx::close_button].right = window->width - 3;
+            window.widgets[widx::close_button].left = window.width - 15;
+            window.widgets[widx::close_button].right = window.width - 3;
         }
 
-        static void update(Window* window)
+        static void update(Window& window)
         {
-            window->frame_no++;
-            window->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::landscapeGeneration, window->number, window->currentTab + widx::tab_options);
+            window.frame_no++;
+            window.callPrepareDraw();
+            WindowManager::invalidateWidget(WindowType::landscapeGeneration, window.number, window.currentTab + widx::tab_options);
         }
     }
 
@@ -169,20 +169,20 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043DC30
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::start_year].top,
+                window.x + 10,
+                window.y + window.widgets[widx::start_year].top,
                 Colour::black,
                 StringIds::start_year);
         }
 
         // 0x0043DB76
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
@@ -190,13 +190,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) == 0)
             {
-                window->activatedWidgets |= (1 << widx::generate_when_game_starts);
-                window->disabledWidgets |= (1 << widx::generate_now);
+                window.activatedWidgets |= (1 << widx::generate_when_game_starts);
+                window.disabledWidgets |= (1 << widx::generate_now);
             }
             else
             {
-                window->activatedWidgets &= ~(1 << widx::generate_when_game_starts);
-                window->disabledWidgets &= ~(1 << widx::generate_now);
+                window.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
+                window.disabledWidgets &= ~(1 << widx::generate_now);
             }
         }
 
@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043DC83
-        static void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
             auto& options = S5::getOptions();
 
@@ -227,24 +227,24 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::start_year_up:
                     if (options.scenarioStartYear + 1 <= Scenario::max_year)
                         options.scenarioStartYear += 1;
-                    window->invalidate();
+                    window.invalidate();
                     break;
 
                 case widx::start_year_down:
                     if (options.scenarioStartYear - 1 >= Scenario::min_year)
                         options.scenarioStartYear -= 1;
-                    window->invalidate();
+                    window.invalidate();
                     break;
             }
         }
 
         // 0x0043DC58
-        static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(window);
+                    WindowManager::close(&window);
                     break;
 
                 case Common::widx::tab_options:
@@ -252,7 +252,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_forests:
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
-                    Common::switchTab(window, widgetIndex);
+                    Common::switchTab(&window, widgetIndex);
                     break;
 
                 case widx::generate_when_game_starts:
@@ -370,42 +370,42 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043DF89
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::generator].top,
+                window.x + 10,
+                window.y + window.widgets[widx::generator].top,
                 Colour::black,
                 StringIds::generator);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::sea_level].top,
+                window.x + 10,
+                window.y + window.widgets[widx::sea_level].top,
                 Colour::black,
                 StringIds::sea_level);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::min_land_height].top,
+                window.x + 10,
+                window.y + window.widgets[widx::min_land_height].top,
                 Colour::black,
                 StringIds::min_land_height);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::topography_style].top,
+                window.x + 10,
+                window.y + window.widgets[widx::topography_style].top,
                 Colour::black,
                 StringIds::topography_style);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::hill_density].top,
+                window.x + 10,
+                window.y + window.widgets[widx::hill_density].top,
                 Colour::black,
                 StringIds::hill_density);
         }
@@ -460,7 +460,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E2AC
-        static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = 0;
 
@@ -488,7 +488,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043E1BA
-        static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -496,7 +496,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     if (itemIndex != -1)
                     {
                         S5::getOptions().generator = static_cast<S5::LandGeneratorType>(itemIndex);
-                        window->invalidate();
+                        window.invalidate();
                     }
                     break;
 
@@ -504,22 +504,22 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     if (itemIndex != -1)
                     {
                         S5::getOptions().topographyStyle = static_cast<S5::TopographyStyle>(itemIndex);
-                        window->invalidate();
+                        window.invalidate();
                     }
                     break;
 
                 case widx::scrollview:
-                    if (itemIndex != -1 && window->rowHover != -1)
+                    if (itemIndex != -1 && window.rowHover != -1)
                     {
-                        S5::getOptions().landDistributionPatterns[window->rowHover] = static_cast<S5::LandDistributionPattern>(itemIndex);
-                        window->invalidate();
+                        S5::getOptions().landDistributionPatterns[window.rowHover] = static_cast<S5::LandDistributionPattern>(itemIndex);
+                        window.invalidate();
                     }
                     break;
             }
         }
 
         // 0x0043E173
-        static void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
             auto& options = S5::getOptions();
 
@@ -543,8 +543,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::generator_btn:
                 {
-                    Widget& target = window->widgets[widx::generator];
-                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(generatorIds), 0x80);
+                    Widget& target = window.widgets[widx::generator];
+                    Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(generatorIds), 0x80);
 
                     for (size_t i = 0; i < std::size(generatorIds); i++)
                         Dropdown::add(i, generatorIds[i]);
@@ -555,8 +555,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::topography_style_btn:
                 {
-                    Widget& target = window->widgets[widx::topography_style];
-                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(topographyStyleIds), 0x80);
+                    Widget& target = window.widgets[widx::topography_style];
+                    Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(topographyStyleIds), 0x80);
 
                     for (size_t i = 0; i < std::size(topographyStyleIds); i++)
                         Dropdown::add(i, topographyStyleIds[i]);
@@ -579,16 +579,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
 
             // After changing any of the options, invalidate the window.
-            window->invalidate();
+            window.invalidate();
         }
 
         // 0x0043E14E
-        static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(window);
+                    WindowManager::close(&window);
                     break;
 
                 case Common::widx::tab_options:
@@ -596,12 +596,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_forests:
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
-                    Common::switchTab(window, widgetIndex);
+                    Common::switchTab(&window, widgetIndex);
                     break;
 
                 case widx::hillsEdgeOfMap:
                     S5::getOptions().scenarioFlags ^= Scenario::Flags::hillsEdgeOfMap;
-                    window->invalidate();
+                    window.invalidate();
                     break;
             }
         }
@@ -627,20 +627,20 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E1CF
-        static void scrollMouseDown(Window* window, int16_t xPos, int16_t yPos, uint8_t scrollIndex)
+        static void scrollMouseDown(Window& window, int16_t xPos, int16_t yPos, uint8_t scrollIndex)
         {
             int16_t landIndex = scrollPosToLandIndex(xPos, yPos);
             if (landIndex == -1)
                 return;
 
-            window->rowHover = landIndex;
+            window.rowHover = landIndex;
 
-            Audio::playSound(Audio::SoundId::clickDown, window->widgets[widx::scrollview].right);
+            Audio::playSound(Audio::SoundId::clickDown, window.widgets[widx::scrollview].right);
 
-            const Widget& target = window->widgets[widx::scrollview];
-            const int16_t dropdownX = window->x + target.left + 151;
-            const int16_t dropdownY = window->y + target.top + 6 + landIndex * rowHeight - window->scrollAreas[0].contentOffsetY;
-            Dropdown::show(dropdownX, dropdownY, 188, 12, window->getColour(WindowColour::secondary), std::size(landDistributionLabelIds), 0x80);
+            const Widget& target = window.widgets[widx::scrollview];
+            const int16_t dropdownX = window.x + target.left + 151;
+            const int16_t dropdownY = window.y + target.top + 6 + landIndex * rowHeight - window.scrollAreas[0].contentOffsetY;
+            Dropdown::show(dropdownX, dropdownY, 188, 12, window.getColour(WindowColour::secondary), std::size(landDistributionLabelIds), 0x80);
 
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
                 Dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
@@ -649,7 +649,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043DEBF
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
@@ -658,17 +658,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             commonFormatArgs[1] = options.minLandHeight;
             commonFormatArgs[2] = options.hillDensity;
 
-            window->widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
-            window->widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
+            window.widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
+            window.widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
             if ((options.scenarioFlags & Scenario::Flags::hillsEdgeOfMap) != 0)
-                window->activatedWidgets |= (1 << widx::hillsEdgeOfMap);
+                window.activatedWidgets |= (1 << widx::hillsEdgeOfMap);
             else
-                window->activatedWidgets &= ~(1 << widx::hillsEdgeOfMap);
+                window.activatedWidgets &= ~(1 << widx::hillsEdgeOfMap);
         }
 
         // 0x0043E2A2
-        static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_list);
@@ -676,15 +676,15 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E3D9
-        static void update(Window* window)
+        static void update(Window& window)
         {
             Common::update(window);
 
             auto dropdown = WindowManager::find(WindowType::dropdown, 0);
-            if (dropdown == nullptr && window->rowHover != -1)
+            if (dropdown == nullptr && window.rowHover != -1)
             {
-                window->rowHover = -1;
-                window->invalidate();
+                window.rowHover = -1;
+                window.invalidate();
             }
         }
 
@@ -752,69 +752,69 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043E53A
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::number_of_forests].top,
+                window.x + 10,
+                window.y + window.widgets[widx::number_of_forests].top,
                 Colour::black,
                 StringIds::number_of_forests);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::min_forest_radius].top,
+                window.x + 10,
+                window.y + window.widgets[widx::min_forest_radius].top,
                 Colour::black,
                 StringIds::min_forest_radius);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::max_forest_radius].top,
+                window.x + 10,
+                window.y + window.widgets[widx::max_forest_radius].top,
                 Colour::black,
                 StringIds::max_forest_radius);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::min_forest_density].top,
+                window.x + 10,
+                window.y + window.widgets[widx::min_forest_density].top,
                 Colour::black,
                 StringIds::min_forest_density);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::max_forest_density].top,
+                window.x + 10,
+                window.y + window.widgets[widx::max_forest_density].top,
                 Colour::black,
                 StringIds::max_forest_density);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::number_random_trees].top,
+                window.x + 10,
+                window.y + window.widgets[widx::number_random_trees].top,
                 Colour::black,
                 StringIds::number_random_trees);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::min_altitude_for_trees].top,
+                window.x + 10,
+                window.y + window.widgets[widx::min_altitude_for_trees].top,
                 Colour::black,
                 StringIds::min_altitude_for_trees);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::max_altitude_for_trees].top,
+                window.x + 10,
+                window.y + window.widgets[widx::max_altitude_for_trees].top,
                 Colour::black,
                 StringIds::max_altitude_for_trees);
         }
 
         // 0x0043E670
-        static void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
             auto& options = S5::getOptions();
 
@@ -918,16 +918,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
 
             // After changing any of the options, invalidate the window.
-            window->invalidate();
+            window.invalidate();
         }
 
         // 0x0043E655
-        static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(window);
+                    WindowManager::close(&window);
                     break;
 
                 case Common::widx::tab_options:
@@ -935,13 +935,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_forests:
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
-                    Common::switchTab(window, widgetIndex);
+                    Common::switchTab(&window, widgetIndex);
                     break;
             }
         }
 
         // 0x0043E44F
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
@@ -990,21 +990,21 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043E9A3
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::number_of_towns].top,
+                window.x + 10,
+                window.y + window.widgets[widx::number_of_towns].top,
                 Colour::black,
                 StringIds::number_of_towns);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::max_town_size].top,
+                window.x + 10,
+                window.y + window.widgets[widx::max_town_size].top,
                 Colour::black,
                 StringIds::max_town_size);
         }
@@ -1021,17 +1021,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043EBF8
-        static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::max_town_size_btn || itemIndex == -1)
                 return;
 
             S5::getOptions().maxTownSize = itemIndex;
-            window->invalidate();
+            window.invalidate();
         }
 
         // 0x0043EBF1
-        static void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
             auto& options = S5::getOptions();
 
@@ -1041,7 +1041,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     uint16_t newNumTowns = std::min<uint16_t>(options.numberOfTowns + 1, Limits::kMaxTowns);
                     options.numberOfTowns = newNumTowns;
-                    window->invalidate();
+                    window.invalidate();
                     break;
                 }
 
@@ -1049,14 +1049,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     uint16_t newNumTowns = std::max<uint16_t>(Limits::kMinTowns, options.numberOfTowns - 1);
                     options.numberOfTowns = newNumTowns;
-                    window->invalidate();
+                    window.invalidate();
                     break;
                 }
 
                 case widx::max_town_size_btn:
                 {
-                    Widget& target = window->widgets[widx::max_town_size];
-                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(townSizeLabels), 0x80);
+                    Widget& target = window.widgets[widx::max_town_size];
+                    Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(townSizeLabels), 0x80);
 
                     for (size_t i = 0; i < std::size(townSizeLabels); i++)
                         Dropdown::add(i, townSizeLabels[i]);
@@ -1068,12 +1068,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043EBCA
-        static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(window);
+                    WindowManager::close(&window);
                     break;
 
                 case Common::widx::tab_options:
@@ -1081,13 +1081,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_forests:
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
-                    Common::switchTab(window, widgetIndex);
+                    Common::switchTab(&window, widgetIndex);
                     break;
             }
         }
 
         // 0x0043EAEB
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
@@ -1131,14 +1131,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static WindowEventList events;
 
         // 0x0043EB9D
-        static void draw(Window* window, Gfx::Context* context)
+        static void draw(Window& window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
             Gfx::drawStringLeft(
                 *context,
-                window->x + 10,
-                window->y + window->widgets[widx::num_industries].top,
+                window.x + 10,
+                window.y + window.widgets[widx::num_industries].top,
                 Colour::black,
                 StringIds::number_of_industries);
         }
@@ -1150,23 +1150,23 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043EBF8
-        static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::num_industries_btn || itemIndex == -1)
                 return;
 
             S5::getOptions().numberOfIndustries = itemIndex;
-            window->invalidate();
+            window.invalidate();
         }
 
         // 0x0043EBF1
-        static void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex != widx::num_industries_btn)
                 return;
 
-            Widget& target = window->widgets[widx::num_industries];
-            Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(numIndustriesLabels), 0x80);
+            Widget& target = window.widgets[widx::num_industries];
+            Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(numIndustriesLabels), 0x80);
 
             for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
                 Dropdown::add(i, numIndustriesLabels[i]);
@@ -1175,12 +1175,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043EBCA
-        static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
+        static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case Common::widx::close_button:
-                    WindowManager::close(window);
+                    WindowManager::close(&window);
                     break;
 
                 case Common::widx::tab_options:
@@ -1188,33 +1188,32 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_forests:
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
-                    Common::switchTab(window, widgetIndex);
+                    Common::switchTab(&window, widgetIndex);
                     break;
 
                 case widx::check_allow_industries_close_down:
                     IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesCloseDown);
-                    window->invalidate();
+                    window.invalidate();
                     break;
 
                 case widx::check_allow_industries_start_up:
                     IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesStartUp);
-                    window->invalidate();
+                    window.invalidate();
                     break;
             }
         }
 
         // 0x0043EAEB
-        static void prepareDraw(Window* window)
+        static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
             widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
-
-            window->activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
+            window.activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
             if (!(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown))
-                window->activatedWidgets |= 1 << widx::check_allow_industries_close_down;
+                window.activatedWidgets |= 1 << widx::check_allow_industries_close_down;
             if (!(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesStartUp))
-                window->activatedWidgets |= 1 << widx::check_allow_industries_start_up;
+                window.activatedWidgets |= 1 << widx::check_allow_industries_start_up;
         }
 
         static void initEvents()

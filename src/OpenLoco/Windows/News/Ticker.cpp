@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     WindowEventList events;
 
     // 0x00429EA2
-    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
+    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
         if (widgetIndex != 0)
             return;
@@ -35,49 +35,49 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto activeMessageIndex = MessageManager::getActiveIndex();
         MessageManager::setActiveIndex(MessageId::null);
 
-        WindowManager::close(self);
+        WindowManager::close(&self);
         open(activeMessageIndex);
     }
 
     // 0x00429FE4
-    static void onResize(Window* self)
+    static void onResize(Window& self)
     {
         auto y = Ui::height() - windowSize.height + 1;
         auto x = Ui::width() - windowSize.width - 27;
         auto height = windowSize.height - 1;
 
-        if (y != self->y || x != self->x || windowSize.width != self->width || height != self->height)
+        if (y != self.y || x != self.x || windowSize.width != self.width || height != self.height)
         {
-            self->invalidate();
-            self->y = y;
-            self->x = x;
-            self->width = windowSize.width;
-            self->height = height;
-            self->invalidate();
+            self.invalidate();
+            self.y = y;
+            self.x = x;
+            self.width = windowSize.width;
+            self.height = height;
+            self.invalidate();
         }
     }
 
     // 0x00429EEB
-    static void onUpdate(Window* self)
+    static void onUpdate(Window& self)
     {
         auto window = WindowManager::findAtAlt(_cursorX2, _cursorY2);
 
-        if (window == self)
+        if (window == &self)
         {
-            self->var_852 = 12;
+            self.var_852 = 12;
         }
 
-        if (self->var_852 != 0)
+        if (self.var_852 != 0)
         {
             if (!isPaused())
             {
-                self->var_852--;
+                self.var_852--;
             }
         }
 
-        self->invalidate();
+        self.invalidate();
 
-        if (self->var_852 == 0 && !isPaused())
+        if (self.var_852 == 0 && !isPaused())
         {
             _word_525CE0 = _word_525CE0 + 2;
 
@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         MessageManager::setActiveIndex(MessageId::null);
 
-        WindowManager::close(self);
+        WindowManager::close(&self);
     }
 
     // 0x004950EF
@@ -152,9 +152,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429DAA
-    static void draw(Ui::Window* self, Gfx::Context* context)
+    static void draw(Ui::Window& self, Gfx::Context* context)
     {
-        if (self->var_852 != 0)
+        if (self.var_852 != 0)
             return;
 
         if (getPauseFlags() & (1 << 2))
@@ -162,10 +162,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         auto news = MessageManager::get(MessageManager::getActiveIndex());
 
-        auto x = self->x;
-        auto y = self->y;
-        auto width = self->width;
-        auto height = self->height;
+        auto x = self.x;
+        auto y = self.y;
+        auto width = self.width;
+        auto height = self.height;
 
         auto clipped = Gfx::clipContext(*context, { x, y, width, height });
 
