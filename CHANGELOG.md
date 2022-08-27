@@ -1,6 +1,7 @@
 22.08+ (???)
 ------------------------------------------------------------------------
 - Fix: [#1613] Crash when viewing the Build Trains window with certain trains.
+- Fix: [#1614] Crash when ai picks up none existent vehicles.
 
 22.08 (2022-08-25)
 ------------------------------------------------------------------------
