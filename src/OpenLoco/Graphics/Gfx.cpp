@@ -1002,7 +1002,7 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        char buffer[256];
+        char buffer[512];
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
         _currentFontSpriteBase = Font::medium_bold;
@@ -1072,7 +1072,7 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        char buffer[256];
+        char buffer[512];
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
         _currentFontSpriteBase = Font::medium_bold;
@@ -1099,7 +1099,7 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        char buffer[256];
+        char buffer[512];
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
         _currentFontSpriteBase = Font::medium_bold;
@@ -1123,7 +1123,7 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        char buffer[256];
+        char buffer[512];
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
         _currentFontSpriteBase = Font::medium_bold;
@@ -1147,7 +1147,7 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        char buffer[256];
+        char buffer[512];
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
         _currentFontSpriteBase = Font::medium_bold;
@@ -1176,7 +1176,7 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        char buffer[256];
+        char buffer[512];
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
         _currentFontSpriteBase = Font::medium_bold;
@@ -1205,7 +1205,7 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        char buffer[256];
+        char buffer[512];
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
         _currentFontSpriteBase = Font::medium_bold;
@@ -1234,7 +1234,7 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args)
     {
-        char buffer[256];
+        char buffer[512];
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
         _currentFontSpriteBase = Font::medium_bold;
@@ -1267,7 +1267,7 @@ namespace OpenLoco::Gfx
         char empty[1] = "";
         Gfx::drawString(context, context.x, context.y, colour, empty);
 
-        char buffer[256];
+        char buffer[512];
         StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
         _currentFontSpriteBase = Font::medium_bold;
