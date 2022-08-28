@@ -3,6 +3,7 @@
 #include "../Location.hpp"
 #include "../Map/Map.hpp"
 #include "../Types.hpp"
+#include "./ChannelManager.h"
 #include <optional>
 #include <string>
 #include <tuple>
@@ -59,14 +60,6 @@ namespace OpenLoco::Audio
         null = 0xFF
     };
 
-    enum class ChannelId
-    {
-        bgm,
-        unk_1,
-        ambient,
-        title,
-        vehicle_0, // * 10
-    };
     constexpr int32_t kNumReservedChannels = 4 + 10;
 
     using MusicId = uint8_t;
