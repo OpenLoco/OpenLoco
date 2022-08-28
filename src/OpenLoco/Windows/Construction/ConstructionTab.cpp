@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         makeWidget({ 81, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::tooltip_slope_up),
         makeWidget({ 105, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_steep_slope_up, StringIds::tooltip_steep_slope_up),
         makeDropdownWidgets({ 40, 123 }, { 58, 20 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_bridge_stats),
-        makeWidget({ 3, 145 }, { 132, 100 }, WidgetType::slider, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_construct),
+        makeWidget({ 3, 145 }, { 132, 100 }, WidgetType::wt_6, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_construct),
         makeWidget({ 6, 248 }, { 46, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_remove, StringIds::tooltip_remove),
         makeWidget({ 57, 248 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
         widgetEnd(),
@@ -769,7 +769,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_constructionHover == 1)
         {
-            window->widgets[widx::construct].type = WidgetType::slider;
+            window->widgets[widx::construct].type = WidgetType::wt_6;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
             window->widgets[widx::remove].type = WidgetType::none;
             window->widgets[widx::rotate_90].type = WidgetType::buttonWithImage;
@@ -976,7 +976,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_constructionHover == 1)
         {
-            window->widgets[widx::construct].type = WidgetType::slider;
+            window->widgets[widx::construct].type = WidgetType::wt_6;
             window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
             window->widgets[widx::remove].type = WidgetType::none;
             window->widgets[widx::rotate_90].type = WidgetType::buttonWithImage;
