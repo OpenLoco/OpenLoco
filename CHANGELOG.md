@@ -1,5 +1,6 @@
 22.08+ (???)
 ------------------------------------------------------------------------
+- Fix: [#1612] Ambient audio no longer playing.
 - Fix: [#1613] Crash when viewing the Build Trains window with certain trains.
 - Fix: [#1614] Crash when ai picks up none existent vehicles.
 

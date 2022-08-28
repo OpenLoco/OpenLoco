@@ -78,7 +78,8 @@ namespace OpenLoco::Audio
     static loco_global<uint8_t, 0x0050D435> _lastSong;
     static loco_global<bool, 0x0050D554> _audioIsPaused;
     static loco_global<bool, 0x0050D555> _audioIsEnabled;
-    static loco_global<PathId, 0x0050D5B0> _chosenAmbientNoisePathId;
+    // 0x0050D5B0
+    static std::optional<PathId> _chosenAmbientNoisePathId = std::nullopt;
 
     static uint8_t _numActiveVehicleSounds; // 0x0112C666
     static std::vector<std::string> _devices;
@@ -856,10 +857,10 @@ namespace OpenLoco::Audio
             return;
 
         auto* mainViewport = WindowManager::getMainViewport();
-        std::optional<PathId> ambientSound = std::nullopt;
+        std::optional<PathId> newAmbientSound = std::nullopt;
         int32_t maxVolume = kAmbientMinVolume;
 
-        if (!Game::hasFlags((1u << 0)) && mainViewport != nullptr)
+        if (Game::hasFlags((1u << 0)) && mainViewport != nullptr)
         {
             maxVolume = getAmbientMaxVolume(mainViewport->zoom);
             const auto centre = mainViewport->getCentreMapPosition();
@@ -914,15 +915,15 @@ namespace OpenLoco::Audio
 
             if (waterCount > kAmbientNumWaterTilesForOcean)
             {
-                ambientSound = PathId::css3;
+                newAmbientSound = PathId::css3;
             }
             else if (wildernessCount > kAmbientNumMountainTilesForWilderness)
             {
-                ambientSound = PathId::css2;
+                newAmbientSound = PathId::css2;
             }
             else if (treeCount > kAmbientNumTreeTilesForForest)
             {
-                ambientSound = PathId::css4;
+                newAmbientSound = PathId::css4;
             }
         }
         auto* channel = getChannel(ChannelId::ambient);
@@ -930,12 +931,18 @@ namespace OpenLoco::Audio
         {
             return;
         }
+
+        // TODO: Consider changing this so that we ask if the channel is playing a certain
+        // buffer instead of storing what buffer is playing indirectly through the global
+        // variable _chosenAmbientNoisePathId
+
         // In these situations quieten until channel stopped
-        if (!ambientSound.has_value() || (channel->isPlaying() && _chosenAmbientNoisePathId != *ambientSound))
+        if (!newAmbientSound.has_value() || (channel->isPlaying() && _chosenAmbientNoisePathId != *newAmbientSound))
         {
             const auto newVolume = channel->getAttributes().volume - kAmbientVolumeChangePerTick;
             if (newVolume < kAmbientMinVolume)
             {
+                _chosenAmbientNoisePathId = std::nullopt;
                 channel->stop();
             }
             else
@@ -945,14 +952,15 @@ namespace OpenLoco::Audio
             return;
         }
 
-        if (_chosenAmbientNoisePathId != *ambientSound)
+        if (_chosenAmbientNoisePathId != *newAmbientSound)
         {
-            auto musicBuffer = loadMusicSample(*ambientSound);
+            auto musicBuffer = loadMusicSample(*newAmbientSound);
             if (musicBuffer.has_value())
             {
                 channel->load(*musicBuffer);
                 channel->setVolume(kAmbientMinVolume);
                 channel->play(true);
+                _chosenAmbientNoisePathId = *newAmbientSound;
             }
         }
         else
