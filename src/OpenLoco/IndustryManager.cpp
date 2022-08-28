@@ -188,7 +188,7 @@ namespace OpenLoco::IndustryManager
         registers regs;
         regs.dl = indObjId;
         call(0x004599B3, regs);
-        if (regs.ax = -1)
+        if (regs.ax == -1)
         {
             return std::nullopt;
         }
@@ -202,8 +202,12 @@ namespace OpenLoco::IndustryManager
         const auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
         const auto share = ((getNumIndustries() + 1) * indObj->var_CE) / 3;
         const auto share2 = share - share / 4;
+        // ((getNumIndustries() + 1) * indObj->var_CE) / 3 * 3 / 4
+        // ((getNumIndustries() + 1) * indObj->var_CE) / 4
         const auto share3 = (share2 / 2) * gPrng().randNext(0xFF);
         const auto shareLimit = share2 + share3;
+        // // ((getNumIndustries() + 1) * indObj->var_CE) / 4 + (((getNumIndustries() + 1) * indObj->var_CE) / 8 * rand)
+
         const auto totalOfThisType = std::count_if(std::begin(industries()), std::end(industries()), [indObjId](const auto& industry) {
             return (industry.object_id == indObjId);
         });
@@ -244,7 +248,7 @@ namespace OpenLoco::IndustryManager
             return;
         }
 
-        for (size_t indObjId = 0; indObjId < ObjectManager::getMaxObjects(ObjectType::industry); ++indObjId)
+        for (uint8_t indObjId = 0; static_cast<size_t>(indObjId) < ObjectManager::getMaxObjects(ObjectType::industry); ++indObjId)
         {
             auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
             if (indObj == nullptr)
