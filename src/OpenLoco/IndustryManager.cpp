@@ -200,19 +200,21 @@ namespace OpenLoco::IndustryManager
     static void createNewIndustry(const uint8_t indObjId)
     {
         const auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
-        const auto share = ((getNumIndustries() + 1) * indObj->var_CE) / 3;
-        const auto share2 = share - share / 4;
-        // ((getNumIndustries() + 1) * indObj->var_CE) / 3 * 3 / 4
-        // ((getNumIndustries() + 1) * indObj->var_CE) / 4
-        const auto share3 = (share2 / 2) * gPrng().randNext(0xFF);
-        const auto shareLimit = share2 + share3;
-        // // ((getNumIndustries() + 1) * indObj->var_CE) / 4 + (((getNumIndustries() + 1) * indObj->var_CE) / 8 * rand)
+
+        // var_CE is in the range of 1->32 inclusive
+        // This formula is ultimately staticPreferredTotalOfType = 1/4 * ((getNumIndustries() + 1) * indObj->var_CE)
+        // but we will do it in two steps to keep identical results.
+        const auto intermediate1 = ((getNumIndustries() + 1) * indObj->var_CE) / 3;
+        const auto staticPreferredTotalOfType = intermediate1 - intermediate1 / 4;
+        // The preferred total can vary by up to a half of the static preffered total.
+        const auto randomPrefferedTotalOfType = (staticPreferredTotalOfType / 2) * gPrng().randNext(0xFF) / 256;
+        const auto prefferedTotalOfType = staticPreferredTotalOfType + randomPrefferedTotalOfType;
 
         const auto totalOfThisType = std::count_if(std::begin(industries()), std::end(industries()), [indObjId](const auto& industry) {
             return (industry.object_id == indObjId);
         });
 
-        if (totalOfThisType < shareLimit)
+        if (totalOfThisType < prefferedTotalOfType)
         {
             return;
         }
