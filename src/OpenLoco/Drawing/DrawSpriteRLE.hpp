@@ -1,13 +1,14 @@
 #pragma once
 
 #include "../Graphics/Gfx.h"
+#include "../Graphics/RenderTarget.h"
 #include "DrawSprite.h"
 #include "DrawSpriteHelper.hpp"
 
 namespace OpenLoco::Drawing
 {
     template<DrawBlendOp TBlendOp, uint8_t TZoomLevel>
-    inline void drawRLESprite(Gfx::Context& context, const DrawSpriteArgs& args)
+    inline void drawRLESprite(Gfx::RenderTarget& rt, const DrawSpriteArgs& args)
     {
         auto src0 = args.sourceImage.offset;
         const auto srcX = args.srcPos.x;
@@ -15,8 +16,8 @@ namespace OpenLoco::Drawing
         const int32_t width = args.size.width;
         int32_t height = args.size.height;
         constexpr auto zoom = 1 << TZoomLevel;
-        auto dstLineWidth = (static_cast<size_t>(context.width) >> TZoomLevel) + context.pitch;
-        auto* dst0 = context.bits;
+        auto dstLineWidth = (static_cast<size_t>(rt.width) >> TZoomLevel) + rt.pitch;
+        auto* dst0 = rt.bits;
         // Move the pointer to the start point of the destination
         dst0 += dstLineWidth * args.dstPos.y + args.dstPos.x;
 

@@ -9,7 +9,7 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct Context;
+        struct RenderTarget;
     }
 
     namespace TreeObjectFlags
@@ -49,7 +49,7 @@ namespace OpenLoco
         int16_t rating;            // 0x48
         uint16_t var_4A;
 
-        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         uint8_t getTreeGrowthDisplayOffset() const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);

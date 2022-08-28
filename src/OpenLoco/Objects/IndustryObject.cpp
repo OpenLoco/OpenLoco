@@ -87,13 +87,13 @@ namespace OpenLoco
     }
 
     // 0x0045932D
-    void IndustryObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void IndustryObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        drawIndustry(&context, x, y + 40);
+        drawIndustry(&rt, x, y + 40);
     }
 
     // 0x00458C7F
-    void IndustryObject::drawIndustry(Gfx::Context* clipped, int16_t x, int16_t y) const
+    void IndustryObject::drawIndustry(Gfx::RenderTarget* clipped, int16_t x, int16_t y) const
     {
         registers regs;
         regs.cx = x;

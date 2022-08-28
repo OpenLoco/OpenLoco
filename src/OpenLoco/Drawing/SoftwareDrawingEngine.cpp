@@ -17,9 +17,9 @@ namespace OpenLoco::Drawing
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
     loco_global<SetPaletteFunc, 0x0052524C> set_palette_callback;
 
-    static void windowDraw(Context* context, Ui::Window* w, Rect rect);
-    static void windowDraw(Context* context, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-    static bool windowDrawSplit(Gfx::Context* context, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static void windowDraw(RenderTarget* rt, Ui::Window* w, Rect rect);
+    static void windowDraw(RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static bool windowDrawSplit(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     SoftwareDrawingEngine::~SoftwareDrawingEngine()
     {
@@ -203,14 +203,14 @@ namespace OpenLoco::Drawing
         regs.dx = rect.bottom() - 1;
         call(0x00451D98, regs);
 
-        Context windowContext;
-        windowContext.width = rect.width();
-        windowContext.height = rect.height();
-        windowContext.x = rect.left();
-        windowContext.y = rect.top();
-        windowContext.bits = screen_info->context.bits + rect.left() + ((screen_info->context.width + screen_info->context.pitch) * rect.top());
-        windowContext.pitch = screen_info->context.width + screen_info->context.pitch - rect.width();
-        windowContext.zoom_level = 0;
+        RenderTarget rt;
+        rt.width = rect.width();
+        rt.height = rect.height();
+        rt.x = rect.left();
+        rt.y = rect.top();
+        rt.bits = screen_info->renderTarget.bits + rect.left() + ((screen_info->renderTarget.width + screen_info->renderTarget.pitch) * rect.top());
+        rt.pitch = screen_info->renderTarget.width + screen_info->renderTarget.pitch - rect.width();
+        rt.zoom_level = 0;
 
         for (size_t i = 0; i < Ui::WindowManager::count(); i++)
         {
@@ -225,13 +225,13 @@ namespace OpenLoco::Drawing
             if (rect.left() >= w->x + w->width || rect.top() >= w->y + w->height)
                 continue;
 
-            windowDraw(&windowContext, w, rect);
+            windowDraw(&rt, w, rect);
         }
     }
 
-    static void windowDraw(Context* context, Ui::Window* w, Rect rect)
+    static void windowDraw(RenderTarget* rt, Ui::Window* w, Rect rect)
     {
-        windowDraw(context, w, rect.left(), rect.top(), rect.right(), rect.bottom());
+        windowDraw(rt, w, rect.left(), rect.top(), rect.right(), rect.bottom());
     }
 
     /**
@@ -243,13 +243,13 @@ namespace OpenLoco::Drawing
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    static void windowDraw(Context* context, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static void windowDraw(RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         if (!w->isVisible())
             return;
 
         // Split window into only the regions that require drawing
-        if (windowDrawSplit(context, w, left, top, right, bottom))
+        if (windowDrawSplit(rt, w, left, top, right, bottom))
             return;
 
         // Clamp region
@@ -263,7 +263,7 @@ namespace OpenLoco::Drawing
             return;
 
         // Draw the window in this region
-        Ui::WindowManager::drawSingle(context, w, left, top, right, bottom);
+        Ui::WindowManager::drawSingle(rt, w, left, top, right, bottom);
 
         for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)
         {
@@ -273,14 +273,14 @@ namespace OpenLoco::Drawing
             if ((v->flags & Ui::WindowFlags::transparent) == 0)
                 continue;
 
-            Ui::WindowManager::drawSingle(context, v, left, top, right, bottom);
+            Ui::WindowManager::drawSingle(rt, v, left, top, right, bottom);
         }
     }
 
     /**
      * 0x004C5EA9
      *
-     * @param context
+     * @param rt
      * @param w @<esi>
      * @param left @<ax>
      * @param top @<bx>
@@ -288,7 +288,7 @@ namespace OpenLoco::Drawing
      * @param bottom @<bp>
      * @return
      */
-    static bool windowDrawSplit(Gfx::Context* context, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static bool windowDrawSplit(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
         for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)
@@ -307,26 +307,26 @@ namespace OpenLoco::Drawing
             if (topwindow->x > left)
             {
                 // Split draw at topwindow.left
-                windowDraw(context, w, left, top, topwindow->x, bottom);
-                windowDraw(context, w, topwindow->x, top, right, bottom);
+                windowDraw(rt, w, left, top, topwindow->x, bottom);
+                windowDraw(rt, w, topwindow->x, top, right, bottom);
             }
             else if (topwindow->x + topwindow->width < right)
             {
                 // Split draw at topwindow.right
-                windowDraw(context, w, left, top, topwindow->x + topwindow->width, bottom);
-                windowDraw(context, w, topwindow->x + topwindow->width, top, right, bottom);
+                windowDraw(rt, w, left, top, topwindow->x + topwindow->width, bottom);
+                windowDraw(rt, w, topwindow->x + topwindow->width, top, right, bottom);
             }
             else if (topwindow->y > top)
             {
                 // Split draw at topwindow.top
-                windowDraw(context, w, left, top, right, topwindow->y);
-                windowDraw(context, w, left, topwindow->y, right, bottom);
+                windowDraw(rt, w, left, top, right, topwindow->y);
+                windowDraw(rt, w, left, topwindow->y, right, bottom);
             }
             else if (topwindow->y + topwindow->height < bottom)
             {
                 // Split draw at topwindow.bottom
-                windowDraw(context, w, left, top, right, topwindow->y + topwindow->height);
-                windowDraw(context, w, left, topwindow->y + topwindow->height, right, bottom);
+                windowDraw(rt, w, left, top, right, topwindow->y + topwindow->height);
+                windowDraw(rt, w, left, topwindow->y + topwindow->height, right, bottom);
             }
 
             // Drawing for this region should be done now, exit

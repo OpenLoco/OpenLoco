@@ -467,17 +467,17 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EA3E
-    static void draw(Window& self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        self.draw(context);
-        Common::drawTabs(&self, context);
+        self.draw(rt);
+        Common::drawTabs(&self, rt);
         if (_lastSelectedMods & 0xF)
         {
             auto xPos = self.x + self.widgets[widx::image].left + 1;
             auto yPos = self.y + self.widgets[widx::image].top + 1;
             auto width = self.widgets[widx::image].width();
             auto height = self.widgets[widx::image].height();
-            auto clipped = Gfx::clipContext(*context, Ui::Rect(xPos, yPos, width, height));
+            auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(xPos, yPos, width, height));
             if (clipped)
             {
                 coord_t x = 0x2010;
@@ -516,7 +516,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             auto args = FormatArguments();
             args.push<uint32_t>(_modCost);
 
-            Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+            Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
     }
 

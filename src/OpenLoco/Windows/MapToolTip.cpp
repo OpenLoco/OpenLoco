@@ -113,7 +113,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     }
 
     // 0x004CF010
-    static void draw(Window& self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::RenderTarget* rt)
     {
         auto args = FormatArguments::mapToolTip();
         StringManager::ArgsWrapper argsWrap(&args);
@@ -126,25 +126,25 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         if (_mapTooltipOwner == CompanyId::null || _mapTooltipOwner == CompanyManager::getControllingId())
         {
             Ui::Point origin(self.x + self.width / 2, self.y + self.height / 2 - 5);
-            Gfx::drawStringCentredWrapped(*context, origin, self.width, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
+            Gfx::drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
         }
         else
         {
             Ui::Point origin(self.x + self.width / 2 + 13, self.y + self.height / 2 - 5);
-            auto width = Gfx::drawStringCentredWrapped(*context, origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
+            auto width = Gfx::drawStringCentredWrapped(*rt, origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
 
             auto left = self.width / 2 + self.x + 13 - width / 2 - 28;
             auto top = self.height / 2 - 13 + self.y;
             auto right = left + 25;
             auto bottom = top + 25;
 
-            Gfx::fillRect(*context, left, top, right, bottom, enumValue(Colour::darkGreen));
+            Gfx::fillRect(*rt, left, top, right, bottom, enumValue(Colour::darkGreen));
 
             auto* company = CompanyManager::get(_mapTooltipOwner);
             auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
             auto imageId = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
 
-            Gfx::drawImage(context, left + 1, top + 1, imageId);
+            Gfx::drawImage(rt, left + 1, top + 1, imageId);
         }
     }
 

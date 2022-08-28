@@ -22,6 +22,8 @@ namespace OpenLoco::Drawing
 
 namespace OpenLoco::Gfx
 {
+    struct RenderTarget;
+
     namespace G1ExpectedCount
     {
         constexpr uint32_t kDisc = 0x101A; // And GOG
@@ -29,22 +31,6 @@ namespace OpenLoco::Gfx
         constexpr uint32_t kObjects = 0x40000;
     }
 #pragma pack(push, 1)
-
-    struct Context
-    {
-        uint8_t* bits;       // 0x00
-        int16_t x;           // 0x04
-        int16_t y;           // 0x06
-        int16_t width;       // 0x08
-        int16_t height;      // 0x0A
-        int16_t pitch;       // 0x0C note: this is actually (pitch - width)
-        uint16_t zoom_level; // 0x0E
-
-        Ui::Rect getUiRect() const;
-        Ui::Rect getDrawableRect() const;
-    };
-
-    Context& screenContext();
 
     struct G1Header
     {
@@ -151,22 +137,20 @@ namespace OpenLoco::Gfx
     std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId);
     std::optional<PaletteMap> getPaletteMapForColour(ExtColour paletteId);
 
-    Context& screenContext();
-
     void loadG1();
     void initialiseCharacterWidths();
     void initialiseNoiseMaskMap();
-    void clear(Context& context, uint32_t fill);
-    void clearSingle(Context& context, uint8_t paletteId);
+    void clear(RenderTarget& rt, uint32_t fill);
+    void clearSingle(RenderTarget& rt, uint8_t paletteId);
 
     int16_t clipString(int16_t width, char* string);
     uint16_t getStringWidth(const char* buffer);
     uint16_t getMaxStringWidth(const char* buffer);
 
-    Ui::Point drawString(Context& context, int16_t x, int16_t y, AdvancedColour colour, void* str);
+    Ui::Point drawString(RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, void* str);
 
     int16_t drawStringLeftWrapped(
-        Context& context,
+        RenderTarget& rt,
         int16_t x,
         int16_t y,
         int16_t width,
@@ -174,20 +158,20 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args = nullptr);
     void drawStringLeft(
-        Context& context,
+        RenderTarget& rt,
         int16_t x,
         int16_t y,
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringLeft(
-        Context& context,
+        RenderTarget& rt,
         Ui::Point* origin,
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringLeftClipped(
-        Context& context,
+        RenderTarget& rt,
         int16_t x,
         int16_t y,
         int16_t width,
@@ -195,35 +179,35 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args = nullptr);
     void drawStringRight(
-        Context& context,
+        RenderTarget& rt,
         int16_t x,
         int16_t y,
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringRightUnderline(
-        Context& context,
+        RenderTarget& rt,
         int16_t x,
         int16_t y,
         AdvancedColour colour,
         string_id stringId,
         const void* args);
     void drawStringLeftUnderline(
-        Context& context,
+        RenderTarget& rt,
         int16_t x,
         int16_t y,
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringCentred(
-        Context& context,
+        RenderTarget& rt,
         int16_t x,
         int16_t y,
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringCentredClipped(
-        Context& context,
+        RenderTarget& rt,
         int16_t x,
         int16_t y,
         int16_t width,
@@ -231,14 +215,14 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args = nullptr);
     uint16_t drawStringCentredWrapped(
-        Context& context,
+        RenderTarget& rt,
         Ui::Point& origin,
         uint16_t width,
         AdvancedColour colour,
         string_id stringId,
         const void* args = nullptr);
     void drawStringCentredRaw(
-        Context& context,
+        RenderTarget& rt,
         int16_t x,
         int16_t y,
         int16_t width,
@@ -247,15 +231,15 @@ namespace OpenLoco::Gfx
     uint16_t getStringWidthNewLined(const char* buffer);
     std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
 
-    void fillRect(Gfx::Context& context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
-    void drawRect(Gfx::Context& context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
-    void fillRectInset(Gfx::Context& context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags);
-    void drawRectInset(Gfx::Context& context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags);
-    void drawLine(Gfx::Context& context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
-    void drawImage(Gfx::Context* context, int16_t x, int16_t y, uint32_t image);
-    void drawImage(Gfx::Context& context, const Ui::Point& pos, const ImageId& image);
-    void drawImageSolid(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
-    void drawImagePaletteSet(Gfx::Context& context, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* noiseImage);
+    void fillRect(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
+    void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
+    void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags);
+    void drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags);
+    void drawLine(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
+    void drawImage(Gfx::RenderTarget* rt, int16_t x, int16_t y, uint32_t image);
+    void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image);
+    void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
+    void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* noiseImage);
     [[nodiscard]] uint32_t recolour(uint32_t image);
     [[nodiscard]] uint32_t recolour(uint32_t image, Colour colour);
     [[nodiscard]] uint32_t recolour(uint32_t image, ExtColour colour);
@@ -272,8 +256,6 @@ namespace OpenLoco::Gfx
 
     void redrawScreenRect(Ui::Rect rect);
     void redrawScreenRect(int16_t left, int16_t top, int16_t right, int16_t bottom);
-
-    std::optional<Gfx::Context> clipContext(const Gfx::Context& src, const Ui::Rect& newRect);
 
     G1Element* getG1Element(uint32_t id);
 

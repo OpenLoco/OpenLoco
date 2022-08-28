@@ -42,7 +42,7 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<WindowType, 0x00523364> _callingWindowType;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x00508F10> __508F10;
-    static loco_global<Gfx::Context, 0x0050B884> _screenContext;
+    static loco_global<Gfx::RenderTarget, 0x0050B884> _screenRT;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
@@ -1139,50 +1139,50 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C5FC8
-    void drawSingle(Gfx::Context* _context, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void drawSingle(Gfx::RenderTarget* _rt, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
-        // Copy context so we can crop it
-        auto context = *_context;
+        // Copy rt so we can crop it
+        auto rt = *_rt;
 
         // Clamp left to 0
-        int32_t overflow = left - context.x;
+        int32_t overflow = left - rt.x;
         if (overflow > 0)
         {
-            context.x += overflow;
-            context.width -= overflow;
-            if (context.width <= 0)
+            rt.x += overflow;
+            rt.width -= overflow;
+            if (rt.width <= 0)
                 return;
-            context.pitch += overflow;
-            context.bits += overflow;
+            rt.pitch += overflow;
+            rt.bits += overflow;
         }
 
         // Clamp width to right
-        overflow = context.x + context.width - right;
+        overflow = rt.x + rt.width - right;
         if (overflow > 0)
         {
-            context.width -= overflow;
-            if (context.width <= 0)
+            rt.width -= overflow;
+            if (rt.width <= 0)
                 return;
-            context.pitch += overflow;
+            rt.pitch += overflow;
         }
 
         // Clamp top to 0
-        overflow = top - context.y;
+        overflow = top - rt.y;
         if (overflow > 0)
         {
-            context.y += overflow;
-            context.height -= overflow;
-            if (context.height <= 0)
+            rt.y += overflow;
+            rt.height -= overflow;
+            if (rt.height <= 0)
                 return;
-            context.bits += (context.width + context.pitch) * overflow;
+            rt.bits += (rt.width + rt.pitch) * overflow;
         }
 
         // Clamp height to bottom
-        overflow = context.y + context.height - bottom;
+        overflow = rt.y + rt.height - bottom;
         if (overflow > 0)
         {
-            context.height -= overflow;
-            if (context.height <= 0)
+            rt.height -= overflow;
+            if (rt.height <= 0)
                 return;
         }
 
@@ -1208,7 +1208,7 @@ namespace OpenLoco::Ui::WindowManager
         windowColours[3] = w->getColour(WindowColour::quaternary).opaque();
 
         w->callPrepareDraw();
-        w->callDraw(&context);
+        w->callDraw(&rt);
     }
 
     // 0x004CD3D0
@@ -1712,7 +1712,7 @@ namespace OpenLoco::Ui::WindowManager
 
         auto _width = Ui::width();
         auto _height = Ui::height();
-        Gfx::Context& _bitsContext = _screenContext;
+        Gfx::RenderTarget& rt = _screenRT;
 
         // Adjust for move off screen
         // NOTE: when zooming, there can be x, y, dx, dy combinations that go off the
@@ -1727,9 +1727,9 @@ namespace OpenLoco::Ui::WindowManager
         width += lmargin + rmargin;
         height += tmargin + bmargin;
 
-        int32_t stride = _bitsContext.width + _bitsContext.pitch;
-        uint8_t* to = _bitsContext.bits + y * stride + x;
-        uint8_t* from = _bitsContext.bits + (y - dy) * stride + x - dx;
+        int32_t stride = rt.width + rt.pitch;
+        uint8_t* to = rt.bits + y * stride + x;
+        uint8_t* from = rt.bits + (y - dy) * stride + x - dx;
 
         if (dy > 0)
         {

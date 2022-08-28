@@ -8,7 +8,7 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct Context;
+        struct RenderTarget;
     }
 
 #pragma pack(push, 1)
@@ -73,8 +73,8 @@ namespace OpenLoco
         MovementEdge* movementEdges; // 0xB2
         uint8_t pad_B6[0xBA - 0xB6];
 
-        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
-        void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();

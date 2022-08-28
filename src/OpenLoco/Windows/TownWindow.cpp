@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::Town
         static void update(Window& self);
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void drawTabs(Window* self, Gfx::Context* context);
+        static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void initEvents();
     }
 
@@ -128,12 +128,12 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00498FFE
-        static void draw(Window& self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
-            self.drawViewports(context);
-            Widget::drawViewportCentreButton(context, &self, widx::centre_on_viewport);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
+            self.drawViewports(rt);
+            Widget::drawViewportCentreButton(rt, &self, widx::centre_on_viewport);
 
             auto town = TownManager::get(TownId(self.number));
 
@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::Windows::Town
             const auto x = self.x + widget.left - 1;
             const auto y = self.y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::status_town_population, &args);
+            Gfx::drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::status_town_population, &args);
         }
 
         // 0x00499079
@@ -390,12 +390,12 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004994F9
-        static void draw(Window& self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
-            auto clipped = Gfx::clipContext(*context, Ui::Rect(self.x, self.y + 44, self.width, self.height - 44));
+            auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(self.x, self.y + 44, self.width, self.height - 44));
             if (!clipped)
                 return;
 
@@ -516,14 +516,14 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004997F1
-        static void draw(Window& self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
             uint16_t xPos = self.x + 4;
             uint16_t yPos = self.y + 46;
-            Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
+            Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
             xPos += 4;
             yPos += 14;
@@ -552,7 +552,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(rating);
                 args.push(rank);
 
-                Gfx::drawStringLeftClipped(*context, xPos, yPos, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
+                Gfx::drawStringLeftClipped(*rt, xPos, yPos, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
 
                 yPos += 10;
             }
@@ -713,14 +713,14 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004999E1
-        static void drawTabs(Window* self, Gfx::Context* context)
+        static void drawTabs(Window* self, Gfx::RenderTarget* rt)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Town tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                Widget::drawTab(self, context, imageId, widx::tab_town);
+                Widget::drawTab(self, rt, imageId, widx::tab_town);
             }
 
             // Population tab
@@ -742,7 +742,7 @@ namespace OpenLoco::Ui::Windows::Town
                 else
                     imageId += populationTabImageIds[0];
 
-                Widget::drawTab(self, context, imageId, widx::tab_population);
+                Widget::drawTab(self, rt, imageId, widx::tab_population);
             }
 
             // Company ratings tab
@@ -772,7 +772,7 @@ namespace OpenLoco::Ui::Windows::Town
                 else
                     imageId += ratingsTabImageIds[0];
 
-                Widget::drawTab(self, context, imageId, widx::tab_company_ratings);
+                Widget::drawTab(self, rt, imageId, widx::tab_company_ratings);
             }
         }
 

@@ -47,13 +47,13 @@ namespace OpenLoco::Drawing
         const char* formatString = (_currentFPS >= 10.0f ? "%.0f" : "%.1f");
         snprintf(&buffer[3], std::size(buffer) - 3, formatString, fps);
 
-        auto& context = Gfx::screenContext();
+        auto& rt = Gfx::getScreenRT();
 
         // Draw text
         const int stringWidth = Gfx::getStringWidth(buffer);
         const auto x = Ui::width() / 2 - (stringWidth / 2);
         const auto y = 2;
-        Gfx::drawString(context, x, y, Colour::black, buffer);
+        Gfx::drawString(rt, x, y, Colour::black, buffer);
 
         // Make area dirty so the text doesn't get drawn over the last
         Gfx::setDirtyBlocks(x - 16, y - 4, x + 16, 16);

@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns);
 
-        static void drawTabs(Ui::Window* const self, Gfx::Context* const context)
+        static void drawTabs(Ui::Window* const self, Gfx::RenderTarget* const rt)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -83,13 +83,13 @@ namespace OpenLoco::Ui::Windows::Cheats
                 else
                     imageId += financesTabImageIds[0];
 
-                Widget::drawTab(self, context, imageId, Widx::tab_finances);
+                Widget::drawTab(self, rt, imageId, Widx::tab_finances);
             }
 
             // Companies tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_company;
-                Widget::drawTab(self, context, imageId, Widx::tab_companies);
+                Widget::drawTab(self, rt, imageId, Widx::tab_companies);
             }
 
             // Vehicles tab
@@ -116,13 +116,13 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 imageId = Gfx::recolour(imageId, companyColour);
 
-                Widget::drawTab(self, context, imageId, Widx::tab_vehicles);
+                Widget::drawTab(self, rt, imageId, Widx::tab_vehicles);
             }
 
             // Towns tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                Widget::drawTab(self, context, imageId, Widx::tab_towns);
+                Widget::drawTab(self, rt, imageId, Widx::tab_towns);
             }
         }
 
@@ -212,17 +212,17 @@ namespace OpenLoco::Ui::Windows::Cheats
             self.activatedWidgets = (1 << Common::Widx::tab_finances);
         }
 
-        static void draw(Ui::Window& self, Gfx::Context* const context)
+        static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
             // Draw widgets and tabs.
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
             // Add cash step label and value
             {
                 auto& widget = self.widgets[Widx::cash_step_value];
                 Gfx::drawStringLeft(
-                    *context,
+                    *rt,
                     self.x + 10,
                     self.y + widget.top,
                     Colour::black,
@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 auto args = FormatArguments::common();
                 args.push(_cashIncreaseStep);
                 Gfx::drawStringLeft(
-                    *context,
+                    *rt,
                     self.x + widget.left + 1,
                     self.y + widget.top,
                     Colour::black,
@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             {
                 auto& widget = self.widgets[Widx::loan_value];
                 Gfx::drawStringLeft(
-                    *context,
+                    *rt,
                     self.x + 10,
                     self.y + widget.top,
                     Colour::black,
@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 args.push(company->currentLoan);
 
                 Gfx::drawStringLeft(
-                    *context,
+                    *rt,
                     self.x + widget.left + 1,
                     self.y + widget.top,
                     Colour::black,
@@ -266,7 +266,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             {
                 auto& widget = self.widgets[Widx::year_step_value];
                 Gfx::drawStringLeft(
-                    *context,
+                    *rt,
                     self.x + 10,
                     self.y + widget.top,
                     Colour::black,
@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 auto args = FormatArguments::common();
                 args.push(_date.year);
                 Gfx::drawStringLeft(
-                    *context,
+                    *rt,
                     self.x + widget.left + 1,
                     self.y + widget.top,
                     Colour::black,
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             {
                 auto& widget = self.widgets[Widx::month_step_value];
                 Gfx::drawStringLeft(
-                    *context,
+                    *rt,
                     self.x + 10,
                     self.y + widget.top,
                     Colour::black,
@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 auto args = FormatArguments::common();
                 args.push((string_id)OpenLoco::StringManager::monthToString(_date.month).second);
                 Gfx::drawStringLeft(
-                    *context,
+                    *rt,
                     self.x + widget.left + 1,
                     self.y + widget.top,
                     Colour::black,
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             {
                 auto& widget = self.widgets[Widx::day_step_value];
                 Gfx::drawStringLeft(
-                    *context,
+                    *rt,
                     self.x + 10,
                     self.y + widget.top,
                     Colour::black,
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 auto args = FormatArguments::common();
                 args.push(_date.day + 1); // +1 since days in game are 0-based, but IRL they are 1-based
                 Gfx::drawStringLeft(
-                    *context,
+                    *rt,
                     self.x + widget.left + 1,
                     self.y + widget.top,
                     Colour::black,
@@ -503,17 +503,17 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void draw(Ui::Window& self, Gfx::Context* const context)
+        static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
             // Draw widgets and tabs.
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
             // Draw current company name
             auto company = CompanyManager::get(_targetCompanyId);
             auto& widget = self.widgets[Widx::target_company_dropdown];
             Gfx::drawStringLeft(
-                *context,
+                *rt,
                 self.x + widget.left,
                 self.y + widget.top,
                 Colour::black,
@@ -659,11 +659,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void draw(Ui::Window& self, Gfx::Context* const context)
+        static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
             // Draw widgets and tabs.
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
         }
 
         static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
@@ -778,11 +778,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             self.activatedWidgets = (1 << Common::Widx::tab_towns);
         }
 
-        static void draw(Ui::Window& self, Gfx::Context* const context)
+        static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
             // Draw widgets and tabs.
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
         }
 
         static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)

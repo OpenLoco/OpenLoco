@@ -210,9 +210,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x435003
-    static void draw(Window& self, Gfx::Context* const context)
+    static void draw(Window& self, Gfx::RenderTarget* const rt)
     {
-        self.draw(context);
+        self.draw(rt);
         if (self.rowHover == -1)
         {
             return;
@@ -224,11 +224,11 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto t = self.y + 1 + self.widgets[widx::face_frame].top;
             const auto r = self.x - 1 + self.widgets[widx::face_frame].right;
             const auto b = self.y - 1 + self.widgets[widx::face_frame].bottom;
-            Gfx::fillRect(*context, l, t, r, b, colour);
+            Gfx::fillRect(*rt, l, t, r, b, colour);
 
             const CompetitorObject* competitor = _loadedObject;
             uint32_t img = competitor->images[0] + 1 + (1 << 29);
-            Gfx::drawImage(context, l, t, img);
+            Gfx::drawImage(rt, l, t, img);
         }
 
         {
@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             *str++ = ControlCodes::window_colour_2;
             auto objectPtr = self.object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
-            Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none
@@ -247,9 +247,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00435152
-    static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
+    static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
-        Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+        Gfx::clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         auto index = 0;
         for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
@@ -260,7 +260,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             if (index == self.rowHover)
             {
                 inlineColour = ControlCodes::window_colour_2;
-                Gfx::fillRect(context, 0, y, self.width, y + 9, 0x2000000 | 48);
+                Gfx::fillRect(rt, 0, y, self.width, y + 9, 0x2000000 | 48);
             }
 
             std::string name(object.second._name);
@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
                 Gfx::setCurrentFontSpriteBase(Font::m1);
                 stringColour = self.getColour(WindowColour::secondary).opaque().inset();
             }
-            Gfx::drawString(context, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
+            Gfx::drawString(rt, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
 
             index++;
         }

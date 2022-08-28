@@ -22,21 +22,21 @@ namespace OpenLoco::Ui
     }
 
     // 0x0045A0E7
-    void Viewport::render(Gfx::Context* context)
+    void Viewport::render(Gfx::RenderTarget* rt)
     {
-        auto contextRect = context->getUiRect();
+        auto uiRect = rt->getUiRect();
         auto viewRect = getUiRect();
 
-        if (!contextRect.intersects(viewRect))
+        if (!uiRect.intersects(viewRect))
         {
             return;
         }
-        auto intersection = contextRect.intersection(viewRect);
-        paint(context, screenToViewport(intersection));
+        auto intersection = uiRect.intersection(viewRect);
+        paint(rt, screenToViewport(intersection));
     }
 
     // 0x0045A1A4
-    void Viewport::paint(Gfx::Context* context, const Rect& rect)
+    void Viewport::paint(Gfx::RenderTarget* rt, const Rect& rect)
     {
         registers regs{};
         regs.ax = rect.left();
@@ -44,7 +44,7 @@ namespace OpenLoco::Ui
         regs.dx = rect.right();
         regs.bp = rect.bottom();
         regs.esi = X86Pointer(this);
-        regs.edi = X86Pointer(context);
+        regs.edi = X86Pointer(rt);
         call(0x0045A1A4, regs);
     }
 

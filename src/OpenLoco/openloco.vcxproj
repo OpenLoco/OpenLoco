@@ -56,6 +56,7 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Graphics\Colour.cpp" />
     <ClCompile Include="Graphics\Gfx.cpp" />
+    <ClCompile Include="Graphics\RenderTarget.cpp" />
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="Industry.cpp" />
     <ClCompile Include="IndustryManager.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="Graphics\Gfx.h" />
     <ClInclude Include="Graphics\ImageId.h" />
     <ClInclude Include="Graphics\ImageIds.h" />
+    <ClInclude Include="Graphics\RenderTarget.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Industry.h" />
     <ClInclude Include="IndustryManager.h" />

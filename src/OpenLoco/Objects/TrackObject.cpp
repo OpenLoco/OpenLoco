@@ -6,13 +6,13 @@
 namespace OpenLoco
 {
     // 0x004A6CBA
-    void TrackObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void TrackObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        Gfx::drawImage(&context, x, y, colourImage + 18);
-        Gfx::drawImage(&context, x, y, colourImage + 20);
-        Gfx::drawImage(&context, x, y, colourImage + 22);
+        Gfx::drawImage(&rt, x, y, colourImage + 18);
+        Gfx::drawImage(&rt, x, y, colourImage + 20);
+        Gfx::drawImage(&rt, x, y, colourImage + 22);
     }
 
     // 0x004A6C6C

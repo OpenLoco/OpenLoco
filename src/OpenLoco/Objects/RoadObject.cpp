@@ -6,18 +6,18 @@
 namespace OpenLoco
 {
     // 0x00477DFE
-    void RoadObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void RoadObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
         if (paintStyle == 1)
         {
-            Gfx::drawImage(&context, x, y, colourImage + 34);
-            Gfx::drawImage(&context, x, y, colourImage + 36);
-            Gfx::drawImage(&context, x, y, colourImage + 38);
+            Gfx::drawImage(&rt, x, y, colourImage + 34);
+            Gfx::drawImage(&rt, x, y, colourImage + 36);
+            Gfx::drawImage(&rt, x, y, colourImage + 38);
         }
         else
         {
-            Gfx::drawImage(&context, x, y, colourImage + 34);
+            Gfx::drawImage(&rt, x, y, colourImage + 34);
         }
     }
 

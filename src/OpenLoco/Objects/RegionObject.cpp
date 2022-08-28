@@ -5,9 +5,9 @@
 namespace OpenLoco
 {
     // 0x0043CB93
-    void RegionObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void RegionObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        Gfx::drawImage(&context, x, y, image);
+        Gfx::drawImage(&rt, x, y, image);
     }
 
     // 0x0043CA8C

@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x004950EF
-    static void sub_4950EF(Gfx::Context* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
+    static void sub_4950EF(Gfx::RenderTarget* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
     {
         registers regs;
         regs.bx = buffer;
@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429DAA
-    static void draw(Ui::Window& self, Gfx::Context* context)
+    static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
     {
         if (self.var_852 != 0)
             return;
@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto width = self.width;
         auto height = self.height;
 
-        auto clipped = Gfx::clipContext(*context, { x, y, width, height });
+        auto clipped = Gfx::clipRenderTarget(*rt, { x, y, width, height });
 
         if (!clipped)
             return;

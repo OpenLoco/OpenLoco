@@ -57,7 +57,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void onUpdate(Window& self);
-        static void drawTabs(Window* self, Gfx::Context* context);
+        static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void initEvents();
     }
 
@@ -208,29 +208,29 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A5CC
-        static void draw(Window& self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
         }
 
         // 0x0042A5D7
-        static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
 
-            Gfx::clearSingle(context, colour);
+            Gfx::clearSingle(rt, colour);
 
             auto height = 0;
             for (auto i = 0; i < _messageCount; i++)
             {
-                if (height + messageHeight <= context.y)
+                if (height + messageHeight <= rt.y)
                 {
                     height += messageHeight;
                     continue;
                 }
 
-                if (height >= context.y + context.height)
+                if (height >= rt.y + rt.height)
                 {
                     height += messageHeight;
                     continue;
@@ -246,7 +246,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                 if (self.rowHover == i)
                 {
-                    Gfx::drawRect(context, 0, height, self.width, 38, (1 << 25) | PaletteIndex::index_30);
+                    Gfx::drawRect(rt, 0, height, self.width, 38, (1 << 25) | PaletteIndex::index_30);
                     stringId = StringIds::wcolour2_stringid;
                 }
 
@@ -255,14 +255,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(StringIds::tiny_font_date);
                     args.push(message->date);
 
-                    Gfx::drawStringLeft(context, 0, height, Colour::black, stringId, &args);
+                    Gfx::drawStringLeft(rt, 0, height, Colour::black, stringId, &args);
                 }
                 {
                     auto args = FormatArguments();
                     args.push(StringIds::buffer_2039);
 
                     auto width = self.widgets[widx::scrollview].width() - 14;
-                    Gfx::drawStringLeftWrapped(context, 0, height + 6, width, Colour::black, stringId, &args);
+                    Gfx::drawStringLeftWrapped(rt, 0, height + 6, width, Colour::black, stringId, &args);
                     height += messageHeight;
                 }
             }
@@ -500,10 +500,10 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AA02
-        static void draw(Window& self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
             auto yPos = self.widgets[widx::company_major_news].top + self.y;
 
             const string_id newsStringIds[] = {
@@ -527,7 +527,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsStringIds[i]);
 
-                    Gfx::drawStringLeft(*context, self.x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
+                    Gfx::drawStringLeft(*rt, self.x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
                 }
 
                 {
@@ -535,7 +535,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().newsSettings[i])]);
 
-                    Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
+                    Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
                 }
                 yPos += 15;
             }
@@ -640,7 +640,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AB92
-        static void drawTabs(Window* self, Gfx::Context* context)
+        static void drawTabs(Window* self, Gfx::RenderTarget* rt)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -649,7 +649,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_messages;
 
-                Widget::drawTab(self, context, imageId, widx::tab_messages);
+                Widget::drawTab(self, rt, imageId, widx::tab_messages);
             }
 
             // Setting Tab
@@ -657,7 +657,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_message_settings;
 
-                Widget::drawTab(self, context, imageId, widx::tab_settings);
+                Widget::drawTab(self, rt, imageId, widx::tab_settings);
             }
         }
 
