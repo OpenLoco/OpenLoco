@@ -2,21 +2,25 @@
 #include "CompanyManager.h"
 #include "Date.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
 #include "Math/Vector.hpp"
 #include "Objects/BuildingObject.h"
+#include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
+#include <numeric>
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::IndustryManager
 {
     static auto& rawIndustries() { return getGameState().industries; }
+    static auto getNumIndustries() { return getGameState().numberOfIndustries; }
     uint8_t getFlags() { return getGameState().industryFlags; }
 
     void setFlags(const uint8_t flags)
@@ -75,7 +79,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x0047EA42
-    static uint8_t getMostCommonBuildingCargoType()
+    static size_t getMostCommonBuildingCargoType()
     {
         // First generate a count of all the different cargo based on what building could generate
         std::array<uint32_t, 32> cargoCounts{};
@@ -178,6 +182,60 @@ namespace OpenLoco::IndustryManager
         }
     }
 
+    // 0x004599B3
+    static std::optional<Map::Pos2> findRandomNewIndustryLocation(const uint8_t indObjId)
+    {
+        registers regs;
+        regs.dl = indObjId;
+        call(0x004599B3, regs);
+        if (regs.ax = -1)
+        {
+            return std::nullopt;
+        }
+
+        return Map::Pos2{ regs.ax, regs.cx };
+    }
+
+    // 0x00459722
+    static void createNewIndustry(const uint8_t indObjId)
+    {
+        const auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
+        const auto share = ((getNumIndustries() + 1) * indObj->var_CE) / 3;
+        const auto share2 = share - share / 4;
+        const auto share3 = (share2 / 2) * gPrng().randNext(0xFF);
+        const auto shareLimit = share2 + share3;
+        const auto totalOfThisType = std::count_if(std::begin(industries()), std::end(industries()), [indObjId](const auto& industry) {
+            return (industry.object_id == indObjId);
+        });
+
+        if (totalOfThisType < shareLimit)
+        {
+            return;
+        }
+
+        // Try find valid coordinates for this industry
+        for (auto attempt = 0; attempt < 25; ++attempt)
+        {
+            auto randomIndustryLoc = findRandomNewIndustryLocation(indObjId);
+            if (randomIndustryLoc.has_value())
+            {
+                GameCommands::IndustryPlacementArgs args;
+                args.type = indObjId;
+                args.buildImmediately = false;
+                args.pos = *randomIndustryLoc;
+                gPrng().randNext();
+                args.srand0 = gPrng().srand_0();
+                args.srand1 = gPrng().srand_1();
+
+                auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
+                if (res != GameCommands::FAILURE)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
     // 0x00459659
     static void tryCreateNewIndustriesMonthly()
     {
@@ -199,7 +257,7 @@ namespace OpenLoco::IndustryManager
                 continue;
             }
 
-            // 0x00459722
+            createNewIndustry(indObjId);
         }
     }
 
