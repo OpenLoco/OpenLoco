@@ -2,6 +2,7 @@
 
 #include "Colour.h"
 #include "ImageId.h"
+#include <array>
 #include <cstdint>
 #include <optional>
 
