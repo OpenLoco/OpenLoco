@@ -97,7 +97,7 @@ namespace OpenLoco::Ui
                 assert(false); // Unused
                 break;
 
-            case WidgetType::wt_5:
+            case WidgetType::slider:
             case WidgetType::wt_6:
             case WidgetType::toolbarTab:
             case WidgetType::tab:

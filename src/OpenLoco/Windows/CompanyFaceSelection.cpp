@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         makeWidget({ 385, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 400, 257 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 19 }, { 188, 248 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
-        makeWidget({ 265, 23 }, { 66, 66 }, WidgetType::wt_5, WindowColour::secondary),
+        makeWidget({ 265, 23 }, { 66, 66 }, WidgetType::wt_6, WindowColour::secondary),
         widgetEnd(),
     };
 
