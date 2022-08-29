@@ -1,6 +1,7 @@
 #include "Paint.h"
 #include "../Game.h"
 #include "../Graphics/Gfx.h"
+#include "../Graphics/PaletteMap.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Map/Tile.h"
