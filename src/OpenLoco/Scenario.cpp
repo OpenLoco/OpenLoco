@@ -9,6 +9,7 @@
 #include "GameException.hpp"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/PaletteMap.h"
 #include "Gui.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
