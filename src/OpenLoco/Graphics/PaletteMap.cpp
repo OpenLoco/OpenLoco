@@ -22,6 +22,7 @@ namespace OpenLoco::Gfx
         if (!initialised)
         {
             std::iota(std::begin(data), std::end(data), 0);
+            initialised = true;
         }
         return defaultMap;
     }
