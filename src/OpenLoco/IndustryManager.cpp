@@ -20,7 +20,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::IndustryManager
 {
     static auto& rawIndustries() { return getGameState().industries; }
-    static auto getNumIndustries() { return getGameState().numberOfIndustries; }
+    static auto getTotalIndustriesCap() { return getGameState().numberOfIndustries; }
     uint8_t getFlags() { return getGameState().industryFlags; }
 
     void setFlags(const uint8_t flags)
@@ -90,7 +90,7 @@ namespace OpenLoco::IndustryManager
             {
                 continue;
             }
-            if (!(buildObj->flags & BuildingObjectFlags::misc_building)
+            if (!(buildObj->flags & BuildingObjectFlags::miscBuilding)
                 && buildObj->producedQuantity[0] != 0)
             {
                 cargoCounts[buildObj->producedCargoType[0]]++;
@@ -129,8 +129,8 @@ namespace OpenLoco::IndustryManager
         for (auto& industry : industries())
         {
             const auto* indObj = industry.getObject();
-            auto res = std::find(std::begin(indObj->produced_cargo_type), std::end(indObj->produced_cargo_type), cargoType);
-            if (res != std::end(indObj->produced_cargo_type))
+            auto res = std::find(std::begin(indObj->producedCargoType), std::end(indObj->producedCargoType), cargoType);
+            if (res != std::end(indObj->producedCargoType))
             {
                 return true;
             }
@@ -151,17 +151,17 @@ namespace OpenLoco::IndustryManager
         }
 
         // If industry is a self producer i.e. no requirements to produce
-        if (indObj.required_cargo_type[0] == 0xFF)
+        if (indObj.requiredCargoType[0] == 0xFF)
         {
             return true;
         }
 
-        if (indObj.flags & IndustryObjectFlags::requires_all_cargo)
+        if (indObj.flags & IndustryObjectFlags::requiresAllCargo)
         {
             // All required cargo must be producable in world
             for (auto i = 0; i < 3; ++i)
             {
-                if (!canCargoTypeBeProducedInWorld(indObj.required_cargo_type[i]))
+                if (!canCargoTypeBeProducedInWorld(indObj.requiredCargoType[i]))
                 {
                     return false;
                 }
@@ -173,7 +173,7 @@ namespace OpenLoco::IndustryManager
             // At least one required cargo must be producable in world
             for (auto i = 0; i < 3; ++i)
             {
-                if (canCargoTypeBeProducedInWorld(indObj.required_cargo_type[i]))
+                if (canCargoTypeBeProducedInWorld(indObj.requiredCargoType[i]))
                 {
                     return true;
                 }
@@ -197,28 +197,30 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x00459722
-    static void createNewIndustry(const uint8_t indObjId)
+    static bool hasReachedCapOfTypeOfIndustry(const uint8_t indObjId)
     {
         const auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
 
-        // var_CE is in the range of 1->32 inclusive
-        // This formula is ultimately staticPreferredTotalOfType = 1/4 * ((getNumIndustries() + 1) * indObj->var_CE)
+        // totalOfTypeInScenario is in the range of 1->32 inclusive
+        // getTotalIndustriesCap() is in the range of 0->2 (low, med, high)
+        // This formula is ultimately staticPreferredTotalOfType = 1/4 * ((getTotalIndustriesCap() + 1) * indObj->totalOfTypeInScenario)
         // but we will do it in two steps to keep identical results.
-        const auto intermediate1 = ((getNumIndustries() + 1) * indObj->var_CE) / 3;
+        const auto intermediate1 = ((getTotalIndustriesCap() + 1) * indObj->totalOfTypeInScenario) / 3;
         const auto staticPreferredTotalOfType = intermediate1 - intermediate1 / 4;
         // The preferred total can vary by up to a half of the static preffered total.
-        const auto randomPrefferedTotalOfType = (staticPreferredTotalOfType / 2) * gPrng().randNext(0xFF) / 256;
-        const auto prefferedTotalOfType = staticPreferredTotalOfType + randomPrefferedTotalOfType;
+        const auto randomPreferredTotalOfType = (staticPreferredTotalOfType / 2) * gPrng().randNext(0xFF) / 256;
+        const auto preferredTotalOfType = staticPreferredTotalOfType + randomPreferredTotalOfType;
 
         const auto totalOfThisType = std::count_if(std::begin(industries()), std::end(industries()), [indObjId](const auto& industry) {
-            return (industry.object_id == indObjId);
+            return (industry.objectId == indObjId);
         });
 
-        if (totalOfThisType < prefferedTotalOfType)
-        {
-            return;
-        }
+        return totalOfThisType >= preferredTotalOfType;
+    }
 
+    // 0x0045979C
+    static void createNewIndustry(const uint8_t indObjId)
+    {
         // Try find valid coordinates for this industry
         for (auto attempt = 0; attempt < 25; ++attempt)
         {
@@ -263,6 +265,10 @@ namespace OpenLoco::IndustryManager
                 continue;
             }
 
+            if (hasReachedCapOfTypeOfIndustry(indObjId))
+            {
+                continue;
+            }
             createNewIndustry(indObjId);
         }
     }
