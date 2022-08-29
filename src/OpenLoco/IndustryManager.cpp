@@ -196,8 +196,8 @@ namespace OpenLoco::IndustryManager
         return Map::Pos2{ regs.ax, regs.cx };
     }
 
-    // 0x00459722
-    static bool hasReachedCapOfTypeOfIndustry(const uint8_t indObjId)
+    // 0x00459722 & 0x004598F0
+    static int32_t capOfTypeOfIndustry(const uint8_t indObjId)
     {
         const auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
 
@@ -209,7 +209,13 @@ namespace OpenLoco::IndustryManager
         const auto staticPreferredTotalOfType = intermediate1 - intermediate1 / 4;
         // The preferred total can vary by up to a half of the static preffered total.
         const auto randomPreferredTotalOfType = (staticPreferredTotalOfType / 2) * gPrng().randNext(0xFF) / 256;
-        const auto preferredTotalOfType = staticPreferredTotalOfType + randomPreferredTotalOfType;
+        return staticPreferredTotalOfType + randomPreferredTotalOfType;
+    }
+
+    // 0x00459722
+    static bool hasReachedCapOfTypeOfIndustry(const uint8_t indObjId)
+    {
+        const auto preferredTotalOfType = capOfTypeOfIndustry(indObjId);
 
         const auto totalOfThisType = std::count_if(std::begin(industries()), std::end(industries()), [indObjId](const auto& industry) {
             return (industry.objectId == indObjId);
@@ -218,18 +224,18 @@ namespace OpenLoco::IndustryManager
         return totalOfThisType >= preferredTotalOfType;
     }
 
-    // 0x0045979C
-    static void createNewIndustry(const uint8_t indObjId)
+    // 0x0045979C & 0x00459949
+    static void createNewIndustry(const uint8_t indObjId, const bool buildImmediately, const int32_t numAttempts)
     {
         // Try find valid coordinates for this industry
-        for (auto attempt = 0; attempt < 25; ++attempt)
+        for (auto attempt = 0; attempt < numAttempts; ++attempt)
         {
             auto randomIndustryLoc = findRandomNewIndustryLocation(indObjId);
             if (randomIndustryLoc.has_value())
             {
                 GameCommands::IndustryPlacementArgs args;
                 args.type = indObjId;
-                args.buildImmediately = false;
+                args.buildImmediately = buildImmediately;
                 args.pos = *randomIndustryLoc;
                 gPrng().randNext();
                 args.srand0 = gPrng().srand_0();
@@ -269,7 +275,7 @@ namespace OpenLoco::IndustryManager
             {
                 continue;
             }
-            createNewIndustry(indObjId);
+            createNewIndustry(indObjId, false, 25);
         }
     }
 
