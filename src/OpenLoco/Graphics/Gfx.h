@@ -219,4 +219,6 @@ namespace OpenLoco::Gfx
     void setCurrentFontSpriteBase(int16_t base);
 
     Drawing::SoftwareDrawingEngine& getDrawingEngine();
+
+    void loadPalette();
 }

@@ -12,7 +12,6 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Gfx
 {
     static loco_global<uint32_t[147], 0x050B8C8> _paletteToG1Offset;
-    static loco_global<Drawing::PaletteEntry[256], 0x0113ED20> _113ED20;
 
     const PaletteMap& PaletteMap::getDefault()
     {
@@ -69,20 +68,6 @@ namespace OpenLoco::Gfx
         assert(length <= maxLength);
         auto copyLength = std::min(length, maxLength);
         std::memcpy(&_data[dstIndex], &src._data[srcIndex], copyLength);
-    }
-
-    // 0x004523F4
-    void loadPalette()
-    {
-        auto* g1Palette = getG1Element(ImageIds::default_palette);
-        uint8_t* colourData = g1Palette->offset;
-        for (auto i = g1Palette->x_offset; i < g1Palette->width; ++i)
-        {
-            _113ED20[i].b = *colourData++;
-            _113ED20[i].g = *colourData++;
-            _113ED20[i].r = *colourData++;
-        }
-        getDrawingEngine().updatePalette(_113ED20, 10, 236);
     }
 
     std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId)
