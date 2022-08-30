@@ -18,7 +18,7 @@ namespace OpenLoco
         constexpr uint32_t builtOnLowGround = 1 << 2;
         constexpr uint32_t builtOnSnow = 1 << 3;        // above summer snow line
         constexpr uint32_t builtBelowSnowLine = 1 << 4; // below winter snow line
-        constexpr uint32_t builtOn5 = 1 << 5;           // water related
+        constexpr uint32_t builtOnFlatGround = 1 << 5;
         constexpr uint32_t builtNearWater = 1 << 6;
         constexpr uint32_t builtAwayFromWater = 1 << 7;
         constexpr uint32_t builtOnWater = 1 << 8;

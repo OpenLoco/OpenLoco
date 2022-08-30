@@ -5,9 +5,11 @@
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
+#include "Map/TileManager.h"
 #include "Math/Vector.hpp"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
+#include "Objects/ClimateObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
@@ -190,9 +192,149 @@ namespace OpenLoco::IndustryManager
         }
     }
 
+    // 0x00459A05
+    static bool isTooCloseToNearbyIndustries(const Map::Pos2& loc)
+    {
+        for (auto& industry : industries())
+        {
+            const auto dist = Math::Vector::manhattanDistance(loc, Map::Pos2{ industry.x, industry.y });
+            if (dist < 480)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 0x00459A50
+    static bool isOutwithCluster(const Map::Pos2& loc, const uint8_t indObjId)
+    {
+        auto numClusters = 0;
+        for (auto& industry : industries())
+        {
+            if (industry.objectId != indObjId)
+            {
+                continue;
+            }
+            numClusters++;
+            const auto dist = Math::Vector::manhattanDistance(loc, Map::Pos2{ industry.x, industry.y });
+            if (dist < 960)
+            {
+                return false;
+            }
+        }
+        if (numClusters < 3)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    // 0x00469A81
+    static int16_t mountainHeight(const Map::Pos2& loc)
+    {
+        // Works out roughly the height of a mountain of area 11 * 11
+        // (Its just the heighest point - the lowest point)
+        int16_t lowest = std::numeric_limits<int16_t>::max();
+        int16_t highest = 0;
+        Map::TilePosRangeView range{
+            loc - Map::TilePos2{ 5, 5 }, loc + Map::TilePos2{ 5, 5 }
+        };
+        for (auto& tilePos : range)
+        {
+            if (!Map::validCoords(tilePos))
+            {
+                continue;
+            }
+            auto tile = Map::TileManager::get(tilePos);
+            auto* surface = tile.surface();
+            auto height = surface->baseHeight();
+            lowest = std::min(lowest, height);
+            if (surface->slope())
+            {
+                height += 16;
+                if (surface->isSlopeDoubleHeight())
+                {
+                    height += 16;
+                }
+            }
+            highest = std::max(highest, height);
+        }
+        return highest - lowest;
+    }
+
     // 0x004599B3
     static std::optional<Map::Pos2> findRandomNewIndustryLocation(const uint8_t indObjId)
     {
+        auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
+        for (auto i = 0; i < 250; ++i)
+        {
+            const auto randomNum = gPrng().randNext();
+            Map::Pos2 randomPos{
+                Map::TilePos2(randomNum % Map::kMapRows, randomNum >> 16 % Map::kMapColumns)
+            };
+
+            if (isTooCloseToNearbyIndustries(randomPos))
+            {
+                continue;
+            }
+
+            if (indObj->flags & IndustryObjectFlags::builtInClusters)
+            {
+                if (isOutwithCluster(randomPos, indObjId))
+                {
+                    continue;
+                }
+            }
+
+            if (indObj->flags & IndustryObjectFlags::builtOnHighGround)
+            {
+                auto tile = Map::TileManager::get(randomPos);
+                auto* surface = tile.surface();
+                if (surface == nullptr || surface->baseZ() < 48)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtOnLowGround)
+            {
+                auto tile = Map::TileManager::get(randomPos);
+                auto* surface = tile.surface();
+                if (surface == nullptr || surface->baseZ() > 56)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtOnSnow)
+            {
+                auto tile = Map::TileManager::get(randomPos);
+                auto* surface = tile.surface();
+                auto* climateObj = ObjectManager::get<ClimateObject>();
+                if (surface == nullptr || surface->baseZ() < climateObj->summerSnowLine)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtBelowSnowLine)
+            {
+                auto tile = Map::TileManager::get(randomPos);
+                auto* surface = tile.surface();
+                auto* climateObj = ObjectManager::get<ClimateObject>();
+                if (surface == nullptr || surface->baseZ() > climateObj->winterSnowLine)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtOnFlatGround)
+            {
+                if (mountainHeight(randomPos) > 32)
+                {
+                    continue;
+                }
+            }
+            // 0x00459BAC
+        }
+        return std::nullopt;
         registers regs;
         regs.edx = indObjId;
         call(0x004599B3, regs);
