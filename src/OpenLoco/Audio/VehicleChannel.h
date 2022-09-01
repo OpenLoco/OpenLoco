@@ -4,16 +4,15 @@
 
 namespace OpenLoco::Audio
 {
-    class VehicleChannel
+    class VehicleChannel : public Channel
     {
     private:
-        Channel _channel;
         EntityId _vehicleId = EntityId::null;
         SoundId _soundId{};
 
     public:
-        VehicleChannel(const Channel& channel)
-            : _channel(channel)
+        VehicleChannel(OpenAL::Source source)
+            : Channel::Channel(source)
         {
         }
 

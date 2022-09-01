@@ -5,17 +5,19 @@
 
 namespace OpenLoco::Audio
 {
-    static std::unique_ptr<Channel> getNewChannel(OpenAL::SourceManager& sourceManager, ChannelId channelId)
+    static Channel* makeNewChannel(OpenAL::SourceManager& sourceManager, ChannelId channelId)
     {
         if (channelId == ChannelId::vehicle)
-            return std::make_unique<Channel>(new VehicleChannel(sourceManager.allocate()));
+            return new VehicleChannel(sourceManager.allocate());
         else
-            return std::make_unique<Channel>(sourceManager.allocate());
+            return new Channel(sourceManager.allocate());
     }
 
     ChannelManager::ChannelManager(OpenAL::SourceManager& sourceManager)
     {
         _sourceManager = sourceManager;
+
+        virtualChannels.reserve(kMixerChannelDefinitions.size());
 
         for (const auto& channelDef : kMixerChannelDefinitions)
         {
@@ -23,40 +25,72 @@ namespace OpenLoco::Audio
 
             if (result.second)
             {
-                auto& kv = *result.first;
+                auto& virtualChannel = result.first->second;
+
+                // reserve max (instead of initial) to avoid resizing when allocating new channels
+                virtualChannel.channels.reserve(channelDef.second.maxPhysicalChannels);
 
                 for (size_t i = 0; i < channelDef.second.initialPhysicalChannels; ++i)
                 {
-                    /*auto channel = channelDef.first == ChannelId::vehicle
-                        ? VehicleChannel(_sourceManager.allocate())
-                        : Channel(_sourceManager.allocate());*/
-
-                    kv.second.channels.push_back(getNewChannel(sourceManager, channelDef.first));
+                    virtualChannel.channels.push_back(makeNewChannel(_sourceManager, channelDef.first));
                 }
             }
         }
+
+        stopChannels(ChannelId::vehicle);
     }
 
     Channel* ChannelManager::getFreeChannel(ChannelId channelId)
     {
-        auto vChannels = virtualChannels.at(channelId).channels;
-        auto freeChannel = std::find_if(std::begin(vChannels), std::end(vChannels), [](auto& channel) { return !channel.isPlaying(); });
-        Channel* channel = nullptr;
-
-        if (freeChannel == std::end(vChannels))
+        if (channelId == ChannelId::vehicle)
         {
-            if (vChannels.size() < kMixerChannelDefinitions.at(channelId).maxPhysicalChannels)
+            auto& channels = virtualChannels.at(channelId).channels;
+            auto freeChannel = std::find_if(std::begin(channels), std::end(channels), [](auto& channel) { return static_cast<VehicleChannel*>(channel)->isFree(); });
+            Channel* channel = nullptr;
+
+            if (freeChannel == std::end(channels))
             {
-                vChannels.push_back(getNewChannel(_sourceManager, channelId));
-                channel = vChannels.back();
+                if (channels.size() < kMixerChannelDefinitions.at(channelId).maxPhysicalChannels)
+                {
+                    channel = makeNewChannel(_sourceManager, channelId);
+                    channels.push_back(channel);
+                }
+                // else - no free channels and we've hit the channel limit - sound just won't play
             }
-            // else - no free channels and we've hit the channel limit - sound just won't play
+            else
+            {
+                channel = *freeChannel;
+            }
+            return channel;
         }
         else
         {
-            channel = &*freeChannel;
+
+            auto& channels = virtualChannels.at(channelId).channels;
+            auto freeChannel = std::find_if(std::begin(channels), std::end(channels), [](auto& channel) { return !channel->isPlaying(); });
+            Channel* channel = nullptr;
+
+            if (freeChannel == std::end(channels))
+            {
+                if (channels.size() < kMixerChannelDefinitions.at(channelId).maxPhysicalChannels)
+                {
+                    channel = makeNewChannel(_sourceManager, channelId);
+                    channels.push_back(channel);
+                }
+                // else - no free channels and we've hit the channel limit - sound just won't play
+            }
+            else
+            {
+                channel = *freeChannel;
+            }
+            return channel;
         }
-        return channel;
+
+        // if (channel == nullptr)
+        //{
+        //     throw std::logic_error("channel was nullptr!");
+        // }
+        // return channel;
     }
 
     bool ChannelManager::play(ChannelId channelId, PlaySoundParams&& soundParams)
@@ -74,7 +108,7 @@ namespace OpenLoco::Audio
         return false;
     }
 
-    bool ChannelManager::play(ChannelId channelId, PlaySoundParams&& soundParams, SoundId soundId)
+    /*bool ChannelManager::play(ChannelId channelId, PlaySoundParams&& soundParams, SoundId soundId)
     {
         auto channel = getFreeChannel(channelId);
         if (channel != nullptr && channel->load(soundParams.sample))
@@ -82,6 +116,13 @@ namespace OpenLoco::Audio
             (dynamic_cast<VehicleChannel*>(channel)).
         }
         return false;
+    }*/
+
+    bool ChannelManager::play(ChannelId channelId, PlaySoundParams&& soundParams, EntityId entityId)
+    {
+        auto vehicleChannel = *static_cast<VehicleChannel*>(getFreeChannel(ChannelId::vehicle));
+        vehicleChannel.begin(entityId);
+        return true;
     }
 
     VirtualChannel& ChannelManager::getVirtualChannel(ChannelId channelId)
@@ -91,7 +132,7 @@ namespace OpenLoco::Audio
 
     Channel& ChannelManager::getFirstChannel(ChannelId channelId)
     {
-        return virtualChannels.at(channelId).channels.front();
+        return *(virtualChannels.at(channelId).channels.front());
     }
 
     void ChannelManager::disposeChannels()
@@ -99,11 +140,31 @@ namespace OpenLoco::Audio
         virtualChannels.clear();
     }
 
-    void ChannelManager::stopChannel(ChannelId channelId)
+    void ChannelManager::stopChannels(ChannelId channelId)
     {
         for (auto& channel : virtualChannels.at(channelId).channels)
         {
-            channel.stop();
+            channel->stop();
+        }
+    }
+
+    void ChannelManager::stopNonPlayingChannels(ChannelId channelId)
+    {
+        for (auto& channel : virtualChannels.at(channelId).channels)
+        {
+            if (!channel->isPlaying())
+            {
+
+                channel->stop(); // This forces deallocation of buffer
+            }
+        }
+    }
+    void ChannelManager::updateVehicleChannels()
+    {
+        for (auto& channel : virtualChannels.at(ChannelId::vehicle).channels)
+        {
+            auto vehicleChannel = *static_cast<VehicleChannel*>(channel);
+            vehicleChannel.update();
         }
     }
 

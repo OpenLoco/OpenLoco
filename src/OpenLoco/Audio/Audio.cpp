@@ -459,11 +459,7 @@ namespace OpenLoco::Audio
         if (v->var_4A & 1)
         {
             Console::logVerbose("playSound(vehicle #%d)", v->id);
-            channelManager->play(ChannelId::vehicle, PlaySoundParams()) auto vc = channelManager->getFreeVehicleChannel();
-            if (vc != nullptr)
-            {
-                vc->begin(v->id);
-            }
+            channelManager->play(ChannelId::vehicle, PlaySoundParams(), v->id);
         }
     }
 
@@ -572,14 +568,7 @@ namespace OpenLoco::Audio
     // 0x0048A18C
     void updateSounds()
     {
-        auto sfx = channelManager->getVirtualChannel(ChannelId::soundFX);
-        for (auto& channel : sfx.channels)
-        {
-            if (!channel.isPlaying())
-            {
-                channel.stop(); // This forces deallocation of buffer
-            }
-        }
+        channelManager->stopNonPlayingChannels(ChannelId::soundFX);
     }
 
     static std::optional<uint32_t> loadMusicSample(PathId asset)
@@ -623,7 +612,7 @@ namespace OpenLoco::Audio
     static void stopChannel(ChannelId id)
     {
         Console::logVerbose("stopChannel(%d)", id);
-        channelManager->stopChannel(id);
+        channelManager->stopChannels(id);
     }
 
     static void sub_48A274(Vehicles::Vehicle2or6* v)
@@ -746,10 +735,7 @@ namespace OpenLoco::Audio
                 sub_48A1FA(0);
                 sub_48A1FA(1);
                 sub_48A1FA(2);
-                for (auto& vc : _vehicleChannels)
-                {
-                    vc.update();
-                }
+                channelManager->updateVehicleChannels();
                 sub_48A1FA(3);
             }
         }
@@ -758,21 +744,18 @@ namespace OpenLoco::Audio
     // 0x00489C6A
     void stopVehicleNoise()
     {
-        for (auto& vc : _vehicleChannels)
-        {
-            vc.stop();
-        }
+        channelManager->stopChannels(ChannelId::vehicle);
     }
 
     void stopVehicleNoise(EntityId head)
     {
         Vehicles::Vehicle train(head);
-        for (auto& vc : _vehicleChannels)
+        for (auto& channel : channelManager->getVirtualChannel(ChannelId::vehicle).channels)
         {
-            if (vc.getId() == train.veh2->id
-                || vc.getId() == train.tail->id)
+            auto vehicleChannel = *static_cast<VehicleChannel*>(channel);
+            if (vehicleChannel.getId() == train.veh2->id || vehicleChannel.getId() == train.tail->id)
             {
-                vc.stop();
+                vehicleChannel.stop();
             }
         }
     }
@@ -1025,7 +1008,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto cfg = Config::get();
+        auto& cfg = Config::get();
         if (cfg.musicPlaying == 0 || isTitleMode() || isEditorMode())
         {
             return;
@@ -1117,7 +1100,7 @@ namespace OpenLoco::Audio
     // 0x0048AC2B
     void stopTitleMusic()
     {
-        channelManager->stopChannel(ChannelId::title);
+        channelManager->stopChannels(ChannelId::title);
     }
 
     void resetSoundObjects()

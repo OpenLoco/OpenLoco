@@ -30,7 +30,7 @@ namespace OpenLoco::Audio
         { ChannelId::unk_1, VirtualChannelAttributes{ 0, 0 } },
         { ChannelId::ambient, VirtualChannelAttributes{ 1, 1 } },
         { ChannelId::title, VirtualChannelAttributes{ 1, 1 } },
-        { ChannelId::vehicle, VirtualChannelAttributes{ 10, 20 } },
+        { ChannelId::vehicle, VirtualChannelAttributes{ 10, 64 } },
         { ChannelId::soundFX, VirtualChannelAttributes{ 16, 64 } },
     };
 
@@ -48,7 +48,7 @@ namespace OpenLoco::Audio
         float gain;
 
     public:
-        std::vector<Channel> channels;
+        std::vector<Channel*> channels;
 
         VirtualChannel(float initialGain);
     };
@@ -64,10 +64,15 @@ namespace OpenLoco::Audio
         ChannelManager(){};
         ChannelManager(OpenAL::SourceManager& sourceManager);
         bool play(ChannelId channelId, PlaySoundParams&& soundParams);
-        bool play(ChannelId channelId, PlaySoundParams&& soundParams, SoundId soundId);
+        // bool play(ChannelId channelId, PlaySoundParams&& soundParams, SoundId soundId);
+        bool play(ChannelId channelId, PlaySoundParams&& soundParams, EntityId entityId);
         VirtualChannel& getVirtualChannel(ChannelId channelId);
         Channel& getFirstChannel(ChannelId channelId);
         void disposeChannels();
-        void stopChannel(ChannelId channelId);
+        void stopChannels(ChannelId channelId);
+        void stopNonPlayingChannels(ChannelId channelId);
+
+        // vehicle specific
+        void updateVehicleChannels();
     };
 }
