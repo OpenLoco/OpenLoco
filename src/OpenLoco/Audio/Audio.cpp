@@ -1146,6 +1146,16 @@ namespace OpenLoco::Audio
 
     void playMusic(PathId sample, int32_t volume, bool loop)
     {
+        static PathId currentTrackPathId;
+        if (currentTrackPathId != sample)
+        {
+            currentTrackPathId = sample;
+        }
+        else
+        {
+            return;
+        }
+
         if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled)
         {
             return;
