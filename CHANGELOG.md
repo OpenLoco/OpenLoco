@@ -1,4 +1,4 @@
-22.08+ (???)
+22.09 (2022-09-04)
 ------------------------------------------------------------------------
 - Fix: [#1612] Ambient audio no longer playing.
 - Fix: [#1613] Crash when viewing the Build Trains window with certain trains.
