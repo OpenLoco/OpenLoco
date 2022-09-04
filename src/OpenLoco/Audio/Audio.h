@@ -61,10 +61,9 @@ namespace OpenLoco::Audio
 
     enum class ChannelId
     {
-        bgm,
+        music,
         unk_1,
         ambient,
-        title,
         vehicle_0, // * 10
     };
     constexpr int32_t kNumReservedChannels = 4 + 10;

@@ -188,6 +188,11 @@ namespace OpenLoco::Title
         Audio::playTitleScreenMusic();
     }
 
+    void stop()
+    {
+        Audio::stopTitleMusic();
+    }
+
     // 0x00444387
     void update()
     {

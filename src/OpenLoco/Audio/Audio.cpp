@@ -1102,7 +1102,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        if (!_channels[enumValue(ChannelId::bgm)].isPlaying())
+        if (!_channels[enumValue(ChannelId::music)].isPlaying())
         {
             // Not playing, but the 'current song' is last song? It's been requested manually!
             bool requestedSong = _lastSong != kNoSong && _lastSong == _currentSong;
@@ -1123,10 +1123,10 @@ namespace OpenLoco::Audio
             // Load info on the song to play.
             const auto& mi = kMusicInfo[_currentSong];
             auto buffer = loadMusicSample(mi.pathId);
-            if (_channels[enumValue(ChannelId::bgm)].load(*buffer))
+            if (_channels[enumValue(ChannelId::music)].load(*buffer))
             {
-                _channels[enumValue(ChannelId::bgm)].setVolume(Config::get().volume);
-                if (!_channels[enumValue(ChannelId::bgm)].play(false))
+                _channels[enumValue(ChannelId::music)].setVolume(Config::get().volume);
+                if (!_channels[enumValue(ChannelId::music)].play(false))
                 {
                     cfg.musicPlaying = 0;
                 }
@@ -1151,16 +1151,16 @@ namespace OpenLoco::Audio
     // 0x0048AAE8
     void stopBackgroundMusic()
     {
-        if (_audioInitialised && _channels[enumValue(ChannelId::bgm)].isPlaying())
+        if (_audioInitialised && _channels[enumValue(ChannelId::music)].isPlaying())
         {
-            _channels[enumValue(ChannelId::bgm)].stop();
+            _channels[enumValue(ChannelId::music)].stop();
         }
     }
 
     // 0x0048AC66
     void playTitleScreenMusic()
     {
-        auto* channel = getChannel(ChannelId::title);
+        auto* channel = getChannel(ChannelId::music);
         if (channel == nullptr)
         {
             return;
@@ -1189,7 +1189,7 @@ namespace OpenLoco::Audio
     // 0x0048AC2B
     void stopTitleMusic()
     {
-        auto* channel = getChannel(ChannelId::title);
+        auto* channel = getChannel(ChannelId::music);
         if (channel == nullptr)
         {
             return;
@@ -1231,7 +1231,7 @@ namespace OpenLoco::Audio
         cfg.volume = volume;
         Config::write();
 
-        auto* channel = getChannel(ChannelId::bgm);
+        auto* channel = getChannel(ChannelId::music);
         if (channel == nullptr)
         {
             return;
