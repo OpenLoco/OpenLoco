@@ -359,9 +359,8 @@ namespace OpenLoco::Audio
             return;
 
         stopVehicleNoise();
-        stopBackgroundMusic();
         stopAmbientNoise();
-        stopTitleMusic();
+        stopMusic();
         Config::write();
     }
 
@@ -373,8 +372,8 @@ namespace OpenLoco::Audio
 
         _audioIsPaused = true;
         stopVehicleNoise();
-        stopBackgroundMusic();
         stopAmbientNoise();
+        stopMusic();
     }
 
     // 0x00489C58
@@ -1013,7 +1012,7 @@ namespace OpenLoco::Audio
 
         if (!trackStillApplies)
         {
-            stopBackgroundMusic();
+            stopMusic();
             _currentSong = kNoSong;
             _lastSong = kNoSong;
         }
@@ -1091,18 +1090,19 @@ namespace OpenLoco::Audio
     // 0x0048A78D
     void playBackgroundMusic()
     {
-        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled)
-        {
-            return;
-        }
-
-        auto cfg = Config::get();
+        auto& cfg = Config::get();
         if (cfg.musicPlaying == 0 || isTitleMode() || isEditorMode())
         {
             return;
         }
 
-        if (!_channels[enumValue(ChannelId::music)].isPlaying())
+        auto* channel = getChannel(ChannelId::music);
+        if (channel == nullptr)
+        {
+            return;
+        }
+
+        if (!channel->isPlaying())
         {
             // Not playing, but the 'current song' is last song? It's been requested manually!
             bool requestedSong = _lastSong != kNoSong && _lastSong == _currentSong;
@@ -1123,10 +1123,10 @@ namespace OpenLoco::Audio
             // Load info on the song to play.
             const auto& mi = kMusicInfo[_currentSong];
             auto buffer = loadMusicSample(mi.pathId);
-            if (_channels[enumValue(ChannelId::music)].load(*buffer))
+            if (channel->load(*buffer))
             {
-                _channels[enumValue(ChannelId::music)].setVolume(Config::get().volume);
-                if (!_channels[enumValue(ChannelId::music)].play(false))
+                channel->setVolume(Config::get().volume);
+                if (!channel->play(false))
                 {
                     cfg.musicPlaying = 0;
                 }
@@ -1140,61 +1140,51 @@ namespace OpenLoco::Audio
         }
     }
 
+    // 0x0048AC66
+    // void playTitleScreenMusic()
+    // deprecated in favour of Audio::playMusic
+
+    void playMusic(PathId sample, int32_t volume, bool loop)
+    {
+        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled)
+        {
+            return;
+        }
+
+        auto* channel = getChannel(ChannelId::music);
+        if (channel == nullptr)
+        {
+            return;
+        }
+
+        channel->stop();
+
+        auto musicSample = loadMusicSample(sample);
+        if (channel->load(*musicSample))
+        {
+            channel->setVolume(volume);
+            channel->play(loop);
+        }
+    }
+
     // 0x0048AAD2
     void resetMusic()
     {
-        stopBackgroundMusic();
+        stopMusic();
         _currentSong = kNoSong;
         _lastSong = kNoSong;
     }
 
     // 0x0048AAE8
-    void stopBackgroundMusic()
-    {
-        if (_audioInitialised && _channels[enumValue(ChannelId::music)].isPlaying())
-        {
-            _channels[enumValue(ChannelId::music)].stop();
-        }
-    }
-
-    // 0x0048AC66
-    void playTitleScreenMusic()
-    {
-        auto* channel = getChannel(ChannelId::music);
-        if (channel == nullptr)
-        {
-            return;
-        }
-        if (isTitleMode() && _audioInitialised && _audioIsEnabled && Config::getNew().audio.playTitleMusic)
-        {
-            if (!channel->isPlaying())
-            {
-                auto musicSample = loadMusicSample(PathId::css5);
-                if (channel->load(*musicSample))
-                {
-                    channel->setVolume(-500);
-                    channel->play(true);
-                }
-            }
-        }
-        else
-        {
-            if (channel->isPlaying())
-            {
-                channel->stop();
-            }
-        }
-    }
+    // void stopBackgroundMusic()
+    // merged into Audio::stopMusic
 
     // 0x0048AC2B
-    void stopTitleMusic()
+    // previously void stopTitleMusic()
+    void stopMusic()
     {
         auto* channel = getChannel(ChannelId::music);
-        if (channel == nullptr)
-        {
-            return;
-        }
-        if (channel->isPlaying())
+        if (_audioInitialised && channel != nullptr && channel->isPlaying())
         {
             channel->stop();
         }
