@@ -16,7 +16,7 @@ namespace OpenLoco::Map
     constexpr int16_t kMicroToSmallZStep = 4; // e.g. for comparisons between water and baseZ
     constexpr int16_t kSmallZStep = 4;        // e.g. TileElement::baseZ is a smallZ
     using SmallZ = uint8_t;
-    using MircoZ = uint8_t;
+    using MicroZ = uint8_t;
 
     constexpr coord_t tileFloor(coord_t coord)
     {
