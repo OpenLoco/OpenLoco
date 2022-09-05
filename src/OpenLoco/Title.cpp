@@ -188,7 +188,7 @@ namespace OpenLoco::Title
 
         if (Config::getNew().audio.playTitleMusic)
         {
-            Audio::playMusic(Environment::PathId::css5, -500, true);
+            Audio::playMusic(Environment::PathId::css5, Config::get().volume, true);
         }
     }
 
