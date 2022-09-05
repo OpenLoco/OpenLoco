@@ -437,7 +437,22 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
             return;
 
-        Windows::MapWindow::open();
+        auto mapWindow = WindowManager::find(WindowType::map);
+        if (mapWindow != nullptr)
+        {
+            if (WindowManager::isInFront(mapWindow))
+            {
+                WindowManager::close(mapWindow);
+            }
+            else
+            {
+                WindowManager::bringToFront(mapWindow);
+            }
+        }
+        else
+        {
+            Windows::MapWindow::open();
+        }
     }
 
     // 0x004BF359
