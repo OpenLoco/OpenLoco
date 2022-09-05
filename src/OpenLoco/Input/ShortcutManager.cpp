@@ -12,6 +12,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Windows/Construction/Construction.h"
 #include <array>
+#include <functional>
 #include <unordered_map>
 
 using namespace OpenLoco::Interop;
@@ -299,145 +300,9 @@ namespace OpenLoco::Input::ShortcutManager
         window->invalidate();
     }
 
-    // 0x004BF1C6
-    static void adjustLand()
+    static void toggleWindow(WindowType windowType, std::function<void()> windowOpener)
     {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
-            return;
-
-        Windows::Terraform::openAdjustLand();
-    }
-
-    // 0x004BF1E1
-    static void adjustWater()
-    {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
-            return;
-
-        Windows::Terraform::openAdjustWater();
-    }
-
-    // 0x004BF1FC
-    static void plantTrees()
-    {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
-            return;
-
-        Windows::Terraform::openPlantTrees();
-    }
-
-    // 0x004BF217
-    static void bulldozeArea()
-    {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
-            return;
-
-        Windows::Terraform::openClearArea();
-    }
-
-    // 0x004BF232
-    static void buildTracks()
-    {
-        if (isEditorMode())
-            return;
-
-        if (LastGameOptionManager::getLastRailRoad() == LastGameOptionManager::kNoLastOption)
-            return;
-
-        Windows::Construction::openWithFlags(LastGameOptionManager::getLastRailRoad());
-    }
-
-    // 0x004BF24F
-    static void buildRoads()
-    {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
-            return;
-
-        if (LastGameOptionManager::getLastRoad() == LastGameOptionManager::kNoLastOption)
-            return;
-
-        Windows::Construction::openWithFlags(LastGameOptionManager::getLastRoad());
-    }
-
-    // 0x004BF276
-    static void buildAirports()
-    {
-        if (isEditorMode())
-            return;
-
-        if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
-            return;
-
-        Windows::Construction::openWithFlags(1 << 31);
-    }
-
-    // 0x004BF295
-    static void buildShipPorts()
-    {
-        if (isEditorMode())
-            return;
-
-        if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
-            return;
-
-        Windows::Construction::openWithFlags(1 << 30);
-    }
-
-    // 0x004BF2B4
-    static void buildNewVehicles()
-    {
-        if (isEditorMode())
-            return;
-
-        if (LastGameOptionManager::getLastBuildVehiclesOption() == LastGameOptionManager::kNoLastOption)
-            return;
-
-        Windows::BuildVehicle::open(LastGameOptionManager::getLastBuildVehiclesOption(), 1 << 31);
-    }
-
-    // 0x004BF2D1
-    static void showVehiclesList()
-    {
-        if (isEditorMode())
-            return;
-
-        Windows::VehicleList::open(CompanyManager::getControllingId(), LastGameOptionManager::getLastVehicleType());
-    }
-
-    // 0x004BF2F0
-    static void showStationsList()
-    {
-        if (isEditorMode())
-            return;
-
-        Windows::StationList::open(CompanyManager::getControllingId(), 0);
-    }
-
-    // 0x004BF308
-    static void showTownsList()
-    {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
-            return;
-
-        Windows::TownList::open();
-    }
-
-    // 0x004BF323
-    static void showIndustriesList()
-    {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
-            return;
-
-        Windows::IndustryList::open();
-    }
-
-    // 0x004BF33E
-    static void showMap()
-    {
-        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
-            return;
-
-        auto mapWindow = WindowManager::find(WindowType::map);
+        auto mapWindow = WindowManager::find(windowType);
         if (mapWindow != nullptr)
         {
             if (WindowManager::isInFront(mapWindow))
@@ -451,8 +316,152 @@ namespace OpenLoco::Input::ShortcutManager
         }
         else
         {
-            Windows::MapWindow::open();
+            windowOpener();
         }
+    }
+
+    // 0x004BF1C6
+    static void adjustLand()
+    {
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+            return;
+
+        toggleWindow(WindowType::terraform, Windows::Terraform::openAdjustLand);
+    }
+
+    // 0x004BF1E1
+    static void adjustWater()
+    {
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+            return;
+
+        toggleWindow(WindowType::terraform, Windows::Terraform::openAdjustWater);
+    }
+
+    // 0x004BF1FC
+    static void plantTrees()
+    {
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+            return;
+
+        toggleWindow(WindowType::terraform, Windows::Terraform::openPlantTrees);
+    }
+
+    // 0x004BF217
+    static void bulldozeArea()
+    {
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+            return;
+
+        toggleWindow(WindowType::terraform, Windows::Terraform::openClearArea);
+    }
+
+    // 0x004BF232
+    static void buildTracks()
+    {
+        if (isEditorMode())
+            return;
+
+        if (LastGameOptionManager::getLastRailRoad() == LastGameOptionManager::kNoLastOption)
+            return;
+
+        toggleWindow(WindowType::construction, std::bind(Windows::Construction::openWithFlags, LastGameOptionManager::getLastRailRoad()));
+    }
+
+    // 0x004BF24F
+    static void buildRoads()
+    {
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+            return;
+
+        if (LastGameOptionManager::getLastRoad() == LastGameOptionManager::kNoLastOption)
+            return;
+
+        toggleWindow(WindowType::construction, std::bind(Windows::Construction::openWithFlags, LastGameOptionManager::getLastRoad()));
+    }
+
+    // 0x004BF276
+    static void buildAirports()
+    {
+        if (isEditorMode())
+            return;
+
+        if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
+            return;
+
+        toggleWindow(WindowType::construction, std::bind(Windows::Construction::openWithFlags, (1 << 31)));
+    }
+
+    // 0x004BF295
+    static void buildShipPorts()
+    {
+        if (isEditorMode())
+            return;
+
+        if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
+            return;
+
+        toggleWindow(WindowType::construction, std::bind(Windows::Construction::openWithFlags, (1 << 30)));
+    }
+
+    // 0x004BF2B4
+    static void buildNewVehicles()
+    {
+        if (isEditorMode())
+            return;
+
+        if (LastGameOptionManager::getLastBuildVehiclesOption() == LastGameOptionManager::kNoLastOption)
+            return;
+
+        toggleWindow(WindowType::buildVehicle, std::bind(Windows::BuildVehicle::open, LastGameOptionManager::getLastBuildVehiclesOption(), (1 << 31)));
+    }
+
+    // 0x004BF2D1
+    static void showVehiclesList()
+    {
+        if (isEditorMode())
+            return;
+
+        toggleWindow(WindowType::vehicleList, std::bind(Windows::VehicleList::open, CompanyManager::getControllingId(), LastGameOptionManager::getLastVehicleType()));
+    }
+
+    // 0x004BF2F0
+    static void showStationsList()
+    {
+        if (isEditorMode())
+            return;
+
+        Windows::StationList::open(CompanyManager::getControllingId(), 0);
+
+        Window* (*stationOpenFnc)(CompanyId, uint8_t) = &Windows::StationList::open; // arcane syntax taken from https://en.cppreference.com/w/cpp/language/overloaded_address, any improvements welcome
+        toggleWindow(WindowType::stationList, std::bind(stationOpenFnc, CompanyManager::getControllingId(), 0));
+    }
+
+    // 0x004BF308
+    static void showTownsList()
+    {
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+            return;
+
+        toggleWindow(WindowType::townList, Windows::TownList::open);
+    }
+
+    // 0x004BF323
+    static void showIndustriesList()
+    {
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+            return;
+
+        toggleWindow(WindowType::industryList, Windows::IndustryList::open);
+    }
+
+    // 0x004BF33E
+    static void showMap()
+    {
+        if (isEditorMode() && S5::getOptions().editorStep == EditorController::Step::objectSelection)
+            return;
+
+        toggleWindow(WindowType::map, Windows::MapWindow::open);
     }
 
     // 0x004BF359
@@ -461,7 +470,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        Ui::Windows::CompanyList::open();
+        toggleWindow(WindowType::companyList, Windows::CompanyList::open);
     }
 
     // 0x004BF36A
@@ -470,7 +479,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        Ui::Windows::CompanyWindow::open(CompanyManager::getControllingId());
+        toggleWindow(WindowType::company, std::bind(Windows::CompanyWindow::open, CompanyManager::getControllingId()));
     }
 
     // 0x004BF382
@@ -479,7 +488,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        Windows::CompanyWindow::openFinances(CompanyManager::getControllingId());
+        toggleWindow(WindowType::company, std::bind(Windows::CompanyWindow::openFinances, CompanyManager::getControllingId()));
     }
 
     // 0x004BF39A
@@ -488,7 +497,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        Windows::MessageWindow::open();
+        toggleWindow(WindowType::messages, Windows::MessageWindow::open);
     }
 
     // 0x004BF3AB
@@ -503,15 +512,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        auto window = WindowManager::find(WindowType::news);
-        if (window)
-        {
-            Windows::NewsWindow::close(window);
-        }
-        else
-        {
-            Windows::NewsWindow::openLastMessage();
-        }
+        toggleWindow(WindowType::news, Windows::NewsWindow::openLastMessage);
     }
 
     // 0x004BF3DC
