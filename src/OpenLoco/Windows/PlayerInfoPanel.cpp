@@ -24,7 +24,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
-    static const Ui::Size windowSize = { 140, 27 };
+    static constexpr Ui::Size windowSize = { 140, 27 };
 
     namespace Widx
     {

@@ -1525,8 +1525,8 @@ namespace OpenLoco::Gfx
         getDrawingEngine().drawDirtyBlocks();
     }
 
-    loco_global<char[512], 0x0112CC04> byte_112CC04;
-    loco_global<char[512], 0x0112CE04> byte_112CE04;
+    loco_global<char[512], 0x0112CC04> _byte_112CC04;
+    loco_global<char[512], 0x0112CE04> _byte_112CE04;
 
     // 0x004CF63B
     void render()
@@ -1534,8 +1534,8 @@ namespace OpenLoco::Gfx
         char backup1[512] = { 0 };
         char backup2[512] = { 0 };
 
-        std::memcpy(backup1, byte_112CC04, 512);
-        std::memcpy(backup2, byte_112CE04, 512);
+        std::memcpy(backup1, _byte_112CC04, 512);
+        std::memcpy(backup2, _byte_112CE04, 512);
 
         if (Ui::dirtyBlocksInitialised())
         {
@@ -1556,8 +1556,8 @@ namespace OpenLoco::Gfx
             //            sub_4058F5();
         }
 
-        std::memcpy(byte_112CC04, backup1, 512);
-        std::memcpy(byte_112CE04, backup2, 512);
+        std::memcpy(_byte_112CC04, backup1, 512);
+        std::memcpy(_byte_112CE04, backup2, 512);
     }
 
     void redrawScreenRect(Rect rect)

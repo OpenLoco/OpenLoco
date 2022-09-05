@@ -89,7 +89,7 @@ struct PaletteEntry
 };
 #pragma pack(pop)
 using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
-static Interop::loco_global<SetPaletteFunc, 0x0052524C> set_palette_callback;
+static Interop::loco_global<SetPaletteFunc, 0x0052524C> _set_palette_callback;
 
 #ifdef _NO_LOCO_WIN32_
 FORCE_ALIGN_ARG_POINTER

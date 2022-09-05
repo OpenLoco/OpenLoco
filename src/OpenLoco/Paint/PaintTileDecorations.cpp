@@ -802,7 +802,7 @@ namespace OpenLoco::Paint
 
     uint32_t getHeightMarkerImage(const coord_t height)
     {
-        const auto offset = height / Map::kMicroZStep - getGameState().seaLevel + 128;
+        const auto offset = height / Map::kMicroZStep - getGameState().kSeaLevel + 128;
         return kHeightMarkerImages[Config::get().heightMarkerOffset / 0x100][offset];
     }
 }

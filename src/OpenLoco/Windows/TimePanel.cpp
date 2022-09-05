@@ -23,7 +23,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TimePanel
 {
-    static const Ui::Size windowSize = { 145, 27 };
+    static constexpr Ui::Size windowSize = { 145, 27 };
 
     namespace Widx
     {
@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
 
-    loco_global<uint16_t[8], 0x112C826> _common_format_args;
+    loco_global<uint16_t[8], 0x112C826> _commonFormatArgs;
 
     Window* open()
     {
@@ -177,7 +177,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
         Gfx::drawRectInset(*rt, self.x + frame.left + 1, self.y + frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary).u8(), 0x30);
 
-        *(uint32_t*)&_common_format_args[0] = getCurrentDay();
+        *(uint32_t*)&_commonFormatArgs[0] = getCurrentDay();
         string_id format = StringIds::date_daymonthyear;
 
         if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             c = Colour::white;
         }
-        Gfx::drawStringCentred(*rt, self.x + _widgets[Widx::date_btn].mid_x(), self.y + _widgets[Widx::date_btn].top + 1, c, format, &*_common_format_args);
+        Gfx::drawStringCentred(*rt, self.x + _widgets[Widx::date_btn].mid_x(), self.y + _widgets[Widx::date_btn].top + 1, c, format, &*_commonFormatArgs);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         Gfx::drawImage(rt, self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
@@ -244,8 +244,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static void beginSendChatMessage(Window* self)
     {
-        _common_format_args[4] = StringIds::empty;
-        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, &*_common_format_args);
+        _commonFormatArgs[4] = StringIds::empty;
+        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, &*_commonFormatArgs);
     }
 
     // 0x0043A72F

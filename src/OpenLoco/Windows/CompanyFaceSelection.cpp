@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static loco_global<CompetitorObject*, 0x0050D15C> _loadedObject; // This could be any type of object
     static loco_global<int32_t, 0x0113E72C> _cursorX;
 
-    static const Ui::Size windowSize = { 400, 272 };
+    static constexpr Ui::Size windowSize = { 400, 272 };
     static constexpr uint32_t rowHeight = 10;
     static WindowEventList events;
 

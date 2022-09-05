@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleLogo
 {
-    static const Ui::Size windowSize = { 298, 170 };
+    static constexpr Ui::Size windowSize = { 298, 170 };
 
     namespace Widx
     {

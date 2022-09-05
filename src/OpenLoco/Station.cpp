@@ -549,12 +549,12 @@ namespace OpenLoco
             if (*buffer != '\0')
                 ptr = StringManager::formatString(ptr, StringIds::waiting_cargo_separator);
 
-            loco_global<uint32_t, 0x112C826> _common_format_args;
-            *_common_format_args = stationCargoStat.quantity;
+            loco_global<uint32_t, 0x112C826> _commonFormatArgs;
+            *_commonFormatArgs = stationCargoStat.quantity;
 
             auto cargo = ObjectManager::get<CargoObject>(cargoId);
             string_id unit_name = stationCargoStat.quantity == 1 ? cargo->unit_name_singular : cargo->unit_name_plural;
-            ptr = StringManager::formatString(ptr, unit_name, &*_common_format_args);
+            ptr = StringManager::formatString(ptr, unit_name, &*_commonFormatArgs);
         }
 
         string_id suffix = *buffer == '\0' ? StringIds::nothing_waiting : StringIds::waiting;

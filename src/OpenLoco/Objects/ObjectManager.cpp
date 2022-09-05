@@ -69,12 +69,12 @@ namespace OpenLoco::ObjectManager
     struct ObjectRepositoryItem
     {
         Object** objects;
-        ObjectEntry2* object_entry_extendeds;
+        ObjectEntry2* objectEntryExtendeds;
     };
     assert_struct_size(ObjectRepositoryItem, 8);
 #pragma pack(pop)
 
-    loco_global<ObjectRepositoryItem[maxObjectTypes], 0x4FE0B8> object_repository;
+    loco_global<ObjectRepositoryItem[maxObjectTypes], 0x4FE0B8> _objectRepository;
 
     loco_global<uint32_t, 0x0050D154> _totalNumImages;
 
@@ -90,12 +90,12 @@ namespace OpenLoco::ObjectManager
 
     static ObjectRepositoryItem& getRepositoryItem(ObjectType type)
     {
-        return object_repository[enumValue(type)];
+        return _objectRepository[enumValue(type)];
     }
 
     ObjectHeader& getHeader(const LoadedObjectHandle& handle)
     {
-        return getRepositoryItem(handle.type).object_entry_extendeds[handle.id];
+        return getRepositoryItem(handle.type).objectEntryExtendeds[handle.id];
     }
 
     Object* getAny(const LoadedObjectHandle& handle)
@@ -152,7 +152,7 @@ namespace OpenLoco::ObjectManager
                 auto obj = typedObjectList.objects[i];
                 if (obj != nullptr && obj != reinterpret_cast<Object*>(-1))
                 {
-                    const auto& objHeader = typedObjectList.object_entry_extendeds[i];
+                    const auto& objHeader = typedObjectList.objectEntryExtendeds[i];
 
                     if (header == objHeader)
                     {
@@ -589,8 +589,8 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        object_repository[enumValue(loadingHeader.getType())].objects[id] = object;
-        auto& extendedHeader = object_repository[enumValue(loadingHeader.getType())].object_entry_extendeds[id];
+        _objectRepository[enumValue(loadingHeader.getType())].objects[id] = object;
+        auto& extendedHeader = _objectRepository[enumValue(loadingHeader.getType())].objectEntryExtendeds[id];
         extendedHeader = ObjectEntry2{
             loadingHeader, data.size()
         };
@@ -624,8 +624,8 @@ namespace OpenLoco::ObjectManager
             return;
         }
         unload(*handle);
-        free(object_repository[enumValue(handle->type)].objects[handle->id]);
-        object_repository[enumValue(handle->type)].objects[handle->id] = reinterpret_cast<Object*>(-1);
+        free(_objectRepository[enumValue(handle->type)].objects[handle->id]);
+        _objectRepository[enumValue(handle->type)].objects[handle->id] = reinterpret_cast<Object*>(-1);
     }
 
     // 0x00471BCE
@@ -702,7 +702,7 @@ namespace OpenLoco::ObjectManager
 
         auto* obj = reinterpret_cast<Object*>(objectData.data());
         getRepositoryItem(type).objects[index] = obj;
-        getRepositoryItem(type).object_entry_extendeds[index] = ObjectEntry2(header, objectData.size());
+        getRepositoryItem(type).objectEntryExtendeds[index] = ObjectEntry2(header, objectData.size());
         return true;
     }
 
@@ -905,7 +905,7 @@ namespace OpenLoco::ObjectManager
 
     size_t getByteLength(const LoadedObjectHandle& handle)
     {
-        return getRepositoryItem(handle.type).object_entry_extendeds[handle.id].dataSize;
+        return getRepositoryItem(handle.type).objectEntryExtendeds[handle.id].dataSize;
     }
 
     template<typename TObject>

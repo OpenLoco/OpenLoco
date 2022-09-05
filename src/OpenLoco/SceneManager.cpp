@@ -8,7 +8,7 @@ namespace OpenLoco
 {
     loco_global<uint16_t, 0x00508F12> _screenAge;
     loco_global<uint16_t, 0x00508F14> _screenFlags;
-    loco_global<uint8_t, 0x00508F17> pausedState;
+    loco_global<uint8_t, 0x00508F17> _pausedState;
     loco_global<GameSpeed, 0x00508F1A> _gameSpeed;
 
     void resetScreenAge()
@@ -93,22 +93,22 @@ namespace OpenLoco
 
     bool isPaused()
     {
-        return pausedState != 0;
+        return _pausedState != 0;
     }
 
     uint8_t getPauseFlags()
     {
-        return pausedState;
+        return _pausedState;
     }
 
     void setPauseFlag(uint8_t value)
     {
-        *pausedState |= value;
+        *_pausedState |= value;
     }
 
     void unsetPauseFlag(uint8_t value)
     {
-        *pausedState &= ~(value);
+        *_pausedState &= ~(value);
     }
 
     GameSpeed getGameSpeed()

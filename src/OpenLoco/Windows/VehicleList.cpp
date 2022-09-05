@@ -27,9 +27,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
-    static const Ui::Size windowSize = { 550, 213 };
-    static const Ui::Size max_dimensions = { 550, 1200 };
-    static const Ui::Size min_dimensions = { 220, 160 };
+    static constexpr Ui::Size windowSize = { 550, 213 };
+    static constexpr Ui::Size max_dimensions = { 550, 1200 };
+    static constexpr Ui::Size min_dimensions = { 220, 160 };
 
     static WindowEventList _events;
 

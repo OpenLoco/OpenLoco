@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 {
-    static const Ui::Size windowSize = { 280, 92 };
+    static constexpr Ui::Size windowSize = { 280, 92 };
 
     enum widx
     {
@@ -40,12 +40,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     {
         window.draw(rt);
 
-        static loco_global<string_id, 0x0112C826> commonFormatArgs;
+        static loco_global<string_id, 0x0112C826> _commonFormatArgs;
         string_id prompt = window.var_846 == 0 ? StringIds::prompt_confirm_generate_landscape : StringIds::prompt_confirm_random_landscape;
-        *commonFormatArgs = prompt;
+        *_commonFormatArgs = prompt;
 
         auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);
-        Gfx::drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*commonFormatArgs);
+        Gfx::drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*_commonFormatArgs);
     }
 
     // 0x004C18E4

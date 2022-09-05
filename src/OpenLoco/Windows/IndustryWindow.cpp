@@ -68,11 +68,11 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Industry
     {
-        static const Ui::Size windowSize = { 223, 137 };
+        static constexpr Ui::Size windowSize = { 223, 137 };
 
-        static const Ui::Size minWindowSize = { 192, 137 };
+        static constexpr Ui::Size minWindowSize = { 192, 137 };
 
-        static const Ui::Size maxWindowSize = { 600, 440 };
+        static constexpr Ui::Size maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -345,9 +345,9 @@ namespace OpenLoco::Ui::Windows::Industry
     namespace Production
     {
 
-        static const Ui::Size minWindowSize = { 299, 282 };
+        static constexpr Ui::Size minWindowSize = { 299, 282 };
 
-        static const Ui::Size maxWindowSize = { 299, 337 };
+        static constexpr Ui::Size maxWindowSize = { 299, 337 };
 
         static WindowEventList events;
 
@@ -380,9 +380,9 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Production2
     {
-        static const Ui::Size minWindowSize = { 299, 282 };
+        static constexpr Ui::Size minWindowSize = { 299, 282 };
 
-        static const Ui::Size maxWindowSize = { 299, 337 };
+        static constexpr Ui::Size maxWindowSize = { 299, 337 };
 
         static Widget widgets[] = {
             commonWidgets(222, 136, StringIds::title_industry_monthly_production),
@@ -420,7 +420,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Transported
     {
-        static const Ui::Size windowSize = { 300, 127 };
+        static constexpr Ui::Size windowSize = { 300, 127 };
 
         static Widget widgets[] = {
             commonWidgets(300, 126, StringIds::title_statistics),

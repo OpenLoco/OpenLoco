@@ -21,16 +21,16 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
-    static const Ui::Size windowSize = { 366, 217 };
-    static const Ui::Size land_tab_size = { 366, 247 };
+    static constexpr Ui::Size kWindowSize = { 366, 217 };
+    static constexpr Ui::Size kLandTabSize = { 366, 247 };
 
     static const uint8_t rowHeight = 22; // CJK: 22
 
-    static loco_global<uint16_t, 0x00525FB2> seaLevel;
+    static loco_global<uint16_t, 0x00525FB2> _seaLevel;
 
     static constexpr size_t maxLandObjects = ObjectManager::getMaxObjects(ObjectType::land);
 
-    static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
+    static loco_global<uint16_t[10], 0x0112C826> _commonFormatArgs;
 
     namespace Common
     {
@@ -186,7 +186,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            commonFormatArgs[0] = S5::getOptions().scenarioStartYear;
+            _commonFormatArgs[0] = S5::getOptions().scenarioStartYear;
 
             if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) == 0)
             {
@@ -302,7 +302,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // Start of 0x0043DAEA
         if (window == nullptr)
         {
-            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, windowSize, 0, &Options::events);
+            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, kWindowSize, 0, &Options::events);
             window->widgets = Options::widgets;
             window->enabledWidgets = Options::enabled_widgets;
             window->number = 0;
@@ -316,8 +316,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
         // End of 0x0043DAEA
 
-        window->width = windowSize.width;
-        window->height = windowSize.height;
+        window->width = kWindowSize.width;
+        window->height = kWindowSize.height;
 
         window->invalidate();
 
@@ -437,16 +437,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Gfx::drawImage(&rt, 2, yPos + 1, imageId);
 
                 // Draw land description.
-                commonFormatArgs[0] = landObject->name;
-                Gfx::drawStringLeftClipped(rt, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*commonFormatArgs);
+                _commonFormatArgs[0] = landObject->name;
+                Gfx::drawStringLeftClipped(rt, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*_commonFormatArgs);
 
                 // Draw rectangle.
                 Gfx::fillRectInset(rt, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary).u8(), 0b110000);
 
                 // Draw current distribution setting.
                 const string_id distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
-                commonFormatArgs[0] = distributionId;
-                Gfx::drawStringLeftClipped(rt, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
+                _commonFormatArgs[0] = distributionId;
+                Gfx::drawStringLeftClipped(rt, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
 
                 // Draw rectangle (knob).
                 const uint8_t flags = window.rowHover == i ? 0b110000 : 0;
@@ -526,11 +526,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             switch (widgetIndex)
             {
                 case widx::sea_level_up:
-                    *seaLevel = std::min<int8_t>(*seaLevel + 1, Scenario::max_sea_level);
+                    *_seaLevel = std::min<int8_t>(*_seaLevel + 1, Scenario::max_sea_level);
                     break;
 
                 case widx::sea_level_down:
-                    *seaLevel = std::max<int8_t>(Scenario::min_sea_level, *seaLevel - 1);
+                    *_seaLevel = std::max<int8_t>(Scenario::min_sea_level, *_seaLevel - 1);
                     break;
 
                 case widx::min_land_height_up:
@@ -653,10 +653,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            commonFormatArgs[0] = *seaLevel;
+            _commonFormatArgs[0] = *_seaLevel;
             auto& options = S5::getOptions();
-            commonFormatArgs[1] = options.minLandHeight;
-            commonFormatArgs[2] = options.hillDensity;
+            _commonFormatArgs[1] = options.minLandHeight;
+            _commonFormatArgs[2] = options.hillDensity;
 
             window.widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
             window.widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
@@ -946,14 +946,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Common::prepareDraw(window);
 
             auto& options = S5::getOptions();
-            commonFormatArgs[0] = options.numberOfForests;
-            commonFormatArgs[1] = options.minForestRadius;
-            commonFormatArgs[2] = options.maxForestRadius;
-            commonFormatArgs[3] = options.minForestDensity * 14;
-            commonFormatArgs[4] = options.maxForestDensity * 14;
-            commonFormatArgs[5] = options.numberRandomTrees;
-            commonFormatArgs[6] = options.minAltitudeForTrees;
-            commonFormatArgs[7] = options.maxAltitudeForTrees;
+            _commonFormatArgs[0] = options.numberOfForests;
+            _commonFormatArgs[1] = options.minForestRadius;
+            _commonFormatArgs[2] = options.maxForestRadius;
+            _commonFormatArgs[3] = options.minForestDensity * 14;
+            _commonFormatArgs[4] = options.maxForestDensity * 14;
+            _commonFormatArgs[5] = options.numberRandomTrees;
+            _commonFormatArgs[6] = options.minAltitudeForTrees;
+            _commonFormatArgs[7] = options.maxAltitudeForTrees;
         }
 
         static void initEvents()
@@ -1091,7 +1091,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            commonFormatArgs[0] = S5::getOptions().numberOfTowns;
+            _commonFormatArgs[0] = S5::getOptions().numberOfTowns;
 
             widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize];
         }
@@ -1314,9 +1314,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             window->invalidate();
 
-            const Ui::Size* newSize = &windowSize;
+            const Ui::Size* newSize = &kWindowSize;
             if (widgetIndex == widx::tab_land)
-                newSize = &land_tab_size;
+                newSize = &kLandTabSize;
 
             window->setSize(*newSize);
 

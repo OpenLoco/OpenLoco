@@ -21,8 +21,8 @@ using namespace OpenLoco::Map;
 namespace OpenLoco::GameCommands
 {
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
-    static loco_global<uint8_t, 0x00508F08> game_command_nest_level;
-    static loco_global<uint8_t, 0x00508F17> paused_state;
+    static loco_global<uint8_t, 0x00508F08> _gameCommandNestLevel;
+    static loco_global<uint8_t, 0x00508F17> _pausedState;
 
     static uint16_t _gameCommandFlags;
 
@@ -178,7 +178,7 @@ namespace OpenLoco::GameCommands
         uint32_t esi = static_cast<uint32_t>(command);
 
         _gameCommandFlags = regs.bx;
-        if (game_command_nest_level != 0)
+        if (_gameCommandNestLevel != 0)
             return loc_4313C6(esi, regs);
 
         if ((flags & Flags::apply) == 0)
@@ -213,7 +213,7 @@ namespace OpenLoco::GameCommands
         {
             if (getPauseFlags() & 1)
             {
-                paused_state = paused_state ^ 1;
+                _pausedState = _pausedState ^ 1;
                 WindowManager::invalidate(WindowType::timeToolbar);
                 Audio::unpauseSound();
                 Ui::Windows::PlayerInfoPanel::invalidateFrame();
@@ -260,7 +260,7 @@ namespace OpenLoco::GameCommands
     {
         uint16_t flags = regs.bx;
         _gGameCommandErrorText = StringIds::null;
-        game_command_nest_level++;
+        _gameCommandNestLevel++;
 
         uint16_t flagsBackup = _gameCommandFlags;
         registers fnRegs1 = regs;
@@ -274,7 +274,7 @@ namespace OpenLoco::GameCommands
             if (isEditorMode())
                 ebx = 0;
 
-            if (game_command_nest_level == 1)
+            if (_gameCommandNestLevel == 1)
             {
                 if ((_gameCommandFlags & Flags::flag_2) == 0
                     && (_gameCommandFlags & Flags::flag_6) == 0
@@ -296,14 +296,14 @@ namespace OpenLoco::GameCommands
             }
             else
             {
-                game_command_nest_level--;
+                _gameCommandNestLevel--;
                 return ebx;
             }
         }
 
         if ((flags & 1) == 0)
         {
-            game_command_nest_level--;
+            _gameCommandNestLevel--;
             return ebx;
         }
 
@@ -328,8 +328,8 @@ namespace OpenLoco::GameCommands
             ebx = ebx2;
         }
 
-        game_command_nest_level--;
-        if (game_command_nest_level != 0)
+        _gameCommandNestLevel--;
+        if (_gameCommandNestLevel != 0)
             return ebx;
 
         if ((flagsBackup2 & Flags::flag_5) != 0)
@@ -349,8 +349,8 @@ namespace OpenLoco::GameCommands
 
     static uint32_t loc_4314EA()
     {
-        game_command_nest_level--;
-        if (game_command_nest_level != 0)
+        _gameCommandNestLevel--;
+        if (_gameCommandNestLevel != 0)
             return GameCommands::FAILURE;
 
         if (_updatingCompanyId != CompanyManager::getControllingId())

@@ -229,9 +229,9 @@ namespace OpenLoco::Map
         uint8_t slopeCorners() const { return _slope & 0x0F; }
         uint8_t slope() const { return _slope & 0x1F; }
         uint8_t var_4_E0() const { return _slope & 0xE0; }
-        MircoZ water() const { return _water & 0x1F; }
+        MicroZ water() const { return _water & 0x1F; }
         int16_t waterHeight() const { return (_water & 0x1F) * kMicroZStep; }
-        void setWater(MircoZ level) { _water = (_water & 0xE0) | (level & 0x1F); };
+        void setWater(MicroZ level) { _water = (_water & 0xE0) | (level & 0x1F); };
         uint8_t terrain() const { return _terrain & 0x1F; }
         void setTerrain(uint8_t terrain)
         {

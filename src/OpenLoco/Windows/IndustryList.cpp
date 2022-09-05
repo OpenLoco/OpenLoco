@@ -26,7 +26,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::IndustryList
 {
-    static loco_global<currency32_t, 0x00E0C39C> dword_E0C39C;
+    static loco_global<currency32_t, 0x00E0C39C> _dword_E0C39C;
     static loco_global<bool, 0x00E0C3D9> _industryGhostPlaced;
     static loco_global<Map::Pos2, 0x00E0C3C2> _industryGhostPos;
     static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
@@ -69,9 +69,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace IndustryList
     {
-        static const Ui::Size windowSize = { 600, 197 };
-        static const Ui::Size maxDimensions = { 600, 900 };
-        static const Ui::Size minDimensions = { 192, 100 };
+        static constexpr Ui::Size windowSize = { 600, 197 };
+        static constexpr Ui::Size maxDimensions = { 600, 900 };
+        static constexpr Ui::Size minDimensions = { 192, 100 };
 
         static const uint8_t rowHeight = 10;
 
@@ -578,7 +578,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
     namespace NewIndustries
     {
 
-        static const Ui::Size windowSize = { 578, 172 };
+        static constexpr Ui::Size windowSize = { 578, 172 };
 
         static const uint8_t rowHeight = 112;
 
@@ -646,9 +646,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
             auto industryCost = 0;
 
             if (self.var_846 == 0xFFFF)
-                industryCost = dword_E0C39C;
+                industryCost = _dword_E0C39C;
 
-            if ((self.var_846 == 0xFFFF && dword_E0C39C == static_cast<currency32_t>(0x80000000)) || self.var_846 != 0xFFFF)
+            if ((self.var_846 == 0xFFFF && _dword_E0C39C == static_cast<currency32_t>(0x80000000)) || self.var_846 != 0xFFFF)
             {
                 industryCost = Economy::getInflationAdjustedCost(industryObj->cost_factor, industryObj->cost_index, 3);
             }
@@ -714,7 +714,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self.savedView.mapX = -16;
-                    dword_E0C39C = 0x80000000;
+                    _dword_E0C39C = 0x80000000;
                     self.invalidate();
                     break;
                 }
@@ -878,23 +878,23 @@ namespace OpenLoco::Ui::Windows::IndustryList
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
             Gfx::clearSingle(rt, shade);
 
-            loco_global<uint16_t, 0x00E0C3C6> word_E0C3C6;
+            loco_global<uint16_t, 0x00E0C3C6> _word_E0C3C6;
             uint16_t xPos = 0;
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
             {
-                word_E0C3C6 = 0xFFFF;
+                _word_E0C3C6 = 0xFFFF;
                 if (self.rowInfo[i] != self.rowHover)
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        word_E0C3C6 = AdvancedColour::translucent_flag;
+                        _word_E0C3C6 = AdvancedColour::translucent_flag;
                         Gfx::drawRectInset(rt, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucent_flag);
                     }
                 }
                 else
                 {
-                    word_E0C3C6 = AdvancedColour::translucent_flag | AdvancedColour::outline_flag;
+                    _word_E0C3C6 = AdvancedColour::translucent_flag | AdvancedColour::outline_flag;
                     Gfx::drawRectInset(rt, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucent_flag | AdvancedColour::outline_flag));
                 }
 
@@ -1013,9 +1013,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             removeIndustryGhost();
             auto cost = placeIndustryGhost(*placementArgs);
-            if (cost != dword_E0C39C)
+            if (cost != _dword_E0C39C)
             {
-                dword_E0C39C = cost;
+                _dword_E0C39C = cost;
                 self.invalidate();
             }
         }
@@ -1136,7 +1136,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::showGridlines();
             _industryGhostPlaced = false;
-            dword_E0C39C = 0x80000000;
+            _dword_E0C39C = 0x80000000;
 
             self->var_83C = 0;
             self->rowHover = -1;

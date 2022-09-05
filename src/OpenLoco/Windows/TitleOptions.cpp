@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleOptions
 {
-    static const Ui::Size windowSize = { 60, 15 };
+    static constexpr Ui::Size windowSize = { 60, 15 };
 
     namespace Widx
     {

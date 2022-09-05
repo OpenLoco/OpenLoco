@@ -301,7 +301,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     static const Ui::Point objectPreviewOffset = { 56, 56 };
-    static const Ui::Size objectPreviewSize = { 112, 112 };
+    static constexpr Ui::Size objectPreviewSize = { 112, 112 };
     static const uint8_t descriptionRowHeight = 10;
 
     template<typename T>

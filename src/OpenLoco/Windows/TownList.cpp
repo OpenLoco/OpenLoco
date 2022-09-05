@@ -25,7 +25,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TownList
 {
-    static loco_global<currency32_t, 0x01135C34> dword_1135C34;
+    static loco_global<currency32_t, 0x01135C34> _dword_1135C34;
     static loco_global<bool, 0x01135C60> _buildingGhostPlaced;
     static loco_global<Map::Pos3, 0x01135C50> _buildingGhostPos;
     static loco_global<Colour, 0x01135C61> _buildingColour;
@@ -73,9 +73,9 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace TownList
     {
-        static const Ui::Size windowSize = { 600, 197 };
-        static const Ui::Size maxDimensions = { 600, 900 };
-        static const Ui::Size minDimensions = { 192, 100 };
+        static constexpr Ui::Size windowSize = { 600, 197 };
+        static constexpr Ui::Size maxDimensions = { 600, 900 };
+        static constexpr Ui::Size minDimensions = { 192, 100 };
 
         static const uint8_t rowHeight = 10;
 
@@ -589,7 +589,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace BuildTowns
     {
-        static const Ui::Size windowSize = { 220, 87 };
+        static constexpr Ui::Size windowSize = { 220, 87 };
 
         enum widx
         {
@@ -788,7 +788,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace BuildBuildings
     {
-        static const Ui::Size windowSize = { 600, 172 };
+        static constexpr Ui::Size windowSize = { 600, 172 };
 
         static const uint8_t rowHeight = 112;
 
@@ -1083,9 +1083,9 @@ namespace OpenLoco::Ui::Windows::TownList
 
             removeBuildingGhost();
             auto cost = placeBuildingGhost(*placementArgs);
-            if (cost != dword_1135C34)
+            if (cost != _dword_1135C34)
             {
-                dword_1135C34 = cost;
+                _dword_1135C34 = cost;
                 self.invalidate();
             }
         }
@@ -1270,7 +1270,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self.savedView.mapX = -16;
-                    dword_1135C34 = GameCommands::FAILURE;
+                    _dword_1135C34 = GameCommands::FAILURE;
                     _buildingVariation = 0;
                     self.invalidate();
                     break;
@@ -1386,9 +1386,9 @@ namespace OpenLoco::Ui::Windows::TownList
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::showGridlines();
 
-            static loco_global<uint8_t, 0x01135C60> byte_1135C60;
-            byte_1135C60 = 0;
-            dword_1135C34 = GameCommands::FAILURE;
+            static loco_global<uint8_t, 0x01135C60> _byte_1135C60;
+            _byte_1135C60 = 0;
+            _dword_1135C34 = GameCommands::FAILURE;
             self->var_83C = 0;
             self->rowHover = -1;
             self->var_846 = -1;

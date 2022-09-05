@@ -31,7 +31,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 {
-    static loco_global<uint8_t, 0x009C870C> last_town_option;
+    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
 
     namespace Widx
     {
@@ -164,8 +164,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
             case 5:
             {
-                loco_global<uint8_t, 0x00508F16> screenshot_countdown;
-                screenshot_countdown = 10;
+                loco_global<uint8_t, 0x00508F16> _screenshotCountdown;
+                _screenshotCountdown = 10;
                 break;
             }
 
@@ -333,7 +333,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window.widgets[Widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
         window.widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
 
-        if (last_town_option == 0)
+        if (_lastTownOption == 0)
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
         else
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);

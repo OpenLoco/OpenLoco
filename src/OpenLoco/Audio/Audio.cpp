@@ -430,8 +430,8 @@ namespace OpenLoco::Audio
         }
         else
         {
-            loco_global<int32_t[32], 0x004FEAB8> unk_4FEAB8;
-            return unk_4FEAB8[(int32_t)id];
+            loco_global<int32_t[32], 0x004FEAB8> _unk_4FEAB8;
+            return _unk_4FEAB8[(int32_t)id];
         }
     }
 
@@ -479,7 +479,7 @@ namespace OpenLoco::Audio
 
     bool shouldSoundLoop(SoundId id)
     {
-        loco_global<uint8_t[64], 0x0050D514> unk_50D514;
+        loco_global<uint8_t[64], 0x0050D514> _unk_50D514;
         if (isObjectSoundId(id))
         {
             auto obj = getSoundObject(id);
@@ -487,7 +487,7 @@ namespace OpenLoco::Audio
         }
         else
         {
-            return unk_50D514[(int32_t)id * 2] != 0;
+            return _unk_50D514[(int32_t)id * 2] != 0;
         }
     }
 
