@@ -1122,59 +1122,35 @@ namespace OpenLoco::Audio
 
             // Load info on the song to play.
             const auto& mi = kMusicInfo[_currentSong];
-            auto buffer = loadMusicSample(mi.pathId);
-            if (channel->load(*buffer))
-            {
-                channel->setVolume(Config::get().volume);
-                if (!channel->play(false))
-                {
-                    cfg.musicPlaying = 0;
-                }
-            }
-            else
-            {
-                cfg.musicPlaying = 0;
-            }
+            cfg.musicPlaying = playMusic(mi.pathId, cfg.volume, false);
 
             WindowManager::invalidate(WindowType::options);
         }
     }
 
     // 0x0048AC66
-    // void playTitleScreenMusic()
-    // deprecated in favour of Audio::playMusic
-
-    void playMusic(PathId sample, int32_t volume, bool loop)
+    // previously called void playTitleScreenMusic()
+    bool playMusic(PathId sample, int32_t volume, bool loop)
     {
         static PathId currentTrackPathId;
-        if (currentTrackPathId != sample)
-        {
-            currentTrackPathId = sample;
-        }
-        else
-        {
-            return;
-        }
-
-        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled)
-        {
-            return;
-        }
 
         auto* channel = getChannel(ChannelId::music);
-        if (channel == nullptr)
+        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr || currentTrackPathId == sample)
         {
-            return;
+            return false;
         }
 
+        currentTrackPathId = sample;
         channel->stop();
 
         auto musicSample = loadMusicSample(sample);
         if (channel->load(*musicSample))
         {
             channel->setVolume(volume);
-            channel->play(loop);
+            return channel->play(loop);
         }
+
+        return false;
     }
 
     // 0x0048AAD2
@@ -1190,7 +1166,7 @@ namespace OpenLoco::Audio
     // merged into Audio::stopMusic
 
     // 0x0048AC2B
-    // previously void stopTitleMusic()
+    // previously called void stopTitleMusic()
     void stopMusic()
     {
         auto* channel = getChannel(ChannelId::music);
