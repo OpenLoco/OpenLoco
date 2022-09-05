@@ -12,7 +12,6 @@
 #include "../Ui/WindowManager.h"
 #include "../Windows/Construction/Construction.h"
 #include <array>
-#include <functional>
 #include <unordered_map>
 
 using namespace OpenLoco::Interop;
@@ -300,24 +299,32 @@ namespace OpenLoco::Input::ShortcutManager
         window->invalidate();
     }
 
-    static void toggleWindow(WindowType windowType, std::function<void()> windowOpener)
+    static void toggleWindowCore(WindowType windowType, std::function<void()> windowOpener)
     {
-        auto mapWindow = WindowManager::find(windowType);
-        if (mapWindow != nullptr)
+        auto window = WindowManager::find(windowType);
+
+        // window isn't open
+        if (window == nullptr)
         {
-            if (WindowManager::isInFront(mapWindow))
-            {
-                WindowManager::close(mapWindow);
-            }
-            else
-            {
-                WindowManager::bringToFront(mapWindow);
-            }
+            windowOpener();
+            return;
+        }
+
+        // same window, so close it or bring to front
+        if (WindowManager::isInFront(window))
+        {
+            WindowManager::close(window);
         }
         else
         {
-            windowOpener();
+            WindowManager::bringToFront(window);
         }
+    }
+
+    template<typename TFunc, typename... TFuncArgs>
+    static void toggleWindow(WindowType windowType, TFunc windowOpener, TFuncArgs... args)
+    {
+        toggleWindowCore(windowType, std::bind(windowOpener, args...));
     }
 
     // 0x004BF1C6
@@ -365,7 +372,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (LastGameOptionManager::getLastRailRoad() == LastGameOptionManager::kNoLastOption)
             return;
 
-        toggleWindow(WindowType::construction, std::bind(Windows::Construction::openWithFlags, LastGameOptionManager::getLastRailRoad()));
+        toggleWindow(WindowType::construction, Windows::Construction::openWithFlags, LastGameOptionManager::getLastRailRoad());
     }
 
     // 0x004BF24F
@@ -377,7 +384,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (LastGameOptionManager::getLastRoad() == LastGameOptionManager::kNoLastOption)
             return;
 
-        toggleWindow(WindowType::construction, std::bind(Windows::Construction::openWithFlags, LastGameOptionManager::getLastRoad()));
+        toggleWindow(WindowType::construction, Windows::Construction::openWithFlags, LastGameOptionManager::getLastRoad());
     }
 
     // 0x004BF276
@@ -389,7 +396,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
             return;
 
-        toggleWindow(WindowType::construction, std::bind(Windows::Construction::openWithFlags, (1 << 31)));
+        toggleWindow(WindowType::construction, Windows::Construction::openWithFlags, (1 << 31));
     }
 
     // 0x004BF295
@@ -401,7 +408,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
             return;
 
-        toggleWindow(WindowType::construction, std::bind(Windows::Construction::openWithFlags, (1 << 30)));
+        toggleWindow(WindowType::construction, Windows::Construction::openWithFlags, (1 << 30));
     }
 
     // 0x004BF2B4
@@ -413,7 +420,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (LastGameOptionManager::getLastBuildVehiclesOption() == LastGameOptionManager::kNoLastOption)
             return;
 
-        toggleWindow(WindowType::buildVehicle, std::bind(Windows::BuildVehicle::open, LastGameOptionManager::getLastBuildVehiclesOption(), (1 << 31)));
+        toggleWindow(WindowType::buildVehicle, Windows::BuildVehicle::open, LastGameOptionManager::getLastBuildVehiclesOption(), (1 << 31));
     }
 
     // 0x004BF2D1
@@ -422,7 +429,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        toggleWindow(WindowType::vehicleList, std::bind(Windows::VehicleList::open, CompanyManager::getControllingId(), LastGameOptionManager::getLastVehicleType()));
+        toggleWindow(WindowType::vehicleList, Windows::VehicleList::open, CompanyManager::getControllingId(), LastGameOptionManager::getLastVehicleType());
     }
 
     // 0x004BF2F0
@@ -431,10 +438,8 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        Windows::StationList::open(CompanyManager::getControllingId(), 0);
-
         Window* (*stationOpenFnc)(CompanyId, uint8_t) = &Windows::StationList::open; // arcane syntax taken from https://en.cppreference.com/w/cpp/language/overloaded_address, any improvements welcome
-        toggleWindow(WindowType::stationList, std::bind(stationOpenFnc, CompanyManager::getControllingId(), 0));
+        toggleWindow(WindowType::stationList, stationOpenFnc, CompanyManager::getControllingId(), 0);
     }
 
     // 0x004BF308
@@ -479,7 +484,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        toggleWindow(WindowType::company, std::bind(Windows::CompanyWindow::open, CompanyManager::getControllingId()));
+        toggleWindow(WindowType::company, Windows::CompanyWindow::open, CompanyManager::getControllingId());
     }
 
     // 0x004BF382
@@ -488,7 +493,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        toggleWindow(WindowType::company, std::bind(Windows::CompanyWindow::openFinances, CompanyManager::getControllingId()));
+        toggleWindow(WindowType::company, Windows::CompanyWindow::openFinances, CompanyManager::getControllingId());
     }
 
     // 0x004BF39A
