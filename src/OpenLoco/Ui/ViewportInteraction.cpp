@@ -279,15 +279,15 @@ namespace OpenLoco::Ui::ViewportInteraction
     static std::optional<uint32_t> vehicleDistanceFromLocation(const Vehicles::VehicleBase& component, const viewport_pos& targetPosition)
     {
         ViewportRect rect = {
-            component.sprite_left,
-            component.sprite_top,
-            component.sprite_bottom,
-            component.sprite_right
+            component.spriteLeft,
+            component.spriteTop,
+            component.spriteBottom,
+            component.spriteRight
         };
         if (rect.contains(targetPosition))
         {
-            uint32_t xDiff = std::abs(targetPosition.x - (component.sprite_right + component.sprite_left) / 2);
-            uint32_t yDiff = std::abs(targetPosition.y - (component.sprite_top + component.sprite_bottom) / 2);
+            uint32_t xDiff = std::abs(targetPosition.x - (component.spriteRight + component.spriteLeft) / 2);
+            uint32_t yDiff = std::abs(targetPosition.y - (component.spriteTop + component.spriteBottom) / 2);
             return xDiff + yDiff;
         }
         return {};
@@ -295,7 +295,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
     static void checkAndSetNearestVehicle(uint32_t& nearestDistance, Vehicles::VehicleBase*& nearestVehicle, Vehicles::VehicleBase& checkVehicle, const viewport_pos& targetPosition)
     {
-        if (checkVehicle.sprite_left != Location::null)
+        if (checkVehicle.spriteLeft != Location::null)
         {
             auto distanceRes = vehicleDistanceFromLocation(checkVehicle, targetPosition);
             if (distanceRes)

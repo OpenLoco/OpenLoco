@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 {
-    static const Ui::Size window_size = { 280, 92 };
+    static const Ui::Size windowSize = { 280, 92 };
 
     enum widx
     {
@@ -82,7 +82,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         auto window = WindowManager::bringToFront(WindowType::landscapeGenerationConfirm, 0);
         if (window == nullptr)
         {
-            window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, window_size, 0, &events);
+            window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, windowSize, 0, &events);
             window->widgets = widgets;
             window->enabledWidgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
             window->initScrollWidgets();

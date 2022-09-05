@@ -21,7 +21,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
-    static const Ui::Size window_size = { 366, 217 };
+    static const Ui::Size windowSize = { 366, 217 };
     static const Ui::Size land_tab_size = { 366, 247 };
 
     static const uint8_t rowHeight = 22; // CJK: 22
@@ -302,7 +302,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // Start of 0x0043DAEA
         if (window == nullptr)
         {
-            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, window_size, 0, &Options::events);
+            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, windowSize, 0, &Options::events);
             window->widgets = Options::widgets;
             window->enabledWidgets = Options::enabled_widgets;
             window->number = 0;
@@ -316,8 +316,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
         // End of 0x0043DAEA
 
-        window->width = window_size.width;
-        window->height = window_size.height;
+        window->width = windowSize.width;
+        window->height = windowSize.height;
 
         window->invalidate();
 
@@ -1314,7 +1314,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             window->invalidate();
 
-            const Ui::Size* newSize = &window_size;
+            const Ui::Size* newSize = &windowSize;
             if (widgetIndex == widx::tab_land)
                 newSize = &land_tab_size;
 

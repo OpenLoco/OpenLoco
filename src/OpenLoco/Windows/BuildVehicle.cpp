@@ -30,7 +30,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-    static const Ui::Size window_size = { 380, 233 };
+    static const Ui::Size windowSize = { 380, 233 };
 
     enum widx
     {
@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static Window* create(CompanyId company)
     {
         initEvents();
-        auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, WindowFlags::flag_11, &_events);
+        auto window = WindowManager::createWindow(WindowType::buildVehicle, windowSize, WindowFlags::flag_11, &_events);
         window->widgets = _widgets;
         window->number = enumValue(company);
         window->enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
@@ -303,8 +303,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         else
         {
             window = create(CompanyManager::getControllingId());
-            window->width = window_size.width;
-            window->height = window_size.height;
+            window->width = windowSize.width;
+            window->height = windowSize.height;
             _buildTargetVehicle = -1;
             if (!tabMode)
             {

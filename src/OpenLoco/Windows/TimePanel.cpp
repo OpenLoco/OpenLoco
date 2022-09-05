@@ -23,7 +23,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TimePanel
 {
-    static const Ui::Size window_size = { 145, 27 };
+    static const Ui::Size windowSize = { 145, 27 };
 
     namespace Widx
     {
@@ -86,8 +86,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
         auto window = WindowManager::createWindow(
             WindowType::timeToolbar,
-            Ui::Point(Ui::width() - window_size.width, Ui::height() - window_size.height),
-            Ui::Size(window_size.width, window_size.height),
+            Ui::Point(Ui::width() - windowSize.width, Ui::height() - windowSize.height),
+            Ui::Size(windowSize.width, windowSize.height),
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             &_events);
         window->widgets = _widgets;

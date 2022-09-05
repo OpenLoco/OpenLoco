@@ -19,7 +19,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Localisation
 {
     static loco_global<char* [0xFFFF], 0x005183FC> _strings;
-    static std::vector<std::unique_ptr<char[]>> _strings_owner;
+    static std::vector<std::unique_ptr<char[]>> _stringsOwner;
 
     static std::map<std::string, uint8_t, std::less<>> basicCommands = {
         { "INT16_1DP", ControlCodes::int16_decimals },
@@ -245,8 +245,8 @@ namespace OpenLoco::Localisation
                     continue;
 
                 std::string new_string = it->second.as<std::string>();
-                _strings_owner.emplace_back(readString(new_string.data(), new_string.length()));
-                char* processed_string = _strings_owner.back().get();
+                _stringsOwner.emplace_back(readString(new_string.data(), new_string.length()));
+                char* processed_string = _stringsOwner.back().get();
 
                 if (processed_string != nullptr)
                 {
@@ -285,6 +285,6 @@ namespace OpenLoco::Localisation
 
     void unloadLanguageFile()
     {
-        _strings_owner.clear();
+        _stringsOwner.clear();
     }
 }

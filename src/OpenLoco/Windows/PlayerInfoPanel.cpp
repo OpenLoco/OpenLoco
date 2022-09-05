@@ -24,7 +24,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
-    static const Ui::Size window_size = { 140, 27 };
+    static const Ui::Size windowSize = { 140, 27 };
 
     namespace Widx
     {
@@ -178,8 +178,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
         auto window = WindowManager::createWindow(
             WindowType::playerInfoToolbar,
-            Ui::Point(0, Ui::height() - window_size.height),
-            Ui::Size(window_size.width, window_size.height),
+            Ui::Point(0, Ui::height() - windowSize.height),
+            Ui::Size(windowSize.width, windowSize.height),
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             &_events);
         window->widgets = _widgets;

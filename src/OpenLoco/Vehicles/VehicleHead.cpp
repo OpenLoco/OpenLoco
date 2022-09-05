@@ -1398,7 +1398,7 @@ namespace OpenLoco::Vehicles
         if (vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
         {
             vehicleUpdate_helicopterTargetYaw = targetYaw;
-            targetYaw = sprite_yaw;
+            targetYaw = spriteYaw;
             vehType2->var_5A = 1;
             if (targetZ < position.z)
             {
@@ -1406,17 +1406,17 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (targetYaw != sprite_yaw)
+        if (targetYaw != spriteYaw)
         {
-            if (((targetYaw - sprite_yaw) & 0x3F) > 0x20)
+            if (((targetYaw - spriteYaw) & 0x3F) > 0x20)
             {
-                sprite_yaw--;
+                spriteYaw--;
             }
             else
             {
-                sprite_yaw++;
+                spriteYaw++;
             }
-            sprite_yaw &= 0x3F;
+            spriteYaw &= 0x3F;
         }
 
         Pitch targetPitch = Pitch::flat;
@@ -1453,15 +1453,15 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (targetPitch != sprite_pitch)
+        if (targetPitch != spritePitch)
         {
-            if (targetPitch < sprite_pitch)
+            if (targetPitch < spritePitch)
             {
-                sprite_pitch = Pitch(static_cast<uint8_t>(sprite_pitch) - 1);
+                spritePitch = Pitch(static_cast<uint8_t>(spritePitch) - 1);
             }
             else
             {
-                sprite_pitch = Pitch(static_cast<uint8_t>(sprite_pitch) + 1);
+                spritePitch = Pitch(static_cast<uint8_t>(spritePitch) + 1);
             }
         }
 
@@ -1678,7 +1678,7 @@ namespace OpenLoco::Vehicles
     // 0x004A94A9
     bool VehicleHead::airplaneApproachTarget(uint16_t targetZ)
     {
-        auto _yaw = sprite_yaw;
+        auto _yaw = spriteYaw;
         // Helicopter
         if (vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
         {
@@ -1736,7 +1736,7 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        movePlaneTo(newLoc, sprite_yaw, sprite_pitch);
+        movePlaneTo(newLoc, spriteYaw, spritePitch);
         return true;
     }
 
@@ -2321,16 +2321,16 @@ namespace OpenLoco::Vehicles
         shadow->invalidateSprite();
         auto height = coord_t{ TileManager::getHeight(newLoc) };
         shadow->moveTo({ newLoc.x, newLoc.y, height });
-        shadow->sprite_yaw = newYaw;
-        shadow->sprite_pitch = Pitch::flat;
+        shadow->spriteYaw = newYaw;
+        shadow->spritePitch = Pitch::flat;
         shadow->tileX = 0;
         shadow->invalidateSprite();
 
         auto* body = train.cars.firstCar.body;
         body->invalidateSprite();
         body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
-        body->sprite_yaw = newYaw;
-        body->sprite_pitch = newPitch;
+        body->spriteYaw = newYaw;
+        body->spritePitch = newPitch;
         body->tileX = 0;
         body->invalidateSprite();
     }
@@ -2497,27 +2497,27 @@ namespace OpenLoco::Vehicles
         }
 
         auto targetYaw = calculateYaw4FromVector(position.x - veh2->position.x, position.y - veh2->position.y);
-        if (targetYaw != veh2->sprite_yaw)
+        if (targetYaw != veh2->spriteYaw)
         {
-            if (((targetYaw - veh2->sprite_yaw) & 0x3F) > 0x20)
+            if (((targetYaw - veh2->spriteYaw) & 0x3F) > 0x20)
             {
-                veh2->sprite_yaw--;
+                veh2->spriteYaw--;
             }
             else
             {
-                veh2->sprite_yaw++;
+                veh2->spriteYaw++;
             }
-            veh2->sprite_yaw &= 0x3F;
+            veh2->spriteYaw &= 0x3F;
         }
 
         Vehicle1* veh1 = vehicleUpdate_1;
-        auto [newVeh1Pos, newVeh2Pos] = calculateNextPosition(veh2->sprite_yaw, veh2->position, veh1, veh2->currentSpeed);
+        auto [newVeh1Pos, newVeh2Pos] = calculateNextPosition(veh2->spriteYaw, veh2->position, veh1, veh2->currentSpeed);
 
         veh1->var_4E = newVeh1Pos.x;
         veh1->var_50 = newVeh1Pos.y;
 
         Pos3 newLocation = { newVeh2Pos.x, newVeh2Pos.y, veh2->position.z };
-        moveBoatTo(newLocation, veh2->sprite_yaw, Pitch::flat);
+        moveBoatTo(newLocation, veh2->spriteYaw, Pitch::flat);
 
         return flags;
     }
@@ -2532,8 +2532,8 @@ namespace OpenLoco::Vehicles
         train.veh2->tileX = 0;
         train.cars.firstCar.body->invalidateSprite();
         train.cars.firstCar.body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
-        train.cars.firstCar.body->sprite_yaw = yaw;
-        train.cars.firstCar.body->sprite_pitch = pitch;
+        train.cars.firstCar.body->spriteYaw = yaw;
+        train.cars.firstCar.body->spritePitch = pitch;
         train.cars.firstCar.body->tileX = 0;
         train.cars.firstCar.body->invalidateSprite();
     }

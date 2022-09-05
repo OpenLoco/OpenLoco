@@ -248,38 +248,38 @@ namespace OpenLoco::Vehicles
         const auto* vehObj = getObject();
         if (vehObj->bodySprites[objectSpriteType].flags & BodySpriteFlags::hasSteepSprites)
         {
-            sprite_pitch = updateSpritePitchSteepSlopes(distanceBetweenBogies, bogieDifference.z);
+            spritePitch = updateSpritePitchSteepSlopes(distanceBetweenBogies, bogieDifference.z);
         }
         else
         {
-            sprite_pitch = updateSpritePitch(distanceBetweenBogies, bogieDifference.z);
+            spritePitch = updateSpritePitch(distanceBetweenBogies, bogieDifference.z);
         }
 
         // If the sprite_pitch is a transition there is always 4 bits for yaw
-        if (static_cast<uint8_t>(sprite_pitch) & 1)
+        if (static_cast<uint8_t>(spritePitch) & 1)
         {
-            sprite_yaw = calculateYaw1FromVector(bogieDifference.x, bogieDifference.y);
+            spriteYaw = calculateYaw1FromVector(bogieDifference.x, bogieDifference.y);
         }
         else
         {
             auto sprite = vehObj->bodySprites[objectSpriteType];
-            uint8_t i = sprite_pitch == Pitch::flat ? sprite.var_0B : sprite.var_0C;
+            uint8_t i = spritePitch == Pitch::flat ? sprite.var_0B : sprite.var_0C;
             switch (i)
             {
                 case 0:
-                    sprite_yaw = calculateYaw0FromVector(bogieDifference.x, bogieDifference.y);
+                    spriteYaw = calculateYaw0FromVector(bogieDifference.x, bogieDifference.y);
                     break;
                 case 1:
-                    sprite_yaw = calculateYaw1FromVector(bogieDifference.x, bogieDifference.y);
+                    spriteYaw = calculateYaw1FromVector(bogieDifference.x, bogieDifference.y);
                     break;
                 case 2:
-                    sprite_yaw = calculateYaw2FromVector(bogieDifference.x, bogieDifference.y);
+                    spriteYaw = calculateYaw2FromVector(bogieDifference.x, bogieDifference.y);
                     break;
                 case 3:
-                    sprite_yaw = calculateYaw3FromVector(bogieDifference.x, bogieDifference.y);
+                    spriteYaw = calculateYaw3FromVector(bogieDifference.x, bogieDifference.y);
                     break;
                 case 4:
-                    sprite_yaw = calculateYaw4FromVector(bogieDifference.x, bogieDifference.y);
+                    spriteYaw = calculateYaw4FromVector(bogieDifference.x, bogieDifference.y);
                     break;
             }
         }
@@ -942,7 +942,7 @@ namespace OpenLoco::Vehicles
 
         var_05 += 64;
 
-        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
 
         auto bogieDifference = backBogie->position - frontBogie->position;
 
@@ -1069,7 +1069,7 @@ namespace OpenLoco::Vehicles
                 return;
 
             auto positionFactor = vehicleObject->bodySprites[0].bogey_position * var_05 / 256;
-            auto invertedDirection = sprite_yaw ^ (1 << 5);
+            auto invertedDirection = spriteYaw ^ (1 << 5);
             auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
             Map::Pos3 loc = position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
@@ -1093,7 +1093,7 @@ namespace OpenLoco::Vehicles
 
             var_05 += 64;
             auto bogieDifference = backBogie->position - frontBogie->position;
-            auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+            auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
 
             auto loc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
@@ -1129,12 +1129,12 @@ namespace OpenLoco::Vehicles
         var_05 += 64;
 
         auto bogieDifference = backBogie->position - frontBogie->position;
-        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
 
         auto loc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
         // 90 degrees C.W.
-        auto yaw = (sprite_yaw + 16) & 0x3F;
+        auto yaw = (spriteYaw + 16) & 0x3F;
 
         auto unkFactor = 5;
         if (trafficHandedness != 0)
@@ -1179,7 +1179,7 @@ namespace OpenLoco::Vehicles
             return;
 
         auto bogieDifference = backBogie->position - frontBogie->position;
-        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
 
         auto loc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
@@ -1216,12 +1216,12 @@ namespace OpenLoco::Vehicles
             return;
 
         auto bogieDifference = backBogie->position - frontBogie->position;
-        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
 
         auto loc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
         // 90 degrees C.W.
-        auto yaw = (sprite_yaw + 16) & 0x3F;
+        auto yaw = (spriteYaw + 16) & 0x3F;
         auto firstBogie = var_38 & Flags38::isReversed ? backBogie : frontBogie;
         auto unkFactor = 5;
         if (!trackIdToSparkDirection[(firstBogie->trackAndDirection.road._data >> 3)])
@@ -1271,13 +1271,13 @@ namespace OpenLoco::Vehicles
             return;
 
         auto positionFactor = vehicleObject->bodySprites[0].bogey_position;
-        auto invertedDirection = sprite_yaw ^ (1 << 5);
+        auto invertedDirection = spriteYaw ^ (1 << 5);
         auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 4;
 
         Map::Pos3 loc = position + Map::Pos3(xyFactor.x, xyFactor.y, 0);
 
         // 90 degrees C.W.
-        auto yaw = (sprite_yaw + 16) & 0x3F;
+        auto yaw = (spriteYaw + 16) & 0x3F;
 
         xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
         loc.x += xyFactor.x;
@@ -1289,7 +1289,7 @@ namespace OpenLoco::Vehicles
             return;
 
         // 90 degrees C.C.W.
-        yaw = (sprite_yaw - 16) & 0x3F;
+        yaw = (spriteYaw - 16) & 0x3F;
 
         xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
         loc.x += xyFactor.x;

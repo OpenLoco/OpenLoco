@@ -384,7 +384,7 @@ namespace OpenLoco::Ui
         void updateScrollWidgets();
         void initScrollWidgets();
         int8_t getScrollDataIndex(WidgetIndex_t index);
-        void setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets);
+        void setDisabledWidgetsAndInvalidate(uint32_t _disabledWidgets);
         void drawViewports(Gfx::RenderTarget* rt);
         void viewportCentreMain();
         void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);

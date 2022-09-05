@@ -173,7 +173,7 @@ namespace OpenLoco::Vehicles
             {
                 dh = 1;
             }
-            if (_500170[enumValue(frontBogie->sprite_pitch)] <= -19182)
+            if (_500170[enumValue(frontBogie->spritePitch)] <= -19182)
             {
                 const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie->objectId);
                 if (vehObject->power != 0)
@@ -181,7 +181,7 @@ namespace OpenLoco::Vehicles
                     isOnRackRail &= frontBogie->isOnRackRail();
                 }
             }
-            ebp += (frontBogie->var_52 * _500170[enumValue(frontBogie->sprite_pitch)]) >> 8;
+            ebp += (frontBogie->var_52 * _500170[enumValue(frontBogie->spritePitch)]) >> 8;
         }
 
         if (!isOnRackRail)

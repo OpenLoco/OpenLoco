@@ -9,7 +9,7 @@ namespace OpenLoco::Localisation
     struct EncodingConvertEntry
     {
         utf32_t unicode;
-        uint8_t loco_code;
+        uint8_t locoCode;
     };
 
     static const EncodingConvertEntry UnicodeToLocoTable[] = {
@@ -55,22 +55,22 @@ namespace OpenLoco::Localisation
         return 0;
     }
 
-    utf32_t convertLocoToUnicode(uint8_t loco_code)
+    utf32_t convertLocoToUnicode(uint8_t locoCode)
     {
         // We can't do a binary search here, as the table is sorted by Unicode point, not Loco's internal encoding.
         for (const auto& entry : UnicodeToLocoTable)
         {
-            if (entry.loco_code == loco_code)
+            if (entry.locoCode == locoCode)
                 return entry.unicode;
         }
-        return loco_code;
+        return locoCode;
     }
 
     uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
         EncodingConvertEntry* entry = (EncodingConvertEntry*)std::bsearch(&unicode, UnicodeToLocoTable, Utility::length(UnicodeToLocoTable), sizeof(EncodingConvertEntry), searchCompare);
         if (entry != nullptr)
-            return entry->loco_code;
+            return entry->locoCode;
         else if (unicode < 256)
             return unicode;
         else

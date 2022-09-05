@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleExit
 {
-    static const Ui::Size window_size = { 40, 28 };
+    static const Ui::Size windowSize = { 40, 28 };
 
     namespace Widx
     {
@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game),
+        makeWidget({ 0, 0 }, windowSize, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game),
         widgetEnd(),
     };
 
@@ -42,8 +42,8 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleExit,
-            Ui::Point(Ui::width() - window_size.width, Ui::height() - window_size.height),
-            window_size,
+            Ui::Point(Ui::width() - windowSize.width, Ui::height() - windowSize.height),
+            windowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
 

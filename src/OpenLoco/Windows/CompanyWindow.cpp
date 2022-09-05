@@ -389,8 +389,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     viewport->width = proposedDims.width;
                     viewport->height = proposedDims.height;
-                    viewport->view_width = proposedDims.width << viewport->zoom;
-                    viewport->view_height = proposedDims.height << viewport->zoom;
+                    viewport->viewWidth = proposedDims.width << viewport->zoom;
+                    viewport->viewHeight = proposedDims.height << viewport->zoom;
                     self.savedView.clear();
                 }
             }

@@ -209,8 +209,8 @@ namespace OpenLoco::Ui::Windows::Industry
                 {
                     viewport->width = newWidth;
                     viewport->height = newHeight;
-                    viewport->view_width = newWidth << viewport->zoom;
-                    viewport->view_height = newHeight << viewport->zoom;
+                    viewport->viewWidth = newWidth << viewport->zoom;
+                    viewport->viewHeight = newHeight << viewport->zoom;
                     self.savedView.clear();
                 }
             }

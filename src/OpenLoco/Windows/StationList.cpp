@@ -21,7 +21,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::StationList
 {
-    static const Ui::Size window_size = { 600, 197 };
+    static const Ui::Size windowSize = { 600, 197 };
     static const Ui::Size max_dimensions = { 640, 1200 };
     static const Ui::Size min_dimensions = { 192, 100 };
 
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::StationList
             // 0x00491010
             window = WindowManager::createWindow(
                 WindowType::stationList,
-                window_size,
+                windowSize,
                 WindowFlags::flag_11,
                 &_events);
 

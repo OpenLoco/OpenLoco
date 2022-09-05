@@ -696,13 +696,13 @@ namespace OpenLoco::Audio
             return;
 
         // TODO: left or top?
-        if (v->sprite_left == Location::null)
+        if (v->spriteLeft == Location::null)
             return;
 
         if (_numActiveVehicleSounds >= Config::get().maxVehicleSounds)
             return;
 
-        auto spritePosition = viewport_pos(v->sprite_left, v->sprite_top);
+        auto spritePosition = viewport_pos(v->spriteLeft, v->spriteTop);
 
         auto main = WindowManager::getMainWindow();
         if (main != nullptr && main->viewports[0] != nullptr)
@@ -710,12 +710,12 @@ namespace OpenLoco::Audio
             auto viewport = main->viewports[0];
             ViewportRect extendedViewport = {};
 
-            auto quarterWidth = viewport->view_width / 4;
-            auto quarterHeight = viewport->view_height / 4;
+            auto quarterWidth = viewport->viewWidth / 4;
+            auto quarterHeight = viewport->viewHeight / 4;
             extendedViewport.left = viewport->view_x - quarterWidth;
             extendedViewport.top = viewport->view_y - quarterHeight;
-            extendedViewport.right = viewport->view_x + viewport->view_width + quarterWidth;
-            extendedViewport.bottom = viewport->view_y + viewport->view_height + quarterHeight;
+            extendedViewport.right = viewport->view_x + viewport->viewWidth + quarterWidth;
+            extendedViewport.bottom = viewport->view_y + viewport->viewHeight + quarterHeight;
 
             if (extendedViewport.contains(spritePosition))
             {
