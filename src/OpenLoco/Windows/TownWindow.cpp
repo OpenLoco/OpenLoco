@@ -26,9 +26,9 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Town
 {
-    static const Ui::Size windowSize = { 223, 161 };
+    static constexpr Ui::Size windowSize = { 223, 161 };
 
-    static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
+    static loco_global<uint16_t[10], 0x0112C826> _commonFormatArgs;
 
     namespace Common
     {
@@ -242,8 +242,8 @@ namespace OpenLoco::Ui::Windows::Town
                 {
                     viewport->width = newWidth;
                     viewport->height = newHeight;
-                    viewport->view_width = newWidth << viewport->zoom;
-                    viewport->view_height = newHeight << viewport->zoom;
+                    viewport->viewWidth = newWidth << viewport->zoom;
+                    viewport->viewHeight = newHeight << viewport->zoom;
                     self.savedView.clear();
                 }
             }
@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Windows::Town
             self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Put town name in place.
-            commonFormatArgs[0] = TownManager::get(TownId(self.number))->name;
+            _commonFormatArgs[0] = TownManager::get(TownId(self.number))->name;
 
             // Resize common widgets.
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -672,10 +672,10 @@ namespace OpenLoco::Ui::Windows::Town
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
             auto town = TownManager::get(TownId(self->number));
-            commonFormatArgs[4] = town->name;
-            commonFormatArgs[8] = town->name;
+            _commonFormatArgs[4] = town->name;
+            _commonFormatArgs[8] = town->name;
 
-            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs);
+            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &_commonFormatArgs);
         }
 
         // 0x004991BC

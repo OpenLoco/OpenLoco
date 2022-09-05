@@ -6,14 +6,14 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<VehicleBogie*, 0x01136124> vehicleUpdate_frontBogie;
-    static loco_global<VehicleBogie*, 0x01136128> vehicleUpdate_backBogie;
-    static loco_global<bool, 0x01136237> vehicleUpdate_frontBogieHasMoved; // remainingDistance related?
-    static loco_global<bool, 0x01136238> vehicleUpdate_backBogieHasMoved;  // remainingDistance related?
-    static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C;     // Speed
-    static loco_global<uint32_t, 0x01136114> vehicleUpdate_var_1136114;
-    static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
-    static loco_global<EntityId, 0x0113610E> vehicleUpdate_collisionCarComponent;
+    static loco_global<VehicleBogie*, 0x01136124> _vehicleUpdate_frontBogie;
+    static loco_global<VehicleBogie*, 0x01136128> _vehicleUpdate_backBogie;
+    static loco_global<bool, 0x01136237> _vehicleUpdate_frontBogieHasMoved; // remainingDistance related?
+    static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;  // remainingDistance related?
+    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C;     // Speed
+    static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
+    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
+    static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
 
     template<typename T>
     void applyDestructionToComponent(T& component)
@@ -27,8 +27,8 @@ namespace OpenLoco::Vehicles
     // 0x004AA008
     bool VehicleBogie::update()
     {
-        vehicleUpdate_frontBogie = vehicleUpdate_backBogie;
-        vehicleUpdate_backBogie = this;
+        _vehicleUpdate_frontBogie = _vehicleUpdate_backBogie;
+        _vehicleUpdate_backBogie = this;
 
         if (mode == TransportMode::air || mode == TransportMode::water)
         {
@@ -36,14 +36,14 @@ namespace OpenLoco::Vehicles
         }
 
         const auto oldPos = position;
-        vehicleUpdate_var_1136114 = 0;
-        sub_4B15FF(vehicleUpdate_var_113612C);
+        _vehicleUpdate_var_1136114 = 0;
+        sub_4B15FF(_vehicleUpdate_var_113612C);
 
         const auto hasMoved = oldPos != position;
-        vehicleUpdate_backBogieHasMoved = vehicleUpdate_frontBogieHasMoved;
-        vehicleUpdate_frontBogieHasMoved = hasMoved;
+        _vehicleUpdate_backBogieHasMoved = _vehicleUpdate_frontBogieHasMoved;
+        _vehicleUpdate_frontBogieHasMoved = hasMoved;
 
-        const int32_t stash1136130 = vehicleUpdate_var_1136130;
+        const int32_t stash1136130 = _vehicleUpdate_var_1136130;
         if (var_5E != 0)
         {
             auto unk = var_5E;
@@ -51,17 +51,17 @@ namespace OpenLoco::Vehicles
             {
                 unk = 64 - unk;
             }
-            vehicleUpdate_var_1136130 = 500 + unk * 320;
+            _vehicleUpdate_var_1136130 = 500 + unk * 320;
         }
 
         updateRoll();
-        vehicleUpdate_var_1136130 = stash1136130;
-        if (vehicleUpdate_var_1136114 & (1 << 1))
+        _vehicleUpdate_var_1136130 = stash1136130;
+        if (_vehicleUpdate_var_1136114 & (1 << 1))
         {
             sub_4AA464();
             return false;
         }
-        else if (!(vehicleUpdate_var_1136114 & (1 << 2)))
+        else if (!(_vehicleUpdate_var_1136114 & (1 << 2)))
         {
             return true;
         }
@@ -107,7 +107,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Apply Collision to collided train
-        auto* collideEntity = EntityManager::get<EntityBase>(vehicleUpdate_collisionCarComponent);
+        auto* collideEntity = EntityManager::get<EntityBase>(_vehicleUpdate_collisionCarComponent);
         auto* collideCarComponent = collideEntity->asBase<VehicleBase>();
         if (collideCarComponent != nullptr)
         {

@@ -416,7 +416,7 @@ namespace OpenLoco::Map::MapGenerator
     // 0x004C4BD7
     static void generateWater(HeightMap& heightMap)
     {
-        static loco_global<uint16_t, 0x00525FB2> seaLevel;
+        static loco_global<uint16_t, 0x00525FB2> _seaLevel;
 
         Map::TileLoop tileLoop;
         for (uint32_t posId = 0; posId < map_size; posId++)
@@ -425,8 +425,8 @@ namespace OpenLoco::Map::MapGenerator
             auto tile = TileManager::get(pos);
             auto* surface = tile.surface();
 
-            if (surface != nullptr && surface->baseZ() < (seaLevel << 2))
-                surface->setWater(seaLevel);
+            if (surface != nullptr && surface->baseZ() < (_seaLevel << 2))
+                surface->setWater(_seaLevel);
 
             tileLoop.next();
         }

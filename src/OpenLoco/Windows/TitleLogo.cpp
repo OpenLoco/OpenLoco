@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleLogo
 {
-    static const Ui::Size window_size = { 298, 170 };
+    static constexpr Ui::Size windowSize = { 298, 170 };
 
     namespace Widx
     {
@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, WidgetType::wt_3, WindowColour::primary),
+        makeWidget({ 0, 0 }, windowSize, WidgetType::wt_3, WindowColour::primary),
         widgetEnd(),
     };
 
@@ -37,7 +37,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::title_logo,
             { 0, 0 },
-            window_size,
+            windowSize,
             WindowFlags::openQuietly | WindowFlags::transparent,
             &_events);
 

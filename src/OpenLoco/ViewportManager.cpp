@@ -49,8 +49,8 @@ namespace OpenLoco::Ui::ViewportManager
         vp->width = size.width;
         vp->height = size.height;
 
-        vp->view_width = size.width << static_cast<uint8_t>(zoom);
-        vp->view_height = size.height << static_cast<uint8_t>(zoom);
+        vp->viewWidth = size.width << static_cast<uint8_t>(zoom);
+        vp->viewHeight = size.height << static_cast<uint8_t>(zoom);
         vp->zoom = static_cast<uint8_t>(zoom);
         vp->flags = 0;
 
@@ -303,14 +303,14 @@ namespace OpenLoco::Ui::ViewportManager
      */
     void invalidate(EntityBase* t, ZoomLevel zoom)
     {
-        if (t->sprite_left == Location::null)
+        if (t->spriteLeft == Location::null)
             return;
 
         ViewportRect rect;
-        rect.left = t->sprite_left;
-        rect.top = t->sprite_top;
-        rect.right = t->sprite_right;
-        rect.bottom = t->sprite_bottom;
+        rect.left = t->spriteLeft;
+        rect.top = t->spriteTop;
+        rect.right = t->spriteRight;
+        rect.bottom = t->spriteBottom;
 
         auto level = (ZoomLevel)std::min(Config::get().vehiclesMinScale, (uint8_t)zoom);
         invalidate(rect, level);

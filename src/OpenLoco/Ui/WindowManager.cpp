@@ -1200,12 +1200,12 @@ namespace OpenLoco::Ui::WindowManager
         addr<0x1136F9C, int16_t>() = w->x;
         addr<0x1136F9E, int16_t>() = w->y;
 
-        loco_global<AdvancedColour[4], 0x1136594> windowColours;
+        loco_global<AdvancedColour[4], 0x1136594> _windowColours;
         // Text colouring
-        windowColours[0] = w->getColour(WindowColour::primary).opaque();
-        windowColours[1] = w->getColour(WindowColour::secondary).opaque();
-        windowColours[2] = w->getColour(WindowColour::tertiary).opaque();
-        windowColours[3] = w->getColour(WindowColour::quaternary).opaque();
+        _windowColours[0] = w->getColour(WindowColour::primary).opaque();
+        _windowColours[1] = w->getColour(WindowColour::secondary).opaque();
+        _windowColours[2] = w->getColour(WindowColour::tertiary).opaque();
+        _windowColours[3] = w->getColour(WindowColour::quaternary).opaque();
 
         w->callPrepareDraw();
         w->callDraw(&rt);
@@ -1775,49 +1775,49 @@ namespace OpenLoco::Ui::WindowManager
             if (viewport->x < window->x)
             {
                 viewport->width = window->x - viewport->x;
-                viewport->view_width = viewport->width << viewport->zoom;
+                viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->x += viewport->width;
                 viewport->view_x += viewport->width << viewport->zoom;
                 viewport->width = view_copy.width - viewport->width;
-                viewport->view_width = viewport->width << viewport->zoom;
+                viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
             else if (viewport->x + viewport->width > window->x + window->width)
             {
                 viewport->width = window->x + window->width - viewport->x;
-                viewport->view_width = viewport->width << viewport->zoom;
+                viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->x += viewport->width;
                 viewport->view_x += viewport->width << viewport->zoom;
                 viewport->width = view_copy.width - viewport->width;
-                viewport->view_width = viewport->width << viewport->zoom;
+                viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
             else if (viewport->y < window->y)
             {
                 viewport->height = window->y - viewport->y;
-                viewport->view_width = viewport->width << viewport->zoom;
+                viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->y += viewport->height;
                 viewport->view_y += viewport->height << viewport->zoom;
                 viewport->height = view_copy.height - viewport->height;
-                viewport->view_width = viewport->width << viewport->zoom;
+                viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
             else if (viewport->y + viewport->height > window->y + window->height)
             {
                 viewport->height = window->y + window->height - viewport->y;
-                viewport->view_width = viewport->width << viewport->zoom;
+                viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
 
                 viewport->y += viewport->height;
                 viewport->view_y += viewport->height << viewport->zoom;
                 viewport->height = view_copy.height - viewport->height;
-                viewport->view_width = viewport->width << viewport->zoom;
+                viewport->viewWidth = viewport->width << viewport->zoom;
                 viewportRedrawAfterShift(window, viewport, x, y);
             }
 
@@ -2029,7 +2029,7 @@ namespace OpenLoco::Ui::WindowManager
 
 namespace OpenLoco::Ui::Windows
 {
-    static loco_global<uint8_t, 0x00508F09> suppressErrorSound;
+    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<int8_t, 0x00F2533F> _gridlinesState;
     static loco_global<uint8_t, 0x0112C2E1> _directionArrowsState;
 
@@ -2038,12 +2038,12 @@ namespace OpenLoco::Ui::Windows
     {
         if (!sound)
         {
-            suppressErrorSound = true;
+            _suppressErrorSound = true;
         }
 
         Windows::Error::open(title, message);
 
-        suppressErrorSound = false;
+        _suppressErrorSound = false;
     }
 
     // 0x00468FD3

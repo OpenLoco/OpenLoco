@@ -29,9 +29,9 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace Common
     {
-        static const Ui::Size minWindowSize = { 192, 136 };
+        static constexpr Ui::Size minWindowSize = { 192, 136 };
 
-        static const Ui::Size maxWindowSize = { 600, 440 };
+        static constexpr Ui::Size maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace Station
     {
-        static const Ui::Size windowSize = { 223, 136 };
+        static constexpr Ui::Size windowSize = { 223, 136 };
 
         enum widx
         {
@@ -177,8 +177,8 @@ namespace OpenLoco::Ui::Windows::Station
                 {
                     viewport->width = newWidth;
                     viewport->height = newHeight;
-                    viewport->view_width = newWidth << viewport->zoom;
-                    viewport->view_height = newHeight << viewport->zoom;
+                    viewport->viewWidth = newWidth << viewport->zoom;
+                    viewport->viewHeight = newHeight << viewport->zoom;
                     self.savedView.clear();
                 }
             }
@@ -566,9 +566,9 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace CargoRatings
     {
-        static const Ui::Size windowSize = { 249, 136 };
+        static constexpr Ui::Size windowSize = { 249, 136 };
 
-        static const Ui::Size maxWindowSize = { 249, 440 };
+        static constexpr Ui::Size maxWindowSize = { 249, 440 };
 
         enum widx
         {

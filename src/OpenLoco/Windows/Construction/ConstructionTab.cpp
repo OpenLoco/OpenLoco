@@ -38,7 +38,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
 
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
-    static loco_global<uint8_t[18], 0x0050A006> available_objects;   // toptoolbar
+    static loco_global<uint8_t[18], 0x0050A006> _availableObjects;   // toptoolbar
 
     namespace TrackPiece
     {
@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
 
-        for (const auto objId : available_objects)
+        for (const auto objId : _availableObjects)
         {
             if (objId == 0xFF)
             {

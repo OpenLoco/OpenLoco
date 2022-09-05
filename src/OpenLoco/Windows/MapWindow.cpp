@@ -1220,7 +1220,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto top = viewport->view_y;
             auto right = viewport->view_x;
             auto bottom = viewport->view_y;
-            right += viewport->view_width;
+            right += viewport->viewWidth;
 
             drawViewOnMap(rt, left, top, right, bottom);
         }
@@ -1228,11 +1228,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             auto left = viewport->view_x;
             auto top = viewport->view_y;
-            top += viewport->view_height;
+            top += viewport->viewHeight;
             auto right = viewport->view_x;
             auto bottom = viewport->view_y;
-            right += viewport->view_width;
-            bottom += viewport->view_height;
+            right += viewport->viewWidth;
+            bottom += viewport->viewHeight;
 
             drawViewOnMap(rt, left, top, right, bottom);
         }
@@ -1242,7 +1242,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto top = viewport->view_y;
             auto right = viewport->view_x;
             auto bottom = viewport->view_y;
-            bottom += viewport->view_height;
+            bottom += viewport->viewHeight;
 
             drawViewOnMap(rt, left, top, right, bottom);
         }
@@ -1250,11 +1250,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             auto left = viewport->view_x;
             auto top = viewport->view_y;
-            left += viewport->view_width;
+            left += viewport->viewWidth;
             auto right = viewport->view_x;
             auto bottom = viewport->view_y;
-            right += viewport->view_width;
-            bottom += viewport->view_height;
+            right += viewport->viewWidth;
+            bottom += viewport->viewHeight;
 
             drawViewOnMap(rt, left, top, right, bottom);
         }
@@ -1276,7 +1276,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         {
             auto left = viewport->view_x;
-            left += viewport->view_width;
+            left += viewport->viewWidth;
             auto top = viewport->view_y;
 
             drawViewCornersOnMap(rt, left, top, -cornerSize, 0, 0, 0);
@@ -1292,7 +1292,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             auto left = viewport->view_x;
             auto top = viewport->view_y;
-            top += viewport->view_height;
+            top += viewport->viewHeight;
 
             drawViewCornersOnMap(rt, left, top, 0, -cornerSize, 0, 0);
         }
@@ -1300,23 +1300,23 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             auto left = viewport->view_x;
             auto top = viewport->view_y;
-            top += viewport->view_height;
+            top += viewport->viewHeight;
 
             drawViewCornersOnMap(rt, left, top, 0, 0, cornerSize, 0);
         }
 
         {
             auto left = viewport->view_x;
-            left += viewport->view_width;
+            left += viewport->viewWidth;
             auto top = viewport->view_y;
-            top += viewport->view_height;
+            top += viewport->viewHeight;
 
             drawViewCornersOnMap(rt, left, top, -cornerSize, 0, 0, 0);
         }
 
         {
             auto left = viewport->view_x;
-            left += viewport->view_width;
+            left += viewport->viewWidth;
             auto top = viewport->view_y;
 
             drawViewCornersOnMap(rt, left, top, 0, 0, 0, cornerSize);
@@ -1324,9 +1324,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         {
             auto left = viewport->view_x;
-            left += viewport->view_width;
+            left += viewport->viewWidth;
             auto top = viewport->view_y;
-            top += viewport->view_height;
+            top += viewport->viewHeight;
 
             drawViewCornersOnMap(rt, left, top, 0, -cornerSize, 0, 0);
         }
@@ -1499,8 +1499,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (window == nullptr)
             return;
 
-        auto x = viewport->view_width / 2;
-        auto y = viewport->view_height / 2;
+        auto x = viewport->viewWidth / 2;
+        auto y = viewport->viewHeight / 2;
         x += viewport->view_x;
         y += viewport->view_y;
         x /= 32;

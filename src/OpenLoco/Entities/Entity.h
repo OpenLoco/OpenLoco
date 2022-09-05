@@ -43,7 +43,7 @@ namespace OpenLoco
         uint8_t type; // Use type specific getters/setters as this depends on base_type
     public:
         EntityId nextQuadrantId;  // 0x02
-        EntityId next_thing_id;   // 0x04
+        EntityId nextThingId;     // 0x04
         EntityId llPreviousId;    // 0x06
         uint8_t linkedListOffset; // 0x8
         uint8_t var_09;
@@ -52,12 +52,12 @@ namespace OpenLoco
         Map::Pos3 position; // 0x0E
         uint8_t var_14;
         uint8_t var_15;
-        int16_t sprite_left;   // 0x16
-        int16_t sprite_top;    // 0x18
-        int16_t sprite_right;  // 0x1A
-        int16_t sprite_bottom; // 0x1C
-        uint8_t sprite_yaw;    // 0x1E
-        Pitch sprite_pitch;    // 0x1F
+        int16_t spriteLeft;   // 0x16
+        int16_t spriteTop;    // 0x18
+        int16_t spriteRight;  // 0x1A
+        int16_t spriteBottom; // 0x1C
+        uint8_t spriteYaw;    // 0x1E
+        Pitch spritePitch;    // 0x1F
         uint8_t pad_20;
         CompanyId owner; // 0x21
         string_id name;  // 0x22, combined with ordinalNumber on vehicles

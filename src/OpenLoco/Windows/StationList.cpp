@@ -21,9 +21,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::StationList
 {
-    static const Ui::Size window_size = { 600, 197 };
-    static const Ui::Size max_dimensions = { 640, 1200 };
-    static const Ui::Size min_dimensions = { 192, 100 };
+    static constexpr Ui::Size kWindowSize = { 600, 197 };
+    static constexpr Ui::Size kMaxDimensions = { 640, 1200 };
+    static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
     static const uint8_t rowHeight = 10; // CJK: 13
 
@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::StationList
         CargoAccepted,
     };
 
-    loco_global<uint16_t[4], 0x112C826> _common_format_args;
+    loco_global<uint16_t[4], 0x112C826> _commonFormatArgs;
 
     static Ui::CursorId cursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::StationList
             // 0x00491010
             window = WindowManager::createWindow(
                 WindowType::stationList,
-                window_size,
+                kWindowSize,
                 WindowFlags::flag_11,
                 &_events);
 
@@ -318,10 +318,10 @@ namespace OpenLoco::Ui::Windows::StationList
 
             refreshStationList(window);
 
-            window->minWidth = min_dimensions.width;
-            window->minHeight = min_dimensions.height;
-            window->maxWidth = max_dimensions.width;
-            window->maxHeight = max_dimensions.height;
+            window->minWidth = kMinDimensions.width;
+            window->minHeight = kMinDimensions.height;
+            window->maxWidth = kMaxDimensions.width;
+            window->maxHeight = kMaxDimensions.height;
             window->flags |= WindowFlags::resizable;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Set company name.
         auto company = CompanyManager::get(CompanyId(window.number));
-        *_common_format_args = company->name;
+        *_commonFormatArgs = company->name;
 
         // Set window title.
         window.widgets[widx::caption].text = tabInformationByType[window.currentTab].windowTitleId;
@@ -476,28 +476,28 @@ namespace OpenLoco::Ui::Windows::StationList
             auto station = StationManager::get(stationId);
 
             // First, draw the town name.
-            _common_format_args[0] = StringIds::stringid_stringid;
-            _common_format_args[1] = station->name;
-            _common_format_args[2] = enumValue(station->town);
-            _common_format_args[3] = getTransportIconsFromStationFlags(station->flags);
+            _commonFormatArgs[0] = StringIds::stringid_stringid;
+            _commonFormatArgs[1] = station->name;
+            _commonFormatArgs[2] = enumValue(station->town);
+            _commonFormatArgs[3] = getTransportIconsFromStationFlags(station->flags);
 
-            Gfx::drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             // Then the station's current status.
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             station->getStatusString(buffer);
 
-            _common_format_args[0] = StringIds::buffer_1250;
-            Gfx::drawStringLeftClipped(rt, 200, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
+            _commonFormatArgs[0] = StringIds::buffer_1250;
+            Gfx::drawStringLeftClipped(rt, 200, yPos, 198, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             // Total units waiting.
             uint16_t totalUnits = 0;
             for (const auto& stats : station->cargoStats)
                 totalUnits += stats.quantity;
 
-            _common_format_args[0] = StringIds::num_units;
-            *(uint32_t*)&_common_format_args[1] = totalUnits;
-            Gfx::drawStringLeftClipped(rt, 400, yPos, 88, Colour::black, text_colour_id, &*_common_format_args);
+            _commonFormatArgs[0] = StringIds::num_units;
+            *(uint32_t*)&_commonFormatArgs[1] = totalUnits;
+            Gfx::drawStringLeftClipped(rt, 400, yPos, 88, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             // And, finally, what goods the station accepts.
             char* ptr = buffer;
@@ -516,8 +516,8 @@ namespace OpenLoco::Ui::Windows::StationList
                 ptr = StringManager::formatString(ptr, ObjectManager::get<CargoObject>(cargoId)->name);
             }
 
-            _common_format_args[0] = StringIds::buffer_1250;
-            Gfx::drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &*_common_format_args);
+            _commonFormatArgs[0] = StringIds::buffer_1250;
+            Gfx::drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             yPos += rowHeight;
         }
@@ -552,12 +552,12 @@ namespace OpenLoco::Ui::Windows::StationList
         Gfx::drawImage(rt, x, y, image);
 
         // TODO: locale-based pluralisation.
-        _common_format_args[0] = window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural;
-        _common_format_args[1] = window.var_83C;
+        _commonFormatArgs[0] = window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural;
+        _commonFormatArgs[1] = window.var_83C;
 
         // Draw number of stations.
         auto origin = Ui::Point(window.x + 4, window.y + window.height - 12);
-        Gfx::drawStringLeft(*rt, &origin, Colour::black, StringIds::black_stringid, &*_common_format_args);
+        Gfx::drawStringLeft(*rt, &origin, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
     }
 
     // 0x004917BB

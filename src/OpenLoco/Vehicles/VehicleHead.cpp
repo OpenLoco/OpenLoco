@@ -43,18 +43,18 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<uint32_t, 0x011360D0> vehicleUpdate_manhattanDistanceToStation;
-    static loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
-    static loco_global<Vehicle1*, 0x0113611C> vehicleUpdate_1;
-    static loco_global<Vehicle2*, 0x01136120> vehicleUpdate_2;
-    static loco_global<VehicleBogie*, 0x01136124> vehicleUpdate_frontBogie;
-    static loco_global<VehicleBogie*, 0x01136128> vehicleUpdate_backBogie;
-    static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
-    static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
-    static loco_global<int16_t, 0x01136168> vehicleUpdate_targetZ;
-    static loco_global<Status, 0x0113646C> vehicleUpdate_initialStatus;
-    static loco_global<uint8_t, 0x0113646D> vehicleUpdate_helicopterTargetYaw;
-    static loco_global<uint32_t, 0x00525BB0> vehicleUpdate_var_525BB0;
+    static loco_global<uint32_t, 0x011360D0> _vehicleUpdate_manhattanDistanceToStation;
+    static loco_global<VehicleHead*, 0x01136118> _vehicleUpdate_head;
+    static loco_global<Vehicle1*, 0x0113611C> _vehicleUpdate_1;
+    static loco_global<Vehicle2*, 0x01136120> _vehicleUpdate_2;
+    static loco_global<VehicleBogie*, 0x01136124> _vehicleUpdate_frontBogie;
+    static loco_global<VehicleBogie*, 0x01136128> _vehicleUpdate_backBogie;
+    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
+    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
+    static loco_global<int16_t, 0x01136168> _vehicleUpdate_targetZ;
+    static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
+    static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
+    static loco_global<uint32_t, 0x00525BB0> _vehicleUpdate_var_525BB0;
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
     static constexpr uint16_t kBusSignalTimeout = 960;   // Time to wait before turning around at barriers
@@ -78,19 +78,19 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::update()
     {
         Vehicle train(head);
-        vehicleUpdate_head = train.head;
-        vehicleUpdate_1 = train.veh1;
-        vehicleUpdate_2 = train.veh2;
+        _vehicleUpdate_head = train.head;
+        _vehicleUpdate_1 = train.veh1;
+        _vehicleUpdate_2 = train.veh2;
 
-        vehicleUpdate_initialStatus = status;
+        _vehicleUpdate_initialStatus = status;
         updateDrivingSounds();
 
-        vehicleUpdate_frontBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
-        vehicleUpdate_backBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
+        _vehicleUpdate_frontBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
+        _vehicleUpdate_backBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
 
-        Vehicle2* veh2 = vehicleUpdate_2;
-        vehicleUpdate_var_113612C = veh2->currentSpeed.getRaw() >> 7;
-        vehicleUpdate_var_1136130 = veh2->currentSpeed.getRaw() >> 7;
+        Vehicle2* veh2 = _vehicleUpdate_2;
+        _vehicleUpdate_var_113612C = veh2->currentSpeed.getRaw() >> 7;
+        _vehicleUpdate_var_1136130 = veh2->currentSpeed.getRaw() >> 7;
 
         if (var_5C != 0)
         {
@@ -618,7 +618,7 @@ namespace OpenLoco::Vehicles
     // 0x004A88F7
     void VehicleHead::updateDrivingSoundFriction(Vehicle2or6* vehType2or6, VehicleObjectFrictionSound* snd)
     {
-        Vehicle2* vehType2_2 = vehicleUpdate_2;
+        Vehicle2* vehType2_2 = _vehicleUpdate_2;
         if (vehType2_2->currentSpeed < snd->minSpeed)
         {
             updateDrivingSoundNone(vehType2or6);
@@ -655,7 +655,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        Vehicle2* vehType2_2 = vehicleUpdate_2;
+        Vehicle2* vehType2_2 = _vehicleUpdate_2;
         uint16_t targetFrequency = 0;
         uint8_t targetVolume = 0;
         if (vehType2_2->var_5A == 2)
@@ -748,7 +748,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        Vehicle2* vehType2_2 = vehicleUpdate_2;
+        Vehicle2* vehType2_2 = _vehicleUpdate_2;
         uint16_t targetFrequency = 0;
         uint8_t targetVolume = 0;
         bool var5aEqual1Code = false;
@@ -860,7 +860,7 @@ namespace OpenLoco::Vehicles
     // 0x004A8C11
     bool VehicleHead::updateLand()
     {
-        Vehicle2* vehType2 = vehicleUpdate_2;
+        Vehicle2* vehType2 = _vehicleUpdate_2;
         if ((!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered)) && status == Status::approaching)
         {
             if (mode == TransportMode::road)
@@ -1023,7 +1023,7 @@ namespace OpenLoco::Vehicles
     // 0x004A8CB6
     bool VehicleHead::sub_4A8CB6()
     {
-        Vehicle1* vehType1 = vehicleUpdate_1;
+        Vehicle1* vehType1 = _vehicleUpdate_1;
 
         if (position != vehType1->position)
         {
@@ -1043,7 +1043,7 @@ namespace OpenLoco::Vehicles
         }
 
         status = Status::stopped;
-        vehType2 = vehicleUpdate_2;
+        vehType2 = _vehicleUpdate_2;
 
         if (vehType2->var_73 & Flags73::isBrokenDown)
         {
@@ -1056,7 +1056,7 @@ namespace OpenLoco::Vehicles
     // 0x004A8C81
     bool VehicleHead::sub_4A8C81()
     {
-        Vehicle2* vehType2 = vehicleUpdate_2;
+        Vehicle2* vehType2 = _vehicleUpdate_2;
         if (vehType2->currentSpeed > 1.0_mph)
         {
             return landNormalMovementUpdate();
@@ -1129,7 +1129,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::landNormalMovementUpdate()
     {
         advanceToNextRoutableOrder();
-        auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, vehicleUpdate_var_113612C);
+        auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, _vehicleUpdate_var_113612C);
 
         if (mode == TransportMode::road)
         {
@@ -1302,15 +1302,15 @@ namespace OpenLoco::Vehicles
     // 0x004A9051
     bool VehicleHead::updateAir()
     {
-        Vehicle2* vehType2 = vehicleUpdate_2;
+        Vehicle2* vehType2 = _vehicleUpdate_2;
 
         if (vehType2->currentSpeed >= 20.0_mph)
         {
-            vehicleUpdate_var_1136130 = 0x4000;
+            _vehicleUpdate_var_1136130 = 0x4000;
         }
         else
         {
-            vehicleUpdate_var_1136130 = 0x2000;
+            _vehicleUpdate_var_1136130 = 0x2000;
         }
 
         Vehicle train(head);
@@ -1339,7 +1339,7 @@ namespace OpenLoco::Vehicles
         auto [newStatus, targetSpeed] = airplaneGetNewStatus();
 
         status = newStatus;
-        Vehicle1* vehType1 = vehicleUpdate_1;
+        Vehicle1* vehType1 = _vehicleUpdate_1;
         vehType1->var_44 = targetSpeed;
 
         advanceToNextRoutableOrder();
@@ -1391,14 +1391,14 @@ namespace OpenLoco::Vehicles
 
         auto [manhattanDistance, targetZ, targetYaw] = sub_427122();
 
-        vehicleUpdate_manhattanDistanceToStation = manhattanDistance;
-        vehicleUpdate_targetZ = targetZ;
+        _vehicleUpdate_manhattanDistanceToStation = manhattanDistance;
+        _vehicleUpdate_targetZ = targetZ;
 
         // Helicopter
-        if (vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
+        if (_vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
         {
-            vehicleUpdate_helicopterTargetYaw = targetYaw;
-            targetYaw = sprite_yaw;
+            _vehicleUpdate_helicopterTargetYaw = targetYaw;
+            targetYaw = spriteYaw;
             vehType2->var_5A = 1;
             if (targetZ < position.z)
             {
@@ -1406,17 +1406,17 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (targetYaw != sprite_yaw)
+        if (targetYaw != spriteYaw)
         {
-            if (((targetYaw - sprite_yaw) & 0x3F) > 0x20)
+            if (((targetYaw - spriteYaw) & 0x3F) > 0x20)
             {
-                sprite_yaw--;
+                spriteYaw--;
             }
             else
             {
-                sprite_yaw++;
+                spriteYaw++;
             }
-            sprite_yaw &= 0x3F;
+            spriteYaw &= 0x3F;
         }
 
         Pitch targetPitch = Pitch::flat;
@@ -1453,20 +1453,20 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (targetPitch != sprite_pitch)
+        if (targetPitch != spritePitch)
         {
-            if (targetPitch < sprite_pitch)
+            if (targetPitch < spritePitch)
             {
-                sprite_pitch = Pitch(static_cast<uint8_t>(sprite_pitch) - 1);
+                spritePitch = Pitch(static_cast<uint8_t>(spritePitch) - 1);
             }
             else
             {
-                sprite_pitch = Pitch(static_cast<uint8_t>(sprite_pitch) + 1);
+                spritePitch = Pitch(static_cast<uint8_t>(spritePitch) + 1);
             }
         }
 
         // Helicopter
-        if (vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
+        if (_vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
         {
             vehType2->currentSpeed = 8.0_mph;
             if (targetZ != position.z)
@@ -1629,7 +1629,7 @@ namespace OpenLoco::Vehicles
         if (var_0C & Flags0C::commandStop)
         {
             status = Status::stopped;
-            Vehicle2* vehType2 = vehicleUpdate_2;
+            Vehicle2* vehType2 = _vehicleUpdate_2;
             vehType2->currentSpeed = 0.0_mph;
         }
         else
@@ -1644,7 +1644,7 @@ namespace OpenLoco::Vehicles
     // 0x004A95F5
     bool VehicleHead::airplaneLoadingUpdate()
     {
-        Vehicle2* vehType2 = vehicleUpdate_2;
+        Vehicle2* vehType2 = _vehicleUpdate_2;
         vehType2->currentSpeed = 0.0_mph;
         vehType2->var_5A = 0;
         if (updateLoadCargo())
@@ -1678,15 +1678,15 @@ namespace OpenLoco::Vehicles
     // 0x004A94A9
     bool VehicleHead::airplaneApproachTarget(uint16_t targetZ)
     {
-        auto _yaw = sprite_yaw;
+        auto _yaw = spriteYaw;
         // Helicopter
-        if (vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
+        if (_vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
         {
-            _yaw = vehicleUpdate_helicopterTargetYaw;
+            _yaw = _vehicleUpdate_helicopterTargetYaw;
         }
 
-        Vehicle1* vehType1 = vehicleUpdate_1;
-        Vehicle2* vehType2 = vehicleUpdate_2;
+        Vehicle1* vehType1 = _vehicleUpdate_1;
+        Vehicle2* vehType2 = _vehicleUpdate_2;
 
         auto [veh1Loc, veh2Loc] = calculateNextPosition(
             _yaw, position, vehType1, vehType2->currentSpeed);
@@ -1697,7 +1697,7 @@ namespace OpenLoco::Vehicles
         if (targetZ != position.z)
         {
             // Final section of landing / helicopter
-            if (vehicleUpdate_manhattanDistanceToStation <= 28)
+            if (_vehicleUpdate_manhattanDistanceToStation <= 28)
             {
                 int16_t z_shift = 1;
                 if (vehType2->currentSpeed >= 50.0_mph)
@@ -1723,7 +1723,7 @@ namespace OpenLoco::Vehicles
                 int32_t zDiff = targetZ - position.z;
                 // We want a SAR instruction so use >>5
                 int32_t param1 = (zDiff * toSpeed16(vehType2->currentSpeed).getRaw()) >> 5;
-                int32_t param2 = vehicleUpdate_manhattanDistanceToStation - 18;
+                int32_t param2 = _vehicleUpdate_manhattanDistanceToStation - 18;
 
                 auto modulo = param1 % param2;
                 if (modulo < 0)
@@ -1736,7 +1736,7 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        movePlaneTo(newLoc, sprite_yaw, sprite_pitch);
+        movePlaneTo(newLoc, spriteYaw, spritePitch);
         return true;
     }
 
@@ -1852,14 +1852,14 @@ namespace OpenLoco::Vehicles
     // 0x004A9649
     bool VehicleHead::updateWater()
     {
-        Vehicle2* vehType2 = vehicleUpdate_2;
+        Vehicle2* vehType2 = _vehicleUpdate_2;
         if (vehType2->currentSpeed >= 5.0_mph)
         {
-            vehicleUpdate_var_1136130 = 0x4000;
+            _vehicleUpdate_var_1136130 = 0x4000;
         }
         else
         {
-            vehicleUpdate_var_1136130 = 0x2000;
+            _vehicleUpdate_var_1136130 = 0x2000;
         }
 
         Vehicle train(head);
@@ -1948,11 +1948,11 @@ namespace OpenLoco::Vehicles
      *  manhattanDistance = regs.ebp
      *  targetZ = regs.dx
      *  targetYaw = regs.bl
-     *  airportFlags = vehicleUpdate_var_525BB0
+     *  airportFlags = _vehicleUpdate_var_525BB0
      */
     std::tuple<uint32_t, uint16_t, uint8_t> VehicleHead::sub_427122()
     {
-        vehicleUpdate_var_525BB0 = 0;
+        _vehicleUpdate_var_525BB0 = 0;
         StationId targetStationId = StationId::null;
         std::optional<Map::Pos3> targetPos{};
         if (stationId == StationId::null)
@@ -1985,7 +1985,7 @@ namespace OpenLoco::Vehicles
                 else
                 {
                     auto [flags, pos] = airportGetMovementEdgeTarget(stationId, airportMovementEdge);
-                    vehicleUpdate_var_525BB0 = flags;
+                    _vehicleUpdate_var_525BB0 = flags;
                     targetPos = pos;
                 }
             }
@@ -2227,7 +2227,7 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        if (vehicleUpdate_initialStatus != Status::stopped && vehicleUpdate_initialStatus != Status::waitingAtSignal)
+        if (_vehicleUpdate_initialStatus != Status::stopped && _vehicleUpdate_initialStatus != Status::waitingAtSignal)
         {
             return;
         }
@@ -2244,7 +2244,7 @@ namespace OpenLoco::Vehicles
             }
             auto randSoundIndex = gPrng().randNext(numSounds - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
-            Vehicle2* veh2 = vehicleUpdate_2;
+            Vehicle2* veh2 = _vehicleUpdate_2;
             auto tileHeight = TileManager::getHeight(veh2->position);
             auto volume = 0;
             if (veh2->position.z < tileHeight.landHeight)
@@ -2321,16 +2321,16 @@ namespace OpenLoco::Vehicles
         shadow->invalidateSprite();
         auto height = coord_t{ TileManager::getHeight(newLoc) };
         shadow->moveTo({ newLoc.x, newLoc.y, height });
-        shadow->sprite_yaw = newYaw;
-        shadow->sprite_pitch = Pitch::flat;
+        shadow->spriteYaw = newYaw;
+        shadow->spritePitch = Pitch::flat;
         shadow->tileX = 0;
         shadow->invalidateSprite();
 
         auto* body = train.cars.firstCar.body;
         body->invalidateSprite();
         body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
-        body->sprite_yaw = newYaw;
-        body->sprite_pitch = newPitch;
+        body->spriteYaw = newYaw;
+        body->spritePitch = newPitch;
         body->tileX = 0;
         body->invalidateSprite();
     }
@@ -2344,7 +2344,7 @@ namespace OpenLoco::Vehicles
     // bit 17 : reachedADestination
     uint32_t VehicleHead::updateWaterMotion(uint32_t flags)
     {
-        Vehicle2* veh2 = vehicleUpdate_2;
+        Vehicle2* veh2 = _vehicleUpdate_2;
 
         // updates the current boats position and sets flags about position
         auto tile = TileManager::get(veh2->position);
@@ -2497,27 +2497,27 @@ namespace OpenLoco::Vehicles
         }
 
         auto targetYaw = calculateYaw4FromVector(position.x - veh2->position.x, position.y - veh2->position.y);
-        if (targetYaw != veh2->sprite_yaw)
+        if (targetYaw != veh2->spriteYaw)
         {
-            if (((targetYaw - veh2->sprite_yaw) & 0x3F) > 0x20)
+            if (((targetYaw - veh2->spriteYaw) & 0x3F) > 0x20)
             {
-                veh2->sprite_yaw--;
+                veh2->spriteYaw--;
             }
             else
             {
-                veh2->sprite_yaw++;
+                veh2->spriteYaw++;
             }
-            veh2->sprite_yaw &= 0x3F;
+            veh2->spriteYaw &= 0x3F;
         }
 
-        Vehicle1* veh1 = vehicleUpdate_1;
-        auto [newVeh1Pos, newVeh2Pos] = calculateNextPosition(veh2->sprite_yaw, veh2->position, veh1, veh2->currentSpeed);
+        Vehicle1* veh1 = _vehicleUpdate_1;
+        auto [newVeh1Pos, newVeh2Pos] = calculateNextPosition(veh2->spriteYaw, veh2->position, veh1, veh2->currentSpeed);
 
         veh1->var_4E = newVeh1Pos.x;
         veh1->var_50 = newVeh1Pos.y;
 
         Pos3 newLocation = { newVeh2Pos.x, newVeh2Pos.y, veh2->position.z };
-        moveBoatTo(newLocation, veh2->sprite_yaw, Pitch::flat);
+        moveBoatTo(newLocation, veh2->spriteYaw, Pitch::flat);
 
         return flags;
     }
@@ -2532,8 +2532,8 @@ namespace OpenLoco::Vehicles
         train.veh2->tileX = 0;
         train.cars.firstCar.body->invalidateSprite();
         train.cars.firstCar.body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
-        train.cars.firstCar.body->sprite_yaw = yaw;
-        train.cars.firstCar.body->sprite_pitch = pitch;
+        train.cars.firstCar.body->spriteYaw = yaw;
+        train.cars.firstCar.body->spritePitch = pitch;
         train.cars.firstCar.body->tileX = 0;
         train.cars.firstCar.body->invalidateSprite();
     }
@@ -2804,9 +2804,9 @@ namespace OpenLoco::Vehicles
                 auto company = CompanyManager::get(owner);
                 company->var_4A8[var_60].var_80 += cargoProfit;
             }
-            Vehicle2* veh2 = vehicleUpdate_2;
+            Vehicle2* veh2 = _vehicleUpdate_2;
             veh2->curMonthRevenue += cargoProfit;
-            Vehicle1* veh1 = vehicleUpdate_1;
+            Vehicle1* veh1 = _vehicleUpdate_1;
             if (cargoProfit != 0)
             {
                 veh1->var_48 |= (1 << 2);
@@ -3134,7 +3134,7 @@ namespace OpenLoco::Vehicles
         {
             auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::mask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
-            Vehicle2* veh2 = vehicleUpdate_2;
+            Vehicle2* veh2 = _vehicleUpdate_2;
             Audio::playSound(randSoundId, veh2->position + Map::Pos3{ 0, 0, 22 }, 0, 22050);
         }
     }
@@ -3161,7 +3161,7 @@ namespace OpenLoco::Vehicles
             auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::mask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
 
-            Vehicle2* veh2 = vehicleUpdate_2;
+            Vehicle2* veh2 = _vehicleUpdate_2;
             Audio::playSound(randSoundId, veh2->position + Map::Pos3{ 0, 0, 22 }, 0, 22050);
         }
     }

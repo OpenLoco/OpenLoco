@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleOptions
 {
-    static const Ui::Size window_size = { 60, 15 };
+    static constexpr Ui::Size windowSize = { 60, 15 };
 
     namespace Widx
     {
@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, WidgetType::buttonWithImage, WindowColour::secondary),
+        makeWidget({ 0, 0 }, windowSize, WidgetType::buttonWithImage, WindowColour::secondary),
         widgetEnd(),
     };
 
@@ -40,8 +40,8 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 
         auto window = WindowManager::createWindow(
             WindowType::titleOptions,
-            Ui::Point(Ui::width() - window_size.width, 0),
-            window_size,
+            Ui::Point(Ui::width() - windowSize.width, 0),
+            windowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
 

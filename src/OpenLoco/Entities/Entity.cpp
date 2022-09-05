@@ -23,15 +23,15 @@ void EntityBase::moveTo(const Map::Pos3& loc)
     // Update sprite boundaries
     if (position.x == Location::null)
     {
-        sprite_left = Location::null;
+        spriteLeft = Location::null;
         return;
     }
 
     const auto vpPos = Map::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
-    sprite_left = vpPos.x - var_14;
-    sprite_right = vpPos.x + var_14;
-    sprite_top = vpPos.y - var_09;
-    sprite_bottom = vpPos.y + var_15;
+    spriteLeft = vpPos.x - var_14;
+    spriteRight = vpPos.x + var_14;
+    spriteTop = vpPos.y - var_09;
+    spriteBottom = vpPos.y + var_15;
 }
 
 // 0x004CBB01

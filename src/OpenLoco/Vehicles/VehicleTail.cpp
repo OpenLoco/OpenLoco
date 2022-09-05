@@ -13,8 +13,8 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
-    static loco_global<uint32_t, 0x01136114> vehicleUpdate_var_1136114;
+    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
+    static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
 
     static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
 
@@ -77,10 +77,10 @@ namespace OpenLoco::Vehicles
         const auto _oldRoutingHandle = routingHandle;
         const Map::Pos3 _oldTilePos = Map::Pos3(tileX, tileY, tileBaseZ * Map::kSmallZStep);
 
-        vehicleUpdate_var_1136114 = 0;
-        sub_4B15FF(*vehicleUpdate_var_113612C);
+        _vehicleUpdate_var_1136114 = 0;
+        sub_4B15FF(*_vehicleUpdate_var_113612C);
 
-        if (*vehicleUpdate_var_1136114 & (1 << 1))
+        if (*_vehicleUpdate_var_1136114 & (1 << 1))
         {
             sub_4AA464();
             return false;

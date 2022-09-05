@@ -23,9 +23,9 @@ using namespace OpenLoco::Ui::Windows;
 
 namespace OpenLoco::EditorController
 {
-    static loco_global<uint8_t, 0x00508F17> paused_state;
-    static loco_global<char[267], 0x00050B745> activeSavePath;
-    static loco_global<char[512], 0x00112CE04> scenarioFilename;
+    static loco_global<uint8_t, 0x00508F17> _paused_state;
+    static loco_global<char[267], 0x00050B745> _activeSavePath;
+    static loco_global<char[512], 0x00112CE04> _scenarioFilename;
 
     // 0x0043D7DC
     void init()
@@ -206,9 +206,9 @@ namespace OpenLoco::EditorController
                 S5::getOptions().editorStep = Step::null;
                 call(0x0046F910); // Sets up new multiplayer related rands
 
-                auto path = fs::u8path(scenarioFilename.get());
+                auto path = fs::u8path(_scenarioFilename.get());
                 path.replace_extension(S5::extensionSC5);
-                strncpy(activeSavePath, path.u8string().c_str(), 257); // Or 256?
+                strncpy(_activeSavePath, path.u8string().c_str(), 257); // Or 256?
                 uint32_t saveFlags = S5::SaveFlags::scenario;
                 if (Config::get().flags & Config::Flags::exportObjectsWithSaves)
                 {

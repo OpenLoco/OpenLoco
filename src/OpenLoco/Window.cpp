@@ -227,7 +227,7 @@ namespace OpenLoco::Ui
         if (vp->x < 0)
         {
             vp->width += vp->x;
-            vp->view_width += vp->x * zoom;
+            vp->viewWidth += vp->x * zoom;
             vp->view_x -= vp->x * zoom;
             vp->x = 0;
         }
@@ -236,7 +236,7 @@ namespace OpenLoco::Ui
         if (eax > 0)
         {
             vp->width -= eax;
-            vp->view_width -= eax * zoom;
+            vp->viewWidth -= eax * zoom;
         }
 
         if (vp->width <= 0)
@@ -248,7 +248,7 @@ namespace OpenLoco::Ui
         if (vp->y < 0)
         {
             vp->height += vp->y;
-            vp->view_height += vp->y * zoom;
+            vp->viewHeight += vp->y * zoom;
             vp->view_y -= vp->y * zoom;
             vp->y = 0;
         }
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui
         if (eax > 0)
         {
             vp->height -= eax;
-            vp->view_height -= eax * zoom;
+            vp->viewHeight -= eax * zoom;
         }
 
         if (vp->height <= 0)
@@ -300,8 +300,8 @@ namespace OpenLoco::Ui
             }
             else
             {
-                int16_t midX = config->saved_view_x + (viewport->view_width / 2);
-                int16_t midY = config->saved_view_y + (viewport->view_height / 2);
+                int16_t midX = config->saved_view_x + (viewport->viewWidth / 2);
+                int16_t midY = config->saved_view_y + (viewport->viewHeight / 2);
 
                 Map::Pos2 mapCoord = viewportCoordToMapCoord(midX, midY, 128, viewport->getRotation());
                 viewportSetUndergroundFlag(false, viewport);
@@ -332,8 +332,8 @@ namespace OpenLoco::Ui
                 {
                     auto coord_2d = gameToScreen({ mapCoord.x, mapCoord.y, 128 }, viewport->getRotation());
 
-                    config->saved_view_x = coord_2d.x - viewport->view_width / 2;
-                    config->saved_view_y = coord_2d.y - viewport->view_height / 2;
+                    config->saved_view_x = coord_2d.x - viewport->viewWidth / 2;
+                    config->saved_view_y = coord_2d.y - viewport->viewHeight / 2;
                 }
 
                 centre.x = config->saved_view_x;
@@ -496,10 +496,10 @@ namespace OpenLoco::Ui
         return scrollIndex;
     }
 
-    void Window::setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets)
+    void Window::setDisabledWidgetsAndInvalidate(uint32_t _disabledWidgets)
     {
         registers regs;
-        regs.eax = (int32_t)_disabled_widgets;
+        regs.eax = (int32_t)_disabledWidgets;
         regs.esi = X86Pointer(this);
         call(0x004CC7CB, regs);
     }
@@ -575,8 +575,8 @@ namespace OpenLoco::Ui
 
         auto pos = gameToScreen(loc, WindowManager::getCurrentRotation());
 
-        pos.x -= viewport->view_width / 2;
-        pos.y -= viewport->view_height / 2;
+        pos.x -= viewport->viewWidth / 2;
+        pos.y -= viewport->viewHeight / 2;
 
         moveWindowToLocation(pos);
     }
@@ -675,20 +675,20 @@ namespace OpenLoco::Ui
         while (v->zoom > zoomLevel)
         {
             v->zoom--;
-            vc->saved_view_x += v->view_width / 4;
-            vc->saved_view_y += v->view_height / 4;
-            v->view_width /= 2;
-            v->view_height /= 2;
+            vc->saved_view_x += v->viewWidth / 4;
+            vc->saved_view_y += v->viewHeight / 4;
+            v->viewWidth /= 2;
+            v->viewHeight /= 2;
         }
 
         // Zoom out
         while (v->zoom < zoomLevel)
         {
             v->zoom++;
-            vc->saved_view_x -= v->view_width / 2;
-            vc->saved_view_y -= v->view_height / 2;
-            v->view_width *= 2;
-            v->view_height *= 2;
+            vc->saved_view_x -= v->viewWidth / 2;
+            vc->saved_view_y -= v->viewHeight / 2;
+            v->viewWidth *= 2;
+            v->viewHeight *= 2;
         }
 
         // Zooming to cursor? Centre around the tile we were hovering over just now.
@@ -760,20 +760,20 @@ namespace OpenLoco::Ui
                 if (zoom < 0)
                 {
                     zoom = -zoom;
-                    viewport->view_width >>= zoom;
-                    viewport->view_height >>= zoom;
+                    viewport->viewWidth >>= zoom;
+                    viewport->viewHeight >>= zoom;
                 }
                 else
                 {
-                    viewport->view_width <<= zoom;
-                    viewport->view_height <<= zoom;
+                    viewport->viewWidth <<= zoom;
+                    viewport->viewHeight <<= zoom;
                 }
             }
             viewport->zoom = zoom;
             viewport->setRotation(newSavedView.rotation);
 
-            config.saved_view_x -= viewport->view_width / 2;
-            config.saved_view_y -= viewport->view_height / 2;
+            config.saved_view_x -= viewport->viewWidth / 2;
+            config.saved_view_y -= viewport->viewHeight / 2;
         }
     }
 

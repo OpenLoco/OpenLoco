@@ -55,7 +55,7 @@ namespace OpenLoco::Input
 
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
 
-    static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
+    static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
     static loco_global<uint16_t, 0x0052334A> _52334A;
     static loco_global<uint16_t, 0x0052334C> _52334C;
@@ -776,7 +776,7 @@ namespace OpenLoco::Input
             case MouseButton::released:
             {
                 // 4C74E4
-                _ticksSinceDragStart += time_since_last_tick;
+                _ticksSinceDragStart += _timeSinceLastTick;
                 auto vp = window->viewports[0];
                 if (vp == nullptr)
                 {
@@ -1066,7 +1066,7 @@ namespace OpenLoco::Input
         {
             case MouseButton::released:
             {
-                _ticksSinceDragStart += time_since_last_tick;
+                _ticksSinceDragStart += _timeSinceLastTick;
                 if (x != 0 || y != 0)
                 {
                     _ticksSinceDragStart = 1000;
@@ -1631,7 +1631,7 @@ namespace OpenLoco::Input
         {
             if (window != nullptr && *_tooltipWindowType == window->type && _tooltipWindowNumber == window->number && _tooltipWidgetIndex == widgetIndex)
             {
-                _tooltipTimeout += time_since_last_tick;
+                _tooltipTimeout += _timeSinceLastTick;
                 if (_tooltipTimeout >= 8000)
                 {
                     WindowManager::close(Ui::WindowType::tooltip);
@@ -1647,7 +1647,7 @@ namespace OpenLoco::Input
 
         if (_tooltipNotShownTicks < 500 || (x == _tooltipCursorX && y == _tooltipCursorY))
         {
-            _tooltipTimeout += time_since_last_tick;
+            _tooltipTimeout += _timeSinceLastTick;
             int bp = 2000;
             if (_tooltipNotShownTicks <= 1000)
             {

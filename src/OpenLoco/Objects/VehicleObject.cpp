@@ -39,7 +39,7 @@ namespace OpenLoco
     }
 
     // TODO: Should only be defined in ObjectSelectionWindow
-    static const uint8_t descriptionRowHeight = 10;
+    static const uint8_t kDescriptionRowHeight = 10;
 
     // 0x004B8C9D
     void VehicleObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width) const
@@ -51,19 +51,19 @@ namespace OpenLoco
             FormatArguments args{};
             args.push(power);
             Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
-            rowPosition.y += descriptionRowHeight;
+            rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push<uint32_t>(StringManager::internalLengthToComma1DP(getLength()));
             Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_length, &args);
-            rowPosition.y += descriptionRowHeight;
+            rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(weight);
             Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_weight, &args);
-            rowPosition.y += descriptionRowHeight;
+            rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};

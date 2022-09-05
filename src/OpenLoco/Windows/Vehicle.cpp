@@ -101,8 +101,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Details
     {
-        static const Ui::Size minWindowSize = { 192, 148 };
-        static const Ui::Size maxWindowSize = { 400, 440 };
+        static constexpr Ui::Size minWindowSize = { 192, 148 };
+        static constexpr Ui::Size maxWindowSize = { 400, 440 };
 
         enum widx
         {
@@ -129,8 +129,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Cargo
     {
-        static const Ui::Size minWindowSize = { 192, 142 };
-        static const Ui::Size maxWindowSize = { 400, 440 };
+        static constexpr Ui::Size minWindowSize = { 192, 142 };
+        static constexpr Ui::Size maxWindowSize = { 400, 440 };
 
         enum widx
         {
@@ -153,8 +153,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Finances
     {
-        static const Ui::Size minWindowSize = { 400, 202 };
-        static const Ui::Size maxWindowSize = minWindowSize;
+        static constexpr Ui::Size minWindowSize = { 400, 202 };
+        static constexpr Ui::Size maxWindowSize = minWindowSize;
 
         static WindowEventList events;
         constexpr uint64_t enabledWidgets = Common::enabledWidgets;
@@ -169,8 +169,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Route
     {
-        static const Ui::Size minWindowSize = { 265, 178 };
-        static const Ui::Size maxWindowSize = { 600, 440 };
+        static constexpr Ui::Size minWindowSize = { 265, 178 };
+        static constexpr Ui::Size maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -219,9 +219,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Main
     {
-        static const Ui::Size windowSize = { 265, 177 };
-        static const Ui::Size minWindowSize = { 192, 177 };
-        static const Ui::Size maxWindowSize = { 600, 440 };
+        static constexpr Ui::Size windowSize = { 265, 177 };
+        static constexpr Ui::Size minWindowSize = { 192, 177 };
+        static constexpr Ui::Size maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -559,8 +559,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     self.invalidate();
                     viewport->width = newWidth;
                     viewport->height = newHeight;
-                    viewport->view_width = newWidth << viewport->zoom;
-                    viewport->view_height = newHeight << viewport->zoom;
+                    viewport->viewWidth = newWidth << viewport->zoom;
+                    viewport->viewHeight = newHeight << viewport->zoom;
                     self.savedView.clear();
                 }
             }

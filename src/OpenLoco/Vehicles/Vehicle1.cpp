@@ -9,9 +9,9 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
-    static loco_global<Speed32, 0x01136134> vehicleUpdate_var_1136134; // Speed
-    static loco_global<uint32_t, 0x01136114> vehicleUpdate_var_1136114;
+    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
+    static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
+    static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
 
     // 0x004A9788
     bool Vehicle1::update()
@@ -106,14 +106,14 @@ namespace OpenLoco::Vehicles
         }
         var_44 = maxSpeed;
 
-        vehicleUpdate_var_1136134 = maxSpeed;
+        _vehicleUpdate_var_1136134 = maxSpeed;
         int32_t distance1 = (train.veh2->currentSpeed / 2).getRaw() - var_3C;
-        const auto unk2 = std::max(vehicleUpdate_var_113612C * 4, 0xCC48);
+        const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
 
         distance1 = std::min(distance1, unk2);
         var_3C += distance1 - updateRoadMotion(distance1);
 
-        if (!(vehicleUpdate_var_1136114 & (1 << 1)))
+        if (!(_vehicleUpdate_var_1136114 & (1 << 1)))
         {
             return true;
         }

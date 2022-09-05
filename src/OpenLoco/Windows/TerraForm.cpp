@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     namespace PlantTrees
     {
-        static const Ui::Size windowSize = { 634, 162 };
+        static constexpr Ui::Size windowSize = { 634, 162 };
 
         static const uint8_t rowHeight = 102;
         static const uint8_t columnWidth = 66;
@@ -1883,7 +1883,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     namespace BuildWalls
     {
-        static const Ui::Size windowSize = { 418, 108 };
+        static constexpr Ui::Size windowSize = { 418, 108 };
 
         static const uint8_t rowHeight = 48;
 

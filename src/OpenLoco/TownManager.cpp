@@ -16,7 +16,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::TownManager
 {
-    static loco_global<Town*, 0x01135C38> dword_1135C38;
+    static loco_global<Town*, 0x01135C38> _dword_1135C38;
 
     // 0x00497DC1
     // The return value of this function is also being returned via dword_1135C38.
@@ -25,12 +25,12 @@ namespace OpenLoco::TownManager
         auto res = getClosestTownAndUnk(loc);
         if (res == std::nullopt)
         {
-            dword_1135C38 = nullptr;
+            _dword_1135C38 = nullptr;
             return nullptr;
         }
         auto townId = res->first;
         auto town = get(townId);
-        dword_1135C38 = town;
+        _dword_1135C38 = town;
         if (town != nullptr)
         {
             town->populationCapacity += populationCapacity;

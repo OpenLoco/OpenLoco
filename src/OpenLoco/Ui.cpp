@@ -66,12 +66,12 @@ namespace OpenLoco::Ui
 #ifdef _WIN32
     loco_global<void*, 0x00525320> _hwnd;
 #endif // _WIN32
-    loco_global<ScreenInfo, 0x0050B884> screen_info;
+    loco_global<ScreenInfo, 0x0050B884> _screenInfo;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<Ui::CursorId, 0x00523393> _currentToolCursor;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
-    loco_global<uint8_t[256], 0x01140740> _keyboard_state;
+    loco_global<uint8_t[256], 0x01140740> _keyboardState;
 
     bool _resolutionsAllowAnyAspectRatio = false;
     std::vector<Resolution> _fsResolutions;
@@ -99,17 +99,17 @@ namespace OpenLoco::Ui
 
     int32_t width()
     {
-        return screen_info->width;
+        return _screenInfo->width;
     }
 
     int32_t height()
     {
-        return screen_info->height;
+        return _screenInfo->height;
     }
 
     bool dirtyBlocksInitialised()
     {
-        return screen_info->dirty_blocks_initialised != 0;
+        return _screenInfo->dirty_blocks_initialised != 0;
     }
 
     static sdl_window_desc getWindowDesc(const Config::Display& cfg)
@@ -373,20 +373,20 @@ namespace OpenLoco::Ui
         rt.height = height;
         rt.pitch = pitch - width;
 
-        screen_info->renderTarget = rt;
-        screen_info->width = width;
-        screen_info->height = height;
-        screen_info->width_2 = width;
-        screen_info->height_2 = height;
-        screen_info->width_3 = width;
-        screen_info->height_3 = height;
-        screen_info->dirty_block_width = blockWidth;
-        screen_info->dirty_block_height = blockHeight;
-        screen_info->dirty_block_columns = (width / blockWidth) + 1;
-        screen_info->dirty_block_rows = (height / blockHeight) + 1;
-        screen_info->dirty_block_column_shift = widthShift;
-        screen_info->dirty_block_row_shift = heightShift;
-        screen_info->dirty_blocks_initialised = 1;
+        _screenInfo->renderTarget = rt;
+        _screenInfo->width = width;
+        _screenInfo->height = height;
+        _screenInfo->width_2 = width;
+        _screenInfo->height_2 = height;
+        _screenInfo->width_3 = width;
+        _screenInfo->height_3 = height;
+        _screenInfo->dirty_block_width = blockWidth;
+        _screenInfo->dirty_block_height = blockHeight;
+        _screenInfo->dirty_block_columns = (width / blockWidth) + 1;
+        _screenInfo->dirty_block_rows = (height / blockHeight) + 1;
+        _screenInfo->dirty_block_column_shift = widthShift;
+        _screenInfo->dirty_block_row_shift = heightShift;
+        _screenInfo->dirty_blocks_initialised = 1;
     }
 
     static void positionChanged(int32_t x, int32_t y)
@@ -524,8 +524,8 @@ namespace OpenLoco::Ui
     static void readKeyboardState()
     {
         addr<0x005251CC, uint8_t>() = 0;
-        auto dstSize = _keyboard_state.size();
-        auto dst = _keyboard_state.get();
+        auto dstSize = _keyboardState.size();
+        auto dst = _keyboardState.get();
 
         int numKeys;
 

@@ -63,8 +63,8 @@ namespace OpenLoco::Map
     protected:
         uint8_t _type;
         uint8_t _flags;
-        uint8_t _base_z;
-        uint8_t _clear_z;
+        uint8_t _baseZ;
+        uint8_t _clearZ;
 
     public:
         // Temporary, use this to get fields easily before they are defined
@@ -76,10 +76,10 @@ namespace OpenLoco::Map
             _type = enumValue(t) << 2;
         }
         uint8_t flags() const { return _flags; }
-        SmallZ baseZ() const { return _base_z; }
-        int16_t baseHeight() const { return _base_z * kSmallZStep; }
-        SmallZ clearZ() const { return _clear_z; }
-        int16_t clearHeight() const { return _clear_z * kSmallZStep; }
+        SmallZ baseZ() const { return _baseZ; }
+        int16_t baseHeight() const { return _baseZ * kSmallZStep; }
+        SmallZ clearZ() const { return _clearZ; }
+        int16_t clearHeight() const { return _clearZ * kSmallZStep; }
 
         bool isGhost() const { return _flags & ElementFlags::ghost; }
         void setGhost(bool state)
@@ -94,8 +94,8 @@ namespace OpenLoco::Map
             _flags &= ~ElementFlags::flag_6;
             _flags |= state == true ? ElementFlags::flag_6 : 0;
         }
-        void setBaseZ(uint8_t baseZ) { _base_z = baseZ; }
-        void setClearZ(uint8_t value) { _clear_z = value; }
+        void setBaseZ(uint8_t baseZ) { _baseZ = baseZ; }
+        void setClearZ(uint8_t value) { _clearZ = value; }
         bool isLast() const;
         void setLastFlag(bool state)
         {
@@ -166,26 +166,42 @@ namespace OpenLoco::Map
     namespace SurfaceSlope
     {
         constexpr uint8_t flat = 0x00;
-        constexpr uint8_t all_corners_up = 0x0F;
 
-        constexpr uint8_t n_corner_up = (1 << 0);
-        constexpr uint8_t e_corner_up = (1 << 1);
-        constexpr uint8_t s_corner_up = (1 << 2);
-        constexpr uint8_t w_corner_up = (1 << 3);
-        constexpr uint8_t double_height = (1 << 4);
+        namespace CornerUp
+        {
+            constexpr uint8_t all = 0x0F;
+            constexpr uint8_t north = (1 << 0);
+            constexpr uint8_t east = (1 << 1);
+            constexpr uint8_t south = (1 << 2);
+            constexpr uint8_t west = (1 << 3);
+        }
 
-        constexpr uint8_t w_corner_dn = all_corners_up & ~w_corner_up;
-        constexpr uint8_t s_corner_dn = all_corners_up & ~s_corner_up;
-        constexpr uint8_t e_corner_dn = all_corners_up & ~e_corner_up;
-        constexpr uint8_t n_corner_dn = all_corners_up & ~n_corner_up;
+        constexpr uint8_t doubleHeight = (1 << 4);
 
-        constexpr uint8_t ne_side_up = n_corner_up | e_corner_up;
-        constexpr uint8_t se_side_up = e_corner_up | s_corner_up;
-        constexpr uint8_t nw_side_up = n_corner_up | w_corner_up;
-        constexpr uint8_t sw_side_up = s_corner_up | w_corner_up;
+        namespace CornerDown
+        {
 
-        constexpr uint8_t w_e_valley = e_corner_up | w_corner_up;
-        constexpr uint8_t n_s_valley = n_corner_up | s_corner_up;
+            constexpr uint8_t west = CornerUp::all & ~CornerUp::west;
+            constexpr uint8_t south = CornerUp::all & ~CornerUp::south;
+            constexpr uint8_t east = CornerUp::all & ~CornerUp::east;
+            constexpr uint8_t north = CornerUp::all & ~CornerUp::north;
+        }
+
+        namespace SideUp
+        {
+
+            constexpr uint8_t northeast = CornerUp::north | CornerUp::east;
+            constexpr uint8_t southeast = CornerUp::south | CornerUp::east;
+            constexpr uint8_t northwest = CornerUp::north | CornerUp::west;
+            constexpr uint8_t southwest = CornerUp::south | CornerUp::west;
+        }
+
+        namespace Valley
+        {
+
+            constexpr uint8_t westeast = CornerUp::east | CornerUp::west;
+            constexpr uint8_t northsouth = CornerUp::north | CornerUp::south;
+        }
     }
 
     struct SurfaceElement : public TileElementBase
@@ -209,13 +225,13 @@ namespace OpenLoco::Map
             setHighTypeFlag(highTypeFlag);
         }
 
-        bool isSlopeDoubleHeight() const { return _slope & SurfaceSlope::double_height; }
+        bool isSlopeDoubleHeight() const { return _slope & SurfaceSlope::doubleHeight; }
         uint8_t slopeCorners() const { return _slope & 0x0F; }
         uint8_t slope() const { return _slope & 0x1F; }
         uint8_t var_4_E0() const { return _slope & 0xE0; }
-        MircoZ water() const { return _water & 0x1F; }
+        MicroZ water() const { return _water & 0x1F; }
         int16_t waterHeight() const { return (_water & 0x1F) * kMicroZStep; }
-        void setWater(MircoZ level) { _water = (_water & 0xE0) | (level & 0x1F); };
+        void setWater(MicroZ level) { _water = (_water & 0xE0) | (level & 0x1F); };
         uint8_t terrain() const { return _terrain & 0x1F; }
         void setTerrain(uint8_t terrain)
         {
@@ -254,7 +270,7 @@ namespace OpenLoco::Map
     private:
         uint8_t _4;
         uint8_t _5;
-        uint16_t _station_id;
+        uint16_t _stationId;
 
     public:
         CompanyId owner() const { return CompanyId(_4 & 0xF); } // _4l
@@ -262,7 +278,7 @@ namespace OpenLoco::Map
         StationType stationType() const;
         uint8_t rotation() const { return _type & 0x3; }
         uint8_t multiTileIndex() const { return (_type >> 6) & 3; }
-        StationId stationId() const { return StationId(_station_id & 0x3FF); }
+        StationId stationId() const { return StationId(_stationId & 0x3FF); }
     };
     static_assert(sizeof(StationElement) == TileElementSize);
 

@@ -68,21 +68,21 @@ namespace OpenLoco::Ui
 
     struct Viewport
     {
-        int16_t width;       // 0x00
-        int16_t height;      // 0x02
-        int16_t x;           // 0x04
-        int16_t y;           // 0x06
-        int16_t view_x;      // 0x08
-        int16_t view_y;      // 0x0A
-        int16_t view_width;  // 0x0C
-        int16_t view_height; // 0x0E
-        uint8_t zoom;        // 0x10
+        int16_t width;      // 0x00
+        int16_t height;     // 0x02
+        int16_t x;          // 0x04
+        int16_t y;          // 0x06
+        int16_t view_x;     // 0x08
+        int16_t view_y;     // 0x0A
+        int16_t viewWidth;  // 0x0C
+        int16_t viewHeight; // 0x0E
+        uint8_t zoom;       // 0x10
         uint8_t pad_11;
         uint16_t flags; // 0x12
 
         constexpr bool contains(const viewport_pos& vpos)
         {
-            return (vpos.y >= view_y && vpos.y < view_y + view_height && vpos.x >= view_x && vpos.x < view_x + view_width);
+            return (vpos.y >= view_y && vpos.y < view_y + viewHeight && vpos.x >= view_x && vpos.x < view_x + viewWidth);
         }
 
         constexpr bool containsUi(const Point& pos)
@@ -103,10 +103,10 @@ namespace OpenLoco::Ui
             if (vpos.bottom <= view_y)
                 return false;
 
-            if (vpos.left >= view_x + view_width)
+            if (vpos.left >= view_x + viewWidth)
                 return false;
 
-            if (vpos.top >= view_y + view_height)
+            if (vpos.top >= view_y + viewHeight)
                 return false;
 
             return true;
@@ -116,9 +116,9 @@ namespace OpenLoco::Ui
         {
             auto out = ViewportRect();
             out.left = std::max(rect.left, view_x);
-            out.right = std::min<int16_t>(rect.right, view_x + view_width);
+            out.right = std::min<int16_t>(rect.right, view_x + viewWidth);
             out.top = std::max(rect.top, view_y);
-            out.bottom = std::min<int16_t>(rect.bottom, view_y + view_height);
+            out.bottom = std::min<int16_t>(rect.bottom, view_y + viewHeight);
 
             return out;
         }

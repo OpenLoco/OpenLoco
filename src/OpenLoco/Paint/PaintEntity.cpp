@@ -38,19 +38,19 @@ namespace OpenLoco::Paint
             auto bottom = top + rt->height;
 
             // TODO: Create a rect from sprite dims and use a contains function
-            if (entity->sprite_top > bottom)
+            if (entity->spriteTop > bottom)
             {
                 continue;
             }
-            if (entity->sprite_bottom <= top)
+            if (entity->spriteBottom <= top)
             {
                 continue;
             }
-            if (entity->sprite_left > right)
+            if (entity->spriteLeft > right)
             {
                 continue;
             }
-            if (entity->sprite_right <= left)
+            if (entity->spriteRight <= left)
             {
                 continue;
             }

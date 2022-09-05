@@ -98,7 +98,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Status
     {
-        static const Ui::Size windowSize = { 270, 182 };
+        static constexpr Ui::Size windowSize = { 270, 182 };
 
         enum widx
         {
@@ -389,8 +389,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     viewport->width = proposedDims.width;
                     viewport->height = proposedDims.height;
-                    viewport->view_width = proposedDims.width << viewport->zoom;
-                    viewport->view_height = proposedDims.height << viewport->zoom;
+                    viewport->viewWidth = proposedDims.width << viewport->zoom;
+                    viewport->viewHeight = proposedDims.height << viewport->zoom;
                     self.savedView.clear();
                 }
             }
@@ -1732,9 +1732,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // '@ X% interest per' label
             {
-                loco_global<uint8_t, 0x00525FC6> loanInterestRate;
+                loco_global<uint8_t, 0x00525FC6> _loanInterestRate;
                 FormatArguments args{};
-                args.push<uint16_t>(loanInterestRate);
+                args.push<uint16_t>(_loanInterestRate);
                 Gfx::drawStringLeft(
                     *rt,
                     self.x + self.widgets[widx::currentLoan].right + 3,

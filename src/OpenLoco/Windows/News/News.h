@@ -16,7 +16,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     static loco_global<uint32_t, 0x00525CDC> _dword_525CDC;
     static loco_global<uint16_t, 0x00525CE0> _word_525CE0;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
-    static loco_global<char[512], 0x0112CC04> byte_112CC04;
+    static loco_global<char[512], 0x0112CC04> _byte_112CC04;
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
 
@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
     namespace News1
     {
-        static const Ui::Size windowSize = { 360, 117 };
+        static constexpr Ui::Size windowSize = { 360, 117 };
 
         extern Widget widgets[7];
 
@@ -59,14 +59,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
     namespace News2
     {
-        static const Ui::Size windowSize = { 360, 159 };
+        static constexpr Ui::Size windowSize = { 360, 159 };
 
         extern Widget widgets[7];
     }
 
     namespace Ticker
     {
-        static const Ui::Size windowSize = { 111, 26 };
+        static constexpr Ui::Size windowSize = { 111, 26 };
 
         enum widx
         {

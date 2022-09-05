@@ -33,7 +33,7 @@ namespace OpenLoco::StringManager
 
     static auto& rawUserStrings() { return getGameState().userStrings; }
 
-    static std::map<int32_t, string_id> day_to_string = {
+    static std::map<int32_t, string_id> dayToString = {
         { 1, StringIds::day_1st },
         { 2, StringIds::day_2nd },
         { 3, StringIds::day_3rd },
@@ -67,7 +67,7 @@ namespace OpenLoco::StringManager
         { 31, StringIds::day_31st },
     };
 
-    static std::map<MonthId, std::pair<string_id, string_id>> month_to_string = {
+    static std::map<MonthId, std::pair<string_id, string_id>> monthToStringMap = {
         { MonthId::january, { StringIds::month_short_january, StringIds::month_long_january } },
         { MonthId::february, { StringIds::month_short_february, StringIds::month_long_february } },
         { MonthId::march, { StringIds::month_short_march, StringIds::month_long_march } },
@@ -84,7 +84,7 @@ namespace OpenLoco::StringManager
 
     std::pair<string_id, string_id> monthToString(MonthId month)
     {
-        return month_to_string[month];
+        return monthToStringMap[month];
     }
 
     // 0x0049650E
@@ -166,14 +166,14 @@ namespace OpenLoco::StringManager
     {
         auto date = calcDate(totalDays);
 
-        string_id day_string = day_to_string[date.day];
-        buffer = formatString(buffer, day_string, nullptr);
+        string_id dayString = dayToString[date.day];
+        buffer = formatString(buffer, dayString, nullptr);
 
         *buffer = ' ';
         buffer++;
 
-        string_id month_string = month_to_string[date.month].second;
-        buffer = formatString(buffer, month_string, nullptr);
+        string_id monthString = monthToString(date.month).second;
+        buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
         buffer++;
@@ -188,8 +188,8 @@ namespace OpenLoco::StringManager
     {
         auto date = calcDate(totalDays);
 
-        string_id month_string = month_to_string[date.month].second;
-        buffer = formatString(buffer, month_string, nullptr);
+        string_id monthString = monthToString(date.month).second;
+        buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
         buffer++;
@@ -204,8 +204,8 @@ namespace OpenLoco::StringManager
     {
         auto date = calcDate(totalDays);
 
-        string_id month_string = month_to_string[date.month].second;
-        buffer = formatString(buffer, month_string, nullptr);
+        string_id monthString = monthToString(date.month).second;
+        buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
         buffer++;
@@ -219,8 +219,8 @@ namespace OpenLoco::StringManager
     static char* formatRawDateMYAbbrev(uint32_t totalDays, char* buffer)
     {
         auto month = static_cast<MonthId>(totalDays % 12);
-        string_id month_string = month_to_string[month].first;
-        buffer = formatString(buffer, month_string, nullptr);
+        string_id monthString = monthToString(month).first;
+        buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
         buffer++;
