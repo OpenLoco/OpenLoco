@@ -867,7 +867,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                 clipped->y *= 2;
 
                                 auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
-                                auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::previewImage, companyColour);
+                                auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::kPreviewImage, companyColour);
                                 Gfx::drawImage(&*clipped, -4, -9, imageId);
 
                                 auto colour = Colours::getTranslucent(companyColour);
@@ -875,7 +875,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                 {
                                     colour = ExtColour::unk2E;
                                 }
-                                imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::previewImageWindows, colour);
+                                imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::kPreviewImageWindows, colour);
                                 Gfx::drawImage(&*clipped, -4, -9, imageId);
                             }
 

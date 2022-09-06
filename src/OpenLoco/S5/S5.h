@@ -88,10 +88,10 @@ namespace OpenLoco::S5
         char scenarioDetails[256];                            // 0x6A
         ObjectHeader scenarioText;                            // 0x16A
         uint16_t numberOfForests;                             // 0x17a
-        uint8_t min_forest_radius;                            // 0x17C
-        uint8_t max_forest_radius;                            // 0x17D
-        uint8_t min_forest_density;                           // 0x17E
-        uint8_t max_forest_density;                           // 0x17F
+        uint8_t minForestRadius;                              // 0x17C
+        uint8_t maxForestRadius;                              // 0x17D
+        uint8_t minForestDensity;                             // 0x17E
+        uint8_t maxForestDensity;                             // 0x17F
         uint16_t numberRandomTrees;                           // 0x180
         uint8_t minAltitudeForTrees;                          // 0x182
         uint8_t maxAltitudeForTrees;                          // 0x183
@@ -123,10 +123,10 @@ namespace OpenLoco::S5
     static_assert(0x009C8714 + offsetof(Options, madeAnyChanges) == 0x009C871C);
     static_assert(0x009C8714 + offsetof(Options, landDistributionPatterns) == 0x009C871E);
     static_assert(0x009C8714 + offsetof(Options, numberOfForests) == 0x009C888E);
-    static_assert(0x009C8714 + offsetof(Options, min_forest_radius) == 0x009C8890);
-    static_assert(0x009C8714 + offsetof(Options, max_forest_radius) == 0x009C8891);
-    static_assert(0x009C8714 + offsetof(Options, min_forest_density) == 0x009C8892);
-    static_assert(0x009C8714 + offsetof(Options, max_forest_density) == 0x009C8893);
+    static_assert(0x009C8714 + offsetof(Options, minForestRadius) == 0x009C8890);
+    static_assert(0x009C8714 + offsetof(Options, maxForestRadius) == 0x009C8891);
+    static_assert(0x009C8714 + offsetof(Options, minForestDensity) == 0x009C8892);
+    static_assert(0x009C8714 + offsetof(Options, maxForestDensity) == 0x009C8893);
     static_assert(0x009C8714 + offsetof(Options, numberRandomTrees) == 0x009C8894);
     static_assert(0x009C8714 + offsetof(Options, minAltitudeForTrees) == 0x009C8896);
     static_assert(0x009C8714 + offsetof(Options, maxAltitudeForTrees) == 0x009C8897);
@@ -162,7 +162,7 @@ namespace OpenLoco::S5
         uint32_t date;                       // 0x200
         uint16_t performanceIndex;           // 0x204 (from [company.performance_index)
         char scenario[0x40];                 // 0x206
-        uint8_t challenge_progress;          // 0x246
+        uint8_t challengeProgress;           // 0x246
         std::byte pad_247;                   // 0x247
         uint8_t image[250 * 200];            // 0x248
         uint32_t challengeFlags;             // 0xC598 (from [company.challenge_flags])
@@ -182,7 +182,7 @@ namespace OpenLoco::S5
         uint32_t updateCounter;        // 0x0012
         int16_t performanceIndex;      // 0x0016
         uint8_t pad_18[0x8C4E - 0x18]; // 0x0018
-        uint8_t challenge_progress;    // 0x8C4E
+        uint8_t challengeProgress;     // 0x8C4E
         uint8_t pad_8C4F[0x8FA8 - 0x8C4F];
     };
     static_assert(sizeof(Company) == 0x8FA8);

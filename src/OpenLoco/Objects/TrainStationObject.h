@@ -59,8 +59,8 @@ namespace OpenLoco
 
     namespace TrainStation::ImageIds
     {
-        constexpr uint32_t previewImage = 0;
-        constexpr uint32_t previewImageWindows = 1;
+        static constexpr uint32_t kPreviewImage = 0;
+        static constexpr uint32_t kPreviewImageWindows = 1;
         // These are relative to var_12
         // var_12 is the imageIds per sequenceIndex (for start/middle/end of the platform)
         namespace Style0

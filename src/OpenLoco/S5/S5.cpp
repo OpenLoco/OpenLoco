@@ -115,7 +115,7 @@ namespace OpenLoco::S5
             eventList.draw = previewWindowDraw;
 
             auto tempWindow = WindowManager::createWindow(
-                WindowType::previewImage,
+                WindowType::kPreviewImage,
                 { 0, 0 },
                 size,
                 WindowFlags::stickToFront,
@@ -147,7 +147,7 @@ namespace OpenLoco::S5
                     rt = backupContext;
                 }
 
-                WindowManager::close(WindowType::previewImage);
+                WindowManager::close(WindowType::kPreviewImage);
             }
         }
     }
@@ -161,7 +161,7 @@ namespace OpenLoco::S5
         StringManager::formatString(saveDetails->owner, sizeof(saveDetails->owner), playerCompany.ownerName);
         saveDetails->date = gameState.currentDay;
         saveDetails->performanceIndex = playerCompany.performanceIndex;
-        saveDetails->challenge_progress = playerCompany.challenge_progress;
+        saveDetails->challengeProgress = playerCompany.challengeProgress;
         saveDetails->challengeFlags = playerCompany.challengeFlags;
         std::strncpy(saveDetails->scenario, gameState.scenarioName, sizeof(saveDetails->scenario));
         drawPreviewImage(saveDetails->image, { 250, 200 });

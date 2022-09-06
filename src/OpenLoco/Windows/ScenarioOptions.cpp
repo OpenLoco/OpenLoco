@@ -690,7 +690,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
 
                 case widx::max_competing_companies_up:
-                    CompanyManager::setMaxCompetingCompanies(std::min<uint8_t>(CompanyManager::getMaxCompetingCompanies() + 1, Scenario::max_competing_companies));
+                    CompanyManager::setMaxCompetingCompanies(std::min<uint8_t>(CompanyManager::getMaxCompetingCompanies() + 1, Scenario::kMaxCompetingCompanies));
                     self.invalidate();
                     break;
 

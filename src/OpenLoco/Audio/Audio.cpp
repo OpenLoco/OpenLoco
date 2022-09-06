@@ -99,7 +99,7 @@ namespace OpenLoco::Audio
     static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq);
 
     // 0x004FE910
-    static const MusicInfo kMusicInfo[] = {
+    static constexpr MusicInfo kMusicInfo[] = {
         { PathId::music_chuggin_along, StringIds::music_chuggin_along, 1925, 1933 },
         { PathId::music_long_dusty_road, StringIds::music_long_dusty_road, 1927, 1935 },
         { PathId::music_flying_high, StringIds::music_flying_high, 1932, 1940 },

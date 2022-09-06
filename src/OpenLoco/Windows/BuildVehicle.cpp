@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         vehicle_preview
     };
 
-    static const uint32_t trainTabImages[16]{
+    static constexpr uint32_t kTrainTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_train_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_train_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_train_frame_2,
@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         InterfaceSkin::ImageIds::build_vehicle_train_frame_15,
     };
 
-    static const uint32_t aircraftTabImages[16]{
+    static constexpr uint32_t kAircraftTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_2,
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_15,
     };
 
-    static const uint32_t busTabImages[16]{
+    static constexpr uint32_t kBusTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_bus_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_bus_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_bus_frame_2,
@@ -119,7 +119,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         InterfaceSkin::ImageIds::build_vehicle_bus_frame_15,
     };
 
-    static const uint32_t tramTabImages[16]{
+    static constexpr uint32_t kTramTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_tram_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_tram_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_tram_frame_2,
@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         InterfaceSkin::ImageIds::build_vehicle_tram_frame_15,
     };
 
-    static const uint32_t truckTabImages[16]{
+    static constexpr uint32_t kTruckTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_truck_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_truck_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_truck_frame_2,
@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         InterfaceSkin::ImageIds::build_vehicle_truck_frame_15,
     };
 
-    static const uint32_t shipTabImages[16]{
+    static constexpr uint32_t kShipTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_ship_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_ship_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_ship_frame_2,
@@ -184,12 +184,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     };
 
     static TabDetails _transportTypeTabInformation[] = {
-        { VehicleType::train, tab_build_new_trains, trainTabImages },
-        { VehicleType::bus, tab_build_new_buses, busTabImages },
-        { VehicleType::truck, tab_build_new_trucks, truckTabImages },
-        { VehicleType::tram, tab_build_new_trams, tramTabImages },
-        { VehicleType::aircraft, tab_build_new_aircraft, aircraftTabImages },
-        { VehicleType::ship, tab_build_new_ships, shipTabImages }
+        { VehicleType::train, tab_build_new_trains, kTrainTabImages },
+        { VehicleType::bus, tab_build_new_buses, kBusTabImages },
+        { VehicleType::truck, tab_build_new_trucks, kTruckTabImages },
+        { VehicleType::tram, tab_build_new_trams, kTramTabImages },
+        { VehicleType::aircraft, tab_build_new_aircraft, kAircraftTabImages },
+        { VehicleType::ship, tab_build_new_ships, kShipTabImages }
     };
 
     // 0x5231D0

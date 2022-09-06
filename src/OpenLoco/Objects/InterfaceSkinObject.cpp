@@ -25,7 +25,7 @@ namespace OpenLoco
     // 0x0043C86A
     void InterfaceSkinObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        auto image = Gfx::recolour(img + InterfaceSkin::ImageIds::previewImage, Colour::mutedSeaGreen);
+        auto image = Gfx::recolour(img + InterfaceSkin::ImageIds::kPreviewImage, Colour::mutedSeaGreen);
 
         Gfx::drawImage(&rt, x - 32, y - 32, image);
     }

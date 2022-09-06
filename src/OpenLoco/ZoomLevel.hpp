@@ -5,15 +5,6 @@
 
 namespace OpenLoco
 {
-    /*enum class ZoomLevel : uint8_t
-    {
-        full = 0,
-        half = 1,
-        quarter = 2,
-        eighth = 3,
-        max = 4,
-    };*/
-
 #pragma pack(push, 1)
     class ZoomLevel
     {

@@ -64,7 +64,7 @@ namespace OpenLoco::Scenario
     constexpr uint32_t kMaxObjectiveDeliveredCargo = 200000000;
 
     constexpr uint8_t kMinCompetingCompanies = 0;
-    constexpr uint8_t max_competing_companies = 14;
+    constexpr uint8_t kMaxCompetingCompanies = 14;
 
     constexpr uint8_t kMinCompetitorStartDelay = 0;
     constexpr uint8_t kMaxCompetitorStartDelay = 240;
@@ -90,11 +90,11 @@ namespace OpenLoco::Scenario
     constexpr uint16_t kMinNumForests = 0;
     constexpr uint16_t kMaxNumForests = 990;
 
-    constexpr uint8_t min_forest_radius = 4;
-    constexpr uint8_t max_forest_radius = 40;
+    constexpr uint8_t kMinForestRadius = 4;
+    constexpr uint8_t kMaxForestRadius = 40;
 
-    constexpr uint8_t min_forest_density = 1;
-    constexpr uint8_t max_forest_density = 7;
+    constexpr uint8_t kMinForestDensity = 1;
+    constexpr uint8_t kMaxForestDensity = 7;
 
     constexpr uint16_t kMinNumTrees = 0;
     constexpr uint16_t kMaxNumTrees = 20000;
