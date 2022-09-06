@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 {
     static TilePos2 _currentPosition{};
 
-    constexpr Ui::Size windowSize = { 250, 182 };
+    static constexpr Ui::Size kWindowSize = { 250, 182 };
 
     namespace widx
     {
@@ -57,15 +57,15 @@ namespace OpenLoco::Ui::Windows::TileInspector
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, windowSize.height - 15 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
+        makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WidgetType::panel, WindowColour::secondary),
         makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::textbox, WindowColour::secondary),
         makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::textbox, WindowColour::secondary),
-        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
-        makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
-        makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
+        makeWidget({ kWindowSize.width - 26, 18 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
+        makeWidget({ 4, 46 }, { kWindowSize.width - 8, 100 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
+        makeWidget({ 4, 148 }, { kWindowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
         widgetEnd(),
     };
 
@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
         window = WindowManager::createWindow(
             WindowType::tileInspector,
-            windowSize,
+            kWindowSize,
             0,
             &_events);
 

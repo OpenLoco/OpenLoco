@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace IndustryList
     {
-        static constexpr Ui::Size windowSize = { 600, 197 };
+        static constexpr Ui::Size kWindowSize = { 600, 197 };
         static constexpr Ui::Size maxDimensions = { 600, 900 };
         static constexpr Ui::Size minDimensions = { 192, 100 };
 
@@ -517,12 +517,12 @@ namespace OpenLoco::Ui::Windows::IndustryList
         else
         {
             // 0x00457878
-            auto origin = Ui::Point(Ui::width() - IndustryList::windowSize.width, 30);
+            auto origin = Ui::Point(Ui::width() - IndustryList::kWindowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::industryList,
                 origin,
-                IndustryList::windowSize,
+                IndustryList::kWindowSize,
                 WindowFlags::flag_8,
                 &IndustryList::events);
 
@@ -550,8 +550,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             // 0x00457878 end
 
             // TODO: only needs to be called once.
-            window->width = IndustryList::windowSize.width;
-            window->height = IndustryList::windowSize.height;
+            window->width = IndustryList::kWindowSize.width;
+            window->height = IndustryList::kWindowSize.height;
 
             Common::initEvents();
 
@@ -578,7 +578,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
     namespace NewIndustries
     {
 
-        static constexpr Ui::Size windowSize = { 578, 172 };
+        static constexpr Ui::Size kWindowSize = { 578, 172 };
 
         static const uint8_t rowHeight = 112;
 
@@ -816,19 +816,19 @@ namespace OpenLoco::Ui::Windows::IndustryList
                                 {
                                     y = std::min(y, 276);
                                 }
-                                self.minWidth = windowSize.width;
+                                self.minWidth = kWindowSize.width;
                                 self.minHeight = y;
-                                self.maxWidth = windowSize.width;
+                                self.maxWidth = kWindowSize.width;
                                 self.maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = windowSize.width;
-                                    self.minHeight = windowSize.height;
-                                    self.maxWidth = windowSize.width;
-                                    self.maxHeight = windowSize.height;
+                                    self.minWidth = kWindowSize.width;
+                                    self.minHeight = kWindowSize.height;
+                                    self.maxWidth = kWindowSize.width;
+                                    self.maxHeight = kWindowSize.height;
                                 }
                             }
                         }
@@ -839,10 +839,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     self.savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = windowSize.width;
-                        self.minHeight = windowSize.height;
-                        self.maxWidth = windowSize.width;
-                        self.maxHeight = windowSize.height;
+                        self.minWidth = kWindowSize.width;
+                        self.minHeight = kWindowSize.height;
+                        self.maxWidth = kWindowSize.width;
+                        self.maxHeight = kWindowSize.height;
                     }
                 }
             }
@@ -1127,10 +1127,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457FFE
         static void tabReset(Window* self)
         {
-            self->minWidth = NewIndustries::windowSize.width;
-            self->minHeight = NewIndustries::windowSize.height;
-            self->maxWidth = NewIndustries::windowSize.width;
-            self->maxHeight = NewIndustries::windowSize.height;
+            self->minWidth = NewIndustries::kWindowSize.width;
+            self->minHeight = NewIndustries::kWindowSize.height;
+            self->maxWidth = NewIndustries::kWindowSize.width;
+            self->maxHeight = NewIndustries::kWindowSize.height;
             Input::toolSet(self, Common::widx::tab_new_industry, CursorId::placeFactory);
 
             Input::setFlag(Input::Flags::flag6);

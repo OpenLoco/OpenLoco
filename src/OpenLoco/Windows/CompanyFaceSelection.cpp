@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static loco_global<CompetitorObject*, 0x0050D15C> _loadedObject; // This could be any type of object
     static loco_global<int32_t, 0x0113E72C> _cursorX;
 
-    static constexpr Ui::Size windowSize = { 400, 272 };
+    static constexpr Ui::Size kWindowSize = { 400, 272 };
     static constexpr uint32_t rowHeight = 10;
     static WindowEventList events;
 
@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     // 0x509680
     static Widget widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 398, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::company_face_selection_title),
         makeWidget({ 385, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 400, 257 }, WidgetType::panel, WindowColour::secondary),
@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         else
         {
             initEvents();
-            self = WindowManager::createWindow(WindowType::companyFaceSelection, windowSize, 0, &events);
+            self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, 0, &events);
             self->widgets = widgets;
             self->enabledWidgets = (1 << widx::close_button);
             self->initScrollWidgets();

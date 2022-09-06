@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace TownList
     {
-        static constexpr Ui::Size windowSize = { 600, 197 };
+        static constexpr Ui::Size kWindowSize = { 600, 197 };
         static constexpr Ui::Size maxDimensions = { 600, 900 };
         static constexpr Ui::Size minDimensions = { 192, 100 };
 
@@ -484,8 +484,8 @@ namespace OpenLoco::Ui::Windows::TownList
             self->minHeight = minDimensions.height;
             self->maxWidth = maxDimensions.width;
             self->maxHeight = maxDimensions.height;
-            self->width = windowSize.width;
-            self->height = windowSize.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
             self->var_83C = 0;
             self->rowHover = -1;
 
@@ -520,12 +520,12 @@ namespace OpenLoco::Ui::Windows::TownList
         else
         {
             // 0x00499CFC
-            auto origin = Ui::Point(Ui::width() - TownList::windowSize.width, 30);
+            auto origin = Ui::Point(Ui::width() - TownList::kWindowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::townList,
                 origin,
-                TownList::windowSize,
+                TownList::kWindowSize,
                 WindowFlags::resizable,
                 &TownList::events);
 
@@ -553,8 +553,8 @@ namespace OpenLoco::Ui::Windows::TownList
             // 0x00499CFC end
 
             // TODO: only needs to be called once.
-            window->width = TownList::windowSize.width;
-            window->height = TownList::windowSize.height;
+            window->width = TownList::kWindowSize.width;
+            window->height = TownList::kWindowSize.height;
 
             Common::initEvents();
 
@@ -589,7 +589,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace BuildTowns
     {
-        static constexpr Ui::Size windowSize = { 220, 87 };
+        static constexpr Ui::Size kWindowSize = { 220, 87 };
 
         enum widx
         {
@@ -746,7 +746,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A844
         static void onResize(Window& self)
         {
-            self.setSize(windowSize, windowSize);
+            self.setSize(kWindowSize, kWindowSize);
         }
 
         // 0x0049A7C7
@@ -759,12 +759,12 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A3BE
         static void tabReset(Window* self)
         {
-            self->minWidth = windowSize.width;
-            self->minHeight = windowSize.height;
-            self->maxWidth = windowSize.width;
-            self->maxWidth = windowSize.height;
-            self->width = windowSize.width;
-            self->height = windowSize.height;
+            self->minWidth = kWindowSize.width;
+            self->minHeight = kWindowSize.height;
+            self->maxWidth = kWindowSize.width;
+            self->maxWidth = kWindowSize.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
             Input::toolSet(self, Common::widx::tab_build_town, CursorId::placeTown);
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::showGridlines();
@@ -788,7 +788,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace BuildBuildings
     {
-        static constexpr Ui::Size windowSize = { 600, 172 };
+        static constexpr Ui::Size kWindowSize = { 600, 172 };
 
         static const uint8_t rowHeight = 112;
 
@@ -920,19 +920,19 @@ namespace OpenLoco::Ui::Windows::TownList
                                 {
                                     y = std::min(y, 276);
                                 }
-                                self.minWidth = windowSize.width;
+                                self.minWidth = kWindowSize.width;
                                 self.minHeight = y;
-                                self.maxWidth = windowSize.width;
+                                self.maxWidth = kWindowSize.width;
                                 self.maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = windowSize.width;
-                                    self.minHeight = windowSize.height;
-                                    self.maxWidth = windowSize.width;
-                                    self.maxHeight = windowSize.height;
+                                    self.minWidth = kWindowSize.width;
+                                    self.minHeight = kWindowSize.height;
+                                    self.maxWidth = kWindowSize.width;
+                                    self.maxHeight = kWindowSize.height;
                                 }
                             }
                         }
@@ -943,10 +943,10 @@ namespace OpenLoco::Ui::Windows::TownList
                     self.savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = windowSize.width;
-                        self.minHeight = windowSize.height;
-                        self.maxWidth = windowSize.width;
-                        self.maxHeight = windowSize.height;
+                        self.minWidth = kWindowSize.width;
+                        self.minHeight = kWindowSize.height;
+                        self.maxWidth = kWindowSize.width;
+                        self.maxHeight = kWindowSize.height;
                     }
                 }
             }
@@ -1371,12 +1371,12 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A3FF
         static void tabReset(Window* self)
         {
-            self->minWidth = windowSize.width;
-            self->minHeight = windowSize.height;
-            self->maxWidth = windowSize.width;
-            self->maxWidth = windowSize.height;
-            self->width = windowSize.width;
-            self->height = windowSize.height;
+            self->minWidth = kWindowSize.width;
+            self->minHeight = kWindowSize.height;
+            self->maxWidth = kWindowSize.width;
+            self->maxWidth = kWindowSize.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
 
             auto tab = Common::widx::tab_build_buildings;
             if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)

@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace Station
     {
-        static constexpr Ui::Size windowSize = { 223, 136 };
+        static constexpr Ui::Size kWindowSize = { 223, 136 };
 
         enum widx
         {
@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::Station
         };
 
         Widget widgets[] = {
-            // commonWidgets(windowSize.width, windowSize.height),
+            // commonWidgets(kWindowSize.width, kWindowSize.height),
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
@@ -165,7 +165,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(windowSize, Common::maxWindowSize);
+            self.setSize(kWindowSize, Common::maxWindowSize);
 
             if (self.viewports[0] != nullptr)
             {
@@ -276,7 +276,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             // 0x0048F29F start
             const uint32_t newFlags = WindowFlags::resizable | WindowFlags::flag_11;
-            window = WindowManager::createWindow(WindowType::station, Station::windowSize, newFlags, &Station::events);
+            window = WindowManager::createWindow(WindowType::station, Station::kWindowSize, newFlags, &Station::events);
             window->number = enumValue(stationId);
             auto station = StationManager::get(stationId);
             window->owner = station->owner;
@@ -566,7 +566,7 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace CargoRatings
     {
-        static constexpr Ui::Size windowSize = { 249, 136 };
+        static constexpr Ui::Size kWindowSize = { 249, 136 };
 
         static constexpr Ui::Size maxWindowSize = { 249, 440 };
 
@@ -633,7 +633,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(windowSize, maxWindowSize);
+            self.setSize(kWindowSize, maxWindowSize);
         }
 
         // 0x0048EE4A
@@ -912,7 +912,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             self->invalidate();
 
-            self->setSize(Station::windowSize);
+            self->setSize(Station::kWindowSize);
             self->callOnResize();
             self->callPrepareDraw();
             self->initScrollWidgets();

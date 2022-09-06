@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Industry
     {
-        static constexpr Ui::Size windowSize = { 223, 137 };
+        static constexpr Ui::Size kWindowSize = { 223, 137 };
 
         static constexpr Ui::Size minWindowSize = { 192, 137 };
 
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             // 0x00456DBC start
             const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
-            window = WindowManager::createWindow(WindowType::industry, Industry::windowSize, newFlags, &Industry::events);
+            window = WindowManager::createWindow(WindowType::industry, Industry::kWindowSize, newFlags, &Industry::events);
             window->number = enumValue(industryId);
             window->minWidth = 192;
             window->minHeight = 137;
@@ -420,7 +420,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Transported
     {
-        static constexpr Ui::Size windowSize = { 300, 127 };
+        static constexpr Ui::Size kWindowSize = { 300, 127 };
 
         static Widget widgets[] = {
             commonWidgets(300, 126, StringIds::title_statistics),
@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void onResize(Window& self)
         {
             {
-                self.setSize(windowSize, windowSize);
+                self.setSize(kWindowSize, kWindowSize);
             }
         }
 
@@ -787,7 +787,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self->invalidate();
 
-            self->setSize(Industry::windowSize);
+            self->setSize(Industry::kWindowSize);
             self->callOnResize();
             self->callPrepareDraw();
             self->initScrollWidgets();

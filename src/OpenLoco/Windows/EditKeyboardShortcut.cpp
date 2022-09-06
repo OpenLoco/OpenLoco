@@ -16,16 +16,16 @@ using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
-    constexpr Ui::Size windowSize = { 280, 72 };
+    static constexpr Ui::Size kWindowSize = { 280, 72 };
 
     static WindowEventList events;
     static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),                                                                      // 0,
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::change_keyboard_shortcut),          // 1,
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),                                                                     // 0,
+        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::change_keyboard_shortcut),         // 1,
         makeWidget({ 265, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), // 2,
-        makeWidget({ 0, 15 }, { windowSize.width, 57 }, WidgetType::panel, WindowColour::secondary),                                                     // 3,
+        makeWidget({ 0, 15 }, { kWindowSize.width, 57 }, WidgetType::panel, WindowColour::secondary),                                                    // 3,
         widgetEnd(),
     };
 
@@ -51,7 +51,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         // TODO: only needs to be called once
         initEvents();
 
-        auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, windowSize, 0, &events);
+        auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, kWindowSize, 0, &events);
 
         window->widgets = _widgets;
         window->enabledWidgets = 1 << Widx::close;

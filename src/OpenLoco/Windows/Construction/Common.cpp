@@ -1072,7 +1072,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             auto window = WindowManager::createWindow(
                 WindowType::construction,
-                Construction::windowSize,
+                Construction::kWindowSize,
                 WindowFlags::flag_11 | WindowFlags::noAutoClose,
                 &Construction::events);
 

@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             _word_525CE0 = std::min(height, self.height);
 
             height = Ui::height() - _word_525CE0 - self.y;
-            auto width = (Ui::width() / 2) - (windowSize.width / 2) - self.x;
+            auto width = (Ui::width() / 2) - (kWindowSize.width / 2) - self.x;
 
             if (width != 0 || height != 0)
             {
@@ -563,7 +563,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             Gfx::drawImage(rt, self->x, self->y, ImageIds::news_background_new_left);
 
-            Gfx::drawImage(rt, self->x + (windowSize.width / 2), self->y, ImageIds::news_background_new_right);
+            Gfx::drawImage(rt, self->x + (kWindowSize.width / 2), self->y, ImageIds::news_background_new_right);
 
             self->draw(rt);
 
@@ -645,7 +645,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             imageId = Gfx::recolour(ImageIds::news_background_old_right, ExtColour::translucentBrown1);
 
-            Gfx::drawImage(rt, self->x + (windowSize.width / 2), self->y, imageId);
+            Gfx::drawImage(rt, self->x + (kWindowSize.width / 2), self->y, imageId);
 
             self->draw(rt);
 

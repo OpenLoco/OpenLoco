@@ -48,7 +48,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int rowHeight = 12;
-    static Ui::Size windowSize = { 600, 398 };
+    static constexpr Ui::Size kWindowSize = { 600, 398 };
 
     static loco_global<uint8_t[999], 0x004FE384> _4FE384;
 
@@ -154,7 +154,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         sub_473A95();
 
-        window = WindowManager::createWindowCentred(WindowType::objectSelection, { windowSize }, 0, &_events);
+        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, 0, &_events);
         window->widgets = widgets;
         window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::advancedButton);
         window->initScrollWidgets();

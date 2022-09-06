@@ -17,10 +17,10 @@ namespace OpenLoco::Ui::Windows::Tutorial
         frame,
     };
 
-    constexpr Ui::Size windowSize = { 140, 29 };
+    static constexpr Ui::Size kWindowSize = { 140, 29 };
 
     Widget widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::wt_3, WindowColour::primary),
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary),
         widgetEnd(),
     };
 
@@ -35,7 +35,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
         auto window = WindowManager::createWindow(
             WindowType::tutorial,
-            Ui::Point(windowSize.width, Ui::height() - 27),
+            Ui::Point(kWindowSize.width, Ui::height() - 27),
             Ui::Size(Ui::width() - 280, 27),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             &_events);
