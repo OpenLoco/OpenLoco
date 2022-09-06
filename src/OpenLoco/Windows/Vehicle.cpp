@@ -369,7 +369,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return self;
             }
             self->owner = vehicle->owner;
-            self->kRowHeight = rowHeights[static_cast<uint8_t>(vehicle->vehicleType)];
+            self->rowHeight = rowHeights[static_cast<uint8_t>(vehicle->vehicleType)];
             self->currentTab = 0;
             self->frameNo = 0;
             resetDisabledWidgets(self);
@@ -1225,7 +1225,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x4B38FA
         static void getScrollSize(Ui::Window& self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
         {
-            *height = static_cast<uint16_t>(Common::getNumCars(&self) * self.kRowHeight);
+            *height = static_cast<uint16_t>(Common::getNumCars(&self) * self.rowHeight);
         }
 
         // 0x004B3B54
@@ -1578,7 +1578,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     carStr = StringIds::wcolour2_stringid;
 
                     int16_t top = pos.y;
-                    int16_t bottom = pos.y + self.kRowHeight - 1;
+                    int16_t bottom = pos.y + self.rowHeight - 1;
                     if (_dragCarComponent != nullptr)
                     {
                         bottom = pos.y;
@@ -1588,7 +1588,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     Gfx::fillRect(rt, 0, top, self.width, bottom, 0x2000030);
                 }
 
-                int16_t y = pos.y + (self.kRowHeight - 22) / 2;
+                int16_t y = pos.y + (self.rowHeight - 22) / 2;
                 uint8_t al = 0;
                 uint8_t ah = 0;
                 if (car.front == _dragCarComponent)
@@ -1602,10 +1602,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args{};
                 args.push(vehicleObj->name);
                 x += 2;
-                y = pos.y + (self.kRowHeight / 2) - 6;
+                y = pos.y + (self.rowHeight / 2) - 6;
                 Gfx::drawStringLeft(rt, x, y, Colour::black, carStr, &args);
 
-                pos.y += self.kRowHeight;
+                pos.y += self.rowHeight;
             }
 
             if (EntityId(self.rowHover) == train.tail->id && _dragCarComponent != nullptr)
@@ -1656,7 +1656,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return nullptr;
             }
 
-            auto y = self.kRowHeight / 2 + res.scrollviewLoc.y;
+            auto y = self.rowHeight / 2 + res.scrollviewLoc.y;
             auto car = Common::getCarFromScrollView(&self, y);
             if (!car)
             {
@@ -1883,18 +1883,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto body = car.body;
                 if (front->id == EntityId(self.rowHover))
                 {
-                    Gfx::fillRect(rt, 0, y, self.width, y + self.kRowHeight - 1, 0x2000030);
+                    Gfx::fillRect(rt, 0, y, self.width, y + self.rowHeight - 1, 0x2000030);
                     strFormat = StringIds::wcolour2_stringid;
                 }
                 // Get width of the drawing
                 auto width = Common::sub_4B743B(1, 0, 0, y, front, &rt);
                 // Actually draw it
-                width = Common::sub_4B743B(0, 0, 24 - width, (self.kRowHeight - 22) / 2 + y, car.front, &rt);
+                width = Common::sub_4B743B(0, 0, 24 - width, (self.rowHeight - 22) / 2 + y, car.front, &rt);
 
                 if (body->primaryCargo.type != 0xFF)
                 {
 
-                    int16_t cargoTextHeight = self.kRowHeight / 2 + y - ((self.kRowHeight - 22) / 2) - 10;
+                    int16_t cargoTextHeight = self.rowHeight / 2 + y - ((self.rowHeight - 22) / 2) - 10;
                     if (front->secondaryCargo.qty != 0 || body->primaryCargo.qty != 0)
                     {
                         if (body->primaryCargo.qty == 0 || front->secondaryCargo.qty == 0)
@@ -1912,7 +1912,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     }
                 }
 
-                y += self.kRowHeight;
+                y += self.rowHeight;
             }
         }
 
@@ -2040,7 +2040,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4360
         static void getScrollSize(Ui::Window& self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
         {
-            *height = static_cast<uint16_t>(Common::getNumCars(&self) * self.kRowHeight);
+            *height = static_cast<uint16_t>(Common::getNumCars(&self) * self.rowHeight);
         }
 
         static char* generateCargoTooltipDetails(char* buffer, const string_id cargoFormat, const uint8_t cargoType, const uint8_t maxCargo, const uint32_t acceptedCargoTypes)
@@ -4461,7 +4461,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto heightOffset = y;
             for (auto& car : train.cars)
             {
-                heightOffset -= self->kRowHeight;
+                heightOffset -= self->rowHeight;
                 if (heightOffset <= 0)
                 {
                     return { car };

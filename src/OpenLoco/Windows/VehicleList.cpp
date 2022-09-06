@@ -460,7 +460,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self = create(companyId);
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;
-        self->kRowHeight = row_heights[tabIndex];
+        self->rowHeight = row_heights[tabIndex];
         self->width = kWindowSize.width;
         self->height = kWindowSize.height;
         self->sortMode = 0;
@@ -713,9 +713,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             const auto vehicleId = EntityId(self.rowInfo[i]);
 
             // Item not in rendering context, or no vehicle available for this slot?
-            if (yPos + self.kRowHeight < rt.y || yPos >= rt.y + rt.height + self.kRowHeight || vehicleId == EntityId::null)
+            if (yPos + self.rowHeight < rt.y || yPos >= rt.y + rt.height + self.rowHeight || vehicleId == EntityId::null)
             {
-                yPos += self.kRowHeight;
+                yPos += self.rowHeight;
                 continue;
             }
 
@@ -726,10 +726,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
             // Highlight selection.
             if (head->id == EntityId(self.rowHover))
-                Gfx::drawRect(rt, 0, yPos, self.width, self.kRowHeight, Colours::getShade(self.getColour(WindowColour::secondary).c(), 0));
+                Gfx::drawRect(rt, 0, yPos, self.width, self.rowHeight, Colours::getShade(self.getColour(WindowColour::secondary).c(), 0));
 
             // Draw vehicle at the bottom of the row.
-            drawVehicle(head, &rt, yPos + (self.kRowHeight - 28) / 2 + 6);
+            drawVehicle(head, &rt, yPos + (self.rowHeight - 28) / 2 + 6);
 
             // Draw vehicle status
             {
@@ -786,7 +786,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 Gfx::drawStringLeftClipped(rt, 475, yPos, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, &args);
             }
 
-            yPos += self.kRowHeight - 2;
+            yPos += self.rowHeight - 2;
         }
     }
 
@@ -798,7 +798,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;
-        self->kRowHeight = row_heights[tabIndex];
+        self->rowHeight = row_heights[tabIndex];
         self->frameNo = 0;
 
         if (CompanyManager::getControllingId() == CompanyId(self->number) && LastGameOptionManager::getLastVehicleType() != type)
@@ -1010,7 +1010,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C265B
     static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = self.var_83C * self.kRowHeight;
+        *scrollHeight = self.var_83C * self.rowHeight;
     }
 
     // 0x004C266D
@@ -1019,7 +1019,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (widgetIdx != Widx::scrollview)
             return fallback;
 
-        uint16_t currentIndex = yPos / self.kRowHeight;
+        uint16_t currentIndex = yPos / self.rowHeight;
         if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
             return CursorId::handPointer;
 
@@ -1033,7 +1033,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         self.flags &= ~WindowFlags::notScrollView;
 
-        uint16_t currentRow = y / self.kRowHeight;
+        uint16_t currentRow = y / self.rowHeight;
         if (currentRow < self.var_83C)
             self.rowHover = self.rowInfo[currentRow];
         else
@@ -1093,7 +1093,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C27C0
     static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        uint16_t currentRow = y / self.kRowHeight;
+        uint16_t currentRow = y / self.rowHeight;
         if (currentRow >= self.var_83C)
             return;
 

@@ -81,10 +81,10 @@ namespace OpenLoco::Utility
 
         // this lambda is essentially a reimplementation of strnlen, which isn't standard
         size_t destLen = [=] {
-            auto destLen = reinterpret_cast<const char*>(std::memchr(dest, '\0', size));
-            if (destLen != nullptr)
+            auto destEnd = reinterpret_cast<const char*>(std::memchr(dest, '\0', size));
+            if (destEnd != nullptr)
             {
-                return static_cast<size_t>(destLen - dest);
+                return static_cast<size_t>(destEnd - dest);
             }
             else
             {

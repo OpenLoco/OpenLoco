@@ -267,7 +267,7 @@ namespace OpenLoco::Ui
         int16_t rowInfo[1000];                             // 0x6A
         uint16_t rowCount;                                 // 0x83A
         uint16_t var_83C;
-        uint16_t kRowHeight;   // 0x83E
+        uint16_t rowHeight;    // 0x83E
         int16_t rowHover = -1; // 0x840
         int16_t var_842;       // 0x842
         uint16_t sortMode;     // 0x844;

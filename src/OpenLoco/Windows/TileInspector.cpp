@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         window->widgets = _widgets;
         window->enabledWidgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);
         window->rowCount = 0;
-        window->kRowHeight = 10;
+        window->rowHeight = 10;
         window->var_842 = -1;
         window->initScrollWidgets();
 
@@ -307,12 +307,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
             string_id formatString;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.kRowHeight, enumValue(Colour::darkGreen));
+                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, enumValue(Colour::darkGreen));
                 formatString = StringIds::white_stringid;
             }
             else if (self.rowHover == rowNum)
             {
-                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.kRowHeight, 0x2000030);
+                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, 0x2000030);
                 formatString = StringIds::wcolour2_stringid;
             }
             else
@@ -343,13 +343,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
             Gfx::drawStringLeft(rt, 0, yPos, Colour::black, formatString, &args);
             rowNum++;
-            yPos += self.kRowHeight;
+            yPos += self.rowHeight;
         }
     }
 
     static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
     {
-        auto index = y / self.kRowHeight;
+        auto index = y / self.rowHeight;
         if (index >= self.rowCount)
             return;
 
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
     {
-        auto index = y / self.kRowHeight;
+        auto index = y / self.rowHeight;
         if (index >= self.rowCount)
             return;
 
@@ -416,7 +416,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
         }
 
-        *scrollHeight = self.rowCount * self.kRowHeight;
+        *scrollHeight = self.rowCount * self.rowHeight;
     }
 
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)

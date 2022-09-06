@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             window->enabledWidgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
             window->initScrollWidgets();
 
-            window->kRowHeight = 11;
+            window->rowHeight = 11;
             window->var_85A = -1;
 
             _9DA285 = 0;
@@ -215,13 +215,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x004464A1
     static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = window.kRowHeight * static_cast<uint16_t>(_files.size());
+        *scrollHeight = window.rowHeight * static_cast<uint16_t>(_files.size());
     }
 
     // 0x004464F7
     static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
-        auto index = size_t(y / self.kRowHeight);
+        auto index = size_t(y / self.rowHeight);
         if (index >= _files.size())
             return;
 
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (WindowManager::getCurrentModalType() != WindowType::fileBrowserPrompt)
             return;
 
-        auto index = y / self.kRowHeight;
+        auto index = y / self.rowHeight;
         if (index >= static_cast<uint16_t>(_files.size()))
             return;
 
@@ -569,7 +569,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Directories / files
         auto i = 0;
         auto y = 0;
-        auto lineHeight = window.kRowHeight;
+        auto lineHeight = window.rowHeight;
         for (const auto& entry : _files)
         {
             if (y + lineHeight >= rt.y && y <= rt.y + rt.height)
