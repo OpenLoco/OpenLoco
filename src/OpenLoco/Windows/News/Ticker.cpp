@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
         *buffer = ControlCodes::Colour::black;
         buffer++;
-        *buffer = ControlCodes::fontSmall;
+        *buffer = ControlCodes::Font::small;
         buffer++;
 
         auto newsStringChar = *newsString;

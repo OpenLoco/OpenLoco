@@ -261,12 +261,12 @@ namespace OpenLoco::Gfx
 
                 case ControlCodes::newline:
                 case ControlCodes::newlineSmaller:
-                case ControlCodes::fontSmall:
-                case ControlCodes::fontLarge:
-                case ControlCodes::fontBold:
-                case ControlCodes::fontRegular:
-                case ControlCodes::outline:
-                case ControlCodes::outlineOff:
+                case ControlCodes::Font::small:
+                case ControlCodes::Font::large:
+                case ControlCodes::Font::bold:
+                case ControlCodes::Font::regular:
+                case ControlCodes::Font::outline:
+                case ControlCodes::Font::outlineOff:
                 case ControlCodes::windowColour1:
                 case ControlCodes::windowColour2:
                 case ControlCodes::windowColour3:
@@ -359,24 +359,24 @@ namespace OpenLoco::Gfx
                 case ControlCodes::newlineSmaller:
                     continue;
 
-                case ControlCodes::fontSmall:
+                case ControlCodes::Font::small:
                     fontSpriteBase = Font::small;
                     break;
 
-                case ControlCodes::fontLarge:
+                case ControlCodes::Font::large:
                     fontSpriteBase = Font::large;
                     break;
 
-                case ControlCodes::fontBold:
+                case ControlCodes::Font::bold:
                     fontSpriteBase = Font::medium_bold;
                     break;
 
-                case ControlCodes::fontRegular:
+                case ControlCodes::Font::regular:
                     fontSpriteBase = Font::medium_normal;
                     break;
 
-                case ControlCodes::outline:
-                case ControlCodes::outlineOff:
+                case ControlCodes::Font::outline:
+                case ControlCodes::Font::outlineOff:
                 case ControlCodes::windowColour1:
                 case ControlCodes::windowColour2:
                 case ControlCodes::windowColour3:
@@ -450,24 +450,24 @@ namespace OpenLoco::Gfx
                 case ControlCodes::newlineSmaller:
                     continue;
 
-                case ControlCodes::fontSmall:
+                case ControlCodes::Font::small:
                     fontSpriteBase = Font::small;
                     break;
 
-                case ControlCodes::fontLarge:
+                case ControlCodes::Font::large:
                     fontSpriteBase = Font::large;
                     break;
 
-                case ControlCodes::fontBold:
+                case ControlCodes::Font::bold:
                     fontSpriteBase = Font::medium_bold;
                     break;
 
-                case ControlCodes::fontRegular:
+                case ControlCodes::Font::regular:
                     fontSpriteBase = Font::medium_normal;
                     break;
 
-                case ControlCodes::outline:
-                case ControlCodes::outlineOff:
+                case ControlCodes::Font::outline:
+                case ControlCodes::Font::outlineOff:
                 case ControlCodes::windowColour1:
                 case ControlCodes::windowColour2:
                 case ControlCodes::windowColour3:
@@ -610,22 +610,22 @@ namespace OpenLoco::Gfx
                     break;
                 }
 
-                case ControlCodes::fontSmall:
+                case ControlCodes::Font::small:
                     setCurrentFontSpriteBase(Font::small);
                     break;
-                case ControlCodes::fontLarge:
+                case ControlCodes::Font::large:
                     setCurrentFontSpriteBase(Font::large);
                     break;
-                case ControlCodes::fontRegular:
+                case ControlCodes::Font::regular:
                     setCurrentFontSpriteBase(Font::medium_normal);
                     break;
-                case ControlCodes::fontBold:
+                case ControlCodes::Font::bold:
                     setCurrentFontSpriteBase(Font::medium_bold);
                     break;
-                case ControlCodes::outline:
+                case ControlCodes::Font::outline:
                     _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
                     break;
-                case ControlCodes::outlineOff:
+                case ControlCodes::Font::outlineOff:
                     _currentFontFlags = _currentFontFlags & ~TextDrawFlags::outline;
                     break;
                 case ControlCodes::windowColour1:
@@ -1270,16 +1270,16 @@ namespace OpenLoco::Gfx
                             maxWidth = std::max(maxWidth, lineWidth);
                             break;
                         }
-                        case ControlCodes::fontSmall:
+                        case ControlCodes::Font::small:
                             font = Font::small;
                             break;
-                        case ControlCodes::fontLarge:
+                        case ControlCodes::Font::large:
                             font = Font::large;
                             break;
-                        case ControlCodes::fontBold:
+                        case ControlCodes::Font::bold:
                             font = Font::medium_bold;
                             break;
-                        case ControlCodes::fontRegular:
+                        case ControlCodes::Font::regular:
                             font = Font::medium_normal;
                             break;
                     }

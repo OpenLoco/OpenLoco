@@ -40,12 +40,17 @@ namespace OpenLoco
         // Arguments: none
         constexpr uint8_t newline = 5;
         constexpr uint8_t newlineSmaller = 6;
-        constexpr uint8_t fontSmall = 7;
-        constexpr uint8_t fontLarge = 8;
-        constexpr uint8_t fontBold = 9;
-        constexpr uint8_t fontRegular = 10;
-        constexpr uint8_t outline = 11;
-        constexpr uint8_t outlineOff = 12;
+
+        namespace Font
+        {
+            constexpr uint8_t small = 7;
+            constexpr uint8_t large = 8;
+            constexpr uint8_t bold = 9;
+            constexpr uint8_t regular = 10;
+            constexpr uint8_t outline = 11;
+            constexpr uint8_t outlineOff = 12;
+        }
+
         constexpr uint8_t windowColour1 = 13;
         constexpr uint8_t windowColour2 = 14;
         constexpr uint8_t windowColour3 = 15;

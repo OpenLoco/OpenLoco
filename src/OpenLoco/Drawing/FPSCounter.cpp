@@ -40,8 +40,8 @@ namespace OpenLoco::Drawing
 
         // Format string
         char buffer[64];
-        buffer[0] = ControlCodes::fontBold;
-        buffer[1] = ControlCodes::outline;
+        buffer[0] = ControlCodes::Font::bold;
+        buffer[1] = ControlCodes::Font::outline;
         buffer[2] = ControlCodes::Colour::white;
 
         const char* formatString = (_currentFPS >= 10.0f ? "%.0f" : "%.1f");
