@@ -71,8 +71,8 @@
 
 [[maybe_unused]] static std::wstring getDumpDirectory()
 {
-    auto user_dir = OpenLoco::Platform::getUserDirectory();
-    auto result = OpenLoco::Utility::toUtf16(user_dir.string());
+    auto userDir = OpenLoco::Platform::getUserDirectory();
+    auto result = OpenLoco::Utility::toUtf16(userDir.string());
     return result;
 }
 

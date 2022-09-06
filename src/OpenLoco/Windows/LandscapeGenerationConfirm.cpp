@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     }
 
     // 0x004C180C
-    Window* open(int32_t prompt_type)
+    Window* open(int32_t promptType)
     {
         auto window = WindowManager::bringToFront(WindowType::landscapeGenerationConfirm, 0);
         if (window == nullptr)
@@ -94,8 +94,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
             init_events();
         }
 
-        window->var_846 = prompt_type;
-        if (prompt_type == 0)
+        window->var_846 = promptType;
+        if (promptType == 0)
             window->widgets[widx::caption].text = StringIds::title_generate_new_landscape;
         else
             window->widgets[widx::caption].text = StringIds::title_random_landscape_option;

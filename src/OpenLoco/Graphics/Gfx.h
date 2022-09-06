@@ -35,8 +35,8 @@ namespace OpenLoco::Gfx
 
     struct G1Header
     {
-        uint32_t num_entries;
-        uint32_t total_size;
+        uint32_t numEntries;
+        uint32_t totalSize;
     };
 
     struct G1Element32
@@ -44,8 +44,8 @@ namespace OpenLoco::Gfx
         uint32_t offset;    // 0x00
         int16_t width;      // 0x04
         int16_t height;     // 0x06
-        int16_t x_offset;   // 0x08
-        int16_t y_offset;   // 0x0A
+        int16_t xOffset;    // 0x08
+        int16_t yOffset;    // 0x0A
         uint16_t flags;     // 0x0C
         int16_t zoomOffset; // 0x0E
     };
@@ -56,8 +56,8 @@ namespace OpenLoco::Gfx
         uint8_t* offset = nullptr;
         int16_t width = 0;
         int16_t height = 0;
-        int16_t x_offset = 0;
-        int16_t y_offset = 0;
+        int16_t xOffset = 0;
+        int16_t yOffset = 0;
         uint16_t flags = 0;
         int16_t zoomOffset = 0;
 
@@ -66,8 +66,8 @@ namespace OpenLoco::Gfx
             : offset((uint8_t*)src.offset)
             , width(src.width)
             , height(src.height)
-            , x_offset(src.x_offset)
-            , y_offset(src.y_offset)
+            , xOffset(src.xOffset)
+            , yOffset(src.yOffset)
             , flags(src.flags)
             , zoomOffset(src.zoomOffset)
         {

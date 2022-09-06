@@ -20,7 +20,7 @@ namespace OpenLoco::Paint
         {
             return;
         }
-        if (session.getRenderTarget()->zoom_level > 0)
+        if (session.getRenderTarget()->zoomLevel > 0)
         {
             return;
         }
@@ -102,7 +102,7 @@ namespace OpenLoco::Paint
                         continue;
                     }
                 }
-                const auto imageId = ImageId{ cargoObj->unit_inline_sprite + Cargo::ImageIds::stationPlatformBegin + variation };
+                const auto imageId = ImageId{ cargoObj->unitInlineSprite + Cargo::ImageIds::stationPlatformBegin + variation };
                 session.addToPlotListAsChild(imageId, offset + Map::Pos3{ 0, 0, offsetZ }, boundBoxOffset, boundBoxSize);
             }
         }

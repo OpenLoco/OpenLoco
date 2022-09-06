@@ -14,7 +14,7 @@ namespace OpenLoco::Ui
         // Indicates that the imageId has a colour set and not to replace it with the window colour
         // This reuses the ImageIdFlags::translucent flag for use in widget draw
         // Flag *MUST* be removed before passing to Gfx::drawImage functions
-        static constexpr uint32_t imageIdColourSet = (1 << 30);
+        static constexpr uint32_t kImageIdColourSet = (1 << 30);
         static constexpr int32_t kContentNull = 0xFFFFFFFF;
         static constexpr int32_t kContentUnk = 0xFFFFFFFE;
 

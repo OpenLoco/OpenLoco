@@ -194,7 +194,7 @@ namespace OpenLoco::Paint
         }
         else
         {
-            if (session.getViewFlags() & (1 << 4) && session.getRenderTarget()->zoom_level == 0)
+            if (session.getViewFlags() & (1 << 4) && session.getRenderTarget()->zoomLevel == 0)
             {
                 session.setItemType(InteractionItem::noInteraction);
                 const auto imageId = ImageId{ getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedAvocadoGreen };
@@ -226,7 +226,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        if (session.getRenderTarget()->zoom_level > 1)
+        if (session.getRenderTarget()->zoomLevel > 1)
         {
             return;
         }

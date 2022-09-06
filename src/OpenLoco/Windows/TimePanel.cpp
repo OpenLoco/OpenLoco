@@ -346,7 +346,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
         else
         {
-            args.push(StringIds::challenge_progress);
+            args.push(StringIds::challengeProgress);
             args.push<uint16_t>(playerCompany->challengeProgress);
 
             if (Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit)

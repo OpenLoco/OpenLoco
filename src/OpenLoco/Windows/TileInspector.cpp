@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         window->widgets = _widgets;
         window->enabledWidgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);
         window->rowCount = 0;
-        window->rowHeight = 10;
+        window->kRowHeight = 10;
         window->var_842 = -1;
         window->initScrollWidgets();
 
@@ -155,7 +155,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             std::array<uint8_t, 8>& data = tile->rawData();
 
             char buffer[32] = {};
-            buffer[0] = ControlCodes::window_colour_2;
+            buffer[0] = ControlCodes::windowColour2;
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
             auto widget = self.widgets[widx::detailsGroup];
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             case ElementType::industry:
             {
                 auto& industry = element.get<IndustryElement>();
-                auto object = ObjectManager::get<IndustryObject>(industry.industry()->object_id);
+                auto object = ObjectManager::get<IndustryObject>(industry.industry()->objectId);
                 return object->name;
             }
         }
@@ -307,12 +307,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
             string_id formatString;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, enumValue(Colour::darkGreen));
+                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.kRowHeight, enumValue(Colour::darkGreen));
                 formatString = StringIds::white_stringid;
             }
             else if (self.rowHover == rowNum)
             {
-                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, 0x2000030);
+                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.kRowHeight, 0x2000030);
                 formatString = StringIds::wcolour2_stringid;
             }
             else
@@ -343,13 +343,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
             Gfx::drawStringLeft(rt, 0, yPos, Colour::black, formatString, &args);
             rowNum++;
-            yPos += self.rowHeight;
+            yPos += self.kRowHeight;
         }
     }
 
     static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
     {
-        auto index = y / self.rowHeight;
+        auto index = y / self.kRowHeight;
         if (index >= self.rowCount)
             return;
 
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
     {
-        auto index = y / self.rowHeight;
+        auto index = y / self.kRowHeight;
         if (index >= self.rowCount)
             return;
 
@@ -387,22 +387,22 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 break;
 
             case widx::xPosDecrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, Map::map_columns);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, Map::kMapColumns);
                 self.invalidate();
                 break;
 
             case widx::xPosIncrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, Map::map_columns);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, Map::kMapColumns);
                 self.invalidate();
                 break;
 
             case widx::yPosDecrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, Map::map_rows);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, Map::kMapRows);
                 self.invalidate();
                 break;
 
             case widx::yPosIncrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, Map::map_rows);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, Map::kMapRows);
                 self.invalidate();
                 break;
         }
@@ -416,7 +416,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
         }
 
-        *scrollHeight = self.rowCount * self.rowHeight;
+        *scrollHeight = self.rowCount * self.kRowHeight;
     }
 
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)

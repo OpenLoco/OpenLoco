@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window->number = enumValue(company);
         window->enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
         window->owner = CompanyManager::getControllingId();
-        window->frame_no = 0;
+        window->frameNo = 0;
         auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
@@ -322,7 +322,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window->currentTab = vehicle;
             }
 
-            window->rowHeight = _scrollRowHeight[window->currentTab];
+            window->kRowHeight = _scrollRowHeight[window->currentTab];
             window->rowCount = 0;
             window->var_83C = 0;
             window->rowHover = -1;
@@ -420,7 +420,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         _numAvailableVehicles = 0;
         struct build_item
         {
-            uint16_t vehicle_index;
+            uint16_t vehicleIndex;
             bool isPowered;
             uint16_t designed;
         };
@@ -494,7 +494,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         std::stable_sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.isPowered > item2.isPowered; });
         for (size_t i = 0; i < buildableVehicles.size(); ++i)
         {
-            _availableVehicles[i] = buildableVehicles[i].vehicle_index;
+            _availableVehicles[i] = buildableVehicles[i].vehicleIndex;
         }
         _numAvailableVehicles = static_cast<int16_t>(buildableVehicles.size());
     }
@@ -599,8 +599,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                 auto newTab = widgetIndex - widx::tab_build_new_trains;
                 window.currentTab = newTab;
-                window.rowHeight = _scrollRowHeight[newTab];
-                window.frame_no = 0;
+                window.kRowHeight = _scrollRowHeight[newTab];
+                window.frameNo = 0;
                 window.currentSecondaryTab = 0;
                 if (newTab != LastGameOptionManager::getLastBuildVehiclesOption())
                 {
@@ -722,7 +722,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C377B
     static void onUpdate(Window& window)
     {
-        window.frame_no++;
+        window.frameNo++;
         window.callPrepareDraw();
 
         WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, window.currentTab + 4);
@@ -733,7 +733,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C37B9
     static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = window.var_83C * window.rowHeight;
+        *scrollHeight = window.var_83C * window.kRowHeight;
     }
 
     // 0x4C384B
@@ -744,7 +744,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             return;
         }
 
-        auto scrollItem = y / window.rowHeight;
+        auto scrollItem = y / window.kRowHeight;
         if (scrollItem >= window.var_83C)
         {
             return;
@@ -791,7 +791,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             return;
         }
 
-        auto scrollItem = y / window.rowHeight;
+        auto scrollItem = y / window.kRowHeight;
         int16_t item = -1;
         if (scrollItem < window.var_83C)
         {
@@ -856,7 +856,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             return fallback;
         }
 
-        auto scrollItem = yPos / window.rowHeight;
+        auto scrollItem = yPos / window.kRowHeight;
         if (scrollItem >= window.var_83C)
         {
             return fallback;
@@ -947,14 +947,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
 
         {
-            auto cost = Economy::getInflationAdjustedCost(vehicleObj->cost_factor, vehicleObj->cost_index, 6);
+            auto cost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 6);
             FormatArguments args{};
             args.push(cost);
             buffer = StringManager::formatString(buffer, StringIds::stats_cost, &args);
         }
 
         {
-            auto runningCost = Economy::getInflationAdjustedCost(vehicleObj->run_cost_factor, vehicleObj->run_cost_index, 10);
+            auto runningCost = Economy::getInflationAdjustedCost(vehicleObj->runCostFactor, vehicleObj->runCostIndex, 10);
             FormatArguments args{};
             args.push(runningCost);
             buffer = StringManager::formatString(buffer, StringIds::stats_running_cost, &args);
@@ -998,25 +998,25 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             buffer = StringManager::formatString(buffer, trackName);
 
-            for (auto i = 0; i < vehicleObj->num_mods; ++i)
+            for (auto i = 0; i < vehicleObj->numMods; ++i)
             {
                 strcpy(buffer, " + ");
                 buffer += 3;
                 if (vehicleObj->mode == TransportMode::road)
                 {
-                    auto roadExtraObj = ObjectManager::get<RoadExtraObject>(vehicleObj->required_track_extras[i]);
+                    auto roadExtraObj = ObjectManager::get<RoadExtraObject>(vehicleObj->requiredTrackExtras[i]);
                     buffer = StringManager::formatString(buffer, roadExtraObj->name);
                 }
                 else
                 {
-                    auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->required_track_extras[i]);
+                    auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->requiredTrackExtras[i]);
                     buffer = StringManager::formatString(buffer, trackExtraObj->name);
                 }
             }
 
-            if (vehicleObj->flags & FlagsE0::rack_rail)
+            if (vehicleObj->flags & FlagsE0::rackRail)
             {
-                auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rack_rail_type);
+                auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rackRailType);
                 FormatArguments args{};
                 args.push(trackExtraObj->name);
                 buffer = StringManager::formatString(buffer, StringIds::stats_string_steep_slope, &args);
@@ -1048,11 +1048,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             args.push(vehicleObj->speed.getRaw());
             buffer = StringManager::formatString(buffer, StringIds::stats_max_speed, &args);
         }
-        if (vehicleObj->flags & FlagsE0::rack_rail)
+        if (vehicleObj->flags & FlagsE0::rackRail)
         {
-            auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rack_rail_type);
+            auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rackRailType);
             FormatArguments args{};
-            args.push(vehicleObj->rack_speed);
+            args.push(vehicleObj->rackSpeed);
             args.push(trackExtraObj->name);
             buffer = StringManager::formatString(buffer, StringIds::stats_velocity_on_string, &args);
         }
@@ -1090,15 +1090,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                     auto widget = window.widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
-                    auto y = (window.rowHeight - 10) / 2;
+                    auto y = (window.kRowHeight - 10) / 2;
                     Gfx::drawStringLeftWrapped(rt, 3, y, width, Colour::black, defaultMessage, &args);
                 }
                 else
                 {
                     int16_t y = 0;
-                    for (auto i = 0; i < window.var_83C; ++i, y += window.rowHeight)
+                    for (auto i = 0; i < window.var_83C; ++i, y += window.kRowHeight)
                     {
-                        if (y + window.rowHeight + 30 <= rt.y)
+                        if (y + window.kRowHeight + 30 <= rt.y)
                         {
                             continue;
                         }
@@ -1129,11 +1129,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         {
                             if (rowIsALockedVehicle)
                             {
-                                Gfx::fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, lockedHoverRowColour);
+                                Gfx::fillRect(rt, 0, y, window.width, y + window.kRowHeight - 1, lockedHoverRowColour);
                             }
                             else
                             {
-                                Gfx::fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, normalHoverRowColour);
+                                Gfx::fillRect(rt, 0, y, window.width, y + window.kRowHeight - 1, normalHoverRowColour);
                             }
                             colouredString = StringIds::wcolour2_stringid;
                         }
@@ -1141,17 +1141,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         {
                             if (rowIsALockedVehicle)
                             {
-                                Gfx::fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, lockedRowColour);
+                                Gfx::fillRect(rt, 0, y, window.width, y + window.kRowHeight - 1, lockedRowColour);
                             }
                         }
 
-                        int16_t half = (window.rowHeight - 22) / 2;
+                        int16_t half = (window.kRowHeight - 22) / 2;
                         auto x = drawVehicleInline(&rt, vehicleType, 0, CompanyManager::getControllingId(), { 0, static_cast<int16_t>(y + half) });
 
                         auto vehicleObj = ObjectManager::get<VehicleObject>(vehicleType);
                         FormatArguments args{};
                         args.push(vehicleObj->name);
-                        half = (window.rowHeight - 10) / 2;
+                        half = (window.kRowHeight - 10) / 2;
                         Gfx::drawStringLeft(rt, x + 3, y + half, Colour::black, colouredString, &args);
                     }
                 }
@@ -1176,15 +1176,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);
                 auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
                 buffer = StringManager::formatString(buffer, vehicleObj->name);
-                auto usableCargoTypes = vehicleObj->primary_cargo_types | vehicleObj->secondary_cargo_types;
+                auto usableCargoTypes = vehicleObj->primaryCargoTypes | vehicleObj->secondaryCargoTypes;
 
                 for (auto cargoTypes = Utility::bitScanForward(usableCargoTypes); cargoTypes != -1; cargoTypes = Utility::bitScanForward(usableCargoTypes))
                 {
                     usableCargoTypes &= ~(1 << cargoTypes);
                     auto cargoObj = ObjectManager::get<CargoObject>(cargoTypes);
                     *buffer++ = ' ';
-                    *buffer++ = ControlCodes::inline_sprite_str;
-                    *(reinterpret_cast<uint32_t*>(buffer)) = cargoObj->unit_inline_sprite;
+                    *buffer++ = ControlCodes::inlineSpriteStr;
+                    *(reinterpret_cast<uint32_t*>(buffer)) = cargoObj->unitInlineSprite;
                     buffer += 4;
                 }
 
@@ -1354,7 +1354,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             auto frameNo = 0;
             if (_transportTypeTabInformation[window->currentTab].type == tab.type)
             {
-                frameNo = (window->frame_no / 2) & 0xF;
+                frameNo = (window->frameNo / 2) & 0xF;
             }
             uint32_t image = Gfx::recolour(skin->img + tab.imageIds[frameNo], companyColour);
             Widget::drawTab(window, rt, image, tab.widgetIndex);
@@ -1412,7 +1412,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 img = roadObj->image;
                 if (window->currentSecondaryTab == tab)
                 {
-                    img += (window->frame_no / 4) & 0x1F;
+                    img += (window->frameNo / 4) & 0x1F;
                 }
                 img = Gfx::recolour(img, companyColour);
             }
@@ -1422,7 +1422,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 img = trackObj->image;
                 if (window->currentSecondaryTab == tab)
                 {
-                    img += (window->frame_no / 4) & 0xF;
+                    img += (window->frameNo / 4) & 0xF;
                 }
                 img = Gfx::recolour(img, companyColour);
             }

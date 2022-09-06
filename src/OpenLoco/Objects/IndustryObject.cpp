@@ -73,7 +73,7 @@ namespace OpenLoco
 
                 if (requiredCargoCount > 1)
                 {
-                    if ((flags & IndustryObjectFlags::requires_all_cargo) != 0)
+                    if ((flags & IndustryObjectFlags::requiresAllCargo) != 0)
                         ptr = StringManager::formatString(ptr, StringIds::cargo_and);
                     else
                         ptr = StringManager::formatString(ptr, StringIds::cargo_or);
@@ -126,7 +126,7 @@ namespace OpenLoco
         }
 
         // 230/256 = ~90%
-        if (-clearCostFactor > cost_factor * 230 / 256)
+        if (-clearCostFactor > costFactor * 230 / 256)
         {
             return false;
         }

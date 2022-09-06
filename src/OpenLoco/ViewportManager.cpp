@@ -68,15 +68,15 @@ namespace OpenLoco::Ui::ViewportManager
         assert(index >= 0 && index < viewportsPerWindow);
         Viewport* viewport = w->viewports[index];
 
-        w->viewportConfigurations[index].viewport_target_sprite = dx;
+        w->viewportConfigurations[index].viewportTargetSprite = dx;
 
         auto t = EntityManager::get<EntityBase>(dx);
 
         const auto dest = viewport->centre2dCoordinates(t->position);
-        w->viewportConfigurations[index].saved_view_x = dest.x;
-        w->viewportConfigurations[index].saved_view_y = dest.y;
-        viewport->view_x = dest.x;
-        viewport->view_y = dest.y;
+        w->viewportConfigurations[index].savedViewX = dest.x;
+        w->viewportConfigurations[index].savedViewY = dest.y;
+        viewport->viewX = dest.x;
+        viewport->viewY = dest.y;
     }
 
     static void focusViewportOn(Window* w, int index, Map::Pos3 tile)
@@ -84,13 +84,13 @@ namespace OpenLoco::Ui::ViewportManager
         assert(index >= 0 && index < viewportsPerWindow);
         Viewport* viewport = w->viewports[index];
 
-        w->viewportConfigurations[index].viewport_target_sprite = EntityId::null;
+        w->viewportConfigurations[index].viewportTargetSprite = EntityId::null;
 
         const auto dest = viewport->centre2dCoordinates(tile);
-        w->viewportConfigurations[index].saved_view_x = dest.x;
-        w->viewportConfigurations[index].saved_view_y = dest.y;
-        viewport->view_x = dest.x;
-        viewport->view_y = dest.y;
+        w->viewportConfigurations[index].savedViewX = dest.x;
+        w->viewportConfigurations[index].savedViewY = dest.y;
+        viewport->viewX = dest.x;
+        viewport->viewY = dest.y;
     }
 
     static Viewport* create(registers regs, int index)
@@ -209,10 +209,10 @@ namespace OpenLoco::Ui::ViewportManager
             auto intersection = viewport->getIntersection(rect);
 
             // offset rect by (negative) viewport origin
-            int16_t left = intersection.left - viewport->view_x;
-            int16_t right = intersection.right - viewport->view_x;
-            int16_t top = intersection.top - viewport->view_y;
-            int16_t bottom = intersection.bottom - viewport->view_y;
+            int16_t left = intersection.left - viewport->viewX;
+            int16_t right = intersection.right - viewport->viewX;
+            int16_t top = intersection.top - viewport->viewY;
+            int16_t bottom = intersection.bottom - viewport->viewY;
 
             // apply zoom
             left = left >> viewport->zoom;
@@ -266,10 +266,10 @@ namespace OpenLoco::Ui::ViewportManager
             auto intersection = viewport->getIntersection(rect);
 
             // offset rect by (negative) viewport origin
-            int16_t left = intersection.left - viewport->view_x;
-            int16_t right = intersection.right - viewport->view_x;
-            int16_t top = intersection.top - viewport->view_y;
-            int16_t bottom = intersection.bottom - viewport->view_y;
+            int16_t left = intersection.left - viewport->viewX;
+            int16_t right = intersection.right - viewport->viewX;
+            int16_t top = intersection.top - viewport->viewY;
+            int16_t bottom = intersection.bottom - viewport->viewY;
 
             // apply zoom
             left = left >> viewport->zoom;

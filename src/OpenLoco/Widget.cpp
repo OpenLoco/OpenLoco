@@ -226,8 +226,8 @@ namespace OpenLoco::Ui
     void Widget::sub_4CADE8(Gfx::RenderTarget* rt, const Window* window, AdvancedColour colour, bool enabled, bool disabled, bool activated)
     {
         Ui::Point placeForImage(left + window->x, top + window->y);
-        const bool isColourSet = image & Widget::imageIdColourSet;
-        ImageId imageId = ImageId::fromUInt32(image & ~Widget::imageIdColourSet);
+        const bool isColourSet = image & Widget::kImageIdColourSet;
+        ImageId imageId = ImageId::fromUInt32(image & ~Widget::kImageIdColourSet);
         if (type == WidgetType::wt_6 || type == WidgetType::toolbarTab || type == WidgetType::tab || type == WidgetType::wt_4)
         {
             if (activated)
@@ -239,7 +239,7 @@ namespace OpenLoco::Ui
 
         if (disabled)
         {
-            // TODO: this is odd most likely this is another flag like Widget::imageIdColourSet
+            // TODO: this is odd most likely this is another flag like Widget::kImageIdColourSet
             if (imageId.hasSecondary())
             {
                 return;
@@ -266,7 +266,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        // TODO: this is odd most likely this is another flag like Widget::imageIdColourSet
+        // TODO: this is odd most likely this is another flag like Widget::kImageIdColourSet
         if (imageId.hasSecondary())
         {
             // 0x4CAE5F
@@ -388,9 +388,9 @@ namespace OpenLoco::Ui
             return;
         }
 
-        const bool isColourSet = image & Widget::imageIdColourSet;
+        const bool isColourSet = image & Widget::kImageIdColourSet;
         // TODO: Remove addedImage addition
-        ImageId imageId = ImageId::fromUInt32(image & ~Widget::imageIdColourSet).withIndexOffset(2);
+        ImageId imageId = ImageId::fromUInt32(image & ~Widget::kImageIdColourSet).withIndexOffset(2);
 
         if (!isColourSet && imageId.hasPrimary())
         {
@@ -447,9 +447,9 @@ namespace OpenLoco::Ui
             return;
         }
 
-        const bool isColourSet = image & Widget::imageIdColourSet;
+        const bool isColourSet = image & Widget::kImageIdColourSet;
         // TODO: Remove addition
-        ImageId imageId = ImageId::fromUInt32(image & ~Widget::imageIdColourSet);
+        ImageId imageId = ImageId::fromUInt32(image & ~Widget::kImageIdColourSet);
 
         if (enabled && activated && hovered)
         {
@@ -594,7 +594,7 @@ namespace OpenLoco::Ui
     void Widget::draw_23_caption(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour)
     {
         char stringBuffer[512];
-        stringBuffer[0] = ControlCodes::colour_black;
+        stringBuffer[0] = ControlCodes::Colour::black;
         StringManager::formatString(&stringBuffer[1], text, _commonFormatArgs);
 
         int16_t width = right - left - 4 - 14;
@@ -615,7 +615,7 @@ namespace OpenLoco::Ui
     void Widget::draw_24_caption(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour)
     {
         char stringBuffer[512];
-        stringBuffer[0] = ControlCodes::window_colour_1;
+        stringBuffer[0] = ControlCodes::windowColour1;
         StringManager::formatString(&stringBuffer[1], text, _commonFormatArgs);
 
         int16_t x = left + window->x + 2;
@@ -633,7 +633,7 @@ namespace OpenLoco::Ui
     void Widget::draw_25_caption(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour)
     {
         char stringBuffer[512];
-        stringBuffer[0] = ControlCodes::colour_white;
+        stringBuffer[0] = ControlCodes::Colour::white;
         StringManager::formatString(&stringBuffer[1], text, _commonFormatArgs);
 
         int16_t x = left + window->x + 2;

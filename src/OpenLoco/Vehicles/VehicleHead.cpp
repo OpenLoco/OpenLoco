@@ -284,7 +284,7 @@ namespace OpenLoco::Vehicles
         auto newObject = ObjectManager::get<VehicleObject>(newVehicleTypeId);       // edi
         auto sourceObject = ObjectManager::get<VehicleObject>(sourceVehicleTypeId); // esi
 
-        if ((newObject->flags & FlagsE0::can_couple) && (sourceObject->flags & FlagsE0::can_couple))
+        if ((newObject->flags & FlagsE0::canCouple) && (sourceObject->flags & FlagsE0::canCouple))
         {
             GameCommands::setErrorText(StringIds::incompatible_vehicle);
             return false;
@@ -295,26 +295,26 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        for (auto i = 0; i < newObject->num_compat; ++i)
+        for (auto i = 0; i < newObject->numCompat; ++i)
         {
-            if (newObject->compatible_vehicles[i] == sourceVehicleTypeId)
+            if (newObject->compatibleVehicles[i] == sourceVehicleTypeId)
             {
                 return true;
             }
         }
 
-        if (sourceObject->num_compat != 0)
+        if (sourceObject->numCompat != 0)
         {
-            for (auto i = 0; i < sourceObject->num_compat; ++i)
+            for (auto i = 0; i < sourceObject->numCompat; ++i)
             {
-                if (sourceObject->compatible_vehicles[i] == newVehicleTypeId)
+                if (sourceObject->compatibleVehicles[i] == newVehicleTypeId)
                 {
                     return true;
                 }
             }
         }
 
-        if ((newObject->num_compat != 0) || (sourceObject->num_compat != 0))
+        if ((newObject->numCompat != 0) || (sourceObject->numCompat != 0))
         {
             GameCommands::setErrorText(StringIds::incompatible_vehicle);
             return false;
@@ -1446,7 +1446,7 @@ namespace OpenLoco::Vehicles
                 auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
 
                 // looks wrong??
-                if (vehObject->flags & FlagsE0::can_couple)
+                if (vehObject->flags & FlagsE0::canCouple)
                 {
                     targetPitch = Pitch::up12deg;
                 }
@@ -1699,23 +1699,23 @@ namespace OpenLoco::Vehicles
             // Final section of landing / helicopter
             if (_vehicleUpdate_manhattanDistanceToStation <= 28)
             {
-                int16_t z_shift = 1;
+                int16_t zShift = 1;
                 if (vehType2->currentSpeed >= 50.0_mph)
                 {
-                    z_shift++;
+                    zShift++;
                     if (vehType2->currentSpeed >= 100.0_mph)
                     {
-                        z_shift++;
+                        zShift++;
                     }
                 }
 
                 if (targetZ < position.z)
                 {
-                    newLoc.z = std::max<int16_t>(targetZ, position.z - z_shift);
+                    newLoc.z = std::max<int16_t>(targetZ, position.z - zShift);
                 }
                 else if (targetZ > position.z)
                 {
-                    newLoc.z = std::min<int16_t>(targetZ, position.z + z_shift);
+                    newLoc.z = std::min<int16_t>(targetZ, position.z + zShift);
                 }
             }
             else
@@ -1803,7 +1803,7 @@ namespace OpenLoco::Vehicles
                 Vehicle train(head);
                 uint16_t planeType = train.cars.firstCar.front->getPlaneType();
 
-                if (airportObject->allowed_plane_types & planeType)
+                if (airportObject->allowedPlaneTypes & planeType)
                 {
                     stationId = orderStationId;
                     airportMovementEdge = cAirportMovementNodeNull;
@@ -3316,7 +3316,7 @@ namespace OpenLoco::Vehicles
             }
             hasCargo = true;
             auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
-            auto unitNameFormat = cargoTotal == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural;
+            auto unitNameFormat = cargoTotal == 1 ? cargoObj->unitNameSingular : cargoObj->unitNamePlural;
             FormatArguments args{};
             args.push(cargoTotal);
             buffer = StringManager::formatString(buffer, unitNameFormat, &args);
@@ -3589,7 +3589,7 @@ namespace OpenLoco::Vehicles
         for (const auto& car : train.cars)
         {
             auto* vehObj = ObjectManager::get<VehicleObject>(car.front->objectId);
-            currency32_t runCost = Economy::getInflationAdjustedCost(vehObj->run_cost_factor, vehObj->run_cost_index, 10);
+            currency32_t runCost = Economy::getInflationAdjustedCost(vehObj->runCostFactor, vehObj->runCostIndex, 10);
             totalRunCost += runCost;
         }
         return totalRunCost;

@@ -27,7 +27,7 @@ namespace OpenLoco::GameCommands
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
 
-        GameCommands::setPosition(Map::Pos3(args.pos.x + Map::tile_size / 2, args.pos.y + Map::tile_size / 2, args.pos.z));
+        GameCommands::setPosition(Map::Pos3(args.pos.x + Map::kTileSize / 2, args.pos.y + Map::kTileSize / 2, args.pos.z));
 
         auto tile = Map::TileManager::get(args.pos);
         for (auto& tileElement : tile)

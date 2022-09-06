@@ -109,7 +109,7 @@ namespace OpenLoco::Ui
 
     bool dirtyBlocksInitialised()
     {
-        return _screenInfo->dirty_blocks_initialised != 0;
+        return _screenInfo->dirtyBlocksInitialised != 0;
     }
 
     static sdl_window_desc getWindowDesc(const Config::Display& cfg)
@@ -380,13 +380,13 @@ namespace OpenLoco::Ui
         _screenInfo->height_2 = height;
         _screenInfo->width_3 = width;
         _screenInfo->height_3 = height;
-        _screenInfo->dirty_block_width = blockWidth;
-        _screenInfo->dirty_block_height = blockHeight;
-        _screenInfo->dirty_block_columns = (width / blockWidth) + 1;
-        _screenInfo->dirty_block_rows = (height / blockHeight) + 1;
-        _screenInfo->dirty_block_column_shift = widthShift;
-        _screenInfo->dirty_block_row_shift = heightShift;
-        _screenInfo->dirty_blocks_initialised = 1;
+        _screenInfo->dirtyBlockWidth = blockWidth;
+        _screenInfo->dirtyBlockHeight = blockHeight;
+        _screenInfo->dirtyBlockColumns = (width / blockWidth) + 1;
+        _screenInfo->dirtyBlockRows = (height / blockHeight) + 1;
+        _screenInfo->dirtyBlockColumnShift = widthShift;
+        _screenInfo->dirtyBlockRowShift = heightShift;
+        _screenInfo->dirtyBlocksInitialised = 1;
     }
 
     static void positionChanged(int32_t x, int32_t y)
@@ -416,9 +416,9 @@ namespace OpenLoco::Ui
             Config::writeNewConfig();
         }
 
-        auto options_window = WindowManager::find(WindowType::options);
-        if (options_window != nullptr)
-            options_window->moveToCentre();
+        auto optionsWindow = WindowManager::find(WindowType::options);
+        if (optionsWindow != nullptr)
+            optionsWindow->moveToCentre();
     }
 
     void triggerResize()
@@ -802,14 +802,14 @@ namespace OpenLoco::Ui
 
         // Update config fullscreen resolution if not set
         auto& cfg = Config::get();
-        auto& cfg_new = Config::getNew();
+        auto& cfgNew = Config::getNew();
 
-        if (!(cfg_new.display.fullscreenResolution.isPositive() && cfg.resolutionWidth > 0 && cfg.resolutionHeight > 0))
+        if (!(cfgNew.display.fullscreenResolution.isPositive() && cfg.resolutionWidth > 0 && cfg.resolutionHeight > 0))
         {
             cfg.resolutionWidth = resolutions.back().width;
             cfg.resolutionHeight = resolutions.back().height;
-            cfg_new.display.fullscreenResolution.width = resolutions.back().width;
-            cfg_new.display.fullscreenResolution.height = resolutions.back().height;
+            cfgNew.display.fullscreenResolution.width = resolutions.back().width;
+            cfgNew.display.fullscreenResolution.height = resolutions.back().height;
         }
 
         _fsResolutions = resolutions;

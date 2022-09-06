@@ -26,7 +26,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static loco_global<int32_t, 0x0113E72C> _cursorX;
 
     static constexpr Ui::Size kWindowSize = { 400, 272 };
-    static constexpr uint32_t rowHeight = 10;
+    static constexpr uint32_t kRowHeight = 10;
     static WindowEventList events;
 
     enum widx
@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x4352BB
     static void getScrollSize(Window& self, const uint32_t scrollIndex, uint16_t* const scrollWidth, uint16_t* const scrollHeight)
     {
-        *scrollHeight = _numberCompetitorObjects * rowHeight;
+        *scrollHeight = _numberCompetitorObjects * kRowHeight;
     }
 
     static bool isInUseCompetitor(const uint32_t objIndex)
@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static ObjectManager::ObjIndexPair getObjectFromSelection(const int16_t& y)
     {
-        const int16_t rowIndex = y / rowHeight;
+        const int16_t rowIndex = y / kRowHeight;
         const auto objects = ObjectManager::getAvailableObjects(ObjectType::competitor);
         if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= objects.size())
         {
@@ -236,7 +236,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto y = self.y + self.widgets[widx::face_frame].bottom + 3;
             const auto width = self.width - self.widgets[widx::scrollview].right - 6;
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-            *str++ = ControlCodes::window_colour_2;
+            *str++ = ControlCodes::windowColour2;
             auto objectPtr = self.object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
             Gfx::drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_2039);
@@ -254,12 +254,12 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         auto index = 0;
         for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
         {
-            const auto y = index * rowHeight;
-            uint8_t inlineColour = ControlCodes::colour_black;
+            const auto y = index * kRowHeight;
+            uint8_t inlineColour = ControlCodes::Colour::black;
 
             if (index == self.rowHover)
             {
-                inlineColour = ControlCodes::window_colour_2;
+                inlineColour = ControlCodes::windowColour2;
                 Gfx::fillRect(rt, 0, y, self.width, y + 9, 0x2000000 | 48);
             }
 

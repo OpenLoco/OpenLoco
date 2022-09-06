@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::Town
             auto town = TownManager::get(TownId(self.number));
 
             // Draw Y label and grid lines.
-            int32_t yTick = town->history_min_population;
+            int32_t yTick = town->historyMinPopulation;
             for (int16_t yPos = self.height - 57; yPos >= 14; yPos -= 20)
             {
                 auto args = FormatArguments();
@@ -528,12 +528,12 @@ namespace OpenLoco::Ui::Windows::Town
             xPos += 4;
             yPos += 14;
             auto town = TownManager::get(TownId(self.number));
-            for (uint8_t i = 0; i < std::size(town->company_ratings); i++)
+            for (uint8_t i = 0; i < std::size(town->companyRatings); i++)
             {
-                if ((town->companies_with_rating & (1 << i)) == 0)
+                if ((town->companiesWithRating & (1 << i)) == 0)
                     continue;
 
-                int16_t rating = (std::clamp<int16_t>(town->company_ratings[i], -1000, 1000) + 1000) / 20;
+                int16_t rating = (std::clamp<int16_t>(town->companyRatings[i], -1000, 1000) + 1000) / 20;
                 string_id rank{};
                 if (rating >= 70)
                     rank = StringIds::town_rating_excellent;
@@ -664,7 +664,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static void update(Window& self)
         {
-            self.frame_no++;
+            self.frameNo++;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::station, self.number);
         }
@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Windows::Town
             TextInput::sub_4CE6C9(self->type, self->number);
 
             self->currentTab = widgetIndex - widx::tab_town;
-            self->frame_no = 0;
+            self->frameNo = 0;
             self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
 
@@ -738,7 +738,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                 uint32_t imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
                 if (self->currentTab == widx::tab_population - widx::tab_town)
-                    imageId += populationTabImageIds[(self->frame_no / 4) % std::size(populationTabImageIds)];
+                    imageId += populationTabImageIds[(self->frameNo / 4) % std::size(populationTabImageIds)];
                 else
                     imageId += populationTabImageIds[0];
 
@@ -768,7 +768,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_company_ratings - widx::tab_town)
-                    imageId += ratingsTabImageIds[(self->frame_no / 4) % std::size(ratingsTabImageIds)];
+                    imageId += ratingsTabImageIds[(self->frameNo / 4) % std::size(ratingsTabImageIds)];
                 else
                     imageId += ratingsTabImageIds[0];
 

@@ -60,7 +60,7 @@ namespace OpenLoco::Map
                     {
                         AnimationManager::createAnimation(5, loc, baseZ());
                     }
-                    if (buildingObj->flags & BuildingObjectFlags::large_tile)
+                    if (buildingObj->flags & BuildingObjectFlags::largeTle)
                     {
                         for (auto i = 1; i < 4; ++i)
                         {
@@ -95,7 +95,7 @@ namespace OpenLoco::Map
             setUnk5u(newUnk5u);
             setAge(newAge);
             Ui::ViewportManager::invalidate(loc, baseHeight(), clearHeight(), ZoomLevel::quarter);
-            if (buildingObj->flags & BuildingObjectFlags::large_tile)
+            if (buildingObj->flags & BuildingObjectFlags::largeTle)
             {
                 for (auto i = 1; i < 4; ++i)
                 {
@@ -141,7 +141,7 @@ namespace OpenLoco::Map
                 const auto newAge = age() + 1;
 
                 setAge(newAge);
-                if (buildingObj->flags & BuildingObjectFlags::large_tile)
+                if (buildingObj->flags & BuildingObjectFlags::largeTle)
                 {
                     for (auto i = 1; i < 4; ++i)
                     {
@@ -196,7 +196,7 @@ namespace OpenLoco::Map
                 }
                 town->var_19C[i][0] += producedAmount;
 
-                const auto size = (buildingObj->flags & BuildingObjectFlags::large_tile) ? Map::TilePos2(2, 2) : Map::TilePos2(1, 1);
+                const auto size = (buildingObj->flags & BuildingObjectFlags::largeTle) ? Map::TilePos2(2, 2) : Map::TilePos2(1, 1);
                 town->var_19C[i][1] += StationManager::deliverCargoToNearbyStations(buildingObj->producedCargoType[i], producedAmount, loc, size) & 0xFF;
             }
         }

@@ -25,13 +25,13 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::land;
 
         string_id name;
-        uint8_t cost_index; // 0x02
+        uint8_t costIndex; // 0x02
         uint8_t var_03;
         uint8_t var_04;
         uint8_t flags; // 0x05
         uint8_t var_06;
         uint8_t var_07;
-        int8_t cost_factor; // 0x08
+        int8_t costFactor; // 0x08
         uint8_t pad_09;
         uint32_t image; // 0x0A
         uint32_t var_0E;
@@ -52,7 +52,7 @@ namespace OpenLoco
 
     namespace Land::ImageIds
     {
-        constexpr uint32_t landscape_generator_tile_icon = 1;
-        constexpr uint32_t toolbar_terraform_land = 3;
+        static constexpr uint32_t kLandscapeGeneratorTileIcon = 1;
+        static constexpr uint32_t kToolbarTerraformLand = 3;
     }
 }

@@ -48,25 +48,25 @@ namespace OpenLoco
         };
 
         string_id name;
-        int16_t build_cost_factor; // 0x02
-        int16_t sell_cost_factor;  // 0x04
-        uint8_t cost_index;        // 0x06
+        int16_t buildCostFactor; // 0x02
+        int16_t sellCostFactor;  // 0x04
+        uint8_t costIndex;       // 0x06
         uint8_t var_07;
         uint32_t image; // 0x08
         uint32_t var_0C;
-        uint16_t allowed_plane_types; // 0x10
-        uint8_t num_sprite_sets;      // 0x12
-        uint8_t num_tiles;            // 0x13
+        uint16_t allowedPlaneTypes; // 0x10
+        uint8_t numSpriteSets;      // 0x12
+        uint8_t numTiles;           // 0x13
         uint8_t pad_14[0x1C - 0x14];
         uint32_t var_1C[32];
         uint32_t var_9C;
-        uint32_t large_tiles;        // 0xA0
-        int8_t min_x;                // 0xA4
-        int8_t min_y;                // 0xA5
-        int8_t max_x;                // 0xA6
-        int8_t max_y;                // 0xA7
-        uint16_t designed_year;      // 0xA8
-        uint16_t obsolete_year;      // 0xAA
+        uint32_t largeTiles;         // 0xA0
+        int8_t minX;                 // 0xA4
+        int8_t minY;                 // 0xA5
+        int8_t maxX;                 // 0xA6
+        int8_t maxY;                 // 0xA7
+        uint16_t designedYear;       // 0xA8
+        uint16_t obsoleteYear;       // 0xAA
         uint8_t numMovementNodes;    // 0xAC
         uint8_t numMovementEdges;    // 0xAD
         MovementNode* movementNodes; // 0xAE

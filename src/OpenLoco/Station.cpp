@@ -33,7 +33,7 @@ namespace OpenLoco
     struct CargoSearchState
     {
     private:
-        inline static loco_global<uint8_t[map_size], 0x00F00484> _map;
+        inline static loco_global<uint8_t[kMapSize], 0x00F00484> _map;
         inline static loco_global<uint32_t, 0x0112C68C> _filter;
         inline static loco_global<uint32_t[kMaxCargoStats], 0x0112C690> _score;
         inline static loco_global<uint32_t, 0x0112C710> _producedCargoTypes;
@@ -43,22 +43,22 @@ namespace OpenLoco
     public:
         bool mapHas2(const tile_coord_t x, const tile_coord_t y) const
         {
-            return (_map[y * map_columns + x] & (1 << 1)) != 0;
+            return (_map[y * kMapColumns + x] & (1 << 1)) != 0;
         }
 
         void mapRemove2(const tile_coord_t x, const tile_coord_t y)
         {
-            _map[y * map_columns + x] &= ~(1 << 1);
+            _map[y * kMapColumns + x] &= ~(1 << 1);
         }
 
         void setTile(const tile_coord_t x, const tile_coord_t y, const uint8_t flag)
         {
-            _map[y * map_columns + x] |= (1 << flag);
+            _map[y * kMapColumns + x] |= (1 << flag);
         }
 
         void resetTile(const tile_coord_t x, const tile_coord_t y, const uint8_t flag)
         {
-            _map[y * map_columns + x] &= ~(1 << flag);
+            _map[y * kMapColumns + x] &= ~(1 << flag);
         }
 
         void setTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, const uint8_t flag)
@@ -290,13 +290,13 @@ namespace OpenLoco
             cargoSearchState.filter(~0);
         }
 
-        for (tile_coord_t ty = 0; ty < map_columns; ty++)
+        for (tile_coord_t ty = 0; ty < kMapColumns; ty++)
         {
-            for (tile_coord_t tx = 0; tx < map_rows; tx++)
+            for (tile_coord_t tx = 0; tx < kMapRows; tx++)
             {
                 if (cargoSearchState.mapHas2(tx, ty))
                 {
-                    auto pos = Pos2(tx * tile_size, ty * tile_size);
+                    auto pos = Pos2(tx * kTileSize, ty * kTileSize);
                     auto tile = TileManager::get(pos);
 
                     for (auto& el : tile)
@@ -312,7 +312,7 @@ namespace OpenLoco
                                 auto& industryEl = el.get<IndustryElement>();
                                 auto* industry = industryEl.industry();
 
-                                if (industry == nullptr || industry->under_construction != 0xFF)
+                                if (industry == nullptr || industry->underConstruction != 0xFF)
                                 {
                                     break;
                                 }
@@ -380,11 +380,11 @@ namespace OpenLoco
                                 }
 
                                 // Multi tile buildings should only be counted once so remove the other tiles from the search
-                                if (obj->flags & BuildingObjectFlags::large_tile)
+                                if (obj->flags & BuildingObjectFlags::largeTle)
                                 {
                                     auto index = buildingEl.multiTileIndex();
-                                    tile_coord_t xPos = (pos.x - Map::offsets[index].x) / tile_size;
-                                    tile_coord_t yPos = (pos.y - Map::offsets[index].y) / tile_size;
+                                    tile_coord_t xPos = (pos.x - Map::offsets[index].x) / kTileSize;
+                                    tile_coord_t yPos = (pos.y - Map::offsets[index].y) / kTileSize;
 
                                     cargoSearchState.mapRemove2(xPos + 0, yPos + 0);
                                     cargoSearchState.mapRemove2(xPos + 0, yPos + 1);
@@ -422,7 +422,7 @@ namespace OpenLoco
     void Station::setCatchmentDisplay(const uint8_t catchmentFlag)
     {
         CargoSearchState cargoSearchState;
-        cargoSearchState.resetTileRegion(0, 0, map_columns, map_rows, catchmentFlag);
+        cargoSearchState.resetTileRegion(0, 0, kMapColumns, kMapRows, catchmentFlag);
 
         if (this == (Station*)0xFFFFFFFF)
             return;
@@ -446,8 +446,8 @@ namespace OpenLoco
                 {
                     auto airportObject = ObjectManager::get<AirportObject>(stationElement->objectId());
 
-                    Pos2 minPos(airportObject->min_x * 32, airportObject->min_y * 32);
-                    Pos2 maxPos(airportObject->max_x * 32, airportObject->max_y * 32);
+                    Pos2 minPos(airportObject->minX * 32, airportObject->minY * 32);
+                    Pos2 maxPos(airportObject->maxX * 32, airportObject->maxY * 32);
 
                     minPos = Math::Vector::rotate(minPos, stationElement->rotation());
                     maxPos = Math::Vector::rotate(maxPos, stationElement->rotation());
@@ -512,7 +512,7 @@ namespace OpenLoco
     void Station::deliverCargoToTown(uint8_t cargoType, uint16_t cargoQuantity)
     {
         auto twn = TownManager::get(town);
-        twn->monthly_cargo_delivered[cargoType] = Math::Bound::add(twn->monthly_cargo_delivered[cargoType], cargoQuantity);
+        twn->monthlyCargoDelivered[cargoType] = Math::Bound::add(twn->monthlyCargoDelivered[cargoType], cargoQuantity);
     }
 
     // 0x0042F489
@@ -553,8 +553,8 @@ namespace OpenLoco
             *_commonFormatArgs = stationCargoStat.quantity;
 
             auto cargo = ObjectManager::get<CargoObject>(cargoId);
-            string_id unit_name = stationCargoStat.quantity == 1 ? cargo->unit_name_singular : cargo->unit_name_plural;
-            ptr = StringManager::formatString(ptr, unit_name, &*_commonFormatArgs);
+            auto unitName = stationCargoStat.quantity == 1 ? cargo->unitNameSingular : cargo->unitNamePlural;
+            ptr = StringManager::formatString(ptr, unitName, &*_commonFormatArgs);
         }
 
         string_id suffix = *buffer == '\0' ? StringIds::nothing_waiting : StringIds::waiting;
@@ -802,8 +802,8 @@ namespace OpenLoco
     {
         minPos.x = std::max(minPos.x, static_cast<coord_t>(0));
         minPos.y = std::max(minPos.y, static_cast<coord_t>(0));
-        maxPos.x = std::min(maxPos.x, static_cast<coord_t>(map_columns - 1));
-        maxPos.y = std::min(maxPos.y, static_cast<coord_t>(map_rows - 1));
+        maxPos.x = std::min(maxPos.x, static_cast<coord_t>(kMapColumns - 1));
+        maxPos.y = std::min(maxPos.y, static_cast<coord_t>(kMapRows - 1));
 
         maxPos.x -= minPos.x;
         maxPos.y -= minPos.y;

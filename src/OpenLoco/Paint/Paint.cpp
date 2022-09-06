@@ -102,7 +102,7 @@ namespace OpenLoco::Paint
 
     static int32_t remapPositionToQuadrant(const PaintStruct& ps, uint8_t rotation)
     {
-        constexpr auto mapRangeMax = kMaxPaintQuadrants * Map::tile_size;
+        constexpr auto mapRangeMax = kMaxPaintQuadrants * Map::kTileSize;
         constexpr auto mapRangeCenter = mapRangeMax / 2;
 
         const auto x = ps.bounds.x;
@@ -131,7 +131,7 @@ namespace OpenLoco::Paint
         const auto positionHash = remapPositionToQuadrant(ps, currentRotation);
 
         // Values below zero or above MaxPaintQuadrants are void, corners also share the same quadrant as void.
-        const uint32_t paintQuadrantIndex = std::clamp(positionHash / Map::tile_size, 0, kMaxPaintQuadrants - 1);
+        const uint32_t paintQuadrantIndex = std::clamp(positionHash / Map::kTileSize, 0, kMaxPaintQuadrants - 1);
 
         ps.quadrantIndex = paintQuadrantIndex;
         ps.nextQuadrantPS = _quadrants[paintQuadrantIndex];
@@ -170,8 +170,8 @@ namespace OpenLoco::Paint
 
     static constexpr bool imageWithinRT(const Ui::viewport_pos& imagePos, const Gfx::G1Element& g1, const Gfx::RenderTarget& rt)
     {
-        int32_t left = imagePos.x + g1.x_offset;
-        int32_t bottom = imagePos.y + g1.y_offset;
+        int32_t left = imagePos.x + g1.xOffset;
+        int32_t bottom = imagePos.y + g1.yOffset;
 
         int32_t right = left + g1.width;
         int32_t top = bottom + g1.height;
@@ -899,7 +899,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!station.labelFrame.contains(rect, (*_renderTarget)->zoom_level))
+            if (!station.labelFrame.contains(rect, (*_renderTarget)->zoomLevel))
             {
                 continue;
             }
@@ -926,7 +926,7 @@ namespace OpenLoco::Paint
 
         for (auto& town : TownManager::towns())
         {
-            if (!town.labelFrame.contains(rect, (*_renderTarget)->zoom_level))
+            if (!town.labelFrame.contains(rect, (*_renderTarget)->zoomLevel))
             {
                 continue;
             }

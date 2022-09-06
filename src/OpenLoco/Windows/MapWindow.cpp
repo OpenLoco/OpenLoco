@@ -110,22 +110,22 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static Pos2 mapWindowPosToLocation(Point pos)
     {
-        pos.x = ((pos.x + 8) - map_columns) / 2;
+        pos.x = ((pos.x + 8) - kMapColumns) / 2;
         pos.y = ((pos.y + 8)) / 2;
         Pos2 location = { static_cast<coord_t>(pos.y - pos.x), static_cast<coord_t>(pos.x + pos.y) };
-        location.x *= tile_size;
-        location.y *= tile_size;
+        location.x *= kTileSize;
+        location.y *= kTileSize;
 
         switch (getCurrentRotation())
         {
             case 0:
                 return location;
             case 1:
-                return { static_cast<coord_t>(map_width - 1 - location.y), location.x };
+                return { static_cast<coord_t>(kMapWidth - 1 - location.y), location.x };
             case 2:
-                return { static_cast<coord_t>(map_width - 1 - location.x), static_cast<coord_t>(map_height - 1 - location.y) };
+                return { static_cast<coord_t>(kMapWidth - 1 - location.x), static_cast<coord_t>(kMapHeight - 1 - location.y) };
             case 3:
-                return { location.y, static_cast<coord_t>(map_height - 1 - location.x) };
+                return { location.y, static_cast<coord_t>(kMapHeight - 1 - location.x) };
         }
 
         return { 0, 0 }; // unreachable
@@ -140,24 +140,24 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             case 3:
                 std::swap(x, y);
-                x = map_width - 1 - x;
+                x = kMapWidth - 1 - x;
                 break;
             case 2:
-                x = map_width - 1 - x;
-                y = map_height - 1 - y;
+                x = kMapWidth - 1 - x;
+                y = kMapHeight - 1 - y;
                 break;
             case 1:
                 std::swap(x, y);
-                y = map_height - 1 - y;
+                y = kMapHeight - 1 - y;
                 break;
             case 0:
                 break;
         }
 
-        x /= tile_size;
-        y /= tile_size;
+        x /= kTileSize;
+        y /= kTileSize;
 
-        return Point(-x + y + map_columns - 8, x + y - 8);
+        return Point(-x + y + kMapColumns - 8, x + y - 8);
     }
 
     // 0x0046B8E6
@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     return;
 
                 self.currentTab = tabIndex;
-                self.frame_no = 0;
+                self.frameNo = 0;
                 self.var_854 = 0;
                 break;
             }
@@ -208,9 +208,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self.maxWidth = 800;
         self.maxHeight = 800;
 
-        Ui::Size minWindowSize = { self.minWidth, self.minHeight };
-        Ui::Size maxWindowSize = { self.maxWidth, self.maxHeight };
-        self.setSize(minWindowSize, maxWindowSize);
+        Ui::Size kMinWindowSize = { self.minWidth, self.minHeight };
+        Ui::Size kMaxWindowSize = { self.maxWidth, self.maxHeight };
+        self.setSize(kMinWindowSize, kMaxWindowSize);
     }
 
     // 0x0046C544
@@ -249,11 +249,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static uint8_t legendWidth = 100;
     static uint8_t legendItemHeight = 10;
-    static const uint8_t overallGraphKeySize = 6;
+    static constexpr uint8_t kOverallGraphKeySize = 6;
 
     static std::array<size_t, 5> legendLengths = {
         {
-            overallGraphKeySize,
+            kOverallGraphKeySize,
             std::size(_vehicleTypeCounts),
             ObjectManager::getMaxObjects(ObjectType::industry),
             0,
@@ -342,7 +342,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046BA5B
     static void onUpdate(Window& self)
     {
-        self.frame_no++;
+        self.frameNo++;
         self.callPrepareDraw();
 
         WindowManager::invalidateWidget(WindowType::map, self.number, self.currentTab + widx::tabOverall);
@@ -375,8 +375,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         self.callPrepareDraw();
-        *scrollWidth = map_columns * 2;
-        *scrollHeight = map_rows * 2;
+        *scrollWidth = kMapColumns * 2;
+        *scrollHeight = kMapRows * 2;
     }
 
     // 0x0046B9D4
@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tabVehicles - widx::tabOverall)
-                    imageId += vehicleImageIds[(self->frame_no / 2) % std::size(vehicleImageIds)];
+                    imageId += vehicleImageIds[(self->frameNo / 2) % std::size(vehicleImageIds)];
                 else
                     imageId += vehicleImageIds[0];
 
@@ -522,7 +522,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tabRoutes - widx::tabOverall)
-                    imageId += routeImageIds[(self->frame_no / 16) % std::size(routeImageIds)];
+                    imageId += routeImageIds[(self->frameNo / 16) % std::size(routeImageIds)];
                 else
                     imageId += routeImageIds[0];
 
@@ -563,7 +563,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::map_key_vegetation,
         };
 
-        for (auto i = 0; i < overallGraphKeySize; i++)
+        for (auto i = 0; i < kOverallGraphKeySize; i++)
         {
             auto colour = overallColours[i];
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
@@ -855,7 +855,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto industryCount = 0;
             for (const auto& industry : IndustryManager::industries())
             {
-                if (industry.object_id == industryIndex)
+                if (industry.objectId == industryIndex)
                 {
                     industryCount++;
                 }
@@ -1216,21 +1216,21 @@ namespace OpenLoco::Ui::Windows::MapWindow
             return;
 
         {
-            auto left = viewport->view_x;
-            auto top = viewport->view_y;
-            auto right = viewport->view_x;
-            auto bottom = viewport->view_y;
+            auto left = viewport->viewX;
+            auto top = viewport->viewY;
+            auto right = viewport->viewX;
+            auto bottom = viewport->viewY;
             right += viewport->viewWidth;
 
             drawViewOnMap(rt, left, top, right, bottom);
         }
 
         {
-            auto left = viewport->view_x;
-            auto top = viewport->view_y;
+            auto left = viewport->viewX;
+            auto top = viewport->viewY;
             top += viewport->viewHeight;
-            auto right = viewport->view_x;
-            auto bottom = viewport->view_y;
+            auto right = viewport->viewX;
+            auto bottom = viewport->viewY;
             right += viewport->viewWidth;
             bottom += viewport->viewHeight;
 
@@ -1238,21 +1238,21 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         {
-            auto left = viewport->view_x;
-            auto top = viewport->view_y;
-            auto right = viewport->view_x;
-            auto bottom = viewport->view_y;
+            auto left = viewport->viewX;
+            auto top = viewport->viewY;
+            auto right = viewport->viewX;
+            auto bottom = viewport->viewY;
             bottom += viewport->viewHeight;
 
             drawViewOnMap(rt, left, top, right, bottom);
         }
 
         {
-            auto left = viewport->view_x;
-            auto top = viewport->view_y;
+            auto left = viewport->viewX;
+            auto top = viewport->viewY;
             left += viewport->viewWidth;
-            auto right = viewport->view_x;
-            auto bottom = viewport->view_y;
+            auto right = viewport->viewX;
+            auto bottom = viewport->viewY;
             right += viewport->viewWidth;
             bottom += viewport->viewHeight;
 
@@ -1268,64 +1268,64 @@ namespace OpenLoco::Ui::Windows::MapWindow
         uint8_t cornerSize = 5;
 
         {
-            auto left = viewport->view_x;
-            auto top = viewport->view_y;
+            auto left = viewport->viewX;
+            auto top = viewport->viewY;
 
             drawViewCornersOnMap(rt, left, top, 0, 0, cornerSize, 0);
         }
 
         {
-            auto left = viewport->view_x;
+            auto left = viewport->viewX;
             left += viewport->viewWidth;
-            auto top = viewport->view_y;
+            auto top = viewport->viewY;
 
             drawViewCornersOnMap(rt, left, top, -cornerSize, 0, 0, 0);
         }
 
         {
-            auto left = viewport->view_x;
-            auto top = viewport->view_y;
+            auto left = viewport->viewX;
+            auto top = viewport->viewY;
 
             drawViewCornersOnMap(rt, left, top, 0, 0, 0, cornerSize);
         }
 
         {
-            auto left = viewport->view_x;
-            auto top = viewport->view_y;
+            auto left = viewport->viewX;
+            auto top = viewport->viewY;
             top += viewport->viewHeight;
 
             drawViewCornersOnMap(rt, left, top, 0, -cornerSize, 0, 0);
         }
 
         {
-            auto left = viewport->view_x;
-            auto top = viewport->view_y;
+            auto left = viewport->viewX;
+            auto top = viewport->viewY;
             top += viewport->viewHeight;
 
             drawViewCornersOnMap(rt, left, top, 0, 0, cornerSize, 0);
         }
 
         {
-            auto left = viewport->view_x;
+            auto left = viewport->viewX;
             left += viewport->viewWidth;
-            auto top = viewport->view_y;
+            auto top = viewport->viewY;
             top += viewport->viewHeight;
 
             drawViewCornersOnMap(rt, left, top, -cornerSize, 0, 0, 0);
         }
 
         {
-            auto left = viewport->view_x;
+            auto left = viewport->viewX;
             left += viewport->viewWidth;
-            auto top = viewport->view_y;
+            auto top = viewport->viewY;
 
             drawViewCornersOnMap(rt, left, top, 0, 0, 0, cornerSize);
         }
 
         {
-            auto left = viewport->view_x;
+            auto left = viewport->viewX;
             left += viewport->viewWidth;
-            auto top = viewport->view_y;
+            auto top = viewport->viewY;
             top += viewport->viewHeight;
 
             drawViewCornersOnMap(rt, left, top, 0, -cornerSize, 0, 0);
@@ -1370,10 +1370,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
             offset += 0x90000;
 
         Gfx::getG1Element(0)->offset = offset;
-        Gfx::getG1Element(0)->width = map_columns * 2;
-        Gfx::getG1Element(0)->height = map_rows * 2;
-        Gfx::getG1Element(0)->x_offset = -8;
-        Gfx::getG1Element(0)->y_offset = -8;
+        Gfx::getG1Element(0)->width = kMapColumns * 2;
+        Gfx::getG1Element(0)->height = kMapRows * 2;
+        Gfx::getG1Element(0)->xOffset = -8;
+        Gfx::getG1Element(0)->yOffset = -8;
         Gfx::getG1Element(0)->flags = 0;
 
         Gfx::drawImage(&rt, 0, 0, 0);
@@ -1429,7 +1429,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (window != nullptr)
             return;
 
-        auto ptr = malloc(map_size * 8);
+        auto ptr = malloc(kMapSize * 8);
 
         if (ptr == NULL)
             return;
@@ -1451,7 +1451,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         initEvents();
 
         window->initScrollWidgets();
-        window->frame_no = 0;
+        window->frameNo = 0;
 
         if (_lastMapWindowFlags != 0)
         {
@@ -1501,8 +1501,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto x = viewport->viewWidth / 2;
         auto y = viewport->viewHeight / 2;
-        x += viewport->view_x;
-        y += viewport->view_y;
+        x += viewport->viewX;
+        y += viewport->viewY;
         x /= 32;
         y /= 16;
         x += _4FDC4C[getCurrentRotation()];

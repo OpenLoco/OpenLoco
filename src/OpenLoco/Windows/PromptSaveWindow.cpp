@@ -93,13 +93,13 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
                 window->widgets[widx::caption].text = StringIds::title_quit_scenario_editor;
         }
 
-        static constexpr std::array<const string_id, 3> typeToPrompt = {
+        static constexpr std::array<const string_id, 3> kTypeToPrompt = {
             StringIds::prompt_save_before_loading,
             StringIds::prompt_save_before_quitting,
             StringIds::prompt_save_before_quitting_alt,
         };
 
-        window->widgets[widx::promptLabel].text = typeToPrompt.at(savePromptType);
+        window->widgets[widx::promptLabel].text = kTypeToPrompt.at(savePromptType);
 
         return window;
     }

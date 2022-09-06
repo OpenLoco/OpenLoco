@@ -20,7 +20,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Dropdown
 {
-    static constexpr int bytes_per_item = 8;
+    static constexpr int kBytesPerItem = 8;
 
     static loco_global<Colour[31], 0x00504619> _byte_504619;
     static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
@@ -40,8 +40,8 @@ namespace OpenLoco::Ui::Dropdown
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
     static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
-    static loco_global<std::byte[40][bytes_per_item], 0x0113D8A0> _dropdownItemArgs;
-    static loco_global<std::byte[40][bytes_per_item], 0x0113D9E0> _dropdownItemArgs2;
+    static loco_global<std::byte[40][kBytesPerItem], 0x0113D8A0> _dropdownItemArgs;
+    static loco_global<std::byte[40][kBytesPerItem], 0x0113D9E0> _dropdownItemArgs2;
     static loco_global<CompanyId[40], 0x00113DB20> _menuOptions;
 
     static std::vector<std::optional<DropdownItemId>> _dropdownIds;

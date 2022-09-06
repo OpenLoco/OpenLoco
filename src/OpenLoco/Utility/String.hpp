@@ -55,11 +55,11 @@ namespace OpenLoco::Utility
 
     inline size_t strlcpy(char* dest, const char* src, size_t size)
     {
-        size_t src_len = std::strlen(src);
+        size_t srcLen = std::strlen(src);
 
-        if (src_len < size)
+        if (srcLen < size)
         {
-            std::memcpy(dest, src, src_len + 1);
+            std::memcpy(dest, src, srcLen + 1);
         }
         else
         {
@@ -67,24 +67,24 @@ namespace OpenLoco::Utility
             dest[size - 1] = '\0';
         }
 
-        return src_len;
+        return srcLen;
     }
 
     inline size_t strlcat(char* dest, const char* src, size_t size)
     {
-        size_t src_len = std::strlen(src);
+        size_t srcLen = std::strlen(src);
 
         if (size == 0)
         {
-            return src_len;
+            return srcLen;
         }
 
         // this lambda is essentially a reimplementation of strnlen, which isn't standard
-        size_t dest_len = [=] {
-            auto dest_end = reinterpret_cast<const char*>(std::memchr(dest, '\0', size));
-            if (dest_end != nullptr)
+        size_t destLen = [=] {
+            auto destLen = reinterpret_cast<const char*>(std::memchr(dest, '\0', size));
+            if (destLen != nullptr)
             {
-                return static_cast<size_t>(dest_end - dest);
+                return static_cast<size_t>(destLen - dest);
             }
             else
             {
@@ -92,16 +92,16 @@ namespace OpenLoco::Utility
             }
         }();
 
-        if (dest_len < size)
+        if (destLen < size)
         {
-            size_t copy_count = std::min<size_t>((size - dest_len) - 1, src_len);
-            char* copy_ptr = (dest + dest_len);
+            size_t copyCount = std::min<size_t>((size - destLen) - 1, srcLen);
+            char* copyPtr = (dest + destLen);
 
-            std::memcpy(copy_ptr, src, copy_count);
-            copy_ptr[copy_count] = '\0';
+            std::memcpy(copyPtr, src, copyCount);
+            copyPtr[copyCount] = '\0';
         }
 
-        return (dest_len + src_len);
+        return (destLen + srcLen);
     }
 
     template<size_t N>

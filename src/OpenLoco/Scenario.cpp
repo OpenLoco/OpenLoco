@@ -443,7 +443,7 @@ namespace OpenLoco::Scenario
                 {
                     cargoObject = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
                 }
-                args.push(cargoObject->unit_name_plural);
+                args.push(cargoObject->unitNamePlural);
                 args.push(Scenario::getObjective().deliveredCargoAmount);
                 break;
             }

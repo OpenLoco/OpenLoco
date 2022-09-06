@@ -43,7 +43,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        auto& sprite = vehObject->bogie_sprites[bogie->objectSpriteType];
+        auto& sprite = vehObject->bogieSprites[bogie->objectSpriteType];
         uint8_t yaw = (bogie->spriteYaw + (session.getRotation() << 4)) & 0x3F;
         auto pitch = bogie->spritePitch;
 
@@ -409,14 +409,14 @@ namespace OpenLoco::Paint
                 offsetModifier = -offsetModifier;
             }
 
-            if (unk.body_sprite_ind & SpriteIndex::flag_unk7)
+            if (unk.bodySpriteInd & SpriteIndex::flag_unk7)
             {
                 offsetModifier = -offsetModifier;
             }
 
             boundBoxOffsets.x = (_503B6A[originalYaw].x * offsetModifier) >> 11;
             boundBoxOffsets.y = (_503B6A[originalYaw].y * offsetModifier) >> 11;
-            offsetModifier = sprite.bogey_position * 2 - 4;
+            offsetModifier = sprite.bogeyPosition * 2 - 4;
             originalYaw &= 0x1F;
             boundBoxOffsets.x += (_5001B4[originalYaw * 4] * offsetModifier) >> 8;
             boundBoxOffsets.y += (_5001B4[originalYaw * 4 + 1] * offsetModifier) >> 8;

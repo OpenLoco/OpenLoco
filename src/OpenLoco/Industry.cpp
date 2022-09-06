@@ -39,7 +39,7 @@ namespace OpenLoco
 
     const IndustryObject* Industry::getObject() const
     {
-        return ObjectManager::get<IndustryObject>(object_id);
+        return ObjectManager::get<IndustryObject>(objectId);
     }
 
     bool Industry::empty() const
@@ -50,7 +50,7 @@ namespace OpenLoco
     bool Industry::canReceiveCargo() const
     {
         auto receiveCargoState = false;
-        for (const auto& receivedCargo : ObjectManager::get<IndustryObject>(object_id)->required_cargo_type)
+        for (const auto& receivedCargo : ObjectManager::get<IndustryObject>(objectId)->required_cargo_type)
         {
             if (receivedCargo != 0xff)
                 receiveCargoState = true;
@@ -61,7 +61,7 @@ namespace OpenLoco
     bool Industry::canProduceCargo() const
     {
         auto produceCargoState = false;
-        for (const auto& producedCargo : ObjectManager::get<IndustryObject>(object_id)->produced_cargo_type)
+        for (const auto& producedCargo : ObjectManager::get<IndustryObject>(objectId)->produced_cargo_type)
         {
             if (producedCargo != 0xff)
                 produceCargoState = true;
@@ -98,7 +98,7 @@ namespace OpenLoco
         }
 
         // Under Construction
-        if (under_construction != 0xFF)
+        if (underConstruction != 0xFF)
         {
             ptr = StringManager::formatString(ptr, StringIds::industry_under_construction);
             return;
@@ -134,15 +134,15 @@ namespace OpenLoco
     // 0x00453275
     void Industry::update()
     {
-        if (!(flags & IndustryFlags::flag_01) && under_construction == 0xFF)
+        if (!(flags & IndustryFlags::flag_01) && underConstruction == 0xFF)
         {
             // Run tile loop for 100 iterations
             for (int i = 0; i < 100; i++)
             {
-                sub_45329B(tile_loop.current());
+                sub_45329B(tileLoop.current());
 
                 // loc_453318
-                if (tile_loop.next() == Pos2())
+                if (tileLoop.next() == Pos2())
                 {
                     sub_453354();
                     break;
@@ -162,7 +162,7 @@ namespace OpenLoco
         auto* indObj = getObject();
 
         uint16_t production = 0;
-        if (indObj->flags & IndustryObjectFlags::requires_all_cargo)
+        if (indObj->flags & IndustryObjectFlags::requiresAllCargo)
         {
             production = std::numeric_limits<uint16_t>::max();
             for (auto i = 0; i < 3; ++i)
@@ -207,7 +207,7 @@ namespace OpenLoco
 
         for (auto i = 0; i < 3; ++i)
         {
-            // Lose a 16th of required cargo if requires_all_cargo and not equally satisfied
+            // Lose a 16th of required cargo if requiresAllCargo and not equally satisfied
             receivedCargoQuantityDailyTotal[i] -= Math::Bound::add(receivedCargoQuantityDailyTotal[i], 15) / 16;
         }
 
@@ -266,7 +266,7 @@ namespace OpenLoco
         }
         bool hasEvent = false;
         const auto* indObj = getObject();
-        if (under_construction == 0xFF
+        if (underConstruction == 0xFF
             && !(flags & IndustryFlags::closingDown)
             && indObj->required_cargo_type[0] == 0xFF)
         {
@@ -287,7 +287,7 @@ namespace OpenLoco
         }
         if (!hasEvent
             && !(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown)
-            && under_construction == 0xFF
+            && underConstruction == 0xFF
             && !(flags & IndustryFlags::closingDown))
         {
             if (isMonthlyProductionClosing())

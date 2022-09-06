@@ -41,7 +41,7 @@ namespace OpenLoco::Input
     static void statePositioningWindow(MouseButton button, int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex);
     static void windowPositionEnd();
 
-    static void windowResizeBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widget_index);
+    static void windowResizeBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex);
 
     static void viewportDragBegin(Window* w);
 
@@ -810,8 +810,8 @@ namespace OpenLoco::Input
                         auto offsetX = dragOffset.x << (vp->zoom + 1);
                         auto offsetY = dragOffset.y << (vp->zoom + 1);
 
-                        window->viewportConfigurations[0].saved_view_x += offsetX * invert;
-                        window->viewportConfigurations[0].saved_view_y += offsetY * invert;
+                        window->viewportConfigurations[0].savedViewX += offsetX * invert;
+                        window->viewportConfigurations[0].savedViewY += offsetY * invert;
                     }
                     else
                     {
@@ -1846,10 +1846,10 @@ namespace OpenLoco::Input
 #pragma mark - Window positioning
 
     // 0x004C877D
-    void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widget_index)
+    void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex)
     {
         state(State::positioningWindow);
-        _pressedWidgetIndex = widget_index;
+        _pressedWidgetIndex = widgetIndex;
         _dragLastX = x;
         _dragLastY = y;
         _dragWindowType = window->type;
@@ -1869,10 +1869,10 @@ namespace OpenLoco::Input
 #pragma mark - Window resizing
 
     // 0x004C85D1
-    static void windowResizeBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widget_index)
+    static void windowResizeBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex)
     {
         state(State::resizing);
-        _pressedWidgetIndex = widget_index;
+        _pressedWidgetIndex = widgetIndex;
         _dragLastX = x;
         _dragLastY = y;
         _dragWindowType = window->type;

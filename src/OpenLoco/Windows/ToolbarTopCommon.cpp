@@ -88,16 +88,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_zoom_in, StringIds::menu_zoom_in });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_zoom_out, StringIds::menu_zoom_out });
 
-        static const uint32_t map_sprites_by_rotation[] = {
+        static constexpr uint32_t kMapSpritesByRotation[] = {
             InterfaceSkin::ImageIds::toolbar_menu_map_north,
             InterfaceSkin::ImageIds::toolbar_menu_map_west,
             InterfaceSkin::ImageIds::toolbar_menu_map_south,
             InterfaceSkin::ImageIds::toolbar_menu_map_east,
         };
 
-        uint32_t map_sprite = map_sprites_by_rotation[WindowManager::getCurrentRotation()];
+        uint32_t mapSprite = kMapSpritesByRotation[WindowManager::getCurrentRotation()];
 
-        Dropdown::add(2, StringIds::menu_sprite_stringid, { interface->img + map_sprite, StringIds::menu_map });
+        Dropdown::add(2, StringIds::menu_sprite_stringid, { interface->img + mapSprite, StringIds::menu_map });
         Dropdown::showBelow(window, widgetIndex, 3, 25, (1 << 6));
         Dropdown::setHighlightedItem(0);
 
@@ -181,8 +181,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         auto water = ObjectManager::get<WaterObject>();
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
-        Dropdown::add(1, StringIds::menu_sprite_stringid, { land->var_16 + Land::ImageIds::toolbar_terraform_land, StringIds::menu_adjust_land });
-        Dropdown::add(2, StringIds::menu_sprite_stringid, { water->image + Water::ImageIds::toolbar_terraform_water, StringIds::menu_adjust_water });
+        Dropdown::add(1, StringIds::menu_sprite_stringid, { land->var_16 + Land::ImageIds::kToolbarTerraformLand, StringIds::menu_adjust_land });
+        Dropdown::add(2, StringIds::menu_sprite_stringid, { water->image + Water::ImageIds::kToolbarTerraformWater, StringIds::menu_adjust_water });
         Dropdown::add(3, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees, StringIds::menu_plant_trees });
         Dropdown::add(4, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_build_walls, StringIds::menu_build_walls });
         Dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
@@ -207,34 +207,34 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         auto companyColour = CompanyManager::getPlayerCompanyColour();
 
         // Add available objects to Dropdown.
-        uint16_t highlighted_item = 0;
+        uint16_t highlightedItem = 0;
         for (i = 0; _availableObjects[i] != 0xFF && i < std::size(_availableObjects); i++)
         {
-            uint32_t obj_image;
-            string_id obj_string_id;
+            uint32_t objImage;
+            string_id objStringId;
 
             auto objIndex = _availableObjects[i];
             if ((objIndex & (1 << 7)) != 0)
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
-                obj_string_id = road->name;
-                obj_image = Gfx::recolour(road->image, companyColour);
+                objStringId = road->name;
+                objImage = Gfx::recolour(road->image, companyColour);
             }
             else
             {
                 auto track = ObjectManager::get<TrackObject>(objIndex);
-                obj_string_id = track->name;
-                obj_image = Gfx::recolour(track->image, companyColour);
+                objStringId = track->name;
+                objImage = Gfx::recolour(track->image, companyColour);
             }
 
-            Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
+            Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
             if (objIndex == LastGameOptionManager::getLastRoad())
-                highlighted_item = i;
+                highlightedItem = i;
         }
 
         Dropdown::showBelow(window, widgetIndex, i, 25, (1 << 6));
-        Dropdown::setHighlightedItem(highlighted_item);
+        Dropdown::setHighlightedItem(highlightedItem);
     }
 
     // 0x0043A8CE

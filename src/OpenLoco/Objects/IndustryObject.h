@@ -13,11 +13,11 @@ namespace OpenLoco
 
     namespace IndustryObjectFlags
     {
-        constexpr uint32_t built_on_water = 1 << 8;
+        constexpr uint32_t builtOnWater = 1 << 8;
         constexpr uint32_t oilfield = 1 << 13;
         constexpr uint32_t mines = 1 << 14;
-        constexpr uint32_t can_be_founded_by_user = 1 << 16;
-        constexpr uint32_t requires_all_cargo = 1 << 17;
+        constexpr uint32_t canBeFoundedByUser = 1 << 16;
+        constexpr uint32_t requiresAllCargo = 1 << 17;
         constexpr uint32_t unk18 = 1 << 18;
         constexpr uint32_t unk19 = 1 << 19;
         constexpr uint32_t flag_28 = 1 << 28;
@@ -53,8 +53,8 @@ namespace OpenLoco
         uint16_t designedYear; // 0xCA start year
         uint16_t obsoleteYear; // 0xCC end year
         uint8_t var_CE;
-        uint8_t cost_index;      // 0xCF
-        int16_t cost_factor;     // 0xD0
+        uint8_t costIndex;       // 0xCF
+        int16_t costFactor;      // 0xD0
         int16_t clearCostFactor; // 0xD2
         uint8_t pad_D4[0xD6 - 0xD4];
         uint16_t var_D6;

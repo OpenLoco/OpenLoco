@@ -37,10 +37,10 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct EntityBase
     {
-        EntityBaseType base_type;
+        EntityBaseType baseType;
 
     private:
-        uint8_t type; // Use type specific getters/setters as this depends on base_type
+        uint8_t type; // Use type specific getters/setters as this depends on baseType
     public:
         EntityId nextQuadrantId;  // 0x02
         EntityId nextThingId;     // 0x04
@@ -68,7 +68,7 @@ namespace OpenLoco
         template<typename T>
         bool isBase() const
         {
-            return base_type == T::kBaseType;
+            return baseType == T::kBaseType;
         }
         template<typename BaseType>
         BaseType* asBase()

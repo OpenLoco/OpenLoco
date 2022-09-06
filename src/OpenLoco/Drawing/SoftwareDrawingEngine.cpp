@@ -94,18 +94,18 @@ namespace OpenLoco::Drawing
         right--;
         bottom--;
 
-        const int32_t dirty_block_left = left >> _screenInfo->dirty_block_column_shift;
-        const int32_t dirty_block_right = right >> _screenInfo->dirty_block_column_shift;
-        const int32_t dirty_block_top = top >> _screenInfo->dirty_block_row_shift;
-        const int32_t dirty_block_bottom = bottom >> _screenInfo->dirty_block_row_shift;
+        const int32_t dirtyBlockLeft = left >> _screenInfo->dirtyBlockColumnShift;
+        const int32_t dirtyBlockRight = right >> _screenInfo->dirtyBlockColumnShift;
+        const int32_t dirtyBlockTop = top >> _screenInfo->dirtyBlockRowShift;
+        const int32_t dirtyBlockBottom = bottom >> _screenInfo->dirtyBlockRowShift;
 
-        const size_t columns = _screenInfo->dirty_block_columns;
-        const size_t rows = _screenInfo->dirty_block_rows;
+        const size_t columns = _screenInfo->dirtyBlockColumns;
+        const size_t rows = _screenInfo->dirtyBlockRows;
         auto grid = Grid<uint8_t>(_E025C4, columns, rows);
 
-        for (int16_t y = dirty_block_top; y <= dirty_block_bottom; y++)
+        for (int16_t y = dirtyBlockTop; y <= dirtyBlockBottom; y++)
         {
-            for (int16_t x = dirty_block_left; x <= dirty_block_right; x++)
+            for (int16_t x = dirtyBlockLeft; x <= dirtyBlockRight; x++)
             {
                 grid[y][x] = 0xFF;
             }
@@ -128,8 +128,8 @@ namespace OpenLoco::Drawing
     // 0x004C5CFA
     void SoftwareDrawingEngine::drawDirtyBlocks()
     {
-        const size_t columns = _screenInfo->dirty_block_columns;
-        const size_t rows = _screenInfo->dirty_block_rows;
+        const size_t columns = _screenInfo->dirtyBlockColumns;
+        const size_t rows = _screenInfo->dirtyBlockRows;
         auto grid = Grid<uint8_t>(_E025C4, columns, rows);
 
         for (size_t x = 0; x < columns; x++)
@@ -152,8 +152,8 @@ namespace OpenLoco::Drawing
 
     void SoftwareDrawingEngine::drawDirtyBlocks(size_t x, size_t y, size_t dx, size_t dy)
     {
-        const auto columns = _screenInfo->dirty_block_columns;
-        const auto rows = _screenInfo->dirty_block_rows;
+        const auto columns = _screenInfo->dirtyBlockColumns;
+        const auto rows = _screenInfo->dirtyBlockRows;
         auto grid = Grid<uint8_t>(_E025C4, columns, rows);
 
         // Unset dirty blocks
@@ -166,10 +166,10 @@ namespace OpenLoco::Drawing
         }
 
         auto rect = Rect(
-            static_cast<int16_t>(x * _screenInfo->dirty_block_width),
-            static_cast<int16_t>(y * _screenInfo->dirty_block_height),
-            static_cast<uint16_t>(dx * _screenInfo->dirty_block_width),
-            static_cast<uint16_t>(dy * _screenInfo->dirty_block_height));
+            static_cast<int16_t>(x * _screenInfo->dirtyBlockWidth),
+            static_cast<int16_t>(y * _screenInfo->dirtyBlockHeight),
+            static_cast<uint16_t>(dx * _screenInfo->dirtyBlockWidth),
+            static_cast<uint16_t>(dy * _screenInfo->dirtyBlockHeight));
 
         this->drawRect(rect);
     }
@@ -210,7 +210,7 @@ namespace OpenLoco::Drawing
         rt.y = rect.top();
         rt.bits = _screenInfo->renderTarget.bits + rect.left() + ((_screenInfo->renderTarget.width + _screenInfo->renderTarget.pitch) * rect.top());
         rt.pitch = _screenInfo->renderTarget.width + _screenInfo->renderTarget.pitch - rect.width();
-        rt.zoom_level = 0;
+        rt.zoomLevel = 0;
 
         for (size_t i = 0; i < Ui::WindowManager::count(); i++)
         {

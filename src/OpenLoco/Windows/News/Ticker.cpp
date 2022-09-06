@@ -185,9 +185,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         char* newsString = news->messageString;
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
-        *buffer = ControlCodes::colour_black;
+        *buffer = ControlCodes::Colour::black;
         buffer++;
-        *buffer = ControlCodes::font_small;
+        *buffer = ControlCodes::fontSmall;
         buffer++;
 
         auto newsStringChar = *newsString;

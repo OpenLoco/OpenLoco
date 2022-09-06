@@ -21,10 +21,10 @@ namespace OpenLoco
         string_id name; // 0x0
         uint16_t var_2;
         uint16_t var_4;
-        string_id units_and_cargo_name; // 0x6
-        string_id unit_name_singular;   // 0x8
-        string_id unit_name_plural;     // 0xA
-        uint32_t unit_inline_sprite;    // 0xC
+        string_id unitsAndCargoName; // 0x6
+        string_id unitNameSingular;  // 0x8
+        string_id unitNamePlural;    // 0xA
+        uint32_t unitInlineSprite;   // 0xC
         std::uint8_t pad_10[0x12 - 0x10];
         uint8_t flags;                 // 0x12
         uint8_t numPlatformVariations; // 0x13

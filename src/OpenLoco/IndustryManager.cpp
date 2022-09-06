@@ -115,7 +115,7 @@ namespace OpenLoco::IndustryManager
                 continue;
 
             auto manhattanDistance = Math::Vector::manhattanDistance(Map::Pos2{ industry.x, industry.y }, position);
-            if (manhattanDistance / Map::tile_size < 11)
+            if (manhattanDistance / Map::kTileSize < 11)
                 return true;
         }
 

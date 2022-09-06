@@ -63,8 +63,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Messages
     {
-        static constexpr Ui::Size minWindowSize = { 366, 217 };
-        static constexpr Ui::Size maxWindowSize = { 366, 1200 };
+        static constexpr Ui::Size kMinWindowSize = { 366, 217 };
+        static constexpr Ui::Size kMaxWindowSize = { 366, 1200 };
         static int8_t messageHeight = 39;
 
         enum widx
@@ -271,12 +271,12 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A7B9
         static void tabReset(Window* self)
         {
-            self->minWidth = minWindowSize.width;
-            self->minHeight = minWindowSize.height;
-            self->maxWidth = maxWindowSize.width;
-            self->maxHeight = maxWindowSize.height;
-            self->width = minWindowSize.width;
-            self->height = minWindowSize.height;
+            self->minWidth = kMinWindowSize.width;
+            self->minHeight = kMinWindowSize.height;
+            self->maxWidth = kMaxWindowSize.width;
+            self->maxHeight = kMaxWindowSize.height;
+            self->width = kMinWindowSize.width;
+            self->height = kMinWindowSize.height;
             self->rowHover = -1;
         }
 
@@ -327,24 +327,24 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             window->enabledWidgets = Messages::enabledWidgets;
             window->number = 0;
             window->currentTab = 0;
-            window->frame_no = 0;
+            window->frameNo = 0;
             window->rowHover = -1;
             window->disabledWidgets = 0;
 
             WindowManager::sub_4CEE0B(window);
 
-            window->minWidth = Messages::minWindowSize.width;
-            window->minHeight = Messages::minWindowSize.height;
-            window->maxWidth = Messages::maxWindowSize.width;
-            window->maxHeight = Messages::maxWindowSize.height;
+            window->minWidth = Messages::kMinWindowSize.width;
+            window->minHeight = Messages::kMinWindowSize.height;
+            window->maxWidth = Messages::kMaxWindowSize.width;
+            window->maxHeight = Messages::kMaxWindowSize.height;
             window->flags |= WindowFlags::resizable;
 
             window->owner = CompanyManager::getControllingId();
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0A);
 
-            window->width = Messages::minWindowSize.width;
-            window->height = Messages::minWindowSize.height;
+            window->width = Messages::kMinWindowSize.width;
+            window->height = Messages::kMinWindowSize.height;
         }
 
         window->currentTab = 0;
@@ -611,7 +611,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 Input::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_messages;
-            self->frame_no = 0;
+            self->frameNo = 0;
             self->flags &= ~(WindowFlags::flag_16);
 
             self->viewportRemove(0);
@@ -664,7 +664,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A826 and 0x0042AB6A
         static void onUpdate(Window& self)
         {
-            self.frame_no++;
+            self.frameNo++;
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::messages, self.number, self.currentTab + Common::widx::tab_messages);
         }

@@ -9,7 +9,7 @@ namespace OpenLoco::Gfx
 
     Ui::Rect RenderTarget::getDrawableRect() const
     {
-        auto zoom = zoom_level;
+        auto zoom = zoomLevel;
         auto left = x >> zoom;
         auto top = y >> zoom;
         auto right = (width >> zoom) + left;

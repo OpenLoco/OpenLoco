@@ -760,7 +760,7 @@ namespace OpenLoco::ObjectManager
     {
         // Trim string at first space (note this copies vanilla but maybe shouldn't)
         auto space = filename.find_first_of(' ');
-        if (space != std::string::npos)
+        if (space != std::string::kNpos)
         {
             filename = filename.substr(0, space);
         }
@@ -963,7 +963,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // TODO: Should only be defined in ObjectSelectionWindow
-    static const uint8_t descriptionRowHeight = 10;
+    static constexpr uint8_t kDescriptionRowHeight = 10;
 
     void drawGenericDescription(Gfx::RenderTarget& rt, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete)
     {
@@ -972,7 +972,7 @@ namespace OpenLoco::ObjectManager
             FormatArguments args{};
             args.push(designed);
             Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_designed, &args);
-            rowPosition.y += descriptionRowHeight;
+            rowPosition.y += kDescriptionRowHeight;
         }
 
         if (obsolete != 0xFFFF)
@@ -980,7 +980,7 @@ namespace OpenLoco::ObjectManager
             FormatArguments args{};
             args.push(obsolete);
             Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_obsolete, &args);
-            rowPosition.y += descriptionRowHeight;
+            rowPosition.y += kDescriptionRowHeight;
         }
     }
 

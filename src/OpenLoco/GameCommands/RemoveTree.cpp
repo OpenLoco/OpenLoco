@@ -42,7 +42,7 @@ namespace OpenLoco::GameCommands
         GameCommands::setExpenditureType(ExpenditureType::Construction);
 
         auto tileHeight = Map::TileManager::getHeight(pos);
-        GameCommands::setPosition(Map::Pos3(pos.x + Map::tile_size / 2, pos.y + Map::tile_size / 2, tileHeight.landHeight));
+        GameCommands::setPosition(Map::Pos3(pos.x + Map::kTileSize / 2, pos.y + Map::kTileSize / 2, tileHeight.landHeight));
 
         auto tile = Map::TileManager::get(pos);
         for (auto& element : tile)
@@ -62,7 +62,7 @@ namespace OpenLoco::GameCommands
                 continue;
 
             auto treeObj = ObjectManager::get<TreeObject>(treeElement->treeObjectId());
-            currency32_t removalCost = Economy::getInflationAdjustedCost(treeObj->clear_cost_factor, treeObj->cost_index, 12);
+            currency32_t removalCost = Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
 
             if (flags & Flags::apply)
                 removeTree(*treeElement, flags, pos);

@@ -142,7 +142,7 @@ namespace OpenLoco::S5
                     rt.width = size.width;
                     rt.height = size.height;
                     rt.pitch = 0;
-                    rt.zoom_level = 0;
+                    rt.zoomLevel = 0;
                     Gfx::redrawScreenRect(0, 0, size.width, size.height);
                     rt = backupContext;
                 }
@@ -161,7 +161,7 @@ namespace OpenLoco::S5
         StringManager::formatString(saveDetails->owner, sizeof(saveDetails->owner), playerCompany.ownerName);
         saveDetails->date = gameState.currentDay;
         saveDetails->performanceIndex = playerCompany.performanceIndex;
-        saveDetails->challenge_progress = playerCompany.challengeProgress;
+        saveDetails->challengeProgress = playerCompany.challengeProgress;
         saveDetails->challengeFlags = playerCompany.challengeFlags;
         std::strncpy(saveDetails->scenario, gameState.scenarioName, sizeof(saveDetails->scenario));
         drawPreviewImage(saveDetails->image, { 250, 200 });

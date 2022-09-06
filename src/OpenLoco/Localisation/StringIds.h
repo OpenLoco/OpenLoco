@@ -422,7 +422,7 @@ namespace OpenLoco::StringIds
     constexpr string_id quantity_seven_eigths = 438;
     constexpr string_id comma = 439;
     constexpr string_id produces = 440;
-    constexpr string_id under_construction = 441;
+    constexpr string_id underConstruction = 441;
     constexpr string_id string_owned_by_string = 442;
     constexpr string_id dropdown_without_checkmark = 443;
     constexpr string_id dropdown_with_checkmark = 444;
@@ -609,7 +609,7 @@ namespace OpenLoco::StringIds
     constexpr string_id challenge_completed = 696;
     constexpr string_id tooltip_performance_index = 697;
     constexpr string_id tooltip_company_value = 698;
-    constexpr string_id challenge_progress = 699;
+    constexpr string_id challengeProgress = 699;
     constexpr string_id challenge_time_left = 700;
     constexpr string_id customise_keys = 701;
     constexpr string_id keyboard_shortcuts = 702;
@@ -1274,13 +1274,13 @@ namespace OpenLoco::StringIds
     constexpr string_id sea_level_units = 1637;
     constexpr string_id number_of_forests = 1638;
     constexpr string_id number_of_forests_value = 1639;
-    constexpr string_id min_forest_radius = 1640;
+    constexpr string_id kMinForestRadius = 1640;
     constexpr string_id min_forest_radius_blocks = 1641;
-    constexpr string_id max_forest_radius = 1642;
+    constexpr string_id kMaxForestRadius = 1642;
     constexpr string_id max_forest_radius_blocks = 1643;
-    constexpr string_id min_forest_density = 1644;
+    constexpr string_id kMinForestDensity = 1644;
     constexpr string_id min_forest_density_percent = 1645;
-    constexpr string_id max_forest_density = 1646;
+    constexpr string_id kMaxForestDensity = 1646;
     constexpr string_id max_forest_density_percent = 1647;
     constexpr string_id number_random_trees = 1648;
     constexpr string_id number_random_trees_value = 1649;
@@ -1316,7 +1316,7 @@ namespace OpenLoco::StringIds
     constexpr string_id title_scenario_challenge = 1679;
     constexpr string_id title_company_options = 1680;
     constexpr string_id title_financial_options = 1681;
-    constexpr string_id max_competing_companies = 1682;
+    constexpr string_id kMaxCompetingCompanies = 1682;
     constexpr string_id max_competing_companies_value = 1683;
     constexpr string_id delay_before_competing_companies_start = 1684;
     constexpr string_id delay_before_competing_companies_start_months = 1685;

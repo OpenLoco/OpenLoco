@@ -72,8 +72,8 @@ namespace OpenLoco::Ui
         int16_t height;     // 0x02
         int16_t x;          // 0x04
         int16_t y;          // 0x06
-        int16_t view_x;     // 0x08
-        int16_t view_y;     // 0x0A
+        int16_t viewX;      // 0x08
+        int16_t viewY;      // 0x0A
         int16_t viewWidth;  // 0x0C
         int16_t viewHeight; // 0x0E
         uint8_t zoom;       // 0x10
@@ -82,7 +82,7 @@ namespace OpenLoco::Ui
 
         constexpr bool contains(const viewport_pos& vpos)
         {
-            return (vpos.y >= view_y && vpos.y < view_y + viewHeight && vpos.x >= view_x && vpos.x < view_x + viewWidth);
+            return (vpos.y >= viewY && vpos.y < viewY + viewHeight && vpos.x >= viewX && vpos.x < viewX + viewWidth);
         }
 
         constexpr bool containsUi(const Point& pos)
@@ -97,16 +97,16 @@ namespace OpenLoco::Ui
 
         constexpr bool intersects(const ViewportRect& vpos)
         {
-            if (vpos.right <= view_x)
+            if (vpos.right <= viewX)
                 return false;
 
-            if (vpos.bottom <= view_y)
+            if (vpos.bottom <= viewY)
                 return false;
 
-            if (vpos.left >= view_x + viewWidth)
+            if (vpos.left >= viewX + viewWidth)
                 return false;
 
-            if (vpos.top >= view_y + viewHeight)
+            if (vpos.top >= viewY + viewHeight)
                 return false;
 
             return true;
@@ -115,10 +115,10 @@ namespace OpenLoco::Ui
         constexpr ViewportRect getIntersection(const ViewportRect& rect)
         {
             auto out = ViewportRect();
-            out.left = std::max(rect.left, view_x);
-            out.right = std::min<int16_t>(rect.right, view_x + viewWidth);
-            out.top = std::max(rect.top, view_y);
-            out.bottom = std::min<int16_t>(rect.bottom, view_y + viewHeight);
+            out.left = std::max(rect.left, viewX);
+            out.right = std::min<int16_t>(rect.right, viewX + viewWidth);
+            out.top = std::max(rect.top, viewY);
+            out.bottom = std::min<int16_t>(rect.bottom, viewY + viewHeight);
 
             return out;
         }
@@ -168,9 +168,9 @@ namespace OpenLoco::Ui
 
     struct ViewportConfig
     {
-        EntityId viewport_target_sprite; // 0x0
-        int16_t saved_view_x;            // 0x2
-        int16_t saved_view_y;            // 0x4
+        EntityId viewportTargetSprite; // 0x0
+        int16_t savedViewX;            // 0x2
+        int16_t savedViewY;            // 0x4
     };
 
     namespace ScreenToViewport
@@ -187,7 +187,7 @@ namespace OpenLoco::Ui
 
         [[nodiscard]] constexpr Point viewOffsetTransform(const Point& point, const Viewport& vp)
         {
-            return point + Point{ vp.view_x, vp.view_y };
+            return point + Point{ vp.viewX, vp.viewY };
         }
 
         [[nodiscard]] constexpr Point applyTransform(const Point& uiPoint, const Viewport& vp)
@@ -210,7 +210,7 @@ namespace OpenLoco::Ui
 
         [[nodiscard]] constexpr Point viewOffsetTransform(const Point& point, const Viewport& vp)
         {
-            return point - Point{ vp.view_x, vp.view_y };
+            return point - Point{ vp.viewX, vp.viewY };
         }
 
         [[nodiscard]] constexpr Point applyTransform(const Point& vpPoint, const Viewport& vp)

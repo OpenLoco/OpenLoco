@@ -396,35 +396,35 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto companyColour = CompanyManager::getPlayerCompanyColour();
 
         // Add available objects to Dropdown.
-        uint16_t highlighted_item = 0;
+        uint16_t highlightedItem = 0;
 
         for (auto i = 0u; i < std::size(availableTracks); i++)
         {
-            uint32_t obj_image;
-            string_id obj_string_id;
+            uint32_t objImage;
+            string_id objStringId;
 
             auto objIndex = availableTracks[i];
             if ((objIndex & (1 << 7)) != 0)
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
-                obj_string_id = road->name;
-                obj_image = Gfx::recolour(road->image, companyColour);
+                objStringId = road->name;
+                objImage = Gfx::recolour(road->image, companyColour);
             }
             else
             {
                 auto track = ObjectManager::get<TrackObject>(objIndex);
-                obj_string_id = track->name;
-                obj_image = Gfx::recolour(track->image, companyColour);
+                objStringId = track->name;
+                objImage = Gfx::recolour(track->image, companyColour);
             }
 
-            Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
+            Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
             if (objIndex == LastGameOptionManager::getLastRailRoad())
-                highlighted_item = i;
+                highlightedItem = i;
         }
 
         Dropdown::showBelow(window, widgetIndex, std::size(availableTracks), 25, (1 << 6));
-        Dropdown::setHighlightedItem(highlighted_item);
+        Dropdown::setHighlightedItem(highlightedItem);
     }
 
     // 0x0043A39F
@@ -492,10 +492,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     struct VehicleTypeInterfaceParam
     {
         uint32_t image;
-        uint32_t build_image;
-        string_id build_string;
-        string_id num_singular;
-        string_id num_plural;
+        uint32_t buildImage;
+        string_id buildString;
+        string_id numSingular;
+        string_id numPlural;
     };
 
     // clang-format off
@@ -526,9 +526,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
-            uint32_t vehicle_image = Gfx::recolour(interface_param.build_image, companyColour);
+            uint32_t vehicle_image = Gfx::recolour(interface_param.buildImage, companyColour);
 
-            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, interface_param.build_string });
+            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, interface_param.buildString });
             _menuOptions[ddIndex] = vehicleType;
             ddIndex++;
         }
@@ -580,19 +580,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             if ((availableVehicles & (1 << vehicleType)) == 0)
                 continue;
 
-            auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
+            auto& interfaceParam = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
-            uint32_t vehicle_image = Gfx::recolour(interface_param.image, companyColour);
+            uint32_t vehicleImage = Gfx::recolour(interfaceParam.image, companyColour);
             uint16_t vehicle_count = vehicle_counts[vehicleType];
 
             // TODO: replace with locale-based plurals.
-            string_id vehicle_string_id;
+            string_id vehicleStringId;
             if (vehicle_count == 1)
-                vehicle_string_id = interface_param.num_singular;
+                vehicleStringId = interfaceParam.numSingular;
             else
-                vehicle_string_id = interface_param.num_plural;
+                vehicleStringId = interfaceParam.numPlural;
 
-            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id, vehicle_count });
+            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicleImage, vehicleStringId, vehicle_count });
             _menuOptions[ddIndex] = vehicleType;
             ddIndex++;
         }

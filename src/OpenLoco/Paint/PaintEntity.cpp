@@ -18,7 +18,7 @@ namespace OpenLoco::Paint
     static void paintEntitiesWithFilter(PaintSession& session, const Map::Pos2& loc, FilterType&& filter)
     {
         auto* rt = session.getRenderTarget();
-        if (Config::get().vehiclesMinScale < rt->zoom_level)
+        if (Config::get().vehiclesMinScale < rt->zoomLevel)
         {
             return;
         }
@@ -61,7 +61,7 @@ namespace OpenLoco::Paint
             session.setCurrentItem(entity);
             session.setEntityPosition(entity->position);
             session.setItemType(InteractionItem::entity);
-            switch (entity->base_type)
+            switch (entity->baseType)
             {
                 case EntityBaseType::vehicle:
                     paintVehicleEntity(session, entity->asBase<Vehicles::VehicleBase>());

@@ -16,9 +16,9 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::water;
 
         string_id name;
-        uint8_t cost_index; // 0x02
+        uint8_t costIndex; // 0x02
         uint8_t var_03;
-        int8_t cost_factor; // 0x04
+        int8_t costFactor; // 0x04
         uint8_t var_05;
         uint32_t image; // 0x06
         uint32_t var_0A;
@@ -33,6 +33,6 @@ namespace OpenLoco
 
     namespace Water::ImageIds
     {
-        constexpr uint32_t toolbar_terraform_water = 42;
+        static constexpr uint32_t kToolbarTerraformWater = 42;
     }
 }

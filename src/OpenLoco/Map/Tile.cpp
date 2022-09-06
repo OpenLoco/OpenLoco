@@ -92,7 +92,7 @@ size_t Tile::indexOf(const TileElementBase* element) const
         }
         i++;
     }
-    return npos;
+    return kNpos;
 }
 
 SurfaceElement* Tile::surface() const

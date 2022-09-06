@@ -11,7 +11,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Economy
 {
-    static const uint32_t kInflationFactors[32] = {
+    static constexpr uint32_t kInflationFactors[32] = {
         20,
         20,
         20,

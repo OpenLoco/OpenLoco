@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::WindowManager
     Window* bringToFront(WindowType type, uint16_t id = 0);
     void invalidate(WindowType type);
     void invalidate(WindowType type, WindowNumber_t number);
-    void invalidateWidget(WindowType type, WindowNumber_t number, uint8_t widget_index);
+    void invalidateWidget(WindowType type, WindowNumber_t number, uint8_t widgetIndex);
     void invalidateAllWindowsAfterInput();
     void close(WindowType type);
     void close(WindowType type, uint16_t id);
@@ -265,7 +265,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         Window* openMusicSettings();
-        constexpr uint8_t tab_offset_music = 2;
+        constexpr uint8_t kTabOffsetMusic = 2;
     }
 
     namespace PlayerInfoPanel

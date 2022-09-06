@@ -28,12 +28,12 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleMenu
 {
-    static const uint8_t btn_main_size = 74;
-    static const uint8_t btn_sub_height = 18;
-    static const uint16_t ww = btn_main_size * 4;
-    static const uint16_t wh = btn_main_size + btn_sub_height;
+    static constexpr uint8_t kBtnMainSize = 74;
+    static constexpr uint8_t kBtnSubHeight = 18;
+    static constexpr uint16_t kWW = kBtnMainSize * 4;
+    static constexpr uint16_t kWH = kBtnMainSize + kBtnSubHeight;
 
-    static const std::vector<uint32_t> globe_spin = {
+    static constexpr std::array<uint32_t, 32> kGlobeSpin = {
         ImageIds::title_menu_globe_spin_0,
         ImageIds::title_menu_globe_spin_1,
         ImageIds::title_menu_globe_spin_2,
@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         ImageIds::title_menu_globe_spin_31,
     };
 
-    static const std::vector<uint32_t> globe_construct = {
+    static constexpr std::array<uint32_t, 32> kGlobeConstruct = {
         ImageIds::title_menu_globe_construct_0,
         ImageIds::title_menu_globe_construct_1,
         ImageIds::title_menu_globe_construct_2,
@@ -117,12 +117,12 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_new_game),
-        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_load_game),
-        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_show_tutorial),
-        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_scenario_editor),
-        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_chat_tooltip),
-        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_multiplayer_toggle_tooltip),
+        makeWidget({ 0, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_new_game),
+        makeWidget({ kBtnMainSize, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_load_game),
+        makeWidget({ kBtnMainSize * 2, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_show_tutorial),
+        makeWidget({ kBtnMainSize * 3, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_scenario_editor),
+        makeWidget({ kBtnMainSize * 4 - 31, kBtnMainSize - 27 }, { 31, 27 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_chat_tooltip),
+        makeWidget({ 0, kBtnMainSize }, { kWW, kBtnSubHeight }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_multiplayer_toggle_tooltip),
         widgetEnd(),
     };
 
@@ -163,8 +163,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleMenu,
-            Ui::Point((Ui::width() - ww) / 2, Ui::height() - wh - 25),
-            { ww, wh },
+            Ui::Point((Ui::width() - kWW) / 2, Ui::height() - kWH - 25),
+            { kWW, kWH },
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
 
@@ -189,13 +189,13 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         // TODO: add widget::set_origin()
         window.widgets[Widx::scenario_list_btn].left = 0;
-        window.widgets[Widx::scenario_list_btn].right = btn_main_size - 1;
-        window.widgets[Widx::load_game_btn].left = btn_main_size;
-        window.widgets[Widx::load_game_btn].right = btn_main_size * 2 - 1;
-        window.widgets[Widx::tutorial_btn].left = btn_main_size * 2;
-        window.widgets[Widx::tutorial_btn].right = btn_main_size * 3 - 1;
-        window.widgets[Widx::scenario_editor_btn].left = btn_main_size * 3;
-        window.widgets[Widx::scenario_editor_btn].right = btn_main_size * 4 - 1;
+        window.widgets[Widx::scenario_list_btn].right = kBtnMainSize - 1;
+        window.widgets[Widx::load_game_btn].left = kBtnMainSize;
+        window.widgets[Widx::load_game_btn].right = kBtnMainSize * 2 - 1;
+        window.widgets[Widx::tutorial_btn].left = kBtnMainSize * 2;
+        window.widgets[Widx::tutorial_btn].right = kBtnMainSize * 3 - 1;
+        window.widgets[Widx::scenario_editor_btn].left = kBtnMainSize * 3;
+        window.widgets[Widx::scenario_editor_btn].right = kBtnMainSize * 4 - 1;
         window.widgets[Widx::chat_btn].type = Ui::WidgetType::none;
 
         auto& config = Config::getNew();
@@ -206,10 +206,10 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             window.widgets[Widx::tutorial_btn].type = Ui::WidgetType::none;
             window.widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::none;
 
-            window.widgets[Widx::scenario_list_btn].left = btn_main_size;
-            window.widgets[Widx::scenario_list_btn].right = btn_main_size * 2 - 1;
-            window.widgets[Widx::load_game_btn].left = btn_main_size * 2;
-            window.widgets[Widx::load_game_btn].right = btn_main_size * 3 - 1;
+            window.widgets[Widx::scenario_list_btn].left = kBtnMainSize;
+            window.widgets[Widx::scenario_list_btn].right = kBtnMainSize * 2 - 1;
+            window.widgets[Widx::load_game_btn].left = kBtnMainSize * 2;
+            window.widgets[Widx::load_game_btn].right = kBtnMainSize * 3 - 1;
 
             window.widgets[Widx::chat_btn].type = Ui::WidgetType::buttonWithImage;
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_list_btn))
             {
-                image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
+                image_id = kGlobeSpin[((window.var_846 / 2) % kGlobeSpin.size())];
             }
 
             OpenLoco::Gfx::drawImage(rt, x, y, image_id);
@@ -246,7 +246,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::load_game_btn))
             {
-                image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
+                image_id = kGlobeSpin[((window.var_846 / 2) % kGlobeSpin.size())];
             }
 
             OpenLoco::Gfx::drawImage(rt, x, y, image_id);
@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::tutorial_btn))
             {
-                image_id = globe_spin[((window.var_846 / 2) % globe_spin.size())];
+                image_id = kGlobeSpin[((window.var_846 / 2) % kGlobeSpin.size())];
             }
 
             OpenLoco::Gfx::drawImage(rt, x, y, image_id);
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             uint32_t image_id = ImageIds::title_menu_globe_construct_24;
             if (Input::isHovering(WindowType::titleMenu, 0, Widx::scenario_editor_btn))
             {
-                image_id = globe_construct[((window.var_846 / 2) % globe_construct.size())];
+                image_id = kGlobeConstruct[((window.var_846 / 2) % kGlobeConstruct.size())];
             }
 
             OpenLoco::Gfx::drawImage(rt, x, y, image_id);
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 string = StringIds::two_player_mode_connected;
             }
 
-            drawStringCentredClipped(*rt, x, y, ww - 4, Colour::black, string, (char*)0x112c826);
+            drawStringCentredClipped(*rt, x, y, kWW - 4, Colour::black, string, (char*)0x112c826);
         }
     }
 

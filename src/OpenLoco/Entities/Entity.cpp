@@ -12,7 +12,7 @@ using namespace OpenLoco::Interop;
 
 bool EntityBase::empty() const
 {
-    return base_type == EntityBaseType::null;
+    return baseType == EntityBaseType::null;
 }
 
 // 0x0046FC83

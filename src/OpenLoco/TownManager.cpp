@@ -75,7 +75,7 @@ namespace OpenLoco::TownManager
             std::fill(std::begin(town.var_150), std::end(town.var_150), 0);
         }
 
-        Map::TilePosRangeView tileLoop{ { 1, 1 }, { Map::map_columns - 1, Map::map_rows - 1 } };
+        Map::TilePosRangeView tileLoop{ { 1, 1 }, { Map::kMapColumns - 1, Map::kMapRows - 1 } };
         for (const auto& tilePos : tileLoop)
         {
             auto tile = Map::TileManager::get(tilePos);

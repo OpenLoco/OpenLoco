@@ -61,27 +61,27 @@ namespace OpenLoco::Input
 
         static loco_global<uint8_t[256][4], 0x0113ED20> _113ED20;
 
-        png_structp png_ptr = nullptr;
+        png_structp pngPtr = nullptr;
         png_colorp palette = nullptr;
         try
         {
-            png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
-            if (png_ptr == nullptr)
+            pngPtr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+            if (pngPtr == nullptr)
                 throw std::runtime_error("png_create_write_struct failed.");
 
-            png_set_write_fn(png_ptr, &outputStream, pngWriteData, pngFlush);
+            png_set_write_fn(pngPtr, &outputStream, pngWriteData, pngFlush);
 
             // Set error handler
-            if (setjmp(png_jmpbuf(png_ptr)))
+            if (setjmp(png_jmpbuf(pngPtr)))
             {
                 throw std::runtime_error("PNG ERROR");
             }
 
-            auto info_ptr = png_create_info_struct(png_ptr);
-            if (info_ptr == nullptr)
+            auto infoPtr = png_create_info_struct(pngPtr);
+            if (infoPtr == nullptr)
                 throw std::runtime_error("png_create_info_struct failed.");
 
-            palette = (png_colorp)png_malloc(png_ptr, 246 * sizeof(png_color));
+            palette = (png_colorp)png_malloc(pngPtr, 246 * sizeof(png_color));
             if (palette == nullptr)
                 throw std::runtime_error("png_malloc failed.");
 
@@ -91,30 +91,30 @@ namespace OpenLoco::Input
                 palette[i].green = _113ED20[i][1];
                 palette[i].red = _113ED20[i][2];
             }
-            png_set_PLTE(png_ptr, info_ptr, palette, 246);
+            png_set_PLTE(pngPtr, infoPtr, palette, 246);
             auto& rt = Gfx::getScreenRT();
 
             png_byte transparentIndex = 0;
-            png_set_tRNS(png_ptr, info_ptr, &transparentIndex, 1, nullptr);
-            png_set_IHDR(png_ptr, info_ptr, rt.width, rt.height, 8, PNG_COLOR_TYPE_PALETTE, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
-            png_write_info(png_ptr, info_ptr);
+            png_set_tRNS(pngPtr, infoPtr, &transparentIndex, 1, nullptr);
+            png_set_IHDR(pngPtr, infoPtr, rt.width, rt.height, 8, PNG_COLOR_TYPE_PALETTE, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+            png_write_info(pngPtr, infoPtr);
 
             uint8_t* data = rt.bits;
             for (int y = 0; y < rt.height; y++)
             {
-                png_write_row(png_ptr, data);
+                png_write_row(pngPtr, data);
                 data += rt.pitch + rt.width;
             }
 
-            png_write_end(png_ptr, nullptr);
-            png_destroy_info_struct(png_ptr, &info_ptr);
-            png_free(png_ptr, palette);
-            png_destroy_write_struct(&png_ptr, nullptr);
+            png_write_end(pngPtr, nullptr);
+            png_destroy_info_struct(pngPtr, &infoPtr);
+            png_free(pngPtr, palette);
+            png_destroy_write_struct(&pngPtr, nullptr);
         }
         catch (const std::exception&)
         {
-            png_free(png_ptr, palette);
-            png_destroy_write_struct(&png_ptr, nullptr);
+            png_free(pngPtr, palette);
+            png_destroy_write_struct(&pngPtr, nullptr);
             throw;
         }
 

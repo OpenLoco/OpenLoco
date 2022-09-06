@@ -195,9 +195,9 @@ namespace OpenLoco
 
     struct AdvancedColour
     {
-        static constexpr uint8_t outline_flag = 1 << 5;
-        static constexpr uint8_t inset_flag = 1 << 6;
-        static constexpr uint8_t translucent_flag = 1 << 7;
+        static constexpr uint8_t kOutlineFlag = 1 << 5;
+        static constexpr uint8_t kInsetFlag = 1 << 6;
+        static constexpr uint8_t kTranslucentFlag = 1 << 7;
         static constexpr uint8_t fd = 0xFD;
         static constexpr uint8_t fe = 0xFE;
         static constexpr uint8_t ff = 0xFF;
@@ -212,45 +212,45 @@ namespace OpenLoco
         {
         }
 
-        constexpr explicit operator Colour() const { return static_cast<Colour>(enumValue(_c) & ~(outline_flag | inset_flag | translucent_flag)); }
+        constexpr explicit operator Colour() const { return static_cast<Colour>(enumValue(_c) & ~(kOutlineFlag | kInsetFlag | kTranslucentFlag)); }
         constexpr Colour c() const { return static_cast<Colour>(*this); }
         constexpr explicit operator uint8_t() const { return enumValue(_c); }
         constexpr uint8_t u8() const { return static_cast<uint8_t>(*this); }
 
         constexpr AdvancedColour outline()
         {
-            _c = static_cast<Colour>(enumValue(_c) | outline_flag);
+            _c = static_cast<Colour>(enumValue(_c) | kOutlineFlag);
             return *this;
         }
-        constexpr bool isOutline() const { return enumValue(_c) & outline_flag; }
+        constexpr bool isOutline() const { return enumValue(_c) & kOutlineFlag; }
 
         constexpr AdvancedColour inset()
         {
-            _c = static_cast<Colour>(enumValue(_c) | inset_flag);
+            _c = static_cast<Colour>(enumValue(_c) | kInsetFlag);
             return *this;
         }
-        constexpr bool isInset() const { return enumValue(_c) & inset_flag; }
+        constexpr bool isInset() const { return enumValue(_c) & kInsetFlag; }
 
         constexpr AdvancedColour translucent()
         {
-            _c = static_cast<Colour>(enumValue(_c) | translucent_flag);
+            _c = static_cast<Colour>(enumValue(_c) | kTranslucentFlag);
             return *this;
         }
-        constexpr bool isTranslucent() const { return enumValue(_c) & translucent_flag; }
+        constexpr bool isTranslucent() const { return enumValue(_c) & kTranslucentFlag; }
 
         constexpr AdvancedColour opaque()
         {
-            _c = static_cast<Colour>(enumValue(_c) & ~translucent_flag);
+            _c = static_cast<Colour>(enumValue(_c) & ~kTranslucentFlag);
             return *this;
         }
         constexpr AdvancedColour clearInset()
         {
-            _c = static_cast<Colour>(enumValue(_c) & ~inset_flag);
+            _c = static_cast<Colour>(enumValue(_c) & ~kInsetFlag);
             return *this;
         }
         constexpr AdvancedColour clearOutline()
         {
-            _c = static_cast<Colour>(enumValue(_c) & ~outline_flag);
+            _c = static_cast<Colour>(enumValue(_c) & ~kOutlineFlag);
             return *this;
         }
         constexpr bool isOpaque() const { return !isTranslucent(); }
