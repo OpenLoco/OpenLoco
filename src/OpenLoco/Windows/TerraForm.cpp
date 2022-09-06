@@ -771,14 +771,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        _lastTreeColourFlag = AdvancedColour::kTranslucentFlag;
-                        Gfx::drawRectInset(rt, xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary).u8(), AdvancedColour::kTranslucentFlag);
+                        _lastTreeColourFlag = AdvancedColour::translucentFlag;
+                        Gfx::drawRectInset(rt, xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
                     }
                 }
                 else
                 {
-                    _lastTreeColourFlag = AdvancedColour::kTranslucentFlag | AdvancedColour::kOutlineFlag;
-                    Gfx::drawRectInset(rt, xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::kTranslucentFlag | AdvancedColour::kOutlineFlag));
+                    _lastTreeColourFlag = AdvancedColour::translucentFlag | AdvancedColour::outlineFlag;
+                    Gfx::drawRectInset(rt, xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
                 }
 
                 auto treeObj = ObjectManager::get<TreeObject>(self.rowInfo[i]);
@@ -2306,12 +2306,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        Gfx::drawRectInset(rt, xPos, yPos, 40, kRowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::kTranslucentFlag);
+                        Gfx::drawRectInset(rt, xPos, yPos, 40, kRowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(rt, xPos, yPos, 40, kRowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::kTranslucentFlag | AdvancedColour::kOutlineFlag));
+                    Gfx::drawRectInset(rt, xPos, yPos, 40, kRowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
                 }
 
                 auto wallObj = ObjectManager::get<WallObject>(self.rowInfo[i]);

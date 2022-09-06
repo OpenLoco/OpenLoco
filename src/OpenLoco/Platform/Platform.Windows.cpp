@@ -46,7 +46,7 @@ namespace OpenLoco::Platform
         }
 
         auto nullBytePos = pszPath.find(L'\0');
-        if (nullBytePos != std::wstring::kNpos)
+        if (nullBytePos != std::wstring::npos)
             pszPath.resize(nullBytePos);
 
         return pszPath;

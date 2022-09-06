@@ -98,7 +98,7 @@ namespace OpenLoco
         }
 
         // Under Construction
-        if (underConstruction != 0xFF)
+        if (under_construction != 0xFF)
         {
             ptr = StringManager::formatString(ptr, StringIds::industry_under_construction);
             return;
@@ -134,7 +134,7 @@ namespace OpenLoco
     // 0x00453275
     void Industry::update()
     {
-        if (!(flags & IndustryFlags::flag_01) && underConstruction == 0xFF)
+        if (!(flags & IndustryFlags::flag_01) && under_construction == 0xFF)
         {
             // Run tile loop for 100 iterations
             for (int i = 0; i < 100; i++)
@@ -266,7 +266,7 @@ namespace OpenLoco
         }
         bool hasEvent = false;
         const auto* indObj = getObject();
-        if (underConstruction == 0xFF
+        if (under_construction == 0xFF
             && !(flags & IndustryFlags::closingDown)
             && indObj->required_cargo_type[0] == 0xFF)
         {
@@ -287,7 +287,7 @@ namespace OpenLoco
         }
         if (!hasEvent
             && !(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown)
-            && underConstruction == 0xFF
+            && under_construction == 0xFF
             && !(flags & IndustryFlags::closingDown))
         {
             if (isMonthlyProductionClosing())

@@ -77,13 +77,13 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
 
         if (!isEditorMode())
         {
-            static constexpr std::array<const string_id, 3> typeToType = {
+            static constexpr std::array<const string_id, 3> kTypeToType = {
                 StringIds::title_load_game,
                 StringIds::title_quit_game,
                 StringIds::title_quit_game_alt,
             };
 
-            window->widgets[widx::caption].text = typeToType.at(savePromptType);
+            window->widgets[widx::caption].text = kTypeToType.at(savePromptType);
         }
         else
         {

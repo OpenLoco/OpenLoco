@@ -14,7 +14,7 @@ namespace OpenLoco
 
     namespace BuildingObjectFlags
     {
-        constexpr uint32_t largeTle = 1 << 0; // 2x2 tile
+        constexpr uint32_t largeTile = 1 << 0; // 2x2 tile
         constexpr uint32_t miscBuilding = 1 << 1;
         constexpr uint32_t undestructible = 1 << 2;
         constexpr uint32_t isHeadquarters = 1 << 3;

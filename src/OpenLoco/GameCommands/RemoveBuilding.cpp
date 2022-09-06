@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
                     }
                 }
             }
-            auto animOffsets = getUnk4F9274(buildingObj->flags & BuildingObjectFlags::largeTle);
+            auto animOffsets = getUnk4F9274(buildingObj->flags & BuildingObjectFlags::largeTile);
             for (auto animOffset : animOffsets)
             {
                 const auto subTilePos = animOffset.pos + pos;

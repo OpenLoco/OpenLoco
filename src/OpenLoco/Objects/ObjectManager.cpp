@@ -760,7 +760,7 @@ namespace OpenLoco::ObjectManager
     {
         // Trim string at first space (note this copies vanilla but maybe shouldn't)
         auto space = filename.find_first_of(' ');
-        if (space != std::string::kNpos)
+        if (space != std::string::npos)
         {
             filename = filename.substr(0, space);
         }

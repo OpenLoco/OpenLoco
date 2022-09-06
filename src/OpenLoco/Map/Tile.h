@@ -564,7 +564,7 @@ namespace OpenLoco::Map
         TileElement* const _data;
 
     public:
-        static constexpr size_t kNpos = std::numeric_limits<size_t>().max();
+        static constexpr size_t npos = std::numeric_limits<size_t>().max();
 
         const TilePos2 pos;
 

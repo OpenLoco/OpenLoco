@@ -312,7 +312,7 @@ namespace OpenLoco
                                 auto& industryEl = el.get<IndustryElement>();
                                 auto* industry = industryEl.industry();
 
-                                if (industry == nullptr || industry->underConstruction != 0xFF)
+                                if (industry == nullptr || industry->under_construction != 0xFF)
                                 {
                                     break;
                                 }
@@ -380,7 +380,7 @@ namespace OpenLoco
                                 }
 
                                 // Multi tile buildings should only be counted once so remove the other tiles from the search
-                                if (obj->flags & BuildingObjectFlags::largeTle)
+                                if (obj->flags & BuildingObjectFlags::largeTile)
                                 {
                                     auto index = buildingEl.multiTileIndex();
                                     tile_coord_t xPos = (pos.x - Map::offsets[index].x) / kTileSize;

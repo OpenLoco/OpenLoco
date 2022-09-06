@@ -156,7 +156,7 @@ namespace OpenLoco
         OwnerStatus ownerStatus; // 0x8BC6
         uint8_t pad_8BCA[0x8BCE - 0x8BCA];
         uint32_t cargoDelivered[32]; // 0x8BCE;
-        uint8_t challengeProgress;   // 0x8C4E - percent completed on challenge
+        uint8_t challenge_progress;  // 0x8C4E - percent completed on challenge
         uint8_t pad_8C4F;
         uint32_t cargoUnitsTotalDistance;        // 0x8C50
         uint32_t cargoUnitsDistanceHistory[120]; // 0x8C54
@@ -201,7 +201,7 @@ namespace OpenLoco
     static_assert(sizeof(Company::expenditures) == 0x440);
     static_assert(offsetof(Company, companyValueHistory[0]) == 0x88CE);
     static_assert(offsetof(Company, vehicleProfit) == 0x8B9E);
-    static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
+    static_assert(offsetof(Company, challenge_progress) == 0x8C4E);
     static_assert(offsetof(Company, var_8BB0) == 0x8BB0);
 
     string_id getCorporateRatingAsStringId(CorporateRating rating);

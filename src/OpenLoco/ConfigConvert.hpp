@@ -98,7 +98,7 @@ namespace YAML
             std::size_t pos = s.find_first_of(kDelimiter, 0);
             std::string token = s;
 
-            while (pos != std::string::kNpos)
+            while (pos != std::string::npos)
             {
                 token = s.substr(current, pos);
                 current = pos + 1;

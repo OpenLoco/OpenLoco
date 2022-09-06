@@ -632,9 +632,9 @@ namespace OpenLoco::Map::MapGenerator
         // Place forests
         for (auto i = 0; i < options.numberOfForests; ++i)
         {
-            const auto randRadius = ((gPrng().randNext(255) * std::max(options.kMaxForestRadius - options.kMinForestRadius, 0)) / 255 + options.kMinForestRadius) * kTileSize;
+            const auto randRadius = ((gPrng().randNext(255) * std::max(options.max_forest_radius - options.min_forest_radius, 0)) / 255 + options.min_forest_radius) * kTileSize;
             const auto randLoc = Map::TilePos2(gPrng().randNext(kMapRows), gPrng().randNext(kMapColumns));
-            const auto randDensity = (gPrng().randNext(15) * std::max(options.kMaxForestDensity - options.kMinForestDensity, 0)) / 15 + options.kMinForestDensity;
+            const auto randDensity = (gPrng().randNext(15) * std::max(options.max_forest_density - options.min_forest_density, 0)) / 15 + options.min_forest_density;
             placeTreeCluster(randLoc, randRadius, randDensity, std::nullopt);
 
             if (TileManager::numFreeElements() < 0x36000)

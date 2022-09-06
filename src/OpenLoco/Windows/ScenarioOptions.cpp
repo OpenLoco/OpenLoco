@@ -541,7 +541,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     {
         enum widx
         {
-            kMaxCompetingCompanies = 7,
+            max_competing_companies = 7,
             max_competing_companies_down,
             max_competing_companies_up,
             delay_before_competing_companies_start,
@@ -601,8 +601,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             {
                 const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::kMaxCompetingCompanies].top + 1;
-                Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::kMaxCompetingCompanies);
+                int16_t yPos = window.y + widgets[widx::max_competing_companies].top + 1;
+                Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::max_competing_companies);
             }
 
             {
@@ -690,7 +690,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
 
                 case widx::max_competing_companies_up:
-                    CompanyManager::setMaxCompetingCompanies(std::min<uint8_t>(CompanyManager::getMaxCompetingCompanies() + 1, Scenario::kMaxCompetingCompanies));
+                    CompanyManager::setMaxCompetingCompanies(std::min<uint8_t>(CompanyManager::getMaxCompetingCompanies() + 1, Scenario::max_competing_companies));
                     self.invalidate();
                     break;
 

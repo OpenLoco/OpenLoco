@@ -480,10 +480,10 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A37E
         static void tabReset(Window* self)
         {
-            self->minWidth = minDimensions.width;
-            self->minHeight = minDimensions.height;
-            self->maxWidth = maxDimensions.width;
-            self->maxHeight = maxDimensions.height;
+            self->minWidth = kMinDimensions.width;
+            self->minHeight = kMinDimensions.height;
+            self->maxWidth = kMaxDimensions.width;
+            self->maxHeight = kMaxDimensions.height;
             self->width = kWindowSize.width;
             self->height = kWindowSize.height;
             self->var_83C = 0;
@@ -540,10 +540,10 @@ namespace OpenLoco::Ui::Windows::TownList
 
             WindowManager::sub_4CEE0B(window);
 
-            window->minWidth = TownList::minDimensions.width;
-            window->minHeight = TownList::minDimensions.height;
-            window->maxWidth = TownList::maxDimensions.width;
-            window->maxHeight = TownList::maxDimensions.height;
+            window->minWidth = TownList::kMinDimensions.width;
+            window->minHeight = TownList::kMinDimensions.height;
+            window->maxWidth = TownList::kMaxDimensions.width;
+            window->maxHeight = TownList::kMaxDimensions.height;
             window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -1069,7 +1069,7 @@ namespace OpenLoco::Ui::Windows::TownList
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
             Map::TileManager::setMapSelectionCorner(4);
             auto* building = ObjectManager::get<BuildingObject>(placementArgs->type);
-            auto posB = Map::Pos2(placementArgs->pos) + (building->flags & BuildingObjectFlags::largeTle ? Map::Pos2(32, 32) : Map::Pos2(0, 0));
+            auto posB = Map::Pos2(placementArgs->pos) + (building->flags & BuildingObjectFlags::largeTile ? Map::Pos2(32, 32) : Map::Pos2(0, 0));
             Map::TileManager::setMapSelectionArea(placementArgs->pos, posB);
             Map::TileManager::mapInvalidateSelectionRect();
 
@@ -1190,12 +1190,12 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        Gfx::drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), AdvancedColour::kTranslucentFlag);
+                        Gfx::drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::kTranslucentFlag | AdvancedColour::kOutlineFlag));
+                    Gfx::drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
                 }
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.rowInfo[i]);

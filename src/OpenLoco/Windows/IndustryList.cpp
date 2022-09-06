@@ -480,10 +480,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457FCA
         static void tabReset(Window* self)
         {
-            self->minWidth = minDimensions.width;
-            self->minHeight = minDimensions.height;
-            self->maxWidth = maxDimensions.width;
-            self->maxHeight = maxDimensions.height;
+            self->minWidth = kMinDimensions.width;
+            self->minHeight = kMinDimensions.height;
+            self->maxWidth = kMaxDimensions.width;
+            self->maxHeight = kMaxDimensions.height;
             self->var_83C = 0;
             self->rowHover = -1;
             Common::refreshIndustryList(self);
@@ -537,10 +537,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             WindowManager::sub_4CEE0B(window);
 
-            window->minWidth = IndustryList::minDimensions.width;
-            window->minHeight = IndustryList::minDimensions.height;
-            window->maxWidth = IndustryList::maxDimensions.width;
-            window->maxHeight = IndustryList::maxDimensions.height;
+            window->minWidth = IndustryList::kMinDimensions.width;
+            window->minHeight = IndustryList::kMinDimensions.height;
+            window->maxWidth = IndustryList::kMaxDimensions.width;
+            window->maxHeight = IndustryList::kMaxDimensions.height;
             window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -888,14 +888,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        _word_E0C3C6 = AdvancedColour::kTranslucentFlag;
-                        Gfx::drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::kTranslucentFlag);
+                        _word_E0C3C6 = AdvancedColour::translucentFlag;
+                        Gfx::drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
                     }
                 }
                 else
                 {
-                    _word_E0C3C6 = AdvancedColour::kTranslucentFlag | AdvancedColour::kOutlineFlag;
-                    Gfx::drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::kTranslucentFlag | AdvancedColour::kOutlineFlag));
+                    _word_E0C3C6 = AdvancedColour::translucentFlag | AdvancedColour::outlineFlag;
+                    Gfx::drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
                 }
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self.rowInfo[i]);

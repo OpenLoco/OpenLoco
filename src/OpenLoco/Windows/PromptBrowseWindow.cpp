@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 if (!(flags & CompanyFlags::challengeFailed))
                 {
                     stringId = StringIds::window_browse_challenge_progress;
-                    progress = saveInfo.challengeProgress;
+                    progress = saveInfo.challenge_progress;
                 }
             }
             Gfx::drawStringLeftWrapped(rt, x, y, maxWidth, Colour::black, stringId, &progress);

@@ -805,7 +805,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         buffer = StringManager::formatString(buffer, buildingObj->name);
         if (!building->isConstructed())
         {
-            buffer = StringManager::formatString(buffer, StringIds::underConstruction);
+            buffer = StringManager::formatString(buffer, StringIds::under_construction);
         }
         else
         {
