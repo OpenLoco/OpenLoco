@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         panel,
     };
 
-    constexpr Ui::Size windowSize = { 350, 47 };
+    static constexpr Ui::Size kWindowSize = { 350, 47 };
 
     Widget widgets[] = {
         makeWidget({ 0, 0 }, { 350, 47 }, WidgetType::frame, WindowColour::primary),
@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
         auto window = WindowManager::createWindowCentred(
             WindowType::progressBar,
-            windowSize,
+            kWindowSize,
             WindowFlags::flag_11 | WindowFlags::stickToFront,
             &_events);
 

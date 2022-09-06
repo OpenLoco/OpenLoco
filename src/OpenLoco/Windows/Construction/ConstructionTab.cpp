@@ -105,8 +105,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         makeWidget({ 57, 248 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
         widgetEnd(),
     };
-
-    const uint8_t trackPieceWidgets[] = {
+    static constexpr Ui::Size kWindowSize const uint8_t trackPieceWidgets[] = {
         widx::straight,
         widx::left_hand_curve_very_small,
         widx::right_hand_curve_very_small,

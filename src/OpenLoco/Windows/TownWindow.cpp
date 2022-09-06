@@ -26,7 +26,7 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Town
 {
-    static constexpr Ui::Size windowSize = { 223, 161 };
+    static constexpr Ui::Size kWindowSize = { 223, 161 };
 
     static loco_global<uint16_t[10], 0x0112C826> _commonFormatArgs;
 
@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // 0x00499C0D start
             const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
-            window = WindowManager::createWindow(WindowType::town, windowSize, newFlags, &Town::events);
+            window = WindowManager::createWindow(WindowType::town, kWindowSize, newFlags, &Town::events);
             window->number = townId;
             window->minWidth = 192;
             window->minHeight = 161;
@@ -704,7 +704,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             self->invalidate();
 
-            self->setSize(windowSize);
+            self->setSize(kWindowSize);
             self->callOnResize();
             self->callPrepareDraw();
             self->initScrollWidgets();

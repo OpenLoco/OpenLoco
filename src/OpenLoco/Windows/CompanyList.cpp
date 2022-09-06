@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         static constexpr Ui::Size maxWindowSize = { 640, 470 };
         static constexpr Ui::Size minWindowSize = { 300, 272 };
-        static constexpr Ui::Size windowSize = { 640, 272 };
+        static constexpr Ui::Size kWindowSize = { 640, 272 };
 
         static const uint8_t rowHeight = 25;
 
@@ -544,8 +544,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->minHeight = minWindowSize.height;
             self->maxWidth = maxWindowSize.width;
             self->maxHeight = maxWindowSize.height;
-            self->width = windowSize.width;
-            self->height = windowSize.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
             self->var_83C = 0;
             self->rowHover = -1;
             Common::refreshCompanyList(self);
@@ -585,9 +585,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         if (window == nullptr)
         {
-            Ui::Size windowSize = { 640, 272 };
+            static constexpr Ui::Size kWindowSize = { 640, 272 };
 
-            window = WindowManager::createWindow(WindowType::companyList, windowSize, 0, &CompanyList::events);
+            window = WindowManager::createWindow(WindowType::companyList, kWindowSize, 0, &CompanyList::events);
 
             window->frame_no = 0;
             window->savedView.clear();
@@ -634,7 +634,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CompanyPerformance
     {
-        static constexpr Ui::Size windowSize = { 635, 322 };
+        static constexpr Ui::Size kWindowSize = { 635, 322 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -648,7 +648,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004366D7
         static void onResize(Window& self)
         {
-            self.setSize(windowSize, windowSize);
+            self.setSize(kWindowSize, kWindowSize);
         }
 
         // 0x00436490
@@ -705,12 +705,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004361D8
         static void tabReset(Window* self)
         {
-            self->minWidth = windowSize.width;
-            self->minHeight = windowSize.height;
-            self->maxWidth = windowSize.width;
-            self->maxHeight = windowSize.height;
-            self->width = windowSize.width;
-            self->height = windowSize.height;
+            self->minWidth = kWindowSize.width;
+            self->minHeight = kWindowSize.height;
+            self->maxWidth = kWindowSize.width;
+            self->maxHeight = kWindowSize.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
         }
 
         static void initEvents()
@@ -725,7 +725,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CargoUnits
     {
-        static constexpr Ui::Size windowSize = { 640, 272 };
+        static constexpr Ui::Size kWindowSize = { 640, 272 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -739,7 +739,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004369FB
         static void onResize(Window& self)
         {
-            self.setSize(windowSize, windowSize);
+            self.setSize(kWindowSize, kWindowSize);
         }
 
         // 0x004367B4
@@ -796,12 +796,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436201
         static void tabReset(Window* self)
         {
-            self->minWidth = windowSize.width;
-            self->minHeight = windowSize.height;
-            self->maxWidth = windowSize.width;
-            self->maxHeight = windowSize.height;
-            self->width = windowSize.width;
-            self->height = windowSize.height;
+            self->minWidth = kWindowSize.width;
+            self->minHeight = kWindowSize.height;
+            self->maxWidth = kWindowSize.width;
+            self->maxHeight = kWindowSize.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
         }
 
         static void initEvents()
@@ -816,7 +816,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CargoDistance
     {
-        static constexpr Ui::Size windowSize = { 660, 272 };
+        static constexpr Ui::Size kWindowSize = { 660, 272 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -830,7 +830,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436D1F
         static void onResize(Window& self)
         {
-            self.setSize(windowSize, windowSize);
+            self.setSize(kWindowSize, kWindowSize);
         }
 
         // 0x00436AD8
@@ -887,12 +887,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436227
         static void tabReset(Window* self)
         {
-            self->minWidth = windowSize.width;
-            self->minHeight = windowSize.height;
-            self->maxWidth = windowSize.width;
-            self->maxHeight = windowSize.height;
-            self->width = windowSize.width;
-            self->height = windowSize.height;
+            self->minWidth = kWindowSize.width;
+            self->minHeight = kWindowSize.height;
+            self->maxWidth = kWindowSize.width;
+            self->maxHeight = kWindowSize.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
         }
 
         static void initEvents()
@@ -907,7 +907,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CompanyValues
     {
-        static constexpr Ui::Size windowSize = { 685, 322 };
+        static constexpr Ui::Size kWindowSize = { 685, 322 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -921,7 +921,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437043
         static void onResize(Window& self)
         {
-            self.setSize(windowSize, windowSize);
+            self.setSize(kWindowSize, kWindowSize);
         }
 
         // 0x00436DFC
@@ -978,12 +978,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x0043624D
         static void tabReset(Window* self)
         {
-            self->minWidth = windowSize.width;
-            self->minHeight = windowSize.height;
-            self->maxWidth = windowSize.width;
-            self->maxHeight = windowSize.height;
-            self->width = windowSize.width;
-            self->height = windowSize.height;
+            self->minWidth = kWindowSize.width;
+            self->minHeight = kWindowSize.height;
+            self->maxWidth = kWindowSize.width;
+            self->maxHeight = kWindowSize.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
         }
 
         static void initEvents()
@@ -998,7 +998,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CargoPaymentRates
     {
-        static constexpr Ui::Size windowSize = { 495, 342 };
+        static constexpr Ui::Size kWindowSize = { 495, 342 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -1012,7 +1012,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x0043737D
         static void onResize(Window& self)
         {
-            self.setSize(windowSize, windowSize);
+            self.setSize(kWindowSize, kWindowSize);
         }
 
         // 0x00437949
@@ -1180,12 +1180,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436273
         static void tabReset(Window* self)
         {
-            self->minWidth = windowSize.width;
-            self->minHeight = windowSize.height;
-            self->maxWidth = windowSize.width;
-            self->maxHeight = windowSize.height;
-            self->width = windowSize.width;
-            self->height = windowSize.height;
+            self->minWidth = kWindowSize.width;
+            self->minHeight = kWindowSize.height;
+            self->maxWidth = kWindowSize.width;
+            self->maxHeight = kWindowSize.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
             Economy::buildDeliveredCargoPaymentsTable();
         }
 
@@ -1201,7 +1201,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CompanySpeedRecords
     {
-        static constexpr Ui::Size windowSize = { 495, 169 };
+        static constexpr Ui::Size kWindowSize = { 495, 169 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -1215,7 +1215,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437591
         static void onResize(Window& self)
         {
-            self.setSize(windowSize, windowSize);
+            self.setSize(kWindowSize, kWindowSize);
         }
 
         // 0x0043745A

@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     namespace PlantTrees
     {
-        static constexpr Ui::Size windowSize = { 634, 162 };
+        static constexpr Ui::Size kWindowSize = { 634, 162 };
 
         static const uint8_t rowHeight = 102;
         static const uint8_t columnWidth = 66;
@@ -360,19 +360,19 @@ namespace OpenLoco::Ui::Windows::Terraform
                                 {
                                     y = std::min(y, 358);
                                 }
-                                self.minWidth = windowSize.width;
+                                self.minWidth = kWindowSize.width;
                                 self.minHeight = y;
-                                self.maxWidth = windowSize.width;
+                                self.maxWidth = kWindowSize.width;
                                 self.maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = windowSize.width;
-                                    self.minHeight = windowSize.height;
-                                    self.maxWidth = windowSize.width;
-                                    self.maxHeight = windowSize.height;
+                                    self.minWidth = kWindowSize.width;
+                                    self.minHeight = kWindowSize.height;
+                                    self.maxWidth = kWindowSize.width;
+                                    self.maxHeight = kWindowSize.height;
                                 }
                             }
                         }
@@ -383,10 +383,10 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = windowSize.width;
-                        self.minHeight = windowSize.height;
-                        self.maxWidth = windowSize.width;
-                        self.maxHeight = windowSize.height;
+                        self.minWidth = kWindowSize.width;
+                        self.minHeight = kWindowSize.height;
+                        self.maxWidth = kWindowSize.width;
+                        self.maxHeight = kWindowSize.height;
                     }
                 }
             }
@@ -830,12 +830,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         else
         {
             // 0x004BB586
-            auto origin = Ui::Point(Ui::width() - PlantTrees::windowSize.width, 30);
+            auto origin = Ui::Point(Ui::width() - PlantTrees::kWindowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::terraform,
                 origin,
-                PlantTrees::windowSize,
+                PlantTrees::kWindowSize,
                 WindowFlags::flag_11,
                 &PlantTrees::events);
 
@@ -851,10 +851,10 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             WindowManager::sub_4CEE0B(window);
 
-            window->minWidth = PlantTrees::windowSize.width;
-            window->minHeight = PlantTrees::windowSize.height;
-            window->maxWidth = PlantTrees::windowSize.width;
-            window->maxHeight = PlantTrees::windowSize.height;
+            window->minWidth = PlantTrees::kWindowSize.width;
+            window->minHeight = PlantTrees::kWindowSize.height;
+            window->maxWidth = PlantTrees::kWindowSize.width;
+            window->maxHeight = PlantTrees::kWindowSize.height;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0E);
@@ -1883,7 +1883,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     namespace BuildWalls
     {
-        static constexpr Ui::Size windowSize = { 418, 108 };
+        static constexpr Ui::Size kWindowSize = { 418, 108 };
 
         static const uint8_t rowHeight = 48;
 
@@ -2032,19 +2032,19 @@ namespace OpenLoco::Ui::Windows::Terraform
                                 {
                                     y = std::min(y, 358);
                                 }
-                                self.minWidth = windowSize.width;
+                                self.minWidth = kWindowSize.width;
                                 self.minHeight = y;
-                                self.maxWidth = windowSize.width;
+                                self.maxWidth = kWindowSize.width;
                                 self.maxHeight = y;
                             }
                             else
                             {
                                 if (Input::state() != Input::State::scrollLeft)
                                 {
-                                    self.minWidth = windowSize.width;
-                                    self.minHeight = windowSize.height;
-                                    self.maxWidth = windowSize.width;
-                                    self.maxHeight = windowSize.height;
+                                    self.minWidth = kWindowSize.width;
+                                    self.minHeight = kWindowSize.height;
+                                    self.maxWidth = kWindowSize.width;
+                                    self.maxHeight = kWindowSize.height;
                                 }
                             }
                         }
@@ -2055,10 +2055,10 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.savedView.mapX = 0;
                     if (Input::state() != Input::State::scrollLeft)
                     {
-                        self.minWidth = windowSize.width;
-                        self.minHeight = windowSize.height;
-                        self.maxWidth = windowSize.width;
-                        self.maxHeight = windowSize.height;
+                        self.minWidth = kWindowSize.width;
+                        self.minHeight = kWindowSize.height;
+                        self.maxWidth = kWindowSize.width;
+                        self.maxHeight = kWindowSize.height;
                     }
                 }
             }
@@ -2378,8 +2378,8 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             // CHANGE: width set to 161 to include building walls tab
             uint16_t width = 161;
-            Ui::Size windowSize = { width, height };
-            self.setSize(windowSize, windowSize);
+            Ui::Size kWindowSize = { width, height };
+            self.setSize(kWindowSize, kWindowSize);
         }
 
         // 0x004BC78A, 0x004BCB0B

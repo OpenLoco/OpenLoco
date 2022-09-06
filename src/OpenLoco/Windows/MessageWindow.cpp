@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Settings
     {
-        static constexpr Ui::Size windowSize = { 366, 139 };
+        static constexpr Ui::Size kWindowSize = { 366, 139 };
 
         enum widx
         {
@@ -544,12 +544,12 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A7E8
         static void tabReset(Window* self)
         {
-            self->minWidth = windowSize.width;
-            self->minHeight = windowSize.height;
-            self->maxWidth = windowSize.width;
-            self->maxHeight = windowSize.height;
-            self->width = windowSize.width;
-            self->height = windowSize.height;
+            self->minWidth = kWindowSize.width;
+            self->minHeight = kWindowSize.height;
+            self->maxWidth = kWindowSize.width;
+            self->maxHeight = kWindowSize.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
         }
 
         static void initEvents()

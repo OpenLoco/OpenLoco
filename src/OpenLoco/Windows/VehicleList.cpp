@@ -27,7 +27,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
-    static constexpr Ui::Size windowSize = { 550, 213 };
+    static constexpr Ui::Size kWindowSize = { 550, 213 };
     static constexpr Ui::Size max_dimensions = { 550, 1200 };
     static constexpr Ui::Size min_dimensions = { 220, 160 };
 
@@ -426,7 +426,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         Window* self = WindowManager::createWindow(
             WindowType::vehicleList,
-            windowSize,
+            kWindowSize,
             WindowFlags::flag_11,
             &_events);
 
@@ -461,8 +461,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;
         self->rowHeight = row_heights[tabIndex];
-        self->width = windowSize.width;
-        self->height = windowSize.height;
+        self->width = kWindowSize.width;
+        self->height = kWindowSize.height;
         self->sortMode = 0;
         self->var_83C = 0;
         self->rowHover = -1;

@@ -15,7 +15,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::MusicSelection
 {
-    static constexpr Ui::Size windowSize = { 360, 238 };
+    static constexpr Ui::Size kWindowSize = { 360, 238 };
 
     static const uint8_t rowHeight = 12; // CJK: 15
 
@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
         window = WindowManager::createWindow(
             WindowType::musicSelection,
-            windowSize,
+            kWindowSize,
             0,
             &_events);
 

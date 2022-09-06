@@ -9,7 +9,7 @@
 
 namespace OpenLoco::Ui::Windows::About
 {
-    constexpr Ui::Size windowSize = { 400, 260 };
+    static constexpr Ui::Size kWindowSize = { 400, 260 };
 
     namespace widx
     {
@@ -24,11 +24,11 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::about_locomotion_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, 245 }, WidgetType::panel, WindowColour::secondary),
-        makeWidget({ 100, 234 }, { windowSize.width / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::music_acknowledgements_btn),
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::about_locomotion_caption),
+        makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { kWindowSize.width, 245 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 100, 234 }, { kWindowSize.width / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::music_acknowledgements_btn),
         widgetEnd(),
     };
 
@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::About
 
         auto window = WindowManager::createWindowCentred(
             WindowType::about,
-            windowSize,
+            kWindowSize,
             0,
             &_events);
 
@@ -80,7 +80,7 @@ namespace OpenLoco::Ui::Windows::About
         // Draw widgets.
         window.draw(rt);
 
-        const int16_t x = window.x + windowSize.width / 2;
+        const int16_t x = window.x + kWindowSize.width / 2;
         int16_t y = window.y + 25;
 
         drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_69, nullptr);

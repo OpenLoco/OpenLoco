@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Main
     {
-        static constexpr Ui::Size windowSize = { 265, 177 };
+        static constexpr Ui::Size kWindowSize = { 265, 177 };
         static constexpr Ui::Size minWindowSize = { 192, 177 };
         static constexpr Ui::Size maxWindowSize = { 600, 440 };
 
@@ -359,7 +359,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B60DC
         static Window* create(const EntityId head)
         {
-            auto* const self = WindowManager::createWindow(WindowType::vehicle, windowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, &events);
+            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, &events);
             self->widgets = widgets;
             self->enabledWidgets = enabledWidgets;
             self->number = enumValue(head);

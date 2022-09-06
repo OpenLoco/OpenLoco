@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Finances
     {
-        constexpr Ui::Size windowSize = { 250, 210 };
+        static constexpr Ui::Size kWindowSize = { 250, 210 };
 
         static WindowEventList _events;
 
@@ -162,21 +162,21 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
 
         static Widget _widgets[] = {
-            commonWidgets(windowSize.width, windowSize.height, StringIds::financial_cheats),
+            commonWidgets(kWindowSize.width, kWindowSize.height, StringIds::financial_cheats),
             // money
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_increase_funds),
+            makeWidget({ 4, 48 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_increase_funds),
             makeStepperWidgets({ 80, 62 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
             makeWidget({ 180, 62 }, { 60, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_add),
             // loan
-            makeWidget({ 4, 86 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_clear_loan),
+            makeWidget({ 4, 86 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_clear_loan),
             makeWidget({ 80, 100 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary),
             makeWidget({ 180, 100 }, { 60, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_clear),
             // date/time
-            makeWidget({ 4, 124 }, { windowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_date_change_apply),
+            makeWidget({ 4, 124 }, { kWindowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_date_change_apply),
             makeStepperWidgets({ 80, 138 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
             makeStepperWidgets({ 80, 154 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
             makeStepperWidgets({ 80, 170 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 10, 186 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_date_change_apply),
+            makeWidget({ 10, 186 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_date_change_apply),
             widgetEnd(),
         };
 
@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Companies
     {
-        constexpr Ui::Size windowSize = { 250, 172 };
+        static constexpr Ui::Size kWindowSize = { 250, 172 };
 
         static WindowEventList _events;
 
@@ -474,14 +474,14 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
 
         static Widget _widgets[] = {
-            commonWidgets(windowSize.width, windowSize.height, StringIds::company_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_target_company),
-            makeDropdownWidgets({ 10, 62 }, { windowSize.width - 20, 12 }, WidgetType::textbox, WindowColour::secondary),
-            makeWidget({ 4, 86 }, { windowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_cheat_to_apply),
-            makeWidget({ 10, 100 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_switch_to_company),
-            makeWidget({ 10, 116 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_acquire_company_assets),
-            makeWidget({ 10, 132 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_bankruptcy),
-            makeWidget({ 10, 148 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_jail_status),
+            commonWidgets(kWindowSize.width, kWindowSize.height, StringIds::company_cheats),
+            makeWidget({ 4, 48 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_target_company),
+            makeDropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WidgetType::textbox, WindowColour::secondary),
+            makeWidget({ 4, 86 }, { kWindowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_cheat_to_apply),
+            makeWidget({ 10, 100 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_switch_to_company),
+            makeWidget({ 10, 116 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_acquire_company_assets),
+            makeWidget({ 10, 132 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_bankruptcy),
+            makeWidget({ 10, 148 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_jail_status),
             widgetEnd(),
         };
 
@@ -604,7 +604,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Vehicles
     {
-        constexpr Ui::Size windowSize = { 250, 155 };
+        static constexpr Ui::Size kWindowSize = { 250, 155 };
 
         static WindowEventList _events;
 
@@ -622,11 +622,11 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
 
         static Widget _widgets[] = {
-            commonWidgets(windowSize.width, windowSize.height, StringIds::vehicle_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_vehicle_reliability),
-            makeWidget({ 10, 62 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_zero),
-            makeWidget({ 10, 78 }, { windowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_hundred),
-            makeWidget({ 4, 102 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
+            commonWidgets(kWindowSize.width, kWindowSize.height, StringIds::vehicle_cheats),
+            makeWidget({ 4, 48 }, { kWindowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_vehicle_reliability),
+            makeWidget({ 10, 62 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_zero),
+            makeWidget({ 10, 78 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_hundred),
+            makeWidget({ 4, 102 }, { kWindowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
             makeWidget({ 10, 116 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
             makeWidget({ 25, 130 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
             widgetEnd(),
@@ -745,7 +745,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Towns
     {
-        constexpr Ui::Size windowSize = { 250, 103 };
+        static constexpr Ui::Size kWindowSize = { 250, 103 };
 
         static WindowEventList _events;
 
@@ -762,12 +762,12 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
 
         static Widget _widgets[] = {
-            commonWidgets(windowSize.width, windowSize.height, StringIds::town_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_ratings),
-            makeWidget({ 10, 62 }, { (windowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_min_10pct),
-            makeWidget({ 3 + (windowSize.width / 2), 62 }, { (windowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_plus_10pct),
-            makeWidget({ 10, 78 }, { (windowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_to_min),
-            makeWidget({ 3 + (windowSize.width / 2), 78 }, { (windowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_to_max),
+            commonWidgets(kWindowSize.width, kWindowSize.height, StringIds::town_cheats),
+            makeWidget({ 4, 48 }, { kWindowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_ratings),
+            makeWidget({ 10, 62 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_min_10pct),
+            makeWidget({ 3 + (kWindowSize.width / 2), 62 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_plus_10pct),
+            makeWidget({ 10, 78 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_to_min),
+            makeWidget({ 3 + (kWindowSize.width / 2), 78 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_to_max),
             widgetEnd(),
         };
 
@@ -858,7 +858,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         window = WindowManager::createWindow(
             WindowType::cheats,
-            Finances::windowSize,
+            Finances::kWindowSize,
             0,
             &Finances::_events);
 
@@ -884,15 +884,15 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowEventList* events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
-            Ui::Size windowSize;
+            Ui::Size kWindowSize;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Finances::_widgets,  Widx::tab_finances,  &Finances::_events,  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::windowSize  },
-            { Companies::_widgets, Widx::tab_companies, &Companies::_events, &Companies::enabledWidgets, nullptr,                    Companies::windowSize },
-            { Vehicles::_widgets,  Widx::tab_vehicles,  &Vehicles::_events,  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::windowSize  },
-            { Towns::_widgets,     Widx::tab_towns,     &Towns::_events,     &Towns::enabledWidgets,     nullptr,                    Towns::windowSize     },
+            { Finances::_widgets,  Widx::tab_finances,  &Finances::_events,  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::kWindowSize  },
+            { Companies::_widgets, Widx::tab_companies, &Companies::_events, &Companies::enabledWidgets, nullptr,                    Companies::kWindowSize },
+            { Vehicles::_widgets,  Widx::tab_vehicles,  &Vehicles::_events,  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::kWindowSize  },
+            { Towns::_widgets,     Widx::tab_towns,     &Towns::_events,     &Towns::enabledWidgets,     nullptr,                    Towns::kWindowSize     },
         };
         // clang-format on
 
@@ -912,7 +912,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             self->invalidate();
 
-            self->setSize(tabInfo.windowSize);
+            self->setSize(tabInfo.kWindowSize);
             self->callOnResize();
             self->callPrepareDraw();
             self->initScrollWidgets();
