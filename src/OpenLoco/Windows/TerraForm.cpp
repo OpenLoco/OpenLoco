@@ -1885,7 +1885,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     {
         static constexpr Ui::Size kWindowSize = { 418, 108 };
 
-        static const uint8_t kRowHeight = 48;
+        static constexpr uint8_t kRowHeight = 48;
 
         enum widx
         {

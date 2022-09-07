@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             c = Colour::white;
         }
-        Gfx::drawStringCentred(*rt, self.x + _widgets[Widx::date_btn].mid_x(), self.y + _widgets[Widx::date_btn].top + 1, c, format, &*_commonFormatArgs);
+        Gfx::drawStringCentred(*rt, self.x + _widgets[Widx::date_btn].midX(), self.y + _widgets[Widx::date_btn].top + 1, c, format, &*_commonFormatArgs);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         Gfx::drawImage(rt, self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);

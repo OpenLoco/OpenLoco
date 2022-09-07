@@ -1678,18 +1678,18 @@ namespace OpenLoco::Vehicles
     // 0x004A94A9
     bool VehicleHead::airplaneApproachTarget(uint16_t targetZ)
     {
-        auto _yaw = spriteYaw;
+        auto yaw = spriteYaw;
         // Helicopter
         if (_vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
         {
-            _yaw = _vehicleUpdate_helicopterTargetYaw;
+            yaw = _vehicleUpdate_helicopterTargetYaw;
         }
 
         Vehicle1* vehType1 = _vehicleUpdate_1;
         Vehicle2* vehType2 = _vehicleUpdate_2;
 
         auto [veh1Loc, veh2Loc] = calculateNextPosition(
-            _yaw, position, vehType1, vehType2->currentSpeed);
+            yaw, position, vehType1, vehType2->currentSpeed);
 
         Pos3 newLoc(veh2Loc.x, veh2Loc.y, targetZ);
         vehType1->var_4E = veh1Loc.x;
@@ -2639,7 +2639,7 @@ namespace OpenLoco::Vehicles
 
                 for (auto i = 0; i < 3; ++i)
                 {
-                    if (industryObj->required_cargo_type[i] != cargo.type)
+                    if (industryObj->requiredCargoType[i] != cargo.type)
                     {
                         continue;
                     }

@@ -579,15 +579,15 @@ namespace OpenLoco::Ui::Windows::Options
             else
                 w.widgets[Widx::construction_marker].text = StringIds::white;
 
-            static const string_id scaleStringIds[] = {
+            static constexpr string_id kScaleStringIds[] = {
                 StringIds::full_scale,
                 StringIds::half_scale,
                 StringIds::quarter_scale,
                 StringIds::eighth_scale,
             };
 
-            w.widgets[Widx::vehicles_min_scale].text = scaleStringIds[Config::get().vehiclesMinScale];
-            w.widgets[Widx::station_names_min_scale].text = scaleStringIds[Config::get().stationNamesMinScale];
+            w.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];
+            w.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
 
             w.activatedWidgets &= ~(1 << Widx::show_fps);
             if (Config::getNew().showFPS)

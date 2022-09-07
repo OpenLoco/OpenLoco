@@ -102,7 +102,7 @@ namespace OpenLoco::Paint
                         continue;
                     }
                 }
-                const auto imageId = ImageId{ cargoObj->unitInlineSprite + Cargo::ImageIds::stationPlatformBegin + variation };
+                const auto imageId = ImageId{ cargoObj->unitInlineSprite + Cargo::ImageIds::kStationPlatformBegin + variation };
                 session.addToPlotListAsChild(imageId, offset + Map::Pos3{ 0, 0, offsetZ }, boundBoxOffset, boundBoxSize);
             }
         }

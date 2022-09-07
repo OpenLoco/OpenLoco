@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static constexpr Ui::Size kMaxDimensions = { 640, 1200 };
     static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
-    static const uint8_t kRowHeight = 10; // CJK: 13
+    static constexpr uint8_t kRowHeight = 10; // CJK: 13
 
     enum widx
     {

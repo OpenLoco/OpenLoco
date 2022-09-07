@@ -39,7 +39,7 @@ namespace OpenLoco
     }
 
     // TODO: Should only be defined in ObjectSelectionWindow
-    static const uint8_t kDescriptionRowHeight = 10;
+    static constexpr uint8_t kDescriptionRowHeight = 10;
 
     // 0x004B8C9D
     void VehicleObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width) const

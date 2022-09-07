@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static constexpr Ui::Size kMaxDimensions = { 600, 900 };
         static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
-        static const uint8_t kRowHeight = 10;
+        static constexpr uint8_t kRowHeight = 10;
 
         enum widx
         {
@@ -790,7 +790,7 @@ namespace OpenLoco::Ui::Windows::TownList
     {
         static constexpr Ui::Size kWindowSize = { 600, 172 };
 
-        static const uint8_t kRowHeight = 112;
+        static constexpr uint8_t kRowHeight = 112;
 
         enum widx
         {

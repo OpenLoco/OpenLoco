@@ -457,7 +457,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::received_cargo);
 
                 auto cargoNumber = 0;
-                for (const auto& receivedCargoType : industryObj->required_cargo_type)
+                for (const auto& receivedCargoType : industryObj->requiredCargoType)
                 {
                     if (receivedCargoType != 0xFF)
                     {
@@ -490,7 +490,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 origin.x += 4;
 
                 auto cargoNumber = 0;
-                for (const auto& producedCargoType : industryObj->produced_cargo_type)
+                for (const auto& producedCargoType : industryObj->producedCargoType)
                 {
                     if (producedCargoType != 0xFF)
                     {
@@ -556,10 +556,10 @@ namespace OpenLoco::Ui::Windows::Industry
             auto industryObj = ObjectManager::get<IndustryObject>(IndustryManager::get(IndustryId(self->number))->objectId);
             auto disabledWidgets = 0;
 
-            if (industryObj->produced_cargo_type[0] == 0xFF)
+            if (industryObj->producedCargoType[0] == 0xFF)
                 disabledWidgets |= (1 << Common::widx::tab_production);
 
-            if (industryObj->produced_cargo_type[1] == 0xFF)
+            if (industryObj->producedCargoType[1] == 0xFF)
                 disabledWidgets |= (1 << Common::widx::tab_production_2);
 
             self->disabledWidgets = disabledWidgets;
@@ -574,7 +574,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // Draw Units of Cargo sub title
             const auto industry = IndustryManager::get(IndustryId(self.number));
             const auto industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
-            const auto cargoObj = ObjectManager::get<CargoObject>(industryObj->produced_cargo_type[0]);
+            const auto cargoObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[0]);
 
             {
                 auto args = FormatArguments();
@@ -822,7 +822,7 @@ namespace OpenLoco::Ui::Windows::Industry
             uint32_t imageId = 0xFFFFFFFF;
             auto widget = self->widgets[tab];
 
-            if (industryObj->produced_cargo_type[productionTabNumber] != 0xFF)
+            if (industryObj->producedCargoType[productionTabNumber] != 0xFF)
             {
                 imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
 
@@ -835,7 +835,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto yPos = widget.top + self->y;
                 Gfx::drawImage(rt, xPos, yPos, imageId);
 
-                auto caroObj = ObjectManager::get<CargoObject>(industryObj->produced_cargo_type[productionTabNumber]);
+                auto caroObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[productionTabNumber]);
                 Gfx::drawImage(rt, xPos + 18, yPos + 14, caroObj->unitInlineSprite);
 
                 Widget::drawTab(self, rt, -2, tab);

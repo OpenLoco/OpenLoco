@@ -521,13 +521,13 @@ namespace OpenLoco::Ui
         const auto dest = v->centre2dCoordinates({ *mapX, *mapY, base_height });
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
-        int16_t rebased_x = ((this->width >> 1) - mouse.x) * (1 << v->zoom),
-                rebased_y = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
+        int16_t rebasedX = ((this->width >> 1) - mouse.x) * (1 << v->zoom),
+                rebasedY = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
 
         // Compute cursor offset relative to tile.
         ViewportConfig* vc = &this->viewportConfigurations[0];
-        *offsetX = (vc->savedViewX - (dest.x + rebased_x)) * (1 << v->zoom);
-        *offsetY = (vc->savedViewY - (dest.y + rebased_y)) * (1 << v->zoom);
+        *offsetX = (vc->savedViewX - (dest.x + rebasedX)) * (1 << v->zoom);
+        *offsetY = (vc->savedViewY - (dest.y + rebasedY)) * (1 << v->zoom);
     }
 
     // 0x004C6801
@@ -603,24 +603,24 @@ namespace OpenLoco::Ui
         }
     }
 
-    void Window::viewportCentreTileAroundCursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
+    void Window::viewportCentreTileAroundCursor(int16_t mapX, int16_t mapY, int16_t offsetX, int16_t offsetY)
     {
         // Get viewport coordinates centring around the tile.
-        auto base_height = TileManager::getHeight({ map_x, map_y }).landHeight;
+        auto base_height = TileManager::getHeight({ mapX, mapY }).landHeight;
         Viewport* v = this->viewports[0];
-        const auto dest = v->centre2dCoordinates({ map_x, map_y, base_height });
+        const auto dest = v->centre2dCoordinates({ mapX, mapY, base_height });
 
         // Get mouse position to offset against.
         const auto mouse = Ui::getCursorPos();
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
-        int16_t rebased_x = ((this->width >> 1) - mouse.x) * (1 << v->zoom),
-                rebased_y = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
+        int16_t rebasedX = ((this->width >> 1) - mouse.x) * (1 << v->zoom),
+                rebasedY = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
 
         // Apply offset to the viewport.
         ViewportConfig* vc = &this->viewportConfigurations[0];
-        vc->savedViewX = dest.x + rebased_x + (offset_x / (1 << v->zoom));
-        vc->savedViewY = dest.y + rebased_y + (offset_y / (1 << v->zoom));
+        vc->savedViewX = dest.x + rebasedX + (offsetX / (1 << v->zoom));
+        vc->savedViewY = dest.y + rebasedY + (offsetY / (1 << v->zoom));
     }
 
     void Window::viewportFocusOnEntity(EntityId targetEntity)
@@ -662,13 +662,13 @@ namespace OpenLoco::Ui
             return;
 
         // Zooming to cursor? Remember where we're pointing at the moment.
-        int16_t saved_map_x = 0;
-        int16_t saved_map_y = 0;
-        int16_t offset_x = 0;
-        int16_t offset_y = 0;
+        int16_t savedMapX = 0;
+        int16_t savedMapY = 0;
+        int16_t offsetX = 0;
+        int16_t offsetY = 0;
         if (toCursor && Config::getNew().zoomToCursor)
         {
-            this->viewportGetMapCoordsByCursor(&saved_map_x, &saved_map_y, &offset_x, &offset_y);
+            this->viewportGetMapCoordsByCursor(&savedMapX, &savedMapY, &offsetX, &offsetY);
         }
 
         // Zoom in
@@ -694,7 +694,7 @@ namespace OpenLoco::Ui
         // Zooming to cursor? Centre around the tile we were hovering over just now.
         if (toCursor && Config::getNew().zoomToCursor)
         {
-            this->viewportCentreTileAroundCursor(saved_map_x, saved_map_y, offset_x, offset_y);
+            this->viewportCentreTileAroundCursor(savedMapX, savedMapY, offsetX, offsetY);
         }
 
         this->invalidate();

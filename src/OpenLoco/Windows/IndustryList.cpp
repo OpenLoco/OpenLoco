@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static constexpr Ui::Size kMaxDimensions = { 600, 900 };
         static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
-        static const uint8_t kRowHeight = 10;
+        static constexpr uint8_t kRowHeight = 10;
 
         enum widx
         {
@@ -249,10 +249,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
             if (industryObj->producesCargo())
             {
                 productionTransported = industry.producedCargoPercentTransportedPreviousMonth[0];
-                if (industryObj->produced_cargo_type[1] != 0xFF)
+                if (industryObj->producedCargoType[1] != 0xFF)
                 {
                     productionTransported = industry.producedCargoPercentTransportedPreviousMonth[1];
-                    if (industryObj->produced_cargo_type[0] != 0xFF)
+                    if (industryObj->producedCargoType[0] != 0xFF)
                     {
                         productionTransported += industry.producedCargoPercentTransportedPreviousMonth[0];
                         productionTransported /= 2;
@@ -580,7 +580,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static constexpr Ui::Size kWindowSize = { 578, 172 };
 
-        static const uint8_t kRowHeight = 112;
+        static constexpr uint8_t kRowHeight = 112;
 
         enum widx
         {

@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 continue;
 
             const auto offset = self.currentTab == i ? 1 : 0;
-            auto origin = Ui::Point(widget.mid_x() + self.x, widget.mid_y() + self.y - 3 - offset);
+            auto origin = Ui::Point(widget.midX() + self.x, widget.midY() + self.y - 3 - offset);
             const string_id caption = scenarioGroupIds[i];
 
             Gfx::drawStringCentredWrapped(*rt, origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, &caption);

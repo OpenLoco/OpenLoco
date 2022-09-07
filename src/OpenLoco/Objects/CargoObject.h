@@ -46,8 +46,8 @@ namespace OpenLoco
     static_assert(sizeof(CargoObject) == 0x1F);
     namespace Cargo::ImageIds
     {
-        constexpr uint32_t inlineSprite = 0;
+        constexpr uint32_t kInlineSprite = 0;
         // There are numPlatformVariations sprites after this one
-        constexpr uint32_t stationPlatformBegin = 1;
+        constexpr uint32_t kStationPlatformBegin = 1;
     }
 }

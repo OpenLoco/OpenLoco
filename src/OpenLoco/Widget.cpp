@@ -11,12 +11,12 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui
 {
-    int16_t Widget::mid_x() const
+    int16_t Widget::midX() const
     {
         return (this->left + this->right) / 2;
     }
 
-    int16_t Widget::mid_y() const
+    int16_t Widget::midY() const
     {
         return (this->top + this->bottom) / 2;
     }

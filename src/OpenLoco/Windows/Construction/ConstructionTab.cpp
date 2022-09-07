@@ -2641,7 +2641,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049D38A and 0x0049D16B
     static void drawCostString(Window* self, Gfx::RenderTarget* rt)
     {
-        auto x = self->widgets[widx::construct].mid_x();
+        auto x = self->widgets[widx::construct].midX();
         x += self->x;
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 

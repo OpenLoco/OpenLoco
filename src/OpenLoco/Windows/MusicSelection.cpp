@@ -17,7 +17,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 {
     static constexpr Ui::Size kWindowSize = { 360, 238 };
 
-    static const uint8_t kRowHeight = 12; // CJK: 15
+    static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
     enum widx
     {

@@ -33,7 +33,7 @@ namespace OpenLoco::Environment
         music_the_ragtime_dance,
         music_easy_winners,
         music_setting_off,
-        music_a_travellers_seranade,
+        music_a_travellers_serenade,
         music_latino_trip,
         music_a_good_head_of_steam,
         music_hop_to_the_bop,

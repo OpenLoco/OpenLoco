@@ -117,7 +117,7 @@ namespace OpenLoco::Audio
         { PathId::music_the_ragtime_dance, StringIds::music_the_ragtime_dance, 1909, 1917 },
         { PathId::music_easy_winners, StringIds::music_easy_winners, 0, 1914 },
         { PathId::music_setting_off, StringIds::music_setting_off, 1929, 1937 },
-        { PathId::music_a_travellers_seranade, StringIds::music_a_travellers_seranade, 1940, 1948 },
+        { PathId::music_a_travellers_serenade, StringIds::music_a_travellers_serenade, 1940, 1948 },
         { PathId::music_latino_trip, StringIds::music_latino_trip, 1943, 1951 },
         { PathId::music_a_good_head_of_steam, StringIds::music_a_good_head_of_steam, 1950, 1958 },
         { PathId::music_hop_to_the_bop, StringIds::music_hop_to_the_bop, 1946, 1954 },

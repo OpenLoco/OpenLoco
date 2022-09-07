@@ -965,14 +965,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 Gfx::drawStringCentred(
                     *rt,
-                    self.x + speedWidget.mid_x(),
+                    self.x + speedWidget.midX(),
                     self.y + speedWidget.top + 4,
                     Colour::black,
                     StringIds::tiny_power);
 
                 Gfx::drawStringCentred(
                     *rt,
-                    self.x + speedWidget.mid_x(),
+                    self.x + speedWidget.midX(),
                     self.y + speedWidget.bottom - 10,
                     Colour::black,
                     StringIds::tiny_brake);
@@ -995,8 +995,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push(StringIds::getVehicleType(veh->vehicleType));
                 Ui::Point origin;
                 Widget& button = self.widgets[widx::viewport];
-                origin.x = self.x + button.mid_x();
-                origin.y = self.y + button.mid_y();
+                origin.x = self.x + button.midX();
+                origin.y = self.y + button.midY();
                 Gfx::drawStringCentredWrapped(
                     *rt,
                     origin,

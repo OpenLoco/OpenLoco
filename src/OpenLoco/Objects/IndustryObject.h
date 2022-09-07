@@ -61,8 +61,8 @@ namespace OpenLoco
         uint8_t pad_D8[0xDA - 0xD8];
         uint16_t var_DA;
         uint8_t pad_DC[0xDE - 0xDC];
-        uint8_t produced_cargo_type[2]; // 0xDE (0xFF = null)
-        uint8_t required_cargo_type[3]; // 0xE0 (0xFF = null)
+        uint8_t producedCargoType[2]; // 0xDE (0xFF = null)
+        uint8_t requiredCargoType[3]; // 0xE0 (0xFF = null)
         uint8_t pad_E3;
         uint32_t flags; // 0xE4
         uint8_t var_E8;

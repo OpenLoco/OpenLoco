@@ -552,12 +552,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             drawPreviewImage(
                 ObjectManager::ObjectIndexEntry::read(&objectPtr)._header,
                 rt,
-                widgets[widx::objectImage].mid_x() + 1 + self.x,
-                widgets[widx::objectImage].mid_y() + 1 + self.y,
+                widgets[widx::objectImage].midX() + 1 + self.x,
+                widgets[widx::objectImage].midY() + 1 + self.y,
                 _50D15C);
         }
 
-        auto x = self.widgets[widx::objectImage].mid_x() + self.x;
+        auto x = self.widgets[widx::objectImage].midX() + self.x;
         auto y = self.widgets[widx::objectImage].bottom + 3 + self.y;
         auto width = self.width - self.widgets[widx::scrollview].right - 6;
 

@@ -25,8 +25,8 @@ namespace OpenLoco
         uint32_t image; // 0x08
         uint32_t var_0C;
         uint8_t pad_10[0x12 - 0x10];
-        uint8_t num_aux_01;     // 0x12
-        uint8_t num_aux_02_ent; // 0x13
+        uint8_t numAux01;    // 0x12
+        uint8_t numAux02Ent; // 0x13
         uint8_t pad_14[0x1C - 0x14];
         uint32_t var_1C[1];     // odd that this is size 1 but that is how its used
         uint16_t designedYear;  // 0x20

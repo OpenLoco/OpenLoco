@@ -388,10 +388,10 @@ namespace OpenLoco::Ui
         void drawViewports(Gfx::RenderTarget* rt);
         void viewportCentreMain();
         void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);
-        void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
+        void viewportGetMapCoordsByCursor(int16_t* mapX, int16_t* mapY, int16_t* offsetX, int16_t* offsetY);
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const Map::Pos3& loc);
-        void viewportCentreTileAroundCursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
+        void viewportCentreTileAroundCursor(int16_t mapX, int16_t mapY, int16_t offsetX, int16_t offsetY);
         void viewportFocusOnEntity(EntityId targetEntity);
         bool viewportIsFocusedOnEntity() const;
         void viewportUnfocusFromEntity();
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui
         Ui::Window* callOnResize();                                                                    // 2
         void call_3(int8_t widgetIndex);                                                               // 3
         void callOnMouseDown(int8_t widgetIndex);                                                      // 4
-        void callOnDropdown(WidgetIndex_t widgetIndex, int16_t item_index);                            // 5
+        void callOnDropdown(WidgetIndex_t widgetIndex, int16_t itemIndex);                             // 5
         void callOnPeriodicUpdate();                                                                   // 6
         void callUpdate();                                                                             // 7
         void call_8();                                                                                 // 8

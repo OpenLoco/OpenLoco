@@ -60,7 +60,7 @@ namespace OpenLoco::Ui
         confirmDisplayModePrompt = 50,
         textInput = 51,
         fileBrowserPrompt = 52,
-        kPreviewImage = 53,
+        previewImage = 53,
         confirmationPrompt = 54,
         openLocoVersion = 55,
         titleOptions = 56,

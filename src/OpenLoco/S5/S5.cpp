@@ -115,7 +115,7 @@ namespace OpenLoco::S5
             eventList.draw = previewWindowDraw;
 
             auto tempWindow = WindowManager::createWindow(
-                WindowType::kPreviewImage,
+                WindowType::previewImage,
                 { 0, 0 },
                 size,
                 WindowFlags::stickToFront,
@@ -147,7 +147,7 @@ namespace OpenLoco::S5
                     rt = backupContext;
                 }
 
-                WindowManager::close(WindowType::kPreviewImage);
+                WindowManager::close(WindowType::previewImage);
             }
         }
     }

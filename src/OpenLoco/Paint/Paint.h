@@ -200,8 +200,8 @@ namespace OpenLoco::Paint
         /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
-         * @param offset_x @<al>
-         * @param offset_y @<cl>
+         * @param offsetX @<al>
+         * @param offsetY @<cl>
          * @param offset_z @<dx>
          * @param boundBoxLength_x @<di>
          * @param boundBoxLength_y @<si>
@@ -212,8 +212,8 @@ namespace OpenLoco::Paint
         /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
-         * @param offset_x @<al>
-         * @param offset_y @<cl>
+         * @param offsetX @<al>
+         * @param offsetY @<cl>
          * @param offset_z @<dx>
          * @param boundBoxLength_x @<di>
          * @param boundBoxLength_y @<si>
@@ -240,8 +240,8 @@ namespace OpenLoco::Paint
         /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
-         * @param offset_x @<al>
-         * @param offset_y @<cl>
+         * @param offsetX @<al>
+         * @param offsetY @<cl>
          * @param offset_z @<dx>
          * @param boundBoxLength_x @<di>
          * @param boundBoxLength_y @<si>
@@ -269,8 +269,8 @@ namespace OpenLoco::Paint
         /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
-         * @param offset_x @<al>
-         * @param offset_y @<cl>
+         * @param offsetX @<al>
+         * @param offsetY @<cl>
          * @param offset_z @<dx>
          * @param boundBoxLength_x @<di>
          * @param boundBoxLength_y @<si>
@@ -282,8 +282,8 @@ namespace OpenLoco::Paint
         void addToPlotList4FD200(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
         /*
          * @param imageId  @<ebx>
-         * @param offset_x @<ax>
-         * @param offset_y @<cx>
+         * @param offsetX @<ax>
+         * @param offsetY @<cx>
          */
         AttachedPaintStruct* attachToPrevious(ImageId imageId, const Ui::Point& offset);
 

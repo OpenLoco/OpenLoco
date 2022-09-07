@@ -32,8 +32,8 @@ namespace OpenLoco::Ui
         };
         string_id tooltip; // 0x0E
 
-        int16_t mid_x() const;
-        int16_t mid_y() const;
+        int16_t midX() const;
+        int16_t midY() const;
         uint16_t width() const;
         uint16_t height() const;
 

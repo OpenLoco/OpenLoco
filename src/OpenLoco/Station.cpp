@@ -323,7 +323,7 @@ namespace OpenLoco
                                     break;
                                 }
 
-                                for (auto cargoId : obj->required_cargo_type)
+                                for (auto cargoId : obj->requiredCargoType)
                                 {
                                     if (cargoId != 0xFF && (cargoSearchState.filter() & (1 << cargoId)))
                                     {
@@ -332,7 +332,7 @@ namespace OpenLoco
                                     }
                                 }
 
-                                for (auto cargoId : obj->produced_cargo_type)
+                                for (auto cargoId : obj->producedCargoType)
                                 {
                                     if (cargoId != 0xFF && (cargoSearchState.filter() & (1 << cargoId)))
                                     {

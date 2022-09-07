@@ -50,7 +50,7 @@ namespace OpenLoco
     bool Industry::canReceiveCargo() const
     {
         auto receiveCargoState = false;
-        for (const auto& receivedCargo : ObjectManager::get<IndustryObject>(objectId)->required_cargo_type)
+        for (const auto& receivedCargo : ObjectManager::get<IndustryObject>(objectId)->requiredCargoType)
         {
             if (receivedCargo != 0xff)
                 receiveCargoState = true;
@@ -61,7 +61,7 @@ namespace OpenLoco
     bool Industry::canProduceCargo() const
     {
         auto produceCargoState = false;
-        for (const auto& producedCargo : ObjectManager::get<IndustryObject>(objectId)->produced_cargo_type)
+        for (const auto& producedCargo : ObjectManager::get<IndustryObject>(objectId)->producedCargoType)
         {
             if (producedCargo != 0xff)
                 produceCargoState = true;
@@ -167,7 +167,7 @@ namespace OpenLoco
             production = std::numeric_limits<uint16_t>::max();
             for (auto i = 0; i < 3; ++i)
             {
-                if (indObj->required_cargo_type[i] != 0xFF)
+                if (indObj->requiredCargoType[i] != 0xFF)
                 {
                     production = std::min(production, receivedCargoQuantityDailyTotal[i]);
                 }
@@ -176,7 +176,7 @@ namespace OpenLoco
             {
                 for (auto i = 0; i < 3; ++i)
                 {
-                    if (indObj->required_cargo_type[i] != 0xFF)
+                    if (indObj->requiredCargoType[i] != 0xFF)
                     {
                         receivedCargoQuantityDailyTotal[i] -= production;
                     }
@@ -187,7 +187,7 @@ namespace OpenLoco
         {
             for (auto i = 0; i < 3; ++i)
             {
-                if (indObj->required_cargo_type[i] != 0xFF)
+                if (indObj->requiredCargoType[i] != 0xFF)
                 {
                     production = Math::Bound::add(production, receivedCargoQuantityDailyTotal[i]);
                     receivedCargoQuantityDailyTotal[i] = 0;
@@ -198,7 +198,7 @@ namespace OpenLoco
         {
             for (auto i = 0; i < 2; ++i)
             {
-                if (indObj->produced_cargo_type[i] != 0xFF)
+                if (indObj->producedCargoType[i] != 0xFF)
                 {
                     var_181[i] = Math::Bound::add(var_181[i], production);
                 }
@@ -213,7 +213,7 @@ namespace OpenLoco
 
         for (auto i = 0; i < 2; ++i)
         {
-            if (indObj->produced_cargo_type[i] == 0xFF)
+            if (indObj->producedCargoType[i] == 0xFF)
             {
                 continue;
             }
@@ -245,7 +245,7 @@ namespace OpenLoco
                     }
                 }
 
-                const auto quantityDelivered = StationManager::deliverCargoToStations(stations, indObj->produced_cargo_type[i], max);
+                const auto quantityDelivered = StationManager::deliverCargoToStations(stations, indObj->producedCargoType[i], max);
                 producedCargoQuantityDeliveredMonthlyTotal[i] = Math::Bound::add(quantityDelivered, producedCargoQuantityDeliveredMonthlyTotal[i]);
             }
         }
@@ -268,7 +268,7 @@ namespace OpenLoco
         const auto* indObj = getObject();
         if (under_construction == 0xFF
             && !(flags & IndustryFlags::closingDown)
-            && indObj->required_cargo_type[0] == 0xFF)
+            && indObj->requiredCargoType[0] == 0xFF)
         {
             if (isMonthlyProductionUp())
             {
@@ -510,7 +510,7 @@ namespace OpenLoco
             auto& indStatsStation = producedCargoStatsStation[cargoNum];
             auto& indStatsRating = producedCargoStatsRating[cargoNum];
             std::fill(std::begin(indStatsStation), std::end(indStatsStation), StationId::null);
-            const auto cargoType = industryObj->produced_cargo_type[cargoNum];
+            const auto cargoType = industryObj->producedCargoType[cargoNum];
             if (cargoType == 0xFF)
             {
                 continue;
