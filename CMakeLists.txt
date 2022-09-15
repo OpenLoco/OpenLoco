@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.9)
-cmake_policy(VERSION 3.9)
+cmake_minimum_required(VERSION 3.15)
+cmake_policy(VERSION 3.15)
 
 set (PROJECT openloco)
 
@@ -95,6 +95,8 @@ if (NOT MSVC)
     list(APPEND COMMON_COMPILE_OPTIONS
     -Wno-unknown-pragmas
     -Wno-unused-private-field
+     # compilers often get confused about our memory access patterns, disable some of the warnings
+    -Wno-array-bounds
     )
 
     # Set warnings common to supported compilers
@@ -303,8 +305,7 @@ set(YAML_CPP_FORMAT_SOURCE OFF CACHE BOOL "")
 add_subdirectory(src/Thirdparty/yaml-cpp)
 
 target_compile_options(${PROJECT} PUBLIC ${COMMON_COMPILE_OPTIONS})
-# compilers often get confused about our memory access patterns, disable some of the warnings
-target_compile_options(${PROJECT} PUBLIC -Wno-array-bounds)
+
 # clang does not understand following options and errors with -Wunknown-warning-option
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     target_compile_options(${PROJECT} PUBLIC -Wno-stringop-overflow -Wno-stringop-overread -Wno-stringop-truncation)
@@ -340,7 +341,7 @@ if (MINGW)
     # newer GCC gets confused about our use of hardcoded address shenanigans
 else ()
     if (MSVC)
-        target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
+        target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD YAML_CPP_STATIC_DEFINE)
     else ()
         target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
     endif ()
