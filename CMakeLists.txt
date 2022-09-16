@@ -95,14 +95,14 @@ if (NOT MSVC)
     list(APPEND COMMON_COMPILE_OPTIONS
     -Wno-unknown-pragmas
     -Wno-unused-private-field
-     # compilers often get confused about our memory access patterns, disable some of the warnings
-    -Wno-array-bounds
     )
 
     # Set warnings common to supported compilers
     list(APPEND COMMON_COMPILE_OPTIONS
     -Waddress
-    -Warray-bounds
+    # -Warray-bounds
+    # compilers often get confused about our memory access patterns, disable some of the warnings
+    -Wno-array-bounds
     -Wchar-subscripts
     -Wenum-compare
     -Wformat
