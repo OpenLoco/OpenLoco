@@ -24,14 +24,14 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco::Ui::Windows::Station
 {
-    static loco_global<uint8_t[map_size], 0x00F00484> _byte_F00484;
+    static loco_global<uint8_t[kMapSize], 0x00F00484> _byte_F00484;
     static loco_global<StationId, 0x00112C786> _lastSelectedStation;
 
     namespace Common
     {
-        static constexpr Ui::Size minWindowSize = { 192, 136 };
+        static constexpr Ui::Size kMinWindowSize = { 192, 136 };
 
-        static constexpr Ui::Size maxWindowSize = { 600, 440 };
+        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -165,7 +165,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(kWindowSize, Common::maxWindowSize);
+            self.setSize(kWindowSize, Common::kMaxWindowSize);
 
             if (self.viewports[0] != nullptr)
             {
@@ -280,10 +280,10 @@ namespace OpenLoco::Ui::Windows::Station
             window->number = enumValue(stationId);
             auto station = StationManager::get(stationId);
             window->owner = station->owner;
-            window->minWidth = Common::minWindowSize.width;
-            window->minHeight = Common::minWindowSize.height;
-            window->maxWidth = Common::maxWindowSize.width;
-            window->maxHeight = Common::maxWindowSize.height;
+            window->minWidth = Common::kMinWindowSize.width;
+            window->minHeight = Common::kMinWindowSize.height;
+            window->maxWidth = Common::kMaxWindowSize.width;
+            window->maxHeight = Common::kMaxWindowSize.height;
 
             window->savedView.clear();
 
@@ -377,8 +377,8 @@ namespace OpenLoco::Ui::Windows::Station
                     continue;
 
                 *buffer++ = ' ';
-                *buffer++ = ControlCodes::inline_sprite_str;
-                *(reinterpret_cast<uint32_t*>(buffer)) = ObjectManager::get<CargoObject>(cargoId)->unit_inline_sprite;
+                *buffer++ = ControlCodes::inlineSpriteStr;
+                *(reinterpret_cast<uint32_t*>(buffer)) = ObjectManager::get<CargoObject>(cargoId)->unitInlineSprite;
                 buffer += 4;
 
                 cargoTypeCount++;
@@ -435,7 +435,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(Common::minWindowSize, Common::maxWindowSize);
+            self.setSize(Common::kMinWindowSize, Common::kMaxWindowSize);
         }
 
         // 0x0048EB64
@@ -492,15 +492,15 @@ namespace OpenLoco::Ui::Windows::Station
                     for (; units > 0; units--)
                     {
                         {
-                            Gfx::drawImage(&rt, xPos, y, cargoObj->unit_inline_sprite);
+                            Gfx::drawImage(&rt, xPos, y, cargoObj->unitInlineSprite);
                             xPos += 10;
                         }
                     }
                 }
-                auto cargoName = cargoObj->unit_name_singular;
+                auto cargoName = cargoObj->unitNameSingular;
 
                 if (cargo.quantity != 1)
-                    cargoName = cargoObj->unit_name_plural;
+                    cargoName = cargoObj->unitNamePlural;
 
                 auto args = FormatArguments();
                 args.push(cargoName);
@@ -568,7 +568,7 @@ namespace OpenLoco::Ui::Windows::Station
     {
         static constexpr Ui::Size kWindowSize = { 249, 136 };
 
-        static constexpr Ui::Size maxWindowSize = { 249, 440 };
+        static constexpr Ui::Size kMaxWindowSize = { 249, 440 };
 
         enum widx
         {
@@ -633,7 +633,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Common::enableRenameByCaption(&self);
 
-            self.setSize(kWindowSize, maxWindowSize);
+            self.setSize(kWindowSize, kMaxWindowSize);
         }
 
         // 0x0048EE4A
@@ -728,7 +728,7 @@ namespace OpenLoco::Ui::Windows::Station
     {
         TileLoop tileLoop;
 
-        for (uint32_t posId = 0; posId < map_size; posId++)
+        for (uint32_t posId = 0; posId < kMapSize; posId++)
         {
             if (_byte_F00484[posId] & (1 << 0))
             {
@@ -861,7 +861,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E6F1
         static void update(Window& self)
         {
-            self.frame_no++;
+            self.frameNo++;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::station, self.number);
         }
@@ -895,7 +895,7 @@ namespace OpenLoco::Ui::Windows::Station
             TextInput::sub_4CE6C9(self->type, self->number);
 
             self->currentTab = widgetIndex - widx::tab_station;
-            self->frame_no = 0;
+            self->frameNo = 0;
             self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
 
@@ -945,7 +945,7 @@ namespace OpenLoco::Ui::Windows::Station
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_cargo - widx::tab_station)
-                    imageId += cargoTabImageIds[(self->frame_no / 8) % std::size(cargoTabImageIds)];
+                    imageId += cargoTabImageIds[(self->frameNo / 8) % std::size(cargoTabImageIds)];
                 else
                     imageId += cargoTabImageIds[0];
 

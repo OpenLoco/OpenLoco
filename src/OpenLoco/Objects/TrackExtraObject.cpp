@@ -31,16 +31,16 @@ namespace OpenLoco
         }
 
         // This check missing from vanilla
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
 
-        if (-sell_cost_factor > build_cost_factor)
+        if (-sellCostFactor > buildCostFactor)
         {
             return false;
         }
-        return build_cost_factor > 0;
+        return buildCostFactor > 0;
     }
 
     // 0x004A6CF8

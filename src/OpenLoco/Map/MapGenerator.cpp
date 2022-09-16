@@ -419,7 +419,7 @@ namespace OpenLoco::Map::MapGenerator
         static loco_global<uint16_t, 0x00525FB2> _seaLevel;
 
         Map::TileLoop tileLoop;
-        for (uint32_t posId = 0; posId < map_size; posId++)
+        for (uint32_t posId = 0; posId < kMapSize; posId++)
         {
             auto pos = tileLoop.current();
             auto tile = TileManager::get(pos);
@@ -579,7 +579,7 @@ namespace OpenLoco::Map::MapGenerator
             return;
         }
 
-        TilePosRangeView tileLoop{ { 1, 1 }, { map_columns - 1, map_rows - 1 } };
+        TilePosRangeView tileLoop{ { 1, 1 }, { kMapColumns - 1, kMapRows - 1 } };
         for (const auto& tilePos : tileLoop)
         {
             auto* surface = Map::TileManager::get(tilePos).surface();
@@ -632,8 +632,8 @@ namespace OpenLoco::Map::MapGenerator
         // Place forests
         for (auto i = 0; i < options.numberOfForests; ++i)
         {
-            const auto randRadius = ((gPrng().randNext(255) * std::max(options.maxForestRadius - options.minForestRadius, 0)) / 255 + options.minForestRadius) * tile_size;
-            const auto randLoc = Map::TilePos2(gPrng().randNext(map_rows), gPrng().randNext(map_columns));
+            const auto randRadius = ((gPrng().randNext(255) * std::max(options.maxForestRadius - options.minForestRadius, 0)) / 255 + options.minForestRadius) * kTileSize;
+            const auto randLoc = Map::TilePos2(gPrng().randNext(kMapRows), gPrng().randNext(kMapColumns));
             const auto randDensity = (gPrng().randNext(15) * std::max(options.maxForestDensity - options.minForestDensity, 0)) / 15 + options.minForestDensity;
             placeTreeCluster(randLoc, randRadius, randDensity, std::nullopt);
 
@@ -646,7 +646,7 @@ namespace OpenLoco::Map::MapGenerator
         // Place a number of random trees
         for (auto i = 0; i < options.numberRandomTrees; ++i)
         {
-            const auto randLoc = Map::Pos2(gPrng().randNext(map_width), gPrng().randNext(map_height));
+            const auto randLoc = Map::Pos2(gPrng().randNext(kMapWidth), gPrng().randNext(kMapHeight));
             placeRandomTree(randLoc, std::nullopt);
         }
 
@@ -654,7 +654,7 @@ namespace OpenLoco::Map::MapGenerator
         uint32_t randMask = gPrng().randNext();
         uint32_t i = 0;
         std::vector<TileElement*> toBeRemoved;
-        for (auto& loc : TilePosRangeView({}, { map_rows - 1, map_columns - 1 }))
+        for (auto& loc : TilePosRangeView({}, { kMapRows - 1, kMapColumns - 1 }))
         {
             auto tile = TileManager::get(loc);
             for (auto& el : tile)

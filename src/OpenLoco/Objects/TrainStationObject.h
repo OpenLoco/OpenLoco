@@ -31,19 +31,19 @@ namespace OpenLoco
         string_id name;
         uint8_t drawStyle; // 0x02
         uint8_t var_03;
-        uint16_t track_pieces;     // 0x04
-        int16_t build_cost_factor; // 0x06
-        int16_t sell_cost_factor;  // 0x08
-        uint8_t cost_index;        // 0x0A
+        uint16_t trackPieces;    // 0x04
+        int16_t buildCostFactor; // 0x06
+        int16_t sellCostFactor;  // 0x08
+        uint8_t costIndex;       // 0x0A
         uint8_t var_0B;
         uint8_t flags; // 0x0C
         uint8_t var_0D;
         uint32_t image; // 0x0E
         uint32_t var_12[4];
-        uint8_t num_compatible; // 0x22
+        uint8_t numCompatible; // 0x22
         uint8_t mods[7];
-        uint16_t designed_year;            // 0x2A
-        uint16_t obsolete_year;            // 0x2C
+        uint16_t designedYear;             // 0x2A
+        uint16_t obsoleteYear;             // 0x2C
         std::byte* cargoOffsetBytes[4][4]; // 0x2E
         uint32_t var_6E[16];
 

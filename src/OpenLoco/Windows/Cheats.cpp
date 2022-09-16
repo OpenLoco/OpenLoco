@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == Widx::tab_finances - Widx::tab_finances)
-                    imageId += financesTabImageIds[(self->frame_no / 2) % std::size(financesTabImageIds)];
+                    imageId += financesTabImageIds[(self->frameNo / 2) % std::size(financesTabImageIds)];
                 else
                     imageId += financesTabImageIds[0];
 
@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == Widx::tab_vehicles - Widx::tab_finances)
-                    imageId += vehiclesTabImageIds[(self->frame_no / 2) % std::size(vehiclesTabImageIds)];
+                    imageId += vehiclesTabImageIds[(self->frameNo / 2) % std::size(vehiclesTabImageIds)];
                 else
                     imageId += vehiclesTabImageIds[0];
 
@@ -406,7 +406,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
 
                 case Widx::year_step_decrease:
-                    _date.year = std::max<int32_t>(OpenLoco::Scenario::min_year, _date.year - timeStepSize);
+                    _date.year = std::max<int32_t>(OpenLoco::Scenario::kMinYear, _date.year - timeStepSize);
                     break;
 
                 case Widx::year_step_increase:
@@ -436,7 +436,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void onUpdate(Window& self)
         {
-            self.frame_no += 1;
+            self.frameNo += 1;
             self.callPrepareDraw();
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_finances);
         }
@@ -586,7 +586,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void onUpdate(Window& self)
         {
-            self.frame_no += 1;
+            self.frameNo += 1;
             self.callPrepareDraw();
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_finances);
         }
@@ -729,7 +729,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void onUpdate(Window& self)
         {
-            self.frame_no += 1;
+            self.frameNo += 1;
             self.callPrepareDraw();
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_vehicles);
         }
@@ -832,7 +832,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void onUpdate(Window& self)
         {
-            self.frame_no += 1;
+            self.frameNo += 1;
             self.callPrepareDraw();
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_towns);
         }
@@ -899,7 +899,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             self->currentTab = widgetIndex - Widx::tab_finances;
-            self->frame_no = 0;
+            self->frameNo = 0;
 
             auto tabInfo = tabInformationByTabOffset[self->currentTab];
 

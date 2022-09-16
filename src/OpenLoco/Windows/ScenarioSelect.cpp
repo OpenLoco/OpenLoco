@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         widgetEnd(),
     };
 
-    constexpr auto rowHeight = 24;
+    constexpr auto kRowHeight = 24;
 
     static WindowEventList _events;
 
@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 continue;
 
             const auto offset = self.currentTab == i ? 1 : 0;
-            auto origin = Ui::Point(widget.mid_x() + self.x, widget.mid_y() + self.y - 3 - offset);
+            auto origin = Ui::Point(widget.midX() + self.x, widget.midY() + self.y - 3 - offset);
             const string_id caption = scenarioGroupIds[i];
 
             Gfx::drawStringCentredWrapped(*rt, origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, &caption);
@@ -336,9 +336,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             if (scenarioInfo == nullptr)
                 continue;
 
-            if (y + rowHeight < rt.y || y > rt.y + rt.height)
+            if (y + kRowHeight < rt.y || y > rt.y + rt.height)
             {
-                y += rowHeight;
+                y += kRowHeight;
                 continue;
             }
 
@@ -346,7 +346,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             auto formatStringId = StringIds::black_stringid;
             if (scenarioInfo == reinterpret_cast<ScenarioIndexEntry*>(self.info))
             {
-                Gfx::drawRect(rt, 0, y, self.width, rowHeight - 1, 0x2000000 | 48);
+                Gfx::drawRect(rt, 0, y, self.width, kRowHeight - 1, 0x2000000 | 48);
                 formatStringId = StringIds::wcolour2_stringid;
             }
 
@@ -365,7 +365,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             // Completed?
             if (!scenarioInfo->hasFlag(ScenarioIndexFlags::completed))
             {
-                y += rowHeight;
+                y += kRowHeight;
                 continue;
             }
 
@@ -387,7 +387,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 Gfx::drawStringCentred(rt, x, y + 10, Colour::black, formatStringId, &args);
             }
 
-            y += rowHeight;
+            y += kRowHeight;
         }
     }
 
@@ -439,7 +439,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443EF6
     static void getScrollSize(Window& self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
-        *scrollHeight = ScenarioManager::getScenarioCountByCategory(self.currentTab) * rowHeight;
+        *scrollHeight = ScenarioManager::getScenarioCountByCategory(self.currentTab) * kRowHeight;
     }
 
     // 0x00443F32
@@ -447,7 +447,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     {
         auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self.currentTab);
 
-        auto index = y / rowHeight;
+        auto index = y / kRowHeight;
         if (index > scenarioCount)
             return;
 
@@ -473,7 +473,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     {
         auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self.currentTab);
 
-        auto index = y / rowHeight;
+        auto index = y / kRowHeight;
         if (index > scenarioCount)
             return;
 

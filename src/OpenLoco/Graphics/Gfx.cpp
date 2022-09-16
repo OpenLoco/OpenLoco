@@ -33,7 +33,7 @@ namespace OpenLoco::Gfx
         constexpr uint8_t inset = (1ULL << 0);
         constexpr uint8_t outline = (1ULL << 1);
         constexpr uint8_t dark = (1ULL << 2);
-        constexpr uint8_t extra_dark = (1ULL << 3);
+        constexpr uint8_t extraDark = (1ULL << 3);
     }
 
     constexpr uint32_t kG1CountTemporary = 0x1000;
@@ -105,27 +105,27 @@ namespace OpenLoco::Gfx
             throw std::runtime_error("Reading g1 file header failed.");
         }
 
-        if (header.num_entries != G1ExpectedCount::kDisc)
+        if (header.numEntries != G1ExpectedCount::kDisc)
         {
             std::cout << "G1 element count doesn't match expected value: ";
-            std::cout << "Expected " << G1ExpectedCount::kDisc << "; Got " << header.num_entries << std::endl;
-            if (header.num_entries == G1ExpectedCount::kSteam)
+            std::cout << "Expected " << G1ExpectedCount::kDisc << "; Got " << header.numEntries << std::endl;
+            if (header.numEntries == G1ExpectedCount::kSteam)
             {
                 std::cout << "Got Steam G1.DAT variant, will fix elements automatically." << std::endl;
             }
         }
 
         // Read element headers
-        auto elements32 = std::vector<G1Element32>(header.num_entries);
-        if (!readData(stream, elements32.data(), header.num_entries))
+        auto elements32 = std::vector<G1Element32>(header.numEntries);
+        if (!readData(stream, elements32.data(), header.numEntries))
         {
             throw std::runtime_error("Reading g1 element headers failed.");
         }
         auto elements = convertElements(elements32);
 
         // Read element data
-        auto elementData = std::make_unique<std::byte[]>(header.total_size);
-        if (!readData(stream, elementData.get(), header.total_size))
+        auto elementData = std::make_unique<std::byte[]>(header.totalSize);
+        if (!readData(stream, elementData.get(), header.totalSize))
         {
             throw std::runtime_error("Reading g1 elements failed.");
         }
@@ -133,12 +133,12 @@ namespace OpenLoco::Gfx
 
         // The steam G1.DAT is missing two localised tutorial icons, and a smaller font variant
         // This code copies the closest variants into their place, and moves other elements accordingly
-        if (header.num_entries == G1ExpectedCount::kSteam)
+        if (header.numEntries == G1ExpectedCount::kSteam)
         {
             elements.resize(G1ExpectedCount::kDisc);
 
             // Extra two tutorial images
-            std::copy_n(&elements[3549], header.num_entries - 3549, &elements[3551]);
+            std::copy_n(&elements[3549], header.numEntries - 3549, &elements[3551]);
             std::copy_n(&elements[3551], 1, &elements[3549]);
             std::copy_n(&elements[3551], 1, &elements[3550]);
 
@@ -207,8 +207,8 @@ namespace OpenLoco::Gfx
     // ebp: fill
     void clear(RenderTarget& rt, uint32_t fill)
     {
-        int32_t w = rt.width / (1 << rt.zoom_level);
-        int32_t h = rt.height / (1 << rt.zoom_level);
+        int32_t w = rt.width / (1 << rt.zoomLevel);
+        int32_t h = rt.height / (1 << rt.zoomLevel);
         uint8_t* ptr = rt.bits;
 
         for (int32_t y = 0; y < h; y++)
@@ -249,38 +249,38 @@ namespace OpenLoco::Gfx
             curString.push_back(*chr);
             switch (*chr)
             {
-                case ControlCodes::move_x:
+                case ControlCodes::moveX:
                     curString.push_back(*++chr);
                     break;
 
-                case ControlCodes::adjust_palette:
+                case ControlCodes::adjustPalette:
                 case 3:
                 case 4:
                     curString.push_back(*++chr);
                     break;
 
                 case ControlCodes::newline:
-                case ControlCodes::newline_smaller:
-                case ControlCodes::font_small:
-                case ControlCodes::font_large:
-                case ControlCodes::font_bold:
-                case ControlCodes::font_regular:
-                case ControlCodes::outline:
-                case ControlCodes::outline_off:
-                case ControlCodes::window_colour_1:
-                case ControlCodes::window_colour_2:
-                case ControlCodes::window_colour_3:
-                case ControlCodes::window_colour_4:
+                case ControlCodes::newlineSmaller:
+                case ControlCodes::Font::small:
+                case ControlCodes::Font::large:
+                case ControlCodes::Font::bold:
+                case ControlCodes::Font::regular:
+                case ControlCodes::Font::outline:
+                case ControlCodes::Font::outlineOff:
+                case ControlCodes::windowColour1:
+                case ControlCodes::windowColour2:
+                case ControlCodes::windowColour3:
+                case ControlCodes::windowColour4:
                     break;
 
-                case ControlCodes::inline_sprite_str:
+                case ControlCodes::inlineSpriteStr:
                     curString.push_back(*++chr);
                     curString.push_back(*++chr);
                     curString.push_back(*++chr);
                     curString.push_back(*++chr);
                     break;
 
-                case ControlCodes::newline_x_y:
+                case ControlCodes::newlineXY:
                     curString.push_back(*++chr);
                     curString.push_back(*++chr);
                     break;
@@ -344,46 +344,46 @@ namespace OpenLoco::Gfx
 
             switch (chr)
             {
-                case ControlCodes::move_x:
+                case ControlCodes::moveX:
                     width = *str;
                     str++;
                     break;
 
-                case ControlCodes::adjust_palette:
+                case ControlCodes::adjustPalette:
                 case 3:
                 case 4:
                     str++;
                     break;
 
                 case ControlCodes::newline:
-                case ControlCodes::newline_smaller:
+                case ControlCodes::newlineSmaller:
                     continue;
 
-                case ControlCodes::font_small:
+                case ControlCodes::Font::small:
                     fontSpriteBase = Font::small;
                     break;
 
-                case ControlCodes::font_large:
+                case ControlCodes::Font::large:
                     fontSpriteBase = Font::large;
                     break;
 
-                case ControlCodes::font_bold:
+                case ControlCodes::Font::bold:
                     fontSpriteBase = Font::medium_bold;
                     break;
 
-                case ControlCodes::font_regular:
+                case ControlCodes::Font::regular:
                     fontSpriteBase = Font::medium_normal;
                     break;
 
-                case ControlCodes::outline:
-                case ControlCodes::outline_off:
-                case ControlCodes::window_colour_1:
-                case ControlCodes::window_colour_2:
-                case ControlCodes::window_colour_3:
-                case ControlCodes::window_colour_4:
+                case ControlCodes::Font::outline:
+                case ControlCodes::Font::outlineOff:
+                case ControlCodes::windowColour1:
+                case ControlCodes::windowColour2:
+                case ControlCodes::windowColour3:
+                case ControlCodes::windowColour4:
                     break;
 
-                case ControlCodes::inline_sprite_str:
+                case ControlCodes::inlineSpriteStr:
                 {
                     const uint32_t image = reinterpret_cast<const uint32_t*>(str)[0];
                     const uint32_t imageId = image & 0x7FFFF;
@@ -434,53 +434,53 @@ namespace OpenLoco::Gfx
 
             switch (chr)
             {
-                case ControlCodes::move_x:
+                case ControlCodes::moveX:
                     maxWidth = std::max(width, maxWidth);
                     width = *str;
                     str++;
                     break;
 
-                case ControlCodes::adjust_palette:
+                case ControlCodes::adjustPalette:
                 case 3:
                 case 4:
                     str++;
                     break;
 
                 case ControlCodes::newline:
-                case ControlCodes::newline_smaller:
+                case ControlCodes::newlineSmaller:
                     continue;
 
-                case ControlCodes::font_small:
+                case ControlCodes::Font::small:
                     fontSpriteBase = Font::small;
                     break;
 
-                case ControlCodes::font_large:
+                case ControlCodes::Font::large:
                     fontSpriteBase = Font::large;
                     break;
 
-                case ControlCodes::font_bold:
+                case ControlCodes::Font::bold:
                     fontSpriteBase = Font::medium_bold;
                     break;
 
-                case ControlCodes::font_regular:
+                case ControlCodes::Font::regular:
                     fontSpriteBase = Font::medium_normal;
                     break;
 
-                case ControlCodes::outline:
-                case ControlCodes::outline_off:
-                case ControlCodes::window_colour_1:
-                case ControlCodes::window_colour_2:
-                case ControlCodes::window_colour_3:
-                case ControlCodes::window_colour_4:
+                case ControlCodes::Font::outline:
+                case ControlCodes::Font::outlineOff:
+                case ControlCodes::windowColour1:
+                case ControlCodes::windowColour2:
+                case ControlCodes::windowColour3:
+                case ControlCodes::windowColour4:
                     break;
 
-                case ControlCodes::newline_x_y:
+                case ControlCodes::newlineXY:
                     maxWidth = std::max(width, maxWidth);
                     width = *str;
                     str += 2;
                     break;
 
-                case ControlCodes::inline_sprite_str:
+                case ControlCodes::inlineSpriteStr:
                 {
                     const uint32_t image = reinterpret_cast<const uint32_t*>(str)[0];
                     const uint32_t imageId = image & 0x7FFFF;
@@ -550,13 +550,13 @@ namespace OpenLoco::Gfx
                 case '\0':
                     return pos;
 
-                case ControlCodes::adjust_palette:
+                case ControlCodes::adjustPalette:
                     // This control character does not appear in the localisation files
                     assert(false);
                     str++;
                     break;
 
-                case ControlCodes::newline_smaller:
+                case ControlCodes::newlineSmaller:
                     pos.x = origin.x;
                     if (getCurrentFontSpriteBase() == Font::medium_normal || getCurrentFontSpriteBase() == Font::medium_bold)
                     {
@@ -588,7 +588,7 @@ namespace OpenLoco::Gfx
                     }
                     break;
 
-                case ControlCodes::move_x:
+                case ControlCodes::moveX:
                 {
                     uint8_t offset = *str;
                     str++;
@@ -597,7 +597,7 @@ namespace OpenLoco::Gfx
                     break;
                 }
 
-                case ControlCodes::newline_x_y:
+                case ControlCodes::newlineXY:
                 {
                     uint8_t offset = *str;
                     str++;
@@ -610,50 +610,50 @@ namespace OpenLoco::Gfx
                     break;
                 }
 
-                case ControlCodes::font_small:
+                case ControlCodes::Font::small:
                     setCurrentFontSpriteBase(Font::small);
                     break;
-                case ControlCodes::font_large:
+                case ControlCodes::Font::large:
                     setCurrentFontSpriteBase(Font::large);
                     break;
-                case ControlCodes::font_regular:
+                case ControlCodes::Font::regular:
                     setCurrentFontSpriteBase(Font::medium_normal);
                     break;
-                case ControlCodes::font_bold:
+                case ControlCodes::Font::bold:
                     setCurrentFontSpriteBase(Font::medium_bold);
                     break;
-                case ControlCodes::outline:
+                case ControlCodes::Font::outline:
                     _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
                     break;
-                case ControlCodes::outline_off:
+                case ControlCodes::Font::outlineOff:
                     _currentFontFlags = _currentFontFlags & ~TextDrawFlags::outline;
                     break;
-                case ControlCodes::window_colour_1:
+                case ControlCodes::windowColour1:
                 {
                     auto hue = _windowColours[0].c();
                     setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
-                case ControlCodes::window_colour_2:
+                case ControlCodes::windowColour2:
                 {
                     auto hue = _windowColours[1].c();
                     setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
-                case ControlCodes::window_colour_3:
+                case ControlCodes::windowColour3:
                 {
                     auto hue = _windowColours[2].c();
                     setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
-                case ControlCodes::window_colour_4:
+                case ControlCodes::windowColour4:
                 {
                     auto hue = _windowColours[3].c();
                     setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
 
-                case ControlCodes::inline_sprite_str:
+                case ControlCodes::inlineSpriteStr:
                 {
                     uint32_t image = ((uint32_t*)str)[0];
                     ImageId imageId{ image & 0x7FFFF };
@@ -673,59 +673,59 @@ namespace OpenLoco::Gfx
                     break;
                 }
 
-                case ControlCodes::colour_black:
+                case ControlCodes::Colour::black:
                     setTextColour(0);
                     break;
 
-                case ControlCodes::colour_grey:
+                case ControlCodes::Colour::grey:
                     setTextColour(1);
                     break;
 
-                case ControlCodes::colour_white:
+                case ControlCodes::Colour::white:
                     setTextColour(2);
                     break;
 
-                case ControlCodes::colour_red:
+                case ControlCodes::Colour::red:
                     setTextColour(3);
                     break;
 
-                case ControlCodes::colour_green:
+                case ControlCodes::Colour::green:
                     setTextColour(4);
                     break;
 
-                case ControlCodes::colour_yellow:
+                case ControlCodes::Colour::yellow:
                     setTextColour(5);
                     break;
 
-                case ControlCodes::colour_topaz:
+                case ControlCodes::Colour::topaz:
                     setTextColour(6);
                     break;
 
-                case ControlCodes::colour_celadon:
+                case ControlCodes::Colour::celadon:
                     setTextColour(7);
                     break;
 
-                case ControlCodes::colour_babyblue:
+                case ControlCodes::Colour::babyBlue:
                     setTextColour(8);
                     break;
 
-                case ControlCodes::colour_palelavender:
+                case ControlCodes::Colour::paleLavender:
                     setTextColour(9);
                     break;
 
-                case ControlCodes::colour_palegold:
+                case ControlCodes::Colour::paleGold:
                     setTextColour(10);
                     break;
 
-                case ControlCodes::colour_lightpink:
+                case ControlCodes::Colour::lightPink:
                     setTextColour(11);
                     break;
 
-                case ControlCodes::colour_pearlaqua:
+                case ControlCodes::Colour::pearlAqua:
                     setTextColour(12);
                     break;
 
-                case ControlCodes::colour_palesilver:
+                case ControlCodes::Colour::paleSilver:
                     setTextColour(13);
                     break;
 
@@ -805,7 +805,7 @@ namespace OpenLoco::Gfx
         {
             setCurrentFontSpriteBase(Font::medium_bold);
             _currentFontFlags = _currentFontFlags | TextDrawFlags::dark;
-            _currentFontFlags = _currentFontFlags | TextDrawFlags::extra_dark;
+            _currentFontFlags = _currentFontFlags | TextDrawFlags::extraDark;
         }
 
         _textColours[0] = PaletteIndex::transparent;
@@ -827,7 +827,7 @@ namespace OpenLoco::Gfx
 
         if ((_currentFontFlags & TextDrawFlags::inset) != 0)
         {
-            if ((_currentFontFlags & TextDrawFlags::dark) != 0 && (_currentFontFlags & TextDrawFlags::extra_dark) != 0)
+            if ((_currentFontFlags & TextDrawFlags::dark) != 0 && (_currentFontFlags & TextDrawFlags::extraDark) != 0)
             {
                 _textColours[1] = Colours::getShade(colour.c(), 2);
                 _textColours[2] = PaletteIndex::transparent;
@@ -1270,16 +1270,16 @@ namespace OpenLoco::Gfx
                             maxWidth = std::max(maxWidth, lineWidth);
                             break;
                         }
-                        case ControlCodes::font_small:
+                        case ControlCodes::Font::small:
                             font = Font::small;
                             break;
-                        case ControlCodes::font_large:
+                        case ControlCodes::Font::large:
                             font = Font::large;
                             break;
-                        case ControlCodes::font_bold:
+                        case ControlCodes::Font::bold:
                             font = Font::medium_bold;
                             break;
-                        case ControlCodes::font_regular:
+                        case ControlCodes::Font::regular:
                             font = Font::medium_normal;
                             break;
                     }
@@ -1292,7 +1292,7 @@ namespace OpenLoco::Gfx
                 {
                     switch (*ptr)
                     {
-                        case ControlCodes::move_x:
+                        case ControlCodes::moveX:
                             lineWidth = static_cast<uint8_t>(ptr[1]);
                             break;
                     }
@@ -1306,7 +1306,7 @@ namespace OpenLoco::Gfx
                 {
                     switch (*ptr)
                     {
-                        case ControlCodes::inline_sprite_str:
+                        case ControlCodes::inlineSpriteStr:
                         {
                             uint32_t image = *reinterpret_cast<const uint32_t*>(ptr);
                             ImageId imageId{ image & 0x7FFFF };
@@ -1606,7 +1606,7 @@ namespace OpenLoco::Gfx
         auto height = element.height;
 
         // This is the start y coordinate on the destination
-        auto dstTop = dispPos.y + element.y_offset;
+        auto dstTop = dispPos.y + element.yOffset;
 
         // For whatever reason the RLE version does not use
         // the zoom mask on the y coordinate but does on x.
@@ -1665,7 +1665,7 @@ namespace OpenLoco::Gfx
         // This is the source start x coordinate
         auto srcX = 0;
         // This is the destination start x coordinate
-        int32_t dstLeft = ((dispPos.x + element.x_offset + ~zoomMask) & zoomMask) - rt.x;
+        int32_t dstLeft = ((dispPos.x + element.xOffset + ~zoomMask) & zoomMask) - rt.x;
 
         if (dstLeft < 0)
         {
@@ -1728,7 +1728,7 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        if (rt.zoom_level > 0 && (element->flags & G1ElementFlags::hasZoomSprites))
+        if (rt.zoomLevel > 0 && (element->flags & G1ElementFlags::hasZoomSprites))
         {
             auto zoomedrt{ rt };
             zoomedrt.bits = rt.bits;
@@ -1737,7 +1737,7 @@ namespace OpenLoco::Gfx
             zoomedrt.height = rt.height >> 1;
             zoomedrt.width = rt.width >> 1;
             zoomedrt.pitch = rt.pitch;
-            zoomedrt.zoom_level = rt.zoom_level - 1;
+            zoomedrt.zoomLevel = rt.zoomLevel - 1;
 
             const auto zoomCoords = Ui::Point(pos.x >> 1, pos.y >> 1);
             drawImagePaletteSet(
@@ -1748,7 +1748,7 @@ namespace OpenLoco::Gfx
         const bool isRLE = element->flags & G1ElementFlags::isRLECompressed;
         if (isRLE)
         {
-            switch (rt.zoom_level)
+            switch (rt.zoomLevel)
             {
                 default:
                     drawImagePaletteSet<0, true>(rt, pos, image, *element, palette, noiseImage);
@@ -1766,7 +1766,7 @@ namespace OpenLoco::Gfx
         }
         else
         {
-            switch (rt.zoom_level)
+            switch (rt.zoomLevel)
             {
                 default:
                     drawImagePaletteSet<0, false>(rt, pos, image, *element, palette, noiseImage);
@@ -1811,7 +1811,7 @@ namespace OpenLoco::Gfx
     {
         auto* g1Palette = getG1Element(ImageIds::default_palette);
         uint8_t* colourData = g1Palette->offset;
-        for (auto i = g1Palette->x_offset; i < g1Palette->width; ++i)
+        for (auto i = g1Palette->xOffset; i < g1Palette->width; ++i)
         {
             _113ED20[i].b = *colourData++;
             _113ED20[i].g = *colourData++;

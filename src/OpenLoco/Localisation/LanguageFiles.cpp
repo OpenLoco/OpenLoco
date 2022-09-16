@@ -26,11 +26,11 @@ namespace OpenLoco::Localisation
         { "INT32_1DP", ControlCodes::int32_decimals },
         { "INT16", ControlCodes::int16_grouped },
         { "UINT16", ControlCodes::uint16_ungrouped },
-        { "SMALLFONT", ControlCodes::font_regular },
-        { "BIGFONT", ControlCodes::font_large },
-        { "TINYFONT", ControlCodes::font_small },
-        { "NEWLINE_SMALLER", ControlCodes::newline_smaller },
-        { "OUTLINE", OpenLoco::ControlCodes::outline },
+        { "SMALLFONT", ControlCodes::Font::regular },
+        { "BIGFONT", ControlCodes::Font::large },
+        { "TINYFONT", ControlCodes::Font::small },
+        { "NEWLINE_SMALLER", ControlCodes::newlineSmaller },
+        { "OUTLINE", OpenLoco::ControlCodes::Font::outline },
         { "VELOCITY", ControlCodes::velocity },
         { "CURRENCY32", ControlCodes::currency32 },
         { "HEIGHT", ControlCodes::height },
@@ -41,16 +41,16 @@ namespace OpenLoco::Localisation
     };
 
     static std::map<std::string, uint8_t, std::less<>> textColourNames = {
-        { "BLACK", ControlCodes::colour_black },
-        { "WINDOW_1", ControlCodes::window_colour_1 },
-        { "WINDOW_2", ControlCodes::window_colour_2 },
-        { "WINDOW_3", ControlCodes::window_colour_3 },
-        { "WINDOW_4", ControlCodes::window_colour_4 },
-        { "WHITE", ControlCodes::colour_white },
-        { "YELLOW", ControlCodes::colour_yellow },
-        { "TOPAZ", ControlCodes::colour_topaz },
-        { "RED", ControlCodes::colour_red },
-        { "GREEN", ControlCodes::colour_green },
+        { "BLACK", ControlCodes::Colour::black },
+        { "WINDOW_1", ControlCodes::windowColour1 },
+        { "WINDOW_2", ControlCodes::windowColour2 },
+        { "WINDOW_3", ControlCodes::windowColour3 },
+        { "WINDOW_4", ControlCodes::windowColour4 },
+        { "WHITE", ControlCodes::Colour::white },
+        { "YELLOW", ControlCodes::Colour::yellow },
+        { "TOPAZ", ControlCodes::Colour::topaz },
+        { "RED", ControlCodes::Colour::red },
+        { "GREEN", ControlCodes::Colour::green },
     };
 
     static std::unique_ptr<char[]> readString(const char* value, size_t size)
@@ -111,7 +111,7 @@ namespace OpenLoco::Localisation
                 {
                     if (commands.size() == 1)
                     {
-                        *out = (char)ControlCodes::stringid_args;
+                        *out = (char)ControlCodes::stringidArgs;
                         out++;
                     }
                     else
@@ -128,13 +128,13 @@ namespace OpenLoco::Localisation
                 {
                     if (commands.size() == 1)
                     {
-                        *out++ = (char)ControlCodes::inline_sprite_args;
+                        *out++ = (char)ControlCodes::inlineSpriteArgs;
                     }
                     else
                     {
-                        *out++ = (char)ControlCodes::inline_sprite_str;
-                        int32_t sprite_id = std::atoi(commands[1].data());
-                        *((uint32_t*)out) = sprite_id;
+                        *out++ = (char)ControlCodes::inlineSpriteStr;
+                        int32_t spriteId = std::atoi(commands[1].data());
+                        *((uint32_t*)out) = spriteId;
                         out += 4;
                     }
                 }
@@ -184,9 +184,9 @@ namespace OpenLoco::Localisation
                 }
                 else if (commands[0] == "MOVE_X")
                 {
-                    *out++ = (char)ControlCodes::move_x;
-                    uint8_t pixels_to_move_by = std::atoi(commands[1].data());
-                    *out++ = pixels_to_move_by;
+                    *out++ = (char)ControlCodes::moveX;
+                    uint8_t pixelsToMoveBy = std::atoi(commands[1].data());
+                    *out++ = pixelsToMoveBy;
                 }
                 else if (commands[0] == "NEWLINE")
                 {
@@ -196,13 +196,13 @@ namespace OpenLoco::Localisation
                     }
                     else if (commands.size() == 3)
                     {
-                        *out++ = (char)ControlCodes::newline_x_y;
+                        *out++ = (char)ControlCodes::newlineXY;
 
-                        uint8_t x_pixels_to_move_by = std::atoi(commands[1].data());
-                        *out++ = x_pixels_to_move_by;
+                        uint8_t xPixelsToMoveBy = std::atoi(commands[1].data());
+                        *out++ = xPixelsToMoveBy;
 
-                        uint8_t y_pixels_to_move_by = std::atoi(commands[2].data());
-                        *out++ = y_pixels_to_move_by;
+                        uint8_t yPixelsToMoveBy = std::atoi(commands[2].data());
+                        *out++ = yPixelsToMoveBy;
                     }
                 }
                 else
@@ -246,11 +246,11 @@ namespace OpenLoco::Localisation
 
                 std::string new_string = it->second.as<std::string>();
                 _stringsOwner.emplace_back(readString(new_string.data(), new_string.length()));
-                char* processed_string = _stringsOwner.back().get();
+                char* processedString = _stringsOwner.back().get();
 
-                if (processed_string != nullptr)
+                if (processedString != nullptr)
                 {
-                    _strings[id] = processed_string;
+                    _strings[id] = processedString;
                 }
             }
 

@@ -369,7 +369,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043270A
         static void onUpdate(Window& self)
         {
-            self.frame_no += 1;
+            self.frameNo += 1;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self.number);
         }
@@ -573,7 +573,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->number = enumValue(companyId);
         window->owner = companyId;
         window->currentTab = 0;
-        window->frame_no = 0;
+        window->frameNo = 0;
         window->savedView.clear();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -676,7 +676,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto companyColour = CompanyManager::getCompanyColour(CompanyId(self.number));
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             uint32_t image = skin->img + InterfaceSkin::ImageIds::build_headquarters;
-            self.widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | Widget::imageIdColourSet;
+            self.widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | Widget::kImageIdColourSet;
 
             self.disabledWidgets &= ~(1 << widx::centre_on_viewport);
             if (company->headquartersX == -1)
@@ -1028,7 +1028,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0432D85
         static void onUpdate(Window& self)
         {
-            self.frame_no += 1;
+            self.frameNo += 1;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self.number);
         }
@@ -1283,10 +1283,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Widget::leftAlignTabs(self, Common::widx::tab_status, Common::widx::tab_challenge);
 
             // Set company's main colour
-            self.widgets[widx::main_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
+            self.widgets[widx::main_colour_scheme].image = Widget::kImageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
 
             // Set company's secondary colour
-            self.widgets[widx::secondary_colour_scheme].image = Widget::imageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.secondary);
+            self.widgets[widx::secondary_colour_scheme].image = Widget::kImageIdColourSet | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.secondary);
 
             struct ColourSchemeTuple
             {
@@ -1549,7 +1549,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043325F
         static void onUpdate(Window& self)
         {
-            self.frame_no += 1;
+            self.frameNo += 1;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self.number);
         }
@@ -1749,18 +1749,18 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Set cash value in format args.
                 auto args = FormatArguments::common(company->cash);
 
-                string_id cash_format = StringIds::cash_positive;
+                auto cashFormat = StringIds::cash_positive;
                 if ((company->challengeFlags & CompanyFlags::bankrupt) != 0)
-                    cash_format = StringIds::cash_bankrupt;
+                    cashFormat = StringIds::cash_bankrupt;
                 if (company->cash.var_04 < 0)
-                    cash_format = StringIds::cash_negative;
+                    cashFormat = StringIds::cash_negative;
 
                 Gfx::drawStringLeft(
                     *rt,
                     self.x + 7,
                     self.y + self.widgets[widx::currentLoan].top + 13,
                     Colour::black,
-                    cash_format,
+                    cashFormat,
                     &args);
             }
 
@@ -2030,7 +2030,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043399D
         static void onUpdate(Window& self)
         {
-            self.frame_no += 1;
+            self.frameNo += 1;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self.number);
         }
@@ -2163,9 +2163,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 FormatArguments args{};
                 if (company->cargoDelivered[i] == 1)
-                    args.push(cargo->unit_name_singular);
+                    args.push(cargo->unitNameSingular);
                 else
-                    args.push(cargo->unit_name_plural);
+                    args.push(cargo->unitNamePlural);
 
                 args.push(company->cargoDelivered[i]);
 
@@ -2243,7 +2243,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433C7D
         static void onUpdate(Window& self)
         {
-            self.frame_no += 1;
+            self.frameNo += 1;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self.number);
         }
@@ -2264,9 +2264,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 cargoHeight += 10;
             }
 
-            const uint16_t windowHeight = std::max<int16_t>(cargoHeight, 50) + 62;
+            const uint16_t kWindowHeight = std::max<int16_t>(cargoHeight, 50) + 62;
 
-            self.setSize({ kWindowSize.width, windowHeight });
+            self.setSize({ kWindowSize.width, kWindowHeight });
         }
 
         static void initEvents()
@@ -2330,7 +2330,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::drawTabs(&self, rt);
 
             char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-            *buffer_2039++ = static_cast<char>(ControlCodes::colour_black);
+            *buffer_2039++ = static_cast<char>(ControlCodes::Colour::black);
             char* scenarioDetailsString = getGameState().scenarioDetails;
             strcpy(buffer_2039, scenarioDetailsString);
 
@@ -2435,7 +2435,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043402E
         static void onUpdate(Window& self)
         {
-            self.frame_no += 1;
+            self.frameNo += 1;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::company, self.number);
         }
@@ -2592,7 +2592,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             TextInput::sub_4CE6C9(self->type, self->number);
 
             self->currentTab = widgetIndex - widx::tab_status;
-            self->frame_no = 0;
+            self->frameNo = 0;
             self->flags &= ~(WindowFlags::flag_16);
 
             self->viewportRemove(0);
@@ -2687,7 +2687,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_colour_scheme - widx::tab_status)
-                    imageId += colourSchemeTabImageIds[(self->frame_no / 4) % std::size(colourSchemeTabImageIds)];
+                    imageId += colourSchemeTabImageIds[(self->frameNo / 4) % std::size(colourSchemeTabImageIds)];
                 else
                     imageId += colourSchemeTabImageIds[0];
 
@@ -2717,7 +2717,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_finances - widx::tab_status)
-                    imageId += financesTabImageIds[(self->frame_no / 2) % std::size(financesTabImageIds)];
+                    imageId += financesTabImageIds[(self->frameNo / 2) % std::size(financesTabImageIds)];
                 else
                     imageId += financesTabImageIds[0];
 
@@ -2735,7 +2735,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_cargo_delivered - widx::tab_status)
-                    imageId += cargoDeliveredTabImageIds[(self->frame_no / 4) % std::size(cargoDeliveredTabImageIds)];
+                    imageId += cargoDeliveredTabImageIds[(self->frameNo / 4) % std::size(cargoDeliveredTabImageIds)];
                 else
                     imageId += cargoDeliveredTabImageIds[0];
 
@@ -2765,7 +2765,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_challenge - widx::tab_status)
-                    imageId += challengeTabImageIds[(self->frame_no / 4) % std::size(challengeTabImageIds)];
+                    imageId += challengeTabImageIds[(self->frameNo / 4) % std::size(challengeTabImageIds)];
                 else
                     imageId += challengeTabImageIds[0];
 

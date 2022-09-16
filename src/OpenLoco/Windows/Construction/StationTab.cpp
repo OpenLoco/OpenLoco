@@ -232,8 +232,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         placementArgs.type = _lastSelectedStationType;
         placementArgs.rotation = _constructionRotation;
         auto* airportObject = ObjectManager::get<AirportObject>(placementArgs.type);
-        TilePos2 minPos(airportObject->min_x, airportObject->min_y);
-        TilePos2 maxPos(airportObject->max_x, airportObject->max_y);
+        TilePos2 minPos(airportObject->minX, airportObject->minY);
+        TilePos2 maxPos(airportObject->maxX, airportObject->maxY);
 
         minPos = Math::Vector::rotate(minPos, placementArgs.rotation);
         maxPos = Math::Vector::rotate(maxPos, placementArgs.rotation);
@@ -347,7 +347,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
                         auto* industry = elIndustry->industry();
                         const auto* industryObj = industry->getObject();
-                        if (!(industryObj->flags & IndustryObjectFlags::built_on_water))
+                        if (!(industryObj->flags & IndustryObjectFlags::builtOnWater))
                         {
                             continue;
                         }
@@ -729,7 +729,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
 
-                        Gfx::drawImage(rt, origin.x, origin.y, cargoObj->unit_inline_sprite);
+                        Gfx::drawImage(rt, origin.x, origin.y, cargoObj->unitInlineSprite);
                         origin.x += 10;
                     }
                 }
@@ -758,7 +758,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
 
-                        Gfx::drawImage(rt, origin.x, origin.y, cargoObj->unit_inline_sprite);
+                        Gfx::drawImage(rt, origin.x, origin.y, cargoObj->unitInlineSprite);
                         origin.x += 10;
                     }
                 }

@@ -43,8 +43,8 @@ namespace OpenLoco::Vehicles
 
         if ((flags & GameCommands::Flags::apply) != 0)
         {
-            static const std::array<int, 3> transformTable = { 2, 0, 1 };
-            int arrayIndex = transformTable.at(index);
+            static constexpr std::array<int, 3> kTransformTable = { 2, 0, 1 };
+            int arrayIndex = kTransformTable.at(index);
             staticRenameBuffer[arrayIndex * 3] = buffer0;
             staticRenameBuffer[arrayIndex * 3 + 1] = buffer1;
             staticRenameBuffer[arrayIndex * 3 + 2] = buffer2;

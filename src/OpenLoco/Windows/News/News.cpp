@@ -573,11 +573,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (!mtd.hasFlag(MessageTypeFlags::unk5))
             {
-                *buffer = ControlCodes::font_large;
+                *buffer = ControlCodes::Font::large;
                 buffer++;
             }
 
-            *buffer = ControlCodes::colour_black;
+            *buffer = ControlCodes::Colour::black;
             buffer++;
 
             strncpy(buffer, newsString, 512);
@@ -655,11 +655,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             if (!mtd.hasFlag(MessageTypeFlags::unk5))
             {
-                *buffer = ControlCodes::font_large;
+                *buffer = ControlCodes::Font::large;
                 buffer++;
             }
 
-            *buffer = ControlCodes::colour_black;
+            *buffer = ControlCodes::Colour::black;
             buffer++;
 
             strncpy(buffer, newsString, 512);
@@ -702,7 +702,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             char* newsString = news->messageString;
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
-            *buffer = ControlCodes::colour_black;
+            *buffer = ControlCodes::Colour::black;
             buffer++;
 
             strncpy(buffer, newsString, 512);

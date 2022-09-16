@@ -33,7 +33,7 @@ namespace OpenLoco::Paint
 
         const auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
         const uint8_t viewableRotation = (session.getRotation() + elTree.rotation()) & 0x3;
-        const uint32_t treeFrameNum = (viewableRotation % treeObj->num_rotations) + elTree.unk5l() * treeObj->num_rotations;
+        const uint32_t treeFrameNum = (viewableRotation % treeObj->numRotations) + elTree.unk5l() * treeObj->numRotations;
 
         uint8_t season = elTree.season();
 
@@ -96,7 +96,7 @@ namespace OpenLoco::Paint
 
         if (shadowImageId)
         {
-            if (session.getRenderTarget()->zoom_level <= 1)
+            if (session.getRenderTarget()->zoomLevel <= 1)
             {
                 session.addToPlotListAsParent(*shadowImageId, imageOffset, imageOffset, { 18, 18, 1 });
             }

@@ -162,7 +162,7 @@ namespace OpenLoco::S5
         uint32_t date;                       // 0x200
         uint16_t performanceIndex;           // 0x204 (from [company.performance_index)
         char scenario[0x40];                 // 0x206
-        uint8_t challenge_progress;          // 0x246
+        uint8_t challengeProgress;           // 0x246
         std::byte pad_247;                   // 0x247
         uint8_t image[250 * 200];            // 0x248
         uint32_t challengeFlags;             // 0xC598 (from [company.challenge_flags])

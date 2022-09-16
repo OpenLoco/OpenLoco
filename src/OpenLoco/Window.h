@@ -290,7 +290,7 @@ namespace OpenLoco::Ui
         };
         uint8_t pad_85E[0x870 - 0x85E];
         uint16_t currentTab = 0;                  // 0x870
-        uint16_t frame_no = 0;                    // 0x872
+        uint16_t frameNo = 0;                     // 0x872
         uint16_t currentSecondaryTab = 0;         // 0x874
         ViewportConfig viewportConfigurations[2]; // 0x876
         WindowType type;                          // 0x882
@@ -372,8 +372,8 @@ namespace OpenLoco::Ui
             return (this->flags & WindowFlags::transparent) != 0;
         }
 
-        bool isEnabled(int8_t widget_index);
-        bool isDisabled(int8_t widget_index);
+        bool isEnabled(int8_t widgetIndex);
+        bool isDisabled(int8_t widgetIndex);
         bool isActivated(WidgetIndex_t index);
         bool isHoldable(WidgetIndex_t index);
         bool canResize();
@@ -388,10 +388,10 @@ namespace OpenLoco::Ui
         void drawViewports(Gfx::RenderTarget* rt);
         void viewportCentreMain();
         void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);
-        void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
+        void viewportGetMapCoordsByCursor(int16_t* mapX, int16_t* mapY, int16_t* offsetX, int16_t* offsetY);
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const Map::Pos3& loc);
-        void viewportCentreTileAroundCursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
+        void viewportCentreTileAroundCursor(int16_t mapX, int16_t mapY, int16_t offsetX, int16_t offsetY);
         void viewportFocusOnEntity(EntityId targetEntity);
         bool viewportIsFocusedOnEntity() const;
         void viewportUnfocusFromEntity();
@@ -412,26 +412,26 @@ namespace OpenLoco::Ui
         void callClose();                                                                              // 0
         void callOnMouseUp(WidgetIndex_t widgetIndex);                                                 // 1
         Ui::Window* callOnResize();                                                                    // 2
-        void call_3(int8_t widget_index);                                                              // 3
-        void callOnMouseDown(int8_t widget_index);                                                     // 4
-        void callOnDropdown(WidgetIndex_t widget_index, int16_t item_index);                           // 5
+        void call_3(int8_t widgetIndex);                                                               // 3
+        void callOnMouseDown(int8_t widgetIndex);                                                      // 4
+        void callOnDropdown(WidgetIndex_t widgetIndex, int16_t itemIndex);                             // 5
         void callOnPeriodicUpdate();                                                                   // 6
         void callUpdate();                                                                             // 7
         void call_8();                                                                                 // 8
         void call_9();                                                                                 // 9
-        void callToolUpdate(int16_t widget_index, int16_t xPos, int16_t yPos);                         // 10
-        void callToolDown(int16_t widget_index, int16_t xPos, int16_t yPos);                           // 11
-        void callToolDragContinue(const int16_t widget_index, const int16_t xPos, const int16_t yPos); // 12
-        void callToolDragEnd(const int16_t widget_index);                                              // 13
-        void callToolAbort(int16_t widget_index);                                                      // 14
+        void callToolUpdate(int16_t widgetIndex, int16_t xPos, int16_t yPos);                          // 10
+        void callToolDown(int16_t widgetIndex, int16_t xPos, int16_t yPos);                            // 11
+        void callToolDragContinue(const int16_t widgetIndex, const int16_t xPos, const int16_t yPos);  // 12
+        void callToolDragEnd(const int16_t widgetIndex);                                               // 13
+        void callToolAbort(int16_t widgetIndex);                                                       // 14
         Ui::CursorId call_15(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out);            // 15
         void callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16
-        void callScrollMouseDown(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
-        void callScrollMouseDrag(int16_t x, int16_t y, uint8_t scroll_index);                          // 18
-        void callScrollMouseOver(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
+        void callScrollMouseDown(int16_t x, int16_t y, uint8_t scrollIndex);                           // 17
+        void callScrollMouseDrag(int16_t x, int16_t y, uint8_t scrollIndex);                           // 18
+        void callScrollMouseOver(int16_t x, int16_t y, uint8_t scrollIndex);                           // 19
         void callTextInput(WidgetIndex_t caller, const char* buffer);                                  // 20
         void callViewportRotate();                                                                     // 21
-        std::optional<FormatArguments> callTooltip(int16_t widget_index);                              // 23
+        std::optional<FormatArguments> callTooltip(int16_t widgetIndex);                               // 23
         Ui::CursorId callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback); // 24
         void callOnMove(int16_t xPos, int16_t yPos);                                                   // 25
         void callPrepareDraw();                                                                        // 26

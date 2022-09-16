@@ -155,7 +155,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             std::array<uint8_t, 8>& data = tile->rawData();
 
             char buffer[32] = {};
-            buffer[0] = ControlCodes::window_colour_2;
+            buffer[0] = ControlCodes::windowColour2;
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
             auto widget = self.widgets[widx::detailsGroup];
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             case ElementType::industry:
             {
                 auto& industry = element.get<IndustryElement>();
-                auto object = ObjectManager::get<IndustryObject>(industry.industry()->object_id);
+                auto object = ObjectManager::get<IndustryObject>(industry.industry()->objectId);
                 return object->name;
             }
         }
@@ -387,22 +387,22 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 break;
 
             case widx::xPosDecrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, Map::map_columns);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, Map::kMapColumns);
                 self.invalidate();
                 break;
 
             case widx::xPosIncrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, Map::map_columns);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, Map::kMapColumns);
                 self.invalidate();
                 break;
 
             case widx::yPosDecrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, Map::map_rows);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, Map::kMapRows);
                 self.invalidate();
                 break;
 
             case widx::yPosIncrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, Map::map_rows);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, Map::kMapRows);
                 self.invalidate();
                 break;
         }

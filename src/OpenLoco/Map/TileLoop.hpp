@@ -14,12 +14,12 @@ namespace OpenLoco::Map
         Pos2 current() const { return _pos; }
         Pos2 next()
         {
-            _pos.x += tile_size;
-            if (_pos.x >= map_width - 1)
+            _pos.x += kTileSize;
+            if (_pos.x >= kMapWidth - 1)
             {
                 _pos.x = 0;
-                _pos.y += tile_size;
-                if (_pos.y >= map_height - 1)
+                _pos.y += kTileSize;
+                if (_pos.y >= kMapHeight - 1)
                 {
                     _pos.y = 0;
                 }

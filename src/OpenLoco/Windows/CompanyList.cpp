@@ -100,11 +100,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CompanyList
     {
-        static constexpr Ui::Size maxWindowSize = { 640, 470 };
-        static constexpr Ui::Size minWindowSize = { 300, 272 };
+        static constexpr Ui::Size kMaxWindowSize = { 640, 470 };
+        static constexpr Ui::Size kMinWindowSize = { 300, 272 };
         static constexpr Ui::Size kWindowSize = { 640, 272 };
 
-        static const uint8_t rowHeight = 25;
+        static constexpr uint8_t kRowHeight = 25;
 
         enum widx
         {
@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004363CB
         static void onResize(Window& self)
         {
-            self.setSize(minWindowSize, maxWindowSize);
+            self.setSize(kMinWindowSize, kMaxWindowSize);
         }
 
         // 0x00437BA0
@@ -312,7 +312,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004362C0
         static void onUpdate(Window& self)
         {
-            self.frame_no++;
+            self.frameNo++;
 
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::companyList, self.number, self.currentTab + Common::widx::tab_company_list);
@@ -347,13 +347,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436321
         static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = self.var_83C * rowHeight;
+            *scrollHeight = self.var_83C * kRowHeight;
         }
 
         // 0x004363A0
         static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            uint16_t currentRow = y / rowHeight;
+            uint16_t currentRow = y / kRowHeight;
             if (currentRow > self.var_83C)
                 return;
 
@@ -369,7 +369,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             self.flags &= ~(WindowFlags::notScrollView);
 
-            uint16_t currentRow = y / rowHeight;
+            uint16_t currentRow = y / kRowHeight;
             int16_t currentCompany = -1;
 
             if (currentRow < self.var_83C)
@@ -396,7 +396,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             if (widgetIdx != widx::scrollview)
                 return fallback;
 
-            uint16_t currentIndex = yPos / rowHeight;
+            uint16_t currentIndex = yPos / kRowHeight;
             if (currentIndex < self.var_83C && self.rowInfo[currentIndex] != -1)
                 return CursorId::handPointer;
 
@@ -540,10 +540,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436198
         static void tabReset(Window* self)
         {
-            self->minWidth = minWindowSize.width;
-            self->minHeight = minWindowSize.height;
-            self->maxWidth = maxWindowSize.width;
-            self->maxHeight = maxWindowSize.height;
+            self->minWidth = kMinWindowSize.width;
+            self->minHeight = kMinWindowSize.height;
+            self->maxWidth = kMaxWindowSize.width;
+            self->maxHeight = kMaxWindowSize.height;
             self->width = kWindowSize.width;
             self->height = kWindowSize.height;
             self->var_83C = 0;
@@ -589,7 +589,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             window = WindowManager::createWindow(WindowType::companyList, kWindowSize, 0, &CompanyList::events);
 
-            window->frame_no = 0;
+            window->frameNo = 0;
             window->savedView.clear();
             window->flags |= WindowFlags::resizable;
             window->sortMode = 2;
@@ -606,10 +606,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         window->currentTab = 0;
-        window->minWidth = CompanyList::minWindowSize.width;
-        window->minHeight = CompanyList::minWindowSize.height;
-        window->maxWidth = CompanyList::maxWindowSize.width;
-        window->maxHeight = CompanyList::maxWindowSize.height;
+        window->minWidth = CompanyList::kMinWindowSize.width;
+        window->minHeight = CompanyList::kMinWindowSize.height;
+        window->maxWidth = CompanyList::kMaxWindowSize.width;
+        window->maxHeight = CompanyList::kMaxWindowSize.height;
 
         window->invalidate();
 
@@ -1364,7 +1364,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437570
         static void onUpdate(Window& self)
         {
-            self.frame_no++;
+            self.frameNo++;
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_company_list);
 
@@ -1427,7 +1427,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 Input::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_company_list;
-            self->frame_no = 0;
+            self->frameNo = 0;
             self->flags &= ~(WindowFlags::flag_16);
 
             self->viewportRemove(0);
@@ -1499,7 +1499,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_performance - widx::tab_company_list)
-                    imageId += performanceImageIds[(self->frame_no / 4) % std::size(performanceImageIds)];
+                    imageId += performanceImageIds[(self->frameNo / 4) % std::size(performanceImageIds)];
                 else
                     imageId += performanceImageIds[0];
 
@@ -1523,7 +1523,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_cargo_units - widx::tab_company_list)
-                    imageId += cargoUnitsImageIds[(self->frame_no / 4) % std::size(cargoUnitsImageIds)];
+                    imageId += cargoUnitsImageIds[(self->frameNo / 4) % std::size(cargoUnitsImageIds)];
                 else
                     imageId += cargoUnitsImageIds[0];
 
@@ -1547,7 +1547,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_cargo_distance - widx::tab_company_list)
-                    imageId += cargoDistanceImageIds[(self->frame_no / 4) % std::size(cargoDistanceImageIds)];
+                    imageId += cargoDistanceImageIds[(self->frameNo / 4) % std::size(cargoDistanceImageIds)];
                 else
                     imageId += cargoDistanceImageIds[0];
 
@@ -1571,7 +1571,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_values - widx::tab_company_list)
-                    imageId += companyValuesImageIds[(self->frame_no / 4) % std::size(companyValuesImageIds)];
+                    imageId += companyValuesImageIds[(self->frameNo / 4) % std::size(companyValuesImageIds)];
                 else
                     imageId += companyValuesImageIds[0];
 

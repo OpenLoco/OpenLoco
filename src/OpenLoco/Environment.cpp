@@ -50,14 +50,14 @@ namespace OpenLoco::Environment
 
     static fs::path autoDetectLocoInstallPath()
     {
-        static constexpr const char* searchPaths[] = {
+        static constexpr const char* kSearchPaths[] = {
             "C:/Program Files (x86)/Atari/Locomotion",
             "C:/GOG Games/Chris Sawyer's Locomotion",
             "C:/GOG Games/Locomotion",
         };
 
         std::cout << "Searching for Locomotion install path..." << std::endl;
-        for (auto path : searchPaths)
+        for (auto path : kSearchPaths)
         {
             if (validateLocoInstallPath(path))
             {
@@ -264,7 +264,7 @@ namespace OpenLoco::Environment
 
     static fs::path getSubPath(PathId id)
     {
-        static constexpr const char* paths[] = {
+        static constexpr const char* kPaths[] = {
             "Data/g1.DAT",
             "plugin.dat",
             "plugin2.dat",
@@ -323,10 +323,10 @@ namespace OpenLoco::Environment
         };
 
         size_t index = (size_t)id;
-        if (index >= Utility::length(paths))
+        if (index >= Utility::length(kPaths))
         {
             throw std::runtime_error("Invalid PathId: " + std::to_string((int32_t)id));
         }
-        return paths[(size_t)id];
+        return kPaths[(size_t)id];
     }
 }

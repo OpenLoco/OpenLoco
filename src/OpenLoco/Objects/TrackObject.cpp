@@ -24,32 +24,32 @@ namespace OpenLoco
         }
 
         // vanilla missed this check
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
 
-        if (-sell_cost_factor > build_cost_factor)
+        if (-sellCostFactor > buildCostFactor)
         {
             return false;
         }
-        if (build_cost_factor <= 0)
+        if (buildCostFactor <= 0)
         {
             return false;
         }
-        if (tunnel_cost_factor <= 0)
+        if (tunnelCostFactor <= 0)
         {
             return false;
         }
-        if ((track_pieces & ((1 << 0) | (1 << 1))) && (track_pieces & ((1 << 7) | (1 << 4))))
+        if ((trackPieces & ((1 << 0) | (1 << 1))) && (trackPieces & ((1 << 7) | (1 << 4))))
         {
             return false;
         }
-        if (num_bridges > 7)
+        if (numBridges > 7)
         {
             return false;
         }
-        return num_stations <= 7;
+        return numStations <= 7;
     }
 
     // 0x004A6A5F

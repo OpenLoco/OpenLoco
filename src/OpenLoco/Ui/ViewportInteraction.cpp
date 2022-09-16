@@ -997,21 +997,21 @@ namespace OpenLoco::Ui::ViewportInteraction
 
             chosenV = vp;
             auto vpPos = vp->screenToViewport({ screenPos.x, screenPos.y });
-            _rt1->zoom_level = vp->zoom;
+            _rt1->zoomLevel = vp->zoom;
             _rt1->x = (0xFFFF << vp->zoom) & vpPos.x;
             _rt1->y = (0xFFFF << vp->zoom) & vpPos.y;
             _rt2->x = _rt1->x;
             _rt2->y = _rt1->y;
             _rt2->width = 1;
             _rt2->height = 1;
-            _rt2->zoom_level = _rt1->zoom_level;
+            _rt2->zoomLevel = _rt1->zoomLevel;
             auto* session = Paint::allocateSession(_rt2, vp->flags);
             session->generate();
             session->arrangeStructs();
             interaction = session->getNormalInteractionInfo(flags);
             if (!(vp->flags & ViewportFlags::station_names_displayed))
             {
-                if (_rt2->zoom_level <= Config::get().stationNamesMinScale)
+                if (_rt2->zoomLevel <= Config::get().stationNamesMinScale)
                 {
                     auto stationInteraction = session->getStationNameInteractionInfo(flags);
                     if (stationInteraction.type != InteractionItem::noInteraction)

@@ -28,21 +28,21 @@ namespace OpenLoco
     void RoadStationObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(rt, rowPosition, designed_year, obsolete_year);
+        ObjectManager::drawGenericDescription(rt, rowPosition, designedYear, obsoleteYear);
     }
 
     // 0x00490BD8
     bool RoadStationObject::validate() const
     {
-        if (cost_index >= 32)
+        if (costIndex >= 32)
         {
             return false;
         }
-        if (-sell_cost_factor > build_cost_factor)
+        if (-sellCostFactor > buildCostFactor)
         {
             return false;
         }
-        if (build_cost_factor <= 0)
+        if (buildCostFactor <= 0)
         {
             return false;
         }
@@ -50,7 +50,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if (num_compatible > 7)
+        if (numCompatible > 7)
         {
             return false;
         }

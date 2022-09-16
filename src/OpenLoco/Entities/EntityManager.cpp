@@ -16,7 +16,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::EntityManager
 {
-    constexpr size_t kSpatialEntityMapSize = (Map::map_pitch * Map::map_pitch) + 1;
+    constexpr size_t kSpatialEntityMapSize = (Map::kMapPitch * Map::kMapPitch) + 1;
     constexpr size_t kEntitySpatialIndexNull = kSpatialEntityMapSize - 1;
 
     static_assert(kSpatialEntityMapSize == 0x40001);
@@ -45,7 +45,7 @@ namespace OpenLoco::EntityManager
         for (; id < Limits::maxNormalEntities; ++id)
         {
             auto& ent = rawEntities()[id];
-            ent.base_type = EntityBaseType::null;
+            ent.baseType = EntityBaseType::null;
             ent.id = EntityId(id);
             ent.nextThingId = EntityId::null;
             ent.linkedListOffset = static_cast<uint8_t>(EntityListType::null) * 2;
@@ -68,7 +68,7 @@ namespace OpenLoco::EntityManager
         for (; id < Limits::kMaxEntities; ++id)
         {
             auto& ent = rawEntities()[id];
-            ent.base_type = EntityBaseType::null;
+            ent.baseType = EntityBaseType::null;
             ent.id = EntityId(id);
             ent.nextThingId = EntityId::null;
             ent.linkedListOffset = static_cast<uint8_t>(EntityListType::nullMoney) * 2;
@@ -122,13 +122,13 @@ namespace OpenLoco::EntityManager
         if (loc.x == Location::null)
             return kEntitySpatialIndexNull;
 
-        const auto tileX = std::abs(loc.x) / Map::tile_size;
-        const auto tileY = std::abs(loc.y) / Map::tile_size;
+        const auto tileX = std::abs(loc.x) / Map::kTileSize;
+        const auto tileY = std::abs(loc.y) / Map::kTileSize;
 
-        if (tileX >= Map::map_pitch || tileY >= Map::map_pitch)
+        if (tileX >= Map::kMapPitch || tileY >= Map::kMapPitch)
             return kEntitySpatialIndexNull;
 
-        return (Map::map_pitch * tileX) + tileY;
+        return (Map::kMapPitch * tileX) + tileY;
     }
 
     EntityId firstQuadrantId(const Map::Pos2& loc)
@@ -290,7 +290,7 @@ namespace OpenLoco::EntityManager
         auto list = enumValue(entity->id) < 19800 ? EntityListType::null : EntityListType::nullMoney;
         moveEntityToList(entity, list);
         StringManager::emptyUserString(entity->name);
-        entity->base_type = EntityBaseType::null;
+        entity->baseType = EntityBaseType::null;
 
         if (!removeFromSpatialIndex(*entity))
         {
@@ -422,7 +422,7 @@ namespace OpenLoco::EntityManager
         auto id = ent->id;
         auto llOffset = ent->linkedListOffset;
         std::fill_n(reinterpret_cast<uint8_t*>(ent), sizeof(Entity), 0);
-        ent->base_type = EntityBaseType::null;
+        ent->baseType = EntityBaseType::null;
         ent->nextThingId = next;
         ent->llPreviousId = previous;
         ent->id = id;

@@ -8,11 +8,11 @@ namespace OpenLoco
     // 0x004C56BC
     bool WaterObject::validate() const
     {
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
-        if (cost_factor <= 0)
+        if (costFactor <= 0)
         {
             return false;
         }

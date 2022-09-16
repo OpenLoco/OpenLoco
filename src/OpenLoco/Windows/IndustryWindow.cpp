@@ -70,9 +70,9 @@ namespace OpenLoco::Ui::Windows::Industry
     {
         static constexpr Ui::Size kWindowSize = { 223, 137 };
 
-        static constexpr Ui::Size minWindowSize = { 192, 137 };
+        static constexpr Ui::Size kMinWindowSize = { 192, 137 };
 
-        static constexpr Ui::Size maxWindowSize = { 600, 440 };
+        static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00455F1A
         static void onResize(Window& self)
         {
-            self.setSize(minWindowSize, maxWindowSize);
+            self.setSize(kMinWindowSize, kMaxWindowSize);
 
             if (self.viewports[0] != nullptr)
             {
@@ -345,9 +345,9 @@ namespace OpenLoco::Ui::Windows::Industry
     namespace Production
     {
 
-        static constexpr Ui::Size minWindowSize = { 299, 282 };
+        static constexpr Ui::Size kMinWindowSize = { 299, 282 };
 
-        static constexpr Ui::Size maxWindowSize = { 299, 337 };
+        static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
 
         static WindowEventList events;
 
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void onResize(Window& self)
         {
             {
-                self.setSize(minWindowSize, maxWindowSize);
+                self.setSize(kMinWindowSize, kMaxWindowSize);
             }
         }
 
@@ -380,9 +380,9 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Production2
     {
-        static constexpr Ui::Size minWindowSize = { 299, 282 };
+        static constexpr Ui::Size kMinWindowSize = { 299, 282 };
 
-        static constexpr Ui::Size maxWindowSize = { 299, 337 };
+        static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
 
         static Widget widgets[] = {
             commonWidgets(222, 136, StringIds::title_industry_monthly_production),
@@ -403,7 +403,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void onResize(Window& self)
         {
             {
-                self.setSize(minWindowSize, maxWindowSize);
+                self.setSize(kMinWindowSize, kMaxWindowSize);
             }
         }
 
@@ -457,7 +457,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::received_cargo);
 
                 auto cargoNumber = 0;
-                for (const auto& receivedCargoType : industryObj->required_cargo_type)
+                for (const auto& receivedCargoType : industryObj->requiredCargoType)
                 {
                     if (receivedCargoType != 0xFF)
                     {
@@ -466,11 +466,11 @@ namespace OpenLoco::Ui::Windows::Industry
 
                         if (industry->receivedCargoQuantityPreviousMonth[cargoNumber] == 1)
                         {
-                            args.push(cargoObj->unit_name_singular);
+                            args.push(cargoObj->unitNameSingular);
                         }
                         else
                         {
-                            args.push(cargoObj->unit_name_plural);
+                            args.push(cargoObj->unitNamePlural);
                         }
                         args.push<uint32_t>(industry->receivedCargoQuantityPreviousMonth[cargoNumber]);
 
@@ -490,7 +490,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 origin.x += 4;
 
                 auto cargoNumber = 0;
-                for (const auto& producedCargoType : industryObj->produced_cargo_type)
+                for (const auto& producedCargoType : industryObj->producedCargoType)
                 {
                     if (producedCargoType != 0xFF)
                     {
@@ -499,11 +499,11 @@ namespace OpenLoco::Ui::Windows::Industry
 
                         if (industry->producedCargoQuantityPreviousMonth[cargoNumber] == 1)
                         {
-                            args.push(cargoObj->unit_name_singular);
+                            args.push(cargoObj->unitNameSingular);
                         }
                         else
                         {
-                            args.push(cargoObj->unit_name_plural);
+                            args.push(cargoObj->unitNamePlural);
                         }
                         args.push<uint32_t>(industry->producedCargoQuantityPreviousMonth[cargoNumber]);
                         args.push<uint16_t>(industry->producedCargoPercentTransportedPreviousMonth[cargoNumber]);
@@ -553,13 +553,13 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static void setDisabledWidgets(Window* self)
         {
-            auto industryObj = ObjectManager::get<IndustryObject>(IndustryManager::get(IndustryId(self->number))->object_id);
+            auto industryObj = ObjectManager::get<IndustryObject>(IndustryManager::get(IndustryId(self->number))->objectId);
             auto disabledWidgets = 0;
 
-            if (industryObj->produced_cargo_type[0] == 0xFF)
+            if (industryObj->producedCargoType[0] == 0xFF)
                 disabledWidgets |= (1 << Common::widx::tab_production);
 
-            if (industryObj->produced_cargo_type[1] == 0xFF)
+            if (industryObj->producedCargoType[1] == 0xFF)
                 disabledWidgets |= (1 << Common::widx::tab_production_2);
 
             self->disabledWidgets = disabledWidgets;
@@ -573,12 +573,12 @@ namespace OpenLoco::Ui::Windows::Industry
 
             // Draw Units of Cargo sub title
             const auto industry = IndustryManager::get(IndustryId(self.number));
-            const auto industryObj = ObjectManager::get<IndustryObject>(industry->object_id);
-            const auto cargoObj = ObjectManager::get<CargoObject>(industryObj->produced_cargo_type[0]);
+            const auto industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
+            const auto cargoObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[0]);
 
             {
                 auto args = FormatArguments();
-                args.push(cargoObj->units_and_cargo_name);
+                args.push(cargoObj->unitsAndCargoName);
 
                 int16_t x = self.x + 2;
                 int16_t y = self.y - 24 + 68;
@@ -735,7 +735,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static void update(Window& self)
         {
-            self.frame_no++;
+            self.frameNo++;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::industry, self.number);
         }
@@ -769,7 +769,7 @@ namespace OpenLoco::Ui::Windows::Industry
             TextInput::sub_4CE6C9(self->type, self->number);
 
             self->currentTab = widgetIndex - widx::tab_industry;
-            self->frame_no = 0;
+            self->frameNo = 0;
             self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
 
@@ -809,7 +809,7 @@ namespace OpenLoco::Ui::Windows::Industry
             };
 
             auto industry = IndustryManager::get(IndustryId(self->number));
-            auto industryObj = ObjectManager::get<IndustryObject>(industry->object_id);
+            auto industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             static const uint32_t productionTabIds[] = {
@@ -822,12 +822,12 @@ namespace OpenLoco::Ui::Windows::Industry
             uint32_t imageId = 0xFFFFFFFF;
             auto widget = self->widgets[tab];
 
-            if (industryObj->produced_cargo_type[productionTabNumber] != 0xFF)
+            if (industryObj->producedCargoType[productionTabNumber] != 0xFF)
             {
                 imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
 
                 if (self->currentTab == tab - widx::tab_industry)
-                    imageId += productionTabImageIds[(self->frame_no / 4) % std::size(productionTabImageIds)];
+                    imageId += productionTabImageIds[(self->frameNo / 4) % std::size(productionTabImageIds)];
                 else
                     imageId += productionTabImageIds[0];
 
@@ -835,8 +835,8 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto yPos = widget.top + self->y;
                 Gfx::drawImage(rt, xPos, yPos, imageId);
 
-                auto caroObj = ObjectManager::get<CargoObject>(industryObj->produced_cargo_type[productionTabNumber]);
-                Gfx::drawImage(rt, xPos + 18, yPos + 14, caroObj->unit_inline_sprite);
+                auto caroObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[productionTabNumber]);
+                Gfx::drawImage(rt, xPos + 18, yPos + 14, caroObj->unitInlineSprite);
 
                 Widget::drawTab(self, rt, -2, tab);
             }
@@ -878,7 +878,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_transported - widx::tab_industry)
-                    imageId += transportedTabImageIds[(self->frame_no / 4) % std::size(transportedTabImageIds)];
+                    imageId += transportedTabImageIds[(self->frameNo / 4) % std::size(transportedTabImageIds)];
                 else
                     imageId += transportedTabImageIds[0];
                 Widget::drawTab(self, rt, imageId, widx::tab_transported);

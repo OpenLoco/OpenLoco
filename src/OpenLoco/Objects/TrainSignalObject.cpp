@@ -22,7 +22,7 @@ namespace OpenLoco
                 return false;
         }
 
-        switch (num_frames)
+        switch (numFrames)
         {
             case 4:
             case 7:
@@ -32,17 +32,17 @@ namespace OpenLoco
                 return false;
         }
 
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
 
-        if (-sell_cost_factor > cost_factor)
+        if (-sellCostFactor > costFactor)
         {
             return false;
         }
 
-        if (num_compatible > 7)
+        if (numCompatible > 7)
         {
             return false;
         }
@@ -71,7 +71,7 @@ namespace OpenLoco
     // 0x004899A7
     void TrainSignalObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        auto frames = signalFrames[(((num_frames + 2) / 3) - 2)];
+        auto frames = signalFrames[(((numFrames + 2) / 3) - 2)];
         auto frameCount = std::size(frames) - 1;
         auto animationFrame = frameCount & (ScenarioManager::getScenarioTicks() >> animationSpeed);
 

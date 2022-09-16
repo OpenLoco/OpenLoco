@@ -418,15 +418,15 @@ namespace OpenLoco::Network
             }
 
             sockaddr_storage ss{};
-            socklen_t ss_len;
-            resolveAddress(protocol, address, port, &ss, &ss_len);
+            socklen_t ssLen;
+            resolveAddress(protocol, address, port, &ss, &ssLen);
 
             // Create the listening socket
             _socket = createSocket(protocol);
             try
             {
                 // Bind to address:port and listen
-                if (bind(_socket, reinterpret_cast<sockaddr*>(&ss), ss_len) != 0)
+                if (bind(_socket, reinterpret_cast<sockaddr*>(&ss), ssLen) != 0)
                 {
                     throw SocketException("Unable to bind to socket.");
                 }
@@ -438,7 +438,7 @@ namespace OpenLoco::Network
             }
 
             _listeningAddress = ss;
-            _listeningAddressLen = ss_len;
+            _listeningAddressLen = ssLen;
             _listeningPort = port;
             _status = SocketStatus::listening;
         }
@@ -446,9 +446,9 @@ namespace OpenLoco::Network
         size_t sendData(Protocol protocol, const std::string& address, uint16_t port, const void* buffer, size_t size) override
         {
             sockaddr_storage ss{};
-            socklen_t ss_len;
-            resolveAddress(protocol, address, port, &ss, &ss_len);
-            NetworkEndpoint endpoint(reinterpret_cast<const sockaddr*>(&ss), ss_len);
+            socklen_t ssLen;
+            resolveAddress(protocol, address, port, &ss, &ssLen);
+            NetworkEndpoint endpoint(reinterpret_cast<const sockaddr*>(&ss), ssLen);
             return sendData(endpoint, buffer, size);
         }
 
@@ -618,9 +618,9 @@ namespace OpenLoco::Network
         {
             initialiseWSA();
             sockaddr_storage ss{};
-            socklen_t ss_len;
-            BaseSocket::resolveAddress(protocol, address, port, &ss, &ss_len);
-            return std::make_unique<NetworkEndpoint>(reinterpret_cast<const sockaddr*>(&ss), ss_len);
+            socklen_t ssLen;
+            BaseSocket::resolveAddress(protocol, address, port, &ss, &ssLen);
+            return std::make_unique<NetworkEndpoint>(reinterpret_cast<const sockaddr*>(&ss), ssLen);
         }
     }
 }

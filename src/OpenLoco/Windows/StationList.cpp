@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static constexpr Ui::Size kMaxDimensions = { 640, 1200 };
     static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
-    static const uint8_t rowHeight = 10; // CJK: 13
+    static constexpr uint8_t kRowHeight = 10; // CJK: 13
 
     enum widx
     {
@@ -311,7 +311,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window->number = enumValue(companyId);
             window->owner = companyId;
             window->currentTab = 0;
-            window->frame_no = 0;
+            window->frameNo = 0;
             window->sortMode = 0;
             window->var_83C = 0;
             window->rowHover = -1;
@@ -352,11 +352,11 @@ namespace OpenLoco::Ui::Windows::StationList
         if (type > 4)
             throw std::domain_error("Unexpected station type");
 
-        Window* station_list = open(companyId);
+        Window* stationList = open(companyId);
         widx target = tabInformationByType[type].widgetIndex;
-        station_list->callOnMouseUp(target);
+        stationList->callOnMouseUp(target);
 
-        return station_list;
+        return stationList;
     }
 
     // 0x004919A4
@@ -365,7 +365,7 @@ namespace OpenLoco::Ui::Windows::StationList
         if (widgetIdx != widx::scrollview)
             return fallback;
 
-        uint16_t currentIndex = yPos / rowHeight;
+        uint16_t currentIndex = yPos / kRowHeight;
         if (currentIndex < window.var_83C && window.rowInfo[currentIndex] != -1)
             return CursorId::handPointer;
 
@@ -458,9 +458,9 @@ namespace OpenLoco::Ui::Windows::StationList
             auto stationId = StationId(window.rowInfo[i]);
 
             // Skip items outside of view, or irrelevant to the current filter.
-            if (yPos + rowHeight < rt.y || yPos >= yPos + rowHeight + rt.height || stationId == StationId::null)
+            if (yPos + kRowHeight < rt.y || yPos >= yPos + kRowHeight + rt.height || stationId == StationId::null)
             {
-                yPos += rowHeight;
+                yPos += kRowHeight;
                 continue;
             }
 
@@ -469,7 +469,7 @@ namespace OpenLoco::Ui::Windows::StationList
             // Highlight selection.
             if (stationId == StationId(window.rowHover))
             {
-                Gfx::drawRect(rt, 0, yPos, window.width, rowHeight, 0x2000030);
+                Gfx::drawRect(rt, 0, yPos, window.width, kRowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::StationList
             _commonFormatArgs[0] = StringIds::buffer_1250;
             Gfx::drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &*_commonFormatArgs);
 
-            yPos += rowHeight;
+            yPos += kRowHeight;
         }
     }
 
@@ -623,7 +623,7 @@ namespace OpenLoco::Ui::Windows::StationList
                     Input::toolCancel();
 
                 window.currentTab = widgetIndex - widx::tab_all_stations;
-                window.frame_no = 0;
+                window.frameNo = 0;
 
                 window.invalidate();
 
@@ -644,11 +644,11 @@ namespace OpenLoco::Ui::Windows::StationList
             case sort_total_waiting:
             case sort_accepts:
             {
-                auto sort_mode = widgetIndex - widx::sort_name;
-                if (window.sortMode == sort_mode)
+                auto sortMode = widgetIndex - widx::sort_name;
+                if (window.sortMode == sortMode)
                     return;
 
-                window.sortMode = sort_mode;
+                window.sortMode = sortMode;
                 window.invalidate();
                 window.var_83C = 0;
                 window.rowHover = -1;
@@ -662,7 +662,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x00491A0C
     static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        uint16_t currentRow = y / rowHeight;
+        uint16_t currentRow = y / kRowHeight;
         if (currentRow > window.var_83C)
             return;
 
@@ -678,7 +678,7 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         window.flags &= ~(WindowFlags::notScrollView);
 
-        uint16_t currentRow = y / rowHeight;
+        uint16_t currentRow = y / kRowHeight;
         int16_t currentStation = -1;
 
         if (currentRow < window.var_83C)
@@ -694,7 +694,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x0049193F
     static void onUpdate(Window& window)
     {
-        window.frame_no++;
+        window.frameNo++;
 
         window.callPrepareDraw();
         WindowManager::invalidateWidget(WindowType::stationList, window.number, window.currentTab + 4);
@@ -708,7 +708,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x00491999
     static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = rowHeight * window.var_83C;
+        *scrollHeight = kRowHeight * window.var_83C;
     }
 
     // 0x00491841

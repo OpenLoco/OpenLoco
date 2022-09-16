@@ -17,7 +17,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 {
     static constexpr Ui::Size kWindowSize = { 360, 238 };
 
-    static const uint8_t rowHeight = 12; // CJK: 15
+    static constexpr uint8_t kRowHeight = 12; // CJK: 15
 
     enum widx
     {
@@ -113,7 +113,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw hovered track
             if (i == window.rowHover)
             {
-                Gfx::drawRect(rt, 0, y, 800, rowHeight, 0x2000030);
+                Gfx::drawRect(rt, 0, y, 800, kRowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
@@ -128,14 +128,14 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             string_id music_title_id = Audio::getMusicInfo(i)->titleId;
             Gfx::drawStringLeft(rt, 15, y, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
 
-            y += rowHeight;
+            y += kRowHeight;
         }
     }
 
     // 0x004C176C
     static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = rowHeight * Audio::kNumMusicTracks;
+        *scrollHeight = kRowHeight * Audio::kNumMusicTracks;
     }
 
     // 0x004C1757
@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1799
     static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        uint16_t currentTrack = y / rowHeight;
+        uint16_t currentTrack = y / kRowHeight;
         if (currentTrack > window.rowCount)
             return;
 
@@ -178,7 +178,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1771
     static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        uint16_t currentTrack = y / rowHeight;
+        uint16_t currentTrack = y / kRowHeight;
         if (currentTrack > window.rowCount || currentTrack == window.rowHover)
             return;
 
@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void onUpdate(Window& window)
     {
         auto optionsWindow = WindowManager::find(WindowType::options);
-        if (optionsWindow == nullptr || optionsWindow->currentTab != Options::tab_offset_music)
+        if (optionsWindow == nullptr || optionsWindow->currentTab != Options::kTabOffsetMusic)
         {
             WindowManager::close(&window);
             return;

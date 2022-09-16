@@ -55,7 +55,7 @@ namespace YAML
     template<>
     struct convert<KeyboardShortcut>
     {
-        static const char delimiter = '+';
+        static constexpr char kDelimiter = '+';
 
         static Node encode(const KeyboardShortcut& rhs)
         {
@@ -66,17 +66,17 @@ namespace YAML
             if (rhs.modifiers & KeyModifier::shift)
             {
                 keyName += SDL_GetKeyName(SDLK_LSHIFT);
-                keyName += delimiter;
+                keyName += kDelimiter;
             }
             if (rhs.modifiers & KeyModifier::control)
             {
                 keyName += SDL_GetKeyName(SDLK_LCTRL);
-                keyName += delimiter;
+                keyName += kDelimiter;
             }
             if (rhs.modifiers & KeyModifier::unknown)
             {
                 keyName += SDL_GetKeyName(SDLK_LGUI);
-                keyName += delimiter;
+                keyName += kDelimiter;
             }
 
             keyName += SDL_GetKeyName(rhs.keyCode);
@@ -95,14 +95,14 @@ namespace YAML
 
             rhs.modifiers = 0;
             std::size_t current = 0;
-            std::size_t pos = s.find_first_of(delimiter, 0);
+            std::size_t pos = s.find_first_of(kDelimiter, 0);
             std::string token = s;
 
             while (pos != std::string::npos)
             {
                 token = s.substr(current, pos);
                 current = pos + 1;
-                pos = s.find_first_of(delimiter, current);
+                pos = s.find_first_of(kDelimiter, current);
 
                 SDL_Keycode keyCode = SDL_GetKeyFromName(token.c_str());
 
@@ -148,7 +148,7 @@ namespace YAML
     };
 
     // ScreenMode
-    const convert_pair_vector<ScreenMode> screen_mode_entries = {
+    const convert_pair_vector<ScreenMode> screenModeEntries = {
         enum_def(ScreenMode, window),
         enum_def(ScreenMode, fullscreen),
         enum_def(ScreenMode, fullscreenBorderless),
@@ -156,7 +156,7 @@ namespace YAML
     template<>
     struct convert<ScreenMode> : convert_enum_base<ScreenMode>
     {
-        static const convert_pair_vector<ScreenMode>& getEntries() { return screen_mode_entries; }
+        static const convert_pair_vector<ScreenMode>& getEntries() { return screenModeEntries; }
     };
 }
 

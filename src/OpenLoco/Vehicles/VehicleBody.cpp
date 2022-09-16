@@ -286,20 +286,20 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF4DA
-    Pitch VehicleBody::updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset)
+    Pitch VehicleBody::updateSpritePitchSteepSlopes(uint16_t xyOffset, int16_t zOffset)
     {
         uint32_t i = 0;
 
-        if (z_offset < 0)
+        if (zOffset < 0)
         {
             i = 5;
-            z_offset = -z_offset;
+            zOffset = -zOffset;
         }
 
         uint32_t xyz = std::numeric_limits<uint32_t>::max();
-        if (xy_offset != 0)
+        if (xyOffset != 0)
         {
-            xyz = (static_cast<uint64_t>(z_offset) << 16) / xy_offset;
+            xyz = (static_cast<uint64_t>(zOffset) << 16) / xyOffset;
         }
 
         if (xyz > 10064)
@@ -326,20 +326,20 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF49D
-    Pitch VehicleBody::updateSpritePitch(uint16_t xy_offset, int16_t z_offset)
+    Pitch VehicleBody::updateSpritePitch(uint16_t xyOffset, int16_t zOffset)
     {
         uint32_t i = 0;
 
-        if (z_offset < 0)
+        if (zOffset < 0)
         {
             i = 5;
-            z_offset = -z_offset;
+            zOffset = -zOffset;
         }
 
         uint32_t xyz = std::numeric_limits<uint32_t>::max();
-        if (xy_offset != 0)
+        if (xyOffset != 0)
         {
-            xyz = (static_cast<uint64_t>(z_offset) << 16) / xy_offset;
+            xyz = (static_cast<uint64_t>(zOffset) << 16) / xyOffset;
         }
 
         if (xyz >= 3331)
@@ -953,7 +953,7 @@ namespace OpenLoco::Vehicles
             return;
 
         var_55++;
-        SteamObject* steam_obj = ObjectManager::get<SteamObject>(vehicleObject->animation[num].objectId);
+        SteamObject* steamObj = ObjectManager::get<SteamObject>(vehicleObject->animation[num].objectId);
         if (var_55 >= ((uint8_t)vehicleObject->animation[num].type) + 1)
         {
             var_55 = 0;
@@ -962,7 +962,7 @@ namespace OpenLoco::Vehicles
         bool stationFound = false;
 
         // Looking for a station
-        if (steam_obj->flags & SteamObjectFlags::unk2)
+        if (steamObj->flags & SteamObjectFlags::unk2)
         {
             auto tile = Map::TileManager::get(frontBogie->tileX, frontBogie->tileY);
 
@@ -995,7 +995,7 @@ namespace OpenLoco::Vehicles
 
         if (stationFound)
         {
-            auto soundId = static_cast<SoundObjectId_t>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
+            auto soundId = static_cast<SoundObjectId_t>(steamObj->var_1F[var_55 + (steamObj->soundEffect >> 1)]);
 
             if (veh_2->currentSpeed > 15.0_mph)
                 return;
@@ -1013,13 +1013,13 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            auto soundModifier = steam_obj->sound_effect >> 1;
-            if (!(steam_obj->flags & SteamObjectFlags::unk2))
+            auto soundModifier = steamObj->soundEffect >> 1;
+            if (!(steamObj->flags & SteamObjectFlags::unk2))
             {
                 soundModifier = 0;
             }
-            auto underSoundId = static_cast<SoundObjectId_t>(steam_obj->var_1F[soundModifier + var_55]);
-            auto soundId = static_cast<SoundObjectId_t>(steam_obj->var_1F[var_55]);
+            auto underSoundId = static_cast<SoundObjectId_t>(steamObj->var_1F[soundModifier + var_55]);
+            auto soundId = static_cast<SoundObjectId_t>(steamObj->var_1F[var_55]);
 
             if (veh_2->currentSpeed > 15.0_mph)
                 return;
@@ -1068,7 +1068,7 @@ namespace OpenLoco::Vehicles
             if (ScenarioManager::getScenarioTicks() & 3)
                 return;
 
-            auto positionFactor = vehicleObject->bodySprites[0].bogey_position * var_05 / 256;
+            auto positionFactor = vehicleObject->bodySprites[0].bogeyPosition * var_05 / 256;
             auto invertedDirection = spriteYaw ^ (1 << 5);
             auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
@@ -1270,7 +1270,7 @@ namespace OpenLoco::Vehicles
         if ((ScenarioManager::getScenarioTicks() % frequency) != 0)
             return;
 
-        auto positionFactor = vehicleObject->bodySprites[0].bogey_position;
+        auto positionFactor = vehicleObject->bodySprites[0].bogeyPosition;
         auto invertedDirection = spriteYaw ^ (1 << 5);
         auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 4;
 

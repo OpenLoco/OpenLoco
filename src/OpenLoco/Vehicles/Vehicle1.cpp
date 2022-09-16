@@ -60,9 +60,9 @@ namespace OpenLoco::Vehicles
             if (res & (1 << 12))
             {
                 const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);
-                if (bridgeObj->max_speed != kSpeed16Null)
+                if (bridgeObj->maxSpeed != kSpeed16Null)
                 {
-                    maxSpeed = std::min(bridgeObj->max_speed, maxSpeed);
+                    maxSpeed = std::min(bridgeObj->maxSpeed, maxSpeed);
                 }
             }
         }

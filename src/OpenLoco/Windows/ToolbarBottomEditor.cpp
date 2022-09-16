@@ -16,7 +16,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         next_button,
     };
 
-    static const uint16_t windowHeight = 32;
+    static constexpr uint16_t kWindowHeight = 32;
 
     static WindowEventList _events;
 
@@ -128,8 +128,8 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     {
         initEvents();
 
-        Ui::Point origin = Ui::Point(0, Ui::height() - windowHeight);
-        Ui::Size windowSize = Ui::Size(Ui::width(), windowHeight);
+        Ui::Point origin = Ui::Point(0, Ui::height() - kWindowHeight);
+        Ui::Size windowSize = Ui::Size(Ui::width(), kWindowHeight);
         auto window = WindowManager::createWindow(
             WindowType::editorToolbar,
             origin,

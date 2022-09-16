@@ -216,23 +216,23 @@ namespace OpenLoco::GameCommands
     }
 
     // Build vehicle
-    inline uint32_t do_5(uint16_t vehicle_type, EntityId vehicle_id = EntityId::null)
+    inline uint32_t do_5(uint16_t vehicleType, EntityId vehicleId = EntityId::null)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.di = enumValue(vehicle_id);
-        regs.edx = vehicle_type;
+        regs.di = enumValue(vehicleId);
+        regs.edx = vehicleType;
 
         return doCommand(GameCommand::vehicleCreate, regs);
     }
 
     // Build vehicle
-    inline uint32_t queryDo_5(uint16_t vehicle_type, EntityId vehicle_id = EntityId::null)
+    inline uint32_t queryDo_5(uint16_t vehicleType, EntityId vehicleId = EntityId::null)
     {
         registers regs;
         regs.bl = 0;
-        regs.di = enumValue(vehicle_id);
-        regs.edx = vehicle_type;
+        regs.di = enumValue(vehicleId);
+        regs.edx = vehicleType;
 
         return doCommand(GameCommand::vehicleCreate, regs);
     }
