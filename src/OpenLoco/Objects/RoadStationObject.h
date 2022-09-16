@@ -57,7 +57,7 @@ namespace OpenLoco
 
     namespace RoadStation::ImageIds
     {
-        constexpr uint32_t kPreviewImage = 0;
-        constexpr uint32_t kPreviewImageWindows = 1;
+        constexpr uint32_t preview_image = 0;
+        constexpr uint32_t preview_image_windows = 1;
     }
 }

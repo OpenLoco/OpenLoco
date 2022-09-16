@@ -52,7 +52,7 @@ namespace OpenLoco
 
     namespace Land::ImageIds
     {
-        constexpr uint32_t kLandscapeGeneratorTileIcon = 1;
-        constexpr uint32_t kToolbarTerraformLand = 3;
+        constexpr uint32_t landscape_generator_tile_icon = 1;
+        constexpr uint32_t toolbar_terraform_land = 3;
     }
 }

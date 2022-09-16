@@ -48,7 +48,7 @@ namespace OpenLoco
 
     namespace InterfaceSkin::ImageIds
     {
-        constexpr uint32_t kPreviewImage = 0;
+        constexpr uint32_t preview_image = 0;
         constexpr uint32_t toolbar_loadsave = 3;
         constexpr uint32_t toolbar_loadsave_hover = 4;
         constexpr uint32_t toolbar_zoom = 5;

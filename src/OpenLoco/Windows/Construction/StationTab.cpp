@@ -640,7 +640,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
-            auto imageId = Gfx::recolour(roadStationObj->image + RoadStation::ImageIds::kPreviewImage, companyColour);
+            auto imageId = Gfx::recolour(roadStationObj->image + RoadStation::ImageIds::preview_image, companyColour);
             Gfx::drawImage(rt, xPos, yPos, imageId);
 
             auto colour = Colours::getTranslucent(companyColour);
@@ -649,14 +649,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 colour = ExtColour::unk2E;
             }
 
-            imageId = Gfx::recolourTranslucent(roadStationObj->image + RoadStation::ImageIds::kPreviewImageWindows, colour);
+            imageId = Gfx::recolourTranslucent(roadStationObj->image + RoadStation::ImageIds::preview_image_windows, colour);
             Gfx::drawImage(rt, xPos, yPos, imageId);
         }
         else
         {
             auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 
-            auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::kPreviewImage, companyColour);
+            auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
             Gfx::drawImage(rt, xPos, yPos, imageId);
 
             auto colour = Colours::getTranslucent(companyColour);
@@ -665,7 +665,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 colour = ExtColour::unk2E;
             }
 
-            imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::kPreviewImageWindows, colour);
+            imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
             Gfx::drawImage(rt, xPos, yPos, imageId);
         }
 

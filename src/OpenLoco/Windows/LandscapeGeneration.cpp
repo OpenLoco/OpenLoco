@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             // Land tab
             {
                 auto land = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLand());
-                const uint32_t imageId = land->var_16 + Land::ImageIds::kToolbarTerraformLand;
+                const uint32_t imageId = land->var_16 + Land::ImageIds::toolbar_terraform_land;
                 Widget::drawTab(window, rt, imageId, widx::tab_land);
             }
 
@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     continue;
 
                 // Draw tile icon.
-                const uint32_t imageId = landObject->var_16 + OpenLoco::Land::ImageIds::kLandscapeGeneratorTileIcon;
+                const uint32_t imageId = landObject->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
                 Gfx::drawImage(&rt, 2, yPos + 1, imageId);
 
                 // Draw land description.
