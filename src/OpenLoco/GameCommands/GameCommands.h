@@ -1736,6 +1736,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/RemoveWall.cpp
     void removeWall(registers& regs);
 
+    // Defined in GameCommands/RenameCompanyName.cpp
+    void changeCompanyName(registers& regs);
+
     // Defined in GameCommands/RenameIndustry.cpp
     void renameIndustry(registers& regs);
 
