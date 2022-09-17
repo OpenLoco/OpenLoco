@@ -1739,6 +1739,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/RenameCompanyName.cpp
     void changeCompanyName(registers& regs);
 
+    // Defined in GameCommands/RenameCompanyOwner.cpp
+    void changeCompanyOwnerName(registers& regs);
+
     // Defined in GameCommands/RenameIndustry.cpp
     void renameIndustry(registers& regs);
 
