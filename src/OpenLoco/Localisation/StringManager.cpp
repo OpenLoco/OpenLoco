@@ -268,6 +268,57 @@ namespace OpenLoco::StringManager
     static_assert(920 == hpTokW(1234));
     static_assert(48895 == hpTokW(65535));
 
+    // Loco string argument safe strlen
+    size_t locoStrlen(const char* buffer)
+    {
+        auto* ptr = buffer;
+        while (*ptr != '\0')
+        {
+            const auto ch = *ptr++;
+            if (ch >= ControlCodes::oneArgBegin && ch < ControlCodes::oneArgEnd)
+            {
+                ptr++;
+            }
+            else if (ch >= ControlCodes::twoArgBegin && ch < ControlCodes::twoArgEnd)
+            {
+                ptr += 2;
+            }
+            else if (ch >= ControlCodes::fourArgBegin && ch < ControlCodes::fourArgEnd)
+            {
+                ptr += 4;
+            }
+        }
+        return ptr - buffer;
+    }
+
+    char* locoStrcpy(char* dest, const char* src)
+    {
+        char* ret = dest;
+        while (*src != '\0')
+        {
+            const auto ch = *src++;
+            *dest++ = ch;
+            if (ch >= ControlCodes::oneArgBegin && ch < ControlCodes::oneArgEnd)
+            {
+                *dest++ = *src++;
+            }
+            else if (ch >= ControlCodes::twoArgBegin && ch < ControlCodes::twoArgEnd)
+            {
+                *dest++ = *src++;
+                *dest++ = *src++;
+            }
+            else if (ch >= ControlCodes::fourArgBegin && ch < ControlCodes::fourArgEnd)
+            {
+                *dest++ = *src++;
+                *dest++ = *src++;
+                *dest++ = *src++;
+                *dest++ = *src++;
+            }
+        }
+        *dest = '\0';
+        return ret;
+    }
+
     static char* formatStringPart(char* buffer, const char* sourceStr, ArgsWrapper& args)
     {
         while (true)
@@ -391,8 +442,8 @@ namespace OpenLoco::StringManager
                     case ControlCodes::string_ptr:
                     {
                         const char* str = args.pop<const char*>();
-                        strcpy(buffer, str);
-                        buffer += strlen(str);
+                        locoStrcpy(buffer, str);
+                        buffer += locoStrlen(str);
                         break;
                     }
 
@@ -592,7 +643,7 @@ namespace OpenLoco::StringManager
 
             // !!! TODO: original code is prone to buffer overflow.
             buffer = strncpy(buffer, sourceStr, kUserStringSize);
-            buffer += strlen(sourceStr);
+            buffer += locoStrlen(sourceStr);
             *buffer = '\0';
 
             return buffer;

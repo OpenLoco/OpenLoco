@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         *buffer = 0;
         industry->getStatusString(buffer);
         auto args = FormatArguments::mapToolTip();
-        if (std::strlen(buffer) != 0)
+        if (StringManager::locoStrlen(buffer) != 0)
         {
             args.push(StringIds::wcolour3_stringid_2);
             args.push(industry->name);

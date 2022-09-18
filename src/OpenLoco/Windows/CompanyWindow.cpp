@@ -2332,7 +2332,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *buffer_2039++ = static_cast<char>(ControlCodes::Colour::black);
             char* scenarioDetailsString = getGameState().scenarioDetails;
-            strcpy(buffer_2039, scenarioDetailsString);
+            StringManager::locoStrcpy(buffer_2039, scenarioDetailsString);
 
             int16_t y = self.y + 47;
             // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
