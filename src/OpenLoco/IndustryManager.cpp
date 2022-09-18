@@ -4,7 +4,6 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
-#include "Interop/Interop.hpp"
 #include "Map/TileManager.h"
 #include "Math/Vector.hpp"
 #include "Objects/BuildingObject.h"
@@ -17,8 +16,6 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include <numeric>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::IndustryManager
 {
@@ -365,7 +362,7 @@ namespace OpenLoco::IndustryManager
             {
                 auto tile = Map::TileManager::get(randomPos);
                 auto* surface = tile.surface();
-                if (surface->water() == 0)
+                if (surface != nullptr && surface->water() == 0)
                 {
                     continue;
                 }

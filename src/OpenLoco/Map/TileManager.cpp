@@ -699,7 +699,7 @@ namespace OpenLoco::Map::TileManager
             auto tile = get(tilePos);
             auto* surface = tile.surface();
             // Deserts can't have water!
-            if (surface == nullptr && surface->water() != 0)
+            if (surface == nullptr || surface->water() != 0)
             {
                 continue;
             }
