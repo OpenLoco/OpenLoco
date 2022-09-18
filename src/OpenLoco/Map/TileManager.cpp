@@ -9,6 +9,8 @@
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
 #include "../Objects/BuildingObject.h"
+#include "../Objects/LandObject.h"
+#include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../TownManager.h"
 #include "../Ui.h"
@@ -678,6 +680,41 @@ namespace OpenLoco::Map::TileManager
         }
 
         return surroundingWaterTiles;
+    }
+
+    // 0x00469B1D
+    uint16_t countSurroundingDesertTiles(const Pos2& pos)
+    {
+        // Search a 10x10 area centred at pos.
+        // Initial tile position is the top left of the area.
+        auto initialTilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
+
+        uint16_t surroundingDesertTiles = 0;
+
+        for (const auto& tilePos : TilePosRangeView(initialTilePos, initialTilePos + Map::TilePos2{ 11, 11 }))
+        {
+            if (!Map::validCoords(tilePos))
+                continue;
+
+            auto tile = get(tilePos);
+            auto* surface = tile.surface();
+            // Deserts can't have water!
+            if (surface == nullptr && surface->water() != 0)
+            {
+                continue;
+            }
+            auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
+            if (landObj == nullptr)
+            {
+                continue;
+            }
+            if (landObj->flags & LandObjectFlags::isDesert)
+            {
+                surroundingDesertTiles++;
+            }
+        }
+
+        return surroundingDesertTiles;
     }
 
     // 0x004BE048

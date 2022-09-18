@@ -14,6 +14,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "SceneManager.h"
+#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include <numeric>
 
@@ -332,18 +333,91 @@ namespace OpenLoco::IndustryManager
                     continue;
                 }
             }
-            // 0x00459BAC
+            if (indObj->flags & IndustryObjectFlags::builtInDesert)
+            {
+                if (Map::TileManager::countSurroundingDesertTiles(randomPos) < 100)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtNearDesert)
+            {
+                if (Map::TileManager::countSurroundingDesertTiles(randomPos) >= 70)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtNearWater)
+            {
+                if (Map::TileManager::countSurroundingWaterTiles(randomPos) < 10)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtAwayFromWater)
+            {
+                if (Map::TileManager::countSurroundingWaterTiles(randomPos) != 0)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtOnWater)
+            {
+                auto tile = Map::TileManager::get(randomPos);
+                auto* surface = tile.surface();
+                if (surface->water() == 0)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtNearTown)
+            {
+                auto res = TownManager::getClosestTownAndUnk(randomPos);
+                if (!res.has_value())
+                {
+                    continue;
+                }
+                const auto& [townId, builtUp] = *res;
+                if (builtUp != 0)
+                {
+                    const auto* town = TownManager::get(townId);
+                    if (Math::Vector::manhattanDistance(randomPos, Map::Pos2{ town->x, town->y }) > 576)
+                    {
+                        continue;
+                    }
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtAwayFromTown)
+            {
+                auto res = TownManager::getClosestTownAndUnk(randomPos);
+                if (!res.has_value())
+                {
+                    continue;
+                }
+                const auto townId = res->first;
+                const auto* town = TownManager::get(townId);
+                if (Math::Vector::manhattanDistance(randomPos, Map::Pos2{ town->x, town->y }) < 768)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtNearTrees)
+            {
+                if (Map::TileManager::countSurroundingTrees(randomPos) < 25)
+                {
+                    continue;
+                }
+            }
+            if (indObj->flags & IndustryObjectFlags::builtRequiresTrees)
+            {
+                if (Map::TileManager::countSurroundingTrees(randomPos) > 3)
+                {
+                    continue;
+                }
+            }
+            return randomPos;
         }
         return std::nullopt;
-        registers regs;
-        regs.edx = indObjId;
-        call(0x004599B3, regs);
-        if (regs.ax == -1)
-        {
-            return std::nullopt;
-        }
-
-        return Map::Pos2{ regs.ax, regs.cx };
     }
 
     // 0x00459722 & 0x004598F0

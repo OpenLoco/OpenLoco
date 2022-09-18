@@ -46,6 +46,7 @@ namespace OpenLoco::Map::TileManager
     uint8_t getMapSelectionCorner();
     void resetSurfaceClearance();
     uint16_t countSurroundingWaterTiles(const Pos2& pos);
+    uint16_t countSurroundingDesertTiles(const Pos2& pos);
     uint16_t countSurroundingTrees(const Pos2& pos);
     void update();
     void updateYearly();
