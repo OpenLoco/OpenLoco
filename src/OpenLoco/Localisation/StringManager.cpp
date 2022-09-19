@@ -271,6 +271,10 @@ namespace OpenLoco::StringManager
     // Loco string argument safe strlen
     size_t locoStrlen(const char* buffer)
     {
+        if (buffer == nullptr)
+        {
+            return 0;
+        }
         auto* ptr = buffer;
         while (*ptr != '\0')
         {
@@ -293,6 +297,10 @@ namespace OpenLoco::StringManager
 
     char* locoStrcpy(char* dest, const char* src)
     {
+        if (src == nullptr)
+        {
+            return dest;
+        }
         char* ret = dest;
         while (*src != '\0')
         {
