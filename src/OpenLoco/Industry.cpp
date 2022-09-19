@@ -520,7 +520,7 @@ namespace OpenLoco
         // Search a 5x5 area centred on Pos
         TilePos2 topRight = TilePos2{ pos } - TilePos2{ 2, 2 };
         TilePos2 bottomLeft = TilePos2{ pos } + TilePos2{ 2, 2 };
-        for (const auto& tilePos : TilePosRangeView{ topRight, topRight + TilePos2{ 6, 6 } })
+        for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
         {
             if (sub_45510C(tilePos))
             {
@@ -555,7 +555,7 @@ namespace OpenLoco
         }
 
         std::size_t i = 0;
-        for (const auto& tilePos : TilePosRangeView{ topRight, topRight + TilePos2{ 6, 6 } })
+        for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
         {
             if (E0C3DC.has_value())
             {

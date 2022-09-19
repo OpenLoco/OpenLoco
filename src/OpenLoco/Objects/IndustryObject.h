@@ -64,7 +64,7 @@ namespace OpenLoco
         uint8_t var_BC;
         uint8_t var_BD;
         uint32_t var_BE;
-        uint8_t pad_C2[0xC6 - 0xC2];
+        uint32_t var_C2;
         uint32_t var_C6;
         uint16_t designedYear; // 0xCA start year
         uint16_t obsoleteYear; // 0xCC end year
