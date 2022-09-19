@@ -1336,6 +1336,13 @@ namespace OpenLoco::Gfx
                 {
                     // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
                     maxWidth = std::max(maxWidth, lineWidth);
+                    if (startLine == wordStart && *ptr != '\0')
+                    {
+                        // Warning! Not loco string argument safe assumes no one/two/four argument strings.
+                        // TODO: Implement loco string strlen!
+                        memmove(ptr + 1, ptr, strlen(ptr) + 1);
+                        *ptr++ = '\0';
+                    }
                 }
                 else
                 {
