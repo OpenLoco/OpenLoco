@@ -32,8 +32,10 @@ namespace OpenLoco
         constexpr uint32_t requiresAllCargo = 1 << 17;
         constexpr uint32_t unk18 = 1 << 18;
         constexpr uint32_t unk19 = 1 << 19;
+        constexpr uint32_t unk23 = 1 << 23;
         constexpr uint32_t builtInDesert = 1 << 24;
         constexpr uint32_t builtNearDesert = 1 << 25;
+        constexpr uint32_t unk27 = 1 << 27;
         constexpr uint32_t flag_28 = 1 << 28;
     }
 #pragma pack(push, 1)

@@ -516,14 +516,76 @@ namespace OpenLoco
 
     void Industry::sub_454A43(const Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl)
     {
-        std::size_t numFences = 0;
-        // Search a 4x4 area centred on Pos
+        std::size_t numBorders = 0;
+        // Search a 5x5 area centred on Pos
         TilePos2 topLeft = TilePos2{ pos } - TilePos2{ 2, 2 };
-        for (const auto& tilePos : TilePosRangeView{ topLeft, topLeft + TilePos2{ 5, 5 } })
+        for (const auto& tilePos : TilePosRangeView{ topLeft, topLeft + TilePos2{ 6, 6 } })
         {
             if (sub_45510C(tilePos))
             {
-                numFences++;
+                numBorders++;
+            }
+        }
+        if (numBorders < 20)
+        {
+            return;
+        }
+
+        const auto* indObj = ObjectManager::get<IndustryObject>(objectId);
+        struct UnkStruct
+        {
+            Utility::prng prng;
+            uint8_t varEC;
+        };
+        std::optional<UnkStruct> E0C3DC;
+        if (indObj->flags & IndustryObjectFlags::unk23)
+        {
+            E0C3DC = UnkStruct{ prng, indObj->var_EC };
+        }
+        bool is27 = indObj->flags & IndustryObjectFlags::unk27
+            ? true
+            : false;
+
+        uint32_t randFlags = 0;
+        if (bl != 0xFF && bh != 0xFF)
+        {
+            randFlags = 1 << (prng.srand_0() & 0xF);
+            randFlags = 1 << ((prng.srand_0() >> 4) & 0x1F);
+        }
+
+        for (const auto& tilePos : TilePosRangeView{ topLeft, topLeft + TilePos2{ 6, 6 } })
+        {
+            if (E0C3DC.has_value())
+            {
+                const auto randVal = E0C3DC->prng.randNext();
+                dl = (((randVal & 0xFF) * E0C3DC->varEC) / 256)
+                    | (((randVal >> 8) & 0x7) << 5);
+            }
+            bool skipBorderClear = false;
+            if (is27)
+            {
+                if (!E0C3DC.has_value()) // Vanilla mistake here check to see if anyone suffers from it
+                {
+                    assert(false);
+                }
+                if (E0C3DC->prng.randNext() & 0x7)
+                {
+                    skipBorderClear = true;
+                }
+            }
+            if (!skipBorderClear)
+            {
+                sub_45510C(tilePos, id(), dl);
+            }
+            if (bl == 0xFF)
+            {
+                continue;
+            }
+            if (bl == 5)
+            {
+                GameCommands::WallPlacementArgs args;
+                args.pos = Map::Pos3(Map::Pos2(tilePos), 0);
+                args.
             }
         }
         registers regs;
