@@ -195,10 +195,7 @@ namespace OpenLoco
         var_BE = 0;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
-        var_ED = 0;
-        var_EE = 0;
-        var_EF = 0;
-        var_F0 = 0;
+        std::fill(std::begin(wallTypes), std::end(wallTypes), 0);
         var_F1 = 0;
         var_F2 = 0;
     }

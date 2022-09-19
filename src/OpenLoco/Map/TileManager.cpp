@@ -917,7 +917,7 @@ namespace OpenLoco::Map::TileManager
     // 0x004C482B
     void removeAllWallsOnTile(const Map::TilePos2& pos, SmallZ baseHeight)
     {
-        std::vector<Map::TileElement&> toDelete;
+        std::vector<Map::TileElement*> toDelete;
         auto tile = get(pos);
         for (auto& el : tile)
         {
@@ -934,12 +934,12 @@ namespace OpenLoco::Map::TileManager
             {
                 continue;
             }
-            toDelete.push_back(el);
+            toDelete.push_back(&el);
         }
         // Remove in reverse order to prevent pointer invalidation
-        std::for_each(std::rbegin(toDelete), std::rend(toDelete), [&pos](Map::TileElement& el) {
-            Ui::ViewportManager::invalidate(pos, el.baseHeight(), el.baseHeight() + 72, ZoomLevel::half);
-            removeElement(el);
+        std::for_each(std::rbegin(toDelete), std::rend(toDelete), [&pos](Map::TileElement* el) {
+            Ui::ViewportManager::invalidate(pos, el->baseHeight(), el->baseHeight() + 72, ZoomLevel::half);
+            removeElement(*el);
         });
     }
 

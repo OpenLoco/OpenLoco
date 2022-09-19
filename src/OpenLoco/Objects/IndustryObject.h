@@ -90,10 +90,8 @@ namespace OpenLoco
         uint8_t var_EA;
         uint8_t var_EB;
         uint8_t var_EC;
-        uint8_t var_ED;
-        uint8_t var_EE;
-        uint8_t var_EF;
-        uint8_t var_F0;
+        uint8_t wallTypes[4]; // 0xED There can be up to 4 different wall types for an industry
+        // Selection of wall types isn't completely random from the 4 it is biased into 2 groups of 2
         uint8_t var_F1;
         uint8_t var_F2;
         uint8_t var_F3;

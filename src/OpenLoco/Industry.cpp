@@ -440,15 +440,15 @@ namespace OpenLoco
                 if (prng.randBool())
                 {
                     Map::Pos2 randTile{ static_cast<coord_t>(x + (prng.randNext(-15, 16) * 32)), static_cast<coord_t>(y + (prng.randNext(-15, 16) * 32)) };
-                    uint8_t bl = obj->var_ED;
-                    uint8_t bh = obj->var_EE;
-                    if (obj->var_EF != 0xFF && prng.randBool())
+                    uint8_t primaryWallType = obj->wallTypes[0];
+                    uint8_t secondaryWallType = obj->wallTypes[1];
+                    if (obj->wallTypes[2] != 0xFF && prng.randBool())
                     {
-                        bl = obj->var_EF;
-                        bh = obj->var_F0;
+                        primaryWallType = obj->wallTypes[2];
+                        secondaryWallType = obj->wallTypes[3];
                     }
                     uint8_t dl = prng.randNext(7) * 32;
-                    sub_454A43(randTile, bl, bh, dl);
+                    sub_454A43(randTile, primaryWallType, secondaryWallType, dl);
                 }
             }
         }
@@ -514,12 +514,13 @@ namespace OpenLoco
         return true;
     }
 
-    void Industry::sub_454A43(const Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl)
+    void Industry::sub_454A43(const Pos2& pos, uint8_t primaryWallType, uint8_t secondaryWallType, uint8_t dl)
     {
         std::size_t numBorders = 0;
         // Search a 5x5 area centred on Pos
-        TilePos2 topLeft = TilePos2{ pos } - TilePos2{ 2, 2 };
-        for (const auto& tilePos : TilePosRangeView{ topLeft, topLeft + TilePos2{ 6, 6 } })
+        TilePos2 topRight = TilePos2{ pos } - TilePos2{ 2, 2 };
+        TilePos2 bottomLeft = TilePos2{ pos } + TilePos2{ 2, 2 };
+        for (const auto& tilePos : TilePosRangeView{ topRight, topRight + TilePos2{ 6, 6 } })
         {
             if (sub_45510C(tilePos))
             {
@@ -546,14 +547,15 @@ namespace OpenLoco
             ? true
             : false;
 
-        uint32_t randFlags = 0;
-        if (bl != 0xFF && bh != 0xFF)
+        uint32_t randWallTypeFlags = 0;
+        if (primaryWallType != 0xFF && secondaryWallType != 0xFF)
         {
-            randFlags = 1 << (prng.srand_0() & 0xF);
-            randFlags = 1 << ((prng.srand_0() >> 4) & 0x1F);
+            randWallTypeFlags = 1 << (prng.srand_0() & 0xF);
+            randWallTypeFlags = 1 << ((prng.srand_0() >> 4) & 0x1F);
         }
 
-        for (const auto& tilePos : TilePosRangeView{ topLeft, topLeft + TilePos2{ 6, 6 } })
+        std::size_t i = 0;
+        for (const auto& tilePos : TilePosRangeView{ topRight, topRight + TilePos2{ 6, 6 } })
         {
             if (E0C3DC.has_value())
             {
@@ -577,25 +579,39 @@ namespace OpenLoco
             {
                 sub_45510C(tilePos, id(), dl);
             }
-            if (bl == 0xFF)
+            if (primaryWallType == 0xFF)
             {
                 continue;
             }
-            if (bl == 5)
-            {
+            auto getWallPlacementArgs = [randWallTypeFlags, &i, secondaryWallType, primaryWallType, &tilePos](const uint8_t rotation) {
                 GameCommands::WallPlacementArgs args;
                 args.pos = Map::Pos3(Map::Pos2(tilePos), 0);
-                args.
+                args.rotation = rotation;
+                args.type = randWallTypeFlags & (1 << i) ? secondaryWallType : primaryWallType;
+                i++;
+                args.unk = 0;
+                args.primaryColour = Colour::black;
+                args.secondaryColour = Colour::black;
+                return args;
+            };
+            // If on an edge add a wall
+            if (tilePos.x == topRight.x)
+            {
+                GameCommands::doCommand(getWallPlacementArgs(0), GameCommands::Flags::apply);
+            }
+            else if (tilePos.y == topRight.y)
+            {
+                GameCommands::doCommand(getWallPlacementArgs(2), GameCommands::Flags::apply);
+            }
+            else if (tilePos.x == bottomLeft.x)
+            {
+                GameCommands::doCommand(getWallPlacementArgs(3), GameCommands::Flags::apply);
+            }
+            else if (tilePos.y == bottomLeft.y)
+            {
+                GameCommands::doCommand(getWallPlacementArgs(1), GameCommands::Flags::apply);
             }
         }
-        registers regs;
-        regs.bl = bl;
-        regs.bh = bh;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dl = dl;
-        regs.dh = enumValue(id());
-        call(0x00454A43, regs);
     }
 
     // 0x00459D43
