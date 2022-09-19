@@ -357,7 +357,7 @@ namespace OpenLoco::Gfx
 
                 case ControlCodes::newline:
                 case ControlCodes::newlineSmaller:
-                    continue;
+                    break;
 
                 case ControlCodes::Font::small:
                     fontSpriteBase = Font::small;
@@ -381,6 +381,11 @@ namespace OpenLoco::Gfx
                 case ControlCodes::windowColour2:
                 case ControlCodes::windowColour3:
                 case ControlCodes::windowColour4:
+                    break;
+
+                case ControlCodes::newlineXY:
+                    width = *str++;
+                    str++;
                     break;
 
                 case ControlCodes::inlineSpriteStr:
