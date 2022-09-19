@@ -232,6 +232,7 @@ namespace OpenLoco::Map
         MicroZ water() const { return _water & 0x1F; }
         int16_t waterHeight() const { return (_water & 0x1F) * kMicroZStep; }
         void setWater(MicroZ level) { _water = (_water & 0xE0) | (level & 0x1F); };
+        void setVar5SLR5(uint8_t var5) { _water = (_water & 0x1F) | ((var5 << 5) & 0xE0); }
         uint8_t terrain() const { return _terrain & 0x1F; }
         void setTerrain(uint8_t terrain)
         {
@@ -253,6 +254,7 @@ namespace OpenLoco::Map
             _type &= ~0x40;
             _type |= state ? 0x40 : 0;
         }
+        bool hasType6Flag() const { return _type & 0x40; }
         bool hasHighTypeFlag() const { return _type & 0x80; }
         void setHighTypeFlag(bool state)
         {

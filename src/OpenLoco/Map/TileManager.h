@@ -55,4 +55,5 @@ namespace OpenLoco::Map::TileManager
     void removeSurfaceIndustry(const Pos2& pos);
     void createDestructExplosion(const Map::Pos3& pos);
     void removeBuildingElement(BuildingElement& element, const Map::Pos2& pos);
+    void removeAllWallsOnTile(const Map::TilePos2& pos, SmallZ baseHeight);
 }

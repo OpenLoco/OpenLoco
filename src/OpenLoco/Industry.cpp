@@ -14,6 +14,7 @@
 #include "OpenLoco.h"
 #include "StationManager.h"
 #include "Utility/Numeric.hpp"
+#include "ViewportManager.h"
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -453,8 +454,78 @@ namespace OpenLoco
         }
     }
 
+    // 0x0045510C bl == 0
+    static bool sub_45510C(const Map::TilePos2& pos)
+    {
+        if (!Map::validCoords(pos))
+        {
+            return false;
+        }
+
+        const auto tile = Map::TileManager::get(pos);
+        bool passedSurface = false;
+        for (auto& el : tile)
+        {
+            auto* elSurface = el.as<Map::SurfaceElement>();
+            if (elSurface != nullptr)
+            {
+                if (elSurface->water() != 0)
+                {
+                    return false;
+                }
+                if (elSurface->hasType6Flag())
+                {
+                    return false;
+                }
+                passedSurface = true;
+                continue;
+            }
+            if (!passedSurface)
+            {
+                continue;
+            }
+            if (el.as<Map::WallElement>() != nullptr || el.as<Map::TreeElement>() != nullptr)
+            {
+                continue;
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    // 0x0045510C bl == 1
+    static bool sub_45510C(const Map::TilePos2& pos, IndustryId industryId, uint8_t var_EA)
+    {
+        if (!sub_45510C(pos))
+        {
+            return false;
+        }
+
+        const auto tile = Map::TileManager::get(pos);
+        Map::SurfaceElement* surface = tile.surface();
+        surface->setHighTypeFlag(true);
+        surface->setIndustry(industryId);
+        surface->setVar5SLR5((var_EA & 0xE0) >> 5);
+        surface->setVar6SLR5((var_EA & 0x7));
+        Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32);
+        Map::TileManager::removeAllWallsOnTile(pos, surface->baseZ());
+
+        return true;
+    }
+
     void Industry::sub_454A43(const Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl)
     {
+        std::size_t numFences = 0;
+        // Search a 4x4 area centred on Pos
+        TilePos2 topLeft = TilePos2{ pos } - TilePos2{ 2, 2 };
+        for (const auto& tilePos : TilePosRangeView{ topLeft, topLeft + TilePos2{ 5, 5 } })
+        {
+            if (sub_45510C(tilePos))
+            {
+                numFences++;
+            }
+        }
         registers regs;
         regs.bl = bl;
         regs.bh = bh;

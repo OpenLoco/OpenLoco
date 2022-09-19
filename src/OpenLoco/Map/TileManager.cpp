@@ -914,6 +914,35 @@ namespace OpenLoco::Map::TileManager
         TileManager::removeElement(*reinterpret_cast<TileElement*>(&elBuilding));
     }
 
+    // 0x004C482B
+    void removeAllWallsOnTile(const Map::TilePos2& pos, SmallZ baseHeight)
+    {
+        std::vector<Map::TileElement&> toDelete;
+        auto tile = get(pos);
+        for (auto& el : tile)
+        {
+            auto* elWall = el.as<WallElement>();
+            if (elWall == nullptr)
+            {
+                continue;
+            }
+            if (baseHeight >= elWall->clearHeight())
+            {
+                continue;
+            }
+            if (baseHeight + 12 < elWall->baseHeight())
+            {
+                continue;
+            }
+            toDelete.push_back(el);
+        }
+        // Remove in reverse order to prevent pointer invalidation
+        std::for_each(std::rbegin(toDelete), std::rend(toDelete), [&pos](Map::TileElement& el) {
+            Ui::ViewportManager::invalidate(pos, el.baseHeight(), el.baseHeight() + 72, ZoomLevel::half);
+            removeElement(el);
+        });
+    }
+
     // 0x0047AB9B
     void updateYearly()
     {
