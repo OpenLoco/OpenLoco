@@ -186,7 +186,7 @@ namespace OpenLoco::IndustryManager
     static std::optional<Map::Pos2> findRandomNewIndustryLocation(const uint8_t indObjId)
     {
         registers regs;
-        regs.dl = indObjId;
+        regs.edx = indObjId;
         call(0x004599B3, regs);
         if (regs.ax == -1)
         {
