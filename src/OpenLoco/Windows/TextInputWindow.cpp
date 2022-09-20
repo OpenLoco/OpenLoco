@@ -243,6 +243,14 @@ namespace OpenLoco::Ui::Windows::TextInput
         position = { inputSession.xOffset, 1 };
         Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
 
+        position = { window.x + widget->left, window.y + widget->top - 10 };
+        Gfx::drawStringLeft(*rt, &position, Colour::black, StringIds::character_left_label);
+
+        position = { window.x + widget->left + 85, window.y + widget->top - 10 };
+        drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
+        strcpy(drawnBuffer, std::to_string(inputSession.getCharactersLeft()).c_str());
+        Gfx::drawStringLeft(*rt, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
+
         if ((inputSession.cursorFrame % 32) >= 16)
         {
             return;
