@@ -244,12 +244,15 @@ namespace OpenLoco::Ui::Windows::TextInput
         Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
 
         position = { window.x + widget->left, window.y + widget->top - 10 };
-        Gfx::drawStringLeft(*rt, &position, Colour::black, StringIds::character_left_label);
-
-        position = { window.x + widget->left + 85, window.y + widget->top - 10 };
         drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
         strcpy(drawnBuffer, std::to_string(inputSession.getCharactersLeft()).c_str());
-        Gfx::drawStringLeft(*rt, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
+        Gfx::drawStringLeft(*rt, &position, Colour::black, StringIds::wcolour2_stringid, _commonFormatArgs);
+
+        uint8_t charactersLeftStringLength = uint8_t(strlen(StringManager::getString(StringIds::buffer_2039)));
+        /// offset between max_characters_label and value of buffer_2039 depends on how many digits number in buffer_2039 has
+        uint8_t charactersLeftValueOffset = std::floor(charactersLeftStringLength * 6.7);
+        position = { window.x + widget->left + charactersLeftValueOffset, window.y + widget->top - 10 };
+        Gfx::drawStringLeft(*rt, &position, Colour::black, StringIds::max_characters_label);
 
         if ((inputSession.cursorFrame % 32) >= 16)
         {
