@@ -161,6 +161,10 @@ namespace OpenLoco::IndustryManager
             // All required cargo must be producable in world
             for (auto i = 0; i < 3; ++i)
             {
+                if (indObj.requiredCargoType[i] == 0xFF)
+                {
+                    continue;
+                }
                 if (!canCargoTypeBeProducedInWorld(indObj.requiredCargoType[i]))
                 {
                     return false;
@@ -173,6 +177,10 @@ namespace OpenLoco::IndustryManager
             // At least one required cargo must be producable in world
             for (auto i = 0; i < 3; ++i)
             {
+                if (indObj.requiredCargoType[i] == 0xFF)
+                {
+                    continue;
+                }
                 if (canCargoTypeBeProducedInWorld(indObj.requiredCargoType[i]))
                 {
                     return true;
