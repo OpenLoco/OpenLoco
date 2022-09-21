@@ -167,8 +167,8 @@ namespace OpenLoco::Ui::TextInput
             buffer.end());
     }
 
-    uint8_t InputSession::getCharactersLeft()
+    uint16_t InputSession::getCharactersLeft()
     {
-        return static_cast<uint8_t>(maxAmountOfCharacters - cursorPosition);
+        return static_cast<uint16_t>(maxAmountOfCharacters - cursorPosition);
     }
 }

@@ -3,6 +3,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Localisation/FormatArguments.hpp"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Ui/TextInput.h"
@@ -243,16 +244,14 @@ namespace OpenLoco::Ui::Windows::TextInput
         position = { inputSession.xOffset, 1 };
         Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
 
-        position = { window.x + widget->left, window.y + widget->top - 10 };
-        drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
-        strcpy(drawnBuffer, std::to_string(inputSession.getCharactersLeft()).c_str());
-        Gfx::drawStringLeft(*rt, &position, Colour::black, StringIds::wcolour2_stringid, _commonFormatArgs);
 
-        uint8_t charactersLeftStringLength = uint8_t(strlen(StringManager::getString(StringIds::buffer_2039)));
-        /// offset between max_characters_label and value of buffer_2039 depends on how many digits number in buffer_2039 has
-        uint8_t charactersLeftValueOffset = std::floor(charactersLeftStringLength * 6.7);
-        position = { window.x + widget->left + charactersLeftValueOffset, window.y + widget->top - 10 };
-        Gfx::drawStringLeft(*rt, &position, Colour::black, StringIds::max_characters_label);
+        position = Ui::Point(window.x + widget->left, window.y + widget->top - 10);
+        uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
+        uint16_t maxNumCharacters = inputSession.maxAmountOfCharacters;
+        auto args = FormatArguments();
+        args.push<uint16_t>(numCharacters);
+        args.push<uint16_t>(maxNumCharacters);
+        Gfx::drawStringLeft(*rt, &position, Colour::black, StringIds::num_characters_left_int_int, &args);
 
         if ((inputSession.cursorFrame % 32) >= 16)
         {
