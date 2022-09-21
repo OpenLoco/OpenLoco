@@ -269,7 +269,7 @@ namespace OpenLoco::IndustryManager
         {
             const auto randomNum = gPrng().randNext();
             Map::Pos2 randomPos{
-                Map::TilePos2(randomNum % Map::kMapRows, randomNum >> 16 % Map::kMapColumns)
+                Map::TilePos2(randomNum % Map::kMapRows, (randomNum >> 16) % Map::kMapColumns)
             };
 
             if (isTooCloseToNearbyIndustries(randomPos))
