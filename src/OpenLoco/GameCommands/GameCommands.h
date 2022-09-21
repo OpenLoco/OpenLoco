@@ -1219,7 +1219,7 @@ namespace OpenLoco::GameCommands
         explicit IndustryPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx)
             , type(regs.dl)
-            , buildImmediately(regs.bh & 0x80)
+            , buildImmediately(regs.dl & 0x80)
             , srand0(regs.ebp)
             , srand1(regs.edi)
         {
