@@ -2,8 +2,8 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Interop/Interop.hpp"
-#include "../Localisation/StringIds.h"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Ui/TextInput.h"
@@ -243,7 +243,6 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         position = { inputSession.xOffset, 1 };
         Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
-
 
         position = Ui::Point(window.x + widget->left, window.y + widget->top - 10);
         uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
