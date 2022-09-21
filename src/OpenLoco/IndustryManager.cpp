@@ -245,8 +245,11 @@ namespace OpenLoco::IndustryManager
                 args.type = indObjId;
                 args.buildImmediately = buildImmediately;
                 args.pos = *randomIndustryLoc;
+                // To match vanilla we will do this.
+                // TODO: Once match confirmed replace with two randNext() calls
+                const auto temp = gPrng().srand_0();
                 gPrng().randNext();
-                args.srand0 = gPrng().srand_0();
+                args.srand0 = gPrng().srand_0() - temp;
                 args.srand1 = gPrng().srand_1();
 
                 auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
