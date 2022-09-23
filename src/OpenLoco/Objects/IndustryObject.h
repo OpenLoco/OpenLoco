@@ -52,10 +52,14 @@ namespace OpenLoco
         uint32_t var_C6;
         uint16_t designedYear; // 0xCA start year
         uint16_t obsoleteYear; // 0xCC end year
-        uint8_t var_CE;
-        uint8_t costIndex;       // 0xCF
-        int16_t costFactor;      // 0xD0
-        int16_t clearCostFactor; // 0xD2
+        // Total industries of this type that can be created in a scenario
+        // Note: this is not directly comparabile to total industries and vaires based
+        // on scenario total industries cap settings. At low industries cap this value is ~3x the
+        // amount of industries in a scenario.
+        uint8_t totalOfTypeInScenario; // 0xCE
+        uint8_t costIndex;             // 0xCF
+        int16_t costFactor;            // 0xD0
+        int16_t clearCostFactor;       // 0xD2
         uint8_t pad_D4[0xD6 - 0xD4];
         uint16_t var_D6;
         uint8_t pad_D8[0xDA - 0xD8];
