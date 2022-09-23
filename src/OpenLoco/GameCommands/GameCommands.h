@@ -1239,6 +1239,7 @@ namespace OpenLoco::GameCommands
             regs.dl = type | (buildImmediately ? 0x80 : 0);
             regs.ebp = srand0;
             regs.edi = srand1;
+            regs.esi = enumValue(command); // Vanilla bug? Investigate when doing createIndustry
             return regs;
         }
     };
