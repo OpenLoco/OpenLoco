@@ -13,7 +13,7 @@ namespace OpenLoco::Ui::TextInput
     {
         if ((charCode >= SDLK_SPACE && charCode < SDLK_DELETE) || (charCode >= 159 && charCode <= 255))
         {
-            if (buffer.length() == 199)
+            if (buffer.length() == maxNumOfCharcters)
             {
                 return false;
             }

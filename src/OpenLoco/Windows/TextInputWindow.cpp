@@ -9,6 +9,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 #include <SDL2/SDL.h>
+#include <map>
 
 using namespace OpenLoco::Interop;
 
@@ -40,6 +41,20 @@ namespace OpenLoco::Ui::Windows::TextInput
             ok,
         };
     }
+
+    std::map<string_id, int16_t> inputLengthLimit{
+        { StringIds::title_name_owner, 31 },
+        { StringIds::title_name_company, 31 },
+        { StringIds::preferred_owner_name, 31 },
+        { StringIds::scenario_name_title, 63 },
+        { StringIds::scenario_details_title, 199 },
+        { StringIds::title_station_name, 31 },
+        { StringIds::chat_title, 31 },
+        { StringIds::title_industry_name, 31 },
+        { StringIds::enter_host_address, 15 },
+        { StringIds::title_town_name, 31 },
+        { StringIds::title_name_vehicle, 31 }
+    };
 
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 330, 90 }, WidgetType::frame, WindowColour::primary),
@@ -127,7 +142,8 @@ namespace OpenLoco::Ui::Windows::TextInput
         char temp[200] = {};
         StringManager::formatString(temp, value, valueArgs);
 
-        inputSession = Ui::TextInput::InputSession(temp);
+        auto maxInputLength = inputLengthLimit[title];
+        inputSession = Ui::TextInput::InputSession(temp, maxInputLength);
         inputSession.calculateTextOffset(_widgets[Widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);

@@ -13,14 +13,16 @@ namespace OpenLoco::Ui::TextInput
         size_t cursorPosition; // 0x01136FA2
         int16_t xOffset;       // 0x01136FA4
         uint8_t cursorFrame;   // 0x011370A9
+        uint16_t maxNumOfCharcters;
 
         InputSession() = default;
-        InputSession(const std::string initialString)
+        InputSession(const std::string initialString, uint16_t inputLengthLimit = 199)
         {
             buffer = initialString;
             cursorPosition = buffer.length();
             cursorFrame = 0;
             xOffset = 0;
+            maxNumOfCharcters = inputLengthLimit;
         };
 
         bool handleInput(uint32_t charCode, uint32_t keyCode);
