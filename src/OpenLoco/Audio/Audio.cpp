@@ -1135,9 +1135,14 @@ namespace OpenLoco::Audio
         static PathId currentTrackPathId;
 
         auto* channel = getChannel(ChannelId::music);
-        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr || currentTrackPathId == sample)
+        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
         {
             return false;
+        }
+
+        if (currentTrackPathId == sample)
+        {
+            return true;
         }
 
         currentTrackPathId = sample;

@@ -64,6 +64,7 @@ namespace OpenLoco::Audio
         music,
         unk_1,
         ambient,
+        title_deprecated,
         vehicle_0, // * 10
     };
     constexpr int32_t kNumReservedChannels = 4 + 10;
