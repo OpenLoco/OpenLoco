@@ -484,7 +484,8 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        toggleWindow(WindowType::company, Windows::CompanyWindow::open, CompanyManager::getControllingId());
+        Ui::Windows::CompanyWindow::open(CompanyManager::getControllingId());
+        // toggleWindow(WindowType::company, Windows::CompanyWindow::open, CompanyManager::getControllingId()); // TODO: made toggle window behave nicely for companies
     }
 
     // 0x004BF382
