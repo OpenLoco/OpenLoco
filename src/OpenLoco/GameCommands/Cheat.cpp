@@ -34,7 +34,7 @@ namespace OpenLoco::GameCommands
                 if (roadElement != nullptr)
                 {
                     // check to verify that roadElement is owned by the target company
-                    if (roadElement->owner != targetCompanyId)
+                    if (roadElement->owner() != targetCompanyId)
                         continue;
 
                     roadElement->setOwner(ourCompanyId);
@@ -45,7 +45,7 @@ namespace OpenLoco::GameCommands
                 if (trackElement != nullptr)
                 {
                     // check to verify that the trackElement is owned by the target company
-                    if (trackElement->owner != targetCompanyId)
+                    if (trackElement->owner() != targetCompanyId)
                         continue;
 
                     trackElement->setOwner(ourCompanyId);
