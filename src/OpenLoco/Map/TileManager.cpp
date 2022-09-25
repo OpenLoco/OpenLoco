@@ -691,7 +691,7 @@ namespace OpenLoco::Map::TileManager
 
         uint16_t surroundingDesertTiles = 0;
 
-        for (const auto& tilePos : TilePosRangeView(initialTilePos, initialTilePos + Map::TilePos2{ 11, 11 }))
+        for (const auto& tilePos : TilePosRangeView(initialTilePos, initialTilePos + Map::TilePos2{ 10, 10 }))
         {
             if (!Map::validCoords(tilePos))
                 continue;
