@@ -267,9 +267,16 @@ namespace OpenLoco::IndustryManager
         auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
         for (auto i = 0; i < 250; ++i)
         {
+            // Replace the below with this after validating the function
+            // Map::Pos2 randomPos{
+            //     Map::TilePos2(gPrng().randNext(Map::kMapRows), gPrng().randNext(Map::kMapColumns))
+            // };
             const auto randomNum = gPrng().randNext();
+
             Map::Pos2 randomPos{
-                Map::TilePos2(randomNum % Map::kMapRows, (randomNum >> 16) % Map::kMapColumns)
+                Map::TilePos2(
+                    (((randomNum >> 16) * Map::kMapRows) >> 16),
+                    (((randomNum & 0xFFFF) * Map::kMapColumns) >> 16))
             };
 
             if (isTooCloseToNearbyIndustries(randomPos))
@@ -375,7 +382,7 @@ namespace OpenLoco::IndustryManager
                     continue;
                 }
                 const auto& [townId, builtUp] = *res;
-                if (builtUp != 0)
+                if (builtUp == 0)
                 {
                     const auto* town = TownManager::get(townId);
                     if (Math::Vector::manhattanDistance(randomPos, Map::Pos2{ town->x, town->y }) > 576)
