@@ -38,6 +38,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCommands\ChangeCompanyColour.cpp" />
     <ClCompile Include="GameCommands\ChangeCompanyFace.cpp" />
+    <ClCompile Include="GameCommands\ChangeLoan.cpp" />
     <ClCompile Include="GameCommands\ChangeLandMaterial.cpp" />
     <ClCompile Include="GameCommands\Cheat.cpp" />
     <ClCompile Include="GameCommands\CreateTree.cpp" />
