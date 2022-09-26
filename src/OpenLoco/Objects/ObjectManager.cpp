@@ -536,7 +536,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00471BC5
-    bool load(const ObjectHeader& header, LoadedObjectId id)
+    static bool load(const ObjectHeader& header, LoadedObjectId id)
     {
         // somewhat duplicates isObjectInstalled
         const auto installedObjects = getAvailableObjects(header.getType());
@@ -603,7 +603,7 @@ namespace OpenLoco::ObjectManager
         return true;
     }
 
-    std::optional<LoadedObjectId> findFreeObjectId(const ObjectType type)
+    static std::optional<LoadedObjectId> findFreeObjectId(const ObjectType type)
     {
         for (LoadedObjectId id = 0; id < getMaxObjects(type); ++id)
         {

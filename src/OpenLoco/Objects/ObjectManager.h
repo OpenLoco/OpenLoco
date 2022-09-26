@@ -155,15 +155,11 @@ namespace OpenLoco::ObjectManager
     LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects);
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
-    std::optional<LoadedObjectId> findFreeObjectId(const ObjectType type);
-
     void unloadAll();
     // Only unloads the entry (resets entry does not free)
     void unload(const LoadedObjectHandle& handle);
     // Unloads and frees the entry
     void unload(const ObjectHeader& header);
-
-    bool load(const ObjectHeader& header, LoadedObjectId id);
     bool load(const ObjectHeader& header);
 
     bool tryInstallObject(const ObjectHeader& object, stdx::span<const uint8_t> data);
