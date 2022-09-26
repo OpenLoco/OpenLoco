@@ -1,6 +1,7 @@
 22.09+ (???)
 ------------------------------------------------------------------------
 - Fix: [#1237] Long entity (company) names may be cut-off incorrectly.
+- Fix: [#1650] Acquire all company assets cheat may cause some trains and trams to crash.
 
 22.09 (2022-09-04)
 ------------------------------------------------------------------------
