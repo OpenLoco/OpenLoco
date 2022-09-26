@@ -3,6 +3,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Ui/WindowManager.h"
 #include "GameCommands.h"
 
 using namespace OpenLoco::Interop;
@@ -59,10 +60,18 @@ namespace OpenLoco::GameCommands
         // See whether any other company is using this competitor already
         for (auto& company : CompanyManager::companies())
         {
-            if (company.competitorId == foundCompetitorId && company.id() != targetCompanyId)
+            if (company.competitorId == foundCompetitorId)
             {
-                GameCommands::setErrorText(StringIds::already_selected_for_another_company);
-                return GameCommands::FAILURE;
+                if (company.id() != targetCompanyId)
+                {
+                    GameCommands::setErrorText(StringIds::already_selected_for_another_company);
+                    return GameCommands::FAILURE;
+                }
+                else
+                {
+                    // No change; no work required
+                    return 0;
+                }
             }
         }
 
@@ -70,15 +79,42 @@ namespace OpenLoco::GameCommands
         if ((flags & GameCommands::Flags::apply) == 0)
             return 0;
 
-        // Do we need to load the competitor still?
+        // Do we need to load the competitor, still?
         if (foundCompetitorId == 0xFF)
         {
-            // TODO from 0x004355D9
+            // Load the new competitor object
+            if (!ObjectManager::load(targetHeader))
+                return GameCommands::FAILURE;
+
+            ObjectManager::reloadAll();
+            Ui::WindowManager::close(Ui::WindowType::dropdown);
+
+            auto competitorHandle = ObjectManager::findObjectHandle(targetHeader);
+            if (!competitorHandle)
+                return GameCommands::FAILURE;
+
+            foundCompetitorId = competitorHandle->id;
         }
 
-        // Apply new competitor id to target company
-        // TODO from 0x00435644
+        // Unload the target company's current competitor
+        auto* targetCompany = CompanyManager::get(targetCompanyId);
+        ObjectManager::unload(_competitorHeaders[targetCompany->competitorId]);
+        ObjectManager::reloadAll();
+        Ui::WindowManager::close(Ui::WindowType::dropdown);
 
+        // Set the new competitor id
+        targetCompany->competitorId = foundCompetitorId;
+
+        // Non-player companies should use the competitor object name
+        if (!CompanyManager::isPlayerCompany(targetCompanyId))
+        {
+            auto* competitor = ObjectManager::get<CompetitorObject>(foundCompetitorId);
+            auto oldName = targetCompany->name;
+            targetCompany->name = competitor->var_00;
+            StringManager::emptyUserString(oldName);
+        }
+
+        Gfx::invalidateScreen();
         return 0;
     }
 
