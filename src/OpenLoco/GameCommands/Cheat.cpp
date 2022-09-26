@@ -33,17 +33,19 @@ namespace OpenLoco::GameCommands
                 auto* roadElement = element.as<RoadElement>();
                 if (roadElement != nullptr)
                 {
-                    // check to verify that roadElement is owned by the target company
+                    // Check to verify that roadElement is owned by the target company
                     if (roadElement->owner() == targetCompanyId)
                         roadElement->setOwner(ourCompanyId);
+                    continue;
                 }
 
                 auto* trackElement = element.as<TrackElement>();
                 if (trackElement != nullptr)
                 {
-                    // check to verify that the trackElement is owned by the target company.
+                    // Check to verify that the trackElement is owned by the target company.
                     if (trackElement->owner() == targetCompanyId)
                         trackElement->setOwner(ourCompanyId);
+                    continue;
                 }
             }
 
