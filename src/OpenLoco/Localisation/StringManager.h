@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <string_view>
 #include <utility>
+#include "../Limits.h"
 
 #ifdef small
 #error "small is defined, likely by windows.h"
@@ -135,6 +136,11 @@ namespace OpenLoco
 
 namespace OpenLoco::StringManager
 {
+    const uint8_t kUserStringSize = 32;
+
+    const uint16_t kUserStringsStart = 0x8000;
+    const uint16_t kUserStringsEnd = kUserStringsStart + Limits::kMaxUserStrings;
+
     void reset();
     void setString(string_id id, std::string_view value);
     const char* getString(string_id id);

@@ -182,7 +182,6 @@ namespace OpenLoco::Ui::TextInput
             {
                 return uint16_t(std::size(mOptions.scenarioName) - 1);
             }
-
         }
 
         return uint16_t(StringManager::kUserStringSize - 1);
