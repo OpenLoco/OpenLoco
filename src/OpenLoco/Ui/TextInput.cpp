@@ -13,7 +13,7 @@ namespace OpenLoco::Ui::TextInput
     {
         if ((charCode >= SDLK_SPACE && charCode < SDLK_DELETE) || (charCode >= 159 && charCode <= 255))
         {
-            if (buffer.length() == inputLenLimit)
+            if (buffer.length() == size_t(inputLenLimit))
             {
                 return false;
             }
@@ -165,26 +165,5 @@ namespace OpenLoco::Ui::TextInput
                     return true;
                 }),
             buffer.end());
-    }
-
-    uint16_t InputSession::calculateInputLenLimit(string_id callerTitle, string_id field)
-    {
-        if (field == StringIds::buffer_2039)
-        {
-            auto& mOptions = S5::getOptions();
-
-            if (callerTitle == StringIds::scenario_details_title)
-            {
-                return uint16_t(std::size(mOptions.scenarioDetails) - 1);    
-            }
-
-            if (callerTitle == StringIds::scenario_name_title)
-            {
-                return uint16_t(std::size(mOptions.scenarioName) - 1);
-            }
-
-        }
-
-        return uint16_t(StringManager::kUserStringSize - 1);
     }
 }

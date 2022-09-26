@@ -756,8 +756,9 @@ namespace OpenLoco::Ui::Windows::Industry
             args.push<int64_t>(0);
             args.push(industry->name);
             args.push(industry->town);
+            auto inputSize = StringManager::kUserStringSize - 1;
 
-            TextInput::openTextInput(self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
+            TextInput::openTextInput(self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, inputSize, widgetIndex, &industry->town);
         }
 
         // 0x00455CC7

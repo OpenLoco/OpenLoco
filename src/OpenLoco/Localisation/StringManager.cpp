@@ -21,6 +21,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::StringManager
 {
+    const uint16_t kUserStringsStart = 0x8000;
+    const uint16_t kUserStringsEnd = kUserStringsStart + Limits::kMaxUserStrings;
+
     const uint16_t kMaxTownNames = 345;
     const uint16_t kTownNamesStart = 0x9EE7;
     const uint16_t kTownNamesEnd = kTownNamesStart + kMaxTownNames;

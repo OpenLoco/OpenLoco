@@ -57,7 +57,8 @@ namespace OpenLoco::Ui::Windows::TextInput
             0x004CE523,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                openTextInput((Ui::Window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
+                auto inputSize = StringManager::kUserStringSize - 1;
+                openTextInput((Ui::Window*)regs.esi, regs.ax, regs.bx, regs.cx, inputSize, regs.dx, (void*)0x0112C836);
                 regs = backup;
                 return 0;
             });
@@ -95,7 +96,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
+    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int inputSize, int callingWidget, void* valueArgs)
     {
         _title = title;
         _message = message;
@@ -112,7 +113,6 @@ namespace OpenLoco::Ui::Windows::TextInput
         _events.onMouseUp = onMouseUp;
         _events.onUpdate = onUpdate;
 
-        
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
             { 330, 90 },
@@ -128,7 +128,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         char temp[200] = {};
         StringManager::formatString(temp, value, valueArgs);
 
-        inputSession = Ui::TextInput::InputSession(temp, title, value);
+        inputSession = Ui::TextInput::InputSession(temp, inputSize);
         inputSession.calculateTextOffset(_widgets[Widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         window->setColour(WindowColour::primary, caller->getColour(WindowColour::primary));
         window->setColour(WindowColour::secondary, caller->getColour(WindowColour::secondary));
         window->owner = caller->owner;
-           
+
         if (caller->type == WindowType::titleMenu)
         {
             InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();

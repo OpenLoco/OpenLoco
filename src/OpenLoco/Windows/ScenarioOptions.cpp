@@ -1074,8 +1074,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 {
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, S5::getOptions().scenarioName, 512);
+                    auto inputSize = std::size(S5::getOptions().scenarioName) - 1;
 
-                    TextInput::openTextInput(&self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
+                    TextInput::openTextInput(&self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, inputSize, widgetIndex, nullptr);
                     break;
                 }
 
@@ -1083,8 +1084,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 {
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, S5::getOptions().scenarioDetails, 512);
+                    auto inputSize = std::size(S5::getOptions().scenarioDetails) - 1;
 
-                    TextInput::openTextInput(&self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
+                    TextInput::openTextInput(&self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, inputSize, widgetIndex, nullptr);
                     break;
                 }
             }

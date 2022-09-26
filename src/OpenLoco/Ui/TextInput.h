@@ -1,6 +1,5 @@
 #include "../Graphics/Gfx.h"
-#include "../S5/S5.h"
-#include "../Localisation/StringIds.h"
+#include "../Localisation/StringManager.h"
 
 #include <cstdint>
 #include <string>
@@ -15,28 +14,21 @@ namespace OpenLoco::Ui::TextInput
         size_t cursorPosition; // 0x01136FA2
         int16_t xOffset;       // 0x01136FA4
         uint8_t cursorFrame;   // 0x011370A9
-        uint16_t inputLenLimit;
+        int inputLenLimit;
 
         InputSession() = default;
-        InputSession(const std::string initialString)
+        InputSession(const std::string initialString, int inputSize = StringManager::kUserStringSize)
         {
             buffer = initialString;
             cursorPosition = buffer.length();
             cursorFrame = 0;
-            xOffset = 0;          
-            inputLenLimit = StringManager::kUserStringSize;
+            xOffset = 0;
+            inputLenLimit = inputSize;
         };
-
-        InputSession(const std::string intialString, string_id callerTitle, string_id field)
-            : InputSession(intialString)
-        {
-            inputLenLimit = calculateInputLenLimit(callerTitle, field);
-        }
 
         bool handleInput(uint32_t charCode, uint32_t keyCode);
         bool needsReoffsetting(int16_t containerWidth);
         void calculateTextOffset(int16_t containerWidth);
         void sanitizeInput();
-        uint16_t calculateInputLenLimit(string_id callerTitle, string_id field);
     };
 }

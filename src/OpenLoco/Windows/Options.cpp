@@ -2236,8 +2236,9 @@ namespace OpenLoco::Ui::Windows::Options
             char* playerName = Config::get().preferredName;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
+            auto inputSize = StringManager::kUserStringSize - 1;
 
-            TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, Widx::use_preferred_owner_name, nullptr);
+            TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, inputSize, Widx::use_preferred_owner_name, nullptr);
         }
 
         // 0x004C1342
