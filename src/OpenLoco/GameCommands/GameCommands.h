@@ -1717,6 +1717,12 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/ChangeCompanyColour.cpp
     void changeCompanyColour(registers& regs);
 
+    // Defined in GameCommands/ChangeCompanyFace.cpp
+    void changeCompanyFace(registers& regs);
+
+    // Defined in GameCommands/ChangeLandMaterial.cpp
+    void changeLandMaterial(registers& regs);
+
     // Defined in GameCommands/ChangeLoan.cpp
     void changeLoan(registers& regs);
 
@@ -1727,6 +1733,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/LoadSaveQuit.cpp
     void loadSaveQuit(registers& regs);
+
+    // Defined in GameCommands/RemoveBuilding.cpp
+    void removeBuilding(registers& regs);
 
     // Defined in GameCommands/RemoveTree.cpp
     void removeTree(registers& regs);
@@ -1764,12 +1773,6 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/UpdateOwnerStatus.cpp
     void updateOwnerStatus(registers& regs);
-
-    // Defined in GameCommands/ChangeLandMaterial.cpp
-    void changeLandMaterial(registers& regs);
-
-    // Defined in GameCommands/RemoveBuilding.cpp
-    void removeBuilding(registers& regs);
 
     const Map::Pos3& getPosition();
     void setPosition(const Map::Pos3& pos);
