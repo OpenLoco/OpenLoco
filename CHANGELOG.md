@@ -1,5 +1,6 @@
 22.09+ (???)
 ------------------------------------------------------------------------
+- Change: [#1623] Title screen music volume is now bound to the music volume setting.
 - Fix: [#1237] Long entity (company) names may be cut-off incorrectly.
 
 22.09 (2022-09-04)
