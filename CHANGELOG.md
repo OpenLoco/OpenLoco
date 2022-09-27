@@ -1,5 +1,6 @@
 22.09+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1608] Added character limit label in text input windows.
 - Change: [#1623] Title screen music volume is now bound to the music volume setting.
 - Fix: [#1237] Long entity (company) names may be cut-off incorrectly.
 - Fix: [#1650] Acquire all company assets cheat may cause some trains and trams to crash.

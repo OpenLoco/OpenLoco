@@ -2,6 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
@@ -242,6 +243,16 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         position = { inputSession.xOffset, 1 };
         Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
+
+        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
+        const uint16_t maxNumCharacters = inputSession.inputLenLimit;
+
+        auto args = FormatArguments();
+        args.push<uint16_t>(numCharacters);
+        args.push<uint16_t>(maxNumCharacters);
+
+        widget = &_widgets[Widx::ok];
+        Gfx::drawStringRight(*rt, window.x + widget->left - 5, window.y + widget->top + 1, Colour::black, StringIds::num_characters_left_int_int, &args);
 
         if ((inputSession.cursorFrame % 32) >= 16)
         {
