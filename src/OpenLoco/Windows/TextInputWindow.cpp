@@ -245,8 +245,9 @@ namespace OpenLoco::Ui::Windows::TextInput
         Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
 
         position = Ui::Point(window.x + widget->left, window.y + widget->top - 10);
-        uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
-        uint16_t maxNumCharacters = inputSession.maxAmountOfCharacters;
+        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
+        const uint16_t maxNumCharacters = inputSession.maxAmountOfCharacters;
+
         auto args = FormatArguments();
         args.push<uint16_t>(numCharacters);
         args.push<uint16_t>(maxNumCharacters);
