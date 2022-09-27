@@ -61,10 +61,10 @@ namespace OpenLoco::Audio
 
     enum class ChannelId
     {
-        bgm,
+        music,
         unk_1,
         ambient,
-        title,
+        title_deprecated,
         vehicle_0, // * 10
     };
     constexpr int32_t kNumReservedChannels = 4 + 10;
@@ -118,9 +118,8 @@ namespace OpenLoco::Audio
 
     void resetMusic();
     void playBackgroundMusic();
-    void stopBackgroundMusic();
-    void playTitleScreenMusic();
-    void stopTitleMusic();
+    void stopMusic();
+    bool playMusic(Environment::PathId sample, int32_t volume, bool loop);
 
     void resetSoundObjects();
 

@@ -1,6 +1,7 @@
 #include "Title.h"
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
+#include "Config.h"
 #include "Core/Variant.hpp"
 #include "Environment.h"
 #include "Game.h"
@@ -185,7 +186,15 @@ namespace OpenLoco::Title
         Gfx::invalidateScreen();
         resetScreenAge();
 
-        Audio::playTitleScreenMusic();
+        if (Config::getNew().audio.playTitleMusic)
+        {
+            Audio::playMusic(Environment::PathId::css5, Config::get().volume, true);
+        }
+    }
+
+    void stop()
+    {
+        Audio::stopMusic();
     }
 
     // 0x00444387

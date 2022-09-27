@@ -124,6 +124,11 @@ namespace OpenLoco::Game
     // 0x0043BFF8
     void loadGame()
     {
+        if (isTitleMode())
+        {
+            Title::stop();
+        }
+
         GameCommands::do_21(1, 0);
         Input::toolCancel();
 

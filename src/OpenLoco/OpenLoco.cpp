@@ -686,13 +686,8 @@ namespace OpenLoco
                     {
                         EditorController::tick();
                     }
-                    Audio::playBackgroundMusic();
 
-                    // TODO move stop title music to title::stop (when mode changes)
-                    if (!isTitleMode())
-                    {
-                        Audio::stopTitleMusic();
-                    }
+                    Audio::playBackgroundMusic();
 
                     if (Tutorial::state() != Tutorial::State::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                     {
