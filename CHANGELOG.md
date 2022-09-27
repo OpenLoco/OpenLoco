@@ -1,6 +1,7 @@
 22.09+ (???)
 ------------------------------------------------------------------------
 - Fix: [#1237] Long entity (company) names may be cut-off incorrectly.
+- Fix: [#1608] Added character limit label in text input windows.
 
 22.09 (2022-09-04)
 ------------------------------------------------------------------------
