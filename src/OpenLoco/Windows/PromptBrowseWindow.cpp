@@ -112,9 +112,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
         Utility::strcpy_safe(_filter, filter);
 
-        auto inputSize = StringManager::kUserStringSize - 1;
         changeDirectory(directory.make_preferred());
-        inputSession = Ui::TextInput::InputSession(baseName, inputSize);
+        inputSession = Ui::TextInput::InputSession(baseName, 200);
 
         initEvents();
 
