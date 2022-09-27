@@ -57,8 +57,8 @@ namespace OpenLoco::Ui::Windows::TextInput
             0x004CE523,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto inputSize = StringManager::kUserStringSize - 1;
-                openTextInput((Ui::Window*)regs.esi, regs.ax, regs.bx, regs.cx, inputSize, regs.dx, (void*)0x0112C836);
+                
+                openTextInput((Ui::Window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
                 regs = backup;
                 return 0;
             });
@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, uint32_t inputSize, int callingWidget, void* valueArgs)
+    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs, uint32_t inputSize)
     {
         _title = title;
         _message = message;

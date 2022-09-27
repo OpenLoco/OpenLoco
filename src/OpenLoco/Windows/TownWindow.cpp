@@ -674,9 +674,8 @@ namespace OpenLoco::Ui::Windows::Town
             auto town = TownManager::get(TownId(self->number));
             _commonFormatArgs[4] = town->name;
             _commonFormatArgs[8] = town->name;
-            auto inputSize = StringManager::kUserStringSize - 1;
 
-            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, inputSize, widgetIndex, &_commonFormatArgs);
+            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &_commonFormatArgs);
         }
 
         // 0x004991BC

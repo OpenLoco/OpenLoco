@@ -388,9 +388,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         auto& cfg = Config::get();
         StringManager::setString(StringIds::buffer_2039, Utility::nullTerminatedView(cfg.lastHost));
-        auto inputSize = StringManager::kUserStringSize - 1;
 
-        TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, inputSize, Widx::multiplayer_toggle_btn, nullptr);
+        TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, Widx::multiplayer_toggle_btn, nullptr);
     }
 
     static void multiplayerConnect(std::string_view host)
@@ -445,10 +444,9 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         WindowManager::close(WindowType::multiplayer);
 
         addr<0x112C826 + 8, string_id>() = StringIds::the_other_player;
-        auto inputSize = StringManager::kUserStringSize - 1;
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(callingWindow, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, inputSize, callingWidget, (void*)0x112C826);
+        TextInput::openTextInput(callingWindow, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, (void*)0x112C826);
     }
 
     static void sub_43918F(const char* string)

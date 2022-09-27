@@ -874,9 +874,8 @@ namespace OpenLoco::Ui::Windows::Station
             args.push<int64_t>(0);
             args.push(station->name);
             args.push(station->town);
-            auto inputSize = StringManager::kUserStringSize - 1;
 
-            TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, inputSize, widgetIndex, &station->town);
+            TextInput::openTextInput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
         }
 
         // 0x0048E520
