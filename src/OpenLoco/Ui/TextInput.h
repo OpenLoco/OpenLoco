@@ -29,6 +29,5 @@ namespace OpenLoco::Ui::TextInput
         bool needsReoffsetting(int16_t containerWidth);
         void calculateTextOffset(int16_t containerWidth);
         void sanitizeInput();
-        uint16_t getCharactersLeft();
     };
 }
