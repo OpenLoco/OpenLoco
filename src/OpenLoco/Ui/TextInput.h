@@ -1,5 +1,4 @@
 #include "../Graphics/Gfx.h"
-#include "../Localisation/StringManager.h"
 
 #include <cstdint>
 #include <string>

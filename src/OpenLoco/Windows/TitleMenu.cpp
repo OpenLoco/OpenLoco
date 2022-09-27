@@ -388,7 +388,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         auto& cfg = Config::get();
         StringManager::setString(StringIds::buffer_2039, Utility::nullTerminatedView(cfg.lastHost));
-
         TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, Widx::multiplayer_toggle_btn, nullptr);
     }
 

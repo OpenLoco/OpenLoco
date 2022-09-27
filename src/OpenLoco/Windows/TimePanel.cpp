@@ -245,7 +245,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void beginSendChatMessage(Window* self)
     {
         _commonFormatArgs[4] = StringIds::empty;
-
         TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, &*_commonFormatArgs);
     }
 
