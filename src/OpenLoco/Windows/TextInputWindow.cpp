@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int inputSize, int callingWidget, void* valueArgs)
+    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, uint32_t inputSize, int callingWidget, void* valueArgs)
     {
         _title = title;
         _message = message;

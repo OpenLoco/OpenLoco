@@ -14,10 +14,10 @@ namespace OpenLoco::Ui::TextInput
         size_t cursorPosition; // 0x01136FA2
         int16_t xOffset;       // 0x01136FA4
         uint8_t cursorFrame;   // 0x011370A9
-        int inputLenLimit;
+        uint32_t inputLenLimit;
 
         InputSession() = default;
-        InputSession(const std::string initialString, int inputSize = StringManager::kUserStringSize)
+        InputSession(const std::string initialString, uint32_t inputSize = StringManager::kUserStringSize - 1)
         {
             buffer = initialString;
             cursorPosition = buffer.length();
