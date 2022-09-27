@@ -1,6 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
 #include "../Date.h"
+#include "../Environment.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -853,7 +854,10 @@ namespace OpenLoco::Ui::Windows::Options
             cfg.audio.playTitleMusic = !cfg.audio.playTitleMusic;
             Config::write();
 
-            Audio::playTitleScreenMusic();
+            if (cfg.audio.playTitleMusic)
+            {
+                Audio::playMusic(Environment::PathId::css5, -500, true);
+            }
 
             w->invalidate();
         }
@@ -1087,7 +1091,7 @@ namespace OpenLoco::Ui::Windows::Options
             cfg.musicPlaying = 0;
             Config::write();
 
-            Audio::stopBackgroundMusic();
+            Audio::stopMusic();
 
             _currentSong = -1;
 
@@ -1113,7 +1117,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::get().musicPlaying == 0)
                 return;
 
-            Audio::stopBackgroundMusic();
+            Audio::stopMusic();
 
             _currentSong = -1;
 
@@ -1230,7 +1234,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (track == _currentSong)
                 return;
 
-            Audio::stopBackgroundMusic();
+            Audio::stopMusic();
 
             _currentSong = track;
             _lastSong = track;

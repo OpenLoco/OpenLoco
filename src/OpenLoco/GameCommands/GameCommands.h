@@ -1219,7 +1219,7 @@ namespace OpenLoco::GameCommands
         explicit IndustryPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx)
             , type(regs.dl)
-            , buildImmediately(regs.bh & 0x80)
+            , buildImmediately(regs.dl & 0x80)
             , srand0(regs.ebp)
             , srand1(regs.edi)
         {
@@ -1239,6 +1239,7 @@ namespace OpenLoco::GameCommands
             regs.dl = type | (buildImmediately ? 0x80 : 0);
             regs.ebp = srand0;
             regs.edi = srand1;
+            regs.esi = enumValue(command); // Vanilla bug? Investigate when doing createIndustry
             return regs;
         }
     };

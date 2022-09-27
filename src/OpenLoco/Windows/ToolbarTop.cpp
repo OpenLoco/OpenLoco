@@ -303,7 +303,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 if (config.musicPlaying)
                 {
                     config.musicPlaying = false;
-                    Audio::stopBackgroundMusic();
+                    Audio::stopMusic();
                 }
                 else
                 {

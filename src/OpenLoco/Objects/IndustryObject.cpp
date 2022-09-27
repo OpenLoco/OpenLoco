@@ -120,7 +120,7 @@ namespace OpenLoco
             return false;
         }
 
-        if (var_CE == 0 || var_CE > 32)
+        if (totalOfTypeInScenario == 0 || totalOfTypeInScenario > 32)
         {
             return false;
         }
