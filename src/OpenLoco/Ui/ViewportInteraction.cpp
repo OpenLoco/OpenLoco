@@ -279,15 +279,15 @@ namespace OpenLoco::Ui::ViewportInteraction
     static std::optional<uint32_t> vehicleDistanceFromLocation(const Vehicles::VehicleBase& component, const viewport_pos& targetPosition)
     {
         ViewportRect rect = {
-            component.sprite_left,
-            component.sprite_top,
-            component.sprite_bottom,
-            component.sprite_right
+            component.spriteLeft,
+            component.spriteTop,
+            component.spriteBottom,
+            component.spriteRight
         };
         if (rect.contains(targetPosition))
         {
-            uint32_t xDiff = std::abs(targetPosition.x - (component.sprite_right + component.sprite_left) / 2);
-            uint32_t yDiff = std::abs(targetPosition.y - (component.sprite_top + component.sprite_bottom) / 2);
+            uint32_t xDiff = std::abs(targetPosition.x - (component.spriteRight + component.spriteLeft) / 2);
+            uint32_t yDiff = std::abs(targetPosition.y - (component.spriteTop + component.spriteBottom) / 2);
             return xDiff + yDiff;
         }
         return {};
@@ -295,7 +295,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
     static void checkAndSetNearestVehicle(uint32_t& nearestDistance, Vehicles::VehicleBase*& nearestVehicle, Vehicles::VehicleBase& checkVehicle, const viewport_pos& targetPosition)
     {
-        if (checkVehicle.sprite_left != Location::null)
+        if (checkVehicle.spriteLeft != Location::null)
         {
             auto distanceRes = vehicleDistanceFromLocation(checkVehicle, targetPosition);
             if (distanceRes)
@@ -997,21 +997,21 @@ namespace OpenLoco::Ui::ViewportInteraction
 
             chosenV = vp;
             auto vpPos = vp->screenToViewport({ screenPos.x, screenPos.y });
-            _rt1->zoom_level = vp->zoom;
+            _rt1->zoomLevel = vp->zoom;
             _rt1->x = (0xFFFF << vp->zoom) & vpPos.x;
             _rt1->y = (0xFFFF << vp->zoom) & vpPos.y;
             _rt2->x = _rt1->x;
             _rt2->y = _rt1->y;
             _rt2->width = 1;
             _rt2->height = 1;
-            _rt2->zoom_level = _rt1->zoom_level;
+            _rt2->zoomLevel = _rt1->zoomLevel;
             auto* session = Paint::allocateSession(_rt2, vp->flags);
             session->generate();
             session->arrangeStructs();
             interaction = session->getNormalInteractionInfo(flags);
             if (!(vp->flags & ViewportFlags::station_names_displayed))
             {
-                if (_rt2->zoom_level <= Config::get().stationNamesMinScale)
+                if (_rt2->zoomLevel <= Config::get().stationNamesMinScale)
                 {
                     auto stationInteraction = session->getStationNameInteractionInfo(flags);
                     if (stationInteraction.type != InteractionItem::noInteraction)

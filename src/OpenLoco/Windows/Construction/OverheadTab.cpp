@@ -491,7 +491,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 clipped->x += screenPos.x;
                 clipped->y += screenPos.y;
 
-                const auto previewPos = Map::Pos3(256 * Map::tile_size, 256 * Map::tile_size, 116 * Map::kSmallZStep);
+                const auto previewPos = Map::Pos3(256 * Map::kTileSize, 256 * Map::kTileSize, 116 * Map::kSmallZStep);
 
                 _byte_522095 = _byte_522095 | (1 << 0);
 

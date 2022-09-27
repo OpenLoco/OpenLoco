@@ -39,15 +39,15 @@ namespace OpenLoco
     void CurrencyObject::unload()
     {
         name = 0;
-        prefix_symbol = 0;
-        suffix_symbol = 0;
-        object_icon = 0;
+        prefixSymbol = 0;
+        suffixSymbol = 0;
+        objectIcon = 0;
     }
 
     // 0x0046DFC3
     void CurrencyObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        auto currencyIndex = object_icon + 3;
+        auto currencyIndex = objectIcon + 3;
 
         auto defaultElement = Gfx::getG1Element(ImageIds::currency_symbol);
         auto backupElement = *defaultElement;

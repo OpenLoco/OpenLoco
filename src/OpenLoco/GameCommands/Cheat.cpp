@@ -90,7 +90,7 @@ namespace OpenLoco::GameCommands
             for (auto& town : TownManager::towns())
             {
                 // Does this town have a rating for our company?
-                if (!(town.companies_with_rating &= (1 << enumValue(companyId))))
+                if (!(town.companiesWithRating &= (1 << enumValue(companyId))))
                     continue;
 
                 int16_t newRanking{};
@@ -100,13 +100,13 @@ namespace OpenLoco::GameCommands
                 }
                 else
                 {
-                    newRanking = town.company_ratings[enumValue(companyId)] + kMaxCompanyRating;
+                    newRanking = town.companyRatings[enumValue(companyId)] + kMaxCompanyRating;
                     newRanking *= 1.0f + (1.0f / value);
                     newRanking -= kMaxCompanyRating;
                 }
 
                 // Set the new rating.
-                town.company_ratings[enumValue(companyId)] = std::clamp<int16_t>(newRanking, kMinCompanyRating, kMaxCompanyRating);
+                town.companyRatings[enumValue(companyId)] = std::clamp<int16_t>(newRanking, kMinCompanyRating, kMaxCompanyRating);
             }
 
             return 0;

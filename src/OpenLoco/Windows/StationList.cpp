@@ -21,11 +21,11 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::StationList
 {
-    static const Ui::Size window_size = { 600, 197 };
-    static const Ui::Size max_dimensions = { 640, 1200 };
-    static const Ui::Size min_dimensions = { 192, 100 };
+    static constexpr Ui::Size kWindowSize = { 600, 197 };
+    static constexpr Ui::Size kMaxDimensions = { 640, 1200 };
+    static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
-    static const uint8_t rowHeight = 10; // CJK: 13
+    static constexpr uint8_t kRowHeight = 10; // CJK: 13
 
     enum widx
     {
@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::StationList
         CargoAccepted,
     };
 
-    loco_global<uint16_t[4], 0x112C826> _common_format_args;
+    loco_global<uint16_t[4], 0x112C826> _commonFormatArgs;
 
     static Ui::CursorId cursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
@@ -304,24 +304,24 @@ namespace OpenLoco::Ui::Windows::StationList
             // 0x00491010
             window = WindowManager::createWindow(
                 WindowType::stationList,
-                window_size,
+                kWindowSize,
                 WindowFlags::flag_11,
                 &_events);
 
             window->number = enumValue(companyId);
             window->owner = companyId;
             window->currentTab = 0;
-            window->frame_no = 0;
+            window->frameNo = 0;
             window->sortMode = 0;
             window->var_83C = 0;
             window->rowHover = -1;
 
             refreshStationList(window);
 
-            window->minWidth = min_dimensions.width;
-            window->minHeight = min_dimensions.height;
-            window->maxWidth = max_dimensions.width;
-            window->maxHeight = max_dimensions.height;
+            window->minWidth = kMinDimensions.width;
+            window->minHeight = kMinDimensions.height;
+            window->maxWidth = kMaxDimensions.width;
+            window->maxHeight = kMaxDimensions.height;
             window->flags |= WindowFlags::resizable;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
@@ -352,11 +352,11 @@ namespace OpenLoco::Ui::Windows::StationList
         if (type > 4)
             throw std::domain_error("Unexpected station type");
 
-        Window* station_list = open(companyId);
+        Window* stationList = open(companyId);
         widx target = tabInformationByType[type].widgetIndex;
-        station_list->callOnMouseUp(target);
+        stationList->callOnMouseUp(target);
 
-        return station_list;
+        return stationList;
     }
 
     // 0x004919A4
@@ -365,7 +365,7 @@ namespace OpenLoco::Ui::Windows::StationList
         if (widgetIdx != widx::scrollview)
             return fallback;
 
-        uint16_t currentIndex = yPos / rowHeight;
+        uint16_t currentIndex = yPos / kRowHeight;
         if (currentIndex < window.var_83C && window.rowInfo[currentIndex] != -1)
             return CursorId::handPointer;
 
@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Set company name.
         auto company = CompanyManager::get(CompanyId(window.number));
-        *_common_format_args = company->name;
+        *_commonFormatArgs = company->name;
 
         // Set window title.
         window.widgets[widx::caption].text = tabInformationByType[window.currentTab].windowTitleId;
@@ -458,9 +458,9 @@ namespace OpenLoco::Ui::Windows::StationList
             auto stationId = StationId(window.rowInfo[i]);
 
             // Skip items outside of view, or irrelevant to the current filter.
-            if (yPos + rowHeight < rt.y || yPos >= yPos + rowHeight + rt.height || stationId == StationId::null)
+            if (yPos + kRowHeight < rt.y || yPos >= yPos + kRowHeight + rt.height || stationId == StationId::null)
             {
-                yPos += rowHeight;
+                yPos += kRowHeight;
                 continue;
             }
 
@@ -469,35 +469,35 @@ namespace OpenLoco::Ui::Windows::StationList
             // Highlight selection.
             if (stationId == StationId(window.rowHover))
             {
-                Gfx::drawRect(rt, 0, yPos, window.width, rowHeight, 0x2000030);
+                Gfx::drawRect(rt, 0, yPos, window.width, kRowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
             auto station = StationManager::get(stationId);
 
             // First, draw the town name.
-            _common_format_args[0] = StringIds::stringid_stringid;
-            _common_format_args[1] = station->name;
-            _common_format_args[2] = enumValue(station->town);
-            _common_format_args[3] = getTransportIconsFromStationFlags(station->flags);
+            _commonFormatArgs[0] = StringIds::stringid_stringid;
+            _commonFormatArgs[1] = station->name;
+            _commonFormatArgs[2] = enumValue(station->town);
+            _commonFormatArgs[3] = getTransportIconsFromStationFlags(station->flags);
 
-            Gfx::drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             // Then the station's current status.
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             station->getStatusString(buffer);
 
-            _common_format_args[0] = StringIds::buffer_1250;
-            Gfx::drawStringLeftClipped(rt, 200, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
+            _commonFormatArgs[0] = StringIds::buffer_1250;
+            Gfx::drawStringLeftClipped(rt, 200, yPos, 198, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             // Total units waiting.
             uint16_t totalUnits = 0;
             for (const auto& stats : station->cargoStats)
                 totalUnits += stats.quantity;
 
-            _common_format_args[0] = StringIds::num_units;
-            *(uint32_t*)&_common_format_args[1] = totalUnits;
-            Gfx::drawStringLeftClipped(rt, 400, yPos, 88, Colour::black, text_colour_id, &*_common_format_args);
+            _commonFormatArgs[0] = StringIds::num_units;
+            *(uint32_t*)&_commonFormatArgs[1] = totalUnits;
+            Gfx::drawStringLeftClipped(rt, 400, yPos, 88, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             // And, finally, what goods the station accepts.
             char* ptr = buffer;
@@ -516,10 +516,10 @@ namespace OpenLoco::Ui::Windows::StationList
                 ptr = StringManager::formatString(ptr, ObjectManager::get<CargoObject>(cargoId)->name);
             }
 
-            _common_format_args[0] = StringIds::buffer_1250;
-            Gfx::drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &*_common_format_args);
+            _commonFormatArgs[0] = StringIds::buffer_1250;
+            Gfx::drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &*_commonFormatArgs);
 
-            yPos += rowHeight;
+            yPos += kRowHeight;
         }
     }
 
@@ -552,12 +552,12 @@ namespace OpenLoco::Ui::Windows::StationList
         Gfx::drawImage(rt, x, y, image);
 
         // TODO: locale-based pluralisation.
-        _common_format_args[0] = window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural;
-        _common_format_args[1] = window.var_83C;
+        _commonFormatArgs[0] = window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural;
+        _commonFormatArgs[1] = window.var_83C;
 
         // Draw number of stations.
         auto origin = Ui::Point(window.x + 4, window.y + window.height - 12);
-        Gfx::drawStringLeft(*rt, &origin, Colour::black, StringIds::black_stringid, &*_common_format_args);
+        Gfx::drawStringLeft(*rt, &origin, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
     }
 
     // 0x004917BB
@@ -623,7 +623,7 @@ namespace OpenLoco::Ui::Windows::StationList
                     Input::toolCancel();
 
                 window.currentTab = widgetIndex - widx::tab_all_stations;
-                window.frame_no = 0;
+                window.frameNo = 0;
 
                 window.invalidate();
 
@@ -644,11 +644,11 @@ namespace OpenLoco::Ui::Windows::StationList
             case sort_total_waiting:
             case sort_accepts:
             {
-                auto sort_mode = widgetIndex - widx::sort_name;
-                if (window.sortMode == sort_mode)
+                auto sortMode = widgetIndex - widx::sort_name;
+                if (window.sortMode == sortMode)
                     return;
 
-                window.sortMode = sort_mode;
+                window.sortMode = sortMode;
                 window.invalidate();
                 window.var_83C = 0;
                 window.rowHover = -1;
@@ -662,7 +662,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x00491A0C
     static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        uint16_t currentRow = y / rowHeight;
+        uint16_t currentRow = y / kRowHeight;
         if (currentRow > window.var_83C)
             return;
 
@@ -678,7 +678,7 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         window.flags &= ~(WindowFlags::notScrollView);
 
-        uint16_t currentRow = y / rowHeight;
+        uint16_t currentRow = y / kRowHeight;
         int16_t currentStation = -1;
 
         if (currentRow < window.var_83C)
@@ -694,7 +694,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x0049193F
     static void onUpdate(Window& window)
     {
-        window.frame_no++;
+        window.frameNo++;
 
         window.callPrepareDraw();
         WindowManager::invalidateWidget(WindowType::stationList, window.number, window.currentTab + 4);
@@ -708,7 +708,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x00491999
     static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = rowHeight * window.var_83C;
+        *scrollHeight = kRowHeight * window.var_83C;
     }
 
     // 0x00491841

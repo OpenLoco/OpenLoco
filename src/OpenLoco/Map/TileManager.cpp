@@ -61,7 +61,7 @@ namespace OpenLoco::Map::TileManager
         defaultElement.setLastFlag(true);
 
         auto* element = *_elements;
-        for (auto i = 0; i < map_size; ++i, ++element)
+        for (auto i = 0; i < kMapSize; ++i, ++element)
         {
             *element = *reinterpret_cast<TileElement*>(&defaultElement);
         }
@@ -194,7 +194,7 @@ namespace OpenLoco::Map::TileManager
 
     Tile get(coord_t x, coord_t y)
     {
-        return get(TilePos2(x / Map::tile_size, y / Map::tile_size));
+        return get(TilePos2(x / Map::kTileSize, y / Map::kTileSize));
     }
 
     constexpr uint8_t kTileSize = 31;
@@ -204,16 +204,16 @@ namespace OpenLoco::Map::TileManager
         int16_t quad = 0;
         switch (slope)
         {
-            case SurfaceSlope::n_corner_up:
+            case SurfaceSlope::CornerUp::north:
                 quad = xl + yl - kTileSize;
                 break;
-            case SurfaceSlope::e_corner_up:
+            case SurfaceSlope::CornerUp::east:
                 quad = xl - yl;
                 break;
-            case SurfaceSlope::s_corner_up:
+            case SurfaceSlope::CornerUp::south:
                 quad = kTileSize - yl - xl;
                 break;
-            case SurfaceSlope::w_corner_up:
+            case SurfaceSlope::CornerUp::west:
                 quad = yl - xl;
                 break;
         }
@@ -230,16 +230,16 @@ namespace OpenLoco::Map::TileManager
         int16_t edge = 0;
         switch (slope)
         {
-            case SurfaceSlope::ne_side_up:
+            case SurfaceSlope::SideUp::northeast:
                 edge = xl / 2 + 1;
                 break;
-            case SurfaceSlope::se_side_up:
+            case SurfaceSlope::SideUp::southeast:
                 edge = (kTileSize - yl) / 2;
                 break;
-            case SurfaceSlope::nw_side_up:
+            case SurfaceSlope::SideUp::northwest:
                 edge = yl / 2 + 1;
                 break;
-            case SurfaceSlope::sw_side_up:
+            case SurfaceSlope::SideUp::southwest:
                 edge = (kTileSize - xl) / 2;
                 break;
         }
@@ -254,19 +254,19 @@ namespace OpenLoco::Map::TileManager
 
         switch (slope)
         {
-            case SurfaceSlope::w_corner_dn:
+            case SurfaceSlope::CornerDown::west:
                 quadExtra = xl + kTileSize - yl;
                 quad = xl - yl;
                 break;
-            case SurfaceSlope::s_corner_dn:
+            case SurfaceSlope::CornerDown::south:
                 quadExtra = xl + yl;
                 quad = xl + yl - kTileSize - 1;
                 break;
-            case SurfaceSlope::e_corner_dn:
+            case SurfaceSlope::CornerDown::east:
                 quadExtra = kTileSize - xl + yl;
                 quad = yl - xl;
                 break;
-            case SurfaceSlope::n_corner_dn:
+            case SurfaceSlope::CornerDown::north:
                 quadExtra = (kTileSize - xl) + (kTileSize - yl);
                 quad = kTileSize - yl - xl - 1;
                 break;
@@ -289,13 +289,13 @@ namespace OpenLoco::Map::TileManager
         int16_t quad = 0;
         switch (slope)
         {
-            case SurfaceSlope::w_e_valley:
+            case SurfaceSlope::Valley::westeast:
                 if (xl + yl > kTileSize + 1)
                 {
                     quad = kTileSize - xl - yl;
                 }
                 break;
-            case SurfaceSlope::n_s_valley:
+            case SurfaceSlope::Valley::northsouth:
                 quad = xl - yl;
                 break;
         }
@@ -321,7 +321,7 @@ namespace OpenLoco::Map::TileManager
     {
         TileHeight height{ 16, 0 };
         // Off the map
-        if ((unsigned)pos.x >= (Map::map_width - 1) || (unsigned)pos.y >= (Map::map_height - 1))
+        if ((unsigned)pos.x >= (Map::kMapWidth - 1) || (unsigned)pos.y >= (Map::kMapHeight - 1))
             return height;
 
         auto tile = TileManager::get(pos);
@@ -355,29 +355,29 @@ namespace OpenLoco::Map::TileManager
                 // Flat surface requires no further calculations.
                 break;
 
-            case SurfaceSlope::n_corner_up:
-            case SurfaceSlope::e_corner_up:
-            case SurfaceSlope::s_corner_up:
-            case SurfaceSlope::w_corner_up:
+            case SurfaceSlope::CornerUp::north:
+            case SurfaceSlope::CornerUp::east:
+            case SurfaceSlope::CornerUp::south:
+            case SurfaceSlope::CornerUp::west:
                 height.landHeight += getOneCornerUpLandHeight(xl, yl, slope);
                 break;
 
-            case SurfaceSlope::ne_side_up:
-            case SurfaceSlope::se_side_up:
-            case SurfaceSlope::nw_side_up:
-            case SurfaceSlope::sw_side_up:
+            case SurfaceSlope::SideUp::northeast:
+            case SurfaceSlope::SideUp::southeast:
+            case SurfaceSlope::SideUp::northwest:
+            case SurfaceSlope::SideUp::southwest:
                 height.landHeight += getOneSideUpLandHeight(xl, yl, slope);
                 break;
 
-            case SurfaceSlope::n_corner_dn:
-            case SurfaceSlope::e_corner_dn:
-            case SurfaceSlope::s_corner_dn:
-            case SurfaceSlope::w_corner_dn:
+            case SurfaceSlope::CornerDown::north:
+            case SurfaceSlope::CornerDown::east:
+            case SurfaceSlope::CornerDown::south:
+            case SurfaceSlope::CornerDown::west:
                 height.landHeight += getOneCornerDownLandHeight(xl, yl, slope, surfaceEl->isSlopeDoubleHeight());
                 break;
 
-            case SurfaceSlope::n_s_valley:
-            case SurfaceSlope::w_e_valley:
+            case SurfaceSlope::Valley::northsouth:
+            case SurfaceSlope::Valley::westeast:
                 height.landHeight += getValleyLandHeight(xl, yl, slope);
                 break;
         }
@@ -391,7 +391,7 @@ namespace OpenLoco::Map::TileManager
 
     static void set(TilePos2 pos, TileElement* elements)
     {
-        _tiles[(pos.y * map_pitch) + pos.x] = elements;
+        _tiles[(pos.y * kMapPitch) + pos.x] = elements;
     }
 
     // 0x00461348
@@ -400,9 +400,9 @@ namespace OpenLoco::Map::TileManager
         clearTilePointers();
 
         TileElement* el = _elements;
-        for (tile_coord_t y = 0; y < map_rows; y++)
+        for (tile_coord_t y = 0; y < kMapRows; y++)
         {
-            for (tile_coord_t x = 0; x < map_columns; x++)
+            for (tile_coord_t x = 0; x < kMapColumns; x++)
             {
                 set(TilePos2(x, y), el);
 
@@ -429,9 +429,9 @@ namespace OpenLoco::Map::TileManager
             tempBuffer.resize(maxElements * sizeof(TileElement));
 
             size_t numElements = 0;
-            for (tile_coord_t y = 0; y < map_rows; y++)
+            for (tile_coord_t y = 0; y < kMapRows; y++)
             {
-                for (tile_coord_t x = 0; x < map_columns; x++)
+                for (tile_coord_t x = 0; x < kMapColumns; x++)
                 {
                     auto tile = get(TilePos2(x, y));
                     for (const auto& element : tile)
@@ -640,9 +640,9 @@ namespace OpenLoco::Map::TileManager
     // 0x0046A747
     void resetSurfaceClearance()
     {
-        for (coord_t y = 0; y < map_height; y += tile_size)
+        for (coord_t y = 0; y < kMapHeight; y += kTileSize)
         {
-            for (coord_t x = 0; x < map_width; x += tile_size)
+            for (coord_t x = 0; x < kMapWidth; x += kTileSize)
             {
                 auto tile = get(x, y);
                 auto surface = tile.surface();
@@ -763,9 +763,9 @@ namespace OpenLoco::Map::TileManager
 
         CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
         auto pos = *_startUpdateLocation;
-        for (; pos.y < Map::map_height; pos.y += 16 * Map::tile_size)
+        for (; pos.y < Map::kMapHeight; pos.y += 16 * Map::kTileSize)
         {
-            for (; pos.x < Map::map_width; pos.x += 16 * Map::tile_size)
+            for (; pos.x < Map::kMapWidth; pos.x += 16 * Map::kTileSize)
             {
                 auto tile = TileManager::get(pos);
                 for (auto& el : tile)
@@ -780,9 +780,9 @@ namespace OpenLoco::Map::TileManager
                     }
                 }
             }
-            pos.x -= Map::map_width;
+            pos.x -= Map::kMapWidth;
         }
-        pos.y -= Map::map_height;
+        pos.y -= Map::kMapHeight;
 
         const TilePos2 tilePos(pos);
         const uint8_t shift = (tilePos.y << 4) + tilePos.x + 9;
@@ -819,7 +819,7 @@ namespace OpenLoco::Map::TileManager
                 auto* buildingObj = elBuilding.getObject();
                 if (buildingObj != nullptr)
                 {
-                    if (!(buildingObj->flags & BuildingObjectFlags::misc_building))
+                    if (!(buildingObj->flags & BuildingObjectFlags::miscBuilding))
                     {
                         auto buildingCapacity = -buildingObj->producedQuantity[0];
                         auto removedPopulation = buildingCapacity;

@@ -51,7 +51,7 @@ namespace OpenLoco::Audio
         int32_t var_00;
         int32_t offset;
         uint32_t length;
-        WAVEFORMATEX pcm_header;
+        WAVEFORMATEX pcmHeader;
 
         const void* pcm()
         {
@@ -99,36 +99,36 @@ namespace OpenLoco::Audio
     static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq);
 
     // 0x004FE910
-    static const MusicInfo kMusicInfo[] = {
-        { PathId::music_20s1, StringIds::music_chuggin_along, 1925, 1933 },
-        { PathId::music_20s2, StringIds::music_long_dusty_road, 1927, 1935 },
-        { PathId::music_20s4, StringIds::music_flying_high, 1932, 1940 },
-        { PathId::music_50s1, StringIds::music_gettin_on_the_gas, 1956, 1964 },
-        { PathId::music_50s2, StringIds::music_jumpin_the_rails, 1953, 1961 },
-        { PathId::music_70s1, StringIds::music_smooth_running, 1976, 1984 },
-        { PathId::music_70s2, StringIds::music_traffic_jam, 1973, 1981 },
-        { PathId::music_70s3, StringIds::music_never_stop_til_you_get_there, 1970, 1978 },
-        { PathId::music_80s1, StringIds::music_soaring_away, 1990, 9999 },
-        { PathId::music_90s1, StringIds::music_techno_torture, 1993, 9999 },
-        { PathId::music_90s2, StringIds::music_everlasting_high_rise, 1996, 9999 },
-        { PathId::music_rag3, StringIds::music_solace, 1912, 1920 },
+    static constexpr MusicInfo kMusicInfo[] = {
+        { PathId::music_chuggin_along, StringIds::music_chuggin_along, 1925, 1933 },
+        { PathId::music_long_dusty_road, StringIds::music_long_dusty_road, 1927, 1935 },
+        { PathId::music_flying_high, StringIds::music_flying_high, 1932, 1940 },
+        { PathId::music_gettin_on_the_gas, StringIds::music_gettin_on_the_gas, 1956, 1964 },
+        { PathId::music_jumpin_the_rails, StringIds::music_jumpin_the_rails, 1953, 1961 },
+        { PathId::music_smooth_running, StringIds::music_smooth_running, 1976, 1984 },
+        { PathId::music_traffic_jam, StringIds::music_traffic_jam, 1973, 1981 },
+        { PathId::music_never_stop_til_you_get_there, StringIds::music_never_stop_til_you_get_there, 1970, 1978 },
+        { PathId::music_soaring_away, StringIds::music_soaring_away, 1990, 9999 },
+        { PathId::music_techno_torture, StringIds::music_techno_torture, 1993, 9999 },
+        { PathId::music_everlasting_high_rise, StringIds::music_everlasting_high_rise, 1996, 9999 },
+        { PathId::music_solace, StringIds::music_solace, 1912, 1920 },
         { PathId::music_chrysanthemum, StringIds::music_chrysanthemum, 0, 1911 },
         { PathId::music_eugenia, StringIds::music_eugenia, 0, 1908 },
-        { PathId::music_rag2, StringIds::music_the_ragtime_dance, 1909, 1917 },
-        { PathId::music_rag1, StringIds::music_easy_winners, 0, 1914 },
-        { PathId::music_20s3, StringIds::music_setting_off, 1929, 1937 },
-        { PathId::music_40s1, StringIds::music_a_travellers_seranade, 1940, 1948 },
-        { PathId::music_40s2, StringIds::music_latino_trip, 1943, 1951 },
-        { PathId::music_50s3, StringIds::music_a_good_head_of_steam, 1950, 1958 },
-        { PathId::music_40s3, StringIds::music_hop_to_the_bop, 1946, 1954 },
-        { PathId::music_80s2, StringIds::music_the_city_lights, 1980, 1988 },
-        { PathId::music_60s1, StringIds::music_steamin_down_town, 1960, 1968 },
-        { PathId::music_80s3, StringIds::music_bright_expectations, 1983, 1991 },
-        { PathId::music_60s2, StringIds::music_mo_station, 1963, 1971 },
-        { PathId::music_60s3, StringIds::music_far_out, 1966, 1974 },
-        { PathId::music_80s4, StringIds::music_running_on_time, 1986, 1994 },
-        { PathId::music_20s5, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
-        { PathId::music_20s6, StringIds::music_sandy_track_blues, 1921, 1929 }
+        { PathId::music_the_ragtime_dance, StringIds::music_the_ragtime_dance, 1909, 1917 },
+        { PathId::music_easy_winners, StringIds::music_easy_winners, 0, 1914 },
+        { PathId::music_setting_off, StringIds::music_setting_off, 1929, 1937 },
+        { PathId::music_a_travellers_serenade, StringIds::music_a_travellers_serenade, 1940, 1948 },
+        { PathId::music_latino_trip, StringIds::music_latino_trip, 1943, 1951 },
+        { PathId::music_a_good_head_of_steam, StringIds::music_a_good_head_of_steam, 1950, 1958 },
+        { PathId::music_hop_to_the_bop, StringIds::music_hop_to_the_bop, 1946, 1954 },
+        { PathId::music_the_city_lights, StringIds::music_the_city_lights, 1980, 1988 },
+        { PathId::music_steamin_down_town, StringIds::music_steamin_down_town, 1960, 1968 },
+        { PathId::music_bright_expectations, StringIds::music_bright_expectations, 1983, 1991 },
+        { PathId::music_mo_station, StringIds::music_mo_station, 1963, 1971 },
+        { PathId::music_far_out, StringIds::music_far_out, 1966, 1974 },
+        { PathId::music_running_on_time, StringIds::music_running_on_time, 1986, 1994 },
+        { PathId::music_get_me_to_gladstone_bay, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
+        { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 }
     };
 
     static Channel* getChannel(ChannelId id)
@@ -429,8 +429,8 @@ namespace OpenLoco::Audio
         }
         else
         {
-            loco_global<int32_t[32], 0x004FEAB8> unk_4FEAB8;
-            return unk_4FEAB8[(int32_t)id];
+            loco_global<int32_t[32], 0x004FEAB8> _unk_4FEAB8;
+            return _unk_4FEAB8[(int32_t)id];
         }
     }
 
@@ -478,7 +478,7 @@ namespace OpenLoco::Audio
 
     bool shouldSoundLoop(SoundId id)
     {
-        loco_global<uint8_t[64], 0x0050D514> unk_50D514;
+        loco_global<uint8_t[64], 0x0050D514> _unk_50D514;
         if (isObjectSoundId(id))
         {
             auto obj = getSoundObject(id);
@@ -486,7 +486,7 @@ namespace OpenLoco::Audio
         }
         else
         {
-            return unk_50D514[(int32_t)id * 2] != 0;
+            return _unk_50D514[(int32_t)id * 2] != 0;
         }
     }
 
@@ -580,7 +580,7 @@ namespace OpenLoco::Audio
                 {
                     auto data = (SoundObjectData*)obj->data;
                     assert(data->offset == 8);
-                    _objectSamples[static_cast<size_t>(id)] = loadSoundFromWaveMemory(data->pcm_header, data->pcm(), data->length);
+                    _objectSamples[static_cast<size_t>(id)] = loadSoundFromWaveMemory(data->pcmHeader, data->pcm(), data->length);
                     return _objectSamples[static_cast<size_t>(id)];
                 }
             }
@@ -695,13 +695,13 @@ namespace OpenLoco::Audio
             return;
 
         // TODO: left or top?
-        if (v->sprite_left == Location::null)
+        if (v->spriteLeft == Location::null)
             return;
 
         if (_numActiveVehicleSounds >= Config::get().maxVehicleSounds)
             return;
 
-        auto spritePosition = viewport_pos(v->sprite_left, v->sprite_top);
+        auto spritePosition = viewport_pos(v->spriteLeft, v->spriteTop);
 
         auto main = WindowManager::getMainWindow();
         if (main != nullptr && main->viewports[0] != nullptr)
@@ -709,12 +709,12 @@ namespace OpenLoco::Audio
             auto viewport = main->viewports[0];
             ViewportRect extendedViewport = {};
 
-            auto quarterWidth = viewport->view_width / 4;
-            auto quarterHeight = viewport->view_height / 4;
-            extendedViewport.left = viewport->view_x - quarterWidth;
-            extendedViewport.top = viewport->view_y - quarterHeight;
-            extendedViewport.right = viewport->view_x + viewport->view_width + quarterWidth;
-            extendedViewport.bottom = viewport->view_y + viewport->view_height + quarterHeight;
+            auto quarterWidth = viewport->viewWidth / 4;
+            auto quarterHeight = viewport->viewHeight / 4;
+            extendedViewport.left = viewport->viewX - quarterWidth;
+            extendedViewport.top = viewport->viewY - quarterHeight;
+            extendedViewport.right = viewport->viewX + viewport->viewWidth + quarterWidth;
+            extendedViewport.bottom = viewport->viewY + viewport->viewHeight + quarterHeight;
 
             if (extendedViewport.contains(spritePosition))
             {

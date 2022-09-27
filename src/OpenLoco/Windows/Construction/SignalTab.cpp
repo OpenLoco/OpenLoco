@@ -316,14 +316,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto imageId = trainSignalObject->image;
 
-        xPos = self.widgets[widx::both_directions].mid_x() + self.x;
+        xPos = self.widgets[widx::both_directions].midX() + self.x;
         yPos = self.widgets[widx::both_directions].bottom + self.y - 4;
 
         Gfx::drawImage(rt, xPos - 8, yPos, imageId);
 
         Gfx::drawImage(rt, xPos + 8, yPos, imageId + 4);
 
-        xPos = self.widgets[widx::single_direction].mid_x() + self.x;
+        xPos = self.widgets[widx::single_direction].midX() + self.x;
         yPos = self.widgets[widx::single_direction].bottom + self.y - 4;
 
         Gfx::drawImage(rt, xPos, yPos, imageId);

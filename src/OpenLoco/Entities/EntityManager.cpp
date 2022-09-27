@@ -16,7 +16,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::EntityManager
 {
-    constexpr size_t kSpatialEntityMapSize = (Map::map_pitch * Map::map_pitch) + 1;
+    constexpr size_t kSpatialEntityMapSize = (Map::kMapPitch * Map::kMapPitch) + 1;
     constexpr size_t kEntitySpatialIndexNull = kSpatialEntityMapSize - 1;
 
     static_assert(kSpatialEntityMapSize == 0x40001);
@@ -45,9 +45,9 @@ namespace OpenLoco::EntityManager
         for (; id < Limits::maxNormalEntities; ++id)
         {
             auto& ent = rawEntities()[id];
-            ent.base_type = EntityBaseType::null;
+            ent.baseType = EntityBaseType::null;
             ent.id = EntityId(id);
-            ent.next_thing_id = EntityId::null;
+            ent.nextThingId = EntityId::null;
             ent.linkedListOffset = static_cast<uint8_t>(EntityListType::null) * 2;
             if (previous == nullptr)
             {
@@ -57,7 +57,7 @@ namespace OpenLoco::EntityManager
             else
             {
                 ent.llPreviousId = previous->id;
-                previous->next_thing_id = EntityId(id);
+                previous->nextThingId = EntityId(id);
             }
             previous = &ent;
         }
@@ -68,9 +68,9 @@ namespace OpenLoco::EntityManager
         for (; id < Limits::kMaxEntities; ++id)
         {
             auto& ent = rawEntities()[id];
-            ent.base_type = EntityBaseType::null;
+            ent.baseType = EntityBaseType::null;
             ent.id = EntityId(id);
-            ent.next_thing_id = EntityId::null;
+            ent.nextThingId = EntityId::null;
             ent.linkedListOffset = static_cast<uint8_t>(EntityListType::nullMoney) * 2;
             if (previous == nullptr)
             {
@@ -80,7 +80,7 @@ namespace OpenLoco::EntityManager
             else
             {
                 ent.llPreviousId = previous->id;
-                previous->next_thing_id = EntityId(id);
+                previous->nextThingId = EntityId(id);
             }
             previous = &ent;
         }
@@ -122,13 +122,13 @@ namespace OpenLoco::EntityManager
         if (loc.x == Location::null)
             return kEntitySpatialIndexNull;
 
-        const auto tileX = std::abs(loc.x) / Map::tile_size;
-        const auto tileY = std::abs(loc.y) / Map::tile_size;
+        const auto tileX = std::abs(loc.x) / Map::kTileSize;
+        const auto tileY = std::abs(loc.y) / Map::kTileSize;
 
-        if (tileX >= Map::map_pitch || tileY >= Map::map_pitch)
+        if (tileX >= Map::kMapPitch || tileY >= Map::kMapPitch)
             return kEntitySpatialIndexNull;
 
-        return (Map::map_pitch * tileX) + tileY;
+        return (Map::kMapPitch * tileX) + tileY;
     }
 
     EntityId firstQuadrantId(const Map::Pos2& loc)
@@ -237,7 +237,7 @@ namespace OpenLoco::EntityManager
         newEntity->var_09 = 20;
         newEntity->var_15 = 8;
         newEntity->var_0C = 0;
-        newEntity->sprite_left = Location::null;
+        newEntity->spriteLeft = Location::null;
 
         return newEntity;
     }
@@ -290,7 +290,7 @@ namespace OpenLoco::EntityManager
         auto list = enumValue(entity->id) < 19800 ? EntityListType::null : EntityListType::nullMoney;
         moveEntityToList(entity, list);
         StringManager::emptyUserString(entity->name);
-        entity->base_type = EntityBaseType::null;
+        entity->baseType = EntityBaseType::null;
 
         if (!removeFromSpatialIndex(*entity))
         {
@@ -348,7 +348,7 @@ namespace OpenLoco::EntityManager
         }
 
         auto curList = entity->linkedListOffset / 2;
-        auto nextId = entity->next_thing_id;
+        auto nextId = entity->nextThingId;
         auto previousId = entity->llPreviousId;
 
         // Unlink previous entity from this entity
@@ -365,7 +365,7 @@ namespace OpenLoco::EntityManager
             }
             else
             {
-                previousEntity->next_thing_id = nextId;
+                previousEntity->nextThingId = nextId;
             }
         }
         // Unlink next entity from this entity
@@ -384,12 +384,12 @@ namespace OpenLoco::EntityManager
 
         entity->llPreviousId = EntityId::null;
         entity->linkedListOffset = newListOffset;
-        entity->next_thing_id = rawListHeads()[static_cast<uint8_t>(list)];
+        entity->nextThingId = rawListHeads()[static_cast<uint8_t>(list)];
         rawListHeads()[static_cast<uint8_t>(list)] = entity->id;
         // Link next entity to this entity
-        if (entity->next_thing_id != EntityId::null)
+        if (entity->nextThingId != EntityId::null)
         {
-            auto* nextEntity = get<EntityBase>(entity->next_thing_id);
+            auto* nextEntity = get<EntityBase>(entity->nextThingId);
             if (nextEntity == nullptr)
             {
                 Console::error("Invalid next entity id. Entity linked list corrupted?");
@@ -417,13 +417,13 @@ namespace OpenLoco::EntityManager
 
     static void zeroEntity(EntityBase* ent)
     {
-        auto next = ent->next_thing_id;
+        auto next = ent->nextThingId;
         auto previous = ent->llPreviousId;
         auto id = ent->id;
         auto llOffset = ent->linkedListOffset;
         std::fill_n(reinterpret_cast<uint8_t*>(ent), sizeof(Entity), 0);
-        ent->base_type = EntityBaseType::null;
-        ent->next_thing_id = next;
+        ent->baseType = EntityBaseType::null;
+        ent->nextThingId = next;
         ent->llPreviousId = previous;
         ent->id = id;
         ent->linkedListOffset = llOffset;

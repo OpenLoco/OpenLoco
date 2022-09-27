@@ -112,7 +112,7 @@ namespace OpenLoco::Input
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();
 
-    void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widget_index);
+    void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex);
 
     Ui::Point getScrollLastLocation();
     Ui::Point getDragLastLocation();

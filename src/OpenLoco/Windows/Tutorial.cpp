@@ -17,10 +17,10 @@ namespace OpenLoco::Ui::Windows::Tutorial
         frame,
     };
 
-    constexpr Ui::Size windowSize = { 140, 29 };
+    static constexpr Ui::Size kWindowSize = { 140, 29 };
 
     Widget widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::wt_3, WindowColour::primary),
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary),
         widgetEnd(),
     };
 
@@ -35,7 +35,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
         auto window = WindowManager::createWindow(
             WindowType::tutorial,
-            Ui::Point(windowSize.width, Ui::height() - 27),
+            Ui::Point(kWindowSize.width, Ui::height() - 27),
             Ui::Size(Ui::width() - 280, 27),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             &_events);
@@ -73,10 +73,10 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
         auto& widget = self.widgets[Widx::frame];
         auto yPos = self.y + widget.top + 4;
-        Gfx::drawStringCentred(*rt, self.x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_text, &args);
+        Gfx::drawStringCentred(*rt, self.x + widget.midX(), yPos, Colour::black, StringIds::tutorial_text, &args);
 
         yPos += 10;
-        Gfx::drawStringCentred(*rt, self.x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
+        Gfx::drawStringCentred(*rt, self.x + widget.midX(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
     }
 
     static void initEvents()

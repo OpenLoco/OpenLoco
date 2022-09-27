@@ -14,7 +14,7 @@ namespace OpenLoco
     bool IndustryObject::requiresCargo() const
     {
         auto requiredCargoState = false;
-        for (const auto& requiredCargo : required_cargo_type)
+        for (const auto& requiredCargo : requiredCargoType)
         {
             if (requiredCargo != 0xff)
             {
@@ -28,7 +28,7 @@ namespace OpenLoco
     bool IndustryObject::producesCargo() const
     {
         auto produceCargoState = false;
-        for (const auto& producedCargo : produced_cargo_type)
+        for (const auto& producedCargo : producedCargoType)
         {
             if (producedCargo != 0xff)
             {
@@ -44,7 +44,7 @@ namespace OpenLoco
         char* ptr = (char*)buffer;
         auto producedCargoCount = 0;
 
-        for (const auto& producedCargo : produced_cargo_type)
+        for (const auto& producedCargo : producedCargoType)
         {
             if (producedCargo != 0xFF)
             {
@@ -65,7 +65,7 @@ namespace OpenLoco
         char* ptr = (char*)buffer;
         auto requiredCargoCount = 0;
 
-        for (const auto& requiredCargo : required_cargo_type)
+        for (const auto& requiredCargo : requiredCargoType)
         {
             if (requiredCargo != 0xFF)
             {
@@ -73,7 +73,7 @@ namespace OpenLoco
 
                 if (requiredCargoCount > 1)
                 {
-                    if ((flags & IndustryObjectFlags::requires_all_cargo) != 0)
+                    if ((flags & IndustryObjectFlags::requiresAllCargo) != 0)
                         ptr = StringManager::formatString(ptr, StringIds::cargo_and);
                     else
                         ptr = StringManager::formatString(ptr, StringIds::cargo_or);
@@ -120,13 +120,13 @@ namespace OpenLoco
             return false;
         }
 
-        if (var_CE == 0 || var_CE > 32)
+        if (totalOfTypeInScenario == 0 || totalOfTypeInScenario > 32)
         {
             return false;
         }
 
         // 230/256 = ~90%
-        if (-clearCostFactor > cost_factor * 230 / 256)
+        if (-clearCostFactor > costFactor * 230 / 256)
         {
             return false;
         }
@@ -193,8 +193,8 @@ namespace OpenLoco
         var_38 = 0;
         std::fill(std::begin(var_3C), std::end(var_3C), 0);
         var_BE = 0;
-        std::fill(std::begin(produced_cargo_type), std::end(produced_cargo_type), 0);
-        std::fill(std::begin(required_cargo_type), std::end(required_cargo_type), 0);
+        std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
+        std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
         var_ED = 0;
         var_EE = 0;
         var_EF = 0;

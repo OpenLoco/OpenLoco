@@ -16,12 +16,12 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::currency;
 
-        string_id name;          // 0x00
-        string_id prefix_symbol; // 0x02
-        string_id suffix_symbol; // 0x04
-        uint32_t object_icon;    // 0x06
-        uint8_t separator;       // 0x0A
-        uint8_t factor;          // 0x0B
+        string_id name;         // 0x00
+        string_id prefixSymbol; // 0x02
+        string_id suffixSymbol; // 0x04
+        uint32_t objectIcon;    // 0x06
+        uint8_t separator;      // 0x0A
+        uint8_t factor;         // 0x0B
 
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);

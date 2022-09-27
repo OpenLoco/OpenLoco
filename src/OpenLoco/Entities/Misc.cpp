@@ -178,7 +178,7 @@ namespace OpenLoco
 
         if (_exhaust != nullptr)
         {
-            _exhaust->base_type = EntityBaseType::misc;
+            _exhaust->baseType = EntityBaseType::misc;
             _exhaust->moveTo(loc);
             _exhaust->objectId = type;
             const auto* obj = _exhaust->getObject();
@@ -218,7 +218,7 @@ namespace OpenLoco
             t->var_14 = 44;
             t->var_09 = 32;
             t->var_15 = 34;
-            t->base_type = EntityBaseType::misc;
+            t->baseType = EntityBaseType::misc;
             t->moveTo(loc);
             t->setSubType(MiscEntityType::smoke);
             t->frame = 0;
@@ -327,7 +327,7 @@ namespace OpenLoco
             m->var_14 = 64;
             m->var_09 = 20;
             m->var_15 = 30;
-            m->base_type = EntityBaseType::misc;
+            m->baseType = EntityBaseType::misc;
             m->var_2E = company;
             m->moveTo(loc);
             m->setSubType(MiscEntityType::windowCurrency);
@@ -406,7 +406,7 @@ namespace OpenLoco
             t->var_14 = 44;
             t->var_09 = 32;
             t->var_15 = 34;
-            t->base_type = EntityBaseType::misc;
+            t->baseType = EntityBaseType::misc;
             t->moveTo(loc + Map::Pos3{ 0, 0, 4 });
             t->setSubType(MiscEntityType::explosionSmoke);
             t->frame = 0;

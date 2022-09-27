@@ -8,13 +8,13 @@
 namespace OpenLoco
 {
     // TODO: Should only be defined in ObjectSelectionWindow
-    static const uint8_t descriptionRowHeight = 10;
-    static const Ui::Size objectPreviewSize = { 112, 112 };
+    static constexpr uint8_t kDescriptionRowHeight = 10;
+    static constexpr Ui::Size kObjectPreviewSize = { 112, 112 };
 
     // 0x00434D5B
     void CompetitorObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        Gfx::drawRect(rt, 0, 0, objectPreviewSize.width, objectPreviewSize.height, AdvancedColour(Colour::mutedOrange).inset().u8());
+        Gfx::drawRect(rt, 0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, AdvancedColour(Colour::mutedOrange).inset().u8());
 
         auto image = Gfx::recolour(images[0], Colour::mutedSeaGreen);
         Gfx::drawImage(&rt, x - 32, y - 32, image);
@@ -30,7 +30,7 @@ namespace OpenLoco
             args.push(aiRatingToLevel(intelligence));
 
             Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_intelligence, &args);
-            rowPosition.y += descriptionRowHeight;
+            rowPosition.y += kDescriptionRowHeight;
         }
         {
             auto args = FormatArguments();
@@ -38,7 +38,7 @@ namespace OpenLoco
             args.push(aiRatingToLevel(aggressiveness));
 
             Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_aggressiveness, &args);
-            rowPosition.y += descriptionRowHeight;
+            rowPosition.y += kDescriptionRowHeight;
         }
         {
             auto args = FormatArguments();

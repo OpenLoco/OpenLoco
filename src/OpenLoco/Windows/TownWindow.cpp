@@ -26,9 +26,9 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Town
 {
-    static const Ui::Size windowSize = { 223, 161 };
+    static constexpr Ui::Size kWindowSize = { 223, 161 };
 
-    static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
+    static loco_global<uint16_t[10], 0x0112C826> _commonFormatArgs;
 
     namespace Common
     {
@@ -242,8 +242,8 @@ namespace OpenLoco::Ui::Windows::Town
                 {
                     viewport->width = newWidth;
                     viewport->height = newHeight;
-                    viewport->view_width = newWidth << viewport->zoom;
-                    viewport->view_height = newHeight << viewport->zoom;
+                    viewport->viewWidth = newWidth << viewport->zoom;
+                    viewport->viewHeight = newHeight << viewport->zoom;
                     self.savedView.clear();
                 }
             }
@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // 0x00499C0D start
             const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
-            window = WindowManager::createWindow(WindowType::town, windowSize, newFlags, &Town::events);
+            window = WindowManager::createWindow(WindowType::town, kWindowSize, newFlags, &Town::events);
             window->number = townId;
             window->minWidth = 192;
             window->minHeight = 161;
@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::Town
             auto town = TownManager::get(TownId(self.number));
 
             // Draw Y label and grid lines.
-            int32_t yTick = town->history_min_population;
+            int32_t yTick = town->historyMinPopulation;
             for (int16_t yPos = self.height - 57; yPos >= 14; yPos -= 20)
             {
                 auto args = FormatArguments();
@@ -528,12 +528,12 @@ namespace OpenLoco::Ui::Windows::Town
             xPos += 4;
             yPos += 14;
             auto town = TownManager::get(TownId(self.number));
-            for (uint8_t i = 0; i < std::size(town->company_ratings); i++)
+            for (uint8_t i = 0; i < std::size(town->companyRatings); i++)
             {
-                if ((town->companies_with_rating & (1 << i)) == 0)
+                if ((town->companiesWithRating & (1 << i)) == 0)
                     continue;
 
-                int16_t rating = (std::clamp<int16_t>(town->company_ratings[i], -1000, 1000) + 1000) / 20;
+                int16_t rating = (std::clamp<int16_t>(town->companyRatings[i], -1000, 1000) + 1000) / 20;
                 string_id rank{};
                 if (rating >= 70)
                     rank = StringIds::town_rating_excellent;
@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Windows::Town
             self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Put town name in place.
-            commonFormatArgs[0] = TownManager::get(TownId(self.number))->name;
+            _commonFormatArgs[0] = TownManager::get(TownId(self.number))->name;
 
             // Resize common widgets.
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -664,7 +664,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static void update(Window& self)
         {
-            self.frame_no++;
+            self.frameNo++;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::station, self.number);
         }
@@ -672,10 +672,10 @@ namespace OpenLoco::Ui::Windows::Town
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
             auto town = TownManager::get(TownId(self->number));
-            commonFormatArgs[4] = town->name;
-            commonFormatArgs[8] = town->name;
+            _commonFormatArgs[4] = town->name;
+            _commonFormatArgs[8] = town->name;
 
-            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs);
+            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &_commonFormatArgs);
         }
 
         // 0x004991BC
@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Windows::Town
             TextInput::sub_4CE6C9(self->type, self->number);
 
             self->currentTab = widgetIndex - widx::tab_town;
-            self->frame_no = 0;
+            self->frameNo = 0;
             self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
 
@@ -704,7 +704,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             self->invalidate();
 
-            self->setSize(windowSize);
+            self->setSize(kWindowSize);
             self->callOnResize();
             self->callPrepareDraw();
             self->initScrollWidgets();
@@ -738,7 +738,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                 uint32_t imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
                 if (self->currentTab == widx::tab_population - widx::tab_town)
-                    imageId += populationTabImageIds[(self->frame_no / 4) % std::size(populationTabImageIds)];
+                    imageId += populationTabImageIds[(self->frameNo / 4) % std::size(populationTabImageIds)];
                 else
                     imageId += populationTabImageIds[0];
 
@@ -768,7 +768,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_company_ratings - widx::tab_town)
-                    imageId += ratingsTabImageIds[(self->frame_no / 4) % std::size(ratingsTabImageIds)];
+                    imageId += ratingsTabImageIds[(self->frameNo / 4) % std::size(ratingsTabImageIds)];
                 else
                     imageId += ratingsTabImageIds[0];
 

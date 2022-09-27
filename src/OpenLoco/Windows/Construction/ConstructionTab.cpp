@@ -38,7 +38,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
 
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
-    static loco_global<uint8_t[18], 0x0050A006> available_objects;   // toptoolbar
+    static loco_global<uint8_t[18], 0x0050A006> _availableObjects;   // toptoolbar
 
     namespace TrackPiece
     {
@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
 
-        for (const auto objId : available_objects)
+        for (const auto objId : _availableObjects)
         {
             if (objId == 0xFF)
             {
@@ -599,7 +599,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
             disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
 
-            if (!(trackObj.track_pieces & (1 << 8)))
+            if (!(trackObj.trackPieces & (1 << 8)))
                 disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
         }
 
@@ -618,12 +618,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DAF3
     static void disableTrackSlopes(Window* self, TrackObject trackObj, uint64_t disabledWidgets)
     {
-        auto maskedTrackPieces = trackObj.track_pieces & ((1 << 5) | (1 << 8));
+        auto maskedTrackPieces = trackObj.trackPieces & ((1 << 5) | (1 << 8));
 
         if (maskedTrackPieces != ((1 << 5) | (1 << 8)))
             disabledWidgets |= (1 << widx::slope_down) | (1 << widx::slope_up);
 
-        maskedTrackPieces = trackObj.track_pieces & ((1 << 6) | (1 << 8));
+        maskedTrackPieces = trackObj.trackPieces & ((1 << 6) | (1 << 8));
 
         if (maskedTrackPieces != ((1 << 6) | (1 << 8)))
             disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::steep_slope_up);
@@ -700,7 +700,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::right_hand_curve].left = 91;
         window->widgets[widx::right_hand_curve].right = 112;
 
-        if (roadObj->road_pieces & RoadPieceFlags::track)
+        if (roadObj->roadPieces & RoadPieceFlags::track)
         {
             window->widgets[widx::left_hand_curve_small].left = 25;
             window->widgets[widx::left_hand_curve_small].right = 46;
@@ -715,7 +715,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonWithImage;
         }
 
-        if (roadObj->road_pieces & RoadPieceFlags::one_way)
+        if (roadObj->roadPieces & RoadPieceFlags::oneWay)
         {
             window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonWithImage;
@@ -724,7 +724,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::s_bend_dual_track_left].type = WidgetType::none;
         window->widgets[widx::s_bend_dual_track_right].type = WidgetType::none;
 
-        if (roadObj->road_pieces & RoadPieceFlags::one_sided)
+        if (roadObj->roadPieces & RoadPieceFlags::oneSided)
         {
             window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonWithImage;
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
@@ -739,13 +739,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::slope_up].type = WidgetType::none;
         window->widgets[widx::steep_slope_up].type = WidgetType::none;
 
-        if (roadObj->road_pieces & RoadPieceFlags::slope)
+        if (roadObj->roadPieces & RoadPieceFlags::slope)
         {
             window->widgets[widx::slope_down].type = WidgetType::buttonWithImage;
             window->widgets[widx::slope_up].type = WidgetType::buttonWithImage;
         }
 
-        if (roadObj->road_pieces & RoadPieceFlags::steep_slope)
+        if (roadObj->roadPieces & RoadPieceFlags::steepSlope)
         {
             window->widgets[widx::steep_slope_down].type = WidgetType::buttonWithImage;
             window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
@@ -874,7 +874,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::right_hand_curve].left = 91;
         window->widgets[widx::right_hand_curve].right = 112;
 
-        if (trackObj->track_pieces & TrackPieceFlags::very_small_curve)
+        if (trackObj->trackPieces & TrackPieceFlags::verySmallCurve)
         {
             window->widgets[widx::left_hand_curve_small].left = 25;
             window->widgets[widx::left_hand_curve_small].right = 46;
@@ -889,19 +889,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->track_pieces & TrackPieceFlags::large_curve)
+        if (trackObj->trackPieces & TrackPieceFlags::largeCurve)
         {
             window->widgets[widx::left_hand_curve_large].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve_large].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->track_pieces & TrackPieceFlags::normal_curve)
+        if (trackObj->trackPieces & TrackPieceFlags::normalCurve)
         {
             window->widgets[widx::left_hand_curve].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->track_pieces & TrackPieceFlags::small_curve)
+        if (trackObj->trackPieces & TrackPieceFlags::smallCurve)
         {
             window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonWithImage;
@@ -910,7 +910,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::s_bend_dual_track_left].type = WidgetType::none;
         window->widgets[widx::s_bend_dual_track_right].type = WidgetType::none;
 
-        if (trackObj->track_pieces & TrackPieceFlags::one_sided)
+        if (trackObj->trackPieces & TrackPieceFlags::oneSided)
         {
             window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonWithImage;
             window->widgets[widx::s_bend_dual_track_right].type = WidgetType::buttonWithImage;
@@ -946,13 +946,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::slope_up].type = WidgetType::none;
         window->widgets[widx::steep_slope_up].type = WidgetType::none;
 
-        if (trackObj->track_pieces & TrackPieceFlags::slope)
+        if (trackObj->trackPieces & TrackPieceFlags::slope)
         {
             window->widgets[widx::slope_down].type = WidgetType::buttonWithImage;
             window->widgets[widx::slope_up].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->track_pieces & TrackPieceFlags::steep_slope)
+        if (trackObj->trackPieces & TrackPieceFlags::steepSlope)
         {
             window->widgets[widx::steep_slope_down].type = WidgetType::buttonWithImage;
             window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
@@ -1591,7 +1591,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto args = FormatArguments();
             args.push(imageId);
 
-            if (bridgeObj->max_speed == kSpeed16Null)
+            if (bridgeObj->maxSpeed == kSpeed16Null)
             {
                 args.push(StringIds::unlimited_speed);
                 args.push<uint16_t>(0);
@@ -1599,9 +1599,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             else
             {
                 args.push(StringIds::velocity);
-                args.push(bridgeObj->max_speed);
+                args.push(bridgeObj->maxSpeed);
             }
-            args.push<uint16_t>(bridgeObj->max_height);
+            args.push<uint16_t>(bridgeObj->maxHeight);
 
             Dropdown::add(i, StringIds::dropdown_bridge_stats, args);
         }
@@ -1825,7 +1825,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DCA2
     static void onUpdate(Window& self)
     {
-        self.frame_no++;
+        self.frameNo++;
         self.callPrepareDraw();
         WindowManager::invalidate(WindowType::construction, self.number);
 
@@ -2144,7 +2144,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         break;
                     }
                     const auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
-                    if (bridgeObj->disabled_track_cfg & _4F8764[args.trackId])
+                    if (bridgeObj->disabledTrackCfg & _4F8764[args.trackId])
                     {
                         continue;
                     }
@@ -2197,7 +2197,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         break;
                     }
                     const auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
-                    if (bridgeObj->disabled_track_cfg & _4F7284[args.roadId])
+                    if (bridgeObj->disabledTrackCfg & _4F7284[args.roadId])
                     {
                         continue;
                     }
@@ -2516,7 +2516,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (bridgeObj != nullptr)
             {
                 args.push(bridgeObj->name);
-                if (bridgeObj->max_speed == kSpeed16Null)
+                if (bridgeObj->maxSpeed == kSpeed16Null)
                 {
                     args.push(StringIds::unlimited_speed);
                     args.push<uint16_t>(0);
@@ -2524,9 +2524,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 else
                 {
                     args.push(StringIds::velocity);
-                    args.push(bridgeObj->max_speed);
+                    args.push(bridgeObj->maxSpeed);
                 }
-                args.push<uint16_t>(bridgeObj->max_height);
+                args.push<uint16_t>(bridgeObj->maxHeight);
             }
         }
         Common::repositionTabs(&self);
@@ -2557,7 +2557,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (selectedMods & (1 << mod))
             {
                 const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
-                if ((trackExtraObj->track_pieces & _trackPieceToFlags[trackPieceId]) != _trackPieceToFlags[trackPieceId])
+                if ((trackExtraObj->trackPieces & _trackPieceToFlags[trackPieceId]) != _trackPieceToFlags[trackPieceId])
                 {
                     selectedMods &= ~(1 << mod);
                 }
@@ -2641,7 +2641,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049D38A and 0x0049D16B
     static void drawCostString(Window* self, Gfx::RenderTarget* rt)
     {
-        auto x = self->widgets[widx::construct].mid_x();
+        auto x = self->widgets[widx::construct].midX();
         x += self->x;
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
@@ -2674,7 +2674,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         _byte_522095 = _byte_522095 | (1 << 1);
 
-        drawTrack(Map::Pos3(256 * Map::tile_size, 256 * Map::tile_size, 120 * Map::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
+        drawTrack(Map::Pos3(256 * Map::kTileSize, 256 * Map::kTileSize, 120 * Map::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
@@ -2694,7 +2694,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         _byte_522095 = _byte_522095 | (1 << 1);
 
-        drawRoad(Map::Pos3(256 * Map::tile_size, 256 * Map::tile_size, 120 * Map::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
+        drawRoad(Map::Pos3(256 * Map::kTileSize, 256 * Map::kTileSize, 120 * Map::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 

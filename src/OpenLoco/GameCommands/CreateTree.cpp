@@ -37,7 +37,7 @@ namespace OpenLoco::GameCommands
         setExpenditureType(ExpenditureType::Construction);
 
         auto tileHeight = Map::TileManager::getHeight(args.pos);
-        setPosition(Map::Pos3(args.pos.x + Map::tile_size / 2, args.pos.y + Map::tile_size / 2, tileHeight.landHeight));
+        setPosition(Map::Pos3(args.pos.x + Map::kTileSize / 2, args.pos.y + Map::kTileSize / 2, tileHeight.landHeight));
 
         if (!Map::TileManager::checkFreeElementsAndReorganise())
         {
@@ -129,7 +129,7 @@ namespace OpenLoco::GameCommands
             Ui::ViewportManager::invalidate(args.pos, elTree->baseHeight(), elTree->clearHeight(), ZoomLevel::eighth, 56);
         }
 
-        return Economy::getInflationAdjustedCost(treeObj->build_cost_factor, treeObj->cost_index, 12);
+        return Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
     }
 
     void createTree(registers& regs)

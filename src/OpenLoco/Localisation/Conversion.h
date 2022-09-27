@@ -8,7 +8,7 @@ namespace OpenLoco::Localisation
 {
     utf32_t convertLocoToUnicode(uint8_t loco_char);
     uint8_t convertUnicodeToLoco(utf32_t unicode);
-    std::string convertUnicodeToLoco(std::string unicode_string);
+    std::string convertUnicodeToLoco(const std::string& unicode_string);
 
     namespace LocoChar
     {

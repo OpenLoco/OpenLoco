@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         panel,
     };
 
-    constexpr Ui::Size windowSize = { 441, 91 };
+    static constexpr Ui::Size kWindowSize = { 441, 91 };
 
     Widget widgets[] = {
         makeWidget({ 0, 0 }, { 441, 91 }, WidgetType::frame, WindowColour::primary),
@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
         auto window = WindowManager::createWindowCentred(
             WindowType::networkStatus,
-            windowSize,
+            kWindowSize,
             WindowFlags::flag_11 | WindowFlags::stickToFront,
             &_events);
 

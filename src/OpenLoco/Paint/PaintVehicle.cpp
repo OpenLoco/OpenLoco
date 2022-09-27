@@ -43,15 +43,15 @@ namespace OpenLoco::Paint
             return;
         }
 
-        auto& sprite = vehObject->bogie_sprites[bogie->objectSpriteType];
-        uint8_t yaw = (bogie->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
-        auto pitch = bogie->sprite_pitch;
+        auto& sprite = vehObject->bogieSprites[bogie->objectSpriteType];
+        uint8_t yaw = (bogie->spriteYaw + (session.getRotation() << 4)) & 0x3F;
+        auto pitch = bogie->spritePitch;
 
         if (bogie->getFlags38() & Flags38::isReversed)
         {
             // Flip the highest bit to reverse the yaw
             yaw ^= (1 << 5);
-            pitch = kReversePitch[static_cast<uint8_t>(bogie->sprite_pitch)];
+            pitch = kReversePitch[static_cast<uint8_t>(bogie->spritePitch)];
         }
         auto yawIndex = (yaw >> 1) & 0x1F;
 
@@ -339,14 +339,14 @@ namespace OpenLoco::Paint
         }
 
         auto& sprite = vehObject->bodySprites[body->objectSpriteType];
-        uint8_t yaw = (body->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
+        uint8_t yaw = (body->spriteYaw + (session.getRotation() << 4)) & 0x3F;
         auto originalYaw = yaw; // edi
-        auto pitch = body->sprite_pitch;
+        auto pitch = body->spritePitch;
 
         if (body->getFlags38() & Flags38::isReversed)
         {
             yaw ^= (1 << 5);
-            pitch = kReversePitch[static_cast<uint8_t>(body->sprite_pitch)];
+            pitch = kReversePitch[static_cast<uint8_t>(body->spritePitch)];
         }
 
         uint32_t pitchImageIndex;
@@ -409,14 +409,14 @@ namespace OpenLoco::Paint
                 offsetModifier = -offsetModifier;
             }
 
-            if (unk.body_sprite_ind & SpriteIndex::flag_unk7)
+            if (unk.bodySpriteInd & SpriteIndex::flag_unk7)
             {
                 offsetModifier = -offsetModifier;
             }
 
             boundBoxOffsets.x = (_503B6A[originalYaw].x * offsetModifier) >> 11;
             boundBoxOffsets.y = (_503B6A[originalYaw].y * offsetModifier) >> 11;
-            offsetModifier = sprite.bogey_position * 2 - 4;
+            offsetModifier = sprite.bogeyPosition * 2 - 4;
             originalYaw &= 0x1F;
             boundBoxOffsets.x += (_5001B4[originalYaw * 4] * offsetModifier) >> 8;
             boundBoxOffsets.y += (_5001B4[originalYaw * 4 + 1] * offsetModifier) >> 8;

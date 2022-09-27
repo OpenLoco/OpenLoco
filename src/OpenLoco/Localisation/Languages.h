@@ -26,12 +26,12 @@ namespace OpenLoco::Localisation
     struct LanguageDescriptor
     {
         std::string locale;
-        std::string english_name;
-        std::string native_name;
-        LocoLanguageId loco_original_id;
+        std::string englishName;
+        std::string nativeName;
+        LocoLanguageId locoOriginalId;
     };
 
     void enumerateLanguages();
     std::vector<LanguageDescriptor>& getLanguageDescriptors();
-    const LanguageDescriptor& getDescriptorForLanguage(std::string target_locale);
+    const LanguageDescriptor& getDescriptorForLanguage(std::string targetLocale);
 }

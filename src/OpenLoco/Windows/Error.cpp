@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::Error
     static char* formatErrorString(string_id title, string_id message, FormatArguments args, char* buffer)
     {
         char* ptr = (char*)buffer;
-        ptr[0] = ControlCodes::colour_black;
+        ptr[0] = ControlCodes::Colour::black;
         ptr++;
 
         if (title != StringIds::null)

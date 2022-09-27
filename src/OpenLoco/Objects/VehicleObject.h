@@ -99,9 +99,9 @@ namespace OpenLoco
     {
         uint8_t length; // 0x00
         uint8_t var_01;
-        uint8_t front_bogie_sprite_ind; // 0x02 index of bogie_sprites struct
-        uint8_t back_bogie_sprite_ind;  // 0x03 index of bogie_sprites struct
-        uint8_t body_sprite_ind;        // 0x04 index of a bodySprites struct
+        uint8_t frontBogieSpriteInd; // 0x02 index of bogieSprites struct
+        uint8_t backBogieSpriteInd;  // 0x03 index of bogieSprites struct
+        uint8_t bodySpriteInd;       // 0x04 index of a bodySprites struct
         uint8_t var_05;
     };
 
@@ -148,7 +148,7 @@ namespace OpenLoco
         uint8_t numCargoLoadFrames;      // 0x03
         uint8_t numCargoFrames;          // 0x04
         uint8_t numRollFrames;           // 0x05
-        uint8_t bogey_position;          // 0x06
+        uint8_t bogeyPosition;           // 0x06
         uint8_t flags;                   // 0x07
         uint8_t var_08;                  // sprite width
         uint8_t var_09;                  // sprite height negative
@@ -166,11 +166,11 @@ namespace OpenLoco
     {
         constexpr uint16_t flag_02 = 1 << 2; // rollable? APT Passenger carriage
         constexpr uint16_t flag_03 = 1 << 3; // rollable? APT Driving carriage
-        constexpr uint16_t rack_rail = 1 << 6;
+        constexpr uint16_t rackRail = 1 << 6;
         constexpr uint16_t unk_08 = 1 << 8;
         constexpr uint16_t unk_09 = 1 << 9; // anytrack??
-        constexpr uint16_t speed_control = 1 << 10;
-        constexpr uint16_t can_couple = 1 << 11;
+        constexpr uint16_t speedControl = 1 << 10;
+        constexpr uint16_t canCouple = 1 << 11;
         constexpr uint16_t unk_12 = 1 << 12; // dualhead??
         constexpr uint16_t isHelicopter = 1 << 13;
         constexpr uint16_t refittable = 1 << 14;
@@ -200,36 +200,36 @@ namespace OpenLoco
         TransportMode mode; // 0x02
         VehicleType type;   // 0x03
         uint8_t var_04;
-        uint8_t trackType;                // 0x05
-        uint8_t num_mods;                 // 0x06
-        uint8_t cost_index;               // 0x07
-        int16_t cost_factor;              // 0x08
-        uint8_t reliability;              // 0x0A
-        uint8_t run_cost_index;           // 0x0B
-        int16_t run_cost_factor;          // 0x0C
-        uint8_t colour_type;              // 0x0E
-        uint8_t num_compat;               // 0x0F
-        uint16_t compatible_vehicles[8];  // 0x10 array of compatible vehicle_types
-        uint8_t required_track_extras[4]; // 0x20
+        uint8_t trackType;              // 0x05
+        uint8_t numMods;                // 0x06
+        uint8_t costIndex;              // 0x07
+        int16_t costFactor;             // 0x08
+        uint8_t reliability;            // 0x0A
+        uint8_t runCostIndex;           // 0x0B
+        int16_t runCostFactor;          // 0x0C
+        uint8_t colourType;             // 0x0E
+        uint8_t numCompat;              // 0x0F
+        uint16_t compatibleVehicles[8]; // 0x10 array of compatible vehicle_types
+        uint8_t requiredTrackExtras[4]; // 0x20
         vehicle_object_unk var_24[4];
         VehicleObjectBodySprite bodySprites[kMaxBodySprites]; // 0x3C
-        vehicle_object_bogie_sprite bogie_sprites[2];         // 0xB4
+        vehicle_object_bogie_sprite bogieSprites[2];          // 0xB4
         uint16_t power;                                       // 0xD8
         Speed16 speed;                                        // 0xDA
-        Speed16 rack_speed;                                   // 0xDC
+        Speed16 rackSpeed;                                    // 0xDC
         uint16_t weight;                                      // 0xDE
         uint16_t flags;                                       // 0xE0
-        uint8_t max_primary_cargo;                            // 0xE2 size is relative to the first primary_cargo_types
-        uint8_t max_secondary_cargo;                          // 0xE3
-        uint32_t primary_cargo_types;                         // 0xE4
-        uint32_t secondary_cargo_types;                       // 0xE8
+        uint8_t maxPrimaryCargo;                              // 0xE2 size is relative to the first primaryCargoTypes
+        uint8_t maxSecondaryCargo;                            // 0xE3
+        uint32_t primaryCargoTypes;                           // 0xE4
+        uint32_t secondaryCargoTypes;                         // 0xE8
         uint8_t cargoTypeSpriteOffsets[32];                   // 0xEC
-        uint8_t num_simultaneous_cargo_types;                 // 0x10C
+        uint8_t numSimultaneousCargoTypes;                    // 0x10C
         simple_animation animation[2];                        // 0x10D
         uint8_t var_113;
         uint16_t designed;                 // 0x114
         uint16_t obsolete;                 // 0x116
-        uint8_t rack_rail_type;            // 0x118
+        uint8_t rackRailType;              // 0x118
         DrivingSoundType drivingSoundType; // 0x119
         union
         {

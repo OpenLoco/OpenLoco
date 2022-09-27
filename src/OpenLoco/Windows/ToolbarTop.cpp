@@ -34,14 +34,11 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 {
-    static loco_global<uint8_t[40], 0x00113DB20> menu_options;
-
-    static loco_global<uint32_t, 0x009C86F8> zoom_ticks;
-
-    static loco_global<uint8_t, 0x009C870C> last_town_option;
-    static loco_global<uint8_t, 0x009C870D> last_port_option;
-
-    static loco_global<uint8_t[18], 0x0050A006> available_objects;
+    static loco_global<uint8_t[40], 0x00113DB20> _menuOptions;
+    static loco_global<uint32_t, 0x009C86F8> _zoomTicks;
+    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
+    static loco_global<uint8_t, 0x009C870D> _lastPortOption;
+    static loco_global<uint8_t[18], 0x0050A006> _availableObjects;
     // Replaces 0x0050A006
     std::vector<uint8_t> availableTracks;
 
@@ -96,9 +93,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x00438B26
     void open()
     {
-        zoom_ticks = 0;
-        last_town_option = 0;
-        last_port_option = 0;
+        _zoomTicks = 0;
+        _lastTownOption = 0;
+        _lastPortOption = 0;
 
         _events.onResize = Common::onResize;
         _events.event_03 = onMouseDown;
@@ -207,8 +204,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static void takeScreenshot()
     {
-        loco_global<uint8_t, 0x00508F16> screenshot_countdown;
-        screenshot_countdown = 10;
+        loco_global<uint8_t, 0x00508F16> _screenshotCountdown;
+        _screenshotCountdown = 10;
     }
 
     static void startOrCloseServer()
@@ -388,10 +385,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         // Note: This is not using player company id! This looks odd.
         availableTracks = CompanyManager::get(GameCommands::getUpdatingCompanyId())->getAvailableRailTracks();
 
-        assert(std::size(available_objects) >= std::size(availableTracks));
+        assert(std::size(_availableObjects) >= std::size(availableTracks));
         // Legacy copy to available_objects remove when all users of 0x0050A006 accounted for
-        std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(available_objects));
-        available_objects[availableTracks.size()] = std::numeric_limits<uint8_t>::max();
+        std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(_availableObjects));
+        _availableObjects[availableTracks.size()] = std::numeric_limits<uint8_t>::max();
 
         if (availableTracks.size() == 0)
             return;
@@ -399,35 +396,35 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto companyColour = CompanyManager::getPlayerCompanyColour();
 
         // Add available objects to Dropdown.
-        uint16_t highlighted_item = 0;
+        uint16_t highlightedItem = 0;
 
         for (auto i = 0u; i < std::size(availableTracks); i++)
         {
-            uint32_t obj_image;
-            string_id obj_string_id;
+            uint32_t objImage;
+            string_id objStringId;
 
             auto objIndex = availableTracks[i];
             if ((objIndex & (1 << 7)) != 0)
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
-                obj_string_id = road->name;
-                obj_image = Gfx::recolour(road->image, companyColour);
+                objStringId = road->name;
+                objImage = Gfx::recolour(road->image, companyColour);
             }
             else
             {
                 auto track = ObjectManager::get<TrackObject>(objIndex);
-                obj_string_id = track->name;
-                obj_image = Gfx::recolour(track->image, companyColour);
+                objStringId = track->name;
+                objImage = Gfx::recolour(track->image, companyColour);
             }
 
-            Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
+            Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
             if (objIndex == LastGameOptionManager::getLastRailRoad())
-                highlighted_item = i;
+                highlightedItem = i;
         }
 
         Dropdown::showBelow(window, widgetIndex, std::size(availableTracks), 25, (1 << 6));
-        Dropdown::setHighlightedItem(highlighted_item);
+        Dropdown::setHighlightedItem(highlightedItem);
     }
 
     // 0x0043A39F
@@ -451,14 +448,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (addr<0x525FAC, int8_t>() != -1)
         {
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_airport, StringIds::menu_airport });
-            menu_options[ddIndex] = 0;
+            _menuOptions[ddIndex] = 0;
             ddIndex++;
         }
 
         if (addr<0x525FAD, int8_t>() != -1)
         {
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port, StringIds::menu_ship_port });
-            menu_options[ddIndex] = 1;
+            _menuOptions[ddIndex] = 1;
             ddIndex++;
         }
 
@@ -468,7 +465,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
 
         ddIndex = 0;
-        if (last_port_option != menu_options[0])
+        if (_lastPortOption != _menuOptions[0])
             ddIndex++;
 
         Dropdown::setHighlightedItem(ddIndex);
@@ -480,13 +477,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
 
-        last_port_option = menu_options[itemIndex];
+        _lastPortOption = _menuOptions[itemIndex];
 
-        if (last_port_option == 0)
+        if (_lastPortOption == 0)
         {
             Construction::openWithFlags(1 << 31);
         }
-        else if (last_port_option == 1)
+        else if (_lastPortOption == 1)
         {
             Construction::openWithFlags(1 << 30);
         }
@@ -495,10 +492,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     struct VehicleTypeInterfaceParam
     {
         uint32_t image;
-        uint32_t build_image;
-        string_id build_string;
-        string_id num_singular;
-        string_id num_plural;
+        uint32_t buildImage;
+        string_id buildString;
+        string_id numSingular;
+        string_id numPlural;
     };
 
     // clang-format off
@@ -529,10 +526,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
-            uint32_t vehicle_image = Gfx::recolour(interface_param.build_image, companyColour);
+            uint32_t vehicle_image = Gfx::recolour(interface_param.buildImage, companyColour);
 
-            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, interface_param.build_string });
-            menu_options[ddIndex] = vehicleType;
+            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, interface_param.buildString });
+            _menuOptions[ddIndex] = vehicleType;
             ddIndex++;
         }
 
@@ -549,7 +546,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (itemIndex == -1)
             return;
 
-        itemIndex = menu_options[itemIndex];
+        itemIndex = _menuOptions[itemIndex];
         LastGameOptionManager::setLastBuildVehiclesOption(itemIndex);
 
         BuildVehicle::open(itemIndex, 1 << 31);
@@ -583,20 +580,20 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             if ((availableVehicles & (1 << vehicleType)) == 0)
                 continue;
 
-            auto& interface_param = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
+            auto& interfaceParam = VehicleTypeInterfaceParameters.at(static_cast<VehicleType>(vehicleType));
 
-            uint32_t vehicle_image = Gfx::recolour(interface_param.image, companyColour);
+            uint32_t vehicleImage = Gfx::recolour(interfaceParam.image, companyColour);
             uint16_t vehicle_count = vehicle_counts[vehicleType];
 
             // TODO: replace with locale-based plurals.
-            string_id vehicle_string_id;
+            string_id vehicleStringId;
             if (vehicle_count == 1)
-                vehicle_string_id = interface_param.num_singular;
+                vehicleStringId = interfaceParam.numSingular;
             else
-                vehicle_string_id = interface_param.num_plural;
+                vehicleStringId = interfaceParam.numPlural;
 
-            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id, vehicle_count });
-            menu_options[ddIndex] = vehicleType;
+            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicleImage, vehicleStringId, vehicle_count });
+            _menuOptions[ddIndex] = vehicleType;
             ddIndex++;
         }
 
@@ -613,7 +610,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (itemIndex == -1)
             return;
 
-        auto vehicleType = VehicleType(menu_options[itemIndex]);
+        auto vehicleType = VehicleType(_menuOptions[itemIndex]);
         LastGameOptionManager::setLastVehicleType(vehicleType);
 
         VehicleList::open(CompanyManager::getControllingId(), vehicleType);
@@ -865,11 +862,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window.widgets[Common::Widx::view_menu].left = baseWidget.left + 14 + (baseWidget.width() * 3);
         }
 
-        if (last_port_option == 0
+        if (_lastPortOption == 0
             && LastGameOptionManager::getLastAirport() != LastGameOptionManager::kNoLastOption
             && LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
         {
-            last_port_option = 1;
+            _lastPortOption = 1;
         }
 
         window.widgets[Common::Widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave);
@@ -887,12 +884,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         window.widgets[Common::Widx::vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
         window.widgets[Common::Widx::stations_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_stations);
 
-        if (last_town_option == 0)
+        if (_lastTownOption == 0)
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
         else
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
 
-        if (last_port_option == 0)
+        if (_lastPortOption == 0)
             window.widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_airports);
         else
             window.widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports);

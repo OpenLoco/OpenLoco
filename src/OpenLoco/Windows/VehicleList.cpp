@@ -27,9 +27,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
-    static const Ui::Size window_size = { 550, 213 };
-    static const Ui::Size max_dimensions = { 550, 1200 };
-    static const Ui::Size min_dimensions = { 220, 160 };
+    static constexpr Ui::Size kWindowSize = { 550, 213 };
+    static constexpr Ui::Size kMaxDimensions = { 550, 1200 };
+    static constexpr Ui::Size kMinDimensions = { 220, 160 };
 
     static WindowEventList _events;
 
@@ -404,7 +404,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
 
             auto isActive = tab == self->currentTab + Widx::tab_trains;
-            auto imageId = isActive ? frames[self->frame_no / 2 % 8] : frames[0];
+            auto imageId = isActive ? frames[self->frameNo / 2 % 8] : frames[0];
 
             uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
             Widget::drawTab(self, rt, image, tab);
@@ -426,7 +426,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         Window* self = WindowManager::createWindow(
             WindowType::vehicleList,
-            window_size,
+            kWindowSize,
             WindowFlags::flag_11,
             &_events);
 
@@ -434,7 +434,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->enabledWidgets = _enabledWidgets;
         self->number = enumValue(companyId);
         self->owner = companyId;
-        self->frame_no = 0;
+        self->frameNo = 0;
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         self->setColour(WindowColour::secondary, skin->colour_0A);
@@ -461,8 +461,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;
         self->rowHeight = row_heights[tabIndex];
-        self->width = window_size.width;
-        self->height = window_size.height;
+        self->width = kWindowSize.width;
+        self->height = kWindowSize.height;
         self->sortMode = 0;
         self->var_83C = 0;
         self->rowHover = -1;
@@ -589,12 +589,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
             self.disabledWidgets &= ~((1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn));
 
         // Set appropriate tooltip
-        static constexpr std::array<string_id, 3> filterTooltipByType = {
+        static constexpr std::array<string_id, 3> kFilterTooltipByType = {
             StringIds::null,
             StringIds::tooltip_open_station_window_to_filter,
             StringIds::tooltip_select_cargo_type,
         };
-        self.widgets[Widx::cargo_type_btn].tooltip = filterTooltipByType[self.var_88A];
+        self.widgets[Widx::cargo_type_btn].tooltip = kFilterTooltipByType[self.var_88A];
 
         Widget::leftAlignTabs(self, Widx::tab_trains, Widx::tab_ships);
     }
@@ -671,7 +671,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             {
                 // Show current cargo
                 auto cargoObj = ObjectManager::get<CargoObject>(self.var_88C);
-                args = FormatArguments::common(StringIds::carrying_cargoid_sprite, cargoObj->name, cargoObj->unit_inline_sprite);
+                args = FormatArguments::common(StringIds::carrying_cargoid_sprite, cargoObj->name, cargoObj->unitInlineSprite);
 
                 // NB: the -9 in the xpos is to compensate for a hack due to the cargo dropdown limitation (only three args per item)
                 xPos = self.x + widget->left - 9;
@@ -799,7 +799,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;
         self->rowHeight = row_heights[tabIndex];
-        self->frame_no = 0;
+        self->frameNo = 0;
 
         if (CompanyManager::getControllingId() == CompanyId(self->number) && LastGameOptionManager::getLastVehicleType() != type)
         {
@@ -896,7 +896,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 FormatArguments args{};
                 args.push(cargoObj->name);
-                args.push(cargoObj->unit_inline_sprite);
+                args.push(cargoObj->unitInlineSprite);
                 args.push(cargoId);
                 Dropdown::add(index, StringIds::carrying_cargoid_sprite, args);
 
@@ -979,7 +979,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C260B
     static void onUpdate(Window& self)
     {
-        self.frame_no++;
+        self.frameNo++;
         self.callPrepareDraw();
 
         auto widgetIndex = getTabFromType(static_cast<VehicleType>(self.currentTab));
@@ -1118,11 +1118,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         self.flags |= WindowFlags::resizable;
 
-        self.minWidth = min_dimensions.width;
-        self.minHeight = min_dimensions.height;
+        self.minWidth = kMinDimensions.width;
+        self.minHeight = kMinDimensions.height;
 
-        self.maxWidth = max_dimensions.width;
-        self.maxHeight = max_dimensions.height;
+        self.maxWidth = kMaxDimensions.width;
+        self.maxHeight = kMaxDimensions.height;
 
         if (self.width < self.minWidth)
         {

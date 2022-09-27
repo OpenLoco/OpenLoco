@@ -30,7 +30,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-    static const Ui::Size window_size = { 380, 233 };
+    static constexpr Ui::Size kWindowSize = { 380, 233 };
 
     enum widx
     {
@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         vehicle_preview
     };
 
-    static const uint32_t trainTabImages[16]{
+    static constexpr uint32_t kTrainTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_train_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_train_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_train_frame_2,
@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         InterfaceSkin::ImageIds::build_vehicle_train_frame_15,
     };
 
-    static const uint32_t aircraftTabImages[16]{
+    static constexpr uint32_t kAircraftTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_2,
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_15,
     };
 
-    static const uint32_t busTabImages[16]{
+    static constexpr uint32_t kBusTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_bus_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_bus_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_bus_frame_2,
@@ -119,7 +119,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         InterfaceSkin::ImageIds::build_vehicle_bus_frame_15,
     };
 
-    static const uint32_t tramTabImages[16]{
+    static constexpr uint32_t kTramTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_tram_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_tram_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_tram_frame_2,
@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         InterfaceSkin::ImageIds::build_vehicle_tram_frame_15,
     };
 
-    static const uint32_t truckTabImages[16]{
+    static constexpr uint32_t kTruckTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_truck_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_truck_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_truck_frame_2,
@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         InterfaceSkin::ImageIds::build_vehicle_truck_frame_15,
     };
 
-    static const uint32_t shipTabImages[16]{
+    static constexpr uint32_t kShipTabImages[16]{
         InterfaceSkin::ImageIds::build_vehicle_ship_frame_0,
         InterfaceSkin::ImageIds::build_vehicle_ship_frame_1,
         InterfaceSkin::ImageIds::build_vehicle_ship_frame_2,
@@ -184,12 +184,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     };
 
     static TabDetails _transportTypeTabInformation[] = {
-        { VehicleType::train, tab_build_new_trains, trainTabImages },
-        { VehicleType::bus, tab_build_new_buses, busTabImages },
-        { VehicleType::truck, tab_build_new_trucks, truckTabImages },
-        { VehicleType::tram, tab_build_new_trams, tramTabImages },
-        { VehicleType::aircraft, tab_build_new_aircraft, aircraftTabImages },
-        { VehicleType::ship, tab_build_new_ships, shipTabImages }
+        { VehicleType::train, tab_build_new_trains, kTrainTabImages },
+        { VehicleType::bus, tab_build_new_buses, kBusTabImages },
+        { VehicleType::truck, tab_build_new_trucks, kTruckTabImages },
+        { VehicleType::tram, tab_build_new_trams, kTramTabImages },
+        { VehicleType::aircraft, tab_build_new_aircraft, kAircraftTabImages },
+        { VehicleType::ship, tab_build_new_ships, kShipTabImages }
     };
 
     // 0x5231D0
@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static loco_global<uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1], 0x011364F0> _trackTypesForTab;
     static std::array<uint16_t, 6> _scrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
-    loco_global<uint16_t[8], 0x112C826> _common_format_args;
+    loco_global<uint16_t[8], 0x112C826> _commonFormatArgs;
 
     static WindowEventList _events;
 
@@ -250,12 +250,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static Window* create(CompanyId company)
     {
         initEvents();
-        auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, WindowFlags::flag_11, &_events);
+        auto window = WindowManager::createWindow(WindowType::buildVehicle, kWindowSize, WindowFlags::flag_11, &_events);
         window->widgets = _widgets;
         window->number = enumValue(company);
         window->enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
         window->owner = CompanyManager::getControllingId();
-        window->frame_no = 0;
+        window->frameNo = 0;
         auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
@@ -303,8 +303,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         else
         {
             window = create(CompanyManager::getControllingId());
-            window->width = window_size.width;
-            window->height = window_size.height;
+            window->width = kWindowSize.width;
+            window->height = kWindowSize.height;
             _buildTargetVehicle = -1;
             if (!tabMode)
             {
@@ -420,7 +420,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         _numAvailableVehicles = 0;
         struct build_item
         {
-            uint16_t vehicle_index;
+            uint16_t vehicleIndex;
             bool isPowered;
             uint16_t designed;
         };
@@ -494,7 +494,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         std::stable_sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.isPowered > item2.isPowered; });
         for (size_t i = 0; i < buildableVehicles.size(); ++i)
         {
-            _availableVehicles[i] = buildableVehicles[i].vehicle_index;
+            _availableVehicles[i] = buildableVehicles[i].vehicleIndex;
         }
         _numAvailableVehicles = static_cast<int16_t>(buildableVehicles.size());
     }
@@ -600,7 +600,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 auto newTab = widgetIndex - widx::tab_build_new_trains;
                 window.currentTab = newTab;
                 window.rowHeight = _scrollRowHeight[newTab];
-                window.frame_no = 0;
+                window.frameNo = 0;
                 window.currentSecondaryTab = 0;
                 if (newTab != LastGameOptionManager::getLastBuildVehiclesOption())
                 {
@@ -722,7 +722,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C377B
     static void onUpdate(Window& window)
     {
-        window.frame_no++;
+        window.frameNo++;
         window.callPrepareDraw();
 
         WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, window.currentTab + 4);
@@ -947,14 +947,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
 
         {
-            auto cost = Economy::getInflationAdjustedCost(vehicleObj->cost_factor, vehicleObj->cost_index, 6);
+            auto cost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 6);
             FormatArguments args{};
             args.push(cost);
             buffer = StringManager::formatString(buffer, StringIds::stats_cost, &args);
         }
 
         {
-            auto runningCost = Economy::getInflationAdjustedCost(vehicleObj->run_cost_factor, vehicleObj->run_cost_index, 10);
+            auto runningCost = Economy::getInflationAdjustedCost(vehicleObj->runCostFactor, vehicleObj->runCostIndex, 10);
             FormatArguments args{};
             args.push(runningCost);
             buffer = StringManager::formatString(buffer, StringIds::stats_running_cost, &args);
@@ -998,25 +998,25 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             buffer = StringManager::formatString(buffer, trackName);
 
-            for (auto i = 0; i < vehicleObj->num_mods; ++i)
+            for (auto i = 0; i < vehicleObj->numMods; ++i)
             {
                 strcpy(buffer, " + ");
                 buffer += 3;
                 if (vehicleObj->mode == TransportMode::road)
                 {
-                    auto roadExtraObj = ObjectManager::get<RoadExtraObject>(vehicleObj->required_track_extras[i]);
+                    auto roadExtraObj = ObjectManager::get<RoadExtraObject>(vehicleObj->requiredTrackExtras[i]);
                     buffer = StringManager::formatString(buffer, roadExtraObj->name);
                 }
                 else
                 {
-                    auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->required_track_extras[i]);
+                    auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->requiredTrackExtras[i]);
                     buffer = StringManager::formatString(buffer, trackExtraObj->name);
                 }
             }
 
-            if (vehicleObj->flags & FlagsE0::rack_rail)
+            if (vehicleObj->flags & FlagsE0::rackRail)
             {
-                auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rack_rail_type);
+                auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rackRailType);
                 FormatArguments args{};
                 args.push(trackExtraObj->name);
                 buffer = StringManager::formatString(buffer, StringIds::stats_string_steep_slope, &args);
@@ -1048,11 +1048,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             args.push(vehicleObj->speed.getRaw());
             buffer = StringManager::formatString(buffer, StringIds::stats_max_speed, &args);
         }
-        if (vehicleObj->flags & FlagsE0::rack_rail)
+        if (vehicleObj->flags & FlagsE0::rackRail)
         {
-            auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rack_rail_type);
+            auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rackRailType);
             FormatArguments args{};
-            args.push(vehicleObj->rack_speed);
+            args.push(vehicleObj->rackSpeed);
             args.push(trackExtraObj->name);
             buffer = StringManager::formatString(buffer, StringIds::stats_velocity_on_string, &args);
         }
@@ -1176,15 +1176,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);
                 auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
                 buffer = StringManager::formatString(buffer, vehicleObj->name);
-                auto usableCargoTypes = vehicleObj->primary_cargo_types | vehicleObj->secondary_cargo_types;
+                auto usableCargoTypes = vehicleObj->primaryCargoTypes | vehicleObj->secondaryCargoTypes;
 
                 for (auto cargoTypes = Utility::bitScanForward(usableCargoTypes); cargoTypes != -1; cargoTypes = Utility::bitScanForward(usableCargoTypes))
                 {
                     usableCargoTypes &= ~(1 << cargoTypes);
                     auto cargoObj = ObjectManager::get<CargoObject>(cargoTypes);
                     *buffer++ = ' ';
-                    *buffer++ = ControlCodes::inline_sprite_str;
-                    *(reinterpret_cast<uint32_t*>(buffer)) = cargoObj->unit_inline_sprite;
+                    *buffer++ = ControlCodes::inlineSpriteStr;
+                    *(reinterpret_cast<uint32_t*>(buffer)) = cargoObj->unitInlineSprite;
                     buffer += 4;
                 }
 
@@ -1354,7 +1354,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             auto frameNo = 0;
             if (_transportTypeTabInformation[window->currentTab].type == tab.type)
             {
-                frameNo = (window->frame_no / 2) & 0xF;
+                frameNo = (window->frameNo / 2) & 0xF;
             }
             uint32_t image = Gfx::recolour(skin->img + tab.imageIds[frameNo], companyColour);
             Widget::drawTab(window, rt, image, tab.widgetIndex);
@@ -1412,7 +1412,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 img = roadObj->image;
                 if (window->currentSecondaryTab == tab)
                 {
-                    img += (window->frame_no / 4) & 0x1F;
+                    img += (window->frameNo / 4) & 0x1F;
                 }
                 img = Gfx::recolour(img, companyColour);
             }
@@ -1422,7 +1422,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 img = trackObj->image;
                 if (window->currentSecondaryTab == tab)
                 {
-                    img += (window->frame_no / 4) & 0xF;
+                    img += (window->frameNo / 4) & 0xF;
                 }
                 img = Gfx::recolour(img, companyColour);
             }

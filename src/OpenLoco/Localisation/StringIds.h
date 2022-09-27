@@ -1247,7 +1247,7 @@ namespace OpenLoco::StringIds
     constexpr string_id music_the_ragtime_dance = 1610;
     constexpr string_id music_easy_winners = 1611;
     constexpr string_id music_setting_off = 1612;
-    constexpr string_id music_a_travellers_seranade = 1613;
+    constexpr string_id music_a_travellers_serenade = 1613;
     constexpr string_id music_latino_trip = 1614;
     constexpr string_id music_a_good_head_of_steam = 1615;
     constexpr string_id music_hop_to_the_bop = 1616;

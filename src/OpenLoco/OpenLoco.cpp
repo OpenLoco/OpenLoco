@@ -85,11 +85,11 @@ namespace OpenLoco
     static Timepoint _lastUpdate = Clock::now();
     static CExceptionHandler _exHandler = nullptr;
 
-    loco_global<char[256], 0x005060D0> gCDKey;
+    loco_global<char[256], 0x005060D0> _gCDKey;
 
-    loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
-    loco_global<uint32_t, 0x0050C19E> last_tick_time;
-    loco_global<uint8_t, 0x00508F08> game_command_nest_level;
+    loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
+    loco_global<uint32_t, 0x0050C19E> _last_tick_time;
+    loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
@@ -502,9 +502,9 @@ namespace OpenLoco
 
         // When Locomotion wants to jump to the end of a tick, it sets ESP
         // to some static memory that we define
-        static loco_global<void*, 0x0050C1A6> tickJumpESP;
+        static loco_global<void*, 0x0050C1A6> _tickJumpESP;
         static uint8_t spareStackMemory[2048];
-        tickJumpESP = spareStackMemory + sizeof(spareStackMemory);
+        _tickJumpESP = spareStackMemory + sizeof(spareStackMemory);
 
         if (setjmp(tickJump))
         {
@@ -529,22 +529,22 @@ namespace OpenLoco
                     });
 
                 initialise();
-                last_tick_time = Platform::getTime();
+                _last_tick_time = Platform::getTime();
             }
 
             uint32_t time = Platform::getTime();
-            time_since_last_tick = (uint16_t)std::min(time - last_tick_time, 500U);
-            last_tick_time = time;
+            _time_since_last_tick = (uint16_t)std::min(time - _last_tick_time, 500U);
+            _last_tick_time = time;
 
             if (!isPaused())
             {
-                addr<0x0050C1A2, uint32_t>() += time_since_last_tick;
+                addr<0x0050C1A2, uint32_t>() += _time_since_last_tick;
             }
             if (Tutorial::state() != Tutorial::State::none)
             {
-                time_since_last_tick = 31;
+                _time_since_last_tick = 31;
             }
-            game_command_nest_level = 0;
+            _game_command_nest_level = 0;
             Ui::update();
 
             addr<0x005233AE, int32_t>() += addr<0x0114084C, int32_t>();
@@ -616,7 +616,7 @@ namespace OpenLoco
                 }
                 else
                 {
-                    uint16_t numUpdates = std::clamp<uint16_t>(time_since_last_tick / (uint16_t)31, 1, 3);
+                    uint16_t numUpdates = std::clamp<uint16_t>(_time_since_last_tick / (uint16_t)31, 1, 3);
                     if (WindowManager::find(Ui::WindowType::multiplayer, 0) != nullptr)
                     {
                         numUpdates = 1;
@@ -968,15 +968,15 @@ namespace OpenLoco
         do
         {
             std::this_thread::yield();
-        } while (Platform::getTime() - last_tick_time < 25);
+        } while (Platform::getTime() - _last_tick_time < 25);
     }
 
     void promptTickLoop(std::function<bool()> tickAction)
     {
         while (true)
         {
-            last_tick_time = Platform::getTime();
-            time_since_last_tick = 31;
+            _last_tick_time = Platform::getTime();
+            _time_since_last_tick = 31;
             if (!Ui::processMessages() || !tickAction())
             {
                 break;
@@ -1094,8 +1094,8 @@ namespace OpenLoco
      */
     static void resetCmdline()
     {
-        loco_global<const char*, 0x00525348> glpCmdLine;
-        glpCmdLine = "";
+        loco_global<const char*, 0x00525348> _glpCmdLine;
+        _glpCmdLine = "";
     }
 
     void simulateGame(const fs::path& path, int32_t ticks)

@@ -49,8 +49,8 @@ namespace OpenLoco::Ui::ViewportManager
         vp->width = size.width;
         vp->height = size.height;
 
-        vp->view_width = size.width << static_cast<uint8_t>(zoom);
-        vp->view_height = size.height << static_cast<uint8_t>(zoom);
+        vp->viewWidth = size.width << static_cast<uint8_t>(zoom);
+        vp->viewHeight = size.height << static_cast<uint8_t>(zoom);
         vp->zoom = static_cast<uint8_t>(zoom);
         vp->flags = 0;
 
@@ -68,15 +68,15 @@ namespace OpenLoco::Ui::ViewportManager
         assert(index >= 0 && index < viewportsPerWindow);
         Viewport* viewport = w->viewports[index];
 
-        w->viewportConfigurations[index].viewport_target_sprite = dx;
+        w->viewportConfigurations[index].viewportTargetSprite = dx;
 
         auto t = EntityManager::get<EntityBase>(dx);
 
         const auto dest = viewport->centre2dCoordinates(t->position);
-        w->viewportConfigurations[index].saved_view_x = dest.x;
-        w->viewportConfigurations[index].saved_view_y = dest.y;
-        viewport->view_x = dest.x;
-        viewport->view_y = dest.y;
+        w->viewportConfigurations[index].savedViewX = dest.x;
+        w->viewportConfigurations[index].savedViewY = dest.y;
+        viewport->viewX = dest.x;
+        viewport->viewY = dest.y;
     }
 
     static void focusViewportOn(Window* w, int index, Map::Pos3 tile)
@@ -84,13 +84,13 @@ namespace OpenLoco::Ui::ViewportManager
         assert(index >= 0 && index < viewportsPerWindow);
         Viewport* viewport = w->viewports[index];
 
-        w->viewportConfigurations[index].viewport_target_sprite = EntityId::null;
+        w->viewportConfigurations[index].viewportTargetSprite = EntityId::null;
 
         const auto dest = viewport->centre2dCoordinates(tile);
-        w->viewportConfigurations[index].saved_view_x = dest.x;
-        w->viewportConfigurations[index].saved_view_y = dest.y;
-        viewport->view_x = dest.x;
-        viewport->view_y = dest.y;
+        w->viewportConfigurations[index].savedViewX = dest.x;
+        w->viewportConfigurations[index].savedViewY = dest.y;
+        viewport->viewX = dest.x;
+        viewport->viewY = dest.y;
     }
 
     static Viewport* create(registers regs, int index)
@@ -209,10 +209,10 @@ namespace OpenLoco::Ui::ViewportManager
             auto intersection = viewport->getIntersection(rect);
 
             // offset rect by (negative) viewport origin
-            int16_t left = intersection.left - viewport->view_x;
-            int16_t right = intersection.right - viewport->view_x;
-            int16_t top = intersection.top - viewport->view_y;
-            int16_t bottom = intersection.bottom - viewport->view_y;
+            int16_t left = intersection.left - viewport->viewX;
+            int16_t right = intersection.right - viewport->viewX;
+            int16_t top = intersection.top - viewport->viewY;
+            int16_t bottom = intersection.bottom - viewport->viewY;
 
             // apply zoom
             left = left >> viewport->zoom;
@@ -266,10 +266,10 @@ namespace OpenLoco::Ui::ViewportManager
             auto intersection = viewport->getIntersection(rect);
 
             // offset rect by (negative) viewport origin
-            int16_t left = intersection.left - viewport->view_x;
-            int16_t right = intersection.right - viewport->view_x;
-            int16_t top = intersection.top - viewport->view_y;
-            int16_t bottom = intersection.bottom - viewport->view_y;
+            int16_t left = intersection.left - viewport->viewX;
+            int16_t right = intersection.right - viewport->viewX;
+            int16_t top = intersection.top - viewport->viewY;
+            int16_t bottom = intersection.bottom - viewport->viewY;
 
             // apply zoom
             left = left >> viewport->zoom;
@@ -303,14 +303,14 @@ namespace OpenLoco::Ui::ViewportManager
      */
     void invalidate(EntityBase* t, ZoomLevel zoom)
     {
-        if (t->sprite_left == Location::null)
+        if (t->spriteLeft == Location::null)
             return;
 
         ViewportRect rect;
-        rect.left = t->sprite_left;
-        rect.top = t->sprite_top;
-        rect.right = t->sprite_right;
-        rect.bottom = t->sprite_bottom;
+        rect.left = t->spriteLeft;
+        rect.top = t->spriteTop;
+        rect.right = t->spriteRight;
+        rect.bottom = t->spriteBottom;
 
         auto level = (ZoomLevel)std::min(Config::get().vehiclesMinScale, (uint8_t)zoom);
         invalidate(rect, level);
