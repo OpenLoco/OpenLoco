@@ -135,6 +135,8 @@ namespace OpenLoco
 
 namespace OpenLoco::StringManager
 {
+    const uint8_t kUserStringSize = 32;
+
     void reset();
     void setString(string_id id, std::string_view value);
     const char* getString(string_id id);

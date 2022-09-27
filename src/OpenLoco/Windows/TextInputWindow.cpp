@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
+    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs, uint32_t inputSize)
     {
         _title = title;
         _message = message;
@@ -128,7 +128,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         char temp[200] = {};
         StringManager::formatString(temp, value, valueArgs);
 
-        inputSession = Ui::TextInput::InputSession(temp);
+        inputSession = Ui::TextInput::InputSession(temp, inputSize);
         inputSession.calculateTextOffset(_widgets[Widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
