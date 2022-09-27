@@ -246,7 +246,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         position = Ui::Point(window.x + widget->left, window.y + widget->top - 10);
         const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
-        const uint16_t maxNumCharacters = inputSession.maxAmountOfCharacters;
+        const uint16_t maxNumCharacters = inputSession.inputLenLimit;
 
         auto args = FormatArguments();
         args.push<uint16_t>(numCharacters);
