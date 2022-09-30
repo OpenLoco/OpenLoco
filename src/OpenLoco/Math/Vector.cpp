@@ -9,7 +9,7 @@ namespace OpenLoco::Math::Vector
     uint16_t fastSquareRoot(uint32_t distance)
     {
         uint8_t i = 10;
-        for (; distance > 4096; --i, distance >>= 2)
+        for (; distance >= 4096; --i, distance >>= 2)
             ;
 
         return _vehicle_arr_500B50[(distance & 0xFFE) >> 1] >> i;
