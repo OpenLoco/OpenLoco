@@ -412,6 +412,7 @@ namespace OpenLoco::Interop
     void registerHook(uintptr_t address, hook_function function);
     void writeRet(uint32_t address);
     void writeJmp(uint32_t address, void* fn);
+    void writeLocoCall(uint32_t address, uint32_t fnAddress);
     void writeNop(uint32_t address, size_t count);
     void hookDump(uint32_t address, void* fn);
     void hookLib(uint32_t address, void* fn);
