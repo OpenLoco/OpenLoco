@@ -102,6 +102,7 @@ namespace OpenLoco
     using Speed32 = SpeedTemplate<int32_t>;
     using Speed16 = SpeedTemplate<int16_t>;
 
+    constexpr auto kSpeedZero = Speed16(0);
     constexpr auto kSpeed16Null = Speed16(-1);
     constexpr auto kSpeed16Max = Speed16(0x7FFF);
     // Truncates only use if safe to lose information

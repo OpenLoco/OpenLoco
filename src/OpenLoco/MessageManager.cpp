@@ -1,5 +1,6 @@
 #include "MessageManager.h"
 #include "CompanyManager.h"
+#include "CompanyRecords.h"
 #include "Config.h"
 #include "Date.h"
 #include "Entities/EntityManager.h"
@@ -400,7 +401,7 @@ namespace OpenLoco::MessageManager
                 }
                 args.push(recordTypeStrings[message.itemSubjects[2]]);
                 args.push(vehicleTypeStrings[enumValue(head->vehicleType)]);
-                args.push(getGameState().recordSpeed[message.itemSubjects[2]]);
+                args.push(CompanyManager::getRecords().speed[message.itemSubjects[2]]);
                 StringManager::formatString(tempBuffer, StringIds::message_new_speed_record, &args);
             }
             break;

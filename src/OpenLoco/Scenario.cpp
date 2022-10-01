@@ -1,6 +1,7 @@
 #include "Scenario.h"
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
+#include "CompanyRecords.h"
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
@@ -376,7 +377,8 @@ namespace OpenLoco::Scenario
         initialiseDate(S5::getOptions().scenarioStartYear);
         initialiseSnowLine();
         sub_4748D4();
-        std::fill(std::begin(gameState.recordSpeed), std::end(gameState.recordSpeed), 0_mph);
+
+        CompanyManager::setRecords(CompanyManager::kZeroRecords);
         getObjectiveProgress().timeLimitUntilYear = getObjective().timeLimitYears - 1 + gameState.currentYear;
         getObjectiveProgress().monthsInChallenge = 0;
         call(0x0049B546);
