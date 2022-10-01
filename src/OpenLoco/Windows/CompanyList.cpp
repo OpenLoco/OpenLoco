@@ -1,5 +1,6 @@
 #include "../Company.h"
 #include "../CompanyManager.h"
+#include "../CompanyRecords.h"
 #include "../Date.h"
 #include "../Economy/Economy.h"
 #include "../Graphics/Colour.h"
@@ -18,15 +19,13 @@
 #include "../Widget.h"
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::CompanyList
 {
     static loco_global<Colour[32], 0x004F9442> _cargoLineColour;
     static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<uint16_t[3], 0x0052624E> _word_52624E;
-    static loco_global<CompanyId[3], 0x00526254> _byte_526254;
-    static loco_global<uint32_t[3], 0x00526258> _dword_526258;
     static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
     static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
     static loco_global<uint16_t, 0x0113DC7A> _graphLeft;
@@ -1228,8 +1227,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto i = 0; i < 3; i++)
             {
-                auto recordSpeed = _word_52624E[i];
-                if (recordSpeed == 0)
+                auto recordSpeed = CompanyManager::getRecords().speed[i];
+                if (recordSpeed == 0_mph)
                     continue;
                 {
                     auto args = FormatArguments();
@@ -1246,7 +1245,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 }
                 y += 11;
 
-                auto companyId = _byte_526254[i];
+                auto companyId = CompanyManager::getRecords().company[i];
 
                 if (companyId != CompanyId::null)
                 {
@@ -1265,7 +1264,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto args = FormatArguments();
                     args.push(company->name);
                     args.push<uint16_t>(0);
-                    args.push(_dword_526258[i]);
+                    args.push(CompanyManager::getRecords().date[i]);
 
                     Gfx::drawStringLeft(*rt, x, y, Colour::black, StringIds::record_date_achieved, &args);
                     y += 17;

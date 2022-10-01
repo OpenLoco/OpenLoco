@@ -1,4 +1,5 @@
 #include "CompanyManager.h"
+#include "CompanyRecords.h"
 #include "Config.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
@@ -126,6 +127,15 @@ namespace OpenLoco::CompanyManager
     void setStartingLoanSize(uint16_t loanSize)
     {
         getGameState().startingLoanSize = loanSize;
+    }
+
+    const Records& getRecords()
+    {
+        return getGameState().companyRecords;
+    }
+    void setRecords(const Records& records)
+    {
+        getGameState().companyRecords = records;
     }
 
     FixedVector<Company, Limits::kMaxCompanies> companies()

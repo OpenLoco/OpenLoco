@@ -269,6 +269,7 @@
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Company.h" />
     <ClInclude Include="CompanyManager.h" />
+    <ClInclude Include="CompanyRecords.h" />
     <ClInclude Include="ConfigConvert.hpp" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Console.h" />
