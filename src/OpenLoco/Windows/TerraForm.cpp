@@ -2373,7 +2373,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             /*auto width = 130;
             if (isEditorMode())
-                    width += 31;*/
+                width += 31;*/
 
             // CHANGE: width set to 161 to include building walls tab
             uint16_t width = 161;
@@ -2507,7 +2507,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             // CHANGE: Disabled so the build walls tab shows outside of editor mode
             /*if (!isEditorMode() && !isSandboxMode())
-                    disabledWidgets |= common::widx::tab_build_walls;*/
+                disabledWidgets |= common::widx::tab_build_walls;*/
 
             self->disabledWidgets = disabledWidgets;
             self->invalidate();
