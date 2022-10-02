@@ -71,7 +71,7 @@ namespace OpenLoco::Economy
                 continue;
             }
 
-            for (uint16_t numDays = 2; numDays <= 122; ++numDays)
+            for (uint16_t numDays = 2; numDays < 122; ++numDays)
             {
                 _deliveredCargoPayment[cargoItem][(numDays / 2) - 1] = CompanyManager::calculateDeliveredCargoPayment(cargoItem, 100, 10, numDays);
             }
