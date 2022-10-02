@@ -231,6 +231,16 @@ namespace OpenLoco::Interop
         writeMemory(address, data, sizeof(data));
     }
 
+    void writeLocoCall(uint32_t address, uint32_t fnAddress)
+    {
+        uint8_t data[5] = { 0 };
+        data[0] = 0xE8; // CALL
+
+        WRITE_ADDRESS_STRICTALIAS(&data[1], fnAddress - address - 5);
+
+        writeMemory(address, data, sizeof(data));
+    }
+
     static void* _smallHooks;
     static uint8_t* _offset;
 
