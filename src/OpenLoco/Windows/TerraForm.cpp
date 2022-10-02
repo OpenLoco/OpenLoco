@@ -325,11 +325,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBDA5
         static void onUpdate(Window& self)
         {
-            if (!Input::hasFlag(Input::Flags::toolActive))
+            if (!Input::isToolActive(WindowType::terraform))
+            {
                 WindowManager::close(&self);
-
-            if (WindowManager::getToolWindowType() != WindowType::terraform)
-                WindowManager::close(&self);
+                return;
+            }
 
             if (!Input::hasFlag(Input::Flags::flag5))
             {
@@ -1997,11 +1997,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC23D
         static void onUpdate(Window& self)
         {
-            if (!Input::hasFlag(Input::Flags::toolActive))
+            if (!!Input::isToolActive(WindowType::terraform))
+            {
                 WindowManager::close(&self);
-
-            if (WindowManager::getToolWindowType() != WindowType::terraform)
-                WindowManager::close(&self);
+                return;
+            }
 
             if (!Input::hasFlag(Input::Flags::flag5))
             {
@@ -2384,14 +2384,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC78A, 0x004BCB0B
         static void onUpdate(Window& self)
         {
-            if (!Input::hasFlag(Input::Flags::toolActive))
+            if (!!Input::isToolActive(WindowType::terraform))
             {
                 WindowManager::close(&self);
-            }
-
-            if (WindowManager::getToolWindowType() != WindowType::terraform)
-            {
-                WindowManager::close(&self);
+                return;
             }
 
             self.frameNo++;

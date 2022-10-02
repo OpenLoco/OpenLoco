@@ -4090,7 +4090,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            Ui::setToolCursor(kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0]);
+
+            auto cursorId = kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
+            Ui::setToolCursor(cursorId);
 
             switch (head->mode)
             {
