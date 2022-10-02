@@ -26,7 +26,6 @@
 #include "../Objects/WaterObject.h"
 #include "../SceneManager.h"
 #include "../StationManager.h"
-#include "../Ui.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
@@ -4091,8 +4090,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            auto cursorId = kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
-            Ui::setToolCursor(cursorId);
+            Ui::setToolCursor(kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0]);
 
             switch (head->mode)
             {
