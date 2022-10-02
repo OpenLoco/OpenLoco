@@ -1830,10 +1830,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_constructionHover == 1)
         {
-                        if (!Input::isToolActive(WindowType::construction, self.number, widx::construct)
-                {
+            if (!Input::isToolActive(WindowType::construction, self.number, widx::construct))
+            {
                 WindowManager::close(&self);
-                    }
+            }
         }
         if (_constructionHover == 0)
         {
