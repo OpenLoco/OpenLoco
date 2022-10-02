@@ -326,9 +326,9 @@ namespace OpenLoco::Input
                 Ui::WindowManager::invalidateWidget(WindowManager::getToolWindowType(), WindowManager::getToolWindowNumber(), WindowManager::getToolWidgetIndex());
 
                 // Abort tool event
-                Window* w = Ui::WindowManager::find(WindowManager::getToolWindowType(), WindowManager::getToolWindowNumber());
-                if (w != nullptr)
-                    w->callToolAbort(WindowManager::getToolWidgetIndex());
+                auto wnd = toolGetActiveWindow();
+                if (wnd != nullptr)
+                    wnd->callToolAbort(WindowManager::getToolWidgetIndex());
             }
         }
     }
@@ -491,10 +491,10 @@ namespace OpenLoco::Input
 
                     if (Input::hasFlag(Flags::toolActive))
                     {
-                        auto tool = WindowManager::find(WindowManager::getToolWindowType(), WindowManager::getToolWindowNumber());
-                        if (tool != nullptr)
+                        auto wnd = toolGetActiveWindow();
+                        if (wnd != nullptr)
                         {
-                            tool->callToolDragContinue(WindowManager::getToolWidgetIndex(), x, y);
+                            wnd->callToolDragContinue(WindowManager::getToolWidgetIndex(), x, y);
                         }
                     }
                 }
@@ -510,10 +510,10 @@ namespace OpenLoco::Input
 
                 if (hasFlag(Flags::toolActive))
                 {
-                    auto tool = WindowManager::find(WindowManager::getToolWindowType(), WindowManager::getToolWindowNumber());
-                    if (tool != nullptr)
+                    auto wnd = toolGetActiveWindow();
+                    if (wnd != nullptr)
                     {
-                        tool->callToolDragEnd(WindowManager::getToolWidgetIndex());
+                        wnd->callToolDragEnd(WindowManager::getToolWidgetIndex());
                     }
                 }
                 else if (!hasFlag(Flags::flag4))
@@ -1723,10 +1723,10 @@ namespace OpenLoco::Input
                 _dragWindowNumber = window->number;
                 if (hasFlag(Flags::toolActive))
                 {
-                    auto w = WindowManager::find(WindowManager::getToolWindowType(), WindowManager::getToolWindowNumber());
-                    if (w != nullptr)
+                    auto wnd = toolGetActiveWindow();
+                    if (wnd != nullptr)
                     {
-                        w->callToolDown(WindowManager::getToolWidgetIndex(), x, y);
+                        wnd->callToolDown(WindowManager::getToolWidgetIndex(), x, y);
                         setFlag(Flags::flag4);
                     }
                 }
@@ -2002,7 +2002,7 @@ namespace OpenLoco::Input
                         {
                             // 3
                             cursorId = Ui::WindowManager::getCurrentToolCursor();
-                            auto wnd = Ui::WindowManager::find(WindowManager::getToolWindowType(), WindowManager::getToolWindowNumber());
+                            auto wnd = toolGetActiveWindow();
                             if (wnd)
                             {
                                 bool out = false;

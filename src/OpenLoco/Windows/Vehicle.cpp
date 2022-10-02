@@ -26,6 +26,7 @@
 #include "../Objects/WaterObject.h"
 #include "../SceneManager.h"
 #include "../StationManager.h"
+#include "../Ui.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
