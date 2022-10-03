@@ -164,11 +164,11 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF0FE
     static void zoomViewOut()
     {
-        Window* main = WindowManager::getMainWindow();
+        Window& main = WindowManager::getMainWindow();
         if (main == nullptr)
             return;
 
-        main->viewportZoomOut(false);
+        main.viewportZoomOut(false);
         TownManager::updateLabels();
         StationManager::updateLabels();
     }
@@ -176,11 +176,11 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF115
     static void zoomViewIn()
     {
-        Window* main = WindowManager::getMainWindow();
+        Window& main = WindowManager::getMainWindow();
         if (main == nullptr)
             return;
 
-        main->viewportZoomIn(false);
+        main.viewportZoomIn(false);
         TownManager::updateLabels();
         StationManager::updateLabels();
     }
@@ -188,11 +188,11 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF12C
     static void rotateView()
     {
-        Window* main = WindowManager::getMainWindow();
+        Window& main = WindowManager::getMainWindow();
         if (main == nullptr)
             return;
 
-        main->viewportRotateRight();
+        main.viewportRotateRight();
         TownManager::updateLabels();
         StationManager::updateLabels();
         Windows::MapWindow::centerOnViewPoint();
@@ -234,9 +234,9 @@ namespace OpenLoco::Input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::underground_view;
-        window->invalidate();
+        auto viewport = WindowManager::getMainWindow().viewports[0];
+        viewport.flags ^= ViewportFlags::underground_view;
+        window.invalidate();
     }
 
     // 0x004BF194
@@ -246,9 +246,9 @@ namespace OpenLoco::Input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::hide_foreground_tracks_roads;
-        window->invalidate();
+        auto viewport = WindowManager::getMainWindow().viewports[0];
+        viewport.flags ^= ViewportFlags::hide_foreground_tracks_roads;
+        window.invalidate();
     }
 
     // 0x004BF19E
@@ -258,9 +258,9 @@ namespace OpenLoco::Input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::hide_foreground_scenery_buildings;
-        window->invalidate();
+        auto viewport = WindowManager::getMainWindow().viewports[0];
+        viewport.flags ^= ViewportFlags::hide_foreground_scenery_buildings;
+        window.invalidate();
     }
 
     // 0x004BF1A8
@@ -270,9 +270,9 @@ namespace OpenLoco::Input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::height_marks_on_land;
-        window->invalidate();
+        auto viewport = WindowManager::getMainWindow().viewports[0];
+        viewport.flags ^= ViewportFlags::height_marks_on_land;
+        window.invalidate();
     }
 
     // 0x004BF1B2
@@ -282,9 +282,9 @@ namespace OpenLoco::Input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
-        window->invalidate();
+        auto viewport = WindowManager::getMainWindow().viewports[0];
+        viewport.flags ^= ViewportFlags::height_marks_on_tracks_roads;
+        window.invalidate();
     }
 
     // 0x004BF1BC
@@ -294,9 +294,9 @@ namespace OpenLoco::Input::ShortcutManager
         if (window == nullptr)
             return;
 
-        auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::one_way_direction_arrows;
-        window->invalidate();
+        auto viewport = WindowManager::getMainWindow().viewports[0];
+        viewport.flags ^= ViewportFlags::one_way_direction_arrows;
+        window.invalidate();
     }
 
     // 0x004BF1C6

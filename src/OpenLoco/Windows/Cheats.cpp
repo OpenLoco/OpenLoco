@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns);
 
-        static void drawTabs(Ui::Window* const self, Gfx::RenderTarget* const rt)
+        static void drawTabs(Ui::Window& const self, Gfx::RenderTarget* const rt)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -78,8 +78,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == Widx::tab_finances - Widx::tab_finances)
-                    imageId += financesTabImageIds[(self->frameNo / 2) % std::size(financesTabImageIds)];
+                if (self.currentTab == Widx::tab_finances - Widx::tab_finances)
+                    imageId += financesTabImageIds[(self.frameNo / 2) % std::size(financesTabImageIds)];
                 else
                     imageId += financesTabImageIds[0];
 
@@ -106,8 +106,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                 };
 
                 uint32_t imageId = skin->img;
-                if (self->currentTab == Widx::tab_vehicles - Widx::tab_finances)
-                    imageId += vehiclesTabImageIds[(self->frameNo / 2) % std::size(vehiclesTabImageIds)];
+                if (self.currentTab == Widx::tab_vehicles - Widx::tab_finances)
+                    imageId += vehiclesTabImageIds[(self.frameNo / 2) % std::size(vehiclesTabImageIds)];
                 else
                     imageId += vehiclesTabImageIds[0];
 
@@ -126,7 +126,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex);
     }
 
     namespace Finances
@@ -848,7 +848,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     static void initEvents();
 
-    Window* open()
+    Window& open()
     {
         auto window = WindowManager::bringToFront(WindowType::cheats);
         if (window != nullptr)
@@ -896,28 +896,28 @@ namespace OpenLoco::Ui::Windows::Cheats
         };
         // clang-format on
 
-        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
+        static void switchTab(Window& self, WidgetIndex_t widgetIndex)
         {
-            self->currentTab = widgetIndex - Widx::tab_finances;
-            self->frameNo = 0;
+            self.currentTab = widgetIndex - Widx::tab_finances;
+            self.frameNo = 0;
 
-            auto tabInfo = tabInformationByTabOffset[self->currentTab];
+            auto tabInfo = tabInformationByTabOffset[self.currentTab];
 
-            self->enabledWidgets = *tabInfo.enabledWidgets;
-            self->holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
-            self->eventHandlers = tabInfo.events;
-            self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
-            self->disabledWidgets = 0;
+            self.enabledWidgets = *tabInfo.enabledWidgets;
+            self.holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
+            self.eventHandlers = tabInfo.events;
+            self.activatedWidgets = 0;
+            self.widgets = tabInfo.widgets;
+            self.disabledWidgets = 0;
 
-            self->invalidate();
+            self.invalidate();
 
-            self->setSize(tabInfo.kWindowSize);
-            self->callOnResize();
-            self->callPrepareDraw();
-            self->initScrollWidgets();
-            self->invalidate();
-            self->moveInsideScreenEdges();
+            self.setSize(tabInfo.kWindowSize);
+            self.callOnResize();
+            self.callPrepareDraw();
+            self.initScrollWidgets();
+            self.invalidate();
+            self.moveInsideScreenEdges();
         }
     }
 
