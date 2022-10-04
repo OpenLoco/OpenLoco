@@ -18,7 +18,7 @@ namespace OpenLoco::GameCommands
         auto companyId = CompanyManager::getUpdatingCompanyId();
         if (companyId != CompanyId::neutral)
         {
-            auto res = TownManager::getClosestTownAndUnk(pos);
+            auto res = TownManager::getClosestTownAndDensity(pos);
             if (res.has_value())
             {
                 auto townId = res->first;
@@ -65,7 +65,7 @@ namespace OpenLoco::GameCommands
                         auto rating = getCompanyRating(pos);
                         if (rating.has_value() && *rating < 0)
                         {
-                            auto res = TownManager::getClosestTownAndUnk(pos);
+                            auto res = TownManager::getClosestTownAndDensity(pos);
                             auto* town = TownManager::get(res->first);
                             auto formatArgs = FormatArguments::common();
                             formatArgs.push(town->name);

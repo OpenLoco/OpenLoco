@@ -25,7 +25,7 @@ namespace OpenLoco
         constexpr uint32_t builtNearTown = 1 << 9;
         constexpr uint32_t builtAwayFromTown = 1 << 10;
         constexpr uint32_t builtNearTrees = 1 << 11;
-        constexpr uint32_t builtRequiresTrees = 1 << 12;
+        constexpr uint32_t builtRequiresOpenSpace = 1 << 12;
         constexpr uint32_t oilfield = 1 << 13;
         constexpr uint32_t mines = 1 << 14;
         constexpr uint32_t canBeFoundedByPlayer = 1 << 16;

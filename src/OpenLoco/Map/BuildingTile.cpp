@@ -126,7 +126,7 @@ namespace OpenLoco::Map
             return true;
         }
 
-        auto res = TownManager::getClosestTownAndUnk(loc);
+        auto res = TownManager::getClosestTownAndDensity(loc);
         if (!res)
         {
             return true;
