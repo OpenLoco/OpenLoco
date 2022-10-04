@@ -295,36 +295,75 @@ namespace OpenLoco::StringManager
         return ptr - buffer;
     }
 
+    // Loco string argument safe strlen_s
+    size_t locoStrlenS(const char* buffer, std::size_t size)
+    {
+        if (buffer == nullptr || size == 0)
+        {
+            return 0;
+        }
+        auto* ptr = buffer;
+        std::size_t i = 0;
+        while (*ptr != '\0' && i < size)
+        {
+            i++;
+            const auto ch = *ptr++;
+            if (ch >= ControlCodes::oneArgBegin && ch < ControlCodes::oneArgEnd)
+            {
+                i += 1;
+                if (i > size)
+                {
+                    return i - 2; // Ignore the Control Code and Arg
+                }
+                ptr++;
+            }
+            else if (ch >= ControlCodes::twoArgBegin && ch < ControlCodes::twoArgEnd)
+            {
+                i += 2;
+                if (i > size)
+                {
+                    return i - 3; // Ignore the Control Code and Arg
+                }
+                ptr += 2;
+            }
+            else if (ch >= ControlCodes::fourArgBegin && ch < ControlCodes::fourArgEnd)
+            {
+                i += 4;
+                if (i > size)
+                {
+                    return i - 5; // Ignore the Control Code and Arg
+                }
+                ptr += 4;
+            }
+        }
+        return i;
+    }
+
     char* locoStrcpy(char* dest, const char* src)
     {
         if (src == nullptr)
         {
             return dest;
         }
-        char* ret = dest;
-        while (*src != '\0')
+
+        std::copy(src, src + locoStrlen(src) + 1, dest);
+
+        return dest;
+    }
+
+    char* locoStrcpyS(char* dest, std::size_t destSize, const char* src, std::size_t srcSize)
+    {
+        if (src == nullptr)
         {
-            const auto ch = *src++;
-            *dest++ = ch;
-            if (ch >= ControlCodes::oneArgBegin && ch < ControlCodes::oneArgEnd)
-            {
-                *dest++ = *src++;
-            }
-            else if (ch >= ControlCodes::twoArgBegin && ch < ControlCodes::twoArgEnd)
-            {
-                *dest++ = *src++;
-                *dest++ = *src++;
-            }
-            else if (ch >= ControlCodes::fourArgBegin && ch < ControlCodes::fourArgEnd)
-            {
-                *dest++ = *src++;
-                *dest++ = *src++;
-                *dest++ = *src++;
-                *dest++ = *src++;
-            }
+            return dest;
         }
-        *dest = '\0';
-        return ret;
+
+        auto size = locoStrlenS(src, std::min(destSize, srcSize + 1));
+
+        std::copy(src, src + size, dest);
+        dest[size] = '\0';
+
+        return dest;
     }
 
     static char* formatStringPart(char* buffer, const char* sourceStr, ArgsWrapper& args)
