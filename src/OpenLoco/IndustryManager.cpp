@@ -23,22 +23,22 @@ namespace OpenLoco::IndustryManager
     static auto getTotalIndustriesCap() { return getGameState().numberOfIndustries; }
     uint8_t getFlags() { return getGameState().industryFlags; }
 
-    constexpr uint32_t kCloseIndustryDistanceMax = 480;
-    constexpr uint32_t kIndustryWithinClusterDistance = 960;
-    constexpr uint32_t kNumIndustryInCluster = 3;
-    constexpr uint32_t kFindRandomNewIndustryAttempts = 250;
+    constexpr int32_t kCloseIndustryDistanceMax = 480;
+    constexpr int32_t kIndustryWithinClusterDistance = 960;
+    constexpr int32_t kNumIndustryInCluster = 3;
+    constexpr int32_t kFindRandomNewIndustryAttempts = 250;
     // Above this is classed as high ground
     constexpr Map::SmallZ kIndustryHighGroundMin = 48;
     // Below this is classed as low ground
     constexpr Map::SmallZ kIndustryLowGroundMax = 56;
     // Below this is classed as flat ground
-    constexpr uint32_t kIndustryFlatGroundMountainMax = 32;
+    constexpr int32_t kIndustryFlatGroundMountainMax = 32;
     constexpr uint32_t kIndustryTilesToBeInDesertMin = 100;
     constexpr uint32_t kIndustryTilesToBeNearDesertMax = 70;
     constexpr uint32_t kIndustryTilesToBeNearWaterMin = 10;
     constexpr uint32_t kIndustryTilesToBeAwayWaterMax = 0;
-    constexpr uint32_t kIndustryDistToBeNearTownMax = 576;
-    constexpr uint32_t kIndustryDistToBeAwayTownMin = 768;
+    constexpr int32_t kIndustryDistToBeNearTownMax = 576;
+    constexpr int32_t kIndustryDistToBeAwayTownMin = 768;
     constexpr uint32_t kIndustryNumTreesToBeNearTreesMin = 25;
     constexpr uint32_t kIndustryNumTressToBeOpenSpaceMax = 3;
 
