@@ -13,13 +13,27 @@ namespace OpenLoco
 
     namespace IndustryObjectFlags
     {
+        constexpr uint32_t builtInClusters = 1 << 0;
+        constexpr uint32_t builtOnHighGround = 1 << 1;
+        constexpr uint32_t builtOnLowGround = 1 << 2;
+        constexpr uint32_t builtOnSnow = 1 << 3;        // above summer snow line
+        constexpr uint32_t builtBelowSnowLine = 1 << 4; // below winter snow line
+        constexpr uint32_t builtOnFlatGround = 1 << 5;
+        constexpr uint32_t builtNearWater = 1 << 6;
+        constexpr uint32_t builtAwayFromWater = 1 << 7;
         constexpr uint32_t builtOnWater = 1 << 8;
+        constexpr uint32_t builtNearTown = 1 << 9;
+        constexpr uint32_t builtAwayFromTown = 1 << 10;
+        constexpr uint32_t builtNearTrees = 1 << 11;
+        constexpr uint32_t builtRequiresOpenSpace = 1 << 12;
         constexpr uint32_t oilfield = 1 << 13;
         constexpr uint32_t mines = 1 << 14;
-        constexpr uint32_t canBeFoundedByUser = 1 << 16;
+        constexpr uint32_t canBeFoundedByPlayer = 1 << 16;
         constexpr uint32_t requiresAllCargo = 1 << 17;
         constexpr uint32_t unk18 = 1 << 18;
         constexpr uint32_t unk19 = 1 << 19;
+        constexpr uint32_t builtInDesert = 1 << 24;
+        constexpr uint32_t builtNearDesert = 1 << 25;
         constexpr uint32_t flag_28 = 1 << 28;
     }
 #pragma pack(push, 1)

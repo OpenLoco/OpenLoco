@@ -9,6 +9,8 @@
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
 #include "../Objects/BuildingObject.h"
+#include "../Objects/LandObject.h"
+#include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../TownManager.h"
 #include "../Ui.h"
@@ -654,6 +656,39 @@ namespace OpenLoco::Map::TileManager
         }
     }
 
+    // 0x00469A81
+    int16_t mountainHeight(const Map::Pos2& loc)
+    {
+        // Works out roughly the height of a mountain of area 11 * 11
+        // (Its just the heighest point - the lowest point)
+        int16_t lowest = std::numeric_limits<int16_t>::max();
+        int16_t highest = 0;
+        Map::TilePosRangeView range{
+            loc - Map::TilePos2{ 5, 5 }, loc + Map::TilePos2{ 5, 5 }
+        };
+        for (auto& tilePos : range)
+        {
+            if (!Map::validCoords(tilePos))
+            {
+                continue;
+            }
+            auto tile = Map::TileManager::get(tilePos);
+            auto* surface = tile.surface();
+            auto height = surface->baseHeight();
+            lowest = std::min(lowest, height);
+            if (surface->slope())
+            {
+                height += 16;
+                if (surface->isSlopeDoubleHeight())
+                {
+                    height += 16;
+                }
+            }
+            highest = std::max(highest, height);
+        }
+        return highest - lowest;
+    }
+
     // 0x004C5596
     uint16_t countSurroundingWaterTiles(const Pos2& pos)
     {
@@ -678,6 +713,41 @@ namespace OpenLoco::Map::TileManager
         }
 
         return surroundingWaterTiles;
+    }
+
+    // 0x00469B1D
+    uint16_t countSurroundingDesertTiles(const Pos2& pos)
+    {
+        // Search a 10x10 area centred at pos.
+        // Initial tile position is the top left of the area.
+        auto initialTilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
+
+        uint16_t surroundingDesertTiles = 0;
+
+        for (const auto& tilePos : TilePosRangeView(initialTilePos, initialTilePos + Map::TilePos2{ 10, 10 }))
+        {
+            if (!Map::validCoords(tilePos))
+                continue;
+
+            auto tile = get(tilePos);
+            auto* surface = tile.surface();
+            // Desert tiles can't have water! Oasis aren't deserts.
+            if (surface == nullptr || surface->water() != 0)
+            {
+                continue;
+            }
+            auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
+            if (landObj == nullptr)
+            {
+                continue;
+            }
+            if (landObj->flags & LandObjectFlags::isDesert)
+            {
+                surroundingDesertTiles++;
+            }
+        }
+
+        return surroundingDesertTiles;
     }
 
     // 0x004BE048

@@ -22,7 +22,7 @@ namespace OpenLoco::TownManager
     // The return value of this function is also being returned via dword_1135C38.
     Town* sub_497DC1(const Map::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings)
     {
-        auto res = getClosestTownAndUnk(loc);
+        auto res = getClosestTownAndDensity(loc);
         if (res == std::nullopt)
         {
             _dword_1135C38 = nullptr;
@@ -183,7 +183,7 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00497E52
-    std::optional<std::pair<TownId, uint8_t>> getClosestTownAndUnk(const Map::Pos2& loc)
+    std::optional<std::pair<TownId, uint8_t>> getClosestTownAndDensity(const Map::Pos2& loc)
     {
         int32_t closestDistance = std::numeric_limits<uint16_t>::max();
         auto closestTown = TownId::null; // ebx
@@ -208,9 +208,11 @@ namespace OpenLoco::TownManager
             return std::nullopt;
         }
         const int32_t realDistance = Math::Vector::distance(Map::Pos2(town->x, town->y), loc);
+        // Works out a proxiy for how likely there is to be buildings at the location
+        // i.e. how dense the area is.
         const auto unk = std::clamp((realDistance - town->numBuildings * 4 + 512) / 128, 0, 4);
-        const uint8_t invUnk = std::min(4 - unk, 3); // edx
-        return { std::make_pair(town->id(), invUnk) };
+        const uint8_t density = std::min(4 - unk, 3); // edx
+        return { std::make_pair(town->id(), density) };
     }
 
     void registerHooks()
