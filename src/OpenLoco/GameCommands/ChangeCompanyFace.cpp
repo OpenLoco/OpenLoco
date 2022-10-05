@@ -23,18 +23,18 @@ namespace OpenLoco::GameCommands
             // See whether any other company is using this competitor already
             for (auto& company : CompanyManager::companies())
             {
-                if (company.competitorId == foundCompetitor->id)
+                if (company.competitorId != foundCompetitor->id)
+                    continue;
+
+                if (company.id() != targetCompanyId)
                 {
-                    if (company.id() != targetCompanyId)
-                    {
-                        GameCommands::setErrorText(StringIds::already_selected_for_another_company);
-                        return GameCommands::FAILURE;
-                    }
-                    else
-                    {
-                        // No change; no work required
-                        return 0;
-                    }
+                    GameCommands::setErrorText(StringIds::already_selected_for_another_company);
+                    return GameCommands::FAILURE;
+                }
+                else
+                {
+                    // No change; no work required
+                    return 0;
                 }
             }
         }
