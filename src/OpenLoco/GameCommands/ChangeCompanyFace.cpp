@@ -14,24 +14,27 @@ namespace OpenLoco::GameCommands
     static uint32_t changeCompanyFace(uint8_t flags, CompanyId targetCompanyId, ObjectHeader& targetHeader)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
+        GameCommands::setPosition({ static_cast<int16_t>(0x8000), 0, 0 });
 
         // Find target competitor object among loaded objects
         auto foundCompetitor = ObjectManager::findObjectHandle(targetHeader);
-
-        // See whether any other company is using this competitor already
-        for (auto& company : CompanyManager::companies())
+        if (foundCompetitor)
         {
-            if (company.competitorId == foundCompetitor->id)
+            // See whether any other company is using this competitor already
+            for (auto& company : CompanyManager::companies())
             {
-                if (company.id() != targetCompanyId)
+                if (company.competitorId == foundCompetitor->id)
                 {
-                    GameCommands::setErrorText(StringIds::already_selected_for_another_company);
-                    return GameCommands::FAILURE;
-                }
-                else
-                {
-                    // No change; no work required
-                    return 0;
+                    if (company.id() != targetCompanyId)
+                    {
+                        GameCommands::setErrorText(StringIds::already_selected_for_another_company);
+                        return GameCommands::FAILURE;
+                    }
+                    else
+                    {
+                        // No change; no work required
+                        return 0;
+                    }
                 }
             }
         }
