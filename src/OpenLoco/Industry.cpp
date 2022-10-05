@@ -599,15 +599,16 @@ namespace OpenLoco
             {
                 GameCommands::doCommand(getWallPlacementArgs(0), GameCommands::Flags::apply);
             }
-            else if (tilePos.y == topRight.y)
+            // Must not be else if as corners have two walls
+            if (tilePos.y == topRight.y)
             {
                 GameCommands::doCommand(getWallPlacementArgs(2), GameCommands::Flags::apply);
             }
-            else if (tilePos.x == bottomLeft.x)
+            if (tilePos.x == bottomLeft.x)
             {
                 GameCommands::doCommand(getWallPlacementArgs(3), GameCommands::Flags::apply);
             }
-            else if (tilePos.y == bottomLeft.y)
+            if (tilePos.y == bottomLeft.y)
             {
                 GameCommands::doCommand(getWallPlacementArgs(1), GameCommands::Flags::apply);
             }
