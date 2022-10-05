@@ -58,12 +58,30 @@ namespace OpenLoco::GameCommands
                 return GameCommands::FAILURE;
         }
 
-        // Unload the target company's current competitor
+        // Any other company also using the same competitor?
+        // (This shouldn't happen, but might've been hacked in)
+        bool otherCompanyUsingOldCompetitor = false;
+        for (auto& company : CompanyManager::companies())
+        {
+            if (company.id() == targetCompanyId)
+                continue;
+
+            if (company.competitorId == foundCompetitor->id)
+            {
+                otherCompanyUsingOldCompetitor = true;
+                break;
+            }
+        }
+
+        // Unload the target company's current competitor, if no other company is using it
         auto* targetCompany = CompanyManager::get(targetCompanyId);
-        auto headerToUnload = ObjectManager::getHeader({ ObjectType::competitor, targetCompany->competitorId });
-        ObjectManager::unload(headerToUnload);
-        ObjectManager::reloadAll();
-        Ui::WindowManager::close(Ui::WindowType::dropdown);
+        if (!otherCompanyUsingOldCompetitor)
+        {
+            auto headerToUnload = ObjectManager::getHeader({ ObjectType::competitor, targetCompany->competitorId });
+            ObjectManager::unload(headerToUnload);
+            ObjectManager::reloadAll();
+            Ui::WindowManager::close(Ui::WindowType::dropdown);
+        }
 
         // Set the new competitor id
         targetCompany->competitorId = foundCompetitor->id;
