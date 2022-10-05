@@ -1185,7 +1185,7 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_music_options = 1549;
     constexpr string_id company_face_selection_title = 1550;
     constexpr string_id tooltip_company_face_selection = 1551;
-
+    constexpr string_id already_selected_for_another_company = 1552;
     constexpr string_id cant_select_face = 1553;
     constexpr string_id airport = 1554;
     constexpr string_id docks = 1555;
