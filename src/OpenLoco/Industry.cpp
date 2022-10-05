@@ -551,7 +551,7 @@ namespace OpenLoco
         if (primaryWallType != 0xFF && secondaryWallType != 0xFF)
         {
             randWallTypeFlags = 1 << (prng.srand_0() & 0xF);
-            randWallTypeFlags = 1 << ((prng.srand_0() >> 4) & 0x1F);
+            randWallTypeFlags |= 1 << ((prng.srand_0() >> 4) & 0x1F);
         }
 
         std::size_t i = 0;
@@ -600,11 +600,11 @@ namespace OpenLoco
                 GameCommands::doCommand(getWallPlacementArgs(0), GameCommands::Flags::apply);
             }
             // Must not be else if as corners have two walls
-            if (tilePos.y == topRight.y)
+            if (tilePos.x == bottomLeft.x)
             {
                 GameCommands::doCommand(getWallPlacementArgs(2), GameCommands::Flags::apply);
             }
-            if (tilePos.x == bottomLeft.x)
+            if (tilePos.y == topRight.y)
             {
                 GameCommands::doCommand(getWallPlacementArgs(3), GameCommands::Flags::apply);
             }
