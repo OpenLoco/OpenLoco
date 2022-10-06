@@ -76,7 +76,7 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
 
 # Set some compiler features
 if (MSVC)
-    list(APPEND COMMON_COMPILE_OPTIONS /W4 /MP)
+    list(APPEND COMMON_COMPILE_OPTIONS /W4 /MP $<$<CONFIG:Release>:/Zi>)
 else ()
     list(APPEND COMMON_COMPILE_OPTIONS -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter -Wtype-limits)
 endif ()
@@ -304,6 +304,8 @@ set(YAML_CPP_FORMAT_SOURCE OFF CACHE BOOL "")
 add_subdirectory(src/Thirdparty/yaml-cpp)
 
 target_compile_options(${PROJECT} PUBLIC ${COMMON_COMPILE_OPTIONS})
+target_link_options(${PROJECT} PUBLIC
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:/DEBUG>)
 
 # clang does not understand following options and errors with -Wunknown-warning-option
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
