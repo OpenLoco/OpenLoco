@@ -79,10 +79,10 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
 # MSVC
 set(COMMON_COMPILE_OPTIONS_MSVC
     /W4                      # Warning level 4
-    /MP                      # Mutlithreaded compilation
+    /MP                      # Multithreaded compilation
     $<$<CONFIG:Release>:/Zi> # Debug information in release
 
-    $<$<BOOL:${STRICT}>:/WX>         # Warnings are errors (STRICT ONLY)
+    $<$<BOOL:${STRICT}>:/WX> # Warnings are errors (STRICT ONLY)
 
                              # Poke holes in W4 due to our interop code
     /wd4068                  #   4068: unknown pragma
