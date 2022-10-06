@@ -6,9 +6,6 @@ set (PROJECT openloco)
 # Note: Searching for CCache must be before project() so project() can use CCache too
 # if it is available
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-if (MSVC)
-    add_compile_options(/MP)
-endif ()
 find_package(CCache)
 
 if (CCache_FOUND)
@@ -79,7 +76,7 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
 
 # Set some compiler features
 if (MSVC)
-    list(APPEND COMMON_COMPILE_OPTIONS /W4)
+    list(APPEND COMMON_COMPILE_OPTIONS /W4 /MP)
 else ()
     list(APPEND COMMON_COMPILE_OPTIONS -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter -Wtype-limits)
 endif ()
