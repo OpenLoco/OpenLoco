@@ -56,6 +56,42 @@ jobs:
           name: OpenLoco-${{ runner.os }}-Win32
           path: artifacts
           if-no-files-found: error
+  windows2:
+    name: Windows Cmake
+    runs-on: windows-latest
+    needs: check-code-formatting
+    env:
+      CONFIGURATION: Release
+      POWERSHELL_TELEMETRY_OPTOUT: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Restore artifacts, or setup vcpkg
+        uses: lukka/run-vcpkg@v10.4
+        with:
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgGitCommitId: 01b29f6d8212bc845da64773b18665d682f5ab66 
+      - name: Build OpenLoco
+        shell: cmd
+        run: |
+          call "%Program Files%\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=x86
+          cmake -G"Visual Studio 17 2022" -AWin32 -Bbuild -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake
+          cmake --build build --config Release        
+      - name: Build artifacts
+        run: |
+          mkdir artifacts | Out-Null
+          Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,loco.exe,build\Release\*.dll,build\Release\*.pdb artifacts
+          Copy-Item data\language artifacts\data\language -Recurse
+          Rename-Item artifacts\loco.exe openloco.exe
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: OpenLoco-${{ runner.os }}-Win32-cmake
+          path: artifacts
+          if-no-files-found: error
   ubuntu:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
     runs-on: ubuntu-latest
