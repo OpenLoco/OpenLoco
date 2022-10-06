@@ -59,6 +59,7 @@ jobs:
   windows2:
     name: Windows Cmake
     runs-on: windows-latest
+    needs: check-code-formatting
     env:
       CONFIGURATION: Release
       POWERSHELL_TELEMETRY_OPTOUT: 1
