@@ -484,6 +484,10 @@ namespace OpenLoco
             {
                 continue;
             }
+            if (el.isGhost())
+            {
+                continue;
+            }
             if (el.as<Map::WallElement>() != nullptr || el.as<Map::TreeElement>() != nullptr)
             {
                 continue;
