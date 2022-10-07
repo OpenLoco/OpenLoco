@@ -397,6 +397,18 @@ if (APPLE)
     )
 endif ()
 
+if (MSVC)
+    add_custom_target(OpenLocoExe ALL
+	    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_LINKER_FILE_DIR:${PROJECT}>/OpenLoco.exe"
+	    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_LINKER_FILE_DIR:${PROJECT}>/data"
+	    COMMENT "Copying over data folder and executable"
+	    DEPENDS ${PROJECT}
+    )
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLocoExe)
+    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_COMMAND $<TARGET_LINKER_FILE_DIR:${PROJECT}>/OpenLoco.exe)
+    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_LINKER_FILE_DIR:${PROJECT}>)
+endif()
+
 # Add headers check to verify all headers carry their dependencies.
 # Only valid for Clang for now:
 # - GCC 8 does not support -Wno-pragma-once-outside-header
