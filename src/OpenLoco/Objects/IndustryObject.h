@@ -89,7 +89,7 @@ namespace OpenLoco
         uint8_t var_E9;
         uint8_t var_EA;
         uint8_t var_EB;
-        uint8_t var_EC;
+        uint8_t var_EC;       // Used by Livestock cow shed count??
         uint8_t wallTypes[4]; // 0xED There can be up to 4 different wall types for an industry
         // Selection of wall types isn't completely random from the 4 it is biased into 2 groups of 2
         uint8_t var_F1;

@@ -537,19 +537,18 @@ namespace OpenLoco
         }
 
         const auto* indObj = ObjectManager::get<IndustryObject>(objectId);
-        struct UnkStruct
+
+        std::optional<Utility::prng> is23prng;
+        if (indObj->flags & IndustryObjectFlags::unk23) // Livestock use this
         {
-            Utility::prng prng;
-            uint8_t varEC;
-        };
-        std::optional<UnkStruct> E0C3DC;
-        if (indObj->flags & IndustryObjectFlags::unk23)
-        {
-            E0C3DC = UnkStruct{ prng, indObj->var_EC };
+            is23prng = prng;
         }
-        bool is27 = indObj->flags & IndustryObjectFlags::unk27
-            ? true
-            : false;
+        std::optional<Utility::prng> is27prng;
+        if (indObj->flags & IndustryObjectFlags::unk27) // Skislope use this
+        {
+            // Vanilla mistake here didn't set the prng! It would just recycle from a previous unk23 caller
+            is27prng = prng;
+        }
 
         uint32_t randWallTypeFlags = 0;
         if (primaryWallType != 0xFF && secondaryWallType != 0xFF)
@@ -561,20 +560,16 @@ namespace OpenLoco
         std::size_t i = 0;
         for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
         {
-            if (E0C3DC.has_value())
+            if (is23prng.has_value())
             {
-                const auto randVal = E0C3DC->prng.randNext();
-                dl = (((randVal & 0xFF) * E0C3DC->varEC) / 256)
+                const auto randVal = is23prng->randNext();
+                dl = (((randVal & 0xFF) * indObj->var_EC) / 256)
                     | (((randVal >> 8) & 0x7) << 5);
             }
             bool skipBorderClear = false;
-            if (is27)
+            if (is27prng.has_value())
             {
-                if (!E0C3DC.has_value()) // Vanilla mistake here check to see if anyone suffers from it
-                {
-                    assert(false);
-                }
-                if (E0C3DC->prng.randNext() & 0x7)
+                if (is27prng->randNext() & 0x7)
                 {
                     skipBorderClear = true;
                 }
