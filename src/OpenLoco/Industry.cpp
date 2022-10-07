@@ -448,14 +448,14 @@ namespace OpenLoco
                         secondaryWallType = obj->wallTypes[3];
                     }
                     uint8_t dl = prng.randNext(7) * 32;
-                    sub_454A43(randTile, primaryWallType, secondaryWallType, dl);
+                    expandGrounds(randTile, primaryWallType, secondaryWallType, dl);
                 }
             }
         }
     }
 
     // 0x0045510C bl == 0
-    static bool sub_45510C(const Map::TilePos2& pos)
+    static bool isSurfaceClaimed(const Map::TilePos2& pos)
     {
         if (!Map::validCoords(pos))
         {
@@ -499,9 +499,9 @@ namespace OpenLoco
     }
 
     // 0x0045510C bl == 1
-    static bool sub_45510C(const Map::TilePos2& pos, IndustryId industryId, uint8_t var_EA)
+    static bool claimSurfaceForIndustry(const Map::TilePos2& pos, IndustryId industryId, uint8_t var_EA)
     {
-        if (!sub_45510C(pos))
+        if (!isSurfaceClaimed(pos))
         {
             return false;
         }
@@ -518,7 +518,8 @@ namespace OpenLoco
         return true;
     }
 
-    void Industry::sub_454A43(const Pos2& pos, uint8_t primaryWallType, uint8_t secondaryWallType, uint8_t dl)
+    // 0x00454A43
+    void Industry::expandGrounds(const Pos2& pos, uint8_t primaryWallType, uint8_t secondaryWallType, uint8_t dl)
     {
         std::size_t numBorders = 0;
         // Search a 5x5 area centred on Pos
@@ -526,7 +527,7 @@ namespace OpenLoco
         TilePos2 bottomLeft = TilePos2{ pos } + TilePos2{ 2, 2 };
         for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
         {
-            if (sub_45510C(tilePos))
+            if (isSurfaceClaimed(tilePos))
             {
                 numBorders++;
             }
@@ -576,7 +577,7 @@ namespace OpenLoco
             }
             if (!skipBorderClear)
             {
-                sub_45510C(tilePos, id(), dl);
+                claimSurfaceForIndustry(tilePos, id(), dl);
             }
             if (primaryWallType == 0xFF)
             {
