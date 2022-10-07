@@ -915,7 +915,7 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x004C482B
-    void removeAllWallsOnTile(const Map::TilePos2& pos, SmallZ baseHeight)
+    void removeAllWallsOnTile(const Map::TilePos2& pos, SmallZ baseZ)
     {
         std::vector<Map::TileElement*> toDelete;
         auto tile = get(pos);
@@ -926,11 +926,11 @@ namespace OpenLoco::Map::TileManager
             {
                 continue;
             }
-            if (baseHeight >= elWall->clearHeight())
+            if (baseZ >= elWall->clearZ())
             {
                 continue;
             }
-            if (baseHeight + 12 < elWall->baseHeight())
+            if (baseZ + 12 < elWall->baseZ())
             {
                 continue;
             }
