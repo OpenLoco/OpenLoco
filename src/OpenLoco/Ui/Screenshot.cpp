@@ -1,4 +1,5 @@
 #include "Screenshot.h"
+#include "../Entities/EntityManager.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
@@ -183,8 +184,7 @@ namespace OpenLoco::Input
         viewport.viewY = y - ((viewport.viewHeight << zoomLevel) / 2);
 
         // Ensure sprites appear regardless of rotation
-        // TODO: what is the OpenLoco equivalent?
-        // reset_all_sprite_quadrant_placements();
+        EntityManager::resetSpatialIndex();
 
         Gfx::RenderTarget rt{};
         rt.bits = static_cast<uint8_t*>(malloc(resolutionWidth * resolutionHeight));
