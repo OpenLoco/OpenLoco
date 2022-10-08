@@ -2,9 +2,11 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Map/TileManager.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
 #include "../Ui.h"
+#include "WindowManager.h"
 #include <cstdint>
 #include <fstream>
 #include <png.h>
@@ -124,9 +126,88 @@ namespace OpenLoco::Input
         return fileName;
     }
 
+    static std::string saveGiantScreenshot()
+    {
+        const auto& main = WindowManager::getMainWindow();
+        const auto zoomLevel = main->viewports[0]->zoom;
+
+        const uint16_t resolutionWidth = ((Map::kMapColumns * 32 * 2) >> zoomLevel) + 8;
+        const uint16_t resolutionHeight = ((Map::kMapRows * 32 * 1) >> zoomLevel) + 128;
+
+        Ui::Viewport viewport{};
+        viewport.width = resolutionWidth;
+        viewport.height = resolutionHeight;
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.viewWidth = viewport.width;
+        viewport.viewHeight = viewport.height;
+        viewport.zoom = zoomLevel;
+        viewport.pad_11 = 0;
+        viewport.flags = 0;
+
+        const uint16_t centreX = (Map::kMapColumns / 2) * 32 + 16;
+        const uint16_t centreY = (Map::kMapRows / 2) * 32 + 16;
+
+        const uint16_t z = Map::TileManager::getHeight({ centreX, centreY }).landHeight;
+        const auto rotation = main->viewports[0]->getRotation();
+        uint16_t x = 0, y = 0;
+
+        // TODO: I think we have a function for this already?
+        switch (rotation)
+        {
+            case 0:
+                x = centreY - centreX;
+                y = ((centreX + centreY) / 2) - z;
+                break;
+            case 1:
+                x = -centreY - centreX;
+                y = ((-centreX + centreY) / 2) - z;
+                break;
+            case 2:
+                x = -centreY + centreX;
+                y = ((-centreX - centreY) / 2) - z;
+                break;
+            case 3:
+                x = centreY + centreX;
+                y = ((centreX - centreY) / 2) - z;
+                break;
+        }
+
+        viewport.x = x - ((viewport.viewWidth << zoomLevel) / 2);
+        viewport.y = y - ((viewport.viewHeight << zoomLevel) / 2);
+
+        // Ensure sprites appear regardless of rotation
+        // TODO: what is the OpenLoco equivalent?
+        // reset_all_sprite_quadrant_placements();
+
+        Gfx::RenderTarget rt;
+        rt.bits = static_cast<uint8_t*>(malloc(resolutionWidth * resolutionHeight));
+        if (!rt.bits)
+            return nullptr;
+
+        rt.x = 0;
+        rt.y = 0;
+        rt.width = resolutionWidth;
+        rt.height = resolutionHeight;
+        rt.pitch = 0;
+        rt.zoomLevel = 0;
+
+        viewport.render(&rt);
+        free(rt.bits);
+
+        return prepareSaveScreenshot(rt);
+    }
+
     std::string saveScreenshot()
     {
-        auto& rt = Gfx::getScreenRT();
-        return prepareSaveScreenshot(rt);
+        // TODO: remove hack and just call saveGiantScreenshot from Ui
+        bool giant = true;
+        if (!giant)
+        {
+            auto& rt = Gfx::getScreenRT();
+            return prepareSaveScreenshot(rt);
+        }
+        else
+            return saveGiantScreenshot();
     }
 }
