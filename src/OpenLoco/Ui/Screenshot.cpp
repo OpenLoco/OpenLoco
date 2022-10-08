@@ -146,8 +146,8 @@ namespace OpenLoco::Input
         viewport.height = resolutionHeight;
         viewport.x = 0;
         viewport.y = 0;
-        viewport.viewWidth = viewport.width;
-        viewport.viewHeight = viewport.height;
+        viewport.viewWidth = viewport.width << zoomLevel;
+        viewport.viewHeight = viewport.height << zoomLevel;
         viewport.zoom = zoomLevel;
         viewport.pad_11 = 0;
         viewport.flags = 0;
@@ -155,9 +155,8 @@ namespace OpenLoco::Input
         const coord_t centreX = (Map::kMapColumns / 2) * 32 + 16;
         const coord_t centreY = (Map::kMapRows / 2) * 32 + 16;
         const coord_t z = Map::TileManager::getHeight({ centreX, centreY }).landHeight;
-        const auto rotation = main->viewports[0]->getRotation();
 
-        auto pos = Map::gameToScreen({ centreX, centreY, z }, rotation);
+        auto pos = viewport.centre2dCoordinates({ centreX, centreY, z });
         viewport.viewX = pos.x;
         viewport.viewY = pos.y;
 
