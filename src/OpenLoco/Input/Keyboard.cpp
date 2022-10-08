@@ -51,7 +51,7 @@ namespace OpenLoco::Input
     static loco_global<uint8_t[256], 0x01140740> _keyboardState;
     static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
 
-    static uint8_t _screenshotType = 0;
+    static ScreenshotType _screenshotType = ScreenshotType::regular;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {
         { "DRIVER", loc_4BECDE },
@@ -481,7 +481,7 @@ namespace OpenLoco::Input
         Input::setFlag(Flags::viewportScrolling);
     }
 
-    void triggerScreenshotCountdown(int8_t numTicks, uint8_t type)
+    void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type)
     {
         _screenshotCountdown = numTicks;
         _screenshotType = type;
@@ -498,7 +498,7 @@ namespace OpenLoco::Input
                 try
                 {
                     std::string fileName;
-                    if (_screenshotType != 0)
+                    if (_screenshotType == ScreenshotType::giant)
                         fileName = saveGiantScreenshot();
                     else
                         fileName = saveScreenshot();

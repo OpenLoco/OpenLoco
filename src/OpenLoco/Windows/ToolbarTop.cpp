@@ -244,11 +244,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 break;
 
             case LoadSaveDropdownId::screenshot:
-                Input::triggerScreenshotCountdown(10, 0);
+                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::regular);
                 break;
 
             case LoadSaveDropdownId::giantScreenshot:
-                Input::triggerScreenshotCountdown(10, 1);
+                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::giant);
                 break;
 
             case LoadSaveDropdownId::server:
