@@ -152,9 +152,9 @@ namespace OpenLoco::Input
         viewport.pad_11 = 0;
         viewport.flags = 0;
 
-        const uint16_t centreX = (Map::kMapColumns / 2) * 32 + 16;
-        const uint16_t centreY = (Map::kMapRows / 2) * 32 + 16;
-        const uint16_t z = Map::TileManager::getHeight({ centreX, centreY }).landHeight;
+        const coord_t centreX = (Map::kMapColumns / 2) * 32 + 16;
+        const coord_t centreY = (Map::kMapRows / 2) * 32 + 16;
+        const coord_t z = Map::TileManager::getHeight({ centreX, centreY }).landHeight;
         const auto rotation = main->viewports[0]->getRotation();
 
         auto pos = Map::gameToScreen({ centreX, centreY, z }, rotation);
