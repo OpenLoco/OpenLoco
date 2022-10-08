@@ -1,10 +1,13 @@
 #include "Screenshot.h"
+#include "../Entities/EntityManager.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Map/TileManager.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
 #include "../Ui.h"
+#include "WindowManager.h"
 #include <cstdint>
 #include <fstream>
 #include <png.h>
@@ -29,36 +32,8 @@ namespace OpenLoco::Input
         ostream->flush();
     }
 
-    // 0x00452667
-    std::string saveScreenshot()
+    static void saveRenderTargetToPng(Gfx::RenderTarget& rt, std::fstream& outputStream)
     {
-        auto basePath = Platform::getUserDirectory();
-        std::string scenarioName = S5::getOptions().scenarioName;
-
-        if (scenarioName.length() == 0)
-            scenarioName = StringManager::getString(StringIds::screenshot_filename_template);
-
-        std::string fileName = std::string(scenarioName) + ".png";
-        fs::path path;
-        int16_t suffix;
-        for (suffix = 1; suffix < std::numeric_limits<int16_t>().max(); suffix++)
-        {
-            if (!fs::exists(basePath / fileName))
-            {
-                path = basePath / fileName;
-                break;
-            }
-
-            fileName = std::string(scenarioName) + " (" + std::to_string(suffix) + ").png";
-        }
-
-        if (path.empty())
-        {
-            throw std::runtime_error("Failed finding filename");
-        }
-
-        std::fstream outputStream(path.c_str(), std::ios::out | std::ios::binary);
-
         static loco_global<uint8_t[256][4], 0x0113ED20> _113ED20;
 
         png_structp pngPtr = nullptr;
@@ -92,7 +67,6 @@ namespace OpenLoco::Input
                 palette[i].red = _113ED20[i][2];
             }
             png_set_PLTE(pngPtr, infoPtr, palette, 246);
-            auto& rt = Gfx::getScreenRT();
 
             png_byte transparentIndex = 0;
             png_set_tRNS(pngPtr, infoPtr, &transparentIndex, 1, nullptr);
@@ -117,6 +91,100 @@ namespace OpenLoco::Input
             png_destroy_write_struct(&pngPtr, nullptr);
             throw;
         }
+    }
+
+    // 0x00452667
+    static std::string prepareSaveScreenshot(Gfx::RenderTarget& rt)
+    {
+        auto basePath = Platform::getUserDirectory();
+        std::string scenarioName = S5::getOptions().scenarioName;
+
+        if (scenarioName.length() == 0)
+            scenarioName = StringManager::getString(StringIds::screenshot_filename_template);
+
+        std::string fileName = std::string(scenarioName) + ".png";
+        fs::path path;
+        int16_t suffix;
+        for (suffix = 1; suffix < std::numeric_limits<int16_t>().max(); suffix++)
+        {
+            if (!fs::exists(basePath / fileName))
+            {
+                path = basePath / fileName;
+                break;
+            }
+
+            fileName = std::string(scenarioName) + " (" + std::to_string(suffix) + ").png";
+        }
+
+        if (path.empty())
+        {
+            throw std::runtime_error("Failed finding filename");
+        }
+
+        std::fstream outputStream(path.c_str(), std::ios::out | std::ios::binary);
+        saveRenderTargetToPng(rt, outputStream);
+
+        return fileName;
+    }
+
+    std::string saveScreenshot()
+    {
+        auto& rt = Gfx::getScreenRT();
+        return prepareSaveScreenshot(rt);
+    }
+
+    static Ui::Viewport createGiantViewport(const uint16_t resolutionWidth, const uint16_t resolutionHeight, const uint8_t zoomLevel)
+    {
+        Ui::Viewport viewport{};
+        viewport.width = resolutionWidth;
+        viewport.height = resolutionHeight;
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.viewWidth = viewport.width << zoomLevel;
+        viewport.viewHeight = viewport.height << zoomLevel;
+        viewport.zoom = zoomLevel;
+        viewport.pad_11 = 0;
+        viewport.flags = 0;
+
+        const coord_t centreX = (Map::kMapColumns / 2) * 32 + 16;
+        const coord_t centreY = (Map::kMapRows / 2) * 32 + 16;
+        const coord_t z = Map::TileManager::getHeight({ centreX, centreY }).landHeight;
+
+        auto pos = viewport.centre2dCoordinates({ centreX, centreY, z });
+        viewport.viewX = pos.x;
+        viewport.viewY = pos.y;
+
+        return viewport;
+    }
+
+    std::string saveGiantScreenshot()
+    {
+        const auto& main = WindowManager::getMainWindow();
+        const auto zoomLevel = main->viewports[0]->zoom;
+
+        const uint16_t resolutionWidth = ((Map::kMapColumns * 32 * 2) >> zoomLevel) + 8;
+        const uint16_t resolutionHeight = ((Map::kMapRows * 32 * 1) >> zoomLevel) + 128;
+
+        Ui::Viewport viewport = createGiantViewport(resolutionWidth, resolutionHeight, zoomLevel);
+
+        // Ensure sprites appear regardless of rotation
+        EntityManager::resetSpatialIndex();
+
+        Gfx::RenderTarget rt{};
+        rt.bits = static_cast<uint8_t*>(malloc(resolutionWidth * resolutionHeight));
+        if (!rt.bits)
+            return nullptr;
+
+        rt.x = 0;
+        rt.y = 0;
+        rt.width = resolutionWidth;
+        rt.height = resolutionHeight;
+        rt.pitch = 0;
+        rt.zoomLevel = 0;
+
+        viewport.render(&rt);
+        auto fileName = prepareSaveScreenshot(rt);
+        free(rt.bits);
 
         return fileName;
     }

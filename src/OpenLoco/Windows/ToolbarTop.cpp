@@ -78,6 +78,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         about,
         options,
         screenshot,
+        giantScreenshot,
         server,
         quitToMenu,
         quitToDesktop
@@ -135,7 +136,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                      .separator()
                      .item(LoadSaveDropdownId::about, StringIds::menu_about)
                      .item(LoadSaveDropdownId::options, StringIds::options)
-                     .item(LoadSaveDropdownId::screenshot, StringIds::menu_screenshot);
+                     .item(LoadSaveDropdownId::screenshot, StringIds::menu_screenshot)
+                     .item(LoadSaveDropdownId::giantScreenshot, StringIds::menu_giant_screenshot);
 
         auto& newConfig = Config::getNew();
         if (newConfig.network.enabled)
@@ -202,12 +204,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             Error::open(StringIds::error_game_save_failed, StringIds::null);
     }
 
-    static void takeScreenshot()
-    {
-        loco_global<uint8_t, 0x00508F16> _screenshotCountdown;
-        _screenshotCountdown = 10;
-    }
-
     static void startOrCloseServer()
     {
         if (isNetworked())
@@ -248,7 +244,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 break;
 
             case LoadSaveDropdownId::screenshot:
-                takeScreenshot();
+                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::regular);
+                break;
+
+            case LoadSaveDropdownId::giantScreenshot:
+                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::giant);
                 break;
 
             case LoadSaveDropdownId::server:
