@@ -102,6 +102,8 @@ namespace OpenLoco::Input
     void setMapSelectionFlags(uint8_t flags);
     void resetMapSelectionFlag(uint8_t flags);
 
+    void triggerScreenshotCountdown(int8_t numTicks, uint8_t type);
+
     void handleKeyboard();
     void handleMouse(int16_t x, int16_t y, MouseButton button);
     MouseButton getLastKnownButtonState();

@@ -117,9 +117,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         Dropdown::add(3, StringIds::menu_about);
         Dropdown::add(4, StringIds::options);
         Dropdown::add(5, StringIds::menu_screenshot);
-        Dropdown::add(6, 0);
-        Dropdown::add(7, StringIds::menu_quit_to_menu);
-        Dropdown::add(8, StringIds::menu_exit_openloco);
+        Dropdown::add(6, StringIds::menu_giant_screenshot);
+        Dropdown::add(7, 0);
+        Dropdown::add(8, StringIds::menu_quit_to_menu);
+        Dropdown::add(9, StringIds::menu_exit_openloco);
         Dropdown::showBelow(window, widgetIndex, 9, 0);
         Dropdown::setHighlightedItem(1);
     }
@@ -163,18 +164,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 break;
 
             case 5:
-            {
-                loco_global<uint8_t, 0x00508F16> _screenshotCountdown;
-                _screenshotCountdown = 10;
+                Input::triggerScreenshotCountdown(10, 0);
                 break;
-            }
 
-            case 7:
+            case 6:
+                Input::triggerScreenshotCountdown(10, 1);
+                break;
+
+            case 8:
                 // Return to title screen
                 GameCommands::do_21(0, 1);
                 break;
 
-            case 8:
+            case 9:
                 // Exit to desktop
                 GameCommands::do_21(0, 2);
                 break;

@@ -126,7 +126,13 @@ namespace OpenLoco::Input
         return fileName;
     }
 
-    static std::string saveGiantScreenshot()
+    std::string saveScreenshot()
+    {
+        auto& rt = Gfx::getScreenRT();
+        return prepareSaveScreenshot(rt);
+    }
+
+    std::string saveGiantScreenshot()
     {
         const auto& main = WindowManager::getMainWindow();
         const auto zoomLevel = main->viewports[0]->zoom;
@@ -196,18 +202,5 @@ namespace OpenLoco::Input
         free(rt.bits);
 
         return prepareSaveScreenshot(rt);
-    }
-
-    std::string saveScreenshot()
-    {
-        // TODO: remove hack and just call saveGiantScreenshot from Ui
-        bool giant = true;
-        if (!giant)
-        {
-            auto& rt = Gfx::getScreenRT();
-            return prepareSaveScreenshot(rt);
-        }
-        else
-            return saveGiantScreenshot();
     }
 }

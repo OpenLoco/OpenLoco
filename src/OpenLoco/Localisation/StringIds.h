@@ -1827,4 +1827,5 @@ namespace OpenLoco::StringIds
     constexpr string_id stats_length = 2261;
     constexpr string_id vehicle_details_tooltip_length = 2262;
     constexpr string_id num_characters_left_int_int = 2263;
+    constexpr string_id menu_giant_screenshot = 2264;
 }
