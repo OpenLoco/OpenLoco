@@ -173,14 +173,14 @@ namespace OpenLoco::Input
                 break;
         }
 
-        viewport.x = x - ((viewport.viewWidth << zoomLevel) / 2);
-        viewport.y = y - ((viewport.viewHeight << zoomLevel) / 2);
+        viewport.viewX = x - ((viewport.viewWidth << zoomLevel) / 2);
+        viewport.viewY = y - ((viewport.viewHeight << zoomLevel) / 2);
 
         // Ensure sprites appear regardless of rotation
         // TODO: what is the OpenLoco equivalent?
         // reset_all_sprite_quadrant_placements();
 
-        Gfx::RenderTarget rt;
+        Gfx::RenderTarget rt{};
         rt.bits = static_cast<uint8_t*>(malloc(resolutionWidth * resolutionHeight));
         if (!rt.bits)
             return nullptr;
