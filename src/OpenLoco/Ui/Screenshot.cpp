@@ -133,14 +133,8 @@ namespace OpenLoco::Input
         return prepareSaveScreenshot(rt);
     }
 
-    std::string saveGiantScreenshot()
+    static Ui::Viewport createGiantViewport(const uint16_t resolutionWidth, const uint16_t resolutionHeight, const uint8_t zoomLevel)
     {
-        const auto& main = WindowManager::getMainWindow();
-        const auto zoomLevel = main->viewports[0]->zoom;
-
-        const uint16_t resolutionWidth = ((Map::kMapColumns * 32 * 2) >> zoomLevel) + 8;
-        const uint16_t resolutionHeight = ((Map::kMapRows * 32 * 1) >> zoomLevel) + 128;
-
         Ui::Viewport viewport{};
         viewport.width = resolutionWidth;
         viewport.height = resolutionHeight;
@@ -159,6 +153,19 @@ namespace OpenLoco::Input
         auto pos = viewport.centre2dCoordinates({ centreX, centreY, z });
         viewport.viewX = pos.x;
         viewport.viewY = pos.y;
+
+        return viewport;
+    }
+
+    std::string saveGiantScreenshot()
+    {
+        const auto& main = WindowManager::getMainWindow();
+        const auto zoomLevel = main->viewports[0]->zoom;
+
+        const uint16_t resolutionWidth = ((Map::kMapColumns * 32 * 2) >> zoomLevel) + 8;
+        const uint16_t resolutionHeight = ((Map::kMapRows * 32 * 1) >> zoomLevel) + 128;
+
+        Ui::Viewport viewport = createGiantViewport(resolutionWidth, resolutionHeight, zoomLevel);
 
         // Ensure sprites appear regardless of rotation
         EntityManager::resetSpatialIndex();
