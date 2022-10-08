@@ -154,34 +154,12 @@ namespace OpenLoco::Input
 
         const uint16_t centreX = (Map::kMapColumns / 2) * 32 + 16;
         const uint16_t centreY = (Map::kMapRows / 2) * 32 + 16;
-
         const uint16_t z = Map::TileManager::getHeight({ centreX, centreY }).landHeight;
         const auto rotation = main->viewports[0]->getRotation();
-        uint16_t x = 0, y = 0;
 
-        // TODO: I think we have a function for this already?
-        switch (rotation)
-        {
-            case 0:
-                x = centreY - centreX;
-                y = ((centreX + centreY) / 2) - z;
-                break;
-            case 1:
-                x = -centreY - centreX;
-                y = ((-centreX + centreY) / 2) - z;
-                break;
-            case 2:
-                x = -centreY + centreX;
-                y = ((-centreX - centreY) / 2) - z;
-                break;
-            case 3:
-                x = centreY + centreX;
-                y = ((centreX - centreY) / 2) - z;
-                break;
-        }
-
-        viewport.viewX = x - ((viewport.viewWidth << zoomLevel) / 2);
-        viewport.viewY = y - ((viewport.viewHeight << zoomLevel) / 2);
+        auto pos = Map::gameToScreen({ centreX, centreY, z }, rotation);
+        viewport.viewX = pos.x;
+        viewport.viewY = pos.y;
 
         // Ensure sprites appear regardless of rotation
         EntityManager::resetSpatialIndex();
