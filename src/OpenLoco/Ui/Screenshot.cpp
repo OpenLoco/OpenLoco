@@ -29,36 +29,8 @@ namespace OpenLoco::Input
         ostream->flush();
     }
 
-    // 0x00452667
-    std::string saveScreenshot()
+    static void saveRenderTargetToPng(Gfx::RenderTarget& rt, std::fstream& outputStream)
     {
-        auto basePath = Platform::getUserDirectory();
-        std::string scenarioName = S5::getOptions().scenarioName;
-
-        if (scenarioName.length() == 0)
-            scenarioName = StringManager::getString(StringIds::screenshot_filename_template);
-
-        std::string fileName = std::string(scenarioName) + ".png";
-        fs::path path;
-        int16_t suffix;
-        for (suffix = 1; suffix < std::numeric_limits<int16_t>().max(); suffix++)
-        {
-            if (!fs::exists(basePath / fileName))
-            {
-                path = basePath / fileName;
-                break;
-            }
-
-            fileName = std::string(scenarioName) + " (" + std::to_string(suffix) + ").png";
-        }
-
-        if (path.empty())
-        {
-            throw std::runtime_error("Failed finding filename");
-        }
-
-        std::fstream outputStream(path.c_str(), std::ios::out | std::ios::binary);
-
         static loco_global<uint8_t[256][4], 0x0113ED20> _113ED20;
 
         png_structp pngPtr = nullptr;
@@ -92,7 +64,6 @@ namespace OpenLoco::Input
                 palette[i].red = _113ED20[i][2];
             }
             png_set_PLTE(pngPtr, infoPtr, palette, 246);
-            auto& rt = Gfx::getScreenRT();
 
             png_byte transparentIndex = 0;
             png_set_tRNS(pngPtr, infoPtr, &transparentIndex, 1, nullptr);
@@ -117,7 +88,45 @@ namespace OpenLoco::Input
             png_destroy_write_struct(&pngPtr, nullptr);
             throw;
         }
+    }
+
+    // 0x00452667
+    static std::string prepareSaveScreenshot(Gfx::RenderTarget& rt)
+    {
+        auto basePath = Platform::getUserDirectory();
+        std::string scenarioName = S5::getOptions().scenarioName;
+
+        if (scenarioName.length() == 0)
+            scenarioName = StringManager::getString(StringIds::screenshot_filename_template);
+
+        std::string fileName = std::string(scenarioName) + ".png";
+        fs::path path;
+        int16_t suffix;
+        for (suffix = 1; suffix < std::numeric_limits<int16_t>().max(); suffix++)
+        {
+            if (!fs::exists(basePath / fileName))
+            {
+                path = basePath / fileName;
+                break;
+            }
+
+            fileName = std::string(scenarioName) + " (" + std::to_string(suffix) + ").png";
+        }
+
+        if (path.empty())
+        {
+            throw std::runtime_error("Failed finding filename");
+        }
+
+        std::fstream outputStream(path.c_str(), std::ios::out | std::ios::binary);
+        saveRenderTargetToPng(rt, outputStream);
 
         return fileName;
+    }
+
+    std::string saveScreenshot()
+    {
+        auto& rt = Gfx::getScreenRT();
+        return prepareSaveScreenshot(rt);
     }
 }
