@@ -78,8 +78,8 @@ The following libraries/dependencies are required:
 - [breakpad](https://github.com/google/breakpad) (only required on Windows)
 
 ### Windows
-- 7 / 8 / 10
-- [Visual Studio 2019](https://www.visualstudio.com/vs/community/)
+- 7 / 8 / 10 / 11
+- [Visual Studio 2022](https://www.visualstudio.com/vs/community/)
   - Desktop development with C++
   - Dependencies are managed with [vcpkg](https://github.com/Microsoft/vcpkg)
 
@@ -93,7 +93,7 @@ The following libraries/dependencies are required:
 ## 4.2 Compiling and running
 ### Windows:
 1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
-2. Open a new Developer Command Prompt for VS 2019, then navigate to the repository (e.g. `cd C:\GitHub\OpenLoco`).
+2. Open a new Developer Command Prompt for VS 2022, then navigate to the repository (e.g. `cd C:\GitHub\OpenLoco`).
 3. Run `msbuild openloco.sln /t:restore;build`
 4. Run `mklink /D bin\data ..\data` or `xcopy data bin\data /EIY`
 5. Run `mklink bin\openloco.exe ..\loco.exe` or `copy loco.exe bin\openloco.exe`
@@ -103,7 +103,8 @@ The following libraries/dependencies are required:
 
 Note: The game can currently only be built for 32-bit architectures.
 
-To install dependencies, you need to have vcpkg installed and in the root directory run `.\vcpkg.exe install sdl2:x86-windows sdl2-mixer:x86-windows zlib:x86-windows libpng:x86-windows yaml-cpp:x86-windows breakpad:x86-windows`
+Either open the OpenLoco folder in VS 2022 or build using cmake with the following commands.
+
 1. Run `mkdir build`
 2. Run `cd build`
 3. Run `cmake .. -A Win32 "-DCMAKE_TOOLCHAIN_FILE=<vcpkg_root>/scripts/buildsystems/vcpkg.cmake"`
