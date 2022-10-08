@@ -199,8 +199,9 @@ namespace OpenLoco::Input
         rt.zoomLevel = 0;
 
         viewport.render(&rt);
+        auto fileName = prepareSaveScreenshot(rt);
         free(rt.bits);
 
-        return prepareSaveScreenshot(rt);
+        return fileName;
     }
 }
