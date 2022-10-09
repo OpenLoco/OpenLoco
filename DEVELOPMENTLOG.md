@@ -1,4 +1,4 @@
-# OpenLoco version 22.10 (???)
+# OpenLoco version 22.10 (2022-10-09)
 
 ## Change Company Face Game Command [#1656]
 Changing the company face is much more complex than you might think. Each company face is a seperate Object and changing the face requires unloading and loading objects. This is something that CS generally avoids and limits to the scenario editor. It gives key insight as to how to enable the object selection window in sandbox play and how best to network the object selection window in the future.

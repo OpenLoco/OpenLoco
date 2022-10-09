@@ -1,4 +1,4 @@
-22.09+ (???)
+22.10 (2022-10-09)
 ------------------------------------------------------------------------
 - Feature: [#1608] Added character limit label in text input windows.
 - Feature: [#1666] Allow saving giant (full map) screenshots.
