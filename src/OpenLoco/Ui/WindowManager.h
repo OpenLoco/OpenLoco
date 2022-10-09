@@ -192,6 +192,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         void reset();
+        void removeIndustry(const IndustryId id);
     }
 
     namespace KeyboardShortcuts

@@ -262,7 +262,9 @@ namespace OpenLoco
 
         if (flags & IndustryFlags::closingDown && var_17D[0] == 0 && var_17D[1] == 0)
         {
-            GameCommands::do_48(GameCommands::Flags::apply, id());
+            GameCommands::IndustryRemovalArgs args;
+            args.industryId = id();
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
             return;
         }
         bool hasEvent = false;

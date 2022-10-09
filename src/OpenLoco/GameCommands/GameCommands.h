@@ -1244,14 +1244,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Remove industry
-    inline bool do_48(uint8_t flags, IndustryId industryId)
+    struct IndustryRemovalArgs
     {
-        registers regs;
-        regs.bl = flags;
-        regs.dx = enumValue(industryId);
-        return doCommand(GameCommand::removeIndustry, regs) != FAILURE;
-    }
+        static constexpr auto command = GameCommand::removeIndustry;
+
+        IndustryRemovalArgs() = default;
+        explicit IndustryRemovalArgs(const registers& regs)
+            : industryId(static_cast<IndustryId>(regs.dl))
+        {
+        }
+
+        IndustryId industryId;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.dl = enumValue(industryId);
+            return regs;
+        }
+    };
 
     struct TownPlacementArgs
     {
@@ -1736,6 +1747,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/RemoveBuilding.cpp
     void removeBuilding(registers& regs);
+
+    // Defined in GameCommands/RemoveIndustry.cpp
+    void removeIndustry(registers& regs);
 
     // Defined in GameCommands/RemoveTree.cpp
     void removeTree(registers& regs);
