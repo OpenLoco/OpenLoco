@@ -10,15 +10,103 @@
 #include "../S5/S5.h"
 #include "../StationManager.h"
 #include "../Ui/WindowManager.h"
+#include "../ViewportManager.h"
 #include "GameCommands.h"
 
 namespace OpenLoco::GameCommands
 {
+    // 0x00455916
+    // NOTE: Element is invalid after this call and all elements on tile
+    static void removeElement(const Map::Pos2& pos, Map::TileElement& el)
+    {
+        Ui::ViewportManager::invalidate(pos, el.baseHeight(), el.clearHeight());
+        Map::TileManager::removeElement(el);
+    }
+
     // 0x0045579F
-    static void removeIndustryElement(const Map::Pos3& pos) {}
+    static void removeIndustryElement(const Map::Pos3& pos)
+    {
+        auto tile = Map::TileManager::get(pos);
+        for (auto& el : tile)
+        {
+            auto* elIndustry = el.as<Map::IndustryElement>();
+            if (elIndustry == nullptr)
+            {
+                continue;
+            }
+            if (elIndustry->baseHeight() != pos.z)
+            {
+                continue;
+            }
+            auto* industry = elIndustry->industry();
+            if (industry == nullptr)
+            {
+                continue;
+            }
+            auto* indObj = industry->getObject();
+            if (indObj == nullptr)
+            {
+                continue;
+            }
+            const auto buildingType = elIndustry->var_6_1F();
+            const auto buildingTiles = getUnk4F9274(indObj->var_C6 & (1 << buildingType));
+            for (auto& buildTilePos : buildingTiles)
+            {
+                auto buildPos = buildTilePos.pos + pos;
+                auto buildTile = Map::TileManager::get(buildPos);
+                for (auto& elB : buildTile)
+                {
+                    auto* elBIndustry = elB.as<Map::IndustryElement>();
+                    if (elBIndustry == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elBIndustry->baseHeight() != pos.z)
+                    {
+                        continue;
+                    }
+                    removeElement(buildPos, elB);
+                    break;
+                }
+            }
+            for (auto i = 0; i < industry->numTiles; ++i)
+            {
+                const auto& indTile = industry->tiles[i];
+                const auto indPos = Map::Pos3{ Map::Pos2(indTile),
+                                               indTile.z & ~(1 << 15) };
+                if (indPos == pos)
+                {
+                    std::rotate(&industry->tiles[i], &industry->tiles[i + 1], &industry->tiles[industry->numTiles - 1]);
+                    industry->numTiles--;
+                    break;
+                }
+            }
+            break;
+        }
+    }
 
     // 0x00455A5C
-    static void revokeAllSurfaceClaims() {}
+    static void revokeAllSurfaceClaims()
+    {
+        for (auto& pos : Map::TilePosRangeView({ 0, 0 }, { Map::kMapRows, Map::kMapColumns }))
+        {
+            auto tile = Map::TileManager::get(pos);
+            auto* surface = tile.surface();
+            if (surface == nullptr)
+            {
+                continue;
+            }
+            if (!surface->hasHighTypeFlag())
+            {
+                continue;
+            }
+            surface->setHighTypeFlag(false);
+            surface->setVar6SLR5(0);
+            surface->setVariation(0);
+            Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32);
+            Map::TileManager::removeAllWallsOnTile(Map::Pos3{ pos, surface->baseHeight() });
+        }
+    }
 
     // 0x00455943
     static uint32_t removeIndustry(IndustryId id, uint8_t flags)

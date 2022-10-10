@@ -555,6 +555,7 @@ namespace OpenLoco::Map
         OpenLoco::IndustryId industryId() const { return _industryId; }
         OpenLoco::Industry* industry() const;
         uint8_t var_6_1F() const;
+        uint8_t rotation() const { return _type & 0x3; }
         bool hasHighTypeFlag() const { return _type & 0x80; } // isConstructed?
     };
     static_assert(sizeof(IndustryElement) == TileElementSize);

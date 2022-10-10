@@ -576,7 +576,26 @@ namespace OpenLoco::Ui::Windows::IndustryList
     }
 
     // 0x0045792A
-    void removeIndustry(const IndustryId id) {}
+    void removeIndustry(const IndustryId id)
+    {
+        auto* wnd = WindowManager::find(WindowType::industryList);
+        if (wnd == nullptr)
+        {
+            return;
+        }
+        if (wnd->currentTab != Common::widx::tab_industry_list - Common::widx::tab_industry_list)
+        {
+            return;
+        }
+
+        for (auto i = 0; i < wnd->var_83C; ++i)
+        {
+            if (static_cast<IndustryId>(wnd->rowInfo[i]) == id)
+            {
+                wnd->rowInfo[i] = enumValue(IndustryId::null);
+            }
+        }
+    }
 
     namespace NewIndustries
     {
