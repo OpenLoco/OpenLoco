@@ -18,7 +18,7 @@ namespace OpenLoco
         Map::Pos2 pos;
         uint8_t unk;
     };
-    const stdx::span<const Unk4F9274> getUnk4F9274(bool type);
+    const stdx::span<const Unk4F9274> getBuildingTileOffsets(bool type);
 
     namespace IndustryFlags
     {

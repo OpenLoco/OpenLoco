@@ -31,14 +31,14 @@ namespace OpenLoco::GameCommands
                 continue;
 
             surface->setTerrain(landType);
-            if (!surface->hasHighTypeFlag())
+            if (!surface->isIndustrial())
             {
                 surface->setVar6SLR5(0);
             }
             const auto variation = Map::MapGenerator::getRandomTerrainVariation(*surface);
             if (variation.has_value())
             {
-                if (!surface->hasHighTypeFlag())
+                if (!surface->isIndustrial())
                 {
                     surface->setVariation(*variation);
                 }
@@ -46,7 +46,7 @@ namespace OpenLoco::GameCommands
             auto* landObj = ObjectManager::get<LandObject>(landType);
             if (landObj != nullptr)
             {
-                if (!surface->hasHighTypeFlag())
+                if (!surface->isIndustrial())
                 {
                     surface->setVar6SLR5(landObj->var_03 - 1);
                 }

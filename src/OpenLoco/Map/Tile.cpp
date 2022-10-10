@@ -175,7 +175,7 @@ OpenLoco::Industry* IndustryElement::industry() const
 
 OpenLoco::StationType StationElement::stationType() const { return OpenLoco::StationType(_5 >> 5); }
 
-uint8_t IndustryElement::var_6_1F() const
+uint8_t IndustryElement::buildingType() const
 {
     return (_6 >> 6) & 0x1F;
 }

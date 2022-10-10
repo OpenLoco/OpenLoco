@@ -48,8 +48,8 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            const auto buildingType = elIndustry->var_6_1F();
-            const auto buildingTiles = getUnk4F9274(indObj->var_C6 & (1 << buildingType));
+            const auto buildingType = elIndustry->buildingType();
+            const auto buildingTiles = getBuildingTileOffsets(indObj->buildingSizeFlags & (1 << buildingType));
             for (auto& buildTilePos : buildingTiles)
             {
                 auto buildPos = buildTilePos.pos + pos;
@@ -96,15 +96,15 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (!surface->hasHighTypeFlag())
+            if (!surface->isIndustrial())
             {
                 continue;
             }
-            surface->setHighTypeFlag(false);
+            surface->setIsIndustrialFlag(false);
             surface->setVar6SLR5(0);
             surface->setVariation(0);
             Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32);
-            Map::TileManager::removeAllWallsOnTile(Map::Pos3{ pos, surface->baseHeight() });
+            Map::TileManager::removeAllWallsOnTile(pos, surface->baseZ());
         }
     }
 
