@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                      .item(LoadSaveDropdownId::screenshot, StringIds::menu_screenshot)
                      .item(LoadSaveDropdownId::giantScreenshot, StringIds::menu_giant_screenshot);
 
-        auto& newConfig = Config::getNew();
+        auto& newConfig = Config::get();
         if (newConfig.network.enabled)
         {
             d.separator();
@@ -197,7 +197,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         strncpy(&_currentGameFilePath[0], path.u8string().c_str(), std::size(_currentGameFilePath));
 
         uint32_t flags = 0;
-        if (Config::get().flags & Config::Flags::exportObjectsWithSaves)
+        if (Config::get().old.flags & Config::Flags::exportObjectsWithSaves)
             flags = S5::SaveFlags::packCustomObjects;
 
         if (!S5::save(path, flags))
@@ -279,7 +279,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (!Audio::isAudioEnabled())
             Dropdown::setItemSelected(0);
 
-        if (Config::get().musicPlaying)
+        if (Config::get().old.musicPlaying)
             Dropdown::setItemSelected(1);
 
         Dropdown::setHighlightedItem(0);
@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             case 1:
             {
-                auto& config = Config::get();
+                auto& config = Config::get().old;
                 if (config.musicPlaying)
                 {
                     config.musicPlaying = false;
@@ -845,7 +845,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window.widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window.getColour(WindowColour::primary).c());
         }
 
-        if (Config::getNew().cheatsMenuEnabled)
+        if (Config::get().cheatsMenuEnabled)
         {
             window.widgets[Widx::cheats_menu].type = WidgetType::toolbarTab;
             auto& baseWidget = window.widgets[Widx::cheats_menu];

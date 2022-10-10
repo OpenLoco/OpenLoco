@@ -386,7 +386,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (viewport == nullptr)
             return InteractionArg{};
 
-        if (viewport->zoom > Config::get().vehiclesMinScale)
+        if (viewport->zoom > Config::get().old.vehiclesMinScale)
             return InteractionArg{};
 
         uint32_t nearestDistance = std::numeric_limits<uint32_t>().max();
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             interaction = session->getNormalInteractionInfo(flags);
             if (!(vp->flags & ViewportFlags::station_names_displayed))
             {
-                if (_rt2->zoomLevel <= Config::get().stationNamesMinScale)
+                if (_rt2->zoomLevel <= Config::get().old.stationNamesMinScale)
                 {
                     auto stationInteraction = session->getStationNameInteractionInfo(flags);
                     if (stationInteraction.type != InteractionItem::noInteraction)

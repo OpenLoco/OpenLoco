@@ -180,7 +180,7 @@ void NetworkClient::onReceivePacketFromServer(const Packet& packet)
 
 void NetworkClient::sendConnectPacket()
 {
-    const auto& config = Config::get();
+    const auto& config = Config::get().old;
     ConnectPacket packet;
     std::strncpy(packet.name, config.preferredName, sizeof(packet.name));
     packet.version = kNetworkVersion;

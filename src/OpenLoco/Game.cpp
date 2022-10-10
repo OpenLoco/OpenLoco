@@ -287,7 +287,7 @@ namespace OpenLoco::Game
                 std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
                 uint32_t flags = 0;
-                if (Config::get().flags & Config::Flags::exportObjectsWithSaves)
+                if (Config::get().old.flags & Config::Flags::exportObjectsWithSaves)
                     flags = S5::SaveFlags::packCustomObjects;
 
                 if (!S5::save(path, flags))

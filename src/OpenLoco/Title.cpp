@@ -186,9 +186,9 @@ namespace OpenLoco::Title
         Gfx::invalidateScreen();
         resetScreenAge();
 
-        if (Config::getNew().audio.playTitleMusic)
+        if (Config::get().audio.playTitleMusic)
         {
-            Audio::playMusic(Environment::PathId::css5, Config::get().volume, true);
+            Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
         }
     }
 

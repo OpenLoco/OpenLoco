@@ -200,7 +200,7 @@ namespace OpenLoco::CompanyManager
     // 0x00430319
     void update()
     {
-        if (!isEditorMode() && !Config::getNew().companyAIDisabled)
+        if (!isEditorMode() && !Config::get().companyAIDisabled)
         {
             CompanyId id = CompanyId(ScenarioManager::getScenarioTicks() & 0x0F);
             auto company = get(id);
@@ -589,13 +589,13 @@ namespace OpenLoco::CompanyManager
     // 0x004C95A6
     void setPreferredName()
     {
-        if (!(Config::get().flags & Config::Flags::usePreferredOwnerName))
+        if (!(Config::get().old.flags & Config::Flags::usePreferredOwnerName))
             return;
 
         // First, set the owner name.
         GameCommands::setErrorTitle(StringIds::cannot_change_owner_name);
         {
-            const uint32_t* buffer = reinterpret_cast<uint32_t*>(Config::get().preferredName);
+            const uint32_t* buffer = reinterpret_cast<uint32_t*>(Config::get().old.preferredName);
             GameCommands::do_31(_updatingCompanyId, 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_31(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
             if (GameCommands::do_31(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]))
@@ -609,7 +609,7 @@ namespace OpenLoco::CompanyManager
 
         // Temporarily store the preferred name in buffer string 2039.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(buffer_2039, Config::get().preferredName, 256);
+        strncpy(buffer_2039, Config::get().old.preferredName, 256);
 
         // Prepare '{NAME} Transport' in a buffer.
         {

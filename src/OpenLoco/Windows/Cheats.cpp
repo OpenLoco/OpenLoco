@@ -638,7 +638,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             self.activatedWidgets = (1 << Common::Widx::tab_vehicles);
 
-            if (Config::getNew().displayLockedVehicles)
+            if (Config::get().displayLockedVehicles)
             {
                 self.activatedWidgets |= (1 << Widx::checkbox_display_locked_vehicles);
                 self.disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
@@ -649,7 +649,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 self.disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
             }
 
-            if (Config::getNew().buildLockedVehicles)
+            if (Config::get().buildLockedVehicles)
             {
                 self.activatedWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
             }
@@ -698,16 +698,16 @@ namespace OpenLoco::Ui::Windows::Cheats
                 }
                 case Widx::checkbox_display_locked_vehicles:
 
-                    Config::getNew().displayLockedVehicles = !Config::getNew().displayLockedVehicles;
+                    Config::get().displayLockedVehicles = !Config::get().displayLockedVehicles;
 
                     // if we don't want to display locked vehicles, there is no reason to allow building them
-                    if (Config::getNew().displayLockedVehicles)
+                    if (Config::get().displayLockedVehicles)
                     {
                         self.disabledWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
                     }
                     else
                     {
-                        Config::getNew().buildLockedVehicles = false;
+                        Config::get().buildLockedVehicles = false;
                         self.disabledWidgets |= (1 << Widx::checkbox_build_locked_vehicles);
                     }
 
@@ -717,9 +717,9 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
 
                 case Widx::checkbox_build_locked_vehicles:
-                    if (Config::getNew().displayLockedVehicles)
+                    if (Config::get().displayLockedVehicles)
                     {
-                        Config::getNew().buildLockedVehicles = !Config::getNew().buildLockedVehicles;
+                        Config::get().buildLockedVehicles = !Config::get().buildLockedVehicles;
                         WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_build_locked_vehicles);
                         WindowManager::invalidate(WindowType::buildVehicle);
                     }

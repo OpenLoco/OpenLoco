@@ -158,7 +158,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         auto shade = Colours::getShade(colour, 4);
         Gfx::clearSingle(rt, shade);
 
-        const auto& shortcuts = Config::getNew().shortcuts;
+        const auto& shortcuts = Config::get().shortcuts;
         auto yPos = 0;
         for (auto i = 0; i < self.rowCount; i++)
         {

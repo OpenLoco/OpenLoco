@@ -85,7 +85,7 @@ namespace OpenLoco::Tutorial
         _tutorialNumber = tutorialNumber;
 
         // Figure out what dimensions to use for the tutorial, and whether we can continue using scaling.
-        const auto& config = Config::getNew();
+        const auto& config = Config::get();
         Config::Resolution newResolution = tutorialResolution;
         if (config.scaleFactor > 1.0)
         {
