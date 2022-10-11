@@ -856,7 +856,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             if (cfg.audio.playTitleMusic)
             {
-                Audio::playMusic(Environment::PathId::css5, Config::get().volume, true);
+                Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
             }
 
             w->invalidate();

@@ -7,6 +7,7 @@
 #include <unistd.h>
 #endif
 #include "../Audio/Audio.h"
+#include "../Config.h"
 #include "../Console.h"
 #include "../Core/FileSystem.hpp"
 #include "../Entities/EntityManager.h"
@@ -772,6 +773,7 @@ void OpenLoco::Interop::registerHooks()
     Title::registerHooks();
     OpenLoco::Tutorial::registerHooks();
     Paint::registerHooks();
+    Config::registerHooks();
 
     // Part of 0x004691FA
     registerHook(
