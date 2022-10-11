@@ -73,7 +73,7 @@ namespace OpenLoco::GameCommands
             {
                 const auto& indTile = industry->tiles[i];
                 const auto indPos = Map::Pos3{ Map::Pos2(indTile),
-                                               indTile.z & ~(1 << 15) };
+                                               static_cast<coord_t>(indTile.z & ~(1 << 15)) };
                 if (indPos == pos)
                 {
                     if (industry->numTiles > 1)
@@ -133,7 +133,7 @@ namespace OpenLoco::GameCommands
             for (auto i = industry->numTiles; i != 0; --i)
             {
                 auto tile = industry->tiles[0];
-                tile.z &= ~(1 << 15);
+                tile.z &= static_cast<coord_t>(~(1 << 15));
                 removeIndustryElement(tile);
             }
 
