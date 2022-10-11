@@ -76,7 +76,10 @@ namespace OpenLoco::GameCommands
                                                indTile.z & ~(1 << 15) };
                 if (indPos == pos)
                 {
-                    std::rotate(&industry->tiles[i], &industry->tiles[i + 1], &industry->tiles[industry->numTiles - 1]);
+                    if (industry->numTiles > 1)
+                    {
+                        std::copy(&industry->tiles[i + 1], &industry->tiles[industry->numTiles], &industry->tiles[i]);
+                    }
                     industry->numTiles--;
                     break;
                 }
@@ -88,7 +91,7 @@ namespace OpenLoco::GameCommands
     // 0x00455A5C
     static void revokeAllSurfaceClaims()
     {
-        for (auto& pos : Map::TilePosRangeView({ 0, 0 }, { Map::kMapRows, Map::kMapColumns }))
+        for (auto& pos : Map::TilePosRangeView({ 1, 1 }, { Map::kMapRows - 1, Map::kMapColumns - 1 }))
         {
             auto tile = Map::TileManager::get(pos);
             auto* surface = tile.surface();
