@@ -32,8 +32,10 @@ namespace OpenLoco
         constexpr uint32_t requiresAllCargo = 1 << 17;
         constexpr uint32_t unk18 = 1 << 18;
         constexpr uint32_t unk19 = 1 << 19;
+        constexpr uint32_t unk23 = 1 << 23;
         constexpr uint32_t builtInDesert = 1 << 24;
         constexpr uint32_t builtNearDesert = 1 << 25;
+        constexpr uint32_t unk27 = 1 << 27;
         constexpr uint32_t flag_28 = 1 << 28;
     }
 #pragma pack(push, 1)
@@ -62,7 +64,7 @@ namespace OpenLoco
         uint8_t var_BC;
         uint8_t var_BD;
         uint32_t var_BE;
-        uint8_t pad_C2[0xC6 - 0xC2];
+        uint32_t var_C2;
         uint32_t var_C6;
         uint16_t designedYear; // 0xCA start year
         uint16_t obsoleteYear; // 0xCC end year
@@ -87,11 +89,9 @@ namespace OpenLoco
         uint8_t var_E9;
         uint8_t var_EA;
         uint8_t var_EB;
-        uint8_t var_EC;
-        uint8_t var_ED;
-        uint8_t var_EE;
-        uint8_t var_EF;
-        uint8_t var_F0;
+        uint8_t var_EC;       // Used by Livestock cow shed count??
+        uint8_t wallTypes[4]; // 0xED There can be up to 4 different wall types for an industry
+        // Selection of wall types isn't completely random from the 4 it is biased into 2 groups of 2
         uint8_t var_F1;
         uint8_t var_F2;
         uint8_t var_F3;

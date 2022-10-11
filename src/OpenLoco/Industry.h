@@ -82,7 +82,7 @@ namespace OpenLoco
         bool isMonthlyProductionClosing();
         void sub_45329B(const Map::Pos2& pos);
         void sub_453354();
-        void sub_454A43(const Map::Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl);
+        void expandGrounds(const Map::Pos2& pos, uint8_t primaryWallType, uint8_t secondaryWallType, uint8_t dl);
         void createMapAnimations();
         void updateProducedCargoStats();
     };

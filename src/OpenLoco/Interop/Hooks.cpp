@@ -16,6 +16,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Gui.h"
+#include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Map/AnimationManager.h"
 #include "../Map/Tile.h"
@@ -903,6 +904,19 @@ void OpenLoco::Interop::registerHooks()
             Gfx::RenderTarget* rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
             Gfx::drawImage(*rt, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
 
+            regs = backup;
+            return 0;
+        });
+
+    registerHook(
+        0x00454A43,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            Map::Pos2 pos{ regs.ax, regs.cx };
+            uint8_t primaryWall = regs.bl;
+            uint8_t secondaryWall = regs.bh;
+            auto* industry = IndustryManager::get(static_cast<IndustryId>(regs.dh));
+            industry->expandGrounds(pos, primaryWall, secondaryWall, regs.dl);
             regs = backup;
             return 0;
         });
