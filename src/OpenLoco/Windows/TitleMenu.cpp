@@ -20,6 +20,7 @@
 #include "../Ui.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
+#include "../Utility/String.hpp"
 #include "../ViewportManager.h"
 #include "../Widget.h"
 #include <string_view>
