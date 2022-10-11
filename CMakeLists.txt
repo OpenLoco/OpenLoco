@@ -80,6 +80,7 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
 set(COMMON_COMPILE_OPTIONS_MSVC
     /W4                      # Warning level 4
     /MP                      # Multithreaded compilation
+    $<$<CONFIG:Debug>:/ZI>   # Debug Edit and Continue (Hot reload)
     $<$<CONFIG:Release>:/Zi> # Debug information in release
 
     $<$<BOOL:${STRICT}>:/WX> # Warnings are errors (STRICT ONLY)
@@ -298,7 +299,8 @@ add_subdirectory(src/Thirdparty/yaml-cpp)
 
 target_compile_options(${PROJECT} PUBLIC ${COMMON_COMPILE_OPTIONS})
 target_link_options(${PROJECT} PUBLIC
-    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:/DEBUG>)
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:/DEBUG>
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Debug>>:/INCREMENTAL /SAFESEH:NO>) # Incremental and no safeseh linking required for hot reload
 
 # clang does not understand following options and errors with -Wunknown-warning-option
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
