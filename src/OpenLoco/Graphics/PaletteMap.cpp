@@ -5,6 +5,7 @@
 #include "ImageIds.h"
 #include <algorithm>
 #include <cassert>
+#include <cstring>
 #include <numeric>
 
 using namespace OpenLoco::Interop;
