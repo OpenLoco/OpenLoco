@@ -1,3 +1,5 @@
+# OpenLoco version 22.10+ (???)
+
 # OpenLoco version 22.10 (2022-10-09)
 
 ## Change Company Face Game Command [#1656]
