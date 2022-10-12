@@ -19,14 +19,14 @@ namespace OpenLoco::Drawing
     };
     struct DrawSpriteArgs
     {
-        const Gfx::PaletteMapView& palMap;
+        const Gfx::PaletteMapView palMap;
         const Gfx::G1Element& sourceImage;
         Ui::Point32 srcPos;
         Ui::Point32 dstPos;
         Ui::Size size;
         const Gfx::G1Element* noiseImage;
         DrawSpriteArgs(
-            const Gfx::PaletteMapView& _palMap, const Gfx::G1Element& _sourceImage, const Ui::Point32& _srcPos, const Ui::Point32& _dstPos, const Ui::Size& _size, const Gfx::G1Element* _noiseImage)
+            const Gfx::PaletteMapView _palMap, const Gfx::G1Element& _sourceImage, const Ui::Point32& _srcPos, const Ui::Point32& _dstPos, const Ui::Size& _size, const Gfx::G1Element* _noiseImage)
             : palMap(_palMap)
             , sourceImage(_sourceImage)
             , srcPos(_srcPos)
