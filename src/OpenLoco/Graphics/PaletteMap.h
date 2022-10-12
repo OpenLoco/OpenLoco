@@ -35,7 +35,7 @@ namespace OpenLoco::Gfx
         {
         }
 
-        PaletteMap(stdx::span<uint8_t> data)
+        constexpr PaletteMap(stdx::span<uint8_t> data)
             : _data(data)
             , _numMaps(1)
             , _mapLength(static_cast<uint16_t>(data.size()))
