@@ -765,7 +765,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00447A5F
-    static bool isSpriteInteractedWithPaletteSet(Gfx::RenderTarget* rt, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMapView& paletteMap)
+    static bool isSpriteInteractedWithPaletteSet(Gfx::RenderTarget* rt, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMapView paletteMap)
     {
         static loco_global<const uint8_t*, 0x0050B860> _paletteMap;
         static loco_global<bool, 0x00E40114> _interactionResult;

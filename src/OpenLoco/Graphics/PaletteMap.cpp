@@ -13,28 +13,25 @@ namespace OpenLoco::Gfx
 {
     static loco_global<uint32_t[enumValue(ExtColour::max)], 0x050B8C8> _paletteToG1Offset;
 
-    namespace Detail
-    {
-        // This buffer is used when sprites are drawn with a secondary palette.
-        // TODO: Make this thread safe via thread_local if multi-threading is implemented.
-        static auto _paletteMapBuffer = [] {
-            PaletteMapBuffer data;
-            std::iota(data.begin(), data.end(), 0);
-            return data;
-        }();
+    // This buffer is used when sprites are drawn with a secondary palette.
+    // TODO: Make this thread safe via thread_local if multi-threading is implemented.
+    static auto _paletteMapBuffer = [] {
+        PaletteMapBuffer<256> data;
+        std::iota(data.begin(), data.end(), 0);
+        return data;
+    }();
 
-        auto& getPaletteMapBuffer()
-        {
-            return _paletteMapBuffer;
-        }
+    static auto& getPaletteMapBuffer()
+    {
+        return _paletteMapBuffer;
     }
 
     PaletteMapView getDefaultPaletteMap()
     {
-        return Detail::getPaletteMapBuffer();
+        return getPaletteMapBuffer();
     }
 
-    void copyPaletteData(PaletteMapBuffer& dst, size_t dstIndex, const PaletteMapView src, size_t srcIndex, size_t length)
+    void copyPaletteData(PaletteMapBuffer<256>& dst, size_t dstIndex, const PaletteMapView src, size_t srcIndex, size_t length)
     {
         auto maxLength = std::min(dst.size() - srcIndex, dst.size() - dstIndex);
         assert(length <= maxLength);
@@ -77,7 +74,7 @@ namespace OpenLoco::Gfx
         if (image.hasSecondary())
         {
             // Combines portions of two different palettes into the global palette map.
-            auto& paletteMap = Detail::getPaletteMapBuffer();
+            auto& paletteMap = getPaletteMapBuffer();
             const auto primaryMap = getPaletteMapForColour(Colours::toExt(image.getPrimary()));
             const auto secondaryMap = getPaletteMapForColour(Colours::toExt(image.getSecondary()));
             if (!primaryMap || !secondaryMap)

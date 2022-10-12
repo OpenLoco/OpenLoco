@@ -194,7 +194,7 @@ namespace OpenLoco::Gfx
     void drawImage(Gfx::RenderTarget* rt, int16_t x, int16_t y, uint32_t image);
     void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image);
     void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
-    void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const PaletteMapView& palette, const G1Element* noiseImage);
+    void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMapView palette, const G1Element* noiseImage);
     [[nodiscard]] uint32_t recolour(uint32_t image);
     [[nodiscard]] uint32_t recolour(uint32_t image, Colour colour);
     [[nodiscard]] uint32_t recolour(uint32_t image, ExtColour colour);

@@ -12,8 +12,10 @@ namespace OpenLoco::Gfx
     /**
      * Represents an 8-bit indexed map that maps from one palette index to another.
      */
-    using PaletteMapBuffer = std::array<uint8_t, 256>;
-    using PaletteMapView = stdx::span<const uint8_t>;
+    template<std::size_t TSize>
+    using PaletteMapBuffer = std::array<PaletteIndex_t, TSize>;
+
+    using PaletteMapView = stdx::span<const PaletteIndex_t>;
 
     PaletteMapView getDefaultPaletteMap();
 

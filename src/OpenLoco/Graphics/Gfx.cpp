@@ -62,7 +62,7 @@ namespace OpenLoco::Gfx
     loco_global<uint32_t, 0x00E04324> _E04324;
     loco_global<const uint8_t*, 0x009DA3D8> _noiseMaskImageData;
 
-    static PaletteIndex_t _textColours[8] = { 0 };
+    static PaletteMapBuffer<8> _textColours{ 0 };
 
     // 0x004FFAE8
     ImageId applyGhostToImage(uint32_t imageIndex)
@@ -1580,8 +1580,8 @@ namespace OpenLoco::Gfx
 
     void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
     {
-        uint8_t palette[256];
-        memset(palette, paletteIndex, 256);
+        PaletteMapBuffer<256> palette;
+        std::fill(palette.begin(), palette.end(), 0xFF);
         palette[0] = 0;
 
         // Set the image primary flag to tell drawImagePaletteSet to recolour with the palette (Colour::black is not actually used)
@@ -1715,7 +1715,7 @@ namespace OpenLoco::Gfx
     }
 
     template<uint8_t TZoomLevel, bool TIsRLE>
-    static void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMapView& palette, const G1Element* noiseImage)
+    static void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMapView palette, const G1Element* noiseImage)
     {
         auto args = getDrawImagePosArgs<TZoomLevel, TIsRLE>(rt, pos, element);
         if (args.has_value())
@@ -1727,7 +1727,7 @@ namespace OpenLoco::Gfx
     }
 
     // 0x00448D90
-    void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const PaletteMapView& palette, const G1Element* noiseImage)
+    void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const PaletteMapView palette, const G1Element* noiseImage)
     {
         const auto* element = getG1Element(image.getIndex());
         if (element == nullptr)
