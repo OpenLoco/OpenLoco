@@ -23,7 +23,7 @@ namespace OpenLoco::Gfx
     static auto _defaultPaletteMap = PaletteMap(_defaultPaletteMapData);
 
     // TODO: This could use a better name, this map is used when images are drawn with a secondary palette.
-    const PaletteMap& PaletteMap::getDefault()
+    PaletteMap PaletteMap::getDefault()
     {
         return _defaultPaletteMap;
     }
@@ -44,15 +44,15 @@ namespace OpenLoco::Gfx
     uint8_t PaletteMap::blend(uint8_t src, uint8_t dst) const
     {
         // src = 0 would be transparent so there is no blend palette for that, hence (src - 1)
-        assert(src != 0 && (src - 1) < _numMaps);
-        assert(dst < _mapLength);
-        auto idx = ((src - 1) * 256) + dst;
+        assert(src != 0 && (src - 1u) < _data.size());
+        assert(dst < _data.size());
+        auto idx = ((src - 1u) * 256u) + dst;
         return _data[idx];
     }
-
+    
     void PaletteMap::copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length)
     {
-        auto maxLength = std::min(_mapLength - srcIndex, _mapLength - dstIndex);
+        auto maxLength = std::min(_data.size() - srcIndex, _data.size() - dstIndex);
         assert(length <= maxLength);
         auto copyLength = std::min(length, maxLength);
         std::copy_n(src._data.begin() + srcIndex, copyLength, _data.begin() + dstIndex);
@@ -75,7 +75,8 @@ namespace OpenLoco::Gfx
             auto g1 = getG1Element(*g1Index);
             if (g1 != nullptr)
             {
-                return PaletteMap(g1->offset, g1->height, g1->width);
+                const size_t length = g1->width * g1->height;
+                return PaletteMap(stdx::span{ g1->offset, length });
             }
         }
         return std::nullopt;

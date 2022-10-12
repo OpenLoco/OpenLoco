@@ -17,28 +17,14 @@ namespace OpenLoco::Gfx
     {
     private:
         stdx::span<uint8_t> _data{};
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-private-field"
-        uint16_t _numMaps;
-#pragma clang diagnostic pop
-        uint16_t _mapLength;
 
     public:
-        static const PaletteMap& getDefault();
+        static PaletteMap getDefault();
 
-        PaletteMap() = default;
+        constexpr PaletteMap() = default;
 
-        PaletteMap(uint8_t* data, uint16_t numMaps, uint16_t mapLength)
-            : _data{data, numMaps * mapLength}
-            , _numMaps(numMaps)
-            , _mapLength(mapLength)
-        {
-        }
-
-        constexpr PaletteMap(stdx::span<uint8_t> data)
+        constexpr PaletteMap(stdx::span<uint8_t> data) noexcept
             : _data(data)
-            , _numMaps(1)
-            , _mapLength(static_cast<uint16_t>(data.size()))
         {
         }
 
