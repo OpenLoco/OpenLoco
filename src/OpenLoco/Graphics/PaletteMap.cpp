@@ -11,13 +11,15 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Gfx
 {
-    static loco_global<uint32_t[147], 0x050B8C8> _paletteToG1Offset;
+    static loco_global<uint32_t[enumValue(ExtColour::max)], 0x050B8C8> _paletteToG1Offset;
 
     const PaletteMap& PaletteMap::getDefault()
     {
         static bool initialised = false;
+        
         static uint8_t data[256];
         static PaletteMap defaultMap(data);
+
         if (!initialised)
         {
             std::iota(std::begin(data), std::end(data), 0);

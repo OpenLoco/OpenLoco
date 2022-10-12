@@ -39,6 +39,7 @@ namespace OpenLoco
         darkPink = 28,
         pink = 29,
         mutedRed = 30,
+        max,
     };
 
     enum class ExtColour : uint8_t
@@ -191,6 +192,7 @@ namespace OpenLoco
         unk90,
         unk91,
         unk92,
+        max,
     };
 
     struct AdvancedColour
