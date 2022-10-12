@@ -736,7 +736,7 @@ namespace OpenLoco::Gfx
                         if (chr >= 32)
                         {
                             // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                            Gfx::drawImagePaletteSet(*rt, pos, ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()).withPrimary(Colour::black), PaletteMap{ _textColours }, {});
+                            Gfx::drawImagePaletteSet(*rt, pos, ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()).withPrimary(Colour::black), PaletteMapView{ _textColours }, {});
                             pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
                         }
                         else
@@ -1539,7 +1539,7 @@ namespace OpenLoco::Gfx
 
         if (!palette.has_value())
         {
-            drawImagePaletteSet(rt, pos, image, PaletteMap::getDefault(), noiseImage);
+            drawImagePaletteSet(rt, pos, image, getDefaultPaletteMap(), noiseImage);
         }
         else
         {
@@ -1585,7 +1585,7 @@ namespace OpenLoco::Gfx
         palette[0] = 0;
 
         // Set the image primary flag to tell drawImagePaletteSet to recolour with the palette (Colour::black is not actually used)
-        drawImagePaletteSet(rt, pos, image.withPrimary(Colour::black), PaletteMap{ palette }, {});
+        drawImagePaletteSet(rt, pos, image.withPrimary(Colour::black), PaletteMapView{ palette }, {});
     }
 
     template<uint8_t TZoomLevel, bool TIsRLE>
@@ -1715,7 +1715,7 @@ namespace OpenLoco::Gfx
     }
 
     template<uint8_t TZoomLevel, bool TIsRLE>
-    static void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMap& palette, const G1Element* noiseImage)
+    static void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMapView& palette, const G1Element* noiseImage)
     {
         auto args = getDrawImagePosArgs<TZoomLevel, TIsRLE>(rt, pos, element);
         if (args.has_value())
@@ -1727,7 +1727,7 @@ namespace OpenLoco::Gfx
     }
 
     // 0x00448D90
-    void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const PaletteMap& palette, const G1Element* noiseImage)
+    void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const PaletteMapView& palette, const G1Element* noiseImage)
     {
         const auto* element = getG1Element(image.getIndex());
         if (element == nullptr)

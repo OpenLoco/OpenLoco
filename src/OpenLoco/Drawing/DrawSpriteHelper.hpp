@@ -6,8 +6,17 @@
 namespace OpenLoco::Drawing
 {
 
+    static uint8_t blend(Gfx::PaletteMapView paletteMap, uint8_t src, uint8_t dst)
+    {
+        // src = 0 would be transparent so there is no blend palette for that, hence (src - 1)
+        assert(src != 0 && (src - 1u) < paletteMap.size());
+        assert(dst < paletteMap.size());
+        auto idx = ((src - 1u) * 256u) + dst;
+        return paletteMap[idx];
+    }
+
     template<DrawBlendOp TBlendOp>
-    bool blitPixel(uint8_t src, uint8_t& dst, const Gfx::PaletteMap& paletteMap, const uint8_t noiseMask)
+    bool blitPixel(uint8_t src, uint8_t& dst, const Gfx::PaletteMapView& paletteMap, const uint8_t noiseMask)
     {
         if constexpr ((TBlendOp & BlendOp::noiseMask) != 0)
         {
@@ -25,7 +34,7 @@ namespace OpenLoco::Drawing
 
         if constexpr (((TBlendOp & BlendOp::src) != 0) && ((TBlendOp & BlendOp::dst) != 0))
         {
-            auto pixel = paletteMap.blend(src, dst);
+            auto pixel = blend(paletteMap, src, dst);
             if constexpr (TBlendOp & BlendOp::transparent)
             {
                 if (pixel == PaletteIndex::transparent)
