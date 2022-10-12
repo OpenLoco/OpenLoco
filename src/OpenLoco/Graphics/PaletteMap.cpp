@@ -13,22 +13,20 @@ namespace OpenLoco::Gfx
 {
     static loco_global<uint32_t[enumValue(ExtColour::max)], 0x050B8C8> _paletteToG1Offset;
 
-    // This buffer is used when sprites are drawn with a secondary palette.
-    // TODO: Make this thread safe via thread_local if multi-threading is implemented.
-    static auto _paletteMapBuffer = [] {
+    // Default immutable palette map.
+    static const auto _defaultPaletteMapBuffer = [] {
         PaletteMapBuffer<256> data;
         std::iota(data.begin(), data.end(), 0);
         return data;
     }();
 
-    static auto& getPaletteMapBuffer()
-    {
-        return _paletteMapBuffer;
-    }
+    // This buffer is used when sprites are drawn with a secondary palette.
+    // TODO: Make this thread safe via thread_local if multi-threading is implemented.
+    static auto _secondaryPaletteMapBuffer = _defaultPaletteMapBuffer;
 
     PaletteMapView getDefaultPaletteMap()
     {
-        return getPaletteMapBuffer();
+        return _defaultPaletteMapBuffer;
     }
 
     static void copyPaletteData(PaletteMapBuffer<256>& dst, size_t dstIndex, const PaletteMapView src, size_t srcIndex, size_t length)
@@ -74,7 +72,7 @@ namespace OpenLoco::Gfx
         if (image.hasSecondary())
         {
             // Combines portions of two different palettes into the global palette map.
-            auto& paletteMap = getPaletteMapBuffer();
+            auto& paletteMap = _secondaryPaletteMapBuffer;
             const auto primaryMap = getPaletteMapForColour(Colours::toExt(image.getPrimary()));
             const auto secondaryMap = getPaletteMapForColour(Colours::toExt(image.getSecondary()));
             if (!primaryMap || !secondaryMap)
