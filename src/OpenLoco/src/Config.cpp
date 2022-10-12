@@ -4,8 +4,8 @@
 #include "Environment.h"
 #include "Input/ShortcutManager.h"
 #include "Interop/Interop.hpp"
-#include "Utility/Yaml.hpp"
 #include <fstream>
+#include <yaml-cpp/yaml.h>
 
 using namespace OpenLoco::Interop;
 

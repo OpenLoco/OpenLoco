@@ -5,7 +5,6 @@
 #include "../Interop/Interop.hpp"
 #include "../Platform/Platform.h"
 #include "../Ui.h"
-#include "../Utility/Yaml.hpp"
 #include "Conversion.h"
 #include "StringIds.h"
 #include "StringManager.h"
@@ -13,6 +12,7 @@
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
+#include <yaml-cpp/yaml.h>
 
 using namespace OpenLoco::Interop;
 

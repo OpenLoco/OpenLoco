@@ -17,7 +17,11 @@ if (CCache_FOUND)
     endif (OPENLOCO_USE_CCACHE)
 endif (CCache_FOUND)
 
-project(${PROJECT} CXX)
+project(${PROJECT} LANGUAGES CXX VERSION 22.10)
+
+if (NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 17)
+endif()
 
 if (APPLE)
     # Detection of this variable seems to fail with CMake.
@@ -33,106 +37,69 @@ endif()
 include(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
+include(FetchContent)
+include(Functions)
 
 option(STRICT "Build with warnings as errors" YES)
+option(BUILD_TESTS "Build tests" YES)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
-# Describe current version in terms of closest tag
-execute_process(
-    COMMAND git describe HEAD --always
-    COMMAND sed -E "s/-g.+$//"
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE OPENLOCO_VERSION_TAG
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    # ERROR_QUIET
-)
+set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
+list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
 
-# Define current git branch
-execute_process(
-    COMMAND git rev-parse --abbrev-ref HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE OPENLOCO_BRANCH
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    ERROR_QUIET
-)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+if (${BUILD_TESTS})
+    find_package(GTest REQUIRED)
+endif()
+find_package(SDL2 REQUIRED CONFIG)
+if (TARGET SDL2::SDL2-static)
+    set(SDL2_LIB SDL2::SDL2-static)
+elseif (TARGET SDL2::SDL2)
+    set(SDL2_LIB SDL2::SDL2)
+else ()
+    # Even though we asked for SDL2 from a configure mode which would have SDL2 targets
+    # it appears we have been given a raw module mode SDL2 so create a wrapper library
+    # then we can treat it just like a normal configure mode target
+    add_library(SDL2_WRAPPER INTERFACE)
+    target_link_libraries(SDL2_WRAPPER INTERFACE ${SDL2_LIBRARIES})
+    target_include_directories(SDL2_WRAPPER INTERFACE ${SDL2_INCLUDE_DIRS})
+    set(SDL2_LIB SDL2_WRAPPER)
+endif()
 
-# Define short commit hash
-execute_process(
-    COMMAND git rev-parse --short HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE OPENLOCO_COMMIT_SHA1_SHORT
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    ERROR_QUIET
-)
+find_package(PNG REQUIRED)
+if (NOT APPLE AND NOT MSVC)
+    pkg_check_modules(OPENAL REQUIRED openal)
+else()
+    find_package(OpenAL CONFIG REQUIRED)
+    set(OPENAL_LIBRARIES OpenAL::OpenAL)
+endif()
 
-# To avoid unnecessary rebuilds, set the current branch and short sha1 hash
-# only for the one file that uses these definitions: Version.cpp
-set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
-    PROPERTY COMPILE_DEFINITIONS
-    OPENLOCO_VERSION_TAG="${OPENLOCO_VERSION_TAG}"
-    OPENLOCO_BRANCH="${OPENLOCO_BRANCH}"
-    OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
+set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "")
+set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "")
+set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "")
+set(YAML_BUILD_SHARED_LIBS OFF CACHE BOOL "")
+set(YAML_CPP_INSTALL OFF CACHE BOOL "")
+set(YAML_CPP_FORMAT_SOURCE OFF CACHE BOOL "")
+FetchContent_Declare(
+    yaml-cpp
+    GIT_REPOSITORY      https://github.com/jbeder/yaml-cpp
+    GIT_TAG             1b50109f7bea60bd382d8ea7befce3d2bd67da5f
+    GIT_SHALLOW         ON
+    SYSTEM)
 
-# Set some compiler features
+FetchContent_MakeAvailable(yaml-cpp)
+loco_thirdparty_target_compile_link_flags(yaml-cpp)
 
-# MSVC
-set(COMMON_COMPILE_OPTIONS_MSVC
-    /W4                      # Warning level 4
-    /MP                      # Multithreaded compilation
-    $<$<CONFIG:Debug>:/ZI>   # Debug Edit and Continue (Hot reload)
-    $<$<CONFIG:Release>:/Zi> # Debug information in release
+# breakpad is also required
+if (MSVC)
+    find_package(unofficial-breakpad CONFIG REQUIRED)
+    set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
+endif()
 
-    $<$<BOOL:${STRICT}>:/WX> # Warnings are errors (STRICT ONLY)
-
-                             # Poke holes in W4 due to our interop code
-    /wd4068                  #   4068: unknown pragma
-    /wd4091                  #   4091: 'keyword' : ignored on left of 'type' when no variable is declared
-    /wd4100                  #   4100: 'identifier' : unreferenced formal parameter
-    /wd4132                  #   4132: 'object' : const object should be initialized
-    /wd4200                  #   4200: nonstandard extension used : zero-sized array in struct/union
-    /wd4201                  #   4201: nonstandard extension used : nameless struct/union
-    /wd4204                  #   4204: nonstandard extension used : non-constant aggregate initializer
-    /wd4206                  #   4206: nonstandard extension used : translation unit is empty
-    /wd4221                  #   4221: nonstandard extension used : 'identifier' : cannot be initialized using address of automatic variable
-    /wd4244                  #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
-    /wd4245                  #   4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
-)
-
-# GNU/CLANG
-set(COMMON_COMPILE_OPTIONS_GNU
-    -fstrict-aliasing
-    -Wall
-    -Wextra
-    -Wno-unused-parameter
-    -Wtype-limits
-    $<$<BOOL:${STRICT}>:-Werror>         # Warnings are errors (STRICT ONLY)
-
-    # Poke some holes in -Wall:
-    -Wno-unknown-pragmas
-    -Wno-unused-private-field
-    -Waddress
-    # -Warray-bounds
-    # compilers often get confused about our memory access patterns, disable some of the warnings
-    -Wno-array-bounds
-    -Wchar-subscripts
-    -Wenum-compare
-    -Wformat
-    -Wignored-qualifiers
-    -Winit-self
-    -Wmissing-declarations
-    -Wnon-virtual-dtor
-    -Wnull-dereference
-    -Wstrict-aliasing
-    -Wstrict-overflow=1
-    -Wundef
-    -Wunreachable-code
-)
-
-set(COMMON_COMPILE_OPTIONS
-    $<$<CXX_COMPILER_ID:MSVC>:${COMMON_COMPILE_OPTIONS_MSVC}>
-    $<$<CXX_COMPILER_ID:GNU,Clang>:${COMMON_COMPILE_OPTIONS_GNU}>
-)
+# Display source files nicely in IDEs
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Handle creating the rct2 text and data files on OS X and Linux
 if (UNIX)
@@ -184,251 +151,23 @@ if (UNIX)
         set(LOCO_SECTIONS "${CMAKE_BINARY_DIR}/openloco_data_section.o" "${CMAKE_BINARY_DIR}/openloco_text_section.o")
         set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${CMAKE_CURRENT_SOURCE_DIR}/distribution/linux/${LINKER_SCRIPT}\"")
     endif ()
-endif (UNIX)
-
-set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
-list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
-
-# add source files
-file(GLOB_RECURSE OLOCO_SOURCES "src/OpenLoco/*.cpp")
-file(GLOB_RECURSE OLOCO_HEADERS "src/OpenLoco/*.h" "src/OpenLoco/*.hpp")
-
-if (APPLE)
-    file(GLOB_RECURSE OLOCO_MM_SOURCES "src/*.mm")
-    set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif ()
-
-if (NOT MSVC)
-    set(PIE_FLAG "-fno-pie")
-    set(TARGET_M "-m32")
-endif ()
-
-# Check if a flag exists and add it to the list of compiler (so, not linker) options
-function (ADD_CHECK_CXX_COMPILER_FLAG _CXXFLAGS _CACHE_VAR _FLAG)
-    CHECK_CXX_COMPILER_FLAG("${_FLAG}" "${_CACHE_VAR}")
-    if (${_CACHE_VAR})
-        list(APPEND SUPPORTED_CHECK_CXX_COMPILER_FLAGS "${_FLAG}")
-    else ()
-        message(STATUS "Unsupported CXXFLAG: ${_FLAG}")
-    endif ()
-endfunction ()
-
-# Check if a flag exists and add it to the compiler and the linker options
-function (ADD_CHECK_CXX_FLAG _CXXFLAGS _CACHE_VAR _FLAG)
-    CHECK_CXX_COMPILER_FLAG("${_FLAG}" "${_CACHE_VAR}")
-    if (${_CACHE_VAR})
-        set(${_CXXFLAGS} "${_FLAG}" PARENT_SCOPE)
-    else ()
-        message(STATUS "Unsupported CXXFLAG: ${_FLAG}")
-    endif ()
-endfunction ()
-
-ADD_CHECK_CXX_COMPILER_FLAG(CXX_WARN_NON_VIRTUAL_DTOR CXX_WARN_NON_VIRTUAL_DTOR_CACHE -Wnon-virtual-dtor)
-ADD_CHECK_CXX_FLAG(CXX_WNO_CLOBBERED CXX_WNO_CLOBBERED_CACHE -Wno-clobbered)
-list(APPEND COMMON_COMPILE_OPTIONS ${CXX_WARN_NON_VIRTUAL_DTOR})
-list(APPEND COMMON_COMPILE_OPTIONS ${CXX_WNO_CLOBBERED})
-
-# set necessary flags to compile code as is
-set(CMAKE_CXX_FLAGS "${TARGET_M} ${CMAKE_CXX_FLAGS}")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
-
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-
-find_package(SDL2 REQUIRED)
-if (TARGET SDL2::SDL2-static)
-    set(SDL2_LIBRARIES SDL2::SDL2-static)
-elseif (TARGET SDL2::SDL2)
-    set(SDL2_LIBRARIES SDL2::SDL2)
 endif()
 
-find_package(PNG REQUIRED)
-if (NOT APPLE AND NOT MSVC)
-	pkg_check_modules(OPENAL REQUIRED openal)
-else()
-	find_package(OpenAL CONFIG REQUIRED)
-	set(OPENAL_LIBRARIES OpenAL::OpenAL)
-endif()
-include_directories(src/Thirdparty/yaml-cpp/include)
-set(YAML_CPP_LIBRARIES yaml-cpp)
-
-# breakpad is also required
-if (MSVC)
-    find_package(unofficial-breakpad CONFIG REQUIRED)
-    set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
-endif ()
-
-# Disable optimizations for interop.cpp for all compilers, to allow optimized
-# builds without need for -fno-omit-frame-pointer
-if (MSVC)
-    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "/Oy- /Od")
-else ()
-    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
-endif ()
-
-if (NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 17)
-endif()
-
-# Display source files nicely in IDEs
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${OLOCO_SOURCES} ${OLOCO_HEADERS})
-
-if (MINGW)
-    add_library(${PROJECT} ${OLOCO_SOURCES})
-    target_link_libraries(${PROJECT} winmm)
-else ()
-    if (MSVC)
-        add_library(${PROJECT} SHARED ${OLOCO_SOURCES} ${OLOCO_HEADERS})
-    else ()
-        add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
-        set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
-        if (TARGET SDL2::SDL2main)
-            target_link_libraries(${PROJECT} SDL2::SDL2main)
-        endif()
-    endif ()
-endif ()
-
-set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "")
-set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "")
-set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "")
-set(YAML_BUILD_SHARED_LIBS OFF CACHE BOOL "")
-set(YAML_CPP_INSTALL OFF CACHE BOOL "")
-set(YAML_CPP_FORMAT_SOURCE OFF CACHE BOOL "")
-
-add_subdirectory(src/Thirdparty/yaml-cpp)
-
-target_compile_options(${PROJECT} PUBLIC ${COMMON_COMPILE_OPTIONS})
-target_link_options(${PROJECT} PUBLIC
-    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:/DEBUG>
-    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Debug>>:/INCREMENTAL /SAFESEH:NO>) # Incremental and no safeseh linking required for hot reload
-
-# clang does not understand following options and errors with -Wunknown-warning-option
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-    target_compile_options(${PROJECT} PUBLIC -Wno-stringop-overflow -Wno-stringop-overread -Wno-stringop-truncation)
-endif ()
-
-target_include_directories(${PROJECT} PUBLIC ${SDL2_INCLUDE_DIRS})
-
-target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
-target_link_libraries(${PROJECT} Threads::Threads)
-target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
-target_link_libraries(${PROJECT} ${PNG_LIBRARY})
-target_link_libraries(${PROJECT} ${OPENAL_LIBRARIES})
-
-if (WIN32)
-    target_link_libraries(${PROJECT} ${BREAKPAD_LIBRARIES})
-    target_link_libraries(${PROJECT} winmm ws2_32)
-endif ()
-
-if (NOT WIN32)
-    add_dependencies(${PROJECT} segfiles)
-endif()
-
-if (NOT APPLE AND NOT MSVC)
-    target_link_libraries(${PROJECT} stdc++fs)
-endif()
-
-if (MINGW)
-    target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
-    # someone at yaml-cpp forgot to expose this as a target definition:
-    # https://github.com/jbeder/yaml-cpp/blob/c73ee34704c512ebe915b283645aefa9f424a22f/CMakeLists.txt#L49
-    target_compile_definitions(${PROJECT} PRIVATE YAML_CPP_STATIC_DEFINE)
-    target_link_libraries(${PROJECT} imm32 winmm version)
-    # newer GCC gets confused about our use of hardcoded address shenanigans
-else ()
-    if (MSVC)
-        target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD YAML_CPP_STATIC_DEFINE)
-    else ()
-        target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
-    endif ()
-endif()
-
-if (APPLE)
-    target_link_libraries(${PROJECT} "-framework Cocoa")
-
-    set_target_properties(${PROJECT} PROPERTIES
-        MACOSX_BUNDLE ON
-        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/distribution/macos/Info.plist.in)
-
-    set(MACOSX_BUNDLE_BUNDLE_NAME "OpenLoco")
-    set(MACOSX_BUNDLE_BUNDLE_VERSION "${OPENRCT2_COMMIT_SHA1_SHORT}")
-    set(MACOSX_BUNDLE_COPYRIGHT "OpenLoco is licensed under the MIT License")
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER "io.openloco.OpenLoco")
-    set(MACOSX_BUNDLE_ICON_FILE "AppIcon")
-
-    if(${OPENLOCO_BRANCH} EQUAL master)
-        set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG}")
-    else()
-        set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OPENLOCO_VERSION_TAG} ${OPENLOCO_BRANCH}")
-    endif()
-
-    set(BUNDLE_RESOURCES "")
-
-    find_program(ICONUTIL iconutil)
-    if (ICONUTIL)
-        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/distribution/macos/AppIcon.iconset DESTINATION ${CMAKE_BINARY_DIR})
-        set(ICON_TARGET "${CMAKE_BINARY_DIR}/AppIcon.iconset")
-        set(ICON_OUTPUT "${CMAKE_BINARY_DIR}/AppIcon.icns")
-        set(SOURCE_ICON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/logo")
-        add_custom_command(OUTPUT ${ICON_OUTPUT}
-                COMMAND cp icon_x16.png ${ICON_TARGET}/icon_16x16.png
-                COMMAND cp icon_x32.png ${ICON_TARGET}/icon_16x16@2x.png
-                COMMAND cp icon_x32.png ${ICON_TARGET}/icon_32x32.png
-                COMMAND cp icon_x64.png ${ICON_TARGET}/icon_32x32@2x.png
-                COMMAND cp icon_x128.png ${ICON_TARGET}/icon_128x128.png
-                COMMAND cp icon_x256.png ${ICON_TARGET}/icon_128x128@2x.png
-                COMMAND cp icon_x256.png ${ICON_TARGET}/icon_256x256.png
-                COMMAND cp icon_x512.png ${ICON_TARGET}/icon_256x256@2x.png
-                COMMAND cp icon_x512.png ${ICON_TARGET}/icon_512x512.png
-                COMMAND cp icon_x1024.png ${ICON_TARGET}/icon_512x512@2x.png
-                COMMAND ${ICONUTIL} --convert icns --output ${ICON_OUTPUT} ${ICON_TARGET}
-                WORKING_DIRECTORY ${SOURCE_ICON_DIR})
-        list(APPEND BUNDLE_RESOURCES ${ICON_OUTPUT})
-    endif ()
-
-    list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md)
-    list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CONTRIBUTORS.md)
-    set_target_properties(${PROJECT} PROPERTIES RESOURCE "${BUNDLE_RESOURCES}")
-    target_sources(${PROJECT} PUBLIC ${BUNDLE_RESOURCES})
-
-    file(GLOB BUNDLE_LANGUAGES "${CMAKE_CURRENT_SOURCE_DIR}/data/language/*")
-    target_sources(${PROJECT} PUBLIC ${BUNDLE_LANGUAGES})
-    set_property(
-        SOURCE ${BUNDLE_LANGUAGES}
-        PROPERTY MACOSX_PACKAGE_LOCATION "Resources/language"
-    )
-endif ()
+add_subdirectory(src)
 
 if (MSVC)
     add_custom_target(OpenLocoExe ALL
-	    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_LINKER_FILE_DIR:${PROJECT}>/OpenLoco.exe"
-	    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_LINKER_FILE_DIR:${PROJECT}>/data"
-	    COMMENT "Copying over data folder and executable"
-	    DEPENDS ${PROJECT}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_LINKER_FILE_DIR:OpenLoco>/OpenLoco.exe"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_LINKER_FILE_DIR:OpenLoco>/data"
+        COMMENT "Copying over data folder and executable"
+        DEPENDS OpenLoco
     )
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLocoExe)
-    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_COMMAND $<TARGET_LINKER_FILE_DIR:${PROJECT}>/OpenLoco.exe)
-    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_LINKER_FILE_DIR:${PROJECT}>)
+    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_COMMAND $<TARGET_LINKER_FILE_DIR:OpenLoco>/OpenLoco.exe)
+    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_LINKER_FILE_DIR:OpenLoco>)
 endif()
 
-# Add headers check to verify all headers carry their dependencies.
-# Only valid for Clang for now:
-# - GCC 8 does not support -Wno-pragma-once-outside-header
-# - Other compilers status unknown
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    add_library(${PROJECT}-headers-check OBJECT ${OLOCO_HEADERS})
-    set_target_properties(${PROJECT}-headers-check PROPERTIES LINKER_LANGUAGE CXX)
-    set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
-    target_compile_options(${PROJECT}-headers-check PUBLIC ${COMMON_COMPILE_OPTIONS})
-    target_compile_options(${PROJECT}-headers-check PUBLIC -x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable)
-    target_include_directories(${PROJECT}-headers-check PUBLIC ${SDL2_INCLUDE_DIRS})
-else ()
-    # Dummy target to ease invocation
-    add_custom_target(${PROJECT}-headers-check)
-endif ()
-
-install(TARGETS "openloco"
+install(TARGETS OpenLoco
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
     BUNDLE DESTINATION "${CMAKE_INSTALL_BINDIR}")
 install(FILES "CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")

@@ -14,7 +14,7 @@ namespace stdx
 }
 #else
 
-#include "../../Thirdparty/variant.hpp"
+#include <variant.hpp>
 namespace stdx
 {
     using mpark::variant;

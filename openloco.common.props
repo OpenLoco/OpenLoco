@@ -28,11 +28,12 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
-      <DisableSpecificWarnings>4068;4091;4100;4132;4200;4201;4204;4206;4221;4244;4245;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4068;4091;4100;4127;4132;4200;4201;4204;4206;4221;4244;4245;4251;4275;4996%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <!-- Warnings:
              C4068: unknown pragma
              C4091: 'keyword': ignored on left of 'type' when no variable is declared
-             C4100: 'identifier': unreferenced formal parameter
+	     C4100: 'identifier': unreferenced formal parameter
+             C4127: conditional expression is constant
              C4132: 'identifier': const object should be initialized
              C4200: nonstandard extension used: zero-sized array in struct/union
              C4201: nonstandard extension used: nameless struct/union
@@ -40,7 +41,10 @@
              C4206: nonstandard extension used: translation unit is empty
              C4221: nonstandard extension used: 'identifier': cannot be initialized using address of automatic variable 'identifier'
              C4244: 'conversion_type': conversion from 'type1' to 'type2', possible loss of data
-             C4245: 'conversion_type': conversion from 'type1' to 'type2', signed/unsigned mismatch
+	     C4245: 'conversion_type': conversion from 'type1' to 'type2', signed/unsigned mismatch
+             C4251: 'identifier': 'object_type1' 'identifier1' needs to have dll-interface to be used by clients of 'object_type' 'identfier2'
+	     C4275:  non dll-interface 'classkey' 'identifier1' used as base for dll-interface 'classkey' 'identifier2'
+             C4996: declaration deprecated
       -->
       <TreatSpecificWarningsAsErrors>4263;4265;4548;4549;4555</TreatSpecificWarningsAsErrors>
       <!-- Warnings, that have to be enabled manually:

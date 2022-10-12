@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <SolutionDir Condition="'$(SolutionDir)'==''">..\..\</SolutionDir>
+    <SolutionDir Condition="'$(SolutionDir)'==''">..\..\..\</SolutionDir>
     <VcpkgTriplet>x86-windows</VcpkgTriplet>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
@@ -466,10 +466,10 @@
     <ClInclude Include="ZoomLevel.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\resources\OpenLoco.rc" />
+    <ResourceCompile Include="..\..\Resources\src\OpenLoco.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\resources\logo\icon.ico" />
+    <Image Include="..\..\Resources\src\logo\icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
@@ -482,17 +482,21 @@
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
-  <Import Project="..\..\openloco.common.props" />
+  <Import Project="..\..\..\openloco.common.props" />
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)\%(RelativeDir)</ObjectFileName>
       <AdditionalOptions>$(OPENLOCO_CL_ADDITIONALOPTIONS) %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>..\..\Thirdparty\include;..\..\Resources\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>
       <TargetMachine Condition="'$(Platform)'=='x64'">MachineX64</TargetMachine>
     </Lib>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\Resources\include\OpenLoco\Resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <PackageReference Include="OpenLoco.Dependencies" Version="1.5.0">

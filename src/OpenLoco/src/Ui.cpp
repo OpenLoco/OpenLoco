@@ -10,7 +10,7 @@
 #include <stdexcept>
 
 #ifdef _WIN32
-#include "../../resources/Resource.h"
+#include <OpenLoco/Resources/Resource.h>
 
 #ifndef NOMINMAX
 #define NOMINMAX

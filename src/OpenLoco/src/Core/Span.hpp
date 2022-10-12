@@ -4,4 +4,4 @@
 #pragma once
 
 #define TCB_SPAN_NAMESPACE_NAME stdx
-#include "../../Thirdparty/span.hpp"
+#include <span.hpp>

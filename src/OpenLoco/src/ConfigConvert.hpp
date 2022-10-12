@@ -2,8 +2,8 @@
 
 #include "Config.h"
 #include "Input.h"
-#include "Utility/Yaml.hpp"
 #include <SDL2/SDL.h>
+#include <yaml-cpp/yaml.h>
 
 #define enum_def(x, y) \
     {                  \
