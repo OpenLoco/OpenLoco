@@ -14,18 +14,17 @@ namespace OpenLoco::Gfx
     static loco_global<uint32_t[enumValue(ExtColour::max)], 0x050B8C8> _paletteToG1Offset;
 
     // This buffer is used when sprites are drawn with a secondary palette.
-    static auto _defaultPaletteMapData = [] {
+    // TODO: Make this thread safe via thread_local if multi-threading is implemented.
+    static auto _paletteMapBuffer = [] {
         std::array<uint8_t, 256> data;
         std::iota(data.begin(), data.end(), 0);
         return data;
     }();
 
-    static auto _defaultPaletteMap = PaletteMap(_defaultPaletteMapData);
-
     // TODO: This could use a better name, this map is used when images are drawn with a secondary palette.
     PaletteMap PaletteMap::getDefault()
     {
-        return _defaultPaletteMap;
+        return PaletteMap(_paletteMapBuffer);
     }
 
     uint8_t PaletteMap::operator[](size_t index) const
@@ -49,7 +48,7 @@ namespace OpenLoco::Gfx
         auto idx = ((src - 1u) * 256u) + dst;
         return _data[idx];
     }
-    
+
     void PaletteMap::copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length)
     {
         auto maxLength = std::min(_data.size() - srcIndex, _data.size() - dstIndex);
@@ -92,8 +91,8 @@ namespace OpenLoco::Gfx
 
         if (image.hasSecondary())
         {
-            // A secondary paletteMap is made up by combinging bits from two palettes.
-            PaletteMap customMap = PaletteMap::getDefault();
+            // Combines portions of two different palettes into the global palette map.
+            PaletteMap paletteMap = PaletteMap::getDefault();
             const auto primaryMap = getPaletteMapForColour(Colours::toExt(image.getPrimary()));
             const auto secondaryMap = getPaletteMapForColour(Colours::toExt(image.getSecondary()));
             if (!primaryMap || !secondaryMap)
@@ -101,14 +100,14 @@ namespace OpenLoco::Gfx
                 assert(false);
             }
             // Remap sections are split into two bits for primary
-            customMap.copy(PaletteIndex::primaryRemap0, *primaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
-            customMap.copy(PaletteIndex::primaryRemap3, *primaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
-            customMap.copy(PaletteIndex::secondaryRemap0, *secondaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
-            customMap.copy(PaletteIndex::secondaryRemap3, *secondaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
+            paletteMap.copy(PaletteIndex::primaryRemap0, *primaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
+            paletteMap.copy(PaletteIndex::primaryRemap3, *primaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
+            paletteMap.copy(PaletteIndex::secondaryRemap0, *secondaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
+            paletteMap.copy(PaletteIndex::secondaryRemap3, *secondaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
 
             // TODO: Investigate if this can be simplified by just copying the primary map in full to begin with
             // then it would only need to fill in the secondary remap section
-            return customMap;
+            return paletteMap;
         }
         else
         {
