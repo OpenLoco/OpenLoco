@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Span.hpp"
 #include "Colour.h"
 #include "ImageId.h"
 #include <array>
@@ -15,8 +16,7 @@ namespace OpenLoco::Gfx
     struct PaletteMap
     {
     private:
-        uint8_t* _data{};
-        uint32_t _dataLength{};
+        stdx::span<uint8_t> _data{};
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-private-field"
         uint16_t _numMaps;
@@ -29,24 +29,21 @@ namespace OpenLoco::Gfx
         PaletteMap() = default;
 
         PaletteMap(uint8_t* data, uint16_t numMaps, uint16_t mapLength)
-            : _data(data)
-            , _dataLength(numMaps * mapLength)
+            : _data{data, numMaps * mapLength}
             , _numMaps(numMaps)
             , _mapLength(mapLength)
         {
         }
 
-        template<std::size_t TSize>
-        PaletteMap(uint8_t (&map)[TSize])
-            : _data(map)
-            , _dataLength(static_cast<uint32_t>(std::size(map)))
+        PaletteMap(stdx::span<uint8_t> data)
+            : _data(data)
             , _numMaps(1)
-            , _mapLength(static_cast<uint16_t>(std::size(map)))
+            , _mapLength(static_cast<uint16_t>(data.size()))
         {
         }
 
         uint8_t operator[](size_t index) const;
-        uint8_t* data() const { return _data; }
+        uint8_t* data() const { return _data.data(); }
         uint8_t blend(uint8_t src, uint8_t dst) const;
         void copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length);
     };

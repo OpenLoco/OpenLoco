@@ -30,10 +30,10 @@ namespace OpenLoco::Gfx
 
     uint8_t PaletteMap::operator[](size_t index) const
     {
-        assert(index < _dataLength);
+        assert(index < _data.size());
 
         // Provide safety in release builds
-        if (index >= _dataLength)
+        if (index >= _data.size())
         {
             return 0;
         }
@@ -47,7 +47,7 @@ namespace OpenLoco::Gfx
         assert(src != 0 && (src - 1) < _numMaps);
         assert(dst < _mapLength);
         auto idx = ((src - 1) * 256) + dst;
-        return (*this)[idx];
+        return _data[idx];
     }
 
     void PaletteMap::copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length)
@@ -55,7 +55,7 @@ namespace OpenLoco::Gfx
         auto maxLength = std::min(_mapLength - srcIndex, _mapLength - dstIndex);
         assert(length <= maxLength);
         auto copyLength = std::min(length, maxLength);
-        std::memcpy(&_data[dstIndex], &src._data[srcIndex], copyLength);
+        std::copy(src._data.begin() + srcIndex, src._data.begin() + copyLength, _data.begin() + dstIndex);
     }
 
     std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId)
