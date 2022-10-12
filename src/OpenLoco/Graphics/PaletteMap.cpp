@@ -55,7 +55,7 @@ namespace OpenLoco::Gfx
         auto maxLength = std::min(_mapLength - srcIndex, _mapLength - dstIndex);
         assert(length <= maxLength);
         auto copyLength = std::min(length, maxLength);
-        std::copy(src._data.begin() + srcIndex, src._data.begin() + copyLength, _data.begin() + dstIndex);
+        std::copy_n(src._data.begin() + srcIndex, copyLength, _data.begin() + dstIndex);
     }
 
     std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId)
