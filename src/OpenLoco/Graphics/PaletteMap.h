@@ -45,7 +45,6 @@ namespace OpenLoco::Gfx
         {
         }
 
-        uint8_t& operator[](size_t index);
         uint8_t operator[](size_t index) const;
         uint8_t* data() const { return _data; }
         uint8_t blend(uint8_t src, uint8_t dst) const;

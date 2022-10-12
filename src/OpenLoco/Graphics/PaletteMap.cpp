@@ -26,20 +26,6 @@ namespace OpenLoco::Gfx
         return defaultMap;
     }
 
-    uint8_t& PaletteMap::operator[](size_t index)
-    {
-        assert(index < _dataLength);
-
-        // Provide safety in release builds
-        if (index >= _dataLength)
-        {
-            static uint8_t dummy;
-            return dummy;
-        }
-
-        return _data[index];
-    }
-
     uint8_t PaletteMap::operator[](size_t index) const
     {
         assert(index < _dataLength);
