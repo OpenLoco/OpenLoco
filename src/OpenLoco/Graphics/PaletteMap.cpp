@@ -13,19 +13,19 @@ namespace OpenLoco::Gfx
 {
     static loco_global<uint32_t[enumValue(ExtColour::max)], 0x050B8C8> _paletteToG1Offset;
 
+    // This buffer is used when sprites are drawn with a secondary palette.
+    static auto _defaultPaletteMapData = [] {
+        std::array<uint8_t, 256> data;
+        std::iota(data.begin(), data.end(), 0);
+        return data;
+    }();
+
+    static auto _defaultPaletteMap = PaletteMap(_defaultPaletteMapData);
+
+    // TODO: This could use a better name, this map is used when images are drawn with a secondary palette.
     const PaletteMap& PaletteMap::getDefault()
     {
-        static bool initialised = false;
-        
-        static uint8_t data[256];
-        static PaletteMap defaultMap(data);
-
-        if (!initialised)
-        {
-            std::iota(std::begin(data), std::end(data), 0);
-            initialised = true;
-        }
-        return defaultMap;
+        return _defaultPaletteMap;
     }
 
     uint8_t PaletteMap::operator[](size_t index) const
