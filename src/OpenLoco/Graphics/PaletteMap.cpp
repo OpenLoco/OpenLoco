@@ -86,8 +86,6 @@ namespace OpenLoco::Gfx
             copyPaletteData(paletteMap, PaletteIndex::secondaryRemap0, *secondaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
             copyPaletteData(paletteMap, PaletteIndex::secondaryRemap3, *secondaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
 
-            // TODO: Investigate if this can be simplified by just copying the primary map in full to begin with
-            // then it would only need to fill in the secondary remap section
             return paletteMap;
         }
         else
