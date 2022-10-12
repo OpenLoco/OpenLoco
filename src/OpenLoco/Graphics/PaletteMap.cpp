@@ -31,7 +31,7 @@ namespace OpenLoco::Gfx
         return getPaletteMapBuffer();
     }
 
-    void copyPaletteData(PaletteMapBuffer<256>& dst, size_t dstIndex, const PaletteMapView src, size_t srcIndex, size_t length)
+    static void copyPaletteData(PaletteMapBuffer<256>& dst, size_t dstIndex, const PaletteMapView src, size_t srcIndex, size_t length)
     {
         auto maxLength = std::min(dst.size() - srcIndex, dst.size() - dstIndex);
         assert(length <= maxLength);
