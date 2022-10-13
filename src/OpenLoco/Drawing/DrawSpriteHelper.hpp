@@ -7,10 +7,11 @@ namespace OpenLoco::Drawing
 {
     inline uint8_t blend(const Gfx::PaletteMapView paletteMap, uint8_t src, uint8_t dst)
     {
+        const auto rowCount = paletteMap.size() / 256u;
         // src = 0 would be transparent so there is no blend palette for that, hence (src - 1)
-        assert(src != 0 && (src - 1u) < paletteMap.size());
-        assert(dst < paletteMap.size());
-        auto idx = ((src - 1u) * 256u) + dst;
+        assert(src != 0 && (src - 1u) < rowCount);
+        const auto idx = ((src - 1u) * 256u) + dst;
+        assert(idx < paletteMap.size());
         return paletteMap[idx];
     }
 

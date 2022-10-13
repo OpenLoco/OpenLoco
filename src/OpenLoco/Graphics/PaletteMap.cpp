@@ -55,6 +55,10 @@ namespace OpenLoco::Gfx
             if (g1 != nullptr)
             {
                 const size_t length = g1->width * g1->height;
+                
+                // Palette maps must be of 256 entries per row.
+                assert((length & 0xFF) == 0);
+                
                 return PaletteMapView(stdx::span{ g1->offset, length });
             }
         }
