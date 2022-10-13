@@ -7,19 +7,23 @@
 #include <cstdint>
 #include <optional>
 
-namespace OpenLoco::Gfx
+namespace OpenLoco::Gfx::PaletteMap
 {
+    /**
+     * The typical palette map size used to render images.
+     */
+    constexpr size_t kDefaultSize = 256;
+
     /**
      * Represents an 8-bit indexed map that maps from one palette index to another.
      */
     template<std::size_t TSize>
-    using PaletteMapBuffer = std::array<PaletteIndex_t, TSize>;
+    using Buffer = std::array<PaletteIndex_t, TSize>;
 
-    using PaletteMapView = stdx::span<const PaletteIndex_t>;
+    using View = stdx::span<const PaletteIndex_t>;
 
-    PaletteMapView getDefaultPaletteMap();
+    View getDefault();
 
-    std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId);
-    std::optional<PaletteMapView> getPaletteMapForColour(ExtColour paletteId);
-    std::optional<PaletteMapView> getPaletteMapFromImage(const ImageId image);
+    std::optional<View> getForColour(ExtColour paletteId);
+    std::optional<View> getFromImage(const ImageId image);
 }

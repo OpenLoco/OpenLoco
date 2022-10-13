@@ -9,13 +9,13 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Gfx
+namespace OpenLoco::Gfx::PaletteMap
 {
     static loco_global<uint32_t[enumValue(ExtColour::max)], 0x050B8C8> _paletteToG1Offset;
 
     // Default immutable palette map.
     static const auto _defaultPaletteMapBuffer = [] {
-        PaletteMapBuffer<256> data;
+        Buffer<kDefaultSize> data;
         std::iota(data.begin(), data.end(), 0);
         return data;
     }();
@@ -24,12 +24,12 @@ namespace OpenLoco::Gfx
     // TODO: Make this thread safe via thread_local if multi-threading is implemented.
     static auto _secondaryPaletteMapBuffer = _defaultPaletteMapBuffer;
 
-    PaletteMapView getDefaultPaletteMap()
+    View getDefault()
     {
         return _defaultPaletteMapBuffer;
     }
 
-    static void copyPaletteData(PaletteMapBuffer<256>& dst, size_t dstIndex, const PaletteMapView src, size_t srcIndex, size_t length)
+    static void copyPaletteMapData(Buffer<kDefaultSize>& dst, size_t dstIndex, const View src, size_t srcIndex, size_t length)
     {
         auto maxLength = std::min(dst.size() - srcIndex, dst.size() - dstIndex);
         assert(length <= maxLength);
@@ -37,7 +37,7 @@ namespace OpenLoco::Gfx
         std::copy_n(src.begin() + srcIndex, copyLength, dst.begin() + dstIndex);
     }
 
-    std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId)
+    static std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId)
     {
         if (enumValue(paletteId) < std::size(_paletteToG1Offset))
         {
@@ -46,7 +46,7 @@ namespace OpenLoco::Gfx
         return std::nullopt;
     }
 
-    std::optional<PaletteMapView> getPaletteMapForColour(ExtColour paletteId)
+    std::optional<View> getForColour(ExtColour paletteId)
     {
         auto g1Index = getPaletteG1Index(paletteId);
         if (g1Index)
@@ -55,17 +55,17 @@ namespace OpenLoco::Gfx
             if (g1 != nullptr)
             {
                 const size_t length = g1->width * g1->height;
-                
+
                 // Palette maps must be of 256 entries per row.
-                assert((length & 0xFF) == 0);
-                
-                return PaletteMapView(stdx::span{ g1->offset, length });
+                assert((length % kDefaultSize) == 0);
+
+                return View(stdx::span{ g1->offset, length });
             }
         }
         return std::nullopt;
     }
 
-    std::optional<PaletteMapView> getPaletteMapFromImage(const ImageId image)
+    std::optional<View> getFromImage(const ImageId image)
     {
         // No remapping required so use default palette map
         if (!image.hasPrimary() && !image.isBlended())
@@ -77,18 +77,18 @@ namespace OpenLoco::Gfx
         {
             // Combines portions of two different palettes into the global palette map.
             auto& paletteMap = _secondaryPaletteMapBuffer;
-            const auto primaryMap = getPaletteMapForColour(Colours::toExt(image.getPrimary()));
-            const auto secondaryMap = getPaletteMapForColour(Colours::toExt(image.getSecondary()));
+            const auto primaryMap = getForColour(Colours::toExt(image.getPrimary()));
+            const auto secondaryMap = getForColour(Colours::toExt(image.getSecondary()));
             if (!primaryMap || !secondaryMap)
             {
                 assert(false);
             }
 
             // Remap sections are split into two bits for primary
-            copyPaletteData(paletteMap, PaletteIndex::primaryRemap0, *primaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
-            copyPaletteData(paletteMap, PaletteIndex::primaryRemap3, *primaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
-            copyPaletteData(paletteMap, PaletteIndex::secondaryRemap0, *secondaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
-            copyPaletteData(paletteMap, PaletteIndex::secondaryRemap3, *secondaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
+            copyPaletteMapData(paletteMap, PaletteIndex::primaryRemap0, *primaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
+            copyPaletteMapData(paletteMap, PaletteIndex::primaryRemap3, *primaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
+            copyPaletteMapData(paletteMap, PaletteIndex::secondaryRemap0, *secondaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
+            copyPaletteMapData(paletteMap, PaletteIndex::secondaryRemap3, *secondaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
 
             return paletteMap;
         }
@@ -96,12 +96,12 @@ namespace OpenLoco::Gfx
         {
             if (image.isBlended())
             {
-                return getPaletteMapForColour(image.getTranslucency());
+                return getForColour(image.getTranslucency());
             }
             else
             {
                 // For primary flagged images
-                return getPaletteMapForColour(image.getRemap());
+                return getForColour(image.getRemap());
             }
         }
     }

@@ -765,7 +765,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00447A5F
-    static bool isSpriteInteractedWithPaletteSet(Gfx::RenderTarget* rt, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMapView paletteMap)
+    static bool isSpriteInteractedWithPaletteSet(Gfx::RenderTarget* rt, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMap::View paletteMap)
     {
         static loco_global<const uint8_t*, 0x0050B860> _paletteMap;
         static loco_global<bool, 0x00E40114> _interactionResult;
@@ -785,12 +785,12 @@ namespace OpenLoco::Paint
         static loco_global<bool, 0x00E40114> _interactionResult;
         static loco_global<uint32_t, 0x00E04324> _interactionFlags;
         _interactionResult = false;
-        auto paletteMap = Gfx::getDefaultPaletteMap();
+        auto paletteMap = Gfx::PaletteMap::getDefault();
         if (imageId.hasPrimary())
         {
             _interactionFlags = Gfx::ImageIdFlags::remap;
             ExtColour index = imageId.hasSecondary() ? static_cast<ExtColour>(imageId.getPrimary()) : imageId.getRemap();
-            if (auto pm = Gfx::getPaletteMapForColour(index))
+            if (auto pm = Gfx::PaletteMap::getForColour(index))
             {
                 paletteMap = *pm;
             }
