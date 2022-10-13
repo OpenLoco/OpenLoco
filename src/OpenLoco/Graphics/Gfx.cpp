@@ -1581,7 +1581,7 @@ namespace OpenLoco::Gfx
     void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
     {
         PaletteMapBuffer<256> palette;
-        std::fill(palette.begin(), palette.end(), 0xFF);
+        std::fill(palette.begin(), palette.end(), paletteIndex);
         palette[0] = 0;
 
         // Set the image primary flag to tell drawImagePaletteSet to recolour with the palette (Colour::black is not actually used)
