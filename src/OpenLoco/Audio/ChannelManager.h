@@ -25,11 +25,11 @@ namespace OpenLoco::Audio
         size_t maxPhysicalChannels;
     };
 
-    static const std::unordered_map<ChannelId, VirtualChannelAttributes> kMixerChannelDefinitions = {
+    static const std::unordered_map<ChannelId, VirtualChannelAttributes> kVirtualChannelDefinitions = {
         { ChannelId::music, VirtualChannelAttributes{ 1, 1 } },
-        { ChannelId::unk_1, VirtualChannelAttributes{ 0, 0 } },
+        //{ ChannelId::unk_1, VirtualChannelAttributes{ 0, 0 } },
         { ChannelId::ambient, VirtualChannelAttributes{ 1, 1 } },
-        { ChannelId::title_deprecated, VirtualChannelAttributes{ 1, 1 } },
+        //{ ChannelId::title_deprecated, VirtualChannelAttributes{ 0, 0 } },
         { ChannelId::vehicle, VirtualChannelAttributes{ 10, 64 } },
         { ChannelId::soundFX, VirtualChannelAttributes{ 16, 64 } },
     };
@@ -70,7 +70,7 @@ namespace OpenLoco::Audio
         Channel& getFirstChannel(ChannelId channelId);
         void disposeChannels();
         void stopChannels(ChannelId channelId);
-        void stopNonPlayingChannels(ChannelId channelId);
+        void cleanupNonPlayingChannels(ChannelId channelId);
 
         // vehicle specific
         void updateVehicleChannels();

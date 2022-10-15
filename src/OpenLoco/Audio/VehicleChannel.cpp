@@ -108,9 +108,9 @@ namespace OpenLoco::Audio
         auto sample = Audio::getSoundSample(sid);
         if (sample)
         {
-            _vehicleId = vid;
-            _soundId = sid;
-
+            vehicleId = vid;
+            soundId = sid;
+            sa.volume = -200;
             load(*sample);
             play(loop);
             setVolume(sa.volume);
@@ -125,7 +125,7 @@ namespace OpenLoco::Audio
         {
             return;
         }
-        auto v = EntityManager::get<Vehicles::VehicleBase>(_vehicleId);
+        auto v = EntityManager::get<Vehicles::VehicleBase>(vehicleId);
         if (v == nullptr)
         {
             stop();
@@ -140,7 +140,7 @@ namespace OpenLoco::Audio
         }
 
         auto [sid, sa] = getChannelAttributesFromVehicle(veh26);
-        if (_soundId != sid)
+        if (soundId != sid)
         {
             stop();
             return;
@@ -156,6 +156,6 @@ namespace OpenLoco::Audio
     void VehicleChannel::stop()
     {
         Channel::stop();
-        _vehicleId = EntityId::null;
+        vehicleId = EntityId::null;
     }
 }

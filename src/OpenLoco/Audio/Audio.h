@@ -60,8 +60,6 @@ namespace OpenLoco::Audio
         null = 0xFF
     };
 
-    constexpr int32_t kNumReservedChannels = 4 + 10;
-
     using MusicId = uint8_t;
 
     struct MusicInfo

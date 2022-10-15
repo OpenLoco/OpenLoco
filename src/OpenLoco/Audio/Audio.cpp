@@ -83,9 +83,6 @@ namespace OpenLoco::Audio
 
     static uint8_t _numActiveVehicleSounds; // 0x0112C666
     static std::vector<std::string> _devices;
-    // static std::vector<Channel> _channels;
-    // static std::vector<VehicleChannel> _vehicleChannels;
-    // static std::vector<Channel> _soundFX;
 
     static std::vector<uint32_t> _samples;
     static std::unordered_map<uint16_t, uint32_t> _objectSamples;
@@ -568,7 +565,7 @@ namespace OpenLoco::Audio
     // 0x0048A18C
     void updateSounds()
     {
-        channelManager.stopNonPlayingChannels(ChannelId::soundFX);
+        channelManager.cleanupNonPlayingChannels(ChannelId::soundFX);
     }
 
     static std::optional<uint32_t> loadMusicSample(PathId asset)

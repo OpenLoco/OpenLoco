@@ -1,6 +1,7 @@
 #include "ChannelManager.h"
 #include "VehicleChannel.h"
 #include <algorithm>
+#include <functional>
 #include <iterator>
 
 namespace OpenLoco::Audio
@@ -17,9 +18,9 @@ namespace OpenLoco::Audio
     {
         _sourceManager = sourceManager;
 
-        virtualChannels.reserve(kMixerChannelDefinitions.size());
+        virtualChannels.reserve(kVirtualChannelDefinitions.size());
 
-        for (const auto& channelDef : kMixerChannelDefinitions)
+        for (const auto& channelDef : kVirtualChannelDefinitions)
         {
             auto result = virtualChannels.emplace(channelDef.first, VirtualChannel(1.f));
 
@@ -42,55 +43,33 @@ namespace OpenLoco::Audio
 
     Channel* ChannelManager::getFreeChannel(ChannelId channelId)
     {
-        if (channelId == ChannelId::vehicle)
-        {
-            auto& channels = virtualChannels.at(channelId).channels;
-            auto freeChannel = std::find_if(std::begin(channels), std::end(channels), [](auto& channel) { return static_cast<VehicleChannel*>(channel)->isFree(); });
-            Channel* channel = nullptr;
+        auto& channels = virtualChannels.at(channelId).channels;
 
-            if (freeChannel == std::end(channels))
+        auto freeChannel = std::find_if(
+            std::begin(channels),
+            std::end(channels),
+            [&](auto& channel) {
+                return channelId == ChannelId::vehicle
+                    ? static_cast<const VehicleChannel*>(channel)->isFree()
+                    : !channel->isPlaying();
+            });
+
+        Channel* channel = nullptr;
+
+        if (freeChannel == std::end(channels))
+        {
+            if (channels.size() < kVirtualChannelDefinitions.at(channelId).maxPhysicalChannels)
             {
-                if (channels.size() < kMixerChannelDefinitions.at(channelId).maxPhysicalChannels)
-                {
-                    channel = makeNewChannel(_sourceManager, channelId);
-                    channels.push_back(channel);
-                }
-                // else - no free channels and we've hit the channel limit - sound just won't play
+                channel = makeNewChannel(_sourceManager, channelId);
+                channels.push_back(channel);
             }
-            else
-            {
-                channel = *freeChannel;
-            }
-            return channel;
+            // else - no free channels and we've hit the channel limit - sound just won't play
         }
         else
         {
-
-            auto& channels = virtualChannels.at(channelId).channels;
-            auto freeChannel = std::find_if(std::begin(channels), std::end(channels), [](auto& channel) { return !channel->isPlaying(); });
-            Channel* channel = nullptr;
-
-            if (freeChannel == std::end(channels))
-            {
-                if (channels.size() < kMixerChannelDefinitions.at(channelId).maxPhysicalChannels)
-                {
-                    channel = makeNewChannel(_sourceManager, channelId);
-                    channels.push_back(channel);
-                }
-                // else - no free channels and we've hit the channel limit - sound just won't play
-            }
-            else
-            {
-                channel = *freeChannel;
-            }
-            return channel;
+            channel = *freeChannel;
         }
-
-        // if (channel == nullptr)
-        //{
-        //     throw std::logic_error("channel was nullptr!");
-        // }
-        // return channel;
+        return channel;
     }
 
     bool ChannelManager::play(ChannelId channelId, PlaySoundParams&& soundParams)
@@ -107,16 +86,6 @@ namespace OpenLoco::Audio
 
         return false;
     }
-
-    /*bool ChannelManager::play(ChannelId channelId, PlaySoundParams&& soundParams, SoundId soundId)
-    {
-        auto channel = getFreeChannel(channelId);
-        if (channel != nullptr && channel->load(soundParams.sample))
-        {
-            (dynamic_cast<VehicleChannel*>(channel)).
-        }
-        return false;
-    }*/
 
     bool ChannelManager::play(ChannelId channelId, PlaySoundParams&& soundParams, EntityId entityId)
     {
@@ -148,7 +117,7 @@ namespace OpenLoco::Audio
         }
     }
 
-    void ChannelManager::stopNonPlayingChannels(ChannelId channelId)
+    void ChannelManager::cleanupNonPlayingChannels(ChannelId channelId)
     {
         for (auto& channel : virtualChannels.at(channelId).channels)
         {
