@@ -90,8 +90,8 @@ namespace OpenLoco::Vehicles
     Map::Pos3 OrderRouteWaypoint::getWaypoint() const
     {
         Map::Pos3 loc{};
-        loc.x = ((static_cast<int16_t>(_type & 0x80) << 1) | _data[0]) * Map::tile_size;
-        loc.y = ((static_cast<int16_t>(_data[1] & 0x80) << 1) | _data[2]) * Map::tile_size;
+        loc.x = ((static_cast<int16_t>(_type & 0x80) << 1) | _data[0]) * Map::kTileSize;
+        loc.y = ((static_cast<int16_t>(_data[1] & 0x80) << 1) | _data[2]) * Map::kTileSize;
         loc.z = (_data[1] & 0x7F) * 8;
         return loc;
     }
@@ -170,7 +170,7 @@ namespace OpenLoco::Vehicles
     {
         auto cargoObj = ObjectManager::get<CargoObject>(getCargo());
         args.push(cargoObj->name);
-        args.push(cargoObj->unit_inline_sprite);
+        args.push(cargoObj->unitInlineSprite);
     }
 
     Order* OrderRingView::atIndex(const uint8_t index) const

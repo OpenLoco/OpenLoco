@@ -14,6 +14,7 @@
 #include "OpenLoco.h"
 #include "StationManager.h"
 #include "Utility/Numeric.hpp"
+#include "ViewportManager.h"
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -39,7 +40,7 @@ namespace OpenLoco
 
     const IndustryObject* Industry::getObject() const
     {
-        return ObjectManager::get<IndustryObject>(object_id);
+        return ObjectManager::get<IndustryObject>(objectId);
     }
 
     bool Industry::empty() const
@@ -50,7 +51,7 @@ namespace OpenLoco
     bool Industry::canReceiveCargo() const
     {
         auto receiveCargoState = false;
-        for (const auto& receivedCargo : ObjectManager::get<IndustryObject>(object_id)->required_cargo_type)
+        for (const auto& receivedCargo : ObjectManager::get<IndustryObject>(objectId)->requiredCargoType)
         {
             if (receivedCargo != 0xff)
                 receiveCargoState = true;
@@ -61,7 +62,7 @@ namespace OpenLoco
     bool Industry::canProduceCargo() const
     {
         auto produceCargoState = false;
-        for (const auto& producedCargo : ObjectManager::get<IndustryObject>(object_id)->produced_cargo_type)
+        for (const auto& producedCargo : ObjectManager::get<IndustryObject>(objectId)->producedCargoType)
         {
             if (producedCargo != 0xff)
                 produceCargoState = true;
@@ -139,10 +140,10 @@ namespace OpenLoco
             // Run tile loop for 100 iterations
             for (int i = 0; i < 100; i++)
             {
-                sub_45329B(tile_loop.current());
+                sub_45329B(tileLoop.current());
 
                 // loc_453318
-                if (tile_loop.next() == Pos2())
+                if (tileLoop.next() == Pos2())
                 {
                     sub_453354();
                     break;
@@ -162,12 +163,12 @@ namespace OpenLoco
         auto* indObj = getObject();
 
         uint16_t production = 0;
-        if (indObj->flags & IndustryObjectFlags::requires_all_cargo)
+        if (indObj->flags & IndustryObjectFlags::requiresAllCargo)
         {
             production = std::numeric_limits<uint16_t>::max();
             for (auto i = 0; i < 3; ++i)
             {
-                if (indObj->required_cargo_type[i] != 0xFF)
+                if (indObj->requiredCargoType[i] != 0xFF)
                 {
                     production = std::min(production, receivedCargoQuantityDailyTotal[i]);
                 }
@@ -176,7 +177,7 @@ namespace OpenLoco
             {
                 for (auto i = 0; i < 3; ++i)
                 {
-                    if (indObj->required_cargo_type[i] != 0xFF)
+                    if (indObj->requiredCargoType[i] != 0xFF)
                     {
                         receivedCargoQuantityDailyTotal[i] -= production;
                     }
@@ -187,7 +188,7 @@ namespace OpenLoco
         {
             for (auto i = 0; i < 3; ++i)
             {
-                if (indObj->required_cargo_type[i] != 0xFF)
+                if (indObj->requiredCargoType[i] != 0xFF)
                 {
                     production = Math::Bound::add(production, receivedCargoQuantityDailyTotal[i]);
                     receivedCargoQuantityDailyTotal[i] = 0;
@@ -198,7 +199,7 @@ namespace OpenLoco
         {
             for (auto i = 0; i < 2; ++i)
             {
-                if (indObj->produced_cargo_type[i] != 0xFF)
+                if (indObj->producedCargoType[i] != 0xFF)
                 {
                     var_181[i] = Math::Bound::add(var_181[i], production);
                 }
@@ -207,13 +208,13 @@ namespace OpenLoco
 
         for (auto i = 0; i < 3; ++i)
         {
-            // Lose a 16th of required cargo if requires_all_cargo and not equally satisfied
+            // Lose a 16th of required cargo if requiresAllCargo and not equally satisfied
             receivedCargoQuantityDailyTotal[i] -= Math::Bound::add(receivedCargoQuantityDailyTotal[i], 15) / 16;
         }
 
         for (auto i = 0; i < 2; ++i)
         {
-            if (indObj->produced_cargo_type[i] == 0xFF)
+            if (indObj->producedCargoType[i] == 0xFF)
             {
                 continue;
             }
@@ -245,7 +246,7 @@ namespace OpenLoco
                     }
                 }
 
-                const auto quantityDelivered = StationManager::deliverCargoToStations(stations, indObj->produced_cargo_type[i], max);
+                const auto quantityDelivered = StationManager::deliverCargoToStations(stations, indObj->producedCargoType[i], max);
                 producedCargoQuantityDeliveredMonthlyTotal[i] = Math::Bound::add(quantityDelivered, producedCargoQuantityDeliveredMonthlyTotal[i]);
             }
         }
@@ -268,7 +269,7 @@ namespace OpenLoco
         const auto* indObj = getObject();
         if (under_construction == 0xFF
             && !(flags & IndustryFlags::closingDown)
-            && indObj->required_cargo_type[0] == 0xFF)
+            && indObj->requiredCargoType[0] == 0xFF)
         {
             if (isMonthlyProductionUp())
             {
@@ -439,30 +440,179 @@ namespace OpenLoco
                 if (prng.randBool())
                 {
                     Map::Pos2 randTile{ static_cast<coord_t>(x + (prng.randNext(-15, 16) * 32)), static_cast<coord_t>(y + (prng.randNext(-15, 16) * 32)) };
-                    uint8_t bl = obj->var_ED;
-                    uint8_t bh = obj->var_EE;
-                    if (obj->var_EF != 0xFF && prng.randBool())
+                    uint8_t primaryWallType = obj->wallTypes[0];
+                    uint8_t secondaryWallType = obj->wallTypes[1];
+                    if (obj->wallTypes[2] != 0xFF && prng.randBool())
                     {
-                        bl = obj->var_EF;
-                        bh = obj->var_F0;
+                        primaryWallType = obj->wallTypes[2];
+                        secondaryWallType = obj->wallTypes[3];
                     }
                     uint8_t dl = prng.randNext(7) * 32;
-                    sub_454A43(randTile, bl, bh, dl);
+                    expandGrounds(randTile, primaryWallType, secondaryWallType, dl);
                 }
             }
         }
     }
 
-    void Industry::sub_454A43(const Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl)
+    // 0x0045510C bl == 0
+    static bool isSurfaceClaimed(const Map::TilePos2& pos)
     {
-        registers regs;
-        regs.bl = bl;
-        regs.bh = bh;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dl = dl;
-        regs.dh = enumValue(id());
-        call(0x00454A43, regs);
+        if (!Map::validCoords(pos))
+        {
+            return false;
+        }
+
+        const auto tile = Map::TileManager::get(pos);
+        bool passedSurface = false;
+        for (auto& el : tile)
+        {
+            auto* elSurface = el.as<Map::SurfaceElement>();
+            if (elSurface != nullptr)
+            {
+                if (elSurface->water() != 0)
+                {
+                    return false;
+                }
+                if (elSurface->hasType6Flag())
+                {
+                    return false;
+                }
+                passedSurface = true;
+                continue;
+            }
+            if (!passedSurface)
+            {
+                continue;
+            }
+            if (el.isGhost())
+            {
+                continue;
+            }
+            if (el.as<Map::WallElement>() != nullptr || el.as<Map::TreeElement>() != nullptr)
+            {
+                continue;
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    // 0x0045510C bl == 1
+    static bool claimSurfaceForIndustry(const Map::TilePos2& pos, IndustryId industryId, uint8_t var_EA)
+    {
+        if (!isSurfaceClaimed(pos))
+        {
+            return false;
+        }
+
+        const auto tile = Map::TileManager::get(pos);
+        Map::SurfaceElement* surface = tile.surface();
+        surface->setHighTypeFlag(true);
+        surface->setIndustry(industryId);
+        surface->setVar5SLR5((var_EA & 0xE0) >> 5);
+        surface->setVar6SLR5((var_EA & 0x7));
+        Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32);
+        Map::TileManager::removeAllWallsOnTile(pos, surface->baseZ());
+
+        return true;
+    }
+
+    // 0x00454A43
+    void Industry::expandGrounds(const Pos2& pos, uint8_t primaryWallType, uint8_t secondaryWallType, uint8_t dl)
+    {
+        std::size_t numBorders = 0;
+        // Search a 5x5 area centred on Pos
+        TilePos2 topRight = TilePos2{ pos } - TilePos2{ 2, 2 };
+        TilePos2 bottomLeft = TilePos2{ pos } + TilePos2{ 2, 2 };
+        for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
+        {
+            if (isSurfaceClaimed(tilePos))
+            {
+                numBorders++;
+            }
+        }
+        if (numBorders < 20)
+        {
+            return;
+        }
+
+        const auto* indObj = ObjectManager::get<IndustryObject>(objectId);
+
+        std::optional<Utility::prng> is23prng;
+        if (indObj->flags & IndustryObjectFlags::unk23) // Livestock use this
+        {
+            is23prng = prng;
+        }
+        std::optional<Utility::prng> is27prng;
+        if (indObj->flags & IndustryObjectFlags::unk27) // Skislope use this
+        {
+            // Vanilla mistake here didn't set the prng! It would just recycle from a previous unk23 caller
+            is27prng = prng;
+        }
+
+        uint32_t randWallTypeFlags = 0;
+        if (primaryWallType != 0xFF && secondaryWallType != 0xFF)
+        {
+            randWallTypeFlags = 1 << (prng.srand_0() & 0xF);
+            randWallTypeFlags |= 1 << ((prng.srand_0() >> 4) & 0x1F);
+        }
+
+        std::size_t i = 0;
+        for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
+        {
+            if (is23prng.has_value())
+            {
+                const auto randVal = is23prng->randNext();
+                dl = (((randVal & 0xFF) * indObj->var_EC) / 256)
+                    | (((randVal >> 8) & 0x7) << 5);
+            }
+            bool skipBorderClear = false;
+            if (is27prng.has_value())
+            {
+                if (is27prng->randNext() & 0x7)
+                {
+                    skipBorderClear = true;
+                }
+            }
+            if (!skipBorderClear)
+            {
+                claimSurfaceForIndustry(tilePos, id(), dl);
+            }
+            if (primaryWallType == 0xFF)
+            {
+                continue;
+            }
+            auto getWallPlacementArgs = [randWallTypeFlags, &i, secondaryWallType, primaryWallType, &tilePos](const uint8_t rotation) {
+                GameCommands::WallPlacementArgs args;
+                args.pos = Map::Pos3(Map::Pos2(tilePos), 0);
+                args.rotation = rotation;
+                args.type = randWallTypeFlags & (1 << i) ? secondaryWallType : primaryWallType;
+                i++;
+                args.unk = 0;
+                args.primaryColour = Colour::black;
+                args.secondaryColour = Colour::black;
+                return args;
+            };
+            // If on an edge add a wall
+            if (tilePos.x == topRight.x)
+            {
+                GameCommands::doCommand(getWallPlacementArgs(0), GameCommands::Flags::apply);
+            }
+            // Must not be else if as corners have two walls
+            if (tilePos.x == bottomLeft.x)
+            {
+                GameCommands::doCommand(getWallPlacementArgs(2), GameCommands::Flags::apply);
+            }
+            if (tilePos.y == topRight.y)
+            {
+                GameCommands::doCommand(getWallPlacementArgs(3), GameCommands::Flags::apply);
+            }
+            if (tilePos.y == bottomLeft.y)
+            {
+                GameCommands::doCommand(getWallPlacementArgs(1), GameCommands::Flags::apply);
+            }
+        }
     }
 
     // 0x00459D43
@@ -510,7 +660,7 @@ namespace OpenLoco
             auto& indStatsStation = producedCargoStatsStation[cargoNum];
             auto& indStatsRating = producedCargoStatsRating[cargoNum];
             std::fill(std::begin(indStatsStation), std::end(indStatsStation), StationId::null);
-            const auto cargoType = industryObj->produced_cargo_type[cargoNum];
+            const auto cargoType = industryObj->producedCargoType[cargoNum];
             if (cargoType == 0xFF)
             {
                 continue;

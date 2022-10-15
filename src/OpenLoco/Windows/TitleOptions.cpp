@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleOptions
 {
-    static const Ui::Size window_size = { 60, 15 };
+    static constexpr Ui::Size kWindowSize = { 60, 15 };
 
     namespace Widx
     {
@@ -24,14 +24,14 @@ namespace OpenLoco::Ui::Windows::TitleOptions
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, WidgetType::buttonWithImage, WindowColour::secondary),
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::buttonWithImage, WindowColour::secondary),
         widgetEnd(),
     };
 
     static WindowEventList _events;
 
     static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
-    static void draw(Ui::Window& window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
 
     Window* open()
     {
@@ -40,8 +40,8 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 
         auto window = WindowManager::createWindow(
             WindowType::titleOptions,
-            Ui::Point(Ui::width() - window_size.width, 0),
-            window_size,
+            Ui::Point(Ui::width() - kWindowSize.width, 0),
+            kWindowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);
 
@@ -56,16 +56,16 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         return window;
     }
 
-    static void draw(Ui::Window& window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         // Draw widgets.
-        window.draw(context);
+        window.draw(rt);
 
         int16_t x = window.x + window.width / 2;
         int16_t y = window.y + window.widgets[Widx::options_button].top + 2;
         Ui::Point origin = { x, y };
 
-        Gfx::drawStringCentredWrapped(*context, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
+        Gfx::drawStringCentredWrapped(*rt, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
     }
 
     static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)

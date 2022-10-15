@@ -9,7 +9,7 @@
 
 namespace OpenLoco::Gfx
 {
-    struct Context;
+    struct RenderTarget;
 }
 namespace OpenLoco::Ui
 {
@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::WindowManager
     Window* bringToFront(WindowType type, uint16_t id = 0);
     void invalidate(WindowType type);
     void invalidate(WindowType type, WindowNumber_t number);
-    void invalidateWidget(WindowType type, WindowNumber_t number, uint8_t widget_index);
+    void invalidateWidget(WindowType type, WindowNumber_t number, uint8_t widgetIndex);
     void invalidateAllWindowsAfterInput();
     void close(WindowType type);
     void close(WindowType type, uint16_t id);
@@ -64,7 +64,7 @@ namespace OpenLoco::Ui::WindowManager
     Window* createWindow(WindowType type, Ui::Point origin, Ui::Size size, uint32_t flags, WindowEventList* events);
     Window* createWindowCentred(WindowType type, Ui::Size size, uint32_t flags, WindowEventList* events);
     Window* createWindow(WindowType type, Ui::Size size, uint32_t flags, WindowEventList* events);
-    void drawSingle(Gfx::Context* context, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
+    void drawSingle(Gfx::RenderTarget* rt, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatchUpdateAll();
     void callEvent8OnAllWindows();
     void callEvent9OnAllWindows();
@@ -265,7 +265,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         Window* openMusicSettings();
-        constexpr uint8_t tab_offset_music = 2;
+        constexpr uint8_t kTabOffsetMusic = 2;
     }
 
     namespace PlayerInfoPanel
@@ -343,7 +343,7 @@ namespace OpenLoco::Ui::Windows
     {
         void registerHooks();
 
-        void openTextInput(Ui::Window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
+        void openTextInput(Ui::Window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
         void sub_4CE6C9(WindowType type, WindowNumber_t number);
         void cancel();
         void handleInput(uint32_t charCode, uint32_t keyCode);
@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::Windows
         }
         namespace Common
         {
-            int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::Context* const pDrawpixelinfo);
+            int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::RenderTarget* const pDrawpixelinfo);
         }
         bool rotate();
     }

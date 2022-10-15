@@ -61,15 +61,15 @@ namespace OpenLoco::Tutorial
 
         for (auto it = start; it != end; ++it)
         {
-            auto const first_byte = *it;
+            auto const firstByte = *it;
             ++it;
 
             // We expect an even number of bytes
             if (it == end)
                 throw;
 
-            auto const second_byte = *it;
-            tutorial.push_back(second_byte << 8 | first_byte);
+            auto const secondByte = *it;
+            tutorial.push_back(secondByte << 8 | firstByte);
         }
 
         return tutorial;

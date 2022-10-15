@@ -308,7 +308,7 @@ namespace OpenLoco::StationManager
         auto town = TownManager::get(townId);
         {
             auto manhattanDistance = Math::Vector::manhattanDistance(position, Map::Pos2{ town->x, town->y });
-            if (manhattanDistance / Map::tile_size <= 9)
+            if (manhattanDistance / Map::kTileSize <= 9)
             {
                 // Central
                 if (!realNamesInUse.test(StationName::townCentral))

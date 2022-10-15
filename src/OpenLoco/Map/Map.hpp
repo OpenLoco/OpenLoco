@@ -5,27 +5,27 @@
 
 namespace OpenLoco::Map
 {
-    constexpr coord_t tile_size = 32;
-    constexpr coord_t map_rows = 384;
-    constexpr coord_t map_columns = 384;
-    constexpr coord_t map_pitch = 512;
-    constexpr coord_t map_height = map_rows * tile_size;
-    constexpr coord_t map_width = map_columns * tile_size;
-    constexpr int32_t map_size = map_columns * map_rows;
+    constexpr coord_t kTileSize = 32;
+    constexpr coord_t kMapRows = 384;
+    constexpr coord_t kMapColumns = 384;
+    constexpr coord_t kMapPitch = 512;
+    constexpr coord_t kMapHeight = kMapRows * kTileSize;
+    constexpr coord_t kMapWidth = kMapColumns * kTileSize;
+    constexpr int32_t kMapSize = kMapColumns * kMapRows;
     constexpr int16_t kMicroZStep = 16;       // e.g. SurfaceElement::water is a microZ
     constexpr int16_t kMicroToSmallZStep = 4; // e.g. for comparisons between water and baseZ
     constexpr int16_t kSmallZStep = 4;        // e.g. TileElement::baseZ is a smallZ
     using SmallZ = uint8_t;
-    using MircoZ = uint8_t;
+    using MicroZ = uint8_t;
 
     constexpr coord_t tileFloor(coord_t coord)
     {
-        return coord & (tile_size - 1);
+        return coord & (kTileSize - 1);
     }
 
     using Pos2 = Math::Vector::TVector2<coord_t, 1>;
     using Pos3 = Math::Vector::TVector3<coord_t, 1>;
-    using TilePos2 = Math::Vector::TVector2<coord_t, tile_size>;
+    using TilePos2 = Math::Vector::TVector2<coord_t, kTileSize>;
 
     // Until interop is removed this is a requirement.
     static_assert(sizeof(Pos2) == 4);
@@ -34,12 +34,12 @@ namespace OpenLoco::Map
 
     constexpr bool validCoord(const coord_t coord)
     {
-        return (coord >= 0) && (coord < map_width);
+        return (coord >= 0) && (coord < kMapWidth);
     }
 
     constexpr bool validTileCoord(const coord_t coord)
     {
-        return (coord >= 0) && (coord < map_columns);
+        return (coord >= 0) && (coord < kMapColumns);
     }
 
     constexpr bool validCoords(const Pos2& coords)
@@ -55,7 +55,7 @@ namespace OpenLoco::Map
     // drawing coordinates validation differs from general valid coordinate validation
     constexpr bool drawableCoord(const coord_t coord)
     {
-        return (coord >= (Map::tile_size - 1)) && (coord < (Map::map_width - Map::tile_size));
+        return (coord >= (Map::kTileSize - 1)) && (coord < (Map::kMapWidth - Map::kTileSize));
     }
 
     constexpr bool drawableCoords(const Pos2& coords)

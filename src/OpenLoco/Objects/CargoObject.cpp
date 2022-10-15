@@ -31,9 +31,9 @@ namespace OpenLoco
     void CargoObject::unload()
     {
         name = 0;
-        units_and_cargo_name = 0;
-        unit_name_singular = 0;
-        unit_name_plural = 0;
-        unit_inline_sprite = 0;
+        unitsAndCargoName = 0;
+        unitNameSingular = 0;
+        unitNamePlural = 0;
+        unitInlineSprite = 0;
     }
 }

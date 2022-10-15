@@ -12,11 +12,11 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<uint32_t, 0x01136114> vehicleUpdate_var_1136114;
-    static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
-    static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
-    static loco_global<Speed32, 0x01136134> vehicleUpdate_var_1136134; // Speed
-    static loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
+    static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
+    static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
+    static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
+    static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
+    static loco_global<VehicleHead*, 0x01136118> _vehicleUpdate_head;
 
     // values are pre *256 for maths
     // Lateral force due to gravity due to Pitch possibly SIN(angle) * 256 * 256
@@ -126,16 +126,16 @@ namespace OpenLoco::Vehicles
         }
 
         var_5A = 1;
-        const auto speedDiff = currentSpeed - *vehicleUpdate_var_1136134;
+        const auto speedDiff = currentSpeed - *_vehicleUpdate_var_1136134;
         if (speedDiff > 0.0_mph)
         {
             var_5A = 3;
             const auto newSpeed = currentSpeed - (currentSpeed / 64 + 0.18311_mph);
-            currentSpeed = std::max(newSpeed, std::max(*vehicleUpdate_var_1136134, 5.0_mph));
+            currentSpeed = std::max(newSpeed, std::max(*_vehicleUpdate_var_1136134, 5.0_mph));
             return sub_4A9F20();
         }
 
-        if (!((*vehicleUpdate_head)->var_0C & Flags0C::manualControl))
+        if (!((*_vehicleUpdate_head)->var_0C & Flags0C::manualControl))
         {
             if (speedDiff >= -1.5_mph)
             {
@@ -173,7 +173,7 @@ namespace OpenLoco::Vehicles
             {
                 dh = 1;
             }
-            if (_500170[enumValue(frontBogie->sprite_pitch)] <= -19182)
+            if (_500170[enumValue(frontBogie->spritePitch)] <= -19182)
             {
                 const auto* vehObject = ObjectManager::get<VehicleObject>(frontBogie->objectId);
                 if (vehObject->power != 0)
@@ -181,7 +181,7 @@ namespace OpenLoco::Vehicles
                     isOnRackRail &= frontBogie->isOnRackRail();
                 }
             }
-            ebp += (frontBogie->var_52 * _500170[enumValue(frontBogie->sprite_pitch)]) >> 8;
+            ebp += (frontBogie->var_52 * _500170[enumValue(frontBogie->spritePitch)]) >> 8;
         }
 
         if (!isOnRackRail)
@@ -263,11 +263,11 @@ namespace OpenLoco::Vehicles
             // to behave similar we always take the vehicleUpdate_var_1136134 on negative speed
             if (newSpeed < 0.0_mph)
             {
-                newSpeed = *vehicleUpdate_var_1136134;
+                newSpeed = *_vehicleUpdate_var_1136134;
             }
             else
             {
-                newSpeed = std::min(newSpeed, *vehicleUpdate_var_1136134);
+                newSpeed = std::min(newSpeed, *_vehicleUpdate_var_1136134);
             }
         }
         currentSpeed = newSpeed;
@@ -279,17 +279,17 @@ namespace OpenLoco::Vehicles
     bool Vehicle2::sub_4A9F20()
     {
         Vehicle train(head);
-        vehicleUpdate_var_1136114 = (1 << 15);
-        auto res = sub_4B15FF(vehicleUpdate_var_113612C);
-        vehicleUpdate_var_113612C = vehicleUpdate_var_113612C - res;
-        vehicleUpdate_var_1136130 = vehicleUpdate_var_1136130 - res;
-        if (vehicleUpdate_var_1136114 & (1 << 1))
+        _vehicleUpdate_var_1136114 = (1 << 15);
+        auto res = sub_4B15FF(_vehicleUpdate_var_113612C);
+        _vehicleUpdate_var_113612C = _vehicleUpdate_var_113612C - res;
+        _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res;
+        if (_vehicleUpdate_var_1136114 & (1 << 1))
         {
             sub_4AA464();
             return false;
         }
 
-        if (vehicleUpdate_var_1136114 & (1 << 0))
+        if (_vehicleUpdate_var_1136114 & (1 << 0))
         {
             if (!(train.head->var_0C & Flags0C::manualControl))
             {
@@ -300,11 +300,11 @@ namespace OpenLoco::Vehicles
 
         if (var_5A == 4)
         {
-            vehicleUpdate_var_1136130 = vehicleUpdate_var_113612C + 0x1388;
+            _vehicleUpdate_var_1136130 = _vehicleUpdate_var_113612C + 0x1388;
         }
 
-        train.head->var_3C -= vehicleUpdate_var_113612C;
-        train.veh1->var_3C -= vehicleUpdate_var_113612C;
+        train.head->var_3C -= _vehicleUpdate_var_113612C;
+        train.veh1->var_3C -= _vehicleUpdate_var_113612C;
 
         if (var_5A == 3)
         {

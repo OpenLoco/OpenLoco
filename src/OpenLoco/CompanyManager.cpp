@@ -1,4 +1,5 @@
 #include "CompanyManager.h"
+#include "CompanyRecords.h"
 #include "Config.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
@@ -126,6 +127,15 @@ namespace OpenLoco::CompanyManager
     void setStartingLoanSize(uint16_t loanSize)
     {
         getGameState().startingLoanSize = loanSize;
+    }
+
+    const Records& getRecords()
+    {
+        return getGameState().companyRecords;
+    }
+    void setRecords(const Records& records)
+    {
+        getGameState().companyRecords = records;
     }
 
     FixedVector<Company, Limits::kMaxCompanies> companies()
@@ -347,17 +357,17 @@ namespace OpenLoco::CompanyManager
     {
         if (getCompetitorStartDelay() == 0 && getMaxCompetingCompanies() != 0)
         {
-            int32_t companies_active = 0;
+            int32_t activeCompanies = 0;
             for (const auto& company : companies())
             {
                 if (!isPlayerCompany(company.id()))
-                    companies_active++;
+                    activeCompanies++;
             }
 
             auto& prng = gPrng();
             if (prng.randNext(16) == 0)
             {
-                if (prng.randNext(getMaxCompetingCompanies()) + 1 > companies_active)
+                if (prng.randNext(getMaxCompetingCompanies()) + 1 > activeCompanies)
                 {
                     createAiCompany();
                 }
@@ -679,7 +689,7 @@ namespace OpenLoco::CompanyManager
                 continue;
             }
 
-            if (buildingObj->flags & BuildingObjectFlags::is_headquarters)
+            if (buildingObj->flags & BuildingObjectFlags::isHeadquarters)
             {
                 return static_cast<uint8_t>(i);
             }

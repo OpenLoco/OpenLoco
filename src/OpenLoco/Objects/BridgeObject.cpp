@@ -6,30 +6,30 @@
 namespace OpenLoco
 {
     // 0x0042C6A8
-    void BridgeObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void BridgeObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        Gfx::drawImage(&context, x - 21, y - 9, colourImage);
+        Gfx::drawImage(&rt, x - 21, y - 9, colourImage);
     }
 
     // 0x0042C651
     bool BridgeObject::validate() const
     {
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
 
-        if (-sell_cost_factor > base_cost_factor)
+        if (-sellCostFactor > baseCostFactor)
         {
             return false;
         }
-        if (base_cost_factor <= 0)
+        if (baseCostFactor <= 0)
         {
             return false;
         }
-        if (height_cost_factor < 0)
+        if (heightCostFactor < 0)
         {
             return false;
         }
@@ -37,15 +37,15 @@ namespace OpenLoco
         {
             return false;
         }
-        if (span_length != 1 && span_length != 2 && span_length != 4)
+        if (spanLength != 1 && spanLength != 2 && spanLength != 4)
         {
             return false;
         }
-        if (track_num_compatible > 7)
+        if (trackNumCompatible > 7)
         {
             return false;
         }
-        return road_num_compatible <= 7;
+        return roadNumCompatible <= 7;
     }
 
     // 0x0042C5B6
@@ -63,7 +63,7 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        std::fill(std::begin(track_mods), std::end(track_mods), 0);
-        std::fill(std::begin(road_mods), std::end(road_mods), 0);
+        std::fill(std::begin(trackMods), std::end(trackMods), 0);
+        std::fill(std::begin(roadMods), std::end(roadMods), 0);
     }
 }

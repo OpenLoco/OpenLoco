@@ -1185,7 +1185,7 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_music_options = 1549;
     constexpr string_id company_face_selection_title = 1550;
     constexpr string_id tooltip_company_face_selection = 1551;
-
+    constexpr string_id already_selected_for_another_company = 1552;
     constexpr string_id cant_select_face = 1553;
     constexpr string_id airport = 1554;
     constexpr string_id docks = 1555;
@@ -1247,7 +1247,7 @@ namespace OpenLoco::StringIds
     constexpr string_id music_the_ragtime_dance = 1610;
     constexpr string_id music_easy_winners = 1611;
     constexpr string_id music_setting_off = 1612;
-    constexpr string_id music_a_travellers_seranade = 1613;
+    constexpr string_id music_a_travellers_serenade = 1613;
     constexpr string_id music_latino_trip = 1614;
     constexpr string_id music_a_good_head_of_steam = 1615;
     constexpr string_id music_hop_to_the_bop = 1616;
@@ -1826,4 +1826,6 @@ namespace OpenLoco::StringIds
     constexpr string_id object_selection_length = 2260;
     constexpr string_id stats_length = 2261;
     constexpr string_id vehicle_details_tooltip_length = 2262;
+    constexpr string_id num_characters_left_int_int = 2263;
+    constexpr string_id menu_giant_screenshot = 2264;
 }

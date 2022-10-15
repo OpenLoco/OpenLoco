@@ -28,17 +28,17 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
-    static loco_global<uint32_t, 0x009C86F8> zoom_ticks;
+    static loco_global<uint32_t, 0x009C86F8> _zoomTicks;
 
-    static loco_global<uint8_t, 0x009C870C> last_town_option;
+    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
 
-    static loco_global<uint8_t[18], 0x0050A006> available_objects;
+    static loco_global<uint8_t[18], 0x0050A006> _availableObjects;
 
     // 0x00439DE4
-    void draw(Window& self, Gfx::Context* context)
+    void draw(Window& self, Gfx::RenderTarget* rt)
     {
         // Draw widgets.
-        self.draw(context);
+        self.draw(rt);
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
@@ -73,10 +73,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
                 bgImage++;
             }
 
-            Gfx::drawImage(context, x, y, fgImage);
+            Gfx::drawImage(rt, x, y, fgImage);
 
             y = self.widgets[Widx::road_menu].top + self.y;
-            Gfx::drawImage(context, x, y, bgImage);
+            Gfx::drawImage(rt, x, y, bgImage);
         }
     }
 
@@ -88,16 +88,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_zoom_in, StringIds::menu_zoom_in });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_zoom_out, StringIds::menu_zoom_out });
 
-        static const uint32_t map_sprites_by_rotation[] = {
+        static constexpr uint32_t kMapSpritesByRotation[] = {
             InterfaceSkin::ImageIds::toolbar_menu_map_north,
             InterfaceSkin::ImageIds::toolbar_menu_map_west,
             InterfaceSkin::ImageIds::toolbar_menu_map_south,
             InterfaceSkin::ImageIds::toolbar_menu_map_east,
         };
 
-        uint32_t map_sprite = map_sprites_by_rotation[WindowManager::getCurrentRotation()];
+        uint32_t mapSprite = kMapSpritesByRotation[WindowManager::getCurrentRotation()];
 
-        Dropdown::add(2, StringIds::menu_sprite_stringid, { interface->img + map_sprite, StringIds::menu_map });
+        Dropdown::add(2, StringIds::menu_sprite_stringid, { interface->img + mapSprite, StringIds::menu_map });
         Dropdown::showBelow(window, widgetIndex, 3, 25, (1 << 6));
         Dropdown::setHighlightedItem(0);
 
@@ -111,10 +111,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if (mainWindow->viewports[0]->zoom == 3)
         {
             Dropdown::setItemDisabled(1);
-            zoom_ticks = 1000;
+            _zoomTicks = 1000;
         }
 
-        if (mainWindow->viewports[0]->zoom != 3 && zoom_ticks <= 32)
+        if (mainWindow->viewports[0]->zoom != 3 && _zoomTicks <= 32)
             Dropdown::setHighlightedItem(1);
     }
 
@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { land->var_16 + Land::ImageIds::toolbar_terraform_land, StringIds::menu_adjust_land });
-        Dropdown::add(2, StringIds::menu_sprite_stringid, { water->image + Water::ImageIds::toolbar_terraform_water, StringIds::menu_adjust_water });
+        Dropdown::add(2, StringIds::menu_sprite_stringid, { water->image + Water::ImageIds::kToolbarTerraformWater, StringIds::menu_adjust_water });
         Dropdown::add(3, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees, StringIds::menu_plant_trees });
         Dropdown::add(4, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_build_walls, StringIds::menu_build_walls });
         Dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
@@ -194,12 +194,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     {
         // Load objects.
         registers regs;
-        regs.edi = X86Pointer(&available_objects[0]);
+        regs.edi = X86Pointer(&_availableObjects[0]);
         call(0x00478265, regs);
 
         // Sanity check: any objects available?
         uint32_t i = 0;
-        while (available_objects[i] != 0xFF && i < std::size(available_objects))
+        while (_availableObjects[i] != 0xFF && i < std::size(_availableObjects))
             i++;
         if (i == 0)
             return;
@@ -207,34 +207,34 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         auto companyColour = CompanyManager::getPlayerCompanyColour();
 
         // Add available objects to Dropdown.
-        uint16_t highlighted_item = 0;
-        for (i = 0; available_objects[i] != 0xFF && i < std::size(available_objects); i++)
+        uint16_t highlightedItem = 0;
+        for (i = 0; _availableObjects[i] != 0xFF && i < std::size(_availableObjects); i++)
         {
-            uint32_t obj_image;
-            string_id obj_string_id;
+            uint32_t objImage;
+            string_id objStringId;
 
-            auto objIndex = available_objects[i];
+            auto objIndex = _availableObjects[i];
             if ((objIndex & (1 << 7)) != 0)
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
-                obj_string_id = road->name;
-                obj_image = Gfx::recolour(road->image, companyColour);
+                objStringId = road->name;
+                objImage = Gfx::recolour(road->image, companyColour);
             }
             else
             {
                 auto track = ObjectManager::get<TrackObject>(objIndex);
-                obj_string_id = track->name;
-                obj_image = Gfx::recolour(track->image, companyColour);
+                objStringId = track->name;
+                objImage = Gfx::recolour(track->image, companyColour);
             }
 
-            Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
+            Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
 
             if (objIndex == LastGameOptionManager::getLastRoad())
-                highlighted_item = i;
+                highlightedItem = i;
         }
 
         Dropdown::showBelow(window, widgetIndex, i, 25, (1 << 6));
-        Dropdown::setHighlightedItem(highlighted_item);
+        Dropdown::setHighlightedItem(highlightedItem);
     }
 
     // 0x0043A8CE
@@ -244,7 +244,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_towns, StringIds::menu_towns });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_industries, StringIds::menu_industries });
         Dropdown::showBelow(window, widgetIndex, 2, 25, (1 << 6));
-        Dropdown::setHighlightedItem(last_town_option);
+        Dropdown::setHighlightedItem(_lastTownOption);
     }
 
     // 0x0043A86D
@@ -263,7 +263,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
         else if (itemIndex == 1)
         {
-            zoom_ticks = 0;
+            _zoomTicks = 0;
             window->viewportZoomOut(false);
             TownManager::updateLabels();
             StationManager::updateLabels();
@@ -367,7 +367,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if (itemIndex == -1)
             return;
 
-        uint8_t objIndex = available_objects[itemIndex];
+        uint8_t objIndex = _availableObjects[itemIndex];
         Construction::openWithFlags(objIndex);
     }
 
@@ -380,12 +380,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if (itemIndex == 0)
         {
             TownList::open();
-            last_town_option = 0;
+            _lastTownOption = 0;
         }
         else if (itemIndex == 1)
         {
             IndustryList::open();
-            last_town_option = 1;
+            _lastTownOption = 1;
         }
     }
 
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
     void onUpdate(Window& window)
     {
-        zoom_ticks++;
+        _zoomTicks++;
     }
 
     // 0x0043A17E

@@ -1,5 +1,17 @@
-22.08+ (???)
+22.10+ (???)
 ------------------------------------------------------------------------
+
+22.10 (2022-10-09)
+------------------------------------------------------------------------
+- Feature: [#1608] Added character limit label in text input windows.
+- Feature: [#1666] Allow saving giant (full map) screenshots.
+- Change: [#1623] Title screen music volume is now bound to the music volume setting.
+- Fix: [#1237] Long entity (company) names may be cut-off incorrectly.
+- Fix: [#1650] Acquire all company assets cheat may cause some trains and trams to crash.
+
+22.09 (2022-09-04)
+------------------------------------------------------------------------
+- Fix: [#1612] Ambient audio no longer playing.
 - Fix: [#1613] Crash when viewing the Build Trains window with certain trains.
 - Fix: [#1614] Crash when ai picks up none existent vehicles.
 

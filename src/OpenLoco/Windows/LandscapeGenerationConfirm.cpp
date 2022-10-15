@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 {
-    static const Ui::Size window_size = { 280, 92 };
+    static constexpr Ui::Size kWindowSize = { 280, 92 };
 
     enum widx
     {
@@ -36,16 +36,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     static WindowEventList events;
 
     // 0x004C18A5
-    static void draw(Window& window, Gfx::Context* context)
+    static void draw(Window& window, Gfx::RenderTarget* rt)
     {
-        window.draw(context);
+        window.draw(rt);
 
-        static loco_global<string_id, 0x0112C826> commonFormatArgs;
+        static loco_global<string_id, 0x0112C826> _commonFormatArgs;
         string_id prompt = window.var_846 == 0 ? StringIds::prompt_confirm_generate_landscape : StringIds::prompt_confirm_random_landscape;
-        *commonFormatArgs = prompt;
+        *_commonFormatArgs = prompt;
 
         auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);
-        Gfx::drawStringCentredWrapped(*context, origin, window.width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*commonFormatArgs);
+        Gfx::drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*_commonFormatArgs);
     }
 
     // 0x004C18E4
@@ -77,12 +77,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     }
 
     // 0x004C180C
-    Window* open(int32_t prompt_type)
+    Window* open(int32_t promptType)
     {
         auto window = WindowManager::bringToFront(WindowType::landscapeGenerationConfirm, 0);
         if (window == nullptr)
         {
-            window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, window_size, 0, &events);
+            window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, kWindowSize, 0, &events);
             window->widgets = widgets;
             window->enabledWidgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
             window->initScrollWidgets();
@@ -94,8 +94,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
             init_events();
         }
 
-        window->var_846 = prompt_type;
-        if (prompt_type == 0)
+        window->var_846 = promptType;
+        if (promptType == 0)
             window->widgets[widx::caption].text = StringIds::title_generate_new_landscape;
         else
             window->widgets[widx::caption].text = StringIds::title_random_landscape_option;

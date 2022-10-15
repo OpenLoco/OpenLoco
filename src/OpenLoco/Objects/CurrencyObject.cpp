@@ -39,15 +39,15 @@ namespace OpenLoco
     void CurrencyObject::unload()
     {
         name = 0;
-        prefix_symbol = 0;
-        suffix_symbol = 0;
-        object_icon = 0;
+        prefixSymbol = 0;
+        suffixSymbol = 0;
+        objectIcon = 0;
     }
 
     // 0x0046DFC3
-    void CurrencyObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void CurrencyObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        auto currencyIndex = object_icon + 3;
+        auto currencyIndex = objectIcon + 3;
 
         auto defaultElement = Gfx::getG1Element(ImageIds::currency_symbol);
         auto backupElement = *defaultElement;
@@ -58,7 +58,7 @@ namespace OpenLoco
         auto defaultWidth = _characterWidths[Font::large + 131];
         _characterWidths[Font::large + 131] = currencyElement->width + 1;
 
-        Gfx::drawStringCentred(context, x, y - 9, Colour::black, StringIds::object_currency_big_font);
+        Gfx::drawStringCentred(rt, x, y - 9, Colour::black, StringIds::object_currency_big_font);
 
         _characterWidths[Font::large + 131] = defaultWidth;
         *defaultElement = backupElement;

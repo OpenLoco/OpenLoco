@@ -1,12 +1,11 @@
-cmake_minimum_required(VERSION 3.9)
-cmake_policy(VERSION 3.9)
+cmake_minimum_required(VERSION 3.16)
+cmake_policy(VERSION 3.16)
 
 set (PROJECT openloco)
 
 # Note: Searching for CCache must be before project() so project() can use CCache too
 # if it is available
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
 find_package(CCache)
 
 if (CCache_FOUND)
@@ -31,7 +30,7 @@ if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
     message(FATAL_ERROR "Building in-source is not supported! Create a build dir and remove ${CMAKE_SOURCE_DIR}/CMakeCache.txt")
 endif()
 
-INCLUDE(FindPkgConfig)
+include(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
 
@@ -76,31 +75,46 @@ set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
     OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
 
 # Set some compiler features
-if (MSVC)
-    list(APPEND COMMON_COMPILE_OPTIONS /W4)
-else ()
-    list(APPEND COMMON_COMPILE_OPTIONS -fstrict-aliasing -Wall -Wextra -Wno-unused-parameter -Wtype-limits)
-endif ()
 
-if (STRICT)
-    if (MSVC)
-        list(APPEND COMMON_COMPILE_OPTIONS /WX)
-    else ()
-        list(APPEND COMMON_COMPILE_OPTIONS -Werror)
-    endif ()
-endif ()
+# MSVC
+set(COMMON_COMPILE_OPTIONS_MSVC
+    /W4                      # Warning level 4
+    /MP                      # Multithreaded compilation
+    $<$<CONFIG:Debug>:/ZI>   # Debug Edit and Continue (Hot reload)
+    $<$<CONFIG:Release>:/Zi> # Debug information in release
 
-if (NOT MSVC)
+    $<$<BOOL:${STRICT}>:/WX> # Warnings are errors (STRICT ONLY)
+
+                             # Poke holes in W4 due to our interop code
+    /wd4068                  #   4068: unknown pragma
+    /wd4091                  #   4091: 'keyword' : ignored on left of 'type' when no variable is declared
+    /wd4100                  #   4100: 'identifier' : unreferenced formal parameter
+    /wd4132                  #   4132: 'object' : const object should be initialized
+    /wd4200                  #   4200: nonstandard extension used : zero-sized array in struct/union
+    /wd4201                  #   4201: nonstandard extension used : nameless struct/union
+    /wd4204                  #   4204: nonstandard extension used : non-constant aggregate initializer
+    /wd4206                  #   4206: nonstandard extension used : translation unit is empty
+    /wd4221                  #   4221: nonstandard extension used : 'identifier' : cannot be initialized using address of automatic variable
+    /wd4244                  #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
+    /wd4245                  #   4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
+)
+
+# GNU/CLANG
+set(COMMON_COMPILE_OPTIONS_GNU
+    -fstrict-aliasing
+    -Wall
+    -Wextra
+    -Wno-unused-parameter
+    -Wtype-limits
+    $<$<BOOL:${STRICT}>:-Werror>         # Warnings are errors (STRICT ONLY)
+
     # Poke some holes in -Wall:
-    list(APPEND COMMON_COMPILE_OPTIONS
     -Wno-unknown-pragmas
     -Wno-unused-private-field
-    )
-
-    # Set warnings common to supported compilers
-    list(APPEND COMMON_COMPILE_OPTIONS
     -Waddress
-    -Warray-bounds
+    # -Warray-bounds
+    # compilers often get confused about our memory access patterns, disable some of the warnings
+    -Wno-array-bounds
     -Wchar-subscripts
     -Wenum-compare
     -Wformat
@@ -113,40 +127,18 @@ if (NOT MSVC)
     -Wstrict-overflow=1
     -Wundef
     -Wunreachable-code
-    )
-else ()
-    # Disable the following warnings on MSVC
-    #   4068: unknown pragma
-    #   4091: 'keyword' : ignored on left of 'type' when no variable is declared
-    #   4100: 'identifier' : unreferenced formal parameter
-    #   4132: 'object' : const object should be initialized
-    #   4200: nonstandard extension used : zero-sized array in struct/union
-    #   4201: nonstandard extension used : nameless struct/union
-    #   4204: nonstandard extension used : non-constant aggregate initializer
-    #   4206: nonstandard extension used : translation unit is empty
-    #   4221: nonstandard extension used : 'identifier' : cannot be initialized using address of automatic variable
-    #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
-    #   4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
-    list(APPEND COMMON_COMPILE_OPTIONS
-    /wd4068
-    /wd4091
-    /wd4100
-    /wd4132
-    /wd4200
-    /wd4201
-    /wd4204
-    /wd4206
-    /wd4221
-    /wd4244
-    /wd4245
-    )
-endif ()
+)
 
-set(OBJ_FORMAT "elf32-i386")
-set(LINKER_SCRIPT "ld_script_i386.xc")
+set(COMMON_COMPILE_OPTIONS
+    $<$<CXX_COMPILER_ID:MSVC>:${COMMON_COMPILE_OPTIONS_MSVC}>
+    $<$<CXX_COMPILER_ID:GNU,Clang>:${COMMON_COMPILE_OPTIONS_GNU}>
+)
 
 # Handle creating the rct2 text and data files on OS X and Linux
 if (UNIX)
+    set(OBJ_FORMAT "elf32-i386")
+    set(LINKER_SCRIPT "ld_script_i386.xc")
+
     set(OLOCO_EXE ${CMAKE_CURRENT_SOURCE_DIR}/loco.exe)
     set(OLOCO_TEXT ${CMAKE_BINARY_DIR}/openloco_text)
     set(OLOCO_DATA ${CMAKE_BINARY_DIR}/openloco_data)
@@ -281,12 +273,15 @@ if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17)
 endif()
 
+# Display source files nicely in IDEs
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${OLOCO_SOURCES} ${OLOCO_HEADERS})
+
 if (MINGW)
     add_library(${PROJECT} ${OLOCO_SOURCES})
     target_link_libraries(${PROJECT} winmm)
 else ()
     if (MSVC)
-        add_library(${PROJECT} SHARED ${OLOCO_SOURCES})
+        add_library(${PROJECT} SHARED ${OLOCO_SOURCES} ${OLOCO_HEADERS})
     else ()
         add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
         set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
@@ -303,8 +298,10 @@ set(YAML_CPP_FORMAT_SOURCE OFF CACHE BOOL "")
 add_subdirectory(src/Thirdparty/yaml-cpp)
 
 target_compile_options(${PROJECT} PUBLIC ${COMMON_COMPILE_OPTIONS})
-# compilers often get confused about our memory access patterns, disable some of the warnings
-target_compile_options(${PROJECT} PUBLIC -Wno-array-bounds)
+target_link_options(${PROJECT} PUBLIC
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:/DEBUG>
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Debug>>:/INCREMENTAL /SAFESEH:NO>) # Incremental and no safeseh linking required for hot reload
+
 # clang does not understand following options and errors with -Wunknown-warning-option
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     target_compile_options(${PROJECT} PUBLIC -Wno-stringop-overflow -Wno-stringop-overread -Wno-stringop-truncation)
@@ -340,7 +337,7 @@ if (MINGW)
     # newer GCC gets confused about our use of hardcoded address shenanigans
 else ()
     if (MSVC)
-        target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
+        target_compile_definitions(${PROJECT} PRIVATE _WINDLL _MBCS DEBUG_WIN32=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD YAML_CPP_STATIC_DEFINE)
     else ()
         target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
     endif ()
@@ -402,6 +399,18 @@ if (APPLE)
     )
 endif ()
 
+if (MSVC)
+    add_custom_target(OpenLocoExe ALL
+	    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_LINKER_FILE_DIR:${PROJECT}>/OpenLoco.exe"
+	    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_LINKER_FILE_DIR:${PROJECT}>/data"
+	    COMMENT "Copying over data folder and executable"
+	    DEPENDS ${PROJECT}
+    )
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLocoExe)
+    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_COMMAND $<TARGET_LINKER_FILE_DIR:${PROJECT}>/OpenLoco.exe)
+    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_LINKER_FILE_DIR:${PROJECT}>)
+endif()
+
 # Add headers check to verify all headers carry their dependencies.
 # Only valid for Clang for now:
 # - GCC 8 does not support -Wno-pragma-once-outside-header
@@ -422,6 +431,7 @@ install(TARGETS "openloco"
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
     BUNDLE DESTINATION "${CMAKE_INSTALL_BINDIR}")
 install(FILES "CHANGELOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
+install(FILES "DEVELOPMENTLOG.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
 install(FILES "CONTRIBUTORS.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
 install(FILES "LICENSE" DESTINATION "${CMAKE_INSTALL_DOCDIR}")
 install(FILES "README.md" DESTINATION "${CMAKE_INSTALL_DOCDIR}")

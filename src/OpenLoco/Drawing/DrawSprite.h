@@ -6,7 +6,7 @@ namespace OpenLoco::Gfx
 {
     struct PaletteMap;
     struct G1Element;
-    struct Context;
+    struct RenderTarget;
 }
 
 namespace OpenLoco::Drawing
@@ -70,5 +70,5 @@ namespace OpenLoco::Drawing
     DrawBlendOp getDrawBlendOp(const ImageId image, const DrawSpriteArgs& args);
 
     template<uint8_t TZoomLevel, bool TIsRLE>
-    void drawSpriteToBuffer(Gfx::Context& context, const DrawSpriteArgs& args, const DrawBlendOp op);
+    void drawSpriteToBuffer(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op);
 }

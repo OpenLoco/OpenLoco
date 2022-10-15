@@ -45,7 +45,9 @@ namespace OpenLoco::Map::TileManager
     void setMapSelectionCorner(const uint8_t corner);
     uint8_t getMapSelectionCorner();
     void resetSurfaceClearance();
+    int16_t mountainHeight(const Map::Pos2& loc);
     uint16_t countSurroundingWaterTiles(const Pos2& pos);
+    uint16_t countSurroundingDesertTiles(const Pos2& pos);
     uint16_t countSurroundingTrees(const Pos2& pos);
     void update();
     void updateYearly();
@@ -53,4 +55,5 @@ namespace OpenLoco::Map::TileManager
     void removeSurfaceIndustry(const Pos2& pos);
     void createDestructExplosion(const Map::Pos3& pos);
     void removeBuildingElement(BuildingElement& element, const Map::Pos2& pos);
+    void removeAllWallsOnTile(const Map::TilePos2& pos, SmallZ baseZ);
 }

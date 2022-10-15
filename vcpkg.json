@@ -1,0 +1,12 @@
+{
+    "name": "openloco",
+    "version-string": "22.02",
+    "dependencies": [
+        "benchmark",
+        "breakpad",
+        "gtest",
+        "libpng",
+        "openal-soft",
+        "sdl2"
+    ]
+}

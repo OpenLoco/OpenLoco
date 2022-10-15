@@ -26,9 +26,9 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Town
 {
-    static const Ui::Size windowSize = { 223, 161 };
+    static constexpr Ui::Size kWindowSize = { 223, 161 };
 
-    static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
+    static loco_global<uint16_t[10], 0x0112C826> _commonFormatArgs;
 
     namespace Common
     {
@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::Town
         static void update(Window& self);
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void drawTabs(Window* self, Gfx::Context* context);
+        static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void initEvents();
     }
 
@@ -128,12 +128,12 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00498FFE
-        static void draw(Window& self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
-            self.drawViewports(context);
-            Widget::drawViewportCentreButton(context, &self, widx::centre_on_viewport);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
+            self.drawViewports(rt);
+            Widget::drawViewportCentreButton(rt, &self, widx::centre_on_viewport);
 
             auto town = TownManager::get(TownId(self.number));
 
@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::Windows::Town
             const auto x = self.x + widget.left - 1;
             const auto y = self.y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawStringLeftClipped(*context, x, y, width, Colour::black, StringIds::status_town_population, &args);
+            Gfx::drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::status_town_population, &args);
         }
 
         // 0x00499079
@@ -242,8 +242,8 @@ namespace OpenLoco::Ui::Windows::Town
                 {
                     viewport->width = newWidth;
                     viewport->height = newHeight;
-                    viewport->view_width = newWidth << viewport->zoom;
-                    viewport->view_height = newHeight << viewport->zoom;
+                    viewport->viewWidth = newWidth << viewport->zoom;
+                    viewport->viewHeight = newHeight << viewport->zoom;
                     self.savedView.clear();
                 }
             }
@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // 0x00499C0D start
             const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
-            window = WindowManager::createWindow(WindowType::town, windowSize, newFlags, &Town::events);
+            window = WindowManager::createWindow(WindowType::town, kWindowSize, newFlags, &Town::events);
             window->number = townId;
             window->minWidth = 192;
             window->minHeight = 161;
@@ -390,19 +390,19 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004994F9
-        static void draw(Window& self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
-            auto clipped = Gfx::clipContext(*context, Ui::Rect(self.x, self.y + 44, self.width, self.height - 44));
+            auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(self.x, self.y + 44, self.width, self.height - 44));
             if (!clipped)
                 return;
 
             auto town = TownManager::get(TownId(self.number));
 
             // Draw Y label and grid lines.
-            int32_t yTick = town->history_min_population;
+            int32_t yTick = town->historyMinPopulation;
             for (int16_t yPos = self.height - 57; yPos >= 14; yPos -= 20)
             {
                 auto args = FormatArguments();
@@ -516,24 +516,24 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004997F1
-        static void draw(Window& self, Gfx::Context* context)
+        static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            self.draw(context);
-            Common::drawTabs(&self, context);
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
 
             uint16_t xPos = self.x + 4;
             uint16_t yPos = self.y + 46;
-            Gfx::drawStringLeft(*context, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
+            Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
             xPos += 4;
             yPos += 14;
             auto town = TownManager::get(TownId(self.number));
-            for (uint8_t i = 0; i < std::size(town->company_ratings); i++)
+            for (uint8_t i = 0; i < std::size(town->companyRatings); i++)
             {
-                if ((town->companies_with_rating & (1 << i)) == 0)
+                if ((town->companiesWithRating & (1 << i)) == 0)
                     continue;
 
-                int16_t rating = (std::clamp<int16_t>(town->company_ratings[i], -1000, 1000) + 1000) / 20;
+                int16_t rating = (std::clamp<int16_t>(town->companyRatings[i], -1000, 1000) + 1000) / 20;
                 string_id rank{};
                 if (rating >= 70)
                     rank = StringIds::town_rating_excellent;
@@ -552,7 +552,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(rating);
                 args.push(rank);
 
-                Gfx::drawStringLeftClipped(*context, xPos, yPos, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
+                Gfx::drawStringLeftClipped(*rt, xPos, yPos, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
 
                 yPos += 10;
             }
@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Windows::Town
             self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Put town name in place.
-            commonFormatArgs[0] = TownManager::get(TownId(self.number))->name;
+            _commonFormatArgs[0] = TownManager::get(TownId(self.number))->name;
 
             // Resize common widgets.
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -664,7 +664,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static void update(Window& self)
         {
-            self.frame_no++;
+            self.frameNo++;
             self.callPrepareDraw();
             WindowManager::invalidate(WindowType::station, self.number);
         }
@@ -672,10 +672,10 @@ namespace OpenLoco::Ui::Windows::Town
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
             auto town = TownManager::get(TownId(self->number));
-            commonFormatArgs[4] = town->name;
-            commonFormatArgs[8] = town->name;
+            _commonFormatArgs[4] = town->name;
+            _commonFormatArgs[8] = town->name;
 
-            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs);
+            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &_commonFormatArgs);
         }
 
         // 0x004991BC
@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Windows::Town
             TextInput::sub_4CE6C9(self->type, self->number);
 
             self->currentTab = widgetIndex - widx::tab_town;
-            self->frame_no = 0;
+            self->frameNo = 0;
             self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
 
@@ -704,7 +704,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             self->invalidate();
 
-            self->setSize(windowSize);
+            self->setSize(kWindowSize);
             self->callOnResize();
             self->callPrepareDraw();
             self->initScrollWidgets();
@@ -713,14 +713,14 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004999E1
-        static void drawTabs(Window* self, Gfx::Context* context)
+        static void drawTabs(Window* self, Gfx::RenderTarget* rt)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Town tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                Widget::drawTab(self, context, imageId, widx::tab_town);
+                Widget::drawTab(self, rt, imageId, widx::tab_town);
             }
 
             // Population tab
@@ -738,11 +738,11 @@ namespace OpenLoco::Ui::Windows::Town
 
                 uint32_t imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
                 if (self->currentTab == widx::tab_population - widx::tab_town)
-                    imageId += populationTabImageIds[(self->frame_no / 4) % std::size(populationTabImageIds)];
+                    imageId += populationTabImageIds[(self->frameNo / 4) % std::size(populationTabImageIds)];
                 else
                     imageId += populationTabImageIds[0];
 
-                Widget::drawTab(self, context, imageId, widx::tab_population);
+                Widget::drawTab(self, rt, imageId, widx::tab_population);
             }
 
             // Company ratings tab
@@ -768,11 +768,11 @@ namespace OpenLoco::Ui::Windows::Town
 
                 uint32_t imageId = skin->img;
                 if (self->currentTab == widx::tab_company_ratings - widx::tab_town)
-                    imageId += ratingsTabImageIds[(self->frame_no / 4) % std::size(ratingsTabImageIds)];
+                    imageId += ratingsTabImageIds[(self->frameNo / 4) % std::size(ratingsTabImageIds)];
                 else
                     imageId += ratingsTabImageIds[0];
 
-                Widget::drawTab(self, context, imageId, widx::tab_company_ratings);
+                Widget::drawTab(self, rt, imageId, widx::tab_company_ratings);
             }
         }
 

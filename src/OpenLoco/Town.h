@@ -29,28 +29,28 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Town
     {
-        string_id name;                 // 0x00
-        coord_t x;                      // 0x02
-        coord_t y;                      // 0x04
-        uint16_t flags;                 // 0x06
-        LabelFrame labelFrame;          // 0x08
-        Utility::prng prng;             // 0x28
-        uint32_t population;            // 0x30
-        uint32_t populationCapacity;    // 0x34
-        int16_t numBuildings;           // 0x38
-        int16_t company_ratings[15];    // 0x3A
-        uint16_t companies_with_rating; // 0x58
-        TownSize size;                  // 0x5A
-        uint8_t historySize;            // 0x5B (<= 20 * 12)
-        uint8_t history[20 * 12];       // 0x5C (20 years, 12 months)
-        int32_t history_min_population; // 0x14C
+        string_id name;               // 0x00
+        coord_t x;                    // 0x02
+        coord_t y;                    // 0x04
+        uint16_t flags;               // 0x06
+        LabelFrame labelFrame;        // 0x08
+        Utility::prng prng;           // 0x28
+        uint32_t population;          // 0x30
+        uint32_t populationCapacity;  // 0x34
+        int16_t numBuildings;         // 0x38
+        int16_t companyRatings[15];   // 0x3A
+        uint16_t companiesWithRating; // 0x58
+        TownSize size;                // 0x5A
+        uint8_t historySize;          // 0x5B (<= 20 * 12)
+        uint8_t history[20 * 12];     // 0x5C (20 years, 12 months)
+        int32_t historyMinPopulation; // 0x14C
         uint8_t var_150[8];
-        uint16_t monthly_cargo_delivered[32];
-        uint32_t cargo_influence_flags;
+        uint16_t monthlyCargoDelivered[32];
+        uint32_t cargoInfluenceFlags;
         uint16_t var_19C[2][2];
-        uint8_t build_speed; // 0x1A4, 1=slow build speed, 4=fast build speed
+        uint8_t buildSpeed; // 0x1A4, 1=slow build speed, 4=fast build speed
         uint8_t unk_1A5;
-        uint16_t num_stations; // 0x1A6
+        uint16_t numStations; // 0x1A6
         uint32_t var_1A8;
         uint8_t pad_1AC[0x270 - 0x1AC];
 

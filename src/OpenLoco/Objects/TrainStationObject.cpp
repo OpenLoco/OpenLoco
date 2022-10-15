@@ -8,11 +8,11 @@
 namespace OpenLoco
 {
     // 0x00490A26
-    void TrainStationObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void TrainStationObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        Gfx::drawImage(&context, x - 34, y - 34, colourImage);
+        Gfx::drawImage(&rt, x - 34, y - 34, colourImage);
 
         auto colour = ExtColour::translucentMutedDarkRed1;
         if (!(flags & TrainStationFlags::recolourable))
@@ -22,28 +22,28 @@ namespace OpenLoco
 
         auto translucentImage = Gfx::recolourTranslucent(image + 1, colour);
 
-        Gfx::drawImage(&context, x - 34, y - 34, translucentImage);
+        Gfx::drawImage(&rt, x - 34, y - 34, translucentImage);
     }
 
     // 0x00490A68
-    void TrainStationObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void TrainStationObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(context, rowPosition, designed_year, obsolete_year);
+        ObjectManager::drawGenericDescription(rt, rowPosition, designedYear, obsoleteYear);
     }
 
     // 0x004909F3
     bool TrainStationObject::validate() const
     {
-        if (cost_index >= 32)
+        if (costIndex >= 32)
         {
             return false;
         }
-        if (-sell_cost_factor > build_cost_factor)
+        if (-sellCostFactor > buildCostFactor)
         {
             return false;
         }
-        if (build_cost_factor <= 0)
+        if (buildCostFactor <= 0)
         {
             return false;
         }
@@ -51,7 +51,7 @@ namespace OpenLoco
         {
             return false;
         }
-        return num_compatible <= 7;
+        return numCompatible <= 7;
     }
 
     // 0x004908F1

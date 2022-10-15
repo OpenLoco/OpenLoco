@@ -22,7 +22,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
 namespace OpenLoco::Gfx
 {
-    struct Context;
+    struct RenderTarget;
 }
 
 namespace OpenLoco::Paint
@@ -146,11 +146,11 @@ namespace OpenLoco::Paint
         void generate();
         void arrangeStructs();
         void drawStructs();
-        void init(Gfx::Context& context, const uint16_t viewportFlags);
+        void init(Gfx::RenderTarget& rt, const uint16_t viewportFlags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
-        Gfx::Context* getContext() { return _context; }
+        Gfx::RenderTarget* getRenderTarget() { return _renderTarget; }
         uint8_t getRotation() { return currentRotation; }
         int16_t getMaxHeight() { return _maxHeight; }
         uint32_t get112C300() { return _112C300; }
@@ -200,55 +200,55 @@ namespace OpenLoco::Paint
         /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
-         * @param offset_x @<al>
-         * @param offset_y @<cl>
-         * @param offset_z @<dx>
-         * @param boundBoxLength_x @<di>
-         * @param boundBoxLength_y @<si>
-         * @param boundBoxLength_z @<ah>
+         * @param offsetX @<al>
+         * @param offsetY @<cl>
+         * @param offsetZ @<dx>
+         * @param boundBoxLengthX @<di>
+         * @param boundBoxLengthY @<si>
+         * @param boundBoxLengthZ @<ah>
          */
         PaintStruct* addToPlotListAsParent(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
-         * @param offset_x @<al>
-         * @param offset_y @<cl>
-         * @param offset_z @<dx>
-         * @param boundBoxLength_x @<di>
-         * @param boundBoxLength_y @<si>
-         * @param boundBoxLength_z @<ah>
-         * @param boundBoxOffset_x @<0xE3F0A0>
-         * @param boundBoxOffset_y @<0xE3F0A2>
-         * @param boundBoxOffset_z @<0xE3F0A4>
+         * @param offsetX @<al>
+         * @param offsetY @<cl>
+         * @param offsetZ @<dx>
+         * @param boundBoxLengthX @<di>
+         * @param boundBoxLengthY @<si>
+         * @param boundBoxLengthZ @<ah>
+         * @param boundBoxOffsetX @<0xE3F0A0>
+         * @param boundBoxOffsetY @<0xE3F0A2>
+         * @param boundBoxOffsetZ @<0xE3F0A4>
          */
         PaintStruct* addToPlotListAsParent(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
-         * @param offset_z @<dx>
-         * @param boundBoxLength_x @<di>
-         * @param boundBoxLength_y @<si>
-         * @param boundBoxLength_z @<ah>
-         * @param boundBoxOffset_x @<0xE3F0A0>
-         * @param boundBoxOffset_y @<0xE3F0A2>
-         * @param boundBoxOffset_z @<0xE3F0A4>
+         * @param offsetZ @<dx>
+         * @param boundBoxLengthX @<di>
+         * @param boundBoxLengthY @<si>
+         * @param boundBoxLengthZ @<ah>
+         * @param boundBoxOffsetX @<0xE3F0A0>
+         * @param boundBoxOffsetY @<0xE3F0A2>
+         * @param boundBoxOffsetZ @<0xE3F0A4>
          */
         void addToPlotList4FD150(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
-         * @param offset_x @<al>
-         * @param offset_y @<cl>
-         * @param offset_z @<dx>
-         * @param boundBoxLength_x @<di>
-         * @param boundBoxLength_y @<si>
-         * @param boundBoxLength_z @<ah>
-         * @param boundBoxOffset_x @<0xE3F0A0>
-         * @param boundBoxOffset_y @<0xE3F0A2>
-         * @param boundBoxOffset_z @<0xE3F0A4>
+         * @param offsetX @<al>
+         * @param offsetY @<cl>
+         * @param offsetZ @<dx>
+         * @param boundBoxLengthX @<di>
+         * @param boundBoxLengthY @<si>
+         * @param boundBoxLengthZ @<ah>
+         * @param boundBoxOffsetX @<0xE3F0A0>
+         * @param boundBoxOffsetY @<0xE3F0A2>
+         * @param boundBoxOffsetZ @<0xE3F0A4>
          */
         PaintStruct* addToPlotListAsChild(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
@@ -256,34 +256,34 @@ namespace OpenLoco::Paint
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
          * @param ecx @<ecx>
-         * @param offset_z @<dx>
-         * @param boundBoxLength_x @<di>
-         * @param boundBoxLength_y @<si>
-         * @param boundBoxLength_z @<ah>
-         * @param boundBoxOffset_x @<0xE3F0A0>
-         * @param boundBoxOffset_y @<0xE3F0A2>
-         * @param boundBoxOffset_z @<0xE3F0A4>
+         * @param offsetZ @<dx>
+         * @param boundBoxLengthX @<di>
+         * @param boundBoxLengthY @<si>
+         * @param boundBoxLengthZ @<ah>
+         * @param boundBoxOffsetX @<0xE3F0A0>
+         * @param boundBoxOffsetY @<0xE3F0A2>
+         * @param boundBoxOffsetZ @<0xE3F0A4>
          */
         void addToPlotList4FD180(ImageId imageId, uint32_t ecx, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
-         * @param offset_x @<al>
-         * @param offset_y @<cl>
-         * @param offset_z @<dx>
-         * @param boundBoxLength_x @<di>
-         * @param boundBoxLength_y @<si>
-         * @param boundBoxLength_z @<ah>
-         * @param boundBoxOffset_x @<0xE3F0A0>
-         * @param boundBoxOffset_y @<0xE3F0A2>
-         * @param boundBoxOffset_z @<0xE3F0A4>
+         * @param offsetX @<al>
+         * @param offsetY @<cl>
+         * @param offsetZ @<dx>
+         * @param boundBoxLengthX @<di>
+         * @param boundBoxLengthY @<si>
+         * @param boundBoxLengthZ @<ah>
+         * @param boundBoxOffsetX @<0xE3F0A0>
+         * @param boundBoxOffsetY @<0xE3F0A2>
+         * @param boundBoxOffsetZ @<0xE3F0A4>
          */
         void addToPlotList4FD200(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
         /*
-         * @param imageId  @<ebx>
-         * @param offset_x @<ax>
-         * @param offset_y @<cx>
+         * @param imageId @<ebx>
+         * @param offsetX @<ax>
+         * @param offsetY @<cx>
          */
         AttachedPaintStruct* attachToPrevious(ImageId imageId, const Ui::Point& offset);
 
@@ -298,7 +298,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<uint16_t[2], 0x00525CE4> _525CE4;
         inline static Interop::loco_global<uint8_t, 0x00525CF0> _525CF0;
         inline static Interop::loco_global<uint16_t, 0x00525CF8> _525CF8;
-        inline static Interop::loco_global<Gfx::Context*, 0x00E0C3E0> _context;
+        inline static Interop::loco_global<Gfx::RenderTarget*, 0x00E0C3E0> _renderTarget;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C408> _paintHead;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C40C> _nextFreePaintStruct;
@@ -363,7 +363,7 @@ namespace OpenLoco::Paint
         PaintStruct* createNormalPaintStruct(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
     };
 
-    PaintSession* allocateSession(Gfx::Context& context, const uint16_t viewportFlags);
+    PaintSession* allocateSession(Gfx::RenderTarget& rt, const uint16_t viewportFlags);
 
     void registerHooks();
 }

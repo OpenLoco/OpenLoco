@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleLogo
 {
-    static const Ui::Size window_size = { 298, 170 };
+    static constexpr Ui::Size kWindowSize = { 298, 170 };
 
     namespace Widx
     {
@@ -20,14 +20,14 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, WidgetType::wt_3, WindowColour::primary),
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary),
         widgetEnd(),
     };
 
     static WindowEventList _events;
 
     static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
-    static void draw(Ui::Window& window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
 
     Window* open()
     {
@@ -37,7 +37,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::title_logo,
             { 0, 0 },
-            window_size,
+            kWindowSize,
             WindowFlags::openQuietly | WindowFlags::transparent,
             &_events);
 
@@ -53,9 +53,9 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     // 0x00439298
-    static void draw(Ui::Window& window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        Gfx::drawImage(context, window.x, window.y, ImageIds::locomotion_logo);
+        Gfx::drawImage(rt, window.x, window.y, ImageIds::locomotion_logo);
     }
 
     // 0x004392AD

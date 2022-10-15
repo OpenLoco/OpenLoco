@@ -8,7 +8,7 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct Context;
+        struct RenderTarget;
     }
 
     namespace LandObjectFlags
@@ -25,13 +25,13 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::land;
 
         string_id name;
-        uint8_t cost_index; // 0x02
+        uint8_t costIndex; // 0x02
         uint8_t var_03;
         uint8_t var_04;
         uint8_t flags; // 0x05
         uint8_t var_06;
         uint8_t var_07;
-        int8_t cost_factor; // 0x08
+        int8_t costFactor; // 0x08
         uint8_t pad_09;
         uint32_t image; // 0x0A
         uint32_t var_0E;
@@ -45,7 +45,7 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();
-        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
     };
     static_assert(sizeof(LandObject) == 0x1E);
 #pragma pack(pop)

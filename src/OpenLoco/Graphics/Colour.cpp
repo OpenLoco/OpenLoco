@@ -1,6 +1,7 @@
 #include "Colour.h"
 #include "../Interop/Interop.hpp"
 #include "Gfx.h"
+#include "PaletteMap.h"
 #include <array>
 #include <cassert>
 
@@ -9,8 +10,8 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Colours
 {
 
-    loco_global<uint8_t[32][8], 0x01136BA0> _colour_map_a;
-    loco_global<uint8_t[32][8], 0x01136C98> _colour_map_b;
+    loco_global<uint8_t[32][8], 0x01136BA0> _colourMapA;
+    loco_global<uint8_t[32][8], 0x01136C98> _colourMapB;
 
     // 0x005045FA
     static constexpr std::array<ExtColour, 31> _translucentColourMap = {
@@ -60,19 +61,19 @@ namespace OpenLoco::Colours
                 continue;
             }
             auto& map = *paletteMap;
-            _colour_map_a[i][0] = map[PaletteIndex::primaryRemap2];
+            _colourMapA[i][0] = map[PaletteIndex::primaryRemap2];
 
-            _colour_map_a[i][1] = map[PaletteIndex::primaryRemap3];
-            _colour_map_a[i][2] = map[PaletteIndex::primaryRemap4];
-            _colour_map_a[i][3] = map[PaletteIndex::primaryRemap5];
+            _colourMapA[i][1] = map[PaletteIndex::primaryRemap3];
+            _colourMapA[i][2] = map[PaletteIndex::primaryRemap4];
+            _colourMapA[i][3] = map[PaletteIndex::primaryRemap5];
 
-            _colour_map_a[i][4] = map[PaletteIndex::primaryRemap6];
-            _colour_map_a[i][5] = map[PaletteIndex::primaryRemap7];
-            _colour_map_a[i][6] = map[PaletteIndex::primaryRemap8];
-            _colour_map_a[i][7] = map[PaletteIndex::primaryRemap9];
+            _colourMapA[i][4] = map[PaletteIndex::primaryRemap6];
+            _colourMapA[i][5] = map[PaletteIndex::primaryRemap7];
+            _colourMapA[i][6] = map[PaletteIndex::primaryRemap8];
+            _colourMapA[i][7] = map[PaletteIndex::primaryRemap9];
 
-            _colour_map_b[i][8 - 8] = map[PaletteIndex::primaryRemapA];
-            _colour_map_b[i][9 - 8] = map[PaletteIndex::primaryRemapB];
+            _colourMapB[i][8 - 8] = map[PaletteIndex::primaryRemapA];
+            _colourMapB[i][9 - 8] = map[PaletteIndex::primaryRemapB];
         }
     }
 
@@ -82,10 +83,10 @@ namespace OpenLoco::Colours
 
         if (shade < 8)
         {
-            return _colour_map_a[enumValue(colour)][shade];
+            return _colourMapA[enumValue(colour)][shade];
         }
 
-        return _colour_map_b[enumValue(colour)][shade - 8];
+        return _colourMapB[enumValue(colour)][shade - 8];
     }
 
     // 0x005045FA

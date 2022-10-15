@@ -5,10 +5,10 @@
 namespace OpenLoco
 {
     // 0x00469806
-    void TunnelObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void TunnelObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        Gfx::drawImage(&context, x - 16, y + 15, image);
-        Gfx::drawImage(&context, x - 16, y + 15, image + 1);
+        Gfx::drawImage(&rt, x - 16, y + 15, image);
+        Gfx::drawImage(&rt, x - 16, y + 15, image + 1);
     }
 
     // 0x004697C9

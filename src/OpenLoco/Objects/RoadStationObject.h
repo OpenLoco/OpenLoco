@@ -8,7 +8,7 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct Context;
+        struct RenderTarget;
     }
 
     namespace RoadStationFlags
@@ -27,26 +27,26 @@ namespace OpenLoco
         string_id name;     // 0x00
         uint8_t paintStyle; // 0x02
         uint8_t pad_03;
-        uint16_t road_pieces;      // 0x04
-        int16_t build_cost_factor; // 0x06
-        int16_t sell_cost_factor;  // 0x08
-        uint8_t cost_index;        // 0x0A
-        uint8_t flags;             // 0x0B
-        uint32_t image;            // 0x0C
+        uint16_t roadPieces;     // 0x04
+        int16_t buildCostFactor; // 0x06
+        int16_t sellCostFactor;  // 0x08
+        uint8_t costIndex;       // 0x0A
+        uint8_t flags;           // 0x0B
+        uint32_t image;          // 0x0C
         uint32_t var_10;
         uint32_t var_14;
         uint32_t var_18;
         uint32_t var_1C;
-        uint8_t num_compatible; // 0x20
-        uint8_t mods[7];        // 0x21
-        uint16_t designed_year; // 0x28
-        uint16_t obsolete_year; // 0x2A
+        uint8_t numCompatible; // 0x20
+        uint8_t mods[7];       // 0x21
+        uint16_t designedYear; // 0x28
+        uint16_t obsoleteYear; // 0x2A
         uint8_t var_2C;
         uint8_t pad_2D;
         uint32_t var_2E[16];
 
-        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
-        void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();

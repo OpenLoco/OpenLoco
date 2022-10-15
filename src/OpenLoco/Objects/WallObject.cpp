@@ -23,7 +23,7 @@ namespace OpenLoco
     }
 
     // 0x004C4B0B
-    void WallObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void WallObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto image = sprite;
         if (flags & (1 << 6))
@@ -35,16 +35,16 @@ namespace OpenLoco
             image = Gfx::recolour(sprite, Colour::mutedDarkRed);
         }
 
-        Gfx::drawImage(&context, x + 14, y + 16 + (var_08 * 2), image);
+        Gfx::drawImage(&rt, x + 14, y + 16 + (var_08 * 2), image);
         if (flags & (1 << 1))
         {
-            Gfx::drawImage(&context, x + 14, y + 16 + (var_08 * 2), Gfx::recolourTranslucent(sprite + 6, ExtColour::unk8C));
+            Gfx::drawImage(&rt, x + 14, y + 16 + (var_08 * 2), Gfx::recolourTranslucent(sprite + 6, ExtColour::unk8C));
         }
         else
         {
             if (flags & (1 << 4))
             {
-                Gfx::drawImage(&context, x + 14, y + 16 + (var_08 * 2), image + 1);
+                Gfx::drawImage(&rt, x + 14, y + 16 + (var_08 * 2), image + 1);
             }
         }
     }

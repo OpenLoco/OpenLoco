@@ -9,7 +9,7 @@
 
 namespace OpenLoco::Ui::Windows::About
 {
-    constexpr Ui::Size windowSize = { 400, 260 };
+    static constexpr Ui::Size kWindowSize = { 400, 260 };
 
     namespace widx
     {
@@ -24,11 +24,11 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::about_locomotion_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, 245 }, WidgetType::panel, WindowColour::secondary),
-        makeWidget({ 100, 234 }, { windowSize.width / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::music_acknowledgements_btn),
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::about_locomotion_caption),
+        makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { kWindowSize.width, 245 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 100, 234 }, { kWindowSize.width / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::music_acknowledgements_btn),
         widgetEnd(),
     };
 
@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::About
 
         auto window = WindowManager::createWindowCentred(
             WindowType::about,
-            windowSize,
+            kWindowSize,
             0,
             &_events);
 
@@ -75,46 +75,46 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     // 0x0043B2E4
-    static void draw(Ui::Window& window, Gfx::Context* const context)
+    static void draw(Ui::Window& window, Gfx::RenderTarget* const rt)
     {
         // Draw widgets.
-        window.draw(context);
+        window.draw(rt);
 
-        const int16_t x = window.x + windowSize.width / 2;
+        const int16_t x = window.x + kWindowSize.width / 2;
         int16_t y = window.y + 25;
 
-        drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_69, nullptr);
+        drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_69, nullptr);
 
         y += 10;
-        drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_70, nullptr);
+        drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_70, nullptr);
 
         // Chris Sawyer logo
-        drawImage(context, window.x + 92, window.y + 52, ImageIds::chris_sawyer_logo_small);
+        drawImage(rt, window.x + 92, window.y + 52, ImageIds::chris_sawyer_logo_small);
 
         y += 79;
-        drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_71, nullptr);
+        drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_71, nullptr);
 
         y += 10;
-        drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_72, nullptr);
+        drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_72, nullptr);
 
         y += 10;
-        drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_73, nullptr);
+        drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_73, nullptr);
 
         y += 10;
-        drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_74, nullptr);
+        drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_74, nullptr);
 
         y += 13;
-        drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_75, nullptr);
+        drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_75, nullptr);
 
         y += 25;
-        drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_76, nullptr);
+        drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_76, nullptr);
 
         y += 10;
-        drawStringCentred(*context, x, y, Colour::black, StringIds::about_locomotion_77, nullptr);
+        drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_77, nullptr);
 
         // Licenced to Atari
         y += 25;
-        drawStringCentred(*context, x, y, Colour::black, StringIds::licenced_to_atari_inc, nullptr);
+        drawStringCentred(*rt, x, y, Colour::black, StringIds::licenced_to_atari_inc, nullptr);
     }
 
     static void initEvents()

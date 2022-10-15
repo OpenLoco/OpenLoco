@@ -17,7 +17,7 @@ using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 {
-    static const int rowHeight = 10; // CJK: 13
+    static const int kRowHeight = 10; // CJK: 13
 
     static WindowEventList _events;
 
@@ -44,8 +44,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         };
     }
 
-    static void draw(Ui::Window& self, Gfx::Context* context);
-    static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex);
+    static void draw(Ui::Window& self, Gfx::RenderTarget* rt);
+    static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex);
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
     static void resetShortcuts(Window* self);
     static std::optional<FormatArguments> tooltip(Window&, WidgetIndex_t);
@@ -93,10 +93,10 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE726
-    static void draw(Ui::Window& self, Gfx::Context* context)
+    static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
     {
         // Draw widgets.
-        self.draw(context);
+        self.draw(rt);
     }
 
     static void getBindingString(uint32_t keyCode, char* buffer, const size_t bufferLength)
@@ -152,11 +152,11 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE72C
-    static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
         auto colour = self.getColour(WindowColour::secondary).c();
         auto shade = Colours::getShade(colour, 4);
-        Gfx::clearSingle(context, shade);
+        Gfx::clearSingle(rt, shade);
 
         const auto& shortcuts = Config::getNew().shortcuts;
         auto yPos = 0;
@@ -165,7 +165,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             string_id format = StringIds::black_stringid;
             if (i == self.rowHover)
             {
-                Gfx::drawRect(context, 0, yPos, 800, rowHeight, 0x2000030);
+                Gfx::drawRect(rt, 0, yPos, 800, kRowHeight, 0x2000030);
                 format = StringIds::wcolour2_stringid;
             }
 
@@ -191,8 +191,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(baseStringId);
             formatter.push(buffer);
 
-            Gfx::drawStringLeft(context, 0, yPos - 1, Colour::black, format, &formatter);
-            yPos += rowHeight;
+            Gfx::drawStringLeft(rt, 0, yPos - 1, Colour::black, format, &formatter);
+            yPos += kRowHeight;
         }
     }
 
@@ -229,13 +229,13 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     // 0x004BE84E
     static void getScrollSize(Ui::Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = self.rowCount * rowHeight;
+        *scrollHeight = self.rowCount * kRowHeight;
     }
 
     // 0x004BE853
     static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto row = y / rowHeight;
+        auto row = y / kRowHeight;
 
         if (row >= self.rowCount)
             return;
@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     // 0x004BE87B
     static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto row = y / rowHeight;
+        auto row = y / kRowHeight;
 
         if (row >= self.rowCount)
             return;

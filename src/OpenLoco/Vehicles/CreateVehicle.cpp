@@ -95,7 +95,7 @@ namespace OpenLoco::Vehicles
     static T* createVehicleThing()
     {
         auto* const base = EntityManager::createEntityVehicle();
-        base->base_type = EntityBaseType::vehicle;
+        base->baseType = EntityBaseType::vehicle;
         auto* const vehicleBase = base->asBase<Vehicles::VehicleBase>();
         vehicleBase->setSubType(T::kVehicleThingType);
         return static_cast<T*>(vehicleBase);
@@ -188,7 +188,7 @@ namespace OpenLoco::Vehicles
         sub_4BA873(newBogie);
 
         // Calculate refund cost == 7/8 * cost
-        auto cost = Economy::getInflationAdjustedCost(vehObject.cost_factor, vehObject.cost_index, 6);
+        auto cost = Economy::getInflationAdjustedCost(vehObject.costFactor, vehObject.costIndex, 6);
         newBogie->refundCost = cost - cost / 8;
 
         if (bodyNumber == 0)
@@ -196,10 +196,10 @@ namespace OpenLoco::Vehicles
             // Only front car components front bogie can have cargo
             // stores only secondary cargo presumably due to space constraints
             // in the front car component body
-            if (vehObject.num_simultaneous_cargo_types > 1)
+            if (vehObject.numSimultaneousCargoTypes > 1)
             {
-                newBogie->secondaryCargo.maxQty = vehObject.max_secondary_cargo;
-                newBogie->secondaryCargo.acceptedTypes = vehObject.secondary_cargo_types;
+                newBogie->secondaryCargo.maxQty = vehObject.maxSecondaryCargo;
+                newBogie->secondaryCargo.acceptedTypes = vehObject.secondaryCargoTypes;
                 auto cargoType = Utility::bitScanForward(newBogie->secondaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
@@ -208,12 +208,12 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        newBogie->objectSpriteType = vehObject.var_24[bodyNumber].front_bogie_sprite_ind;
+        newBogie->objectSpriteType = vehObject.var_24[bodyNumber].frontBogieSpriteInd;
         if (newBogie->objectSpriteType != SpriteIndex::null)
         {
-            newBogie->var_14 = vehObject.bogie_sprites[newBogie->objectSpriteType].var_02;
-            newBogie->var_09 = vehObject.bogie_sprites[newBogie->objectSpriteType].var_03;
-            newBogie->var_15 = vehObject.bogie_sprites[newBogie->objectSpriteType].var_04;
+            newBogie->var_14 = vehObject.bogieSprites[newBogie->objectSpriteType].var_02;
+            newBogie->var_09 = vehObject.bogieSprites[newBogie->objectSpriteType].var_03;
+            newBogie->var_15 = vehObject.bogieSprites[newBogie->objectSpriteType].var_04;
         }
         return newBogie;
     }
@@ -227,12 +227,12 @@ namespace OpenLoco::Vehicles
             return nullptr;
         }
         newBogie->var_38 = Flags38::isReversed;
-        newBogie->objectSpriteType = vehObject.var_24[bodyNumber].back_bogie_sprite_ind;
+        newBogie->objectSpriteType = vehObject.var_24[bodyNumber].backBogieSpriteInd;
         if (newBogie->objectSpriteType != SpriteIndex::null)
         {
-            newBogie->var_14 = vehObject.bogie_sprites[newBogie->objectSpriteType].var_02;
-            newBogie->var_09 = vehObject.bogie_sprites[newBogie->objectSpriteType].var_03;
-            newBogie->var_15 = vehObject.bogie_sprites[newBogie->objectSpriteType].var_04;
+            newBogie->var_14 = vehObject.bogieSprites[newBogie->objectSpriteType].var_02;
+            newBogie->var_09 = vehObject.bogieSprites[newBogie->objectSpriteType].var_03;
+            newBogie->var_15 = vehObject.bogieSprites[newBogie->objectSpriteType].var_04;
         }
         return newBogie;
     }
@@ -275,10 +275,10 @@ namespace OpenLoco::Vehicles
             // If the car carries any type of cargo then it will have a primary
             // cargo in the first body of the first car component of the car.
             // Locomotives do not carry any cargo.
-            if (vehObject.num_simultaneous_cargo_types != 0)
+            if (vehObject.numSimultaneousCargoTypes != 0)
             {
-                newBody->primaryCargo.maxQty = vehObject.max_primary_cargo;
-                newBody->primaryCargo.acceptedTypes = vehObject.primary_cargo_types;
+                newBody->primaryCargo.maxQty = vehObject.maxPrimaryCargo;
+                newBody->primaryCargo.acceptedTypes = vehObject.primaryCargoTypes;
                 auto cargoType = Utility::bitScanForward(newBody->primaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
@@ -292,7 +292,7 @@ namespace OpenLoco::Vehicles
         newBody->var_15 = 1;
 
         // different onwards to create bogie
-        auto spriteType = vehObject.var_24[bodyNumber].body_sprite_ind;
+        auto spriteType = vehObject.var_24[bodyNumber].bodySpriteInd;
         if (spriteType != SpriteIndex::null)
         {
             if (spriteType & SpriteIndex::flag_unk7)
@@ -357,10 +357,10 @@ namespace OpenLoco::Vehicles
         const auto company = CompanyManager::get(_updatingCompanyId);
         _1136140 = company->mainColours; // Copy to global variable. Can be removed when all global uses confirmed
         auto colourScheme = company->mainColours;
-        if (company->customVehicleColoursSet & (1 << vehObject->colour_type))
+        if (company->customVehicleColoursSet & (1 << vehObject->colourType))
         {
-            _1136140 = company->vehicleColours[vehObject->colour_type - 1]; // Copy to global variable. Can be removed when all global uses confirmed
-            colourScheme = company->vehicleColours[vehObject->colour_type - 1];
+            _1136140 = company->vehicleColours[vehObject->colourType - 1]; // Copy to global variable. Can be removed when all global uses confirmed
+            colourScheme = company->vehicleColours[vehObject->colourType - 1];
         }
 
         VehicleBogie* newCarStart = nullptr;
@@ -693,7 +693,7 @@ namespace OpenLoco::Vehicles
         }
         // 0x4AE733
         auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
-        auto cost = Economy::getInflationAdjustedCost(vehObject->cost_factor, vehObject->cost_index, 6);
+        auto cost = Economy::getInflationAdjustedCost(vehObject->costFactor, vehObject->costIndex, 6);
         return cost;
     }
 
@@ -760,7 +760,7 @@ namespace OpenLoco::Vehicles
         }
         // 0x4AE733
         auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
-        auto cost = Economy::getInflationAdjustedCost(vehObject->cost_factor, vehObject->cost_index, 6);
+        auto cost = Economy::getInflationAdjustedCost(vehObject->costFactor, vehObject->costIndex, 6);
         return cost;
     }
 

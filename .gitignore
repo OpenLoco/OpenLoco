@@ -291,6 +291,10 @@ __pycache__/
 # Telerik's JustMock configuration file
 *.jmconfig
 
+# CMake User Settings
+CMakeUserSettings.json
+CMakeUserPresets.json
+
 # BizTalk build output
 *.btp.cs
 *.btm.cs

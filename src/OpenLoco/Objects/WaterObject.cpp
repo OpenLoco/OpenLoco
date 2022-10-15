@@ -8,11 +8,11 @@ namespace OpenLoco
     // 0x004C56BC
     bool WaterObject::validate() const
     {
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
-        if (cost_factor <= 0)
+        if (costFactor <= 0)
         {
             return false;
         }
@@ -38,10 +38,10 @@ namespace OpenLoco
     }
 
     // 0x004C56D3
-    void WaterObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void WaterObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolourTranslucent(Gfx::recolour(image + 35), ExtColour::null);
-        Gfx::drawImage(&context, x, y, colourImage);
-        Gfx::drawImage(&context, x, y, image + 30);
+        Gfx::drawImage(&rt, x, y, colourImage);
+        Gfx::drawImage(&rt, x, y, image + 30);
     }
 }

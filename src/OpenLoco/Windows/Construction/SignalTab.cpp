@@ -296,10 +296,10 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E501
-    static void draw(Window& self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        self.draw(context);
-        Common::drawTabs(&self, context);
+        self.draw(rt);
+        Common::drawTabs(&self, rt);
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
 
@@ -311,22 +311,22 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             auto args = FormatArguments();
             args.push(trainSignalObject->var_0C);
 
-            Gfx::drawStringLeftWrapped(*context, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
+            Gfx::drawStringLeftWrapped(*rt, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
         }
 
         auto imageId = trainSignalObject->image;
 
-        xPos = self.widgets[widx::both_directions].mid_x() + self.x;
+        xPos = self.widgets[widx::both_directions].midX() + self.x;
         yPos = self.widgets[widx::both_directions].bottom + self.y - 4;
 
-        Gfx::drawImage(context, xPos - 8, yPos, imageId);
+        Gfx::drawImage(rt, xPos - 8, yPos, imageId);
 
-        Gfx::drawImage(context, xPos + 8, yPos, imageId + 4);
+        Gfx::drawImage(rt, xPos + 8, yPos, imageId + 4);
 
-        xPos = self.widgets[widx::single_direction].mid_x() + self.x;
+        xPos = self.widgets[widx::single_direction].midX() + self.x;
         yPos = self.widgets[widx::single_direction].bottom + self.y - 4;
 
-        Gfx::drawImage(context, xPos, yPos, imageId);
+        Gfx::drawImage(rt, xPos, yPos, imageId);
 
         if (_signalCost != 0x80000000 && _signalCost != 0)
         {
@@ -336,7 +336,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             xPos = self.x + 69;
             yPos = self.widgets[widx::single_direction].bottom + self.y + 5;
 
-            Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+            Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
     }
 

@@ -31,38 +31,43 @@ namespace OpenLoco
     namespace ControlCodes
     {
         // Arguments (1 byte): uint8_t
-        constexpr uint8_t move_x = 1;
-        constexpr uint8_t adjust_palette = 2; // Not used
+        constexpr uint8_t moveX = 1;
+        constexpr uint8_t adjustPalette = 2; // Not used
         // 3-4 Not used
-        constexpr uint8_t oneArgBegin = move_x;
+        constexpr uint8_t oneArgBegin = moveX;
         constexpr uint8_t oneArgEnd = 4 + 1;
 
         // Arguments: none
         constexpr uint8_t newline = 5;
-        constexpr uint8_t newline_smaller = 6;
-        constexpr uint8_t font_small = 7;
-        constexpr uint8_t font_large = 8;
-        constexpr uint8_t font_bold = 9;
-        constexpr uint8_t font_regular = 10;
-        constexpr uint8_t outline = 11;
-        constexpr uint8_t outline_off = 12;
-        constexpr uint8_t window_colour_1 = 13;
-        constexpr uint8_t window_colour_2 = 14;
-        constexpr uint8_t window_colour_3 = 15;
-        constexpr uint8_t window_colour_4 = 16; // Not used
+        constexpr uint8_t newlineSmaller = 6;
+
+        namespace Font
+        {
+            constexpr uint8_t small = 7;
+            constexpr uint8_t large = 8;
+            constexpr uint8_t bold = 9;
+            constexpr uint8_t regular = 10;
+            constexpr uint8_t outline = 11;
+            constexpr uint8_t outlineOff = 12;
+        }
+
+        constexpr uint8_t windowColour1 = 13;
+        constexpr uint8_t windowColour2 = 14;
+        constexpr uint8_t windowColour3 = 15;
+        constexpr uint8_t windowColour4 = 16; // Not used
         constexpr uint8_t noArgBegin = newline;
-        constexpr uint8_t noArgEnd = window_colour_4 + 1;
+        constexpr uint8_t noArgEnd = windowColour4 + 1;
 
         // Arguments (2 bytes): int8_t, int8_t
-        constexpr uint8_t newline_x_y = 17;
+        constexpr uint8_t newlineXY = 17;
         // 18-22 Not used
-        constexpr uint8_t twoArgBegin = newline_x_y;
+        constexpr uint8_t twoArgBegin = newlineXY;
         constexpr uint8_t twoArgEnd = 22 + 1;
 
         // Arguments (4 bytes): uint32_t
-        constexpr uint8_t inline_sprite_str = 23;
+        constexpr uint8_t inlineSpriteStr = 23;
         // 24-31 Not used
-        constexpr uint8_t fourArgBegin = inline_sprite_str;
+        constexpr uint8_t fourArgBegin = inlineSpriteStr;
         constexpr uint8_t fourArgEnd = 31 + 1;
 
         // Arguments in Args buffer
@@ -71,7 +76,7 @@ namespace OpenLoco
         //     ControlCodes valid args in args buffer.
         // Post formatString:
         //     ControlCodes are invalid
-        //     inline_sprite_args replaced with inline_sprite_str, arg is in string
+        //     inlineSpriteArgs replaced with inlineSpriteStr, arg is in string
         constexpr uint8_t int32_grouped = 123 + 0;
         constexpr uint8_t int32_ungrouped = 123 + 1;
         constexpr uint8_t int16_decimals = 123 + 2;
@@ -80,8 +85,8 @@ namespace OpenLoco
         constexpr uint8_t uint16_ungrouped = 123 + 5;
         constexpr uint8_t currency32 = 123 + 6;
         constexpr uint8_t currency48 = 123 + 7;
-        constexpr uint8_t stringid_args = 123 + 8;
-        constexpr uint8_t stringid_str = 123 + 9;
+        constexpr uint8_t stringidArgs = 123 + 8;
+        constexpr uint8_t stringidStr = 123 + 9;
         constexpr uint8_t string_ptr = 123 + 10;
         constexpr uint8_t date = 123 + 11;
         constexpr uint8_t velocity = 123 + 12;
@@ -92,23 +97,26 @@ namespace OpenLoco
         constexpr uint8_t distance = 123 + 17;
         constexpr uint8_t height = 123 + 18;
         constexpr uint8_t power = 123 + 19;
-        constexpr uint8_t inline_sprite_args = 123 + 20;
+        constexpr uint8_t inlineSpriteArgs = 123 + 20;
 
-        // Arguments: none
-        constexpr uint8_t colour_black = 144;
-        constexpr uint8_t colour_grey = 145;
-        constexpr uint8_t colour_white = 146;
-        constexpr uint8_t colour_red = 147;
-        constexpr uint8_t colour_green = 148;
-        constexpr uint8_t colour_yellow = 149;
-        constexpr uint8_t colour_topaz = 150;
-        constexpr uint8_t colour_celadon = 151;
-        constexpr uint8_t colour_babyblue = 152;
-        constexpr uint8_t colour_palelavender = 153;
-        constexpr uint8_t colour_palegold = 154;
-        constexpr uint8_t colour_lightpink = 155;
-        constexpr uint8_t colour_pearlaqua = 156;
-        constexpr uint8_t colour_palesilver = 157;
+        namespace Colour
+        {
+            // Arguments: none
+            constexpr uint8_t black = 144;
+            constexpr uint8_t grey = 145;
+            constexpr uint8_t white = 146;
+            constexpr uint8_t red = 147;
+            constexpr uint8_t green = 148;
+            constexpr uint8_t yellow = 149;
+            constexpr uint8_t topaz = 150;
+            constexpr uint8_t celadon = 151;
+            constexpr uint8_t babyBlue = 152;
+            constexpr uint8_t paleLavender = 153;
+            constexpr uint8_t paleGold = 154;
+            constexpr uint8_t lightPink = 155;
+            constexpr uint8_t pearlAqua = 156;
+            constexpr uint8_t paleSilver = 157;
+        }
     }
 
     namespace DateModifier
@@ -127,6 +135,8 @@ namespace OpenLoco
 
 namespace OpenLoco::StringManager
 {
+    const uint8_t kUserStringSize = 32;
+
     void reset();
     void setString(string_id id, std::string_view value);
     const char* getString(string_id id);

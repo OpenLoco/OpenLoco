@@ -14,8 +14,8 @@ namespace OpenLoco::Config
     static loco_global<LocoConfig, 0x0050AEB4> _config;
     static loco_global<uint8_t, 0x0050AEAD> _50AEAD;
     static loco_global<uint32_t, 0x0113E21C> _totalPhysicalMemory;
-    static NewConfig _new_config;
-    static YAML::Node _config_yaml;
+    static NewConfig _newConfig;
+    static YAML::Node _configYaml;
 
     LocoConfig& get()
     {
@@ -24,7 +24,7 @@ namespace OpenLoco::Config
 
     NewConfig& getNew()
     {
-        return _new_config;
+        return _newConfig;
     }
 
     constexpr uint8_t _defaultMaxVehicleSounds[3] = { 4, 8, 16 };
@@ -107,7 +107,7 @@ namespace OpenLoco::Config
     static void readShortcutConfig(YAML::Node scNode)
     {
         const auto& shortcutDefs = Input::ShortcutManager::getList();
-        auto& shortcuts = _new_config.shortcuts;
+        auto& shortcuts = _newConfig.shortcuts;
         for (size_t i = 0; i < std::size(shortcuts); i++)
         {
             auto& def = shortcutDefs[i];
@@ -126,21 +126,21 @@ namespace OpenLoco::Config
         if (!fs::exists(configPath))
         {
             readShortcutConfig(YAML::Node());
-            return _new_config;
+            return _newConfig;
         }
 
         // On Windows, YAML::LoadFile only supports ANSI paths, so we pass an ifstream instead.
         std::ifstream stream;
         stream.exceptions(std::ifstream::failbit);
         stream.open(configPath, std::ios::in | std::ios::binary);
-        _config_yaml = YAML::Load(stream);
+        _configYaml = YAML::Load(stream);
 
-        const auto& config = _config_yaml;
+        const auto& config = _configYaml;
 
         auto& displayNode = config["display"];
         if (displayNode && displayNode.IsMap())
         {
-            auto& displayConfig = _new_config.display;
+            auto& displayConfig = _newConfig.display;
             displayConfig.mode = displayNode["mode"].as<ScreenMode>(ScreenMode::window);
             displayConfig.index = displayNode["index"].as<int32_t>(0);
             displayConfig.windowResolution = displayNode["window_resolution"].as<Resolution>();
@@ -150,7 +150,7 @@ namespace OpenLoco::Config
         auto& audioNode = config["audio"];
         if (audioNode && audioNode.IsMap())
         {
-            auto& audioConfig = _new_config.audio;
+            auto& audioConfig = _newConfig.audio;
             audioConfig.device = audioNode["device"].as<std::string>("");
             if (audioNode["play_title_music"])
                 audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>();
@@ -159,51 +159,51 @@ namespace OpenLoco::Config
         auto& networkNode = config["network"];
         if (networkNode && networkNode.IsMap())
         {
-            auto& networkConfig = _new_config.network;
+            auto& networkConfig = _newConfig.network;
             networkConfig.enabled = networkNode["enabled"] && networkNode["enabled"].as<bool>();
         }
 
         if (config["allow_multiple_instances"])
-            _new_config.allowMultipleInstances = config["allow_multiple_instances"].as<bool>();
+            _newConfig.allowMultipleInstances = config["allow_multiple_instances"].as<bool>();
         if (config["loco_install_path"])
-            _new_config.locoInstallPath = config["loco_install_path"].as<std::string>();
+            _newConfig.locoInstallPath = config["loco_install_path"].as<std::string>();
         if (config["last_save_path"])
-            _new_config.lastSavePath = config["last_save_path"].as<std::string>();
+            _newConfig.lastSavePath = config["last_save_path"].as<std::string>();
         if (config["language"])
-            _new_config.language = config["language"].as<std::string>();
+            _newConfig.language = config["language"].as<std::string>();
         if (config["breakdowns_disabled"])
-            _new_config.breakdownsDisabled = config["breakdowns_disabled"].as<bool>();
+            _newConfig.breakdownsDisabled = config["breakdowns_disabled"].as<bool>();
         if (config["trainsReverseAtSignals"])
-            _new_config.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>();
+            _newConfig.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>();
         if (config["cheats_menu_enabled"])
-            _new_config.cheatsMenuEnabled = config["cheats_menu_enabled"].as<bool>();
+            _newConfig.cheatsMenuEnabled = config["cheats_menu_enabled"].as<bool>();
         if (config["companyAIDisabled"])
-            _new_config.companyAIDisabled = config["companyAIDisabled"].as<bool>();
+            _newConfig.companyAIDisabled = config["companyAIDisabled"].as<bool>();
         if (config["scale_factor"])
-            _new_config.scaleFactor = config["scale_factor"].as<float>();
+            _newConfig.scaleFactor = config["scale_factor"].as<float>();
         if (config["zoom_to_cursor"])
-            _new_config.zoomToCursor = config["zoom_to_cursor"].as<bool>();
+            _newConfig.zoomToCursor = config["zoom_to_cursor"].as<bool>();
         if (config["autosave_frequency"])
-            _new_config.autosaveFrequency = config["autosave_frequency"].as<int32_t>();
+            _newConfig.autosaveFrequency = config["autosave_frequency"].as<int32_t>();
         if (config["autosave_amount"])
-            _new_config.autosaveAmount = config["autosave_amount"].as<int32_t>();
+            _newConfig.autosaveAmount = config["autosave_amount"].as<int32_t>();
         if (config["showFPS"])
-            _new_config.showFPS = config["showFPS"].as<bool>();
+            _newConfig.showFPS = config["showFPS"].as<bool>();
         if (config["uncapFPS"])
-            _new_config.uncapFPS = config["uncapFPS"].as<bool>();
+            _newConfig.uncapFPS = config["uncapFPS"].as<bool>();
         if (config["displayLockedVehicles"])
-            _new_config.displayLockedVehicles = config["displayLockedVehicles"].as<bool>();
+            _newConfig.displayLockedVehicles = config["displayLockedVehicles"].as<bool>();
         if (config["buildLockedVehicles"])
-            _new_config.buildLockedVehicles = config["buildLockedVehicles"].as<bool>();
+            _newConfig.buildLockedVehicles = config["buildLockedVehicles"].as<bool>();
         if (config["invertRightMouseViewPan"])
-            _new_config.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>();
+            _newConfig.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>();
         if (config["cashPopupRendering"])
-            _new_config.cashPopupRendering = config["cashPopupRendering"].as<bool>();
+            _newConfig.cashPopupRendering = config["cashPopupRendering"].as<bool>();
 
         auto& scNode = config["shortcuts"];
         readShortcutConfig(scNode);
 
-        return _new_config;
+        return _newConfig;
     }
 
     void writeNewConfig()
@@ -212,10 +212,10 @@ namespace OpenLoco::Config
         auto dir = configPath.parent_path();
         Environment::autoCreateDirectory(dir);
 
-        auto& node = _config_yaml;
+        auto& node = _configYaml;
 
         // Display
-        const auto& displayConfig = _new_config.display;
+        const auto& displayConfig = _newConfig.display;
         auto displayNode = node["display"];
         displayNode["mode"] = displayConfig.mode;
         if (displayConfig.index != 0)
@@ -231,7 +231,7 @@ namespace OpenLoco::Config
         node["display"] = displayNode;
 
         // Audio
-        const auto& audioConfig = _new_config.audio;
+        const auto& audioConfig = _newConfig.audio;
         auto audioNode = node["audio"];
         audioNode["device"] = audioConfig.device;
         if (audioConfig.device.empty())
@@ -242,32 +242,32 @@ namespace OpenLoco::Config
         node["audio"] = audioNode;
 
         // Network
-        const auto& networkConfig = _new_config.network;
+        const auto& networkConfig = _newConfig.network;
         auto networkNode = node["network"];
         networkNode["enabled"] = networkConfig.enabled;
         node["network"] = networkNode;
 
-        node["allow_multiple_instances"] = _new_config.allowMultipleInstances;
-        node["loco_install_path"] = _new_config.locoInstallPath;
-        node["last_save_path"] = _new_config.lastSavePath;
-        node["language"] = _new_config.language;
-        node["breakdowns_disabled"] = _new_config.breakdownsDisabled;
-        node["trainsReverseAtSignals"] = _new_config.trainsReverseAtSignals;
-        node["cheats_menu_enabled"] = _new_config.cheatsMenuEnabled;
-        node["companyAIDisabled"] = _new_config.companyAIDisabled;
-        node["scale_factor"] = _new_config.scaleFactor;
-        node["zoom_to_cursor"] = _new_config.zoomToCursor;
-        node["autosave_frequency"] = _new_config.autosaveFrequency;
-        node["autosave_amount"] = _new_config.autosaveAmount;
-        node["showFPS"] = _new_config.showFPS;
-        node["uncapFPS"] = _new_config.uncapFPS;
-        node["displayLockedVehicles"] = _new_config.displayLockedVehicles;
-        node["buildLockedVehicles"] = _new_config.buildLockedVehicles;
-        node["invertRightMouseViewPan"] = _new_config.invertRightMouseViewPan;
-        node["cashPopupRendering"] = _new_config.cashPopupRendering;
+        node["allow_multiple_instances"] = _newConfig.allowMultipleInstances;
+        node["loco_install_path"] = _newConfig.locoInstallPath;
+        node["last_save_path"] = _newConfig.lastSavePath;
+        node["language"] = _newConfig.language;
+        node["breakdowns_disabled"] = _newConfig.breakdownsDisabled;
+        node["trainsReverseAtSignals"] = _newConfig.trainsReverseAtSignals;
+        node["cheats_menu_enabled"] = _newConfig.cheatsMenuEnabled;
+        node["companyAIDisabled"] = _newConfig.companyAIDisabled;
+        node["scale_factor"] = _newConfig.scaleFactor;
+        node["zoom_to_cursor"] = _newConfig.zoomToCursor;
+        node["autosave_frequency"] = _newConfig.autosaveFrequency;
+        node["autosave_amount"] = _newConfig.autosaveAmount;
+        node["showFPS"] = _newConfig.showFPS;
+        node["uncapFPS"] = _newConfig.uncapFPS;
+        node["displayLockedVehicles"] = _newConfig.displayLockedVehicles;
+        node["buildLockedVehicles"] = _newConfig.buildLockedVehicles;
+        node["invertRightMouseViewPan"] = _newConfig.invertRightMouseViewPan;
+        node["cashPopupRendering"] = _newConfig.cashPopupRendering;
 
         // Shortcuts
-        const auto& shortcuts = _new_config.shortcuts;
+        const auto& shortcuts = _newConfig.shortcuts;
         const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto scNode = node["shortcuts"];
         for (size_t i = 0; i < std::size(shortcuts); i++)
@@ -288,7 +288,7 @@ namespace OpenLoco::Config
     void resetShortcuts()
     {
         const auto& shortcutDefs = Input::ShortcutManager::getList();
-        auto& shortcuts = _new_config.shortcuts;
+        auto& shortcuts = _newConfig.shortcuts;
         for (size_t i = 0; i < std::size(shortcuts); i++)
         {
             auto& def = shortcutDefs[i];

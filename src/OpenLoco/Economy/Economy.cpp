@@ -11,7 +11,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Economy
 {
-    static const uint32_t kInflationFactors[32] = {
+    static constexpr uint32_t kInflationFactors[32] = {
         20,
         20,
         20,
@@ -71,7 +71,7 @@ namespace OpenLoco::Economy
                 continue;
             }
 
-            for (uint16_t numDays = 2; numDays <= 122; ++numDays)
+            for (uint16_t numDays = 2; numDays < 122; numDays += 2)
             {
                 _deliveredCargoPayment[cargoItem][(numDays / 2) - 1] = CompanyManager::calculateDeliveredCargoPayment(cargoItem, 100, 10, numDays);
             }

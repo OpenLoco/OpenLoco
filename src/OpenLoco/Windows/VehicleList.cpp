@@ -27,9 +27,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
-    static const Ui::Size window_size = { 550, 213 };
-    static const Ui::Size max_dimensions = { 550, 1200 };
-    static const Ui::Size min_dimensions = { 220, 160 };
+    static constexpr Ui::Size kWindowSize = { 550, 213 };
+    static constexpr Ui::Size kMaxDimensions = { 550, 1200 };
+    static constexpr Ui::Size kMinDimensions = { 220, 160 };
 
     static WindowEventList _events;
 
@@ -330,7 +330,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2A6E
-    static void drawTabs(Window* self, Gfx::Context* context)
+    static void drawTabs(Window* self, Gfx::RenderTarget* rt)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(CompanyId(self->number));
@@ -404,10 +404,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
 
             auto isActive = tab == self->currentTab + Widx::tab_trains;
-            auto imageId = isActive ? frames[self->frame_no / 2 % 8] : frames[0];
+            auto imageId = isActive ? frames[self->frameNo / 2 % 8] : frames[0];
 
             uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
-            Widget::drawTab(self, context, image, tab);
+            Widget::drawTab(self, rt, image, tab);
         }
     }
 
@@ -426,7 +426,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         Window* self = WindowManager::createWindow(
             WindowType::vehicleList,
-            window_size,
+            kWindowSize,
             WindowFlags::flag_11,
             &_events);
 
@@ -434,7 +434,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->enabledWidgets = _enabledWidgets;
         self->number = enumValue(companyId);
         self->owner = companyId;
-        self->frame_no = 0;
+        self->frameNo = 0;
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         self->setColour(WindowColour::secondary, skin->colour_0A);
@@ -461,8 +461,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;
         self->rowHeight = row_heights[tabIndex];
-        self->width = window_size.width;
-        self->height = window_size.height;
+        self->width = kWindowSize.width;
+        self->height = kWindowSize.height;
         self->sortMode = 0;
         self->var_83C = 0;
         self->rowHover = -1;
@@ -589,21 +589,21 @@ namespace OpenLoco::Ui::Windows::VehicleList
             self.disabledWidgets &= ~((1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn));
 
         // Set appropriate tooltip
-        static constexpr std::array<string_id, 3> filterTooltipByType = {
+        static constexpr std::array<string_id, 3> kFilterTooltipByType = {
             StringIds::null,
             StringIds::tooltip_open_station_window_to_filter,
             StringIds::tooltip_select_cargo_type,
         };
-        self.widgets[Widx::cargo_type_btn].tooltip = filterTooltipByType[self.var_88A];
+        self.widgets[Widx::cargo_type_btn].tooltip = kFilterTooltipByType[self.var_88A];
 
         Widget::leftAlignTabs(self, Widx::tab_trains, Widx::tab_ships);
     }
 
     // 0x004C211C
-    static void draw(Window& self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        self.draw(context);
-        drawTabs(&self, context);
+        self.draw(rt);
+        drawTabs(&self, rt);
 
         // Draw company owner image.
         auto company = CompanyManager::get(CompanyId(self.number));
@@ -611,7 +611,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         uint32_t image = Gfx::recolour(competitorObj->images[company->ownerEmotion], company->mainColours.primary);
         uint16_t x = self.x + self.widgets[Widx::company_select].left + 1;
         uint16_t y = self.y + self.widgets[Widx::company_select].top + 1;
-        Gfx::drawImage(context, x, y, image);
+        Gfx::drawImage(rt, x, y, image);
 
         static constexpr std::pair<string_id, string_id> typeToFooterStringIds[]{
             { StringIds::num_trains_singular, StringIds::num_trains_plural },
@@ -629,7 +629,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             string_id footerStringId = self.var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
             args = FormatArguments::common(footerStringId, self.var_83C);
-            Gfx::drawStringLeft(*context, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawStringLeft(*rt, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::black_stringid, &args);
         }
 
         static constexpr std::array<string_id, 3> typeToFilterStringIds{
@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             string_id filter = typeToFilterStringIds[self.var_88A];
             args = FormatArguments::common(filter);
             auto* widget = &self.widgets[Widx::filter_type];
-            Gfx::drawStringLeftClipped(*context, self.x + widget->left + 1, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawStringLeftClipped(*rt, self.x + widget->left + 1, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         auto* widget = &self.widgets[Widx::cargo_type];
@@ -671,7 +671,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             {
                 // Show current cargo
                 auto cargoObj = ObjectManager::get<CargoObject>(self.var_88C);
-                args = FormatArguments::common(StringIds::carrying_cargoid_sprite, cargoObj->name, cargoObj->unit_inline_sprite);
+                args = FormatArguments::common(StringIds::carrying_cargoid_sprite, cargoObj->name, cargoObj->unitInlineSprite);
 
                 // NB: the -9 in the xpos is to compensate for a hack due to the cargo dropdown limitation (only three args per item)
                 xPos = self.x + widget->left - 9;
@@ -685,16 +685,16 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (filterActive)
         {
             // Draw filter text as prepared
-            Gfx::drawStringLeftClipped(*context, xPos, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawStringLeftClipped(*rt, xPos, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
     }
 
     // 0x004B6D43
-    static void drawVehicle(VehicleHead* vehicle, Gfx::Context* context, uint16_t yPos)
+    static void drawVehicle(VehicleHead* vehicle, Gfx::RenderTarget* rt, uint16_t yPos)
     {
         registers regs;
         regs.esi = X86Pointer(vehicle);
-        regs.edi = X86Pointer(context);
+        regs.edi = X86Pointer(rt);
         regs.al = 0x40;
         regs.cx = 0;
         regs.dx = yPos;
@@ -702,10 +702,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C21CD
-    static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
+    static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
         auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 1);
-        Gfx::clearSingle(context, shade);
+        Gfx::clearSingle(rt, shade);
 
         auto yPos = 0;
         for (auto i = 0; i < self.var_83C; i++)
@@ -713,7 +713,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             const auto vehicleId = EntityId(self.rowInfo[i]);
 
             // Item not in rendering context, or no vehicle available for this slot?
-            if (yPos + self.rowHeight < context.y || yPos >= context.y + context.height + self.rowHeight || vehicleId == EntityId::null)
+            if (yPos + self.rowHeight < rt.y || yPos >= rt.y + rt.height + self.rowHeight || vehicleId == EntityId::null)
             {
                 yPos += self.rowHeight;
                 continue;
@@ -726,10 +726,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
             // Highlight selection.
             if (head->id == EntityId(self.rowHover))
-                Gfx::drawRect(context, 0, yPos, self.width, self.rowHeight, Colours::getShade(self.getColour(WindowColour::secondary).c(), 0));
+                Gfx::drawRect(rt, 0, yPos, self.width, self.rowHeight, Colours::getShade(self.getColour(WindowColour::secondary).c(), 0));
 
             // Draw vehicle at the bottom of the row.
-            drawVehicle(head, &context, yPos + (self.rowHeight - 28) / 2 + 6);
+            drawVehicle(head, &rt, yPos + (self.rowHeight - 28) / 2 + 6);
 
             // Draw vehicle status
             {
@@ -749,7 +749,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 // Draw status
                 yPos += 2;
-                Gfx::drawStringLeftClipped(context, 1, yPos, 308, AdvancedColour(Colour::black).outline(), format, &args);
+                Gfx::drawStringLeftClipped(rt, 1, yPos, 308, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             auto vehicle = Vehicles::Vehicle(*head);
@@ -765,7 +765,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 }
 
                 auto args = FormatArguments::common(profit);
-                Gfx::drawStringLeftClipped(context, 310, yPos, 98, AdvancedColour(Colour::black).outline(), format, &args);
+                Gfx::drawStringLeftClipped(rt, 310, yPos, 98, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             // Vehicle age
@@ -776,14 +776,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
                     format = StringIds::vehicle_list_age_year;
 
                 auto args = FormatArguments::common(age);
-                Gfx::drawStringLeftClipped(context, 410, yPos, 63, AdvancedColour(Colour::black).outline(), format, &args);
+                Gfx::drawStringLeftClipped(rt, 410, yPos, 63, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             // Vehicle reliability
             {
                 int16_t reliability = vehicle.veh2->reliability;
                 auto args = FormatArguments::common(reliability);
-                Gfx::drawStringLeftClipped(context, 475, yPos, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, &args);
+                Gfx::drawStringLeftClipped(rt, 475, yPos, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, &args);
             }
 
             yPos += self.rowHeight - 2;
@@ -799,7 +799,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;
         self->rowHeight = row_heights[tabIndex];
-        self->frame_no = 0;
+        self->frameNo = 0;
 
         if (CompanyManager::getControllingId() == CompanyId(self->number) && LastGameOptionManager::getLastVehicleType() != type)
         {
@@ -896,7 +896,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 FormatArguments args{};
                 args.push(cargoObj->name);
-                args.push(cargoObj->unit_inline_sprite);
+                args.push(cargoObj->unitInlineSprite);
                 args.push(cargoId);
                 Dropdown::add(index, StringIds::carrying_cargoid_sprite, args);
 
@@ -979,7 +979,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C260B
     static void onUpdate(Window& self)
     {
-        self.frame_no++;
+        self.frameNo++;
         self.callPrepareDraw();
 
         auto widgetIndex = getTabFromType(static_cast<VehicleType>(self.currentTab));
@@ -1118,11 +1118,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         self.flags |= WindowFlags::resizable;
 
-        self.minWidth = min_dimensions.width;
-        self.minHeight = min_dimensions.height;
+        self.minWidth = kMinDimensions.width;
+        self.minHeight = kMinDimensions.height;
 
-        self.maxWidth = max_dimensions.width;
-        self.maxHeight = max_dimensions.height;
+        self.maxWidth = kMaxDimensions.width;
+        self.maxHeight = kMaxDimensions.height;
 
         if (self.width < self.minWidth)
         {

@@ -6,19 +6,19 @@
 namespace OpenLoco
 {
     // 0x004A6D5F
-    void TrackExtraObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void TrackExtraObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
         if (paintStyle == 0)
         {
-            Gfx::drawImage(&context, x, y, colourImage);
+            Gfx::drawImage(&rt, x, y, colourImage);
         }
         else
         {
-            Gfx::drawImage(&context, x, y, colourImage);
-            Gfx::drawImage(&context, x, y, colourImage + 97);
-            Gfx::drawImage(&context, x, y, colourImage + 96);
+            Gfx::drawImage(&rt, x, y, colourImage);
+            Gfx::drawImage(&rt, x, y, colourImage + 97);
+            Gfx::drawImage(&rt, x, y, colourImage + 96);
         }
     }
 
@@ -31,16 +31,16 @@ namespace OpenLoco
         }
 
         // This check missing from vanilla
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
 
-        if (-sell_cost_factor > build_cost_factor)
+        if (-sellCostFactor > buildCostFactor)
         {
             return false;
         }
-        return build_cost_factor > 0;
+        return buildCostFactor > 0;
     }
 
     // 0x004A6CF8

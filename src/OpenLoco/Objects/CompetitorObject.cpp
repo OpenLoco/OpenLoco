@@ -8,20 +8,20 @@
 namespace OpenLoco
 {
     // TODO: Should only be defined in ObjectSelectionWindow
-    static const uint8_t descriptionRowHeight = 10;
-    static const Ui::Size objectPreviewSize = { 112, 112 };
+    static constexpr uint8_t kDescriptionRowHeight = 10;
+    static constexpr Ui::Size kObjectPreviewSize = { 112, 112 };
 
     // 0x00434D5B
-    void CompetitorObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void CompetitorObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        Gfx::drawRect(context, 0, 0, objectPreviewSize.width, objectPreviewSize.height, AdvancedColour(Colour::mutedOrange).inset().u8());
+        Gfx::drawRect(rt, 0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, AdvancedColour(Colour::mutedOrange).inset().u8());
 
         auto image = Gfx::recolour(images[0], Colour::mutedSeaGreen);
-        Gfx::drawImage(&context, x - 32, y - 32, image);
+        Gfx::drawImage(&rt, x - 32, y - 32, image);
     }
 
     // 0x00434DA7
-    void CompetitorObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void CompetitorObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
         {
@@ -29,23 +29,23 @@ namespace OpenLoco
             args.push<uint16_t>(intelligence);
             args.push(aiRatingToLevel(intelligence));
 
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_intelligence, &args);
-            rowPosition.y += descriptionRowHeight;
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_intelligence, &args);
+            rowPosition.y += kDescriptionRowHeight;
         }
         {
             auto args = FormatArguments();
             args.push<uint16_t>(aggressiveness);
             args.push(aiRatingToLevel(aggressiveness));
 
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_aggressiveness, &args);
-            rowPosition.y += descriptionRowHeight;
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_aggressiveness, &args);
+            rowPosition.y += kDescriptionRowHeight;
         }
         {
             auto args = FormatArguments();
             args.push<uint16_t>(competitiveness);
             args.push(aiRatingToLevel(competitiveness));
 
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_competitiveness, &args);
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_competitiveness, &args);
         }
     }
 

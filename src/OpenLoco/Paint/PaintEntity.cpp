@@ -17,8 +17,8 @@ namespace OpenLoco::Paint
     template<typename FilterType>
     static void paintEntitiesWithFilter(PaintSession& session, const Map::Pos2& loc, FilterType&& filter)
     {
-        auto* context = session.getContext();
-        if (Config::get().vehiclesMinScale < context->zoom_level)
+        auto* rt = session.getRenderTarget();
+        if (Config::get().vehiclesMinScale < rt->zoomLevel)
         {
             return;
         }
@@ -32,25 +32,25 @@ namespace OpenLoco::Paint
         for (auto* entity : entities)
         {
             // TODO: Create a rect from context dims
-            auto left = context->x;
-            auto top = context->y;
-            auto right = left + context->width;
-            auto bottom = top + context->height;
+            auto left = rt->x;
+            auto top = rt->y;
+            auto right = left + rt->width;
+            auto bottom = top + rt->height;
 
             // TODO: Create a rect from sprite dims and use a contains function
-            if (entity->sprite_top > bottom)
+            if (entity->spriteTop > bottom)
             {
                 continue;
             }
-            if (entity->sprite_bottom <= top)
+            if (entity->spriteBottom <= top)
             {
                 continue;
             }
-            if (entity->sprite_left > right)
+            if (entity->spriteLeft > right)
             {
                 continue;
             }
-            if (entity->sprite_right <= left)
+            if (entity->spriteRight <= left)
             {
                 continue;
             }
@@ -61,7 +61,7 @@ namespace OpenLoco::Paint
             session.setCurrentItem(entity);
             session.setEntityPosition(entity->position);
             session.setItemType(InteractionItem::entity);
-            switch (entity->base_type)
+            switch (entity->baseType)
             {
                 case EntityBaseType::vehicle:
                     paintVehicleEntity(session, entity->asBase<Vehicles::VehicleBase>());

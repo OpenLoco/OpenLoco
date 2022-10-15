@@ -36,7 +36,7 @@ namespace OpenLoco::Vehicles
 
     VehicleBase* VehicleBase::nextVehicle()
     {
-        return EntityManager::get<VehicleBase>(next_thing_id);
+        return EntityManager::get<VehicleBase>(nextThingId);
     }
 
     VehicleBase* VehicleBase::nextVehicleComponent()

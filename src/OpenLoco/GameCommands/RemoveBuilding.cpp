@@ -18,14 +18,14 @@ namespace OpenLoco::GameCommands
         auto companyId = CompanyManager::getUpdatingCompanyId();
         if (companyId != CompanyId::neutral)
         {
-            auto res = TownManager::getClosestTownAndUnk(pos);
+            auto res = TownManager::getClosestTownAndDensity(pos);
             if (res.has_value())
             {
                 auto townId = res->first;
                 auto town = TownManager::get(townId);
                 if (town != nullptr)
                 {
-                    return town->company_ratings[enumValue(companyId)];
+                    return town->companyRatings[enumValue(companyId)];
                 }
             }
         }
@@ -60,12 +60,12 @@ namespace OpenLoco::GameCommands
                         return GameCommands::FAILURE;
                     }
 
-                    if ((buildingObj->flags & BuildingObjectFlags::misc_building) == 0)
+                    if ((buildingObj->flags & BuildingObjectFlags::miscBuilding) == 0)
                     {
                         auto rating = getCompanyRating(pos);
                         if (rating.has_value() && *rating < 0)
                         {
-                            auto res = TownManager::getClosestTownAndUnk(pos);
+                            auto res = TownManager::getClosestTownAndDensity(pos);
                             auto* town = TownManager::get(res->first);
                             auto formatArgs = FormatArguments::common();
                             formatArgs.push(town->name);
@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
                     }
                 }
             }
-            auto animOffsets = getUnk4F9274(buildingObj->flags & BuildingObjectFlags::large_tile);
+            auto animOffsets = getUnk4F9274(buildingObj->flags & BuildingObjectFlags::largeTile);
             for (auto animOffset : animOffsets)
             {
                 const auto subTilePos = animOffset.pos + pos;

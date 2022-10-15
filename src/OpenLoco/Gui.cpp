@@ -70,8 +70,8 @@ namespace OpenLoco::Gui
             {
                 window->viewports[0]->width = uiWidth;
                 window->viewports[0]->height = uiHeight;
-                window->viewports[0]->view_width = uiWidth << window->viewports[0]->zoom;
-                window->viewports[0]->view_height = uiHeight << window->viewports[0]->zoom;
+                window->viewports[0]->viewWidth = uiWidth << window->viewports[0]->zoom;
+                window->viewports[0]->viewHeight = uiHeight << window->viewports[0]->zoom;
             }
         }
 

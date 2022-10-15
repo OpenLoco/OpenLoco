@@ -8,7 +8,7 @@
 namespace OpenLoco
 {
     using EntityListType = EntityManager::EntityListType;
-    using EntityListIterator = EntityManager::ListIterator<EntityBase, &EntityBase::next_thing_id>;
+    using EntityListIterator = EntityManager::ListIterator<EntityBase, &EntityBase::nextThingId>;
 
     template<EntityListType id, typename Pred>
     void PopulateEntities(std::vector<EntityBase*>& list, std::vector<Map::Pos3>& posList, const Pred& pred)

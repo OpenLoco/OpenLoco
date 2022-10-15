@@ -16,6 +16,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Gui.h"
+#include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Map/AnimationManager.h"
 #include "../Map/Tile.h"
@@ -89,15 +90,15 @@ struct PaletteEntry
 };
 #pragma pack(pop)
 using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
-static Interop::loco_global<SetPaletteFunc, 0x0052524C> set_palette_callback;
+static Interop::loco_global<SetPaletteFunc, 0x0052524C> _setPaletteCallback;
 
 #ifdef _NO_LOCO_WIN32_
 FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_4054a3(const PaletteEntry* palette, int32_t index, int32_t count)
 {
-    if (set_palette_callback != nullptr)
+    if (_setPaletteCallback != nullptr)
     {
-        (*set_palette_callback)(palette, index, count);
+        (*_setPaletteCallback)(palette, index, count);
     }
 }
 
@@ -679,7 +680,7 @@ void OpenLoco::Interop::registerHooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto pos = Gfx::drawString(*X86Pointer<Gfx::Context>(regs.edi), regs.cx, regs.dx, static_cast<Colour>(regs.al), X86Pointer<uint8_t>(regs.esi));
+            auto pos = Gfx::drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), regs.cx, regs.dx, static_cast<Colour>(regs.al), X86Pointer<uint8_t>(regs.esi));
             regs = backup;
             regs.cx = pos.x;
             regs.dx = pos.y;
@@ -737,8 +738,8 @@ void OpenLoco::Interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             Ui::Window* window = X86Pointer<Ui::Window>(regs.esi);
-            auto context = X86Pointer<Gfx::Context>(regs.edi);
-            window->draw(context);
+            auto rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
+            window->draw(rt);
             regs = backup;
             return 0;
         });
@@ -900,9 +901,22 @@ void OpenLoco::Interop::registerHooks()
         0x00448C79,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            Gfx::Context* context = X86Pointer<Gfx::Context>(regs.edi);
-            Gfx::drawImage(*context, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
+            Gfx::RenderTarget* rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
+            Gfx::drawImage(*rt, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
 
+            regs = backup;
+            return 0;
+        });
+
+    registerHook(
+        0x00454A43,
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            Map::Pos2 pos{ regs.ax, regs.cx };
+            uint8_t primaryWall = regs.bl;
+            uint8_t secondaryWall = regs.bh;
+            auto* industry = IndustryManager::get(static_cast<IndustryId>(regs.dh));
+            industry->expandGrounds(pos, primaryWall, secondaryWall, regs.dl);
             regs = backup;
             return 0;
         });

@@ -10,17 +10,17 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco
 {
     // 0x0042DE40
-    void BuildingObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void BuildingObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto bit = Utility::bitScanReverse(colours);
 
         const auto colour = (bit == -1) ? Colour::black : static_cast<Colour>(bit);
 
-        drawBuilding(&context, 1, x, y + 40, colour);
+        drawBuilding(&rt, 1, x, y + 40, colour);
     }
 
     // 0x0042DB95
-    void BuildingObject::drawBuilding(Gfx::Context* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const
+    void BuildingObject::drawBuilding(Gfx::RenderTarget* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const
     {
         registers regs;
         regs.cx = x;
@@ -33,10 +33,10 @@ namespace OpenLoco
     }
 
     // 0x0042DE82
-    void BuildingObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void BuildingObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(context, rowPosition, designedYear, obsoleteYear);
+        ObjectManager::drawGenericDescription(rt, rowPosition, designedYear, obsoleteYear);
     }
 
     // 0x0042DE1E

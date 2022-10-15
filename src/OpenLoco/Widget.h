@@ -14,7 +14,7 @@ namespace OpenLoco::Ui
         // Indicates that the imageId has a colour set and not to replace it with the window colour
         // This reuses the ImageIdFlags::translucent flag for use in widget draw
         // Flag *MUST* be removed before passing to Gfx::drawImage functions
-        static constexpr uint32_t imageIdColourSet = (1 << 30);
+        static constexpr uint32_t kImageIdColourSet = (1 << 30);
         static constexpr int32_t kContentNull = 0xFFFFFFFF;
         static constexpr int32_t kContentUnk = 0xFFFFFFFE;
 
@@ -32,44 +32,44 @@ namespace OpenLoco::Ui
         };
         string_id tooltip; // 0x0E
 
-        int16_t mid_x() const;
-        int16_t mid_y() const;
+        int16_t midX() const;
+        int16_t midY() const;
         uint16_t width() const;
         uint16_t height() const;
 
-        static void drawViewportCentreButton(Gfx::Context* context, const Window* window, const WidgetIndex_t widgetIndex);
-        static void drawTab(Window* w, Gfx::Context* ctx, int32_t imageId, WidgetIndex_t index);
+        static void drawViewportCentreButton(Gfx::RenderTarget* rt, const Window* window, const WidgetIndex_t widgetIndex);
+        static void drawTab(Window* w, Gfx::RenderTarget* ctx, int32_t imageId, WidgetIndex_t index);
 
         // typical tab width, to be used in most (all?) cases
         static constexpr uint16_t kDefaultTabWidth = 30;
         static void leftAlignTabs(Window& window, uint8_t firstTabIndex, uint8_t lastTabIndex, uint16_t tabWidth = kDefaultTabWidth);
 
-        void draw(Gfx::Context* context, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
+        void draw(Gfx::RenderTarget* rt, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
 
     private:
-        void sub_4CADE8(Gfx::Context* context, const Window* window, AdvancedColour colour, bool enabled, bool disabled, bool activated);
+        void sub_4CADE8(Gfx::RenderTarget* rt, const Window* window, AdvancedColour colour, bool enabled, bool disabled, bool activated);
 
-        void drawPanel(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour);
-        void drawFrame(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour);
+        void drawPanel(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour);
+        void drawFrame(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour);
 
-        void draw_3(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated);
-        void drawTab(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated);
-        void drawButtonWithImage(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated, bool hovered);
-        void drawButtonWithColour(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated, bool hovered);
-        void drawButton(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated);
-        void draw_13(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated);
-        void draw_15(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool disabled);
-        void drawTextBox(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour);
-        void draw_22_caption(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour);
-        void draw_23_caption(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour);
-        void draw_24_caption(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour);
-        void draw_25_caption(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour);
-        void drawScrollview(Gfx::Context* context, Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated, bool hovered, int scrollview_index);
-        void draw_27_checkbox(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated);
-        void draw_27_label(Gfx::Context* context, const Window* window, uint16_t flags, AdvancedColour colour, bool disabled);
-        void draw_29(Gfx::Context* context, const Window* window);
+        void draw_3(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated);
+        void drawTab(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated);
+        void drawButtonWithImage(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated, bool hovered);
+        void drawButtonWithColour(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated, bool hovered);
+        void drawButton(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated);
+        void draw_13(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated);
+        void draw_15(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour, bool disabled);
+        void drawTextBox(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour);
+        void draw_22_caption(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour);
+        void draw_23_caption(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour);
+        void draw_24_caption(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour);
+        void draw_25_caption(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour);
+        void drawScrollview(Gfx::RenderTarget* rt, Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated, bool hovered, int scrollview_index);
+        void draw_27_checkbox(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated);
+        void draw_27_label(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour, bool disabled);
+        void draw_29(Gfx::RenderTarget* rt, const Window* window);
 
-        void drawGroupbox(Gfx::Context* const context, const Window* window);
+        void drawGroupbox(Gfx::RenderTarget* const rt, const Window* window);
     };
 #pragma pack(pop)
     static_assert(sizeof(Widget) == 0x10);

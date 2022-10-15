@@ -216,23 +216,23 @@ namespace OpenLoco::GameCommands
     }
 
     // Build vehicle
-    inline uint32_t do_5(uint16_t vehicle_type, EntityId vehicle_id = EntityId::null)
+    inline uint32_t do_5(uint16_t vehicleType, EntityId vehicleId = EntityId::null)
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.di = enumValue(vehicle_id);
-        regs.edx = vehicle_type;
+        regs.di = enumValue(vehicleId);
+        regs.edx = vehicleType;
 
         return doCommand(GameCommand::vehicleCreate, regs);
     }
 
     // Build vehicle
-    inline uint32_t queryDo_5(uint16_t vehicle_type, EntityId vehicle_id = EntityId::null)
+    inline uint32_t queryDo_5(uint16_t vehicleType, EntityId vehicleId = EntityId::null)
     {
         registers regs;
         regs.bl = 0;
-        regs.di = enumValue(vehicle_id);
-        regs.edx = vehicle_type;
+        regs.di = enumValue(vehicleId);
+        regs.edx = vehicleType;
 
         return doCommand(GameCommand::vehicleCreate, regs);
     }
@@ -1219,7 +1219,7 @@ namespace OpenLoco::GameCommands
         explicit IndustryPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx)
             , type(regs.dl)
-            , buildImmediately(regs.bh & 0x80)
+            , buildImmediately(regs.dl & 0x80)
             , srand0(regs.ebp)
             , srand1(regs.edi)
         {
@@ -1239,6 +1239,7 @@ namespace OpenLoco::GameCommands
             regs.dl = type | (buildImmediately ? 0x80 : 0);
             regs.ebp = srand0;
             regs.edi = srand1;
+            regs.esi = enumValue(command); // Vanilla bug? Investigate when doing createIndustry
             return regs;
         }
     };
@@ -1716,6 +1717,12 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/ChangeCompanyColour.cpp
     void changeCompanyColour(registers& regs);
 
+    // Defined in GameCommands/ChangeCompanyFace.cpp
+    void changeCompanyFace(registers& regs);
+
+    // Defined in GameCommands/ChangeLandMaterial.cpp
+    void changeLandMaterial(registers& regs);
+
     // Defined in GameCommands/ChangeLoan.cpp
     void changeLoan(registers& regs);
 
@@ -1727,6 +1734,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/LoadSaveQuit.cpp
     void loadSaveQuit(registers& regs);
 
+    // Defined in GameCommands/RemoveBuilding.cpp
+    void removeBuilding(registers& regs);
+
     // Defined in GameCommands/RemoveTree.cpp
     void removeTree(registers& regs);
 
@@ -1735,6 +1745,12 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/RemoveWall.cpp
     void removeWall(registers& regs);
+
+    // Defined in GameCommands/RenameCompanyName.cpp
+    void changeCompanyName(registers& regs);
+
+    // Defined in GameCommands/RenameCompanyOwner.cpp
+    void changeCompanyOwnerName(registers& regs);
 
     // Defined in GameCommands/RenameIndustry.cpp
     void renameIndustry(registers& regs);
@@ -1757,12 +1773,6 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/UpdateOwnerStatus.cpp
     void updateOwnerStatus(registers& regs);
-
-    // Defined in GameCommands/ChangeLandMaterial.cpp
-    void changeLandMaterial(registers& regs);
-
-    // Defined in GameCommands/RemoveBuilding.cpp
-    void removeBuilding(registers& regs);
 
     const Map::Pos3& getPosition();
     void setPosition(const Map::Pos3& pos);

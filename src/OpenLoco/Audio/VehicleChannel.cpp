@@ -68,7 +68,7 @@ namespace OpenLoco::Audio
     {
         auto* w = Ui::WindowManager::find(v->soundWindowType, v->soundWindowNumber);
         auto* viewport = w->viewports[0];
-        const auto uiPoint = viewport->viewportToScreen({ v->sprite_left, v->sprite_top });
+        const auto uiPoint = viewport->viewportToScreen({ v->spriteLeft, v->spriteTop });
 
         const auto zoomVolumeModifier = getZoomVolumeModifier(viewport->zoom);
 

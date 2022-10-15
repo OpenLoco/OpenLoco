@@ -2,6 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
@@ -82,7 +83,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     static void prepareDraw(Ui::Window& window);
-    static void draw(Ui::Window& window, Gfx::Context* context);
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onUpdate(Ui::Window& window);
 
@@ -95,7 +96,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
+    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs, uint32_t inputSize)
     {
         _title = title;
         _message = message;
@@ -127,7 +128,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         char temp[200] = {};
         StringManager::formatString(temp, value, valueArgs);
 
-        inputSession = Ui::TextInput::InputSession(temp);
+        inputSession = Ui::TextInput::InputSession(temp, inputSize);
         inputSession.calculateTextOffset(_widgets[Widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
@@ -218,18 +219,18 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param window @<esi>
      * @param context @<edi>
      */
-    static void draw(Ui::Window& window, Gfx::Context* context)
+    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        window.draw(context);
+        window.draw(rt);
 
         *((string_id*)(&_commonFormatArgs[0])) = _message;
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
         Ui::Point position = { (int16_t)(window.x + window.width / 2), (int16_t)(window.y + 30) };
-        Gfx::drawStringCentredWrapped(*context, position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
+        Gfx::drawStringCentredWrapped(*rt, position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[Widx::input];
-        auto clipped = Gfx::clipContext(*context, Ui::Rect(widget->left + 1 + window.x, widget->top + 1 + window.y, widget->width() - 2, widget->height() - 2));
+        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(widget->left + 1 + window.x, widget->top + 1 + window.y, widget->width() - 2, widget->height() - 2));
         if (!clipped)
         {
             return;
@@ -242,6 +243,16 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         position = { inputSession.xOffset, 1 };
         Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
+
+        const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
+        const uint16_t maxNumCharacters = inputSession.inputLenLimit;
+
+        auto args = FormatArguments();
+        args.push<uint16_t>(numCharacters);
+        args.push<uint16_t>(maxNumCharacters);
+
+        widget = &_widgets[Widx::ok];
+        Gfx::drawStringRight(*rt, window.x + widget->left - 5, window.y + widget->top + 1, Colour::black, StringIds::num_characters_left_int_int, &args);
 
         if ((inputSession.cursorFrame % 32) >= 16)
         {

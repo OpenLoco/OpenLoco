@@ -6,18 +6,18 @@
 namespace OpenLoco
 {
     // 0x00477DFE
-    void RoadObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void RoadObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
         if (paintStyle == 1)
         {
-            Gfx::drawImage(&context, x, y, colourImage + 34);
-            Gfx::drawImage(&context, x, y, colourImage + 36);
-            Gfx::drawImage(&context, x, y, colourImage + 38);
+            Gfx::drawImage(&rt, x, y, colourImage + 34);
+            Gfx::drawImage(&rt, x, y, colourImage + 36);
+            Gfx::drawImage(&rt, x, y, colourImage + 38);
         }
         else
         {
-            Gfx::drawImage(&context, x, y, colourImage + 34);
+            Gfx::drawImage(&rt, x, y, colourImage + 34);
         }
     }
 
@@ -25,33 +25,33 @@ namespace OpenLoco
     bool RoadObject::validate() const
     {
         // check missing in vanilla
-        if (cost_index >= 32)
+        if (costIndex >= 32)
         {
             return false;
         }
-        if (-sell_cost_factor > build_cost_factor)
+        if (-sellCostFactor > buildCostFactor)
         {
             return false;
         }
-        if (build_cost_factor <= 0)
+        if (buildCostFactor <= 0)
         {
             return false;
         }
-        if (tunnel_cost_factor <= 0)
+        if (tunnelCostFactor <= 0)
         {
             return false;
         }
-        if (num_bridges > 7)
+        if (numBridges > 7)
         {
             return false;
         }
-        if (num_mods > 2)
+        if (numMods > 2)
         {
             return false;
         }
         if (flags & Flags12::unk_03)
         {
-            return num_mods == 0;
+            return numMods == 0;
         }
         return true;
     }

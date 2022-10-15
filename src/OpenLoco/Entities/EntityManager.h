@@ -117,7 +117,7 @@ namespace OpenLoco::EntityManager
     };
 
     template<typename T>
-    using EntityListIterator = ListIterator<T, &EntityBase::next_thing_id>;
+    using EntityListIterator = ListIterator<T, &EntityBase::nextThingId>;
 
     template<typename T, EntityListType list>
     class EntityList

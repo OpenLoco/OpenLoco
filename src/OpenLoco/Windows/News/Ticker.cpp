@@ -42,16 +42,16 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     // 0x00429FE4
     static void onResize(Window& self)
     {
-        auto y = Ui::height() - windowSize.height + 1;
-        auto x = Ui::width() - windowSize.width - 27;
-        auto height = windowSize.height - 1;
+        auto y = Ui::height() - kWindowSize.height + 1;
+        auto x = Ui::width() - kWindowSize.width - 27;
+        auto height = kWindowSize.height - 1;
 
-        if (y != self.y || x != self.x || windowSize.width != self.width || height != self.height)
+        if (y != self.y || x != self.x || kWindowSize.width != self.width || height != self.height)
         {
             self.invalidate();
             self.y = y;
             self.x = x;
-            self.width = windowSize.width;
+            self.width = kWindowSize.width;
             self.height = height;
             self.invalidate();
         }
@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x004950EF
-    static void sub_4950EF(Gfx::Context* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
+    static void sub_4950EF(Gfx::RenderTarget* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
     {
         registers regs;
         regs.bx = buffer;
@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429DAA
-    static void draw(Ui::Window& self, Gfx::Context* context)
+    static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
     {
         if (self.var_852 != 0)
             return;
@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto width = self.width;
         auto height = self.height;
 
-        auto clipped = Gfx::clipContext(*context, { x, y, width, height });
+        auto clipped = Gfx::clipRenderTarget(*rt, { x, y, width, height });
 
         if (!clipped)
             return;
@@ -185,9 +185,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         char* newsString = news->messageString;
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
-        *buffer = ControlCodes::colour_black;
+        *buffer = ControlCodes::Colour::black;
         buffer++;
-        *buffer = ControlCodes::font_small;
+        *buffer = ControlCodes::Font::small;
         buffer++;
 
         auto newsStringChar = *newsString;

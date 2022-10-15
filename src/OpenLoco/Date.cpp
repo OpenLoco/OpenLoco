@@ -161,7 +161,7 @@ namespace OpenLoco
 
     static std::pair<MonthId, uint8_t> getMonthDay(int32_t dayOfYear)
     {
-        static constexpr std::pair<MonthId, uint8_t> month_table[] = {
+        static constexpr std::pair<MonthId, uint8_t> kMonthTable[] = {
             { MonthId::january, 1 },
             { MonthId::january, 2 },
             { MonthId::january, 3 },
@@ -529,7 +529,7 @@ namespace OpenLoco
             { MonthId::december, 30 },
             { MonthId::december, 31 },
         };
-        return month_table[dayOfYear];
+        return kMonthTable[dayOfYear];
     }
 
     uint8_t getMonthTotalDay(uint16_t year, MonthId month)

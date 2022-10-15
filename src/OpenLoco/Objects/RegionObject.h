@@ -8,7 +8,7 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct Context;
+        struct RenderTarget;
     }
 
 #pragma pack(push, 1)
@@ -22,7 +22,7 @@ namespace OpenLoco
         uint8_t var_09[4];
         uint8_t pad_0D[0x12 - 0xD];
 
-        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         // 0x0043CB89
         bool validate() const { return true; }
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);

@@ -6,14 +6,14 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ScenarioManager
 {
-    loco_global<ScenarioIndexEntry*, 0x0050AE8C> scenarioList;
-    loco_global<int32_t, 0x0050AEA0> scenarioCount;
+    loco_global<ScenarioIndexEntry*, 0x0050AE8C> _scenarioList;
+    loco_global<int32_t, 0x0050AEA0> _scenarioCount;
 
     bool hasScenariosForCategory(uint8_t category)
     {
-        for (auto i = 0; i < scenarioCount; i++)
+        for (auto i = 0; i < _scenarioCount; i++)
         {
-            ScenarioIndexEntry& entry = scenarioList[i];
+            ScenarioIndexEntry& entry = _scenarioList[i];
             if (!entry.hasFlag(ScenarioIndexFlags::flag_0))
                 continue;
 
@@ -26,9 +26,9 @@ namespace OpenLoco::ScenarioManager
 
     bool hasScenarioInCategory(uint8_t category, ScenarioIndexEntry* scenario)
     {
-        for (auto i = 0; i < scenarioCount; i++)
+        for (auto i = 0; i < _scenarioCount; i++)
         {
-            ScenarioIndexEntry* entry = &scenarioList[i];
+            ScenarioIndexEntry* entry = &_scenarioList[i];
 
             if (entry->category != category || !entry->hasFlag(ScenarioIndexFlags::flag_0))
             {
@@ -49,9 +49,9 @@ namespace OpenLoco::ScenarioManager
     uint16_t getScenarioCountByCategory(uint8_t category)
     {
         auto scenarioCountInCategory = 0;
-        for (auto i = 0; i < scenarioCount; i++)
+        for (auto i = 0; i < _scenarioCount; i++)
         {
-            ScenarioIndexEntry& entry = scenarioList[i];
+            ScenarioIndexEntry& entry = _scenarioList[i];
             if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))
                 continue;
 
@@ -64,9 +64,9 @@ namespace OpenLoco::ScenarioManager
     ScenarioIndexEntry* getNthScenarioFromCategory(uint8_t category, uint8_t index)
     {
         uint8_t j = 0;
-        for (auto i = 0; i < scenarioCount; i++)
+        for (auto i = 0; i < _scenarioCount; i++)
         {
-            ScenarioIndexEntry& entry = scenarioList[i];
+            ScenarioIndexEntry& entry = _scenarioList[i];
             if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))
                 continue;
 

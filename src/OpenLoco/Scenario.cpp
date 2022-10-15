@@ -1,6 +1,7 @@
 #include "Scenario.h"
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
+#include "CompanyRecords.h"
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
@@ -9,6 +10,7 @@
 #include "GameException.hpp"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/PaletteMap.h"
 #include "Gui.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
@@ -310,8 +312,8 @@ namespace OpenLoco::Scenario
         }
 
         Audio::pauseSound();
-        static loco_global<char[512], 0x00112CE04> scenarioFilename;
-        std::strncpy(&*scenarioFilename, fullPath.u8string().c_str(), std::size(scenarioFilename));
+        static loco_global<char[512], 0x00112CE04> _scenarioFilename;
+        std::strncpy(&*_scenarioFilename, fullPath.u8string().c_str(), std::size(_scenarioFilename));
         auto result = S5::load(fullPath, S5::LoadFlags::scenario);
         Audio::unpauseSound();
         return result;
@@ -375,7 +377,8 @@ namespace OpenLoco::Scenario
         initialiseDate(S5::getOptions().scenarioStartYear);
         initialiseSnowLine();
         sub_4748D4();
-        std::fill(std::begin(gameState.recordSpeed), std::end(gameState.recordSpeed), 0_mph);
+
+        CompanyManager::setRecords(CompanyManager::kZeroRecords);
         getObjectiveProgress().timeLimitUntilYear = getObjective().timeLimitYears - 1 + gameState.currentYear;
         getObjectiveProgress().monthsInChallenge = 0;
         call(0x0049B546);
@@ -442,7 +445,7 @@ namespace OpenLoco::Scenario
                 {
                     cargoObject = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
                 }
-                args.push(cargoObject->unit_name_plural);
+                args.push(cargoObject->unitNamePlural);
                 args.push(Scenario::getObjective().deliveredCargoAmount);
                 break;
             }

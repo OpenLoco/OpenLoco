@@ -5,9 +5,9 @@
 namespace OpenLoco
 {
     // 0x00469A75
-    void SnowObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void SnowObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        Gfx::drawImage(&context, x, y, image);
+        Gfx::drawImage(&rt, x, y, image);
     }
 
     // 0x00469A35

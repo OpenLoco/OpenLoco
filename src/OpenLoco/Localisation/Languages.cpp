@@ -10,14 +10,14 @@
 
 namespace OpenLoco::Localisation
 {
-    std::vector<LanguageDescriptor> language_descriptors;
+    std::vector<LanguageDescriptor> languageDescriptors;
 
     void enumerateLanguages()
     {
         // (Re-)initialise the languages table.
-        language_descriptors.clear();
+        languageDescriptors.clear();
         LanguageDescriptor undefinedLanguage = { "", "", "", LocoLanguageId::english_uk };
-        language_descriptors.emplace_back(undefinedLanguage);
+        languageDescriptors.emplace_back(undefinedLanguage);
 
         // Search the languages dir for YAML language files.
         fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
@@ -45,33 +45,33 @@ namespace OpenLoco::Localisation
             // Create a language descriptor for this language file.
             LanguageDescriptor language;
             language.locale = header["locale"].as<std::string>();
-            language.english_name = header["english_name"].as<std::string>();
-            language.native_name = convertUnicodeToLoco(header["native_name"].as<std::string>());
-            language.loco_original_id = (LocoLanguageId)header["loco_original_id"].as<size_t>();
+            language.englishName = header["english_name"].as<std::string>();
+            language.nativeName = convertUnicodeToLoco(header["native_name"].as<std::string>());
+            language.locoOriginalId = (LocoLanguageId)header["loco_original_id"].as<size_t>();
 
             // Store it in the languages map.
-            language_descriptors.emplace_back(language);
+            languageDescriptors.emplace_back(language);
         }
 
         // Sort by native name.
-        std::sort(language_descriptors.begin(), language_descriptors.end(), [](const LanguageDescriptor& a, const LanguageDescriptor& b) -> bool {
-            return a.native_name < b.native_name;
+        std::sort(languageDescriptors.begin(), languageDescriptors.end(), [](const LanguageDescriptor& a, const LanguageDescriptor& b) -> bool {
+            return a.nativeName < b.nativeName;
         });
     }
 
     std::vector<LanguageDescriptor>& getLanguageDescriptors()
     {
-        return language_descriptors;
+        return languageDescriptors;
     }
 
     const LanguageDescriptor& getDescriptorForLanguage(std::string target_locale)
     {
-        for (auto& ld : language_descriptors)
+        for (auto& ld : languageDescriptors)
         {
             if (ld.locale == target_locale)
                 return ld;
         }
 
-        return language_descriptors[0];
+        return languageDescriptors[0];
     }
 }

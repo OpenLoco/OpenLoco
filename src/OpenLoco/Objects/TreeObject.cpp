@@ -7,12 +7,12 @@
 namespace OpenLoco
 {
     // 0x004BE2A2
-    void TreeObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void TreeObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        uint32_t image = getTreeGrowthDisplayOffset() * num_rotations;
-        auto rotation = (num_rotations - 1) & 2;
+        uint32_t image = getTreeGrowthDisplayOffset() * numRotations;
+        auto rotation = (numRotations - 1) & 2;
         image += rotation;
-        image += sprites[0][season_state];
+        image += sprites[0][seasonState];
 
         auto colourOptions = colours;
         if (colourOptions != 0)
@@ -29,9 +29,9 @@ namespace OpenLoco
 
         if (flags & TreeObjectFlags::hasSnowVariation)
         {
-            auto snowImage = getTreeGrowthDisplayOffset() * num_rotations;
+            auto snowImage = getTreeGrowthDisplayOffset() * numRotations;
             snowImage += rotation;
-            snowImage += sprites[1][season_state];
+            snowImage += sprites[1][seasonState];
 
             if (colourOptions != 0)
             {
@@ -42,10 +42,10 @@ namespace OpenLoco
                 snowImage = Gfx::recolour(snowImage, colour);
             }
             treePos.x = x + 28;
-            Gfx::drawImage(&context, treePos.x, treePos.y, snowImage);
+            Gfx::drawImage(&rt, treePos.x, treePos.y, snowImage);
             treePos.x = 28;
         }
-        Gfx::drawImage(&context, treePos.x, treePos.y, image);
+        Gfx::drawImage(&rt, treePos.x, treePos.y, image);
     }
 
     // 0x00500775
@@ -71,18 +71,18 @@ namespace OpenLoco
     // 0x004BE24D
     bool TreeObject::validate() const
     {
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
 
         // 230/256 = ~90%
-        if (-clear_cost_factor > build_cost_factor * 230 / 256)
+        if (-clearCostFactor > buildCostFactor * 230 / 256)
         {
             return false;
         }
 
-        switch (num_rotations)
+        switch (numRotations)
         {
             default:
                 return false;

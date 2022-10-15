@@ -8,11 +8,11 @@ namespace OpenLoco
     // 0x00469973
     bool LandObject::validate() const
     {
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
-        if (cost_factor <= 0)
+        if (costFactor <= 0)
         {
             return false;
         }
@@ -51,9 +51,9 @@ namespace OpenLoco
     }
 
     // 0x004699A8
-    void LandObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void LandObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         uint32_t imageId = image + (var_03 - 1) * var_0E;
-        Gfx::drawImage(&context, x, y, imageId);
+        Gfx::drawImage(&rt, x, y, imageId);
     }
 }

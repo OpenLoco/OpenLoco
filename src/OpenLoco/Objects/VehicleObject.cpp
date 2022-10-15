@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco
 {
     // 0x004B7733
-    static void drawVehicle(Gfx::Context* context, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Ui::Point offset)
+    static void drawVehicle(Gfx::RenderTarget* rt, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Ui::Point offset)
     {
         // Eventually calls 0x4B777B part of 0x4B7741
         registers regs;
@@ -24,51 +24,51 @@ namespace OpenLoco
         regs.bl = enumValue(Colour::mutedSeaGreen);
         regs.bh = 2;
         regs.ebp = X86Pointer(vehicleObject);
-        regs.edi = X86Pointer(context);
+        regs.edi = X86Pointer(rt);
         call(0x4B7733, regs);
     }
 
     // 0x004B8C52
-    void VehicleObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void VehicleObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         // Rotation
         uint8_t unk1 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk1();
         uint8_t unk2 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk2();
 
-        drawVehicle(&context, this, unk1, unk2, Ui::Point{ x, y } + Ui::Point{ 0, 19 });
+        drawVehicle(&rt, this, unk1, unk2, Ui::Point{ x, y } + Ui::Point{ 0, 19 });
     }
 
     // TODO: Should only be defined in ObjectSelectionWindow
-    static const uint8_t descriptionRowHeight = 10;
+    static constexpr uint8_t kDescriptionRowHeight = 10;
 
     // 0x004B8C9D
-    void VehicleObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, const int16_t width) const
+    void VehicleObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(context, rowPosition, designed, obsolete);
+        ObjectManager::drawGenericDescription(rt, rowPosition, designed, obsolete);
         if (power != 0 && (mode == TransportMode::road || mode == TransportMode::rail))
         {
             FormatArguments args{};
             args.push(power);
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
-            rowPosition.y += descriptionRowHeight;
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
+            rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push<uint32_t>(StringManager::internalLengthToComma1DP(getLength()));
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_length, &args);
-            rowPosition.y += descriptionRowHeight;
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_length, &args);
+            rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(weight);
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_weight, &args);
-            rowPosition.y += descriptionRowHeight;
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_weight, &args);
+            rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(speed);
-            Gfx::drawStringLeft(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_max_speed, &args);
+            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_max_speed, &args);
         }
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         // Clear buffer
@@ -78,29 +78,29 @@ namespace OpenLoco
 
         if (strlen(buffer) != 0)
         {
-            Gfx::drawStringLeftWrapped(context, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
+            Gfx::drawStringLeftWrapped(rt, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
         }
     }
 
     void VehicleObject::getCargoString(char* buffer) const
     {
-        if (num_simultaneous_cargo_types != 0)
+        if (numSimultaneousCargoTypes != 0)
         {
             {
-                auto cargoType = Utility::bitScanForward(primary_cargo_types);
+                auto cargoType = Utility::bitScanForward(primaryCargoTypes);
                 if (cargoType != -1)
                 {
-                    auto cargoTypes = primary_cargo_types & ~(1 << cargoType);
+                    auto cargoTypes = primaryCargoTypes & ~(1 << cargoType);
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                         FormatArguments args{};
-                        auto cargoUnitName = cargoObj->unit_name_plural;
-                        if (max_primary_cargo == 1)
+                        auto cargoUnitName = cargoObj->unitNamePlural;
+                        if (maxPrimaryCargo == 1)
                         {
-                            cargoUnitName = cargoObj->unit_name_singular;
+                            cargoUnitName = cargoObj->unitNameSingular;
                         }
                         args.push(cargoUnitName);
-                        args.push<uint32_t>(max_primary_cargo);
+                        args.push<uint32_t>(maxPrimaryCargo);
                         buffer = StringManager::formatString(buffer, StringIds::stats_capacity, &args);
                     }
                     cargoType = Utility::bitScanForward(cargoTypes);
@@ -134,22 +134,22 @@ namespace OpenLoco
                 buffer = StringManager::formatString(buffer, StringIds::stats_refittable);
             }
 
-            if (num_simultaneous_cargo_types > 1)
+            if (numSimultaneousCargoTypes > 1)
             {
-                auto cargoType = Utility::bitScanForward(secondary_cargo_types);
+                auto cargoType = Utility::bitScanForward(secondaryCargoTypes);
                 if (cargoType != -1)
                 {
-                    auto cargoTypes = secondary_cargo_types & ~(1 << cargoType);
+                    auto cargoTypes = secondaryCargoTypes & ~(1 << cargoType);
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                         FormatArguments args{};
-                        auto cargoUnitName = cargoObj->unit_name_plural;
-                        if (max_secondary_cargo == 1)
+                        auto cargoUnitName = cargoObj->unitNamePlural;
+                        if (maxSecondaryCargo == 1)
                         {
-                            cargoUnitName = cargoObj->unit_name_singular;
+                            cargoUnitName = cargoObj->unitNameSingular;
                         }
                         args.push(cargoUnitName);
-                        args.push<uint32_t>(max_secondary_cargo);
+                        args.push<uint32_t>(maxSecondaryCargo);
                         buffer = StringManager::formatString(buffer, StringIds::stats_plus_string, &args);
                     }
 
@@ -184,52 +184,52 @@ namespace OpenLoco
     // 0x004B8B23
     bool VehicleObject::validate() const
     {
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
-        if (run_cost_index > 32)
+        if (runCostIndex > 32)
         {
             return false;
         }
 
-        if (cost_factor <= 0)
+        if (costFactor <= 0)
         {
             return false;
         }
-        if (run_cost_factor < 0)
+        if (runCostFactor < 0)
         {
             return false;
         }
 
         if (flags & FlagsE0::unk_09)
         {
-            if (num_mods != 0)
+            if (numMods != 0)
             {
                 return false;
             }
-            if (flags & FlagsE0::rack_rail)
+            if (flags & FlagsE0::rackRail)
             {
                 return false;
             }
         }
 
-        if (num_mods > 4)
+        if (numMods > 4)
         {
             return false;
         }
 
-        if (num_simultaneous_cargo_types > 2)
+        if (numSimultaneousCargoTypes > 2)
         {
             return false;
         }
 
-        if (num_compat > 8)
+        if (numCompat > 8)
         {
             return false;
         }
 
-        if (rack_speed > speed)
+        if (rackSpeed > speed)
         {
             return false;
         }
@@ -285,7 +285,7 @@ namespace OpenLoco
             }
         }
 
-        for (auto& bogieSprite : bogie_sprites)
+        for (auto& bogieSprite : bogieSprites)
         {
             if (!(bogieSprite.flags & BogieSpriteFlags::hasSprites))
             {
@@ -325,16 +325,16 @@ namespace OpenLoco
             anim.objectId = 0;
         }
 
-        std::fill(std::begin(required_track_extras), std::end(required_track_extras), 0);
+        std::fill(std::begin(requiredTrackExtras), std::end(requiredTrackExtras), 0);
 
-        max_primary_cargo = 0;
-        max_secondary_cargo = 0;
-        primary_cargo_types = 0;
-        secondary_cargo_types = 0;
-        num_simultaneous_cargo_types = 0;
+        maxPrimaryCargo = 0;
+        maxSecondaryCargo = 0;
+        primaryCargoTypes = 0;
+        secondaryCargoTypes = 0;
+        numSimultaneousCargoTypes = 0;
 
         std::fill(std::begin(cargoTypeSpriteOffsets), std::end(cargoTypeSpriteOffsets), 0);
-        std::fill(std::begin(compatible_vehicles), std::end(compatible_vehicles), 0);
+        std::fill(std::begin(compatibleVehicles), std::end(compatibleVehicles), 0);
 
         for (auto& bodySprite : bodySprites)
         {
@@ -350,7 +350,7 @@ namespace OpenLoco
             bodySprite.var_0A = 0;
         }
 
-        for (auto& bogieSprite : bogie_sprites)
+        for (auto& bogieSprite : bogieSprites)
         {
             bogieSprite.flatImageIds = 0;
             bogieSprite.gentleImageIds = 0;
@@ -361,7 +361,7 @@ namespace OpenLoco
             bogieSprite.numRollSprites = 0;
         }
 
-        rack_rail_type = 0;
+        rackRailType = 0;
         sound.engine1.soundObjectId = 0;
 
         std::fill(std::begin(startSounds), std::end(startSounds), 0);
@@ -373,13 +373,13 @@ namespace OpenLoco
         auto length = 0;
         for (auto i = 0; i < var_04; ++i)
         {
-            if (var_24[i].body_sprite_ind == 0xFF)
+            if (var_24[i].bodySpriteInd == 0xFF)
             {
                 continue;
             }
 
-            auto unk = var_24[i].body_sprite_ind & (VehicleObject::kMaxBodySprites - 1);
-            length += bodySprites[unk].bogey_position * 2;
+            auto unk = var_24[i].bodySpriteInd & (VehicleObject::kMaxBodySprites - 1);
+            length += bodySprites[unk].bogeyPosition * 2;
         }
         return length;
     }

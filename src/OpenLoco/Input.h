@@ -29,6 +29,13 @@ namespace OpenLoco::Input
         scrollRight,       // 9
     };
 
+    // TODO: move this
+    enum class ScreenshotType : uint8_t
+    {
+        regular = 0,
+        giant = 1,
+    };
+
     namespace Flags
     {
         constexpr uint32_t widgetPressed = 1 << 0;
@@ -102,6 +109,8 @@ namespace OpenLoco::Input
     void setMapSelectionFlags(uint8_t flags);
     void resetMapSelectionFlag(uint8_t flags);
 
+    void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type);
+
     void handleKeyboard();
     void handleMouse(int16_t x, int16_t y, MouseButton button);
     MouseButton getLastKnownButtonState();
@@ -112,7 +121,7 @@ namespace OpenLoco::Input
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();
 
-    void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widget_index);
+    void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex);
 
     Ui::Point getScrollLastLocation();
     Ui::Point getDragLastLocation();

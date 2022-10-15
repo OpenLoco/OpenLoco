@@ -7,34 +7,34 @@
 namespace OpenLoco
 {
     // 0x00490DCF
-    void AirportObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
+    void AirportObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        Gfx::drawImage(&context, x - 34, y - 34, colourImage);
+        Gfx::drawImage(&rt, x - 34, y - 34, colourImage);
     }
 
     // 0x00490DE7
-    void AirportObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void AirportObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(context, rowPosition, designed_year, obsolete_year);
+        ObjectManager::drawGenericDescription(rt, rowPosition, designedYear, obsoleteYear);
     }
 
     // 0x00490DA8
     bool AirportObject::validate() const
     {
-        if (cost_index > 32)
+        if (costIndex > 32)
         {
             return false;
         }
 
-        if (-sell_cost_factor > build_cost_factor)
+        if (-sellCostFactor > buildCostFactor)
         {
             return false;
         }
 
-        return build_cost_factor > 0;
+        return buildCostFactor > 0;
     }
 
     // 0x00490CAF

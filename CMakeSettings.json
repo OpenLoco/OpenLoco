@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "x86-Debug",
+            "generator": "Visual Studio 17 2022",
+            "configurationType": "Debug",
+            "inheritEnvironments": [ "msvc_x86" ],
+            "buildRoot": "${projectDir}\\build",
+            "installRoot": "${projectDir}\\install"
+        },
+        {
+            "name": "x86-Release",
+            "generator": "Visual Studio 17 2022",
+            "configurationType": "Release",
+            "inheritEnvironments": [ "msvc_x86" ],
+            "buildRoot": "${projectDir}\\build",
+            "installRoot": "${projectDir}\\install"
+        }
+    ]
+}

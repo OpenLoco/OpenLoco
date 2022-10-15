@@ -25,8 +25,8 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static loco_global<CompetitorObject*, 0x0050D15C> _loadedObject; // This could be any type of object
     static loco_global<int32_t, 0x0113E72C> _cursorX;
 
-    static const Ui::Size windowSize = { 400, 272 };
-    static constexpr uint32_t rowHeight = 10;
+    static constexpr Ui::Size kWindowSize = { 400, 272 };
+    static constexpr uint32_t kRowHeight = 10;
     static WindowEventList events;
 
     enum widx
@@ -41,12 +41,12 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     // 0x509680
     static Widget widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 398, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::company_face_selection_title),
         makeWidget({ 385, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 400, 257 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 19 }, { 188, 248 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
-        makeWidget({ 265, 23 }, { 66, 66 }, WidgetType::wt_5, WindowColour::secondary),
+        makeWidget({ 265, 23 }, { 66, 66 }, WidgetType::wt_6, WindowColour::secondary),
         widgetEnd(),
     };
 
@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         else
         {
             initEvents();
-            self = WindowManager::createWindow(WindowType::companyFaceSelection, windowSize, 0, &events);
+            self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, 0, &events);
             self->widgets = widgets;
             self->enabledWidgets = (1 << widx::close_button);
             self->initScrollWidgets();
@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x4352BB
     static void getScrollSize(Window& self, const uint32_t scrollIndex, uint16_t* const scrollWidth, uint16_t* const scrollHeight)
     {
-        *scrollHeight = _numberCompetitorObjects * rowHeight;
+        *scrollHeight = _numberCompetitorObjects * kRowHeight;
     }
 
     static bool isInUseCompetitor(const uint32_t objIndex)
@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static ObjectManager::ObjIndexPair getObjectFromSelection(const int16_t& y)
     {
-        const int16_t rowIndex = y / rowHeight;
+        const int16_t rowIndex = y / kRowHeight;
         const auto objects = ObjectManager::getAvailableObjects(ObjectType::competitor);
         if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= objects.size())
         {
@@ -210,9 +210,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x435003
-    static void draw(Window& self, Gfx::Context* const context)
+    static void draw(Window& self, Gfx::RenderTarget* const rt)
     {
-        self.draw(context);
+        self.draw(rt);
         if (self.rowHover == -1)
         {
             return;
@@ -224,22 +224,22 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto t = self.y + 1 + self.widgets[widx::face_frame].top;
             const auto r = self.x - 1 + self.widgets[widx::face_frame].right;
             const auto b = self.y - 1 + self.widgets[widx::face_frame].bottom;
-            Gfx::fillRect(*context, l, t, r, b, colour);
+            Gfx::fillRect(*rt, l, t, r, b, colour);
 
             const CompetitorObject* competitor = _loadedObject;
             uint32_t img = competitor->images[0] + 1 + (1 << 29);
-            Gfx::drawImage(context, l, t, img);
+            Gfx::drawImage(rt, l, t, img);
         }
 
         {
-            const auto x = self.x + self.widgets[widx::face_frame].mid_x();
+            const auto x = self.x + self.widgets[widx::face_frame].midX();
             const auto y = self.y + self.widgets[widx::face_frame].bottom + 3;
             const auto width = self.width - self.widgets[widx::scrollview].right - 6;
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-            *str++ = ControlCodes::window_colour_2;
+            *str++ = ControlCodes::windowColour2;
             auto objectPtr = self.object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
-            Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none
@@ -247,20 +247,20 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00435152
-    static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
+    static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
-        Gfx::clearSingle(context, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+        Gfx::clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         auto index = 0;
         for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
         {
-            const auto y = index * rowHeight;
-            uint8_t inlineColour = ControlCodes::colour_black;
+            const auto y = index * kRowHeight;
+            uint8_t inlineColour = ControlCodes::Colour::black;
 
             if (index == self.rowHover)
             {
-                inlineColour = ControlCodes::window_colour_2;
-                Gfx::fillRect(context, 0, y, self.width, y + 9, 0x2000000 | 48);
+                inlineColour = ControlCodes::windowColour2;
+                Gfx::fillRect(rt, 0, y, self.width, y + 9, 0x2000000 | 48);
             }
 
             std::string name(object.second._name);
@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
                 Gfx::setCurrentFontSpriteBase(Font::m1);
                 stringColour = self.getColour(WindowColour::secondary).opaque().inset();
             }
-            Gfx::drawString(context, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
+            Gfx::drawString(rt, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
 
             index++;
         }

@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 {
     static TilePos2 _currentPosition{};
 
-    constexpr Ui::Size windowSize = { 250, 182 };
+    static constexpr Ui::Size kWindowSize = { 250, 182 };
 
     namespace widx
     {
@@ -57,15 +57,15 @@ namespace OpenLoco::Ui::Windows::TileInspector
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, windowSize.height - 15 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
+        makeWidget({ kWindowSize.width - 15, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { kWindowSize.width, kWindowSize.height - 15 }, WidgetType::panel, WindowColour::secondary),
         makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::textbox, WindowColour::secondary),
         makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::textbox, WindowColour::secondary),
-        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
-        makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
-        makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
+        makeWidget({ kWindowSize.width - 26, 18 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
+        makeWidget({ 4, 46 }, { kWindowSize.width - 8, 100 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
+        makeWidget({ 4, 148 }, { kWindowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
         widgetEnd(),
     };
 
@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
         window = WindowManager::createWindow(
             WindowType::tileInspector,
-            windowSize,
+            kWindowSize,
             0,
             &_events);
 
@@ -117,21 +117,21 @@ namespace OpenLoco::Ui::Windows::TileInspector
             self.activatedWidgets &= ~(1 << widx::select);
     }
 
-    static void draw(Ui::Window& self, Gfx::Context* const context)
+    static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
     {
         // Draw widgets.
-        self.draw(context);
+        self.draw(rt);
 
         // Coord X/Y labels
         {
             auto args = FormatArguments::common(StringIds::tile_inspector_x_coord);
             auto& widget = self.widgets[widx::xPos];
-            Gfx::drawStringLeft(*context, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawStringLeft(*rt, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
         {
             auto args = FormatArguments::common(StringIds::tile_inspector_y_coord);
             auto& widget = self.widgets[widx::yPos];
-            Gfx::drawStringLeft(*context, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawStringLeft(*rt, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         // Coord X/Y values
@@ -139,13 +139,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
             FormatArguments args = {};
             args.push<int16_t>(_currentPosition.x);
             auto& widget = self.widgets[widx::xPos];
-            Gfx::drawStringLeft(*context, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            Gfx::drawStringLeft(*rt, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
         {
             FormatArguments args = {};
             args.push<int16_t>(_currentPosition.y);
             auto& widget = self.widgets[widx::yPos];
-            Gfx::drawStringLeft(*context, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            Gfx::drawStringLeft(*rt, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
 
         // Selected element details
@@ -155,11 +155,11 @@ namespace OpenLoco::Ui::Windows::TileInspector
             std::array<uint8_t, 8>& data = tile->rawData();
 
             char buffer[32] = {};
-            buffer[0] = ControlCodes::window_colour_2;
+            buffer[0] = ControlCodes::windowColour2;
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
             auto widget = self.widgets[widx::detailsGroup];
-            Gfx::drawString(*context, self.x + widget.left + 7, self.y + widget.top + 14, Colour::black, buffer);
+            Gfx::drawString(*rt, self.x + widget.left + 7, self.y + widget.top + 14, Colour::black, buffer);
         }
     }
 
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             case ElementType::industry:
             {
                 auto& industry = element.get<IndustryElement>();
-                auto object = ObjectManager::get<IndustryObject>(industry.industry()->object_id);
+                auto object = ObjectManager::get<IndustryObject>(industry.industry()->objectId);
                 return object->name;
             }
         }
@@ -294,7 +294,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return StringIds::empty;
     }
 
-    static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t)
+    static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t)
     {
         if (_currentPosition == TilePos2(0, 0))
             return;
@@ -307,12 +307,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
             string_id formatString;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(context, 0, yPos, self.width, yPos + self.rowHeight, enumValue(Colour::darkGreen));
+                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, enumValue(Colour::darkGreen));
                 formatString = StringIds::white_stringid;
             }
             else if (self.rowHover == rowNum)
             {
-                Gfx::fillRect(context, 0, yPos, self.width, yPos + self.rowHeight, 0x2000030);
+                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, 0x2000030);
                 formatString = StringIds::wcolour2_stringid;
             }
             else
@@ -341,7 +341,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 args.push(elementName);
             }
 
-            Gfx::drawStringLeft(context, 0, yPos, Colour::black, formatString, &args);
+            Gfx::drawStringLeft(rt, 0, yPos, Colour::black, formatString, &args);
             rowNum++;
             yPos += self.rowHeight;
         }
@@ -387,22 +387,22 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 break;
 
             case widx::xPosDecrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, Map::map_columns);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, Map::kMapColumns);
                 self.invalidate();
                 break;
 
             case widx::xPosIncrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, Map::map_columns);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, Map::kMapColumns);
                 self.invalidate();
                 break;
 
             case widx::yPosDecrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, Map::map_rows);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, Map::kMapRows);
                 self.invalidate();
                 break;
 
             case widx::yPosIncrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, Map::map_rows);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, Map::kMapRows);
                 self.invalidate();
                 break;
         }

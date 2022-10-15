@@ -9,10 +9,10 @@ namespace OpenLoco::Localisation
     struct EncodingConvertEntry
     {
         utf32_t unicode;
-        uint8_t loco_code;
+        uint8_t locoCode;
     };
 
-    static const EncodingConvertEntry UnicodeToLocoTable[] = {
+    static constexpr EncodingConvertEntry kUnicodeToLocoTable[] = {
         { UnicodeChar::a_ogonek_uc, LocoChar::a_ogonek_uc },
         { UnicodeChar::a_ogonek, LocoChar::a_ogonek },
         { UnicodeChar::c_acute_uc, LocoChar::c_acute_uc },
@@ -55,35 +55,35 @@ namespace OpenLoco::Localisation
         return 0;
     }
 
-    utf32_t convertLocoToUnicode(uint8_t loco_code)
+    utf32_t convertLocoToUnicode(uint8_t locoCode)
     {
         // We can't do a binary search here, as the table is sorted by Unicode point, not Loco's internal encoding.
-        for (const auto& entry : UnicodeToLocoTable)
+        for (const auto& entry : kUnicodeToLocoTable)
         {
-            if (entry.loco_code == loco_code)
+            if (entry.locoCode == locoCode)
                 return entry.unicode;
         }
-        return loco_code;
+        return locoCode;
     }
 
     uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
-        EncodingConvertEntry* entry = (EncodingConvertEntry*)std::bsearch(&unicode, UnicodeToLocoTable, Utility::length(UnicodeToLocoTable), sizeof(EncodingConvertEntry), searchCompare);
+        EncodingConvertEntry* entry = (EncodingConvertEntry*)std::bsearch(&unicode, kUnicodeToLocoTable, Utility::length(kUnicodeToLocoTable), sizeof(EncodingConvertEntry), searchCompare);
         if (entry != nullptr)
-            return entry->loco_code;
+            return entry->locoCode;
         else if (unicode < 256)
             return unicode;
         else
             return '?';
     }
 
-    std::string convertUnicodeToLoco(std::string unicode_string)
+    std::string convertUnicodeToLoco(const std::string& unicodeString)
     {
         std::string out;
-        uint8_t* input = (uint8_t*)unicode_string.c_str();
-        while (utf32_t unicode_point = readCodePoint(&input))
+        uint8_t* input = (uint8_t*)unicodeString.c_str();
+        while (utf32_t unicodePoint = readCodePoint(&input))
         {
-            out += convertUnicodeToLoco(unicode_point);
+            out += convertUnicodeToLoco(unicodePoint);
         }
 
         return out;

@@ -40,7 +40,7 @@ namespace OpenLoco::Paint
         }
         const auto height = elTrack.baseZ() * 4;
         const auto rotation = (session.getRotation() + elTrack.unkDirection()) & 0x3;
-        if ((session.getViewFlags() & (1 << 3)) && session.getContext()->zoom_level == 0)
+        if ((session.getViewFlags() & (1 << 3)) && session.getRenderTarget()->zoomLevel == 0)
         {
             const bool isLast = elTrack.isFlag6();
             const bool isFirstTile = elTrack.sequenceIndex() == 0;
@@ -83,7 +83,7 @@ namespace OpenLoco::Paint
             call(trackPaintFunc, regs);
         }
 
-        if (session.getContext()->zoom_level > 0)
+        if (session.getRenderTarget()->zoomLevel > 0)
         {
             return;
         }

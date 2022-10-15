@@ -41,7 +41,7 @@ namespace OpenLoco::Input
     static void statePositioningWindow(MouseButton button, int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex);
     static void windowPositionEnd();
 
-    static void windowResizeBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widget_index);
+    static void windowResizeBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex);
 
     static void viewportDragBegin(Window* w);
 
@@ -55,7 +55,7 @@ namespace OpenLoco::Input
 
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
 
-    static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
+    static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
     static loco_global<uint16_t, 0x0052334A> _52334A;
     static loco_global<uint16_t, 0x0052334C> _52334C;
@@ -776,7 +776,7 @@ namespace OpenLoco::Input
             case MouseButton::released:
             {
                 // 4C74E4
-                _ticksSinceDragStart += time_since_last_tick;
+                _ticksSinceDragStart += _timeSinceLastTick;
                 auto vp = window->viewports[0];
                 if (vp == nullptr)
                 {
@@ -810,8 +810,8 @@ namespace OpenLoco::Input
                         auto offsetX = dragOffset.x << (vp->zoom + 1);
                         auto offsetY = dragOffset.y << (vp->zoom + 1);
 
-                        window->viewportConfigurations[0].saved_view_x += offsetX * invert;
-                        window->viewportConfigurations[0].saved_view_y += offsetY * invert;
+                        window->viewportConfigurations[0].savedViewX += offsetX * invert;
+                        window->viewportConfigurations[0].savedViewY += offsetY * invert;
                     }
                     else
                     {
@@ -1066,7 +1066,7 @@ namespace OpenLoco::Input
         {
             case MouseButton::released:
             {
-                _ticksSinceDragStart += time_since_last_tick;
+                _ticksSinceDragStart += _timeSinceLastTick;
                 if (x != 0 || y != 0)
                 {
                     _ticksSinceDragStart = 1000;
@@ -1258,7 +1258,7 @@ namespace OpenLoco::Input
                         {
                             auto pressedWidget = &dragWindow->widgets[_pressedWidgetIndex];
 
-                            Audio::playSound(Audio::SoundId::clickPress, dragWindow->x + pressedWidget->mid_x());
+                            Audio::playSound(Audio::SoundId::clickPress, dragWindow->x + pressedWidget->midX());
                             dragWindow->callOnMouseUp(_pressedWidgetIndex);
                         }
                     }
@@ -1442,7 +1442,7 @@ namespace OpenLoco::Input
                     if (window != nullptr && widgetIndex != -1)
                     {
                         auto buttonWidget = &window->widgets[widgetIndex];
-                        Audio::playSound(Audio::SoundId::clickUp, window->x + buttonWidget->mid_x());
+                        Audio::playSound(Audio::SoundId::clickUp, window->x + buttonWidget->midX());
                     }
                 }
                 return;
@@ -1513,7 +1513,7 @@ namespace OpenLoco::Input
             _tooltipWindowNumber = _pressedWindowNumber;
             if (window != nullptr)
             {
-                Audio::playSound(Audio::SoundId::clickUp, window->x + widget->mid_x());
+                Audio::playSound(Audio::SoundId::clickUp, window->x + widget->midX());
             }
 
             if (window != nullptr && window->type == *_pressedWindowType && window->number == _pressedWindowNumber && widgetIndex == _pressedWidgetIndex && !window->isDisabled(widgetIndex))
@@ -1631,7 +1631,7 @@ namespace OpenLoco::Input
         {
             if (window != nullptr && *_tooltipWindowType == window->type && _tooltipWindowNumber == window->number && _tooltipWidgetIndex == widgetIndex)
             {
-                _tooltipTimeout += time_since_last_tick;
+                _tooltipTimeout += _timeSinceLastTick;
                 if (_tooltipTimeout >= 8000)
                 {
                     WindowManager::close(Ui::WindowType::tooltip);
@@ -1647,7 +1647,7 @@ namespace OpenLoco::Input
 
         if (_tooltipNotShownTicks < 500 || (x == _tooltipCursorX && y == _tooltipCursorY))
         {
-            _tooltipTimeout += time_since_last_tick;
+            _tooltipTimeout += _timeSinceLastTick;
             int bp = 2000;
             if (_tooltipNotShownTicks <= 1000)
             {
@@ -1753,7 +1753,7 @@ namespace OpenLoco::Input
             default:
                 if (window->isEnabled(widgetIndex) && !window->isDisabled(widgetIndex))
                 {
-                    Audio::playSound(Audio::SoundId::clickDown, window->x + widget->mid_x());
+                    Audio::playSound(Audio::SoundId::clickDown, window->x + widget->midX());
 
                     // Set new cursor down widget
                     _pressedWidgetIndex = widgetIndex;
@@ -1846,10 +1846,10 @@ namespace OpenLoco::Input
 #pragma mark - Window positioning
 
     // 0x004C877D
-    void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widget_index)
+    void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex)
     {
         state(State::positioningWindow);
-        _pressedWidgetIndex = widget_index;
+        _pressedWidgetIndex = widgetIndex;
         _dragLastX = x;
         _dragLastY = y;
         _dragWindowType = window->type;
@@ -1869,10 +1869,10 @@ namespace OpenLoco::Input
 #pragma mark - Window resizing
 
     // 0x004C85D1
-    static void windowResizeBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widget_index)
+    static void windowResizeBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widgetIndex)
     {
         state(State::resizing);
-        _pressedWidgetIndex = widget_index;
+        _pressedWidgetIndex = widgetIndex;
         _dragLastX = x;
         _dragLastY = y;
         _dragWindowType = window->type;

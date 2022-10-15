@@ -232,8 +232,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         placementArgs.type = _lastSelectedStationType;
         placementArgs.rotation = _constructionRotation;
         auto* airportObject = ObjectManager::get<AirportObject>(placementArgs.type);
-        TilePos2 minPos(airportObject->min_x, airportObject->min_y);
-        TilePos2 maxPos(airportObject->max_x, airportObject->max_y);
+        TilePos2 minPos(airportObject->minX, airportObject->minY);
+        TilePos2 maxPos(airportObject->maxX, airportObject->maxY);
 
         minPos = Math::Vector::rotate(minPos, placementArgs.rotation);
         maxPos = Math::Vector::rotate(maxPos, placementArgs.rotation);
@@ -347,7 +347,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
                         auto* industry = elIndustry->industry();
                         const auto* industryObj = industry->getObject();
-                        if (!(industryObj->flags & IndustryObjectFlags::built_on_water))
+                        if (!(industryObj->flags & IndustryObjectFlags::builtOnWater))
                         {
                             continue;
                         }
@@ -614,10 +614,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049DE40
-    static void draw(Window& self, Gfx::Context* context)
+    static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        self.draw(context);
-        Common::drawTabs(&self, context);
+        self.draw(rt);
+        Common::drawTabs(&self, rt);
 
         auto company = CompanyManager::getPlayerCompany();
         auto companyColour = company->mainColours.primary;
@@ -628,20 +628,20 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
             auto imageId = Gfx::recolour(airportObj->image, companyColour);
-            Gfx::drawImage(context, xPos, yPos, imageId);
+            Gfx::drawImage(rt, xPos, yPos, imageId);
         }
         else if (_byte_1136063 & (1 << 6))
         {
             auto dockObj = ObjectManager::get<DockObject>(_lastSelectedStationType);
             auto imageId = Gfx::recolour(dockObj->image, companyColour);
-            Gfx::drawImage(context, xPos, yPos, imageId);
+            Gfx::drawImage(rt, xPos, yPos, imageId);
         }
         else if (_trackType & (1 << 7))
         {
             auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(roadStationObj->image + RoadStation::ImageIds::preview_image, companyColour);
-            Gfx::drawImage(context, xPos, yPos, imageId);
+            Gfx::drawImage(rt, xPos, yPos, imageId);
 
             auto colour = Colours::getTranslucent(companyColour);
             if (!(roadStationObj->flags & RoadStationFlags::recolourable))
@@ -650,14 +650,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
 
             imageId = Gfx::recolourTranslucent(roadStationObj->image + RoadStation::ImageIds::preview_image_windows, colour);
-            Gfx::drawImage(context, xPos, yPos, imageId);
+            Gfx::drawImage(rt, xPos, yPos, imageId);
         }
         else
         {
             auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
-            Gfx::drawImage(context, xPos, yPos, imageId);
+            Gfx::drawImage(rt, xPos, yPos, imageId);
 
             auto colour = Colours::getTranslucent(companyColour);
             if (!(trainStationObj->flags & TrainStationFlags::recolourable))
@@ -666,7 +666,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
 
             imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
-            Gfx::drawImage(context, xPos, yPos, imageId);
+            Gfx::drawImage(rt, xPos, yPos, imageId);
         }
 
         if (_stationCost != 0x80000000 && _stationCost != 0)
@@ -677,13 +677,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             auto args = FormatArguments();
             args.push<uint32_t>(_stationCost);
 
-            Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+            Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
 
         xPos = self.x + 3;
         yPos = self.widgets[widx::image].bottom + self.y + 16;
         auto width = self.width - 4;
-        Gfx::drawRectInset(*context, xPos, yPos, width, 1, self.getColour(WindowColour::secondary).u8(), (1 << 5));
+        Gfx::drawRectInset(*rt, xPos, yPos, width, 1, self.getColour(WindowColour::secondary).u8(), (1 << 5));
 
         if (!(_byte_522096 & (1 << 3)))
             return;
@@ -705,17 +705,17 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         xPos = self.x + 69;
         yPos = self.widgets[widx::image].bottom + self.y + 18;
         width = self.width - 4;
-        Gfx::drawStringCentredClipped(*context, xPos, yPos, width, Colour::black, StringIds::new_station_buffer, &args);
+        Gfx::drawStringCentredClipped(*rt, xPos, yPos, width, Colour::black, StringIds::new_station_buffer, &args);
 
         xPos = self.x + 2;
         yPos = self.widgets[widx::image].bottom + self.y + 29;
         Ui::Point origin = { xPos, yPos };
 
-        Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::catchment_area_accepts);
+        Gfx::drawStringLeft(*rt, &origin, Colour::black, StringIds::catchment_area_accepts);
 
         if (_constructingStationAcceptedCargoTypes == 0)
         {
-            Gfx::drawStringLeft(*context, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
+            Gfx::drawStringLeft(*rt, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {
@@ -729,7 +729,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
 
-                        Gfx::drawImage(context, origin.x, origin.y, cargoObj->unit_inline_sprite);
+                        Gfx::drawImage(rt, origin.x, origin.y, cargoObj->unitInlineSprite);
                         origin.x += 10;
                     }
                 }
@@ -740,11 +740,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         yPos = self.widgets[widx::image].bottom + self.y + 49;
         origin = { xPos, yPos };
 
-        Gfx::drawStringLeft(*context, &origin, Colour::black, StringIds::catchment_area_produces);
+        Gfx::drawStringLeft(*rt, &origin, Colour::black, StringIds::catchment_area_produces);
 
         if (_constructingStationProducedCargoTypes == 0)
         {
-            Gfx::drawStringLeft(*context, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
+            Gfx::drawStringLeft(*rt, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {
@@ -758,7 +758,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
 
-                        Gfx::drawImage(context, origin.x, origin.y, cargoObj->unit_inline_sprite);
+                        Gfx::drawImage(rt, origin.x, origin.y, cargoObj->unitInlineSprite);
                         origin.x += 10;
                     }
                 }

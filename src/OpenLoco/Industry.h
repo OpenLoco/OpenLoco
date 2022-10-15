@@ -36,13 +36,13 @@ namespace OpenLoco
         coord_t y;                  // 0x04
         uint16_t flags;             // 0x06
         Utility::prng prng;         // 0x08
-        uint8_t object_id;          // 0x10
+        uint8_t objectId;           // 0x10
         uint8_t under_construction; // 0x11 (0xFF = Finished)
         uint16_t pad_12;
-        uint8_t numTiles;        // 0x14
-        Map::Pos3 tiles[32];     // 0x15
-        TownId town;             // 0xD5
-        Map::TileLoop tile_loop; // 0xD7
+        uint8_t numTiles;       // 0x14
+        Map::Pos3 tiles[32];    // 0x15
+        TownId town;            // 0xD5
+        Map::TileLoop tileLoop; // 0xD7
         int16_t var_DB;
         int16_t var_DD;
         uint8_t var_DF;
@@ -82,7 +82,7 @@ namespace OpenLoco
         bool isMonthlyProductionClosing();
         void sub_45329B(const Map::Pos2& pos);
         void sub_453354();
-        void sub_454A43(const Map::Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl);
+        void expandGrounds(const Map::Pos2& pos, uint8_t primaryWallType, uint8_t secondaryWallType, uint8_t dl);
         void createMapAnimations();
         void updateProducedCargoStats();
     };

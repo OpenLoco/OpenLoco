@@ -50,13 +50,13 @@ namespace OpenLoco::Ui::Windows::Main
             { window->x, window->y },
             { window->width, window->height },
             ZoomLevel::full,
-            { (Map::map_rows * Map::tile_size) / 2 - 1, (Map::map_rows * Map::tile_size) / 2 - 1, 480 });
+            { (Map::kMapRows * Map::kTileSize) / 2 - 1, (Map::kMapRows * Map::kTileSize) / 2 - 1, 480 });
     }
 
     // 0x0043B2E4
-    static void draw(Ui::Window& window, Gfx::Context* const context)
+    static void draw(Ui::Window& window, Gfx::RenderTarget* const rt)
     {
-        window.drawViewports(context);
+        window.drawViewports(rt);
     }
 
     static void initEvents()

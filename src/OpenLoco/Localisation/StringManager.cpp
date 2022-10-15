@@ -21,7 +21,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::StringManager
 {
-    const uint8_t kUserStringSize = 32;
     const uint16_t kUserStringsStart = 0x8000;
     const uint16_t kUserStringsEnd = kUserStringsStart + Limits::kMaxUserStrings;
 
@@ -33,7 +32,7 @@ namespace OpenLoco::StringManager
 
     static auto& rawUserStrings() { return getGameState().userStrings; }
 
-    static std::map<int32_t, string_id> day_to_string = {
+    static std::map<int32_t, string_id> dayToString = {
         { 1, StringIds::day_1st },
         { 2, StringIds::day_2nd },
         { 3, StringIds::day_3rd },
@@ -67,7 +66,7 @@ namespace OpenLoco::StringManager
         { 31, StringIds::day_31st },
     };
 
-    static std::map<MonthId, std::pair<string_id, string_id>> month_to_string = {
+    static std::map<MonthId, std::pair<string_id, string_id>> monthToStringMap = {
         { MonthId::january, { StringIds::month_short_january, StringIds::month_long_january } },
         { MonthId::february, { StringIds::month_short_february, StringIds::month_long_february } },
         { MonthId::march, { StringIds::month_short_march, StringIds::month_long_march } },
@@ -84,7 +83,7 @@ namespace OpenLoco::StringManager
 
     std::pair<string_id, string_id> monthToString(MonthId month)
     {
-        return month_to_string[month];
+        return monthToStringMap[month];
     }
 
     // 0x0049650E
@@ -166,14 +165,14 @@ namespace OpenLoco::StringManager
     {
         auto date = calcDate(totalDays);
 
-        string_id day_string = day_to_string[date.day];
-        buffer = formatString(buffer, day_string, nullptr);
+        string_id dayString = dayToString[date.day];
+        buffer = formatString(buffer, dayString, nullptr);
 
         *buffer = ' ';
         buffer++;
 
-        string_id month_string = month_to_string[date.month].second;
-        buffer = formatString(buffer, month_string, nullptr);
+        string_id monthString = monthToString(date.month).second;
+        buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
         buffer++;
@@ -188,8 +187,8 @@ namespace OpenLoco::StringManager
     {
         auto date = calcDate(totalDays);
 
-        string_id month_string = month_to_string[date.month].second;
-        buffer = formatString(buffer, month_string, nullptr);
+        string_id monthString = monthToString(date.month).second;
+        buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
         buffer++;
@@ -204,8 +203,8 @@ namespace OpenLoco::StringManager
     {
         auto date = calcDate(totalDays);
 
-        string_id month_string = month_to_string[date.month].second;
-        buffer = formatString(buffer, month_string, nullptr);
+        string_id monthString = monthToString(date.month).second;
+        buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
         buffer++;
@@ -219,8 +218,8 @@ namespace OpenLoco::StringManager
     static char* formatRawDateMYAbbrev(uint32_t totalDays, char* buffer)
     {
         auto month = static_cast<MonthId>(totalDays % 12);
-        string_id month_string = month_to_string[month].first;
-        buffer = formatString(buffer, month_string, nullptr);
+        string_id monthString = monthToString(month).first;
+        buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
         buffer++;
@@ -243,15 +242,15 @@ namespace OpenLoco::StringManager
 
         CurrencyObject* currency = ObjectManager::get<CurrencyObject>();
 
-        int64_t localised_value = value * (1ULL << currency->factor);
+        int64_t localisedValue = value * (1ULL << currency->factor);
 
-        const char* prefix_symbol = getString(currency->prefix_symbol);
-        buffer = formatStringPart(buffer, prefix_symbol, nullptr);
+        const char* prefixSymbol = getString(currency->prefixSymbol);
+        buffer = formatStringPart(buffer, prefixSymbol, nullptr);
 
-        buffer = formatInt48Grouped(localised_value, buffer, currency->separator);
+        buffer = formatInt48Grouped(localisedValue, buffer, currency->separator);
 
-        const char* suffix_symbol = getString(currency->suffix_symbol);
-        buffer = formatStringPart(buffer, suffix_symbol, nullptr);
+        const char* suffixSymbol = getString(currency->suffixSymbol);
+        buffer = formatStringPart(buffer, suffixSymbol, nullptr);
 
         return buffer;
     }
@@ -367,21 +366,21 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::currency48:
                     {
-                        uint32_t value_low = args.pop<uint32_t>();
-                        int32_t value_high = args.pop<int16_t>();
-                        int64_t value = (value_high * (1ULL << 32)) | value_low;
+                        uint32_t valueLow = args.pop<uint32_t>();
+                        int32_t valueHigh = args.pop<int16_t>();
+                        int64_t value = (valueHigh * (1ULL << 32)) | valueLow;
                         buffer = formatCurrency(value, buffer);
                         break;
                     }
 
-                    case ControlCodes::stringid_args:
+                    case ControlCodes::stringidArgs:
                     {
                         string_id id = args.pop<string_id>();
                         buffer = formatString(buffer, id, args);
                         break;
                     }
 
-                    case ControlCodes::stringid_str:
+                    case ControlCodes::stringidStr:
                     {
                         string_id id = *(string_id*)sourceStr;
                         sourceStr += 2;
@@ -430,12 +429,12 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::velocity:
                     {
-                        auto measurement_format = Config::get().measurementFormat;
+                        auto measurementFormat = Config::get().measurementFormat;
 
                         int32_t value = args.pop<int16_t>();
 
                         const char* unit;
-                        if (measurement_format == Config::MeasurementFormat::imperial)
+                        if (measurementFormat == Config::MeasurementFormat::imperial)
                         {
                             unit = getString(StringIds::unit_mph);
                         }
@@ -470,10 +469,10 @@ namespace OpenLoco::StringManager
                     case ControlCodes::distance:
                     {
                         uint32_t value = args.pop<uint16_t>();
-                        auto measurement_format = Config::get().measurementFormat;
+                        auto measurementFormat = Config::get().measurementFormat;
 
                         const char* unit;
-                        if (measurement_format == Config::MeasurementFormat::imperial)
+                        if (measurementFormat == Config::MeasurementFormat::imperial)
                         {
                             unit = getString(StringIds::unit_ft);
                             value = std::round(value * 3.28125);
@@ -496,14 +495,14 @@ namespace OpenLoco::StringManager
                         int32_t value = args.pop<int16_t>();
 
                         bool showHeightAsUnits = Config::get().flags & Config::Flags::showHeightAsUnits;
-                        auto measurement_format = Config::get().measurementFormat;
+                        auto measurementFormat = Config::get().measurementFormat;
                         const char* unit;
 
                         if (showHeightAsUnits)
                         {
                             unit = getString(StringIds::unit_units);
                         }
-                        else if (measurement_format == Config::MeasurementFormat::imperial)
+                        else if (measurementFormat == Config::MeasurementFormat::imperial)
                         {
                             unit = getString(StringIds::unit_ft);
                             value *= 16;
@@ -525,10 +524,10 @@ namespace OpenLoco::StringManager
                     case ControlCodes::power:
                     {
                         uint32_t value = args.pop<uint16_t>();
-                        auto measurement_format = Config::get().measurementFormat;
+                        auto measurementFormat = Config::get().measurementFormat;
 
                         const char* unit;
-                        if (measurement_format == Config::MeasurementFormat::imperial)
+                        if (measurementFormat == Config::MeasurementFormat::imperial)
                         {
                             unit = getString(StringIds::unit_hp);
                         }
@@ -546,12 +545,12 @@ namespace OpenLoco::StringManager
                         break;
                     }
 
-                    case ControlCodes::inline_sprite_args:
+                    case ControlCodes::inlineSpriteArgs:
                     {
-                        *buffer = ControlCodes::inline_sprite_str;
+                        *buffer = ControlCodes::inlineSpriteStr;
                         uint32_t value = args.pop<uint32_t>();
-                        uint32_t* sprite_ptr = (uint32_t*)(buffer + 1);
-                        *sprite_ptr = value;
+                        uint32_t* spritePtr = (uint32_t*)(buffer + 1);
+                        *spritePtr = value;
                         buffer += 5;
 
                         break;

@@ -23,7 +23,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TimePanel
 {
-    static const Ui::Size window_size = { 145, 27 };
+    static constexpr Ui::Size kWindowSize = { 145, 27 };
 
     namespace Widx
     {
@@ -58,7 +58,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static WindowEventList _events;
 
     static void prepareDraw(Window& window);
-    static void draw(Ui::Window& self, Gfx::Context* context);
+    static void draw(Ui::Window& self, Gfx::RenderTarget* rt);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void textInput(Window& w, WidgetIndex_t widgetIndex, const char* str);
@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
 
-    loco_global<uint16_t[8], 0x112C826> _common_format_args;
+    loco_global<uint16_t[8], 0x112C826> _commonFormatArgs;
 
     Window* open()
     {
@@ -86,8 +86,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
         auto window = WindowManager::createWindow(
             WindowType::timeToolbar,
-            Ui::Point(Ui::width() - window_size.width, Ui::height() - window_size.height),
-            Ui::Size(window_size.width, window_size.height),
+            Ui::Point(Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height),
+            Ui::Size(kWindowSize.width, kWindowSize.height),
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             &_events);
         window->widgets = _widgets;
@@ -167,17 +167,17 @@ namespace OpenLoco::Ui::Windows::TimePanel
     };
 
     // 0x004397BE
-    static void draw(Ui::Window& self, Gfx::Context* context)
+    static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
     {
         Widget& frame = _widgets[Widx::outer_frame];
-        Gfx::drawRect(*context, self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        Gfx::drawRect(*rt, self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
-        self.draw(context);
+        self.draw(rt);
 
-        Gfx::drawRectInset(*context, self.x + frame.left + 1, self.y + frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary).u8(), 0x30);
+        Gfx::drawRectInset(*rt, self.x + frame.left + 1, self.y + frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary).u8(), 0x30);
 
-        *(uint32_t*)&_common_format_args[0] = getCurrentDay();
+        *(uint32_t*)&_commonFormatArgs[0] = getCurrentDay();
         string_id format = StringIds::date_daymonthyear;
 
         if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
@@ -193,10 +193,10 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             c = Colour::white;
         }
-        Gfx::drawStringCentred(*context, self.x + _widgets[Widx::date_btn].mid_x(), self.y + _widgets[Widx::date_btn].top + 1, c, format, &*_common_format_args);
+        Gfx::drawStringCentred(*rt, self.x + _widgets[Widx::date_btn].midX(), self.y + _widgets[Widx::date_btn].top + 1, c, format, &*_commonFormatArgs);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        Gfx::drawImage(context, self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
+        Gfx::drawImage(rt, self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
     }
 
     // 0x004398FB
@@ -244,8 +244,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static void beginSendChatMessage(Window* self)
     {
-        _common_format_args[4] = StringIds::empty;
-        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, &*_common_format_args);
+        _commonFormatArgs[4] = StringIds::empty;
+        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, &*_commonFormatArgs);
     }
 
     // 0x0043A72F

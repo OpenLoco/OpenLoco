@@ -9,15 +9,15 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct Context;
+        struct RenderTarget;
     }
 
     namespace BuildingObjectFlags
     {
-        constexpr uint32_t large_tile = 1 << 0; // 2x2 tile
-        constexpr uint32_t misc_building = 1 << 1;
+        constexpr uint32_t largeTile = 1 << 0; // 2x2 tile
+        constexpr uint32_t miscBuilding = 1 << 1;
         constexpr uint32_t undestructible = 1 << 2;
-        constexpr uint32_t is_headquarters = 1 << 3;
+        constexpr uint32_t isHeadquarters = 1 << 3;
     }
 
 #pragma pack(push, 1)
@@ -49,9 +49,9 @@ namespace OpenLoco
         uint8_t var_AD;
         uint32_t var_AE[4];
 
-        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
-        void drawBuilding(Gfx::Context* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const;
-        void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawBuilding(Gfx::RenderTarget* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const;
+        void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();

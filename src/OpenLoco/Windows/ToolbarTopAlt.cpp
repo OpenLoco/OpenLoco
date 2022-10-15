@@ -31,7 +31,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 {
-    static loco_global<uint8_t, 0x009C870C> last_town_option;
+    static loco_global<uint8_t, 0x009C870C> _lastTownOption;
 
     namespace Widx
     {
@@ -117,9 +117,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         Dropdown::add(3, StringIds::menu_about);
         Dropdown::add(4, StringIds::options);
         Dropdown::add(5, StringIds::menu_screenshot);
-        Dropdown::add(6, 0);
-        Dropdown::add(7, StringIds::menu_quit_to_menu);
-        Dropdown::add(8, StringIds::menu_exit_openloco);
+        Dropdown::add(6, StringIds::menu_giant_screenshot);
+        Dropdown::add(7, 0);
+        Dropdown::add(8, StringIds::menu_quit_to_menu);
+        Dropdown::add(9, StringIds::menu_exit_openloco);
         Dropdown::showBelow(window, widgetIndex, 9, 0);
         Dropdown::setHighlightedItem(1);
     }
@@ -163,18 +164,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 break;
 
             case 5:
-            {
-                loco_global<uint8_t, 0x00508F16> screenshot_countdown;
-                screenshot_countdown = 10;
+                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::regular);
                 break;
-            }
 
-            case 7:
+            case 6:
+                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::giant);
+                break;
+
+            case 8:
                 // Return to title screen
                 GameCommands::do_21(0, 1);
                 break;
 
-            case 8:
+            case 9:
                 // Exit to desktop
                 GameCommands::do_21(0, 2);
                 break;
@@ -333,7 +335,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window.widgets[Widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels);
         window.widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque);
 
-        if (last_town_option == 0)
+        if (_lastTownOption == 0)
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
         else
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
