@@ -1535,7 +1535,7 @@ namespace OpenLoco::Gfx
     void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image)
     {
         const auto* noiseImage = getNoiseMaskImageFromImage(image);
-        const auto palette = PaletteMap::getFromImage(image);
+        const auto palette = PaletteMap::getForImage(image);
 
         if (!palette.has_value())
         {

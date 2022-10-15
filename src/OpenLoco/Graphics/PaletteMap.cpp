@@ -65,7 +65,7 @@ namespace OpenLoco::Gfx::PaletteMap
         return std::nullopt;
     }
 
-    std::optional<View> getFromImage(const ImageId image)
+    std::optional<View> getForImage(const ImageId image)
     {
         // No remapping required so use default palette map
         if (!image.hasPrimary() && !image.isBlended())

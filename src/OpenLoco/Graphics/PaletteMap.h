@@ -25,5 +25,5 @@ namespace OpenLoco::Gfx::PaletteMap
     View getDefault();
 
     std::optional<View> getForColour(ExtColour paletteId);
-    std::optional<View> getFromImage(const ImageId image);
+    std::optional<View> getForImage(const ImageId image);
 }
