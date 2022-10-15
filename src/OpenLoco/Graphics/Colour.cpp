@@ -55,7 +55,7 @@ namespace OpenLoco::Colours
         for (uint32_t i = 0; i < 31; i++)
         {
             const auto c = static_cast<Colour>(i);
-            auto paletteMap = Gfx::getPaletteMapForColour(toExt(c));
+            auto paletteMap = Gfx::PaletteMap::getForColour(toExt(c));
             if (!paletteMap)
             {
                 continue;

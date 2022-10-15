@@ -1,10 +1,10 @@
 #pragma once
 #include "../Graphics/ImageId.h"
+#include "../Graphics/PaletteMap.h"
 #include "../Ui/Types.hpp"
 
 namespace OpenLoco::Gfx
 {
-    struct PaletteMap;
     struct G1Element;
     struct RenderTarget;
 }
@@ -19,14 +19,14 @@ namespace OpenLoco::Drawing
     };
     struct DrawSpriteArgs
     {
-        const Gfx::PaletteMap& palMap;
+        const Gfx::PaletteMap::View palMap;
         const Gfx::G1Element& sourceImage;
         Ui::Point32 srcPos;
         Ui::Point32 dstPos;
         Ui::Size size;
         const Gfx::G1Element* noiseImage;
         DrawSpriteArgs(
-            const Gfx::PaletteMap& _palMap, const Gfx::G1Element& _sourceImage, const Ui::Point32& _srcPos, const Ui::Point32& _dstPos, const Ui::Size& _size, const Gfx::G1Element* _noiseImage)
+            const Gfx::PaletteMap::View _palMap, const Gfx::G1Element& _sourceImage, const Ui::Point32& _srcPos, const Ui::Point32& _dstPos, const Ui::Size& _size, const Gfx::G1Element* _noiseImage)
             : palMap(_palMap)
             , sourceImage(_sourceImage)
             , srcPos(_srcPos)

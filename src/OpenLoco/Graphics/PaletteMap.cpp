@@ -9,68 +9,35 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Gfx
+namespace OpenLoco::Gfx::PaletteMap
 {
-    static loco_global<uint32_t[147], 0x050B8C8> _paletteToG1Offset;
+    static loco_global<uint32_t[enumValue(ExtColour::max)], 0x050B8C8> _paletteToG1Offset;
 
-    const PaletteMap& PaletteMap::getDefault()
+    // Default immutable palette map.
+    static const auto _defaultPaletteMapBuffer = [] {
+        Buffer<kDefaultSize> data;
+        std::iota(data.begin(), data.end(), 0);
+        return data;
+    }();
+
+    // This buffer is used when sprites are drawn with a secondary palette.
+    // TODO: Make this thread safe via thread_local if multi-threading is implemented.
+    static auto _secondaryPaletteMapBuffer = _defaultPaletteMapBuffer;
+
+    View getDefault()
     {
-        static bool initialised = false;
-        static uint8_t data[256];
-        static PaletteMap defaultMap(data);
-        if (!initialised)
-        {
-            std::iota(std::begin(data), std::end(data), 0);
-            initialised = true;
-        }
-        return defaultMap;
+        return _defaultPaletteMapBuffer;
     }
 
-    uint8_t& PaletteMap::operator[](size_t index)
+    static void copyPaletteMapData(Buffer<kDefaultSize>& dst, size_t dstIndex, const View src, size_t srcIndex, size_t length)
     {
-        assert(index < _dataLength);
-
-        // Provide safety in release builds
-        if (index >= _dataLength)
-        {
-            static uint8_t dummy;
-            return dummy;
-        }
-
-        return _data[index];
-    }
-
-    uint8_t PaletteMap::operator[](size_t index) const
-    {
-        assert(index < _dataLength);
-
-        // Provide safety in release builds
-        if (index >= _dataLength)
-        {
-            return 0;
-        }
-
-        return _data[index];
-    }
-
-    uint8_t PaletteMap::blend(uint8_t src, uint8_t dst) const
-    {
-        // src = 0 would be transparent so there is no blend palette for that, hence (src - 1)
-        assert(src != 0 && (src - 1) < _numMaps);
-        assert(dst < _mapLength);
-        auto idx = ((src - 1) * 256) + dst;
-        return (*this)[idx];
-    }
-
-    void PaletteMap::copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length)
-    {
-        auto maxLength = std::min(_mapLength - srcIndex, _mapLength - dstIndex);
+        auto maxLength = std::min(dst.size() - srcIndex, dst.size() - dstIndex);
         assert(length <= maxLength);
         auto copyLength = std::min(length, maxLength);
-        std::memcpy(&_data[dstIndex], &src._data[srcIndex], copyLength);
+        std::copy_n(src.begin() + srcIndex, copyLength, dst.begin() + dstIndex);
     }
 
-    std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId)
+    static std::optional<uint32_t> getPaletteG1Index(ExtColour paletteId)
     {
         if (enumValue(paletteId) < std::size(_paletteToG1Offset))
         {
@@ -79,7 +46,7 @@ namespace OpenLoco::Gfx
         return std::nullopt;
     }
 
-    std::optional<PaletteMap> getPaletteMapForColour(ExtColour paletteId)
+    std::optional<View> getForColour(ExtColour paletteId)
     {
         auto g1Index = getPaletteG1Index(paletteId);
         if (g1Index)
@@ -87,13 +54,18 @@ namespace OpenLoco::Gfx
             auto g1 = getG1Element(*g1Index);
             if (g1 != nullptr)
             {
-                return PaletteMap(g1->offset, g1->height, g1->width);
+                const size_t length = g1->width * g1->height;
+
+                // Palette maps must be of 256 entries per row.
+                assert((length % kDefaultSize) == 0);
+
+                return View(stdx::span{ g1->offset, length });
             }
         }
         return std::nullopt;
     }
 
-    std::optional<PaletteMap> getPaletteMapFromImage(const ImageId image)
+    std::optional<View> getForImage(const ImageId image)
     {
         // No remapping required so use default palette map
         if (!image.hasPrimary() && !image.isBlended())
@@ -103,35 +75,35 @@ namespace OpenLoco::Gfx
 
         if (image.hasSecondary())
         {
-            // A secondary paletteMap is made up by combinging bits from two palettes.
-            PaletteMap customMap = PaletteMap::getDefault();
-            const auto primaryMap = getPaletteMapForColour(Colours::toExt(image.getPrimary()));
-            const auto secondaryMap = getPaletteMapForColour(Colours::toExt(image.getSecondary()));
+            // Combines portions of two different palettes into the global palette map.
+            auto& paletteMap = _secondaryPaletteMapBuffer;
+            const auto primaryMap = getForColour(Colours::toExt(image.getPrimary()));
+            const auto secondaryMap = getForColour(Colours::toExt(image.getSecondary()));
             if (!primaryMap || !secondaryMap)
             {
                 assert(false);
             }
-            // Remap sections are split into two bits for primary
-            customMap.copy(PaletteIndex::primaryRemap0, *primaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
-            customMap.copy(PaletteIndex::primaryRemap3, *primaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
-            customMap.copy(PaletteIndex::secondaryRemap0, *secondaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
-            customMap.copy(PaletteIndex::secondaryRemap3, *secondaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
 
-            // TODO: Investigate if this can be simplified by just copying the primary map in full to begin with
-            // then it would only need to fill in the secondary remap section
-            return customMap;
+            // Remap sections are split into two bits for primary
+            copyPaletteMapData(paletteMap, PaletteIndex::primaryRemap0, *primaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
+            copyPaletteMapData(paletteMap, PaletteIndex::primaryRemap3, *primaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
+            copyPaletteMapData(paletteMap, PaletteIndex::secondaryRemap0, *secondaryMap, PaletteIndex::primaryRemap0, (PaletteIndex::primaryRemap2 - PaletteIndex::primaryRemap0 + 1));
+            copyPaletteMapData(paletteMap, PaletteIndex::secondaryRemap3, *secondaryMap, PaletteIndex::primaryRemap3, (PaletteIndex::primaryRemapB - PaletteIndex::primaryRemap3 + 1));
+
+            return paletteMap;
         }
         else
         {
             if (image.isBlended())
             {
-                return getPaletteMapForColour(image.getTranslucency());
+                return getForColour(image.getTranslucency());
             }
             else
             {
                 // For primary flagged images
-                return getPaletteMapForColour(image.getRemap());
+                return getForColour(image.getRemap());
             }
         }
     }
+
 }
