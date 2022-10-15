@@ -95,7 +95,7 @@ namespace OpenLoco::Audio
     static OpenAL::SourceManager _sourceManager;
     static OpenAL::BufferManager _bufferManager;
 
-    static std::unique_ptr<ChannelManager> channelManager;
+    static ChannelManager channelManager;
 
     static void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
     static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq);
@@ -224,7 +224,7 @@ namespace OpenLoco::Audio
 
         _device.open(deviceName);
 
-        channelManager = std::make_unique<ChannelManager>(_sourceManager);
+        channelManager = ChannelManager(_sourceManager);
 
         auto css1path = Environment::getPath(Environment::PathId::css1);
         _samples = loadSoundsFromCSS(css1path);
@@ -234,7 +234,7 @@ namespace OpenLoco::Audio
     // 0x00404E58
     void disposeDSound()
     {
-        channelManager->disposeChannels();
+        channelManager.disposeChannels();
         disposeSamples();
         _sourceManager.dispose();
         _bufferManager.dispose();
@@ -459,7 +459,7 @@ namespace OpenLoco::Audio
         if (v->var_4A & 1)
         {
             Console::logVerbose("playSound(vehicle #%d)", v->id);
-            channelManager->play(ChannelId::vehicle, PlaySoundParams(), v->id);
+            channelManager.play(ChannelId::vehicle, PlaySoundParams(), v->id);
         }
     }
 
@@ -561,14 +561,14 @@ namespace OpenLoco::Audio
         auto sample = getSoundSample(id);
         if (sample)
         {
-            channelManager->play(ChannelId::soundFX, PlaySoundParams{ *sample, volume, pan, freq, loop });
+            channelManager.play(ChannelId::soundFX, PlaySoundParams{ *sample, volume, pan, freq, loop });
         }
     }
 
     // 0x0048A18C
     void updateSounds()
     {
-        channelManager->stopNonPlayingChannels(ChannelId::soundFX);
+        channelManager.stopNonPlayingChannels(ChannelId::soundFX);
     }
 
     static std::optional<uint32_t> loadMusicSample(PathId asset)
@@ -612,7 +612,7 @@ namespace OpenLoco::Audio
     static void stopChannel(ChannelId id)
     {
         Console::logVerbose("stopChannel(%d)", id);
-        channelManager->stopChannels(id);
+        channelManager.stopChannels(id);
     }
 
     static void sub_48A274(Vehicles::Vehicle2or6* v)
@@ -735,7 +735,7 @@ namespace OpenLoco::Audio
                 sub_48A1FA(0);
                 sub_48A1FA(1);
                 sub_48A1FA(2);
-                channelManager->updateVehicleChannels();
+                channelManager.updateVehicleChannels();
                 sub_48A1FA(3);
             }
         }
@@ -744,13 +744,13 @@ namespace OpenLoco::Audio
     // 0x00489C6A
     void stopVehicleNoise()
     {
-        channelManager->stopChannels(ChannelId::vehicle);
+        channelManager.stopChannels(ChannelId::vehicle);
     }
 
     void stopVehicleNoise(EntityId head)
     {
         Vehicles::Vehicle train(head);
-        for (auto& channel : channelManager->getVirtualChannel(ChannelId::vehicle).channels)
+        for (auto& channel : channelManager.getVirtualChannel(ChannelId::vehicle).channels)
         {
             auto vehicleChannel = *static_cast<VehicleChannel*>(channel);
             if (vehicleChannel.getId() == train.veh2->id || vehicleChannel.getId() == train.tail->id)
@@ -854,12 +854,13 @@ namespace OpenLoco::Audio
         // variable _chosenAmbientNoisePathId
 
         // In these situations quieten until channel stopped
+        auto& channel = channelManager.getFirstChannel(ChannelId::ambient);
         if (!newAmbientSound.has_value() || (channel.isPlaying() && _chosenAmbientNoisePathId != *newAmbientSound))
         {
             const auto newVolume = channel.getAttributes().volume - kAmbientVolumeChangePerTick;
             if (newVolume < kAmbientMinVolume)
             {
-                _chosenAmbientNoisePathId = std::nullopt; 
+                _chosenAmbientNoisePathId = std::nullopt;
                 channel.stop();
             }
             else
@@ -1014,14 +1015,8 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto& cfg = Config::get();
-        if (cfg.musicPlaying == 0 || isTitleMode() || isEditorMode())
-        {
-            return;
-        }
-
-        auto& bgmChannel = channelManager->getFirstChannel(ChannelId::music);
-        if (!bgmChannel.isPlaying())
+        auto& channel = channelManager.getFirstChannel(ChannelId::music);
+        if (!channel.isPlaying())
         {
             // Not playing, but the 'current song' is last song? It's been requested manually!
             bool requestedSong = _lastSong != kNoSong && _lastSong == _currentSong;
@@ -1053,8 +1048,8 @@ namespace OpenLoco::Audio
     {
         static PathId currentTrackPathId;
 
-        auto* channel = getChannel(ChannelId::music);
-        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
+        auto& channel = channelManager.getFirstChannel(ChannelId::music);
+        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled)
         {
             return false;
         }
@@ -1065,13 +1060,13 @@ namespace OpenLoco::Audio
         }
 
         currentTrackPathId = sample;
-        channel->stop();
+        channel.stop();
 
         auto musicSample = loadMusicSample(sample);
-        if (channel->load(*musicSample))
+        if (channel.load(*musicSample))
         {
-            channel->setVolume(volume);
-            return channel->play(loop);
+            channel.setVolume(volume);
+            return channel.play(loop);
         }
 
         return false;
@@ -1093,10 +1088,10 @@ namespace OpenLoco::Audio
     // previously called void stopTitleMusic()
     void stopMusic()
     {
-        auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && channel->isPlaying())
+        auto& channel = channelManager.getFirstChannel(ChannelId::music);
+        if (_audioInitialised && channel.isPlaying())
         {
-            channel->stop();
+            channel.stop();
         }
     }
 
@@ -1131,7 +1126,7 @@ namespace OpenLoco::Audio
         cfg.volume = volume;
         Config::write();
 
-        auto& channel = channelManager->getFirstChannel(ChannelId::music);
+        auto& channel = channelManager.getFirstChannel(ChannelId::music);
         if (_audioInitialised && _currentSong != kNoSong)
         {
             channel.setVolume(volume);

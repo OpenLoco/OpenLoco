@@ -11,10 +11,10 @@ namespace OpenLoco::Audio
 {
     enum class ChannelId
     {
-        bgm,
+        music,
         unk_1,
         ambient,
-        title,
+        title_deprecated,
         vehicle, // * 10
         soundFX  // * 64
     };
@@ -26,10 +26,10 @@ namespace OpenLoco::Audio
     };
 
     static const std::unordered_map<ChannelId, VirtualChannelAttributes> kMixerChannelDefinitions = {
-        { ChannelId::bgm, VirtualChannelAttributes{ 1, 1 } },
+        { ChannelId::music, VirtualChannelAttributes{ 1, 1 } },
         { ChannelId::unk_1, VirtualChannelAttributes{ 0, 0 } },
         { ChannelId::ambient, VirtualChannelAttributes{ 1, 1 } },
-        { ChannelId::title, VirtualChannelAttributes{ 1, 1 } },
+        { ChannelId::title_deprecated, VirtualChannelAttributes{ 1, 1 } },
         { ChannelId::vehicle, VirtualChannelAttributes{ 10, 64 } },
         { ChannelId::soundFX, VirtualChannelAttributes{ 16, 64 } },
     };
