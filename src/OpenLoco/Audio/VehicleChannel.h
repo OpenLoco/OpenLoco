@@ -4,22 +4,21 @@
 
 namespace OpenLoco::Audio
 {
-    class VehicleChannel
+    class VehicleChannel : public Channel
     {
     private:
-        Channel _channel;
-        EntityId _vehicleId = EntityId::null;
-        SoundId _soundId{};
+        EntityId vehicleId = EntityId::null;
+        SoundId soundId{};
 
     public:
-        VehicleChannel(const Channel& channel)
-            : _channel(channel)
+        VehicleChannel(OpenAL::Source source)
+            : Channel::Channel(source)
         {
         }
 
-        bool isFree() const { return _vehicleId == EntityId::null; }
+        bool isFree() const { return vehicleId == EntityId::null; }
 
-        EntityId getId() const { return _vehicleId; }
+        EntityId getId() const { return vehicleId; }
         void begin(EntityId vid);
         void update();
         void stop();

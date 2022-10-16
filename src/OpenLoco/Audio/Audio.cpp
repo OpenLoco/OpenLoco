@@ -83,9 +83,6 @@ namespace OpenLoco::Audio
 
     static uint8_t _numActiveVehicleSounds; // 0x0112C666
     static std::vector<std::string> _devices;
-    static std::vector<Channel> _channels;
-    static std::vector<VehicleChannel> _vehicleChannels;
-    static std::vector<Channel> _soundFX;
 
     static std::vector<uint32_t> _samples;
     static std::unordered_map<uint16_t, uint32_t> _objectSamples;
@@ -94,6 +91,8 @@ namespace OpenLoco::Audio
     static OpenAL::Device _device;
     static OpenAL::SourceManager _sourceManager;
     static OpenAL::BufferManager _bufferManager;
+
+    static ChannelManager channelManager;
 
     static void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
     static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq);
@@ -130,16 +129,6 @@ namespace OpenLoco::Audio
         { PathId::music_get_me_to_gladstone_bay, StringIds::music_get_me_to_gladstone_bay, 1918, 1926 },
         { PathId::music_sandy_track_blues, StringIds::music_sandy_track_blues, 1921, 1929 }
     };
-
-    static Channel* getChannel(ChannelId id)
-    {
-        auto index = static_cast<size_t>(id);
-        if (index < _channels.size())
-        {
-            return &_channels[index];
-        }
-        return nullptr;
-    }
 
     static uint32_t loadSoundFromWaveMemory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
     {
@@ -184,13 +173,6 @@ namespace OpenLoco::Audio
         _samples.clear();
         _objectSamples.clear();
         _musicSamples.clear();
-    }
-
-    static void disposeChannels()
-    {
-        _channels.clear();
-        _vehicleChannels.clear();
-        _soundFX.clear();
     }
 
     static void reinitialise()
@@ -238,18 +220,8 @@ namespace OpenLoco::Audio
         }
 
         _device.open(deviceName);
-        _channels.clear();
-        for (auto i = 0; i < 4; ++i)
-        {
-            const auto sourceId = _sourceManager.allocate();
-            _channels.push_back(Channel(sourceId));
-        }
-        _vehicleChannels.clear();
-        for (auto i = 0; i < 10; ++i)
-        {
-            const auto sourceId = _sourceManager.allocate();
-            _vehicleChannels.push_back(Channel(sourceId));
-        }
+
+        channelManager = ChannelManager(_sourceManager);
 
         auto css1path = Environment::getPath(Environment::PathId::css1);
         _samples = loadSoundsFromCSS(css1path);
@@ -259,7 +231,7 @@ namespace OpenLoco::Audio
     // 0x00404E58
     void disposeDSound()
     {
-        disposeChannels();
+        channelManager.disposeChannels();
         disposeSamples();
         _sourceManager.dispose();
         _bufferManager.dispose();
@@ -464,18 +436,6 @@ namespace OpenLoco::Audio
         playSound(id, {}, pan);
     }
 
-    static VehicleChannel* getFreeVehicleChannel()
-    {
-        for (auto& vc : _vehicleChannels)
-        {
-            if (vc.isFree())
-            {
-                return &vc;
-            }
-        }
-        return nullptr;
-    }
-
     bool shouldSoundLoop(SoundId id)
     {
         loco_global<uint8_t[64], 0x0050D514> _unk_50D514;
@@ -496,11 +456,7 @@ namespace OpenLoco::Audio
         if (v->var_4A & 1)
         {
             Console::logVerbose("playSound(vehicle #%d)", v->id);
-            auto vc = getFreeVehicleChannel();
-            if (vc != nullptr)
-            {
-                vc->begin(v->id);
-            }
+            channelManager.play(ChannelId::vehicle, PlaySoundParams(), v->id);
         }
     }
 
@@ -602,39 +558,14 @@ namespace OpenLoco::Audio
         auto sample = getSoundSample(id);
         if (sample)
         {
-            auto freeChannel = std::find_if(std::begin(_soundFX), std::end(_soundFX), [](auto& channel) { return !channel.isPlaying(); });
-            Channel* channel = nullptr;
-            if (freeChannel == std::end(_soundFX))
-            {
-                _soundFX.push_back(Channel(_sourceManager.allocate()));
-                channel = &_soundFX.back();
-            }
-            else
-            {
-                channel = &*freeChannel;
-            }
-            channel->load(*sample);
-            channel->setVolume(volume);
-            channel->setFrequency(freq);
-            channel->setPan(pan);
-            channel->play(loop);
+            channelManager.play(ChannelId::soundFX, PlaySoundParams{ *sample, volume, pan, freq, loop });
         }
     }
 
     // 0x0048A18C
     void updateSounds()
     {
-        if (_soundFX.empty())
-        {
-            return;
-        }
-        for (auto& channel : _soundFX)
-        {
-            if (!channel.isPlaying())
-            {
-                channel.stop(); // This forces deallocation of buffer
-            }
-        }
+        channelManager.cleanupNonPlayingChannels(ChannelId::soundFX);
     }
 
     static std::optional<uint32_t> loadMusicSample(PathId asset)
@@ -678,12 +609,7 @@ namespace OpenLoco::Audio
     static void stopChannel(ChannelId id)
     {
         Console::logVerbose("stopChannel(%d)", id);
-
-        auto channel = getChannel(id);
-        if (channel != nullptr)
-        {
-            channel->stop();
-        }
+        channelManager.stopChannels(id);
     }
 
     static void sub_48A274(Vehicles::Vehicle2or6* v)
@@ -806,10 +732,7 @@ namespace OpenLoco::Audio
                 sub_48A1FA(0);
                 sub_48A1FA(1);
                 sub_48A1FA(2);
-                for (auto& vc : _vehicleChannels)
-                {
-                    vc.update();
-                }
+                channelManager.updateVehicleChannels();
                 sub_48A1FA(3);
             }
         }
@@ -818,21 +741,18 @@ namespace OpenLoco::Audio
     // 0x00489C6A
     void stopVehicleNoise()
     {
-        for (auto& vc : _vehicleChannels)
-        {
-            vc.stop();
-        }
+        channelManager.stopChannels(ChannelId::vehicle);
     }
 
     void stopVehicleNoise(EntityId head)
     {
         Vehicles::Vehicle train(head);
-        for (auto& vc : _vehicleChannels)
+        for (auto& channel : channelManager.getVirtualChannel(ChannelId::vehicle).channels)
         {
-            if (vc.getId() == train.veh2->id
-                || vc.getId() == train.tail->id)
+            auto vehicleChannel = *static_cast<VehicleChannel*>(channel);
+            if (vehicleChannel.getId() == train.veh2->id || vehicleChannel.getId() == train.tail->id)
             {
-                vc.stop();
+                vehicleChannel.stop();
             }
         }
     }
@@ -925,28 +845,24 @@ namespace OpenLoco::Audio
                 newAmbientSound = PathId::css4;
             }
         }
-        auto* channel = getChannel(ChannelId::ambient);
-        if (channel == nullptr)
-        {
-            return;
-        }
 
         // TODO: Consider changing this so that we ask if the channel is playing a certain
         // buffer instead of storing what buffer is playing indirectly through the global
         // variable _chosenAmbientNoisePathId
 
         // In these situations quieten until channel stopped
-        if (!newAmbientSound.has_value() || (channel->isPlaying() && _chosenAmbientNoisePathId != *newAmbientSound))
+        auto& channel = channelManager.getFirstChannel(ChannelId::ambient);
+        if (!newAmbientSound.has_value() || (channel.isPlaying() && _chosenAmbientNoisePathId != *newAmbientSound))
         {
-            const auto newVolume = channel->getAttributes().volume - kAmbientVolumeChangePerTick;
+            const auto newVolume = channel.getAttributes().volume - kAmbientVolumeChangePerTick;
             if (newVolume < kAmbientMinVolume)
             {
                 _chosenAmbientNoisePathId = std::nullopt;
-                channel->stop();
+                channel.stop();
             }
             else
             {
-                channel->setVolume(newVolume);
+                channel.setVolume(newVolume);
             }
             return;
         }
@@ -956,16 +872,16 @@ namespace OpenLoco::Audio
             auto musicBuffer = loadMusicSample(*newAmbientSound);
             if (musicBuffer.has_value())
             {
-                channel->load(*musicBuffer);
-                channel->setVolume(kAmbientMinVolume);
-                channel->play(true);
+                channel.load(*musicBuffer);
+                channel.setVolume(kAmbientMinVolume);
+                channel.play(true);
                 _chosenAmbientNoisePathId = *newAmbientSound;
             }
         }
         else
         {
-            auto newVolume = std::min(channel->getAttributes().volume + kAmbientVolumeChangePerTick, maxVolume);
-            channel->setVolume(newVolume);
+            auto newVolume = std::min(channel.getAttributes().volume + kAmbientVolumeChangePerTick, maxVolume);
+            channel.setVolume(newVolume);
         }
     }
 
@@ -1096,13 +1012,8 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto* channel = getChannel(ChannelId::music);
-        if (channel == nullptr)
-        {
-            return;
-        }
-
-        if (!channel->isPlaying())
+        auto& channel = channelManager.getFirstChannel(ChannelId::music);
+        if (!channel.isPlaying())
         {
             // Not playing, but the 'current song' is last song? It's been requested manually!
             bool requestedSong = _lastSong != kNoSong && _lastSong == _currentSong;
@@ -1134,8 +1045,8 @@ namespace OpenLoco::Audio
     {
         static PathId currentTrackPathId;
 
-        auto* channel = getChannel(ChannelId::music);
-        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
+        auto& channel = channelManager.getFirstChannel(ChannelId::music);
+        if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled)
         {
             return false;
         }
@@ -1146,13 +1057,13 @@ namespace OpenLoco::Audio
         }
 
         currentTrackPathId = sample;
-        channel->stop();
+        channel.stop();
 
         auto musicSample = loadMusicSample(sample);
-        if (channel->load(*musicSample))
+        if (channel.load(*musicSample))
         {
-            channel->setVolume(volume);
-            return channel->play(loop);
+            channel.setVolume(volume);
+            return channel.play(loop);
         }
 
         return false;
@@ -1174,10 +1085,10 @@ namespace OpenLoco::Audio
     // previously called void stopTitleMusic()
     void stopMusic()
     {
-        auto* channel = getChannel(ChannelId::music);
-        if (_audioInitialised && channel != nullptr && channel->isPlaying())
+        auto& channel = channelManager.getFirstChannel(ChannelId::music);
+        if (_audioInitialised && channel.isPlaying())
         {
-            channel->stop();
+            channel.stop();
         }
     }
 
@@ -1212,14 +1123,10 @@ namespace OpenLoco::Audio
         cfg.volume = volume;
         Config::write();
 
-        auto* channel = getChannel(ChannelId::music);
-        if (channel == nullptr)
-        {
-            return;
-        }
+        auto& channel = channelManager.getFirstChannel(ChannelId::music);
         if (_audioInitialised && _currentSong != kNoSong)
         {
-            channel->setVolume(volume);
+            channel.setVolume(volume);
         }
     }
 }
