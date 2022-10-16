@@ -110,7 +110,7 @@ namespace OpenLoco::Audio
         {
             vehicleId = vid;
             soundId = sid;
-            sa.volume = -200;
+
             load(*sample);
             play(loop);
             setVolume(sa.volume);
