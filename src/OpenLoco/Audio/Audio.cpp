@@ -1132,20 +1132,12 @@ namespace OpenLoco::Audio
     // previously called void playTitleScreenMusic()
     bool playMusic(PathId sample, int32_t volume, bool loop)
     {
-        static PathId currentTrackPathId;
-
         auto* channel = getChannel(ChannelId::music);
         if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
         {
             return false;
         }
 
-        if (currentTrackPathId == sample)
-        {
-            return true;
-        }
-
-        currentTrackPathId = sample;
         channel->stop();
 
         auto musicSample = loadMusicSample(sample);

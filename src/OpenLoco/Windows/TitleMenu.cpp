@@ -16,6 +16,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../SceneManager.h"
+#include "../Title.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Ui/Dropdown.h"
@@ -327,6 +328,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 sub_4391E2();
                 break;
             case Widx::scenario_editor_btn:
+                Title::stop();
                 sub_43910A();
                 break;
             case Widx::chat_btn:
