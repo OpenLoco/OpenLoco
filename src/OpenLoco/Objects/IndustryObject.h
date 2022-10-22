@@ -51,16 +51,16 @@ namespace OpenLoco
         uint16_t nameSingular;        // 0x0A
         uint16_t namePlural;          // 0x0C
         uint32_t var_0E;
-        uint32_t var_12;
+        uint32_t var_12; // Base image id for building 0
         uint32_t var_16;
         uint32_t var_1A;
         uint8_t var_1E;
         uint8_t var_1F;
-        uint8_t* var_20;
+        uint8_t* var_20; // This is the height of a building image
         uint32_t var_24;
         uint32_t var_28[4];
         uint32_t var_38;
-        uint8_t* var_3C[32];
+        uint8_t* var_3C[32]; // This is a pointer for buildings[32] image offsets 0xFF indicates end of image offsets
         uint8_t var_BC;
         uint8_t var_BD;
         uint32_t var_BE;
