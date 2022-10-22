@@ -56,11 +56,11 @@ namespace OpenLoco
         uint32_t var_1A;
         uint8_t var_1E;
         uint8_t var_1F;
-        uint32_t var_20;
+        uint8_t* var_20;
         uint32_t var_24;
         uint32_t var_28[4];
         uint32_t var_38;
-        uint32_t var_3C[32];
+        uint8_t* var_3C[32];
         uint8_t var_BC;
         uint8_t var_BD;
         uint32_t var_BE;
