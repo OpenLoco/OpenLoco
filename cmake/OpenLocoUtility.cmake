@@ -174,14 +174,9 @@ function(_loco_add_target TARGET TYPE)
         loco_target_compile_link_flags(${TARGET})
     elseif(_INTERFACE)
         # We want to add the headers to the interface library so that it displays
-        # nicely wihtin IDEs (unfortunately this feature is from CMake v3.19)
-        if (${CMAKE_MINOR_VERSION} LESS 19)
-            # Delete this when cmake min version updated to >19
-            add_library(${TARGET} ${TYPE})
-        else()
-            add_library(${TARGET} ${TYPE}
-                ${_PUBLIC_FILES})
-        endif()
+        # nicely wihtin IDEs
+        add_library(${TARGET} ${TYPE}
+            ${_PUBLIC_FILES})
         target_include_directories(${TARGET}
             INTERFACE
                 "${CMAKE_CURRENT_SOURCE_DIR}/include")
@@ -194,7 +189,7 @@ function(_loco_add_target TARGET TYPE)
     if (_PRIVATE_FILES)
         source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/src" PREFIX "src" FILES ${_PRIVATE_FILES})
     endif()
-    if (_TEST_FILES AND ${BUILD_TESTS})
+    if (_TEST_FILES AND ${OPENLOCO_BUILD_TESTS})
         enable_testing()
 
         # Tests will be under the libraryNameTests.exe

@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.16)
-cmake_policy(VERSION 3.16)
+cmake_minimum_required(VERSION 3.22)
+cmake_policy(VERSION 3.22)
 
 set (PROJECT openloco)
 
@@ -38,10 +38,10 @@ include(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
 include(FetchContent)
-include(Functions)
+include(OpenLocoUtility)
 
 option(STRICT "Build with warnings as errors" YES)
-option(BUILD_TESTS "Build tests" YES)
+option(OPENLOCO_BUILD_TESTS "Build tests" YES)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
@@ -50,7 +50,7 @@ list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-if (${BUILD_TESTS})
+if (${OPENLOCO_BUILD_TESTS})
     find_package(GTest REQUIRED)
 endif()
 find_package(SDL2 REQUIRED CONFIG)
