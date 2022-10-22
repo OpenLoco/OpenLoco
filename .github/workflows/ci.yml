@@ -96,7 +96,7 @@ jobs:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: openloco/openloco:3-${{ matrix.distro }}32
+    container: openloco/openloco:4-${{ matrix.distro }}32
     strategy:
       fail-fast: false
       matrix:
@@ -120,7 +120,7 @@ jobs:
     name: Fedora shared=${{ matrix.build_shared_libs }} i686 MinGW32
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: openloco/openloco:3-mingw32
+    container: openloco/openloco:4-mingw32
     strategy:
       fail-fast: false
       matrix:
