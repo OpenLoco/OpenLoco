@@ -245,6 +245,8 @@ if (NOT SDL2_LIBRARIES)
 	endif()
 endif()
 
+message("SDL2 Libs: ${SDL2_LIBRARIES}")
+
 find_package(PNG REQUIRED)
 if (NOT APPLE AND NOT MSVC)
 	pkg_check_modules(OPENAL REQUIRED openal)
@@ -309,8 +311,11 @@ endif ()
 
 target_include_directories(${PROJECT} PUBLIC ${SDL2_INCLUDE_DIRS})
 
-target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
+if (NOT WIN32 AND TARGET SDL2::SDL2main)
+    target_link_libraries(${PROJECT} SDL2::SDL2main)
+endif()
 
+target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT} Threads::Threads)
 target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
 target_link_libraries(${PROJECT} ${PNG_LIBRARY})
