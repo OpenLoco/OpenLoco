@@ -1829,5 +1829,6 @@ namespace OpenLoco::StringIds
     constexpr string_id num_characters_left_int_int = 2263;
     constexpr string_id menu_giant_screenshot = 2264;
     constexpr string_id object_selection_filename = 2265;
-    constexpr string_id object_selection_name = 2266;
+    constexpr string_id object_selection_indexname = 2266;
+    constexpr string_id object_selection_headername = 2267;
 }

@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename) + 1);
             FormatArguments args{};
             args.push<string_id>(StringIds::buffer_1250);
-            Gfx::drawStringLeft(*clipped, 0, height - kDescriptionRowHeight * 4 - 4, Colour::black, StringIds::object_selection_filename, &args);
+            Gfx::drawStringLeft(*clipped, 18, height - kDescriptionRowHeight * 5 - 4, Colour::black, StringIds::object_selection_filename, &args);
         }
 
         {
@@ -520,7 +520,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             strncpy(buffer, indexEntry._filename, strlen(indexEntry._name) + 1);
             FormatArguments args{};
             args.push<string_id>(StringIds::buffer_1250);
-            Gfx::drawStringLeft(*clipped, 0, height - kDescriptionRowHeight * 3 - 4, Colour::black, StringIds::object_selection_name, &args);
+            Gfx::drawStringLeft(*clipped, 9, height - kDescriptionRowHeight * 4 - 4, Colour::black, StringIds::object_selection_indexname, &args);
+        }
+
+        {
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            strncpy(buffer, indexEntry._filename, strlen(indexEntry._header->name));
+            FormatArguments args{};
+            args.push<string_id>(StringIds::buffer_1250);
+            Gfx::drawStringLeft(*clipped, 0, height - kDescriptionRowHeight * 3 - 4, Colour::black, StringIds::object_selection_headername, &args);
         }
     }
 
