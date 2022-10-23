@@ -508,28 +508,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         {
-            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-            strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename));
-            Gfx::drawStringLeft(*rt, self->x + self->width - 150, self->y + self->height - 32, Colour::black, StringIds::buffer_2039);
-        }
-
-        /*{
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-            strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename));
-
+            strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename) + 1);
             FormatArguments args{};
             args.push<string_id>(StringIds::buffer_1250);
-            Gfx::drawStringLeft(*rt, self->x + self->width - 150, self->y + self->height - 32, Colour::black, StringIds::object_selection_filename, &args);
+            Gfx::drawStringLeft(*clipped, 0, height - kDescriptionRowHeight * 4 - 4, Colour::black, StringIds::object_selection_filename, &args);
         }
 
         {
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-            strncpy(buffer, indexEntry._filename, strlen(indexEntry._name));
-
+            strncpy(buffer, indexEntry._filename, strlen(indexEntry._name) + 1);
             FormatArguments args{};
             args.push<string_id>(StringIds::buffer_1250);
-            Gfx::drawStringLeft(*rt, self->x + self->width - 150, self->y + self->height - 20, Colour::black, StringIds::object_selection_name, &args);
-        }*/
+            Gfx::drawStringLeft(*clipped, 0, height - kDescriptionRowHeight * 3 - 4, Colour::black, StringIds::object_selection_name, &args);
+        }
     }
 
     // 0x004733F5
