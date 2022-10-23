@@ -145,8 +145,10 @@ namespace OpenLoco::ObjectManager
         ObjectHeader problemObject;
     };
 
-    void freeScenarioText();
-    void getScenarioText(ObjectHeader& object);
+    void freeTemporaryObject();
+    void loadTemporaryObject(ObjectHeader& object);
+    Object* getTemporaryObject();
+
     std::optional<LoadedObjectHandle> findObjectHandle(const ObjectHeader& header);
     void reloadAll();
     ObjectHeader& getHeader(const LoadedObjectHandle& handle);

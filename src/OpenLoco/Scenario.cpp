@@ -43,7 +43,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Scenario
 {
-    static loco_global<CargoObject*, 0x0050D15C> _50D15C;
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
 
@@ -440,7 +439,7 @@ namespace OpenLoco::Scenario
             case Scenario::ObjectiveType::cargoDelivery:
             {
                 args.push(StringIds::deliver);
-                CargoObject* cargoObject = _50D15C;
+                CargoObject* cargoObject = reinterpret_cast<CargoObject*>(ObjectManager::getTemporaryObject());
                 if (Scenario::getObjective().deliveredCargoType != 0xFF)
                 {
                     cargoObject = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);

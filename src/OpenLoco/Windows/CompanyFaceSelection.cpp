@@ -22,7 +22,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
     static loco_global<CompanyId, 0x9C68F2> _9C68F2; // Use in a game command??
     static loco_global<uint16_t, 0x112C1C1> _numberCompetitorObjects;
-    static loco_global<CompetitorObject*, 0x0050D15C> _loadedObject; // This could be any type of object
     static loco_global<int32_t, 0x0113E72C> _cursorX;
 
     static constexpr Ui::Size kWindowSize = { 400, 272 };
@@ -114,7 +113,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x004352A4
     static void onClose(Window& self)
     {
-        ObjectManager::freeScenarioText();
+        ObjectManager::freeTemporaryObject();
     }
 
     // 0x435299
@@ -184,10 +183,10 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
         self.rowHover = rowIndex;
         self.object = reinterpret_cast<std::byte*>(object._header);
-        ObjectManager::freeScenarioText();
+        ObjectManager::freeTemporaryObject();
         if (object._header)
         {
-            ObjectManager::getScenarioText(*object._header);
+            ObjectManager::loadTemporaryObject(*object._header);
         }
         self.invalidate();
     }
@@ -226,7 +225,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto b = self.y - 1 + self.widgets[widx::face_frame].bottom;
             Gfx::fillRect(*rt, l, t, r, b, colour);
 
-            const CompetitorObject* competitor = _loadedObject;
+            const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(ObjectManager::getTemporaryObject());
             uint32_t img = competitor->images[0] + 1 + (1 << 29);
             Gfx::drawImage(rt, l, t, img);
         }

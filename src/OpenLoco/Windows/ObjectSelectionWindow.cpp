@@ -168,14 +168,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         sub_473154(window);
         sub_4731EE(window, ObjectType::region);
-        ObjectManager::freeScenarioText();
+        ObjectManager::freeTemporaryObject();
 
         auto objIndex = sub_472BBC(window);
         if (objIndex.index != -1)
         {
             window->rowHover = objIndex.index;
             window->object = reinterpret_cast<std::byte*>(objIndex.object._header);
-            ObjectManager::getScenarioText(*objIndex.object._header);
+            ObjectManager::loadTemporaryObject(*objIndex.object._header);
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -305,14 +305,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr uint8_t kDescriptionRowHeight = 10;
 
     template<typename T>
-    static void callDrawPreviewImage(Gfx::RenderTarget& rt, const Ui::Point& drawingOffset, void* objectPtr)
+    static void callDrawPreviewImage(Gfx::RenderTarget& rt, const Ui::Point& drawingOffset, Object* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
         object->drawPreviewImage(rt, drawingOffset.x, drawingOffset.y);
     }
 
     // 0x00473579
-    static void drawPreviewImage(ObjectHeader* header, Gfx::RenderTarget* rt, int16_t x, int16_t y, void* objectPtr)
+    static void drawPreviewImage(ObjectHeader* header, Gfx::RenderTarget* rt, int16_t x, int16_t y, Object* objectPtr)
     {
         auto type = header->getType();
 
@@ -443,13 +443,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     template<typename T>
-    static void callDrawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width, void* objectPtr)
+    static void callDrawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width, Object* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
         object->drawDescription(rt, x, y, width);
     }
 
-    static void drawDescription(ObjectHeader* header, Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y, void* objectPtr)
+    static void drawDescription(ObjectHeader* header, Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y, Object* objectPtr)
     {
         int16_t width = self->x + self->width - x;
         int16_t height = self->y + self->height - y;
@@ -541,9 +541,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (self.rowHover == -1)
             return;
 
-        loco_global<void*, 0x0050D15C> _50D15C;
+        auto* temporaryObject = ObjectManager::getTemporaryObject();
 
-        if (_50D15C == reinterpret_cast<void*>(-1))
+        if (temporaryObject == nullptr)
             return;
 
         {
@@ -554,7 +554,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 rt,
                 widgets[widx::objectImage].midX() + 1 + self.x,
                 widgets[widx::objectImage].midY() + 1 + self.y,
-                _50D15C);
+                temporaryObject);
         }
 
         auto x = self.widgets[widx::objectImage].midX() + self.x;
@@ -581,7 +581,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 rt,
                 self.widgets[widx::scrollview].right + self.x + 4,
                 y + kDescriptionRowHeight,
-                _50D15C);
+                temporaryObject);
         }
     }
 
@@ -693,7 +693,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     self.rowHover = -1;
                     self.object = nullptr;
                     self.scrollAreas[0].contentWidth = 0;
-                    ObjectManager::freeScenarioText();
+                    ObjectManager::freeTemporaryObject();
                     auto objIndex = sub_472BBC(&self);
 
                     if (objIndex.index != -1)
@@ -701,7 +701,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                         self.rowHover = objIndex.index;
                         self.object = reinterpret_cast<std::byte*>(objIndex.object._header);
 
-                        ObjectManager::getScenarioText(*objIndex.object._header);
+                        ObjectManager::loadTemporaryObject(*objIndex.object._header);
                     }
 
                     self.invalidate();
@@ -772,11 +772,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         self.rowHover = objIndex.index;
         self.object = reinterpret_cast<std::byte*>(objIndex.object._header);
-        ObjectManager::freeScenarioText();
+        ObjectManager::freeTemporaryObject();
 
         if (objIndex.index != -1)
         {
-            ObjectManager::getScenarioText(*objIndex.object._header);
+            ObjectManager::loadTemporaryObject(*objIndex.object._header);
         }
 
         self.invalidate();
@@ -869,7 +869,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         unloadUnselectedObjects();
         editorLoadSelectedObjects();
         ObjectManager::reloadAll();
-        ObjectManager::freeScenarioText();
+        ObjectManager::freeTemporaryObject();
         editorObjectFlagsFree0();
     }
 
