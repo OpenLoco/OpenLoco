@@ -309,6 +309,10 @@ endif ()
 
 target_include_directories(${PROJECT} PUBLIC ${SDL2_INCLUDE_DIRS})
 
+if (TARGET SDL2::SDL2main)
+    target_link_libraries(${PROJECT} SDL2::SDL2main)
+endif()
+
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT} Threads::Threads)
 target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
@@ -317,7 +321,7 @@ target_link_libraries(${PROJECT} ${OPENAL_LIBRARIES})
 
 if (WIN32)
     target_link_libraries(${PROJECT} ${BREAKPAD_LIBRARIES})
-    target_link_libraries(${PROJECT} winmm SDL2::SDL2main ws2_32)
+    target_link_libraries(${PROJECT} winmm ws2_32)
 endif ()
 
 if (NOT WIN32)
