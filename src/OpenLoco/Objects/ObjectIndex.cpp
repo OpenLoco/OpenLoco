@@ -23,11 +23,11 @@ namespace OpenLoco::ObjectManager
     static loco_global<std::byte[0x2002], 0x0112A17F> _112A17F;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
-    static loco_global<uint32_t, 0x009D9D52> _decodedSize;    // return of getScenarioText (badly named)
-    static loco_global<uint32_t, 0x0112A168> _numImages;      // return of getScenarioText (badly named)
-    static loco_global<uint8_t, 0x0112C211> _intelligence;    // return of getScenarioText (badly named)
-    static loco_global<uint8_t, 0x0112C212> _aggressiveness;  // return of getScenarioText (badly named)
-    static loco_global<uint8_t, 0x0112C213> _competitiveness; // return of getScenarioText (badly named)
+    static loco_global<uint32_t, 0x009D9D52> _decodedSize;    // return of loadTemporaryObject (badly named)
+    static loco_global<uint32_t, 0x0112A168> _numImages;      // return of loadTemporaryObject (badly named)
+    static loco_global<uint8_t, 0x0112C211> _intelligence;    // return of loadTemporaryObject (badly named)
+    static loco_global<uint8_t, 0x0112C212> _aggressiveness;  // return of loadTemporaryObject (badly named)
+    static loco_global<uint8_t, 0x0112C213> _competitiveness; // return of loadTemporaryObject (badly named)
 
 #pragma pack(push, 1)
     struct ObjectFolderState
@@ -223,7 +223,7 @@ namespace OpenLoco::ObjectManager
 
         _isPartialLoaded = true;
         _50D158 = _112A17F;
-        getScenarioText(objHeader);
+        loadTemporaryObject(objHeader);
         _50D158 = reinterpret_cast<std::byte*>(-1);
         _isPartialLoaded = false;
         if (_installedObjectCount == 0)
@@ -240,7 +240,7 @@ namespace OpenLoco::ObjectManager
         std::byte newEntryBuffer[0x2000] = {};
         const auto [newEntry, newEntrySize] = createNewEntry(newEntryBuffer, objHeader, filepath.filename());
 
-        freeScenarioText();
+        freeTemporaryObject();
 
         auto* indexPtr = *_installedObjectList;
         // This ptr will be pointing at where in the object list to install the new entry
