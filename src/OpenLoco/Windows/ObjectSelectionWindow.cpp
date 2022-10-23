@@ -498,6 +498,40 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y)
+    {
+        int16_t width = self->x + self->width - x;
+        int16_t height = self->y + self->height - y;
+        // Clip the draw area to simplify image draw
+        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(x, y, width, height));
+        if (!clipped)
+            return;
+
+        {
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename));
+            Gfx::drawStringLeft(*rt, self->x + self->width - 150, self->y + self->height - 32, Colour::black, StringIds::buffer_2039);
+        }
+
+        /*{
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename));
+
+            FormatArguments args{};
+            args.push<string_id>(StringIds::buffer_1250);
+            Gfx::drawStringLeft(*rt, self->x + self->width - 150, self->y + self->height - 32, Colour::black, StringIds::object_selection_filename, &args);
+        }
+
+        {
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            strncpy(buffer, indexEntry._filename, strlen(indexEntry._name));
+
+            FormatArguments args{};
+            args.push<string_id>(StringIds::buffer_1250);
+            Gfx::drawStringLeft(*rt, self->x + self->width - 150, self->y + self->height - 20, Colour::black, StringIds::object_selection_name, &args);
+        }*/
+    }
+
     // 0x004733F5
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
@@ -582,6 +616,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 self.widgets[widx::scrollview].right + self.x + 4,
                 y + kDescriptionRowHeight,
                 _50D15C);
+        }
+
+        {
+            auto objectPtr = self.object;
+
+            drawDatDetails(
+                ObjectManager::ObjectIndexEntry::read(&objectPtr),
+                &self,
+                rt,
+                self.widgets[widx::scrollview].right + self.x + 4,
+                y + kDescriptionRowHeight);
         }
     }
 
