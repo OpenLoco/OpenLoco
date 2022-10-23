@@ -309,11 +309,12 @@ endif ()
 
 target_include_directories(${PROJECT} PUBLIC ${SDL2_INCLUDE_DIRS})
 
+target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
+
 if (TARGET SDL2::SDL2main)
     target_link_libraries(${PROJECT} SDL2::SDL2main)
 endif()
 
-target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT} Threads::Threads)
 target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
 target_link_libraries(${PROJECT} ${PNG_LIBRARY})
