@@ -110,7 +110,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             *_fileType = BrowseFileType::landscape;
         }
-        Utility::strcpy_safe(_filter, filter);
+        Utility::strlcpy(_filter, filter, _filter.size());
 
         changeDirectory(directory.make_preferred());
         inputSession = Ui::TextInput::InputSession(baseName, 200);

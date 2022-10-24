@@ -178,7 +178,7 @@ namespace OpenLoco::Environment
     template<typename T>
     static void setDirectory(T& buffer, fs::path path)
     {
-        Utility::strcpy_safe(buffer, path.make_preferred().u8string().c_str());
+        Utility::strlcpy(buffer, path.make_preferred().u8string().c_str(), buffer.size());
     }
 
     void autoCreateDirectory(const fs::path& path)

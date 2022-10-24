@@ -8,6 +8,7 @@
 #include "../Ui/ProgressBar.h"
 #include "../Utility/Numeric.hpp"
 #include "../Utility/Stream.hpp"
+#include "../Utility/String.hpp"
 #include "ObjectManager.h"
 #include <cstdint>
 #include <fstream>
