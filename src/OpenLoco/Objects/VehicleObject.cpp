@@ -76,7 +76,7 @@ namespace OpenLoco
 
         getCargoString(buffer);
 
-        if (strlen(buffer) != 0)
+        if (StringManager::locoStrlen(buffer) != 0)
         {
             Gfx::drawStringLeftWrapped(rt, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
         }

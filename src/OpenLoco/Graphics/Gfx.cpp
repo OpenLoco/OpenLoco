@@ -312,7 +312,7 @@ namespace OpenLoco::Gfx
             }
             else
             {
-                strcpy(string, bestString.c_str());
+                StringManager::locoStrcpy(string, bestString.c_str());
                 return getStringWidth(string);
             }
         }
@@ -357,7 +357,7 @@ namespace OpenLoco::Gfx
 
                 case ControlCodes::newline:
                 case ControlCodes::newlineSmaller:
-                    continue;
+                    break;
 
                 case ControlCodes::Font::small:
                     fontSpriteBase = Font::small;
@@ -381,6 +381,11 @@ namespace OpenLoco::Gfx
                 case ControlCodes::windowColour2:
                 case ControlCodes::windowColour3:
                 case ControlCodes::windowColour4:
+                    break;
+
+                case ControlCodes::newlineXY:
+                    width = *str++;
+                    str++;
                     break;
 
                 case ControlCodes::inlineSpriteStr:
@@ -1338,9 +1343,9 @@ namespace OpenLoco::Gfx
                     maxWidth = std::max(maxWidth, lineWidth);
                     if (startLine == wordStart && *ptr != '\0')
                     {
-                        // Warning! Not loco string argument safe assumes no one/two/four argument strings.
-                        // TODO: Implement loco string strlen!
-                        memmove(ptr + 1, ptr, strlen(ptr) + 1);
+                        // Shuffle the string forward by one to make space for line ending
+                        std::copy_backward(ptr, ptr + StringManager::locoStrlen(ptr) + 1, ptr + 1);
+                        // Insert line ending
                         *ptr++ = '\0';
                     }
                 }
@@ -1348,6 +1353,7 @@ namespace OpenLoco::Gfx
                 {
                     // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
                     maxWidth = std::max(maxWidth, lastWordLineWith);
+                    // Insert line ending instead of space character
                     *wordStart = '\0';
                     ptr = wordStart + 1;
                 }

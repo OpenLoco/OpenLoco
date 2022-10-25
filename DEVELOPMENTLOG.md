@@ -1,5 +1,8 @@
 # OpenLoco version 22.10+ (???)
 
+## Add Loco String Functions [#1642]
+Internally locomotion uses its own form of strings. These strings can have inline parameters and arguments or arguments passed as a seperate variable. To acheive this the game assumes that all text is a C-string, mostly ASCII (7bit) and uses some of the spare bits for argument indication (sentinals). This causes some havoc with trying to support non-Latin languages as we ideally need to move to UTF-8. The arguments vary from 1-4 bytes of information and crucially they might have 0 as one of those bytes. This potential 0 means that all C-string functions strcat, strcpy, strlen may work incorrectly and not understand the string. Therefore we now have locoStrlen, locoStrcpy to replace them. Eventually we will require to rework all string handling so that arguments are safely encoded in (hopefully) UTF-8 but that is a long way off.
+
 # OpenLoco version 22.10 (2022-10-09)
 
 ## Change Company Face Game Command [#1656]

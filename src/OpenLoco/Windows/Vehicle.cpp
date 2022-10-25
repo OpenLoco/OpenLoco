@@ -1278,7 +1278,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
-            if (strlen(buffer) != 0)
+            if (StringManager::locoStrlen(buffer) != 0)
             {
                 if (self.widgets[widx::carList].tooltip == tooltipFormat && self.var_85C == enumValue(tooltipContent))
                 {
