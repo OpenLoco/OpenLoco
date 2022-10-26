@@ -15,6 +15,7 @@
 #include "../Station.h"
 #include "../Ui.h"
 #include "Paint.h"
+#include "PaintIndustry.h"
 #include "PaintSignal.h"
 #include "PaintStation.h"
 #include "PaintTrack.h"
@@ -159,16 +160,6 @@ namespace OpenLoco::Paint
         regs.ecx = (session.getRotation() + elRoad.unkDirection()) & 0x3;
         regs.dx = elRoad.baseHeight();
         call(0x004759A6, regs);
-    }
-
-    // 0x00453C52
-    static void paintIndustry(PaintSession& session, Map::IndustryElement& elIndustry)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elIndustry);
-        regs.ecx = (session.getRotation() + (elIndustry.data()[0] & 0x3)) & 0x3;
-        regs.dx = elIndustry.baseHeight();
-        call(0x00453C52, regs);
     }
 
     // Returns std::nullopt on no need to paint

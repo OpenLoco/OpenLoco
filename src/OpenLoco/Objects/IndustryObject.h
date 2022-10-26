@@ -32,6 +32,7 @@ namespace OpenLoco
         constexpr uint32_t requiresAllCargo = 1 << 17;
         constexpr uint32_t unk18 = 1 << 18;
         constexpr uint32_t unk19 = 1 << 19;
+        constexpr uint32_t hasShadows = 1 << 21;
         constexpr uint32_t unk23 = 1 << 23;
         constexpr uint32_t builtInDesert = 1 << 24;
         constexpr uint32_t builtNearDesert = 1 << 25;
@@ -50,8 +51,8 @@ namespace OpenLoco
         string_id nameDownProduction; // 0x8
         uint16_t nameSingular;        // 0x0A
         uint16_t namePlural;          // 0x0C
-        uint32_t var_0E;
-        uint32_t var_12; // Base image id for building 0
+        uint32_t var_0E;              // 0x0E shadows image id base
+        uint32_t var_12;              // 0x12 Base image id for building 0
         uint32_t var_16;
         uint32_t var_1A;
         uint8_t var_1E;

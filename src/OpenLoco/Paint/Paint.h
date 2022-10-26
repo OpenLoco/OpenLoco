@@ -185,6 +185,7 @@ namespace OpenLoco::Paint
         void set525CE4(const uint8_t i, const uint16_t newValue) { _525CE4[i] = newValue; }
         void resetTileColumn(const Ui::Point& pos);
         void resetTunnels();
+        void resetLastPS() { _lastPS = nullptr; }
 
         /*
          * @param amount    @<eax>
