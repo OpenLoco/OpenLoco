@@ -279,6 +279,7 @@ namespace OpenLoco
         void initColourMap();
         PaletteIndex_t getShade(Colour colour, uint8_t shade);
         ExtColour getTranslucent(Colour colour);
+        ExtColour getShadow(Colour colour);
         constexpr ExtColour toExt(Colour c) { return static_cast<ExtColour>(c); }
     }
 

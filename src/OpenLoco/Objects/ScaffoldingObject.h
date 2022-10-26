@@ -17,8 +17,9 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::scaffolding;
 
         string_id name;
-        uint32_t image; // 0x02
-        uint8_t pad_06[0x12 - 0x06];
+        uint32_t image;             // 0x02
+        uint16_t segmentHeights[3]; // 0x06
+        uint8_t pad_0C[0x12 - 0x0C];
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         // 0x0042DF0B
