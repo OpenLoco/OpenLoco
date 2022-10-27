@@ -2,6 +2,8 @@
 #include "../Industry.h"
 #include "../Map/Tile.h"
 #include "../Objects/IndustryObject.h"
+#include "../Objects/ScaffoldingObject.h"
+#include "../Objects/ObjectManager.h"
 #include "../ScenarioManager.h"
 #include "../Ui.h"
 #include "Paint.h"
@@ -51,6 +53,7 @@ namespace OpenLoco::Paint
         uint8_t* esi = indObj->var_3C[buildingType];
         const auto baseHeight = elIndustry.baseHeight();
         int16_t bbZOffset = baseHeight;
+        bool isMultiTile = indObj->buildingSizeFlags & (1 << buildingType);
 
         session.resetLastPS(); // Odd...
         if (indObj->flags & IndustryObjectFlags::hasShadows)
@@ -59,7 +62,7 @@ namespace OpenLoco::Paint
             {
                 const auto shadowImageOffset = buildingType * 4 + indObj->var_0E + rotation;
                 const ImageId shadowImage = baseColour.withIndex(shadowImageOffset).withTranslucency(Colours::getShadow(elIndustry.var_6_F800()));
-                if (indObj->buildingSizeFlags & (1 << buildingType))
+                if (isMultiTile)
                 {
                     session.addToPlotListAsChild(shadowImage, { 0, 0, baseHeight }, { -8, -8, bbZOffset }, { 38, 38, bbLengthZ });
                 }
@@ -70,6 +73,50 @@ namespace OpenLoco::Paint
             }
         }
 
-        // 0x00453DF3
+        // 0x00525D4F
+        uint8_t totalSectionHeight = 0;
+        if (bl != 0xF0)
+        {
+            int8_t sectionCount = bl;
+            auto* edi = esi;
+            while (*edi != 0xFF)
+            {
+                totalSectionHeight += indObj->var_20[*edi];
+                sectionCount--;
+                if (sectionCount == -1)
+                {
+                    totalSectionHeight = std::min<uint8_t>(1, totalSectionHeight);
+                    break;
+                }
+            }
+        }
+        // 0x00525D30 (note this should be combined with a applyGhostToImage)
+        const auto scaffoldingColour = indObj->scaffoldingColour;
+
+        if (isMultiTile)
+        {
+            // 0x004540A6
+        }
+        else
+        {
+            // 0x00453E5B
+            const auto scaffSegType = indObj->scaffoldingSegmentType;
+            if (totalSectionHeight != 0 && scaffSegType != 0xFF)
+            {
+                const auto* scaffObj = ObjectManager::get<ScaffoldingObject>();
+                const auto segmentHeight = scaffObj->segmentHeights[scaffSegType];
+                uint32_t scaffImageIdx = scaffObj->image + scaffSegType * 12;
+                ImageId scaffImage{};
+                if (elIndustry.isGhost())
+                {
+                    scaffImage = Gfx::applyGhostToImage(scaffImageIdx);
+                }
+                else
+                {
+                    scaffImage = ImageId(scaffImageIdx, scaffoldingColour);
+                }
+
+            }
+        }
     }
 }
