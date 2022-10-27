@@ -2,8 +2,8 @@
 #include "../Industry.h"
 #include "../Map/Tile.h"
 #include "../Objects/IndustryObject.h"
-#include "../Objects/ScaffoldingObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/ScaffoldingObject.h"
 #include "../ScenarioManager.h"
 #include "../Ui.h"
 #include "Paint.h"
@@ -115,8 +115,54 @@ namespace OpenLoco::Paint
                 {
                     scaffImage = ImageId(scaffImageIdx, scaffoldingColour);
                 }
-
+                auto height = baseHeight;
+                for (auto remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
+                {
+                    session.addToPlotListAsChild(scaffImage, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
+                }
             }
+
+            auto* edi = esi;
+            int8_t sectionCount = bl;
+            auto height = baseHeight;
+            while (*edi != 0xFF && sectionCount != -1)
+            {
+                auto& thing = indObj->var_24[*edi];
+                auto esi2 = *edi;
+                if (thing.al)
+                {
+                    auto al = thing.al - 1;
+                    auto cl = thing.cl & 0x7F;
+                    auto tickThing = ticks >> cl;
+                    if (thing.cl & (1 << 7))
+                    {
+                        auto pos = Map::TilePos2(session.getUnkPosition());
+                        tickThing += pos.x * 5;
+                        tickThing += pos.y * 3;
+                    }
+                    esi2 += al & tickThing;
+                }
+                else
+                {
+                    if (unkE0C3B0 != nullptr)
+                    {
+                        auto tickThing = (ticks >> thing.cl) & (unkE0C3B0[0] - 1);
+                        esi2 += unkE0C3B0[tickThing + 1];
+                    }
+                }
+                const auto sectionHeight = indObj->var_20[esi2];
+                const uint32_t imageIdx = esi2 * 4 + indObj->var_12 + rotation;
+                ImageId image = baseColour.withIndex(imageIdx);
+                if (bl == 0 && !baseColour.isBlended())
+                {
+                    image = image.withNoiseMask(bh + 1 & 0x7);
+                }
+                session.addToPlotListAsChild(image, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
+                height += sectionHeight;
+                sectionCount--;
+                edi++;
+            }
+            // 0x00453FDB
         }
     }
 }
