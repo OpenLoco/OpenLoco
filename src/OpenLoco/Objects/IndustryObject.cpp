@@ -3,6 +3,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Utility/Numeric.hpp"
 #include "CargoObject.h"
 #include "ObjectManager.h"
 #include <algorithm>
@@ -95,12 +96,17 @@ namespace OpenLoco
     // 0x00458C7F
     void IndustryObject::drawIndustry(Gfx::RenderTarget* clipped, int16_t x, int16_t y) const
     {
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.edi = X86Pointer(clipped);
-        regs.ebp = X86Pointer(this);
-        call(0x00458C7F, regs);
+        auto firstColour = Utility::bitScanReverse(var_C2);
+        Colour c = firstColour != -1 ? static_cast<Colour>(firstColour)
+                                     : Colour::black;
+        ImageId baseImage(var_12, c);
+        Ui::Point pos{ x, y };
+        for (auto* unk = var_3C[0]; *unk != 0xFF; ++unk)
+        {
+            auto image = baseImage.withIndexOffset(*unk * 4 + 1);
+            Gfx::drawImage(*clipped, pos, image);
+            pos.y -= var_20[*unk];
+        }
     }
 
     // 0x0045926F
@@ -187,11 +193,11 @@ namespace OpenLoco
         var_12 = 0;
         var_16 = 0;
         var_1A = 0;
-        var_20 = 0;
+        var_20 = nullptr;
         var_24 = 0;
         std::fill(std::begin(var_28), std::end(var_28), 0);
         var_38 = 0;
-        std::fill(std::begin(var_3C), std::end(var_3C), 0);
+        std::fill(std::begin(var_3C), std::end(var_3C), nullptr);
         var_BE = 0;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
