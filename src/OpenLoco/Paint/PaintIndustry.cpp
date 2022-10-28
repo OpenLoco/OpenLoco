@@ -80,7 +80,7 @@ namespace OpenLoco::Paint
             int8_t sectionCount = bl;
             for (const auto buildingPart : buildingParts)
             {
-                totalSectionHeight += indObj->var_20[buildingPart];
+                totalSectionHeight += indObj->buildingPartHeight[buildingPart];
                 sectionCount--;
                 if (sectionCount == -1)
                 {
@@ -131,12 +131,12 @@ namespace OpenLoco::Paint
                 }
                 auto& thing = indObj->var_24[buildingPart];
                 auto esi2 = buildingPart;
-                if (thing.al)
+                if (thing.var_00)
                 {
-                    auto al = thing.al - 1;
-                    auto cl = thing.cl & 0x7F;
+                    auto al = thing.var_00 - 1;
+                    auto cl = thing.var_01 & 0x7F;
                     auto tickThing = ticks >> cl;
-                    if (thing.cl & (1 << 7))
+                    if (thing.var_01 & (1 << 7))
                     {
                         auto pos = Map::TilePos2(session.getUnkPosition());
                         tickThing += pos.x * 5;
@@ -148,11 +148,11 @@ namespace OpenLoco::Paint
                 {
                     if (unkE0C3B0 != nullptr)
                     {
-                        auto tickThing = (ticks >> thing.cl) & (unkE0C3B0[0] - 1);
+                        auto tickThing = (ticks >> thing.var_01) & (unkE0C3B0[0] - 1);
                         esi2 += unkE0C3B0[tickThing + 1];
                     }
                 }
-                const auto sectionHeight = indObj->var_20[esi2];
+                const auto sectionHeight = indObj->buildingPartHeight[esi2];
                 const uint32_t imageIdx = esi2 * 4 + indObj->var_12 + rotation;
                 ImageId image = baseColour.withIndex(imageIdx);
                 if (bl == 0 && !baseColour.isBlended())

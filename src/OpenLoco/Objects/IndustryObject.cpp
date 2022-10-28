@@ -105,7 +105,7 @@ namespace OpenLoco
         {
             auto image = baseImage.withIndexOffset(part * 4 + 1);
             Gfx::drawImage(*clipped, pos, image);
-            pos.y -= var_20[part];
+            pos.y -= buildingPartHeight[part];
         }
     }
 
@@ -193,8 +193,8 @@ namespace OpenLoco
         var_12 = 0;
         var_16 = 0;
         var_1A = 0;
-        var_20 = nullptr;
-        var_24 = 0;
+        buildingPartHeight = nullptr;
+        var_24 = nullptr;
         std::fill(std::begin(var_28), std::end(var_28), 0);
         var_38 = 0;
         std::fill(std::begin(buildingParts), std::end(buildingParts), nullptr);

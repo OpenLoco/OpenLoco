@@ -40,6 +40,12 @@ namespace OpenLoco
         constexpr uint32_t flag_28 = 1 << 28;
     }
 #pragma pack(push, 1)
+    struct IndustryObjectUnk24
+    {
+        uint8_t var_00;
+        uint8_t var_01;
+    };
+
     struct IndustryObject
     {
         static constexpr auto kObjectType = ObjectType::industry;
@@ -57,11 +63,11 @@ namespace OpenLoco
         uint32_t var_1A;
         uint8_t var_1E;
         uint8_t var_1F;
-        uint8_t* var_20; // This is the height of a building image
-        uint32_t var_24;
+        uint8_t* buildingPartHeight; // 0x20 This is the height of a building image
+        IndustryObjectUnk24* var_24; // 0x24 Building part related
         uint32_t var_28[4];
         uint32_t var_38;
-        uint8_t* buildingParts[32]; // This is a pointer for buildings[32] parts 0xFF indicates end of parts
+        uint8_t* buildingParts[32]; // 0x3C This is a pointer for buildings[32] parts 0xFF indicates end of parts
         uint8_t var_BC;
         uint8_t var_BD;
         uint32_t var_BE;
