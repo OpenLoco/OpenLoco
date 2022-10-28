@@ -101,11 +101,11 @@ namespace OpenLoco
                                      : Colour::black;
         ImageId baseImage(var_12, c);
         Ui::Point pos{ x, y };
-        for (auto* unk = var_3C[0]; *unk != 0xFF; ++unk)
+        for (const auto part : getBuildingParts(0))
         {
-            auto image = baseImage.withIndexOffset(*unk * 4 + 1);
+            auto image = baseImage.withIndexOffset(part * 4 + 1);
             Gfx::drawImage(*clipped, pos, image);
-            pos.y -= var_20[*unk];
+            pos.y -= var_20[part];
         }
     }
 
@@ -197,12 +197,22 @@ namespace OpenLoco
         var_24 = 0;
         std::fill(std::begin(var_28), std::end(var_28), 0);
         var_38 = 0;
-        std::fill(std::begin(var_3C), std::end(var_3C), nullptr);
+        std::fill(std::begin(buildingParts), std::end(buildingParts), nullptr);
         var_BE = 0;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
         std::fill(std::begin(wallTypes), std::end(wallTypes), 0);
         var_F1 = 0;
         var_F2 = 0;
+    }
+
+    stdx::span<const std::uint8_t> IndustryObject::getBuildingParts(const uint8_t buildingType) const
+    {
+        const auto* partsPointer = buildingParts[buildingType];
+        auto* end = partsPointer;
+        while (*end != 0xFF)
+            end++;
+
+        return stdx::span<const std::uint8_t>(partsPointer, end);
     }
 }

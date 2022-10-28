@@ -50,7 +50,7 @@ namespace OpenLoco::Paint
 
         // 0x00E0C3A4
         uint32_t buildingType = elIndustry.buildingType();
-        uint8_t* esi = indObj->var_3C[buildingType];
+        const auto buildingParts = indObj->getBuildingParts(buildingType);
         const auto baseHeight = elIndustry.baseHeight();
         int16_t bbZOffset = baseHeight;
         bool isMultiTile = indObj->buildingSizeFlags & (1 << buildingType);
@@ -78,10 +78,9 @@ namespace OpenLoco::Paint
         if (bl != 0xF0)
         {
             int8_t sectionCount = bl;
-            auto* edi = esi;
-            while (*edi != 0xFF)
+            for (const auto buildingPart : buildingParts)
             {
-                totalSectionHeight += indObj->var_20[*edi];
+                totalSectionHeight += indObj->var_20[buildingPart];
                 sectionCount--;
                 if (sectionCount == -1)
                 {
@@ -122,13 +121,16 @@ namespace OpenLoco::Paint
                 }
             }
 
-            auto* edi = esi;
             int8_t sectionCount = bl;
             auto height = baseHeight;
-            while (*edi != 0xFF && sectionCount != -1)
+            for (const auto buildingPart : buildingParts)
             {
-                auto& thing = indObj->var_24[*edi];
-                auto esi2 = *edi;
+                if (sectionCount == -1)
+                {
+                    break;
+                }
+                auto& thing = indObj->var_24[buildingPart];
+                auto esi2 = buildingPart;
                 if (thing.al)
                 {
                     auto al = thing.al - 1;
@@ -160,7 +162,6 @@ namespace OpenLoco::Paint
                 session.addToPlotListAsChild(image, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
                 height += sectionHeight;
                 sectionCount--;
-                edi++;
             }
             // 0x00453FDB
         }

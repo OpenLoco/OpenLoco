@@ -61,7 +61,7 @@ namespace OpenLoco
         uint32_t var_24;
         uint32_t var_28[4];
         uint32_t var_38;
-        uint8_t* var_3C[32]; // This is a pointer for buildings[32] image offsets 0xFF indicates end of image offsets
+        uint8_t* buildingParts[32]; // This is a pointer for buildings[32] parts 0xFF indicates end of parts
         uint8_t var_BC;
         uint8_t var_BD;
         uint32_t var_BE;
@@ -107,6 +107,7 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();
+        stdx::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryObject) == 0xF4);
