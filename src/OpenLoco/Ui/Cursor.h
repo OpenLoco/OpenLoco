@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cassert>
 #include <cstdint>
 #include <cstdio>

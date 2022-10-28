@@ -1,3 +1,5 @@
+#pragma once
+
 #ifdef _WIN32
 // Ignore warnings generated from yaml-cpp
 #pragma warning(push)

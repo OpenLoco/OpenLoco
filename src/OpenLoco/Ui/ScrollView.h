@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../Interop/Interop.hpp"
 #include "../Window.h"
 
