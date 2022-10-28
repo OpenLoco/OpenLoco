@@ -75,7 +75,7 @@ namespace OpenLoco::Paint
             {
                 maxClearZ = std::max<uint8_t>(maxClearZ, surface->water() * Map::kMicroToSmallZStep);
             }
-            if (surface->hasHighTypeFlag())
+            if (surface->isIndustrial())
             {
                 maxClearZ = std::max<uint8_t>(maxClearZ, surface->clearZ() + 24);
             }

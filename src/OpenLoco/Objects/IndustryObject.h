@@ -65,9 +65,9 @@ namespace OpenLoco
         uint8_t var_BD;
         uint32_t var_BE;
         uint32_t var_C2;
-        uint32_t var_C6;
-        uint16_t designedYear; // 0xCA start year
-        uint16_t obsoleteYear; // 0xCC end year
+        uint32_t buildingSizeFlags; // 0xC6 flags indicating the building types size 1:large4x4, 0:small1x1
+        uint16_t designedYear;      // 0xCA start year
+        uint16_t obsoleteYear;      // 0xCC end year
         // Total industries of this type that can be created in a scenario
         // Note: this is not directly comparabile to total industries and vaires based
         // on scenario total industries cap settings. At low industries cap this value is ~3x the

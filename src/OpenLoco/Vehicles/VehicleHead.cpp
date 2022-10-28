@@ -2356,9 +2356,9 @@ namespace OpenLoco::Vehicles
             auto waterHeight = surface->water();
             if (waterHeight != 0)
             {
-                if (surface->hasHighTypeFlag())
+                if (surface->isIndustrial())
                 {
-                    surface->setHighTypeFlag(false);
+                    surface->setIsIndustrialFlag(false);
                     surface->setVar6SLR5(0);
                 }
                 surface->setIndustry(IndustryId(0));

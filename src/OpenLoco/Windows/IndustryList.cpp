@@ -575,6 +575,28 @@ namespace OpenLoco::Ui::Windows::IndustryList
         LastGameOptionManager::setLastIndustry(LastGameOptionManager::kNoLastOption);
     }
 
+    // 0x0045792A
+    void removeIndustry(const IndustryId id)
+    {
+        auto* wnd = WindowManager::find(WindowType::industryList);
+        if (wnd == nullptr)
+        {
+            return;
+        }
+        if (wnd->currentTab != Common::widx::tab_industry_list - Common::widx::tab_industry_list)
+        {
+            return;
+        }
+
+        for (auto i = 0; i < wnd->var_83C; ++i)
+        {
+            if (static_cast<IndustryId>(wnd->rowInfo[i]) == id)
+            {
+                wnd->rowInfo[i] = enumValue(IndustryId::null);
+            }
+        }
+    }
+
     namespace NewIndustries
     {
 
@@ -930,7 +952,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
             if (_industryGhostPlaced)
             {
                 _industryGhostPlaced = false;
-                GameCommands::do_48(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, _industryGhostId);
+                GameCommands::IndustryRemovalArgs args;
+                args.industryId = _industryGhostId;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             }
         }
 

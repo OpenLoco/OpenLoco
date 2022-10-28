@@ -31,7 +31,7 @@ namespace OpenLoco
         Unk4F9274{ { 32, 32 }, 2 },
         Unk4F9274{ { 32, 0 }, 3 },
     };
-    const stdx::span<const Unk4F9274> getUnk4F9274(bool type)
+    const stdx::span<const Unk4F9274> getBuildingTileOffsets(bool type)
     {
         if (type)
             return word_4F927C;
@@ -262,7 +262,9 @@ namespace OpenLoco
 
         if (flags & IndustryFlags::closingDown && var_17D[0] == 0 && var_17D[1] == 0)
         {
-            GameCommands::do_48(GameCommands::Flags::apply, id());
+            GameCommands::IndustryRemovalArgs args;
+            args.industryId = id();
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
             return;
         }
         bool hasEvent = false;
@@ -391,7 +393,7 @@ namespace OpenLoco
         const auto& surface = TileManager::get(pos).surface();
         if (surface != nullptr)
         {
-            if (surface->hasHighTypeFlag())
+            if (surface->isIndustrial())
             {
                 if (surface->industryId() == id())
                 {
@@ -508,7 +510,7 @@ namespace OpenLoco
 
         const auto tile = Map::TileManager::get(pos);
         Map::SurfaceElement* surface = tile.surface();
-        surface->setHighTypeFlag(true);
+        surface->setIsIndustrialFlag(true);
         surface->setIndustry(industryId);
         surface->setVar5SLR5((var_EA & 0xE0) >> 5);
         surface->setVar6SLR5((var_EA & 0x7));
@@ -639,7 +641,7 @@ namespace OpenLoco
                     const auto* industryObject = tileIndustry->getObject();
                     if (industryObject != nullptr)
                     {
-                        auto animOffsets = getUnk4F9274(industryObject->var_C6 & (1 << industryEl->var_6_1F()));
+                        auto animOffsets = getBuildingTileOffsets(industryObject->buildingSizeFlags & (1 << industryEl->buildingType()));
                         for (auto animOffset : animOffsets)
                         {
                             AnimationManager::createAnimation(3, animOffset.pos + tilePos, baseZ);

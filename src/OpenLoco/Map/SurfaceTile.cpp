@@ -6,9 +6,9 @@ namespace OpenLoco::Map
 {
     void SurfaceElement::removeIndustry(const Map::Pos2& pos)
     {
-        if (hasHighTypeFlag())
+        if (isIndustrial())
         {
-            setHighTypeFlag(false);
+            setIsIndustrialFlag(false);
             setVar6SLR5(0);
             setIndustry(IndustryId(0));
             auto z = baseHeight();

@@ -222,7 +222,7 @@ namespace OpenLoco::Map
             setBaseZ(baseZ);
             setClearZ(clearZ);
             _flags = quarterTile;
-            setHighTypeFlag(highTypeFlag);
+            setIsIndustrialFlag(highTypeFlag);
         }
 
         bool isSlopeDoubleHeight() const { return _slope & SurfaceSlope::doubleHeight; }
@@ -255,8 +255,12 @@ namespace OpenLoco::Map
             _type |= state ? 0x40 : 0;
         }
         bool hasType6Flag() const { return _type & 0x40; }
-        bool hasHighTypeFlag() const { return _type & 0x80; }
-        void setHighTypeFlag(bool state)
+
+        // Note: Also used for other means for boats
+        bool isIndustrial() const { return _type & 0x80; }
+
+        // Note: Also used for other means for boats
+        void setIsIndustrialFlag(bool state)
         {
             _type &= ~0x80;
             _type |= state ? 0x80 : 0;
@@ -554,7 +558,8 @@ namespace OpenLoco::Map
     public:
         OpenLoco::IndustryId industryId() const { return _industryId; }
         OpenLoco::Industry* industry() const;
-        uint8_t var_6_1F() const;
+        uint8_t buildingType() const;
+        uint8_t rotation() const { return _type & 0x3; }
         bool hasHighTypeFlag() const { return _type & 0x80; } // isConstructed?
     };
     static_assert(sizeof(IndustryElement) == TileElementSize);

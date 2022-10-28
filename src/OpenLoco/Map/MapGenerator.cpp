@@ -460,7 +460,7 @@ namespace OpenLoco::Map::MapGenerator
         {
             return std::nullopt;
         }
-        if (surface.hasHighTypeFlag())
+        if (surface.isIndustrial())
         {
             return std::nullopt;
         }
