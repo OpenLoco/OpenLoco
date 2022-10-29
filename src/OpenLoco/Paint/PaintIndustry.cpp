@@ -84,7 +84,7 @@ namespace OpenLoco::Paint
                 sectionCount--;
                 if (sectionCount == -1)
                 {
-                    totalSectionHeight = std::min<uint8_t>(1, totalSectionHeight);
+                    totalSectionHeight = std::max<uint8_t>(1, totalSectionHeight);
                     break;
                 }
             }
