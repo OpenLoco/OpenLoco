@@ -17,6 +17,28 @@ if (CCache_FOUND)
     endif (OPENLOCO_USE_CCACHE)
 endif (CCache_FOUND)
 
+include(FetchContent)
+
+# On windows VCPKG is used to get all dependencies other platforms can use it as well by specifying it
+# in the CMAKE_TOOLCHAIN_FILE
+if (WIN32)
+    if (EXISTS ${VCPKG_ROOT})
+        set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+    else()
+        # Provide a message for first time invocations
+        if (NOT CMAKE_TOOLCHAIN_FILE)
+            message("VCPKG not installed on windows fetching and building VCPKG. Warning may take a while on slow connections.")
+        endif ()
+        FetchContent_Declare(vcpkg
+            GIT_REPOSITORY https://github.com/microsoft/vcpkg.git
+            GIT_TAG 2022.10.19)
+        FetchContent_MakeAvailable(vcpkg)
+
+        set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake"
+            CACHE STRING "CMake toolchain file")
+    endif()
+endif ()
+
 project(${PROJECT} LANGUAGES CXX VERSION 22.10)
 
 if (NOT CMAKE_CXX_STANDARD)
@@ -37,7 +59,6 @@ endif()
 include(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
-include(FetchContent)
 include(OpenLocoUtility)
 
 option(STRICT "Build with warnings as errors" YES)
@@ -153,18 +174,18 @@ if (UNIX)
     endif ()
 endif()
 
-add_subdirectory(src)
+add_subdirectory(modules)
 
 if (MSVC)
     add_custom_target(OpenLocoExe ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_LINKER_FILE_DIR:OpenLoco>/OpenLoco.exe"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_LINKER_FILE_DIR:OpenLoco>/data"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/loco.exe" "$<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/data" "$<TARGET_FILE_DIR:OpenLoco>/data"
         COMMENT "Copying over data folder and executable"
         DEPENDS OpenLoco
     )
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenLocoExe)
-    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_COMMAND $<TARGET_LINKER_FILE_DIR:OpenLoco>/OpenLoco.exe)
-    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_LINKER_FILE_DIR:OpenLoco>)
+    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_COMMAND $<TARGET_FILE_DIR:OpenLoco>/OpenLoco.exe)
+    set_property(TARGET OpenLocoExe PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:OpenLoco>)
 endif()
 
 install(TARGETS OpenLoco

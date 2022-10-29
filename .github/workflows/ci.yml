@@ -82,9 +82,8 @@ jobs:
       - name: Build artifacts
         run: |
           mkdir artifacts | Out-Null
-          Copy-Item CHANGELOG.md,CONTRIBUTORS.md,DEVELOPMENTLOG.md,LICENSE,loco.exe,builds\windows-msvc\src\OpenLoco\Release\*.dll,builds\windows-msvc\src\OpenLoco\Release\*.pdb artifacts
-          Copy-Item data\language artifacts\data\language -Recurse
-          Rename-Item artifacts\loco.exe openloco.exe
+          Copy-Item CHANGELOG.md,CONTRIBUTORS.md,DEVELOPMENTLOG.md,LICENSE artifacts
+          Copy-Item build\windows-msvc\Release\* artifacts -Recurse
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
