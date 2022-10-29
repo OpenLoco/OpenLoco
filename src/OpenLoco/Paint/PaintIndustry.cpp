@@ -154,7 +154,7 @@ namespace OpenLoco::Paint
                     const auto sectionHeight = indObj->buildingPartHeight[adjustedBuildingPart];
                     const uint32_t imageIdx = adjustedBuildingPart * 4 + indObj->var_12 + rotation;
                     ImageId image = baseColour.withIndex(imageIdx);
-                    if (bl == 0 && !baseColour.isBlended())
+                    if (sectionCount == 0 && !baseColour.isBlended())
                     {
                         image = image.withNoiseMask((bh + 1) & 0x7);
                     }
@@ -249,7 +249,7 @@ namespace OpenLoco::Paint
                 const auto sectionHeight = indObj->buildingPartHeight[adjustedBuildingPart];
                 const uint32_t imageIdx = adjustedBuildingPart * 4 + indObj->var_12 + rotation;
                 ImageId image = baseColour.withIndex(imageIdx);
-                if (bl == 0 && !baseColour.isBlended())
+                if (sectionCount == 0 && !baseColour.isBlended())
                 {
                     image = image.withNoiseMask((bh + 1) & 0x7);
                 }
