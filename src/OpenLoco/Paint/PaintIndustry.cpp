@@ -114,7 +114,7 @@ namespace OpenLoco::Paint
                         scaffImage = ImageId(scaffImageIdx, scaffoldingColour);
                     }
                     auto height = baseHeight;
-                    for (auto remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
+                    for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
                     {
                         session.addToPlotListAsChild(scaffImage, { 0, 0, height }, { -8, -8, bbZOffset }, { 38, 38, bbLengthZ });
                     }
@@ -179,7 +179,7 @@ namespace OpenLoco::Paint
                     }
                     auto scaffImage = baseScaffImage.withIndexOffset(scaffImages.part1);
                     height = baseHeight;
-                    for (auto remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
+                    for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
                     {
                         session.addToPlotListAsChild(scaffImage, { 0, 0, height }, { -8, -8, bbZOffset }, { 38, 38, bbLengthZ });
                     }
@@ -209,7 +209,7 @@ namespace OpenLoco::Paint
                     scaffImage = ImageId(scaffImageIdx, scaffoldingColour);
                 }
                 auto height = baseHeight;
-                for (auto remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
+                for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
                 {
                     session.addToPlotListAsChild(scaffImage, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
                 }
@@ -274,7 +274,7 @@ namespace OpenLoco::Paint
                 }
                 auto scaffImage = baseScaffImage.withIndexOffset(scaffImages.part1);
                 height = baseHeight;
-                for (auto remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
+                for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
                 {
                     session.addToPlotListAsChild(scaffImage, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
                 }
