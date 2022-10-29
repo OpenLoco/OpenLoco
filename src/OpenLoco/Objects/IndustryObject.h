@@ -65,7 +65,7 @@ namespace OpenLoco
         uint8_t var_1F;
         uint8_t* buildingPartHeight; // 0x20 This is the height of a building image
         IndustryObjectUnk24* var_24; // 0x24 Building part related
-        uint32_t var_28[4];
+        uint8_t* var_28[4];
         uint32_t var_38;
         uint8_t* buildingParts[32]; // 0x3C This is a pointer for buildings[32] parts 0xFF indicates end of parts
         uint8_t var_BC;
@@ -114,6 +114,7 @@ namespace OpenLoco
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();
         stdx::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
+        stdx::span<const std::uint8_t> getUnk28(const uint8_t unk) const;
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryObject) == 0xF4);

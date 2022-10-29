@@ -195,7 +195,7 @@ namespace OpenLoco
         var_1A = 0;
         buildingPartHeight = nullptr;
         var_24 = nullptr;
-        std::fill(std::begin(var_28), std::end(var_28), 0);
+        std::fill(std::begin(var_28), std::end(var_28), nullptr);
         var_38 = 0;
         std::fill(std::begin(buildingParts), std::end(buildingParts), nullptr);
         var_BE = 0;
@@ -214,5 +214,12 @@ namespace OpenLoco
             end++;
 
         return stdx::span<const std::uint8_t>(partsPointer, end);
+    }
+    stdx::span<const std::uint8_t> IndustryObject::getUnk28(const uint8_t unk) const
+    {
+        // Var_28 comprises of a size then then data. Size will always be a power of 2
+        const auto* unkPointer = var_28[unk];
+        const auto size = *unkPointer++;
+        return stdx::span<const std::uint8_t>(unkPointer, size);
     }
 }

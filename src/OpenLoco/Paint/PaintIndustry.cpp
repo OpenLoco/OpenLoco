@@ -41,11 +41,11 @@ namespace OpenLoco::Paint
         // 0x00525D4E
         const int16_t bbLengthZ = std::min(elIndustry.clearHeight() - elIndustry.baseHeight(), 128) - 2;
 
-        // 0x00E0C3B0 (pointer to something like x,y bytes)
-        uint32_t unkE0C3B0 = 0;
+        // 0x00E0C3B0
+        stdx::span<const std::uint8_t> unkE0C3B0{};
         if ((elIndustry.var_6_003F() & (1 << 5)) && (elIndustry.var_6_003F() & (1 << 4)))
         {
-            unkE0C3B0 = indObj->var_28[elIndustry.var_6_003F() & 0x3];
+            unkE0C3B0 = indObj->getUnk28(elIndustry.var_6_003F() & 0x3);
         }
 
         // 0x00E0C3A4
@@ -95,16 +95,17 @@ namespace OpenLoco::Paint
         if (isMultiTile)
         {
             // 0x004540A6
+            unk525D5C = unk525D5C;
         }
         else
         {
-            // 0x00453E5B
             const auto scaffSegType = indObj->scaffoldingSegmentType;
             if (totalSectionHeight != 0 && scaffSegType != 0xFF)
             {
                 const auto* scaffObj = ObjectManager::get<ScaffoldingObject>();
                 const auto segmentHeight = scaffObj->segmentHeights[scaffSegType];
-                uint32_t scaffImageIdx = scaffObj->image + scaffSegType * 12;
+                const auto& scaffImages = getScaffoldingImages(scaffSegType).getIndustry();
+                uint32_t scaffImageIdx = scaffObj->image + scaffImages.part0;
                 ImageId scaffImage{};
                 if (elIndustry.isGhost())
                 {
@@ -130,7 +131,7 @@ namespace OpenLoco::Paint
                     break;
                 }
                 auto& thing = indObj->var_24[buildingPart];
-                auto esi2 = buildingPart;
+                auto adjustedBuildingPart = buildingPart;
                 if (thing.var_00)
                 {
                     auto al = thing.var_00 - 1;
@@ -142,18 +143,18 @@ namespace OpenLoco::Paint
                         tickThing += pos.x * 5;
                         tickThing += pos.y * 3;
                     }
-                    esi2 += al & tickThing;
+                    adjustedBuildingPart += al & tickThing;
                 }
                 else
                 {
-                    if (unkE0C3B0 != nullptr)
+                    if (!unkE0C3B0.empty())
                     {
-                        auto tickThing = (ticks >> thing.var_01) & (unkE0C3B0[0] - 1);
-                        esi2 += unkE0C3B0[tickThing + 1];
+                        auto tickThing = (ticks >> thing.var_01) & (unkE0C3B0.size() - 1);
+                        adjustedBuildingPart += unkE0C3B0[tickThing];
                     }
                 }
-                const auto sectionHeight = indObj->buildingPartHeight[esi2];
-                const uint32_t imageIdx = esi2 * 4 + indObj->var_12 + rotation;
+                const auto sectionHeight = indObj->buildingPartHeight[adjustedBuildingPart];
+                const uint32_t imageIdx = adjustedBuildingPart * 4 + indObj->var_12 + rotation;
                 ImageId image = baseColour.withIndex(imageIdx);
                 if (bl == 0 && !baseColour.isBlended())
                 {
@@ -163,7 +164,30 @@ namespace OpenLoco::Paint
                 height += sectionHeight;
                 sectionCount--;
             }
-            // 0x00453FDB
+            if (totalSectionHeight != 0 && scaffSegType != 0xFF)
+            {
+                const auto* scaffObj = ObjectManager::get<ScaffoldingObject>();
+                const auto segmentHeight = scaffObj->segmentHeights[scaffSegType];
+                const auto& scaffImages = getScaffoldingImages(scaffSegType).getIndustry();
+                uint32_t baseScaffImageIdx = scaffObj->image;
+                ImageId baseScaffImage{};
+                if (elIndustry.isGhost())
+                {
+                    baseScaffImage = Gfx::applyGhostToImage(baseScaffImageIdx);
+                }
+                else
+                {
+                    baseScaffImage = ImageId(baseScaffImageIdx, scaffoldingColour);
+                }
+                auto scaffImage = baseScaffImage.withIndexOffset(scaffImages.part1);
+                height = baseHeight;
+                for (auto remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
+                {
+                    session.addToPlotListAsChild(scaffImage, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
+                }
+                scaffImage = baseScaffImage.withIndexOffset(scaffImages.getRoof(rotation));
+                session.addToPlotListAsChild(scaffImage, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
+            }
         }
     }
 }
