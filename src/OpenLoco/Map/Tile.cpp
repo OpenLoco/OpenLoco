@@ -186,7 +186,7 @@ namespace OpenLoco::Map
         return _6 & 0x3F;
     }
 
-    uint8_t IndustryElement::var_5_E0() const
+    uint8_t IndustryElement::sectionProgress() const
     {
         return (_5 >> 5) & 0x7;
     }

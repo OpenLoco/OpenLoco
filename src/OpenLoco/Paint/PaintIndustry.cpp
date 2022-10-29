@@ -26,13 +26,14 @@ namespace OpenLoco::Paint
         const uint8_t rotation = (session.getRotation() + elIndustry.rotation()) & 0x3;
         // 0xE0C3A0
         auto ticks = ScenarioManager::getScenarioTicks();
-        uint8_t bl = 0xF0;
-        uint8_t bh = 0;
-        if (!elIndustry.hasHighTypeFlag())
+        uint8_t numSections = 0xF0; // 0xF0 represents all sections completed
+        // Only used when under construction
+        uint8_t sectionProgress = 0;
+        if (!elIndustry.isConstructed())
         {
             ticks = 0;
-            bl = elIndustry.var_6_003F();
-            bh = elIndustry.var_5_E0();
+            numSections = elIndustry.var_6_003F();
+            sectionProgress = elIndustry.sectionProgress();
         }
 
         // 0x00525D5C
@@ -75,9 +76,9 @@ namespace OpenLoco::Paint
 
         // 0x00525D4F
         uint8_t totalSectionHeight = 0;
-        if (bl != 0xF0)
+        if (numSections != 0xF0)
         {
-            int8_t sectionCount = bl;
+            int8_t sectionCount = numSections;
             for (const auto buildingPart : buildingParts)
             {
                 totalSectionHeight += indObj->buildingPartHeight[buildingPart];
@@ -120,7 +121,7 @@ namespace OpenLoco::Paint
                     }
                 }
 
-                int8_t sectionCount = bl;
+                int8_t sectionCount = numSections;
                 auto height = baseHeight;
                 for (const auto buildingPart : buildingParts)
                 {
@@ -156,7 +157,7 @@ namespace OpenLoco::Paint
                     ImageId image = baseColour.withIndex(imageIdx);
                     if (sectionCount == 0 && !baseColour.isBlended())
                     {
-                        image = image.withNoiseMask((bh + 1) & 0x7);
+                        image = image.withNoiseMask((sectionProgress + 1) & 0x7);
                     }
                     session.addToPlotListAsChild(image, { 0, 0, height }, { -8, -8, bbZOffset }, { 38, 38, bbLengthZ });
                     height += sectionHeight;
@@ -215,7 +216,7 @@ namespace OpenLoco::Paint
                 }
             }
 
-            int8_t sectionCount = bl;
+            int8_t sectionCount = numSections;
             auto height = baseHeight;
             for (const auto buildingPart : buildingParts)
             {
@@ -251,7 +252,7 @@ namespace OpenLoco::Paint
                 ImageId image = baseColour.withIndex(imageIdx);
                 if (sectionCount == 0 && !baseColour.isBlended())
                 {
-                    image = image.withNoiseMask((bh + 1) & 0x7);
+                    image = image.withNoiseMask((sectionProgress + 1) & 0x7);
                 }
                 session.addToPlotListAsChild(image, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
                 height += sectionHeight;
