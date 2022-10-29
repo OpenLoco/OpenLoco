@@ -32,7 +32,8 @@ namespace OpenLoco::Map
         // var_5_E0
         uint8_t sectionProgress() const;
         Colour var_6_F800() const;
-        uint8_t var_6_003F() const; // This has two uses. When under construction it is the number of completed sections.
+        // This has two uses. When under construction it is the number of completed sections. Otherwise its animation sequence related
+        uint8_t var_6_003F() const;
         bool isConstructed() const { return _type & 0x80; }
     };
 #pragma pack(pop)

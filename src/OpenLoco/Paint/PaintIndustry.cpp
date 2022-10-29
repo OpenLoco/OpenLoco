@@ -43,10 +43,10 @@ namespace OpenLoco::Paint
         const int16_t bbLengthZ = std::min(elIndustry.clearHeight() - elIndustry.baseHeight(), 128) - 2;
 
         // 0x00E0C3B0
-        stdx::span<const std::uint8_t> unkE0C3B0{};
+        stdx::span<const std::uint8_t> animationSequence{};
         if ((elIndustry.var_6_003F() & (1 << 5)) && (elIndustry.var_6_003F() & (1 << 4)))
         {
-            unkE0C3B0 = indObj->getUnk28(elIndustry.var_6_003F() & 0x3);
+            animationSequence = indObj->getAnimationSequence(elIndustry.var_6_003F() & 0x3);
         }
 
         // 0x00E0C3A4
@@ -129,27 +129,27 @@ namespace OpenLoco::Paint
                     {
                         break;
                     }
-                    auto& thing = indObj->var_24[buildingPart];
+                    auto& buildingAnimation = indObj->buildingPartAnimations[buildingPart];
                     auto adjustedBuildingPart = buildingPart;
-                    if (thing.var_00)
+                    if (buildingAnimation.numFrames)
                     {
-                        auto al = thing.var_00 - 1;
-                        auto cl = thing.var_01 & 0x7F;
+                        auto frameMask = buildingAnimation.numFrames - 1;
+                        auto cl = buildingAnimation.animationSpeed & 0x7F;
                         auto tickThing = ticks >> cl;
-                        if (thing.var_01 & (1 << 7))
+                        if (buildingAnimation.animationSpeed & (1 << 7))
                         {
                             auto pos = Map::TilePos2(session.getUnkPosition());
                             tickThing += pos.x * 5;
                             tickThing += pos.y * 3;
                         }
-                        adjustedBuildingPart += al & tickThing;
+                        adjustedBuildingPart += frameMask & tickThing;
                     }
                     else
                     {
-                        if (!unkE0C3B0.empty())
+                        if (!animationSequence.empty())
                         {
-                            auto tickThing = (ticks >> thing.var_01) & (unkE0C3B0.size() - 1);
-                            adjustedBuildingPart += unkE0C3B0[tickThing];
+                            auto tickThing = (ticks >> buildingAnimation.animationSpeed) & (animationSequence.size() - 1);
+                            adjustedBuildingPart += animationSequence[tickThing];
                         }
                     }
                     const auto sectionHeight = indObj->buildingPartHeight[adjustedBuildingPart];
@@ -224,27 +224,27 @@ namespace OpenLoco::Paint
                 {
                     break;
                 }
-                auto& thing = indObj->var_24[buildingPart];
+                auto& buildingAnimation = indObj->buildingPartAnimations[buildingPart];
                 auto adjustedBuildingPart = buildingPart;
-                if (thing.var_00)
+                if (buildingAnimation.numFrames)
                 {
-                    auto al = thing.var_00 - 1;
-                    auto cl = thing.var_01 & 0x7F;
+                    auto frameMask = buildingAnimation.numFrames - 1;
+                    auto cl = buildingAnimation.animationSpeed & 0x7F;
                     auto tickThing = ticks >> cl;
-                    if (thing.var_01 & (1 << 7))
+                    if (buildingAnimation.animationSpeed & (1 << 7))
                     {
                         auto pos = Map::TilePos2(session.getUnkPosition());
                         tickThing += pos.x * 5;
                         tickThing += pos.y * 3;
                     }
-                    adjustedBuildingPart += al & tickThing;
+                    adjustedBuildingPart += frameMask & tickThing;
                 }
                 else
                 {
-                    if (!unkE0C3B0.empty())
+                    if (!animationSequence.empty())
                     {
-                        auto tickThing = (ticks >> thing.var_01) & (unkE0C3B0.size() - 1);
-                        adjustedBuildingPart += unkE0C3B0[tickThing];
+                        auto tickThing = (ticks >> buildingAnimation.animationSpeed) & (animationSequence.size() - 1);
+                        adjustedBuildingPart += animationSequence[tickThing];
                     }
                 }
                 const auto sectionHeight = indObj->buildingPartHeight[adjustedBuildingPart];
