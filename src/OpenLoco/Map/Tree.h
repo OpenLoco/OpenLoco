@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Map.hpp"
 #include <optional>
 
