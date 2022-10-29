@@ -11,8 +11,6 @@
 #include "TrackElement.h"
 #include <cassert>
 
-
-
 namespace OpenLoco::Map
 {
     const uint8_t* TileElementBase::data() const
@@ -168,10 +166,6 @@ namespace OpenLoco::Map
 
     StationType StationElement::stationType() const { return StationType(_5 >> 5); }
 
-    uint8_t IndustryElement::buildingType() const
-    {
-        return (_6 >> 6) & 0x1F;
-    }
     Industry* IndustryElement::industry() const
     {
         return IndustryManager::get(_industryId);
@@ -197,7 +191,7 @@ namespace OpenLoco::Map
         return (_5 >> 5) & 0x7;
     }
 
-    uint8_t IndustryElement::var_5_03() const
+    uint8_t IndustryElement::sequenceIndex() const
     {
         return _5 & 0x3;
     }

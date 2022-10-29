@@ -25,7 +25,7 @@ namespace OpenLoco::Map
         Industry* industry() const;
         uint8_t buildingType() const;
         uint8_t rotation() const { return _type & 0x3; }
-        uint8_t var_5_03() const;
+        uint8_t sequenceIndex() const;
         uint8_t var_5_E0() const;
         Colour var_6_F800() const;
         uint8_t var_6_003F() const;
