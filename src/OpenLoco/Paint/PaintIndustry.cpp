@@ -75,7 +75,7 @@ namespace OpenLoco::Paint
             {
                 baseScaffImage = ImageId(baseScaffImageIdx, scaffoldingColour);
             }
-            ImageId scaffImage = baseScaffImage.withIndexOffset(scaffImages.part0);
+            ImageId scaffImage = baseScaffImage.withIndexOffset(scaffImages.back);
             auto segmentImageOffset = imageOffset;
             for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, segmentImageOffset.z += segmentHeight)
             {
@@ -140,7 +140,7 @@ namespace OpenLoco::Paint
             {
                 baseScaffImage = ImageId(baseScaffImageIdx, scaffoldingColour);
             }
-            auto scaffImage = baseScaffImage.withIndexOffset(scaffImages.part1);
+            auto scaffImage = baseScaffImage.withIndexOffset(scaffImages.front);
             auto segmentImageOffset = imageOffset;
             for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, segmentImageOffset.z += segmentHeight)
             {
