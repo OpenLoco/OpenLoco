@@ -65,16 +65,17 @@ namespace OpenLoco::Paint
             const auto* scaffObj = ObjectManager::get<ScaffoldingObject>();
             const auto segmentHeight = scaffObj->segmentHeights[scaffSegType];
             const auto& scaffImages = isMultiTile ? getScaffoldingImages(scaffSegType).get2x2() : getScaffoldingImages(scaffSegType).get1x1();
-            uint32_t scaffImageIdx = scaffObj->image + scaffImages.part0;
-            ImageId scaffImage{};
+            uint32_t baseScaffImageIdx = scaffObj->image;
+            ImageId baseScaffImage{};
             if (elIndustry.isGhost())
             {
-                scaffImage = Gfx::applyGhostToImage(scaffImageIdx);
+                baseScaffImage = Gfx::applyGhostToImage(baseScaffImageIdx);
             }
             else
             {
-                scaffImage = ImageId(scaffImageIdx, scaffoldingColour);
+                baseScaffImage = ImageId(baseScaffImageIdx, scaffoldingColour);
             }
+            ImageId scaffImage = baseScaffImage.withIndexOffset(scaffImages.part0);
             auto segmentImageOffset = imageOffset;
             for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, segmentImageOffset.z += segmentHeight)
             {
