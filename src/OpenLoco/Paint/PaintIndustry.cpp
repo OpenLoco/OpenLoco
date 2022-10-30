@@ -10,6 +10,13 @@
 
 namespace OpenLoco::Paint
 {
+    static Map::Pos3 kImageOffsetBase1x1 = { 16, 16, 0 };
+    static Map::Pos3 kImageOffsetBase2x2 = { 0, 0, 0 };
+    static Map::Pos3 kBBOffsetBase1x1 = { 3, 3, 0 };
+    static Map::Pos3 kBBOffsetBase2x2 = { -8, -8, 0 };
+    static Map::Pos3 kBBSizeBase1x1 = { 26, 26, 0 };
+    static Map::Pos3 kBBSizeBase2x2 = { 38, 38, 0 };
+
     // 0x00453C52
     void paintIndustry(PaintSession& session, const Map::IndustryElement& elIndustry)
     {
@@ -53,8 +60,13 @@ namespace OpenLoco::Paint
         uint32_t buildingType = elIndustry.buildingType();
         const auto buildingParts = indObj->getBuildingParts(buildingType);
         const auto baseHeight = elIndustry.baseHeight();
-        int16_t bbZOffset = baseHeight;
+
         bool isMultiTile = indObj->buildingSizeFlags & (1 << buildingType);
+
+        // Note: Image offsets will change as you move up the building but bboffset/size does not
+        const Map::Pos3 imageOffset = (isMultiTile ? kImageOffsetBase2x2 : kImageOffsetBase1x1) + Map::Pos3{ 0, 0, baseHeight };
+        const Map::Pos3 bbOffset = (isMultiTile ? kBBOffsetBase2x2 : kBBOffsetBase1x1) + Map::Pos3{ 0, 0, baseHeight };
+        const Map::Pos3 bbSize = (isMultiTile ? kBBSizeBase2x2 : kBBSizeBase1x1) + Map::Pos3{ 0, 0, bbLengthZ };
 
         session.resetLastPS(); // Odd...
         if (indObj->flags & IndustryObjectFlags::hasShadows)
@@ -65,11 +77,11 @@ namespace OpenLoco::Paint
                 const ImageId shadowImage = baseColour.withIndex(shadowImageOffset).withTranslucency(Colours::getShadow(elIndustry.var_6_F800()));
                 if (isMultiTile)
                 {
-                    session.addToPlotListAsChild(shadowImage, { 0, 0, baseHeight }, { -8, -8, bbZOffset }, { 38, 38, bbLengthZ });
+                    session.addToPlotListAsChild(shadowImage, imageOffset, bbOffset, bbSize);
                 }
                 else
                 {
-                    session.addToPlotListAsChild(shadowImage, { 16, 16, baseHeight }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
+                    session.addToPlotListAsChild(shadowImage, imageOffset, bbOffset, bbSize);
                 }
             }
         }
@@ -114,15 +126,15 @@ namespace OpenLoco::Paint
                     {
                         scaffImage = ImageId(scaffImageIdx, scaffoldingColour);
                     }
-                    auto height = baseHeight;
-                    for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
+                    auto sectionImageOffset = imageOffset;
+                    for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, sectionImageOffset.z += segmentHeight)
                     {
-                        session.addToPlotListAsChild(scaffImage, { 0, 0, height }, { -8, -8, bbZOffset }, { 38, 38, bbLengthZ });
+                        session.addToPlotListAsChild(scaffImage, sectionImageOffset, bbOffset, bbSize);
                     }
                 }
 
                 int8_t sectionCount = numSections;
-                auto height = baseHeight;
+                auto sectionImageOffset = imageOffset;
                 for (const auto buildingPart : buildingParts)
                 {
                     if (sectionCount == -1)
@@ -159,8 +171,8 @@ namespace OpenLoco::Paint
                     {
                         image = image.withNoiseMask((sectionProgress + 1) & 0x7);
                     }
-                    session.addToPlotListAsChild(image, { 0, 0, height }, { -8, -8, bbZOffset }, { 38, 38, bbLengthZ });
-                    height += sectionHeight;
+                    session.addToPlotListAsChild(image, sectionImageOffset, bbOffset, bbSize);
+                    sectionImageOffset.z += sectionHeight;
                     sectionCount--;
                 }
                 if (totalSectionHeight != 0 && scaffSegType != 0xFF)
@@ -179,13 +191,13 @@ namespace OpenLoco::Paint
                         baseScaffImage = ImageId(baseScaffImageIdx, scaffoldingColour);
                     }
                     auto scaffImage = baseScaffImage.withIndexOffset(scaffImages.part1);
-                    height = baseHeight;
-                    for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
+                    auto sectionImageOffset = imageOffset;
+                    for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, sectionImageOffset.z += segmentHeight)
                     {
-                        session.addToPlotListAsChild(scaffImage, { 0, 0, height }, { -8, -8, bbZOffset }, { 38, 38, bbLengthZ });
+                        session.addToPlotListAsChild(scaffImage, sectionImageOffset, bbOffset, bbSize);
                     }
                     scaffImage = baseScaffImage.withIndexOffset(scaffImages.getRoof(rotation));
-                    session.addToPlotListAsChild(scaffImage, { 0, 0, height }, { -8, -8, bbZOffset }, { 38, 38, bbLengthZ });
+                    session.addToPlotListAsChild(scaffImage, sectionImageOffset, bbOffset, bbSize);
                 }
             }
             session.setSegmentSupportHeight(Segment::all, 0xFFFF, 0);
@@ -209,15 +221,15 @@ namespace OpenLoco::Paint
                 {
                     scaffImage = ImageId(scaffImageIdx, scaffoldingColour);
                 }
-                auto height = baseHeight;
-                for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
+                auto sectionImageOffset = imageOffset;
+                for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, sectionImageOffset.z += segmentHeight)
                 {
-                    session.addToPlotListAsChild(scaffImage, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
+                    session.addToPlotListAsChild(scaffImage, sectionImageOffset, bbOffset, bbSize);
                 }
             }
 
             int8_t sectionCount = numSections;
-            auto height = baseHeight;
+            auto sectionImageOffset = imageOffset;
             for (const auto buildingPart : buildingParts)
             {
                 if (sectionCount == -1)
@@ -254,8 +266,8 @@ namespace OpenLoco::Paint
                 {
                     image = image.withNoiseMask((sectionProgress + 1) & 0x7);
                 }
-                session.addToPlotListAsChild(image, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
-                height += sectionHeight;
+                session.addToPlotListAsChild(image, sectionImageOffset, bbOffset, bbSize);
+                sectionImageOffset.z += sectionHeight;
                 sectionCount--;
             }
             if (totalSectionHeight != 0 && scaffSegType != 0xFF)
@@ -274,13 +286,13 @@ namespace OpenLoco::Paint
                     baseScaffImage = ImageId(baseScaffImageIdx, scaffoldingColour);
                 }
                 auto scaffImage = baseScaffImage.withIndexOffset(scaffImages.part1);
-                height = baseHeight;
-                for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, height += segmentHeight)
+                auto sectionImageOffset = imageOffset;
+                for (int8_t remainingHeight = totalSectionHeight; remainingHeight > 0; remainingHeight -= segmentHeight, sectionImageOffset.z += segmentHeight)
                 {
-                    session.addToPlotListAsChild(scaffImage, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
+                    session.addToPlotListAsChild(scaffImage, sectionImageOffset, bbOffset, bbSize);
                 }
                 scaffImage = baseScaffImage.withIndexOffset(scaffImages.getRoof(rotation));
-                session.addToPlotListAsChild(scaffImage, { 16, 16, height }, { 3, 3, bbZOffset }, { 26, 26, bbLengthZ });
+                session.addToPlotListAsChild(scaffImage, sectionImageOffset, bbOffset, bbSize);
             }
         }
     }
