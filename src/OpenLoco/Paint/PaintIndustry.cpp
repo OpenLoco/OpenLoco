@@ -17,7 +17,7 @@ namespace OpenLoco::Paint
     static Map::Pos3 kBBSizeBase1x1 = { 26, 26, 0 };
     static Map::Pos3 kBBSizeBase2x2 = { 38, 38, 0 };
 
-    void paintIndustryBuilding(PaintSession& session, const Map::IndustryElement& elIndustry, const IndustryObject& indObj, const Map::Pos3& imageOffset, const Map::Pos3& bbOffset, const Map::Pos3& bbSize, const ImageId& baseColour, const uint8_t rotation, const bool isMultiTile)
+    static void paintIndustryBuilding(PaintSession& session, const Map::IndustryElement& elIndustry, const IndustryObject& indObj, const Map::Pos3& imageOffset, const Map::Pos3& bbOffset, const Map::Pos3& bbSize, const ImageId& baseColour, const uint8_t rotation, const bool isMultiTile)
     {
         // 0xE0C3A0
         auto ticks = ScenarioManager::getScenarioTicks();
