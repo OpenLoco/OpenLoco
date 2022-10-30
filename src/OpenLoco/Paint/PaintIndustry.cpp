@@ -165,7 +165,7 @@ namespace OpenLoco::Paint
         }
         // Combine this with any imageId
         const uint8_t rotation = (session.getRotation() + elIndustry.rotation()) & 0x3;
-        
+
         // 0x00525D4E
         const int16_t bbLengthZ = std::min(elIndustry.clearHeight() - elIndustry.baseHeight(), 128) - 2;
 
