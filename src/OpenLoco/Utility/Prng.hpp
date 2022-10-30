@@ -6,7 +6,7 @@
 namespace OpenLoco::Utility
 {
 #pragma pack(push, 1)
-    struct prng
+    struct Prng
     {
     private:
         uint32_t _srand_0{};
@@ -16,11 +16,11 @@ namespace OpenLoco::Utility
         uint32_t srand_0() { return _srand_0; }
         uint32_t srand_1() { return _srand_1; }
 
-        prng()
+        Prng()
         {
         }
 
-        prng(uint32_t s0, uint32_t s1)
+        Prng(uint32_t s0, uint32_t s1)
             : _srand_0(s0)
             , _srand_1(s1)
         {

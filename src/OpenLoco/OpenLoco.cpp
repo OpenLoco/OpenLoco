@@ -114,7 +114,7 @@ namespace OpenLoco
         return version;
     }
 
-    Utility::prng& gPrng()
+    Utility::Prng& gPrng()
     {
         return getGameState().rng;
     }

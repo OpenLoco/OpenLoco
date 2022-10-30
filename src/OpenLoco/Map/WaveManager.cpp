@@ -16,7 +16,7 @@ namespace OpenLoco::Map::WaveManager
     using namespace OpenLoco::Interop;
     using namespace OpenLoco::Ui;
 
-    static loco_global<Utility::prng, 0x00525E20> _prng; // not the gPrng
+    static loco_global<Utility::Prng, 0x00525E20> _prng; // not the gPrng
 
     const static Pos2 _offsets[4] = {
         Pos2(+32, 0),
