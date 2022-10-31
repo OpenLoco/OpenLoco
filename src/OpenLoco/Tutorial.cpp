@@ -137,7 +137,7 @@ namespace OpenLoco::Tutorial
 
         // Set fixed rng seed
         auto& gameState = getGameState();
-        gameState.rng = Utility::prng(0x12345678, 0x9ABCDEF0);
+        gameState.rng = Utility::Prng(0x12345678, 0x9ABCDEF0);
 
         // Start the scenario
         Scenario::start();

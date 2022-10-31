@@ -541,12 +541,12 @@ namespace OpenLoco
 
         const auto* indObj = ObjectManager::get<IndustryObject>(objectId);
 
-        std::optional<Utility::prng> is23prng;
+        std::optional<Utility::Prng> is23prng;
         if (indObj->flags & IndustryObjectFlags::unk23) // Livestock use this
         {
             is23prng = prng;
         }
-        std::optional<Utility::prng> is27prng;
+        std::optional<Utility::Prng> is27prng;
         if (indObj->flags & IndustryObjectFlags::unk27) // Skislope use this
         {
             // Vanilla mistake here didn't set the prng! It would just recycle from a previous unk23 caller

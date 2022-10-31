@@ -22,7 +22,7 @@ namespace OpenLoco
     std::string getVersionInfo();
 
     void* hInstance();
-    Utility::prng& gPrng();
+    Utility::Prng& gPrng();
     void initialiseViewports();
     void simulateGame(const fs::path& path, int32_t ticks);
 

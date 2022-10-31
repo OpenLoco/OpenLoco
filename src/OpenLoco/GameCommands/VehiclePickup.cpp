@@ -11,7 +11,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<Utility::prng, 0x00525E20> _prng;
+    static loco_global<Utility::Prng, 0x00525E20> _prng;
 
     // 0x0048B15B
     void playPickupSound(Vehicles::Vehicle2* veh2)
