@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
+#include "Map/BuildingElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"

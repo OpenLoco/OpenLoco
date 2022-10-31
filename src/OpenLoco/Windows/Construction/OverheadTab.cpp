@@ -5,6 +5,8 @@
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
 #include "../../Localisation/StringIds.h"
+#include "../../Map/RoadElement.h"
+#include "../../Map/TrackElement.h"
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/RoadExtraObject.h"
 #include "../../Objects/RoadObject.h"

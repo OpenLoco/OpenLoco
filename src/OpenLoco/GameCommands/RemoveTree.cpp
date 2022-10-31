@@ -1,6 +1,7 @@
 #include "../Economy/Economy.h"
 #include "../Economy/Expenditures.h"
 #include "../Map/TileManager.h"
+#include "../Map/TreeElement.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/TreeObject.h"
 #include "../OpenLoco.h"

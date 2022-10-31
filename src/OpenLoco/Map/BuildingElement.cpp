@@ -1,3 +1,4 @@
+#include "BuildingElement.h"
 #include "../CompanyManager.h"
 #include "../Game.h"
 #include "../GameCommands/GameCommands.h"

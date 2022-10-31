@@ -5,6 +5,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
+#include "../Map/TrackElement.h"
 #include "../Math/Trigonometry.hpp"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"

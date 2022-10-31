@@ -4,7 +4,7 @@
 #include "../Graphics/PaletteMap.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
-#include "../Map/Tile.h"
+#include "../Map/SurfaceElement.h"
 #include "../Map/TileManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"

@@ -8,6 +8,8 @@
 namespace OpenLoco::Map
 {
     class QuarterTile;
+    struct BuildingElement;
+    enum class ElementType;
 }
 
 namespace OpenLoco::Map::TileManager

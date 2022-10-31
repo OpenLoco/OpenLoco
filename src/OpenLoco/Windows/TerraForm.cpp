@@ -13,6 +13,7 @@
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
 #include "../Map/Tree.h"
+#include "../Map/TreeElement.h"
 #include "../Math/Trigonometry.hpp"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"

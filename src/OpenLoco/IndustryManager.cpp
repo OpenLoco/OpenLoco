@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Math/Vector.hpp"
 #include "Objects/BuildingObject.h"

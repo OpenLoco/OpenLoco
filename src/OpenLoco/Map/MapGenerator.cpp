@@ -9,10 +9,12 @@
 #include "../Scenario.h"
 #include "../Ui/ProgressBar.h"
 #include "../Ui/WindowManager.h"
+#include "SurfaceElement.h"
 #include "Tile.h"
 #include "TileLoop.hpp"
 #include "TileManager.h"
 #include "Tree.h"
+#include "TreeElement.h"
 #include <cassert>
 #include <cstdint>
 #include <random>

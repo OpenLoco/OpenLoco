@@ -1,3 +1,5 @@
+#pragma once
+
 #include "TileElementBase.h"
 
 namespace OpenLoco::Map

@@ -5,6 +5,12 @@
 #include "../Objects/ObjectManager.h"
 #include "../Station.h"
 #include "../Ui/WindowManager.h"
+#include "BuildingElement.h"
+#include "IndustryElement.h"
+#include "RoadElement.h"
+#include "StationElement.h"
+#include "SurfaceElement.h"
+#include "TrackElement.h"
 #include <cassert>
 
 using namespace OpenLoco;

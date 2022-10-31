@@ -1,5 +1,6 @@
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
+#include "../Map/StationElement.h"
 #include "../Map/TileManager.h"
 #include "Vehicle.h"
 

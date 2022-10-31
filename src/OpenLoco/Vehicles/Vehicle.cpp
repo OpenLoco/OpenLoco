@@ -1,6 +1,7 @@
 #include "Vehicle.h"
 #include "../Entities/EntityManager.h"
 #include "../Interop/Interop.hpp"
+#include "../Map/RoadElement.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 

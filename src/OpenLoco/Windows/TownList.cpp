@@ -8,6 +8,7 @@
 #include "../LastGameOptionManager.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Map/SurfaceElement.h"
 #include "../Map/TileManager.h"
 #include "../Objects/BuildingObject.h"
 #include "../Objects/InterfaceSkinObject.h"

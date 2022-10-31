@@ -1,3 +1,4 @@
+#include "RoadElement.h"
 #include "../CompanyManager.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Interop/Interop.hpp"
