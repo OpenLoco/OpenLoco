@@ -15,7 +15,12 @@
 #include "../TownManager.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"
+#include "BuildingElement.h"
 #include "QuarterTile.h"
+#include "RoadElement.h"
+#include "SurfaceElement.h"
+#include "TreeElement.h"
+#include "WallElement.h"
 
 using namespace OpenLoco::Interop;
 

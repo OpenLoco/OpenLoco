@@ -3,7 +3,7 @@
 #include "../Graphics/Colour.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
-#include "../Map/Tile.h"
+#include "../Map/TrackElement.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/TrackExtraObject.h"
 #include "../Objects/TrackObject.h"

@@ -1,5 +1,6 @@
 #include "../CompanyManager.h"
 #include "../Economy/Expenditures.h"
+#include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Limits.h"
 #include "../Localisation/FormatArguments.hpp"

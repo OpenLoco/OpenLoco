@@ -1,5 +1,6 @@
 #include "../Economy/Expenditures.h"
 #include "../Map/TileManager.h"
+#include "../Map/WallElement.h"
 #include "../S5/S5.h"
 #include "../ViewportManager.h"
 #include "GameCommands.h"

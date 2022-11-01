@@ -3,6 +3,7 @@
 #include "../Industry.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Map/BuildingElement.h"
 #include "../Map/TileManager.h"
 #include "../Objects/BuildingObject.h"
 #include "../S5/S5.h"

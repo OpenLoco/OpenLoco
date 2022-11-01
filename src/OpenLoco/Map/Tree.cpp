@@ -7,6 +7,7 @@
 #include "../OpenLoco.h"
 #include "../Scenario.h"
 #include "../Ui.h"
+#include "SurfaceElement.h"
 #include "TileManager.h"
 
 namespace OpenLoco::Map

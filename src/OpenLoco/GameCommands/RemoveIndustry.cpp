@@ -3,6 +3,8 @@
 #include "../Industry.h"
 #include "../IndustryManager.h"
 #include "../Localisation/StringManager.h"
+#include "../Map/IndustryElement.h"
+#include "../Map/SurfaceElement.h"
 #include "../Map/TileManager.h"
 #include "../MessageManager.h"
 #include "../Objects/IndustryObject.h"

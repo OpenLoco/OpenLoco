@@ -3,10 +3,12 @@
 #include "../Interop/Interop.hpp"
 #include "../Map/AnimationManager.h"
 #include "../Map/Map.hpp"
+#include "../Map/SignalElement.h"
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
 #include "../Map/Track/Track.h"
 #include "../Map/Track/TrackData.h"
+#include "../Map/TrackElement.h"
 #include "../ViewportManager.h"
 #include "Vehicle.h"
 

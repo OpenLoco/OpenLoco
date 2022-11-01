@@ -4,6 +4,7 @@
 #include "Limits.h"
 #include "Town.h"
 #include <array>
+#include <optional>
 
 namespace OpenLoco::TownManager
 {

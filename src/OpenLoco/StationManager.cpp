@@ -6,6 +6,8 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/StationElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
 #include "ScenarioManager.h"

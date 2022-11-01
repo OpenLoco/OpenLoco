@@ -8,6 +8,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Utility/Prng.hpp"
 #include "../ViewportManager.h"
+#include "SurfaceElement.h"
 #include "TileManager.h"
 #include "Wave.h"
 

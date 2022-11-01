@@ -1,4 +1,5 @@
 #include "../Map/MapGenerator.h"
+#include "../Map/SurfaceElement.h"
 #include "../Map/TileLoop.hpp"
 #include "../Map/TileManager.h"
 #include "../Objects/LandObject.h"

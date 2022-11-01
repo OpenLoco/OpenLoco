@@ -8,6 +8,8 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/BuildingElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Math/Bound.hpp"
 #include "Objects/BuildingObject.h"

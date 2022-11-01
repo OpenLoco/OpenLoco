@@ -1,4 +1,5 @@
 #include "../Economy/Expenditures.h"
+#include "../Graphics/Gfx.h"
 #include "../Industry.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
