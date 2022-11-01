@@ -1,6 +1,6 @@
 #include "PaintIndustry.h"
 #include "../Industry.h"
-#include "../Map/Tile.h"
+#include "../Map/IndustryElement.h"
 #include "../Objects/IndustryObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/ScaffoldingObject.h"
