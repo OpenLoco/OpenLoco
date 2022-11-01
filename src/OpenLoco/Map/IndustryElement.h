@@ -31,10 +31,17 @@ namespace OpenLoco::Map
         uint8_t sequenceIndex() const;
         // var_5_E0
         uint8_t sectionProgress() const;
+        void setSectionProgress(uint8_t val);
+
         Colour var_6_F800() const;
         // This has two uses. When under construction it is the number of completed sections. Otherwise its animation sequence related
         uint8_t var_6_003F() const;
+        void setVar_6_003F(uint8_t val);
+
         bool isConstructed() const { return _type & 0x80; }
+        void setIsConstructed(bool val);
+
+        bool update(const Map::Pos2& loc);
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryElement) == kTileElementSize);

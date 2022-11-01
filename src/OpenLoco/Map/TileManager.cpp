@@ -16,6 +16,7 @@
 #include "../Ui.h"
 #include "../ViewportManager.h"
 #include "BuildingElement.h"
+#include "IndustryElement.h"
 #include "QuarterTile.h"
 #include "RoadElement.h"
 #include "SurfaceElement.h"
@@ -818,8 +819,10 @@ namespace OpenLoco::Map::TileManager
                 return elRoad.update(loc);
             }
             case ElementType::industry:
-                call(0x00456FF7, regs);
-                break;
+            {
+                auto& elIndustry = el.get<IndustryElement>();
+                return elIndustry.update(loc);
+            }
             case ElementType::track: break;
             case ElementType::station: break;
             case ElementType::signal: break;

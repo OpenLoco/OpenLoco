@@ -81,6 +81,7 @@
     <ClCompile Include="Localisation\Unicode.cpp" />
     <ClCompile Include="Map\AnimationManager.cpp" />
     <ClCompile Include="Map\BuildingElement.cpp" />
+    <ClCompile Include="Map\IndustryElement.cpp" />
     <ClCompile Include="Map\MapGenerator.cpp" />
     <ClCompile Include="Map\RoadElement.cpp" />
     <ClCompile Include="Map\SurfaceElement.cpp" />

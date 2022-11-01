@@ -215,11 +215,21 @@ namespace OpenLoco
 
         return stdx::span<const std::uint8_t>(partsPointer, end);
     }
+
     stdx::span<const std::uint8_t> IndustryObject::getAnimationSequence(const uint8_t unk) const
     {
         // animationSequences comprises of a size then data. Size will always be a power of 2
         const auto* sequencePointer = animationSequences[unk];
         const auto size = *sequencePointer++;
         return stdx::span<const std::uint8_t>(sequencePointer, size);
+    }
+
+    stdx::span<const IndustryObjectUnk38> OpenLoco::IndustryObject::getUnk38() const
+    {
+        const auto* unkPointer = var_38;
+        auto* end = unkPointer;
+        while (end->var_00 != 0xFF)
+            end++;
+        return stdx::span<const IndustryObjectUnk38>(unkPointer, end);
     }
 }
