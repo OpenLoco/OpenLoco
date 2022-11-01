@@ -1,13 +1,17 @@
 #pragma once
 
 #include "../Types.hpp"
-#include "../Viewport.hpp"
 #include "Map.hpp"
 #include "TileElement.h"
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+
+namespace OpenLoco::Ui
+{
+    struct viewport_pos;
+}
 
 namespace OpenLoco::Map
 {

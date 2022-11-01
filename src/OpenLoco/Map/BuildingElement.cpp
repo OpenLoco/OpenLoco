@@ -3,6 +3,7 @@
 #include "../Game.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Objects/BuildingObject.h"
+#include "../Objects/ObjectManager.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
@@ -13,6 +14,10 @@
 
 namespace OpenLoco::Map
 {
+    const BuildingObject* BuildingElement::getObject() const
+    {
+        return ObjectManager::get<BuildingObject>(objectId());
+    }
 
     // 0x0042DF8B
     bool BuildingElement::update(const Map::Pos2& loc)

@@ -3,6 +3,7 @@
 #include "../Types.hpp"
 #include "Map.hpp"
 #include <array>
+#include <cassert>
 
 namespace OpenLoco::Map
 {
