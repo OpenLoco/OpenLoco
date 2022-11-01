@@ -217,7 +217,7 @@ namespace OpenLoco
     }
     stdx::span<const std::uint8_t> IndustryObject::getAnimationSequence(const uint8_t unk) const
     {
-        // animationSequences comprises of a size then then data. Size will always be a power of 2
+        // animationSequences comprises of a size then data. Size will always be a power of 2
         const auto* sequencePointer = animationSequences[unk];
         const auto size = *sequencePointer++;
         return stdx::span<const std::uint8_t>(sequencePointer, size);
