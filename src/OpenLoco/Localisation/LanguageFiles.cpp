@@ -21,7 +21,7 @@ namespace OpenLoco::Localisation
     static loco_global<char* [0xFFFF], 0x005183FC> _strings;
     static std::vector<std::unique_ptr<char[]>> _stringsOwner;
 
-    static std::map<std::string, uint8_t, std::less<>> basicCommands = {
+    static const std::map<std::string, uint8_t, std::less<>> kBasicCommands = {
         { "INT16_1DP", ControlCodes::int16_decimals },
         { "INT32_1DP", ControlCodes::int32_decimals },
         { "INT16", ControlCodes::int16_grouped },
@@ -40,7 +40,7 @@ namespace OpenLoco::Localisation
         { "POWER", ControlCodes::power },
     };
 
-    static std::map<std::string, uint8_t, std::less<>> textColourNames = {
+    static const std::map<std::string, uint8_t, std::less<>> kTextColourNames = {
         { "BLACK", ControlCodes::Colour::black },
         { "WINDOW_1", ControlCodes::windowColour1 },
         { "WINDOW_2", ControlCodes::windowColour2 },
@@ -101,8 +101,8 @@ namespace OpenLoco::Localisation
                     }
                 }
 
-                auto search = basicCommands.find(commands[0]);
-                if (search != basicCommands.end())
+                auto search = kBasicCommands.find(commands[0]);
+                if (search != kBasicCommands.end())
                 {
                     *out = search->second;
                     out++;
@@ -171,8 +171,8 @@ namespace OpenLoco::Localisation
                 }
                 else if (commands[0] == "COLOUR")
                 {
-                    auto colour = textColourNames.find(commands[1]);
-                    if (colour != textColourNames.end())
+                    auto colour = kTextColourNames.find(commands[1]);
+                    if (colour != kTextColourNames.end())
                     {
                         *out = colour->second;
                         out++;

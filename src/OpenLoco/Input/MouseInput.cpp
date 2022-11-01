@@ -26,8 +26,6 @@ using namespace OpenLoco::Ui::ScrollView;
 using namespace OpenLoco::Ui::ViewportInteraction;
 using namespace OpenLoco::Map;
 
-#define DROPDOWN_ITEM_UNDEFINED -1
-
 namespace OpenLoco::Input
 {
     static void stateScrollLeft(MouseButton cx, WidgetIndex_t edx, Ui::Window* window, Ui::Widget* widget, int16_t x, int16_t y);
@@ -133,6 +131,8 @@ namespace OpenLoco::Input
         { Ui::ScrollView::ScrollPart::vscrollbarTrackBottom, StringIds::tooltip_scroll_down_fast },
         { Ui::ScrollView::ScrollPart::vscrollbarThumb, StringIds::tooltip_scroll_up_down },
     };
+
+    constexpr int32_t kDropdownItemUndefined = -1;
 
     void initMouse()
     {
@@ -1301,62 +1301,62 @@ namespace OpenLoco::Input
         }
     }
 
-    static int dropdownIndexFromPoint(Ui::Window* window, int x, int y)
+    static std::optional<int> dropdownIndexFromPoint(Ui::Window* window, int x, int y)
     {
         // Check whether x and y are over a list item
         int left = x - window->x;
         if (left < 0)
         {
-            return DROPDOWN_ITEM_UNDEFINED;
+            return std::nullopt;
         }
         if (left >= window->width)
         {
-            return DROPDOWN_ITEM_UNDEFINED;
+            return std::nullopt;
         }
 
         // 2px of padding on the top of the list?
         int top = y - window->y - 2;
         if (top < 0)
         {
-            return DROPDOWN_ITEM_UNDEFINED;
+            return std::nullopt;
         }
 
         unsigned int itemY = top / _dropdownItemHeight;
         if (itemY >= _dropdownItemCount)
         {
-            return DROPDOWN_ITEM_UNDEFINED;
+            return std::nullopt;
         }
 
         left -= 2;
         if (left < 0)
         {
-            return DROPDOWN_ITEM_UNDEFINED;
+            return std::nullopt;
         }
 
         unsigned int itemX = left / _dropdownItemWidth;
         if (itemX >= _dropdownColumnCount)
         {
-            return DROPDOWN_ITEM_UNDEFINED;
+            return std::nullopt;
         }
         if (itemY >= _dropdownRowCount)
         {
-            return DROPDOWN_ITEM_UNDEFINED;
+            return std::nullopt;
         }
 
         int item = itemY * _dropdownColumnCount + itemX;
         if (item >= _dropdownItemCount)
         {
-            return DROPDOWN_ITEM_UNDEFINED;
+            return std::nullopt;
         }
 
         if (item < 32 && (_dropdownDisabledItems & (1ULL << item)) != 0)
         {
-            return DROPDOWN_ITEM_UNDEFINED;
+            return std::nullopt;
         }
 
         if (_dropdownItemFormats[item] == 0)
         {
-            return DROPDOWN_ITEM_UNDEFINED;
+            return std::nullopt;
         }
 
         return item;
@@ -1477,9 +1477,9 @@ namespace OpenLoco::Input
                     if (window->type == Ui::WindowType::dropdown)
                     {
                         auto item = dropdownIndexFromPoint(window, x, y);
-                        if (item != DROPDOWN_ITEM_UNDEFINED)
+                        if (item.has_value())
                         {
-                            dropdownRegisterSelection(item);
+                            dropdownRegisterSelection(*item);
                         }
                     }
                     else
@@ -1496,7 +1496,7 @@ namespace OpenLoco::Input
                                 }
                             }
 
-                            dropdownRegisterSelection(DROPDOWN_ITEM_UNDEFINED);
+                            dropdownRegisterSelection(kDropdownItemUndefined);
                         }
                     }
                 }
@@ -1541,9 +1541,9 @@ namespace OpenLoco::Input
             if (window != nullptr && window->type == Ui::WindowType::dropdown)
             {
                 auto item = dropdownIndexFromPoint(window, x, y);
-                if (item != DROPDOWN_ITEM_UNDEFINED)
+                if (item.has_value())
                 {
-                    _dropdownHighlightedIndex = item;
+                    _dropdownHighlightedIndex = *item;
                     WindowManager::invalidate(Ui::WindowType::dropdown, 0);
                 }
             }

@@ -26,7 +26,7 @@ namespace OpenLoco::Input
 {
 
 #pragma pack(push, 1)
-    struct key
+    struct Key
     {
         uint32_t keyCode;
         uint32_t charCode;
@@ -44,7 +44,7 @@ namespace OpenLoco::Input
     static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
     static std::string _cheatBuffer; // 0x0011364A5
-    static loco_global<key[64], 0x0113E300> _keyQueue;
+    static loco_global<Key[64], 0x0113E300> _keyQueue;
     static loco_global<uint32_t, 0x00525388> _keyQueueLastWrite;
     static loco_global<uint32_t, 0x00525384> _keyQueueReadIndex;
     static loco_global<uint32_t, 0x00525380> _keyQueueWriteIndex;
@@ -169,7 +169,7 @@ namespace OpenLoco::Input
     }
 
     // 0x00407028
-    static key* getNextKey()
+    static Key* getNextKey()
     {
         uint32_t readIndex = _keyQueueReadIndex;
         if (readIndex == _keyQueueWriteIndex)
@@ -239,7 +239,7 @@ namespace OpenLoco::Input
         }
     }
 
-    static void editShortcut(key* k)
+    static void editShortcut(Key* k)
     {
         if (k->keyCode == SDLK_UP)
             return;

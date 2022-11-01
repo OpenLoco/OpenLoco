@@ -32,7 +32,7 @@ namespace OpenLoco::StringManager
 
     static auto& rawUserStrings() { return getGameState().userStrings; }
 
-    static std::map<int32_t, string_id> dayToString = {
+    static const std::map<int32_t, string_id> kDayToString = {
         { 1, StringIds::day_1st },
         { 2, StringIds::day_2nd },
         { 3, StringIds::day_3rd },
@@ -66,7 +66,7 @@ namespace OpenLoco::StringManager
         { 31, StringIds::day_31st },
     };
 
-    static std::map<MonthId, std::pair<string_id, string_id>> monthToStringMap = {
+    static const std::map<MonthId, std::pair<string_id, string_id>> kMonthToStringMap = {
         { MonthId::january, { StringIds::month_short_january, StringIds::month_long_january } },
         { MonthId::february, { StringIds::month_short_february, StringIds::month_long_february } },
         { MonthId::march, { StringIds::month_short_march, StringIds::month_long_march } },
@@ -83,7 +83,7 @@ namespace OpenLoco::StringManager
 
     std::pair<string_id, string_id> monthToString(MonthId month)
     {
-        return monthToStringMap[month];
+        return kMonthToStringMap.find(month)->second;
     }
 
     // 0x0049650E
@@ -165,7 +165,7 @@ namespace OpenLoco::StringManager
     {
         auto date = calcDate(totalDays);
 
-        string_id dayString = dayToString[date.day];
+        string_id dayString = kDayToString.find(date.day)->second;
         buffer = formatString(buffer, dayString, nullptr);
 
         *buffer = ' ';
