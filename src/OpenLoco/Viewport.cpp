@@ -3,6 +3,7 @@
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
+#include "Paint/Paint.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
 
@@ -38,6 +39,83 @@ namespace OpenLoco::Ui
     // 0x0045A1A4
     void Viewport::paint(Gfx::RenderTarget* rt, const Rect& rect)
     {
+        Paint::SessionOptions options;
+        if (flags & (ViewportFlags::hide_foreground_scenery_buildings || ViewportFlags::hide_foreground_tracks_roads))
+        {
+            options.foregroundCullingHeight = viewHeight / 2 + viewY;
+        }
+        options.fillColour = PaletteIndex::index_D8;
+        if (flags & (ViewportFlags::underground_view | ViewportFlags::flag_7 | ViewportFlags::flag_8))
+        {
+            options.fillColour = PaletteIndex::index_0A;
+        }
+
+        uint32_t width = rect.width();
+        uint32_t height = rect.height();
+        const uint32_t bitmask =  0xFFFFFFFF << zoom;
+        auto origin = rect.origin;
+
+        width &= bitmask;
+        height &= bitmask;
+        origin.x &= bitmask;
+        origin.y &= bitmask;
+
+        auto unkX = ((origin.x - static_cast<int32_t>(viewX & bitmask)) >> zoom) + x;
+
+        auto unkY = ((origin.y - static_cast<int32_t>(viewY & bitmask)) >> zoom) + y;
+
+        Gfx::RenderTarget target1{};
+        target1.x = origin.x;
+        target1.y = origin.y;
+        target1.width = width;
+        target1.height = height;
+        target1.pitch = rt->width + rt->pitch - (width >> zoom);
+        target1.bits = rt->bits + (unkX - rt->x) + ((unkY - rt->y) * (rt->width + rt->pitch));
+        target1.zoomLevel = zoom;
+
+        Gfx::RenderTarget target2{};
+        target2.y = target1.y;
+        target2.height = target1.height;
+        target2.zoomLevel = target1.zoomLevel;
+        // make sure, the compare operation is done in int32_t to avoid the loop becoming an infinite loop.
+        // this as well as the [x += 32] in the loop causes signed integer overflow -> undefined behaviour.
+        auto rightBorder = target1.x + target1.width;
+        // Floors to nearest 32
+        auto alignedX = target1.x & ~0x1F;
+
+        // Generate and sort columns.
+        for (auto columnX = alignedX; columnX < rightBorder; columnX += 32)
+        {
+            target2.width = target1.width;
+            target2.pitch = target1.pitch;
+            target2.bits = target1.bits;
+            target2.x = target1.x;
+            if (columnX >= target1.x)
+            {
+                auto leftPitch = columnX - target1.x;
+                target2.width -= leftPitch;
+                target2.pitch += (leftPitch >> target1.zoomLevel);
+                target2.bits += (leftPitch >> target1.zoomLevel);
+                target2.x = columnX;
+            }
+            auto columnRightX = columnX + 32;
+            auto paintRight = target2.x + target2.width;
+            if (paintRight >= columnRightX)
+            {
+                auto rightPitch = paintRight - columnX - 32;
+                paintRight -= rightPitch;
+                target2.pitch += rightPitch >> target1.zoomLevel;
+            }
+
+            target2.width = paintRight - target2.x;
+
+            Gfx::clearSingle(target2, options.fillColour);
+            auto* sess = Paint::allocateSession(target2, viewFlags, options);
+            sess->generate();
+            sess->arrangeStructs();
+            sess->drawStructs();
+            // 0x0045A354
+        }
         registers regs{};
         regs.ax = rect.left();
         regs.bx = rect.top();
