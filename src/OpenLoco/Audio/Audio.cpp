@@ -230,7 +230,7 @@ namespace OpenLoco::Audio
             _devices = getDevices();
         }
         std::string deviceName{};
-        const auto& cfg = Config::getNew();
+        const auto& cfg = Config::get();
         if (!cfg.audio.device.empty())
         {
             if (std::find(std::begin(_devices), std::end(_devices), cfg.audio.device) != std::end(_devices))
@@ -323,13 +323,13 @@ namespace OpenLoco::Audio
 #endif
         }
 
-        const auto& cfg = Config::getNew();
+        const auto& cfg = Config::get();
         return cfg.audio.device.c_str();
     }
 
     size_t getCurrentDevice()
     {
-        const auto& cfg = Config::getNew();
+        const auto& cfg = Config::get();
         return getDeviceIndex(cfg.audio.device);
     }
 
@@ -337,7 +337,7 @@ namespace OpenLoco::Audio
     {
         if (index < _devices.size())
         {
-            auto& cfg = Config::getNew();
+            auto& cfg = Config::get();
 #ifdef __HAS_DEFAULT_DEVICE__
             if (index == 0)
             {
@@ -348,7 +348,7 @@ namespace OpenLoco::Audio
             {
                 cfg.audio.device = _devices[index];
             }
-            Config::writeNewConfig();
+            Config::write();
             reinitialise();
         }
     }
@@ -554,7 +554,7 @@ namespace OpenLoco::Audio
                 pan = 0;
             }
 
-            const auto& cfg = Config::get();
+            const auto& cfg = Config::get().old;
             if (cfg.var_1E == 0)
             {
                 pan = 0;
@@ -700,7 +700,7 @@ namespace OpenLoco::Audio
         if (v->spriteLeft == Location::null)
             return;
 
-        if (_numActiveVehicleSounds >= Config::get().maxVehicleSounds)
+        if (_numActiveVehicleSounds >= Config::get().old.maxVehicleSounds)
             return;
 
         auto spritePosition = viewport_pos(v->spriteLeft, v->spriteTop);
@@ -986,7 +986,7 @@ namespace OpenLoco::Audio
     void revalidateCurrentTrack()
     {
         using MusicPlaylistType = Config::MusicPlaylistType;
-        const auto& cfg = Config::get();
+        const auto& cfg = Config::get().old;
 
         if (_currentSong == kNoSong)
             return;
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Audio
         static std::vector<uint8_t> playlist;
         playlist.clear();
 
-        const auto& cfg = Config::get();
+        const auto& cfg = Config::get().old;
         switch (cfg.musicPlaylist)
         {
             case MusicPlaylistType::currentEra:
@@ -1092,7 +1092,7 @@ namespace OpenLoco::Audio
     // 0x0048A78D
     void playBackgroundMusic()
     {
-        auto& cfg = Config::get();
+        auto& cfg = Config::get().old;
         if (cfg.musicPlaying == 0 || isTitleMode() || isEditorMode())
         {
             return;
@@ -1206,12 +1206,12 @@ namespace OpenLoco::Audio
     // 0x0048AA67
     void setBgmVolume(int32_t volume)
     {
-        if (Config::get().volume == volume)
+        if (Config::get().old.volume == volume)
         {
             return;
         }
 
-        auto& cfg = Config::get();
+        auto& cfg = Config::get().old;
         cfg.volume = volume;
         Config::write();
 

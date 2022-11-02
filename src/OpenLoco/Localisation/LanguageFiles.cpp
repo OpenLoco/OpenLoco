@@ -273,7 +273,7 @@ namespace OpenLoco::Localisation
             throw std::runtime_error("Could not load the en-GB language file!");
 
         // Determine the language currently selected.
-        auto& config = Config::getNew();
+        auto& config = Config::get();
         if (config.language == "en-GB")
             return;
 

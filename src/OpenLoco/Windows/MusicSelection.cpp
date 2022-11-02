@@ -103,7 +103,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
         Gfx::clearSingle(rt, shade);
 
-        const auto& config = Config::get();
+        const auto& config = Config::get().old;
 
         uint16_t y = 0;
         for (uint16_t i = 0; i < window.rowCount; i++)
@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         if (currentTrack > window.rowCount)
             return;
 
-        auto& config = Config::get();
+        auto& config = Config::get().old;
 
         // Toggle the track in question.
         config.enabledMusic[currentTrack] = !config.enabledMusic[currentTrack];

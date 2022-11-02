@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         window.widgets[Widx::scenario_editor_btn].right = kBtnMainSize * 4 - 1;
         window.widgets[Widx::chat_btn].type = Ui::WidgetType::none;
 
-        auto& config = Config::getNew();
+        auto& config = Config::get();
         window.widgets[Widx::multiplayer_toggle_btn].type = config.network.enabled ? WidgetType::buttonWithImage : WidgetType::none;
 
         if (OpenLoco::isNetworked())
@@ -389,14 +389,14 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
     static void showMultiplayer(Window* window)
     {
-        auto& cfg = Config::get();
+        auto& cfg = Config::get().old;
         StringManager::setString(StringIds::buffer_2039, Utility::nullTerminatedView(cfg.lastHost));
         TextInput::openTextInput(window, StringIds::enter_host_address, StringIds::enter_host_address_description, StringIds::buffer_2039, Widx::multiplayer_toggle_btn, nullptr);
     }
 
     static void multiplayerConnect(std::string_view host)
     {
-        auto& cfg = Config::get();
+        auto& cfg = Config::get().old;
         auto szHost = std::string(host);
         Utility::strcpy_safe(cfg.lastHost, szHost.c_str());
 

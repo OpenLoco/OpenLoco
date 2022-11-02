@@ -184,15 +184,14 @@ namespace OpenLoco::Config
         bool invertRightMouseViewPan = false;
         bool cashPopupRendering = true;
         bool allowMultipleInstances = false;
+        LocoConfig old;
     };
 
-    LocoConfig& get();
-    NewConfig& getNew();
+    NewConfig& get();
 
-    LocoConfig& read();
-    NewConfig& readNewConfig();
+    NewConfig& read();
     void write();
-    void writeNewConfig();
 
     void resetShortcuts();
+    void registerHooks();
 }

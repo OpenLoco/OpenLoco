@@ -449,7 +449,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
 
             const auto* company = CompanyManager::get(companyId);
-            if (!Config::getNew().displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleObjIndex))
+            if (!Config::get().displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleObjIndex))
             {
                 continue;
             }
@@ -1115,9 +1115,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         }
 
                         const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-                        auto rowIsALockedVehicle = Config::getNew().displayLockedVehicles
+                        auto rowIsALockedVehicle = Config::get().displayLockedVehicles
                             && !company->isVehicleIndexUnlocked(vehicleType)
-                            && !Config::getNew().buildLockedVehicles;
+                            && !Config::get().buildLockedVehicles;
 
                         auto colouredString = StringIds::black_stringid;
 

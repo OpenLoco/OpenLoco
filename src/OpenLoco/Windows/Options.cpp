@@ -241,24 +241,24 @@ namespace OpenLoco::Ui::Windows::Options
 
                 case Widx::show_fps:
                 {
-                    auto& cfg = OpenLoco::Config::getNew();
+                    auto& cfg = OpenLoco::Config::get();
                     cfg.showFPS ^= 1;
-                    OpenLoco::Config::writeNewConfig();
+                    OpenLoco::Config::write();
                     Gfx::invalidateScreen();
                     return;
                 }
                 case Widx::uncap_fps:
                 {
-                    auto& cfg = OpenLoco::Config::getNew();
+                    auto& cfg = OpenLoco::Config::get();
                     cfg.uncapFPS ^= 1;
-                    OpenLoco::Config::writeNewConfig();
+                    OpenLoco::Config::write();
                     Gfx::invalidateScreen();
                     return;
                 }
 
                 case Widx::landscape_smoothing:
                 {
-                    auto& cfg = OpenLoco::Config::get();
+                    auto& cfg = OpenLoco::Config::get().old;
                     // TODO: is there a better way to toggle a flag?
                     if (cfg.flags & Config::Flags::landscapeSmoothing)
                     {
@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 case Widx::gridlines_on_landscape:
                 {
-                    auto& cfg = OpenLoco::Config::get();
+                    auto& cfg = OpenLoco::Config::get().old;
                     if (cfg.flags & Config::Flags::gridlinesOnLandscape)
                     {
                         cfg.flags &= ~Config::Flags::gridlinesOnLandscape;
@@ -303,7 +303,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 case Widx::cash_popup_rendering:
                 {
-                    auto& cfg = OpenLoco::Config::getNew();
+                    auto& cfg = OpenLoco::Config::get();
                     cfg.cashPopupRendering = !cfg.cashPopupRendering;
                     Config::write();
                     w.invalidate();
@@ -321,7 +321,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
-            Dropdown::setItemSelected(Config::get().constructionMarker);
+            Dropdown::setItemSelected(Config::get().old.constructionMarker);
         }
 
         // 0x004BFE98
@@ -330,10 +330,10 @@ namespace OpenLoco::Ui::Windows::Options
             if (ax == -1)
                 return;
 
-            if (ax == Config::get().constructionMarker)
+            if (ax == Config::get().old.constructionMarker)
                 return;
 
-            auto& cfg = OpenLoco::Config::get();
+            auto& cfg = OpenLoco::Config::get().old;
             cfg.constructionMarker = ax;
             OpenLoco::Config::write();
             Gfx::invalidateScreen();
@@ -351,7 +351,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
             Dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
-            Dropdown::setItemSelected(Config::get().vehiclesMinScale);
+            Dropdown::setItemSelected(Config::get().old.vehiclesMinScale);
         }
 
         // 0x004BFF4C
@@ -360,10 +360,10 @@ namespace OpenLoco::Ui::Windows::Options
             if (ax == -1)
                 return;
 
-            if (ax == Config::get().vehiclesMinScale)
+            if (ax == Config::get().old.vehiclesMinScale)
                 return;
 
-            auto& cfg = OpenLoco::Config::get();
+            auto& cfg = OpenLoco::Config::get().old;
             cfg.vehiclesMinScale = ax;
             OpenLoco::Config::write();
             Gfx::invalidateScreen();
@@ -381,7 +381,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
             Dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
-            Dropdown::setItemSelected(Config::get().stationNamesMinScale);
+            Dropdown::setItemSelected(Config::get().old.stationNamesMinScale);
         }
 
         // 0x004C0000
@@ -390,10 +390,10 @@ namespace OpenLoco::Ui::Windows::Options
             if (ax == -1)
                 return;
 
-            if (ax == Config::get().stationNamesMinScale)
+            if (ax == Config::get().old.stationNamesMinScale)
                 return;
 
-            auto& cfg = OpenLoco::Config::get();
+            auto& cfg = OpenLoco::Config::get().old;
             cfg.stationNamesMinScale = ax;
             OpenLoco::Config::write();
             Gfx::invalidateScreen();
@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::Options
 #if !(defined(__APPLE__) && defined(__MACH__))
         static void screenModeToggleEnabled(Window* w)
         {
-            if (Config::getNew().display.mode == Config::ScreenMode::fullscreen)
+            if (Config::get().display.mode == Config::ScreenMode::fullscreen)
             {
                 w->enabledWidgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
                 w->disabledWidgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
@@ -424,7 +424,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen_window);
 
-            auto selection = static_cast<uint16_t>(Config::getNew().display.mode);
+            auto selection = static_cast<uint16_t>(Config::get().display.mode);
             Dropdown::setItemSelected(selection);
         }
 
@@ -434,7 +434,7 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
 
             auto new_mode = static_cast<Config::ScreenMode>(selection);
-            if (new_mode == Config::getNew().display.mode)
+            if (new_mode == Config::get().display.mode)
                 return;
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::Options
             Widget dropdown = w->widgets[Widx::display_resolution];
             Dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->getColour(WindowColour::secondary), resolutions.size(), 0x80);
 
-            auto& cfg = Config::getNew();
+            auto& cfg = Config::get();
             for (size_t i = 0; i < resolutions.size(); i++)
             {
                 Dropdown::add(i, StringIds::dropdown_stringid, { StringIds::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
@@ -555,7 +555,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
             string_id screenModeStringId = StringIds::empty;
-            switch (Config::getNew().display.mode)
+            switch (Config::get().display.mode)
             {
                 case Config::ScreenMode::window:
                     screenModeStringId = StringIds::options_mode_windowed;
@@ -571,11 +571,11 @@ namespace OpenLoco::Ui::Windows::Options
 
             FormatArguments args = {};
             args.skip(0x10);
-            auto& resolution = Config::getNew().display.fullscreenResolution;
+            auto& resolution = Config::get().display.fullscreenResolution;
             args.push<uint16_t>(resolution.width);
             args.push<uint16_t>(resolution.height);
 
-            if (Config::get().constructionMarker)
+            if (Config::get().old.constructionMarker)
                 w.widgets[Widx::construction_marker].text = StringIds::translucent;
             else
                 w.widgets[Widx::construction_marker].text = StringIds::white;
@@ -587,45 +587,45 @@ namespace OpenLoco::Ui::Windows::Options
                 StringIds::eighth_scale,
             };
 
-            w.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().vehiclesMinScale];
-            w.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().stationNamesMinScale];
+            w.widgets[Widx::vehicles_min_scale].text = kScaleStringIds[Config::get().old.vehiclesMinScale];
+            w.widgets[Widx::station_names_min_scale].text = kScaleStringIds[Config::get().old.stationNamesMinScale];
 
             w.activatedWidgets &= ~(1 << Widx::show_fps);
-            if (Config::getNew().showFPS)
+            if (Config::get().showFPS)
             {
                 w.activatedWidgets |= (1 << Widx::show_fps);
             }
 
             w.activatedWidgets &= ~(1 << Widx::uncap_fps);
-            if (Config::getNew().uncapFPS)
+            if (Config::get().uncapFPS)
             {
                 w.activatedWidgets |= (1 << Widx::uncap_fps);
             }
 
             w.activatedWidgets &= ~(1 << Widx::landscape_smoothing);
-            if ((Config::get().flags & Config::Flags::landscapeSmoothing) == 0)
+            if ((Config::get().old.flags & Config::Flags::landscapeSmoothing) == 0)
             {
                 w.activatedWidgets |= (1 << Widx::landscape_smoothing);
             }
 
             w.activatedWidgets &= ~(1 << Widx::gridlines_on_landscape);
-            if (Config::get().flags & Config::Flags::gridlinesOnLandscape)
+            if (Config::get().old.flags & Config::Flags::gridlinesOnLandscape)
             {
                 w.activatedWidgets |= (1 << Widx::gridlines_on_landscape);
             }
 
             w.activatedWidgets &= ~(1 << Widx::cash_popup_rendering);
-            if (Config::getNew().cashPopupRendering)
+            if (Config::get().cashPopupRendering)
                 w.activatedWidgets |= (1 << Widx::cash_popup_rendering);
             else
                 w.activatedWidgets &= ~(1 << Widx::cash_popup_rendering);
 
-            if (Config::getNew().scaleFactor <= OpenLoco::Ui::ScaleFactor::min)
+            if (Config::get().scaleFactor <= OpenLoco::Ui::ScaleFactor::min)
                 w.disabledWidgets |= (1 << Widx::display_scale_down_btn);
             else
                 w.disabledWidgets &= ~(1 << Widx::display_scale_down_btn);
 
-            if (Config::getNew().scaleFactor >= OpenLoco::Ui::ScaleFactor::max)
+            if (Config::get().scaleFactor >= OpenLoco::Ui::ScaleFactor::max)
                 w.disabledWidgets |= (1 << Widx::display_scale_up_btn);
             else
                 w.disabledWidgets &= ~(1 << Widx::display_scale_up_btn);
@@ -664,14 +664,14 @@ namespace OpenLoco::Ui::Windows::Options
             y = w.y + Display::_widgets[Display::Widx::display_scale].top + 1;
             drawStringLeft(*rt, x, y, Colour::black, StringIds::window_scale_factor, nullptr);
 
-            int scale = (int)(Config::getNew().scaleFactor * 100);
+            int scale = (int)(Config::get().scaleFactor * 100);
             auto& scaleWidget = w.widgets[Widx::display_scale];
             drawStringLeft(*rt, w.x + scaleWidget.left + 1, w.y + scaleWidget.top + 1, Colour::black, StringIds::scale_formatted, &scale);
         }
 
         static void applyScreenModeRestrictions(Window* w)
         {
-            if (Config::getNew().display.mode != Config::ScreenMode::fullscreen)
+            if (Config::get().display.mode != Config::ScreenMode::fullscreen)
                 w->disabledWidgets = (1 << Display::Widx::display_resolution) | (1 << Display::Widx::display_resolution_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -752,7 +752,7 @@ namespace OpenLoco::Ui::Windows::Options
             else
                 args.push(StringIds::audio_device_none);
 
-            if (Config::getNew().audio.playTitleMusic)
+            if (Config::get().audio.playTitleMusic)
                 w.activatedWidgets |= (1 << Widx::play_title_music);
             else
                 w.activatedWidgets &= ~(1 << Widx::play_title_music);
@@ -850,13 +850,13 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void playTitleMusicOnMouseUp(Window* w)
         {
-            auto& cfg = Config::getNew();
+            auto& cfg = Config::get();
             cfg.audio.playTitleMusic = !cfg.audio.playTitleMusic;
             Config::write();
 
             if (cfg.audio.playTitleMusic)
             {
-                Audio::playMusic(Environment::PathId::css5, Config::get().volume, true);
+                Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
             }
 
             w->invalidate();
@@ -958,14 +958,14 @@ namespace OpenLoco::Ui::Windows::Options
                 StringIds::play_custom_music_selection,
             };
 
-            string_id currentSongStringId = playlist_string_ids[(uint8_t)Config::get().musicPlaylist];
+            string_id currentSongStringId = playlist_string_ids[(uint8_t)Config::get().old.musicPlaylist];
             args.push(currentSongStringId);
 
             w.activatedWidgets &= ~((1 << Widx::music_controls_stop) | (1 << Widx::music_controls_play));
             w.activatedWidgets |= (1 << Widx::music_controls_stop);
             if (_currentSong != -1)
             {
-                if (Config::get().musicPlaying)
+                if (Config::get().old.musicPlaying)
                 {
                     w.activatedWidgets &= ~((1 << Widx::music_controls_stop) | (1 << Widx::music_controls_play));
                     w.activatedWidgets |= (1 << Widx::music_controls_play);
@@ -973,7 +973,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             w.disabledWidgets |= (1 << Widx::edit_selection);
-            if (Config::get().musicPlaylist == Config::MusicPlaylistType::custom)
+            if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::custom)
             {
                 w.disabledWidgets &= ~(1 << Widx::edit_selection);
             }
@@ -995,7 +995,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             Gfx::drawImage(rt, w.x + w.widgets[Widx::volume].left, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
 
-            int16_t x = 90 + (Config::get().volume / 32);
+            int16_t x = 90 + (Config::get().old.volume / 32);
             Gfx::drawImage(rt, w.x + w.widgets[Widx::volume].left + x, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w.getColour(WindowColour::secondary).c()));
         }
 
@@ -1084,10 +1084,10 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0778
         static void stopMusic(Window* w)
         {
-            if (Config::get().musicPlaying == 0)
+            if (Config::get().old.musicPlaying == 0)
                 return;
 
-            auto& cfg = Config::get();
+            auto& cfg = Config::get().old;
             cfg.musicPlaying = 0;
             Config::write();
 
@@ -1101,10 +1101,10 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C07A4
         static void playMusic(Window* w)
         {
-            if (Config::get().musicPlaying != 0)
+            if (Config::get().old.musicPlaying != 0)
                 return;
 
-            auto& cfg = Config::get();
+            auto& cfg = Config::get().old;
             cfg.musicPlaying = 1;
             Config::write();
 
@@ -1114,7 +1114,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C07C4
         static void playNextSong(Window* w)
         {
-            if (Config::get().musicPlaying == 0)
+            if (Config::get().old.musicPlaying == 0)
                 return;
 
             Audio::stopMusic();
@@ -1136,7 +1136,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::play_custom_music_selection);
 
-            Dropdown::setItemSelected((uint8_t)Config::get().musicPlaylist);
+            Dropdown::setItemSelected((uint8_t)Config::get().old.musicPlaylist);
         }
 
         // 0x004C084A
@@ -1145,7 +1145,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (ax == -1)
                 return;
 
-            auto& cfg = OpenLoco::Config::get();
+            auto& cfg = OpenLoco::Config::get().old;
             cfg.musicPlaylist = (Config::MusicPlaylistType)ax;
             Config::write();
 
@@ -1162,7 +1162,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             auto vector = std::vector<int>();
 
-            if (Config::get().musicPlaylist == Config::MusicPlaylistType::currentEra)
+            if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::currentEra)
             {
                 uint16_t year = getCurrentYear();
                 for (int i = 0; i < Audio::kNumMusicTracks; i++)
@@ -1174,18 +1174,18 @@ namespace OpenLoco::Ui::Windows::Options
                     }
                 }
             }
-            else if (Config::get().musicPlaylist == Config::MusicPlaylistType::all)
+            else if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::all)
             {
                 for (int i = 0; i < Audio::kNumMusicTracks; i++)
                 {
                     vector.push_back(i);
                 }
             }
-            else if (Config::get().musicPlaylist == Config::MusicPlaylistType::custom)
+            else if (Config::get().old.musicPlaylist == Config::MusicPlaylistType::custom)
             {
                 for (int i = 0; i < Audio::kNumMusicTracks; i++)
                 {
-                    if (Config::get().enabledMusic[i] & 1)
+                    if (Config::get().old.enabledMusic[i] & 1)
                     {
                         vector.push_back(i);
                     }
@@ -1334,11 +1334,11 @@ namespace OpenLoco::Ui::Windows::Options
 
             FormatArguments args = {};
 
-            auto& language = Localisation::getDescriptorForLanguage(Config::getNew().language);
+            auto& language = Localisation::getDescriptorForLanguage(Config::get().language);
             args.push(language.nativeName.c_str());
 
             string_id current_height_units = StringIds::height_units;
-            if ((OpenLoco::Config::get().flags & Config::Flags::showHeightAsUnits) == 0)
+            if ((OpenLoco::Config::get().old.flags & Config::Flags::showHeightAsUnits) == 0)
             {
                 current_height_units = StringIds::height_real_values;
             }
@@ -1347,7 +1347,7 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(current_height_units);
 
             string_id current_measurement_format = StringIds::imperial;
-            if (OpenLoco::Config::get().measurementFormat == Config::MeasurementFormat::metric)
+            if (OpenLoco::Config::get().old.measurementFormat == Config::MeasurementFormat::metric)
             {
                 current_measurement_format = StringIds::metric;
             }
@@ -1357,20 +1357,20 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(current_measurement_format);
 
             w.activatedWidgets &= ~(1 << Widx::preferred_currency_for_new_games);
-            if (Config::get().flags & Config::Flags::preferredCurrencyForNewGames)
+            if (Config::get().old.flags & Config::Flags::preferredCurrencyForNewGames)
             {
                 w.activatedWidgets |= (1 << Widx::preferred_currency_for_new_games);
             }
 
             w.activatedWidgets &= ~(1 << Widx::preferred_currency_always);
-            if (Config::get().flags & Config::Flags::preferredCurrencyAlways)
+            if (Config::get().old.flags & Config::Flags::preferredCurrencyAlways)
             {
                 w.activatedWidgets |= (1 << Widx::preferred_currency_always);
             }
 
             w.disabledWidgets &= ~(1 << Widx::currency);
             w.disabledWidgets &= ~(1 << Widx::currency_btn);
-            if (Config::get().flags & Config::Flags::preferredCurrencyAlways)
+            if (Config::get().old.flags & Config::Flags::preferredCurrencyAlways)
             {
                 w.disabledWidgets |= (1 << Widx::currency);
                 w.disabledWidgets |= (1 << Widx::currency_btn);
@@ -1480,7 +1480,7 @@ namespace OpenLoco::Ui::Windows::Options
             Widget dropdown = w->widgets[Widx::language];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), numLanguages - 1, 0x80);
 
-            std::string& current_language = Config::getNew().language;
+            std::string& current_language = Config::get().language;
 
             for (uint8_t index = 1; index < numLanguages; index++)
             {
@@ -1502,7 +1502,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             auto& lds = Localisation::getLanguageDescriptors();
             auto& ld = lds[ax + 1];
-            Config::getNew().language = ld.locale;
+            Config::get().language = ld.locale;
             Config::write();
             Localisation::loadLanguageFile();
             Gfx::invalidateScreen();
@@ -1596,7 +1596,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 if (index == ax)
                 {
-                    auto& cfg = OpenLoco::Config::get();
+                    auto& cfg = OpenLoco::Config::get().old;
                     cfg.preferredCurrency = *object.second._header;
 
                     sub_4C1519();
@@ -1614,7 +1614,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0F14
         static void preferredCurrencyNewGameMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::get();
+            auto& cfg = OpenLoco::Config::get().old;
             if (cfg.flags & Config::Flags::preferredCurrencyForNewGames)
             {
                 cfg.flags &= ~Config::Flags::preferredCurrencyForNewGames;
@@ -1631,7 +1631,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0F27
         static void preferredCurrencyAlwaysMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::get();
+            auto& cfg = OpenLoco::Config::get().old;
             if (cfg.flags & Config::Flags::preferredCurrencyAlways)
             {
                 cfg.flags &= ~Config::Flags::preferredCurrencyAlways;
@@ -1656,7 +1656,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::metric);
-            Dropdown::setItemSelected(static_cast<uint8_t>(Config::get().measurementFormat));
+            Dropdown::setItemSelected(static_cast<uint8_t>(Config::get().old.measurementFormat));
         }
 
         // 0x004C0FB3
@@ -1665,7 +1665,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (ax == -1)
                 return;
 
-            auto& cfg = Config::get();
+            auto& cfg = Config::get().old;
             cfg.measurementFormat = Config::MeasurementFormat(ax);
 
             // 0x004C0FC2
@@ -1689,7 +1689,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::height_real_values);
 
             int selectedItem = 0;
-            if ((Config::get().flags & Config::Flags::showHeightAsUnits) == 0)
+            if ((Config::get().old.flags & Config::Flags::showHeightAsUnits) == 0)
             {
                 selectedItem = 1;
             }
@@ -1702,7 +1702,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (ax == -1)
                 return;
 
-            auto& cfg = Config::get();
+            auto& cfg = Config::get().old;
             cfg.flags &= ~Config::Flags::showHeightAsUnits;
 
             if (ax == 0)
@@ -1791,15 +1791,15 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
             w.activatedWidgets &= ~(1 << Widx::edge_scrolling | 1 << Widx::zoom_to_cursor | 1 << Widx::invertRightMouseViewPan);
-            if (Config::get().edgeScrolling)
+            if (Config::get().old.edgeScrolling)
             {
                 w.activatedWidgets |= (1 << Widx::edge_scrolling);
             }
-            if (Config::getNew().zoomToCursor)
+            if (Config::get().zoomToCursor)
             {
                 w.activatedWidgets |= (1 << Widx::zoom_to_cursor);
             }
-            if (Config::getNew().invertRightMouseViewPan)
+            if (Config::get().invertRightMouseViewPan)
             {
                 w.activatedWidgets |= (1 << Widx::invertRightMouseViewPan);
             }
@@ -1853,7 +1853,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C117A
         static void edgeScrollingMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::get();
+            auto& cfg = OpenLoco::Config::get().old;
             cfg.edgeScrolling = !cfg.edgeScrolling;
             Config::write();
 
@@ -1862,7 +1862,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void zoomToCursorMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::getNew();
+            auto& cfg = OpenLoco::Config::get();
             cfg.zoomToCursor = !cfg.zoomToCursor;
             Config::write();
 
@@ -1871,7 +1871,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void invertRightMouseViewPan(Window* w)
         {
-            auto& cfg = OpenLoco::Config::getNew();
+            auto& cfg = OpenLoco::Config::get();
             cfg.invertRightMouseViewPan = !cfg.invertRightMouseViewPan;
             Config::write();
 
@@ -1971,35 +1971,35 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            if (Config::getNew().cheatsMenuEnabled)
+            if (Config::get().cheatsMenuEnabled)
                 w.activatedWidgets |= (1 << Widx::enableCheatsToolbarButton);
             else
                 w.activatedWidgets &= ~(1 << Widx::enableCheatsToolbarButton);
 
-            if (Config::getNew().breakdownsDisabled)
+            if (Config::get().breakdownsDisabled)
                 w.activatedWidgets |= (1 << Widx::disable_vehicle_breakdowns);
             else
                 w.activatedWidgets &= ~(1 << Widx::disable_vehicle_breakdowns);
 
-            if (Config::getNew().trainsReverseAtSignals)
+            if (Config::get().trainsReverseAtSignals)
                 w.activatedWidgets |= (1 << Widx::trainsReverseAtSignals);
             else
                 w.activatedWidgets &= ~(1 << Widx::trainsReverseAtSignals);
 
-            if (Config::getNew().companyAIDisabled)
+            if (Config::get().companyAIDisabled)
                 w.activatedWidgets |= (1 << Widx::disableAICompanies);
             else
                 w.activatedWidgets &= ~(1 << Widx::disableAICompanies);
 
             w.activatedWidgets &= ~(1 << Widx::export_plugin_objects);
-            if (Config::get().flags & Config::Flags::exportObjectsWithSaves)
+            if (Config::get().old.flags & Config::Flags::exportObjectsWithSaves)
             {
                 w.activatedWidgets |= (1 << Widx::export_plugin_objects);
             }
 
             w.activatedWidgets &= ~(1 << Widx::use_preferred_owner_name);
             w.disabledWidgets |= (1 << Widx::change_btn);
-            if (Config::get().flags & Config::Flags::usePreferredOwnerName)
+            if (Config::get().old.flags & Config::Flags::usePreferredOwnerName)
             {
                 w.activatedWidgets |= (1 << Widx::use_preferred_owner_name);
                 w.disabledWidgets &= ~(1 << Widx::change_btn);
@@ -2030,7 +2030,7 @@ namespace OpenLoco::Ui::Windows::Options
             Common::drawTabs(&w, rt);
 
             auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-            char* playerName = Config::get().preferredName;
+            char* playerName = Config::get().old.preferredName;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
@@ -2041,7 +2041,7 @@ namespace OpenLoco::Ui::Windows::Options
             auto y = w.y + w.widgets[Widx::autosave_frequency].top + 1;
             drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
 
-            auto freq = Config::getNew().autosaveFrequency;
+            auto freq = Config::get().autosaveFrequency;
             string_id stringId;
             switch (freq)
             {
@@ -2060,29 +2060,29 @@ namespace OpenLoco::Ui::Windows::Options
             y = w.y + w.widgets[Widx::autosave_amount].top + 1;
             drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_amount, nullptr);
 
-            auto scale = Config::getNew().autosaveAmount;
+            auto scale = Config::get().autosaveAmount;
             drawDropdownContent(&w, rt, Widx::autosave_amount, StringIds::int_32, scale);
         }
 
         static void changeAutosaveAmount(Window* w, int32_t delta)
         {
-            auto& cfg = Config::getNew();
+            auto& cfg = Config::get();
             auto newValue = std::clamp(cfg.autosaveAmount + delta, 1, 24);
             if (cfg.autosaveAmount != newValue)
             {
                 cfg.autosaveAmount = newValue;
-                Config::writeNewConfig();
+                Config::write();
                 w->invalidate();
             }
         }
 
         static void changeAutosaveFrequency(Window* w, int32_t value)
         {
-            auto& cfg = Config::getNew();
+            auto& cfg = Config::get();
             if (cfg.autosaveFrequency != value)
             {
                 cfg.autosaveFrequency = value;
-                Config::writeNewConfig();
+                Config::write();
                 w->invalidate();
             }
         }
@@ -2100,7 +2100,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(4, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint32_t>(12) });
 
             // Set current selection
-            auto freq = Config::getNew().autosaveFrequency;
+            auto freq = Config::get().autosaveFrequency;
             std::optional<size_t> selected;
             switch (freq)
             {
@@ -2237,7 +2237,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void changePreferredName(Window* w)
         {
             auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-            char* playerName = Config::get().preferredName;
+            char* playerName = Config::get().old.preferredName;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
@@ -2247,7 +2247,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C1342
         static void setPreferredName(Window* w, const char* str)
         {
-            auto& cfg = OpenLoco::Config::get();
+            auto& cfg = OpenLoco::Config::get().old;
 
             if (strlen(str) == 0)
                 cfg.flags &= ~Config::Flags::usePreferredOwnerName;
@@ -2263,7 +2263,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C135F
         static void usePreferredOwnerNameMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::get();
+            auto& cfg = OpenLoco::Config::get().old;
             if (cfg.flags & Config::Flags::usePreferredOwnerName)
             {
                 cfg.flags &= ~Config::Flags::usePreferredOwnerName;
@@ -2287,7 +2287,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void enableCheatsToolbarButtonMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::getNew();
+            auto& cfg = OpenLoco::Config::get();
             cfg.cheatsMenuEnabled = !cfg.cheatsMenuEnabled;
             Config::write();
             w->invalidate();
@@ -2296,7 +2296,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void disableVehicleBreakdownsMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::getNew();
+            auto& cfg = OpenLoco::Config::get();
             cfg.breakdownsDisabled = !cfg.breakdownsDisabled;
             Config::write();
             w->invalidate();
@@ -2304,7 +2304,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void trainsReverseAtSignalsMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::getNew();
+            auto& cfg = OpenLoco::Config::get();
             cfg.trainsReverseAtSignals = !cfg.trainsReverseAtSignals;
             Config::write();
             w->invalidate();
@@ -2312,7 +2312,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void disableAICompaniesMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::getNew();
+            auto& cfg = OpenLoco::Config::get();
             cfg.companyAIDisabled = !cfg.companyAIDisabled;
             Config::write();
             w->invalidate();
@@ -2320,7 +2320,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void exportPluginObjectsMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::get();
+            auto& cfg = OpenLoco::Config::get().old;
             if (cfg.flags & Config::Flags::exportObjectsWithSaves)
             {
                 cfg.flags &= ~Config::Flags::exportObjectsWithSaves;

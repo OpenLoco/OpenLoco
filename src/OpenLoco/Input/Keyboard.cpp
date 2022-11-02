@@ -186,7 +186,7 @@ namespace OpenLoco::Input
 
     static bool tryShortcut(Shortcut sc, uint32_t keyCode, uint8_t modifiers)
     {
-        auto cfg = OpenLoco::Config::getNew();
+        auto cfg = OpenLoco::Config::get();
         if (cfg.shortcuts[sc].keyCode == keyCode && cfg.shortcuts[sc].modifiers == modifiers)
         {
             ShortcutManager::execute(sc);
@@ -256,7 +256,7 @@ namespace OpenLoco::Input
         if (k->keyCode == SDLK_RGUI)
             return;
 
-        auto& cfg = Config::getNew();
+        auto& cfg = Config::get();
 
         // Unbind any shortcuts that may be using the current keycode.
         for (size_t i = 0; i < ShortcutManager::kCount; i++)
@@ -390,7 +390,7 @@ namespace OpenLoco::Input
         if (Tutorial::state() != Tutorial::State::none)
             return;
 
-        if (Config::get().edgeScrolling == 0)
+        if (Config::get().old.edgeScrolling == 0)
             return;
 
         if (Input::state() != State::normal && Input::state() != State::dropdownActive)

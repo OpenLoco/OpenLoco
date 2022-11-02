@@ -11,18 +11,18 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Config
 {
-    static loco_global<LocoConfig, 0x0050AEB4> _config;
+    static loco_global<LocoConfig, 0x0050AEB4> _legacyConfig;
     static loco_global<uint8_t, 0x0050AEAD> _50AEAD;
     static loco_global<uint32_t, 0x0113E21C> _totalPhysicalMemory;
     static NewConfig _newConfig;
     static YAML::Node _configYaml;
 
-    LocoConfig& get()
+    static LocoConfig& getLegacy()
     {
-        return _config;
+        return _legacyConfig;
     }
 
-    NewConfig& getNew()
+    NewConfig& get()
     {
         return _newConfig;
     }
@@ -32,30 +32,32 @@ namespace OpenLoco::Config
     constexpr ObjectHeader _defaultPreferredCurrency = { 0x00000082u, { 'C', 'U', 'R', 'R', 'D', 'O', 'L', 'L' }, 0u };
     constexpr uint32_t _legacyConfigMagicNumber = 0x62272;
 
+    static void writeNewConfig();
+
     static void setDefaultsLegacyConfig()
     {
         if (_totalPhysicalMemory <= (64 * 1024 * 1024)) // 64 MB
         {
-            _config->soundQuality = 0;
-            _config->vehiclesMinScale = 1;
+            getLegacy().soundQuality = 0;
+            getLegacy().vehiclesMinScale = 1;
         }
         else if (_totalPhysicalMemory <= 128 * 1024 * 1024) // 128 MB
         {
-            _config->soundQuality = 1;
-            _config->vehiclesMinScale = 1;
+            getLegacy().soundQuality = 1;
+            getLegacy().vehiclesMinScale = 1;
         }
         else
         {
-            _config->soundQuality = 2;
-            _config->vehiclesMinScale = 2;
+            getLegacy().soundQuality = 2;
+            getLegacy().vehiclesMinScale = 2;
         }
-        _config->maxVehicleSounds = _defaultMaxVehicleSounds[_config->soundQuality];
-        _config->maxSoundInstances = _defaultMaxSoundInstances[_config->soundQuality];
-        _config->preferredCurrency = _defaultPreferredCurrency;
+        getLegacy().maxVehicleSounds = _defaultMaxVehicleSounds[getLegacy().soundQuality];
+        getLegacy().maxSoundInstances = _defaultMaxSoundInstances[getLegacy().soundQuality];
+        getLegacy().preferredCurrency = _defaultPreferredCurrency;
     }
 
     // 0x00441A6C
-    LocoConfig& read()
+    static LocoConfig& readLegacy()
     {
         auto configPath = Environment::getPathNoWarning(Environment::PathId::gamecfg);
 
@@ -71,8 +73,8 @@ namespace OpenLoco::Config
                 stream.read(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
                 if (magicNumber == _legacyConfigMagicNumber)
                 {
-                    stream.read(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
-                    return _config;
+                    stream.read(reinterpret_cast<char*>(&getLegacy()), sizeof(LocoConfig));
+                    return getLegacy();
                 }
             }
         }
@@ -80,11 +82,11 @@ namespace OpenLoco::Config
         // A valid config file could not be read. Use defaults.
         setDefaultsLegacyConfig();
         _50AEAD = 1;
-        return _config;
+        return getLegacy();
     }
 
     // 0x00441BB8
-    static void writeLocoConfig()
+    static void writeLegacyConfig()
     {
         std::ofstream stream;
         stream.exceptions(std::ifstream::failbit);
@@ -93,14 +95,15 @@ namespace OpenLoco::Config
         {
             uint32_t magicNumber = _legacyConfigMagicNumber;
             stream.write(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
-            stream.write(reinterpret_cast<char*>(&*_config), sizeof(LocoConfig));
+            stream.write(reinterpret_cast<char*>(&getLegacy()), sizeof(LocoConfig));
         }
     }
 
     // 0x00441BB8
     void write()
     {
-        writeLocoConfig();
+        getLegacy() = _newConfig.old;
+        writeLegacyConfig();
         writeNewConfig();
     }
 
@@ -118,7 +121,7 @@ namespace OpenLoco::Config
         }
     }
 
-    NewConfig& readNewConfig()
+    static NewConfig& readNew()
     {
         auto configPath = Environment::getPathNoWarning(Environment::PathId::openlocoYML);
 
@@ -206,7 +209,14 @@ namespace OpenLoco::Config
         return _newConfig;
     }
 
-    void writeNewConfig()
+    NewConfig& read()
+    {
+        auto& config = readNew();
+        config.old = readLegacy();
+        return config;
+    }
+
+    static void writeNewConfig()
     {
         auto configPath = Environment::getPathNoWarning(Environment::PathId::openlocoYML);
         auto dir = configPath.parent_path();
@@ -295,6 +305,21 @@ namespace OpenLoco::Config
             shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
         }
 
-        writeNewConfig();
+        write();
+    }
+
+    void registerHooks()
+    {
+        registerHook(
+            0x00441BB8,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                auto& newConfig = get();
+                // Copy the old config into the new config as callers will be modifying the old memory
+                newConfig.old = getLegacy();
+                write();
+                regs = backup;
+                return 0;
+            });
     }
 }

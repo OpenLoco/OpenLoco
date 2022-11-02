@@ -18,7 +18,7 @@ namespace OpenLoco::Paint
     static void paintEntitiesWithFilter(PaintSession& session, const Map::Pos2& loc, FilterType&& filter)
     {
         auto* rt = session.getRenderTarget();
-        if (Config::get().vehiclesMinScale < rt->zoomLevel)
+        if (Config::get().old.vehiclesMinScale < rt->zoomLevel)
         {
             return;
         }

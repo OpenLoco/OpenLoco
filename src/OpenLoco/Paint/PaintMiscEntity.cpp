@@ -83,7 +83,7 @@ namespace OpenLoco::Paint
     // 0x00440400
     static void paintWindowCurrencyEntity(PaintSession& session, MoneyEffect* moneyEffect)
     {
-        if (!Config::getNew().cashPopupRendering)
+        if (!Config::get().cashPopupRendering)
         {
             return;
         }

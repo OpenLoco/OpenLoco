@@ -70,13 +70,13 @@ namespace OpenLoco::Environment
 
     static fs::path resolveLocoInstallPath()
     {
-        auto& cfg = Config::getNew();
+        auto& cfg = Config::get();
         auto path = fs::u8path(cfg.locoInstallPath);
         if (!path.empty())
         {
             if (validateLocoInstallPath(path))
             {
-                Config::writeNewConfig();
+                Config::write();
                 return path;
             }
             std::cerr << "Configured install path for Locomotion is missing Data/g1.DAT." << std::endl;
@@ -86,7 +86,7 @@ namespace OpenLoco::Environment
         if (!path.empty())
         {
             cfg.locoInstallPath = path.make_preferred().u8string();
-            Config::writeNewConfig();
+            Config::write();
             return path;
         }
         else
@@ -98,7 +98,7 @@ namespace OpenLoco::Environment
             if (validateLocoInstallPath(path))
             {
                 cfg.locoInstallPath = path.make_preferred().u8string();
-                Config::writeNewConfig();
+                Config::write();
                 return path;
             }
 
@@ -214,7 +214,7 @@ namespace OpenLoco::Environment
 
         // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
         auto saveDirectory = getPathNoWarning(PathId::save) / "";
-        auto& configLastSavePath = Config::getNew().lastSavePath;
+        auto& configLastSavePath = Config::get().lastSavePath;
         if (!configLastSavePath.empty())
         {
             // Getting the directory can fail if config is bad.
