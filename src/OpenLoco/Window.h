@@ -400,6 +400,7 @@ namespace OpenLoco::Ui
         void viewportZoomOut(bool toCursor);
         void viewportRotateRight();
         void viewportRotateLeft();
+        void viewportRotate(bool directionRight);
         void viewportRemove(const uint8_t viewportId);
         void viewportFromSavedView(const SavedViewSimple& savedView);
 

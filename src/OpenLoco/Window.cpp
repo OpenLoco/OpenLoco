@@ -721,17 +721,49 @@ namespace OpenLoco::Ui
     // 0x0045F04F
     void Window::viewportRotateRight()
     {
-        registers regs;
-        regs.esi = (uintptr_t)this;
-        call(0x0045F04F, regs);
+        viewportRotate(true);
     }
 
     // 0x0045F0ED
     void Window::viewportRotateLeft()
     {
-        registers regs;
-        regs.esi = (uintptr_t)this;
-        call(0x0045F0ED, regs);
+        viewportRotate(false);
+    }
+
+    void Window::viewportRotate(bool directionRight)
+    {
+        auto* viewport = viewports[0];
+        if (viewport == nullptr)
+        {
+            return;
+        }
+
+        const auto uiCentre = viewport->getUiCentre();
+        auto res = ViewportInteraction::getSurfaceLocFromUi(uiCentre);
+
+        Map::Pos3 target = [&]() {
+            if (!res.has_value() || res->second != viewport)
+            {
+                const auto centre = viewport->getCentreMapPosition();
+                const auto height = Map::TileManager::getHeight(centre).landHeight;
+                return Map::Pos3{ centre, height };
+            }
+            else
+            {
+                auto height = Map::TileManager::getHeight(res->first);
+                return Map::Pos3{ res->first.x, res->first.y, height.landHeight };
+            }
+        }();
+
+        viewport->setRotation((viewport->getRotation() + (directionRight ? 1 : -1)) & 3);
+        const auto newCentre = viewport->centre2dCoordinates(target);
+        viewportConfigurations->savedViewX = newCentre.x;
+        viewportConfigurations->savedViewY = newCentre.y;
+        viewport->viewX = newCentre.x;
+        viewport->viewY = newCentre.y;
+        invalidate();
+        WindowManager::callViewportRotateEventOnAllWindows();
+        EntityManager::updateSpatialIndex();
     }
 
     void Window::viewportRemove(const uint8_t viewportId)
