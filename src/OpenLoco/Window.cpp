@@ -12,6 +12,7 @@
 #include "Ui.h"
 #include "Ui/Rect.h"
 #include "Ui/ScrollView.h"
+#include "Utility/Numeric.hpp"
 #include "Widget.h"
 #include <cassert>
 #include <cinttypes>
@@ -496,12 +497,21 @@ namespace OpenLoco::Ui
         return scrollIndex;
     }
 
+    // 0x004CC7CB
     void Window::setDisabledWidgetsAndInvalidate(uint32_t _disabledWidgets)
     {
-        registers regs;
-        regs.eax = (int32_t)_disabledWidgets;
-        regs.esi = X86Pointer(this);
-        call(0x004CC7CB, regs);
+        const auto oldDisabled = disabledWidgets;
+        if (oldDisabled == _disabledWidgets)
+        {
+            return;
+        }
+        disabledWidgets = _disabledWidgets;
+        auto changedWidgets = oldDisabled ^ _disabledWidgets;
+        for (auto widx = Utility::bitScanForward(changedWidgets); widx != -1; widx = Utility::bitScanForward(changedWidgets))
+        {
+            changedWidgets &= ~(1ULL << widx);
+            WindowManager::invalidateWidget(type, number, widx);
+        }
     }
 
     void Window::viewportGetMapCoordsByCursor(int16_t* mapX, int16_t* mapY, int16_t* offsetX, int16_t* offsetY)
