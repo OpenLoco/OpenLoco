@@ -6,6 +6,8 @@
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "AnimationManager.h"
+#include "StationElement.h"
+#include "TileLoop.hpp"
 #include "TileManager.h"
 #include <numeric>
 
@@ -57,6 +59,40 @@ namespace OpenLoco::Map
     {
         _type &= ~(1 << 7);
         _type |= val ? (1 << 7) : 0;
+    }
+
+    // 0x0045769A
+    // A more generic version of the vanilla function
+    template<typename TFunction>
+    static void applyToMultiTile(IndustryElement& el0, const Map::Pos2& loc, bool isMultiTile, TFunction func)
+    {
+        for (auto& offset : getBuildingTileOffsets(isMultiTile))
+        {
+            auto* elIndustry = &el0;
+            const auto pos = loc + offset.pos;
+            if (offset.unk != 0)
+            {
+                auto tile = Map::TileManager::get(pos);
+                for (auto& el : tile)
+                {
+                    elIndustry = el.as<IndustryElement>();
+                    if (elIndustry == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elIndustry->baseZ() != el0.baseZ())
+                    {
+                        elIndustry = nullptr;
+                        continue;
+                    }
+                    break;
+                }
+            }
+            if (elIndustry != nullptr)
+            {
+                func(*elIndustry, pos);
+            }
+        }
     }
 
     // 0x00456FF7
@@ -210,14 +246,45 @@ namespace OpenLoco::Map
                     if ((rand & 0x7) == 0)
                     {
                         const auto randAnim = _E0C3D4[(numAnimations * (rand & 0xFF)) / 256];
-                        applyToMultiTile((randAnim | 1 << 5), false);
+                        applyToMultiTile(*this, loc, isMultiTile, [var_6 = randAnim | (1 << 5)](IndustryElement& elIndustry, const Map::Pos2& pos) {
+                            elIndustry.setVar_6_003F(var_6);
+                        });
                         AnimationManager::createAnimation(4, loc, baseZ());
                     }
                 }
             }
         }
 
-        // 0x00457432
+        if (ind->under_construction == 0xFF)
+        {
+            const coord_t upperRange = isMultiTile ? 10 : 8;
+            constexpr coord_t kLowerRange = 8;
+
+            // Find all stations in range of industry building
+            for (auto& tilePos : TilePosRangeView(Map::TilePos2(loc) - Map::TilePos2{ kLowerRange, kLowerRange }, Map::TilePos2(loc) + Map::TilePos2{ upperRange, upperRange }))
+            {
+                if (!validCoords(tilePos))
+                {
+                    continue;
+                }
+
+                auto tile = TileManager::get(tilePos);
+                for (auto& el : tile)
+                {
+                    auto* elStation = el.as<StationElement>();
+                    if (elStation == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elStation->isGhost() || elStation->isFlag5())
+                    {
+                        continue;
+                    }
+                    const auto station = elStation->stationId();
+                    ind->var_E1.set(enumValue(station), true);
+                }
+            }
+        }
         return true;
     }
 }
