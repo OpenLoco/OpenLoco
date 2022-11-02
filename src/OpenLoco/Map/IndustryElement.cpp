@@ -243,11 +243,12 @@ namespace OpenLoco::Map
                 if (numAnimations != 0)
                 {
                     const auto rand = ind->prng.randNext();
-                    if ((rand & 0x7) == 0)
+                    if ((rand & 0x700) == 0)
                     {
                         const auto randAnim = _E0C3D4[(numAnimations * (rand & 0xFF)) / 256];
-                        applyToMultiTile(*this, loc, isMultiTile, [var_6 = randAnim | (1 << 5)](IndustryElement& elIndustry, const Map::Pos2& pos) {
-                            elIndustry.setVar_6_003F(var_6);
+                        const auto newVar6_3F = randAnim | (1 << 5) | (var_6_003F() & 0xC);
+                        applyToMultiTile(*this, loc, isMultiTile, [newVar6_3F](IndustryElement& elIndustry, const Map::Pos2& pos) {
+                            elIndustry.setVar_6_003F(newVar6_3F);
                         });
                         AnimationManager::createAnimation(4, loc, baseZ());
                     }
