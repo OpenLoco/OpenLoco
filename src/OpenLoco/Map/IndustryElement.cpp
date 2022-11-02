@@ -258,7 +258,7 @@ namespace OpenLoco::Map
 
         if (ind->under_construction == 0xFF)
         {
-            const coord_t upperRange = isMultiTile ? 6 : 4;
+            const coord_t upperRange = isMultiTile ? 5 : 4;
             constexpr coord_t kLowerRange = 4;
 
             // Find all stations in range of industry building
