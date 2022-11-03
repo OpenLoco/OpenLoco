@@ -64,7 +64,7 @@ namespace OpenLoco::Map
     // 0x0045769A
     // A more generic version of the vanilla function
     template<typename TFunction>
-    static void applyToMultiTile(IndustryElement& el0, const Map::Pos2& loc, bool isMultiTile, TFunction func)
+    static void applyToMultiTile(IndustryElement& el0, const Map::Pos2& loc, bool isMultiTile, TFunction&& func)
     {
         for (auto& offset : getBuildingTileOffsets(isMultiTile))
         {
@@ -140,34 +140,11 @@ namespace OpenLoco::Map
 
                     const auto newClearZ = ((height + 3) / Map::kSmallZStep) + baseHeight();
 
-                    for (auto& offset : getBuildingTileOffsets(isMultiTile))
-                    {
-                        auto* elIndustry = this;
-                        const auto pos = loc + offset.pos;
-                        if (offset.unk != 0)
-                        {
-                            auto tile = Map::TileManager::get(pos);
-                            for (auto& el : tile)
-                            {
-                                elIndustry = el.as<IndustryElement>();
-                                if (elIndustry == nullptr)
-                                {
-                                    continue;
-                                }
-                                if (elIndustry->baseZ() != baseZ())
-                                {
-                                    elIndustry = nullptr;
-                                    continue;
-                                }
-                                break;
-                            }
-                        }
-                        if (elIndustry != nullptr)
-                        {
-                            Ui::ViewportManager::invalidate(pos, elIndustry->baseHeight(), elIndustry->clearHeight(), ZoomLevel::quarter);
-                            elIndustry->setClearZ(newClearZ);
-                        }
-                    }
+                    applyToMultiTile(*this, loc, isMultiTile, [newClearZ](Map::IndustryElement& elIndustry, const Map::Pos2& pos) {
+                        Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
+                        elIndustry.setClearZ(newClearZ);
+                    });
+
                     newConstructed = true;
                     newSectionProgress = 0;
                     newNumSections = 0;
@@ -183,36 +160,12 @@ namespace OpenLoco::Map
                 newSectionProgress++;
             }
 
-            for (auto& offset : getBuildingTileOffsets(isMultiTile))
-            {
-                auto* elIndustry = this;
-                const auto pos = loc + offset.pos;
-                if (offset.unk != 0)
-                {
-                    auto tile = Map::TileManager::get(pos);
-                    for (auto& el : tile)
-                    {
-                        elIndustry = el.as<IndustryElement>();
-                        if (elIndustry == nullptr)
-                        {
-                            continue;
-                        }
-                        if (elIndustry->baseZ() != baseZ())
-                        {
-                            elIndustry = nullptr;
-                            continue;
-                        }
-                        break;
-                    }
-                }
-                if (elIndustry != nullptr)
-                {
-                    elIndustry->setIsConstructed(newConstructed);
-                    elIndustry->setSectionProgress(newSectionProgress);
-                    elIndustry->setVar_6_003F(newNumSections);
-                    Ui::ViewportManager::invalidate(pos, elIndustry->baseHeight(), elIndustry->clearHeight(), ZoomLevel::quarter);
-                }
-            }
+            applyToMultiTile(*this, loc, isMultiTile, [newConstructed, newSectionProgress, newNumSections](Map::IndustryElement& elIndustry, const Map::Pos2& pos) {
+                elIndustry.setIsConstructed(newConstructed);
+                elIndustry.setSectionProgress(newSectionProgress);
+                elIndustry.setVar_6_003F(newNumSections);
+                Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
+            });
         }
 
         // Might have changed so can't be combined with above if
