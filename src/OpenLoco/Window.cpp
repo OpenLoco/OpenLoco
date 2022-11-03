@@ -12,6 +12,7 @@
 #include "Ui.h"
 #include "Ui/Rect.h"
 #include "Ui/ScrollView.h"
+#include "Utility/Numeric.hpp"
 #include "Widget.h"
 #include <cassert>
 #include <cinttypes>
@@ -496,12 +497,21 @@ namespace OpenLoco::Ui
         return scrollIndex;
     }
 
+    // 0x004CC7CB
     void Window::setDisabledWidgetsAndInvalidate(uint32_t _disabledWidgets)
     {
-        registers regs;
-        regs.eax = (int32_t)_disabledWidgets;
-        regs.esi = X86Pointer(this);
-        call(0x004CC7CB, regs);
+        const auto oldDisabled = disabledWidgets;
+        if (oldDisabled == _disabledWidgets)
+        {
+            return;
+        }
+        disabledWidgets = _disabledWidgets;
+        auto changedWidgets = oldDisabled ^ _disabledWidgets;
+        for (auto widx = Utility::bitScanForward(changedWidgets); widx != -1; widx = Utility::bitScanForward(changedWidgets))
+        {
+            changedWidgets &= ~(1ULL << widx);
+            WindowManager::invalidateWidget(type, number, widx);
+        }
     }
 
     void Window::viewportGetMapCoordsByCursor(int16_t* mapX, int16_t* mapY, int16_t* offsetX, int16_t* offsetY)
@@ -721,17 +731,49 @@ namespace OpenLoco::Ui
     // 0x0045F04F
     void Window::viewportRotateRight()
     {
-        registers regs;
-        regs.esi = (uintptr_t)this;
-        call(0x0045F04F, regs);
+        viewportRotate(true);
     }
 
     // 0x0045F0ED
     void Window::viewportRotateLeft()
     {
-        registers regs;
-        regs.esi = (uintptr_t)this;
-        call(0x0045F0ED, regs);
+        viewportRotate(false);
+    }
+
+    void Window::viewportRotate(bool directionRight)
+    {
+        auto* viewport = viewports[0];
+        if (viewport == nullptr)
+        {
+            return;
+        }
+
+        const auto uiCentre = viewport->getUiCentre();
+        auto res = ViewportInteraction::getSurfaceLocFromUi(uiCentre);
+
+        Map::Pos3 target = [&]() {
+            if (!res.has_value() || res->second != viewport)
+            {
+                const auto centre = viewport->getCentreMapPosition();
+                const auto height = Map::TileManager::getHeight(centre).landHeight;
+                return Map::Pos3{ centre, height };
+            }
+            else
+            {
+                auto height = Map::TileManager::getHeight(res->first);
+                return Map::Pos3{ res->first.x, res->first.y, height.landHeight };
+            }
+        }();
+
+        viewport->setRotation((viewport->getRotation() + (directionRight ? 1 : -1)) & 3);
+        const auto newCentre = viewport->centre2dCoordinates(target);
+        viewportConfigurations->savedViewX = newCentre.x;
+        viewportConfigurations->savedViewY = newCentre.y;
+        viewport->viewX = newCentre.x;
+        viewport->viewY = newCentre.y;
+        invalidate();
+        WindowManager::callViewportRotateEventOnAllWindows();
+        EntityManager::updateSpatialIndex();
     }
 
     void Window::viewportRemove(const uint8_t viewportId)
