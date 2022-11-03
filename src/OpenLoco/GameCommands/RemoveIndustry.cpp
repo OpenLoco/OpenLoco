@@ -91,7 +91,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00455A5C
-    static void revokeAllSurfaceClaims()
+    static void revokeAllSurfaceClaims(const IndustryId id)
     {
         for (auto& pos : Map::TilePosRangeView({ 1, 1 }, { Map::kMapRows - 1, Map::kMapColumns - 1 }))
         {
@@ -102,6 +102,10 @@ namespace OpenLoco::GameCommands
                 continue;
             }
             if (!surface->isIndustrial())
+            {
+                continue;
+            }
+            if (surface->industryId() != id)
             {
                 continue;
             }
@@ -144,7 +148,7 @@ namespace OpenLoco::GameCommands
             StringManager::emptyUserString(industry->name);
             industry->name = StringIds::null;
             Ui::Windows::IndustryList::removeIndustry(id);
-            revokeAllSurfaceClaims();
+            revokeAllSurfaceClaims(id);
 
             for (auto& station : StationManager::stations())
             {
