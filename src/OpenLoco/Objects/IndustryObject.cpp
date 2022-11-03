@@ -101,11 +101,11 @@ namespace OpenLoco
                                      : Colour::black;
         ImageId baseImage(var_12, c);
         Ui::Point pos{ x, y };
-        for (auto* unk = var_3C[0]; *unk != 0xFF; ++unk)
+        for (const auto part : getBuildingParts(0))
         {
-            auto image = baseImage.withIndexOffset(*unk * 4 + 1);
+            auto image = baseImage.withIndexOffset(part * 4 + 1);
             Gfx::drawImage(*clipped, pos, image);
-            pos.y -= var_20[*unk];
+            pos.y -= buildingPartHeight[part];
         }
     }
 
@@ -193,16 +193,33 @@ namespace OpenLoco
         var_12 = 0;
         var_16 = 0;
         var_1A = 0;
-        var_20 = nullptr;
-        var_24 = 0;
-        std::fill(std::begin(var_28), std::end(var_28), 0);
+        buildingPartHeight = nullptr;
+        buildingPartAnimations = nullptr;
+        std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);
         var_38 = 0;
-        std::fill(std::begin(var_3C), std::end(var_3C), nullptr);
+        std::fill(std::begin(buildingParts), std::end(buildingParts), nullptr);
         var_BE = 0;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
         std::fill(std::begin(wallTypes), std::end(wallTypes), 0);
         var_F1 = 0;
         var_F2 = 0;
+    }
+
+    stdx::span<const std::uint8_t> IndustryObject::getBuildingParts(const uint8_t buildingType) const
+    {
+        const auto* partsPointer = buildingParts[buildingType];
+        auto* end = partsPointer;
+        while (*end != 0xFF)
+            end++;
+
+        return stdx::span<const std::uint8_t>(partsPointer, end);
+    }
+    stdx::span<const std::uint8_t> IndustryObject::getAnimationSequence(const uint8_t unk) const
+    {
+        // animationSequences comprises of a size then data. Size will always be a power of 2
+        const auto* sequencePointer = animationSequences[unk];
+        const auto size = *sequencePointer++;
+        return stdx::span<const std::uint8_t>(sequencePointer, size);
     }
 }

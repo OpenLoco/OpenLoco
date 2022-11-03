@@ -48,6 +48,40 @@ namespace OpenLoco::Colours
         ExtColour::translucentMutedRed1,
     };
 
+    static constexpr std::array<ExtColour, 31> _shadowColourMap = {
+        ExtColour::null,
+        ExtColour::unk21,
+        ExtColour::unk22,
+        ExtColour::unk23,
+        ExtColour::unk24,
+        ExtColour::unk25,
+        ExtColour::unk26,
+        ExtColour::unk27,
+        ExtColour::unk28,
+        ExtColour::unk29,
+        ExtColour::unk2A,
+        ExtColour::unk2B,
+        ExtColour::unk2C,
+        ExtColour::unk2D,
+        ExtColour::unk2E,
+        ExtColour::unk2F,
+        ExtColour::unk30,
+        ExtColour::unk31,
+        ExtColour::unk32,
+        ExtColour::unk33,
+        ExtColour::unk34,
+        ExtColour::translucentGrey1,
+        ExtColour::translucentGrey2,
+        ExtColour::translucentGrey0,
+        ExtColour::translucentBlue1,
+        ExtColour::translucentBlue2,
+        ExtColour::translucentBlue0,
+        ExtColour::translucentMutedDarkRed1,
+        ExtColour::translucentMutedDarkRed2,
+        ExtColour::translucentMutedDarkRed0,
+        ExtColour::translucentMutedSeaGreen1,
+    };
+
     void initColourMap()
     {
         // TODO: create a list of tuples with colour and image id
@@ -93,5 +127,10 @@ namespace OpenLoco::Colours
     ExtColour getTranslucent(Colour colour)
     {
         return _translucentColourMap[enumValue(colour)];
+    }
+
+    ExtColour getShadow(Colour colour)
+    {
+        return _shadowColourMap[enumValue(colour)];
     }
 }

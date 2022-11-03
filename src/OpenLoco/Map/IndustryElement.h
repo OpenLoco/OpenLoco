@@ -21,11 +21,20 @@ namespace OpenLoco::Map
         uint16_t _6;
 
     public:
+        // var_4
         IndustryId industryId() const { return _industryId; }
         Industry* industry() const;
+        // var_6_07C0
         uint8_t buildingType() const;
         uint8_t rotation() const { return _type & 0x3; }
-        bool hasHighTypeFlag() const { return _type & 0x80; } // isConstructed?
+        // var_5_03
+        uint8_t sequenceIndex() const;
+        // var_5_E0
+        uint8_t sectionProgress() const;
+        Colour var_6_F800() const;
+        // This has two uses. When under construction it is the number of completed sections. Otherwise its animation sequence related
+        uint8_t var_6_003F() const;
+        bool isConstructed() const { return _type & 0x80; }
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryElement) == kTileElementSize);

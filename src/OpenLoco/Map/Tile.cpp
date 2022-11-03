@@ -164,16 +164,36 @@ namespace OpenLoco::Map
         return result;
     }
 
+    StationType StationElement::stationType() const { return StationType(_5 >> 5); }
+
     Industry* IndustryElement::industry() const
     {
         return IndustryManager::get(_industryId);
     }
 
-    StationType StationElement::stationType() const { return StationType(_5 >> 5); }
-
     uint8_t IndustryElement::buildingType() const
     {
         return (_6 >> 6) & 0x1F;
+    }
+
+    Colour IndustryElement::var_6_F800() const
+    {
+        return static_cast<Colour>((_6 >> 11) & 0x1F);
+    }
+
+    uint8_t IndustryElement::var_6_003F() const
+    {
+        return _6 & 0x3F;
+    }
+
+    uint8_t IndustryElement::sectionProgress() const
+    {
+        return (_5 >> 5) & 0x7;
+    }
+
+    uint8_t IndustryElement::sequenceIndex() const
+    {
+        return _5 & 0x3;
     }
 
     /**

@@ -10,9 +10,9 @@ namespace OpenLoco
     {
         auto colourImage = Gfx::recolour(image, Colour::yellow);
 
-        Gfx::drawImage(&rt, x, y + 23, colourImage + 24);
-        Gfx::drawImage(&rt, x, y + 23, colourImage + 25);
-        Gfx::drawImage(&rt, x, y + 23, colourImage + 27);
+        Gfx::drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentBack);
+        Gfx::drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentFront);
+        Gfx::drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1RoofSE);
     }
 
     // 0x0042DED8

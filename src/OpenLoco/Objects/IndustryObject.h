@@ -32,6 +32,7 @@ namespace OpenLoco
         constexpr uint32_t requiresAllCargo = 1 << 17;
         constexpr uint32_t unk18 = 1 << 18;
         constexpr uint32_t unk19 = 1 << 19;
+        constexpr uint32_t hasShadows = 1 << 21;
         constexpr uint32_t unk23 = 1 << 23;
         constexpr uint32_t builtInDesert = 1 << 24;
         constexpr uint32_t builtNearDesert = 1 << 25;
@@ -39,6 +40,13 @@ namespace OpenLoco
         constexpr uint32_t flag_28 = 1 << 28;
     }
 #pragma pack(push, 1)
+    struct BuildingPartAnimation
+    {
+        uint8_t numFrames;      // 0x0 Must be a power of 2 (0 = no part animation, could still have animation sequence)
+        uint8_t animationSpeed; // 0x1 Also encodes in bit 7 if the animation is position modified
+    };
+    static_assert(sizeof(BuildingPartAnimation) == 0x2);
+
     struct IndustryObject
     {
         static constexpr auto kObjectType = ObjectType::industry;
@@ -50,17 +58,17 @@ namespace OpenLoco
         string_id nameDownProduction; // 0x8
         uint16_t nameSingular;        // 0x0A
         uint16_t namePlural;          // 0x0C
-        uint32_t var_0E;
-        uint32_t var_12; // Base image id for building 0
+        uint32_t var_0E;              // 0x0E shadows image id base
+        uint32_t var_12;              // 0x12 Base image id for building 0
         uint32_t var_16;
         uint32_t var_1A;
         uint8_t var_1E;
         uint8_t var_1F;
-        uint8_t* var_20; // This is the height of a building image
-        uint32_t var_24;
-        uint32_t var_28[4];
+        uint8_t* buildingPartHeight;                   // 0x20 This is the height of a building image
+        BuildingPartAnimation* buildingPartAnimations; // 0x24
+        uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
         uint32_t var_38;
-        uint8_t* var_3C[32]; // This is a pointer for buildings[32] image offsets 0xFF indicates end of image offsets
+        uint8_t* buildingParts[32]; // 0x3C Access with getBuildingParts helper method
         uint8_t var_BC;
         uint8_t var_BD;
         uint32_t var_BE;
@@ -72,11 +80,12 @@ namespace OpenLoco
         // Note: this is not directly comparabile to total industries and vaires based
         // on scenario total industries cap settings. At low industries cap this value is ~3x the
         // amount of industries in a scenario.
-        uint8_t totalOfTypeInScenario; // 0xCE
-        uint8_t costIndex;             // 0xCF
-        int16_t costFactor;            // 0xD0
-        int16_t clearCostFactor;       // 0xD2
-        uint8_t pad_D4[0xD6 - 0xD4];
+        uint8_t totalOfTypeInScenario;  // 0xCE
+        uint8_t costIndex;              // 0xCF
+        int16_t costFactor;             // 0xD0
+        int16_t clearCostFactor;        // 0xD2
+        uint8_t scaffoldingSegmentType; // 0xD4
+        Colour scaffoldingColour;       // 0xD5
         uint16_t var_D6;
         uint8_t pad_D8[0xDA - 0xD8];
         uint16_t var_DA;
@@ -105,6 +114,8 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
         void unload();
+        stdx::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
+        stdx::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryObject) == 0xF4);
