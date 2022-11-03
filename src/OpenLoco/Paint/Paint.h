@@ -153,6 +153,7 @@ namespace OpenLoco::Paint
         void generate();
         void arrangeStructs();
         void drawStructs();
+        void drawStringStructs();
         void init(Gfx::RenderTarget& rt, const SessionOptions& options);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);

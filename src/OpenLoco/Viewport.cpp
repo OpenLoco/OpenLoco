@@ -1,9 +1,11 @@
 #include "Viewport.hpp"
+#include "Config.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Paint/Paint.h"
+#include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
 
@@ -34,6 +36,30 @@ namespace OpenLoco::Ui
         }
         auto intersection = uiRect.intersection(viewRect);
         paint(rt, screenToViewport(intersection));
+    }
+
+    // 0x0048DE97
+    static void drawStationNames(Gfx::RenderTarget& rt)
+    {
+        registers regs{};
+        regs.edi = X86Pointer(&rt);
+        call(0x0048DE97, regs);
+    }
+
+    // 0x004977E5
+    static void drawTownNames(Gfx::RenderTarget& rt)
+    {
+        registers regs{};
+        regs.edi = X86Pointer(&rt);
+        call(0x004977E5, regs);
+    }
+
+    // 0x00470A62
+    static void drawRoutingNumbers(Gfx::RenderTarget& rt)
+    {
+        registers regs{};
+        regs.edi = X86Pointer(&rt);
+        call(0x00470A62, regs);
     }
 
     // 0x0045A1A4
@@ -114,16 +140,26 @@ namespace OpenLoco::Ui
             sess->generate();
             sess->arrangeStructs();
             sess->drawStructs();
-            // 0x0045A354
+            // Climate code used to draw here.
+
+            if (!isTitleMode())
+            {
+                if (!(options.viewFlags & ViewportFlags::station_names_displayed))
+                {
+                    if (target2.zoomLevel <= Config::get().old.stationNamesMinScale)
+                    {
+                        drawStationNames(target2);
+                    }
+                }
+                if (!(options.viewFlags & ViewportFlags::town_names_displayed))
+                {
+                    drawTownNames(target2);
+                }
+            }
+
+            sess->drawStringStructs();
+            drawRoutingNumbers(target2);
         }
-        //registers regs{};
-        //regs.ax = rect.left();
-        //regs.bx = rect.top();
-        //regs.dx = rect.right();
-        //regs.bp = rect.bottom();
-        //regs.esi = X86Pointer(this);
-        //regs.edi = X86Pointer(rt);
-        //call(0x0045A1A4, regs);
     }
 
     // 0x004CA444
