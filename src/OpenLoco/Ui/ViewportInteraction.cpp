@@ -1014,7 +1014,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             _rt2->width = 1;
             _rt2->height = 1;
             _rt2->zoomLevel = _rt1->zoomLevel;
-            Paint::SessionOptions options {};
+            Paint::SessionOptions options{};
             options.rotation = vp->getRotation();
             options.viewFlags = vp->flags;
             // Todo: should this pass the cullHeight...

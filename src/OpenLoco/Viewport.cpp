@@ -80,63 +80,59 @@ namespace OpenLoco::Ui
 
         const uint32_t bitmask = 0xFFFFFFFF << zoom;
 
-        Gfx::RenderTarget target1{};
-        target1.width = rect.width();
-        target1.height = rect.height();
-        target1.x = rect.origin.x;
-        target1.y = rect.origin.y;
+        // rt is in terms of the ui we need a target setup for the viewport zoom level
+        Gfx::RenderTarget zoomViewRt{};
+        zoomViewRt.width = rect.width();
+        zoomViewRt.height = rect.height();
+        zoomViewRt.x = rect.origin.x;
+        zoomViewRt.y = rect.origin.y;
 
-        target1.width &= bitmask;
-        target1.height &= bitmask;
-        target1.x &= bitmask;
-        target1.y &= bitmask;
+        zoomViewRt.width &= bitmask;
+        zoomViewRt.height &= bitmask;
+        zoomViewRt.x &= bitmask;
+        zoomViewRt.y &= bitmask;
 
-        auto unkX = ((target1.x - static_cast<int32_t>(viewX & bitmask)) >> zoom) + x;
+        auto unkX = ((zoomViewRt.x - static_cast<int32_t>(viewX & bitmask)) >> zoom) + x;
 
-        auto unkY = ((target1.y - static_cast<int32_t>(viewY & bitmask)) >> zoom) + y;
+        auto unkY = ((zoomViewRt.y - static_cast<int32_t>(viewY & bitmask)) >> zoom) + y;
 
-        target1.pitch = rt->width + rt->pitch - (target1.width >> zoom);
-        target1.bits = rt->bits + (unkX - rt->x) + ((unkY - rt->y) * (rt->width + rt->pitch));
-        target1.zoomLevel = zoom;
+        zoomViewRt.pitch = rt->width + rt->pitch - (zoomViewRt.width >> zoom);
+        zoomViewRt.bits = rt->bits + (unkX - rt->x) + ((unkY - rt->y) * (rt->width + rt->pitch));
+        zoomViewRt.zoomLevel = zoom;
 
-        Gfx::RenderTarget target2{};
-        target2.y = target1.y;
-        target2.height = target1.height;
-        target2.zoomLevel = target1.zoomLevel;
         // make sure, the compare operation is done in int32_t to avoid the loop becoming an infinite loop.
         // this as well as the [x += 32] in the loop causes signed integer overflow -> undefined behaviour.
-        auto rightBorder = target1.x + target1.width;
+        auto rightBorder = zoomViewRt.x + zoomViewRt.width;
         // Floors to nearest 32
-        auto alignedX = target1.x & ~0x1F;
+        auto alignedX = zoomViewRt.x & ~0x1F;
+
+        // Drawing is performed in columns of 32 pixels (1 tile wide)
 
         // Generate and sort columns.
         for (auto columnX = alignedX; columnX < rightBorder; columnX += 32)
         {
-            target2.width = target1.width;
-            target2.pitch = target1.pitch;
-            target2.bits = target1.bits;
-            target2.x = target1.x;
-            if (columnX >= target1.x)
+            Gfx::RenderTarget columnRt = zoomViewRt;
+            if (columnX >= columnRt.x)
             {
-                auto leftPitch = columnX - target1.x;
-                target2.width -= leftPitch;
-                target2.pitch += (leftPitch >> target1.zoomLevel);
-                target2.bits += (leftPitch >> target1.zoomLevel);
-                target2.x = columnX;
+                auto leftPitch = columnX - columnRt.x;
+                columnRt.width -= leftPitch;
+                columnRt.pitch += (leftPitch >> columnRt.zoomLevel);
+                columnRt.bits += (leftPitch >> columnRt.zoomLevel);
+                columnRt.x = columnX;
             }
             auto columnRightX = columnX + 32;
-            auto paintRight = target2.x + target2.width;
+            auto paintRight = columnRt.x + columnRt.width;
             if (paintRight >= columnRightX)
             {
                 auto rightPitch = paintRight - columnX - 32;
                 paintRight -= rightPitch;
-                target2.pitch += rightPitch >> target1.zoomLevel;
+                columnRt.pitch += rightPitch >> columnRt.zoomLevel;
             }
 
-            target2.width = paintRight - target2.x;
+            columnRt.width = paintRight - columnRt.x;
 
-            Gfx::clearSingle(target2, fillColour);
-            auto* sess = Paint::allocateSession(target2, options);
+            Gfx::clearSingle(columnRt, fillColour);
+            auto* sess = Paint::allocateSession(columnRt, options);
             sess->generate();
             sess->arrangeStructs();
             sess->drawStructs();
@@ -146,19 +142,19 @@ namespace OpenLoco::Ui
             {
                 if (!(options.viewFlags & ViewportFlags::station_names_displayed))
                 {
-                    if (target2.zoomLevel <= Config::get().old.stationNamesMinScale)
+                    if (columnRt.zoomLevel <= Config::get().old.stationNamesMinScale)
                     {
-                        drawStationNames(target2);
+                        drawStationNames(columnRt);
                     }
                 }
                 if (!(options.viewFlags & ViewportFlags::town_names_displayed))
                 {
-                    drawTownNames(target2);
+                    drawTownNames(columnRt);
                 }
             }
 
             sess->drawStringStructs();
-            drawRoutingNumbers(target2);
+            drawRoutingNumbers(columnRt);
         }
     }
 
