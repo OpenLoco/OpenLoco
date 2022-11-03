@@ -319,7 +319,7 @@ namespace OpenLoco::Paint
         return attached;
     }
 
-    void PaintSession::init(Gfx::RenderTarget& rt, const uint16_t viewportFlags)
+    void PaintSession::init(Gfx::RenderTarget& rt, const SessionOptions& options)
     {
         _renderTarget = &rt;
         _nextFreePaintStruct = &_paintEntries[0];
@@ -334,14 +334,16 @@ namespace OpenLoco::Paint
         _lastPaintString = 0;
         _paintStringHead = 0;
 
-        addr<0x00E3F0BC, uint16_t>() = viewportFlags; // Remove when all users of 0x00E3F0BC implemented
-        viewFlags = viewportFlags;
+        addr<0x00E3F0BC, uint16_t>() = options.viewFlags; // Remove when all users of 0x00E3F0BC implemented
+        viewFlags = options.viewFlags;
+        currentRotation = options.rotation;
+        addr<0x00E3F0A6, int16_t>() = options.foregroundCullHeight;
     }
 
     // 0x0045A6CA
-    PaintSession* allocateSession(Gfx::RenderTarget& rt, uint16_t viewportFlags)
+    PaintSession* allocateSession(Gfx::RenderTarget& rt, const SessionOptions& options)
     {
-        _session.init(rt, viewportFlags);
+        _session.init(rt, options);
         return &_session;
     }
 

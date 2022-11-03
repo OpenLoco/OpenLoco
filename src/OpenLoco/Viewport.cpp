@@ -39,37 +39,37 @@ namespace OpenLoco::Ui
     // 0x0045A1A4
     void Viewport::paint(Gfx::RenderTarget* rt, const Rect& rect)
     {
-        Paint::SessionOptions options;
+        Paint::SessionOptions options{};
         if (flags & (ViewportFlags::hide_foreground_scenery_buildings || ViewportFlags::hide_foreground_tracks_roads))
         {
-            options.foregroundCullingHeight = viewHeight / 2 + viewY;
+            options.foregroundCullHeight = viewHeight / 2 + viewY;
         }
-        options.fillColour = PaletteIndex::index_D8;
+        PaletteIndex_t fillColour = PaletteIndex::index_D8;
         if (flags & (ViewportFlags::underground_view | ViewportFlags::flag_7 | ViewportFlags::flag_8))
         {
-            options.fillColour = PaletteIndex::index_0A;
+            fillColour = PaletteIndex::index_0A;
         }
+        options.rotation = getRotation();
+        options.viewFlags = flags;
 
-        uint32_t width = rect.width();
-        uint32_t height = rect.height();
-        const uint32_t bitmask =  0xFFFFFFFF << zoom;
-        auto origin = rect.origin;
-
-        width &= bitmask;
-        height &= bitmask;
-        origin.x &= bitmask;
-        origin.y &= bitmask;
-
-        auto unkX = ((origin.x - static_cast<int32_t>(viewX & bitmask)) >> zoom) + x;
-
-        auto unkY = ((origin.y - static_cast<int32_t>(viewY & bitmask)) >> zoom) + y;
+        const uint32_t bitmask = 0xFFFFFFFF << zoom;
 
         Gfx::RenderTarget target1{};
-        target1.x = origin.x;
-        target1.y = origin.y;
-        target1.width = width;
-        target1.height = height;
-        target1.pitch = rt->width + rt->pitch - (width >> zoom);
+        target1.width = rect.width();
+        target1.height = rect.height();
+        target1.x = rect.origin.x;
+        target1.y = rect.origin.y;
+
+        target1.width &= bitmask;
+        target1.height &= bitmask;
+        target1.x &= bitmask;
+        target1.y &= bitmask;
+
+        auto unkX = ((target1.x - static_cast<int32_t>(viewX & bitmask)) >> zoom) + x;
+
+        auto unkY = ((target1.y - static_cast<int32_t>(viewY & bitmask)) >> zoom) + y;
+
+        target1.pitch = rt->width + rt->pitch - (target1.width >> zoom);
         target1.bits = rt->bits + (unkX - rt->x) + ((unkY - rt->y) * (rt->width + rt->pitch));
         target1.zoomLevel = zoom;
 
@@ -109,21 +109,21 @@ namespace OpenLoco::Ui
 
             target2.width = paintRight - target2.x;
 
-            Gfx::clearSingle(target2, options.fillColour);
-            auto* sess = Paint::allocateSession(target2, viewFlags, options);
+            Gfx::clearSingle(target2, fillColour);
+            auto* sess = Paint::allocateSession(target2, options);
             sess->generate();
             sess->arrangeStructs();
             sess->drawStructs();
             // 0x0045A354
         }
-        registers regs{};
-        regs.ax = rect.left();
-        regs.bx = rect.top();
-        regs.dx = rect.right();
-        regs.bp = rect.bottom();
-        regs.esi = X86Pointer(this);
-        regs.edi = X86Pointer(rt);
-        call(0x0045A1A4, regs);
+        //registers regs{};
+        //regs.ax = rect.left();
+        //regs.bx = rect.top();
+        //regs.dx = rect.right();
+        //regs.bp = rect.bottom();
+        //regs.esi = X86Pointer(this);
+        //regs.edi = X86Pointer(rt);
+        //call(0x0045A1A4, regs);
     }
 
     // 0x004CA444

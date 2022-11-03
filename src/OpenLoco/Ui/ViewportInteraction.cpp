@@ -1014,7 +1014,11 @@ namespace OpenLoco::Ui::ViewportInteraction
             _rt2->width = 1;
             _rt2->height = 1;
             _rt2->zoomLevel = _rt1->zoomLevel;
-            auto* session = Paint::allocateSession(_rt2, vp->flags);
+            Paint::SessionOptions options {};
+            options.rotation = vp->getRotation();
+            options.viewFlags = vp->flags;
+            // Todo: should this pass the cullHeight...
+            auto* session = Paint::allocateSession(_rt2, options);
             session->generate();
             session->arrangeStructs();
             interaction = session->getNormalInteractionInfo(flags);

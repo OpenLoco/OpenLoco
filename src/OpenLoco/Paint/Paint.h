@@ -138,6 +138,13 @@ namespace OpenLoco::Paint
 #pragma pack(pop)
     struct GenerationParameters;
 
+    struct SessionOptions
+    {
+        uint8_t rotation;
+        int16_t foregroundCullHeight;
+        uint16_t viewFlags;
+    };
+
     static constexpr auto kMaxPaintQuadrants = 1024;
 
     struct PaintSession
@@ -146,7 +153,7 @@ namespace OpenLoco::Paint
         void generate();
         void arrangeStructs();
         void drawStructs();
-        void init(Gfx::RenderTarget& rt, const uint16_t viewportFlags);
+        void init(Gfx::RenderTarget& rt, const SessionOptions& options);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
@@ -364,7 +371,7 @@ namespace OpenLoco::Paint
         PaintStruct* createNormalPaintStruct(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
     };
 
-    PaintSession* allocateSession(Gfx::RenderTarget& rt, const uint16_t viewportFlags);
+    PaintSession* allocateSession(Gfx::RenderTarget& rt, const SessionOptions& options);
 
     void registerHooks();
 }
