@@ -356,6 +356,11 @@ namespace OpenLoco::Input
         toolCancel();
     }
 
+    StationId getHoveredStationId()
+    {
+        return _hoveredStationId;
+    }
+
     uint16_t getMapSelectionFlags()
     {
         return _mapSelectionFlags;

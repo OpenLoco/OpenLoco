@@ -1,11 +1,14 @@
 #include "Viewport.hpp"
 #include "Config.h"
 #include "Graphics/Gfx.h"
+#include "Input.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Paint/Paint.h"
 #include "SceneManager.h"
+#include "StationManager.h"
+#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
 
@@ -38,20 +41,88 @@ namespace OpenLoco::Ui
         paint(rt, screenToViewport(intersection));
     }
 
+    // 0x0048DF4D
+    static void drawStationName(Gfx::RenderTarget& unZoomedRt, const Station& station, uint8_t zoom)
+    {
+        registers regs{};
+        regs.edi = X86Pointer(&unZoomedRt);
+        regs.esi = X86Pointer(&station);
+        regs.ecx = zoom;
+        call(0x0048DF4D, regs);
+    }
+
+    // 0x0048E13B
+    static void drawHoveredStationName(Gfx::RenderTarget& unZoomedRt, const Station& station, uint8_t zoom)
+    {
+        registers regs{};
+        regs.edi = X86Pointer(&unZoomedRt);
+        regs.esi = X86Pointer(&station);
+        regs.ecx = zoom;
+        call(0x0048E13B, regs);
+    }
+
     // 0x0048DE97
     static void drawStationNames(Gfx::RenderTarget& rt)
     {
-        registers regs{};
-        regs.edi = X86Pointer(&rt);
-        call(0x0048DE97, regs);
+        Gfx::RenderTarget unZoomedRt = rt;
+        unZoomedRt.zoomLevel = 0;
+        unZoomedRt.x >>= rt.zoomLevel;
+        unZoomedRt.y >>= rt.zoomLevel;
+        unZoomedRt.width >>= rt.zoomLevel;
+        unZoomedRt.height >>= rt.zoomLevel;
+
+        for (const auto& station : StationManager::stations())
+        {
+            if (station.flags & StationFlags::flag_5)
+            {
+                continue;
+            }
+
+            if (!(Input::getMapSelectionFlags() & Input::MapSelectionFlags::unk_6) || station.id() != Input::getHoveredStationId())
+            {
+                drawStationName(unZoomedRt, station, rt.zoomLevel);
+            }
+        }
+
+        if (Input::getMapSelectionFlags() & Input::MapSelectionFlags::unk_6)
+        {
+            const auto* station = StationManager::get(Input::getHoveredStationId());
+            if (station != nullptr && !(station->flags & StationFlags::flag_5))
+            {
+                drawHoveredStationName(unZoomedRt, *station, rt.zoomLevel);
+            }
+        }
     }
+
+    static constexpr std::array<int16_t, 4> kZoomToTownFonts = {
+        Font::medium_bold,
+        Font::medium_bold,
+        Font::medium_normal,
+        Font::medium_normal,
+    };
 
     // 0x004977E5
     static void drawTownNames(Gfx::RenderTarget& rt)
     {
-        registers regs{};
-        regs.edi = X86Pointer(&rt);
-        call(0x004977E5, regs);
+        Gfx::RenderTarget unZoomedRt = rt;
+        unZoomedRt.zoomLevel = 0;
+        unZoomedRt.x >>= rt.zoomLevel;
+        unZoomedRt.y >>= rt.zoomLevel;
+        unZoomedRt.width >>= rt.zoomLevel;
+        unZoomedRt.height >>= rt.zoomLevel;
+
+        char buffer[512]{};
+        for (const auto& town : TownManager::towns())
+        {
+            if (!town.labelFrame.contains(rt.getDrawableRect(), rt.zoomLevel))
+            {
+                continue;
+            }
+
+            StringManager::formatString(buffer, town.name);
+            Gfx::setCurrentFontSpriteBase(kZoomToTownFonts[rt.zoomLevel]);
+            Gfx::drawString(unZoomedRt, town.labelFrame.left[rt.zoomLevel] + 1, town.labelFrame.top[rt.zoomLevel] + 1, AdvancedColour(Colour::white).outline(), buffer);
+        }
     }
 
     // 0x00470A62
@@ -66,7 +137,7 @@ namespace OpenLoco::Ui
     void Viewport::paint(Gfx::RenderTarget* rt, const Rect& rect)
     {
         Paint::SessionOptions options{};
-        if (flags & (ViewportFlags::hide_foreground_scenery_buildings || ViewportFlags::hide_foreground_tracks_roads))
+        if (flags & (ViewportFlags::hide_foreground_scenery_buildings | ViewportFlags::hide_foreground_tracks_roads))
         {
             options.foregroundCullHeight = viewHeight / 2 + viewY;
         }

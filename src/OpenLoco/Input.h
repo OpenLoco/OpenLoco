@@ -104,6 +104,9 @@ namespace OpenLoco::Input
     void enqueueText(const char* text);
     void enqueueKey(uint32_t key);
     bool hasKeyModifier(uint8_t modifier);
+
+    StationId getHoveredStationId();
+
     uint16_t getMapSelectionFlags();
     bool hasMapSelectionFlag(uint8_t flags);
     void setMapSelectionFlags(uint8_t flags);
