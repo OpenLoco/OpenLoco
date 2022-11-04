@@ -78,13 +78,13 @@ namespace OpenLoco::Ui
                 continue;
             }
 
-            if (!(Input::getMapSelectionFlags() & Input::MapSelectionFlags::unk_6) || station.id() != Input::getHoveredStationId())
+            if (!(Input::getMapSelectionFlags() & Input::MapSelectionFlags::hoveringOverStation) || station.id() != Input::getHoveredStationId())
             {
                 drawStationName(unZoomedRt, station, rt.zoomLevel);
             }
         }
 
-        if (Input::getMapSelectionFlags() & Input::MapSelectionFlags::unk_6)
+        if (Input::getMapSelectionFlags() & Input::MapSelectionFlags::hoveringOverStation)
         {
             const auto* station = StationManager::get(Input::getHoveredStationId());
             if (station != nullptr && !(station->flags & StationFlags::flag_5))

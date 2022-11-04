@@ -1959,9 +1959,9 @@ namespace OpenLoco::Input
 
         Windows::MapToolTip::reset();
 
-        if (hasMapSelectionFlag(MapSelectionFlags::unk_6))
+        if (hasMapSelectionFlag(MapSelectionFlags::hoveringOverStation))
         {
-            resetMapSelectionFlag(MapSelectionFlags::unk_6);
+            resetMapSelectionFlag(MapSelectionFlags::hoveringOverStation);
             auto station = StationManager::get(_hoveredStationId);
             if (!station->empty())
             {
