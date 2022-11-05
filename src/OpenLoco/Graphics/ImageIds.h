@@ -947,9 +947,12 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t icon_parent_folder = 2310;
     constexpr uint32_t icon_folder = 2311;
 
-    constexpr uint32_t curved_border_left = 2315;
-    constexpr uint32_t curved_border_right = 2316;
-
+    constexpr uint32_t curved_border_left_medium = 2315;
+    constexpr uint32_t curved_border_right_medium = 2316;
+    constexpr uint32_t curved_border_left_medium_bold = 2317;
+    constexpr uint32_t curved_border_right_medium_bold = 2318;
+    constexpr uint32_t curved_border_left_small = 2319;
+    constexpr uint32_t curved_border_right_small = 2320;
     constexpr uint32_t close_button = 2321;
     constexpr uint32_t frame_background_image = 2322;
     constexpr uint32_t frame_background_image_alt = 2323;

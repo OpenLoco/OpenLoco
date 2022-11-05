@@ -1,8 +1,11 @@
 #include "Viewport.hpp"
+#include "CompanyManager.h"
 #include "Config.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Paint/Paint.h"
@@ -41,14 +44,91 @@ namespace OpenLoco::Ui
         paint(rt, screenToViewport(intersection));
     }
 
-    // 0x0048DF4D
-    static void drawStationName(Gfx::RenderTarget& unZoomedRt, const Station& station, uint8_t zoom)
+    struct StationBorder
     {
-        registers regs{};
-        regs.edi = X86Pointer(&unZoomedRt);
-        regs.esi = X86Pointer(&station);
-        regs.ecx = zoom;
-        call(0x0048DF4D, regs);
+        uint32_t left;
+        uint32_t right;
+        uint16_t width;
+    };
+    static constexpr std::array<StationBorder, 4> kZoomToStationBorder = {
+        StationBorder{
+            ImageIds::curved_border_left_medium,
+            ImageIds::curved_border_right_medium,
+            3,
+        },
+        StationBorder{
+            ImageIds::curved_border_left_medium,
+            ImageIds::curved_border_right_medium,
+            3,
+        },
+        StationBorder{
+            ImageIds::curved_border_left_small,
+            ImageIds::curved_border_right_small,
+            1,
+        },
+        StationBorder{
+            ImageIds::curved_border_left_small,
+            ImageIds::curved_border_right_small,
+            1,
+        },
+    };
+
+    static constexpr std::array<int16_t, 4> kZoomToStationFonts = {
+        Font::medium_bold,
+        Font::medium_bold,
+        Font::small,
+        Font::small,
+    };
+
+    // 0x0048DF4D, 0x0048E13B
+    static void drawStationName(Gfx::RenderTarget& unZoomedRt, const Station& station, uint8_t zoom, bool isHovered)
+    {
+        if (!station.labelFrame.contains(unZoomedRt.getDrawableRect(), zoom))
+        {
+            return;
+        }
+
+        auto& borderImages = kZoomToStationBorder[zoom];
+
+        const auto colour = Colours::getTranslucent([&station]() {
+            if (station.owner == CompanyId::null)
+            {
+                return Colour::grey;
+            }
+            else
+            {
+                return CompanyManager::getCompanyColour(station.owner);
+            }
+        }(),
+                                                    isHovered ? 0 : 1);
+
+        Ui::Point topLeft = { station.labelFrame.left[zoom],
+                              station.labelFrame.top[zoom] };
+        Ui::Point bottomRight = { station.labelFrame.right[zoom],
+                                  station.labelFrame.bottom[zoom] };
+
+        Gfx::drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
+        Gfx::drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(colour));
+
+        Ui::Point topRight = { bottomRight.x - borderImages.width, topLeft.y };
+        Gfx::drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
+        Gfx::drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(colour));
+
+        Gfx::drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, (1 << 25) | enumValue(ExtColour::unk34));
+        Gfx::drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, (1 << 25) | enumValue(colour));
+
+        char buffer[512]{};
+
+        FormatArguments args;
+        args.push<uint16_t>(enumValue(station.town));
+        auto* str = buffer;
+        *str++ = ControlCodes::Colour::black;
+        str = StringManager::formatString(str, station.name, &args);
+        *str++ = ' ';
+        StringManager::formatString(str, getTransportIconsFromStationFlags(station.flags));
+
+        Gfx::setCurrentFontSpriteBase(kZoomToStationFonts[zoom]);
+        Gfx::drawString(unZoomedRt, topLeft.x + borderImages.width, topLeft.y, Colour::black, buffer);
     }
 
     // 0x0048E13B
@@ -80,7 +160,7 @@ namespace OpenLoco::Ui
 
             if (!(Input::getMapSelectionFlags() & Input::MapSelectionFlags::hoveringOverStation) || station.id() != Input::getHoveredStationId())
             {
-                drawStationName(unZoomedRt, station, rt.zoomLevel);
+                drawStationName(unZoomedRt, station, rt.zoomLevel, false);
             }
         }
 
