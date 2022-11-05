@@ -131,16 +131,6 @@ namespace OpenLoco::Ui
         Gfx::drawString(unZoomedRt, topLeft.x + borderImages.width, topLeft.y, Colour::black, buffer);
     }
 
-    // 0x0048E13B
-    static void drawHoveredStationName(Gfx::RenderTarget& unZoomedRt, const Station& station, uint8_t zoom)
-    {
-        registers regs{};
-        regs.edi = X86Pointer(&unZoomedRt);
-        regs.esi = X86Pointer(&station);
-        regs.ecx = zoom;
-        call(0x0048E13B, regs);
-    }
-
     // 0x0048DE97
     static void drawStationNames(Gfx::RenderTarget& rt)
     {
@@ -158,19 +148,9 @@ namespace OpenLoco::Ui
                 continue;
             }
 
-            if (!(Input::getMapSelectionFlags() & Input::MapSelectionFlags::hoveringOverStation) || station.id() != Input::getHoveredStationId())
-            {
-                drawStationName(unZoomedRt, station, rt.zoomLevel, false);
-            }
-        }
+            bool isHovered = (Input::getMapSelectionFlags() & Input::MapSelectionFlags::hoveringOverStation) && (station.id() == Input::getHoveredStationId());
 
-        if (Input::getMapSelectionFlags() & Input::MapSelectionFlags::hoveringOverStation)
-        {
-            const auto* station = StationManager::get(Input::getHoveredStationId());
-            if (station != nullptr && !(station->flags & StationFlags::flag_5))
-            {
-                drawHoveredStationName(unZoomedRt, *station, rt.zoomLevel);
-            }
+            drawStationName(unZoomedRt, station, rt.zoomLevel, isHovered);
         }
     }
 
