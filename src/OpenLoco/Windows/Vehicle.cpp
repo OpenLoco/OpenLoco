@@ -2379,7 +2379,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             GameCommands::setErrorTitle(StringIds::empty);
             GameCommands::do_36(head->id, orderOffset - head->orderTableOffset);
-            Vehicles::OrderManager::sub_470824(head);
+            Vehicles::OrderManager::generateNumDisplayFrames(head);
         }
 
         // 0x004B4F6D
@@ -2416,7 +2416,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             GameCommands::setErrorTitle(StringIds::empty);
             auto result = GameCommands::do_75(head->id, orderOffset - head->orderTableOffset);
-            Vehicles::OrderManager::sub_470824(head); // Note order changed check if this matters.
+            Vehicles::OrderManager::generateNumDisplayFrames(head); // Note order changed check if this matters.
             return result != GameCommands::FAILURE;
         }
 
@@ -2425,7 +2425,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             GameCommands::setErrorTitle(StringIds::empty);
             auto result = GameCommands::do_76(head->id, orderOffset - head->orderTableOffset);
-            Vehicles::OrderManager::sub_470824(head); // Note order changed check if this matters.
+            Vehicles::OrderManager::generateNumDisplayFrames(head); // Note order changed check if this matters.
             return result != GameCommands::FAILURE;
         }
 
@@ -2623,7 +2623,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::setErrorTitle(StringIds::orders_cant_insert);
             auto previousSize = head->sizeOfOrderTable;
             GameCommands::do_35(head->id, order.getRaw(), chosenOffset);
-            Vehicles::OrderManager::sub_470824(head);
+            Vehicles::OrderManager::generateNumDisplayFrames(head);
             if (head->sizeOfOrderTable == previousSize)
             {
                 return;
@@ -2686,7 +2686,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (Input::toolSet(&self, widx::tool, CursorId::crosshair))
                 {
                     self.invalidate();
-                    Vehicles::OrderManager::sub_470824(head);
+                    Vehicles::OrderManager::generateNumDisplayFrames(head);
                 }
             }
         }
@@ -2969,7 +2969,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            Vehicles::OrderManager::sub_470824(head);
+            Vehicles::OrderManager::generateNumDisplayFrames(head);
         }
 
         // 0x004B468C

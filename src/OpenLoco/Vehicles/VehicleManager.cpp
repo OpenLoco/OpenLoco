@@ -233,8 +233,8 @@ namespace OpenLoco::Vehicles::RoutingManager
 namespace OpenLoco::Vehicles::OrderManager
 {
     // TODO: Make this a fixed vector of size 63 (kMaxNumOrderPerVehicle) no need for it to be dynamic
-    std::vector<UnkF2494A> _displayFrames;
-    const std::vector<UnkF2494A>& displayFrames() { return _displayFrames; }
+    std::vector<NumDisplayFrame> _displayFrames;
+    const std::vector<NumDisplayFrame>& displayFrames() { return _displayFrames; }
 
     static auto& orders() { return getGameState().orders; }
     static auto& numOrders() { return getGameState().numOrders; }
@@ -338,7 +338,7 @@ namespace OpenLoco::Vehicles::OrderManager
     }
 
     // 0x00470824
-    void sub_470824(Vehicles::VehicleHead* head)
+    void generateNumDisplayFrames(Vehicles::VehicleHead* head)
     {
         Input::setMapSelectionFlags(Input::MapSelectionFlags::unk_04);
         Gfx::invalidateScreen();
@@ -351,7 +351,7 @@ namespace OpenLoco::Vehicles::OrderManager
             {
                 continue;
             }
-            UnkF2494A newFrame;
+            NumDisplayFrame newFrame;
             newFrame.orderOffset = order.getOffset();
 
             auto lineNumber = 0;
