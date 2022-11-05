@@ -13,6 +13,8 @@
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/Orders.h"
+#include "Vehicles/VehicleManager.h"
 #include "Window.h"
 
 using namespace OpenLoco::Interop;
@@ -188,9 +190,42 @@ namespace OpenLoco::Ui
     // 0x00470A62
     static void drawRoutingNumbers(Gfx::RenderTarget& rt)
     {
-        registers regs{};
-        regs.edi = X86Pointer(&rt);
-        call(0x00470A62, regs);
+        if (!(Input::getMapSelectionFlags() & Input::MapSelectionFlags::unk_04))
+        {
+            return;
+        }
+
+        Gfx::RenderTarget unZoomedRt = rt;
+        unZoomedRt.zoomLevel = 0;
+        unZoomedRt.x >>= rt.zoomLevel;
+        unZoomedRt.y >>= rt.zoomLevel;
+        unZoomedRt.width >>= rt.zoomLevel;
+        unZoomedRt.height >>= rt.zoomLevel;
+
+        auto orderNum = 0;
+        for (auto& orderFrame : Vehicles::OrderManager::displayFrames())
+        {
+            auto orderRing = Vehicles::OrderRingView(orderFrame.orderOffset);
+            auto* order = orderRing.atIndex(0);
+            if (!order->hasFlag(Vehicles::OrderFlags::HasNumber))
+            {
+                continue;
+            }
+            orderNum++;
+            if (!orderFrame.frame.contains(rt.getDrawableRect(), rt.zoomLevel))
+            {
+                continue;
+            }
+            auto res = Vehicles::OrderManager::generateOrderUiStringAndLoc(orderFrame.orderOffset, orderNum);
+            auto& orderString = res.second;
+            if (orderString.empty())
+            {
+                continue;
+            }
+
+            Gfx::setCurrentFontSpriteBase(Font::medium_normal);
+            Gfx::drawString(unZoomedRt, orderFrame.frame.left[rt.zoomLevel] + 1, orderFrame.frame.top[rt.zoomLevel], AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
+        }
     }
 
     // 0x0045A1A4
