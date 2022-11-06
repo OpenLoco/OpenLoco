@@ -498,6 +498,24 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y)
+    {
+        int16_t width = self->x + self->width - x;
+        int16_t height = self->y + self->height - y;
+        // Clip the draw area to simplify image draw
+        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(x, y, width, height));
+        if (!clipped)
+            return;
+
+        {
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename) + 1);
+            FormatArguments args{};
+            args.push<string_id>(StringIds::buffer_1250);
+            Gfx::drawStringLeft(*clipped, 18, height - kDescriptionRowHeight * 3 - 4, Colour::black, StringIds::object_selection_filename, &args);
+        }
+    }
+
     // 0x004733F5
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
@@ -582,6 +600,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 self.widgets[widx::scrollview].right + self.x + 4,
                 y + kDescriptionRowHeight,
                 temporaryObject);
+        }
+
+        {
+            auto objectPtr = self.object;
+
+            drawDatDetails(
+                ObjectManager::ObjectIndexEntry::read(&objectPtr),
+                &self,
+                rt,
+                self.widgets[widx::scrollview].right + self.x + 4,
+                y + kDescriptionRowHeight);
         }
     }
 
