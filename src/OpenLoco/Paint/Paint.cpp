@@ -334,8 +334,7 @@ namespace OpenLoco::Paint
         _lastPaintString = 0;
         _paintStringHead = 0;
 
-        addr<0x00E3F0BC, uint16_t>() = options.viewFlags; // Remove when all users of 0x00E3F0BC implemented
-        viewFlags = options.viewFlags;
+        _viewFlags = options.viewFlags;
         currentRotation = options.rotation;
         addr<0x00E3F0A6, int16_t>() = options.foregroundCullHeight;
     }
@@ -528,7 +527,6 @@ namespace OpenLoco::Paint
         if (!Game::hasFlags(1u << 0))
             return;
 
-        viewFlags = addr<0x00E3F0BC, uint16_t>();
         currentRotation = Ui::WindowManager::getCurrentRotation();
         switch (currentRotation)
         {

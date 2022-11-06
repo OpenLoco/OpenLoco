@@ -174,7 +174,7 @@ namespace OpenLoco::Paint
         {
             return Map::Pos2{ _spritePositionX, _spritePositionY };
         }
-        uint16_t getViewFlags() { return viewFlags; }
+        uint16_t getViewFlags() { return _viewFlags; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
@@ -342,8 +342,8 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00F00480> _waterHeight;
         inline static Interop::loco_global<uint32_t, 0x0112C300> _112C300;
         inline static Interop::loco_global<uint16_t, 0x0112C306> _112C306;
+        inline static Interop::loco_global<uint16_t, 0x00E3F0BC> _viewFlags;
         uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as seperate item
-        uint16_t viewFlags;      // new field set from 0x00E3F0BC
 
         // From OpenRCT2 equivalent fields not found yet or new
         // AttachedPaintStruct* unkF1AD2C;              // no equivalent
