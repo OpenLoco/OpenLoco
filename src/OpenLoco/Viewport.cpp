@@ -112,7 +112,7 @@ namespace OpenLoco::Ui
         Gfx::drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
         Gfx::drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(colour));
 
-        Ui::Point topRight = { bottomRight.x - borderImages.width, topLeft.y };
+        Ui::Point topRight = { static_cast<int16_t>(bottomRight.x - borderImages.width), topLeft.y };
         Gfx::drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
         Gfx::drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(colour));
 
