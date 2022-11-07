@@ -467,7 +467,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Core/LocoFixedVector.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Optional.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Span.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Variant.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteBMP.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteHelper.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteRLE.hpp"
@@ -544,10 +543,11 @@ else ()
 endif ()
 
 target_link_libraries(OpenLoco
-    Thirdparty
+    ThirdPartyStdx
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp
+    ghcFilesystem::ghc_filesystem
     ${PNG_LIBRARY}
     ${OPENAL_LIBRARIES})
 
@@ -643,7 +643,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
-        Thirdparty)
+        ghcFilesystem::ghc_filesystem
+        ThirdPartyStdx)
 else ()
     # Dummy target to ease invocation
     add_custom_target(OpenLoco-headers-check)

@@ -488,7 +488,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)\%(RelativeDir)</ObjectFileName>
       <AdditionalOptions>$(OPENLOCO_CL_ADDITIONALOPTIONS) %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>..\..\Thirdparty\include;..\..\Resources\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\ThirdParty\Stdx\include;..\..\Resources\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <TargetMachine Condition="'$(Platform)'=='Win32'">MachineX86</TargetMachine>

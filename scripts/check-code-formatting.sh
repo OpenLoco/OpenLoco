@@ -16,4 +16,4 @@ fi
 basedir="$($readlink_bin -f `dirname $0`/..)"
 cd $basedir
 
-scripts/run-clang-format.py -r modules --exclude modules/Thirdparty
+scripts/run-clang-format.py -r src
