@@ -92,7 +92,7 @@ namespace OpenLoco::Ui
 
         auto& borderImages = kZoomToStationBorder[zoom];
 
-        const auto colour = Colours::getTranslucent([&station]() {
+        const auto companyColour = [&station]() {
             if (station.owner == CompanyId::null)
             {
                 return Colour::grey;
@@ -101,8 +101,8 @@ namespace OpenLoco::Ui
             {
                 return CompanyManager::getCompanyColour(station.owner);
             }
-        }(),
-                                                    isHovered ? 0 : 1);
+        }();
+        const auto colour = Colours::getTranslucent(companyColour, isHovered ? 0 : 1);
 
         Ui::Point topLeft = { station.labelFrame.left[zoom],
                               station.labelFrame.top[zoom] };
