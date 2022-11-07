@@ -41,8 +41,8 @@ namespace OpenLoco::Ui
     // 0x004CF3EB
     static void drawStationNameBackground(Gfx::RenderTarget* rt, const Window* window, const Widget* widget, int16_t x, int16_t y, AdvancedColour colour, int16_t width)
     {
-        Gfx::drawImage(rt, x - 4, y, Gfx::recolour(ImageIds::curved_border_left, colour.c()));
-        Gfx::drawImage(rt, x + width, y, Gfx::recolour(ImageIds::curved_border_right, colour.c()));
+        Gfx::drawImage(rt, x - 4, y, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
+        Gfx::drawImage(rt, x + width, y, Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
         Gfx::fillRect(*rt, x, y, x + width - 1, y + 11, Colours::getShade(colour.c(), 5));
     }
 

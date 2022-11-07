@@ -1,8 +1,13 @@
 #pragma once
+#include "../LabelFrame.h"
+#include "../Map/Map.hpp"
 #include "../Types.hpp"
 #include "Routing.h"
 #include <iterator>
 #include <optional>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace OpenLoco
 {
@@ -28,7 +33,17 @@ namespace OpenLoco::VehicleManager
 
 namespace OpenLoco::Vehicles::OrderManager
 {
+    struct NumDisplayFrame
+    {
+        uint32_t orderOffset; // 0x0
+        LabelFrame frame;     // 0x4
+        uint8_t lineNumber;   // 0x24
+    };
+
     void freeOrders(VehicleHead* const head);
+    std::pair<Map::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum);
+    void generateNumDisplayFrames(Vehicles::VehicleHead* head);
+    const std::vector<NumDisplayFrame>& displayFrames();
 }
 
 namespace OpenLoco::Vehicles::RoutingManager

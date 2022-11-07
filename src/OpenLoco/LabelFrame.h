@@ -13,7 +13,7 @@ namespace OpenLoco
         int16_t top[ZoomLevel::max]{};
         int16_t bottom[ZoomLevel::max]{};
 
-        [[nodiscard]] bool contains(Ui::Rect& rec, uint8_t zoom) const
+        [[nodiscard]] bool contains(const Ui::Rect& rec, uint8_t zoom) const
         {
             if (rec.top() > bottom[zoom])
             {

@@ -133,7 +133,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         auto station = StationManager::get(id);
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::unk_6);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::hoveringOverStation);
         ViewportManager::invalidate(station);
         Windows::MapToolTip::setOwner(station->owner);
         auto args = FormatArguments::mapToolTip(StringIds::stringid_stringid_wcolour3_stringid);
@@ -1014,7 +1014,11 @@ namespace OpenLoco::Ui::ViewportInteraction
             _rt2->width = 1;
             _rt2->height = 1;
             _rt2->zoomLevel = _rt1->zoomLevel;
-            auto* session = Paint::allocateSession(_rt2, vp->flags);
+            Paint::SessionOptions options{};
+            options.rotation = vp->getRotation();
+            options.viewFlags = vp->flags;
+            // Todo: should this pass the cullHeight...
+            auto* session = Paint::allocateSession(_rt2, options);
             session->generate();
             session->arrangeStructs();
             interaction = session->getNormalInteractionInfo(flags);

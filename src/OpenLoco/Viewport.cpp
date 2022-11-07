@@ -1,9 +1,20 @@
 #include "Viewport.hpp"
+#include "CompanyManager.h"
+#include "Config.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/ImageIds.h"
+#include "Input.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
+#include "Paint/Paint.h"
+#include "SceneManager.h"
+#include "StationManager.h"
+#include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/Orders.h"
+#include "Vehicles/VehicleManager.h"
 #include "Window.h"
 
 using namespace OpenLoco::Interop;
@@ -35,17 +46,282 @@ namespace OpenLoco::Ui
         paint(rt, screenToViewport(intersection));
     }
 
+    struct StationBorder
+    {
+        uint32_t left;
+        uint32_t right;
+        uint16_t width;
+    };
+    static constexpr std::array<StationBorder, 4> kZoomToStationBorder = {
+        StationBorder{
+            ImageIds::curved_border_left_medium,
+            ImageIds::curved_border_right_medium,
+            3,
+        },
+        StationBorder{
+            ImageIds::curved_border_left_medium,
+            ImageIds::curved_border_right_medium,
+            3,
+        },
+        StationBorder{
+            ImageIds::curved_border_left_small,
+            ImageIds::curved_border_right_small,
+            1,
+        },
+        StationBorder{
+            ImageIds::curved_border_left_small,
+            ImageIds::curved_border_right_small,
+            1,
+        },
+    };
+
+    static constexpr std::array<int16_t, 4> kZoomToStationFonts = {
+        Font::medium_bold,
+        Font::medium_bold,
+        Font::small,
+        Font::small,
+    };
+
+    // 0x0048DF4D, 0x0048E13B
+    static void drawStationName(Gfx::RenderTarget& unZoomedRt, const Station& station, uint8_t zoom, bool isHovered)
+    {
+        if (!station.labelFrame.contains(unZoomedRt.getDrawableRect(), zoom))
+        {
+            return;
+        }
+
+        auto& borderImages = kZoomToStationBorder[zoom];
+
+        const auto companyColour = [&station]() {
+            if (station.owner == CompanyId::null)
+            {
+                return Colour::grey;
+            }
+            else
+            {
+                return CompanyManager::getCompanyColour(station.owner);
+            }
+        }();
+        const auto colour = Colours::getTranslucent(companyColour, isHovered ? 0 : 1);
+
+        Ui::Point topLeft = { station.labelFrame.left[zoom],
+                              station.labelFrame.top[zoom] };
+        Ui::Point bottomRight = { station.labelFrame.right[zoom],
+                                  station.labelFrame.bottom[zoom] };
+
+        Gfx::drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
+        Gfx::drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(colour));
+
+        Ui::Point topRight = { static_cast<int16_t>(bottomRight.x - borderImages.width), topLeft.y };
+        Gfx::drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
+        Gfx::drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(colour));
+
+        Gfx::drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, (1 << 25) | enumValue(ExtColour::unk34));
+        Gfx::drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, (1 << 25) | enumValue(colour));
+
+        char buffer[512]{};
+
+        FormatArguments args;
+        args.push<uint16_t>(enumValue(station.town));
+        auto* str = buffer;
+        *str++ = ControlCodes::Colour::black;
+        str = StringManager::formatString(str, station.name, &args);
+        *str++ = ' ';
+        StringManager::formatString(str, getTransportIconsFromStationFlags(station.flags));
+
+        Gfx::setCurrentFontSpriteBase(kZoomToStationFonts[zoom]);
+        Gfx::drawString(unZoomedRt, topLeft.x + borderImages.width, topLeft.y, Colour::black, buffer);
+    }
+
+    // 0x0048DE97
+    static void drawStationNames(Gfx::RenderTarget& rt)
+    {
+        Gfx::RenderTarget unZoomedRt = rt;
+        unZoomedRt.zoomLevel = 0;
+        unZoomedRt.x >>= rt.zoomLevel;
+        unZoomedRt.y >>= rt.zoomLevel;
+        unZoomedRt.width >>= rt.zoomLevel;
+        unZoomedRt.height >>= rt.zoomLevel;
+
+        for (const auto& station : StationManager::stations())
+        {
+            if (station.flags & StationFlags::flag_5)
+            {
+                continue;
+            }
+
+            bool isHovered = (Input::getMapSelectionFlags() & Input::MapSelectionFlags::hoveringOverStation) && (station.id() == Input::getHoveredStationId());
+
+            drawStationName(unZoomedRt, station, rt.zoomLevel, isHovered);
+        }
+    }
+
+    static constexpr std::array<int16_t, 4> kZoomToTownFonts = {
+        Font::medium_bold,
+        Font::medium_bold,
+        Font::medium_normal,
+        Font::medium_normal,
+    };
+
+    // 0x004977E5
+    static void drawTownNames(Gfx::RenderTarget& rt)
+    {
+        Gfx::RenderTarget unZoomedRt = rt;
+        unZoomedRt.zoomLevel = 0;
+        unZoomedRt.x >>= rt.zoomLevel;
+        unZoomedRt.y >>= rt.zoomLevel;
+        unZoomedRt.width >>= rt.zoomLevel;
+        unZoomedRt.height >>= rt.zoomLevel;
+
+        char buffer[512]{};
+        for (const auto& town : TownManager::towns())
+        {
+            if (!town.labelFrame.contains(rt.getDrawableRect(), rt.zoomLevel))
+            {
+                continue;
+            }
+
+            StringManager::formatString(buffer, town.name);
+            Gfx::setCurrentFontSpriteBase(kZoomToTownFonts[rt.zoomLevel]);
+            Gfx::drawString(unZoomedRt, town.labelFrame.left[rt.zoomLevel] + 1, town.labelFrame.top[rt.zoomLevel] + 1, AdvancedColour(Colour::white).outline(), buffer);
+        }
+    }
+
+    // 0x00470A62
+    static void drawRoutingNumbers(Gfx::RenderTarget& rt)
+    {
+        if (!(Input::getMapSelectionFlags() & Input::MapSelectionFlags::unk_04))
+        {
+            return;
+        }
+
+        Gfx::RenderTarget unZoomedRt = rt;
+        unZoomedRt.zoomLevel = 0;
+        unZoomedRt.x >>= rt.zoomLevel;
+        unZoomedRt.y >>= rt.zoomLevel;
+        unZoomedRt.width >>= rt.zoomLevel;
+        unZoomedRt.height >>= rt.zoomLevel;
+
+        auto orderNum = 0;
+        for (auto& orderFrame : Vehicles::OrderManager::displayFrames())
+        {
+            auto orderRing = Vehicles::OrderRingView(orderFrame.orderOffset);
+            auto* order = orderRing.atIndex(0);
+            if (!order->hasFlag(Vehicles::OrderFlags::HasNumber))
+            {
+                continue;
+            }
+            orderNum++;
+            if (!orderFrame.frame.contains(rt.getDrawableRect(), rt.zoomLevel))
+            {
+                continue;
+            }
+            auto res = Vehicles::OrderManager::generateOrderUiStringAndLoc(orderFrame.orderOffset, orderNum);
+            auto& orderString = res.second;
+            if (orderString.empty())
+            {
+                continue;
+            }
+
+            Gfx::setCurrentFontSpriteBase(Font::medium_normal);
+            Gfx::drawString(unZoomedRt, orderFrame.frame.left[rt.zoomLevel] + 1, orderFrame.frame.top[rt.zoomLevel], AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
+        }
+    }
+
     // 0x0045A1A4
     void Viewport::paint(Gfx::RenderTarget* rt, const Rect& rect)
     {
-        registers regs{};
-        regs.ax = rect.left();
-        regs.bx = rect.top();
-        regs.dx = rect.right();
-        regs.bp = rect.bottom();
-        regs.esi = X86Pointer(this);
-        regs.edi = X86Pointer(rt);
-        call(0x0045A1A4, regs);
+        Paint::SessionOptions options{};
+        if (flags & (ViewportFlags::hide_foreground_scenery_buildings | ViewportFlags::hide_foreground_tracks_roads))
+        {
+            options.foregroundCullHeight = viewHeight / 2 + viewY;
+        }
+        PaletteIndex_t fillColour = PaletteIndex::index_D8;
+        if (flags & (ViewportFlags::underground_view | ViewportFlags::flag_7 | ViewportFlags::flag_8))
+        {
+            fillColour = PaletteIndex::index_0A;
+        }
+        options.rotation = getRotation();
+        options.viewFlags = flags;
+
+        const uint32_t bitmask = 0xFFFFFFFF << zoom;
+
+        // rt is in terms of the ui we need a target setup for the viewport zoom level
+        Gfx::RenderTarget zoomViewRt{};
+        zoomViewRt.width = rect.width();
+        zoomViewRt.height = rect.height();
+        zoomViewRt.x = rect.origin.x;
+        zoomViewRt.y = rect.origin.y;
+
+        zoomViewRt.width &= bitmask;
+        zoomViewRt.height &= bitmask;
+        zoomViewRt.x &= bitmask;
+        zoomViewRt.y &= bitmask;
+
+        auto unkX = ((zoomViewRt.x - static_cast<int32_t>(viewX & bitmask)) >> zoom) + x;
+
+        auto unkY = ((zoomViewRt.y - static_cast<int32_t>(viewY & bitmask)) >> zoom) + y;
+
+        zoomViewRt.pitch = rt->width + rt->pitch - (zoomViewRt.width >> zoom);
+        zoomViewRt.bits = rt->bits + (unkX - rt->x) + ((unkY - rt->y) * (rt->width + rt->pitch));
+        zoomViewRt.zoomLevel = zoom;
+
+        // make sure, the compare operation is done in int32_t to avoid the loop becoming an infinite loop.
+        // this as well as the [x += 32] in the loop causes signed integer overflow -> undefined behaviour.
+        auto rightBorder = zoomViewRt.x + zoomViewRt.width;
+        // Floors to nearest 32
+        auto alignedX = zoomViewRt.x & ~0x1F;
+
+        // Drawing is performed in columns of 32 pixels (1 tile wide)
+
+        // Generate and sort columns.
+        for (auto columnX = alignedX; columnX < rightBorder; columnX += 32)
+        {
+            Gfx::RenderTarget columnRt = zoomViewRt;
+            if (columnX >= columnRt.x)
+            {
+                auto leftPitch = columnX - columnRt.x;
+                columnRt.width -= leftPitch;
+                columnRt.pitch += (leftPitch >> columnRt.zoomLevel);
+                columnRt.bits += (leftPitch >> columnRt.zoomLevel);
+                columnRt.x = columnX;
+            }
+            auto columnRightX = columnX + 32;
+            auto paintRight = columnRt.x + columnRt.width;
+            if (paintRight >= columnRightX)
+            {
+                auto rightPitch = paintRight - columnX - 32;
+                paintRight -= rightPitch;
+                columnRt.pitch += rightPitch >> columnRt.zoomLevel;
+            }
+
+            columnRt.width = paintRight - columnRt.x;
+
+            Gfx::clearSingle(columnRt, fillColour);
+            auto* sess = Paint::allocateSession(columnRt, options);
+            sess->generate();
+            sess->arrangeStructs();
+            sess->drawStructs();
+            // Climate code used to draw here.
+
+            if (!isTitleMode())
+            {
+                if (!(options.viewFlags & ViewportFlags::station_names_displayed))
+                {
+                    if (columnRt.zoomLevel <= Config::get().old.stationNamesMinScale)
+                    {
+                        drawStationNames(columnRt);
+                    }
+                }
+                if (!(options.viewFlags & ViewportFlags::town_names_displayed))
+                {
+                    drawTownNames(columnRt);
+                }
+            }
+
+            sess->drawStringStructs();
+            drawRoutingNumbers(columnRt);
+        }
     }
 
     // 0x004CA444

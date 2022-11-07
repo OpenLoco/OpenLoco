@@ -138,6 +138,13 @@ namespace OpenLoco::Paint
 #pragma pack(pop)
     struct GenerationParameters;
 
+    struct SessionOptions
+    {
+        uint8_t rotation;
+        int16_t foregroundCullHeight;
+        uint16_t viewFlags;
+    };
+
     static constexpr auto kMaxPaintQuadrants = 1024;
 
     struct PaintSession
@@ -146,7 +153,8 @@ namespace OpenLoco::Paint
         void generate();
         void arrangeStructs();
         void drawStructs();
-        void init(Gfx::RenderTarget& rt, const uint16_t viewportFlags);
+        void drawStringStructs();
+        void init(Gfx::RenderTarget& rt, const SessionOptions& options);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
@@ -166,7 +174,7 @@ namespace OpenLoco::Paint
         {
             return Map::Pos2{ _spritePositionX, _spritePositionY };
         }
-        uint16_t getViewFlags() { return viewFlags; }
+        uint16_t getViewFlags() { return _viewFlags; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
@@ -334,8 +342,8 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00F00480> _waterHeight;
         inline static Interop::loco_global<uint32_t, 0x0112C300> _112C300;
         inline static Interop::loco_global<uint16_t, 0x0112C306> _112C306;
+        inline static Interop::loco_global<uint16_t, 0x00E3F0BC> _viewFlags;
         uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as seperate item
-        uint16_t viewFlags;      // new field set from 0x00E3F0BC
 
         // From OpenRCT2 equivalent fields not found yet or new
         // AttachedPaintStruct* unkF1AD2C;              // no equivalent
@@ -364,7 +372,7 @@ namespace OpenLoco::Paint
         PaintStruct* createNormalPaintStruct(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
     };
 
-    PaintSession* allocateSession(Gfx::RenderTarget& rt, const uint16_t viewportFlags);
+    PaintSession* allocateSession(Gfx::RenderTarget& rt, const SessionOptions& options);
 
     void registerHooks();
 }

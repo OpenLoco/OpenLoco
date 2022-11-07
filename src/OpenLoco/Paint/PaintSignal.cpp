@@ -11,6 +11,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/TrainSignalObject.h"
 #include "../Ui.h"
+#include "../Viewport.hpp"
 #include "Paint.h"
 #include "PaintTileDecorations.h"
 
@@ -196,7 +197,7 @@ namespace OpenLoco::Paint
         }
         else
         {
-            if (session.getViewFlags() & (1 << 4) && session.getRenderTarget()->zoomLevel == 0)
+            if ((session.getViewFlags() & Ui::ViewportFlags::one_way_direction_arrows) && session.getRenderTarget()->zoomLevel == 0)
             {
                 session.setItemType(InteractionItem::noInteraction);
                 const auto imageId = ImageId{ getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedAvocadoGreen };

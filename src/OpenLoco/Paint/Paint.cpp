@@ -319,7 +319,7 @@ namespace OpenLoco::Paint
         return attached;
     }
 
-    void PaintSession::init(Gfx::RenderTarget& rt, const uint16_t viewportFlags)
+    void PaintSession::init(Gfx::RenderTarget& rt, const SessionOptions& options)
     {
         _renderTarget = &rt;
         _nextFreePaintStruct = &_paintEntries[0];
@@ -334,14 +334,15 @@ namespace OpenLoco::Paint
         _lastPaintString = 0;
         _paintStringHead = 0;
 
-        addr<0x00E3F0BC, uint16_t>() = viewportFlags; // Remove when all users of 0x00E3F0BC implemented
-        viewFlags = viewportFlags;
+        _viewFlags = options.viewFlags;
+        currentRotation = options.rotation;
+        addr<0x00E3F0A6, int16_t>() = options.foregroundCullHeight;
     }
 
     // 0x0045A6CA
-    PaintSession* allocateSession(Gfx::RenderTarget& rt, uint16_t viewportFlags)
+    PaintSession* allocateSession(Gfx::RenderTarget& rt, const SessionOptions& options)
     {
-        _session.init(rt, viewportFlags);
+        _session.init(rt, options);
         return &_session;
     }
 
@@ -526,7 +527,6 @@ namespace OpenLoco::Paint
         if (!Game::hasFlags(1u << 0))
             return;
 
-        viewFlags = addr<0x00E3F0BC, uint16_t>();
         currentRotation = Ui::WindowManager::getCurrentRotation();
         switch (currentRotation)
         {
@@ -762,6 +762,12 @@ namespace OpenLoco::Paint
     void PaintSession::drawStructs()
     {
         call(0x0045EA23);
+    }
+
+    // 0x0045A60E
+    void PaintSession::drawStringStructs()
+    {
+        call(0x0045A60E);
     }
 
     // 0x00447A5F

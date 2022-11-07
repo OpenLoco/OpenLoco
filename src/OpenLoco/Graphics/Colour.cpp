@@ -14,38 +14,162 @@ namespace OpenLoco::Colours
     loco_global<uint8_t[32][8], 0x01136C98> _colourMapB;
 
     // 0x005045FA
-    static constexpr std::array<ExtColour, 31> _translucentColourMap = {
-        ExtColour::translucentGrey1,
-        ExtColour::translucentGrey1,
-        ExtColour::translucentWhite1,
-        ExtColour::translucentMutedPurple1,
-        ExtColour::translucentMutedPurple1,
-        ExtColour::translucentPurple1,
-        ExtColour::translucentBlue1,
-        ExtColour::translucentBlue1,
-        ExtColour::translucentMutedTeal1,
-        ExtColour::translucentMutedTeal1,
-        ExtColour::translucentGreen1,
-        ExtColour::translucentMutedSeaGreen1,
-        ExtColour::translucentMutedGrassGreen1,
-        ExtColour::translucentGreen1,
-        ExtColour::translucentMutedAvocadoGreen1,
-        ExtColour::translucentMutedOliveGreen1,
-        ExtColour::translucentYellow1,
-        ExtColour::translucentYellow1,
-        ExtColour::translucentOrange1,
-        ExtColour::translucentAmber1,
-        ExtColour::translucentOrange1,
-        ExtColour::translucentMutedYellow1,
-        ExtColour::translucentMutedYellow1,
-        ExtColour::translucentBrown1,
-        ExtColour::translucentMutedOrange1,
-        ExtColour::translucentMutedDarkRed1,
-        ExtColour::translucentRed1,
-        ExtColour::translucentRed1,
-        ExtColour::translucentPink1,
-        ExtColour::translucentPink1,
-        ExtColour::translucentMutedRed1,
+    static constexpr std::array<std::array<ExtColour, 3>, 31> _translucentColourMap = {
+        std::array<ExtColour, 3>{
+            ExtColour::translucentGrey0,
+            ExtColour::translucentGrey1,
+            ExtColour::translucentGrey2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentGrey0,
+            ExtColour::translucentGrey1,
+            ExtColour::translucentGrey2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentWhite0,
+            ExtColour::translucentWhite1,
+            ExtColour::translucentWhite2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedPurple0,
+            ExtColour::translucentMutedPurple1,
+            ExtColour::translucentMutedPurple2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedPurple0,
+            ExtColour::translucentMutedPurple1,
+            ExtColour::translucentMutedPurple2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentPurple0,
+            ExtColour::translucentPurple1,
+            ExtColour::translucentPurple2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentBlue0,
+            ExtColour::translucentBlue1,
+            ExtColour::translucentBlue2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentBlue0,
+            ExtColour::translucentBlue1,
+            ExtColour::translucentBlue2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedTeal0,
+            ExtColour::translucentMutedTeal1,
+            ExtColour::translucentMutedTeal2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedTeal0,
+            ExtColour::translucentMutedTeal1,
+            ExtColour::translucentMutedTeal2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentGreen0,
+            ExtColour::translucentGreen1,
+            ExtColour::translucentGreen2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedSeaGreen0,
+            ExtColour::translucentMutedSeaGreen1,
+            ExtColour::translucentMutedSeaGreen2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedGrassGreen0,
+            ExtColour::translucentMutedGrassGreen1,
+            ExtColour::translucentMutedGrassGreen2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentGreen0,
+            ExtColour::translucentGreen1,
+            ExtColour::translucentGreen2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedAvocadoGreen0,
+            ExtColour::translucentMutedAvocadoGreen1,
+            ExtColour::translucentMutedAvocadoGreen2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedOliveGreen0,
+            ExtColour::translucentMutedOliveGreen1,
+            ExtColour::translucentMutedOliveGreen2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentYellow0,
+            ExtColour::translucentYellow1,
+            ExtColour::translucentYellow2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentYellow0,
+            ExtColour::translucentYellow1,
+            ExtColour::translucentYellow2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentOrange0,
+            ExtColour::translucentOrange1,
+            ExtColour::translucentOrange2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentAmber0,
+            ExtColour::translucentAmber1,
+            ExtColour::translucentAmber2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentOrange0,
+            ExtColour::translucentOrange1,
+            ExtColour::translucentOrange2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedYellow0,
+            ExtColour::translucentMutedYellow1,
+            ExtColour::translucentMutedYellow2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedYellow0,
+            ExtColour::translucentMutedYellow1,
+            ExtColour::translucentMutedYellow2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentBrown0,
+            ExtColour::translucentBrown1,
+            ExtColour::translucentBrown2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedOrange0,
+            ExtColour::translucentMutedOrange1,
+            ExtColour::translucentMutedOrange2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedDarkRed0,
+            ExtColour::translucentMutedDarkRed1,
+            ExtColour::translucentMutedDarkRed2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentRed0,
+            ExtColour::translucentRed1,
+            ExtColour::translucentRed2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentRed0,
+            ExtColour::translucentRed1,
+            ExtColour::translucentRed2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentPink0,
+            ExtColour::translucentPink1,
+            ExtColour::translucentPink2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentPink0,
+            ExtColour::translucentPink1,
+            ExtColour::translucentPink2,
+        },
+        std::array<ExtColour, 3>{
+            ExtColour::translucentMutedRed0,
+            ExtColour::translucentMutedRed1,
+            ExtColour::translucentMutedRed2,
+        },
     };
 
     static constexpr std::array<ExtColour, 31> _shadowColourMap = {
@@ -126,7 +250,12 @@ namespace OpenLoco::Colours
     // 0x005045FA
     ExtColour getTranslucent(Colour colour)
     {
-        return _translucentColourMap[enumValue(colour)];
+        return getTranslucent(colour, 1);
+    }
+
+    ExtColour getTranslucent(Colour colour, uint8_t shade)
+    {
+        return _translucentColourMap[enumValue(colour)][shade];
     }
 
     ExtColour getShadow(Colour colour)

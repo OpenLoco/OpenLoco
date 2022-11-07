@@ -356,6 +356,11 @@ namespace OpenLoco::Input
         toolCancel();
     }
 
+    StationId getHoveredStationId()
+    {
+        return _hoveredStationId;
+    }
+
     uint16_t getMapSelectionFlags()
     {
         return _mapSelectionFlags;
@@ -1954,9 +1959,9 @@ namespace OpenLoco::Input
 
         Windows::MapToolTip::reset();
 
-        if (hasMapSelectionFlag(MapSelectionFlags::unk_6))
+        if (hasMapSelectionFlag(MapSelectionFlags::hoveringOverStation))
         {
-            resetMapSelectionFlag(MapSelectionFlags::unk_6);
+            resetMapSelectionFlag(MapSelectionFlags::hoveringOverStation);
             auto station = StationManager::get(_hoveredStationId);
             if (!station->empty())
             {

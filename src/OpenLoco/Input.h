@@ -56,7 +56,7 @@ namespace OpenLoco::Input
         constexpr uint8_t unk_03 = 1 << 3;
         constexpr uint8_t unk_04 = 1 << 4; // Vehicle orders?
         constexpr uint8_t catchmentArea = 1 << 5;
-        constexpr uint8_t unk_6 = 1 << 6;
+        constexpr uint8_t hoveringOverStation = 1 << 6;
     };
 
     namespace KeyModifier
@@ -104,6 +104,9 @@ namespace OpenLoco::Input
     void enqueueText(const char* text);
     void enqueueKey(uint32_t key);
     bool hasKeyModifier(uint8_t modifier);
+
+    StationId getHoveredStationId();
+
     uint16_t getMapSelectionFlags();
     bool hasMapSelectionFlag(uint8_t flags);
     void setMapSelectionFlags(uint8_t flags);
