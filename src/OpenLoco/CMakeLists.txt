@@ -49,7 +49,7 @@ if (Git_FOUND)
         OPENLOCO_COMMIT_SHA1_SHORT="${OPENLOCO_COMMIT_SHA1_SHORT}")
 endif()
 
-# add source files Generated originally with: find src -type f -follow -name '*.mm' -exec echo "\"{}\"" \;
+# add source files Generated originally with: find src -type f -follow -name '*.cpp' -exec echo "\"\${CMAKE_CURRENT_SOURCE_DIR}/{}\"" \;
 set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Audio.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Audio/Channel.cpp"
