@@ -183,6 +183,7 @@ namespace OpenLoco::Gfx
         int16_t width,
         AdvancedColour colour,
         const void* args);
+    void drawStringYOffsets(RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets);
     uint16_t getStringWidthNewLined(const char* buffer);
     std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
 

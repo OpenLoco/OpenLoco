@@ -1231,6 +1231,18 @@ namespace OpenLoco::Gfx
         call(0x00494E33, regs);
     }
 
+    void drawStringYOffsets(RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)
+    {
+        registers regs;
+        regs.edi = X86Pointer(&rt);
+        regs.esi = X86Pointer(args);
+        regs.ebp = X86Pointer(yOffsets);
+        regs.cx = loc.x;
+        regs.dx = loc.y;
+        regs.al = colour.u8();
+        call(0x0045196C, regs);
+    }
+
     // 0x00495715
     // @param buffer @<esi>
     // @return width @<cx>

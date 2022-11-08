@@ -53,6 +53,7 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<int32_t, 0x00E3F0B8> _gCurrentRotation;
     static loco_global<Window[kMaxWindows], 0x011370AC> _windows;
     static loco_global<Window*, 0x0113D754> _windowsEnd;
+    loco_global<AdvancedColour[4], 0x1136594> _windowColours;
 
     static void viewportRedrawAfterShift(Window* window, Viewport* viewport, int16_t x, int16_t y);
 
@@ -507,6 +508,12 @@ namespace OpenLoco::Ui::WindowManager
     size_t count()
     {
         return ((uintptr_t)*_windowsEnd - (uintptr_t)_windows.get()) / sizeof(Window);
+    }
+
+    void setWindowColours(uint8_t i, AdvancedColour colour)
+    {
+        assert(i < 4);
+        _windowColours[i] = colour;
     }
 
     WindowType getCurrentModalType()
@@ -1200,12 +1207,11 @@ namespace OpenLoco::Ui::WindowManager
         addr<0x1136F9C, int16_t>() = w->x;
         addr<0x1136F9E, int16_t>() = w->y;
 
-        loco_global<AdvancedColour[4], 0x1136594> _windowColours;
         // Text colouring
-        _windowColours[0] = w->getColour(WindowColour::primary).opaque();
-        _windowColours[1] = w->getColour(WindowColour::secondary).opaque();
-        _windowColours[2] = w->getColour(WindowColour::tertiary).opaque();
-        _windowColours[3] = w->getColour(WindowColour::quaternary).opaque();
+        setWindowColours(0, w->getColour(WindowColour::primary).opaque());
+        setWindowColours(1, w->getColour(WindowColour::secondary).opaque());
+        setWindowColours(2, w->getColour(WindowColour::tertiary).opaque());
+        setWindowColours(3, w->getColour(WindowColour::quaternary).opaque());
 
         w->callPrepareDraw();
         w->callDraw(&rt);
