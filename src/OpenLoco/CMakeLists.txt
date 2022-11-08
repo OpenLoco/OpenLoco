@@ -547,7 +547,6 @@ target_link_libraries(OpenLoco
     Threads::Threads
     yaml-cpp::yaml-cpp
     nonstd::span-lite
-    ghcFilesystem::ghc_filesystem
     ${PNG_LIBRARY}
     ${OPENAL_LIBRARIES})
 
@@ -565,13 +564,29 @@ if (NOT APPLE AND NOT MSVC)
 endif()
 
 if (MINGW)
-    target_compile_definitions(OpenLoco PRIVATE DEBUG=${DEBUG_LEVEL} _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
+    target_compile_definitions(OpenLoco
+        PRIVATE
+            DEBUG=${DEBUG_LEVEL}
+            SDL_MAIN_HANDLED=1)
+
     target_link_libraries(OpenLoco imm32 winmm version)
     # newer GCC gets confused about our use of hardcoded address shenanigans
 elseif (MSVC)
-    target_compile_definitions(OpenLoco PRIVATE DEBUG=${DEBUG_LEVEL} _WINDLL _MBCS DEBUG_WIN32=1 _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _USE_MATH_DEFINES SDL_MAIN_HANDLED _WINSOCK_DEPRECATED_NO_WARNINGS USE_BREAKPAD)
+    target_compile_definitions(OpenLoco
+        PRIVATE
+            DEBUG=${DEBUG_LEVEL}
+            _WINDLL _MBCS DEBUG_WIN32=1
+            _CRT_SECURE_NO_WARNINGS
+            _CRT_NONSTDC_NO_DEPRECATE
+            _USE_MATH_DEFINES
+            SDL_MAIN_HANDLED
+            _WINSOCK_DEPRECATED_NO_WARNINGS
+            USE_BREAKPAD)
 else ()
-    target_compile_definitions(OpenLoco PRIVATE DEBUG=${DEBUG_LEVEL} _NO_LOCO_WIN32_=1)
+    target_compile_definitions(OpenLoco
+        PRIVATE
+            DEBUG=${DEBUG_LEVEL}
+            _NO_LOCO_WIN32_=1)
 endif()
 
 if (APPLE AND FALSE) # TODO: This is broken after moving resources into src/Resources
@@ -643,7 +658,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp::yaml-cpp
-        ghcFilesystem::ghc_filesystem
         nonstd::span-lite)
 else ()
     # Dummy target to ease invocation

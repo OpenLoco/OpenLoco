@@ -16,16 +16,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(yaml-cpp)
 loco_thirdparty_target_compile_link_flags(yaml-cpp)
 
-## ghc-filesystem
-FetchContent_Declare(
-    ghc_filesystem
-    GIT_REPOSITORY      https://github.com/gulrak/filesystem
-    GIT_TAG             v1.5.12
-    GIT_SHALLOW         ON
-)
-
-FetchContent_MakeAvailable(ghc_filesystem)
-
 ## span-lite
 FetchContent_Declare(
     span-lite
@@ -37,4 +27,4 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(span-lite)
 
 # Group all the ThirdParty items under a ThirdParty folder in IDEs
-set_target_properties(yaml-cpp ghc_filesystem span-lite PROPERTIES FOLDER "ThirdParty")
+set_target_properties(yaml-cpp span-lite PROPERTIES FOLDER "ThirdParty")
