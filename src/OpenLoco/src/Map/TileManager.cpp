@@ -79,7 +79,7 @@ namespace OpenLoco::Map::TileManager
 
     stdx::span<TileElement> getElements()
     {
-        return stdx::span<TileElement>(_elements, getElementsEnd());
+        return stdx::span<TileElement>(static_cast<TileElement*>(_elements), getElementsEnd());
     }
 
     void setMapSelectionArea(const Pos2& locA, const Pos2& locB)

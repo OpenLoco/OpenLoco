@@ -97,31 +97,6 @@ else()
     set(OPENAL_LIBRARIES OpenAL::OpenAL)
 endif()
 
-set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "")
-set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "")
-set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "")
-set(YAML_BUILD_SHARED_LIBS OFF CACHE BOOL "")
-set(YAML_CPP_INSTALL OFF CACHE BOOL "")
-set(YAML_CPP_FORMAT_SOURCE OFF CACHE BOOL "")
-FetchContent_Declare(
-    yaml-cpp
-    GIT_REPOSITORY      https://github.com/jbeder/yaml-cpp
-    GIT_TAG             1b50109f7bea60bd382d8ea7befce3d2bd67da5f
-    GIT_SHALLOW         ON
-    SYSTEM)
-
-FetchContent_MakeAvailable(yaml-cpp)
-loco_thirdparty_target_compile_link_flags(yaml-cpp)
-
-FetchContent_Declare(
-    ghcfilesystem
-    GIT_REPOSITORY      https://github.com/gulrak/filesystem
-    GIT_TAG             cd6805e94dd5d6346be1b75a54cdc27787319dd2
-    GIT_SHALLOW         ON
-    SYSTEM)
-
-FetchContent_MakeAvailable(ghcfilesystem)
-
 # breakpad is also required
 if (MSVC)
     find_package(unofficial-breakpad CONFIG REQUIRED)
@@ -184,7 +159,16 @@ if (UNIX)
 endif()
 
 add_subdirectory(src)
+
+# Place thirdparty in a new source group
+set(CMAKE_FOLDER_TEMP ${CMAKE_FOLDER})
+if(CMAKE_FOLDER)
+	set(CMAKE_FOLDER "${CMAKE_FOLDER}/thirdparty")
+else()
+	set(CMAKE_FOLDER thirdparty)
+endif()
 add_subdirectory(thirdparty)
+set(CMAKE_FOLDER ${CMAKE_FOLDER_TEMP})
 
 if (MSVC)
     add_custom_target(OpenLocoExe ALL

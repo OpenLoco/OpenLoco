@@ -3,5 +3,9 @@
 
 #pragma once
 
-#define TCB_SPAN_NAMESPACE_NAME stdx
-#include <ThirdParty/Stdx/span.hpp>
+#include <nonstd/span.hpp>
+
+namespace stdx
+{
+    using nonstd::span;
+}

@@ -543,7 +543,7 @@ else ()
 endif ()
 
 target_link_libraries(OpenLoco
-    ThirdPartyStdx
+    span-lite
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp
@@ -644,7 +644,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
         ghcFilesystem::ghc_filesystem
-        ThirdPartyStdx)
+        span-lite)
 else ()
     # Dummy target to ease invocation
     add_custom_target(OpenLoco-headers-check)
