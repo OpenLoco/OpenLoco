@@ -47,6 +47,13 @@ namespace OpenLoco
     };
     static_assert(sizeof(BuildingPartAnimation) == 0x2);
 
+    struct IndustryObjectUnk38
+    {
+        uint8_t var_00;
+        uint8_t var_01;
+    };
+    static_assert(sizeof(IndustryObjectUnk38) == 0x2);
+
     struct IndustryObject
     {
         static constexpr auto kObjectType = ObjectType::industry;
@@ -67,8 +74,8 @@ namespace OpenLoco
         uint8_t* buildingPartHeight;                   // 0x20 This is the height of a building image
         BuildingPartAnimation* buildingPartAnimations; // 0x24
         uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
-        uint32_t var_38;
-        uint8_t* buildingParts[32]; // 0x3C Access with getBuildingParts helper method
+        IndustryObjectUnk38* var_38;                   // 0x38 Access with getUnk38 helper method
+        uint8_t* buildingParts[32];                    // 0x3C Access with getBuildingParts helper method
         uint8_t var_BC;
         uint8_t var_BD;
         uint32_t var_BE;
@@ -116,6 +123,7 @@ namespace OpenLoco
         void unload();
         stdx::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
         stdx::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;
+        stdx::span<const IndustryObjectUnk38> getUnk38() const;
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryObject) == 0xF4);

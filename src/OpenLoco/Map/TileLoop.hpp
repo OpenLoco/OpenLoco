@@ -39,8 +39,8 @@ namespace OpenLoco::Map
         class Iterator
         {
         private:
-            const TilePos2& _bottomLeft;
-            const TilePos2& _topRight;
+            const TilePos2 _bottomLeft;
+            const TilePos2 _topRight;
             TilePos2 _pos;
 
         public:
