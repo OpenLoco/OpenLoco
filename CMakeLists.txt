@@ -159,16 +159,7 @@ if (UNIX)
 endif()
 
 add_subdirectory(src)
-
-# Place thirdparty in a new source group
-set(CMAKE_FOLDER_TEMP ${CMAKE_FOLDER})
-if(CMAKE_FOLDER)
-	set(CMAKE_FOLDER "${CMAKE_FOLDER}/thirdparty")
-else()
-	set(CMAKE_FOLDER thirdparty)
-endif()
 add_subdirectory(thirdparty)
-set(CMAKE_FOLDER ${CMAKE_FOLDER_TEMP})
 
 if (MSVC)
     add_custom_target(OpenLocoExe ALL

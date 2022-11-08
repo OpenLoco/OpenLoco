@@ -26,48 +26,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Install MSVC problem matcher
-        uses: ammaraskar/msvc-problem-matcher@master
-      - name: Build OpenLoco
-        run: |
-            $installPath = vswhere -latest -property installationpath
-            $instanceId = vswhere -latest -property instanceid
-            Import-Module "$installPath\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
-            Enter-VsDevShell $instanceId
-            if (-not $env:GITHUB_REF.StartsWith("refs/tags/"))
-            {
-                $env:OPENLOCO_BRANCH=($env:GITHUB_REF -replace "refs/heads/")
-            }
-            $env:OPENLOCO_SHA1=$env:GITHUB_SHA
-            $env:OPENLOCO_SHA1_SHORT=$env:GITHUB_SHA.Substring(0, 7)
-            $env:GIT_DESCRIBE = (git describe HEAD | sed -E "s/-g.+$//")
-            Write-Host "%GIT_DESCRIBE% = $env:GIT_DESCRIBE"
-            msbuild openloco.sln -m -t:restore
-            msbuild openloco.sln -m
-      - name: Build artifacts
-        run: |
-            mkdir artifacts | Out-Null
-            Copy-Item CHANGELOG.md,CONTRIBUTORS.md,DEVELOPMENTLOG.md,LICENSE,loco.exe,bin\*.dll,bin\*.pdb artifacts
-            Copy-Item data\language artifacts\data\language -Recurse
-            Rename-Item artifacts\loco.exe openloco.exe
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: OpenLoco-${{ runner.os }}-Win32
-          path: artifacts
-          if-no-files-found: error
-  windows2:
-    name: Windows Cmake
-    runs-on: windows-latest
-    needs: check-code-formatting
-    env:
-      CONFIGURATION: Release
-      POWERSHELL_TELEMETRY_OPTOUT: 1
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
           submodules: true
       - name: Restore artifacts, or setup vcpkg
         uses: lukka/run-vcpkg@v10.4

@@ -1,4 +1,6 @@
 ## yaml-cpp
+# Get rid of yaml uninstall target
+add_library(uninstall INTERFACE)
 set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "")
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "")
 set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "")
@@ -33,3 +35,6 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(span-lite)
+
+# Group all the ThirdParty items under a ThirdParty folder in IDEs
+set_target_properties(yaml-cpp ghc_filesystem span-lite PROPERTIES FOLDER "ThirdParty")

@@ -543,10 +543,10 @@ else ()
 endif ()
 
 target_link_libraries(OpenLoco
-    span-lite
     ${SDL2_LIB}
     Threads::Threads
-    yaml-cpp
+    yaml-cpp::yaml-cpp
+    nonstd::span-lite
     ghcFilesystem::ghc_filesystem
     ${PNG_LIBRARY}
     ${OPENAL_LIBRARIES})
@@ -642,9 +642,9 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_compile_options(OpenLoco-headers-check PUBLIC -x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable)
     target_link_libraries(OpenLoco-headers-check PUBLIC
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
-        yaml-cpp
+        yaml-cpp::yaml-cpp
         ghcFilesystem::ghc_filesystem
-        span-lite)
+        nonstd::span-lite)
 else ()
     # Dummy target to ease invocation
     add_custom_target(OpenLoco-headers-check)
