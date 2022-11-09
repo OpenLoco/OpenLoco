@@ -1,0 +1,193 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 22,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "windows-base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "cacheVariables": {
+                "VCPKG_ROOT": {
+                    "type": "PATH",
+                    "value": "$env{VCPKG_ROOT}"
+                },
+                "VCPKG_TARGET_TRIPLET": {
+                    "type": "STRING",
+                    "value": "x86-windows"
+                }
+            },
+            "toolset": {
+                "value": "host=x86",
+                "strategy": "external"
+            }
+        },
+        {
+            "name": "windows-msvc",
+            "displayName": "MSVC",
+            "description": "Default configure environment for windows",
+            "inherits": "windows-base",
+            "generator": "Visual Studio 17 2022",
+            "architecture": {
+                "strategy": "set",
+                "value": "Win32"
+            }
+        },
+        {
+            "name": "windows-ninja",
+            "displayName": "Ninja",
+            "description": "Ninja configure environment for windows",
+            "inherits": "windows-base",
+            "generator": "Ninja Multi-Config",
+            "architecture": {
+                "strategy": "external",
+                "value": "x86"
+            }
+        },
+        {
+            "name": "linux",
+            "displayName": "Linux-ci",
+            "description": "Ninja configure environment for linux",
+            "generator": "Ninja Multi-Config",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "condition": {
+                "type": "not",
+                "condition": {
+                    "type": "equals",
+                    "lhs": "${hostSystemName}",
+                    "rhs": "Windows"
+                }
+            },
+            "cacheVariables": {
+                "OPENLOCO_USE_CCACHE": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "SDL2_DIR": {
+                    "type": "PATH",
+                    "value": "/usr/lib/i386-linux-gnu/cmake/SDL2"
+                },
+                "PNG_LIBRARY": {
+                    "type": "FILEPATH",
+                    "value": "/usr/lib/i386-linux-gnu/libpng16.so"
+                },
+                "PNG_PNG_INCLUDE_DIR": {
+                    "type": "PATH",
+                    "value": "/usr/include"
+                },
+                "ZLIB_LIBRARY": {
+                    "type": "FILEPATH",
+                    "value": "/usr/lib/i386-linux-gnu/libz.so"
+                }
+            }
+        },
+        {
+            "name": "mingw",
+            "displayName": "MinGW32-ci",
+            "description": "Ninja configure environment for MinGW32",
+            "generator": "Ninja Multi-Config",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "condition": {
+                "type": "not",
+                "condition": {
+                    "type": "equals",
+                    "lhs": "${hostSystemName}",
+                    "rhs": "Windows"
+                }
+            },
+            "toolchainFile": "${sourceDir}/CMakeLists_mingw.txt",
+            "cacheVariables": {
+                "OPENLOCO_USE_CCACHE": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "SDL2_DIR": {
+                    "type": "PATH",
+                    "value": "/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2"
+                },
+                "PNG_LIBRARY": {
+                    "type": "FILEPATH",
+                    "value": "/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll"
+                },
+                "PNG_PNG_INCLUDE_DIR": {
+                    "type": "PATH",
+                    "value": "/usr/i686-w64-mingw32/sys-root/mingw/include"
+                },
+                "OPENLOCO_BUILD_TESTS": {
+                    "type": "BOOL",
+                    "value": false
+                }
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "windows-msvc-debug",
+            "configurePreset": "windows-msvc",
+            "displayName": "Debug",
+            "description": "Build Debug MSVC Configurations",
+            "configuration": "Debug"
+        },
+        {
+            "name": "windows-msvc-release",
+            "configurePreset": "windows-msvc",
+            "displayName": "Release",
+            "description": "Build Release MSVC Configurations",
+            "configuration": "Release"
+        },
+        {
+            "name": "windows-ninja-debug",
+            "configurePreset": "windows-ninja",
+            "displayName": "Debug",
+            "description": "Build Debug Ninja Configurations",
+            "configuration": "Debug"
+        },
+        {
+            "name": "windows-ninja-release",
+            "configurePreset": "windows-ninja",
+            "displayName": "Release",
+            "description": "Build Release Ninja Configurations",
+            "configuration": "Release"
+        },
+        {
+            "name": "linux-debug",
+            "configurePreset": "linux",
+            "displayName": "Debug",
+            "description": "Build Debug Ninja Configurations",
+            "configuration": "Debug",
+            "nativeToolOptions": [ "-k0" ]
+        },
+        {
+            "name": "linux-release",
+            "configurePreset": "linux",
+            "displayName": "Release",
+            "description": "Build Release Ninja Configurations",
+            "configuration": "Release",
+            "nativeToolOptions": [ "-k0" ]
+        },
+        {
+            "name": "mingw-debug",
+            "configurePreset": "mingw",
+            "displayName": "Debug",
+            "description": "Build Debug Ninja Configurations",
+            "configuration": "Debug",
+            "nativeToolOptions": [ "-k0" ]
+        },
+        {
+            "name": "mingw-release",
+            "configurePreset": "mingw",
+            "displayName": "Release",
+            "description": "Build Release Ninja Configurations",
+            "configuration": "Release",
+            "nativeToolOptions": [ "-k0" ]
+        }
+    ]
+}

@@ -74,7 +74,7 @@ The following libraries/dependencies are required:
 - [libzip](https://libzip.org)
 - [OpenAL](https://www.openal.org/)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp) (included as submodule for Linux builds)
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp) (fetched during CMake generation)
 - [breakpad](https://github.com/google/breakpad) (only required on Windows)
 
 ### Windows
@@ -84,7 +84,7 @@ The following libraries/dependencies are required:
   - Dependencies are managed with [vcpkg](https://github.com/Microsoft/vcpkg)
 
 ### Linux
-- cmake
+- cmake 3.22+
 - make or ninja
 - 32-bit versions of the libraries mentioned above
 
@@ -92,29 +92,26 @@ The following libraries/dependencies are required:
 
 ## 4.2 Compiling and running
 ### Windows:
-1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
-2. Open a new Developer Command Prompt for VS 2022, then navigate to the repository (e.g. `cd C:\GitHub\OpenLoco`).
-3. Run `msbuild openloco.sln /t:restore;build`
-4. Run `mklink /D bin\data ..\data` or `xcopy data bin\data /EIY`
-5. Run `mklink bin\openloco.exe ..\loco.exe` or `copy loco.exe bin\openloco.exe`
-6. Run the game, `bin\openloco.exe`
-
-### Alternatively, building using cmake:
-
 Note: The game can currently only be built for 32-bit architectures.
 
-Either open the OpenLoco folder in VS 2022 or build using cmake with the following commands.
+1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
+2. With VS 2022 use the "Open a local folder" option to start the project file generation. This may take some time as it downloads dependencies.
+3. After successful generation of the project files open "build/windows-msvc/openloco.sln".
+4. Select a config Debug or Release and run Build -> Build Solution.
+4. Run the game from "build/windows-msvc/<config>/OpenLoco.exe" or within VS.
 
-1. Run `cmake -S . -B build -A Win32 "-DCMAKE_TOOLCHAIN_FILE=<vcpkg_root>/scripts/buildsystems/vcpkg.cmake"`
-2. Run `cmake --build build`
+Alternatively using CMake use the following commands.
+
+1. Run `cmake --preset windows-msvc`
+2. Run `cmake --build --preset windows-msvc-release`
 
 ### Linux:
-Due to issues with yaml-cpp package, for Linux we bundle our own copy via git submodule. Make sure you have cloned repository recursively.
+Due to issues with yaml-cpp package we download it during CMake generation.
 
 The standard CMake build procedure is to install the required libraries, then:
 ```
-CXXFLAGS="-m32" cmake -S . -B build -G Ninja # remember the usual cmake options, e.g. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-cmake --build build
+cmake --preset linux
+cmake --build --preset linux-release
 ```
 
 Note that installing some packages can be problematic on desktop AMD64 distributions, you can use our docker images for compilation.
