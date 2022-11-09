@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../Company.h"
-#include "../Core/Optional.hpp"
 #include "../Graphics/Colour.h"
 #include "../Localisation/StringManager.h"
 #include "../Window.h"

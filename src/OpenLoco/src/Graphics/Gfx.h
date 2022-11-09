@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Core/Optional.hpp"
 #include "../Graphics/PaletteMap.h"
 #include "../Types.hpp"
 #include "../Ui/Rect.h"
@@ -8,6 +7,7 @@
 #include "ImageId.h"
 #include <array>
 #include <cstdint>
+#include <optional>
 
 namespace OpenLoco
 {

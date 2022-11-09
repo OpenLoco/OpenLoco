@@ -1,6 +1,5 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
-#include "../Core/Optional.hpp"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
@@ -15,6 +14,7 @@
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
+#include <optional>
 
 using namespace OpenLoco::Interop;
 

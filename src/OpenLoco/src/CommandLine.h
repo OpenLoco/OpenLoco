@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Optional.hpp"
+#include <optional>
 #include <string>
 
 namespace OpenLoco

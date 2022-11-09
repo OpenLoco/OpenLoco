@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Core/Optional.hpp"
 #include "Network.h"
 #include "Packet.h"
 #include "Socket.h"
@@ -9,6 +8,7 @@
 #include <deque>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <queue>
 #include <thread>
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Company.h"
-#include "Core/Optional.hpp"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -13,6 +12,7 @@
 #include "Viewport.hpp"
 #include "ZoomLevel.hpp"
 #include <algorithm>
+#include <optional>
 
 namespace OpenLoco::Ui
 {

@@ -1,7 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
-#include "../Core/Optional.hpp"
 #include "../Date.h"
 #include "../Economy/Economy.h"
 #include "../Entities/EntityManager.h"
@@ -40,6 +39,7 @@
 #include "VehicleManager.h"
 #include <cassert>
 #include <numeric>
+#include <optional>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
