@@ -25,7 +25,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     static constexpr Ui::Size kCompaniesWindowSize = { 366, 327 };
     static constexpr Ui::Size kOtherWindowSize = { 366, 217 };
 
-    static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
     static loco_global<uint16_t[10], 0x0112C826> _commonFormatArgs;
 
     namespace Common
@@ -270,11 +269,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                         case Scenario::ObjectiveType::cargoDelivery:
                         {
                             uint16_t stepSize{};
-                            if (*_clickRepeatTicks < 100)
+                            uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
+                            if (clickRepeatTicks < 100)
                                 stepSize = 100;
-                            else if (*_clickRepeatTicks >= 100)
+                            else if (clickRepeatTicks >= 100)
                                 stepSize = 1000;
-                            else if (*_clickRepeatTicks >= 200)
+                            else if (clickRepeatTicks >= 200)
                                 stepSize = 10000;
 
                             // Round off cargo to the nearest multiple of the step size.
@@ -309,11 +309,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                         case Scenario::ObjectiveType::cargoDelivery:
                         {
                             uint16_t stepSize{};
-                            if (*_clickRepeatTicks < 100)
+                            uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
+                            if (clickRepeatTicks < 100)
                                 stepSize = 100;
-                            else if (*_clickRepeatTicks >= 100)
+                            else if (clickRepeatTicks >= 100)
                                 stepSize = 1000;
-                            else if (*_clickRepeatTicks >= 200)
+                            else if (clickRepeatTicks >= 200)
                                 stepSize = 10000;
 
                             // Round off cargo to the nearest multiple of the step size.

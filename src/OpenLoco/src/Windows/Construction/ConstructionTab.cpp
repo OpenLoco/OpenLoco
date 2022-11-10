@@ -34,7 +34,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t, 0x00522091> _byte_522091;
     static loco_global<uint8_t, 0x00522092> _byte_522092;
 
-    static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
     static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
 
     static loco_global<Map::Pos3, 0x00F24942> _constructionArrowPos;
@@ -1721,14 +1720,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             case widx::construct:
             {
-                if (*_clickRepeatTicks >= 40)
+                if (Input::getClickRepeatTicks() >= 40)
                     constructTrack(&self, widgetIndex);
                 break;
             }
 
             case widx::remove:
             {
-                if (*_clickRepeatTicks >= 40)
+                if (Input::getClickRepeatTicks() >= 40)
                     removeTrack(&self, widgetIndex);
                 break;
             }

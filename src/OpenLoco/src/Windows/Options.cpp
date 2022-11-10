@@ -1066,12 +1066,11 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         static loco_global<int16_t, 0x005233A4> _5233A4;
-        static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
         // 0x004C072A
         static void volumeMouseDown(Window* w)
         {
-            _clickRepeatTicks = 31;
+            Input::setClickRepeatTicks(31);
 
             int x = _5233A4 - w->x - w->widgets[Widx::volume].left - 10;
             x = std::clamp(x, 0, 80);
