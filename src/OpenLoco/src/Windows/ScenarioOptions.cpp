@@ -5,6 +5,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -24,8 +25,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     static constexpr Ui::Size kChallengeWindowSize = { 366, 197 };
     static constexpr Ui::Size kCompaniesWindowSize = { 366, 327 };
     static constexpr Ui::Size kOtherWindowSize = { 366, 217 };
-
-    static loco_global<uint16_t[10], 0x0112C826> _commonFormatArgs;
 
     namespace Common
     {
@@ -418,25 +417,27 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             widgets[widx::time_limit_value_down].type = WidgetType::none;
             widgets[widx::time_limit_value_up].type = WidgetType::none;
 
+            auto args = FormatArguments();
+
             switch (Scenario::getObjective().type)
             {
                 case Scenario::ObjectiveType::companyValue:
-                    *(int32_t*)&*_commonFormatArgs = Scenario::getObjective().companyValue;
+                    args.push<int32_t>(Scenario::getObjective().companyValue);
                     widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
                 case Scenario::ObjectiveType::vehicleProfit:
-                    *(int32_t*)&*_commonFormatArgs = Scenario::getObjective().monthlyVehicleProfit;
+                    args.push<int32_t>(Scenario::getObjective().monthlyVehicleProfit);
                     widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
                 case Scenario::ObjectiveType::performanceIndex:
-                    *(int16_t*)&*_commonFormatArgs = Scenario::getObjective().performanceIndex * 10;
+                    args.push<int16_t>(Scenario::getObjective().performanceIndex * 10);
                     widgets[widx::objective_value].text = StringIds::challenge_performance_index;
                     break;
 
                 case Scenario::ObjectiveType::cargoDelivery:
-                    *(int32_t*)&*_commonFormatArgs = Scenario::getObjective().deliveredCargoAmount;
+                    args.push<int32_t>(Scenario::getObjective().deliveredCargoAmount);
                     widgets[widx::objective_value].text = StringIds::challenge_delivered_cargo;
 
                     auto cargo = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
@@ -461,7 +462,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 widgets[widx::time_limit_value].type = WidgetType::textbox;
                 widgets[widx::time_limit_value_down].type = WidgetType::button;
                 widgets[widx::time_limit_value_up].type = WidgetType::button;
-                _commonFormatArgs[3] = Scenario::getObjective().timeLimitYears;
+                args.skip(2);
+                args.push<uint16_t>(Scenario::getObjective().timeLimitYears);
             }
         }
 
@@ -795,8 +797,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            _commonFormatArgs[0] = CompanyManager::getMaxCompetingCompanies();
-            _commonFormatArgs[1] = CompanyManager::getCompetitorStartDelay();
+            auto args = FormatArguments();
+            args.push<uint16_t>(CompanyManager::getMaxCompetingCompanies());
+            args.push<uint16_t>(CompanyManager::getCompetitorStartDelay());
 
             auto& state = getGameState();
 
@@ -937,14 +940,16 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
+            auto args = FormatArguments();
+
             uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
-            *(uint32_t*)&_commonFormatArgs[0] = loanSizeInCurrency;
+            args.push<uint32_t>(loanSizeInCurrency);
 
             uint64_t maxLoanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8) / 100 * 100;
-            *(uint32_t*)&_commonFormatArgs[2] = static_cast<uint32_t>(maxLoanSizeInCurrency);
+            args.push(static_cast<uint32_t>(maxLoanSizeInCurrency));
 
             auto& state = getGameState();
-            *(uint32_t*)&_commonFormatArgs[4] = state.loanInterestRate;
+            args.push<uint32_t>(state.loanInterestRate);
         }
 
         static void initEvents()
@@ -986,19 +991,24 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             Common::draw(window, rt);
 
             {
+                auto args = FormatArguments();
+
                 // Prepare scenario name text.
                 char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                 strncpy(buffer, S5::getOptions().scenarioName, 512);
-                _commonFormatArgs[0] = StringIds::buffer_2039;
+                args.push(StringIds::buffer_2039);
 
                 auto* stex = ObjectManager::get<ScenarioTextObject>();
                 if (stex != nullptr)
-                    _commonFormatArgs[0] = stex->name;
+                {
+                    args.rewind();
+                    args.push(stex->name);
+                }
 
                 const int16_t xPos = window.x + 10;
                 int16_t yPos = window.y + widgets[widx::change_name_btn].top + 1;
                 int16_t width = widgets[widx::change_name_btn].left - 20;
-                Gfx::drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::scenario_name_stringid, &*_commonFormatArgs);
+                Gfx::drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::scenario_name_stringid, &args);
             }
 
             {
@@ -1014,17 +1024,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             {
+                auto args = FormatArguments();
+
                 // Prepare scenario details text.
                 char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                 strncpy(buffer, S5::getOptions().scenarioDetails, 512);
-                _commonFormatArgs[0] = StringIds::buffer_2039;
+                args.push(StringIds::buffer_2039);
 
                 auto* stex = ObjectManager::get<ScenarioTextObject>();
                 if (stex != nullptr)
-                    _commonFormatArgs[0] = stex->details;
+                {
+                    args.rewind();
+                    args.push(stex->details);
+                }
 
                 auto& target = window.widgets[widx::change_details_btn];
-                Gfx::drawStringLeftWrapped(*rt, window.x + 16, window.y + 12 + target.top, target.left - 26, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
+                Gfx::drawStringLeftWrapped(*rt, window.x + 16, window.y + 12 + target.top, target.left - 26, Colour::black, StringIds::black_stringid, &args);
             }
         }
 
