@@ -45,4 +45,8 @@ namespace OpenLoco::Map
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryElement) == kTileElementSize);
+
+    struct Animation;
+    bool updateIndustryAnimation1(const Animation& anim);
+    bool updateIndustryAnimation2(const Animation& anim);
 }
