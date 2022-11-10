@@ -1,5 +1,6 @@
 #include "../CompanyManager.h"
 #include "../Economy/Economy.h"
+#include "../GameState.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -24,17 +25,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     static constexpr Ui::Size kCompaniesWindowSize = { 366, 327 };
     static constexpr Ui::Size kOtherWindowSize = { 366, 217 };
 
-    static loco_global<uint8_t, 0x00525FC6> _loanInterestRate;
-
-    static loco_global<uint8_t, 0x00526215> _preferredAIIntelligence;
-    static loco_global<uint8_t, 0x00526216> _preferredAIAggressiveness;
-    static loco_global<uint8_t, 0x00526217> _preferredAICompetitiveness;
-
-    static loco_global<uint16_t, 0x00526248> _forbiddenVehiclesPlayers;
-    static loco_global<uint16_t, 0x0052624A> _forbiddenVehiclesCompetitors;
-
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
-
     static loco_global<uint16_t[10], 0x0112C826> _commonFormatArgs;
 
     namespace Common
@@ -661,18 +652,20 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             if (itemIndex == -1)
                 return;
 
+            auto& state = getGameState();
+
             switch (widgetIndex)
             {
                 case widx::preferred_intelligence_btn:
-                    *_preferredAIIntelligence = itemIndex;
+                    state.preferredAIIntelligence = itemIndex;
                     break;
 
                 case widx::preferred_aggressiveness_btn:
-                    *_preferredAIAggressiveness = itemIndex;
+                    state.preferredAIAggressiveness = itemIndex;
                     break;
 
                 case widx::preferred_competitiveness_btn:
-                    *_preferredAICompetitiveness = itemIndex;
+                    state.preferredAICompetitiveness = itemIndex;
                     break;
             }
 
@@ -682,6 +675,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F639
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
+            auto& state = getGameState();
+
             switch (widgetIndex)
             {
                 case widx::max_competing_companies_down:
@@ -712,7 +707,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
 
-                    Dropdown::setItemSelected(*_preferredAIIntelligence);
+                    Dropdown::setItemSelected(state.preferredAIIntelligence);
                     break;
                 }
 
@@ -724,7 +719,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
 
-                    Dropdown::setItemSelected(*_preferredAIAggressiveness);
+                    Dropdown::setItemSelected(state.preferredAIAggressiveness);
                     break;
                 }
 
@@ -736,7 +731,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
 
-                    Dropdown::setItemSelected(*_preferredAICompetitiveness);
+                    Dropdown::setItemSelected(state.preferredAICompetitiveness);
                     break;
                 }
             }
@@ -745,6 +740,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F60C
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
         {
+            auto& state = getGameState();
+
             switch (widgetIndex)
             {
                 case Common::widx::tab_challenge:
@@ -762,11 +759,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case widx::competitor_forbid_ships:
                 {
                     uint16_t targetVehicle = static_cast<uint16_t>(widgetIndex - widx::competitor_forbid_trains);
-                    uint16_t newForbiddenVehicles = *_forbiddenVehiclesCompetitors ^ (1 << targetVehicle);
+                    uint16_t newForbiddenVehicles = state.forbiddenVehiclesCompetitors ^ (1 << targetVehicle);
                     // TODO(avgeffen): Add a constant for this mask.
                     if (newForbiddenVehicles != 0b111111)
                     {
-                        *_forbiddenVehiclesCompetitors = newForbiddenVehicles;
+                        state.forbiddenVehiclesCompetitors = newForbiddenVehicles;
                         self.invalidate();
                     }
                     break;
@@ -780,11 +777,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case widx::player_forbid_ships:
                 {
                     uint16_t targetVehicle = static_cast<uint16_t>(widgetIndex - widx::player_forbid_trains);
-                    uint16_t newForbiddenVehicles = *_forbiddenVehiclesPlayers ^ (1 << targetVehicle);
+                    uint16_t newForbiddenVehicles = state.forbiddenVehiclesPlayers ^ (1 << targetVehicle);
                     // TODO(avgeffen): Add a constant for this mask.
                     if (newForbiddenVehicles != 0b111111)
                     {
-                        *_forbiddenVehiclesPlayers = newForbiddenVehicles;
+                        state.forbiddenVehiclesPlayers = newForbiddenVehicles;
                         self.invalidate();
                     }
                     break;
@@ -800,15 +797,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             _commonFormatArgs[0] = CompanyManager::getMaxCompetingCompanies();
             _commonFormatArgs[1] = CompanyManager::getCompetitorStartDelay();
 
-            self.widgets[widx::preferred_intelligence].text = preferenceLabelIds[*_preferredAIIntelligence];
-            self.widgets[widx::preferred_aggressiveness].text = preferenceLabelIds[*_preferredAIAggressiveness];
-            self.widgets[widx::preferred_competitiveness].text = preferenceLabelIds[*_preferredAICompetitiveness];
+            auto& state = getGameState();
+
+            self.widgets[widx::preferred_intelligence].text = preferenceLabelIds[state.preferredAIIntelligence];
+            self.widgets[widx::preferred_aggressiveness].text = preferenceLabelIds[state.preferredAIAggressiveness];
+            self.widgets[widx::preferred_competitiveness].text = preferenceLabelIds[state.preferredAICompetitiveness];
 
             self.activatedWidgets &= ~((1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships));
 
             // TODO(avgeffen): replace with wicked smart widget-id kerfuffle, someday.
-            self.activatedWidgets |= static_cast<uint64_t>(*_forbiddenVehiclesCompetitors) << widx::competitor_forbid_trains;
-            self.activatedWidgets |= static_cast<uint64_t>(*_forbiddenVehiclesPlayers) << widx::player_forbid_trains;
+            self.activatedWidgets |= static_cast<uint64_t>(state.forbiddenVehiclesCompetitors) << widx::competitor_forbid_trains;
+            self.activatedWidgets |= static_cast<uint64_t>(state.forbiddenVehiclesPlayers) << widx::player_forbid_trains;
         }
 
         static void initEvents()
@@ -876,6 +875,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
+            auto& state = getGameState();
+
             switch (widgetIndex)
             {
                 case widx::starting_loan_down:
@@ -899,11 +900,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
 
                 case widx::loan_interest_rate_down:
-                    *_loanInterestRate = std::max<int16_t>(*_loanInterestRate - 1, Scenario::kMinLoanInterestUnits);
+                    state.loanInterestRate = std::max<int16_t>(state.loanInterestRate - 1, Scenario::kMinLoanInterestUnits);
                     break;
 
                 case widx::loan_interest_rate_up:
-                    *_loanInterestRate = std::min<uint16_t>(*_loanInterestRate + 1, Scenario::kMaxLoanInterestUnits);
+                    state.loanInterestRate = std::min<uint16_t>(state.loanInterestRate + 1, Scenario::kMaxLoanInterestUnits);
                     break;
             }
 
@@ -941,7 +942,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             uint64_t maxLoanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8) / 100 * 100;
             *(uint32_t*)&_commonFormatArgs[2] = static_cast<uint32_t>(maxLoanSizeInCurrency);
 
-            *(uint32_t*)&_commonFormatArgs[4] = *_loanInterestRate;
+            auto& state = getGameState();
+            *(uint32_t*)&_commonFormatArgs[4] = state.loanInterestRate;
         }
 
         static void initEvents()
