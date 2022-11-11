@@ -70,6 +70,7 @@ namespace OpenLoco::Environment
 
     static fs::path resolveLocoInstallPath()
     {
+        autoCreateDirectory(Platform::getUserDirectory());
         auto& cfg = Config::get();
         auto path = fs::u8path(cfg.locoInstallPath);
         if (!path.empty())

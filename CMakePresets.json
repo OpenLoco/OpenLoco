@@ -58,6 +58,7 @@
             "description": "Ninja configure environment for linux",
             "generator": "Ninja Multi-Config",
             "binaryDir": "${sourceDir}/build/${presetName}",
+            "vendor": {"microsoft.com/VisualStudioSettings/CMake/1.0": {"intelliSenseMode": "linux-gcc-x86"}},
             "condition": {
                 "type": "not",
                 "condition": {
