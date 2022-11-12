@@ -433,6 +433,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case Scenario::ObjectiveType::performanceIndex:
                     args.push<int16_t>(Scenario::getObjective().performanceIndex * 10);
+                    args.skip(2);
                     widgets[widx::objective_value].text = StringIds::challenge_performance_index;
                     break;
 
