@@ -1934,8 +1934,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043383E
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
-            static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
-
             switch (widgetIndex)
             {
                 case Common::widx::company_select:
@@ -1949,7 +1947,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         return;
 
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = std::max<currency32_t>(0, company->currentLoan - calculateStepSize(*_clickRepeatTicks));
+                    args.newLoan = std::max<currency32_t>(0, company->currentLoan - calculateStepSize(Input::getClickRepeatTicks()));
 
                     GameCommands::setErrorTitle(StringIds::cant_pay_back_loan);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -1959,7 +1957,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::loan_increase:
                 {
                     GameCommands::ChangeLoanArgs args{};
-                    args.newLoan = CompanyManager::get(CompanyId(self.number))->currentLoan + calculateStepSize(*_clickRepeatTicks);
+                    args.newLoan = CompanyManager::get(CompanyId(self.number))->currentLoan + calculateStepSize(Input::getClickRepeatTicks());
 
                     GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);

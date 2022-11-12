@@ -133,6 +133,7 @@ namespace OpenLoco::Input
     uint16_t getTooltipTimeout();
     void setTooltipTimeout(uint16_t tooltipTimeout);
 
+    uint16_t getClickRepeatTicks();
     void setClickRepeatTicks(uint16_t ticks);
 
     bool isRightMouseButtonDown();

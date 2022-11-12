@@ -2112,6 +2112,11 @@ namespace OpenLoco::Input
         _tooltipTimeout = tooltipTimeout;
     }
 
+    uint16_t getClickRepeatTicks()
+    {
+        return _clickRepeatTicks;
+    }
+
     void setClickRepeatTicks(uint16_t ticks)
     {
         _clickRepeatTicks = ticks;

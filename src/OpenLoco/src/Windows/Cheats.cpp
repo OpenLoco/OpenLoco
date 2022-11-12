@@ -6,6 +6,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
+#include "../Input.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
@@ -367,22 +368,21 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
         {
-            static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
-
             currency32_t cashStepSize{};
             int32_t timeStepSize{};
+            uint16_t clickRepeatTicks = Input::getClickRepeatTicks();
 
-            if (*_clickRepeatTicks < 100)
+            if (clickRepeatTicks < 100)
             {
                 cashStepSize = 1'000;
                 timeStepSize = 1;
             }
-            else if (*_clickRepeatTicks < 200)
+            else if (clickRepeatTicks < 200)
             {
                 cashStepSize = 10'000;
                 timeStepSize = 10;
             }
-            else if (*_clickRepeatTicks < 300)
+            else if (clickRepeatTicks < 300)
             {
                 cashStepSize = 100'000;
                 timeStepSize = 100;
