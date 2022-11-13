@@ -20,8 +20,8 @@ namespace OpenLoco::ObjectManager
     static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
     static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
     static loco_global<bool, 0x0112A17E> _customObjectsInIndex;
-    static loco_global<std::byte*, 0x0050D158> _50D158;
-    static loco_global<std::byte[0x2002], 0x0112A17F> _112A17F;
+    static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
+    static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<uint32_t, 0x009D9D52> _decodedSize;    // return of loadTemporaryObject (badly named)
@@ -184,7 +184,7 @@ namespace OpenLoco::ObjectManager
         std::memcpy(&entryBuffer[newEntrySize], &objHeader3, sizeof(objHeader3));
         newEntrySize += sizeof(objHeader3);
 
-        auto* ptr = &_112A17F[0];
+        auto* ptr = &_dependentObjectVectorData[0];
 
         // ObjectList1 (required objects)
         const uint8_t size1 = uint8_t(*ptr++);
@@ -223,9 +223,9 @@ namespace OpenLoco::ObjectManager
         _installedObjectCount++;
 
         _isPartialLoaded = true;
-        _50D158 = _112A17F;
+        _dependentObjectsVector = _dependentObjectVectorData;
         loadTemporaryObject(objHeader);
-        _50D158 = reinterpret_cast<std::byte*>(-1);
+        _dependentObjectsVector = reinterpret_cast<std::byte*>(-1);
         _isPartialLoaded = false;
         if (_installedObjectCount == 0)
         {

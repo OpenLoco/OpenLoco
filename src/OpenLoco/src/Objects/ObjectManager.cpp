@@ -78,8 +78,8 @@ namespace OpenLoco::ObjectManager
 
     loco_global<uint32_t, 0x0050D154> _totalNumImages;
 
-    static loco_global<std::byte*, 0x0050D158> _50D158;
-    static loco_global<std::byte[0x2002], 0x0112A17F> _112A17F;
+    static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
+    static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<Object*, 0x0050D15C> _temporaryObject;
