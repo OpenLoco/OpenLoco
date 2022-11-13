@@ -7,6 +7,7 @@
 #include "GameState.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
+#include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
@@ -139,6 +140,33 @@ namespace OpenLoco::EditorController
         Gfx::invalidateScreen();
     }
 
+    // 0x004747D4
+    string_id validateHeadquarterBuilding()
+    {
+        size_t numHeadquarterTypes = 0;
+        for (LoadedObjectId id = 0; id < ObjectManager::getMaxObjects(ObjectType::building); ++id)
+        {
+            auto* buildingObj = ObjectManager::get<BuildingObject>(id);
+            if (buildingObj == nullptr)
+            {
+                continue;
+            }
+            if (buildingObj->flags & BuildingObjectFlags::isHeadquarters)
+            {
+                numHeadquarterTypes++;
+            }
+        }
+        if (numHeadquarterTypes == 0)
+        {
+            return StringIds::company_headquarter_building_type_must_be_selected;
+        }
+        else if (numHeadquarterTypes > 1)
+        {
+            return StringIds::only_one_company_headquarter_building_type_must_be_selected;
+        }
+        return StringIds::null;
+    }
+
     // 0x0043D15D
     void goToNextStep()
     {
@@ -148,8 +176,17 @@ namespace OpenLoco::EditorController
                 break;
 
             case Step::objectSelection:
-                ObjectSelectionWindow::closeWindow();
-                call(0x004747D4);
+                if (!ObjectSelectionWindow::tryCloseWindow())
+                {
+                    // Try close has failed so do not allow changing step!
+                    return;
+                }
+                auto res = validateHeadquarterBuilding();
+                if (res != StringIds::null)
+                {
+                    Windows::Error::open(StringIds::invalid_selection_of_objects, res);
+                    return;
+                }
                 Scenario::sub_4748D4();
                 Scenario::initialiseSnowLine();
                 S5::sub_4BAEC4();

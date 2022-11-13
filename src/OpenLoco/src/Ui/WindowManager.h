@@ -259,7 +259,7 @@ namespace OpenLoco::Ui::Windows
     namespace ObjectSelectionWindow
     {
         Window* open();
-        void closeWindow();
+        bool tryCloseWindow();
     }
 
     namespace Options

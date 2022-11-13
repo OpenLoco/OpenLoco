@@ -673,9 +673,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473A13
-    void closeWindow()
+    bool tryCloseWindow()
     {
-        call(0x00473A13);
+        return !(call(0x00473A13) & X86_FLAG_CARRY);
     }
 
     // 0x004737BA
@@ -684,7 +684,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         switch (w)
         {
             case widx::closeButton:
-                closeWindow();
+                tryCloseWindow();
                 break;
 
             case widx::tabArea:

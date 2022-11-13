@@ -1629,7 +1629,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id error_unable_to_select_object = 2049;
     constexpr string_id error_unable_to_deselect_object = 2050;
-
+    constexpr string_id invalid_selection_of_objects = 2051;
     constexpr string_id title_object_selection = 2052;
     constexpr string_id object_interface_styles = 2053;
     constexpr string_id object_sounds = 2054;
@@ -1675,6 +1675,9 @@ namespace OpenLoco::StringIds
     constexpr string_id object_currency_big_font = 2095;
 
     constexpr string_id new_objects_installed_successfully = 2096;
+
+    constexpr string_id company_headquarter_building_type_must_be_selected = 2099;
+    constexpr string_id only_one_company_headquarter_building_type_must_be_selected = 2100;
 
     constexpr string_id unit_mph = 2113;
     constexpr string_id unit_kmh = 2114;
