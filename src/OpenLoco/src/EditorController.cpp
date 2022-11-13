@@ -141,7 +141,7 @@ namespace OpenLoco::EditorController
     }
 
     // 0x004747D4
-    string_id validateHeadquarterBuilding()
+    static string_id validateHeadquarterBuilding()
     {
         size_t numHeadquarterTypes = 0;
         for (LoadedObjectId id = 0; id < ObjectManager::getMaxObjects(ObjectType::building); ++id)
@@ -176,6 +176,7 @@ namespace OpenLoco::EditorController
                 break;
 
             case Step::objectSelection:
+            {
                 if (!ObjectSelectionWindow::tryCloseWindow())
                 {
                     // Try close has failed so do not allow changing step!
@@ -200,7 +201,7 @@ namespace OpenLoco::EditorController
                     }
                 }
                 break;
-
+            }
             case Step::landscapeEditor:
             {
                 if (!validateStep1())
