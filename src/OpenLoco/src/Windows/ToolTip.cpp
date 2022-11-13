@@ -219,6 +219,12 @@ namespace OpenLoco::Ui::Windows::ToolTip
         set_52336E(false);
     }
 
+    // 0x00439BB1
+    bool isTimeTooltip()
+    {
+        return _tooltipWindowType == WindowType::timeToolbar && _tooltipWidgetIndex == 3;
+    }
+
     static void initEvents()
     {
         events.onClose = onClose;
