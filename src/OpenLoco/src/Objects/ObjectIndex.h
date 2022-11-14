@@ -2,6 +2,7 @@
 
 #include "../Core/Span.hpp"
 #include "Object.h"
+#include <optional>
 #include <vector>
 
 namespace OpenLoco::ObjectManager
@@ -27,5 +28,6 @@ namespace OpenLoco::ObjectManager
 
     std::vector<std::pair<uint32_t, ObjectIndexEntry>> getAvailableObjects(ObjectType type);
     bool isObjectInstalled(const ObjectHeader& objectHeader);
+    std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader);
     ObjIndexPair getActiveObject(ObjectType objectType, uint8_t* edi);
 }

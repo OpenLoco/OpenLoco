@@ -82,6 +82,7 @@ namespace OpenLoco::ObjectManager
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
+    static loco_global<uint8_t, 0x0050D160> _isTemporaryObject; // 0xFF or 0
     static loco_global<Object*, 0x0050D15C> _temporaryObject;
     static loco_global<uint32_t, 0x009D9D52> _decodedSize;    // return of loadTemporaryObject (badly named)
     static loco_global<uint32_t, 0x0112A168> _numImages;      // return of loadTemporaryObject (badly named)
@@ -124,30 +125,6 @@ namespace OpenLoco::ObjectManager
         printf("%08X ", data.checksum);
     }
     */
-
-    // 0x00471B95
-    void freeTemporaryObject()
-    {
-        call(0x00471B95);
-    }
-
-    // 0x0047176D
-    void loadTemporaryObject(ObjectHeader& object)
-    {
-        registers regs;
-        regs.ebp = X86Pointer(&object);
-        call(0x0047176D, regs);
-    }
-
-    Object* getTemporaryObject()
-    {
-        Object* obj = _temporaryObject;
-        if (obj == reinterpret_cast<Object*>(-1))
-        {
-            return nullptr;
-        }
-        return obj;
-    }
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
@@ -557,6 +534,87 @@ namespace OpenLoco::ObjectManager
         checksum = computeChecksum(data, checksum);
 
         return checksum == object.checksum;
+    }
+
+    // 0x00471B95
+    void freeTemporaryObject()
+    {
+        if (_temporaryObject != nullptr && _temporaryObject != reinterpret_cast<Object*>(-1))
+        {
+            free(_temporaryObject);
+            _temporaryObject = reinterpret_cast<Object*>(-1);
+        }
+    }
+
+    // 0x0047176D
+    // TODO: Return a std::unique_ptr and a ObjectHeader3 for the metadata
+    bool loadTemporaryObject(ObjectHeader& header)
+    {
+        auto installedObject = findObjectInIndex(header);
+        if (!installedObject.has_value())
+        {
+            return false;
+        }
+
+        const auto filePath = Environment::getPath(Environment::PathId::objects) / fs::u8path(installedObject->_filename);
+
+        SawyerStreamReader stream(filePath);
+        ObjectHeader loadingHeader;
+        stream.read(&loadingHeader, sizeof(loadingHeader));
+        if (loadingHeader != header)
+        {
+            // Something wrong has happened and installed object does not match index
+            // Vanilla continued to search for subsequent matching installed headers.
+            return false;
+        }
+
+        // Vanilla would branch and perform more efficient readChunk if size was known from installedObject.ObjectHeader2
+        auto data = stream.readChunk();
+
+        if (!computeObjectChecksum(loadingHeader, data))
+        {
+            // Something wrong has happened and installed object checksum is broken
+            return false;
+        }
+
+        // Copy the object into Loco freeable memory (required for when load loads the object)
+        auto* object = reinterpret_cast<Object*>(malloc(data.size()));
+        if (object == nullptr)
+        {
+            return false;
+        }
+        std::copy(std::begin(data), std::end(data), reinterpret_cast<uint8_t*>(object));
+
+        if (!callObjectFunction(loadingHeader.getType(), *object, ObjectProcedure::validate))
+        {
+            free(object);
+            object = nullptr;
+            // Object failed validation
+            return false;
+        }
+
+        const uint32_t oldNumImages = _totalNumImages;
+        _totalNumImages = Gfx::G1ExpectedCount::kDisc;
+        _temporaryObject = object;
+        _isPartialLoaded = true;
+        _isTemporaryObject = 0xFF;
+        callObjectLoad({ loadingHeader.getType(), 0 }, *object, stdx::span<std::byte>(reinterpret_cast<std::byte*>(object), data.size()));
+        _isTemporaryObject = 0;
+        _isPartialLoaded = false;
+
+        _numImages = _totalNumImages - Gfx::G1ExpectedCount::kDisc;
+        _totalNumImages = oldNumImages;
+        return true;
+    }
+
+    Object* getTemporaryObject()
+    {
+        Object* obj = _temporaryObject;
+        if (obj == reinterpret_cast<Object*>(-1))
+        {
+            return nullptr;
+        }
+        return obj;
     }
 
     // 0x00471BC5

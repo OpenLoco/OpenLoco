@@ -130,7 +130,7 @@ namespace OpenLoco::ObjectManager
 
     struct ObjectHeader3
     {
-        uint32_t var_00;         // image count?
+        uint32_t numImages;      // 0x0
         uint8_t intelligence;    // 0x4 competitor stats
         uint8_t aggressiveness;  // 0x5
         uint8_t competitiveness; // 0x6
@@ -146,7 +146,7 @@ namespace OpenLoco::ObjectManager
     };
 
     void freeTemporaryObject();
-    void loadTemporaryObject(ObjectHeader& object);
+    bool loadTemporaryObject(ObjectHeader& header);
     Object* getTemporaryObject();
 
     std::optional<LoadedObjectHandle> findObjectHandle(const ObjectHeader& header);

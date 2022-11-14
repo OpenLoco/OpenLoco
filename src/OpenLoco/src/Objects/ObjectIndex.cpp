@@ -177,7 +177,7 @@ namespace OpenLoco::ObjectManager
 
         // Header3
         ObjectHeader3 objHeader3{};
-        objHeader3.var_00 = _numImages;
+        objHeader3.numImages = _numImages;
         objHeader3.intelligence = _intelligence;
         objHeader3.aggressiveness = _aggressiveness;
         objHeader3.competitiveness = _competitiveness;
@@ -421,11 +421,20 @@ namespace OpenLoco::ObjectManager
         return list;
     }
 
-    bool isObjectInstalled(const ObjectHeader& objectHeader)
+    std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader)
     {
         const auto objects = getAvailableObjects(objectHeader.getType());
         auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return *obj.second._header == objectHeader; });
-        return res != std::end(objects);
+        if (res == std::end(objects))
+        {
+            return std::nullopt;
+        }
+        return res->second;
+    }
+
+    bool isObjectInstalled(const ObjectHeader& objectHeader)
+    {
+        return findObjectInIndex(objectHeader).has_value();
     }
 
     // 0x00472AFE
