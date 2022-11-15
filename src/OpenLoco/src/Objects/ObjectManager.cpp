@@ -350,20 +350,6 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    static bool callObjectFunction(const ObjectType type, Object& obj, const ObjectProcedure proc)
-    {
-        switch (proc)
-        {
-            case ObjectProcedure::validate:
-                return callObjectValidate(type, obj);
-            case ObjectProcedure::unload:
-                callObjectUnload(type, obj);
-                return true;
-            default:
-                throw std::runtime_error("Don't call this function with load/drawPreview.");
-        }
-    }
-
     static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, stdx::span<std::byte> data)
     {
         switch (handle.type)
@@ -476,17 +462,6 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    static bool callObjectFunction(const LoadedObjectHandle& handle, ObjectProcedure proc)
-    {
-        auto* obj = getAny(handle);
-        if (obj != nullptr)
-        {
-            return callObjectFunction(handle.type, *obj, proc);
-        }
-
-        throw std::runtime_error("Object not loaded at this index");
-    }
-
     // 0x0047237D
     void reloadAll()
     {
@@ -595,7 +570,7 @@ namespace OpenLoco::ObjectManager
 
         preLoadObj.objectData = stdx::span<std::byte>(reinterpret_cast<std::byte*>(preLoadObj.object), data.size());
 
-        if (!callObjectFunction(preLoadObj.header.getType(), *preLoadObj.object, ObjectProcedure::validate))
+        if (!callObjectValidate(preLoadObj.header.getType(), *preLoadObj.object))
         {
             free(preLoadObj.object);
             // Object failed validation
@@ -967,7 +942,15 @@ namespace OpenLoco::ObjectManager
 
     void unload(const LoadedObjectHandle& handle)
     {
-        callObjectFunction(handle, ObjectProcedure::unload);
+        auto* obj = getAny(handle);
+        if (obj != nullptr)
+        {
+            callObjectUnload(handle.type, *obj);
+        }
+        else
+        {
+            throw std::runtime_error("Object not loaded at this index");
+        }
     }
 
     size_t getByteLength(const LoadedObjectHandle& handle)

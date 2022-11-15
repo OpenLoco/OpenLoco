@@ -158,7 +158,7 @@ namespace OpenLoco::ObjectManager
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();
-    // Only unloads the entry (resets entry does not free)
+    // Only unloads the entry (clears entry for packing does not free)
     void unload(const LoadedObjectHandle& handle);
     // Unloads and frees the entry
     void unload(const ObjectHeader& header);
