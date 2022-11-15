@@ -406,16 +406,16 @@ namespace OpenLoco::ObjectManager
         return *_installedObjectCount;
     }
 
-    std::vector<std::pair<uint32_t, ObjectIndexEntry>> getAvailableObjects(ObjectType type)
+    std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> getAvailableObjects(ObjectType type)
     {
         auto ptr = (std::byte*)_installedObjectList;
-        std::vector<std::pair<uint32_t, ObjectIndexEntry>> list;
+        std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> list;
 
-        for (uint32_t i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
         {
             auto entry = ObjectIndexEntry::read(&ptr);
             if (entry._header->getType() == type)
-                list.emplace_back(std::pair<uint32_t, ObjectIndexEntry>(i, entry));
+                list.emplace_back(std::pair<ObjectIndexId, ObjectIndexEntry>(i, entry));
         }
 
         return list;
