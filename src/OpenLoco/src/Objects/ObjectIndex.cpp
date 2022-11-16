@@ -224,17 +224,17 @@ namespace OpenLoco::ObjectManager
 
         _isPartialLoaded = true;
         _dependentObjectsVector = _dependentObjectVectorData;
-        loadTemporaryObject(objHeader);
+        const bool tempLoadFailed = loadTemporaryObject(objHeader);
         _dependentObjectsVector = reinterpret_cast<std::byte*>(-1);
         _isPartialLoaded = false;
-        if (_installedObjectCount == 0)
+        _installedObjectCount--;
+        // Rewind as it is only a partial object loaded
+        usedBufferSize = curObjPos;
+
+        if (!tempLoadFailed)
         {
             return;
         }
-        _installedObjectCount--;
-
-        // Rewind as it is only a partial object loaded
-        usedBufferSize = curObjPos;
 
         // Load full entry into temp buffer.
         // 0x009D1CC8

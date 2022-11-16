@@ -578,6 +578,9 @@ namespace OpenLoco::ObjectManager
             Console::error("Object %s in index failed validation! (This should not be possible)", str.c_str());
             return std::nullopt;
         }
+
+        _decodedSize = preLoadObj.objectData.size();
+
         return preLoadObj;
     }
 
@@ -636,6 +639,7 @@ namespace OpenLoco::ObjectManager
         extendedHeader = ObjectEntry2{
             preLoadObj->header, preLoadObj->objectData.size()
         };
+
 
         if (!*_isPartialLoaded)
         {
