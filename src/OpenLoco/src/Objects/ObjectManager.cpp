@@ -585,7 +585,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047176D
-    // TODO: Return a std::unique_ptr and a ObjectHeader3 for the metadata
+    // TODO: Return a std::unique_ptr and a ObjectHeader3 & ObjectHeader2 for the metadata
     bool loadTemporaryObject(ObjectHeader& header)
     {
         auto preLoadObj = findAndPreLoadObject(header);
@@ -639,7 +639,6 @@ namespace OpenLoco::ObjectManager
         extendedHeader = ObjectEntry2{
             preLoadObj->header, preLoadObj->objectData.size()
         };
-
 
         if (!*_isPartialLoaded)
         {

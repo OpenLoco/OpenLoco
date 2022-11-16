@@ -124,7 +124,7 @@ namespace OpenLoco::ObjectManager
 
         // Header2 NULL
         ObjectHeader2 objHeader2;
-        objHeader2.var_00 = std::numeric_limits<uint32_t>::max();
+        objHeader2.decodedFileSize = std::numeric_limits<uint32_t>::max();
         std::memcpy(&entryBuffer[newEntrySize], &objHeader2, sizeof(objHeader2));
         newEntrySize += sizeof(objHeader2);
 
@@ -149,6 +149,7 @@ namespace OpenLoco::ObjectManager
         return std::make_pair(entry, newEntrySize);
     }
 
+    // TODO: Take an ObjectHeader2 & ObjectHeader3 from loadTemporary
     static std::pair<ObjectIndexEntry, size_t> createNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename)
     {
         ObjectIndexEntry entry{};
@@ -166,7 +167,7 @@ namespace OpenLoco::ObjectManager
 
         // Header2
         ObjectHeader2 objHeader2;
-        objHeader2.var_00 = _decodedSize;
+        objHeader2.decodedFileSize = _decodedSize;
         std::memcpy(&entryBuffer[newEntrySize], &objHeader2, sizeof(objHeader2));
         newEntrySize += sizeof(objHeader2);
 

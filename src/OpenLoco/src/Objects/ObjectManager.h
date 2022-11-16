@@ -125,7 +125,7 @@ namespace OpenLoco::ObjectManager
 #pragma pack(push, 1)
     struct ObjectHeader2
     {
-        uint32_t var_00;
+        uint32_t decodedFileSize;
     };
 
     struct ObjectHeader3
