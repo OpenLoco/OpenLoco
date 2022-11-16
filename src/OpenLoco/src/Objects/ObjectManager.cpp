@@ -175,12 +175,6 @@ namespace OpenLoco::ObjectManager
         return std::nullopt;
     }
 
-    // 0x0047237D
-    void reloadAll()
-    {
-        call(0x0047237D);
-    }
-
     enum class ObjectProcedure
     {
         load,
@@ -514,6 +508,25 @@ namespace OpenLoco::ObjectManager
         }
 
         throw std::runtime_error("Object not loaded at this index");
+    }
+
+    // 0x0047237D
+    void reloadAll()
+    {
+        _totalNumImages = 0x201A; // TODO: Why this value?
+        for (auto type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
+        {
+            for (LoadedObjectId id = 0; id < getMaxObjects(type); id++)
+            {
+                LoadedObjectHandle handle{ type, id };
+                auto* obj = getAny(handle);
+                if (obj != nullptr)
+                {
+                    auto& extHdr = getRepositoryItem(type).objectEntryExtendeds[id];
+                    callObjectLoad(handle, *obj, stdx::span<std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
+                }
+            }
+        }
     }
 
     // 0x00472754

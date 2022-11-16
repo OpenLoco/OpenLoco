@@ -563,7 +563,10 @@ namespace OpenLoco::Ui::WindowManager
     // 0x00439BA5
     void updateDaily()
     {
-        call(0x00439BA5);
+        if (find(WindowType::tooltip) && Windows::ToolTip::isTimeTooltip())
+        {
+            Windows::ToolTip::closeAndReset();
+        }
     }
 
     // 0x004CE438

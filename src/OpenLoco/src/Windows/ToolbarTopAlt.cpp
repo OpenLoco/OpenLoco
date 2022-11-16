@@ -141,8 +141,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             case 1:
             {
                 if (S5::getOptions().editorStep == EditorController::Step::objectSelection)
-                    ObjectSelectionWindow::closeWindow();
-
+                {
+                    if (!ObjectSelectionWindow::tryCloseWindow())
+                    {
+                        // Try close has failed so do not open save window!
+                        return;
+                    }
+                }
                 WindowManager::closeAllFloatingWindows();
                 Input::toolCancel();
 
