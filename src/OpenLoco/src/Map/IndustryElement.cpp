@@ -268,13 +268,10 @@ namespace OpenLoco::Map
             for (auto& part : buildingParts)
             {
                 auto& partAnim = indObj->buildingPartAnimations[part];
-                if (partAnim.numFrames != 0)
+                if (partAnim.numFrames > 1)
                 {
                     hasAnimation = true;
-                    if (partAnim.numFrames != 1)
-                    {
-                        animSpeed = std::min<uint8_t>(animSpeed, partAnim.animationSpeed & ~(1 << 7));
-                    }
+                    animSpeed = std::min<uint8_t>(animSpeed, partAnim.animationSpeed & ~(1 << 7));
                 }
             }
             if (!hasAnimation)
