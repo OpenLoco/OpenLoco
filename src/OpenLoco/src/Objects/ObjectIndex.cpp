@@ -20,8 +20,8 @@ namespace OpenLoco::ObjectManager
     static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
     static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
     static loco_global<bool, 0x0112A17E> _customObjectsInIndex;
-    static loco_global<std::byte*, 0x0050D158> _50D158;
-    static loco_global<std::byte[0x2002], 0x0112A17F> _112A17F;
+    static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
+    static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
     static loco_global<uint32_t, 0x009D9D52> _decodedSize;    // return of loadTemporaryObject (badly named)
@@ -124,7 +124,7 @@ namespace OpenLoco::ObjectManager
 
         // Header2 NULL
         ObjectHeader2 objHeader2;
-        objHeader2.var_00 = std::numeric_limits<uint32_t>::max();
+        objHeader2.decodedFileSize = std::numeric_limits<uint32_t>::max();
         std::memcpy(&entryBuffer[newEntrySize], &objHeader2, sizeof(objHeader2));
         newEntrySize += sizeof(objHeader2);
 
@@ -149,6 +149,7 @@ namespace OpenLoco::ObjectManager
         return std::make_pair(entry, newEntrySize);
     }
 
+    // TODO: Take an ObjectHeader2 & ObjectHeader3 from loadTemporary
     static std::pair<ObjectIndexEntry, size_t> createNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename)
     {
         ObjectIndexEntry entry{};
@@ -166,7 +167,7 @@ namespace OpenLoco::ObjectManager
 
         // Header2
         ObjectHeader2 objHeader2;
-        objHeader2.var_00 = _decodedSize;
+        objHeader2.decodedFileSize = _decodedSize;
         std::memcpy(&entryBuffer[newEntrySize], &objHeader2, sizeof(objHeader2));
         newEntrySize += sizeof(objHeader2);
 
@@ -177,14 +178,14 @@ namespace OpenLoco::ObjectManager
 
         // Header3
         ObjectHeader3 objHeader3{};
-        objHeader3.var_00 = _numImages;
+        objHeader3.numImages = _numImages;
         objHeader3.intelligence = _intelligence;
         objHeader3.aggressiveness = _aggressiveness;
         objHeader3.competitiveness = _competitiveness;
         std::memcpy(&entryBuffer[newEntrySize], &objHeader3, sizeof(objHeader3));
         newEntrySize += sizeof(objHeader3);
 
-        auto* ptr = &_112A17F[0];
+        auto* ptr = &_dependentObjectVectorData[0];
 
         // ObjectList1 (required objects)
         const uint8_t size1 = uint8_t(*ptr++);
@@ -223,18 +224,18 @@ namespace OpenLoco::ObjectManager
         _installedObjectCount++;
 
         _isPartialLoaded = true;
-        _50D158 = _112A17F;
-        loadTemporaryObject(objHeader);
-        _50D158 = reinterpret_cast<std::byte*>(-1);
+        _dependentObjectsVector = _dependentObjectVectorData;
+        const bool tempLoadFailed = loadTemporaryObject(objHeader);
+        _dependentObjectsVector = reinterpret_cast<std::byte*>(-1);
         _isPartialLoaded = false;
-        if (_installedObjectCount == 0)
+        _installedObjectCount--;
+        // Rewind as it is only a partial object loaded
+        usedBufferSize = curObjPos;
+
+        if (!tempLoadFailed)
         {
             return;
         }
-        _installedObjectCount--;
-
-        // Rewind as it is only a partial object loaded
-        usedBufferSize = curObjPos;
 
         // Load full entry into temp buffer.
         // 0x009D1CC8
@@ -406,26 +407,35 @@ namespace OpenLoco::ObjectManager
         return *_installedObjectCount;
     }
 
-    std::vector<std::pair<uint32_t, ObjectIndexEntry>> getAvailableObjects(ObjectType type)
+    std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> getAvailableObjects(ObjectType type)
     {
         auto ptr = (std::byte*)_installedObjectList;
-        std::vector<std::pair<uint32_t, ObjectIndexEntry>> list;
+        std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> list;
 
-        for (uint32_t i = 0; i < _installedObjectCount; i++)
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
         {
             auto entry = ObjectIndexEntry::read(&ptr);
             if (entry._header->getType() == type)
-                list.emplace_back(std::pair<uint32_t, ObjectIndexEntry>(i, entry));
+                list.emplace_back(std::pair<ObjectIndexId, ObjectIndexEntry>(i, entry));
         }
 
         return list;
     }
 
-    bool isObjectInstalled(const ObjectHeader& objectHeader)
+    std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader)
     {
         const auto objects = getAvailableObjects(objectHeader.getType());
         auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return *obj.second._header == objectHeader; });
-        return res != std::end(objects);
+        if (res == std::end(objects))
+        {
+            return std::nullopt;
+        }
+        return res->second;
+    }
+
+    bool isObjectInstalled(const ObjectHeader& objectHeader)
+    {
+        return findObjectInIndex(objectHeader).has_value();
     }
 
     // 0x00472AFE

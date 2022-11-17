@@ -874,13 +874,36 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00474821
     static void unloadUnselectedObjects()
     {
-        call(0x00474821); // unload_unselected_objects
+        for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
+        {
+            auto objects = ObjectManager::getAvailableObjects(type);
+            for (auto [i, object] : objects)
+            {
+                if (!(_50D144[i] & (1 << 0)))
+                {
+                    ObjectManager::unload(*object._header);
+                }
+            }
+        }
     }
 
     // 0x00474874
     static void editorLoadSelectedObjects()
     {
-        call(0x00474874); // editor_load_selected_objects
+        for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
+        {
+            auto objects = ObjectManager::getAvailableObjects(type);
+            for (auto [i, object] : objects)
+            {
+                if (_50D144[i] & (1 << 0))
+                {
+                    if (!ObjectManager::findObjectHandle(*object._header))
+                    {
+                        ObjectManager::load(*object._header);
+                    }
+                }
+            }
+        }
     }
 
     // 0x00473B91

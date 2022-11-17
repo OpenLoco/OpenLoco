@@ -3,6 +3,8 @@
 - Feature: [#1696] Display filename in object selection window.
 - Fix: [#1680] Title music plays in scenario editor.
 - Fix: [#1711] Crash on linux when config folder for OpenLoco is not manually created.
+- Fix: [#1720] Crash when indexing object files that fail validation.
+- Fix: [#1720] Object selection not properly checking valid object selection.
 
 22.10 (2022-10-09)
 ------------------------------------------------------------------------

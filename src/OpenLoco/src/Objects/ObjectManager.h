@@ -125,12 +125,12 @@ namespace OpenLoco::ObjectManager
 #pragma pack(push, 1)
     struct ObjectHeader2
     {
-        uint32_t var_00;
+        uint32_t decodedFileSize;
     };
 
     struct ObjectHeader3
     {
-        uint32_t var_00;         // image count?
+        uint32_t numImages;      // 0x0
         uint8_t intelligence;    // 0x4 competitor stats
         uint8_t aggressiveness;  // 0x5
         uint8_t competitiveness; // 0x6
@@ -146,7 +146,7 @@ namespace OpenLoco::ObjectManager
     };
 
     void freeTemporaryObject();
-    void loadTemporaryObject(ObjectHeader& object);
+    bool loadTemporaryObject(ObjectHeader& header);
     Object* getTemporaryObject();
 
     std::optional<LoadedObjectHandle> findObjectHandle(const ObjectHeader& header);
@@ -158,7 +158,7 @@ namespace OpenLoco::ObjectManager
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();
-    // Only unloads the entry (resets entry does not free)
+    // Only unloads the entry (clears entry for packing does not free)
     void unload(const LoadedObjectHandle& handle);
     // Unloads and frees the entry
     void unload(const ObjectHeader& header);

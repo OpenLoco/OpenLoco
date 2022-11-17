@@ -2,6 +2,7 @@
 
 #include "../Core/Span.hpp"
 #include "Object.h"
+#include <optional>
 #include <vector>
 
 namespace OpenLoco::ObjectManager
@@ -21,11 +22,15 @@ namespace OpenLoco::ObjectManager
         ObjectIndexEntry object;
     };
 
+    // Index into the overall ObjectIndex. Note: Not a type specific index!
+    using ObjectIndexId = uint32_t;
+
     uint32_t getNumInstalledObjects();
 
     void loadIndex();
 
-    std::vector<std::pair<uint32_t, ObjectIndexEntry>> getAvailableObjects(ObjectType type);
+    std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> getAvailableObjects(ObjectType type);
     bool isObjectInstalled(const ObjectHeader& objectHeader);
+    std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader);
     ObjIndexPair getActiveObject(ObjectType objectType, uint8_t* edi);
 }

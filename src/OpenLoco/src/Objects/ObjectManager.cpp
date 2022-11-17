@@ -78,10 +78,11 @@ namespace OpenLoco::ObjectManager
 
     loco_global<uint32_t, 0x0050D154> _totalNumImages;
 
-    static loco_global<std::byte*, 0x0050D158> _50D158;
-    static loco_global<std::byte[0x2002], 0x0112A17F> _112A17F;
+    static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
+    static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
+    static loco_global<uint8_t, 0x0050D160> _isTemporaryObject; // 0xFF or 0
     static loco_global<Object*, 0x0050D15C> _temporaryObject;
     static loco_global<uint32_t, 0x009D9D52> _decodedSize;    // return of loadTemporaryObject (badly named)
     static loco_global<uint32_t, 0x0112A168> _numImages;      // return of loadTemporaryObject (badly named)
@@ -124,30 +125,6 @@ namespace OpenLoco::ObjectManager
         printf("%08X ", data.checksum);
     }
     */
-
-    // 0x00471B95
-    void freeTemporaryObject()
-    {
-        call(0x00471B95);
-    }
-
-    // 0x0047176D
-    void loadTemporaryObject(ObjectHeader& object)
-    {
-        registers regs;
-        regs.ebp = X86Pointer(&object);
-        call(0x0047176D, regs);
-    }
-
-    Object* getTemporaryObject()
-    {
-        Object* obj = _temporaryObject;
-        if (obj == reinterpret_cast<Object*>(-1))
-        {
-            return nullptr;
-        }
-        return obj;
-    }
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
@@ -373,20 +350,6 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    static bool callObjectFunction(const ObjectType type, Object& obj, const ObjectProcedure proc)
-    {
-        switch (proc)
-        {
-            case ObjectProcedure::validate:
-                return callObjectValidate(type, obj);
-            case ObjectProcedure::unload:
-                callObjectUnload(type, obj);
-                return true;
-            default:
-                throw std::runtime_error("Don't call this function with load/drawPreview.");
-        }
-    }
-
     static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, stdx::span<std::byte> data)
     {
         switch (handle.type)
@@ -499,17 +462,6 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    static bool callObjectFunction(const LoadedObjectHandle& handle, ObjectProcedure proc)
-    {
-        auto* obj = getAny(handle);
-        if (obj != nullptr)
-        {
-            return callObjectFunction(handle.type, *obj, proc);
-        }
-
-        throw std::runtime_error("Object not loaded at this index");
-    }
-
     // 0x0047237D
     void reloadAll()
     {
@@ -559,69 +511,138 @@ namespace OpenLoco::ObjectManager
         return checksum == object.checksum;
     }
 
-    // 0x00471BC5
-    static bool load(const ObjectHeader& header, LoadedObjectId id)
+    // 0x00471B95
+    void freeTemporaryObject()
     {
-        // somewhat duplicates isObjectInstalled
-        const auto installedObjects = getAvailableObjects(header.getType());
-        auto res = std::find_if(std::begin(installedObjects), std::end(installedObjects), [&header](auto& obj) { return *obj.second._header == header; });
-        if (res == std::end(installedObjects))
+        if (_temporaryObject != nullptr && _temporaryObject != reinterpret_cast<Object*>(-1))
         {
-            // Object is not installed
-            return false;
+            free(_temporaryObject);
+            // For vanilla compatibility set as -1. Replace with nullptr when all users of temporaryObject implemented.
+            _temporaryObject = reinterpret_cast<Object*>(-1);
+        }
+    }
+
+    struct PreLoadedObject
+    {
+        stdx::span<std::byte> objectData;
+        Object* object; // Owning pointer!
+        ObjectHeader header;
+    };
+
+    static std::optional<PreLoadedObject> findAndPreLoadObject(const ObjectHeader& header)
+    {
+        auto installedObject = findObjectInIndex(header);
+        if (!installedObject.has_value())
+        {
+            return std::nullopt;
         }
 
-        const auto& installedObject = res->second;
-        const auto filePath = Environment::getPath(Environment::PathId::objects) / fs::u8path(installedObject._filename);
+        const auto filePath = Environment::getPath(Environment::PathId::objects) / fs::u8path(installedObject->_filename);
 
         SawyerStreamReader stream(filePath);
-        ObjectHeader loadingHeader;
-        stream.read(&loadingHeader, sizeof(loadingHeader));
-        if (loadingHeader != header)
+        PreLoadedObject preLoadObj{};
+        stream.read(&preLoadObj.header, sizeof(preLoadObj.header));
+        if (preLoadObj.header != header)
         {
             // Something wrong has happened and installed object does not match index
             // Vanilla continued to search for subsequent matching installed headers.
-            return false;
+            Console::error("Missmatch between installed object header and object file header!");
+            return std::nullopt;
         }
 
         // Vanilla would branch and perform more efficient readChunk if size was known from installedObject.ObjectHeader2
         auto data = stream.readChunk();
 
-        if (!computeObjectChecksum(loadingHeader, data))
+        if (!computeObjectChecksum(preLoadObj.header, data))
         {
             // Something wrong has happened and installed object checksum is broken
-            return false;
+            Console::error("Missmatch between installed object header checksum and object file checksum!");
+            return std::nullopt;
         }
 
         // Copy the object into Loco freeable memory (required for when load loads the object)
-        auto* object = reinterpret_cast<Object*>(malloc(data.size()));
-        std::copy(std::begin(data), std::end(data), reinterpret_cast<uint8_t*>(object));
-
-        if (!callObjectFunction(loadingHeader.getType(), *object, ObjectProcedure::validate))
+        preLoadObj.object = reinterpret_cast<Object*>(malloc(data.size()));
+        if (preLoadObj.object == nullptr)
         {
-            free(object);
-            object = nullptr;
+            return std::nullopt;
+        }
+        std::copy(std::begin(data), std::end(data), reinterpret_cast<uint8_t*>(preLoadObj.object));
+
+        preLoadObj.objectData = stdx::span<std::byte>(reinterpret_cast<std::byte*>(preLoadObj.object), data.size());
+
+        if (!callObjectValidate(preLoadObj.header.getType(), *preLoadObj.object))
+        {
+            free(preLoadObj.object);
             // Object failed validation
+            std::string str(header.getName());
+            Console::error("Object %s in index failed validation! (This should not be possible)", str.c_str());
+            return std::nullopt;
+        }
+
+        _decodedSize = preLoadObj.objectData.size();
+
+        return preLoadObj;
+    }
+
+    // 0x0047176D
+    // TODO: Return a std::unique_ptr and a ObjectHeader3 & ObjectHeader2 for the metadata
+    bool loadTemporaryObject(ObjectHeader& header)
+    {
+        auto preLoadObj = findAndPreLoadObject(header);
+        if (!preLoadObj.has_value())
+        {
+            return false;
+        }
+
+        const uint32_t oldNumImages = _totalNumImages;
+        _totalNumImages = Gfx::G1ExpectedCount::kDisc;
+        _temporaryObject = preLoadObj->object;
+        _isPartialLoaded = true;
+        _isTemporaryObject = 0xFF;
+        callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData);
+        _isTemporaryObject = 0;
+        _isPartialLoaded = false;
+
+        _numImages = _totalNumImages - Gfx::G1ExpectedCount::kDisc;
+        _totalNumImages = oldNumImages;
+        return true;
+    }
+
+    Object* getTemporaryObject()
+    {
+        Object* obj = _temporaryObject;
+        if (obj == reinterpret_cast<Object*>(-1))
+        {
+            return nullptr;
+        }
+        return obj;
+    }
+
+    // 0x00471BC5
+    static bool load(const ObjectHeader& header, LoadedObjectId id)
+    {
+        auto preLoadObj = findAndPreLoadObject(header);
+        if (!preLoadObj.has_value())
+        {
             return false;
         }
 
         if (_totalNumImages >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
         {
-            free(object);
-            object = nullptr;
+            free(preLoadObj->object);
             // Too many objects loaded and no free image space
             return false;
         }
 
-        _objectRepository[enumValue(loadingHeader.getType())].objects[id] = object;
-        auto& extendedHeader = _objectRepository[enumValue(loadingHeader.getType())].objectEntryExtendeds[id];
+        _objectRepository[enumValue(preLoadObj->header.getType())].objects[id] = preLoadObj->object;
+        auto& extendedHeader = _objectRepository[enumValue(preLoadObj->header.getType())].objectEntryExtendeds[id];
         extendedHeader = ObjectEntry2{
-            loadingHeader, data.size()
+            preLoadObj->header, preLoadObj->objectData.size()
         };
 
         if (!*_isPartialLoaded)
         {
-            callObjectLoad({ loadingHeader.getType(), id }, *object, stdx::span<std::byte>(reinterpret_cast<std::byte*>(object), data.size()));
+            callObjectLoad({ preLoadObj->header.getType(), id }, *preLoadObj->object, preLoadObj->objectData);
         }
 
         return true;
@@ -924,7 +945,15 @@ namespace OpenLoco::ObjectManager
 
     void unload(const LoadedObjectHandle& handle)
     {
-        callObjectFunction(handle, ObjectProcedure::unload);
+        auto* obj = getAny(handle);
+        if (obj != nullptr)
+        {
+            callObjectUnload(handle.type, *obj);
+        }
+        else
+        {
+            throw std::runtime_error("Object not loaded at this index");
+        }
     }
 
     size_t getByteLength(const LoadedObjectHandle& handle)

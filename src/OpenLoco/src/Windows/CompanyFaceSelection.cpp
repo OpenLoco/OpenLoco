@@ -138,35 +138,40 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         return std::find(_inUseCompetitors.begin(), _inUseCompetitors.end(), objIndex) != _inUseCompetitors.end();
     }
 
-    static ObjectManager::ObjIndexPair getObjectFromSelection(const int16_t& y)
+    struct ObjectRow
+    {
+        ObjectManager::ObjectIndexEntry object;
+        int16_t rowIndex;
+    };
+    static ObjectRow getObjectFromSelection(const int16_t& y)
     {
         const int16_t rowIndex = y / kRowHeight;
         const auto objects = ObjectManager::getAvailableObjects(ObjectType::competitor);
         if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= objects.size())
         {
-            return { -1, ObjectManager::ObjectIndexEntry{} };
+            return { ObjectManager::ObjectIndexEntry{}, -1 };
         }
 
         if (isInUseCompetitor(objects[rowIndex].first))
         {
-            return { -1, ObjectManager::ObjectIndexEntry{} };
+            return { ObjectManager::ObjectIndexEntry{}, -1 };
         }
-        return { rowIndex, objects[rowIndex].second };
+        return { objects[rowIndex].second, rowIndex };
     }
 
     // 0x00435314
     static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
-        const auto objIndex = getObjectFromSelection(y);
+        const auto objRow = getObjectFromSelection(y);
 
-        if (!objIndex.object._header)
+        if (objRow.rowIndex == -1)
         {
             return;
         }
         self.invalidate();
         Audio::playSound(Audio::SoundId::clickDown, _cursorX);
         GameCommands::setErrorTitle(StringIds::cant_select_face);
-        const auto result = GameCommands::do_65(*objIndex.object._header, self.owner);
+        const auto result = GameCommands::do_65(*objRow.object._header, self.owner);
         if (result)
         {
             WindowManager::close(&self);
@@ -176,17 +181,22 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x004352C7
     static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
-        auto [rowIndex, object] = getObjectFromSelection(y);
-        if (self.rowHover == rowIndex)
+        auto objRow = getObjectFromSelection(y);
+        if (self.rowHover == objRow.rowIndex)
         {
             return;
         }
-        self.rowHover = rowIndex;
-        self.object = reinterpret_cast<std::byte*>(object._header);
+        self.rowHover = objRow.rowIndex;
         ObjectManager::freeTemporaryObject();
-        if (object._header)
+
+        if (objRow.rowIndex != -1)
         {
-            ObjectManager::loadTemporaryObject(*object._header);
+            self.object = reinterpret_cast<std::byte*>(objRow.object._header);
+            ObjectManager::loadTemporaryObject(*objRow.object._header);
+        }
+        else
+        {
+            self.object = nullptr;
         }
         self.invalidate();
     }
