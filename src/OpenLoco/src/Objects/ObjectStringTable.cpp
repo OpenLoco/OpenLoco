@@ -92,7 +92,7 @@ namespace OpenLoco::ObjectManager
             {
                 anyStr = str;
             }
-            ptr += strlen(str) + 1;
+            ptr += strlen(str);
         }
         ptr++;
         res.tableLength = std::distance(data.begin(), ptr);
@@ -111,7 +111,7 @@ namespace OpenLoco::ObjectManager
         if (isTemporyObjectLoad())
         {
             res.str = kTemporaryObjectStringIds[index];
-            StringManager::setString(res.str, chosenStr);
+            StringManager::swapString(res.str, chosenStr);
             return res;
         }
 
@@ -122,7 +122,7 @@ namespace OpenLoco::ObjectManager
         }
         res.str += kNumStringsPerObject[enumValue(handle.type)] * handle.id;
 
-        StringManager::setString(res.str, chosenStr);
+        StringManager::swapString(res.str, chosenStr);
         return res;
     }
 }

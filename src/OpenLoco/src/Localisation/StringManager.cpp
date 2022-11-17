@@ -108,6 +108,13 @@ namespace OpenLoco::StringManager
         dst[value.size()] = '\0';
     }
 
+    const char* swapString(string_id id, const char* src)
+    {
+        auto* dst = _strings[id];
+        _strings[id] = const_cast<char*>(src);
+        return dst;
+    }
+
     static char* formatInt32Grouped(int32_t value, char* buffer)
     {
         registers regs;

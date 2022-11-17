@@ -139,6 +139,7 @@ namespace OpenLoco::StringManager
 
     void reset();
     void setString(string_id id, std::string_view value);
+    const char* swapString(string_id id, const char* src);
     const char* getString(string_id id);
     char* formatString(char* buffer, string_id id, const void* args = nullptr);
     char* formatString(char* buffer, size_t bufferLen, string_id id, const void* args = nullptr);
