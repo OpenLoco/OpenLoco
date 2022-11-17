@@ -1832,4 +1832,22 @@ namespace OpenLoco::StringIds
     constexpr string_id num_characters_left_int_int = 2263;
     constexpr string_id menu_giant_screenshot = 2264;
     constexpr string_id object_selection_filename = 2265;
+
+    constexpr string_id temporary_object_load_str_0 = 8192;
+    constexpr string_id temporary_object_load_str_1 = 8193;
+    constexpr string_id temporary_object_load_str_2 = 8194;
+    constexpr string_id temporary_object_load_str_3 = 8195;
+    constexpr string_id temporary_object_load_str_4 = 8196;
+    constexpr string_id temporary_object_load_str_5 = 8197;
+    constexpr string_id temporary_object_load_str_6 = 8198;
+    constexpr string_id temporary_object_load_str_7 = 8199;
+    constexpr string_id temporary_object_load_str_8 = 8200;
+    constexpr string_id temporary_object_load_str_9 = 8201;
+    constexpr string_id temporary_object_load_str_10 = 8202;
+    constexpr string_id temporary_object_load_str_11 = 8203;
+    constexpr string_id temporary_object_load_str_12 = 8204;
+    constexpr string_id temporary_object_load_str_13 = 8205;
+    constexpr string_id temporary_object_load_str_14 = 8206;
+    constexpr string_id temporary_object_load_str_15 = 8207;
+    constexpr string_id object_strings_begin = 8208;
 }

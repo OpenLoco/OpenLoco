@@ -148,6 +148,7 @@ namespace OpenLoco::ObjectManager
     void freeTemporaryObject();
     bool loadTemporaryObject(ObjectHeader& header);
     Object* getTemporaryObject();
+    bool isTemporyObjectLoad();
 
     std::optional<LoadedObjectHandle> findObjectHandle(const ObjectHeader& header);
     void reloadAll();
@@ -172,4 +173,6 @@ namespace OpenLoco::ObjectManager
 
     void updateYearly1();
     void updateYearly2();
+
+    void registerHooks();
 }
