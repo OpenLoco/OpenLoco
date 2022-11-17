@@ -264,7 +264,7 @@ namespace OpenLoco::Map
             const auto* indObj = industry->getObject();
             auto buildingParts = indObj->getBuildingParts(elIndustry->buildingType());
             bool hasAnimation = false;
-            uint8_t animSpeed = 0;
+            uint8_t animSpeed = std::numeric_limits<uint8_t>::max();
             for (auto& part : buildingParts)
             {
                 auto& partAnim = indObj->buildingPartAnimations[part];
