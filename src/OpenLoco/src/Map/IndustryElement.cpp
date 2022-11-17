@@ -312,7 +312,8 @@ namespace OpenLoco::Map
             const auto* indObj = industry->getObject();
             const auto type = elIndustry->buildingType();
             auto buildingParts = indObj->getBuildingParts(type);
-            auto animSequence = indObj->getAnimationSequence(elIndustry->var_6_003F() & 0x3);
+            // Gauranteed power of 2
+            auto animLength = indObj->getAnimationSequence(elIndustry->var_6_003F() & 0x3).size();
             const auto isMultiTile = indObj->buildingSizeFlags & (1 << type);
 
             for (auto& part : buildingParts)
@@ -321,7 +322,7 @@ namespace OpenLoco::Map
                 if (partAnim.numFrames == 0)
                 {
                     const auto animSpeed = partAnim.animationSpeed & ~(1 << 7);
-                    const auto speedMask = animSequence[0] - 1;
+                    const auto speedMask = animLength - 1;
                     if (elIndustry->var_6_003F() & (1 << 4))
                     {
                         if ((speedMask & (ScenarioManager::getScenarioTicks() >> animSpeed)) == 0)
