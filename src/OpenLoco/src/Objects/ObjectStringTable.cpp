@@ -26,7 +26,7 @@ namespace OpenLoco::ObjectManager
         StringIds::temporary_object_load_str_15,
     };
 
-    constexpr std::array<uint8_t, 34> kNumStringsPerObject = {
+    constexpr std::array<uint8_t, 34> kNumStringsPerObjectType = {
         1,
         1,
         3,
@@ -118,9 +118,9 @@ namespace OpenLoco::ObjectManager
         res.str = StringIds::object_strings_begin + index;
         for (auto objType = ObjectType::interfaceSkin; enumValue(objType) < enumValue(handle.type); objType = static_cast<ObjectType>(enumValue(objType) + 1))
         {
-            res.str += static_cast<uint16_t>(getMaxObjects(objType)) * kNumStringsPerObject[enumValue(objType)];
+            res.str += static_cast<uint16_t>(getMaxObjects(objType)) * kNumStringsPerObjectType[enumValue(objType)];
         }
-        res.str += kNumStringsPerObject[enumValue(handle.type)] * handle.id;
+        res.str += kNumStringsPerObjectType[enumValue(handle.type)] * handle.id;
 
         StringManager::swapString(res.str, chosenStr);
         return res;

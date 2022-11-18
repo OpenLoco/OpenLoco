@@ -28,7 +28,8 @@ namespace OpenLoco::StringManager
     const uint16_t kTownNamesStart = 0x9EE7;
     const uint16_t kTownNamesEnd = kTownNamesStart + kMaxTownNames;
 
-    static loco_global<char* [0xFFFF], 0x005183FC> _strings;
+    // 0x2000 lang strings, 0x10 temp obj strings, 0x45E loaded obj strings
+    static loco_global<char* [0x246E], 0x005183FC> _strings;
 
     static auto& rawUserStrings() { return getGameState().userStrings; }
 
