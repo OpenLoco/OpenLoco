@@ -279,7 +279,7 @@ namespace OpenLoco::Map
                 return true;
             }
             const auto speedMask = ((1 << animSpeed) - 1);
-            if (ScenarioManager::getScenarioTicks() & speedMask)
+            if (!(ScenarioManager::getScenarioTicks() & speedMask))
             {
                 Ui::ViewportManager::invalidate(anim.pos, el.baseHeight(), el.clearHeight(), ZoomLevel::quarter);
             }
