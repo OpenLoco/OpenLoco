@@ -1,6 +1,7 @@
 22.10+ (???)
 ------------------------------------------------------------------------
 - Feature: [#1696] Display filename in object selection window.
+- Fix: [#1549] Objects do not load localised strings.
 - Fix: [#1676] Crash when viewing newly created scenarios in scenario list.
 - Fix: [#1680] Title music plays in scenario editor.
 - Fix: [#1711] Crash on linux when config folder for OpenLoco is not manually created.
