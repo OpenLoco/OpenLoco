@@ -3,8 +3,10 @@
 #include "../IndustryManager.h"
 #include "../Objects/IndustryObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../ScenarioManager.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
+#include "Animation.h"
 #include "AnimationManager.h"
 #include "StationElement.h"
 #include "TileLoop.hpp"
@@ -236,6 +238,124 @@ namespace OpenLoco::Map
                     }
                     const auto station = elStation->stationId();
                     ind->var_E1.set(enumValue(station), true);
+                }
+            }
+        }
+        return true;
+    }
+
+    // 0x00456E32
+    bool updateIndustryAnimation1(const Animation& anim)
+    {
+        auto tile = TileManager::get(anim.pos);
+        for (auto& el : tile)
+        {
+            auto* elIndustry = el.as<IndustryElement>();
+            if (elIndustry == nullptr)
+            {
+                continue;
+            }
+            if (elIndustry->baseZ() != anim.baseZ)
+            {
+                continue;
+            }
+
+            auto* industry = elIndustry->industry();
+            const auto* indObj = industry->getObject();
+            auto buildingParts = indObj->getBuildingParts(elIndustry->buildingType());
+            bool hasAnimation = false;
+            uint8_t animSpeed = std::numeric_limits<uint8_t>::max();
+            for (auto& part : buildingParts)
+            {
+                auto& partAnim = indObj->buildingPartAnimations[part];
+                if (partAnim.numFrames > 1)
+                {
+                    hasAnimation = true;
+                    animSpeed = std::min<uint8_t>(animSpeed, partAnim.animationSpeed & ~(1 << 7));
+                }
+            }
+            if (!hasAnimation)
+            {
+                return true;
+            }
+            const auto speedMask = ((1 << animSpeed) - 1);
+            if (!(ScenarioManager::getScenarioTicks() & speedMask))
+            {
+                Ui::ViewportManager::invalidate(anim.pos, el.baseHeight(), el.clearHeight(), ZoomLevel::quarter);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    // 0x00456EEB
+    bool updateIndustryAnimation2(const Animation& anim)
+    {
+        auto tile = TileManager::get(anim.pos);
+        for (auto& el : tile)
+        {
+            auto* elIndustry = el.as<IndustryElement>();
+            if (elIndustry == nullptr)
+            {
+                continue;
+            }
+            if (elIndustry->baseZ() != anim.baseZ)
+            {
+                continue;
+            }
+            if (!(elIndustry->var_6_003F() & (1 << 5)))
+            {
+                continue;
+            }
+
+            auto* industry = elIndustry->industry();
+            const auto* indObj = industry->getObject();
+            const auto type = elIndustry->buildingType();
+            auto buildingParts = indObj->getBuildingParts(type);
+            // Gauranteed power of 2
+            auto animLength = indObj->getAnimationSequence(elIndustry->var_6_003F() & 0x3).size();
+            const auto isMultiTile = indObj->buildingSizeFlags & (1 << type);
+
+            for (auto& part : buildingParts)
+            {
+                auto& partAnim = indObj->buildingPartAnimations[part];
+                if (partAnim.numFrames == 0)
+                {
+                    const auto animSpeed = partAnim.animationSpeed & ~(1 << 7);
+                    const auto speedMask = animLength - 1;
+                    if (elIndustry->var_6_003F() & (1 << 4))
+                    {
+                        if ((speedMask & (ScenarioManager::getScenarioTicks() >> animSpeed)) == 0)
+                        {
+                            applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](Map::IndustryElement& elIndustry, const Map::Pos2& pos) {
+                                Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
+                                elIndustry.setVar_6_003F(elIndustry.var_6_003F() & ~(1 << 5));
+                            });
+                            return true;
+                        }
+                        else
+                        {
+                            const auto speedMask2 = (1 << animSpeed) - 1;
+                            if (!(speedMask2 & ScenarioManager::getScenarioTicks()))
+                            {
+                                applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](Map::IndustryElement& elIndustry, const Map::Pos2& pos) {
+                                    Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
+                                });
+                            }
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if ((speedMask & (ScenarioManager::getScenarioTicks() >> animSpeed)) == 1)
+                        {
+                            applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](Map::IndustryElement& elIndustry, const Map::Pos2& pos) {
+                                Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
+                                elIndustry.setVar_6_003F(elIndustry.var_6_003F() | (1 << 4));
+                            });
+                        }
+                        return false;
+                    }
                 }
             }
         }

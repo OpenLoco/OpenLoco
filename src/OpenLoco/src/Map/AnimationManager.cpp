@@ -3,6 +3,7 @@
 #include "../GameState.h"
 #include "../Interop/Interop.hpp"
 #include "Animation.h"
+#include "IndustryElement.h"
 #include <array>
 
 using namespace OpenLoco::Interop;
@@ -48,22 +49,33 @@ namespace OpenLoco::Map::AnimationManager
 
     static bool callUpdateFunction(Animation& anim)
     {
-        constexpr std::array<uint32_t, 9> _funcs = {
-            0x0048950F,
-            0x00479413,
-            0x004BD528,
-            0x00456E32,
-            0x00456EEB,
-            0x0042E4D4,
-            0x0042E646,
-            0x004939ED,
-            0x004944B6,
-        };
         registers regs;
         regs.ax = anim.pos.x;
         regs.cx = anim.pos.y;
         regs.dl = anim.baseZ;
-        return call(_funcs[anim.type], regs) & X86_FLAG_CARRY;
+        switch (anim.type)
+        {
+            case 0:
+                return call(0x0048950F, regs) & X86_FLAG_CARRY;
+            case 1:
+                return call(0x00479413, regs) & X86_FLAG_CARRY;
+            case 2:
+                return call(0x004BD528, regs) & X86_FLAG_CARRY;
+            case 3:
+                return updateIndustryAnimation1(anim);
+            case 4:
+                return updateIndustryAnimation2(anim);
+            case 5:
+                return call(0x0042E4D4, regs) & X86_FLAG_CARRY;
+            case 6:
+                return call(0x0042E646, regs) & X86_FLAG_CARRY;
+            case 7:
+                return call(0x004939ED, regs) & X86_FLAG_CARRY;
+            case 8:
+                return call(0x004944B6, regs) & X86_FLAG_CARRY;
+        }
+        assert(false);
+        return false;
     }
 
     // 0x004612EC
