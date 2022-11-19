@@ -1,5 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
+#include "../Console.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
@@ -7,6 +8,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Objects/ObjectIndex.h"
 #include "../Objects/ObjectManager.h"
 #include "../Scenario.h"
 #include "../ScenarioManager.h"
@@ -54,8 +56,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
     constexpr auto kRowHeight = 24;
 
+    static bool _warnOnce = false;
     static WindowEventList _events;
-
     static void initEvents();
 
     // 0x00443807
@@ -192,11 +194,25 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         auto isLoaded = ObjectManager::findObjectHandle(scenarioInfo->currency);
         if (!isLoaded)
         {
-            // Swap out the currency object and reload
-            ObjectManager::unload(ObjectManager::getHeader({ ObjectType::currency, 0 }));
-            ObjectManager::load(scenarioInfo->currency);
-            ObjectManager::reloadAll();
-            call(0x0046E07B); // load currency gfx
+            if (ObjectManager::findObjectInIndex(scenarioInfo->currency))
+            {
+                // Swap out the currency object and reload
+                ObjectManager::unload(ObjectManager::getHeader({ ObjectType::currency, 0 }));
+                if (!ObjectManager::load(scenarioInfo->currency))
+                {
+                    Console::error("Currency object failed to load! Game will likely crash.");
+                }
+                ObjectManager::reloadAll();
+                call(0x0046E07B); // load currency gfx
+            }
+            else
+            {
+                if (!_warnOnce)
+                {
+                    Console::error("Currency object could not be found. Scenario may be corrupt.");
+                    _warnOnce = true;
+                }
+            }
         }
 
         const int16_t baseX = self.x + self.widgets[widx::list].right + 4;
@@ -481,8 +497,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         if (scenarioEntry == nullptr)
             return;
 
-        self.info = reinterpret_cast<uintptr_t>(scenarioEntry);
-        self.invalidate();
+        if (self.info != reinterpret_cast<uintptr_t>(scenarioEntry))
+        {
+            self.info = reinterpret_cast<uintptr_t>(scenarioEntry);
+            self.invalidate();
+            _warnOnce = false;
+        }
     }
 
     // 0x00444001
