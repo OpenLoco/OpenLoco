@@ -4,6 +4,7 @@
 #include "../Graphics/PaletteMap.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringManager.h"
 #include "../Map/SurfaceElement.h"
 #include "../Map/TileManager.h"
 #include "../StationManager.h"
@@ -767,7 +768,35 @@ namespace OpenLoco::Paint
     // 0x0045A60E
     void PaintSession::drawStringStructs()
     {
-        call(0x0045A60E);
+        PaintStringStruct* psString = _paintStringHead;
+        if (psString == nullptr)
+        {
+            return;
+        }
+
+        Gfx::RenderTarget unZoomedRt = **(_renderTarget);
+        const auto zoom = (*_renderTarget)->zoomLevel;
+
+        unZoomedRt.zoomLevel = 0;
+        unZoomedRt.x >>= zoom;
+        unZoomedRt.y >>= zoom;
+        unZoomedRt.width >>= zoom;
+        unZoomedRt.height >>= zoom;
+
+        Gfx::setCurrentFontSpriteBase(zoom == 0 ? Font::medium_bold : Font::small);
+
+        char buffer[512]{};
+
+        for (; psString != nullptr; psString = psString->next)
+        {
+            Ui::Point loc(psString->vpPos.x >> zoom, psString->vpPos.y >> zoom);
+            StringManager::formatString(buffer, psString->stringId, psString->args);
+
+            Ui::WindowManager::setWindowColours(0, AdvancedColour(static_cast<Colour>(psString->colour)));
+            Ui::WindowManager::setWindowColours(1, AdvancedColour(static_cast<Colour>(psString->colour)));
+
+            Gfx::drawStringYOffsets(unZoomedRt, loc, Colour::black, buffer, psString->yOffsets);
+        }
     }
 
     // 0x00447A5F
