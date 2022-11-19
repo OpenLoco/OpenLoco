@@ -108,7 +108,7 @@ namespace OpenLoco::ObjectManager
             return anyStr;
         }();
 
-        if (isTemporyObjectLoad())
+        if (isTemporaryObjectLoad())
         {
             res.str = kTemporaryObjectStringIds[index];
             StringManager::swapString(res.str, chosenStr);

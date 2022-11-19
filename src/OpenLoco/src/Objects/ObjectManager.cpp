@@ -619,7 +619,8 @@ namespace OpenLoco::ObjectManager
         return obj;
     }
 
-    bool isTemporyObjectLoad()
+    // TODO: Pass this through other means to users
+    bool isTemporaryObjectLoad()
     {
         return _isTemporaryObject == 0xFF;
     }
