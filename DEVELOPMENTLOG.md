@@ -1,5 +1,20 @@
 # OpenLoco version 22.10+ (???)
 
+## Misc Refactors [#1706, #1705, #1701, #1715]
+No code base is without violations to coding style or minor design issues. These refactors help ensure the codebase is consistent, sensible and compiles quickly. All of which improve the speed at which new features can be implemented and code can be understood. Special thanks to @tnixeu who is not part of the regular team for his refactor.
+
+## Rename free/get ScenarioText and implement them [#1697, #1720]
+The name of these functions come from our original work on OpenRCT2. The name was badly given in OpenRCT2 but it stuck with the codebase for a long time. We used the same name in OpenLoco but it is now finally renamed to load/free TemporaryObject. Which is much clearer as to its purpose.
+
+## Project Layout Change CMake [#1686]
+The whole project has been reorganised and the majority of the CMake scripts have been rewritten to allow for modularising parts. This will allow us to write unit tests for sections of code. In addition on Windows VCPKG will automatically download and then download all of the dependencies. This allows for a much simplified developer experience. Unfortunately this has meant that we have had to retire the old MSVS .sln and .vcxproj files. All building of the project now happens through CMake.
+
+## PaletteMap Cleanup [#1675]
+Internally the game draws everything with a 256 colour palette. To handle transparancies and shadows the game has a number of maps that are used to apply these transparancy effects. This PR cleaned up how the palettes were used and identified a major source of use after free which could potentially cause issues. Luckily there were no issues but its all much clearer now.
+
+## Implement Industry Functions [#1643, #1669, #1694, #1700, #1707, #1716]
+A number of pull requests all focused on industry related functions. These represent almost all of the remaining industry functions. All that remains for industry is to implement CreateIndustry GameCommand and IndustryObject load. At this point almost all of the industry related structures have been mapped and are mostly understood. There is not much that is not known about industries.
+
 ## Add Loco String Functions [#1642]
 Internally locomotion uses its own form of strings. These strings can have inline parameters and arguments or arguments passed as a seperate variable. To acheive this the game assumes that all text is a C-string, mostly ASCII (7bit) and uses some of the spare bits for argument indication (sentinals). This causes some havoc with trying to support non-Latin languages as we ideally need to move to UTF-8. The arguments vary from 1-4 bytes of information and crucially they might have 0 as one of those bytes. This potential 0 means that all C-string functions strcat, strcpy, strlen may work incorrectly and not understand the string. Therefore we now have locoStrlen, locoStrcpy to replace them. Eventually we will require to rework all string handling so that arguments are safely encoded in (hopefully) UTF-8 but that is a long way off.
 
