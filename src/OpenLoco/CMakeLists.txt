@@ -11,7 +11,7 @@ if (Git_FOUND)
         # ERROR_QUIET
     )
 
-    if (${OPENLOCO_VERSION_TAG})
+    if (OPENLOCO_VERSION_TAG)
         # Use a platform agnostic sed equivalent to strip the commit hash from the version tag
         # i.e. "v22.10-9-g8ff1d207" becomes "v22.10-9 "
         string(REGEX REPLACE "-g.+$" " " OPENLOCO_VERSION_TAG ${OPENLOCO_VERSION_TAG})
