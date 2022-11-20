@@ -1,4 +1,4 @@
-22.10+ (???)
+22.11 (2022-11-20)
 ------------------------------------------------------------------------
 - Feature: [#1696] Display filename in object selection window.
 - Fix: [#1549] Objects do not load localised strings.

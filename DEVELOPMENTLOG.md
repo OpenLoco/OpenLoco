@@ -1,4 +1,4 @@
-# OpenLoco version 22.10+ (???)
+# OpenLoco version 22.11 (2022-11-20)
 
 ## Implement Industry Functions [#1643, #1669, #1694, #1700, #1707, #1716]
 A number of pull requests all focused on industry related functions. These represent almost all of the remaining industry functions. All that remains for industry is to implement CreateIndustry GameCommand and IndustryObject load. At this point almost all of the industry related structures have been mapped and are mostly understood. There is not much that is not known about industries.
