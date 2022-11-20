@@ -23,6 +23,7 @@
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
 #include "../Map/WaveManager.h"
+#include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
@@ -774,6 +775,7 @@ void OpenLoco::Interop::registerHooks()
     OpenLoco::Tutorial::registerHooks();
     Paint::registerHooks();
     Config::registerHooks();
+    ObjectManager::registerHooks();
 
     // Part of 0x004691FA
     registerHook(

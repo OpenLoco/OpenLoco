@@ -26,6 +26,7 @@
 #include "LandObject.h"
 #include "LevelCrossingObject.h"
 #include "ObjectIndex.h"
+#include "ObjectStringTable.h"
 #include "RegionObject.h"
 #include "RoadExtraObject.h"
 #include "RoadObject.h"
@@ -618,6 +619,12 @@ namespace OpenLoco::ObjectManager
         return obj;
     }
 
+    // TODO: Pass this through other means to users
+    bool isTemporaryObjectLoad()
+    {
+        return _isTemporaryObject == 0xFF;
+    }
+
     // 0x00471BC5
     static bool load(const ObjectHeader& header, LoadedObjectId id)
     {
@@ -1049,5 +1056,26 @@ namespace OpenLoco::ObjectManager
     {
         // update available vehicles/roads/airports/etc.
         call(0x004C3A9E);
+    }
+
+    void registerHooks()
+    {
+        registerHook(
+            0x00472172,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                uint8_t index = regs.edx;
+                LoadedObjectHandle handle = { static_cast<ObjectType>(regs.ecx), static_cast<LoadedObjectId>(regs.ebx) };
+
+                // 0x2000 chosen as a large number
+                stdx::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x2000);
+                auto res = ObjectManager::loadStringTable(data, handle, index);
+
+                regs = backup;
+                regs.ebp += res.tableLength;
+                regs.eax = res.str;
+                return 0;
+            });
     }
 }

@@ -28,7 +28,8 @@ namespace OpenLoco::StringManager
     const uint16_t kTownNamesStart = 0x9EE7;
     const uint16_t kTownNamesEnd = kTownNamesStart + kMaxTownNames;
 
-    static loco_global<char* [0xFFFF], 0x005183FC> _strings;
+    // 0x2000 lang strings, 0x10 temp obj strings, 0x45E loaded obj strings
+    static loco_global<char* [0x246E], 0x005183FC> _strings;
 
     static auto& rawUserStrings() { return getGameState().userStrings; }
 
@@ -106,6 +107,13 @@ namespace OpenLoco::StringManager
         auto* dst = _strings[id];
         std::memcpy(dst, value.data(), value.size());
         dst[value.size()] = '\0';
+    }
+
+    const char* swapString(string_id id, const char* src)
+    {
+        auto* dst = _strings[id];
+        _strings[id] = const_cast<char*>(src);
+        return dst;
     }
 
     static char* formatInt32Grouped(int32_t value, char* buffer)

@@ -1504,6 +1504,8 @@ namespace OpenLoco::Ui::Windows::Options
             Config::get().language = ld.locale;
             Config::write();
             Localisation::loadLanguageFile();
+            // Reloading the objects will force objects to load the new language
+            ObjectManager::reloadAll();
             Gfx::invalidateScreen();
         }
 
