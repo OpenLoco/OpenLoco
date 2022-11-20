@@ -90,7 +90,7 @@ namespace OpenLoco::EditorController
         gameState.numberOfIndustries = options.numberOfIndustries;
         options.objective = Scenario::getObjective();
         options.objectiveDeliveredCargo = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::cargo, options.objective.deliveredCargoType });
-        options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, options.objective.deliveredCargoType });
+        options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, 0 });
     }
 
     // 0x0043EE25
