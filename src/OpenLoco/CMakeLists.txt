@@ -546,7 +546,7 @@ endif ()
 target_link_libraries(OpenLoco
     ${SDL2_LIB}
     Threads::Threads
-    yaml-cpp::yaml-cpp
+    yaml-cpp
     nonstd::span-lite
     ${PNG_LIBRARY}
     ${OPENAL_LIBRARIES})
@@ -558,10 +558,6 @@ endif ()
 
 if (NOT WIN32)
     add_dependencies(OpenLoco segfiles)
-endif()
-
-if (NOT APPLE AND NOT MSVC)
-    target_link_libraries(OpenLoco stdc++fs)
 endif()
 
 if (MINGW)
@@ -659,7 +655,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
-        yaml-cpp::yaml-cpp
+        yaml-cpp
         nonstd::span-lite)
 else ()
     # Dummy target to ease invocation

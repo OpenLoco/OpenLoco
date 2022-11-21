@@ -2,7 +2,7 @@
 [Desktop Entry]
 Type=Application
 Version=1.0
-Exec=openloco %u
+Exec=OpenLoco %u
 Icon=openloco
 Name=OpenLoco
 GenericName=Transport management game
