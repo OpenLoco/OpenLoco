@@ -1,7 +1,6 @@
 #include "OpenLoco.h"
 
 #define NAME "OpenLoco"
-#define VERSION "22.11"
 
 namespace OpenLoco
 {
@@ -9,7 +8,7 @@ namespace OpenLoco
 #ifdef OPENLOCO_VERSION_TAG
         OPENLOCO_VERSION_TAG
 #else
-                                "v" VERSION
+#error "OPENLOCO_VERSION_TAG Not set. Rerun CMake."
 #endif
 #if defined(OPENLOCO_BRANCH) || defined(OPENLOCO_COMMIT_SHA1_SHORT) || !defined(NDEBUG)
                                 " ("
