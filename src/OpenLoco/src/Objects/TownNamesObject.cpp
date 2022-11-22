@@ -1,5 +1,5 @@
 #include "TownNamesObject.h"
-#include "../Interop/Interop.hpp"
+#include "Interop/Interop.hpp"
 #include <numeric>
 
 namespace OpenLoco

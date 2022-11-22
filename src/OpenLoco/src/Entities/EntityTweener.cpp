@@ -1,6 +1,6 @@
 #include "EntityTweener.h"
-#include "../OpenLoco.h"
-#include "../Vehicles/Vehicle.h"
+#include "OpenLoco.h"
+#include "Vehicles/Vehicle.h"
 #include "Entity.h"
 #include <cmath>
 #include <iostream>

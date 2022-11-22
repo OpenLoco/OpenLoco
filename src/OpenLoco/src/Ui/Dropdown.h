@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Company.h"
-#include "../Graphics/Colour.h"
-#include "../Localisation/StringManager.h"
-#include "../Window.h"
+#include "Company.h"
+#include "Graphics/Colour.h"
+#include "Localisation/StringManager.h"
+#include "Window.h"
 #include <cstdlib>
 #include <optional>
 

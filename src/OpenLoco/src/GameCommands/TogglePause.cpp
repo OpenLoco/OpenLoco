@@ -1,8 +1,8 @@
-#include "../Audio/Audio.h"
-#include "../GameException.hpp"
-#include "../SceneManager.h"
-#include "../Ui/WindowManager.h"
-#include "../Ui/WindowType.h"
+#include "Audio/Audio.h"
+#include "GameException.hpp"
+#include "SceneManager.h"
+#include "Ui/WindowManager.h"
+#include "Ui/WindowType.h"
 #include "GameCommands.h"
 
 using namespace OpenLoco::Interop;

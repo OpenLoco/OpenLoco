@@ -1,8 +1,8 @@
 #include "TreeObject.h"
-#include "../Graphics/Colour.h"
-#include "../Graphics/Gfx.h"
-#include "../Interop/Interop.hpp"
-#include "../Utility/Numeric.hpp"
+#include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
+#include "Interop/Interop.hpp"
+#include "Utility/Numeric.hpp"
 
 namespace OpenLoco
 {

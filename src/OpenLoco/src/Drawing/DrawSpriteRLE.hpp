@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Graphics/Gfx.h"
-#include "../Graphics/RenderTarget.h"
+#include "Graphics/Gfx.h"
+#include "Graphics/RenderTarget.h"
 #include "DrawSprite.h"
 #include "DrawSpriteHelper.hpp"
 

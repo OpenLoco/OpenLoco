@@ -1,9 +1,9 @@
 #include "Entity.h"
-#include "../Config.h"
-#include "../Graphics/Gfx.h"
-#include "../Interop/Interop.hpp"
-#include "../Ui/WindowManager.h"
-#include "../ViewportManager.h"
+#include "Config.h"
+#include "Graphics/Gfx.h"
+#include "Interop/Interop.hpp"
+#include "Ui/WindowManager.h"
+#include "ViewportManager.h"
 #include "EntityManager.h"
 #include <algorithm>
 

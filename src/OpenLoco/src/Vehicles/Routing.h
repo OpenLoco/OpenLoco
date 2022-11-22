@@ -1,5 +1,5 @@
 #pragma once
-#include "../Limits.h"
+#include "Limits.h"
 #include <cstdint>
 
 namespace OpenLoco::Vehicles

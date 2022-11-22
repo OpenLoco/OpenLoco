@@ -1,7 +1,7 @@
 #include "AnimationManager.h"
-#include "../Game.h"
-#include "../GameState.h"
-#include "../Interop/Interop.hpp"
+#include "Game.h"
+#include "GameState.h"
+#include "Interop/Interop.hpp"
 #include "Animation.h"
 #include "IndustryElement.h"
 #include <array>

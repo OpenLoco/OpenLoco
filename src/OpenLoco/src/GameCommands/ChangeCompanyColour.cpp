@@ -1,10 +1,10 @@
-#include "../Audio/Audio.h"
-#include "../CompanyManager.h"
-#include "../GameException.hpp"
-#include "../Localisation/StringIds.h"
-#include "../OpenLoco.h"
-#include "../Ui/WindowManager.h"
-#include "../Ui/WindowType.h"
+#include "Audio/Audio.h"
+#include "CompanyManager.h"
+#include "GameException.hpp"
+#include "Localisation/StringIds.h"
+#include "OpenLoco.h"
+#include "Ui/WindowManager.h"
+#include "Ui/WindowType.h"
 #include "GameCommands.h"
 
 using namespace OpenLoco::Interop;

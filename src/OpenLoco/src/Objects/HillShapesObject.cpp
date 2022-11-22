@@ -1,6 +1,6 @@
 #include "HillShapesObject.h"
-#include "../Graphics/Gfx.h"
-#include "../Interop/Interop.hpp"
+#include "Graphics/Gfx.h"
+#include "Interop/Interop.hpp"
 
 namespace OpenLoco
 {

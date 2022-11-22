@@ -1,4 +1,5 @@
 #include "CompanyManager.h"
+#include "Construction.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
@@ -23,7 +24,6 @@
 #include "SceneManager.h"
 #include "StationManager.h"
 #include "Widget.h"
-#include "Construction.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

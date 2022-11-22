@@ -1,6 +1,6 @@
-#include "../Ui/TextInput.h"
-#include "../Interop/Interop.hpp"
-#include "../Localisation/StringManager.h"
+#include "Ui/TextInput.h"
+#include "Interop/Interop.hpp"
+#include "Localisation/StringManager.h"
 
 #include <SDL2/SDL.h>
 

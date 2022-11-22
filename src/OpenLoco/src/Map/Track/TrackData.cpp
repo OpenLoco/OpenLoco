@@ -1,6 +1,6 @@
 #include "TrackData.h"
-#include "../../Interop/Interop.hpp"
-#include "../../Utility/Numeric.hpp"
+#include "../Interop/Interop.hpp"
+#include "../Utility/Numeric.hpp"
 #include <array>
 #include <cassert>
 

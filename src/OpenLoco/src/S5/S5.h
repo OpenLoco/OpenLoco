@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Core/FileSystem.hpp"
-#include "../EditorController.h"
-#include "../Objects/Object.h"
-#include "../ScenarioObjective.h"
+#include "Core/FileSystem.hpp"
+#include "EditorController.h"
+#include "Objects/Object.h"
+#include "ScenarioObjective.h"
 #include "Limits.h"
 #include <cstdint>
 #include <memory>

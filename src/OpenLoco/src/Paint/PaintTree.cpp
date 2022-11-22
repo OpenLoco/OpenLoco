@@ -1,10 +1,10 @@
 #include "PaintTree.h"
-#include "../Config.h"
-#include "../Graphics/Colour.h"
-#include "../Map/TreeElement.h"
-#include "../Objects/ObjectManager.h"
-#include "../Objects/TreeObject.h"
-#include "../Ui.h"
+#include "Config.h"
+#include "Graphics/Colour.h"
+#include "Map/TreeElement.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/TreeObject.h"
+#include "Ui.h"
 #include "Paint.h"
 
 using namespace OpenLoco::Interop;

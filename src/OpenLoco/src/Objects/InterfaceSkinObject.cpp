@@ -1,7 +1,7 @@
 #include "InterfaceSkinObject.h"
-#include "../Graphics/Colour.h"
-#include "../Graphics/Gfx.h"
-#include "../Interop/Interop.hpp"
+#include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
+#include "Interop/Interop.hpp"
 
 namespace OpenLoco
 {

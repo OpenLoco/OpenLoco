@@ -57,7 +57,7 @@
 #endif // _WIN32
 // clang-format on
 
-#include "../Console.h"
+#include "Console.h"
 #include "Socket.h"
 
 namespace OpenLoco::Network

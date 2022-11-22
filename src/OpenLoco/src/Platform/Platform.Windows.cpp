@@ -10,8 +10,8 @@
 #include <shlobj.h>
 #include <windows.h>
 
-#include "../Ui.h"
-#include "../Utility/String.hpp"
+#include "Ui.h"
+#include "Utility/String.hpp"
 #include "Platform.h"
 
 namespace OpenLoco::Platform

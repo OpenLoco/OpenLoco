@@ -1,6 +1,6 @@
 #pragma once
-#include "../Map/Map.hpp"
-#include "../Types.hpp"
+#include "Map/Map.hpp"
+#include "Types.hpp"
 
 namespace OpenLoco::Paint
 {

@@ -1,6 +1,6 @@
 #include "PaletteMap.h"
-#include "../Drawing/SoftwareDrawingEngine.h"
-#include "../Interop/Interop.hpp"
+#include "Drawing/SoftwareDrawingEngine.h"
+#include "Interop/Interop.hpp"
 #include "Gfx.h"
 #include "ImageIds.h"
 #include <algorithm>

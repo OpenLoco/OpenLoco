@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Graphics/PaletteMap.h"
-#include "../Types.hpp"
-#include "../Ui/Rect.h"
-#include "../Ui/Types.hpp"
+#include "Graphics/PaletteMap.h"
+#include "Types.hpp"
+#include "Ui/Rect.h"
+#include "Ui/Types.hpp"
 #include "ImageId.h"
 #include <array>
 #include <cstdint>

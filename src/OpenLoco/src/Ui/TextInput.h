@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Graphics/Gfx.h"
+#include "Graphics/Gfx.h"
 
 #include <cstdint>
 #include <string>

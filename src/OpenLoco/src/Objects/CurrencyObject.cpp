@@ -1,9 +1,9 @@
 #include "CurrencyObject.h"
-#include "../Graphics/Colour.h"
-#include "../Graphics/Gfx.h"
-#include "../Graphics/ImageIds.h"
-#include "../Interop/Interop.hpp"
-#include "../Localisation/StringIds.h"
+#include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
+#include "Graphics/ImageIds.h"
+#include "Interop/Interop.hpp"
+#include "Localisation/StringIds.h"
 
 using namespace OpenLoco::Interop;
 

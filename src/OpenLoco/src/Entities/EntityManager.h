@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Map/Map.hpp"
+#include "Map/Map.hpp"
 #include "Entity.h"
 #include <cstdio>
 #include <iterator>

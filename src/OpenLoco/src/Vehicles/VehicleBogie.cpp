@@ -1,5 +1,5 @@
-#include "../Entities/EntityManager.h"
-#include "../Interop/Interop.hpp"
+#include "Entities/EntityManager.h"
+#include "Interop/Interop.hpp"
 #include "Vehicle.h"
 
 using namespace OpenLoco::Interop;

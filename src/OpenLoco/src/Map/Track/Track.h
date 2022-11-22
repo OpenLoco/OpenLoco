@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../Types.hpp"
-#include "../Map.hpp"
+#include "../Types.hpp"
+#include "Map.hpp"
 #include <utility>
 
 namespace OpenLoco::Map::Track

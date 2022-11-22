@@ -1,5 +1,5 @@
 #include "Conversion.h"
-#include "../Utility/Collection.hpp"
+#include "Utility/Collection.hpp"
 #include "Unicode.h"
 #include <cstdlib>
 #include <string>

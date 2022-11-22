@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Location.hpp"
+#include "Location.hpp"
 #include "Map.hpp"
 
 namespace OpenLoco::Map

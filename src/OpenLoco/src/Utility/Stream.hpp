@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Core/FileSystem.hpp"
-#include "../Core/Span.hpp"
+#include "Core/FileSystem.hpp"
+#include "Core/Span.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <cstring>

@@ -10,7 +10,7 @@
 #else
 #include <sys/mman.h>
 #endif // _WIN32
-#include "../Console.h"
+#include "Console.h"
 #include "Interop.hpp"
 
 namespace OpenLoco::Interop

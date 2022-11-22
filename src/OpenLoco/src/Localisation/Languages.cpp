@@ -1,7 +1,7 @@
 #include "Languages.h"
-#include "../Core/FileSystem.hpp"
-#include "../Environment.h"
-#include "../Platform/Platform.h"
+#include "Core/FileSystem.hpp"
+#include "Environment.h"
+#include "Platform/Platform.h"
 #include "Conversion.h"
 #include <yaml-cpp/yaml.h>
 

@@ -1,6 +1,6 @@
 #include "SurfaceElement.h"
-#include "../TownManager.h"
-#include "../ViewportManager.h"
+#include "TownManager.h"
+#include "ViewportManager.h"
 #include "TileManager.h"
 
 namespace OpenLoco::Map

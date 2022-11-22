@@ -1,7 +1,7 @@
 #pragma once
-#include "../LabelFrame.h"
-#include "../Map/Map.hpp"
-#include "../Types.hpp"
+#include "LabelFrame.h"
+#include "Map/Map.hpp"
+#include "Types.hpp"
 #include "Routing.h"
 #include <iterator>
 #include <optional>

@@ -1,4 +1,5 @@
 #include "Audio/Audio.h"
+#include "Construction.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -12,7 +13,6 @@
 #include "Objects/TrainSignalObject.h"
 #include "Ui/Dropdown.h"
 #include "Widget.h"
-#include "Construction.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Core/Span.hpp"
-#include "../Ui/Types.hpp"
+#include "Core/Span.hpp"
+#include "Ui/Types.hpp"
 #include "Object.h"
 #include <optional>
 #include <vector>

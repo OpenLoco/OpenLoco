@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Entities/Misc.h"
+#include "Entities/Misc.h"
 #include "Paint.h"
 
 namespace OpenLoco::Paint

@@ -1,8 +1,8 @@
 #include "ScrollView.h"
-#include "../Input.h"
-#include "../Interop/Interop.hpp"
-#include "../Ui.h"
-#include "../Widget.h"
+#include "Input.h"
+#include "Interop/Interop.hpp"
+#include "Ui.h"
+#include "Widget.h"
 #include "WindowManager.h"
 #include <cmath>
 

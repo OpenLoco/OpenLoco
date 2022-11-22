@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Economy/Currency.h"
-#include "../Map/Map.hpp"
-#include "../Objects/SteamObject.h"
+#include "Economy/Currency.h"
+#include "Map/Map.hpp"
+#include "Objects/SteamObject.h"
 #include "Entity.h"
 
 namespace OpenLoco

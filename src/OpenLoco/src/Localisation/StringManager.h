@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Types.hpp"
+#include "Types.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <string_view>

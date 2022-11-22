@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Core/Span.hpp"
-#include "../Graphics/Colour.h"
-#include "../Types.hpp"
+#include "Core/Span.hpp"
+#include "Graphics/Colour.h"
+#include "Types.hpp"
 #include "Object.h"
 
 namespace OpenLoco

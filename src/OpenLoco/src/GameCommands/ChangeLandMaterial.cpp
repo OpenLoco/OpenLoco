@@ -1,10 +1,10 @@
-#include "../Map/MapGenerator.h"
-#include "../Map/SurfaceElement.h"
-#include "../Map/TileLoop.hpp"
-#include "../Map/TileManager.h"
-#include "../Objects/LandObject.h"
-#include "../Objects/ObjectManager.h"
-#include "../S5/S5.h"
+#include "Map/MapGenerator.h"
+#include "Map/SurfaceElement.h"
+#include "Map/TileLoop.hpp"
+#include "Map/TileManager.h"
+#include "Objects/LandObject.h"
+#include "Objects/ObjectManager.h"
+#include "S5/S5.h"
 #include "GameCommands.h"
 
 using namespace OpenLoco::Interop;

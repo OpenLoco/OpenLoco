@@ -1,5 +1,5 @@
 #include "Vector.hpp"
-#include "../Interop/Interop.hpp"
+#include "Interop/Interop.hpp"
 
 namespace OpenLoco::Math::Vector
 {

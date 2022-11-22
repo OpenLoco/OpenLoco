@@ -1,7 +1,7 @@
-#include "../CompanyManager.h"
-#include "../Economy/Economy.h"
-#include "../Localisation/StringIds.h"
-#include "../Ui/WindowManager.h"
+#include "CompanyManager.h"
+#include "Economy/Economy.h"
+#include "Localisation/StringIds.h"
+#include "Ui/WindowManager.h"
 #include "GameCommands.h"
 
 using namespace OpenLoco::Interop;

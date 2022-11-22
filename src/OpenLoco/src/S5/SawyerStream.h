@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Core/FileSystem.hpp"
-#include "../Core/Span.hpp"
-#include "../Utility/Stream.hpp"
+#include "Core/FileSystem.hpp"
+#include "Core/Span.hpp"
+#include "Utility/Stream.hpp"
 #include <cstdint>
 #include <memory>
 

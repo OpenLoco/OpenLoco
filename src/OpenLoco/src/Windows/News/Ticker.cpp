@@ -4,9 +4,9 @@
 #include "Localisation/StringIds.h"
 #include "Message.h"
 #include "MessageManager.h"
+#include "News.h"
 #include "SceneManager.h"
 #include "Widget.h"
-#include "News.h"
 
 using namespace OpenLoco::Interop;
 

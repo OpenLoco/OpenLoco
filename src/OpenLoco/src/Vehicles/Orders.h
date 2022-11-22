@@ -1,6 +1,6 @@
 #pragma once
-#include "../Map/Tile.h"
-#include "../Types.hpp"
+#include "Map/Tile.h"
+#include "Types.hpp"
 #include <iterator>
 #include <memory>
 

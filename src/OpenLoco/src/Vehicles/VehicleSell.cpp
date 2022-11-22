@@ -1,5 +1,5 @@
-#include "../Entities/EntityManager.h"
-#include "../GameCommands/GameCommands.h"
+#include "Entities/EntityManager.h"
+#include "GameCommands/GameCommands.h"
 #include "Vehicle.h"
 #include "VehicleManager.h"
 

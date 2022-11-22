@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Core/Span.hpp"
+#include "Core/Span.hpp"
 #include "Colour.h"
 #include "ImageId.h"
 #include <array>
