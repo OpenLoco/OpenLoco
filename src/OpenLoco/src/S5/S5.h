@@ -7,6 +7,7 @@
 #include "ScenarioObjective.h"
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <vector>
 
 namespace OpenLoco
@@ -440,6 +441,7 @@ namespace OpenLoco::S5
 
     bool importSaveToGameState(const fs::path& path, uint32_t flags);
     bool importSaveToGameState(Stream& stream, uint32_t flags);
+    std::unique_ptr<SaveDetails> peakSaveDetails(const fs::path& path);
 
     void sub_4BAEC4();
 }

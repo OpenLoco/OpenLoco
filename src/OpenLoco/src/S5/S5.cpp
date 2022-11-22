@@ -722,6 +722,41 @@ namespace OpenLoco::S5
         }
     }
 
+    // 0x00442403
+    std::unique_ptr<SaveDetails> peakSaveDetails(const fs::path& path)
+    {
+        FileStream stream(path, StreamFlags::read);
+        SawyerStreamReader fs(stream);
+        if (!fs.validateChecksum())
+        {
+            return nullptr;
+        }
+
+        Header s5Header{};
+
+        // Read header
+        fs.readChunk(&s5Header, sizeof(s5Header));
+
+        if (s5Header.magic != magicNumber)
+        {
+            return nullptr;
+        }
+
+        if (s5Header.flags & (S5Flags::isTitleSequence | S5Flags::isDump | S5Flags::isRaw))
+        {
+            return nullptr;
+        }
+
+        // Read saved details 0x00442087
+        if (s5Header.flags & S5Flags::hasSaveDetails)
+        {
+            auto ret = std::make_unique<SaveDetails>();
+            fs.readChunk(ret.get(), sizeof(*ret));
+            return ret;
+        }
+        return nullptr;
+    }
+
     void registerHooks()
     {
         registerHook(
