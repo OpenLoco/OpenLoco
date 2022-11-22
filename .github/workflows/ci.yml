@@ -2,7 +2,6 @@ name: CI
 on: [push, pull_request, workflow_dispatch]
 env:
   OPENLOCO_BUILD_SERVER: GitHub
-  OPENLOCO_VERSION: 22.11
 jobs:
   check-code-formatting:
     name: Check code formatting
