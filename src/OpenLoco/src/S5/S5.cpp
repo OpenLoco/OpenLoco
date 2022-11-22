@@ -48,7 +48,7 @@ namespace OpenLoco::S5
     static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
     static loco_global<string_id, 0x0050C198> _loadErrorMessage;
 
-    static bool save(Stream& stream, const S5File& file, const std::vector<ObjectHeader>& packedObjects);
+    static bool exportGameState(Stream& stream, const S5File& file, const std::vector<ObjectHeader>& packedObjects);
 
     Options& getOptions()
     {
@@ -200,7 +200,7 @@ namespace OpenLoco::S5
         }
     }
 
-    static std::unique_ptr<S5File> prepareSaveFile(uint32_t flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
+    static std::unique_ptr<S5File> prepareGameState(uint32_t flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
     {
         auto mainWindow = WindowManager::getMainWindow();
         auto savedView = mainWindow != nullptr && mainWindow->viewports[0] != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple{ 0, 0, 0, 0 };
@@ -236,13 +236,13 @@ namespace OpenLoco::S5
     }
 
     // 0x00441C26
-    bool save(const fs::path& path, uint32_t flags)
+    bool exportGameStateToFile(const fs::path& path, uint32_t flags)
     {
         FileStream fs(path, StreamFlags::write);
-        return save(fs, flags);
+        return exportGameStateToFile(fs, flags);
     }
 
-    bool save(Stream& stream, uint32_t flags)
+    bool exportGameStateToFile(Stream& stream, uint32_t flags)
     {
         if (!(flags & SaveFlags::noWindowClose) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
         {
@@ -269,8 +269,8 @@ namespace OpenLoco::S5
                 });
             }
 
-            auto file = prepareSaveFile(flags, requiredObjects, packedObjects);
-            saveResult = save(stream, *file, packedObjects);
+            auto file = prepareGameState(flags, requiredObjects, packedObjects);
+            saveResult = exportGameState(stream, *file, packedObjects);
         }
 
         if (!(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
@@ -292,7 +292,7 @@ namespace OpenLoco::S5
         return false;
     }
 
-    static bool save(Stream& stream, const S5File& file, const std::vector<ObjectHeader>& packedObjects)
+    static bool exportGameState(Stream& stream, const S5File& file, const std::vector<ObjectHeader>& packedObjects)
     {
         try
         {
@@ -383,7 +383,7 @@ namespace OpenLoco::S5
     }
 
     // 0x00441FC9
-    static std::unique_ptr<S5File> load(Stream& stream)
+    static std::unique_ptr<S5File> importSave(Stream& stream)
     {
         SawyerStreamReader fs(stream);
         if (!fs.validateChecksum())
@@ -519,13 +519,13 @@ namespace OpenLoco::S5
     }
 
     // 0x00441FA7
-    bool load(const fs::path& path, uint32_t flags)
+    bool importSaveToGameState(const fs::path& path, uint32_t flags)
     {
         FileStream fs(path, StreamFlags::read);
-        return load(fs, flags);
+        return importSaveToGameState(fs, flags);
     }
 
-    bool load(Stream& stream, uint32_t flags)
+    bool importSaveToGameState(Stream& stream, uint32_t flags)
     {
         _gameSpeed = 0;
         if (!(flags & LoadFlags::titleSequence) && !(flags & LoadFlags::twoPlayer))
@@ -536,7 +536,7 @@ namespace OpenLoco::S5
 
         try
         {
-            auto file = load(stream);
+            auto file = importSave(stream);
 
             if (file->header.version != currentVersion)
             {
@@ -728,13 +728,13 @@ namespace OpenLoco::S5
             0x00441C26,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto path = fs::u8path(std::string(_savePath));
-                return save(path, regs.eax) ? 0 : X86_FLAG_CARRY;
+                return exportGameStateToFile(path, regs.eax) ? 0 : X86_FLAG_CARRY;
             });
         registerHook(
             0x00441FA7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto path = fs::u8path(std::string(_savePath));
-                return load(path, regs.eax) ? X86_FLAG_CARRY : 0;
+                return importSaveToGameState(path, regs.eax) ? X86_FLAG_CARRY : 0;
             });
     }
 }

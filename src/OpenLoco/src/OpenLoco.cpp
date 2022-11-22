@@ -324,7 +324,7 @@ namespace OpenLoco
         }
         else
         {
-            S5::load(path, 0);
+            S5::importSaveToGameState(path, 0);
         }
     }
 
@@ -877,7 +877,7 @@ namespace OpenLoco
 
             auto autosaveFullPath8 = autosaveFullPath.u8string();
             std::printf("Autosaving game to %s\n", autosaveFullPath8.c_str());
-            S5::save(autosaveFullPath, S5::SaveFlags::noWindowClose);
+            S5::exportGameStateToFile(autosaveFullPath, S5::SaveFlags::noWindowClose);
         }
         catch (const std::exception& e)
         {

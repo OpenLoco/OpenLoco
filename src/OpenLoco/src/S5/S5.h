@@ -434,12 +434,12 @@ namespace OpenLoco::S5
 
     Options& getOptions();
     Options& getPreviewOptions();
-    bool save(const fs::path& path, uint32_t flags);
-    bool save(Stream& stream, uint32_t flags);
+    bool exportGameStateToFile(const fs::path& path, uint32_t flags);
+    bool exportGameStateToFile(Stream& stream, uint32_t flags);
     void registerHooks();
 
-    bool load(const fs::path& path, uint32_t flags);
-    bool load(Stream& stream, uint32_t flags);
+    bool importSaveToGameState(const fs::path& path, uint32_t flags);
+    bool importSaveToGameState(Stream& stream, uint32_t flags);
 
     void sub_4BAEC4();
 }
