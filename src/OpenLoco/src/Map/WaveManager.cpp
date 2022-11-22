@@ -5,11 +5,11 @@
 #include "Interop/Interop.hpp"
 #include "Limits.h"
 #include "ScenarioManager.h"
+#include "SurfaceElement.h"
+#include "TileManager.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Prng.hpp"
 #include "ViewportManager.h"
-#include "SurfaceElement.h"
-#include "TileManager.h"
 #include "Wave.h"
 
 namespace OpenLoco::Map::WaveManager

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Types.hpp"
 #include "Map.hpp"
+#include "Types.hpp"
 #include <array>
 #include <cassert>
 

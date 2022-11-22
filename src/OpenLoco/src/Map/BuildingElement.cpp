@@ -1,16 +1,16 @@
 #include "BuildingElement.h"
+#include "AnimationManager.h"
 #include "CompanyManager.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "StationManager.h"
+#include "Tile.h"
+#include "TileManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include "AnimationManager.h"
-#include "Tile.h"
-#include "TileManager.h"
 
 namespace OpenLoco::Map
 {

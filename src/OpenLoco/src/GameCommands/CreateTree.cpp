@@ -1,5 +1,6 @@
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
+#include "GameCommands.h"
 #include "Localisation/StringIds.h"
 #include "Map/QuarterTile.h"
 #include "Map/SurfaceElement.h"
@@ -14,7 +15,6 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include "GameCommands.h"
 
 using namespace OpenLoco::Interop;
 

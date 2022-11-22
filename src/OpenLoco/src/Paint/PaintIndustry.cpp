@@ -4,9 +4,9 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
+#include "Paint.h"
 #include "ScenarioManager.h"
 #include "Ui.h"
-#include "Paint.h"
 
 namespace OpenLoco::Paint
 {

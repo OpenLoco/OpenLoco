@@ -7,13 +7,13 @@
 #include "Localisation/StringManager.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "PaintEntity.h"
+#include "PaintTile.h"
+#include "PaintTrack.h"
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
-#include "PaintEntity.h"
-#include "PaintTile.h"
-#include "PaintTrack.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;

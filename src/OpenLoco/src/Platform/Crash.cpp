@@ -1,8 +1,8 @@
 #include "Crash.h"
 #if defined(USE_BREAKPAD)
 #include "OpenLoco.h"
-#include "Utility/String.hpp"
 #include "Platform.h"
+#include "Utility/String.hpp"
 #include <ShlObj.h>
 #include <client/windows/handler/exception_handler.h>
 

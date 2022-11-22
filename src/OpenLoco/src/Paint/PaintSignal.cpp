@@ -10,10 +10,10 @@
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrainSignalObject.h"
-#include "Ui.h"
-#include "Viewport.hpp"
 #include "Paint.h"
 #include "PaintTileDecorations.h"
+#include "Ui.h"
+#include "Viewport.hpp"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;

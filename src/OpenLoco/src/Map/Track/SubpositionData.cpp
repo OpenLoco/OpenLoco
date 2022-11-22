@@ -1,7 +1,7 @@
 #include "SubpositionData.h"
-#include "../Entities/Entity.h"
-#include "../GameState.h"
-#include "../Interop/Interop.hpp"
+#include "Entities/Entity.h"
+#include "GameState.h"
+#include "Interop/Interop.hpp"
 #include <array>
 
 using namespace OpenLoco::Interop;

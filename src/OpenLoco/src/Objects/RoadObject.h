@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Core/Span.hpp"
+#include "Object.h"
 #include "Speed.hpp"
 #include "Types.hpp"
-#include "Object.h"
 
 namespace OpenLoco
 {

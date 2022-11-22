@@ -4,8 +4,8 @@
 #include "Graphics/Colour.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
-#include "Vehicles/Vehicle.h"
 #include "Paint.h"
+#include "Vehicles/Vehicle.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Vehicles;

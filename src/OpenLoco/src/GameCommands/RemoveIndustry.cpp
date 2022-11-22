@@ -1,5 +1,6 @@
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
+#include "GameCommands.h"
 #include "Industry.h"
 #include "IndustryManager.h"
 #include "Localisation/StringManager.h"
@@ -13,7 +14,6 @@
 #include "StationManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include "GameCommands.h"
 
 namespace OpenLoco::GameCommands
 {

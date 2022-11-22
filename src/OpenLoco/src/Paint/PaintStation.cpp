@@ -7,10 +7,10 @@
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrainStationObject.h"
+#include "Paint.h"
 #include "Station.h"
 #include "StationManager.h"
 #include "Ui.h"
-#include "Paint.h"
 
 namespace OpenLoco::Paint
 {

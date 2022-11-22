@@ -28,15 +28,15 @@
 #include "Objects/RoadStationObject.h"
 #include "Objects/VehicleObject.h"
 #include "OpenLoco.h"
+#include "Orders.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
-#include "ViewportManager.h"
-#include "Orders.h"
 #include "Vehicle.h"
 #include "VehicleManager.h"
+#include "ViewportManager.h"
 #include <cassert>
 #include <numeric>
 #include <optional>

@@ -1,5 +1,6 @@
 #include "CompanyManager.h"
 #include "Economy/Economy.h"
+#include "GameCommands.h"
 #include "Industry.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -9,7 +10,6 @@
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "TownManager.h"
-#include "GameCommands.h"
 
 namespace OpenLoco::GameCommands
 {

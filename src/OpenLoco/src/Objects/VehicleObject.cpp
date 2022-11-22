@@ -1,12 +1,12 @@
 #include "VehicleObject.h"
+#include "CargoObject.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "ObjectManager.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
-#include "CargoObject.h"
-#include "ObjectManager.h"
 
 using namespace OpenLoco::Interop;
 

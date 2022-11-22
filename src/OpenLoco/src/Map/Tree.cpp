@@ -6,9 +6,9 @@
 #include "Objects/TreeObject.h"
 #include "OpenLoco.h"
 #include "Scenario.h"
-#include "Ui.h"
 #include "SurfaceElement.h"
 #include "TileManager.h"
+#include "Ui.h"
 
 namespace OpenLoco::Map
 {

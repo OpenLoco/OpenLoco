@@ -2,6 +2,7 @@
 #include "Console.h"
 #include "Core/LocoFixedVector.hpp"
 #include "Entities/Misc.h"
+#include "EntityTweener.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
@@ -10,7 +11,6 @@
 #include "Map/Tile.h"
 #include "SceneManager.h"
 #include "Vehicles/Vehicle.h"
-#include "EntityTweener.h"
 
 using namespace OpenLoco::Interop;
 

@@ -4,8 +4,8 @@
 #include "Map/TreeElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
-#include "Ui.h"
 #include "Paint.h"
+#include "Ui.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;

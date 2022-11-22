@@ -14,6 +14,7 @@
 #include "Map/TileManager.h"
 #include "MultiPlayer.h"
 #include "SceneManager.h"
+#include "ScrollView.h"
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Tutorial.h"
@@ -21,7 +22,6 @@
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
-#include "ScrollView.h"
 #include <algorithm>
 #include <cinttypes>
 #include <memory>

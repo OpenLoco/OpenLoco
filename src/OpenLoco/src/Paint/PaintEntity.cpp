@@ -4,10 +4,10 @@
 #include "Entities/Misc.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
-#include "Vehicles/Vehicle.h"
 #include "Paint.h"
 #include "PaintMiscEntity.h"
 #include "PaintVehicle.h"
+#include "Vehicles/Vehicle.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;

@@ -1,4 +1,5 @@
 #include "Audio.h"
+#include "Channel.h"
 #include "Config.h"
 #include "Console.h"
 #include "Date.h"
@@ -17,9 +18,8 @@
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Stream.hpp"
-#include "Vehicles/Vehicle.h"
-#include "Channel.h"
 #include "VehicleChannel.h"
+#include "Vehicles/Vehicle.h"
 #include <array>
 #include <cassert>
 #include <fstream>

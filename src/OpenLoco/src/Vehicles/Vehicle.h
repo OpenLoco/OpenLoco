@@ -5,11 +5,11 @@
 #include "Entities/Entity.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
+#include "Routing.h"
 #include "Speed.hpp"
 #include "Types.hpp"
 #include "Ui/WindowType.h"
 #include "Window.h"
-#include "Routing.h"
 
 namespace OpenLoco::Vehicles
 {

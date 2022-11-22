@@ -3,13 +3,13 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include "ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
 #include "Utility/Numeric.hpp"
 #include "Utility/Stream.hpp"
 #include "Utility/String.hpp"
-#include "ObjectManager.h"
 #include <cstdint>
 #include <fstream>
 

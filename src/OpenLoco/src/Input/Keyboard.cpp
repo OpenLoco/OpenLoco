@@ -9,11 +9,11 @@
 #include "Intro.h"
 #include "Localisation/StringIds.h"
 #include "SceneManager.h"
+#include "ShortcutManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/Screenshot.h"
 #include "Vehicles/Vehicle.h"
-#include "ShortcutManager.h"
 #include <SDL2/SDL.h>
 #include <cstdint>
 #include <functional>

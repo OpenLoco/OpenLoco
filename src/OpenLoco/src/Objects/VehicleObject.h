@@ -2,8 +2,8 @@
 
 #include "Core/Span.hpp"
 #include "Localisation/StringIds.h"
-#include "Speed.hpp"
 #include "Object.h"
+#include "Speed.hpp"
 
 namespace OpenLoco
 {

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Graphics/PaletteMap.h"
+#include "ImageId.h"
 #include "Types.hpp"
 #include "Ui/Rect.h"
 #include "Ui/Types.hpp"
-#include "ImageId.h"
 #include <array>
 #include <cstdint>
 #include <optional>

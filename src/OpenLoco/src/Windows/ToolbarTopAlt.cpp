@@ -20,12 +20,12 @@
 #include "Objects/WaterObject.h"
 #include "S5/S5.h"
 #include "StationManager.h"
+#include "ToolbarTopCommon.h"
 #include "TownManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
-#include "ToolbarTopCommon.h"
 
 using namespace OpenLoco::Interop;
 

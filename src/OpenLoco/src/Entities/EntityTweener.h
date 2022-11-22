@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Map/Map.hpp"
 #include "EntityManager.h"
+#include "Map/Map.hpp"
 #include <vector>
 
 namespace OpenLoco

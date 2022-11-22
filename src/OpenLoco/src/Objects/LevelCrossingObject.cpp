@@ -1,8 +1,8 @@
 #include "LevelCrossingObject.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
-#include "ScenarioManager.h"
 #include "ObjectManager.h"
+#include "ScenarioManager.h"
 
 namespace OpenLoco
 {

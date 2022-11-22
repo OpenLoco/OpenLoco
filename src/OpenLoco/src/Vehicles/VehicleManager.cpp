@@ -9,9 +9,9 @@
 #include "Interop/Interop.hpp"
 #include "MessageManager.h"
 #include "Objects/CargoObject.h"
+#include "Orders.h"
 #include "StationManager.h"
 #include "Ui/WindowManager.h"
-#include "Orders.h"
 #include "Vehicle.h"
 #include <sstream>
 

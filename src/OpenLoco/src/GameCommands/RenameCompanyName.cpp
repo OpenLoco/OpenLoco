@@ -1,5 +1,6 @@
 #include "CompanyManager.h"
 #include "Economy/Expenditures.h"
+#include "GameCommands.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Limits.h"
@@ -7,7 +8,6 @@
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Types.hpp"
-#include "GameCommands.h"
 
 using namespace OpenLoco::Interop;
 

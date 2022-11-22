@@ -1,11 +1,11 @@
 #include "IndustryObject.h"
+#include "CargoObject.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
-#include "Utility/Numeric.hpp"
-#include "CargoObject.h"
 #include "ObjectManager.h"
+#include "Utility/Numeric.hpp"
 #include <algorithm>
 
 using namespace OpenLoco::Interop;

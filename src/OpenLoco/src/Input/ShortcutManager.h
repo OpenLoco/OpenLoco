@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Types.hpp"
 #include "Shortcut.h"
+#include "Types.hpp"
 #include <array>
 #include <cstddef>
 

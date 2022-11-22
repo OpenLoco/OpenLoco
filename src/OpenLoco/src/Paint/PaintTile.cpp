@@ -12,14 +12,14 @@
 #include "Map/TrackElement.h"
 #include "Map/TreeElement.h"
 #include "Map/WallElement.h"
-#include "Station.h"
-#include "Ui.h"
 #include "Paint.h"
 #include "PaintIndustry.h"
 #include "PaintSignal.h"
 #include "PaintStation.h"
 #include "PaintTrack.h"
 #include "PaintTree.h"
+#include "Station.h"
+#include "Ui.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;

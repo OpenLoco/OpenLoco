@@ -1,4 +1,5 @@
 #include "Economy/Expenditures.h"
+#include "GameCommands.h"
 #include "Graphics/Gfx.h"
 #include "Industry.h"
 #include "Interop/Interop.hpp"
@@ -8,7 +9,6 @@
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Types.hpp"
-#include "GameCommands.h"
 
 using namespace OpenLoco::Interop;
 

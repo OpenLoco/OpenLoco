@@ -19,6 +19,7 @@
 #include "Gui.h"
 #include "IndustryManager.h"
 #include "Input.h"
+#include "Interop.hpp"
 #include "Map/AnimationManager.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
@@ -41,7 +42,6 @@
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
-#include "Interop.hpp"
 
 using namespace OpenLoco;
 

@@ -1,4 +1,5 @@
 #include "Misc.h"
+#include "EntityManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"
@@ -10,7 +11,6 @@
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include "EntityManager.h"
 
 using namespace OpenLoco::Interop;
 

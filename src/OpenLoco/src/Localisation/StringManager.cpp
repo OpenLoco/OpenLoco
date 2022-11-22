@@ -1,4 +1,5 @@
 #include "StringManager.h"
+#include "ArgsWrapper.hpp"
 #include "Config.h"
 #include "Console.h"
 #include "Date.h"
@@ -7,9 +8,8 @@
 #include "Interop/Interop.hpp"
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
-#include "TownManager.h"
-#include "ArgsWrapper.hpp"
 #include "StringIds.h"
+#include "TownManager.h"
 
 #include <cassert>
 #include <cmath>

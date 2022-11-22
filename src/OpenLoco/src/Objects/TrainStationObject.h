@@ -2,8 +2,8 @@
 
 #include "Core/Span.hpp"
 #include "Map/Map.hpp"
-#include "Types.hpp"
 #include "Object.h"
+#include "Types.hpp"
 #include <array>
 #include <cstddef>
 #include <vector>

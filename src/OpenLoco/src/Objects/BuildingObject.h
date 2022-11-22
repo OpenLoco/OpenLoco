@@ -2,8 +2,8 @@
 
 #include "Core/Span.hpp"
 #include "Graphics/Colour.h"
-#include "Types.hpp"
 #include "Object.h"
+#include "Types.hpp"
 
 namespace OpenLoco
 {

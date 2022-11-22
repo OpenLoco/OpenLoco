@@ -16,6 +16,7 @@
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
+#include "SawyerStream.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "StationManager.h"
@@ -25,7 +26,6 @@
 #include "Utility/Stream.hpp"
 #include "Vehicles/Orders.h"
 #include "ViewportManager.h"
-#include "SawyerStream.h"
 #include <fstream>
 #include <iomanip>
 #include <sstream>

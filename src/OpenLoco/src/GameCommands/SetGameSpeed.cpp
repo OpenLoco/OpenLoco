@@ -1,6 +1,6 @@
+#include "GameCommands.h"
 #include "Interop/Interop.hpp"
 #include "SceneManager.h"
-#include "GameCommands.h"
 
 using namespace OpenLoco::Interop;
 

@@ -1,16 +1,16 @@
 #include "IndustryElement.h"
+#include "Animation.h"
+#include "AnimationManager.h"
 #include "Industry.h"
 #include "IndustryManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "ScenarioManager.h"
-#include "Ui/WindowManager.h"
-#include "ViewportManager.h"
-#include "Animation.h"
-#include "AnimationManager.h"
 #include "StationElement.h"
 #include "TileLoop.hpp"
 #include "TileManager.h"
+#include "Ui/WindowManager.h"
+#include "ViewportManager.h"
 #include <numeric>
 
 namespace OpenLoco::Map

@@ -1,7 +1,7 @@
 #include "SurfaceElement.h"
+#include "TileManager.h"
 #include "TownManager.h"
 #include "ViewportManager.h"
-#include "TileManager.h"
 
 namespace OpenLoco::Map
 {

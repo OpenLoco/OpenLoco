@@ -7,11 +7,11 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
+#include "Paint.h"
+#include "PaintTileDecorations.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Viewport.hpp"
-#include "Paint.h"
-#include "PaintTileDecorations.h"
 
 using namespace OpenLoco::Interop;
 

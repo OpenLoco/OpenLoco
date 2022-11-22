@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Types.hpp"
 #include "Map.hpp"
 #include "TileElement.h"
+#include "Types.hpp"
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
