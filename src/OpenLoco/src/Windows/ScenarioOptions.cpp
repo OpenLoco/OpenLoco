@@ -932,7 +932,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0046E306
         static uint32_t getLoanSizeInCurrency()
         {
-            uint64_t loanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8) / 100 * 100;
+            uint64_t loanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getStartingLoanSize(), 0, 8) / 100 * 100;
             return static_cast<uint32_t>(loanSizeInCurrency);
         }
 
