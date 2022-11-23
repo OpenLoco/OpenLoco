@@ -915,18 +915,21 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004739DD
     static void onClose(Window& self)
     {
-        if (!(isEditorMode() || isSandboxMode()))
-            return;
-
         unloadUnselectedObjects();
         editorLoadSelectedObjects();
         ObjectManager::reloadAll();
+        ObjectManager::freeTemporaryObject();
 
         if (!isEditorMode())
-            return;
-
-        ObjectManager::freeTemporaryObject();
-        editorObjectFlagsFree0();
+        {
+            // Make new selection available in-game.
+            ObjectManager::updateYearly2();
+            Gfx::invalidateScreen();
+        }
+        else
+        {
+            editorObjectFlagsFree0();
+        }
     }
 
     // 0x00473A04
