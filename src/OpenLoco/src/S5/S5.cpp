@@ -42,7 +42,6 @@ namespace OpenLoco::S5
     static loco_global<GameState, 0x00525E18> _gameState;
     static loco_global<Options, 0x009C8714> _activeOptions;
     static loco_global<Header, 0x009CCA34> _header;
-    static loco_global<Options, 0x009CCA54> _previewOptions;
     static loco_global<char[512], 0x0112CE04> _savePath;
     static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
     static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
@@ -53,11 +52,6 @@ namespace OpenLoco::S5
     Options& getOptions()
     {
         return _activeOptions;
-    }
-
-    Options& getPreviewOptions()
-    {
-        return _previewOptions;
     }
 
     static Header prepareHeader(uint32_t flags, size_t numPackedObjects)
@@ -723,7 +717,7 @@ namespace OpenLoco::S5
     }
 
     // 0x00442403
-    std::unique_ptr<SaveDetails> peakSaveDetails(const fs::path& path)
+    std::unique_ptr<SaveDetails> peekSaveDetails(const fs::path& path)
     {
         FileStream stream(path, StreamFlags::read);
         SawyerStreamReader fs(stream);
@@ -737,7 +731,7 @@ namespace OpenLoco::S5
         // Read header
         fs.readChunk(&s5Header, sizeof(s5Header));
 
-        if (s5Header.magic != magicNumber)
+        if (s5Header.version != currentVersion)
         {
             return nullptr;
         }
@@ -747,10 +741,41 @@ namespace OpenLoco::S5
             return nullptr;
         }
 
-        // Read saved details 0x00442087
         if (s5Header.flags & S5Flags::hasSaveDetails)
         {
+            // 0x0050AEA8
             auto ret = std::make_unique<SaveDetails>();
+            fs.readChunk(ret.get(), sizeof(*ret));
+            return ret;
+        }
+        return nullptr;
+    }
+
+    // 0x00442AFC
+    std::unique_ptr<Options> peekScenarioOptions(const fs::path& path)
+    {
+        FileStream stream(path, StreamFlags::read);
+        SawyerStreamReader fs(stream);
+        if (!fs.validateChecksum())
+        {
+            return nullptr;
+        }
+
+        Header s5Header{};
+
+        // Read header
+        fs.readChunk(&s5Header, sizeof(s5Header));
+
+        if (s5Header.version != currentVersion)
+        {
+            return nullptr;
+        }
+
+        if (s5Header.type == S5Type::scenario)
+        {
+            // 0x009DA285 = 1
+            // 0x009CCA54 _previewOptions
+            auto ret = std::make_unique<Options>();
             fs.readChunk(ret.get(), sizeof(*ret));
             return ret;
         }

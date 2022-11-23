@@ -62,10 +62,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static WindowEventList _events;
     static loco_global<uint8_t, 0x009D9D63> _type;
     static loco_global<BrowseFileType, 0x009DA284> _fileType;
-    static loco_global<uint8_t, 0x009DA285> _9DA285;
     static loco_global<char[512], 0x009DA084> _displayFolderBuffer;
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x0112CE04> _savePath;
+
+    // 0x0050AEA8
+    static std::unique_ptr<S5::SaveDetails> _previewSaveDetails;
+    // 0x009CCA54
+    static std::unique_ptr<S5::Options> _previewScenarioOptions;
 
     static Ui::TextInput::InputSession inputSession;
 
@@ -134,8 +138,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             window->rowHeight = 11;
             window->var_85A = -1;
 
-            _9DA285 = 0;
-
             auto& widget = window->widgets[widx::text_filename];
             inputSession.calculateTextOffset(widget.width());
 
@@ -165,7 +167,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00447174
     static void freeFileDetails()
     {
-        call(0x00447174);
+        _previewSaveDetails.reset();
     }
 
     // 0x0044647C
@@ -408,15 +410,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 if (*_fileType == BrowseFileType::savedGame)
                 {
                     // Preview image
-                    auto saveInfo = *((const S5::SaveDetails**)0x50AEA8);
-                    if (saveInfo != (void*)-1)
+                    if (_previewSaveDetails != nullptr)
                     {
-                        drawSavePreview(window, *rt, x, y, width, 201, *saveInfo);
+                        drawSavePreview(window, *rt, x, y, width, 201, *_previewSaveDetails);
                     }
                 }
                 else if (*_fileType == BrowseFileType::landscape)
                 {
-                    drawLandscapePreview(window, *rt, x, y, width, 129);
+                    if (_previewScenarioOptions != nullptr)
+                    {
+                        drawLandscapePreview(window, *rt, x, y, width, 129);
+                    }
                 }
             }
         }
@@ -495,7 +499,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         Gfx::fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary).u8(), 0x30);
 
-        if (S5::getPreviewOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone)
+        if (_previewScenarioOptions->scenarioFlags & Scenario::Flags::landscapeGenerationDone)
         {
             // Height map
             auto imageId = 0;
@@ -505,7 +509,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 // Temporarily substitute a g1 for the height map image data in the saved game
                 auto backupg1 = *g1;
                 *g1 = {};
-                g1->offset = (uint8_t*)0x9CCBDE;
+                g1->offset = &_previewScenarioOptions->preview[0][0];
                 g1->width = 128;
                 g1->height = 128;
                 Gfx::drawImage(&rt, x + 1, y + 1, imageId);
@@ -872,7 +876,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         freeFileDetails();
 
-        _9DA285 = 0;
         if (self->var_85A == -1)
             return;
 
@@ -884,17 +887,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         auto path = _currentDirectory / entry.stem();
         path += getExtensionFromFileType(_fileType);
 
-        // Copy path to buffer.
-        strncpy(_savePath.get(), path.u8string().c_str(), std::size(_savePath));
-
         // Load save game or scenario info.
         switch (_fileType)
         {
             case BrowseFileType::savedGame:
-                call(0x00442403);
+                _previewSaveDetails = S5::peekSaveDetails(path);
                 break;
             case BrowseFileType::landscape:
-                call(0x00442AFC);
+                _previewScenarioOptions = S5::peekScenarioOptions(path);
                 break;
         }
     }

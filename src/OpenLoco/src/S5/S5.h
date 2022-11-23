@@ -434,14 +434,14 @@ namespace OpenLoco::S5
     constexpr const char* filterSV5 = "*.SV5";
 
     Options& getOptions();
-    Options& getPreviewOptions();
     bool exportGameStateToFile(const fs::path& path, uint32_t flags);
     bool exportGameStateToFile(Stream& stream, uint32_t flags);
     void registerHooks();
 
     bool importSaveToGameState(const fs::path& path, uint32_t flags);
     bool importSaveToGameState(Stream& stream, uint32_t flags);
-    std::unique_ptr<SaveDetails> peakSaveDetails(const fs::path& path);
+    std::unique_ptr<SaveDetails> peekSaveDetails(const fs::path& path);
+    std::unique_ptr<Options> peekScenarioOptions(const fs::path& path);
 
     void sub_4BAEC4();
 }
