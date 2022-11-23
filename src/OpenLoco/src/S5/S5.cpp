@@ -36,8 +36,8 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::S5
 {
-    constexpr uint32_t currentVersion = 0x62262;
-    constexpr uint32_t magicNumber = 0x62300;
+    constexpr uint32_t kCurrentVersion = 0x62262;
+    constexpr uint32_t kMagicNumber = 0x62300;
 
     static loco_global<GameState, 0x00525E18> _gameState;
     static loco_global<Options, 0x009C8714> _activeOptions;
@@ -66,8 +66,8 @@ namespace OpenLoco::S5
             result.type = S5Type::scenario;
 
         result.numPackedObjects = static_cast<uint16_t>(numPackedObjects);
-        result.version = currentVersion;
-        result.magic = magicNumber;
+        result.version = kCurrentVersion;
+        result.magic = kMagicNumber;
 
         if (flags & SaveFlags::raw)
         {
@@ -215,7 +215,7 @@ namespace OpenLoco::S5
         file->gameState.savedViewY = savedView.viewY;
         file->gameState.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
         file->gameState.savedViewRotation = savedView.rotation;
-        file->gameState.magicNumber = magicNumber; // Match implementation at 0x004437FC
+        file->gameState.magicNumber = kMagicNumber; // Match implementation at 0x004437FC
 
         auto tileElements = TileManager::getElements();
         file->tileElements.resize(tileElements.size());
@@ -532,7 +532,7 @@ namespace OpenLoco::S5
         {
             auto file = importSave(stream);
 
-            if (file->header.version != currentVersion)
+            if (file->header.version != kCurrentVersion)
             {
                 throw LoadException("Unsupported S5 version", StringIds::error_file_contains_invalid_data);
             }
@@ -731,7 +731,7 @@ namespace OpenLoco::S5
         // Read header
         fs.readChunk(&s5Header, sizeof(s5Header));
 
-        if (s5Header.version != currentVersion)
+        if (s5Header.version != kCurrentVersion)
         {
             return nullptr;
         }
@@ -766,7 +766,7 @@ namespace OpenLoco::S5
         // Read header
         fs.readChunk(&s5Header, sizeof(s5Header));
 
-        if (s5Header.version != currentVersion)
+        if (s5Header.version != kCurrentVersion)
         {
             return nullptr;
         }
