@@ -1,4 +1,5 @@
 #include "CompanyManager.h"
+#include "Engine/Limits.h"
 #include "Entities/Entity.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
@@ -8,7 +9,6 @@
 #include "IndustryManager.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
-#include "Limits.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"

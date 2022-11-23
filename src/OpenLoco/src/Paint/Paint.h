@@ -3,7 +3,7 @@
 #include "Interop/Interop.hpp"
 #include "Map/Map.hpp"
 #include "Types.hpp"
-#include "Ui/Types.hpp"
+#include "Ui/UiTypes.hpp"
 
 namespace OpenLoco::Map
 {

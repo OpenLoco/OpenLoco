@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ui/Types.hpp"
+#include "Ui/UiTypes.hpp"
 #include "Ui/WindowManager.h"
 #include "Window.h"
 

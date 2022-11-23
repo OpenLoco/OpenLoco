@@ -4,7 +4,7 @@
 #include "ImageId.h"
 #include "Types.hpp"
 #include "Ui/Rect.h"
-#include "Ui/Types.hpp"
+#include "Ui/UiTypes.hpp"
 #include <array>
 #include <cstdint>
 #include <optional>

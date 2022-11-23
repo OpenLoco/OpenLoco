@@ -1,9 +1,9 @@
 #pragma once
 #include "Company.h"
 #include "CompanyRecords.h"
+#include "Engine/Limits.h"
 #include "Entities/Entity.h"
 #include "Industry.h"
-#include "Limits.h"
 #include "Map/Animation.h"
 #include "Map/Wave.h"
 #include "Message.h"
