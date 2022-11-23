@@ -1,5 +1,7 @@
 22.11+ (???)
 ------------------------------------------------------------------------
+- Feature: [#175, #938] Allow modifying object selection in-game (cheat menu).
+- Feature: [#1664] Allow modifying scenario options in-game (cheat menu).
 - Fix: [#1727] Starting loan is not displayed properly in scenario options.
 
 22.11 (2022-11-20)
