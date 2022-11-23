@@ -879,6 +879,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             window.initScrollWidgets();
         }
 
+        setDisabledTransportTabs(&window);
+
         // Mask off all the tabs
         auto activeWidgets = window.activatedWidgets & ((1 << frame) | (1 << caption) | (1 << close_button) | (1 << panel) | (1 << scrollview_vehicle_selection) | (1 << scrollview_vehicle_preview));
         // Only activate the singular tabs

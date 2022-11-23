@@ -515,6 +515,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1F88
     static void prepareDraw(Window& self)
     {
+        disableUnavailableVehicleTypes(&self);
+
         // The original game was setting widget sets here. As all tabs are the same, this has been omitted.
         self.activatedWidgets &= ~_tabWidgets;
         self.activatedWidgets |= 1ULL << (self.currentTab + Widx::tab_trains);

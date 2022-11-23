@@ -14,6 +14,7 @@
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "ScenarioObjective.h"
+#include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
@@ -770,6 +771,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                         state.forbiddenVehiclesCompetitors = newForbiddenVehicles;
                         self.invalidate();
                     }
+                    if (!isEditorMode())
+                    {
+                        CompanyManager::determineAvailableVehicles();
+                        WindowManager::invalidate(WindowType::vehicleList);
+                    }
                     break;
                 }
 
@@ -787,6 +793,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     {
                         state.forbiddenVehiclesPlayers = newForbiddenVehicles;
                         self.invalidate();
+                    }
+                    if (!isEditorMode())
+                    {
+                        CompanyManager::determineAvailableVehicles();
+                        WindowManager::invalidate(WindowType::buildVehicle);
+                        WindowManager::invalidate(WindowType::vehicleList);
                     }
                     break;
                 }
