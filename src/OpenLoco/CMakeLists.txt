@@ -656,7 +656,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
     loco_target_compile_link_flags(OpenLoco-headers-check)
     target_compile_options(OpenLoco-headers-check PUBLIC -x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable)
-    target_link_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+    target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp::yaml-cpp
