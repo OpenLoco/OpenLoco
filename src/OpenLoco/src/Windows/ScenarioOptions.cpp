@@ -134,6 +134,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             // Scenario details tab
+            if (window->widgets[widx::tab_scenario].type != WidgetType::none)
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_scenario_details;
                 Widget::drawTab(window, rt, imageId, widx::tab_scenario);
@@ -1198,6 +1199,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.activatedWidgets &= ~((1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario));
             widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
             self.activatedWidgets |= (1ULL << widgetIndex);
+
+            // Disable scenario details tab in-game.
+            if (!isEditorMode())
+                self.widgets[widx::tab_scenario].type = WidgetType::none;
 
             // Resize common widgets.
             self.widgets[Common::widx::frame].right = self.width - 1;
