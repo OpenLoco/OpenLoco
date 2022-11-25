@@ -8,11 +8,18 @@ set(public_files
 set(private_files
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Prng.cpp")
 
+set(test_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/PrngTests.cpp"
+)
+
 loco_add_library(Core STATIC
     PUBLIC_FILES
         ${public_files}
     PRIVATE_FILES
-        ${private_files})
+        ${private_files}
+    TEST_FILES
+        ${test_files}
+)
 
 target_link_libraries(Core
     PUBLIC

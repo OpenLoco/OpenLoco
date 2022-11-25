@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
 
 namespace OpenLoco::Core
@@ -29,11 +30,14 @@ namespace OpenLoco::Core
 
         int32_t randNext(int32_t high)
         {
+            high &= 0x7FFFFFFF; // no negatives allowed
             return randNext(0, high);
         }
 
+        // NOTE: Callers to ensure low is less than high
         int32_t randNext(int32_t low, int32_t high)
         {
+            assert(low <= high);
             int32_t positive = randNext() & 0x7FFFFFFF;
             return low + (positive % ((high + 1) - low));
         }
