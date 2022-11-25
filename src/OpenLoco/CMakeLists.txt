@@ -314,6 +314,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Economy/Economy.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Economy/Expenditures.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/EditorController.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Engine/Limits.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Entities/Entity.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Entities/EntityManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Entities/EntityTweener.h"
@@ -338,7 +339,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LabelFrame.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LastGameOptionManager.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Limits.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Conversion.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/LanguageFiles.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Languages.h"
@@ -483,7 +483,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Vector.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Speed.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Types.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Types.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/UiTypes.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/Collection.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/Exception.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/Numeric.hpp"
@@ -656,6 +656,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
     loco_target_compile_link_flags(OpenLoco-headers-check)
     target_compile_options(OpenLoco-headers-check PUBLIC -x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable)
+    target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp::yaml-cpp

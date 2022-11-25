@@ -1,7 +1,7 @@
 #pragma once
-#include "../Graphics/Gfx.h"
-#include "../Graphics/PaletteMap.h"
 #include "DrawSprite.h"
+#include "Graphics/Gfx.h"
+#include "Graphics/PaletteMap.h"
 
 namespace OpenLoco::Drawing
 {

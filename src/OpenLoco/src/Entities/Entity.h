@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Location.hpp"
-#include "../Map/Map.hpp"
-#include "../Types.hpp"
+#include "Location.hpp"
+#include "Map/Map.hpp"
+#include "Types.hpp"
 
 #include <cstdint>
 #include <limits>

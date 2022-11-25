@@ -1,7 +1,7 @@
 #pragma once
-#include "../Graphics/ImageId.h"
-#include "../Graphics/PaletteMap.h"
-#include "../Ui/Types.hpp"
+#include "Graphics/ImageId.h"
+#include "Graphics/PaletteMap.h"
+#include "Ui/UiTypes.hpp"
 
 namespace OpenLoco::Gfx
 {

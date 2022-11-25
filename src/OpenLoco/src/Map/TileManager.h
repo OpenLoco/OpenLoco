@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Core/Span.hpp"
+#include "Core/Span.hpp"
 #include "Tile.h"
 #include <cstdint>
 #include <tuple>

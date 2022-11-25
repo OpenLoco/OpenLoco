@@ -1,10 +1,10 @@
-#include "../Audio/Audio.h"
-#include "../Game.h"
-#include "../SceneManager.h"
-#include "../Tutorial.h"
-#include "../Ui/WindowManager.h"
-#include "../Ui/WindowType.h"
+#include "Audio/Audio.h"
+#include "Game.h"
 #include "GameCommands.h"
+#include "SceneManager.h"
+#include "Tutorial.h"
+#include "Ui/WindowManager.h"
+#include "Ui/WindowType.h"
 
 #pragma warning(disable : 4702)
 

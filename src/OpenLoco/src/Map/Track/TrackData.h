@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../Core/Span.hpp"
-#include "../../Types.hpp"
-#include "../Map.hpp"
-#include "../QuarterTile.h"
+#include "Core/Span.hpp"
+#include "Map/Map.hpp"
+#include "Map/QuarterTile.h"
+#include "Types.hpp"
 #include <array>
 #include <cstddef>
 #include <cstdlib>

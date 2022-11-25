@@ -1,8 +1,8 @@
 #include "FPSCounter.h"
-#include "../Graphics/Colour.h"
-#include "../Graphics/Gfx.h"
-#include "../Localisation/StringManager.h"
-#include "../Ui.h"
+#include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
+#include "Localisation/StringManager.h"
+#include "Ui.h"
 
 #include <chrono>
 #include <stdio.h>

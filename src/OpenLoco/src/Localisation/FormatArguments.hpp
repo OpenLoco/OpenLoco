@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Interop/Interop.hpp"
+#include "Interop/Interop.hpp"
 
 using namespace OpenLoco::Interop;
 

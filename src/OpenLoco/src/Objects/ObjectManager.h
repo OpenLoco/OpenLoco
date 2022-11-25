@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Core/Span.hpp"
-#include "../Ui/Types.hpp"
+#include "Core/Span.hpp"
 #include "Object.h"
+#include "Ui/UiTypes.hpp"
 #include <optional>
 #include <vector>
 

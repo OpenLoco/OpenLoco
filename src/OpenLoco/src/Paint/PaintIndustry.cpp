@@ -1,12 +1,12 @@
 #include "PaintIndustry.h"
-#include "../Industry.h"
-#include "../Map/IndustryElement.h"
-#include "../Objects/IndustryObject.h"
-#include "../Objects/ObjectManager.h"
-#include "../Objects/ScaffoldingObject.h"
-#include "../ScenarioManager.h"
-#include "../Ui.h"
+#include "Industry.h"
+#include "Map/IndustryElement.h"
+#include "Objects/IndustryObject.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/ScaffoldingObject.h"
 #include "Paint.h"
+#include "ScenarioManager.h"
+#include "Ui.h"
 
 namespace OpenLoco::Paint
 {

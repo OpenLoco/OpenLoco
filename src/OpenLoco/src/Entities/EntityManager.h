@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Map/Map.hpp"
 #include "Entity.h"
+#include "Map/Map.hpp"
 #include <cstdio>
 #include <iterator>
 

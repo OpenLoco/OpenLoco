@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Core/Span.hpp"
+#include "Core/Span.hpp"
 #include "Object.h"
 #include <optional>
 #include <vector>

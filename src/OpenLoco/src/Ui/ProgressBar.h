@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
+#include "Localisation/StringManager.h"
 #include <cstdint>
 #include <string_view>
 

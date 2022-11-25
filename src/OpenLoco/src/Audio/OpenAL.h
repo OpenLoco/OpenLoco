@@ -1,5 +1,5 @@
 #pragma once
-#include "../Core/Span.hpp"
+#include "Core/Span.hpp"
 #include <AL/alc.h>
 #include <string>
 #include <vector>

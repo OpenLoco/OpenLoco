@@ -1,13 +1,13 @@
 #include "NetworkClient.h"
-#include "../Config.h"
-#include "../Console.h"
-#include "../GameCommands/GameCommands.h"
-#include "../Platform/Platform.h"
-#include "../S5/S5.h"
-#include "../SceneManager.h"
-#include "../Ui/WindowManager.h"
-#include "../Utility/Stream.hpp"
+#include "Config.h"
+#include "Console.h"
+#include "GameCommands/GameCommands.h"
 #include "NetworkConnection.h"
+#include "Platform/Platform.h"
+#include "S5/S5.h"
+#include "SceneManager.h"
+#include "Ui/WindowManager.h"
+#include "Utility/Stream.hpp"
 
 using namespace OpenLoco;
 using namespace OpenLoco::Network;

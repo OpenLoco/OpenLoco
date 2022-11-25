@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Graphics/Gfx.h"
-#include "../Graphics/RenderTarget.h"
 #include "DrawSprite.h"
 #include "DrawSpriteHelper.hpp"
+#include "Graphics/Gfx.h"
+#include "Graphics/RenderTarget.h"
 
 namespace OpenLoco::Drawing
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Core/Span.hpp"
+#include "Core/Span.hpp"
 #include "Network.h"
 #include "NetworkBase.h"
 #include "Socket.h"

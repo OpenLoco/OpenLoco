@@ -1,5 +1,5 @@
 #pragma once
-#include "../Map/Map.hpp"
+#include "Map/Map.hpp"
 
 namespace OpenLoco::Paint
 {

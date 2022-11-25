@@ -1,8 +1,8 @@
 #include "TrainSignalObject.h"
-#include "../Graphics/Colour.h"
-#include "../Graphics/Gfx.h"
-#include "../Interop/Interop.hpp"
-#include "../ScenarioManager.h"
+#include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
+#include "Interop/Interop.hpp"
+#include "ScenarioManager.h"
 
 namespace OpenLoco
 {

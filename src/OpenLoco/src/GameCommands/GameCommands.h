@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../Company.h"
-#include "../Economy/Currency.h"
-#include "../Entities/Entity.h"
-#include "../Interop/Interop.hpp"
-#include "../Map/Tile.h"
-#include "../Objects/Object.h"
+#include "Company.h"
+#include "Economy/Currency.h"
+#include "Entities/Entity.h"
+#include "Interop/Interop.hpp"
+#include "Map/Tile.h"
+#include "Objects/Object.h"
 
 using namespace OpenLoco::Interop;
 

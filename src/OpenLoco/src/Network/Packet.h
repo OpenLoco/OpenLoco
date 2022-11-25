@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <string_view>
 
-#include "../Interop/Interop.hpp"
+#include "Interop/Interop.hpp"
 #include "Network.h"
 
 namespace OpenLoco::Network

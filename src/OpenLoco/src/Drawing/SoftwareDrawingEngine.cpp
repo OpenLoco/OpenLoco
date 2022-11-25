@@ -1,7 +1,7 @@
 #include "SoftwareDrawingEngine.h"
-#include "../Interop/Interop.hpp"
-#include "../Ui.h"
-#include "../Ui/WindowManager.h"
+#include "Interop/Interop.hpp"
+#include "Ui.h"
+#include "Ui/WindowManager.h"
 #include <SDL2/SDL.h>
 #include <algorithm>
 

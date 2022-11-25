@@ -1,9 +1,9 @@
-#include "../Input.h"
-#include "../Interop/Interop.hpp"
-#include "../OpenLoco.h"
-#include "../Ui/WindowManager.h"
-#include "../Vehicles/Vehicle.h"
-#include "../Widget.h"
+#include "Input.h"
+#include "Interop/Interop.hpp"
+#include "OpenLoco.h"
+#include "Ui/WindowManager.h"
+#include "Vehicles/Vehicle.h"
+#include "Widget.h"
 
 using namespace OpenLoco::Interop;
 

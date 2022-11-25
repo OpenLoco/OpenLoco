@@ -1,11 +1,11 @@
-#include "../Audio/Audio.h"
-#include "../Economy/Expenditures.h"
-#include "../Entities/EntityManager.h"
-#include "../Interop/Interop.hpp"
-#include "../Types.hpp"
-#include "../Utility/Prng.hpp"
-#include "../Vehicles/Vehicle.h"
+#include "Audio/Audio.h"
+#include "Economy/Expenditures.h"
+#include "Entities/EntityManager.h"
 #include "GameCommands.h"
+#include "Interop/Interop.hpp"
+#include "Types.hpp"
+#include "Utility/Prng.hpp"
+#include "Vehicles/Vehicle.h"
 
 using namespace OpenLoco::Interop;
 

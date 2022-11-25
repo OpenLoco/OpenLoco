@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Ui/Rect.h"
+#include "Ui/Rect.h"
 #include <cstdint>
 #include <optional>
 

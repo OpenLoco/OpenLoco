@@ -1,6 +1,6 @@
 #include "Colour.h"
-#include "../Interop/Interop.hpp"
 #include "Gfx.h"
+#include "Interop/Interop.hpp"
 #include "PaletteMap.h"
 #include <array>
 #include <cassert>

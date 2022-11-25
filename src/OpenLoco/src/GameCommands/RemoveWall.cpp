@@ -1,9 +1,9 @@
-#include "../Economy/Expenditures.h"
-#include "../Map/TileManager.h"
-#include "../Map/WallElement.h"
-#include "../S5/S5.h"
-#include "../ViewportManager.h"
+#include "Economy/Expenditures.h"
 #include "GameCommands.h"
+#include "Map/TileManager.h"
+#include "Map/WallElement.h"
+#include "S5/S5.h"
+#include "ViewportManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

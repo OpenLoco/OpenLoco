@@ -1,9 +1,9 @@
 #pragma once
-#include "../Graphics/ImageId.h"
-#include "../Interop/Interop.hpp"
-#include "../Map/Map.hpp"
-#include "../Types.hpp"
-#include "../Ui/Types.hpp"
+#include "Graphics/ImageId.h"
+#include "Interop/Interop.hpp"
+#include "Map/Map.hpp"
+#include "Types.hpp"
+#include "Ui/UiTypes.hpp"
 
 namespace OpenLoco::Map
 {

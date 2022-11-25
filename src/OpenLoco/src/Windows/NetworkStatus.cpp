@@ -1,11 +1,11 @@
-#include "../Graphics/Colour.h"
-#include "../Graphics/Gfx.h"
-#include "../Graphics/ImageIds.h"
-#include "../Localisation/StringIds.h"
-#include "../OpenLoco.h"
-#include "../Ui/WindowManager.h"
-#include "../Widget.h"
-#include "../Window.h"
+#include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
+#include "Graphics/ImageIds.h"
+#include "Localisation/StringIds.h"
+#include "OpenLoco.h"
+#include "Ui/WindowManager.h"
+#include "Widget.h"
+#include "Window.h"
 
 #include <string>
 #include <string_view>

@@ -153,11 +153,17 @@ function(_loco_add_target TARGET TYPE)
         add_library(OpenLoco::${TARGET} ALIAS ${TARGET})
 
         # We need to include both include and src as src may have private headers
-        target_include_directories(${TARGET}
-            PUBLIC 
-                "${CMAKE_CURRENT_SOURCE_DIR}/include"
-            PRIVATE
-                $<$<BOOL:${_PRIVATE_FILES}>:${CMAKE_CURRENT_SOURCE_DIR}/src>)
+        # Note: Generator expresions for this were not working!
+        if (DEFINED _PUBLIC_FILES)
+            target_include_directories(${TARGET}
+                PUBLIC
+                    "${CMAKE_CURRENT_SOURCE_DIR}/include")
+        endif()
+        if (DEFINED _PRIVATE_FILES)
+            target_include_directories(${TARGET}
+                PRIVATE
+                    "${CMAKE_CURRENT_SOURCE_DIR}/src")
+        endif()
 
         # TODO Maybe pass an additional Component variable to the function instead of repeat TARGET
         if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/${TARGET}")

@@ -1,13 +1,13 @@
-#include "../CompanyManager.h"
-#include "../Economy/Expenditures.h"
-#include "../Graphics/Gfx.h"
-#include "../Interop/Interop.hpp"
-#include "../Limits.h"
-#include "../Localisation/FormatArguments.hpp"
-#include "../Localisation/StringIds.h"
-#include "../Localisation/StringManager.h"
-#include "../Types.hpp"
+#include "CompanyManager.h"
+#include "Economy/Expenditures.h"
+#include "Engine/Limits.h"
 #include "GameCommands.h"
+#include "Graphics/Gfx.h"
+#include "Interop/Interop.hpp"
+#include "Localisation/FormatArguments.hpp"
+#include "Localisation/StringIds.h"
+#include "Localisation/StringManager.h"
+#include "Types.hpp"
 
 using namespace OpenLoco::Interop;
 

@@ -1,5 +1,5 @@
 #include "RenderTarget.h"
-#include "../Interop/Interop.hpp"
+#include "Interop/Interop.hpp"
 
 using namespace OpenLoco::Interop;
 

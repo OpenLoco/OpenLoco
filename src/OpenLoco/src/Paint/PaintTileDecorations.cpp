@@ -1,8 +1,8 @@
 #include "PaintTileDecorations.h"
-#include "../Config.h"
-#include "../GameState.h"
-#include "../Graphics/ImageIds.h"
-#include "../Interop/Interop.hpp"
+#include "Config.h"
+#include "GameState.h"
+#include "Graphics/ImageIds.h"
+#include "Interop/Interop.hpp"
 
 namespace OpenLoco::Paint
 {

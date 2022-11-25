@@ -1,12 +1,12 @@
-#include "../Entities/EntityManager.h"
-#include "../Map/AnimationManager.h"
-#include "../Map/RoadElement.h"
-#include "../Map/TileManager.h"
-#include "../Map/Track/Track.h"
-#include "../Map/Track/TrackData.h"
-#include "../ViewportManager.h"
+#include "Entities/EntityManager.h"
+#include "Map/AnimationManager.h"
+#include "Map/RoadElement.h"
+#include "Map/TileManager.h"
+#include "Map/Track/Track.h"
+#include "Map/Track/TrackData.h"
 #include "Vehicle.h"
 #include "VehicleManager.h"
+#include "ViewportManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;

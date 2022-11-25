@@ -1,7 +1,7 @@
 #include "TrainStationObject.h"
-#include "../Graphics/Colour.h"
-#include "../Graphics/Gfx.h"
-#include "../Interop/Interop.hpp"
+#include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
+#include "Interop/Interop.hpp"
 #include "ObjectManager.h"
 #include <cassert>
 

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Core/FileSystem.hpp"
-#include "../EditorController.h"
-#include "../Objects/Object.h"
-#include "../ScenarioObjective.h"
-#include "Limits.h"
+#include "Core/FileSystem.hpp"
+#include "EditorController.h"
+#include "Engine/Limits.h"
+#include "Objects/Object.h"
+#include "ScenarioObjective.h"
 #include <cstdint>
 #include <memory>
 #include <vector>

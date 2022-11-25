@@ -1,14 +1,14 @@
 #include "Tree.h"
-#include "../GameCommands/GameCommands.h"
-#include "../Math/Trigonometry.hpp"
-#include "../Objects/LandObject.h"
-#include "../Objects/ObjectManager.h"
-#include "../Objects/TreeObject.h"
-#include "../OpenLoco.h"
-#include "../Scenario.h"
-#include "../Ui.h"
+#include "GameCommands/GameCommands.h"
+#include "Math/Trigonometry.hpp"
+#include "Objects/LandObject.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/TreeObject.h"
+#include "OpenLoco.h"
+#include "Scenario.h"
 #include "SurfaceElement.h"
 #include "TileManager.h"
+#include "Ui.h"
 
 namespace OpenLoco::Map
 {

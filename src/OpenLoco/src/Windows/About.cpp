@@ -1,11 +1,11 @@
-#include "../Graphics/Colour.h"
-#include "../Graphics/Gfx.h"
-#include "../Graphics/ImageIds.h"
-#include "../Localisation/StringIds.h"
-#include "../Objects/InterfaceSkinObject.h"
-#include "../Objects/ObjectManager.h"
-#include "../Ui/WindowManager.h"
-#include "../Widget.h"
+#include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
+#include "Graphics/ImageIds.h"
+#include "Localisation/StringIds.h"
+#include "Objects/InterfaceSkinObject.h"
+#include "Objects/ObjectManager.h"
+#include "Ui/WindowManager.h"
+#include "Widget.h"
 
 namespace OpenLoco::Ui::Windows::About
 {

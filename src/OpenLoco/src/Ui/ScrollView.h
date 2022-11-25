@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Interop/Interop.hpp"
-#include "../Window.h"
+#include "Interop/Interop.hpp"
+#include "Window.h"
 
 using namespace OpenLoco::Interop;
 

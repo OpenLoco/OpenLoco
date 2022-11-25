@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Localisation/StringManager.h"
-#include "../Map/Map.hpp"
-#include "../Window.h"
+#include "Localisation/StringManager.h"
+#include "Map/Map.hpp"
+#include "Window.h"
 #include <cstddef>
 #include <functional>
 #include <string_view>

@@ -1,5 +1,5 @@
 #include "SoundObject.h"
-#include "../Interop/Interop.hpp"
+#include "Interop/Interop.hpp"
 
 namespace OpenLoco
 {

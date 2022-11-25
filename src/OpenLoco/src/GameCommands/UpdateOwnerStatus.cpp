@@ -1,4 +1,4 @@
-#include "../CompanyManager.h"
+#include "CompanyManager.h"
 #include "GameCommands.h"
 
 using namespace OpenLoco::Interop;

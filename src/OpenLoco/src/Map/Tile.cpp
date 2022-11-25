@@ -1,14 +1,14 @@
 #include "Tile.h"
-#include "../IndustryManager.h"
-#include "../Objects/ObjectManager.h"
-#include "../Station.h"
-#include "../Ui/WindowManager.h"
-#include "../Viewport.hpp"
 #include "IndustryElement.h"
+#include "IndustryManager.h"
+#include "Objects/ObjectManager.h"
 #include "RoadElement.h"
+#include "Station.h"
 #include "StationElement.h"
 #include "SurfaceElement.h"
 #include "TrackElement.h"
+#include "Ui/WindowManager.h"
+#include "Viewport.hpp"
 #include <cassert>
 
 namespace OpenLoco::Map
