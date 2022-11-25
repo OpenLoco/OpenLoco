@@ -55,19 +55,23 @@ namespace OpenLoco::Utility
 
     inline size_t strlcpy(char* dest, const char* src, size_t size)
     {
+        if (size == 0 || src == nullptr || dest == nullptr)
+        {
+            return 0;
+        }
         size_t srcLen = std::strlen(src);
 
         if (srcLen < size)
         {
             std::memcpy(dest, src, srcLen + 1);
+            return srcLen;
         }
         else
         {
             std::memcpy(dest, src, size);
             dest[size - 1] = '\0';
+            return size - 1;
         }
-
-        return srcLen;
     }
 
     inline size_t strlcat(char* dest, const char* src, size_t size)
@@ -99,9 +103,10 @@ namespace OpenLoco::Utility
 
             std::memcpy(copyPtr, src, copyCount);
             copyPtr[copyCount] = '\0';
+            return destLen + copyCount;
         }
 
-        return (destLen + srcLen);
+        return size - 1;
     }
 
     template<size_t N>

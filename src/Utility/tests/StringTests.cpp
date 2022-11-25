@@ -88,3 +88,105 @@ TEST(StringTests, endsWith)
     EXPECT_FALSE(Utility::endsWith("Test", "Message"));
     EXPECT_FALSE(Utility::endsWith("", "Test"));
 }
+
+TEST(StringTests, strlcpy)
+{
+    constexpr size_t kBufferLength = 10;
+    constexpr size_t kSmallLength = 5;
+    char buffer[kBufferLength]{};
+
+    // Check handles nulls
+    auto len = Utility::strlcpy(buffer, "", kBufferLength);
+    EXPECT_STREQ(buffer, "");
+    EXPECT_EQ(len, 0);
+
+    // Check handles nulls
+    len = Utility::strlcpy(buffer, "", 0);
+    EXPECT_STREQ(buffer, "");
+    EXPECT_EQ(len, 0);
+
+    // Check handles nulls
+    len = Utility::strlcpy(nullptr, "", kBufferLength);
+    EXPECT_STREQ(buffer, "");
+    EXPECT_EQ(len, 0);
+
+    // Check handles nulls
+    len = Utility::strlcpy(buffer, nullptr, kBufferLength);
+    EXPECT_STREQ(buffer, "");
+    EXPECT_EQ(len, 0);
+
+    // Check that it copies
+    len = Utility::strlcpy(buffer, "0123456", kBufferLength);
+    EXPECT_STREQ(buffer, "0123456");
+    EXPECT_EQ(len, 7);
+
+    std::fill(std::begin(buffer), std::end(buffer), '\0');
+
+    // Check that it truncates
+    len = Utility::strlcpy(buffer, "012345678", kSmallLength);
+    EXPECT_STREQ(buffer, "0123");
+    EXPECT_EQ(len, 4);
+
+    // Check that it null terminates
+    std::fill(std::begin(buffer), std::end(buffer), 'a');
+    len = Utility::strlcpy(buffer, "Hello!", kBufferLength);
+    EXPECT_STREQ(buffer, "Hello!");
+    EXPECT_EQ(len, 6);
+}
+
+TEST(StringTests, strlcat)
+{
+    constexpr size_t kBufferLength = 20;
+    constexpr size_t kSmallLength = 5;
+    char buffer[kBufferLength]{};
+
+    // Check handles nulls
+    auto len = Utility::strlcpy(buffer, "", kBufferLength);
+    EXPECT_STREQ(buffer, "");
+    EXPECT_EQ(len, 0);
+
+    // Check handles nulls
+    len = Utility::strlcpy(buffer, "", 0);
+    EXPECT_STREQ(buffer, "");
+    EXPECT_EQ(len, 0);
+
+    // Check handles nulls
+    len = Utility::strlcpy(nullptr, "", kBufferLength);
+    EXPECT_STREQ(buffer, "");
+    EXPECT_EQ(len, 0);
+
+    // Check handles nulls
+    len = Utility::strlcpy(buffer, nullptr, kBufferLength);
+    EXPECT_STREQ(buffer, "");
+    EXPECT_EQ(len, 0);
+
+    // Check that it copies
+    len = Utility::strlcat(buffer, "0123456", kBufferLength);
+    EXPECT_STREQ(buffer, "0123456");
+    EXPECT_EQ(len, 7);
+
+    std::fill(std::begin(buffer), std::end(buffer), '\0');
+
+    // Check that it truncates
+    len = Utility::strlcat(buffer, "012345678", kSmallLength);
+    EXPECT_STREQ(buffer, "0123");
+    EXPECT_EQ(len, kSmallLength - 1);
+
+    std::fill(std::begin(buffer), std::end(buffer), '\0');
+    len = Utility::strlcpy(buffer, "Hello ", kBufferLength);
+
+    // Check that it concats
+    len = Utility::strlcat(buffer, "World!", kBufferLength);
+    EXPECT_STREQ(buffer, "Hello World!");
+    EXPECT_EQ(len, 12);
+
+    // Check that it fails to concat if buffer really small
+    len = Utility::strlcat(buffer, "World!", kSmallLength);
+    EXPECT_STREQ(buffer, "Hello World!");
+    EXPECT_EQ(len, kSmallLength - 1);
+
+    // Check that it truncats concat if buffer small
+    len = Utility::strlcat(buffer, "1234", sizeof("Hello World!") + 3);
+    EXPECT_STREQ(buffer, "Hello World!123");
+    EXPECT_EQ(len, 15);
+}
