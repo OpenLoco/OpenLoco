@@ -47,6 +47,10 @@ jobs:
           name: OpenLoco-${{ runner.os }}-Win32-cmake
           path: artifacts
           if-no-files-found: error
+      - name: Run Tests
+        shell: cmd
+        run: |
+          ctest --test-dir build\windows-msvc\ --output-on-failure
   ubuntu:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
     runs-on: ubuntu-latest

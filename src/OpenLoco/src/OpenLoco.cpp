@@ -67,9 +67,9 @@
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
-#include "Utility/Numeric.hpp"
-#include "Utility/String.hpp"
 #include "ViewportManager.h"
+#include <OpenLoco/Utility/Numeric.hpp>
+#include <OpenLoco/Utility/String.hpp>
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
@@ -114,7 +114,7 @@ namespace OpenLoco
         return version;
     }
 
-    Utility::Prng& gPrng()
+    Core::Prng& gPrng()
     {
         return getGameState().rng;
     }

@@ -20,9 +20,9 @@
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
-#include "Utility/Numeric.hpp"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 #include <array>
 #include <map>

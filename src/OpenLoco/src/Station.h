@@ -5,7 +5,7 @@
 #include "Map/Tile.h"
 #include "Speed.hpp"
 #include "Types.hpp"
-#include "Utility/Numeric.hpp"
+#include <OpenLoco/Utility/Numeric.hpp>
 #include <cstdint>
 #include <limits>
 

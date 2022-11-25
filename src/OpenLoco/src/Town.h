@@ -3,7 +3,7 @@
 #include "Company.h"
 #include "LabelFrame.h"
 #include "Map/Tile.h"
-#include "Utility/Prng.hpp"
+#include <OpenLoco/Core/Prng.h>
 #include <limits>
 
 namespace OpenLoco
@@ -34,7 +34,7 @@ namespace OpenLoco
         coord_t y;                    // 0x04
         uint16_t flags;               // 0x06
         LabelFrame labelFrame;        // 0x08
-        Utility::Prng prng;           // 0x28
+        Core::Prng prng;              // 0x28
         uint32_t population;          // 0x30
         uint32_t populationCapacity;  // 0x34
         int16_t numBuildings;         // 0x38

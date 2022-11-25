@@ -212,8 +212,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ViewportInteraction.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/WindowManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/Numeric.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/String.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/CloneVehicle.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/CreateVehicle.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Orders.cpp"
@@ -464,10 +462,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/News/News.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolbarTopCommon.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ConfigConvert.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Core/BitSet.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Core/FileSystem.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Core/LocoFixedVector.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Span.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteBMP.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteHelper.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteRLE.hpp"
@@ -484,12 +478,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Speed.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Types.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/UiTypes.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/Collection.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/Exception.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/Numeric.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/Prng.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/Stream.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Utility/String.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Viewport.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
 
@@ -544,10 +532,11 @@ else ()
 endif ()
 
 target_link_libraries(OpenLoco
+    Core
+    Utility
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp
-    nonstd::span-lite
     ${PNG_LIBRARY}
     ${OPENAL_LIBRARIES})
 
@@ -654,6 +643,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_compile_options(OpenLoco-headers-check PUBLIC -x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable)
     target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_link_libraries(OpenLoco-headers-check PUBLIC
+        Core
+        Utility
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
         nonstd::span-lite)

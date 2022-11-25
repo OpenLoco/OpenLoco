@@ -32,11 +32,4 @@ namespace OpenLoco::Utility
     {
         return (value ? (x | mask) : (x & ~mask));
     }
-
-    template<typename T>
-    constexpr T setBit(T x, size_t index, bool value)
-    {
-        constexpr T mask = static_cast<T>(1 << index);
-        return setMask(mask);
-    }
 }

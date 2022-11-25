@@ -6,7 +6,7 @@
 #include "Localisation/StringIds.h"
 #include "ObjectManager.h"
 #include "Ui/WindowManager.h"
-#include "Utility/Numeric.hpp"
+#include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
 

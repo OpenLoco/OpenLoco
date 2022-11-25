@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core/LocoFixedVector.hpp"
 #include "Engine/Limits.h"
 #include "Station.h"
+#include <OpenLoco/Core/LocoFixedVector.hpp>
 #include <array>
 #include <cstddef>
 #include <vector>

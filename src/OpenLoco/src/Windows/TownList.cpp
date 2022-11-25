@@ -19,8 +19,8 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
-#include "Utility/Numeric.hpp"
 #include "Widget.h"
+#include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
 

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Company.h"
-#include "Core/LocoFixedVector.hpp"
 #include "Engine/Limits.h"
 #include "Map/Map.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Core/LocoFixedVector.hpp>
 #include <array>
 #include <cstddef>
 

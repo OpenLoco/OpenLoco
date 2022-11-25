@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core/FileSystem.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Map.hpp"
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
 
 namespace OpenLoco

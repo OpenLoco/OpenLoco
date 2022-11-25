@@ -3,8 +3,8 @@
 #include "Interop/Interop.hpp"
 #include "Platform/Platform.h"
 #include "Ui.h"
-#include "Utility/Collection.hpp"
-#include "Utility/String.hpp"
+#include <OpenLoco/Utility/Collection.hpp>
+#include <OpenLoco/Utility/String.hpp>
 #include <cstring>
 #include <fstream>
 #include <iostream>

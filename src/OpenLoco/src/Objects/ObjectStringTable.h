@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/Span.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
 {

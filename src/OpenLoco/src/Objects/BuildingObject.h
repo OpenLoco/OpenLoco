@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Core/Span.hpp"
 #include "Graphics/Colour.h"
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
 {

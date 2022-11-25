@@ -12,8 +12,8 @@
 #include "Ui.h"
 #include "Ui/Rect.h"
 #include "Ui/ScrollView.h"
-#include "Utility/Numeric.hpp"
 #include "Widget.h"
+#include <OpenLoco/Utility/Numeric.hpp>
 #include <cassert>
 #include <cinttypes>
 

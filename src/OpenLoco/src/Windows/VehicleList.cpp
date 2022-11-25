@@ -16,10 +16,10 @@
 #include "StationManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
-#include "Utility/String.hpp"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
+#include <OpenLoco/Utility/String.hpp>
 #include <stdexcept>
 #include <utility>
 

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Core/FileSystem.hpp"
 #include "EditorController.h"
 #include "Engine/Limits.h"
 #include "Objects/Object.h"
 #include "ScenarioObjective.h"
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
 #include <memory>
 #include <vector>

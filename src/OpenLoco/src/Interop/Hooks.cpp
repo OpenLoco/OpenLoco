@@ -9,7 +9,6 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Console.h"
-#include "Core/FileSystem.hpp"
 #include "Entities/EntityManager.h"
 #include "Environment.h"
 #include "Game.h"
@@ -38,10 +37,11 @@
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
-#include "Utility/String.hpp"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Utility/String.hpp>
 
 using namespace OpenLoco;
 

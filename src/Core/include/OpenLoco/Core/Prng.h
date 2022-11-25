@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Numeric.hpp"
 #include <cstdint>
 
-namespace OpenLoco::Utility
+namespace OpenLoco::Core
 {
 #pragma pack(push, 1)
     struct Prng
@@ -26,14 +25,7 @@ namespace OpenLoco::Utility
         {
         }
 
-        uint32_t randNext()
-        {
-            auto srand0 = _srand_0;
-            auto srand1 = _srand_1;
-            _srand_0 += ror<uint32_t>(srand1 ^ 0x1234567F, 7);
-            _srand_1 = ror<uint32_t>(srand0, 3);
-            return _srand_1;
-        }
+        uint32_t randNext();
 
         int32_t randNext(int32_t high)
         {

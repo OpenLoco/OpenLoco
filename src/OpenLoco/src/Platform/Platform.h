@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "Core/FileSystem.hpp"
+#include <OpenLoco/Core/FileSystem.hpp>
 
 namespace OpenLoco::Platform
 {
