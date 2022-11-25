@@ -370,7 +370,7 @@ namespace OpenLoco::Scenario
         std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
 
         call(0x004C159C);
-        call(0x0046E07B); // load currency gfx
+        Gfx::loadCurrency();
         CompanyManager::reset();
         CompanyManager::createPlayerCompany();
         initialiseDate(S5::getOptions().scenarioStartYear);

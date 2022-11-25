@@ -2,6 +2,7 @@
 #include "Console.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
@@ -924,6 +925,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             // Make new selection available in-game.
             ObjectManager::updateYearly2();
+            Gfx::loadCurrency();
             Gfx::invalidateScreen();
         }
         else

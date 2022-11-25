@@ -688,7 +688,7 @@ namespace OpenLoco::S5
             addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
             Gfx::invalidateScreen();
             call(0x004C153B);
-            call(0x0046E07B); // load currency gfx
+            Gfx::loadCurrency();
             addr<0x00525F62, uint16_t>() = 0;
 
             if (flags & LoadFlags::titleSequence)

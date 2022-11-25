@@ -221,5 +221,6 @@ namespace OpenLoco::Gfx
 
     Drawing::SoftwareDrawingEngine& getDrawingEngine();
 
+    void loadCurrency();
     void loadPalette();
 }
