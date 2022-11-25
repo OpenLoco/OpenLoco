@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
-        window->var_856 = 0;
+        window->var_856 = isEditorMode() ? 0 : 1;
 
         initEvents();
 
