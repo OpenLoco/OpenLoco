@@ -651,7 +651,7 @@ namespace OpenLoco::S5
 
             EntityManager::resetSpatialIndex();
             CompanyManager::updateColours();
-            call(0x004748FA);
+            ObjectManager::sub_4748FA();
             TileManager::resetSurfaceClearance();
             IndustryManager::createAllMapAnimations();
             Audio::resetSoundObjects();

@@ -174,5 +174,7 @@ namespace OpenLoco::ObjectManager
     void updateYearly1();
     void updateYearly2();
 
+    void sub_4748FA();
+
     void registerHooks();
 }

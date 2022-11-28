@@ -1058,6 +1058,15 @@ namespace OpenLoco::ObjectManager
         call(0x004C3A9E);
     }
 
+    // 0x004748FA
+    void sub_4748FA()
+    {
+        call(0x004697A1);
+        call(0x0047D9F2);
+        call(0x004C57A6);
+        call(0x00469F90);
+    }
+
     void registerHooks()
     {
         registerHook(

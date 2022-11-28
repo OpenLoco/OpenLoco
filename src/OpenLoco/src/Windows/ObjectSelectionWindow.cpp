@@ -925,6 +925,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             // Make new selection available in-game.
             ObjectManager::updateYearly2();
+            ObjectManager::sub_4748FA();
             Gfx::loadCurrency();
             Gfx::loadPalette();
             Gfx::invalidateScreen();
