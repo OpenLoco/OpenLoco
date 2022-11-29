@@ -117,6 +117,10 @@ namespace OpenLoco::ScenarioManager
         return nullptr;
     }
 
+    static void saveIndex() {
+
+    }
+
     // 0x00444574
     static ScenarioFolderState getCurrentScenarioFolderState()
     {
@@ -318,9 +322,12 @@ namespace OpenLoco::ScenarioManager
                 std::strcpy(entry.filename, u8FileName.c_str());
             }
             loadScenarioDetails(entry, *options);
-
-            // sort.
         }
+
+        std::sort(*_scenarioList, *_scenarioList + _scenarioHeader->numScenarios, [](const ScenarioIndexEntry& lhs, const ScenarioIndexEntry& rhs) {
+            return strcmp(lhs.scenarioName, rhs.scenarioName) < 0;
+            });
+        saveIndex();
     }
 
     // 0x0044452F
