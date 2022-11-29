@@ -4,8 +4,10 @@
 #include "Environment.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
@@ -201,6 +203,41 @@ namespace OpenLoco::ScenarioManager
         return true;
     }
 
+    // 0x00444C4E
+    static void loadScenarioProgress(ScenarioIndexEntry& entry, S5::Options& options)
+    {
+        ObjectManager::loadTemporaryObject(options.objectiveDeliveredCargo);
+        Scenario::Objective objective = options.objective;
+        Scenario::ObjectiveProgress progress{};
+        progress.timeLimitUntilYear = objective.timeLimitYears + options.scenarioStartYear - 1;
+        objective.deliveredCargoType = 0xFF; // Used to indicate formatChallengeArguments to use tempObj
+
+        std::optional<ObjectHeader> previousCurrency;
+        if (ObjectManager::get<CurrencyObject>() != nullptr)
+        {
+            previousCurrency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, 0 });
+            ObjectManager::unload(*previousCurrency);
+        }
+        ObjectManager::load(options.currency);
+        ObjectManager::reloadAll();
+        call(0x0046E07B); // load currency gfx
+
+        FormatArguments args{};
+        Scenario::formatChallengeArguments(objective, progress, args);
+        StringManager::formatString(entry.objective, *reinterpret_cast<const string_id*>(&args), reinterpret_cast<const std::byte*>(&args) + sizeof(string_id));
+
+        ObjectManager::freeTemporaryObject();
+
+        // Original didn't clean up like this
+        if (previousCurrency)
+        {
+            ObjectManager::unload(options.currency);
+            ObjectManager::load(*previousCurrency);
+            ObjectManager::reloadAll();
+            call(0x0046E07B); // load currency gfx
+        }
+    }
+
     // 0x004447DF
     static void createIndex(const ScenarioFolderState& currentState)
     {
@@ -270,7 +307,8 @@ namespace OpenLoco::ScenarioManager
             entry.numCompetingCompanies = options->maxCompetingCompanies;
             entry.competingCompanyDelay = options->competitorStartDelay;
 
-            // sub_444C4E get/set objective set currency
+            entry.currency = options->currency;
+            loadScenarioProgress(entry, *options);
             if (entryFound)
             {
             }
