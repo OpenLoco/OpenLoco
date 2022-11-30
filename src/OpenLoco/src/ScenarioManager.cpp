@@ -117,8 +117,19 @@ namespace OpenLoco::ScenarioManager
         return nullptr;
     }
 
-    static void saveIndex() {
+    // 0x00444B61
+    static void saveIndex()
+    {
+        const auto scorePath = Environment::getPath(Environment::PathId::scores);
+        std::ofstream stream;
+        stream.open(scorePath, std::ios::out | std::ios::binary);
+        if (!stream.is_open())
+        {
+            return;
+        }
 
+        stream.write(reinterpret_cast<const char*>(&*_scenarioHeader), sizeof(ScoreHeader));
+        stream.write(reinterpret_cast<const char*>(&_scenarioList[0]), sizeof(ScenarioIndexEntry) * _scenarioHeader->numScenarios);
     }
 
     // 0x00444574
@@ -245,9 +256,11 @@ namespace OpenLoco::ScenarioManager
     // 0x004447DF
     static void createIndex(const ScenarioFolderState& currentState)
     {
+        auto indexAllocSize = _scenarioHeader->numScenarios;
         if (_scenarioList == reinterpret_cast<ScenarioIndexEntry*>(-1) || _scenarioList == nullptr)
         {
             _scenarioHeader->numScenarios = 0;
+            indexAllocSize = currentState.numFiles;
             _scenarioList = static_cast<ScenarioIndexEntry*>(malloc(currentState.numFiles * sizeof(ScenarioIndexEntry)));
             if (_scenarioList == nullptr)
             {
@@ -297,6 +310,23 @@ namespace OpenLoco::ScenarioManager
             {
                 continue;
             }
+            if (!entryFound)
+            {
+                // Its possible to have more scenarios than files in the scenario folder
+                // this is because even deleted scenarios need to keep their scores entry
+                // due to this we will realloc if we get to this point. Also when adding
+                // a scenario to the folder you will need to realloc as it has alloced only,
+                // enough space for the previous amount of scenarios.
+                // TODO: Use a vector after all free/mallocs of _scenarioList implemented
+                if (_scenarioHeader->numScenarios >= indexAllocSize)
+                {
+                    const auto clearFromIndex = _scenarioHeader->numScenarios;
+                    indexAllocSize = _scenarioHeader->numScenarios + 1;
+                    _scenarioList = static_cast<ScenarioIndexEntry*>(realloc(_scenarioList, indexAllocSize * sizeof(ScenarioIndexEntry)));
+                    // Zero the new entries
+                    std::fill_n(&_scenarioList[clearFromIndex], indexAllocSize - clearFromIndex, ScenarioIndexEntry{});
+                }
+            }
             ScenarioIndexEntry& entry = _scenarioList[entryFound ? foundId : _scenarioHeader->numScenarios];
 
             entry.flags |= ScenarioIndexFlags::flag_0;
@@ -326,7 +356,7 @@ namespace OpenLoco::ScenarioManager
 
         std::sort(*_scenarioList, *_scenarioList + _scenarioHeader->numScenarios, [](const ScenarioIndexEntry& lhs, const ScenarioIndexEntry& rhs) {
             return strcmp(lhs.scenarioName, rhs.scenarioName) < 0;
-            });
+        });
         saveIndex();
     }
 
