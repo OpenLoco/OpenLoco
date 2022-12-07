@@ -12,11 +12,14 @@
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Math/Bound.hpp"
+#include "MessageManager.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "OpenLoco.h"
+#include "ScenarioManager.h"
+#include "SceneManager.h"
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
@@ -283,10 +286,67 @@ namespace OpenLoco
     // 0x004387D0
     void Company::updateDailyPlayer()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.ebx = enumValue(id());
-        call(0x004387D0, regs);
+        if (isEditorMode() || isTitleMode())
+        {
+            return;
+        }
+
+        const auto newProgress = getNewChallengeProgress();
+        if (newProgress != challengeProgress)
+        {
+            challengeProgress = newProgress;
+            Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id()));
+        }
+
+        if (challengeFlags & (CompanyFlags::challengeBeatenByOpponent | CompanyFlags::challengeCompleted | CompanyFlags::challengeFailed))
+        {
+            return;
+        }
+
+        if (challengeProgress == 100)
+        {
+            challengeFlags |= CompanyFlags::challengeCompleted;
+            if (CompanyManager::getControllingId() == id())
+            {
+                if (CompanyManager::getSecondaryPlayerId() != CompanyId::null)
+                {
+                    auto* secondaryPlayer = CompanyManager::get(CompanyManager::getSecondaryPlayerId());
+                    secondaryPlayer->challengeFlags |= CompanyFlags::challengeBeatenByOpponent;
+                    Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(secondaryPlayer->id()));
+                }
+                MessageManager::post(MessageType::congratulationsCompleted, id(), enumValue(id()), 0xFFFF);
+                StationManager::sub_437F29(id(), 1);
+                updateOwnerEmotion();
+                Ui::Windows::CompanyWindow::openChallenge(id());
+                Scenario::getObjectiveProgress().completedChallengeInMonths = Scenario::getObjectiveProgress().monthsInChallenge;
+                ScenarioManager::saveNewScore(Scenario::getObjectiveProgress(), id());
+            }
+            else
+            {
+                if (CompanyManager::getControllingId() != CompanyId::null)
+                {
+                    auto* secondaryPlayer = CompanyManager::get(CompanyManager::getControllingId());
+                    secondaryPlayer->challengeFlags |= CompanyFlags::challengeBeatenByOpponent;
+                    Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(secondaryPlayer->id()));
+                }
+                MessageManager::post(MessageType::haveBeenBeaten, id(), enumValue(id()), 0xFFFF);
+                StationManager::sub_437F29(id(), 5);
+                updateOwnerEmotion();
+                Ui::Windows::CompanyWindow::openChallenge(id());
+                Scenario::getObjectiveProgress().completedChallengeInMonths = Scenario::getObjectiveProgress().monthsInChallenge;
+            }
+        }
+        else if (challengeProgress == 255)
+        {
+            challengeFlags |= CompanyFlags::challengeFailed;
+            if (CompanyManager::getControllingId() == id())
+            {
+                MessageManager::post(MessageType::failedObjectives, id(), enumValue(id()), 0xFFFF);
+                StationManager::sub_437F29(id(), 4);
+                updateOwnerEmotion();
+                Ui::Windows::CompanyWindow::openChallenge(id());
+            }
+        }
     }
 
     // Converts performance index to rating
@@ -685,5 +745,15 @@ namespace OpenLoco
         registers regs;
         regs.esi = X86Pointer(this);
         call(0x00494805, regs);
+    }
+
+    // 0x004385F6
+    uint8_t Company::getNewChallengeProgress() const
+    {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        regs.ebx = enumValue(id());
+        call(0x004385F6, regs);
+        return regs.al;
     }
 }
