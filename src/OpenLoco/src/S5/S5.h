@@ -440,8 +440,8 @@ namespace OpenLoco::S5
 
     bool importSaveToGameState(const fs::path& path, uint32_t flags);
     bool importSaveToGameState(Stream& stream, uint32_t flags);
-    std::unique_ptr<SaveDetails> peekSaveDetails(const fs::path& path);
-    std::unique_ptr<Options> peekScenarioOptions(const fs::path& path);
+    std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path);
+    std::unique_ptr<Options> readScenarioOptions(const fs::path& path);
 
     void sub_4BAEC4();
 }

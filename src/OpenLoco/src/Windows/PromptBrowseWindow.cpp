@@ -891,10 +891,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         switch (_fileType)
         {
             case BrowseFileType::savedGame:
-                _previewSaveDetails = S5::peekSaveDetails(path);
+                _previewSaveDetails = S5::readSaveDetails(path);
                 break;
             case BrowseFileType::landscape:
-                _previewScenarioOptions = S5::peekScenarioOptions(path);
+                _previewScenarioOptions = S5::readScenarioOptions(path);
                 break;
         }
     }

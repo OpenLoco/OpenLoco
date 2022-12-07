@@ -717,7 +717,7 @@ namespace OpenLoco::S5
     }
 
     // 0x00442403
-    std::unique_ptr<SaveDetails> peekSaveDetails(const fs::path& path)
+    std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path)
     {
         FileStream stream(path, StreamFlags::read);
         SawyerStreamReader fs(stream);
@@ -752,7 +752,7 @@ namespace OpenLoco::S5
     }
 
     // 0x00442AFC
-    std::unique_ptr<Options> peekScenarioOptions(const fs::path& path)
+    std::unique_ptr<Options> readScenarioOptions(const fs::path& path)
     {
         FileStream stream(path, StreamFlags::read);
         SawyerStreamReader fs(stream);
