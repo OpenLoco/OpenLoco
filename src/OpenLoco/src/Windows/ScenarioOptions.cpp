@@ -14,6 +14,7 @@
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "ScenarioObjective.h"
+#include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
@@ -32,6 +33,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             frame,
             caption,
+            close_button,
             panel,
             tab_challenge,
             tab_companies,
@@ -39,15 +41,16 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             tab_scenario,
         };
 
-        const uint64_t enabledWidgets = (1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario);
+        const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario);
 
-#define commonWidgets(frameHeight, windowCaptionId)                                                                                             \
-    makeWidget({ 0, 0 }, { 366, frameHeight }, WidgetType::frame, WindowColour::primary),                                                       \
-        makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                      \
-        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),                                                        \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_challenge), \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),   \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_financial_options), \
+#define commonWidgets(frameHeight, windowCaptionId)                                                                                                      \
+    makeWidget({ 0, 0 }, { 366, frameHeight }, WidgetType::frame, WindowColour::primary),                                                                \
+        makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                               \
+        makeWidget({ 351, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),                                                                 \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_challenge),          \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),            \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_financial_options),          \
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_options)
 
         // Defined at the bottom of this file.
@@ -133,6 +136,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             // Scenario details tab
+            if (window->widgets[widx::tab_scenario].type != WidgetType::none)
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_scenario_details;
                 Widget::drawTab(window, rt, imageId, widx::tab_scenario);
@@ -154,7 +158,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     {
         enum widx
         {
-            objective_type = 7,
+            objective_type = 8,
             objective_type_btn,
             objective_value,
             objective_value_down,
@@ -381,6 +385,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             switch (widgetIndex)
             {
+                case Common::widx::close_button:
+                    WindowManager::close(&self);
+                    break;
+
                 case Common::widx::tab_challenge:
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
@@ -536,7 +544,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     {
         enum widx
         {
-            max_competing_companies = 7,
+            max_competing_companies = 8,
             max_competing_companies_down,
             max_competing_companies_up,
             delay_before_competing_companies_start,
@@ -748,6 +756,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             switch (widgetIndex)
             {
+                case Common::widx::close_button:
+                    WindowManager::close(&self);
+                    break;
+
                 case Common::widx::tab_challenge:
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
@@ -770,6 +782,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                         state.forbiddenVehiclesCompetitors = newForbiddenVehicles;
                         self.invalidate();
                     }
+                    if (!isEditorMode())
+                    {
+                        CompanyManager::determineAvailableVehicles();
+                        WindowManager::invalidate(WindowType::vehicleList);
+                    }
                     break;
                 }
 
@@ -787,6 +804,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     {
                         state.forbiddenVehiclesPlayers = newForbiddenVehicles;
                         self.invalidate();
+                    }
+                    if (!isEditorMode())
+                    {
+                        CompanyManager::determineAvailableVehicles();
+                        WindowManager::invalidate(WindowType::buildVehicle);
+                        WindowManager::invalidate(WindowType::vehicleList);
                     }
                     break;
                 }
@@ -830,7 +853,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     {
         enum widx
         {
-            starting_loan = 7,
+            starting_loan = 8,
             starting_loan_down,
             starting_loan_up,
             max_loan_size,
@@ -920,6 +943,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             switch (widgetIndex)
             {
+                case Common::widx::close_button:
+                    WindowManager::close(&self);
+                    break;
+
                 case Common::widx::tab_challenge:
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
@@ -967,7 +994,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     {
         enum widx
         {
-            change_name_btn = 7,
+            change_name_btn = 8,
             scenario_group,
             scenario_group_btn,
             change_details_btn,
@@ -1082,6 +1109,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             switch (widgetIndex)
             {
+                case Common::widx::close_button:
+                    WindowManager::close(&self);
+                    break;
+
                 case Common::widx::tab_challenge:
                 case Common::widx::tab_companies:
                 case Common::widx::tab_finances:
@@ -1186,6 +1217,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.activatedWidgets &= ~((1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario));
             widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
             self.activatedWidgets |= (1ULL << widgetIndex);
+
+            if (isEditorMode())
+            {
+                // Disable close button in the scenario editor.
+                self.widgets[Common::widx::close_button].type = WidgetType::none;
+                self.widgets[widx::tab_scenario].type = WidgetType::tab;
+            }
+            else
+            {
+                // Disable scenario details tab in-game.
+                self.widgets[Common::widx::close_button].type = WidgetType::buttonWithImage;
+                self.widgets[widx::tab_scenario].type = WidgetType::none;
+            }
 
             // Resize common widgets.
             self.widgets[Common::widx::frame].right = self.width - 1;

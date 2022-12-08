@@ -203,7 +203,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                     Console::error("Currency object failed to load! Game will likely crash.");
                 }
                 ObjectManager::reloadAll();
-                call(0x0046E07B); // load currency gfx
+                Gfx::loadCurrency();
             }
             else
             {

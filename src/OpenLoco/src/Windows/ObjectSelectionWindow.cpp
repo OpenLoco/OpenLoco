@@ -2,6 +2,7 @@
 #include "Console.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
@@ -160,7 +161,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
-        window->var_856 = 0;
+        window->var_856 = isEditorMode() ? 0 : 1;
 
         initEvents();
 
@@ -915,14 +916,24 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004739DD
     static void onClose(Window& self)
     {
-        if (!isEditorMode())
-            return;
-
         unloadUnselectedObjects();
         editorLoadSelectedObjects();
         ObjectManager::reloadAll();
         ObjectManager::freeTemporaryObject();
-        editorObjectFlagsFree0();
+
+        if (!isEditorMode())
+        {
+            // Make new selection available in-game.
+            ObjectManager::updateYearly2();
+            ObjectManager::sub_4748FA();
+            Gfx::loadCurrency();
+            Gfx::loadPalette();
+            Gfx::invalidateScreen();
+        }
+        else
+        {
+            editorObjectFlagsFree0();
+        }
     }
 
     // 0x00473A04

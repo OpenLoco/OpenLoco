@@ -1831,6 +1831,12 @@ namespace OpenLoco::Gfx
 
     static loco_global<Drawing::PaletteEntry[256], 0x0113ED20> _113ED20;
 
+    // 0x0046E07B
+    void loadCurrency()
+    {
+        call(0x0046E07B);
+    }
+
     // 0x004523F4
     void loadPalette()
     {

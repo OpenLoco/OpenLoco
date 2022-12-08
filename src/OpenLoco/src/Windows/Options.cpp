@@ -3,6 +3,7 @@
 #include "Date.h"
 #include "Environment.h"
 #include "Graphics/Colour.h"
+#include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
@@ -1555,7 +1556,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                     ObjectManager::load(*object.second._header);
                     ObjectManager::reloadAll();
-                    call(0x0046E07B); // load currency gfx
+                    Gfx::loadCurrency();
                     sub_4BF935();
 
                     break;

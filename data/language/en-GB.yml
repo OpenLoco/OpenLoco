@@ -2318,3 +2318,5 @@ strings:
   2263: "{COLOUR WINDOW_2}{UINT16}/{UINT16}"
   2264: "Giant screenshot"
   2265: "{COLOUR WINDOW_2} Filename: {COLOUR BLACK}{STRINGID}"
+  2266: "Scenario options"
+  2267: "Object selection"
