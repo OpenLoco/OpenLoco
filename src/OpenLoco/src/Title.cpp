@@ -123,7 +123,7 @@ namespace OpenLoco::Title
             uint16_t backupWord = _525F62;
             auto titlePath = Environment::getPath(Environment::PathId::title);
             clearScreenFlag(ScreenFlags::networked);
-            S5::load(titlePath, S5::LoadFlags::titleSequence);
+            S5::importSaveToGameState(titlePath, S5::LoadFlags::titleSequence);
 
             CompanyManager::setControllingId(CompanyId(0));
             CompanyManager::setSecondaryPlayerId(CompanyId::null);

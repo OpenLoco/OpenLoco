@@ -155,7 +155,7 @@ namespace OpenLoco::Game
                 auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
                 std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
-                if (S5::load(path, 0))
+                if (S5::importSaveToGameState(path, 0))
                 {
                     resetScreenAge();
                     throw GameException::Interrupt;
@@ -290,7 +290,7 @@ namespace OpenLoco::Game
                 if (Config::get().old.flags & Config::Flags::exportObjectsWithSaves)
                     flags = S5::SaveFlags::packCustomObjects;
 
-                if (!S5::save(path, flags))
+                if (!S5::exportGameStateToFile(path, flags))
                     Ui::Windows::Error::open(StringIds::error_game_save_failed, StringIds::null);
                 else
                     GameCommands::do_21(2, 0);
@@ -326,7 +326,7 @@ namespace OpenLoco::Game
         auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
         std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
-        bool saveResult = !S5::save(path, S5::SaveFlags::scenario);
+        bool saveResult = !S5::exportGameStateToFile(path, S5::SaveFlags::scenario);
         if (saveResult)
             Ui::Windows::Error::open(StringIds::landscape_save_failed, StringIds::null);
 

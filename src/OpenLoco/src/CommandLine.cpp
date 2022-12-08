@@ -557,7 +557,7 @@ namespace OpenLoco
         {
             try
             {
-                S5::save(outPath, S5::SaveFlags::none);
+                S5::exportGameStateToFile(outPath, S5::SaveFlags::none);
                 std::printf("  path:           %s\n", outPath.u8string().c_str());
             }
             catch (...)

@@ -148,7 +148,7 @@ void NetworkServer::onReceiveStateRequestPacket(Client& client, const RequestSta
 
     // Dump S5 data to stream
     MemoryStream ms;
-    S5::save(ms, S5::SaveFlags::noWindowClose);
+    S5::exportGameStateToFile(ms, S5::SaveFlags::noWindowClose);
 
     // Append extra state
     ExtraState extra;

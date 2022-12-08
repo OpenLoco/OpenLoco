@@ -253,7 +253,7 @@ namespace OpenLoco::EditorController
                     saveFlags |= S5::SaveFlags::packCustomObjects;
                 }
 
-                bool success = S5::save(path, saveFlags);
+                bool success = S5::exportGameStateToFile(path, saveFlags);
 
                 if (!success)
                 {
