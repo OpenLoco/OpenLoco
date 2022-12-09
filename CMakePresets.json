@@ -87,6 +87,10 @@
                 "ZLIB_LIBRARY": {
                     "type": "FILEPATH",
                     "value": "/usr/lib/i386-linux-gnu/libz.so"
+                },
+                "GTEST_ROOT": {
+                    "type": "FILEPATH",
+                    "value": "/usr/lib/i386-linux-gnu"
                 }
             }
         },
