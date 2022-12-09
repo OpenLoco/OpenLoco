@@ -73,6 +73,10 @@ jobs:
         run: |
           cmake --preset linux -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           cmake --build --preset linux-release
+      - name: Run Tests
+        run: |
+          ctest --test-dir build/linux/ --output-on-failure
+
   fedora:
     name: Fedora shared=${{ matrix.build_shared_libs }} i686 MinGW32
     runs-on: ubuntu-latest
