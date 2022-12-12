@@ -19,6 +19,7 @@
 #include "LevelCrossingObject.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "ObjectImageTable.h"
 #include "ObjectIndex.h"
 #include "ObjectStringTable.h"
 #include "RegionObject.h"
@@ -76,8 +77,6 @@ namespace OpenLoco::ObjectManager
 #pragma pack(pop)
 
     loco_global<ObjectRepositoryItem[maxObjectTypes], 0x4FE0B8> _objectRepository;
-
-    loco_global<uint32_t, 0x0050D154> _totalNumImages;
 
     static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
@@ -466,7 +465,7 @@ namespace OpenLoco::ObjectManager
     // 0x0047237D
     void reloadAll()
     {
-        _totalNumImages = 0x201A; // TODO: Why this value?
+        setTotalNumImages(0x201A); // TODO: Why this value?
         for (auto type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
         {
             for (LoadedObjectId id = 0; id < getMaxObjects(type); id++)
@@ -595,8 +594,8 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        const uint32_t oldNumImages = _totalNumImages;
-        _totalNumImages = Gfx::G1ExpectedCount::kDisc;
+        const uint32_t oldNumImages = getTotalNumImages();
+        setTotalNumImages(Gfx::G1ExpectedCount::kDisc);
         _temporaryObject = preLoadObj->object;
         _isPartialLoaded = true;
         _isTemporaryObject = 0xFF;
@@ -604,8 +603,8 @@ namespace OpenLoco::ObjectManager
         _isTemporaryObject = 0;
         _isPartialLoaded = false;
 
-        _numImages = _totalNumImages - Gfx::G1ExpectedCount::kDisc;
-        _totalNumImages = oldNumImages;
+        _numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
+        setTotalNumImages(oldNumImages);
         return true;
     }
 
@@ -634,7 +633,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        if (_totalNumImages >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
+        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
         {
             free(preLoadObj->object);
             // Too many objects loaded and no free image space
@@ -866,7 +865,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        if (_totalNumImages >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
+        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
         {
             // Free objectData?
             return false;
