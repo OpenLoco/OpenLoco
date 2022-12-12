@@ -27,36 +27,34 @@ TEST(NumericTest, bitScanReverse)
 
 TEST(NumericTest, rol)
 {
-    // rol is constexpr but it has some invalid values in constexpr such as a shift of 0 or shift > numBits
-    // caller is expected to check for these
+    // rol is constexpr so all of the following could be done as static_asserts
 
-    EXPECT_EQ(Utility::rol(0u, 4), 0u); // UB
+    EXPECT_EQ(Utility::rol(0u, 4), 0u);
     EXPECT_EQ(Utility::rol(0b1u, 0), 1u);
     EXPECT_EQ(Utility::rol(0b0010u, 1), 0b0100u);
     EXPECT_EQ(Utility::rol(0b0010u, 2), 0b1000u);
     EXPECT_EQ(Utility::rol(0b0101'0101'0101'0101u, 1), 0b1010'1010'1010'1010u);
 
-    // Sometimes rollsover from 32 to 0. NOTE: UB
-    // EXPECT_EQ(Utility::rol(0b0101'0101'0101'0101u, 32), 0b0101'0101'0101'0101u);
-    // EXPECT_EQ(Utility::rol(0b0101'0101'0101'0101u, 33), 0b1010'1010'1010'1010u);
+    // Rollsover from 32 to 0.
+    EXPECT_EQ(Utility::rol(0b0101'0101'0101'0101u, 32), 0b0101'0101'0101'0101u);
+    EXPECT_EQ(Utility::rol(0b0101'0101'0101'0101u, 33), 0b1010'1010'1010'1010u);
 
     EXPECT_EQ(Utility::rol(1ULL, 62), 1ULL << 62);
 }
 
 TEST(NumericTest, ror)
 {
-    // ror is constexpr but it has some invalid values in constexpr such as a shift of 0 or shift > numBits
-    // caller is expected to check for these
+    // ror is constexpr so all of the following could be done as static_asserts
 
-    EXPECT_EQ(Utility::ror(0u, 4), 0); // UB
+    EXPECT_EQ(Utility::ror(0u, 4), 0);
     EXPECT_EQ(Utility::ror(0b1u, 0), 1);
     EXPECT_EQ(Utility::ror(0b00000010u, 1), 1);
     EXPECT_EQ(Utility::ror(0b00000010u, 2), 1u << 31);
     EXPECT_EQ(Utility::ror(0b0101'0101'0101'0101'0101'0101'0101'0101u, 1), 0b1010'1010'1010'1010'1010'1010'1010'1010u);
 
-    // Sometimes rollsover from 32 to 0. NOTE: UB
-    // EXPECT_EQ(Utility::ror(0b0101'0101'0101'0101'0101'0101'0101'0101u, 32), 0b0101'0101'0101'0101'0101'0101'0101'0101u);
-    // EXPECT_EQ(Utility::ror(0b0101'0101'0101'0101'0101'0101'0101'0101u, 33), 0b1010'1010'1010'1010'1010'1010'1010'1010u);
+    // Rollsover from 32 to 0.
+    EXPECT_EQ(Utility::ror(0b0101'0101'0101'0101'0101'0101'0101'0101u, 32), 0b0101'0101'0101'0101'0101'0101'0101'0101u);
+    EXPECT_EQ(Utility::ror(0b0101'0101'0101'0101'0101'0101'0101'0101u, 33), 0b1010'1010'1010'1010'1010'1010'1010'1010u);
 
     EXPECT_EQ(Utility::ror(1ULL << 62, 62), 1u);
 }
