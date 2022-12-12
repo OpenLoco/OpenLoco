@@ -23,7 +23,7 @@ namespace OpenLoco
 
         // 0x0048AFEE
         bool validate() const { return true; }
-        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> objData);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> objData);
         void unload();
     };
 #pragma pack(pop)

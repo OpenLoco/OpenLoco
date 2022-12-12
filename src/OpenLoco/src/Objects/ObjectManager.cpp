@@ -351,7 +351,7 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, stdx::span<std::byte> data)
+    static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, stdx::span<const std::byte> data)
     {
         switch (handle.type)
         {
@@ -476,7 +476,7 @@ namespace OpenLoco::ObjectManager
                 if (obj != nullptr)
                 {
                     auto& extHdr = getRepositoryItem(type).objectEntryExtendeds[id];
-                    callObjectLoad(handle, *obj, stdx::span<std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
+                    callObjectLoad(handle, *obj, stdx::span<const std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
                 }
             }
         }

@@ -68,7 +68,7 @@ namespace OpenLoco
     }
 
     // 0x00434CA0
-    void CompetitorObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void CompetitorObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

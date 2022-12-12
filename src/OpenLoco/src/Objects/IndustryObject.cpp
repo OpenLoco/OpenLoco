@@ -169,7 +169,7 @@ namespace OpenLoco
     }
 
     // 0x00458CD9
-    void IndustryObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void IndustryObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

@@ -12,7 +12,7 @@ namespace OpenLoco
     }
 
     // 0x004697C9
-    void TunnelObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void TunnelObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

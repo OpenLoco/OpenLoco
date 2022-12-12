@@ -245,7 +245,7 @@ namespace OpenLoco
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width) const;
         void getCargoString(char* buffer) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data);
         void unload();
         uint32_t getLength() const;
     };

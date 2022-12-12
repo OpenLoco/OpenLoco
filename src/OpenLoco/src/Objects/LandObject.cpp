@@ -29,7 +29,7 @@ namespace OpenLoco
     }
 
     // 0x0046983C
-    void LandObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void LandObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

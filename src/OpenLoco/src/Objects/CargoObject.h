@@ -38,7 +38,7 @@ namespace OpenLoco
         uint8_t unitSize;          // 0x1E
 
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data);
         void unload();
     };
 #pragma pack(pop)

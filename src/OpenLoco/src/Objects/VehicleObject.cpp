@@ -306,7 +306,7 @@ namespace OpenLoco
     }
 
     // 0x004B841B
-    void VehicleObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void VehicleObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

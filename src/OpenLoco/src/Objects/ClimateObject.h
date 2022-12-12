@@ -19,7 +19,7 @@ namespace OpenLoco
         uint8_t pad_09;
 
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data);
         void unload();
     };
 #pragma pack(pop)

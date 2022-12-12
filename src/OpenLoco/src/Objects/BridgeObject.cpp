@@ -49,7 +49,7 @@ namespace OpenLoco
     }
 
     // 0x0042C5B6
-    void BridgeObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void BridgeObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

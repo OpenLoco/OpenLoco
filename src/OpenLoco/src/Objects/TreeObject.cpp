@@ -105,7 +105,7 @@ namespace OpenLoco
     }
 
     // 0x004BE144
-    void TreeObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void TreeObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

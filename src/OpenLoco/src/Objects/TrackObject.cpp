@@ -53,7 +53,7 @@ namespace OpenLoco
     }
 
     // 0x004A6A5F
-    void TrackObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void TrackObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

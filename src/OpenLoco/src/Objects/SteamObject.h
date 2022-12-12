@@ -42,7 +42,7 @@ namespace OpenLoco
 
         // 0x00440DDE
         bool validate() const { return true; }
-        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data);
         void unload();
 
         std::pair<uint16_t, ImageAndHeight*> getFramesInfo(bool isType1) const

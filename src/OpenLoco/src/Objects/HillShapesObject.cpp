@@ -13,7 +13,7 @@ namespace OpenLoco
     }
 
     // 0x00463B70
-    void HillShapesObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void HillShapesObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

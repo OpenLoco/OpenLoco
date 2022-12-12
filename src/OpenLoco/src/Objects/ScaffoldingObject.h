@@ -24,7 +24,7 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         // 0x0042DF0B
         bool validate() const { return true; }
-        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data);
         void unload();
     };
 #pragma pack(pop)

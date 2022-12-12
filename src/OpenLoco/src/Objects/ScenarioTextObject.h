@@ -20,7 +20,7 @@ namespace OpenLoco
         {
             return true;
         }
-        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data);
         void unload();
     };
 #pragma pack(pop)
