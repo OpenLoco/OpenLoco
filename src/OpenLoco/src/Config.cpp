@@ -182,6 +182,8 @@ namespace OpenLoco::Config
             _newConfig.cheatsMenuEnabled = config["cheats_menu_enabled"].as<bool>();
         if (config["companyAIDisabled"])
             _newConfig.companyAIDisabled = config["companyAIDisabled"].as<bool>();
+        if (config["townGrowthDisabled"])
+            _newConfig.townGrowthDisabled = config["townGrowthDisabled"].as<bool>();
         if (config["scale_factor"])
             _newConfig.scaleFactor = config["scale_factor"].as<float>();
         if (config["zoom_to_cursor"])
@@ -265,6 +267,7 @@ namespace OpenLoco::Config
         node["trainsReverseAtSignals"] = _newConfig.trainsReverseAtSignals;
         node["cheats_menu_enabled"] = _newConfig.cheatsMenuEnabled;
         node["companyAIDisabled"] = _newConfig.companyAIDisabled;
+        node["townGrowthDisabled"] = _newConfig.townGrowthDisabled;
         node["scale_factor"] = _newConfig.scaleFactor;
         node["zoom_to_cursor"] = _newConfig.zoomToCursor;
         node["autosave_frequency"] = _newConfig.autosaveFrequency;

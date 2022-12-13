@@ -1906,7 +1906,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Misc
     {
-        static constexpr Ui::Size kWindowSize = { 420, 251 };
+        static constexpr Ui::Size kWindowSize = { 420, 266 };
 
         namespace Widx
         {
@@ -1917,6 +1917,7 @@ namespace OpenLoco::Ui::Windows::Options
                 disable_vehicle_breakdowns,
                 trainsReverseAtSignals,
                 disableAICompanies,
+                disableTownExpansion,
                 groupPreferredOwnerName,
                 use_preferred_owner_name,
                 change_btn,
@@ -1930,28 +1931,29 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Misc::Widx::enableCheatsToolbarButton) | (1 << Misc::Widx::disable_vehicle_breakdowns) | (1 << Widx::trainsReverseAtSignals) | (1 << Widx::disableAICompanies) | (1 << Misc::Widx::use_preferred_owner_name) | (1 << Misc::Widx::change_btn) | (1 << Misc::Widx::export_plugin_objects) | (1 << Misc::Widx::autosave_frequency_btn) | (1 << Misc::Widx::autosave_amount) | (1 << Misc::Widx::autosave_amount_down_btn) | (1 << Misc::Widx::autosave_amount_up_btn);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::enableCheatsToolbarButton) | (1 << Widx::disable_vehicle_breakdowns) | (1 << Widx::trainsReverseAtSignals) | (1 << Widx::disableAICompanies) | (1 << Widx::disableAICompanies) | (1 << Widx::use_preferred_owner_name) | (1 << Widx::change_btn) | (1 << Widx::export_plugin_objects) | (1 << Widx::disableTownExpansion) | (1 << Widx::autosave_amount) | (1 << Widx::autosave_amount_down_btn) | (1 << Widx::autosave_amount_up_btn);
 
         static Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_miscellaneous),
 
             // Cheats group
-            makeWidget({ 4, 49 }, { 412, 78 }, WidgetType::groupbox, WindowColour::secondary, StringIds::gameplay_tweaks),
+            makeWidget({ 4, 49 }, { 412, 93 }, WidgetType::groupbox, WindowColour::secondary, StringIds::gameplay_tweaks),
             makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_cheat_menu_enable, StringIds::tooltip_option_cheat_menu_enable),
             makeWidget({ 10, 79 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
             makeWidget({ 10, 94 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::trainsReverseAtSignals),
             makeWidget({ 10, 109 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
+            makeWidget({ 10, 124 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableTownExpansion, StringIds::disableTownExpansion_tip),
 
             // Preferred owner name group
-            makeWidget({ 4, 130 }, { 412, 47 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferred_owner),
-            makeWidget({ 10, 145 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
-            makeWidget({ 335, 159 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            makeWidget({ 4, 145 }, { 412, 47 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferred_owner),
+            makeWidget({ 10, 160 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
+            makeWidget({ 335, 174 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
 
             // Save options group
-            makeWidget({ 4, 181 }, { 412, 65 }, WidgetType::groupbox, WindowColour::secondary, StringIds::autosave_preferences),
-            makeDropdownWidgets({ 250, 197 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 250, 212 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 10, 228 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
+            makeWidget({ 4, 196 }, { 412, 65 }, WidgetType::groupbox, WindowColour::secondary, StringIds::autosave_preferences),
+            makeDropdownWidgets({ 250, 212 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 250, 227 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 10, 243 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
             widgetEnd(),
         };
 
@@ -1966,6 +1968,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void disableVehicleBreakdownsMouseUp(Window* w);
         static void trainsReverseAtSignalsMouseUp(Window* w);
         static void disableAICompaniesMouseUp(Window* w);
+        static void disableTownExpansionMouseUp(Window* w);
         static void exportPluginObjectsMouseUp(Window* w);
 
         // 0x004C11B7
@@ -2004,6 +2007,11 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets |= (1 << Widx::disableAICompanies);
             else
                 w.activatedWidgets &= ~(1 << Widx::disableAICompanies);
+
+            if (Config::get().townGrowthDisabled)
+                w.activatedWidgets |= (1 << Widx::disableTownExpansion);
+            else
+                w.activatedWidgets &= ~(1 << Widx::disableTownExpansion);
 
             w.activatedWidgets &= ~(1 << Widx::export_plugin_objects);
             if (Config::get().old.flags & Config::Flags::exportObjectsWithSaves)
@@ -2196,6 +2204,10 @@ namespace OpenLoco::Ui::Windows::Options
                     disableAICompaniesMouseUp(&w);
                     break;
 
+                case Widx::disableTownExpansion:
+                    disableTownExpansionMouseUp(&w);
+                    break;
+
                 case Widx::export_plugin_objects:
                     exportPluginObjectsMouseUp(&w);
                     break;
@@ -2328,6 +2340,14 @@ namespace OpenLoco::Ui::Windows::Options
         {
             auto& cfg = OpenLoco::Config::get();
             cfg.companyAIDisabled = !cfg.companyAIDisabled;
+            Config::write();
+            w->invalidate();
+        }
+
+        static void disableTownExpansionMouseUp(Window* w)
+        {
+            auto& cfg = OpenLoco::Config::get();
+            cfg.townGrowthDisabled = !cfg.townGrowthDisabled;
             Config::write();
             w->invalidate();
         }

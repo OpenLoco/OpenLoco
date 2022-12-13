@@ -172,6 +172,7 @@ namespace OpenLoco::Config
         bool breakdownsDisabled = false;
         bool trainsReverseAtSignals = true;
         bool companyAIDisabled = false;
+        bool townGrowthDisabled = false;
         float scaleFactor = 1.0f;
         bool zoomToCursor = true;
         int32_t autosaveFrequency = 1;

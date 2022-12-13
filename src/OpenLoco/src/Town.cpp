@@ -1,4 +1,5 @@
 #include "Town.h"
+#include "Config.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
@@ -24,6 +25,9 @@ namespace OpenLoco
     void Town::update()
     {
         recalculateSize();
+
+        if (Config::get().townGrowthDisabled)
+            return;
 
         static constexpr std::array<uint8_t, 12> kBuildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 };
         auto growthPerTick = kBuildSpeedToGrowthPerTick[this->buildSpeed];
