@@ -6,6 +6,10 @@
 
 namespace OpenLoco
 {
+    namespace ObjectManager
+    {
+        struct DependentObjects;
+    }
     namespace Gfx
     {
         struct RenderTarget;
@@ -119,7 +123,7 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawIndustry(Gfx::RenderTarget* clipped, int16_t x, int16_t y) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
         stdx::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
         stdx::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;

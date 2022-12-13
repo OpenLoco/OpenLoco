@@ -57,7 +57,7 @@ namespace OpenLoco
     }
 
     // 0x00477BCF
-    void RoadObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
+    void RoadObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

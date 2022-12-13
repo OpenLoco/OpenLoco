@@ -6,6 +6,10 @@
 
 namespace OpenLoco
 {
+    namespace ObjectManager
+    {
+        struct DependentObjects;
+    }
     namespace SoundObjectId
     {
         constexpr SoundObjectId_t null = 0xFF;
@@ -23,7 +27,7 @@ namespace OpenLoco
 
         // 0x0048AFEE
         bool validate() const { return true; }
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> objData);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> objData, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

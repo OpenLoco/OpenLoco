@@ -4,7 +4,7 @@
 namespace OpenLoco
 {
     // 0x0048AFAF
-    void SoundObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> objData)
+    void SoundObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> objData, ObjectManager::DependentObjects*)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

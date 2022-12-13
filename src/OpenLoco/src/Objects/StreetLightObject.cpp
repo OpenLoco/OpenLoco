@@ -22,7 +22,7 @@ namespace OpenLoco
     }
 
     // 0x00477F19
-    void StreetLightObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
+    void StreetLightObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

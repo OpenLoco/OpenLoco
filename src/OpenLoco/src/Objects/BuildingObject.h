@@ -7,6 +7,10 @@
 
 namespace OpenLoco
 {
+    namespace ObjectManager
+    {
+        struct DependentObjects;
+    }
     namespace Gfx
     {
         struct RenderTarget;
@@ -55,7 +59,7 @@ namespace OpenLoco
         void drawBuilding(Gfx::RenderTarget* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const;
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
     };
 #pragma pack(pop)

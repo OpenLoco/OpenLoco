@@ -8,7 +8,7 @@
 namespace OpenLoco
 {
     // 0x0043C82D
-    void InterfaceSkinObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
+    void InterfaceSkinObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(InterfaceSkinObject));
         auto stringRes = ObjectManager::loadStringTable(remainingData, handle, 0);

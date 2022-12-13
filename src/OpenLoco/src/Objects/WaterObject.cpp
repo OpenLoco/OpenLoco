@@ -20,7 +20,7 @@ namespace OpenLoco
     }
 
     // 0x004C567C
-    void WaterObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
+    void WaterObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

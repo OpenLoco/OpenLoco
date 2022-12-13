@@ -7,6 +7,10 @@
 
 namespace OpenLoco
 {
+    namespace ObjectManager
+    {
+        struct DependentObjects;
+    }
     namespace SteamObjectFlags
     {
         constexpr uint16_t applyWind = (1 << 0);
@@ -42,7 +46,7 @@ namespace OpenLoco
 
         // 0x00440DDE
         bool validate() const { return true; }
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
 
         std::pair<uint16_t, ImageAndHeight*> getFramesInfo(bool isType1) const

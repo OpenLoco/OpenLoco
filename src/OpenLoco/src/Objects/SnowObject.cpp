@@ -11,7 +11,7 @@ namespace OpenLoco
     }
 
     // 0x00469A35
-    void SnowObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
+    void SnowObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

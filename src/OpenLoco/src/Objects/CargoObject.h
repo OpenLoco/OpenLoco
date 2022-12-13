@@ -6,6 +6,11 @@
 
 namespace OpenLoco
 {
+    namespace ObjectManager
+    {
+        struct DependentObjects;
+    }
+
     namespace CargoObjectFlags
     {
         constexpr uint8_t unk0 = (1 << 0);
@@ -38,7 +43,7 @@ namespace OpenLoco
         uint8_t unitSize;          // 0x1E
 
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

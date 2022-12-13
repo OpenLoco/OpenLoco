@@ -169,13 +169,28 @@ namespace OpenLoco
     }
 
     // 0x00458CD9
-    void IndustryObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data)
+    void IndustryObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);
         regs.ebx = handle.id;
         regs.ecx = enumValue(handle.type);
         Interop::call(0x00458CD9, regs);
+        if (dependencies != nullptr)
+        {
+            auto* depObjs = addr<0x0050D158, uint8_t*>();
+            dependencies->required.resize(*depObjs++);
+            if (!dependencies->required.empty())
+            {
+                std::copy(reinterpret_cast<ObjectHeader*>(depObjs), reinterpret_cast<ObjectHeader*>(depObjs) + dependencies->required.size(), dependencies->required.data());
+                depObjs += sizeof(ObjectHeader) * dependencies->required.size();
+            }
+            dependencies->willLoad.resize(*depObjs++);
+            if (!dependencies->willLoad.empty())
+            {
+                std::copy(reinterpret_cast<ObjectHeader*>(depObjs), reinterpret_cast<ObjectHeader*>(depObjs) + dependencies->willLoad.size(), dependencies->willLoad.data());
+            }
+        }
     }
 
     // 0x0045919D
