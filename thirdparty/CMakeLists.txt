@@ -1,8 +1,8 @@
 # TODO: look into using FetchContent's FIND_PACKAGE_ARGS when next increasing CMake version
-find_package(yaml-cpp)
-find_package(span-lite)
+find_package(yaml-cpp QUIET)
+find_package(span-lite QUIET)
 
-if ( NOT yaml-cpp_FOUND AND NOT span-lite_FOUND ) 
+if ( NOT yaml-cpp_FOUND )
     ## yaml-cpp
     # Get rid of yaml uninstall target
     add_library(uninstall INTERFACE)
@@ -21,6 +21,11 @@ if ( NOT yaml-cpp_FOUND AND NOT span-lite_FOUND )
     FetchContent_MakeAvailable(yaml-cpp)
     loco_thirdparty_target_compile_link_flags(yaml-cpp)
 
+    # Group all the ThirdParty items under a ThirdParty folder in IDEs
+    set_target_properties(yaml-cpp PROPERTIES FOLDER "ThirdParty")
+endif()
+
+if ( NOT span-lite_FOUND )
     ## span-lite
     FetchContent_Declare(
         span-lite
@@ -31,5 +36,5 @@ if ( NOT yaml-cpp_FOUND AND NOT span-lite_FOUND )
     FetchContent_MakeAvailable(span-lite)
 
     # Group all the ThirdParty items under a ThirdParty folder in IDEs
-    set_target_properties(yaml-cpp span-lite PROPERTIES FOLDER "ThirdParty")
+    set_target_properties(span-lite PROPERTIES FOLDER "ThirdParty")
 endif()
