@@ -8,6 +8,7 @@ namespace OpenLoco::ObjectManager
 {
     static loco_global<uint32_t, 0x0050D154> _totalNumImages;
 
+    // 0x0047221F
     ImageTableResult loadImageTable(stdx::span<const std::byte> data)
     {
         auto remainingData = data;
@@ -27,11 +28,11 @@ namespace OpenLoco::ObjectManager
             g1Element.offset = imageDataBegin + g32Ptr->offset;
             if (g1Element.flags & Gfx::G1ElementFlags::duplicatePrevious)
             {
-                g1Element = Gfx::G1Element(*(g32Ptr - 1));
+                g1Element = *Gfx::getG1Element(_totalNumImages + i - 1);
                 g1Element.xOffset += g32Ptr->xOffset;
                 g1Element.yOffset += g32Ptr->yOffset;
             }
-            Gfx::getG1Element(_totalNumImages + i);
+            *Gfx::getG1Element(_totalNumImages + i) = g1Element;
         }
         _totalNumImages += g1Header.numEntries;
         return res;

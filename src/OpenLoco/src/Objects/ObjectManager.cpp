@@ -1078,5 +1078,20 @@ namespace OpenLoco::ObjectManager
                 regs.eax = res.str;
                 return 0;
             });
+
+        registerHook(
+            0x0047221F,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                // 0x20000 chosen as a large number
+                stdx::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x20000);
+                auto res = ObjectManager::loadImageTable(data);
+
+                regs = backup;
+                regs.ebp += res.tableLength;
+                regs.eax = res.imageOffset;
+                return 0;
+            });
     }
 }
