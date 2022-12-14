@@ -1854,5 +1854,5 @@ namespace OpenLoco::StringIds
     constexpr string_id object_strings_begin = 8208;
     constexpr string_id gameplay_tweaks = 2268;
     constexpr string_id preferred_owner = 2269;
-    constexpr string_id autosave_preferences = 2269;
+    constexpr string_id autosave_preferences = 2270;
 }
