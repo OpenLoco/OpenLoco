@@ -25,13 +25,6 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::StringIds
-{
-    constexpr string_id gameplay_tweaks = 2268;
-    constexpr string_id preferred_owner = 2269;
-    constexpr string_id autosave_preferences = 2269;
-}
-
 namespace OpenLoco::Ui::Windows::Options
 {
     static void tabOnMouseUp(Window* w, WidgetIndex_t wi);
