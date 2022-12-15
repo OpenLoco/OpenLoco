@@ -582,8 +582,8 @@ namespace OpenLoco::Ui::Windows::TownList
     // 0x00496B50
     void reset()
     {
-        LastGameOptionManager::setLastBuildingOption(0xFF);
-        LastGameOptionManager::setLastMiscBuildingOption(0xFF);
+        LastGameOptionManager::setLastBuildingOption(LastGameOptionManager::kNoLastOption);
+        LastGameOptionManager::setLastMiscBuildingOption(LastGameOptionManager::kNoLastOption);
         _buildingRotation = 2;
         _townSize = 3;
     }
@@ -1260,7 +1260,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     self.rowHover = rowInfo;
 
                     if (self.currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
-                        LastGameOptionManager::setLastBuildingOption(static_cast<uint8_t>(rowInfo));
+                        LastGameOptionManager::setLastMiscBuildingOption(static_cast<uint8_t>(rowInfo));
                     else
                         LastGameOptionManager::setLastBuildingOption(static_cast<uint8_t>(rowInfo));
 
@@ -1345,7 +1345,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             auto lastSelectedBuilding = LastGameOptionManager::getLastBuildingOption();
             if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
-                lastSelectedBuilding = LastGameOptionManager::getLastBuildingOption();
+                lastSelectedBuilding = LastGameOptionManager::getLastMiscBuildingOption();
 
             if (lastSelectedBuilding != LastGameOptionManager::kNoLastOption)
             {
