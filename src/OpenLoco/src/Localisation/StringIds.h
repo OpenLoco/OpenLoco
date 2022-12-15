@@ -1834,6 +1834,9 @@ namespace OpenLoco::StringIds
     constexpr string_id object_selection_filename = 2265;
     constexpr string_id open_scenario_options = 2266;
     constexpr string_id open_object_selection = 2267;
+    constexpr string_id gameplay_tweaks = 2268;
+    constexpr string_id preferred_owner = 2269;
+    constexpr string_id autosave_preferences = 2270;
 
     constexpr string_id temporary_object_load_str_0 = 8192;
     constexpr string_id temporary_object_load_str_1 = 8193;

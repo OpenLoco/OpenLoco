@@ -2320,3 +2320,6 @@ strings:
   2265: "{COLOUR WINDOW_2} Filename: {COLOUR BLACK}{STRINGID}"
   2266: "Scenario options"
   2267: "Object selection"
+  2268: "Gameplay tweaks"
+  2269: "Preferred owner"
+  2270: "Autosave preferences"

@@ -1906,24 +1906,27 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Misc
     {
-        static constexpr Ui::Size kWindowSize = { 420, 189 };
+        static constexpr Ui::Size kWindowSize = { 420, 251 };
 
         namespace Widx
         {
             enum
             {
-                enableCheatsToolbarButton = 10,
+                groupCheats = 10,
+                enableCheatsToolbarButton,
                 disable_vehicle_breakdowns,
                 trainsReverseAtSignals,
                 disableAICompanies,
+                groupPreferredOwnerName,
                 use_preferred_owner_name,
                 change_btn,
-                export_plugin_objects,
+                groupSaveOptions,
                 autosave_frequency,
                 autosave_frequency_btn,
                 autosave_amount,
                 autosave_amount_down_btn,
                 autosave_amount_up_btn,
+                export_plugin_objects,
             };
         }
 
@@ -1931,15 +1934,24 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_miscellaneous),
-            makeWidget({ 10, 49 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_cheat_menu_enable, StringIds::tooltip_option_cheat_menu_enable),
-            makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
-            makeWidget({ 10, 79 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::trainsReverseAtSignals),
-            makeWidget({ 10, 94 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
-            makeWidget({ 10, 109 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
-            makeWidget({ 335, 124 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
-            makeWidget({ 10, 139 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
-            makeDropdownWidgets({ 250, 154 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 250, 169 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+
+            // Cheats group
+            makeWidget({ 4, 49 }, { 412, 78 }, WidgetType::groupbox, WindowColour::secondary, StringIds::gameplay_tweaks),
+            makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_cheat_menu_enable, StringIds::tooltip_option_cheat_menu_enable),
+            makeWidget({ 10, 79 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
+            makeWidget({ 10, 94 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::trainsReverseAtSignals),
+            makeWidget({ 10, 109 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
+
+            // Preferred owner name group
+            makeWidget({ 4, 130 }, { 412, 47 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferred_owner),
+            makeWidget({ 10, 145 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
+            makeWidget({ 335, 159 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+
+            // Save options group
+            makeWidget({ 4, 181 }, { 412, 65 }, WidgetType::groupbox, WindowColour::secondary, StringIds::autosave_preferences),
+            makeDropdownWidgets({ 250, 197 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 250, 212 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 10, 228 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
             widgetEnd(),
         };
 
@@ -2038,9 +2050,9 @@ namespace OpenLoco::Ui::Windows::Options
 
             FormatArguments args = {};
             args.push(StringIds::buffer_2039);
-            Gfx::drawStringLeft(*rt, w.x + 10, w.y + w.widgets[Widx::change_btn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
+            Gfx::drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::change_btn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
 
-            auto y = w.y + w.widgets[Widx::autosave_frequency].top + 1;
+            auto y = w.y + w.widgets[Widx::autosave_frequency].top;
             drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
 
             auto freq = Config::get().autosaveFrequency;
@@ -2059,7 +2071,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
             drawDropdownContent(&w, rt, Widx::autosave_frequency, stringId, freq);
 
-            y = w.y + w.widgets[Widx::autosave_amount].top + 1;
+            y = w.y + w.widgets[Widx::autosave_amount].top;
             drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_amount, nullptr);
 
             auto scale = Config::get().autosaveAmount;
