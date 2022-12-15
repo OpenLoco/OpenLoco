@@ -1837,6 +1837,8 @@ namespace OpenLoco::StringIds
     constexpr string_id gameplay_tweaks = 2268;
     constexpr string_id preferred_owner = 2269;
     constexpr string_id autosave_preferences = 2270;
+    constexpr string_id disableTownExpansion = 2271;
+    constexpr string_id disableTownExpansion_tip = 2272;
 
     constexpr string_id temporary_object_load_str_0 = 8192;
     constexpr string_id temporary_object_load_str_1 = 8193;

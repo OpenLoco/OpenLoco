@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#175, #938] Allow modifying object selection in-game (cheat menu).
 - Feature: [#1664] Allow modifying scenario options in-game (cheat menu).
+- Feature: [#1736] Allow disabling town renewal/expansion/growth (options menu).
 - Fix: [#1727] Starting loan is not displayed properly in scenario options.
 - Fix: [#1737] Unpacked objects accidentally get installed into wrong folder.
 - Change: [#1736] The miscellaneous options tab has been redesigned to reduce clutter.
