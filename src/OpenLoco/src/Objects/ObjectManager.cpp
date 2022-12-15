@@ -792,19 +792,12 @@ namespace OpenLoco::ObjectManager
     // is possible and if not permutates the name until it is valid.
     static fs::path findObjectPath(std::string& filename)
     {
-        auto objPath = Environment::getPath(Environment::PathId::objects);
-
-        bool permutateName = false;
-        do
+        auto objPath = Environment::getPath(Environment::PathId::objects) / (filename + ".DAT");
+        while (fs::exists(objPath))
         {
-            if (permutateName)
-            {
-                permutateObjectFilename(filename);
-            }
-            objPath.replace_filename(filename);
-            objPath.replace_extension(".DAT");
-            permutateName = true;
-        } while (fs::exists(objPath));
+            permutateObjectFilename(filename);
+            objPath.replace_filename(filename + ".DAT");
+        }
         return objPath;
     }
 
