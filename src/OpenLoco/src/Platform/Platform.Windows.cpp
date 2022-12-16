@@ -12,7 +12,7 @@
 
 #include "Platform.h"
 #include "Ui.h"
-#include "Utility/String.hpp"
+#include <OpenLoco/Utility/String.hpp>
 
 namespace OpenLoco::Platform
 {

@@ -21,9 +21,9 @@
 #include "Ui.h"
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
-#include "Utility/String.hpp"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Utility/String.hpp>
 #include <string_view>
 
 using namespace OpenLoco::Interop;

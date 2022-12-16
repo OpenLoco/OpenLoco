@@ -1,7 +1,6 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Console.h"
-#include "Core/FileSystem.hpp"
 #include "Environment.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
@@ -16,8 +15,9 @@
 #include "Ui.h"
 #include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
-#include "Utility/String.hpp"
 #include "Widget.h"
+#include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Utility/String.hpp>
 
 #include <SDL2/SDL.h>
 

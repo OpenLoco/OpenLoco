@@ -1,6 +1,5 @@
 #include "NetworkServer.h"
 #include "Console.h"
-#include "Core/Span.hpp"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "NetworkConnection.h"
@@ -8,8 +7,9 @@
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
-#include "Utility/Stream.hpp"
-#include "Utility/String.hpp"
+#include <OpenLoco/Core/Span.hpp>
+#include <OpenLoco/Utility/Stream.hpp>
+#include <OpenLoco/Utility/String.hpp>
 
 using namespace OpenLoco;
 using namespace OpenLoco::Network;

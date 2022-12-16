@@ -17,8 +17,8 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct GameState
     {
-        Utility::Prng rng;                                                       // 0x000000 (0x00525E18)
-        Utility::Prng unkRng;                                                    // 0x000008 (0x00525E20)
+        Core::Prng rng;                                                          // 0x000000 (0x00525E18)
+        Core::Prng unkRng;                                                       // 0x000008 (0x00525E20)
         uint32_t flags;                                                          // 0x000010 (0x00525E28)
         uint32_t currentDay;                                                     // 0x000014 (0x00525E2C)
         uint16_t dayCounter;                                                     // 0x000018 (0x00525E30)
@@ -72,7 +72,7 @@ namespace OpenLoco
         uint8_t lastMiscBuildingOption;                                          // 0x0001B1 (0x00525FC9)
         uint8_t lastWallOption;                                                  // 0x0001B2 (0x00525FCA)
         uint8_t var_1B3;                                                         // 0x0001B3 (0x00525FCB)
-        Utility::Prng var_1B4;                                                   // 0x0001B4 (0x00525FCC)
+        Core::Prng var_1B4;                                                      // 0x0001B4 (0x00525FCC)
         char scenarioFileName[256];                                              // 0x0001BC (0x00525FD4)
         char scenarioName[64];                                                   // 0x0002BC (0x005260D4)
         char scenarioDetails[256];                                               // 0x0002FC (0x00526114)

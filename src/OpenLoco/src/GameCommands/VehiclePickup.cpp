@@ -4,14 +4,14 @@
 #include "GameCommands.h"
 #include "Interop/Interop.hpp"
 #include "Types.hpp"
-#include "Utility/Prng.hpp"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Core/Prng.h>
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<Utility::Prng, 0x00525E20> _prng;
+    static loco_global<Core::Prng, 0x00525E20> _prng;
 
     // 0x0048B15B
     void playPickupSound(Vehicles::Vehicle2* veh2)

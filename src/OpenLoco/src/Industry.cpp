@@ -17,8 +17,8 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "StationManager.h"
-#include "Utility/Numeric.hpp"
 #include "ViewportManager.h"
+#include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -545,12 +545,12 @@ namespace OpenLoco
 
         const auto* indObj = ObjectManager::get<IndustryObject>(objectId);
 
-        std::optional<Utility::Prng> is23prng;
+        std::optional<Core::Prng> is23prng;
         if (indObj->flags & IndustryObjectFlags::unk23) // Livestock use this
         {
             is23prng = prng;
         }
-        std::optional<Utility::Prng> is27prng;
+        std::optional<Core::Prng> is27prng;
         if (indObj->flags & IndustryObjectFlags::unk27) // Skislope use this
         {
             // Vanilla mistake here didn't set the prng! It would just recycle from a previous unk23 caller

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Colour.h"
-#include "Core/Span.hpp"
 #include "ImageId.h"
+#include <OpenLoco/Core/Span.hpp>
 #include <array>
 #include <cstdint>
 #include <optional>

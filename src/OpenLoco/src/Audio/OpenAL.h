@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/Span.hpp"
 #include <AL/alc.h>
+#include <OpenLoco/Core/Span.hpp>
 #include <string>
 #include <vector>
 

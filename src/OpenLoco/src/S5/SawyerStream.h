@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core/FileSystem.hpp"
-#include "Core/Span.hpp"
-#include "Utility/Stream.hpp"
+#include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Core/Span.hpp>
+#include <OpenLoco/Utility/Stream.hpp>
 #include <cstdint>
 #include <memory>
 

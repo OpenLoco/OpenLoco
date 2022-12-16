@@ -13,7 +13,7 @@
 #include "PaletteMap.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
-#include "Utility/Stream.hpp"
+#include <OpenLoco/Utility/Stream.hpp>
 #include <algorithm>
 #include <cassert>
 #include <fstream>

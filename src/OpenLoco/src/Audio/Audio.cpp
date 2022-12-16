@@ -17,9 +17,9 @@
 #include "Objects/TreeObject.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
-#include "Utility/Stream.hpp"
 #include "VehicleChannel.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Utility/Stream.hpp>
 #include <array>
 #include <cassert>
 #include <fstream>

@@ -1,6 +1,5 @@
 #include "EntityManager.h"
 #include "Console.h"
-#include "Core/LocoFixedVector.hpp"
 #include "Entities/Misc.h"
 #include "EntityTweener.h"
 #include "Game.h"
@@ -11,6 +10,7 @@
 #include "Map/Tile.h"
 #include "SceneManager.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Core/LocoFixedVector.hpp>
 
 using namespace OpenLoco::Interop;
 

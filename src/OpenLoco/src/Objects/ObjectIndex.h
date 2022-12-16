@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/Span.hpp"
 #include "Object.h"
+#include <OpenLoco/Core/Span.hpp>
 #include <optional>
 #include <vector>
 

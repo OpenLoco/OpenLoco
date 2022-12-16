@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Core/BitSet.hpp"
-#include "Core/Span.hpp"
 #include "Engine/Limits.h"
 #include "Map/Tile.h"
 #include "Map/TileLoop.hpp"
 #include "Types.hpp"
-#include "Utility/Prng.hpp"
+#include <OpenLoco/Core/BitSet.hpp>
+#include <OpenLoco/Core/Prng.h>
+#include <OpenLoco/Core/Span.hpp>
 #include <limits>
 
 namespace OpenLoco
@@ -35,7 +35,7 @@ namespace OpenLoco
         coord_t x;                  // 0x02
         coord_t y;                  // 0x04
         uint16_t flags;             // 0x06
-        Utility::Prng prng;         // 0x08
+        Core::Prng prng;            // 0x08
         uint8_t objectId;           // 0x10
         uint8_t under_construction; // 0x11 (0xFF = Finished)
         uint16_t pad_12;

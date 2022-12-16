@@ -1,14 +1,19 @@
 #pragma once
 
-#include "Core/FileSystem.hpp"
-#include "Core/Span.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <istream>
+#include <nonstd/span.hpp>
 #include <stdexcept>
 #include <vector>
+
+namespace Stdx
+{
+    using nonstd::span;
+}
 
 namespace OpenLoco
 {
@@ -200,7 +205,7 @@ namespace OpenLoco
         bool _writing{};
 
     public:
-        FileStream(const fs::path path, uint8_t flags)
+        FileStream(const std::filesystem::path path, uint8_t flags)
         {
             if (flags & StreamFlags::write)
             {

@@ -5,7 +5,7 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "ObjectManager.h"
-#include "Utility/Numeric.hpp"
+#include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 
 using namespace OpenLoco::Interop;

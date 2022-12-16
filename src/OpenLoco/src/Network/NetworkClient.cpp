@@ -7,7 +7,7 @@
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
-#include "Utility/Stream.hpp"
+#include <OpenLoco/Utility/Stream.hpp>
 
 using namespace OpenLoco;
 using namespace OpenLoco::Network;

@@ -203,8 +203,6 @@ function(_loco_add_target TARGET TYPE)
         source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/src" PREFIX "src" FILES ${_PRIVATE_FILES})
     endif()
     if (_TEST_FILES AND ${OPENLOCO_BUILD_TESTS})
-        enable_testing()
-
         # Tests will be under the libraryNameTests.exe
         set(TEST_TARGET ${TARGET}Tests)
         add_executable(${TEST_TARGET} ${_TEST_FILES})

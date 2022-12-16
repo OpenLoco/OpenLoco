@@ -3,7 +3,7 @@
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "ObjectManager.h"
-#include "Utility/Numeric.hpp"
+#include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
 

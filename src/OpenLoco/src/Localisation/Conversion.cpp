@@ -1,6 +1,6 @@
 #include "Conversion.h"
 #include "Unicode.h"
-#include "Utility/Collection.hpp"
+#include <OpenLoco/Utility/Collection.hpp>
 #include <cstdlib>
 #include <string>
 

@@ -6,7 +6,6 @@
 #include "ClimateObject.h"
 #include "CompetitorObject.h"
 #include "Console.h"
-#include "Core/FileSystem.hpp"
 #include "CurrencyObject.h"
 #include "DockObject.h"
 #include "Environment.h"
@@ -43,11 +42,12 @@
 #include "TunnelObject.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
-#include "Utility/Numeric.hpp"
-#include "Utility/Stream.hpp"
 #include "VehicleObject.h"
 #include "WallObject.h"
 #include "WaterObject.h"
+#include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Utility/Numeric.hpp>
+#include <OpenLoco/Utility/Stream.hpp>
 #include <vector>
 
 using namespace OpenLoco::Interop;

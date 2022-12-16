@@ -1,6 +1,7 @@
 #define DO_TITLE_SEQUENCE_CHECKS
 
 #include "S5.h"
+
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Entities/EntityManager.h"
@@ -22,10 +23,10 @@
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
-#include "Utility/Exception.hpp"
-#include "Utility/Stream.hpp"
 #include "Vehicles/Orders.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Utility/Exception.hpp>
+#include <OpenLoco/Utility/Stream.hpp>
 #include <fstream>
 #include <iomanip>
 #include <sstream>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/Span.hpp"
 #include "Tile.h"
+#include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
 #include <tuple>
 

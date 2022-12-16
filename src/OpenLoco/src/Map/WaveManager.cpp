@@ -1,5 +1,4 @@
 #include "WaveManager.h"
-#include "Core/LocoFixedVector.hpp"
 #include "Engine/Limits.h"
 #include "Game.h"
 #include "GameState.h"
@@ -8,16 +7,17 @@
 #include "SurfaceElement.h"
 #include "TileManager.h"
 #include "Ui/WindowManager.h"
-#include "Utility/Prng.hpp"
 #include "ViewportManager.h"
 #include "Wave.h"
+#include <OpenLoco/Core/LocoFixedVector.hpp>
+#include <OpenLoco/Core/Prng.h>
 
 namespace OpenLoco::Map::WaveManager
 {
     using namespace OpenLoco::Interop;
     using namespace OpenLoco::Ui;
 
-    static loco_global<Utility::Prng, 0x00525E20> _prng; // not the gPrng
+    static loco_global<Core::Prng, 0x00525E20> _prng; // not the gPrng
 
     const static Pos2 _offsets[4] = {
         Pos2(+32, 0),

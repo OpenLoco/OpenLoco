@@ -7,9 +7,9 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
-#include "Utility/Numeric.hpp"
-#include "Utility/Stream.hpp"
-#include "Utility/String.hpp"
+#include <OpenLoco/Utility/Numeric.hpp>
+#include <OpenLoco/Utility/Stream.hpp>
+#include <OpenLoco/Utility/String.hpp>
 #include <cstdint>
 #include <fstream>
 

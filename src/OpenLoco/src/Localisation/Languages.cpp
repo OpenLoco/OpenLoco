@@ -1,8 +1,8 @@
 #include "Languages.h"
 #include "Conversion.h"
-#include "Core/FileSystem.hpp"
 #include "Environment.h"
 #include "Platform/Platform.h"
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <yaml-cpp/yaml.h>
 
 #include <algorithm>

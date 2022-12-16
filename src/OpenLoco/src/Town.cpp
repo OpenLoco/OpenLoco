@@ -5,6 +5,7 @@
 #include "OpenLoco.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
