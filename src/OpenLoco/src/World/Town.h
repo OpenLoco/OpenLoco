@@ -66,6 +66,7 @@ namespace OpenLoco
         void recalculateSize();
         void grow(int32_t growFlags);
         string_id getTownSizeString() const;
+        void sub_497FFC();
     };
     static_assert(sizeof(Town) == 0x270);
 #pragma pack(pop)

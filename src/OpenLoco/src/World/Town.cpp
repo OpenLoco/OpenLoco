@@ -1,6 +1,12 @@
 #include "Town.h"
 #include "Config.h"
 #include "Localisation/StringIds.h"
+#include "Map/RoadElement.h"
+#include "Map/SurfaceElement.h"
+#include "Map/TileManager.h"
+#include "Map/Track/TrackData.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
 #include "OpenLoco.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
@@ -203,5 +209,99 @@ namespace OpenLoco
             return townSizeNames[static_cast<uint8_t>(size)];
         }
         return StringIds::town_size_hamlet;
+    }
+
+    // 0x00463BD2
+    template<typename Func>
+    static void sub_463BD2(const Map::Pos2& centreLoc, uint8_t searchSize, Func&& predicate)
+    {
+        static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
+        Map::Pos2 pos = centreLoc;
+        for (uint8_t i = 1; i < searchSize; i += 2)
+        {
+            for (uint8_t direction = 0; direction < 4; ++direction)
+            {
+                for (auto j = i; j != 0; --j)
+                {
+                    if (Map::validCoords(pos))
+                    {
+                        if (!predicate(pos))
+                        {
+                            return;
+                        }
+                    }
+                    pos += _503C6C[direction];
+                }
+            }
+            pos += Map::TilePos2{ 1, -1 };
+        }
+    }
+
+    // 0x00497FFC
+    void Town::sub_497FFC()
+    {
+        struct FindResult
+        {
+            Map::Pos2 loc;
+            Map::RoadElement* elRoad;
+        };
+        std::optional<FindResult> res;
+        auto sub_497F74 = [randVal = prng.srand_0(), &res](const Map::Pos2& loc) mutable {
+            auto tile = Map::TileManager::get(loc);
+            bool hasPassedSurface = false;
+            for (auto& el : tile)
+            {
+                auto* elSurface = el.as<Map::SurfaceElement>();
+                if (elSurface != nullptr)
+                {
+                    hasPassedSurface = true;
+                    continue;
+                }
+                if (!hasPassedSurface)
+                {
+                    continue;
+                }
+                auto* elRoad = el.as<Map::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elRoad->isGhost() || elRoad->isFlag5())
+                {
+                    continue;
+                }
+                if (elRoad->sequenceIndex() != 0)
+                {
+                    continue;
+                }
+                auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                if (!(roadObj->flags & Flags12::unk_03))
+                {
+                    continue;
+                }
+                // There is a 50% chance that it will use a new result
+                if (res.has_value())
+                {
+                    bool bitRes = randVal & 1;
+                    randVal = Utility::ror(randVal, 1);
+                    if (bitRes)
+                    {
+                        return true;
+                    }
+                }
+                res = FindResult{ loc, elRoad };
+                return true;
+            }
+            return true;
+        };
+        sub_463BD2({ x, y }, 9, sub_497F74);
+        if (res.has_value())
+        {
+            static loco_global<uint16_t, 0x001135C5A> _trackAndDirection;
+            _trackAndDirection = (res->elRoad->roadId() << 3) | res->elRoad->unkDirection() | (res->elRoad->hasBridge() ? (1 << 12) : 0);
+            auto& roadPiece = Map::TrackData::getRoadPiece(res->elRoad->roadId());
+
+            auto dx = res->elRoad->baseHeight() - roadPiece[0].z;
+        }
     }
 }
