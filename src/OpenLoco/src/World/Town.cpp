@@ -213,10 +213,27 @@ namespace OpenLoco
 
     // 0x00463BD2
     template<typename Func>
-    static void sub_463BD2(const Map::Pos2& centreLoc, uint8_t searchSize, Func&& predicate)
+    static void sub_463BD2(const Map::Pos2& topLeftLoc, uint8_t searchSize, Func&& predicate)
     {
+        /* Searches in a square of increasing size
+         * Note: Will repeateadly check the first row and column
+         *
+         *      0 1 2 3 4 5 6 7 8 9
+         *     ____________________
+         *  0 | X X Y Y Z Z J J K K
+         * -1 | X X   Y   Z   J   K
+         * -2 | Y     Y   Z   J   K
+         * -3 | Y Y Y Y   Z   J   K
+         * -4 | Z         Z   J   K
+         * -5 | Z Z Z Z Z Z   J   K
+         * -6 | J             J   K
+         * -7 | J J J J J J J J   K
+         * -8 | K                 K
+         * -9 | K K K K K K K K K K
+         */
+        // Note: Could be refactored into a fixed array
         static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
-        Map::Pos2 pos = centreLoc;
+        Map::Pos2 pos = topLeftLoc;
         for (uint8_t i = 1; i < searchSize; i += 2)
         {
             for (uint8_t direction = 0; direction < 4; ++direction)
