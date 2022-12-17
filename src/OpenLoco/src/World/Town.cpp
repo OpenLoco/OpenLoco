@@ -255,7 +255,7 @@ namespace OpenLoco
     }
 
     // 0x00497FFC
-    void Town::sub_497FFC()
+    std::optional<Sub497FFCResult> Town::sub_497FFC()
     {
         struct FindResult
         {
@@ -312,13 +312,19 @@ namespace OpenLoco
             return true;
         };
         sub_463BD2({ x, y }, 9, sub_497F74);
-        if (res.has_value())
+        if (!res.has_value())
         {
-            static loco_global<uint16_t, 0x001135C5A> _trackAndDirection;
-            _trackAndDirection = (res->elRoad->roadId() << 3) | res->elRoad->unkDirection() | (res->elRoad->hasBridge() ? (1 << 12) : 0);
-            auto& roadPiece = Map::TrackData::getRoadPiece(res->elRoad->roadId());
-
-            auto dx = res->elRoad->baseHeight() - roadPiece[0].z;
+            return std::nullopt;
         }
+
+        // static loco_global<uint16_t, 0x001135C5A> _trackAndDirection;
+
+        auto& roadPiece = Map::TrackData::getRoadPiece(res->elRoad->roadId());
+
+        return Sub497FFCResult{
+            Map::Pos3(res->loc, res->elRoad->baseHeight() - roadPiece[0].z),
+            static_cast<uint16_t>((res->elRoad->roadId() << 3) | res->elRoad->unkDirection()),
+            res->elRoad->hasBridge()
+        };
     }
 }
