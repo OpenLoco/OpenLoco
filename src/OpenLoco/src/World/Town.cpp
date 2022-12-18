@@ -257,6 +257,10 @@ namespace OpenLoco
     // 0x00497FFC
     std::optional<Sub497FFCResult> Town::sub_497FFC()
     {
+        registers regs;
+        regs.esi = X86Pointer(this);
+        call(0x00497FFC, regs);
+
         struct FindResult
         {
             Map::Pos2 loc;
