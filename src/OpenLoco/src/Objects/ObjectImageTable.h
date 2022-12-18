@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/Span.hpp"
+#include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
 
 namespace OpenLoco::ObjectManager
