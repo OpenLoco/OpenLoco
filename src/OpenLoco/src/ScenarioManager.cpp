@@ -203,6 +203,8 @@ namespace OpenLoco::ScenarioManager
         if ((options.scenarioText.flags & 0xFF) == 0xFF)
         {
             // Details are not loaded they are prepopulated
+            strncpy(entry.scenarioName, options.scenarioName, sizeof(entry.scenarioName));
+            strncpy(entry.description, options.scenarioDetails, sizeof(entry.description));
             return true;
         }
 
@@ -235,7 +237,7 @@ namespace OpenLoco::ScenarioManager
         }
         ObjectManager::load(options.currency);
         ObjectManager::reloadAll();
-        call(0x0046E07B); // load currency gfx
+        Gfx::loadCurrency();
 
         FormatArguments args{};
         Scenario::formatChallengeArguments(objective, progress, args);
@@ -249,7 +251,7 @@ namespace OpenLoco::ScenarioManager
             ObjectManager::unload(options.currency);
             ObjectManager::load(*previousCurrency);
             ObjectManager::reloadAll();
-            call(0x0046E07B); // load currency gfx
+            Gfx::loadCurrency();
         }
     }
 
@@ -343,10 +345,7 @@ namespace OpenLoco::ScenarioManager
 
             entry.currency = options->currency;
             loadScenarioProgress(entry, *options);
-            if (entryFound)
-            {
-            }
-            else
+            if (!entryFound)
             {
                 _scenarioHeader->numScenarios++;
                 std::strcpy(entry.filename, u8FileName.c_str());
