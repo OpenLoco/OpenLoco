@@ -15,6 +15,7 @@
 #include "SceneManager.h"
 #include "Ui.h"
 #include <OpenLoco/Utility/Stream.hpp>
+#include <OpenLoco/Utility/String.hpp>
 #include <fstream>
 
 using namespace OpenLoco::Interop;
@@ -284,6 +285,10 @@ namespace OpenLoco::ScenarioManager
         for (const auto& file : fs::directory_iterator(scenarioPath, fs::directory_options::skip_permission_denied))
         {
             if (!file.is_regular_file())
+            {
+                continue;
+            }
+            if (!Utility::iequals(file.path().extension().u8string(), ".sc5"))
             {
                 continue;
             }
