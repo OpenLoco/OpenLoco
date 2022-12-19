@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if ((company.challengeFlags & CompanyFlags::sorted) != 0)
+                if ((company.challengeFlags & CompanyFlags::sorted) != CompanyFlags::none)
                     continue;
 
                 if (chosenCompany == CompanyId::null)
@@ -506,11 +506,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 auto performanceStringId = StringIds::performance_index;
 
-                if ((company->challengeFlags & CompanyFlags::increasedPerformance) && (company->challengeFlags & CompanyFlags::decreasedPerformance))
+                if ((company->challengeFlags & CompanyFlags::increasedPerformance) != CompanyFlags::none && (company->challengeFlags & CompanyFlags::decreasedPerformance) != CompanyFlags::none)
                 {
                     performanceStringId = StringIds::performance_index_decrease;
 
-                    if (company->challengeFlags & CompanyFlags::increasedPerformance)
+                    if ((company->challengeFlags & CompanyFlags::increasedPerformance) != CompanyFlags::none)
                     {
                         performanceStringId = StringIds::performance_index_increase;
                     }

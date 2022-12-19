@@ -478,14 +478,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Challenge progress
         auto flags = saveInfo.challengeFlags;
-        if (!(flags & CompanyFlags::challengeBeatenByOpponent))
+        if ((flags & CompanyFlags::challengeBeatenByOpponent) == CompanyFlags::none)
         {
             auto stringId = StringIds::window_browse_challenge_completed;
             int16_t progress = 0;
-            if (!(flags & CompanyFlags::challengeCompleted))
+            if ((flags & CompanyFlags::challengeCompleted) == CompanyFlags::none)
             {
                 stringId = StringIds::window_browse_challenge_failed;
-                if (!(flags & CompanyFlags::challengeFailed))
+                if ((flags & CompanyFlags::challengeFailed) == CompanyFlags::none)
                 {
                     stringId = StringIds::window_browse_challenge_progress;
                     progress = saveInfo.challengeProgress;

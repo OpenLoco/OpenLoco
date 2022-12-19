@@ -773,11 +773,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 formatPerformanceIndex(company->performanceIndex, args);
 
                 string_id formatId = StringIds::company_details_performance;
-                if (company->challengeFlags & CompanyFlags::decreasedPerformance)
+                if ((company->challengeFlags & CompanyFlags::decreasedPerformance) != CompanyFlags::none)
                 {
                     formatId = StringIds::company_details_performance_decreasing;
                 }
-                else if (company->challengeFlags & CompanyFlags::increasedPerformance)
+                else if ((company->challengeFlags & CompanyFlags::increasedPerformance) != CompanyFlags::none)
                 {
                     formatId = StringIds::company_details_performance_increasing;
                 }
@@ -1639,7 +1639,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 self.widgets[widx::loan_increase].type = WidgetType::button;
                 self.widgets[widx::loan_autopay].type = WidgetType::checkbox;
 
-                if ((company->challengeFlags & CompanyFlags::autopayLoan) != 0)
+                if ((company->challengeFlags & CompanyFlags::autopayLoan) != CompanyFlags::none)
                 {
                     self.activatedWidgets |= (1ULL << Finances::widx::loan_autopay);
                 }
@@ -1751,7 +1751,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 auto args = FormatArguments::common(company->cash);
 
                 auto cashFormat = StringIds::cash_positive;
-                if ((company->challengeFlags & CompanyFlags::bankrupt) != 0)
+                if ((company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
                     cashFormat = StringIds::cash_bankrupt;
                 if (company->cash.var_04 < 0)
                     cashFormat = StringIds::cash_negative;
@@ -2349,7 +2349,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             Company* playerCompany = CompanyManager::getPlayerCompany();
 
-            if ((playerCompany->challengeFlags & CompanyFlags::challengeCompleted) != 0)
+            if ((playerCompany->challengeFlags & CompanyFlags::challengeCompleted) != CompanyFlags::none)
             {
                 uint16_t years = Scenario::getObjectiveProgress().completedChallengeInMonths / 12;
                 uint16_t months = Scenario::getObjectiveProgress().completedChallengeInMonths % 12;
@@ -2359,13 +2359,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            if ((playerCompany->challengeFlags & CompanyFlags::challengeFailed) != 0)
+            if ((playerCompany->challengeFlags & CompanyFlags::challengeFailed) != CompanyFlags::none)
             {
                 Gfx::drawStringLeftWrapped(*rt, self.x + 5, y, self.width - 10, Colour::black, StringIds::failed_you_failed_to_complete_the_challenge);
                 return;
             }
 
-            if ((playerCompany->challengeFlags & CompanyFlags::challengeBeatenByOpponent) != 0)
+            if ((playerCompany->challengeFlags & CompanyFlags::challengeBeatenByOpponent) != CompanyFlags::none)
             {
                 uint16_t years = Scenario::getObjectiveProgress().completedChallengeInMonths / 12;
                 uint16_t months = Scenario::getObjectiveProgress().completedChallengeInMonths % 12;

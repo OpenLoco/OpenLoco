@@ -390,7 +390,7 @@ namespace OpenLoco::CompanyManager
             return StringIds::company_status_empty;
         }
 
-        if (company->challengeFlags & CompanyFlags::bankrupt)
+        if ((company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
             return StringIds::company_status_bankrupt;
 
         const string_id observationStatusStrings[] = {

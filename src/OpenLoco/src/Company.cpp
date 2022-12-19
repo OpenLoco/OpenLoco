@@ -167,7 +167,7 @@ namespace OpenLoco
 
         callThinkFunc2();
 
-        if (headquartersX != -1 || (challengeFlags & CompanyFlags::bankrupt) || ((challengeFlags & CompanyFlags::unk0) == 0))
+        if (headquartersX != -1 || (challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none || (challengeFlags & CompanyFlags::unk0) == CompanyFlags::none)
         {
             return;
         }
@@ -433,7 +433,7 @@ namespace OpenLoco
 
     void Company::updateLoanAutorepay()
     {
-        if (currentLoan > 0 && cash > 0 && ((challengeFlags & CompanyFlags::autopayLoan) != 0))
+        if (currentLoan > 0 && cash > 0 && ((challengeFlags & CompanyFlags::autopayLoan) != CompanyFlags::none))
         {
             GameCommands::ChangeLoanArgs args{};
             args.newLoan = currentLoan - std::max<currency32_t>(0, std::min<currency32_t>(currentLoan, cash.asInt64()));
@@ -703,7 +703,7 @@ namespace OpenLoco
             return;
         }
 
-        if (challengeFlags & CompanyFlags::bankrupt)
+        if ((challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
             bool hasAssets = false;
             for (auto& unk : var_4A8)
