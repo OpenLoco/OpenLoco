@@ -107,7 +107,7 @@ namespace OpenLoco
         static_assert(sizeof(unk4A8) == 0x8C);
         string_id name;
         string_id ownerName;
-        uint32_t challengeFlags;          // 0x04
+        CompanyFlags challengeFlags;      // 0x04
         currency48_t cash;                // 0x08
         currency32_t currentLoan;         // 0x0E
         uint32_t updateCounter;           // 0x12
