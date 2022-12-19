@@ -4,6 +4,7 @@
 #include "Economy/Expenditures.h"
 #include "Map/Map.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -11,19 +12,21 @@
 
 namespace OpenLoco
 {
-    namespace CompanyFlags
+    enum class CompanyFlags : uint32_t
     {
-        constexpr uint32_t unk0 = (1 << 0);                      // 0x01
-        constexpr uint32_t sorted = (1 << 3);                    // 0x08
-        constexpr uint32_t increasedPerformance = (1 << 4);      // 0x10
-        constexpr uint32_t decreasedPerformance = (1 << 5);      // 0x20
-        constexpr uint32_t challengeCompleted = (1 << 6);        // 0x40
-        constexpr uint32_t challengeFailed = (1 << 7);           // 0x80
-        constexpr uint32_t challengeBeatenByOpponent = (1 << 8); // 0x100
-        constexpr uint32_t bankrupt = (1 << 9);                  // 0x200
-        constexpr uint32_t autopayLoan = (1 << 31);              // 0x80000000 new for OpenLoco
-    }
-
+        none = 0U,
+        unk0 = (1U << 0),                      // 0x01
+        sorted = (1U << 3),                    // 0x08
+        increasedPerformance = (1U << 4),      // 0x10
+        decreasedPerformance = (1U << 5),      // 0x20
+        challengeCompleted = (1U << 6),        // 0x40
+        challengeFailed = (1U << 7),           // 0x80
+        challengeBeatenByOpponent = (1U << 8), // 0x100
+        bankrupt = (1U << 9),                  // 0x200
+        autopayLoan = (1U << 31),              // 0x80000000 new for OpenLoco
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(CompanyFlags);
+    
     enum class CorporateRating
     {
         platelayer,           // 0 - 9.9%
