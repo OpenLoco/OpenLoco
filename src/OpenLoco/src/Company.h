@@ -26,7 +26,7 @@ namespace OpenLoco
         autopayLoan = (1U << 31),              // 0x80000000 new for OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(CompanyFlags);
-    
+
     enum class CorporateRating
     {
         platelayer,           // 0 - 9.9%
