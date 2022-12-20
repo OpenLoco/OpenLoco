@@ -234,7 +234,7 @@ namespace OpenLoco
         // Note: Could be refactored into a fixed array
         static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
         Map::Pos2 pos = topLeftLoc;
-        for (uint8_t i = 1; i < searchSize; i += 2)
+        for (uint8_t i = 1; i <= searchSize; i += 2)
         {
             for (uint8_t direction = 0; direction < 4; ++direction)
             {
@@ -260,7 +260,15 @@ namespace OpenLoco
         registers regs;
         regs.esi = X86Pointer(this);
         call(0x00497FFC, regs);
+        std::optional<Sub497FFCResult> origRes;
 
+        if (regs.ax != -1)
+        {
+            static loco_global<uint16_t, 0x001135C5A> _trackAndDirection2;
+            origRes = Sub497FFCResult{
+                Map::Pos3{ regs.ax, regs.cx, regs.dx }, static_cast<uint16_t>(regs.ebp), static_cast<bool>((*_trackAndDirection2) & (1 << 12))
+            };
+        }
         struct FindResult
         {
             Map::Pos2 loc;
@@ -316,6 +324,7 @@ namespace OpenLoco
             return true;
         };
         sub_463BD2({ x, y }, 9, sub_497F74);
+        assert(origRes.has_value() == res.has_value());
         if (!res.has_value())
         {
             return std::nullopt;
@@ -324,11 +333,14 @@ namespace OpenLoco
         // static loco_global<uint16_t, 0x001135C5A> _trackAndDirection;
 
         auto& roadPiece = Map::TrackData::getRoadPiece(res->elRoad->roadId());
-
-        return Sub497FFCResult{
+        std::optional<Sub497FFCResult> newRes = Sub497FFCResult{
             Map::Pos3(res->loc, res->elRoad->baseHeight() - roadPiece[0].z),
             static_cast<uint16_t>((res->elRoad->roadId() << 3) | res->elRoad->unkDirection()),
             res->elRoad->hasBridge()
         };
+        assert(origRes->roadStart == newRes->roadStart);
+        assert(origRes->tad == newRes->tad);
+        assert(origRes->isBridge == newRes->isBridge);
+        return newRes;
     }
 }
