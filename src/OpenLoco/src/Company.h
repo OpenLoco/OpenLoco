@@ -194,6 +194,8 @@ namespace OpenLoco
 
         void sub_4308D4();
         void sub_494805();
+
+        uint8_t getNewChallengeProgress() const;
     };
 #pragma pack(pop)
 

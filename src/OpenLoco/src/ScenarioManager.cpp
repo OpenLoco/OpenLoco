@@ -1,4 +1,5 @@
 #include "ScenarioManager.h"
+#include "CompanyManager.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
 
@@ -85,6 +86,15 @@ namespace OpenLoco::ScenarioManager
         registers regs;
         regs.al = al;
         call(0x0044452F, regs);
+    }
+
+    // 0x00438959
+    void saveNewScore(Scenario::ObjectiveProgress& progress, const CompanyId companyId)
+    {
+        auto* company = CompanyManager::get(companyId);
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x00438959, regs);
     }
 
     // 0x00525F5E

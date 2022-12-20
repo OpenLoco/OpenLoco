@@ -1,9 +1,15 @@
 #pragma once
 
 #include "Objects/Object.h"
+#include "Types.hpp"
 
 #include <cstddef>
 #include <cstdint>
+
+namespace OpenLoco::Scenario
+{
+    struct ObjectiveProgress;
+}
 
 namespace OpenLoco::ScenarioManager
 {
@@ -46,6 +52,7 @@ namespace OpenLoco::ScenarioManager
     uint16_t getScenarioCountByCategory(uint8_t category);
     ScenarioIndexEntry* getNthScenarioFromCategory(uint8_t category, uint8_t index);
     void loadIndex(uint8_t al);
+    void saveNewScore(Scenario::ObjectiveProgress& progress, const CompanyId companyId);
 
     // 0x00525F5E
     uint32_t getScenarioTicks();
