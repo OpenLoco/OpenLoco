@@ -145,6 +145,12 @@ namespace OpenLoco::ObjectManager
         ObjectHeader problemObject;
     };
 
+    struct DependentObjects
+    {
+        std::vector<ObjectHeader> required;
+        std::vector<ObjectHeader> willLoad;
+    };
+
     void freeTemporaryObject();
     bool loadTemporaryObject(ObjectHeader& header);
     Object* getTemporaryObject();

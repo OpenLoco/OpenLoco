@@ -6,6 +6,10 @@
 
 namespace OpenLoco
 {
+    namespace ObjectManager
+    {
+        struct DependentObjects;
+    }
 #pragma pack(push, 1)
     struct ClimateObject
     {
@@ -19,7 +23,7 @@ namespace OpenLoco
         uint8_t pad_09;
 
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

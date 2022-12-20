@@ -7,6 +7,10 @@
 
 namespace OpenLoco
 {
+    namespace ObjectManager
+    {
+        struct DependentObjects;
+    }
     namespace Gfx
     {
         struct RenderTarget;
@@ -46,7 +50,7 @@ namespace OpenLoco
         uint16_t obsoleteYear; // 0x1C
 
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
     };

@@ -19,6 +19,7 @@
 #include "LevelCrossingObject.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "ObjectImageTable.h"
 #include "ObjectIndex.h"
 #include "ObjectStringTable.h"
 #include "RegionObject.h"
@@ -76,8 +77,6 @@ namespace OpenLoco::ObjectManager
 #pragma pack(pop)
 
     loco_global<ObjectRepositoryItem[maxObjectTypes], 0x4FE0B8> _objectRepository;
-
-    loco_global<uint32_t, 0x0050D154> _totalNumImages;
 
     static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
@@ -351,111 +350,111 @@ namespace OpenLoco::ObjectManager
         }
     }
 
-    static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, stdx::span<std::byte> data)
+    static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, stdx::span<const std::byte> data, DependentObjects* dependencies = nullptr)
     {
         switch (handle.type)
         {
             case ObjectType::interfaceSkin:
-                reinterpret_cast<InterfaceSkinObject*>(&obj)->load(handle, data);
+                reinterpret_cast<InterfaceSkinObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::sound:
-                reinterpret_cast<SoundObject*>(&obj)->load(handle, data);
+                reinterpret_cast<SoundObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::currency:
-                reinterpret_cast<CurrencyObject*>(&obj)->load(handle, data);
+                reinterpret_cast<CurrencyObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::steam:
-                reinterpret_cast<SteamObject*>(&obj)->load(handle, data);
+                reinterpret_cast<SteamObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::rock:
-                reinterpret_cast<RockObject*>(&obj)->load(handle, data);
+                reinterpret_cast<RockObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::water:
-                reinterpret_cast<WaterObject*>(&obj)->load(handle, data);
+                reinterpret_cast<WaterObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::land:
-                reinterpret_cast<LandObject*>(&obj)->load(handle, data);
+                reinterpret_cast<LandObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::townNames:
-                reinterpret_cast<TownNamesObject*>(&obj)->load(handle, data);
+                reinterpret_cast<TownNamesObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::cargo:
-                reinterpret_cast<CargoObject*>(&obj)->load(handle, data);
+                reinterpret_cast<CargoObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::wall:
-                reinterpret_cast<WallObject*>(&obj)->load(handle, data);
+                reinterpret_cast<WallObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::trackSignal:
-                reinterpret_cast<TrainSignalObject*>(&obj)->load(handle, data);
+                reinterpret_cast<TrainSignalObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::levelCrossing:
-                reinterpret_cast<LevelCrossingObject*>(&obj)->load(handle, data);
+                reinterpret_cast<LevelCrossingObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::streetLight:
-                reinterpret_cast<StreetLightObject*>(&obj)->load(handle, data);
+                reinterpret_cast<StreetLightObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::tunnel:
-                reinterpret_cast<TunnelObject*>(&obj)->load(handle, data);
+                reinterpret_cast<TunnelObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::bridge:
-                reinterpret_cast<BridgeObject*>(&obj)->load(handle, data);
+                reinterpret_cast<BridgeObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::trackStation:
-                reinterpret_cast<TrainStationObject*>(&obj)->load(handle, data);
+                reinterpret_cast<TrainStationObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::trackExtra:
-                reinterpret_cast<TrackExtraObject*>(&obj)->load(handle, data);
+                reinterpret_cast<TrackExtraObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::track:
-                reinterpret_cast<TrackObject*>(&obj)->load(handle, data);
+                reinterpret_cast<TrackObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::roadStation:
-                reinterpret_cast<RoadStationObject*>(&obj)->load(handle, data);
+                reinterpret_cast<RoadStationObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::roadExtra:
-                reinterpret_cast<RoadExtraObject*>(&obj)->load(handle, data);
+                reinterpret_cast<RoadExtraObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::road:
-                reinterpret_cast<RoadObject*>(&obj)->load(handle, data);
+                reinterpret_cast<RoadObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::airport:
-                reinterpret_cast<AirportObject*>(&obj)->load(handle, data);
+                reinterpret_cast<AirportObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::dock:
-                reinterpret_cast<DockObject*>(&obj)->load(handle, data);
+                reinterpret_cast<DockObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::vehicle:
-                reinterpret_cast<VehicleObject*>(&obj)->load(handle, data);
+                reinterpret_cast<VehicleObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::tree:
-                reinterpret_cast<TreeObject*>(&obj)->load(handle, data);
+                reinterpret_cast<TreeObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::snow:
-                reinterpret_cast<SnowObject*>(&obj)->load(handle, data);
+                reinterpret_cast<SnowObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::climate:
-                reinterpret_cast<ClimateObject*>(&obj)->load(handle, data);
+                reinterpret_cast<ClimateObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::hillShapes:
-                reinterpret_cast<HillShapesObject*>(&obj)->load(handle, data);
+                reinterpret_cast<HillShapesObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::building:
-                reinterpret_cast<BuildingObject*>(&obj)->load(handle, data);
+                reinterpret_cast<BuildingObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::scaffolding:
-                reinterpret_cast<ScaffoldingObject*>(&obj)->load(handle, data);
+                reinterpret_cast<ScaffoldingObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::industry:
-                reinterpret_cast<IndustryObject*>(&obj)->load(handle, data);
+                reinterpret_cast<IndustryObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::region:
-                reinterpret_cast<RegionObject*>(&obj)->load(handle, data);
+                reinterpret_cast<RegionObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::competitor:
-                reinterpret_cast<CompetitorObject*>(&obj)->load(handle, data);
+                reinterpret_cast<CompetitorObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::scenarioText:
-                reinterpret_cast<ScenarioTextObject*>(&obj)->load(handle, data);
+                reinterpret_cast<ScenarioTextObject*>(&obj)->load(handle, data, dependencies);
                 break;
             default:
                 assert(false);
@@ -466,7 +465,7 @@ namespace OpenLoco::ObjectManager
     // 0x0047237D
     void reloadAll()
     {
-        _totalNumImages = 0x201A; // TODO: Why this value?
+        setTotalNumImages(0x201A); // TODO: Why this value?
         for (auto type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
         {
             for (LoadedObjectId id = 0; id < getMaxObjects(type); id++)
@@ -476,7 +475,7 @@ namespace OpenLoco::ObjectManager
                 if (obj != nullptr)
                 {
                     auto& extHdr = getRepositoryItem(type).objectEntryExtendeds[id];
-                    callObjectLoad(handle, *obj, stdx::span<std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
+                    callObjectLoad(handle, *obj, stdx::span<const std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
                 }
             }
         }
@@ -595,17 +594,33 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        const uint32_t oldNumImages = _totalNumImages;
-        _totalNumImages = Gfx::G1ExpectedCount::kDisc;
+        const uint32_t oldNumImages = getTotalNumImages();
+        setTotalNumImages(Gfx::G1ExpectedCount::kDisc);
         _temporaryObject = preLoadObj->object;
         _isPartialLoaded = true;
         _isTemporaryObject = 0xFF;
-        callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData);
+        auto* depObjs = Interop::addr<0x0050D158, uint8_t*>();
+        DependentObjects dependencies;
+        callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData, depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF) ? &dependencies : nullptr);
+        if (depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF))
+        {
+            *depObjs++ = static_cast<uint8_t>(dependencies.required.size());
+            if (!dependencies.required.empty())
+            {
+                std::copy(dependencies.required.begin(), dependencies.required.end(), reinterpret_cast<ObjectHeader*>(depObjs));
+                depObjs += sizeof(ObjectHeader) * dependencies.required.size();
+            }
+            *depObjs++ = static_cast<uint8_t>(dependencies.willLoad.size());
+            if (!dependencies.willLoad.empty())
+            {
+                std::copy(dependencies.willLoad.begin(), dependencies.willLoad.end(), reinterpret_cast<ObjectHeader*>(depObjs));
+            }
+        }
         _isTemporaryObject = 0;
         _isPartialLoaded = false;
 
-        _numImages = _totalNumImages - Gfx::G1ExpectedCount::kDisc;
-        _totalNumImages = oldNumImages;
+        _numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
+        setTotalNumImages(oldNumImages);
         return true;
     }
 
@@ -634,7 +649,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        if (_totalNumImages >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
+        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
         {
             free(preLoadObj->object);
             // Too many objects loaded and no free image space
@@ -866,7 +881,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        if (_totalNumImages >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
+        if (getTotalNumImages() >= Gfx::G1ExpectedCount::kObjects + Gfx::G1ExpectedCount::kDisc)
         {
             // Free objectData?
             return false;
@@ -1077,6 +1092,21 @@ namespace OpenLoco::ObjectManager
                 regs = backup;
                 regs.ebp += res.tableLength;
                 regs.eax = res.str;
+                return 0;
+            });
+
+        registerHook(
+            0x0047221F,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                // 0x20000 chosen as a large number
+                stdx::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x20000);
+                auto res = ObjectManager::loadImageTable(data);
+
+                regs = backup;
+                regs.ebp += res.tableLength;
+                regs.eax = res.imageOffset;
                 return 0;
             });
     }

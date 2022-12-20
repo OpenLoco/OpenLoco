@@ -6,6 +6,10 @@
 
 namespace OpenLoco
 {
+    namespace ObjectManager
+    {
+        struct DependentObjects;
+    }
 #pragma pack(push, 1)
     struct TownNamesObject
     {
@@ -22,7 +26,7 @@ namespace OpenLoco
         Unk unks[6];    // 0x02
 
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<std::byte> data);
+        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

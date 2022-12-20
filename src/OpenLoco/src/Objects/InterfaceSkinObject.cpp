@@ -2,17 +2,20 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "ObjectImageTable.h"
+#include "ObjectStringTable.h"
 
 namespace OpenLoco
 {
     // 0x0043C82D
-    void InterfaceSkinObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void InterfaceSkinObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x0043C82D, regs);
+        auto remainingData = data.subspan(sizeof(InterfaceSkinObject));
+        auto stringRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = stringRes.str;
+        remainingData = remainingData.subspan(stringRes.tableLength);
+        auto imageRes = ObjectManager::loadImageTable(remainingData);
+        img = imageRes.imageOffset;
     }
 
     // 0x0043C853

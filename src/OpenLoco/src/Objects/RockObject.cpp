@@ -6,7 +6,7 @@
 namespace OpenLoco
 {
     // 0x004699C9
-    void RockObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void RockObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);

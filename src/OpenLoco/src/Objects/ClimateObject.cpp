@@ -14,7 +14,7 @@ namespace OpenLoco
     }
 
     // 0x00496AF7
-    void ClimateObject::load(const LoadedObjectHandle& handle, stdx::span<std::byte> data)
+    void ClimateObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);
