@@ -348,4 +348,66 @@ namespace OpenLoco
             res->elRoad->hasBridge()
         };
     }
+
+    // 0x00497F1F
+    std::optional<uint8_t> sub_497F1F(Town& town)
+    {
+        struct Res
+        {
+            uint8_t roadObjId;  // dl
+            TownSize foundSize; // cl
+        };
+        std::optional<Res> findResult;
+        for (uint8_t roadObjId = 0; roadObjId < ObjectManager::getMaxObjects(ObjectType::road); ++roadObjId)
+        {
+            auto* roadObj = ObjectManager::get<RoadObject>(roadObjId);
+            if (roadObj == nullptr)
+            {
+                continue;
+            }
+            if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+            {
+                continue;
+            }
+            if (roadObj->hasFlags(RoadObjectFlags::unk_00))
+            {
+                continue;
+            }
+            if (findResult.has_value())
+            {
+                bool setNewFound = false;
+                if (roadObj->targetTownSize == town.size)
+                {
+                    setNewFound = true;
+                }
+                else
+                {
+                    if (roadObj->targetTownSize < town.size)
+                    {
+                        if (findResult->foundSize > town.size || roadObj->targetTownSize >= findResult->foundSize)
+                        {
+                            setNewFound = true;
+                        }
+                    }
+                    else
+                    {
+                        if (findResult->foundSize > town.size && roadObj->targetTownSize < findResult->foundSize)
+                        {
+                            setNewFound = true;
+                        }
+                    }
+                }
+                if (!setNewFound)
+                {
+                    continue;
+                }
+            }
+            findResult = Res{ roadObjId, town.size };
+        }
+        if (findResult.has_value())
+        {
+            return findResult->roadObjId;
+        }
+        return std::nullopt;
+    }
 }
