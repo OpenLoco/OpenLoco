@@ -12,6 +12,8 @@ namespace OpenLoco
     {
         struct DependentObjects;
     }
+    enum class TownSize : uint8_t;
+
     namespace Gfx
     {
         struct RenderTarget;

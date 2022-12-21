@@ -251,6 +251,16 @@ namespace OpenLoco::TownManager
                 regs = backupRegs;
                 return 0;
             });
+
+        registerHook(
+            0x00498101,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backupRegs = regs;
+                Town* town = X86Pointer<Town>(regs.esi);
+                town->buildInitialRoad();
+                regs = backupRegs;
+                return 0;
+            });
     }
 }
 

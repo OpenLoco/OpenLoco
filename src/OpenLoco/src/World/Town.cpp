@@ -1,5 +1,6 @@
 #include "Town.h"
 #include "Config.h"
+#include "GameCommands/GameCommands.h"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceElement.h"
@@ -350,7 +351,7 @@ namespace OpenLoco
     }
 
     // 0x00497F1F
-    std::optional<uint8_t> sub_497F1F(Town& town)
+    static std::optional<uint8_t> getIdealTownRoadId(const Town& town)
     {
         struct Res
         {
@@ -409,5 +410,40 @@ namespace OpenLoco
             return findResult->roadObjId;
         }
         return std::nullopt;
+    }
+
+    // 0x00498101
+    void Town::buildInitialRoad()
+    {
+        // 0x0049807D
+        auto placeRoadAtTile = [&town = *this](const World::Pos2& loc) {
+            auto tile = World::TileManager::get(loc);
+            auto* elSurface = tile.surface();
+            auto height = elSurface->baseHeight();
+            if (elSurface->slope())
+            {
+                height += 16;
+                if (elSurface->isSlopeDoubleHeight())
+                {
+                    height += 16;
+                }
+            }
+
+            auto roadObjId = getIdealTownRoadId(town);
+            if (!roadObjId.has_value())
+            {
+                return true;
+            }
+
+            GameCommands::RoadPlacementArgs args{};
+            args.pos = World::Pos3{ loc, height };
+            args.rotation = town.prng.randNext(3);
+            args.roadId = 0;
+            args.mods = 0;
+            args.bridge = 0xFF;
+            args.roadObjectId = roadObjId.value();
+            return GameCommands::doCommand(args, GameCommands::Flags::apply) == GameCommands::FAILURE;
+        };
+        squareSearch({ x, y }, 9, placeRoadAtTile);
     }
 }
