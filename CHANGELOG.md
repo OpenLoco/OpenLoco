@@ -5,6 +5,7 @@
 - Feature: [#1736] Allow disabling town renewal/expansion/growth (options menu).
 - Fix: [#1727] Starting loan is not displayed properly in scenario options.
 - Fix: [#1737] Unpacked objects accidentally get installed into wrong folder.
+- Fix: [#1738] Last selected Misc building not remembered in Building Placement tab.
 - Change: [#1736] The miscellaneous options tab has been redesigned to reduce clutter.
 
 22.11 (2022-11-20)
