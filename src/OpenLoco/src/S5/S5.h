@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CompanyManager.h"
 #include "EditorController.h"
 #include "Engine/Limits.h"
 #include "Objects/Object.h"
@@ -165,7 +166,7 @@ namespace OpenLoco::S5
         uint8_t challengeProgress;           // 0x246
         std::byte pad_247;                   // 0x247
         uint8_t image[250 * 200];            // 0x248
-        uint32_t challengeFlags;             // 0xC598 (from [company.challenge_flags])
+        CompanyFlags challengeFlags;         // 0xC598 (from [company.challenge_flags])
         std::byte pad_C59C[0xC618 - 0xC59C]; // 0xC59C
     };
 #pragma pack(pop)
@@ -176,7 +177,7 @@ namespace OpenLoco::S5
     {
         uint16_t name;                 // 0x0000
         uint16_t ownerName;            // 0x0002
-        uint32_t challengeFlags;       // 0x0004
+        CompanyFlags challengeFlags;   // 0x0004
         uint8_t cash[6];               // 0x0008
         uint32_t currentLoan;          // 0x000E
         uint32_t updateCounter;        // 0x0012

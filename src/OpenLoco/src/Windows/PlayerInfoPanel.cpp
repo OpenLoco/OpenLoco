@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto x = window.x + frame.width() / 2 + 12;
         {
             auto companyValueString = StringIds::player_info_bankrupt;
-            if (!(playerCompany->challengeFlags & CompanyFlags::bankrupt))
+            if ((playerCompany->challengeFlags & CompanyFlags::bankrupt) == CompanyFlags::none)
             {
                 if (static_cast<int16_t>(playerCompany->cash.var_04) < 0)
                 {
@@ -248,11 +248,11 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         {
             auto performanceString = StringIds::player_info_performance;
 
-            if (playerCompany->challengeFlags & CompanyFlags::increasedPerformance)
+            if ((playerCompany->challengeFlags & CompanyFlags::increasedPerformance) != CompanyFlags::none)
             {
                 performanceString = StringIds::player_info_performance_increase;
             }
-            else if (playerCompany->challengeFlags & (CompanyFlags::decreasedPerformance))
+            else if ((playerCompany->challengeFlags & CompanyFlags::decreasedPerformance) != CompanyFlags::none)
             {
                 performanceString = StringIds::player_info_performance_decrease;
             }
