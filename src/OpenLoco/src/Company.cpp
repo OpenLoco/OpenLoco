@@ -298,7 +298,8 @@ namespace OpenLoco
             Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id()));
         }
 
-        if (challengeFlags & (CompanyFlags::challengeBeatenByOpponent | CompanyFlags::challengeCompleted | CompanyFlags::challengeFailed))
+        constexpr auto requiredFlags = CompanyFlags::challengeBeatenByOpponent | CompanyFlags::challengeCompleted | CompanyFlags::challengeFailed;
+        if ((challengeFlags & requiredFlags) != CompanyFlags::none)
         {
             return;
         }
