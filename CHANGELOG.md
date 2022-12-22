@@ -1,4 +1,4 @@
-22.11+ (???)
+22.12 (2022-12-22)
 ------------------------------------------------------------------------
 - Feature: [#175, #938] Allow modifying object selection in-game (cheat menu).
 - Feature: [#1664] Allow modifying scenario options in-game (cheat menu).
