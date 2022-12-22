@@ -1,3 +1,5 @@
+# OpenLoco version 22.12+ (???)
+
 # OpenLoco version 22.12 (2022-12-22)
 
 ## Introduce Enum Flags [#1741]
