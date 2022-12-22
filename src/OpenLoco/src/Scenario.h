@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Localisation/FormatArguments.hpp"
 #include "Map/Map.hpp"
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
@@ -8,10 +7,14 @@
 namespace OpenLoco
 {
     enum class MonthId : uint8_t;
+    class FormatArguments;
 }
 
 namespace OpenLoco::Scenario
 {
+    struct Objective;
+    struct ObjectiveProgress;
+
     namespace Flags
     {
         constexpr uint16_t landscapeGenerationDone = (1 << 0);
@@ -138,6 +141,6 @@ namespace OpenLoco::Scenario
     [[noreturn]] void start();
 
     void registerHooks();
-    void formatChallengeArguments(FormatArguments& args);
+    void formatChallengeArguments(const Objective& objective, const ObjectiveProgress& progress, FormatArguments& args);
     void sub_46115C();
 }

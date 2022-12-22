@@ -2342,7 +2342,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             {
                 FormatArguments args = {};
-                Scenario::formatChallengeArguments(args);
+                Scenario::formatChallengeArguments(Scenario::getObjective(), Scenario::getObjectiveProgress(), args);
                 y = Gfx::drawStringLeftWrapped(*rt, self.x + 5, y, self.width - 10, Colour::black, StringIds::challenge_value, &args);
                 y += 5;
             }

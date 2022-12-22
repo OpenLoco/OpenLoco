@@ -14,6 +14,7 @@
 #include "Gui.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/MapGenerator.h"
@@ -414,24 +415,24 @@ namespace OpenLoco::Scenario
     // Note: no input and output parameters are in the original assembly, update is done in the memory
     // in this implementation we return FormatArguments so in the future it will be not depending on global variables
     // 0x004384E9
-    void formatChallengeArguments(FormatArguments& args)
+    void formatChallengeArguments(const Objective& objective, const ObjectiveProgress& progress, FormatArguments& args)
     {
-        switch (Scenario::getObjective().type)
+        switch (objective.type)
         {
             case Scenario::ObjectiveType::companyValue:
                 args.push(StringIds::achieve_a_company_value_of);
-                args.push(Scenario::getObjective().companyValue);
+                args.push(objective.companyValue);
                 break;
 
             case Scenario::ObjectiveType::vehicleProfit:
                 args.push(StringIds::achieve_a_monthly_profit_from_vehicles_of);
-                args.push(Scenario::getObjective().monthlyVehicleProfit);
+                args.push(objective.monthlyVehicleProfit);
                 break;
 
             case Scenario::ObjectiveType::performanceIndex:
             {
                 args.push(StringIds::achieve_a_performance_index_of);
-                int16_t performanceIndex = Scenario::getObjective().performanceIndex * 10;
+                int16_t performanceIndex = objective.performanceIndex * 10;
                 formatPerformanceIndex(performanceIndex, args);
                 break;
             }
@@ -440,35 +441,35 @@ namespace OpenLoco::Scenario
             {
                 args.push(StringIds::deliver);
                 CargoObject* cargoObject = reinterpret_cast<CargoObject*>(ObjectManager::getTemporaryObject());
-                if (Scenario::getObjective().deliveredCargoType != 0xFF)
+                if (objective.deliveredCargoType != 0xFF)
                 {
-                    cargoObject = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
+                    cargoObject = ObjectManager::get<CargoObject>(objective.deliveredCargoType);
                 }
                 args.push(cargoObject->unitNamePlural);
-                args.push(Scenario::getObjective().deliveredCargoAmount);
+                args.push(objective.deliveredCargoAmount);
                 break;
             }
         }
 
-        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beTopCompany) != 0)
+        if ((objective.flags & Scenario::ObjectiveFlags::beTopCompany) != 0)
         {
             args.push(StringIds::and_be_the_top_performing_company);
         }
-        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
+        if ((objective.flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
         {
             args.push(StringIds::and_be_one_of_the_top_3_performing_companies);
         }
-        if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+        if ((objective.flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
         {
             if (isTitleMode() || isEditorMode())
             {
                 args.push(StringIds::within_years);
-                args.push<uint16_t>(Scenario::getObjective().timeLimitYears);
+                args.push<uint16_t>(objective.timeLimitYears);
             }
             else
             {
                 args.push(StringIds::by_the_end_of);
-                args.push(Scenario::getObjectiveProgress().timeLimitUntilYear);
+                args.push(progress.timeLimitUntilYear);
             }
         }
 

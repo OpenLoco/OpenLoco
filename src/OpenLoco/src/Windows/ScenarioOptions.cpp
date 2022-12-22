@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::challenge_label);
 
             FormatArguments args = {};
-            OpenLoco::Scenario::formatChallengeArguments(args);
+            OpenLoco::Scenario::formatChallengeArguments(Scenario::getObjective(), Scenario::getObjectiveProgress(), args);
             yPos += 10;
             Gfx::drawStringLeftWrapped(*rt, xPos, yPos, window.width - 10, Colour::black, StringIds::challenge_value, &args);
         }
