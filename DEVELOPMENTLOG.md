@@ -1,5 +1,19 @@
-# OpenLoco version 22.11+ (???)
+# OpenLoco version 22.12 (2022-12-22)
 
+## Introduce Enum Flags [#1741]
+One of the limitations of C++ is that there is no nice native way to handle flags for a type. There are many alternative ways of doing it all with positives and negatives. For the history of the project we had been using a namespace of constexpr values. This was easy to use but it wasn't type safe. @ZehMatt suggested using Macro to add helper functions to a traditional enum class. This improves the type safety of the flags and reduces the chance of accidental bugs. Next month we will roll out this change to all of the flags of the game to ensure consistency.
+
+## Implement Object Image Table Loading [#1733]
+Almost all .DAT files contain an image table for the sprites used in game. Depending on the type of the object this table has a certain size. Implementing the loading function has helped identify a minor new feature compared to RCT2. Images it appears can have a flag to indicate that they are a duplicate of the previous image. We aren't entirely sure why this feature is required but its interesting.
+
+## Implement S5 functions [#1726]
+These functions are used to quickly read the main headers of save files and scenario files. The details are then used for display in the Save Selection and Scenario Selection windows. This represented some of the last of the S5 loading functionality and paves the way for introducing our own save format!
+
+## Support Building Flatpak Images (Linux) [#1711]
+Special thanks to @garethppls for this pull request. These changes to the CMake allow for OpenLoco to be built as a flatpak image for ease of use on the Linux platform. The next stage of this will be to add a CI job to create flatpak images automatically.
+
+## Split off Utility and Core Libraries [#1713]
+After last months CMake refactoring it was finally time to start splitting up the repository into a number of libraries and adding unit tests. After extracting Utility and adding tests it identified a number of edge cases we hadn't accounted for in the libraries so it hopefully will reduce bugs. There is still plenty to move into these two libraries and plenty of tests to add but its a start.
 
 # OpenLoco version 22.11 (2022-11-20)
 
