@@ -256,6 +256,21 @@ namespace OpenLoco::ScenarioManager
         }
     }
 
+    static std::optional<uint32_t> findScenario(const fs::path& fileName)
+    {
+        const auto u8FileName = fileName.filename().u8string();
+        const auto* begin = &_scenarioList[0];
+        const auto* end = &_scenarioList[_scenarioHeader->numScenarios];
+        auto res = std::find_if(begin, end, [&u8FileName](const ScenarioIndexEntry& entry) {
+            return std::strcmp(entry.filename, u8FileName.c_str()) == 0;
+        });
+        if (res != end)
+        {
+            return std::distance(begin, res);
+        }
+        return std::nullopt;
+    }
+
     // 0x004447DF
     static void createIndex(const ScenarioFolderState& currentState)
     {
@@ -295,18 +310,7 @@ namespace OpenLoco::ScenarioManager
             Ui::processMessagesMini();
 
             const auto u8FileName = file.path().filename().u8string();
-            bool entryFound = false;
-            uint32_t foundId = 0;
-            for (; foundId < _scenarioHeader->numScenarios; foundId++)
-            {
-                ScenarioIndexEntry& entry = _scenarioList[foundId];
-
-                if (std::strcmp(entry.filename, u8FileName.c_str()) == 0)
-                {
-                    entryFound = true;
-                    break;
-                }
-            }
+            auto foundId = findScenario(u8FileName);
 
             const auto options = S5::readScenarioOptions(file.path());
             if (options == nullptr)
@@ -317,7 +321,7 @@ namespace OpenLoco::ScenarioManager
             {
                 continue;
             }
-            if (!entryFound)
+            if (!foundId.has_value())
             {
                 // Its possible to have more scenarios than files in the scenario folder
                 // this is because even deleted scenarios need to keep their scores entry
@@ -334,7 +338,7 @@ namespace OpenLoco::ScenarioManager
                     std::fill_n(&_scenarioList[clearFromIndex], indexAllocSize - clearFromIndex, ScenarioIndexEntry{});
                 }
             }
-            ScenarioIndexEntry& entry = _scenarioList[entryFound ? foundId : _scenarioHeader->numScenarios];
+            ScenarioIndexEntry& entry = _scenarioList[foundId.value_or(_scenarioHeader->numScenarios)];
 
             entry.flags |= ScenarioIndexFlags::flag_0;
             entry.category = options->difficulty;
@@ -350,7 +354,7 @@ namespace OpenLoco::ScenarioManager
 
             entry.currency = options->currency;
             loadScenarioProgress(entry, *options);
-            if (!entryFound)
+            if (!foundId.has_value())
             {
                 _scenarioHeader->numScenarios++;
                 std::strcpy(entry.filename, u8FileName.c_str());
@@ -394,10 +398,20 @@ namespace OpenLoco::ScenarioManager
     // 0x00438959
     void saveNewScore(Scenario::ObjectiveProgress& progress, const CompanyId companyId)
     {
-        auto* company = CompanyManager::get(companyId);
-        registers regs;
-        regs.esi = X86Pointer(company);
-        call(0x00438959, regs);
+        auto res = findScenario(getGameState().scenarioFileName);
+        if (!res.has_value())
+        {
+            return;
+        }
+        auto& entry = _scenarioList[res.value()];
+        if (!entry.hasFlag(ScenarioIndexFlags::completed) || progress.completedChallengeInMonths < entry.completedMonths)
+        {
+            entry.flags |= ScenarioIndexFlags::completed;
+            entry.completedMonths = progress.completedChallengeInMonths;
+            auto* company = CompanyManager::get(companyId);
+            StringManager::formatString(entry.highscoreName, company->name);
+            saveIndex();
+        }
     }
 
     // 0x00525F5E
