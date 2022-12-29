@@ -75,14 +75,14 @@ namespace OpenLoco
         uint32_t var_1A;
         uint8_t var_1E;
         uint8_t var_1F;
-        uint8_t* buildingPartHeight;                   // 0x20 This is the height of a building image
-        BuildingPartAnimation* buildingPartAnimations; // 0x24
-        uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
-        IndustryObjectUnk38* var_38;                   // 0x38 Access with getUnk38 helper method
-        uint8_t* buildingParts[32];                    // 0x3C Access with getBuildingParts helper method
+        const uint8_t* buildingPartHeight;                   // 0x20 This is the height of a building image
+        const BuildingPartAnimation* buildingPartAnimations; // 0x24
+        const uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
+        const IndustryObjectUnk38* var_38;                   // 0x38 Access with getUnk38 helper method
+        const uint8_t* buildingParts[32];                    // 0x3C Access with getBuildingParts helper method
         uint8_t var_BC;
         uint8_t var_BD;
-        uint32_t var_BE;
+        const uint8_t* var_BE;
         uint32_t var_C2;
         uint32_t buildingSizeFlags; // 0xC6 flags indicating the building types size 1:large4x4, 0:small1x1
         uint16_t designedYear;      // 0xCA start year
