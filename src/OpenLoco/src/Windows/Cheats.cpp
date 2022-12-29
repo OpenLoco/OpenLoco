@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 10, 116 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_acquire_company_assets),
             makeWidget({ 10, 132 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_bankruptcy),
             makeWidget({ 10, 148 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_jail_status),
-            makeWidget({ 10, 164 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::title_scenario_challenge),
+            makeWidget({ 10, 164 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::completeChallenge),
             widgetEnd(),
         };
 
