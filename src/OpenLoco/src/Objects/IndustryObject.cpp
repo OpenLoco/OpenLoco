@@ -176,48 +176,49 @@ namespace OpenLoco
         auto remainingData = data.subspan(sizeof(IndustryObject));
 
         {
-            auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
-            name = strRes.str;
-            remainingData = remainingData.subspan(strRes.tableLength);
-            strRes = ObjectManager::loadStringTable(remainingData, handle, 1);
-            var_02 = strRes.str;
-            remainingData = remainingData.subspan(strRes.tableLength);
-            strRes = ObjectManager::loadStringTable(remainingData, handle, 2);
-            // Unused??
-            remainingData = remainingData.subspan(strRes.tableLength);
-            strRes = ObjectManager::loadStringTable(remainingData, handle, 3);
-            nameClosingDown = strRes.str;
-            remainingData = remainingData.subspan(strRes.tableLength);
-            strRes = ObjectManager::loadStringTable(remainingData, handle, 4);
-            nameUpProduction = strRes.str;
-            remainingData = remainingData.subspan(strRes.tableLength);
-            strRes = ObjectManager::loadStringTable(remainingData, handle, 5);
-            nameDownProduction = strRes.str;
-            remainingData = remainingData.subspan(strRes.tableLength);
-            strRes = ObjectManager::loadStringTable(remainingData, handle, 6);
-            nameSingular = strRes.str;
-            remainingData = remainingData.subspan(strRes.tableLength);
-            strRes = ObjectManager::loadStringTable(remainingData, handle, 7);
-            namePlural = strRes.str;
-            remainingData = remainingData.subspan(strRes.tableLength);
+            auto loadString = [&remainingData, &handle](string_id& dst, uint8_t num) {
+                auto strRes = ObjectManager::loadStringTable(remainingData, handle, num);
+                dst = strRes.str;
+                remainingData = remainingData.subspan(strRes.tableLength);
+            };
+            string_id notUsed{};
+
+            loadString(name, 0);
+            loadString(var_02, 1);
+            loadString(notUsed, 2);
+            loadString(nameClosingDown, 3);
+            loadString(nameUpProduction, 4);
+            loadString(nameDownProduction, 5);
+            loadString(nameSingular, 6);
+            loadString(namePlural, 7);
         }
 
+        // LOAD BUILDING PARTS Start
+        // Load Part Heights
         buildingPartHeight = reinterpret_cast<const uint8_t*>(remainingData.data());
         remainingData = remainingData.subspan(var_1E * sizeof(uint8_t));
+
+        // Load Part Animations
         buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
         remainingData = remainingData.subspan(var_1E * sizeof(BuildingPartAnimation));
+
+        // Load Animations
         for (auto& animSeq : animationSequences)
         {
             animSeq = reinterpret_cast<const uint8_t*>(remainingData.data());
             // animationSequences comprises of a size then data. Size will always be a power of 2
             remainingData = remainingData.subspan(*animSeq * sizeof(uint8_t) + 1);
         }
+
+        // Load Unk Animation Related Structure
         var_38 = reinterpret_cast<const IndustryObjectUnk38*>(remainingData.data());
         while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
             remainingData = remainingData.subspan(sizeof(IndustryObjectUnk38));
         }
         remainingData = remainingData.subspan(1);
+
+        // Load Parts
         for (auto i = 0; i < var_1F; ++i)
         {
             auto& part = buildingParts[i];
@@ -228,9 +229,13 @@ namespace OpenLoco
             }
             remainingData = remainingData.subspan(1);
         }
+        // LOAD BUILDING PARTS End
+
+        // Load Unk?
         var_BE = reinterpret_cast<const uint8_t*>(remainingData.data());
         remainingData = remainingData.subspan(var_BD * sizeof(uint8_t));
 
+        // Load Produced Cargo
         for (auto& cargo : producedCargoType)
         {
             cargo = 0xFF;
@@ -249,6 +254,8 @@ namespace OpenLoco
             }
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
+
+        // Load Required Cargo
         for (auto& cargo : requiredCargoType)
         {
             cargo = 0xFF;
@@ -268,6 +275,8 @@ namespace OpenLoco
             }
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
+
+        // Load Wall Types
         for (auto& wallType : wallTypes)
         {
             wallType = 0xFF;
@@ -287,6 +296,8 @@ namespace OpenLoco
             }
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
+
+        // Load Unk1 Wall Types
         var_F1 = 0xFF;
         if (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
@@ -303,6 +314,7 @@ namespace OpenLoco
         }
         remainingData = remainingData.subspan(sizeof(ObjectHeader));
 
+        // Load Unk2 Wall Types
         var_F2 = 0xFF;
         if (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
@@ -319,6 +331,7 @@ namespace OpenLoco
         }
         remainingData = remainingData.subspan(sizeof(ObjectHeader));
 
+        // Load Image Offsets
         auto imgRes = ObjectManager::loadImageTable(remainingData);
         var_0E = imgRes.imageOffset;
         assert(remainingData.size() == imgRes.tableLength);
@@ -349,7 +362,7 @@ namespace OpenLoco
         buildingPartHeight = nullptr;
         buildingPartAnimations = nullptr;
         std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);
-        var_38 = 0;
+        var_38 = nullptr;
         std::fill(std::begin(buildingParts), std::end(buildingParts), nullptr);
         var_BE = nullptr;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
