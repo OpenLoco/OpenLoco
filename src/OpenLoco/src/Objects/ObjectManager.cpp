@@ -142,7 +142,7 @@ namespace OpenLoco::ObjectManager
                 {
                     const auto& objHeader = typedObjectList.objectEntryExtendeds[i];
 
-                    if (header == objHeader)
+                    if (header == objHeader) // PERHAPS WRONG WAY ROUND
                     {
                         return { LoadedObjectHandle{ objectType, i } };
                     }
