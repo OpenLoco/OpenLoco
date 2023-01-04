@@ -16,6 +16,7 @@
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "S5/S5.h"
+#include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
@@ -1508,6 +1509,9 @@ namespace OpenLoco::Ui::Windows::Options
             // Reloading the objects will force objects to load the new language
             ObjectManager::reloadAll();
             Gfx::invalidateScreen();
+
+            // Rebuild the scenario index to use the new language.
+            ScenarioManager::loadIndex(1);
         }
 
         // 0x004C0C73
