@@ -1,16 +1,24 @@
 #include "ScenarioTextObject.h"
 #include "Interop/Interop.hpp"
+#include "ObjectImageTable.h"
+#include "ObjectManager.h"
+#include "ObjectStringTable.h"
 
 namespace OpenLoco
 {
     // 0x0043EDE3
     void ScenarioTextObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x0043EDE3, regs);
+        auto remainingData = data.subspan(sizeof(ScenarioTextObject));
+
+        auto loadString = [&remainingData, &handle](string_id& dst, uint8_t num) {
+            auto strRes = ObjectManager::loadStringTable(remainingData, handle, num);
+            dst = strRes.str;
+            remainingData = remainingData.subspan(strRes.tableLength);
+        };
+
+        loadString(name, 0);
+        loadString(details, 1);
     }
 
     // 0x0043EE0B
