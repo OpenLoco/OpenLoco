@@ -135,6 +135,15 @@ namespace OpenLoco::Gfx
         // This code copies the closest variants into their place, and moves other elements accordingly
         if (header.numEntries == G1ExpectedCount::kSteam)
         {
+            // Temporarily convert offsets to absolute indexes
+            for (size_t i = 0; i < elements.size(); i++)
+            {
+                if (elements[i].flags & G1ElementFlags::hasZoomSprites)
+                {
+                    elements[i].zoomOffset = i - elements[i].zoomOffset;
+                }
+            }
+
             elements.resize(G1ExpectedCount::kDisc);
 
             // Extra two tutorial images
@@ -144,6 +153,15 @@ namespace OpenLoco::Gfx
 
             // Extra font variant
             std::copy_n(&elements[1788], 223, &elements[3898]);
+
+            // Restore relative offsets
+            for (size_t i = 0; i < elements.size(); i++)
+            {
+                if (elements[i].flags & G1ElementFlags::hasZoomSprites)
+                {
+                    elements[i].zoomOffset = i - elements[i].zoomOffset;
+                }
+            }
         }
 
         // Adjust memory offsets
