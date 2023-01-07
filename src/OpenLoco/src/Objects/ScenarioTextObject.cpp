@@ -3,6 +3,7 @@
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
+#include <cassert>
 
 namespace OpenLoco
 {
@@ -19,6 +20,8 @@ namespace OpenLoco
 
         loadString(name, 0);
         loadString(details, 1);
+
+        assert(remainingData.size() == 0);
     }
 
     // 0x0043EE0B
