@@ -30,6 +30,17 @@ namespace OpenLoco
         void unload();
     };
 #pragma pack(pop)
-
     static_assert(sizeof(SnowObject) == 0x6);
+
+    namespace SnowLine::ImageIds
+    {
+        constexpr uint32_t surfaceEighthZoom = 0;
+        constexpr uint32_t outlineEighthZoom = 10;
+        constexpr uint32_t surfaceQuarterZoom = 19;
+        constexpr uint32_t outlineQuarterZoom = 38;
+        constexpr uint32_t surfaceHalfZoom = 57;
+        constexpr uint32_t outlineHalfZoom = 76;
+        constexpr uint32_t surfaceFullZoom = 95;
+        constexpr uint32_t outlineFullZoom = 114;
+    }
 }
