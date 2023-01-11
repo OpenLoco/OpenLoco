@@ -19,10 +19,6 @@ namespace OpenLoco
     struct SnowObject
     {
         static constexpr auto kObjectType = ObjectType::snow;
-        static constexpr auto kImageOffsetEighthZoom = 0;
-        static constexpr auto kImageOffsetQuarterZoom = 19;
-        static constexpr auto kImageOffsetHalfZoom = 57;
-        static constexpr auto kImageOffsetFullZoom = 95;
 
         string_id name;
         uint32_t image; // 0x02
@@ -34,6 +30,17 @@ namespace OpenLoco
         void unload();
     };
 #pragma pack(pop)
-
     static_assert(sizeof(SnowObject) == 0x6);
+
+    namespace SnowLine::ImageIds
+    {
+        constexpr uint32_t surfaceEighthZoom = 0;
+        constexpr uint32_t outlineEighthZoom = 10;
+        constexpr uint32_t surfaceQuarterZoom = 19;
+        constexpr uint32_t outlineQuarterZoom = 38;
+        constexpr uint32_t surfaceHalfZoom = 57;
+        constexpr uint32_t outlineHalfZoom = 76;
+        constexpr uint32_t surfaceFullZoom = 95;
+        constexpr uint32_t outlineFullZoom = 114;
+    }
 }
