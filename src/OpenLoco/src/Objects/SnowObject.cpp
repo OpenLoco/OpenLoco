@@ -23,7 +23,7 @@ namespace OpenLoco
         remainingData = remainingData.subspan(strRes.tableLength);
 
         auto imgRes = ObjectManager::loadImageTable(remainingData);
-        image = imgRes.imageOffset;
+        image = imgRes.imageOffset + kImageOffsetFullZoom;
         assert(remainingData.size() == imgRes.tableLength);
     }
 

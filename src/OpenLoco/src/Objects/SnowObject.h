@@ -19,6 +19,10 @@ namespace OpenLoco
     struct SnowObject
     {
         static constexpr auto kObjectType = ObjectType::snow;
+        static constexpr auto kImageOffsetEighthZoom = 0;
+        static constexpr auto kImageOffsetQuarterZoom = 19;
+        static constexpr auto kImageOffsetHalfZoom = 57;
+        static constexpr auto kImageOffsetFullZoom = 95;
 
         string_id name;
         uint32_t image; // 0x02
