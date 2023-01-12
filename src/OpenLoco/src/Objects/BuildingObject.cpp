@@ -104,7 +104,7 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        // Load ???
+        // Load ??? Cargo
         for (auto& unkObj : var_A4)
         {
             unkObj = 0xFF; // This is a cargo

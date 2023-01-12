@@ -47,7 +47,7 @@ namespace OpenLoco
         uint8_t pad_9E[0xA0 - 0x9E];
         uint8_t producedQuantity[2];  // 0xA0
         uint8_t producedCargoType[2]; // 0xA2
-        uint8_t var_A4[2];
+        uint8_t var_A4[2];            // Some type of Cargo
         uint8_t var_A6[2];
         uint8_t var_A8[2];
         int16_t demolishRatingReduction;
