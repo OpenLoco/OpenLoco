@@ -1839,6 +1839,7 @@ namespace OpenLoco::StringIds
     constexpr string_id autosave_preferences = 2270;
     constexpr string_id disableTownExpansion = 2271;
     constexpr string_id disableTownExpansion_tip = 2272;
+    constexpr string_id completeChallenge = 2273;
 
     constexpr string_id temporary_object_load_str_0 = 8192;
     constexpr string_id temporary_object_load_str_1 = 8193;

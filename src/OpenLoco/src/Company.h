@@ -174,6 +174,7 @@ namespace OpenLoco
         void updateDaily();
         void updateDailyLogic();
         void updateDailyPlayer();
+        void evaluateChallengeProgress();
         void updateDailyControllingPlayer();
         void updateMonthlyHeadquarters();
         void updateLoanAutorepay();

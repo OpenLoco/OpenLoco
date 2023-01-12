@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Companies
     {
-        static constexpr Ui::Size kWindowSize = { 250, 172 };
+        static constexpr Ui::Size kWindowSize = { 250, 188 };
 
         static WindowEventList _events;
 
@@ -470,6 +470,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 acquire_company_assets_button,
                 toggle_bankruptcy_button,
                 toggle_jail_status_button,
+                complete_challenge_button,
             };
         }
 
@@ -477,15 +478,16 @@ namespace OpenLoco::Ui::Windows::Cheats
             commonWidgets(kWindowSize.width, kWindowSize.height, StringIds::company_cheats),
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_target_company),
             makeDropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WidgetType::textbox, WindowColour::secondary),
-            makeWidget({ 4, 86 }, { kWindowSize.width - 8, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_cheat_to_apply),
+            makeWidget({ 4, 86 }, { kWindowSize.width - 8, 96 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_cheat_to_apply),
             makeWidget({ 10, 100 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_switch_to_company),
             makeWidget({ 10, 116 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_acquire_company_assets),
             makeWidget({ 10, 132 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_bankruptcy),
             makeWidget({ 10, 148 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_toggle_jail_status),
+            makeWidget({ 10, 164 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::completeChallenge),
             widgetEnd(),
         };
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::target_company_dropdown) | (1 << Widx::target_company_dropdown_btn) | (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button) | (1 << Widx::toggle_bankruptcy_button) | (1 << Widx::toggle_jail_status_button);
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::target_company_dropdown) | (1 << Widx::target_company_dropdown_btn) | (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button) | (1 << Widx::toggle_bankruptcy_button) | (1 << Widx::toggle_jail_status_button) | (1 << Widx::complete_challenge_button);
 
         static CompanyId _targetCompanyId{};
 
@@ -500,6 +502,15 @@ namespace OpenLoco::Ui::Windows::Cheats
             else
             {
                 self.disabledWidgets &= ~((1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button));
+            }
+
+            if (!CompanyManager::isPlayerCompany(_targetCompanyId))
+            {
+                self.disabledWidgets |= (1 << Widx::complete_challenge_button);
+            }
+            else
+            {
+                self.disabledWidgets &= ~(1 << Widx::complete_challenge_button);
             }
         }
 
@@ -560,6 +571,13 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Widx::toggle_jail_status_button:
                 {
                     GameCommands::do_81(CheatCommand::toggleJail, enumValue(_targetCompanyId));
+                    WindowManager::invalidate(WindowType::playerInfoToolbar);
+                    return;
+                }
+
+                case Widx::complete_challenge_button:
+                {
+                    GameCommands::do_81(CheatCommand::completeChallenge, enumValue(_targetCompanyId));
                     WindowManager::invalidate(WindowType::playerInfoToolbar);
                     return;
                 }
