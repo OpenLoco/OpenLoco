@@ -369,7 +369,7 @@ namespace OpenLoco::ScenarioManager
     }
 
     // 0x0044452F
-    void loadIndex(uint8_t al)
+    void loadIndex(bool forceReload)
     {
         const auto oldFlags = getScreenFlags();
         setAllScreenFlags(ScreenFlags::title | oldFlags);
@@ -380,18 +380,11 @@ namespace OpenLoco::ScenarioManager
         }
 
         const auto currentState = getCurrentScenarioFolderState();
-
-        if (!tryLoadIndex(currentState))
+        if (!tryLoadIndex(currentState) || forceReload)
         {
             createIndex(currentState);
         }
-        else
-        {
-            if (al != 0)
-            {
-                createIndex(currentState);
-            }
-        }
+
         setAllScreenFlags(oldFlags);
     }
 

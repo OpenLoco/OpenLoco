@@ -262,7 +262,7 @@ namespace OpenLoco::EditorController
                     break;
                 }
 
-                ScenarioManager::loadIndex(1);
+                ScenarioManager::loadIndex(true);
 
                 // This ends with a premature tick termination
                 Game::returnToTitle();

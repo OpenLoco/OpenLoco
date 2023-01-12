@@ -1511,7 +1511,7 @@ namespace OpenLoco::Ui::Windows::Options
             Gfx::invalidateScreen();
 
             // Rebuild the scenario index to use the new language.
-            ScenarioManager::loadIndex(1);
+            ScenarioManager::loadIndex(true);
         }
 
         // 0x004C0C73
