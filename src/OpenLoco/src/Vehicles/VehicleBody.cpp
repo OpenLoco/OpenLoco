@@ -996,7 +996,7 @@ namespace OpenLoco::Vehicles
 
         if (stationFound)
         {
-            auto soundId = static_cast<SoundObjectId_t>(steamObj->var_1F[var_55 + (steamObj->soundEffect >> 1)]);
+            auto soundId = steamObj->soundEffects[var_55 + (steamObj->numSoundEffects >> 1)];
 
             if (veh_2->currentSpeed > 15.0_mph)
                 return;
@@ -1014,13 +1014,13 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            auto soundModifier = steamObj->soundEffect >> 1;
+            auto soundModifier = steamObj->numSoundEffects >> 1;
             if (!(steamObj->flags & SteamObjectFlags::unk2))
             {
                 soundModifier = 0;
             }
-            auto underSoundId = static_cast<SoundObjectId_t>(steamObj->var_1F[soundModifier + var_55]);
-            auto soundId = static_cast<SoundObjectId_t>(steamObj->var_1F[var_55]);
+            auto underSoundId = steamObj->soundEffects[soundModifier + var_55];
+            auto soundId = steamObj->soundEffects[var_55];
 
             if (veh_2->currentSpeed > 15.0_mph)
                 return;
