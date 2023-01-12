@@ -1,6 +1,7 @@
 22.12+ (???)
 ------------------------------------------------------------------------
 - Feature: [#1745] Add cheat to instantly win any scenario/challenge.
+- Fix: [#1750] Scenario index is not updated when in-game language changes.
 
 22.12 (2022-12-22)
 ------------------------------------------------------------------------

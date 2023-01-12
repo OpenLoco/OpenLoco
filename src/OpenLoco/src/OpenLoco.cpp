@@ -284,7 +284,7 @@ namespace OpenLoco
         Ui::ProgressBar::setProgress(40);
         Ui::ProgressBar::end();
         ObjectManager::loadIndex();
-        ScenarioManager::loadIndex(0);
+        ScenarioManager::loadIndex();
         Ui::ProgressBar::begin(StringIds::loading);
         Ui::ProgressBar::setProgress(60);
         Gfx::loadG1();
