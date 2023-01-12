@@ -1,4 +1,5 @@
 #include "SteamObject.h"
+#include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
@@ -53,10 +54,10 @@ namespace OpenLoco
         auto imgRes = ObjectManager::loadImageTable(remainingData);
         baseImageId = imgRes.imageOffset;
 
-        // auto imageExtents = getMaxImageExtent(baseImageId, numImages);
-        // var_05 = imageExtents.width
-        // var_06 = imageExtents.heightNegative
-        // var_07 = imageExtents.heightPositive
+        auto imageExtents = Gfx::getImagesMaxExtent(ImageId(baseImageId), numImages);
+        var_05 = imageExtents.width;
+        var_06 = imageExtents.heightNegative;
+        var_07 = imageExtents.heightPositive;
 
         assert(remainingData.size() == imgRes.tableLength);
     }
