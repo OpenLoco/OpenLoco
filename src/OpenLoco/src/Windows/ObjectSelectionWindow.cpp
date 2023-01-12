@@ -12,6 +12,7 @@
 #include "Objects/BridgeObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
+#include "Objects/CliffEdgeObject.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/CurrencyObject.h"
 #include "Objects/DockObject.h"
@@ -26,7 +27,6 @@
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
-#include "Objects/RockObject.h"
 #include "Objects/ScaffoldingObject.h"
 #include "Objects/SnowObject.h"
 #include "Objects/StreetLightObject.h"
@@ -333,8 +333,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 callDrawPreviewImage<CurrencyObject>(*clipped, kObjectPreviewOffset, objectPtr);
                 break;
 
-            case ObjectType::rock:
-                callDrawPreviewImage<RockObject>(*clipped, kObjectPreviewOffset, objectPtr);
+            case ObjectType::cliffEdge:
+                callDrawPreviewImage<CliffEdgeObject>(*clipped, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::water:

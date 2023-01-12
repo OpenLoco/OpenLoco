@@ -154,6 +154,19 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
+        static uint32_t completeChallenge(CompanyId targetCompanyId)
+        {
+            auto company = CompanyManager::get(targetCompanyId);
+            if ((company->challengeFlags & CompanyFlags::challengeCompleted) != CompanyFlags::none)
+                return 0;
+
+            company->challengeFlags &= ~(CompanyFlags::challengeBeatenByOpponent | CompanyFlags::challengeCompleted | CompanyFlags::challengeFailed);
+            company->challengeProgress = 100;
+            company->evaluateChallengeProgress();
+
+            return 0;
+        }
+
         static uint32_t vehicleReliability(int32_t newReliablity)
         {
             auto ourCompanyId = CompanyManager::getUpdatingCompanyId();
@@ -213,6 +226,9 @@ namespace OpenLoco::GameCommands
 
             case CheatCommand::modifyDate:
                 return Cheats::modifyDateCheat(param1, param2, param3);
+
+            case CheatCommand::completeChallenge:
+                return Cheats::completeChallenge(CompanyId(param1));
 
             default:
                 break;

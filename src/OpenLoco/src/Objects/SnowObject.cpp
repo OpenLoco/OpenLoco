@@ -1,6 +1,9 @@
 #include "SnowObject.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "ObjectImageTable.h"
+#include "ObjectManager.h"
+#include "ObjectStringTable.h"
 
 namespace OpenLoco
 {
@@ -13,11 +16,15 @@ namespace OpenLoco
     // 0x00469A35
     void SnowObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x00469A35, regs);
+        auto remainingData = data.subspan(sizeof(SnowObject));
+
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        auto imgRes = ObjectManager::loadImageTable(remainingData);
+        image = imgRes.imageOffset + SnowLine::ImageIds::surfaceFullZoom;
+        assert(remainingData.size() == imgRes.tableLength);
     }
 
     // 0x00469A5E

@@ -13,7 +13,7 @@ namespace OpenLoco
         sound,
         currency,
         steam,
-        rock,
+        cliffEdge,
         water,
         land,
         townNames,

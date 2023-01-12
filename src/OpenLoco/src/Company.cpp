@@ -304,6 +304,12 @@ namespace OpenLoco
             return;
         }
 
+        evaluateChallengeProgress();
+    }
+
+    // Split off from updateDailyPlayer
+    void Company::evaluateChallengeProgress()
+    {
         if (challengeProgress == 100)
         {
             challengeFlags |= CompanyFlags::challengeCompleted;

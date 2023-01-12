@@ -2,6 +2,9 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "ObjectImageTable.h"
+#include "ObjectManager.h"
+#include "ObjectStringTable.h"
 
 namespace OpenLoco
 {
@@ -51,11 +54,41 @@ namespace OpenLoco
     // 0x0042C5B6
     void BridgeObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x0042C5B6, regs);
+        auto remainingData = data.subspan(sizeof(BridgeObject));
+
+        {
+            auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+            name = strRes.str;
+            remainingData = remainingData.subspan(strRes.tableLength);
+        }
+
+        for (auto i = 0; i < trackNumCompatible; ++i)
+        {
+            trackMods[i] = 0xFF;
+            ObjectHeader trackModHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(trackModHeader);
+            if (res.has_value())
+            {
+                trackMods[i] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        for (auto i = 0; i < roadNumCompatible; ++i)
+        {
+            roadMods[i] = 0xFF;
+            ObjectHeader roadModHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(roadModHeader);
+            if (res.has_value())
+            {
+                roadMods[i] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        auto imgRes = ObjectManager::loadImageTable(remainingData);
+        image = imgRes.imageOffset;
+        assert(remainingData.size() == imgRes.tableLength);
     }
 
     // 0x0042C632

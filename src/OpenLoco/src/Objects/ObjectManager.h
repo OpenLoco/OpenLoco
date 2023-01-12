@@ -22,7 +22,7 @@ namespace OpenLoco
     struct SoundObject;
     struct CurrencyObject;
     struct SteamObject;
-    struct RockObject;
+    struct CliffEdgeObject;
     struct WaterObject;
     struct LandObject;
     struct TownNamesObject;

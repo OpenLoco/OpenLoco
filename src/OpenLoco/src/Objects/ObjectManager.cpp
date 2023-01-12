@@ -3,6 +3,7 @@
 #include "BridgeObject.h"
 #include "BuildingObject.h"
 #include "CargoObject.h"
+#include "CliffEdgeObject.h"
 #include "ClimateObject.h"
 #include "CompetitorObject.h"
 #include "Console.h"
@@ -26,7 +27,6 @@
 #include "RoadExtraObject.h"
 #include "RoadObject.h"
 #include "RoadStationObject.h"
-#include "RockObject.h"
 #include "S5/SawyerStream.h"
 #include "ScaffoldingObject.h"
 #include "ScenarioTextObject.h"
@@ -172,8 +172,8 @@ namespace OpenLoco::ObjectManager
                 return reinterpret_cast<CurrencyObject*>(&obj)->validate();
             case ObjectType::steam:
                 return reinterpret_cast<SteamObject*>(&obj)->validate();
-            case ObjectType::rock:
-                return reinterpret_cast<RockObject*>(&obj)->validate();
+            case ObjectType::cliffEdge:
+                return reinterpret_cast<CliffEdgeObject*>(&obj)->validate();
             case ObjectType::water:
                 return reinterpret_cast<WaterObject*>(&obj)->validate();
             case ObjectType::land:
@@ -254,8 +254,8 @@ namespace OpenLoco::ObjectManager
             case ObjectType::steam:
                 reinterpret_cast<SteamObject*>(&obj)->unload();
                 break;
-            case ObjectType::rock:
-                reinterpret_cast<RockObject*>(&obj)->unload();
+            case ObjectType::cliffEdge:
+                reinterpret_cast<CliffEdgeObject*>(&obj)->unload();
                 break;
             case ObjectType::water:
                 reinterpret_cast<WaterObject*>(&obj)->unload();
@@ -366,8 +366,8 @@ namespace OpenLoco::ObjectManager
             case ObjectType::steam:
                 reinterpret_cast<SteamObject*>(&obj)->load(handle, data, dependencies);
                 break;
-            case ObjectType::rock:
-                reinterpret_cast<RockObject*>(&obj)->load(handle, data, dependencies);
+            case ObjectType::cliffEdge:
+                reinterpret_cast<CliffEdgeObject*>(&obj)->load(handle, data, dependencies);
                 break;
             case ObjectType::water:
                 reinterpret_cast<WaterObject*>(&obj)->load(handle, data, dependencies);
@@ -1025,7 +1025,7 @@ namespace OpenLoco::ObjectManager
         std::vector<ObjectHeader> entries;
         entries.reserve(ObjectManager::maxObjects);
 
-        addAllInUseHeadersOfTypes<InterfaceSkinObject, SoundObject, CurrencyObject, SteamObject, RockObject, WaterObject, LandObject, TownNamesObject, CargoObject, WallObject, TrainSignalObject, LevelCrossingObject, StreetLightObject, TunnelObject, BridgeObject, TrainStationObject, TrackExtraObject, TrackObject, RoadStationObject, RoadExtraObject, RoadObject, AirportObject, DockObject, VehicleObject, TreeObject, SnowObject, ClimateObject, HillShapesObject, BuildingObject, ScaffoldingObject, IndustryObject, RegionObject, CompetitorObject, ScenarioTextObject>(entries);
+        addAllInUseHeadersOfTypes<InterfaceSkinObject, SoundObject, CurrencyObject, SteamObject, CliffEdgeObject, WaterObject, LandObject, TownNamesObject, CargoObject, WallObject, TrainSignalObject, LevelCrossingObject, StreetLightObject, TunnelObject, BridgeObject, TrainStationObject, TrackExtraObject, TrackObject, RoadStationObject, RoadExtraObject, RoadObject, AirportObject, DockObject, VehicleObject, TreeObject, SnowObject, ClimateObject, HillShapesObject, BuildingObject, ScaffoldingObject, IndustryObject, RegionObject, CompetitorObject, ScenarioTextObject>(entries);
 
         return entries;
     }

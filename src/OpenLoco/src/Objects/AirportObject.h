@@ -61,20 +61,21 @@ namespace OpenLoco
         uint16_t allowedPlaneTypes; // 0x10
         uint8_t numSpriteSets;      // 0x12
         uint8_t numTiles;           // 0x13
-        uint8_t pad_14[0x1C - 0x14];
-        uint32_t var_1C[32];
-        uint32_t var_9C;
-        uint32_t largeTiles;         // 0xA0
-        int8_t minX;                 // 0xA4
-        int8_t minY;                 // 0xA5
-        int8_t maxX;                 // 0xA6
-        int8_t maxY;                 // 0xA7
-        uint16_t designedYear;       // 0xA8
-        uint16_t obsoleteYear;       // 0xAA
-        uint8_t numMovementNodes;    // 0xAC
-        uint8_t numMovementEdges;    // 0xAD
-        MovementNode* movementNodes; // 0xAE
-        MovementEdge* movementEdges; // 0xB2
+        const uint8_t* var_14;
+        const uint16_t* var_18;
+        const uint8_t* var_1C[32];
+        const uint32_t* var_9C;
+        uint32_t largeTiles;               // 0xA0
+        int8_t minX;                       // 0xA4
+        int8_t minY;                       // 0xA5
+        int8_t maxX;                       // 0xA6
+        int8_t maxY;                       // 0xA7
+        uint16_t designedYear;             // 0xA8
+        uint16_t obsoleteYear;             // 0xAA
+        uint8_t numMovementNodes;          // 0xAC
+        uint8_t numMovementEdges;          // 0xAD
+        const MovementNode* movementNodes; // 0xAE
+        const MovementEdge* movementEdges; // 0xB2
         uint8_t pad_B6[0xBA - 0xB6];
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
