@@ -2,6 +2,10 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "ObjectImageTable.h"
+#include "ObjectManager.h"
+#include "ObjectStringTable.h"
+#include <cassert>
 
 namespace OpenLoco
 {
@@ -22,11 +26,20 @@ namespace OpenLoco
     // 0x004C567C
     void WaterObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x004C567C, regs);
+        auto remainingData = data.subspan(sizeof(WaterObject));
+
+        // Load object name string
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        // Load images
+        auto imageRes = ObjectManager::loadImageTable(remainingData);
+        image = imageRes.imageOffset;
+        var_0A = imageRes.imageOffset + 40;
+
+        // Ensure we've loaded the entire object
+        assert(remainingData.size() == imageRes.tableLength);
     }
 
     // 0x004C56A8
