@@ -1,5 +1,8 @@
 #include "TownNamesObject.h"
 #include "Interop/Interop.hpp"
+#include "ObjectManager.h"
+#include "ObjectStringTable.h"
+#include <cassert>
 #include <numeric>
 
 namespace OpenLoco
@@ -21,11 +24,15 @@ namespace OpenLoco
     // 0x00498E1D
     void TownNamesObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x00498E1D, regs);
+        auto remainingData = data.subspan(sizeof(TownNamesObject));
+
+        // Load object name string
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        // Ensure we've loaded the entire object
+        assert(remainingData.size() == 0);
     }
 
     // 0x00498E3B
