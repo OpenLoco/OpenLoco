@@ -2,6 +2,10 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "ObjectImageTable.h"
+#include "ObjectManager.h"
+#include "ObjectStringTable.h"
+#include <cassert>
 
 namespace OpenLoco
 {
@@ -41,11 +45,20 @@ namespace OpenLoco
     // 0x00477E52
     void RoadExtraObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x00477E52, regs);
+        auto remainingData = data.subspan(sizeof(RoadExtraObject));
+
+        // Load object name string
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        // Load images
+        auto imageRes = ObjectManager::loadImageTable(remainingData);
+        var_0E = imageRes.imageOffset;
+        image = imageRes.imageOffset + 8;
+
+        // Ensure we've loaded the entire object
+        assert(remainingData.size() == imageRes.tableLength);
     }
 
     // 0x00477E7E
