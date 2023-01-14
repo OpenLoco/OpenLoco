@@ -4,6 +4,10 @@
 #include "Graphics/ImageIds.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
+#include "ObjectImageTable.h"
+#include "ObjectManager.h"
+#include "ObjectStringTable.h"
+#include <cassert>
 
 using namespace OpenLoco::Interop;
 
@@ -28,11 +32,25 @@ namespace OpenLoco
     // 0x0046DF56
     void CurrencyObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x0046DF56, regs);
+        auto remainingData = data.subspan(sizeof(CurrencyObject));
+
+        auto loadString = [&remainingData, &handle](string_id& dst, uint8_t num) {
+            auto strRes = ObjectManager::loadStringTable(remainingData, handle, num);
+            dst = strRes.str;
+            remainingData = remainingData.subspan(strRes.tableLength);
+        };
+
+        // Load object strings
+        loadString(name, 0);
+        loadString(prefixSymbol, 1);
+        loadString(suffixSymbol, 2);
+
+        // Load images
+        auto imageRes = ObjectManager::loadImageTable(remainingData);
+        objectIcon = imageRes.imageOffset;
+
+        // Ensure we've loaded the entire object
+        assert(remainingData.size() == imageRes.tableLength);
     }
 
     // 0x0046DF90

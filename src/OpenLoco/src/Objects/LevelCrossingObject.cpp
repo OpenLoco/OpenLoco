@@ -1,8 +1,11 @@
 #include "LevelCrossingObject.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "ObjectImageTable.h"
 #include "ObjectManager.h"
+#include "ObjectStringTable.h"
 #include "ScenarioManager.h"
+#include <cassert>
 
 namespace OpenLoco
 {
@@ -35,11 +38,19 @@ namespace OpenLoco
     // 0x004780E7
     void LevelCrossingObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x004780E7, regs);
+        auto remainingData = data.subspan(sizeof(LevelCrossingObject));
+
+        // Load object name string
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        // Load images
+        auto imageRes = ObjectManager::loadImageTable(remainingData);
+        image = imageRes.imageOffset;
+
+        // Ensure we've loaded the entire object
+        assert(remainingData.size() == imageRes.tableLength);
     }
 
     // 0x0047810D
