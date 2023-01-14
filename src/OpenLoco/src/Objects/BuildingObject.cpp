@@ -2,7 +2,9 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "ObjectImageTable.h"
 #include "ObjectManager.h"
+#include "ObjectStringTable.h"
 #include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
@@ -52,26 +54,89 @@ namespace OpenLoco
     // 0x0042DBE8
     void BuildingObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x0042DBE8, regs);
-        if (dependencies != nullptr)
+        auto remainingData = data.subspan(sizeof(BuildingObject));
+
         {
-            auto* depObjs = addr<0x0050D158, uint8_t*>();
-            dependencies->required.resize(*depObjs++);
-            if (!dependencies->required.empty())
-            {
-                std::copy(reinterpret_cast<ObjectHeader*>(depObjs), reinterpret_cast<ObjectHeader*>(depObjs) + dependencies->required.size(), dependencies->required.data());
-                depObjs += sizeof(ObjectHeader) * dependencies->required.size();
-            }
-            dependencies->willLoad.resize(*depObjs++);
-            if (!dependencies->willLoad.empty())
-            {
-                std::copy(reinterpret_cast<ObjectHeader*>(depObjs), reinterpret_cast<ObjectHeader*>(depObjs) + dependencies->willLoad.size(), dependencies->willLoad.data());
-            }
+            auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+            name = strRes.str;
+            remainingData = remainingData.subspan(strRes.tableLength);
         }
+
+        // LOAD BUILDING PARTS Start
+        // Load Part Heights
+        varationHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        remainingData = remainingData.subspan(var_06 * sizeof(uint8_t));
+
+        // Load Part Animations (probably)
+        var_0C = reinterpret_cast<const uint16_t*>(remainingData.data());
+        remainingData = remainingData.subspan(var_06 * sizeof(uint16_t));
+
+        // Load Parts
+        for (auto i = 0; i < numVariations; ++i)
+        {
+            auto& part = variationsArr10[i];
+            part = reinterpret_cast<const uint8_t*>(remainingData.data());
+            while (*remainingData.data() != static_cast<std::byte>(0xFF))
+            {
+                remainingData = remainingData.subspan(1);
+            }
+            remainingData = remainingData.subspan(1);
+        }
+        // LOAD BUILDING PARTS End
+
+        // Load Produced Cargo
+        for (auto& cargo : producedCargoType)
+        {
+            cargo = 0xFF;
+            if (*remainingData.data() != static_cast<std::byte>(0xFF))
+            {
+                ObjectHeader cargoHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+                if (dependencies != nullptr)
+                {
+                    dependencies->required.push_back(cargoHeader);
+                }
+                auto res = ObjectManager::findObjectHandle(cargoHeader);
+                if (res.has_value())
+                {
+                    cargo = res->id;
+                }
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        // Load ??? Cargo
+        for (auto& unkObj : var_A4)
+        {
+            unkObj = 0xFF; // This is a cargo
+            if (*remainingData.data() != static_cast<std::byte>(0xFF))
+            {
+                ObjectHeader cargoHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+
+                if (dependencies != nullptr)
+                {
+                    dependencies->required.push_back(cargoHeader);
+                }
+                auto res = ObjectManager::findObjectHandle(cargoHeader);
+                if (res.has_value())
+                {
+                    unkObj = res->id;
+                }
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        // Load ???
+        for (auto i = 0; i < var_AD; ++i)
+        {
+            var_AE[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
+            const auto size = *reinterpret_cast<const uint16_t*>(var_AE[i]);
+            remainingData = remainingData.subspan(sizeof(uint16_t) + size);
+        }
+
+        // Load Image Offsets
+        auto imgRes = ObjectManager::loadImageTable(remainingData);
+        image = imgRes.imageOffset;
+        assert(remainingData.size() == imgRes.tableLength);
     }
 
     // 0x0042DDC4
@@ -84,6 +149,6 @@ namespace OpenLoco
         std::fill(std::begin(variationsArr10), std::end(variationsArr10), nullptr);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(var_A4), std::end(var_A4), 0);
-        std::fill(std::begin(var_AE), std::end(var_AE), 0);
+        std::fill(std::begin(var_AE), std::end(var_AE), nullptr);
     }
 }

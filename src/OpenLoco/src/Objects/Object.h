@@ -84,7 +84,11 @@ namespace OpenLoco
 
         bool operator==(const ObjectHeader& rhs) const
         {
-            if (isCustom())
+            // Some vanilla objects reference other vanilla objects using a
+            // ObjectHeader that is set as custom. To handle those we need
+            // to check both the lhs and the rhs and only if both are Custom
+            // do the full check.
+            if (isCustom() && rhs.isCustom())
             {
                 return std::memcmp(this, &rhs, sizeof(ObjectHeader)) == 0;
             }
@@ -93,6 +97,7 @@ namespace OpenLoco
                 return getType() == rhs.getType() && getName() == rhs.getName();
             }
         }
+
         bool operator!=(const ObjectHeader& rhs) const
         {
             return !(*this == rhs);
