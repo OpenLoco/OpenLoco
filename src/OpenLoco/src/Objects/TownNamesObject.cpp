@@ -31,8 +31,7 @@ namespace OpenLoco
         name = strRes.str;
         remainingData = remainingData.subspan(strRes.tableLength);
 
-        // Ensure we've loaded the entire object
-        assert(remainingData.size() == 0);
+        // Town name object has an additional structure after this point so can't assert its size
     }
 
     // 0x00498E3B
