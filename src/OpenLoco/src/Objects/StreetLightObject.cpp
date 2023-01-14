@@ -1,6 +1,10 @@
 #include "StreetLightObject.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "ObjectImageTable.h"
+#include "ObjectManager.h"
+#include "ObjectStringTable.h"
+#include <cassert>
 
 namespace OpenLoco
 {
@@ -24,11 +28,21 @@ namespace OpenLoco
     // 0x00477F19
     void StreetLightObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x00477F19, regs);
+        auto remainingData = data.subspan(sizeof(StreetLightObject));
+
+        // Load object name string
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        // TODO: verify what's happening at 0x00477F31
+
+        // Load images
+        auto imageRes = ObjectManager::loadImageTable(remainingData);
+        image = imageRes.imageOffset;
+
+        // Ensure we've loaded the entire object
+        assert(remainingData.size() == imageRes.tableLength);
     }
 
     // 0x00477F52
