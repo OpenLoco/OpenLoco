@@ -34,9 +34,6 @@ namespace OpenLoco
         auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
         name = strRes.str;
         remainingData = remainingData.subspan(strRes.tableLength);
-
-        // TODO: verify what's happening at 0x00477F31
-
         // Load images
         auto imageRes = ObjectManager::loadImageTable(remainingData);
         image = imageRes.imageOffset;
