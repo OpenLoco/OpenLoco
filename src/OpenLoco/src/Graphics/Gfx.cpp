@@ -1854,7 +1854,7 @@ namespace OpenLoco::Gfx
     // 0x004530F8
     ImageExtents getImagesMaxExtent(const ImageId baseImageId, const size_t numImages)
     {
-        uint8_t bitmap[200][200] = { 0 };
+        uint8_t bitmap[200][200] = {};
 
         RenderTarget rt = {
             /*.bits = */ reinterpret_cast<uint8_t*>(bitmap),
