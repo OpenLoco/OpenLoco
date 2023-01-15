@@ -18,6 +18,7 @@ namespace OpenLoco
         remainingData = remainingData.subspan(strRes.tableLength);
 
         frameInfoType0 = reinterpret_cast<const ImageAndHeight*>(remainingData.data());
+        totalNumFramesType0 = 0;
         while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
             totalNumFramesType0++;
@@ -26,6 +27,7 @@ namespace OpenLoco
         remainingData = remainingData.subspan(1);
 
         frameInfoType1 = reinterpret_cast<const ImageAndHeight*>(remainingData.data());
+        totalNumFramesType1 = 0;
         while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
             totalNumFramesType1++;
