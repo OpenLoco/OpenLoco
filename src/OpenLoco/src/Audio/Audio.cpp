@@ -36,32 +36,6 @@ using namespace OpenLoco::Utility;
 
 namespace OpenLoco::Audio
 {
-#pragma pack(push, 1)
-    struct WAVEFORMATEX
-    {
-        int16_t wFormatTag;
-        int16_t nChannels;
-        int32_t nSamplesPerSec;
-        int32_t nAvgBytesPerSec;
-        int16_t nBlockAlign;
-        int16_t wBitsPerSample;
-        int16_t cbSize;
-    };
-
-    struct SoundObjectData
-    {
-        int32_t var_00;
-        int32_t offset;
-        uint32_t length;
-        WAVEFORMATEX pcmHeader;
-
-        const void* pcm()
-        {
-            return (void*)((uintptr_t)this + sizeof(SoundObjectData));
-        }
-    };
-#pragma pack(pop)
-
     struct AudioFormat
     {
         int32_t frequency{};
@@ -580,7 +554,7 @@ namespace OpenLoco::Audio
                 auto obj = getSoundObject(id);
                 if (obj != nullptr)
                 {
-                    auto data = (SoundObjectData*)obj->data;
+                    auto* data = obj->data;
                     assert(data->offset == 8);
                     _objectSamples[static_cast<size_t>(id)] = loadSoundFromWaveMemory(data->pcmHeader, data->pcm(), data->length);
                     return _objectSamples[static_cast<size_t>(id)];
