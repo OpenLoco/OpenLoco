@@ -1850,4 +1850,94 @@ namespace OpenLoco::Gfx
         }
         getDrawingEngine().updatePalette(_113ED20, 10, 236);
     }
+
+    // 0x004530F8
+    ImageExtents getImagesMaxExtent(const ImageId baseImageId, const size_t numImages)
+    {
+        uint8_t bitmap[200][200] = {};
+
+        RenderTarget rt = {
+            /*.bits = */ reinterpret_cast<uint8_t*>(bitmap),
+            /*.x = */ -100,
+            /*.y = */ -100,
+            /*.width = */ 200,
+            /*.height = */ 200,
+            /*.pitch = */ 0,
+            /*.zoom_level = */ 0,
+        };
+
+        // Draw all the images ontop of the one bitmap
+        for (size_t i = 0; i < numImages; ++i)
+        {
+            drawImage(rt, { 0, 0 }, baseImageId.withIndexOffset(i));
+        }
+
+        // Explore the bitmap to find the extents of the images drawn
+        int32_t spriteWidth = -1;
+        for (int32_t i = 99; i != 0; --i)
+        {
+            for (int32_t j = 0; j < 200; j++)
+            {
+                if (bitmap[j][100 - i] != 0)
+                {
+                    spriteWidth = i;
+                    break;
+                }
+            }
+
+            if (spriteWidth != -1)
+                break;
+
+            for (int32_t j = 0; j < 200; j++)
+            {
+                if (bitmap[j][100 + i] != 0)
+                {
+                    spriteWidth = i;
+                    break;
+                }
+            }
+
+            if (spriteWidth != -1)
+                break;
+        }
+
+        spriteWidth++;
+        int32_t spriteHeightNegative = -1;
+
+        for (int32_t i = 99; i != 0; --i)
+        {
+            for (int32_t j = 0; j < 200; j++)
+            {
+                if (bitmap[100 - i][j] != 0)
+                {
+                    spriteHeightNegative = i;
+                    break;
+                }
+            }
+
+            if (spriteHeightNegative != -1)
+                break;
+        }
+        spriteHeightNegative++;
+
+        int32_t spriteHeightPositive = -1;
+
+        for (int32_t i = 99; i != 0; --i)
+        {
+            for (int32_t j = 0; j < 200; j++)
+            {
+                if (bitmap[100 + i][j] != 0)
+                {
+                    spriteHeightPositive = i;
+                    break;
+                }
+            }
+
+            if (spriteHeightPositive != -1)
+                break;
+        }
+        spriteHeightPositive++;
+
+        return ImageExtents{ static_cast<uint8_t>(spriteWidth), static_cast<uint8_t>(spriteHeightNegative), static_cast<uint8_t>(spriteHeightPositive) };
+    }
 }

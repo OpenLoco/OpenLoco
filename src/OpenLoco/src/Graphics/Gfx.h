@@ -75,6 +75,14 @@ namespace OpenLoco::Gfx
     };
 
 #pragma pack(pop)
+
+    struct ImageExtents
+    {
+        uint8_t width;
+        uint8_t heightNegative;
+        uint8_t heightPositive;
+    };
+
     namespace G1ElementFlags
     {
         constexpr uint16_t hasTransparancy = 1 << 0;   // Image data contains transparent sections (when not set data is plain bmp)
@@ -224,4 +232,6 @@ namespace OpenLoco::Gfx
 
     void loadCurrency();
     void loadPalette();
+
+    ImageExtents getImagesMaxExtent(const ImageId baseImageId, const size_t numImages);
 }
