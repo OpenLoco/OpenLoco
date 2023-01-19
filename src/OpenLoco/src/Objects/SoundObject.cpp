@@ -17,7 +17,7 @@ namespace OpenLoco
         // Unknown structure size 0x10
         uint32_t numUnkStructs = *reinterpret_cast<const uint32_t*>(remainingData.data());
         remainingData = remainingData.subspan(sizeof(uint32_t));
-        uint32_t pcmDataLength = *reinterpret_cast<const uint32_t*>(remainingData.data());
+        [[maybe_unused]] uint32_t pcmDataLength = *reinterpret_cast<const uint32_t*>(remainingData.data());
         remainingData = remainingData.subspan(sizeof(uint32_t));
         remainingData = remainingData.subspan(numUnkStructs * 16);
 
