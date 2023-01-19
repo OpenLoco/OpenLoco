@@ -61,9 +61,9 @@ namespace OpenLoco
             ObjectHeader cliffEdgeHeader2 = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             if (dependencies != nullptr)
             {
-                dependencies->required.push_back(cliffEdgeHeader);
+                dependencies->required.push_back(cliffEdgeHeader2);
             }
-            auto res2 = ObjectManager::findObjectHandle(cliffEdgeHeader);
+            auto res2 = ObjectManager::findObjectHandle(cliffEdgeHeader2);
             if (res2.has_value())
             {
                 var_07 = res2->id;
