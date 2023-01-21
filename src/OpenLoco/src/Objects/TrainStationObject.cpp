@@ -88,9 +88,9 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        for (auto i = 0; i < 4; ++i)
+        for (size_t i = 0; i < 4; ++i)
         {
-            for (auto j = 0; j < 4; ++j)
+            for (size_t j = 0; j < 4; ++j)
             {
                 cargoOffsetBytes[i][j] = reinterpret_cast<const std::byte*>(remainingData.data());
 
@@ -107,7 +107,7 @@ namespace OpenLoco
             }
         }
 
-        for (auto i = 0; i < sizeof(var_6E) / sizeof(var_6E[0]); ++i)
+        for (size_t i = 0; i < sizeof(var_6E) / sizeof(var_6E[0]); ++i)
         {
             var_6E[i] = reinterpret_cast<const std::byte*>(remainingData.data());
 
@@ -129,7 +129,7 @@ namespace OpenLoco
         assert(remainingData.size() == imgRes.tableLength);
 
         auto imageOffset = image + TrainStation::ImageIds::totalPreviewImages;
-        for (auto i = 0; i < sizeof(var_12) / sizeof(var_12[0]); ++i)
+        for (size_t i = 0; i < sizeof(var_12) / sizeof(var_12[0]); ++i)
         {
             var_12[i] = imageOffset;
             imageOffset += kDrawStyleTotalNumImages[drawStyle];
