@@ -140,7 +140,7 @@ namespace OpenLoco::Gfx
             {
                 if (elements[i].flags & G1ElementFlags::hasZoomSprites)
                 {
-                    elements[i].zoomOffset = i - elements[i].zoomOffset;
+                    elements[i].zoomOffset = static_cast<int16_t>(i - elements[i].zoomOffset);
                 }
             }
 
@@ -159,7 +159,7 @@ namespace OpenLoco::Gfx
             {
                 if (elements[i].flags & G1ElementFlags::hasZoomSprites)
                 {
-                    elements[i].zoomOffset = i - elements[i].zoomOffset;
+                    elements[i].zoomOffset = static_cast<int16_t>(i - elements[i].zoomOffset);
                 }
             }
         }
