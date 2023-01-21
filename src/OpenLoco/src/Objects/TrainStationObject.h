@@ -46,10 +46,10 @@ namespace OpenLoco
         uint32_t var_12[4];
         uint8_t numCompatible; // 0x22
         uint8_t mods[7];
-        uint16_t designedYear;             // 0x2A
-        uint16_t obsoleteYear;             // 0x2C
-        std::byte* cargoOffsetBytes[4][4]; // 0x2E
-        uint32_t var_6E[16];
+        uint16_t designedYear;                   // 0x2A
+        uint16_t obsoleteYear;                   // 0x2C
+        const std::byte* cargoOffsetBytes[4][4]; // 0x2E
+        const std::byte* var_6E[16];
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
@@ -65,6 +65,7 @@ namespace OpenLoco
     {
         constexpr uint32_t preview_image = 0;
         constexpr uint32_t preview_image_windows = 1;
+        constexpr uint32_t totalPreviewImages = 2;
         // These are relative to var_12
         // var_12 is the imageIds per sequenceIndex (for start/middle/end of the platform)
         namespace Style0
@@ -86,6 +87,11 @@ namespace OpenLoco
             constexpr uint32_t diagonalSE2 = 14;
             constexpr uint32_t diagonalSE3 = 15;
             constexpr uint32_t diagonalCanopyTranslucentSE3 = 16;
+            constexpr uint32_t totalNumImages = 17;
+        }
+        namespace Style1
+        {
+            constexpr uint32_t totalNumImages = 8;
         }
     }
 }
