@@ -46,7 +46,7 @@ namespace OpenLoco::Game
         Audio::pauseSound();
         setPauseFlag(1 << 2);
         Gfx::invalidateScreen();
-        Gfx::render();
+        Gfx::renderAndUpdate();
 
         bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleId);
 
@@ -54,7 +54,7 @@ namespace OpenLoco::Game
         Ui::processMessagesMini();
         unsetPauseFlag(1 << 2);
         Gfx::invalidateScreen();
-        Gfx::render();
+        Gfx::renderAndUpdate();
 
         return confirm;
     }

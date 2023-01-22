@@ -75,7 +75,7 @@ namespace OpenLoco::Drawing
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    void SoftwareDrawingEngine::setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void SoftwareDrawingEngine::invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         left = std::max(left, 0);
         top = std::max(top, 0);
@@ -122,7 +122,7 @@ namespace OpenLoco::Drawing
     }
 
     // 0x004C5CFA
-    void SoftwareDrawingEngine::drawDirtyBlocks()
+    void SoftwareDrawingEngine::render()
     {
         const size_t columns = _screenInfo->dirtyBlockColumns;
         const size_t rows = _screenInfo->dirtyBlockRows;
@@ -141,12 +141,12 @@ namespace OpenLoco::Drawing
                 // Check rows
                 size_t dY = grid.getRows(x, dX, y);
 
-                drawDirtyBlocks(x, y, dX, dY);
+                render(x, y, dX, dY);
             }
         }
     }
 
-    void SoftwareDrawingEngine::drawDirtyBlocks(size_t x, size_t y, size_t dx, size_t dy)
+    void SoftwareDrawingEngine::render(size_t x, size_t y, size_t dx, size_t dy)
     {
         const auto columns = _screenInfo->dirtyBlockColumns;
         const auto rows = _screenInfo->dirtyBlockRows;
@@ -167,7 +167,7 @@ namespace OpenLoco::Drawing
             static_cast<uint16_t>(dx * _screenInfo->dirtyBlockWidth),
             static_cast<uint16_t>(dy * _screenInfo->dirtyBlockHeight));
 
-        this->drawRect(rect);
+        this->render(rect);
     }
 
     void SoftwareDrawingEngine::updatePalette(const PaletteEntry* entries, int32_t index, int32_t count)
@@ -187,7 +187,7 @@ namespace OpenLoco::Drawing
         SDL_SetPaletteColors(_palette, &base[index], index, count);
     }
 
-    void SoftwareDrawingEngine::drawRect(const Rect& _rect)
+    void SoftwareDrawingEngine::render(const Rect& _rect)
     {
         auto max = Rect(0, 0, Ui::width(), Ui::height());
         auto rect = _rect.intersection(max);
@@ -213,5 +213,5 @@ namespace OpenLoco::Drawing
         // Draw UI.
         Ui::WindowManager::render(rt, rect);
     }
-    
+
 }

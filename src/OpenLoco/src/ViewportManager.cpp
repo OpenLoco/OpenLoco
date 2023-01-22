@@ -226,7 +226,7 @@ namespace OpenLoco::Ui::ViewportManager
             top += viewport->y;
             bottom += viewport->y;
 
-            Gfx::setDirtyBlocks(left, top, right, bottom);
+            Gfx::invalidateRegion(left, top, right, bottom);
         }
 
         if (doGarbageCollect)
@@ -283,7 +283,7 @@ namespace OpenLoco::Ui::ViewportManager
             top += viewport->y;
             bottom += viewport->y;
 
-            Gfx::setDirtyBlocks(left, top, right, bottom);
+            Gfx::invalidateRegion(left, top, right, bottom);
         }
 
         if (doGarbageCollect)

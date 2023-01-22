@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004C5C69,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Gfx::setDirtyBlocks(regs.ax, regs.bx, regs.dx, regs.bp);
+                Gfx::invalidateRegion(regs.ax, regs.bx, regs.dx, regs.bp);
                 regs = backup;
 
                 return 0;
@@ -743,7 +743,7 @@ namespace OpenLoco::Ui::WindowManager
 
             if (widget.left != -2)
             {
-                Gfx::setDirtyBlocks(
+                Gfx::invalidateRegion(
                     w->x + widget.left,
                     w->y + widget.top,
                     w->x + widget.right + 1,
@@ -1707,7 +1707,7 @@ namespace OpenLoco::Ui::WindowManager
 
             if (left < right && top < bottom)
             {
-                Gfx::redrawScreenRect(left, top, right, bottom);
+                Gfx::render(left, top, right, bottom);
             }
         }
 
@@ -1845,7 +1845,7 @@ namespace OpenLoco::Ui::WindowManager
             if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->width)
             {
                 // redraw whole viewport
-                Gfx::redrawScreenRect(left, top, right, bottom);
+                Gfx::render(left, top, right, bottom);
             }
             else
             {
@@ -1856,14 +1856,14 @@ namespace OpenLoco::Ui::WindowManager
                 {
                     // draw left
                     int16_t _right = left + x;
-                    Gfx::redrawScreenRect(left, top, _right, bottom);
+                    Gfx::render(left, top, _right, bottom);
                     left += x;
                 }
                 else if (x < 0)
                 {
                     // draw right
                     int16_t _left = right + x;
-                    Gfx::redrawScreenRect(_left, top, right, bottom);
+                    Gfx::render(_left, top, right, bottom);
                     right += x;
                 }
 
@@ -1871,13 +1871,13 @@ namespace OpenLoco::Ui::WindowManager
                 {
                     // draw top
                     bottom = top + y;
-                    Gfx::redrawScreenRect(left, top, right, bottom);
+                    Gfx::render(left, top, right, bottom);
                 }
                 else if (y < 0)
                 {
                     // draw bottom
                     top = bottom + y;
-                    Gfx::redrawScreenRect(left, top, right, bottom);
+                    Gfx::render(left, top, right, bottom);
                 }
             }
         }

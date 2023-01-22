@@ -214,13 +214,21 @@ namespace OpenLoco::Gfx
     [[nodiscard]] ImageId applyGhostToImage(uint32_t imageIndex);
     [[nodiscard]] constexpr uint32_t getImageIndex(uint32_t imageId) { return imageId & 0x7FFFF; }
 
+    // Invalidates the entire screen.
     void invalidateScreen();
-    void setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
-    void drawDirtyBlocks();
+
+    // Invalidate a region of the screen.
+    void invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom);
+
+    // Renders all invalidated regions the next frame.
     void render();
 
-    void redrawScreenRect(Ui::Rect rect);
-    void redrawScreenRect(int16_t left, int16_t top, int16_t right, int16_t bottom);
+    // Renders a region of the screen.
+    void render(Ui::Rect rect);
+    void render(int16_t left, int16_t top, int16_t right, int16_t bottom);
+
+    // Renders all invalidated regions and processes new messages.
+    void renderAndUpdate();
 
     G1Element* getG1Element(uint32_t id);
 
