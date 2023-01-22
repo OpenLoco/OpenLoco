@@ -10,18 +10,20 @@ namespace OpenLoco::Config
 {
 #pragma pack(push, 1)
 
-    namespace Flags
+    enum class Flags : uint32_t
     {
-        constexpr uint32_t gridlinesOnLandscape = (1 << 0);
-        constexpr uint32_t showHeightAsUnits = (1 << 1);
-        constexpr uint32_t landscapeSmoothing = (1 << 2);
-        constexpr uint32_t exportObjectsWithSaves = (1 << 3);
+        none = 0U,
+        gridlinesOnLandscape = (1 << 0),
+        showHeightAsUnits = (1 << 1),
+        landscapeSmoothing = (1 << 2),
+        exportObjectsWithSaves = (1 << 3),
 
-        constexpr uint32_t preferredCurrencyForNewGames = (1 << 6);
-        constexpr uint32_t preferredCurrencyAlways = (1 << 7);
+        preferredCurrencyForNewGames = (1 << 6),
+        preferredCurrencyAlways = (1 << 7),
 
-        constexpr uint32_t usePreferredOwnerName = (1 << 9);
-    }
+        usePreferredOwnerName = (1 << 9),
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
     enum class MeasurementFormat : uint8_t
     {
@@ -61,7 +63,7 @@ namespace OpenLoco::Config
             uint8_t var_1;
         };
 
-        uint32_t flags;                                 // 0x50AEB4, 0x00
+        Flags flags;                                    // 0x50AEB4, 0x00
         int16_t resolutionWidth;                        // 0x50AEB8, 0x04
         int16_t resolutionHeight;                       // 0x50AEBA, 0x06
         uint16_t backupResolutionWidth;                 // 0x50AEBC, 0x08
