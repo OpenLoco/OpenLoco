@@ -17,10 +17,6 @@ namespace OpenLoco::Drawing
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
     loco_global<SetPaletteFunc, 0x0052524C> _setPaletteCallback;
 
-    static void windowDraw(RenderTarget* rt, Ui::Window* w, Rect rect);
-    static void windowDraw(RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-    static bool windowDrawSplit(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-
     SoftwareDrawingEngine::~SoftwareDrawingEngine()
     {
         if (_palette != nullptr)
@@ -212,128 +208,10 @@ namespace OpenLoco::Drawing
         rt.pitch = _screenInfo->renderTarget.width + _screenInfo->renderTarget.pitch - rect.width();
         rt.zoomLevel = 0;
 
-        for (size_t i = 0; i < Ui::WindowManager::count(); i++)
-        {
-            auto w = Ui::WindowManager::get(i);
+        // TODO: Remove main window and draw that independent from UI.
 
-            if (w->isTranslucent())
-                continue;
-
-            if (rect.right() <= w->x || rect.bottom() <= w->y)
-                continue;
-
-            if (rect.left() >= w->x + w->width || rect.top() >= w->y + w->height)
-                continue;
-
-            windowDraw(&rt, w, rect);
-        }
+        // Draw UI.
+        Ui::WindowManager::render(rt, rect);
     }
-
-    static void windowDraw(RenderTarget* rt, Ui::Window* w, Rect rect)
-    {
-        windowDraw(rt, w, rect.left(), rect.top(), rect.right(), rect.bottom());
-    }
-
-    /**
-     * 0x004C5EA9
-     *
-     * @param w
-     * @param left @<ax>
-     * @param top @<bx>
-     * @param right @<dx>
-     * @param bottom @<bp>
-     */
-    static void windowDraw(RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
-    {
-        if (!w->isVisible())
-            return;
-
-        // Split window into only the regions that require drawing
-        if (windowDrawSplit(rt, w, left, top, right, bottom))
-            return;
-
-        // Clamp region
-        left = std::max(left, w->x);
-        top = std::max(top, w->y);
-        right = std::min<int16_t>(right, w->x + w->width);
-        bottom = std::min<int16_t>(bottom, w->y + w->height);
-        if (left >= right)
-            return;
-        if (top >= bottom)
-            return;
-
-        // Draw the window in this region
-        Ui::WindowManager::drawSingle(rt, w, left, top, right, bottom);
-
-        for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)
-        {
-            auto v = Ui::WindowManager::get(index);
-
-            // Don't draw overlapping opaque windows, they won't have changed
-            if ((v->flags & Ui::WindowFlags::transparent) == 0)
-                continue;
-
-            Ui::WindowManager::drawSingle(rt, v, left, top, right, bottom);
-        }
-    }
-
-    /**
-     * 0x004C5EA9
-     *
-     * @param rt
-     * @param w @<esi>
-     * @param left @<ax>
-     * @param top @<bx>
-     * @param right @<dx>
-     * @param bottom @<bp>
-     * @return
-     */
-    static bool windowDrawSplit(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
-    {
-        // Divide the draws up for only the visible regions of the window recursively
-        for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)
-        {
-            auto topwindow = Ui::WindowManager::get(index);
-
-            // Check if this window overlaps w
-            if (topwindow->x >= right || topwindow->y >= bottom)
-                continue;
-            if (topwindow->x + topwindow->width <= left || topwindow->y + topwindow->height <= top)
-                continue;
-            if (topwindow->isTranslucent())
-                continue;
-
-            // A window overlaps w, split up the draw into two regions where the window starts to overlap
-            if (topwindow->x > left)
-            {
-                // Split draw at topwindow.left
-                windowDraw(rt, w, left, top, topwindow->x, bottom);
-                windowDraw(rt, w, topwindow->x, top, right, bottom);
-            }
-            else if (topwindow->x + topwindow->width < right)
-            {
-                // Split draw at topwindow.right
-                windowDraw(rt, w, left, top, topwindow->x + topwindow->width, bottom);
-                windowDraw(rt, w, topwindow->x + topwindow->width, top, right, bottom);
-            }
-            else if (topwindow->y > top)
-            {
-                // Split draw at topwindow.top
-                windowDraw(rt, w, left, top, right, topwindow->y);
-                windowDraw(rt, w, left, topwindow->y, right, bottom);
-            }
-            else if (topwindow->y + topwindow->height < bottom)
-            {
-                // Split draw at topwindow.bottom
-                windowDraw(rt, w, left, top, right, topwindow->y + topwindow->height);
-                windowDraw(rt, w, left, topwindow->y + topwindow->height, right, bottom);
-            }
-
-            // Drawing for this region should be done now, exit
-            return true;
-        }
-
-        // No windows overlap
-        return false;
-    }
+    
 }
