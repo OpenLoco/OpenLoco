@@ -600,7 +600,7 @@ namespace OpenLoco::StringManager
                     {
                         int32_t value = args.pop<int16_t>();
 
-                        bool showHeightAsUnits = Config::get().old.flags & Config::Flags::showHeightAsUnits;
+                        bool showHeightAsUnits = Config::get().old.flags & Config::Flags::showHeightAsUnits != Config::Flags::none;
                         auto measurementFormat = Config::get().old.measurementFormat;
                         const char* unit;
 
