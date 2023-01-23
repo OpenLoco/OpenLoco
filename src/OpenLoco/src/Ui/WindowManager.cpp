@@ -2211,7 +2211,7 @@ namespace OpenLoco::Ui::Windows
         _gridlinesState--;
         if (!_gridlinesState)
         {
-            if (!(Config::get().old.flags & Config::Flags::gridlinesOnLandscape))
+            if ((Config::get().old.flags & Config::Flags::gridlinesOnLandscape) == Config::Flags::none)
             {
                 auto window = WindowManager::getMainWindow();
                 if (window != nullptr)
