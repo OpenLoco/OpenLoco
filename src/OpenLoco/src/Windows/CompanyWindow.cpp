@@ -438,7 +438,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void noViewportPresent(Window* const self, const SavedView& view)
         {
             uint16_t vpFlags = 0;
-            if (Config::get().old.flags & Config::Flags::gridlinesOnLandscape != Config::Flags::none)
+            if ((Config::get().old.flags & Config::Flags::gridlinesOnLandscape) != Config::Flags::none)
             {
                 vpFlags |= ViewportFlags::gridlines_on_landscape;
             }
@@ -1091,7 +1091,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             uint16_t vpFlags = 0;
             if (self.viewports[0] == nullptr)
             {
-                if (Config::get().old.flags & Config::Flags::gridlinesOnLandscape != Config::Flags::none)
+                if ((Config::get().old.flags & Config::Flags::gridlinesOnLandscape) != Config::Flags::none)
                 {
                     vpFlags |= ViewportFlags::gridlines_on_landscape;
                 }

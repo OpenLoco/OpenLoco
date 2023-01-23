@@ -589,7 +589,7 @@ namespace OpenLoco::CompanyManager
     // 0x004C95A6
     void setPreferredName()
     {
-        if (Config::get().old.flags & Config::Flags::usePreferredOwnerName == Config::Flags::none)
+        if ((Config::get().old.flags & Config::Flags::usePreferredOwnerName) == Config::Flags::none)
             return;
 
         // First, set the owner name.

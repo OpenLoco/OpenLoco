@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::Options
                 {
                     auto& cfg = OpenLoco::Config::get().old;
                     // TODO: is there a better way to toggle a flag?
-                    if (cfg.flags & Config::Flags::landscapeSmoothing != Config::Flags::none)
+                    if ((cfg.flags & Config::Flags::landscapeSmoothing) != Config::Flags::none)
                     {
                         cfg.flags &= ~Config::Flags::landscapeSmoothing;
                     }
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::gridlines_on_landscape:
                 {
                     auto& cfg = OpenLoco::Config::get().old;
-                    if (cfg.flags & Config::Flags::gridlinesOnLandscape != Config::Flags::none)
+                    if ((cfg.flags & Config::Flags::gridlinesOnLandscape) != Config::Flags::none)
                     {
                         cfg.flags &= ~Config::Flags::gridlinesOnLandscape;
                     }
@@ -611,7 +611,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             w.activatedWidgets &= ~(1 << Widx::gridlines_on_landscape);
-            if (Config::get().old.flags & Config::Flags::gridlinesOnLandscape != Config::Flags::none)
+            if ((Config::get().old.flags & Config::Flags::gridlinesOnLandscape) != Config::Flags::none)
             {
                 w.activatedWidgets |= (1 << Widx::gridlines_on_landscape);
             }
@@ -1358,20 +1358,20 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(current_measurement_format);
 
             w.activatedWidgets &= ~(1 << Widx::preferred_currency_for_new_games);
-            if (Config::get().old.flags & Config::Flags::preferredCurrencyForNewGames != Config::Flags::none)
+            if ((Config::get().old.flags & Config::Flags::preferredCurrencyForNewGames) != Config::Flags::none)
             {
                 w.activatedWidgets |= (1 << Widx::preferred_currency_for_new_games);
             }
 
             w.activatedWidgets &= ~(1 << Widx::preferred_currency_always);
-            if (Config::get().old.flags & Config::Flags::preferredCurrencyAlways != Config::Flags::none)
+            if ((Config::get().old.flags & Config::Flags::preferredCurrencyAlways) != Config::Flags::none)
             {
                 w.activatedWidgets |= (1 << Widx::preferred_currency_always);
             }
 
             w.disabledWidgets &= ~(1 << Widx::currency);
             w.disabledWidgets &= ~(1 << Widx::currency_btn);
-            if (Config::get().old.flags & Config::Flags::preferredCurrencyAlways != Config::Flags::none)
+            if ((Config::get().old.flags & Config::Flags::preferredCurrencyAlways) != Config::Flags::none)
             {
                 w.disabledWidgets |= (1 << Widx::currency);
                 w.disabledWidgets |= (1 << Widx::currency_btn);
@@ -1621,7 +1621,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void preferredCurrencyNewGameMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::get().old;
-            if (cfg.flags & Config::Flags::preferredCurrencyForNewGames != Config::Flags::none)
+            if ((cfg.flags & Config::Flags::preferredCurrencyForNewGames) != Config::Flags::none)
             {
                 cfg.flags &= ~Config::Flags::preferredCurrencyForNewGames;
             }
@@ -1638,7 +1638,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void preferredCurrencyAlwaysMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::get().old;
-            if (cfg.flags & Config::Flags::preferredCurrencyAlways != Config::Flags::none)
+            if ((cfg.flags & Config::Flags::preferredCurrencyAlways) != Config::Flags::none)
             {
                 cfg.flags &= ~Config::Flags::preferredCurrencyAlways;
             }
@@ -1860,7 +1860,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void edgeScrollingMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::get().old;
-            cfg.edgeScrolling = !cfg.edgeScrolling;
+            cfg.edgeScrolling = ~cfg.edgeScrolling;
             Config::write();
 
             w->invalidate();
@@ -2018,14 +2018,14 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets &= ~(1 << Widx::disableTownExpansion);
 
             w.activatedWidgets &= ~(1 << Widx::export_plugin_objects);
-            if (Config::get().old.flags & Config::Flags::exportObjectsWithSaves != Config::Flags::none)
+            if ((Config::get().old.flags & Config::Flags::exportObjectsWithSaves) != Config::Flags::none)
             {
                 w.activatedWidgets |= (1 << Widx::export_plugin_objects);
             }
 
             w.activatedWidgets &= ~(1 << Widx::use_preferred_owner_name);
             w.disabledWidgets |= (1 << Widx::change_btn);
-            if (Config::get().old.flags & Config::Flags::usePreferredOwnerName != Config::Flags::none)
+            if ((Config::get().old.flags & Config::Flags::usePreferredOwnerName) != Config::Flags::none)
             {
                 w.activatedWidgets |= (1 << Widx::use_preferred_owner_name);
                 w.disabledWidgets &= ~(1 << Widx::change_btn);
@@ -2294,7 +2294,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void usePreferredOwnerNameMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::get().old;
-            if (cfg.flags & Config::Flags::usePreferredOwnerName != Config::Flags::none)
+            if ((cfg.flags & Config::Flags::usePreferredOwnerName) != Config::Flags::none)
             {
                 cfg.flags &= ~Config::Flags::usePreferredOwnerName;
             }
@@ -2306,7 +2306,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             w->invalidate();
 
-            if (cfg.flags & Config::Flags::usePreferredOwnerName != Config::Flags::none)
+            if ((cfg.flags & Config::Flags::usePreferredOwnerName) != Config::Flags::none)
             {
                 if (strlen(cfg.preferredName) == 0)
                 {
@@ -2359,7 +2359,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void exportPluginObjectsMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::get().old;
-            if (cfg.flags & Config::Flags::exportObjectsWithSaves != Config::Flags::none)
+            if ((cfg.flags & Config::Flags::exportObjectsWithSaves) != Config::Flags::none)
             {
                 cfg.flags &= ~Config::Flags::exportObjectsWithSaves;
             }
