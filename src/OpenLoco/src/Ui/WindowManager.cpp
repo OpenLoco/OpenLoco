@@ -2071,15 +2071,15 @@ namespace OpenLoco::Ui::WindowManager
         // Draw the window in this region
         Ui::WindowManager::drawSingle(rt, w, left, top, right, bottom);
 
-        for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)
+        for (uint32_t index = indexOf(w) + 1; index < count(); index++)
         {
-            auto v = Ui::WindowManager::get(index);
+            auto v = get(index);
 
             // Don't draw overlapping opaque windows, they won't have changed
-            if ((v->flags & Ui::WindowFlags::transparent) == 0)
+            if ((v->flags & WindowFlags::transparent) == 0)
                 continue;
 
-            Ui::WindowManager::drawSingle(rt, v, left, top, right, bottom);
+            drawSingle(rt, v, left, top, right, bottom);
         }
     }
 
@@ -2102,9 +2102,9 @@ namespace OpenLoco::Ui::WindowManager
     static bool windowDrawSplit(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
-        for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)
+        for (uint32_t index = indexOf(w) + 1; index < count(); index++)
         {
-            auto topwindow = Ui::WindowManager::get(index);
+            auto topwindow = get(index);
 
             // Check if this window overlaps w
             if (topwindow->x >= right || topwindow->y >= bottom)
