@@ -3,6 +3,7 @@
 - Feature: [#1745] Add cheat to instantly win any scenario/challenge.
 - Fix: [#528] Snow rendering issue with Steam provided Locomotion.
 - Fix: [#1750] Scenario index is not updated when in-game language changes.
+- Change: [#1698] The prompts asking to locate the Locomotion install folder have been improved.
 
 22.12 (2022-12-22)
 ------------------------------------------------------------------------
