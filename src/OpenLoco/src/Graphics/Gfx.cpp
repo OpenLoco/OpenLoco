@@ -1456,7 +1456,7 @@ namespace OpenLoco::Gfx
     // 0x004CD406
     void invalidateScreen()
     {
-        setDirtyBlocks(0, 0, Ui::width(), Ui::height());
+        invalidateRegion(0, 0, Ui::width(), Ui::height());
     }
 
     static std::unique_ptr<Drawing::SoftwareDrawingEngine> engine;
@@ -1478,22 +1478,23 @@ namespace OpenLoco::Gfx
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    void setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
-        getDrawingEngine().setDirtyBlocks(left, top, right, bottom);
+        getDrawingEngine().invalidateRegion(left, top, right, bottom);
     }
 
     // 0x004C5CFA
-    void drawDirtyBlocks()
+    void render()
     {
-        getDrawingEngine().drawDirtyBlocks();
+        getDrawingEngine().render();
     }
 
     loco_global<char[512], 0x0112CC04> _byte_112CC04;
     loco_global<char[512], 0x0112CE04> _byte_112CE04;
 
     // 0x004CF63B
-    void render()
+    // TODO: Split this into two functions, one for rendering and one for processing messages.
+    void renderAndUpdate()
     {
         char backup1[512] = { 0 };
         char backup2[512] = { 0 };
@@ -1503,7 +1504,7 @@ namespace OpenLoco::Gfx
 
         if (Ui::dirtyBlocksInitialised())
         {
-            getDrawingEngine().drawDirtyBlocks();
+            getDrawingEngine().render();
         }
 
         if (Input::hasFlag(Input::Flags::flag5))
@@ -1524,9 +1525,9 @@ namespace OpenLoco::Gfx
         std::memcpy(_byte_112CE04, backup2, 512);
     }
 
-    void redrawScreenRect(Rect rect)
+    void render(Rect rect)
     {
-        getDrawingEngine().drawRect(rect);
+        getDrawingEngine().render(rect);
     }
 
     /**
@@ -1538,9 +1539,9 @@ namespace OpenLoco::Gfx
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    void redrawScreenRect(int16_t left, int16_t top, int16_t right, int16_t bottom)
+    void render(int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
-        redrawScreenRect(Rect::fromLTRB(left, top, right, bottom));
+        render(Rect::fromLTRB(left, top, right, bottom));
     }
 
     static const G1Element* getNoiseMaskImageFromImage(const ImageId image)

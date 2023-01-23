@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     Input::processKeyboardInput();
                     WindowManager::update();
                     Ui::minimalHandleInput();
-                    Gfx::render();
+                    Gfx::renderAndUpdate();
                     return WindowManager::find(WindowType::fileBrowserPrompt) != nullptr;
                 });
             WindowManager::setCurrentModalType(WindowType::undefined);

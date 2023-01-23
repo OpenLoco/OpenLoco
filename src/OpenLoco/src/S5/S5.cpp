@@ -138,7 +138,7 @@ namespace OpenLoco::S5
                     rt.height = size.height;
                     rt.pitch = 0;
                     rt.zoomLevel = 0;
-                    Gfx::redrawScreenRect(0, 0, size.width, size.height);
+                    Gfx::render(0, 0, size.width, size.height);
                     rt = backupContext;
                 }
 

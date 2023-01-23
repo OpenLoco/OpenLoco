@@ -56,6 +56,6 @@ namespace OpenLoco::Drawing
         Gfx::drawString(rt, x, y, Colour::black, buffer);
 
         // Make area dirty so the text doesn't get drawn over the last
-        Gfx::setDirtyBlocks(x - 16, y - 4, x + 16, 16);
+        Gfx::invalidateRegion(x - 16, y - 4, x + 16, 16);
     }
 }

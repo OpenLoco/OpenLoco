@@ -218,7 +218,7 @@ namespace OpenLoco::Ui
         if (vp->flags & ViewportFlags::hide_foreground_tracks_roads || vp->flags & ViewportFlags::hide_foreground_scenery_buildings || w->flags & WindowFlags::flag_8)
         {
             auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
-            Gfx::redrawScreenRect(rect);
+            Gfx::render(rect);
             return;
         }
 
@@ -396,7 +396,7 @@ namespace OpenLoco::Ui
     // input: regs.esi - window (this)
     void Window::invalidate()
     {
-        Gfx::setDirtyBlocks(x, y, x + width, y + height);
+        Gfx::invalidateRegion(x, y, x + width, y + height);
     }
 
     // 0x004CA115

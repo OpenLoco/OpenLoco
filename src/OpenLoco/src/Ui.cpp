@@ -442,7 +442,7 @@ namespace OpenLoco::Ui
 
         if (!Intro::isActive())
         {
-            Gfx::drawDirtyBlocks();
+            Gfx::render();
         }
 
         // Lock the surface before setting its pixels

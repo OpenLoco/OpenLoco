@@ -23,16 +23,22 @@ namespace OpenLoco::Drawing
     {
     public:
         ~SoftwareDrawingEngine();
-        void drawDirtyBlocks();
-        void drawRect(const Ui::Rect& rect);
-        void setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
+
+        // Renders all invalidated regions.
+        void render();
+
+        // Renders a specific region.
+        void render(const Ui::Rect& rect);
+
+        // Invalidates a region, this forces it to be rendered next frame.
+        void invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom);
 
         void createPalette();
         SDL_Palette* getPalette() { return _palette; }
         void updatePalette(const PaletteEntry* entries, int32_t index, int32_t count);
 
     private:
-        void drawDirtyBlocks(size_t x, size_t y, size_t dx, size_t dy);
+        void render(size_t x, size_t y, size_t dx, size_t dy);
 
         SDL_Palette* _palette;
     };

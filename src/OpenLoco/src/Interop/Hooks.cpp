@@ -750,7 +750,7 @@ void OpenLoco::Interop::registerHooks()
         0x004CF63B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            Gfx::render();
+            Gfx::renderAndUpdate();
             regs = backup;
             return 0;
         });
@@ -878,7 +878,7 @@ void OpenLoco::Interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
 
-            Gfx::redrawScreenRect(regs.ax, regs.bx, regs.dx, regs.bp);
+            Gfx::render(regs.ax, regs.bx, regs.dx, regs.bp);
 
             regs = backup;
             return 0;

@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
                 Input::processKeyboardInput();
                 WindowManager::update();
                 Ui::minimalHandleInput();
-                Gfx::render();
+                Gfx::renderAndUpdate();
                 return WindowManager::find(WindowType::confirmationPrompt) != nullptr;
             });
         WindowManager::setCurrentModalType(originalModal);
