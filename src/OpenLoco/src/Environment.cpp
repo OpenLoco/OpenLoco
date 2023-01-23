@@ -72,6 +72,8 @@ namespace OpenLoco::Environment
     {
         autoCreateDirectory(Platform::getUserDirectory());
         auto& cfg = Config::get();
+
+        // Validate any existing configured install path first
         auto path = fs::u8path(cfg.locoInstallPath);
         if (!path.empty())
         {
@@ -80,9 +82,10 @@ namespace OpenLoco::Environment
                 Config::write();
                 return path;
             }
-            std::cerr << "Configured install path for Locomotion is missing Data/g1.DAT." << std::endl;
+            std::cerr << "Configured Locomotion game folder is missing Data/g1.DAT." << std::endl;
         }
 
+        // Try to detect the Locomotion install path
         path = autoDetectLocoInstallPath();
         if (!path.empty())
         {
@@ -90,23 +93,28 @@ namespace OpenLoco::Environment
             Config::write();
             return path;
         }
-        else
-        {
-            std::cerr << "Unable to find install path for Locomotion." << std::endl
-                      << "You will need to manually provide it." << std::endl;
-            Ui::showMessageBox("OpenLoco", "Select your Locomotion install path.");
-            path = Platform::promptDirectory("Select your Locomotion install path.");
-            if (validateLocoInstallPath(path))
-            {
-                cfg.locoInstallPath = path.make_preferred().u8string();
-                Config::write();
-                return path;
-            }
 
-            std::cerr << "Path is missing g1.dat." << std::endl;
-            Ui::showMessageBox("OpenLoco", "Path is missing Data/g1.DAT.");
-            std::exit(-1);
+        std::cerr << "Unable to automatically find the Locomotion game folder." << std::endl
+                  << "Please provide the location manually." << std::endl;
+        Ui::showMessageBox("OpenLoco", "Unable to automatically detect the Locomotion game folder.\n"
+                                       "Please locate the Locomotion game folder manually.");
+
+        // Let user manually specify the Locomotion install folder, and verify files are present
+        path = Platform::promptDirectory("Locate original Locomotion game files");
+        if (validateLocoInstallPath(path))
+        {
+            cfg.locoInstallPath = path.make_preferred().u8string();
+            Config::write();
+            return path;
         }
+
+        // Files could not be located -- bail with a helpful error message
+        std::cerr << "The selected folder does not contain Data/g1.DAT" << std::endl;
+        Ui::showMessageBox("OpenLoco", "The selected folder does not contain Data/g1.DAT, suggesting it is not a Locomotion\n"
+                                       "install folder. Please verify the folder contains the original Locomotion game files,\n"
+                                       "then restart OpenLoco to try again.");
+
+        std::exit(-1);
     }
 
     static fs::path getLocoInstallPath()
