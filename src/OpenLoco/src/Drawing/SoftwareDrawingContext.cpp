@@ -1539,17 +1539,129 @@ namespace OpenLoco::Drawing
             fillRectInset(rt, x, y, x + dx - 1, y + dy - 1, colour, flags);
         }
 
-        // 0x00452DA4
-        static void drawLine(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+        /**
+         * Draws a horizontal line of specified colour to a buffer.
+         *  0x0045308A
+         */
+        static void drawHorizontalLine(Gfx::RenderTarget& rt, PaletteIndex_t colour, const Ui::Point& startCoord, int32_t length)
         {
-            registers regs;
-            regs.ax = left;
-            regs.bx = top;
-            regs.cx = right;
-            regs.dx = bottom;
-            regs.ebp = colour;
-            regs.edi = X86Pointer(&rt);
-            call(0x00452DA4, regs);
+            Ui::Point offset{ startCoord.x - rt.x, startCoord.y - rt.y };
+
+            // Check to make sure point is in the y range
+            if (offset.y < 0)
+                return;
+            if (offset.y >= rt.height)
+                return;
+            // Check to make sure we are drawing at least a pixel
+            if (length == 0)
+                length++;
+
+            // If x coord outside range leave
+            if (offset.x < 0)
+            {
+                // Unless the number of pixels is enough to be in range
+                length += offset.x;
+                if (length <= 0)
+                    return;
+                // Resets starting point to 0 as we don't draw outside the range
+                offset.x = 0;
+            }
+
+            // Ensure that the end point of the line is within range
+            if (offset.x + length - rt.width > 0)
+            {
+                // If the end point has any pixels outside range
+                // cut them off. If there are now no pixels return.
+                length -= offset.x + length - rt.width;
+                if (length <= 0)
+                    return;
+            }
+
+            // Get the buffer we are drawing to and move to the first coordinate.
+            uint8_t* buffer = rt.bits
+                + offset.y * static_cast<int32_t>(rt.pitch + rt.width) + offset.x;
+
+            // Draw the line to the specified colour
+            std::fill_n(buffer, length, colour);
+        }
+
+        // 0x00452DA4
+        void drawLine(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, PaletteIndex_t colour)
+        {
+            // Check to make sure the line is within the drawing area
+            if ((left < rt.x) && (right < rt.x))
+            {
+                return;
+            }
+
+            if ((top < rt.y) && (bottom < rt.y))
+            {
+                return;
+            }
+
+            if ((left > (rt.x + rt.width)) && (right > (rt.x + rt.width)))
+            {
+                return;
+            }
+
+            if ((top > (rt.y + rt.height)) && (bottom > (rt.y + rt.height)))
+            {
+                return;
+            }
+
+            // Bresenham's algorithm
+
+            // If vertical plot points upwards
+            const bool isSteep = std::abs(bottom - top) > std::abs(right - left);
+            if (isSteep)
+            {
+                std::swap(bottom, left);
+                std::swap(top, right);
+            }
+
+            // If line is right to left swap direction
+            if (left > right)
+            {
+                std::swap(left, right);
+                std::swap(bottom, top);
+            }
+
+            const auto deltaX = right - left;
+            const auto deltaY = std::abs(bottom - top);
+            auto error = deltaX / 2;
+            const auto yStep = top < bottom ? 1 : -1;
+            auto y = top;
+
+            for (auto x = left, xStart = left, length = static_cast<int16_t>(1); x < right; ++x, ++length)
+            {
+                // Vertical lines are drawn 1 pixel at a time
+                if (isSteep)
+                {
+                    drawHorizontalLine(rt, colour, { y, x }, 1);
+                }
+
+                error -= deltaY;
+                if (error < 0)
+                {
+                    // Non vertical lines are drawn with as many pixels in a horizontal line as possible
+                    if (!isSteep)
+                    {
+                        drawHorizontalLine(rt, colour, { xStart, y }, length);
+                    }
+
+                    // Reset non vertical line vars
+                    xStart = x + 1;
+                    length = 1;
+                    y += yStep;
+                    error += deltaX;
+                }
+
+                // Catch the case of the last line
+                if (x + 1 == right && !isSteep)
+                {
+                    drawHorizontalLine(rt, colour, { xStart, y }, length);
+                }
+            }
         }
     } // Impl
 
@@ -1673,7 +1785,7 @@ namespace OpenLoco::Drawing
         return Impl::drawRectInset(rt, x, y, dx, dy, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawLine(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    void SoftwareDrawingContext::drawLine(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, PaletteIndex_t colour)
     {
         return Impl::drawLine(rt, left, top, right, bottom, colour);
     }
