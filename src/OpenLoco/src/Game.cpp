@@ -99,10 +99,10 @@ namespace OpenLoco::Game
     // 0x00441993
     bool saveLandscapeOpen()
     {
-        S5::getOptions().scenarioFlags &= ~Scenario::Flags::none;
-        if (hasFlags(Scenario::Flags::none))
+        S5::getOptions().scenarioFlags &= ~Scenario::Flags::landscapeGenerationDone;
+        if (hasFlags(Scenario::Flags::landscapeGenerationDone))
         {
-            S5::getOptions().scenarioFlags |= Scenario::Flags::none;
+            S5::getOptions().scenarioFlags |= Scenario::Flags::landscapeGenerationDone;
             sub_46DB4C();
         }
 
