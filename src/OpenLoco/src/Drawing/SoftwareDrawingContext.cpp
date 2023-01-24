@@ -21,8 +21,6 @@ namespace OpenLoco::Drawing
         static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
         static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
 
-        static loco_global<uint32_t, 0x00E04324> _E04324;
-
         static loco_global<const uint8_t*, 0x009DA3D8> _noiseMaskImageData;
         // 0x009DA3E0
         // Originally 0x009DA3E0 was an array of the image data pointers setup within 0x00452336

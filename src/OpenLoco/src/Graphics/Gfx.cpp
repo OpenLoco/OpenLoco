@@ -28,41 +28,13 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Gfx
 {
-    namespace TextDrawFlags
-    {
-        constexpr uint8_t inset = (1ULL << 0);
-        constexpr uint8_t outline = (1ULL << 1);
-        constexpr uint8_t dark = (1ULL << 2);
-        constexpr uint8_t extraDark = (1ULL << 3);
-    }
-
     constexpr uint32_t kG1CountTemporary = 0x1000;
 
     static loco_global<G1Element[G1ExpectedCount::kDisc + kG1CountTemporary + G1ExpectedCount::kObjects], 0x9E2424> _g1Elements;
-    // 0x009DA3E0
-    // Originally 0x009DA3E0 was an array of the image data pointers setup within 0x00452336
-    // We have removed that step and instead work directly on the images.
-    static constexpr std::array<uint32_t, 8> _noiseMaskImages = {
-        ImageIds::null,
-        ImageIds::noise_mask_1,
-        ImageIds::noise_mask_2,
-        ImageIds::noise_mask_3,
-        ImageIds::noise_mask_4,
-        ImageIds::noise_mask_5,
-        ImageIds::noise_mask_6,
-        ImageIds::noise_mask_7,
-    };
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
 
-    static loco_global<uint16_t, 0x112C824> _currentFontFlags;
-    static loco_global<int16_t, 0x0112C876> _currentFontSpriteBase;
     static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
-    static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
-    loco_global<uint32_t, 0x00E04324> _E04324;
-    loco_global<const uint8_t*, 0x009DA3D8> _noiseMaskImageData;
-
-    static PaletteMap::Buffer<8> _textColours{ 0 };
 
     // 0x004FFAE8
     ImageId applyGhostToImage(uint32_t imageIndex)
@@ -339,8 +311,6 @@ namespace OpenLoco::Gfx
     {
         return ImageIdFlags::translucent | (enumValue(colour) << 19) | image;
     }
-
-    loco_global<uint8_t*, 0x0050B860> _50B860;
 
     G1Element* getG1Element(uint32_t imageId)
     {
