@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Graphics/PaletteMap.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/PaletteMap.h"
 #include "Types.hpp"
 #include "Ui/Rect.h"
 #include <cstdint>
@@ -9,7 +9,7 @@
 namespace OpenLoco::Drawing
 {
     class SoftwareDrawingContext
-    {        
+    {
     public:
         void clear(Gfx::RenderTarget& rt, uint32_t fill);
         void clearSingle(Gfx::RenderTarget& rt, uint8_t paletteId);

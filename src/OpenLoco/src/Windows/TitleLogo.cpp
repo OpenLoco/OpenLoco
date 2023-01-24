@@ -1,3 +1,4 @@
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Interop/Interop.hpp"
@@ -55,7 +56,8 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     // 0x00439298
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        Gfx::drawImage(rt, window.x, window.y, ImageIds::locomotion_logo);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(rt, window.x, window.y, ImageIds::locomotion_logo);
     }
 
     // 0x004392AD

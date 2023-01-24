@@ -2,6 +2,7 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -131,6 +132,8 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00455C22
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
             self.drawViewports(rt);
@@ -147,7 +150,7 @@ namespace OpenLoco::Ui::Windows::Industry
             auto x = self.x + widget->left - 1;
             auto y = self.y + widget->top - 1;
             auto width = widget->width();
-            Gfx::drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x00455C86
@@ -442,6 +445,8 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00456705
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
@@ -456,7 +461,7 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 origin.x += 4;
                 origin.y += 10;
-                Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::received_cargo);
+                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::received_cargo);
 
                 auto cargoNumber = 0;
                 for (const auto& receivedCargoType : industryObj->requiredCargoType)
@@ -476,7 +481,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         }
                         args.push<uint32_t>(industry->receivedCargoQuantityPreviousMonth[cargoNumber]);
 
-                        origin.y = Gfx::drawStringLeftWrapped(*rt, origin.x, origin.y, 290, Colour::black, StringIds::black_stringid, &args);
+                        origin.y = drawingCtx.drawStringLeftWrapped(*rt, origin.x, origin.y, 290, Colour::black, StringIds::black_stringid, &args);
                     }
                     cargoNumber++;
                 }
@@ -487,7 +492,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // Draw Last Months produced cargo stats
             if (industry->canProduceCargo())
             {
-                Gfx::drawStringLeft(*rt, origin.x, origin.y, Colour::black, StringIds::produced_cargo);
+                drawingCtx.drawStringLeft(*rt, origin.x, origin.y, Colour::black, StringIds::produced_cargo);
                 origin.y += 10;
                 origin.x += 4;
 
@@ -510,7 +515,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         args.push<uint32_t>(industry->producedCargoQuantityPreviousMonth[cargoNumber]);
                         args.push<uint16_t>(industry->producedCargoPercentTransportedPreviousMonth[cargoNumber]);
 
-                        origin.y = Gfx::drawStringLeftWrapped(*rt, origin.x, origin.y, 290, Colour::black, StringIds::transported_cargo, &args);
+                        origin.y = drawingCtx.drawStringLeftWrapped(*rt, origin.x, origin.y, 290, Colour::black, StringIds::transported_cargo, &args);
                     }
                     cargoNumber++;
                 }
@@ -570,6 +575,8 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00456079
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
@@ -585,7 +592,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 int16_t x = self.x + 2;
                 int16_t y = self.y - 24 + 68;
 
-                Gfx::drawStringLeft(*rt, x, y, Colour::black, StringIds::production_graph_label, &args);
+                drawingCtx.drawStringLeft(*rt, x, y, Colour::black, StringIds::production_graph_label, &args);
             }
 
             // Draw Y label and grid lines.
@@ -596,9 +603,9 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto args = FormatArguments();
                 args.push(yTick);
 
-                Gfx::drawRect(*rt, self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+                drawingCtx.drawRect(*rt, self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
-                Gfx::drawStringRight(*rt, self.x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
+                drawingCtx.drawStringRight(*rt, self.x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -623,10 +630,10 @@ namespace OpenLoco::Ui::Windows::Industry
                         auto args = FormatArguments();
                         args.push(year);
 
-                        Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
+                        drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    Gfx::drawRect(*rt, xPos, yPos + 11, 1, self.height - 74, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+                    drawingCtx.drawRect(*rt, xPos, yPos + 11, 1, self.height - 74, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
                 }
 
                 const auto history = productionTabWidx == widx::tab_production ? industry->producedCargoMonthlyHistory1 : industry->producedCargoMonthlyHistory2;
@@ -641,7 +648,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     {
                         if (yPos2 <= graphBottom)
                         {
-                            Gfx::drawLine(*rt, xPos, yPos1, xPos + 1, yPos2, Colours::getShade(self.getColour(WindowColour::secondary).c(), 7));
+                            drawingCtx.drawLine(*rt, xPos, yPos1, xPos + 1, yPos2, Colours::getShade(self.getColour(WindowColour::secondary).c(), 7));
                         }
                     }
                 }
@@ -835,10 +842,11 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 auto xPos = widget.left + self->x;
                 auto yPos = widget.top + self->y;
-                Gfx::drawImage(rt, xPos, yPos, imageId);
+                auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+                drawingCtx.drawImage(rt, xPos, yPos, imageId);
 
                 auto caroObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[productionTabNumber]);
-                Gfx::drawImage(rt, xPos + 18, yPos + 14, caroObj->unitInlineSprite);
+                drawingCtx.drawImage(rt, xPos + 18, yPos + 14, caroObj->unitInlineSprite);
 
                 Widget::drawTab(self, rt, -2, tab);
             }

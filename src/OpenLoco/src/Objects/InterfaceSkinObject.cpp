@@ -1,4 +1,5 @@
 #include "InterfaceSkinObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -30,7 +31,7 @@ namespace OpenLoco
     void InterfaceSkinObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto image = Gfx::recolour(img + InterfaceSkin::ImageIds::preview_image, Colour::mutedSeaGreen);
-
-        Gfx::drawImage(&rt, x - 32, y - 32, image);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x - 32, y - 32, image);
     }
 }

@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Construction.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -518,7 +519,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             auto args = FormatArguments();
             args.push<uint32_t>(_modCost);
 
-            Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
     }
 

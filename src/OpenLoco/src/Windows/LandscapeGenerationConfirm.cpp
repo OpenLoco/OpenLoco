@@ -1,3 +1,4 @@
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Input.h"
@@ -38,6 +39,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     // 0x004C18A5
     static void draw(Window& window, Gfx::RenderTarget* rt)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         window.draw(rt);
 
         static loco_global<string_id, 0x0112C826> _commonFormatArgs;
@@ -45,7 +48,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         *_commonFormatArgs = prompt;
 
         auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);
-        Gfx::drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*_commonFormatArgs);
+        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*_commonFormatArgs);
     }
 
     // 0x004C18E4

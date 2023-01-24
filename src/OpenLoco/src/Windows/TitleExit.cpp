@@ -1,3 +1,4 @@
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -60,8 +61,9 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
     static void prepareDraw(Ui::Window& self)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto exitString = StringManager::getString(StringIds::title_exit_game);
-        self.width = Gfx::getStringWidthNewLined(exitString) + 10;
+        self.width = drawingCtx.getStringWidthNewLined(exitString) + 10;
         self.x = Ui::width() - self.width;
         self.widgets[Widx::exit_button].right = self.width;
     }
@@ -69,13 +71,15 @@ namespace OpenLoco::Ui::Windows::TitleExit
     // 0x00439236
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         // Draw widgets.
         window.draw(rt);
 
         int16_t x = window.x + window.width / 2;
         int16_t y = window.y + window.widgets[Widx::exit_button].top + 8;
         Ui::Point origin = { x, y };
-        Gfx::drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::title_exit_game);
+        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::title_exit_game);
     }
 
     // 0x00439268

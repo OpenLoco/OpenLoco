@@ -51,7 +51,9 @@ namespace OpenLoco::Drawing
         }
 
         static uint16_t getStringWidth(const char* buffer);
-        
+        static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
+        static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
+
         // 0x0112C876
         static int16_t getCurrentFontSpriteBase()
         {
@@ -488,13 +490,7 @@ namespace OpenLoco::Drawing
         }
 
         // 0x00448C79
-        void drawImage(Gfx::RenderTarget* rt, int16_t x, int16_t y, uint32_t image)
-        {
-            drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
-        }
-
-        // 0x00448C79
-        void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image)
+        static void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image)
         {
             const auto* noiseImage = getNoiseMaskImageFromImage(image);
             const auto palette = PaletteMap::getForImage(image);
@@ -507,6 +503,12 @@ namespace OpenLoco::Drawing
             {
                 drawImagePaletteSet(rt, pos, image, *palette, noiseImage);
             }
+        }
+
+        // 0x00448C79
+        static void drawImage(Gfx::RenderTarget* rt, int16_t x, int16_t y, uint32_t image)
+        {
+            drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
         }
 
         void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
@@ -1056,25 +1058,6 @@ namespace OpenLoco::Drawing
             return point.y;
         }
 
-        // 0x00494B3F
-        // al: colour
-        // bx: string id
-        // cx: x
-        // dx: y
-        // esi: args
-        // edi: rt
-        static void drawStringLeft(
-            RenderTarget& rt,
-            int16_t x,
-            int16_t y,
-            AdvancedColour colour,
-            string_id stringId,
-            const void* args)
-        {
-            Point origin = { x, y };
-            drawStringLeft(rt, &origin, colour, stringId, args);
-        }
-
         /**
          *
          * @param rt @<edi>
@@ -1098,6 +1081,25 @@ namespace OpenLoco::Drawing
 
             origin->x = point.x;
             origin->y = point.y;
+        }
+
+        // 0x00494B3F
+        // al: colour
+        // bx: string id
+        // cx: x
+        // dx: y
+        // esi: args
+        // edi: rt
+        static void drawStringLeft(
+            RenderTarget& rt,
+            int16_t x,
+            int16_t y,
+            AdvancedColour colour,
+            string_id stringId,
+            const void* args)
+        {
+            Point origin = { x, y };
+            drawStringLeft(rt, &origin, colour, stringId, args);
         }
 
         // 0x00494BBF

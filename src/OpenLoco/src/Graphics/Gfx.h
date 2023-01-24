@@ -235,10 +235,6 @@ namespace OpenLoco::Gfx
 
     G1Element* getG1Element(uint32_t id);
 
-    // 0x0112C876
-    int16_t getCurrentFontSpriteBase();
-    void setCurrentFontSpriteBase(int16_t base);
-
     Drawing::SoftwareDrawingEngine& getDrawingEngine();
 
     void loadCurrency();

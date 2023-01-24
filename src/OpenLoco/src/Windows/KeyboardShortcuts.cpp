@@ -1,4 +1,5 @@
 #include "Config.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input/ShortcutManager.h"
@@ -154,9 +155,11 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     // 0x004BE72C
     static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         auto colour = self.getColour(WindowColour::secondary).c();
         auto shade = Colours::getShade(colour, 4);
-        Gfx::clearSingle(rt, shade);
+        drawingCtx.clearSingle(rt, shade);
 
         const auto& shortcuts = Config::get().shortcuts;
         auto yPos = 0;
@@ -165,7 +168,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             string_id format = StringIds::black_stringid;
             if (i == self.rowHover)
             {
-                Gfx::drawRect(rt, 0, yPos, 800, kRowHeight, 0x2000030);
+                drawingCtx.drawRect(rt, 0, yPos, 800, kRowHeight, 0x2000030);
                 format = StringIds::wcolour2_stringid;
             }
 
@@ -191,7 +194,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(baseStringId);
             formatter.push(buffer);
 
-            Gfx::drawStringLeft(rt, 0, yPos - 1, Colour::black, format, &formatter);
+            drawingCtx.drawStringLeft(rt, 0, yPos - 1, Colour::black, format, &formatter);
             yPos += kRowHeight;
         }
     }

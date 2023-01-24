@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Console.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -259,6 +260,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0047328D
     static void drawTabs(Window* self, Gfx::RenderTarget* rt)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         auto y = self->widgets[widx::panel].top + self->y - 26;
         auto x = self->x + 3;
 
@@ -275,25 +278,25 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 if (_tabInformation[index].index == self->currentTab)
                 {
                     image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
-                    Gfx::drawImage(rt, xPos, yPos, image);
+                    drawingCtx.drawImage(rt, xPos, yPos, image);
 
                     image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
-                    Gfx::drawImage(rt, xPos, yPos, image);
+                    drawingCtx.drawImage(rt, xPos, yPos, image);
                 }
                 else
                 {
-                    Gfx::drawImage(rt, xPos, yPos, image);
+                    drawingCtx.drawImage(rt, xPos, yPos, image);
 
                     image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
-                    Gfx::drawImage(rt, xPos, yPos, image);
+                    drawingCtx.drawImage(rt, xPos, yPos, image);
 
                     image = Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33);
-                    Gfx::drawImage(rt, xPos, yPos, image);
+                    drawingCtx.drawImage(rt, xPos, yPos, image);
 
                     if (row < 1)
                     {
                         auto colour = Colours::getShade(self->getColour(WindowColour::secondary).c(), 7);
-                        Gfx::drawRect(*rt, xPos, yPos + 26, 31, 1, colour);
+                        drawingCtx.drawRect(*rt, xPos, yPos + 26, 31, 1, colour);
                     }
                 }
                 xPos += 31;
@@ -508,19 +511,23 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (!clipped)
             return;
 
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         {
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename) + 1);
             FormatArguments args{};
             args.push<string_id>(StringIds::buffer_1250);
-            Gfx::drawStringLeft(*clipped, 18, height - kDescriptionRowHeight * 3 - 4, Colour::black, StringIds::object_selection_filename, &args);
+            drawingCtx.drawStringLeft(*clipped, 18, height - kDescriptionRowHeight * 3 - 4, Colour::black, StringIds::object_selection_filename, &args);
         }
     }
 
     // 0x004733F5
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        Gfx::fillRectInset(*rt, self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary).u8(), 0);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
+        drawingCtx.fillRectInset(*rt, self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary).u8(), 0);
         self.draw(rt);
 
         drawTabs(&self, rt);
@@ -540,13 +547,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 5);
-            Gfx::drawRect(*rt, self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour);
+            drawingCtx.drawRect(*rt, self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
-            Gfx::drawRect(*rt, self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
+            drawingCtx.drawRect(*rt, self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
         }
 
         auto type = self.currentTab;
@@ -555,7 +562,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         args.push(_112C1C5[type]);
         args.push(ObjectManager::getMaxObjects(static_cast<ObjectType>(type)));
 
-        Gfx::drawStringLeft(*rt, self.x + 3, self.y + self.height - 12, Colour::black, 2038, &args);
+        drawingCtx.drawStringLeft(*rt, self.x + 3, self.y + self.height - 12, Colour::black, 2038, &args);
 
         if (self.rowHover == -1)
             return;
@@ -588,7 +595,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             strncpy(buffer, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name, 510);
 
-            Gfx::drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_2039);
+            drawingCtx.drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 
         {
@@ -618,7 +625,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0047361D
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t)
     {
-        Gfx::clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
+        drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         if (ObjectManager::getNumInstalledObjects() == 0)
             return;
@@ -628,7 +637,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto [i, object] : objects)
         {
             uint8_t flags = (1 << 7) | (1 << 6) | (1 << 5);
-            Gfx::fillRectInset(rt, 2, y, 11, y + 10, self.getColour(WindowColour::secondary).u8(), flags);
+            drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, self.getColour(WindowColour::secondary).u8(), flags);
 
             uint8_t textColour = ControlCodes::Colour::black;
 
@@ -638,7 +647,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
                 if (object._name == windowObjectName)
                 {
-                    Gfx::fillRect(rt, 0, y, self.width, y + kRowHeight - 1, (1 << 25) | PaletteIndex::index_30);
+                    drawingCtx.fillRect(rt, 0, y, self.width, y + kRowHeight - 1, (1 << 25) | PaletteIndex::index_30);
                     textColour = ControlCodes::windowColour2;
                 }
             }
@@ -646,11 +655,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if (_50D144[i] & (1 << 0))
             {
                 auto x = 2;
-                Gfx::setCurrentFontSpriteBase(Font::m2);
+                drawingCtx.setCurrentFontSpriteBase(Font::m2);
 
                 if (textColour != ControlCodes::windowColour2)
                 {
-                    Gfx::setCurrentFontSpriteBase(Font::m1);
+                    drawingCtx.setCurrentFontSpriteBase(Font::m1);
                 }
 
                 auto checkColour = self.getColour(WindowColour::secondary).opaque();
@@ -660,15 +669,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     checkColour = checkColour.inset();
                 }
 
-                Gfx::drawString(rt, x, y, checkColour, _strCheckmark);
+                drawingCtx.drawString(rt, x, y, checkColour, _strCheckmark);
             }
 
             char buffer[512]{};
             buffer[0] = textColour;
             strncpy(&buffer[1], object._name, 510);
-            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
-            Gfx::drawString(rt, 15, y, Colour::black, buffer);
+            drawingCtx.drawString(rt, 15, y, Colour::black, buffer);
             y += kRowHeight;
         }
     }

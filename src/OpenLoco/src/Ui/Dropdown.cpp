@@ -1,6 +1,7 @@
 #include "Dropdown.h"
 #include "CompanyManager.h"
 #include "Console.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Engine/Limits.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -185,18 +186,21 @@ namespace OpenLoco::Ui::Dropdown
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
-            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
-            Gfx::clipString(width, _byte_112CC04);
+            drawingCtx.clipString(width, _byte_112CC04);
 
-            Gfx::setCurrentFontSpriteBase(Font::m1);
+            drawingCtx.setCurrentFontSpriteBase(Font::m1);
 
-            Gfx::drawString(*rt, x, y, colour, _byte_112CC04);
+            drawingCtx.drawString(*rt, x, y, colour, _byte_112CC04);
         }
 
         // 0x004CD00E
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             _windowDropdownOnpaintCellX = 0;
             _windowDropdownOnpaintCellY = 0;
@@ -209,7 +213,7 @@ namespace OpenLoco::Ui::Dropdown
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
-                        Gfx::drawRect(*rt, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
+                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
                     }
 
                     auto args = FormatArguments();
@@ -262,7 +266,7 @@ namespace OpenLoco::Ui::Dropdown
                         {
                             imageId++;
                         }
-                        Gfx::drawImage(rt, x, y, imageId);
+                        drawingCtx.drawImage(rt, x, y, imageId);
                     }
                 }
                 else
@@ -272,16 +276,16 @@ namespace OpenLoco::Ui::Dropdown
 
                     if (!self.getColour(WindowColour::primary).isTranslucent())
                     {
-                        Gfx::drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 3));
-                        Gfx::drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 7));
+                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 3));
+                        drawingCtx.drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 7));
                     }
                     else
                     {
                         uint32_t colour = enumValue(Colours::getTranslucent(self.getColour(WindowColour::primary).c())) | (1 << 25);
                         colour++; // Gets ExtColour::translucentXXX2 highlight
-                        Gfx::drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, colour);
+                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++; // Gets ExtColour::translucentXXX0 shadow
-                        Gfx::drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, colour);
+                        drawingCtx.drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, colour);
                     }
                 }
 
@@ -346,6 +350,8 @@ namespace OpenLoco::Ui::Dropdown
         // 0x004CCAB2
         static void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, AdvancedColour colour, size_t count, uint8_t flags)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             _dropdownColumnCount = 1;
             _dropdownItemWidth = 0;
             _dropdownItemHeight = 10;
@@ -366,9 +372,9 @@ namespace OpenLoco::Ui::Dropdown
 
                 StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
 
-                Gfx::setCurrentFontSpriteBase(Font::medium_bold);
+                drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
-                auto stringWidth = Gfx::getMaxStringWidth(_byte_112CC04);
+                auto stringWidth = drawingCtx.getMaxStringWidth(_byte_112CC04);
 
                 maxStringWidth = std::max(maxStringWidth, stringWidth);
             }

@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Config.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Interop/Interop.hpp"
@@ -100,8 +101,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1663
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
-        Gfx::clearSingle(rt, shade);
+        drawingCtx.clearSingle(rt, shade);
 
         const auto& config = Config::get().old;
 
@@ -113,20 +116,20 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw hovered track
             if (i == window.rowHover)
             {
-                Gfx::drawRect(rt, 0, y, 800, kRowHeight, 0x2000030);
+                drawingCtx.drawRect(rt, 0, y, 800, kRowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
             // Draw checkbox.
-            Gfx::fillRectInset(rt, 2, y, 11, y + 10, window.getColour(WindowColour::secondary).u8(), 0xE0);
+            drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, window.getColour(WindowColour::secondary).u8(), 0xE0);
 
             // Draw checkmark if track is enabled.
             if (config.enabledMusic[i])
-                Gfx::drawStringLeft(rt, 2, y, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
+                drawingCtx.drawStringLeft(rt, 2, y, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
 
             // Draw track name.
             string_id music_title_id = Audio::getMusicInfo(i)->titleId;
-            Gfx::drawStringLeft(rt, 15, y, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
+            drawingCtx.drawStringLeft(rt, 15, y, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
 
             y += kRowHeight;
         }

@@ -2,6 +2,7 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -219,7 +220,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         {
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
 
-            Gfx::clearSingle(rt, colour);
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            drawingCtx.clearSingle(rt, colour);
 
             auto height = 0;
             for (auto i = 0; i < _messageCount; i++)
@@ -246,7 +248,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                 if (self.rowHover == i)
                 {
-                    Gfx::drawRect(rt, 0, height, self.width, 38, (1 << 25) | PaletteIndex::index_30);
+                    drawingCtx.drawRect(rt, 0, height, self.width, 38, (1 << 25) | PaletteIndex::index_30);
                     stringId = StringIds::wcolour2_stringid;
                 }
 
@@ -255,14 +257,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(StringIds::tiny_font_date);
                     args.push(message->date);
 
-                    Gfx::drawStringLeft(rt, 0, height, Colour::black, stringId, &args);
+                    drawingCtx.drawStringLeft(rt, 0, height, Colour::black, stringId, &args);
                 }
                 {
                     auto args = FormatArguments();
                     args.push(StringIds::buffer_2039);
 
                     auto width = self.widgets[widx::scrollview].width() - 14;
-                    Gfx::drawStringLeftWrapped(rt, 0, height + 6, width, Colour::black, stringId, &args);
+                    drawingCtx.drawStringLeftWrapped(rt, 0, height + 6, width, Colour::black, stringId, &args);
                     height += messageHeight;
                 }
             }
@@ -502,6 +504,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042AA02
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
             auto yPos = self.widgets[widx::company_major_news].top + self.y;
@@ -527,7 +531,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsStringIds[i]);
 
-                    Gfx::drawStringLeft(*rt, self.x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
+                    drawingCtx.drawStringLeft(*rt, self.x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
                 }
 
                 {
@@ -535,7 +539,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().old.newsSettings[i])]);
 
-                    Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
+                    drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
                 }
                 yPos += 15;
             }

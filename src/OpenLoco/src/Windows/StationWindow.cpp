@@ -1,5 +1,6 @@
 #include "CompanyManager.h"
 #include "Config.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
@@ -113,6 +114,8 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E470
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
             self.drawViewports(rt);
@@ -129,7 +132,7 @@ namespace OpenLoco::Ui::Windows::Station
             const auto x = self.x + widget.left - 1;
             const auto y = self.y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0048E4D4
@@ -360,6 +363,8 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E8DE
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
@@ -396,7 +401,7 @@ namespace OpenLoco::Ui::Windows::Station
             const auto y = self.y + widget.top - 1;
             const auto width = widget.width();
 
-            Gfx::drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::buffer_1250);
+            drawingCtx.drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::buffer_1250);
         }
 
         // 0x0048EB0B
@@ -465,7 +470,8 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E986
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            Gfx::clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
             int16_t y = 1;
@@ -492,7 +498,7 @@ namespace OpenLoco::Ui::Windows::Station
                     for (; units > 0; units--)
                     {
                         {
-                            Gfx::drawImage(&rt, xPos, y, cargoObj->unitInlineSprite);
+                            drawingCtx.drawImage(&rt, xPos, y, cargoObj->unitInlineSprite);
                             xPos += 10;
                         }
                     }
@@ -512,7 +518,7 @@ namespace OpenLoco::Ui::Windows::Station
                 const auto& widget = self.widgets[widx::scrollview];
                 auto xPos = widget.width() - 14;
 
-                Gfx::drawStringRight(rt, xPos, y, AdvancedColour(Colour::black).outline(), cargoStr, &args);
+                drawingCtx.drawStringRight(rt, xPos, y, AdvancedColour(Colour::black).outline(), cargoStr, &args);
                 y += 10;
                 if (cargo.origin != StationId(self.number))
                 {
@@ -521,7 +527,7 @@ namespace OpenLoco::Ui::Windows::Station
                     args2.push(originStation->name);
                     args2.push(originStation->town);
 
-                    Gfx::drawStringRight(rt, xPos, y, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, &args2);
+                    drawingCtx.drawStringRight(rt, xPos, y, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, &args2);
                     y += 10;
                 }
                 y += 2;
@@ -536,7 +542,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 auto args = FormatArguments();
                 args.push(StringIds::nothing_waiting);
-                Gfx::drawStringLeft(rt, 1, 0, Colour::black, StringIds::black_stringid, &args);
+                drawingCtx.drawStringLeft(rt, 1, 0, Colour::black, StringIds::black_stringid, &args);
             }
         }
 
@@ -659,19 +665,21 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EF02
         static void drawRatingBar(Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y, uint8_t amount, Colour colour)
         {
-            Gfx::fillRectInset(*rt, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary).u8(), 48);
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            drawingCtx.fillRectInset(*rt, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary).u8(), 48);
 
             uint16_t rating = (amount * 96) / 256;
             if (rating > 2)
             {
-                Gfx::fillRectInset(*rt, x + 2, y + 2, x + 1 + rating, y + 8, enumValue(colour), 0);
+                drawingCtx.fillRectInset(*rt, x + 2, y + 2, x + 1 + rating, y + 8, enumValue(colour), 0);
             }
         }
 
         // 0x0048ED2F
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            Gfx::clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
             int16_t y = 0;
@@ -686,7 +694,7 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
-                Gfx::drawStringLeftClipped(rt, 1, y, 98, Colour::black, StringIds::wcolour2_stringid, &cargoObj->name);
+                drawingCtx.drawStringLeftClipped(rt, 1, y, 98, Colour::black, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
                 auto colour = Colour::green;
@@ -703,7 +711,7 @@ namespace OpenLoco::Ui::Windows::Station
                 drawRatingBar(&self, &rt, 100, y, amount, colour);
 
                 uint16_t percent = rating / 2;
-                Gfx::drawStringLeft(rt, 201, y, Colour::black, StringIds::station_cargo_rating_percent, &percent);
+                drawingCtx.drawStringLeft(rt, 201, y, Colour::black, StringIds::station_cargo_rating_percent, &percent);
                 y += 10;
                 cargoId++;
             }
@@ -923,6 +931,8 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EFBC
         static void drawTabs(Window* self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto station = StationManager::get(StationId(self->number));
             auto companyColour = CompanyManager::getCompanyColour(station->owner);
@@ -967,7 +977,7 @@ namespace OpenLoco::Ui::Windows::Station
                     auto& cargo = cargoStats;
                     if (!cargo.empty())
                     {
-                        Gfx::fillRect(*rt, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
+                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
 
                         auto ratingColour = Colour::green;
                         if (cargo.rating < 100)
@@ -978,7 +988,7 @@ namespace OpenLoco::Ui::Windows::Station
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;
-                        Gfx::fillRect(*rt, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colours::getShade(ratingColour, 6));
+                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colours::getShade(ratingColour, 6));
 
                         yOffset += 3;
                         totalRatingBars++;

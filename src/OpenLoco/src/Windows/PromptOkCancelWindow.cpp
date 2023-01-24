@@ -1,4 +1,5 @@
 #include "Audio/Audio.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
@@ -128,13 +129,15 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     // 0x004470AA
     static void draw(Window& self, Gfx::RenderTarget* const rt)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         self.draw(rt);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
 
         auto origin = Ui::Point(self.x + self.width / 2, self.y + 41);
-        Gfx::drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::wcolour2_stringid, &args);
+        drawingCtx.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::wcolour2_stringid, &args);
     }
 
     static void initEvents()

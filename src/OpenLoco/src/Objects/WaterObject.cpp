@@ -1,4 +1,5 @@
 #include "WaterObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -54,7 +55,8 @@ namespace OpenLoco
     void WaterObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolourTranslucent(Gfx::recolour(image + 35), ExtColour::null);
-        Gfx::drawImage(&rt, x, y, colourImage);
-        Gfx::drawImage(&rt, x, y, image + 30);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x, y, colourImage);
+        drawingCtx.drawImage(&rt, x, y, image + 30);
     }
 }

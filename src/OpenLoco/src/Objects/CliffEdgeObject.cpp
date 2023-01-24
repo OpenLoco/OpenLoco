@@ -1,4 +1,5 @@
 #include "CliffEdgeObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -37,7 +38,8 @@ namespace OpenLoco
     // 0x00469A06
     void CliffEdgeObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        Gfx::drawImage(&rt, x - 30, y, image);
-        Gfx::drawImage(&rt, x - 30, y, image + 16);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x - 30, y, image);
+        drawingCtx.drawImage(&rt, x - 30, y, image + 16);
     }
 }

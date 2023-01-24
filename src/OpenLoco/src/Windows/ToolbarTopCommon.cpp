@@ -2,6 +2,7 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
@@ -37,6 +38,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x00439DE4
     void draw(Window& self, Gfx::RenderTarget* rt)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         // Draw widgets.
         self.draw(rt);
 
@@ -73,10 +76,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
                 bgImage++;
             }
 
-            Gfx::drawImage(rt, x, y, fgImage);
+            drawingCtx.drawImage(rt, x, y, fgImage);
 
             y = self.widgets[Widx::road_menu].top + self.y;
-            Gfx::drawImage(rt, x, y, bgImage);
+            drawingCtx.drawImage(rt, x, y, bgImage);
         }
     }
 

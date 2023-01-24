@@ -1,5 +1,6 @@
 #include "CompanyManager.h"
 #include "Date.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -169,13 +170,15 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004397BE
     static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         Widget& frame = _widgets[Widx::outer_frame];
-        Gfx::drawRect(*rt, self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        drawingCtx.drawRect(*rt, self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
         self.draw(rt);
 
-        Gfx::drawRectInset(*rt, self.x + frame.left + 1, self.y + frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary).u8(), 0x30);
+        drawingCtx.drawRectInset(*rt, self.x + frame.left + 1, self.y + frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary).u8(), 0x30);
 
         *(uint32_t*)&_commonFormatArgs[0] = getCurrentDay();
         string_id format = StringIds::date_daymonthyear;
@@ -193,10 +196,10 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             c = Colour::white;
         }
-        Gfx::drawStringCentred(*rt, self.x + _widgets[Widx::date_btn].midX(), self.y + _widgets[Widx::date_btn].top + 1, c, format, &*_commonFormatArgs);
+        drawingCtx.drawStringCentred(*rt, self.x + _widgets[Widx::date_btn].midX(), self.y + _widgets[Widx::date_btn].top + 1, c, format, &*_commonFormatArgs);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        Gfx::drawImage(rt, self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
+        drawingCtx.drawImage(rt, self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
     }
 
     // 0x004398FB

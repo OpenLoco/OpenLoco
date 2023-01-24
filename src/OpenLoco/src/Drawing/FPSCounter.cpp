@@ -1,4 +1,5 @@
 #include "FPSCounter.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/StringManager.h"
@@ -35,6 +36,8 @@ namespace OpenLoco::Drawing
 
     void drawFPS()
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         // Measure FPS
         const float fps = measureFPS();
 
@@ -50,10 +53,10 @@ namespace OpenLoco::Drawing
         auto& rt = Gfx::getScreenRT();
 
         // Draw text
-        const int stringWidth = Gfx::getStringWidth(buffer);
+        const int stringWidth = drawingCtx.getStringWidth(buffer);
         const auto x = Ui::width() / 2 - (stringWidth / 2);
         const auto y = 2;
-        Gfx::drawString(rt, x, y, Colour::black, buffer);
+        drawingCtx.drawString(rt, x, y, Colour::black, buffer);
 
         // Make area dirty so the text doesn't get drawn over the last
         Gfx::invalidateRegion(x - 16, y - 4, x + 16, 16);

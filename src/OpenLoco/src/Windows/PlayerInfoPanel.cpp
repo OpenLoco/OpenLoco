@@ -1,6 +1,7 @@
 #include "Company.h"
 #include "CompanyManager.h"
 #include "Date.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -206,18 +207,20 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     // 0x43944B
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         Widget& frame = _widgets[Widx::outer_frame];
-        Gfx::drawRect(*rt, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        drawingCtx.drawRect(*rt, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
         window.draw(rt);
 
-        drawRectInset(*rt, window.x + frame.left + 1, window.y + frame.top + 1, frame.width() - 2, frame.height() - 2, window.getColour(WindowColour::secondary).u8(), 0x30);
+        drawingCtx.drawRectInset(*rt, window.x + frame.left + 1, window.y + frame.top + 1, frame.width() - 2, frame.height() - 2, window.getColour(WindowColour::secondary).u8(), 0x30);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);
         auto image = Gfx::recolour(competitor->images[playerCompany->ownerEmotion], playerCompany->mainColours.primary);
-        Gfx::drawImage(rt, window.x + frame.left + 2, window.y + frame.top + 2, image);
+        drawingCtx.drawImage(rt, window.x + frame.left + 2, window.y + frame.top + 2, image);
 
         auto x = window.x + frame.width() / 2 + 12;
         {
@@ -242,7 +245,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             auto args = FormatArguments();
             args.push(playerCompany->cash.var_00);
             args.push(playerCompany->cash.var_04);
-            Gfx::drawStringCentred(*rt, x, window.y + frame.top + 2, colour, companyValueString, &args);
+            drawingCtx.drawStringCentred(*rt, x, window.y + frame.top + 2, colour, companyValueString, &args);
         }
 
         {
@@ -265,7 +268,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
             auto args = FormatArguments();
             args.push(playerCompany->performanceIndex);
-            Gfx::drawStringCentred(*rt, x, window.y + frame.top + 14, colour, performanceString, &args);
+            drawingCtx.drawStringCentred(*rt, x, window.y + frame.top + 14, colour, performanceString, &args);
         }
     }
 

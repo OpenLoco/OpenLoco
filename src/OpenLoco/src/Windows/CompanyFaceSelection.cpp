@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
@@ -227,17 +228,19 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             return;
         }
 
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         {
             const auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
             const auto l = self.x + 1 + self.widgets[widx::face_frame].left;
             const auto t = self.y + 1 + self.widgets[widx::face_frame].top;
             const auto r = self.x - 1 + self.widgets[widx::face_frame].right;
             const auto b = self.y - 1 + self.widgets[widx::face_frame].bottom;
-            Gfx::fillRect(*rt, l, t, r, b, colour);
+            drawingCtx.fillRect(*rt, l, t, r, b, colour);
 
             const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(ObjectManager::getTemporaryObject());
             uint32_t img = competitor->images[0] + 1 + (1 << 29);
-            Gfx::drawImage(rt, l, t, img);
+            drawingCtx.drawImage(rt, l, t, img);
         }
 
         {
@@ -248,7 +251,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             *str++ = ControlCodes::windowColour2;
             auto objectPtr = self.object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
-            Gfx::drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_2039);
+            drawingCtx.drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none
@@ -258,7 +261,8 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x00435152
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
-        Gfx::clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         auto index = 0;
         for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
@@ -269,20 +273,20 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             if (index == self.rowHover)
             {
                 inlineColour = ControlCodes::windowColour2;
-                Gfx::fillRect(rt, 0, y, self.width, y + 9, 0x2000000 | 48);
+                drawingCtx.fillRect(rt, 0, y, self.width, y + 9, 0x2000000 | 48);
             }
 
             std::string name(object.second._name);
             name.insert(0, 1, inlineColour);
 
-            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
             AdvancedColour stringColour = Colour::black;
             if (isInUseCompetitor(object.first))
             {
-                Gfx::setCurrentFontSpriteBase(Font::m1);
+                drawingCtx.setCurrentFontSpriteBase(Font::m1);
                 stringColour = self.getColour(WindowColour::secondary).opaque().inset();
             }
-            Gfx::drawString(rt, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
+            drawingCtx.drawString(rt, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
 
             index++;
         }

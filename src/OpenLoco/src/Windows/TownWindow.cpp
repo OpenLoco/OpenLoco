@@ -2,6 +2,7 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
@@ -130,6 +131,8 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x00498FFE
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
             self.drawViewports(rt);
@@ -145,7 +148,7 @@ namespace OpenLoco::Ui::Windows::Town
             const auto x = self.x + widget.left - 1;
             const auto y = self.y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::status_town_population, &args);
+            drawingCtx.drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::status_town_population, &args);
         }
 
         // 0x00499079
@@ -392,6 +395,8 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x004994F9
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
@@ -409,9 +414,9 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
-                Gfx::drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+                drawingCtx.drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
-                Gfx::drawStringRight(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
+                drawingCtx.drawStringRight(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -433,10 +438,10 @@ namespace OpenLoco::Ui::Windows::Town
                         auto args = FormatArguments();
                         args.push(year);
 
-                        Gfx::drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
+                        drawingCtx.drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    Gfx::drawRect(*clipped, xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+                    drawingCtx.drawRect(*clipped, xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
                 }
 
                 // Draw population graph
@@ -445,7 +450,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                 // Do not draw current segment yet; it may be zeroed.
                 if (i < town->historySize - 1)
-                    Gfx::drawLine(*clipped, xPos, yPos1, xPos + 1, yPos2, Colours::getShade(self.getColour(WindowColour::secondary).c(), 7));
+                    drawingCtx.drawLine(*clipped, xPos, yPos1, xPos + 1, yPos2, Colours::getShade(self.getColour(WindowColour::secondary).c(), 7));
 
                 month--;
                 if (month < 0)
@@ -518,12 +523,14 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x004997F1
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
             uint16_t xPos = self.x + 4;
             uint16_t yPos = self.y + 46;
-            Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
+            drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
             xPos += 4;
             yPos += 14;
@@ -552,7 +559,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(rating);
                 args.push(rank);
 
-                Gfx::drawStringLeftClipped(*rt, xPos, yPos, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
+                drawingCtx.drawStringLeftClipped(*rt, xPos, yPos, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
 
                 yPos += 10;
             }

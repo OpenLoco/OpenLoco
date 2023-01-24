@@ -1,4 +1,5 @@
 #include "CompanyManager.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Engine/Limits.h"
 #include "Entities/Entity.h"
 #include "Entities/EntityManager.h"
@@ -563,12 +564,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::map_key_vegetation,
         };
 
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         for (auto i = 0; i < kOverallGraphKeySize; i++)
         {
             auto colour = overallColours[i];
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                Gfx::drawRect(*rt, x, *y + 3, 5, 5, colour);
+                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour);
             }
             auto args = FormatArguments();
             args.push(lineNames[i]);
@@ -580,7 +583,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawStringLeftClipped(*rt, x + 6, *y, 94, Colour::black, stringId, &args);
+            drawingCtx.drawStringLeftClipped(*rt, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -608,13 +611,15 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::forbid_ships,
         };
 
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         for (uint8_t i = 0; i < std::size(_vehicleTypeCounts); i++)
         {
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
                 auto colour = vehicleTypeColours[i];
 
-                Gfx::drawRect(*rt, x, *y + 3, 5, 5, colour);
+                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour);
             }
             auto args = FormatArguments();
             args.push(lineNames[i]);
@@ -626,7 +631,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawStringLeftClipped(*rt, x + 6, *y, 94, Colour::black, stringId, &args);
+            drawingCtx.drawStringLeftClipped(*rt, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -669,6 +674,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
             PaletteIndex::index_12,
         };
 
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
         {
             auto industry = ObjectManager::get<IndustryObject>(i);
@@ -680,7 +687,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto colour = industryColours[_byte_F253CE[i]];
 
-                Gfx::drawRect(*rt, x, *y + 3, 5, 5, colour);
+                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour);
             }
 
             auto args = FormatArguments();
@@ -693,7 +700,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawStringLeftClipped(*rt, x + 6, *y, 94, Colour::black, stringId, &args);
+            drawingCtx.drawStringLeftClipped(*rt, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -702,6 +709,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D5A4
     static void drawGraphKeyRoutes(Window* self, Gfx::RenderTarget* rt, uint16_t x, uint16_t* y)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         for (auto i = 0; _byte_F253DF[i] != 0xFF; i++)
         {
             auto index = _byte_F253DF[i];
@@ -709,7 +718,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                Gfx::drawRect(*rt, x, *y + 3, 5, 5, colour);
+                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour);
             }
 
             auto routeType = StringIds::map_routes_aircraft;
@@ -743,7 +752,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawStringLeftClipped(*rt, x + 6, *y, 94, Colour::black, stringId, &args);
+            drawingCtx.drawStringLeftClipped(*rt, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -752,6 +761,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D6E1
     static void drawGraphKeyCompanies(Window* self, Gfx::RenderTarget* rt, uint16_t x, uint16_t* y)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         for (const auto& company : CompanyManager::companies())
         {
             auto index = company.id();
@@ -759,7 +770,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << enumValue(index))) || !(mapFrameNumber & (1 << 2)))
             {
-                Gfx::drawRect(*rt, x, *y + 3, 5, 5, colour);
+                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour);
             }
 
             auto args = FormatArguments();
@@ -772,7 +783,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 stringId = StringIds::small_white_string;
             }
 
-            Gfx::drawStringLeftClipped(*rt, x + 6, *y, 94, Colour::black, stringId, &args);
+            drawingCtx.drawStringLeftClipped(*rt, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -908,6 +919,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B779
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         self.draw(rt);
         drawTabs(&self, rt);
 
@@ -968,7 +981,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto y = self.y + self.widgets[widx::statusBar].top - 1;
         auto width = self.widgets[widx::statusBar].width();
 
-        Gfx::drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::black_stringid, &args);
+        drawingCtx.drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::black_stringid, &args);
     }
 
     // 0x0046BF0F based on
@@ -979,7 +992,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto trainPos = locationToMapWindowPos(vehicle->position);
 
-        Gfx::fillRect(*rt, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.fillRect(*rt, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour);
     }
 
     // 0x0046C294
@@ -987,9 +1001,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         auto newStartPos = locationToMapWindowPos({ stationPos.x, stationPos.y });
 
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         if (endPos.x != Location::null)
         {
-            Gfx::drawLine(*rt, endPos.x, endPos.y, newStartPos.x, newStartPos.y, colour);
+            drawingCtx.drawLine(*rt, endPos.x, endPos.y, newStartPos.x, newStartPos.y, colour);
         }
 
         endPos = newStartPos;
@@ -1051,6 +1067,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (!colour)
             return;
 
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         Point startPos = { Location::null, 0 };
         Point endPos = { Location::null, 0 };
         for (auto& order : Vehicles::OrderRingView(train.head->orderTableOffset))
@@ -1070,7 +1088,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (startPos.x == Location::null || endPos.x == Location::null)
             return;
 
-        Gfx::drawLine(*rt, startPos.x, startPos.y, endPos.x, endPos.y, *colour);
+        drawingCtx.drawLine(*rt, startPos.x, startPos.y, endPos.x, endPos.y, *colour);
     }
 
     // 0x0046C426
@@ -1163,7 +1181,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
             std::swap(top, bottom);
         }
 
-        Gfx::fillRect(*rt, left, top, right, bottom, colour);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.fillRect(*rt, left, top, right, bottom, colour);
     }
 
     // 0x0046BE51
@@ -1335,22 +1354,24 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046C481
     static void drawTownNames(Gfx::RenderTarget* rt)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         for (const auto& town : TownManager::towns())
         {
             auto townPos = locationToMapWindowPos({ town.x, town.y });
 
             StringManager::formatString(_stringFormatBuffer, town.name);
-            Gfx::setCurrentFontSpriteBase(Font::small);
+            drawingCtx.setCurrentFontSpriteBase(Font::small);
 
-            auto strWidth = Gfx::getStringWidth(_stringFormatBuffer);
+            auto strWidth = drawingCtx.getStringWidth(_stringFormatBuffer);
 
             strWidth /= 2;
 
             townPos.x -= strWidth;
             townPos.y -= 3;
 
-            Gfx::setCurrentFontSpriteBase(Font::small);
-            Gfx::drawString(*rt, townPos.x, townPos.y, AdvancedColour(Colour::purple).outline(), _stringFormatBuffer);
+            drawingCtx.setCurrentFontSpriteBase(Font::small);
+            drawingCtx.drawString(*rt, townPos.x, townPos.y, AdvancedColour(Colour::purple).outline(), _stringFormatBuffer);
         }
     }
 
@@ -1360,7 +1381,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (!Game::hasFlags(1u << 0))
             return;
 
-        Gfx::clearSingle(rt, PaletteIndex::index_0A);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.clearSingle(rt, PaletteIndex::index_0A);
 
         auto element = Gfx::getG1Element(0);
         auto backupElement = *element;
@@ -1376,7 +1398,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Gfx::getG1Element(0)->yOffset = -8;
         Gfx::getG1Element(0)->flags = 0;
 
-        Gfx::drawImage(&rt, 0, 0, 0);
+        drawingCtx.drawImage(&rt, 0, 0, 0);
 
         *element = backupElement;
 

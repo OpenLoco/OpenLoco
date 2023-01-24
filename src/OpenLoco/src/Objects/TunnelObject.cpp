@@ -1,4 +1,5 @@
 #include "TunnelObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "ObjectImageTable.h"
@@ -11,8 +12,9 @@ namespace OpenLoco
     // 0x00469806
     void TunnelObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        Gfx::drawImage(&rt, x - 16, y + 15, image);
-        Gfx::drawImage(&rt, x - 16, y + 15, image + 1);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x - 16, y + 15, image);
+        drawingCtx.drawImage(&rt, x - 16, y + 15, image + 1);
     }
 
     // 0x004697C9

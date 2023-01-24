@@ -1,4 +1,5 @@
 #include "Paint.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Game.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
@@ -783,7 +784,8 @@ namespace OpenLoco::Paint
         unZoomedRt.width >>= zoom;
         unZoomedRt.height >>= zoom;
 
-        Gfx::setCurrentFontSpriteBase(zoom == 0 ? Font::medium_bold : Font::small);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.setCurrentFontSpriteBase(zoom == 0 ? Font::medium_bold : Font::small);
 
         char buffer[512]{};
 
@@ -795,7 +797,7 @@ namespace OpenLoco::Paint
             Ui::WindowManager::setWindowColours(0, AdvancedColour(static_cast<Colour>(psString->colour)));
             Ui::WindowManager::setWindowColours(1, AdvancedColour(static_cast<Colour>(psString->colour)));
 
-            Gfx::drawStringYOffsets(unZoomedRt, loc, Colour::black, buffer, psString->yOffsets);
+            drawingCtx.drawStringYOffsets(unZoomedRt, loc, Colour::black, buffer, psString->yOffsets);
         }
     }
 

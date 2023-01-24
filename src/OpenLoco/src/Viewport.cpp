@@ -1,6 +1,7 @@
 #include "Viewport.hpp"
 #include "CompanyManager.h"
 #include "Config.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -109,15 +110,16 @@ namespace OpenLoco::Ui
         Ui::Point bottomRight = { station.labelFrame.right[zoom],
                                   station.labelFrame.bottom[zoom] };
 
-        Gfx::drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
-        Gfx::drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(colour));
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
+        drawingCtx.drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(colour));
 
         Ui::Point topRight = { static_cast<int16_t>(bottomRight.x - borderImages.width), topLeft.y };
-        Gfx::drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
-        Gfx::drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(colour));
+        drawingCtx.drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
+        drawingCtx.drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(colour));
 
-        Gfx::drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, (1 << 25) | enumValue(ExtColour::unk34));
-        Gfx::drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, (1 << 25) | enumValue(colour));
+        drawingCtx.drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, (1 << 25) | enumValue(ExtColour::unk34));
+        drawingCtx.drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, (1 << 25) | enumValue(colour));
 
         char buffer[512]{};
 
@@ -129,8 +131,8 @@ namespace OpenLoco::Ui
         *str++ = ' ';
         StringManager::formatString(str, getTransportIconsFromStationFlags(station.flags));
 
-        Gfx::setCurrentFontSpriteBase(kZoomToStationFonts[zoom]);
-        Gfx::drawString(unZoomedRt, topLeft.x + borderImages.width, topLeft.y, Colour::black, buffer);
+        drawingCtx.setCurrentFontSpriteBase(kZoomToStationFonts[zoom]);
+        drawingCtx.drawString(unZoomedRt, topLeft.x + borderImages.width, topLeft.y, Colour::black, buffer);
     }
 
     // 0x0048DE97
@@ -173,6 +175,8 @@ namespace OpenLoco::Ui
         unZoomedRt.width >>= rt.zoomLevel;
         unZoomedRt.height >>= rt.zoomLevel;
 
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         char buffer[512]{};
         for (const auto& town : TownManager::towns())
         {
@@ -182,8 +186,8 @@ namespace OpenLoco::Ui
             }
 
             StringManager::formatString(buffer, town.name);
-            Gfx::setCurrentFontSpriteBase(kZoomToTownFonts[rt.zoomLevel]);
-            Gfx::drawString(unZoomedRt, town.labelFrame.left[rt.zoomLevel] + 1, town.labelFrame.top[rt.zoomLevel] + 1, AdvancedColour(Colour::white).outline(), buffer);
+            drawingCtx.setCurrentFontSpriteBase(kZoomToTownFonts[rt.zoomLevel]);
+            drawingCtx.drawString(unZoomedRt, town.labelFrame.left[rt.zoomLevel] + 1, town.labelFrame.top[rt.zoomLevel] + 1, AdvancedColour(Colour::white).outline(), buffer);
         }
     }
 
@@ -201,6 +205,8 @@ namespace OpenLoco::Ui
         unZoomedRt.y >>= rt.zoomLevel;
         unZoomedRt.width >>= rt.zoomLevel;
         unZoomedRt.height >>= rt.zoomLevel;
+
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto orderNum = 0;
         for (auto& orderFrame : Vehicles::OrderManager::displayFrames())
@@ -223,8 +229,8 @@ namespace OpenLoco::Ui
                 continue;
             }
 
-            Gfx::setCurrentFontSpriteBase(Font::medium_normal);
-            Gfx::drawString(unZoomedRt, orderFrame.frame.left[rt.zoomLevel] + 1, orderFrame.frame.top[rt.zoomLevel], AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_normal);
+            drawingCtx.drawString(unZoomedRt, orderFrame.frame.left[rt.zoomLevel] + 1, orderFrame.frame.top[rt.zoomLevel], AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
         }
     }
 
@@ -266,6 +272,8 @@ namespace OpenLoco::Ui
         zoomViewRt.bits = rt->bits + (unkX - rt->x) + ((unkY - rt->y) * (rt->width + rt->pitch));
         zoomViewRt.zoomLevel = zoom;
 
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         // make sure, the compare operation is done in int32_t to avoid the loop becoming an infinite loop.
         // this as well as the [x += 32] in the loop causes signed integer overflow -> undefined behaviour.
         auto rightBorder = zoomViewRt.x + zoomViewRt.width;
@@ -297,7 +305,7 @@ namespace OpenLoco::Ui
 
             columnRt.width = paintRight - columnRt.x;
 
-            Gfx::clearSingle(columnRt, fillColour);
+            drawingCtx.clearSingle(columnRt, fillColour);
             auto* sess = Paint::allocateSession(columnRt, options);
             sess->generate();
             sess->arrangeStructs();

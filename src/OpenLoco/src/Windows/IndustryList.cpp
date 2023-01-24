@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Date.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
@@ -134,6 +135,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457CD9
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
             auto args = FormatArguments();
@@ -146,7 +149,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 args.push(StringIds::status_num_industries_plural);
             args.push(self.var_83C);
 
-            Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x00457EC4
@@ -380,8 +383,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457D2A
         static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
-            Gfx::clearSingle(rt, shade);
+            drawingCtx.clearSingle(rt, shade);
 
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
@@ -400,7 +405,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 // Highlight selection.
                 if (industryId == IndustryId(self.rowHover))
                 {
-                    Gfx::drawRect(rt, 0, yPos, self.width, kRowHeight, 0x2000030);
+                    drawingCtx.drawRect(rt, 0, yPos, self.width, kRowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
@@ -414,7 +419,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     args.push(industry->name);
                     args.push(industry->town);
 
-                    Gfx::drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Industry Status
                 {
@@ -424,7 +429,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     auto args = FormatArguments();
                     args.push(StringIds::buffer_1250);
 
-                    Gfx::drawStringLeftClipped(rt, 200, yPos, 238, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, 200, yPos, 238, Colour::black, text_colour_id, &args);
                 }
                 // Industry Production Delivered
                 {
@@ -439,7 +444,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     auto args = FormatArguments();
                     args.push<uint16_t>(productionTransported);
 
-                    Gfx::drawStringLeftClipped(rt, 440, yPos, 138, Colour::black, StringIds::production_transported_percent, &args);
+                    drawingCtx.drawStringLeftClipped(rt, 440, yPos, 138, Colour::black, StringIds::production_transported_percent, &args);
                 }
                 yPos += kRowHeight;
             }
@@ -642,6 +647,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x0045826C
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
@@ -650,7 +657,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto xPos = self.x + 3;
                 auto yPos = self.y + self.height - 13;
                 auto width = self.width - 19;
-                Gfx::drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::no_industry_available);
+                drawingCtx.drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::no_industry_available);
                 return;
             }
 
@@ -685,14 +692,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto yPos = self.y + self.height - 13;
                 widthOffset = 138;
 
-                Gfx::drawStringRight(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+                drawingCtx.drawStringRight(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
 
             auto xPos = self.x + 3;
             auto yPos = self.y + self.height - 13;
             auto width = self.width - 19 - widthOffset;
 
-            Gfx::drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::black_stringid, &industryObj->name);
+            drawingCtx.drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::black_stringid, &industryObj->name);
         }
 
         // 0x0045843A
@@ -897,8 +904,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458352
         static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
-            Gfx::clearSingle(rt, shade);
+            drawingCtx.clearSingle(rt, shade);
 
             loco_global<uint16_t, 0x00E0C3C6> _word_E0C3C6;
             uint16_t xPos = 0;
@@ -911,13 +920,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     if (self.rowInfo[i] == self.var_846)
                     {
                         _word_E0C3C6 = AdvancedColour::translucentFlag;
-                        Gfx::drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
+                        drawingCtx.drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
                     }
                 }
                 else
                 {
                     _word_E0C3C6 = AdvancedColour::translucentFlag | AdvancedColour::outlineFlag;
-                    Gfx::drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
+                    drawingCtx.drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
                 }
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self.rowInfo[i]);

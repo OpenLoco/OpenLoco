@@ -341,7 +341,7 @@ namespace OpenLoco::Gfx
     }
 
     loco_global<uint8_t*, 0x0050B860> _50B860;
-    
+
     G1Element* getG1Element(uint32_t imageId)
     {
         const auto id = getImageIndex(imageId);
@@ -389,10 +389,12 @@ namespace OpenLoco::Gfx
             /*.zoom_level = */ 0,
         };
 
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         // Draw all the images ontop of the one bitmap
         for (size_t i = 0; i < numImages; ++i)
         {
-            drawImage(rt, { 0, 0 }, baseImageId.withIndexOffset(i));
+            drawingCtx.drawImage(rt, { 0, 0 }, baseImageId.withIndexOffset(i));
         }
 
         // Explore the bitmap to find the extents of the images drawn
