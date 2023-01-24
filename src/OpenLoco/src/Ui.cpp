@@ -1,6 +1,6 @@
 #include "Drawing/SoftwareDrawingEngine.h"
-#include "Ui/Cursor.h"
 #include "Scenario.h"
+#include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>
 #include <codecvt>

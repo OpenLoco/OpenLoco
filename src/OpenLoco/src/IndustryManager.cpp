@@ -13,7 +13,7 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
-#include "Scenario.h"   
+#include "Scenario.h"
 #include "SceneManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
