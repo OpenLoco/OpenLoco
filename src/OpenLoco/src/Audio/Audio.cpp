@@ -15,6 +15,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/SoundObject.h"
 #include "Objects/TreeObject.h"
+#include "Scenario.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "VehicleChannel.h"
@@ -775,7 +776,7 @@ namespace OpenLoco::Audio
     // 0x48A73B
     void updateVehicleNoise()
     {
-        if (Game::hasFlags(1u << 0))
+        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
         {
             if (!_audioIsPaused && _audioIsEnabled)
             {
@@ -835,7 +836,7 @@ namespace OpenLoco::Audio
         std::optional<PathId> newAmbientSound = std::nullopt;
         int32_t maxVolume = kAmbientMinVolume;
 
-        if (Game::hasFlags((1u << 0)) && mainViewport != nullptr)
+        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone) && mainViewport != nullptr)
         {
             maxVolume = getAmbientMaxVolume(mainViewport->zoom);
             const auto centre = mainViewport->getCentreMapPosition();

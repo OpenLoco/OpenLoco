@@ -13,6 +13,7 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
+#include "Scenario.h"   
 #include "SceneManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
@@ -75,7 +76,7 @@ namespace OpenLoco::IndustryManager
     // 0x00453234
     void update()
     {
-        if (Game::hasFlags(1u << 0) && !isEditorMode())
+        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone) && !isEditorMode())
         {
             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
@@ -88,7 +89,7 @@ namespace OpenLoco::IndustryManager
     // 0x00453487
     void updateDaily()
     {
-        if (Game::hasFlags(1u << 0))
+        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
         {
             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
@@ -500,7 +501,7 @@ namespace OpenLoco::IndustryManager
     // 0x0045383B
     void updateMonthly()
     {
-        if (Game::hasFlags(1u << 0))
+        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
         {
             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
             tryCreateNewIndustriesMonthly();
@@ -517,7 +518,7 @@ namespace OpenLoco::IndustryManager
     // 0x00459D2D
     void createAllMapAnimations()
     {
-        if (!Game::hasFlags(1u << 0))
+        if (!Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
             return;
 
         for (auto& industry : industries())

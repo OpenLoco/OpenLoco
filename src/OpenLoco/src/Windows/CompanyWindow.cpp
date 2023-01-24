@@ -2385,7 +2385,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y = Gfx::drawStringLeftWrapped(*rt, self.x + 5, y, self.width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
             }
 
-            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
             {
                 // time limited challenge
                 uint16_t monthsLeft = Scenario::getObjective().timeLimitYears * 12 - Scenario::getObjectiveProgress().monthsInChallenge;

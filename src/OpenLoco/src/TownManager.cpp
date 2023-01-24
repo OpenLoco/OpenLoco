@@ -8,6 +8,7 @@
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
+#include "Scenario.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
@@ -147,7 +148,7 @@ namespace OpenLoco::TownManager
     // 0x00496B6D
     void update()
     {
-        if (Game::hasFlags(1u << 0) && !isEditorMode())
+        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone) && !isEditorMode())
         {
             auto ticks = ScenarioManager::getScenarioTicks();
             if (ticks % 8 == 0)

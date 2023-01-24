@@ -4,6 +4,7 @@
 #include "GameState.h"
 #include "IndustryElement.h"
 #include "Interop/Interop.hpp"
+#include "Scenario.h"
 #include <array>
 
 using namespace OpenLoco::Interop;
@@ -81,7 +82,7 @@ namespace OpenLoco::Map::AnimationManager
     // 0x004612EC
     void update()
     {
-        if (Game::hasFlags(1u << 0))
+        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
         {
             std::array<bool, Limits::kMaxAnimations> animsToRemove{};
             for (uint16_t i = 0; i < numAnimations(); ++i)

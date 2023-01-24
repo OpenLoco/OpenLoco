@@ -226,7 +226,7 @@ namespace OpenLoco::Title
                                reload();
                            },
                            [](MoveStep step) {
-                               if (Game::hasFlags(1u << 0))
+                               if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
                                {
                                    auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
                                    auto height = Map::TileManager::getHeight(pos);
@@ -241,7 +241,7 @@ namespace OpenLoco::Title
                                }
                            },
                            [](RotateStep step) {
-                               if (Game::hasFlags(1u << 0))
+                               if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
                                {
                                    auto main = Ui::WindowManager::getMainWindow();
                                    if (main != nullptr)

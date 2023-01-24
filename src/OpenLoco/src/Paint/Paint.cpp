@@ -10,6 +10,7 @@
 #include "PaintEntity.h"
 #include "PaintTile.h"
 #include "PaintTrack.h"
+#include "Scenario.h"
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui.h"
@@ -525,7 +526,7 @@ namespace OpenLoco::Paint
     // 0x004622A2
     void PaintSession::generate()
     {
-        if (!Game::hasFlags(1u << 0))
+        if (!Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
             return;
 
         currentRotation = Ui::WindowManager::getCurrentRotation();

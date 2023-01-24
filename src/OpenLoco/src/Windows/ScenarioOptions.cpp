@@ -458,14 +458,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self.activatedWidgets &= ~((1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit));
 
-            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beTopCompany)
-                != 0)
+            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beTopCompany) != Scenario::ObjectiveFlags::none)
                 self.activatedWidgets |= 1 << widx::check_be_top_company;
 
-            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
+            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != Scenario::ObjectiveFlags::none)
                 self.activatedWidgets |= 1 << widx::check_be_within_top_three_companies;
 
-            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
             {
                 self.activatedWidgets |= 1 << widx::check_time_limit;
                 widgets[widx::time_limit_value].type = WidgetType::textbox;

@@ -2,6 +2,11 @@
 
 #include <cstdint>
 
+namespace OpenLoco::Scenario
+{
+    enum class Flags : uint16_t;
+}
+
 namespace OpenLoco::Game
 {
     bool loadSaveGameOpen();
@@ -14,9 +19,9 @@ namespace OpenLoco::Game
     void returnToTitle();
     void confirmSaveGame();
     bool saveLandscape();
-    uint32_t getFlags();
-    void setFlags(uint32_t flags);
-    bool hasFlags(uint32_t flags);
-    void removeFlags(uint32_t flags);
+    Scenario::Flags getFlags();
+    void setFlags(Scenario::Flags flags);
+    bool hasFlags(Scenario::Flags flags);
+    void removeFlags(Scenario::Flags flags);
     void sub_46DB4C();
 }

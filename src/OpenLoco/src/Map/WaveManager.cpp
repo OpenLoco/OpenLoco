@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "GameState.h"
 #include "Interop/Interop.hpp"
+#include "Scenario.h"
 #include "ScenarioManager.h"
 #include "SurfaceElement.h"
 #include "TileManager.h"
@@ -79,7 +80,7 @@ namespace OpenLoco::Map::WaveManager
     // 0x004C56F6
     void update()
     {
-        if (!Game::hasFlags(1u << 0) || (ScenarioManager::getScenarioTicks() & 0x3))
+        if (!Game::hasFlags(Scenario::Flags::landscapeGenerationDone) || (ScenarioManager::getScenarioTicks() & 0x3))
         {
             return;
         }

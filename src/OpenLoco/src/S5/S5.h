@@ -81,7 +81,7 @@ namespace OpenLoco::S5
         uint8_t difficulty;                                   // 0x01
         uint16_t scenarioStartYear;                           // 0x02
         uint8_t pad_4[2];                                     // 0x04
-        uint16_t scenarioFlags;                               // 0x06
+        Scenario::Flags scenarioFlags;                        // 0x06
         uint8_t madeAnyChanges;                               // 0x08
         uint8_t pad_9[1];                                     // 0x09
         LandDistributionPattern landDistributionPatterns[32]; // 0x0A

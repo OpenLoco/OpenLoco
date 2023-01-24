@@ -10,6 +10,7 @@
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
+#include "Scenario.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "TownManager.h"
@@ -55,7 +56,7 @@ namespace OpenLoco::StationManager
     // 0x0048B1FA
     void update()
     {
-        if (Game::hasFlags(1u << 0) && !isEditorMode())
+        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone) && !isEditorMode())
         {
             const auto id = StationId(ScenarioManager::getScenarioTicks() & 0x3FF);
             auto station = get(id);

@@ -99,10 +99,10 @@ namespace OpenLoco::Game
     // 0x00441993
     bool saveLandscapeOpen()
     {
-        S5::getOptions().scenarioFlags &= ~(1 << 0);
-        if (hasFlags(1u << 0))
+        S5::getOptions().scenarioFlags &= ~Scenario::Flags::none;
+        if (hasFlags(Scenario::Flags::none))
         {
-            S5::getOptions().scenarioFlags |= (1 << 0);
+            S5::getOptions().scenarioFlags |= Scenario::Flags::none;
             sub_46DB4C();
         }
 
@@ -333,22 +333,22 @@ namespace OpenLoco::Game
         return saveResult;
     }
 
-    uint32_t getFlags()
+    Scenario::Flags getFlags()
     {
         return getGameState().flags;
     }
 
-    void setFlags(uint32_t flags)
+    void setFlags(Scenario::Flags flags)
     {
         getGameState().flags = flags;
     }
 
-    bool hasFlags(uint32_t flags)
+    bool hasFlags(Scenario::Flags flags)
     {
-        return (getFlags() & flags) != 0;
+        return (getFlags() & flags) != Scenario::Flags::none;
     }
 
-    void removeFlags(uint32_t flags)
+    void removeFlags(Scenario::Flags flags)
     {
         setFlags(getFlags() & ~flags);
     }

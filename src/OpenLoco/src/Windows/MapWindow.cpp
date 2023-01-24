@@ -17,6 +17,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
+#include "Scenario.h"
 #include "SceneManager.h"
 #include "StationManager.h"
 #include "TownManager.h"
@@ -1357,7 +1358,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B806
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
-        if (!Game::hasFlags(1u << 0))
+        if (!Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
             return;
 
         Gfx::clearSingle(rt, PaletteIndex::index_0A);

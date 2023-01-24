@@ -1,4 +1,5 @@
 #include "CommandLine.h"
+#include "Scenario.h"
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -903,7 +904,7 @@ namespace OpenLoco
     // 0x004968C7
     static void dateTick()
     {
-        if (Game::hasFlags(1u << 0) && !isEditorMode())
+        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone) && !isEditorMode())
         {
             if (updateDayCounter())
             {

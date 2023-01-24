@@ -50,7 +50,7 @@ namespace OpenLoco::Scenario
     // 0x0046115C
     void sub_46115C()
     {
-        Game::setFlags(0u);
+        Game::setFlags(Flags::none);
         AnimationManager::reset();
         addr<0x0052624C, uint16_t>() = S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1;
     }
@@ -330,7 +330,7 @@ namespace OpenLoco::Scenario
         Audio::resetMusic();
 
         auto& gameState = getGameState();
-        if (gameState.flags & Flags::landscapeGenerationDone)
+        if ((gameState.flags & Flags::landscapeGenerationDone) != Flags::none)
         {
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)
@@ -451,15 +451,15 @@ namespace OpenLoco::Scenario
             }
         }
 
-        if ((objective.flags & Scenario::ObjectiveFlags::beTopCompany) != 0)
+        if ((objective.flags & ObjectiveFlags::beTopCompany) != ObjectiveFlags::none)
         {
             args.push(StringIds::and_be_the_top_performing_company);
         }
-        if ((objective.flags & Scenario::ObjectiveFlags::beWithinTopThreeCompanies) != 0)
+        if ((objective.flags & ObjectiveFlags::beWithinTopThreeCompanies) != ObjectiveFlags::none)
         {
             args.push(StringIds::and_be_one_of_the_top_3_performing_companies);
         }
-        if ((objective.flags & Scenario::ObjectiveFlags::withinTimeLimit) != 0)
+        if ((objective.flags & ObjectiveFlags::withinTimeLimit) != ObjectiveFlags::none)
         {
             if (isTitleMode() || isEditorMode())
             {

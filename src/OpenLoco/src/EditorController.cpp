@@ -193,7 +193,7 @@ namespace OpenLoco::EditorController
                 S5::sub_4BAEC4();
                 S5::getOptions().editorStep = Step::landscapeEditor;
                 LandscapeGeneration::open();
-                if (S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone)
+                if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) != Scenario::Flags::none)
                 {
                     if ((addr<0x00525E28, uint32_t>() & 1) == 0)
                     {
@@ -291,7 +291,7 @@ namespace OpenLoco::EditorController
 
             case Step::landscapeEditor:
                 // Scenario/landscape loaded?
-                if (Game::hasFlags(1u << 0))
+                if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
                     return;
 
                 if (WindowManager::find(WindowType::landscapeGeneration) == nullptr)
