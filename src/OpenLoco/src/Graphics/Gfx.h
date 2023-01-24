@@ -104,6 +104,7 @@ namespace OpenLoco::Gfx
     void loadG1();
     void initialiseCharacterWidths();
     void initialiseNoiseMaskMap();
+    /*
     void clear(RenderTarget& rt, uint32_t fill);
     void clearSingle(RenderTarget& rt, uint8_t paletteId);
 
@@ -205,6 +206,8 @@ namespace OpenLoco::Gfx
     void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image);
     void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
     void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage);
+    */
+
     [[nodiscard]] uint32_t recolour(uint32_t image);
     [[nodiscard]] uint32_t recolour(uint32_t image, Colour colour);
     [[nodiscard]] uint32_t recolour(uint32_t image, ExtColour colour);
