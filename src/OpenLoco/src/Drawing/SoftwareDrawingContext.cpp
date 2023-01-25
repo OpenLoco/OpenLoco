@@ -51,6 +51,7 @@ namespace OpenLoco::Drawing
         static uint16_t getStringWidth(const char* buffer);
         static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
         static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
+        static void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
 
         // 0x0112C876
         static int16_t getCurrentFontSpriteBase()
@@ -411,115 +412,6 @@ namespace OpenLoco::Drawing
         }
 
         template<uint8_t TZoomLevel, bool TIsRLE>
-        static void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMap::View palette, const G1Element* noiseImage)
-        {
-            auto args = getDrawImagePosArgs<TZoomLevel, TIsRLE>(rt, pos, element);
-            if (args.has_value())
-            {
-                const DrawSpriteArgs fullArgs{ palette, element, args->srcPos, args->dstPos, args->size, noiseImage };
-                const auto op = Drawing::getDrawBlendOp(image, fullArgs);
-                Drawing::drawSpriteToBuffer<TZoomLevel, TIsRLE>(rt, fullArgs, op);
-            }
-        }
-
-        // 0x00448D90
-        void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const PaletteMap::View palette, const G1Element* noiseImage)
-        {
-            const auto* element = getG1Element(image.getIndex());
-            if (element == nullptr)
-            {
-                return;
-            }
-
-            if (rt.zoomLevel > 0 && (element->flags & G1ElementFlags::hasZoomSprites))
-            {
-                auto zoomedrt{ rt };
-                zoomedrt.bits = rt.bits;
-                zoomedrt.x = rt.x >> 1;
-                zoomedrt.y = rt.y >> 1;
-                zoomedrt.height = rt.height >> 1;
-                zoomedrt.width = rt.width >> 1;
-                zoomedrt.pitch = rt.pitch;
-                zoomedrt.zoomLevel = rt.zoomLevel - 1;
-
-                const auto zoomCoords = Ui::Point(pos.x >> 1, pos.y >> 1);
-                drawImagePaletteSet(
-                    zoomedrt, zoomCoords, image.withIndexOffset(-element->zoomOffset), palette, noiseImage);
-                return;
-            }
-
-            const bool isRLE = element->flags & G1ElementFlags::isRLECompressed;
-            if (isRLE)
-            {
-                switch (rt.zoomLevel)
-                {
-                    default:
-                        drawImagePaletteSet<0, true>(rt, pos, image, *element, palette, noiseImage);
-                        break;
-                    case 1:
-                        drawImagePaletteSet<1, true>(rt, pos, image, *element, palette, noiseImage);
-                        break;
-                    case 2:
-                        drawImagePaletteSet<2, true>(rt, pos, image, *element, palette, noiseImage);
-                        break;
-                    case 3:
-                        drawImagePaletteSet<3, true>(rt, pos, image, *element, palette, noiseImage);
-                        break;
-                }
-            }
-            else
-            {
-                switch (rt.zoomLevel)
-                {
-                    default:
-                        drawImagePaletteSet<0, false>(rt, pos, image, *element, palette, noiseImage);
-                        break;
-                    case 1:
-                        drawImagePaletteSet<1, false>(rt, pos, image, *element, palette, noiseImage);
-                        break;
-                    case 2:
-                        drawImagePaletteSet<2, false>(rt, pos, image, *element, palette, noiseImage);
-                        break;
-                    case 3:
-                        drawImagePaletteSet<3, false>(rt, pos, image, *element, palette, noiseImage);
-                        break;
-                }
-            }
-        }
-
-        // 0x00448C79
-        static void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image)
-        {
-            const auto* noiseImage = getNoiseMaskImageFromImage(image);
-            const auto palette = PaletteMap::getForImage(image);
-
-            if (!palette.has_value())
-            {
-                drawImagePaletteSet(rt, pos, image, PaletteMap::getDefault(), noiseImage);
-            }
-            else
-            {
-                drawImagePaletteSet(rt, pos, image, *palette, noiseImage);
-            }
-        }
-
-        // 0x00448C79
-        static void drawImage(Gfx::RenderTarget* rt, int16_t x, int16_t y, uint32_t image)
-        {
-            drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
-        }
-
-        void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
-        {
-            PaletteMap::Buffer<PaletteMap::kDefaultSize> palette;
-            std::fill(palette.begin(), palette.end(), paletteIndex);
-            palette[0] = 0;
-
-            // Set the image primary flag to tell drawImagePaletteSet to recolour with the palette (Colour::black is not actually used)
-            drawImagePaletteSet(rt, pos, image.withPrimary(Colour::black), PaletteMap::View{ palette }, {});
-        }
-
-        template<uint8_t TZoomLevel, bool TIsRLE>
         static std::optional<DrawSpritePosArgs> getDrawImagePosArgs(Gfx::RenderTarget& rt, const Ui::Point& pos, const G1Element& element)
         {
             if constexpr (TZoomLevel > 0)
@@ -643,6 +535,115 @@ namespace OpenLoco::Drawing
             dstLeft = dstLeft >> TZoomLevel;
 
             return DrawSpritePosArgs{ Ui::Point32{ srcX, srcY }, Ui::Point32{ dstLeft, dstTop }, Ui::Size(width, height) };
+        }
+
+        template<uint8_t TZoomLevel, bool TIsRLE>
+        static void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const G1Element& element, const PaletteMap::View palette, const G1Element* noiseImage)
+        {
+            auto args = getDrawImagePosArgs<TZoomLevel, TIsRLE>(rt, pos, element);
+            if (args.has_value())
+            {
+                const DrawSpriteArgs fullArgs{ palette, element, args->srcPos, args->dstPos, args->size, noiseImage };
+                const auto op = Drawing::getDrawBlendOp(image, fullArgs);
+                Drawing::drawSpriteToBuffer<TZoomLevel, TIsRLE>(rt, fullArgs, op);
+            }
+        }
+
+        // 0x00448D90
+        static void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const PaletteMap::View palette, const G1Element* noiseImage)
+        {
+            const auto* element = getG1Element(image.getIndex());
+            if (element == nullptr)
+            {
+                return;
+            }
+
+            if (rt.zoomLevel > 0 && (element->flags & G1ElementFlags::hasZoomSprites))
+            {
+                auto zoomedrt{ rt };
+                zoomedrt.bits = rt.bits;
+                zoomedrt.x = rt.x >> 1;
+                zoomedrt.y = rt.y >> 1;
+                zoomedrt.height = rt.height >> 1;
+                zoomedrt.width = rt.width >> 1;
+                zoomedrt.pitch = rt.pitch;
+                zoomedrt.zoomLevel = rt.zoomLevel - 1;
+
+                const auto zoomCoords = Ui::Point(pos.x >> 1, pos.y >> 1);
+                drawImagePaletteSet(
+                    zoomedrt, zoomCoords, image.withIndexOffset(-element->zoomOffset), palette, noiseImage);
+                return;
+            }
+
+            const bool isRLE = element->flags & G1ElementFlags::isRLECompressed;
+            if (isRLE)
+            {
+                switch (rt.zoomLevel)
+                {
+                    default:
+                        drawImagePaletteSet<0, true>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 1:
+                        drawImagePaletteSet<1, true>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 2:
+                        drawImagePaletteSet<2, true>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 3:
+                        drawImagePaletteSet<3, true>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                }
+            }
+            else
+            {
+                switch (rt.zoomLevel)
+                {
+                    default:
+                        drawImagePaletteSet<0, false>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 1:
+                        drawImagePaletteSet<1, false>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 2:
+                        drawImagePaletteSet<2, false>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                    case 3:
+                        drawImagePaletteSet<3, false>(rt, pos, image, *element, palette, noiseImage);
+                        break;
+                }
+            }
+        }
+
+        // 0x00448C79
+        static void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image)
+        {
+            const auto* noiseImage = getNoiseMaskImageFromImage(image);
+            const auto palette = PaletteMap::getForImage(image);
+
+            if (!palette.has_value())
+            {
+                drawImagePaletteSet(rt, pos, image, PaletteMap::getDefault(), noiseImage);
+            }
+            else
+            {
+                drawImagePaletteSet(rt, pos, image, *palette, noiseImage);
+            }
+        }
+
+        // 0x00448C79
+        static void drawImage(Gfx::RenderTarget* rt, int16_t x, int16_t y, uint32_t image)
+        {
+            drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
+        }
+
+        static void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
+        {
+            PaletteMap::Buffer<PaletteMap::kDefaultSize> palette;
+            std::fill(palette.begin(), palette.end(), paletteIndex);
+            palette[0] = 0;
+
+            // Set the image primary flag to tell drawImagePaletteSet to recolour with the palette (Colour::black is not actually used)
+            drawImagePaletteSet(rt, pos, image.withPrimary(Colour::black), PaletteMap::View{ palette }, {});
         }
 
         // 0x00451189
