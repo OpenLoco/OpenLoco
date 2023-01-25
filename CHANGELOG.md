@@ -1,4 +1,4 @@
-22.12+ (???)
+23.01 (2023-01-25)
 ------------------------------------------------------------------------
 - Feature: [#1745] Add cheat to instantly win any scenario/challenge.
 - Fix: [#528] Snow rendering issue with Steam provided Locomotion.
