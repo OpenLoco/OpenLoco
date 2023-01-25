@@ -3,6 +3,7 @@
 #include "CompanyManager.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Scenario.h"
@@ -197,7 +198,7 @@ namespace OpenLoco::Map
                 }
 
                 auto producedAmount = randArr[i] / 4 + 1;
-                if (Game::hasFlags(Scenario::Flags::hillsEdgeOfMap))
+                if (Game::hasFlags(GameStateFlags::unk2))
                 {
                     producedAmount = (producedAmount + 1) / 2;
                 }

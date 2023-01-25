@@ -74,7 +74,7 @@ namespace OpenLoco::Map::TileManager
             *element = *reinterpret_cast<TileElement*>(&defaultElement);
         }
         updateTilePointers();
-        getGameState().flags |= Scenario::Flags::landscapeGenerationDone;
+        getGameState().flags |= GameStateFlags::tileManagerLoaded;
     }
 
     stdx::span<TileElement> getElements()
@@ -834,7 +834,7 @@ namespace OpenLoco::Map::TileManager
     // 0x00463ABA
     void update()
     {
-        if (!Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             return;
         }

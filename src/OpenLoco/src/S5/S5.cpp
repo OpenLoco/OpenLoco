@@ -7,6 +7,7 @@
 #include "Entities/EntityManager.h"
 #include "Game.h"
 #include "GameException.hpp"
+#include "GameState.h"
 #include "Gui.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
@@ -432,7 +433,7 @@ namespace OpenLoco::S5
             file->gameState.fixFlags |= S5FixFlags::fixFlag1;
             fixState(file->gameState);
 
-            if (file->gameState.flags & (1 << 0))
+            if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
                 // Load tile elements
                 auto tileElements = fs.readChunk();
@@ -629,7 +630,7 @@ namespace OpenLoco::S5
             {
                 _activeOptions = *file->landscapeOptions;
             }
-            if (file->gameState.flags & (1 << 0))
+            if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
                 TileManager::setElements(stdx::span<Map::TileElement>(reinterpret_cast<Map::TileElement*>(file->tileElements.data()), file->tileElements.size()));
             }

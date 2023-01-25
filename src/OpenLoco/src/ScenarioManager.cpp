@@ -343,7 +343,7 @@ namespace OpenLoco::ScenarioManager
             entry.flags |= ScenarioIndexFlags::flag_0;
             entry.category = options->difficulty;
             entry.flags &= ~hasPreviewImage;
-            if ((options->scenarioFlags & Scenario::Flags::landscapeGenerationDone) != Scenario::Flags::none)
+            if ((options->scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
             {
                 entry.flags |= hasPreviewImage;
                 std::copy(&options->preview[0][0], &options->preview[0][0] + sizeof(options->preview), &entry.preview[0][0]);

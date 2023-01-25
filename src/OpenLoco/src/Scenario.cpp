@@ -50,7 +50,7 @@ namespace OpenLoco::Scenario
     // 0x0046115C
     void sub_46115C()
     {
-        Game::setFlags(Flags::none);
+        Game::setFlags(GameStateFlags::none);
         AnimationManager::reset();
         addr<0x0052624C, uint16_t>() = S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1;
     }
@@ -224,7 +224,7 @@ namespace OpenLoco::Scenario
     // 0x0043EDAD
     void eraseLandscape()
     {
-        S5::getOptions().scenarioFlags &= ~(Scenario::Flags::landscapeGenerationDone);
+        S5::getOptions().scenarioFlags &= ~(Scenario::ScenarioFlags::landscapeGenerationDone);
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         reset();
         S5::getOptions().madeAnyChanges = 0;
@@ -330,7 +330,7 @@ namespace OpenLoco::Scenario
         Audio::resetMusic();
 
         auto& gameState = getGameState();
-        if ((gameState.flags & Flags::landscapeGenerationDone) != Flags::none)
+        if ((gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
         {
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)

@@ -82,7 +82,7 @@ namespace OpenLoco::Map::AnimationManager
     // 0x004612EC
     void update()
     {
-        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             std::array<bool, Limits::kMaxAnimations> animsToRemove{};
             for (uint16_t i = 0; i < numAnimations(); ++i)

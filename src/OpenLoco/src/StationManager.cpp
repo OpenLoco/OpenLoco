@@ -56,7 +56,7 @@ namespace OpenLoco::StationManager
     // 0x0048B1FA
     void update()
     {
-        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
         {
             const auto id = StationId(ScenarioManager::getScenarioTicks() & 0x3FF);
             auto station = get(id);

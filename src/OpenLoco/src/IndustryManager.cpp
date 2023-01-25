@@ -76,7 +76,7 @@ namespace OpenLoco::IndustryManager
     // 0x00453234
     void update()
     {
-        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
         {
             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
@@ -89,7 +89,7 @@ namespace OpenLoco::IndustryManager
     // 0x00453487
     void updateDaily()
     {
-        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
@@ -501,7 +501,7 @@ namespace OpenLoco::IndustryManager
     // 0x0045383B
     void updateMonthly()
     {
-        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
             tryCreateNewIndustriesMonthly();
@@ -518,7 +518,7 @@ namespace OpenLoco::IndustryManager
     // 0x00459D2D
     void createAllMapAnimations()
     {
-        if (!Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
             return;
 
         for (auto& industry : industries())

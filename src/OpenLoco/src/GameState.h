@@ -11,16 +11,25 @@
 #include "ScenarioObjective.h"
 #include "Station.h"
 #include "Town.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco
 {
+    enum class GameStateFlags : uint32_t
+    {
+        none = 0U,
+        tileManagerLoaded = (1U << 0),
+        unk2 = (1U << 1),
+        preferredOwnerName = (1U << 2),
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(GameStateFlags);
+
 #pragma pack(push, 1)
     struct GameState
     {
         Core::Prng rng;                                                          // 0x000000 (0x00525E18)
         Core::Prng unkRng;                                                       // 0x000008 (0x00525E20)
-        Scenario::Flags flags;                                                   // 0x000010 (0x00525E28)
-        uint16_t pad_12;                                                         // 0x000012 (0x00525E2A)
+        GameStateFlags flags;                                                    // 0x000010 (0x00525E28)
         uint32_t currentDay;                                                     // 0x000014 (0x00525E2C)
         uint16_t dayCounter;                                                     // 0x000018 (0x00525E30)
         uint16_t currentYear;                                                    // 0x00001A (0x00525E32)

@@ -5,6 +5,7 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Gui.h"
 #include "Interop/Interop.hpp"
 #include "Intro.h"
@@ -226,7 +227,7 @@ namespace OpenLoco::Title
                                reload();
                            },
                            [](MoveStep step) {
-                               if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
+                               if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
                                {
                                    auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
                                    auto height = Map::TileManager::getHeight(pos);
@@ -241,7 +242,7 @@ namespace OpenLoco::Title
                                }
                            },
                            [](RotateStep step) {
-                               if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
+                               if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
                                {
                                    auto main = Ui::WindowManager::getMainWindow();
                                    if (main != nullptr)

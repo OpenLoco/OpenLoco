@@ -148,7 +148,7 @@ namespace OpenLoco::TownManager
     // 0x00496B6D
     void update()
     {
-        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
         {
             auto ticks = ScenarioManager::getScenarioTicks();
             if (ticks % 8 == 0)

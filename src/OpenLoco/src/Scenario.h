@@ -16,14 +16,13 @@ namespace OpenLoco::Scenario
     struct Objective;
     struct ObjectiveProgress;
 
-    enum class Flags : uint16_t
+    enum class ScenarioFlags : uint16_t
     {
         none = 0U,
         landscapeGenerationDone = (1U << 0),
         hillsEdgeOfMap = (1U << 1),
-        preferredOwnerName = (1U << 2),
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ScenarioFlags);
 
     enum class ObjectiveFlags : uint8_t
     {

@@ -78,10 +78,10 @@ namespace OpenLoco::EditorController
             StringManager::formatString(options.scenarioName, StringIds::unnamed);
         }
 
-        options.scenarioFlags &= ~Scenario::Flags::landscapeGenerationDone;
+        options.scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
         if (addr<0x00525E28, uint32_t>() & 1)
         {
-            options.scenarioFlags |= Scenario::Flags::landscapeGenerationDone;
+            options.scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
             Game::sub_46DB4C(); // draw preview map
         }
 
@@ -193,7 +193,7 @@ namespace OpenLoco::EditorController
                 S5::sub_4BAEC4();
                 S5::getOptions().editorStep = Step::landscapeEditor;
                 LandscapeGeneration::open();
-                if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) != Scenario::Flags::none)
+                if ((S5::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
                 {
                     if ((addr<0x00525E28, uint32_t>() & 1) == 0)
                     {
@@ -291,7 +291,7 @@ namespace OpenLoco::EditorController
 
             case Step::landscapeEditor:
                 // Scenario/landscape loaded?
-                if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
+                if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
                     return;
 
                 if (WindowManager::find(WindowType::landscapeGeneration) == nullptr)

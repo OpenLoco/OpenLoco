@@ -188,7 +188,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             _commonFormatArgs[0] = S5::getOptions().scenarioStartYear;
 
-            if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) == Scenario::Flags::none)
+            if ((S5::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
             {
                 window.activatedWidgets |= (1 << widx::generate_when_game_starts);
                 window.disabledWidgets |= (1 << widx::generate_now);
@@ -256,9 +256,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::generate_when_game_starts:
-                    if ((S5::getOptions().scenarioFlags & Scenario::Flags::landscapeGenerationDone) == Scenario::Flags::none)
+                    if ((S5::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
                     {
-                        S5::getOptions().scenarioFlags |= Scenario::Flags::landscapeGenerationDone;
+                        S5::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
                         Scenario::generateLandscape();
                     }
                     else
@@ -600,7 +600,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::hillsEdgeOfMap:
-                    S5::getOptions().scenarioFlags ^= Scenario::Flags::hillsEdgeOfMap;
+                    S5::getOptions().scenarioFlags ^= Scenario::ScenarioFlags::hillsEdgeOfMap;
                     window.invalidate();
                     break;
             }
@@ -661,7 +661,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window.widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
             window.widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
-            if ((options.scenarioFlags & Scenario::Flags::hillsEdgeOfMap) != Scenario::Flags::none)
+            if ((options.scenarioFlags & Scenario::ScenarioFlags::hillsEdgeOfMap) != Scenario::ScenarioFlags::none)
                 window.activatedWidgets |= (1 << widx::hillsEdgeOfMap);
             else
                 window.activatedWidgets &= ~(1 << widx::hillsEdgeOfMap);

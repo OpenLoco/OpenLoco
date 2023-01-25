@@ -80,7 +80,7 @@ namespace OpenLoco::Map::WaveManager
     // 0x004C56F6
     void update()
     {
-        if (!Game::hasFlags(Scenario::Flags::landscapeGenerationDone) || (ScenarioManager::getScenarioTicks() & 0x3))
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded) || (ScenarioManager::getScenarioTicks() & 0x3))
         {
             return;
         }

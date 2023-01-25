@@ -904,7 +904,7 @@ namespace OpenLoco
     // 0x004968C7
     static void dateTick()
     {
-        if (Game::hasFlags(Scenario::Flags::landscapeGenerationDone) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
         {
             if (updateDayCounter())
             {

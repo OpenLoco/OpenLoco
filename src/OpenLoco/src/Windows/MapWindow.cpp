@@ -3,6 +3,7 @@
 #include "Entities/Entity.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -1358,7 +1359,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B806
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
-        if (!Game::hasFlags(Scenario::Flags::landscapeGenerationDone))
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
             return;
 
         Gfx::clearSingle(rt, PaletteIndex::index_0A);
