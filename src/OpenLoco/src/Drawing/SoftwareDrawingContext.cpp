@@ -1545,7 +1545,7 @@ namespace OpenLoco::Drawing
          */
         static void drawHorizontalLine(Gfx::RenderTarget& rt, PaletteIndex_t colour, const Ui::Point& startCoord, int32_t length)
         {
-            Ui::Point offset{ startCoord.x - rt.x, startCoord.y - rt.y };
+            Ui::Point offset(startCoord.x - rt.x, startCoord.y - rt.y);
 
             // Check to make sure point is in the y range
             if (offset.y < 0)
