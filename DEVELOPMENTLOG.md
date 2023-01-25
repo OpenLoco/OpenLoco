@@ -6,6 +6,9 @@ The main focus of this month has been implementing the object loading functions.
 ## Config Enum Flags [#1760]
 Special thanks to @leslieyip02 for this pull request (and his future one[s] that will be into next months release). This was start of rolling out the Enum Flags that were added last month.
 
+## Improve the OpenLoco First-Run Experience [#1764]
+In order for OpenLoco to run, the original Locomotion game asset files are needed. In many cases, the game is able to automatically detect its location. However, if that wasn't the case, a prompt would be displayed asking to locate the Locomotion folder manually. The phrasing for this prompt was quite spartan, however, which led to some confusion. We have rephrased the prompt messages, so the first-run experience should be markedly improved as of v23.01.
+
 # OpenLoco version 22.12 (2022-12-22)
 
 ## Introduce Enum Flags [#1741]
