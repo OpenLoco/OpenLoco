@@ -1,4 +1,10 @@
-# OpenLoco version 22.12+ (???)
+# OpenLoco version 23.01 (???)
+
+## Implement Object Loading Functions [#1739, #1746, #1747, #1749, #1752, #1753, #1758, #1759]
+The main focus of this month has been implementing the object loading functions. When the game loads an object from file it has a header which specifies many of the properties of the object but there are a number of fields within the header that are left empty. It is the object loading function that fills in those empty spaces. In general it is for dynamically sized data such as strings, images and animation maps. Locomotion has been designed cleverly so that these dynamic elements are in one memory allocation. A singular memory allocation improves the loading time and may also marginally improve the game speed. Almost all of the object loading functions have now been implemented but a few of the more tricky ones remain for next month.
+
+## Config Enum Flags [#1760]
+Special thanks to @leslieyip02 for this pull request (and his future one[s] that will be into next months release). This was start of rolling out the Enum Flags that were added last month.
 
 # OpenLoco version 22.12 (2022-12-22)
 
