@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043FC91
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             Common::draw(window, rt);
 
@@ -603,7 +603,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F4EB
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             Common::draw(window, rt);
 
@@ -885,7 +885,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F97D
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             Common::draw(window, rt);
 
@@ -1023,7 +1023,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F004
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             Common::draw(window, rt);
 

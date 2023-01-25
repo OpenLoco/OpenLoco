@@ -14,7 +14,7 @@ namespace OpenLoco
     {
         auto imageId = image + hillHeightMapCount + mountainHeightMapCount;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(&rt, x, y, imageId);
     }
 

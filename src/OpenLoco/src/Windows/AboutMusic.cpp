@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         const int16_t x = 240;
         int16_t y = 2;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (const auto& songStrings : stringsToDraw)
         {
             // TODO: optimisation: don't draw past fold.

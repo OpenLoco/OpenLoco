@@ -71,7 +71,7 @@ namespace OpenLoco
         imageId += frameIndex;
         imageId += image;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(&rt, x, y, imageId);
         drawingCtx.drawImage(&rt, x, y, imageId + 1);
         drawingCtx.drawImage(&rt, x, y, imageId + 2);

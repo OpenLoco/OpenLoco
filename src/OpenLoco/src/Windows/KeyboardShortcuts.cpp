@@ -155,7 +155,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     // 0x004BE72C
     static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto colour = self.getColour(WindowColour::secondary).c();
         auto shade = Colours::getShade(colour, 4);

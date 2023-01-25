@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x00498FFE
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -395,7 +395,7 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x004994F9
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -523,7 +523,7 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x004997F1
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);

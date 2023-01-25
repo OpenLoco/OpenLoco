@@ -15,7 +15,7 @@ namespace OpenLoco
     // 0x00434D5B
     void CompetitorObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         drawingCtx.drawRect(rt, 0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, AdvancedColour(Colour::mutedOrange).inset().u8());
 
@@ -26,7 +26,7 @@ namespace OpenLoco
     // 0x00434DA7
     void CompetitorObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         Ui::Point rowPosition = { x, y };
         {
             auto args = FormatArguments();

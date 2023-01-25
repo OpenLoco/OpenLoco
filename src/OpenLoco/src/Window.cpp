@@ -1462,7 +1462,7 @@ namespace OpenLoco::Ui
     // 0x004CA4DF
     void Window::draw(Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::noBackground))
         {

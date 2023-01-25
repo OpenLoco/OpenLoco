@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 const char* buffer = (const char*)regs.esi;
-                auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+                auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
                 uint16_t width = drawingCtx.getStringWidth(buffer);
                 regs = backup;
                 regs.cx = width;

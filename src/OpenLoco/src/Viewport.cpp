@@ -110,7 +110,7 @@ namespace OpenLoco::Ui
         Ui::Point bottomRight = { station.labelFrame.right[zoom],
                                   station.labelFrame.bottom[zoom] };
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
         drawingCtx.drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(colour));
 
@@ -175,7 +175,7 @@ namespace OpenLoco::Ui
         unZoomedRt.width >>= rt.zoomLevel;
         unZoomedRt.height >>= rt.zoomLevel;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         char buffer[512]{};
         for (const auto& town : TownManager::towns())
@@ -206,7 +206,7 @@ namespace OpenLoco::Ui
         unZoomedRt.width >>= rt.zoomLevel;
         unZoomedRt.height >>= rt.zoomLevel;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto orderNum = 0;
         for (auto& orderFrame : Vehicles::OrderManager::displayFrames())
@@ -272,7 +272,7 @@ namespace OpenLoco::Ui
         zoomViewRt.bits = rt->bits + (unkX - rt->x) + ((unkY - rt->y) * (rt->width + rt->pitch));
         zoomViewRt.zoomLevel = zoom;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // make sure, the compare operation is done in int32_t to avoid the loop becoming an infinite loop.
         // this as well as the [x += 32] in the loop causes signed integer overflow -> undefined behaviour.

@@ -919,7 +919,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C2F23
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         window.draw(rt);
         drawTransportTypeTabs(&window, rt);
@@ -1073,7 +1073,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C3307
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         switch (scrollIndex)
         {
@@ -1372,7 +1372,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C28F1
     static void drawTrackTypeTabs(Ui::Window* window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(CompanyId(window->number));

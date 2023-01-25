@@ -170,7 +170,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004397BE
     static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         Widget& frame = _widgets[Widx::outer_frame];
         drawingCtx.drawRect(*rt, self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);

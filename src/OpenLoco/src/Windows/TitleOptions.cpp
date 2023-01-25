@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Draw widgets.
         window.draw(rt);

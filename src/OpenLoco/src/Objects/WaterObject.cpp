@@ -55,7 +55,7 @@ namespace OpenLoco
     void WaterObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolourTranslucent(Gfx::recolour(image + 35), ExtColour::null);
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(&rt, x, y, colourImage);
         drawingCtx.drawImage(&rt, x, y, image + 30);
     }

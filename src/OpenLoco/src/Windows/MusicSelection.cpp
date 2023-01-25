@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1663
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
         drawingCtx.clearSingle(rt, shade);

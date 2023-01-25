@@ -696,7 +696,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BB8C9
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -757,14 +757,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 image = Gfx::recolour(image, colour);
             }
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.drawImage(clipped, 32, 96, image);
         }
 
         // 0x004BB982
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
             drawingCtx.clearSingle(rt, shade);
@@ -1052,7 +1052,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC5E7
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1556,7 +1556,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC909
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto imgId = skin->img;
@@ -1843,7 +1843,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCCFF
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -2286,7 +2286,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC0C2
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -2310,7 +2310,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC11C
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
             drawingCtx.clearSingle(rt, shade);

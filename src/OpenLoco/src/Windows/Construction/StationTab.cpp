@@ -622,7 +622,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x0049DE40
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         self.draw(rt);
         Common::drawTabs(&self, rt);

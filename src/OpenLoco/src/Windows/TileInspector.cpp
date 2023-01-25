@@ -129,7 +129,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Draw widgets.
         self.draw(rt);
@@ -311,7 +311,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         if (_currentPosition == TilePos2(0, 0))
             return;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto tile = TileManager::get(_currentPosition);
         auto yPos = 0;

@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::TextInput
     {
         std::string cursorStr = buffer.substr(0, cursorPosition);
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
         auto stringWidth = drawingCtx.getStringWidth(buffer.c_str());
         auto cursorX = drawingCtx.getStringWidth(cursorStr.c_str());
@@ -114,7 +114,7 @@ namespace OpenLoco::Ui::TextInput
     {
         std::string cursorStr = buffer.substr(0, cursorPosition);
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
         auto stringWidth = drawingCtx.getStringWidth(buffer.c_str());
         auto cursorX = drawingCtx.getStringWidth(cursorStr.c_str());

@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      */
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         window.draw(rt);
 

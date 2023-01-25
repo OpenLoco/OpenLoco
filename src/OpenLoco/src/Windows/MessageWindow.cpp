@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         {
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
 
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.clearSingle(rt, colour);
 
             auto height = 0;
@@ -504,7 +504,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042AA02
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);

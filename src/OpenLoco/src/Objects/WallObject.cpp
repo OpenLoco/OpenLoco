@@ -47,7 +47,7 @@ namespace OpenLoco
             image = Gfx::recolour(sprite, Colour::mutedDarkRed);
         }
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(&rt, x + 14, y + 16 + (var_08 * 2), image);
         if (flags & (1 << 1))
         {

@@ -10,7 +10,7 @@ namespace OpenLoco
     void RoadObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         if (paintStyle == 1)
         {
             drawingCtx.drawImage(&rt, x, y, colourImage + 34);

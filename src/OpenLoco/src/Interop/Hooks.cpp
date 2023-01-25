@@ -683,7 +683,7 @@ void OpenLoco::Interop::registerHooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto pos = drawingCtx.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), regs.cx, regs.dx, static_cast<Colour>(regs.al), X86Pointer<uint8_t>(regs.esi));
             regs = backup;
             regs.cx = pos.x;
@@ -908,7 +908,7 @@ void OpenLoco::Interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             Gfx::RenderTarget* rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.drawImage(*rt, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
 
             regs = backup;

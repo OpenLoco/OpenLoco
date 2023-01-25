@@ -301,7 +301,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // 0x0049E501
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         self.draw(rt);
         Common::drawTabs(&self, rt);

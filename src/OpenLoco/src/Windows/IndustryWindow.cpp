@@ -132,7 +132,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00455C22
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -445,7 +445,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00456705
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -575,7 +575,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00456079
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -842,7 +842,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 auto xPos = widget.left + self->x;
                 auto yPos = widget.top + self->y;
-                auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+                auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
                 drawingCtx.drawImage(rt, xPos, yPos, imageId);
 
                 auto caroObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[productionTabNumber]);

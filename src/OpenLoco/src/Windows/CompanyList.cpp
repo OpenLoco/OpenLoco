@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00435E56
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00435EA7
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
             drawingCtx.clearSingle(rt, colour);
@@ -1022,7 +1022,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437949
         static void drawGraphLegend(Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto cargoCount = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
@@ -1058,7 +1058,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437120
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1229,7 +1229,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x0043745A
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1484,7 +1484,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437637
         static void drawTabs(Window* self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -1649,7 +1649,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437810
         static void drawGraphLegend(Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto companyCount = 0;
             for (auto& company : CompanyManager::companies())

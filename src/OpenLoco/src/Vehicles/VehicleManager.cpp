@@ -395,7 +395,7 @@ namespace OpenLoco::Vehicles::OrderManager
         }
 
         i = 1;
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (auto& unk : _displayFrames)
         {
             auto order = Vehicles::OrderRingView(unk.orderOffset, 0).begin();

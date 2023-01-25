@@ -186,7 +186,7 @@ namespace OpenLoco::Ui::Dropdown
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
             drawingCtx.clipString(width, _byte_112CC04);
@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Dropdown
         // 0x004CD00E
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             _windowDropdownOnpaintCellX = 0;
@@ -350,7 +350,7 @@ namespace OpenLoco::Ui::Dropdown
         // 0x004CCAB2
         static void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, AdvancedColour colour, size_t count, uint8_t flags)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             _dropdownColumnCount = 1;
             _dropdownItemWidth = 0;

@@ -914,7 +914,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B226D
         static void draw(Window& self, Gfx::RenderTarget* const rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1504,7 +1504,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B3542
         static void draw(Window& self, Gfx::RenderTarget* const rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1571,7 +1571,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B36A3
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t i)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
             auto head = Common::getVehicle(&self);
@@ -1832,7 +1832,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 004B3F0D
         static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1865,7 +1865,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
             auto unitNameFormat = cargoQty == 1 ? cargoObj->unitNameSingular : cargoObj->unitNamePlural;
@@ -1883,7 +1883,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 004B3F62
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t i)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
             auto* head = Common::getVehicle(&self);
@@ -2222,7 +2222,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B576C
         static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -3081,7 +3081,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4866
         static void draw(Window& self, Gfx::RenderTarget* const rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -3177,7 +3177,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4A58 based on
         static void sub_4B4A58(Window& self, Gfx::RenderTarget& rt, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             Ui::Point loc = { 8, static_cast<int16_t>(y - 1) };
             drawingCtx.drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
@@ -3195,7 +3195,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B48BA
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t i)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 

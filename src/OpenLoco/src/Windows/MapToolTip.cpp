@@ -116,7 +116,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     // 0x004CF010
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto args = FormatArguments::mapToolTip();
         StringManager::ArgsWrapper argsWrap(&args);

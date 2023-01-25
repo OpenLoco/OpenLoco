@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457CD9
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -383,7 +383,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457D2A
         static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
             drawingCtx.clearSingle(rt, shade);
@@ -647,7 +647,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x0045826C
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -904,7 +904,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458352
         static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
             drawingCtx.clearSingle(rt, shade);

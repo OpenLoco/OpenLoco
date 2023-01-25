@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     // 0x004C18A5
     static void draw(Window& window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         window.draw(rt);
 

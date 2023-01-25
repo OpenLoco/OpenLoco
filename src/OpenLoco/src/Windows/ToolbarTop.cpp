@@ -745,7 +745,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x00439DE4
     static void draw(Window& window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         Common::draw(window, rt);
 

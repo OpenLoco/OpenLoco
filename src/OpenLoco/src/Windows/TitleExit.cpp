@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
     static void prepareDraw(Ui::Window& self)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto exitString = StringManager::getString(StringIds::title_exit_game);
         self.width = drawingCtx.getStringWidthNewLined(exitString) + 10;
         self.x = Ui::width() - self.width;
@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     // 0x00439236
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Draw widgets.
         window.draw(rt);

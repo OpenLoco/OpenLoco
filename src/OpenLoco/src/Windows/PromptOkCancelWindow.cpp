@@ -129,7 +129,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     // 0x004470AA
     static void draw(Window& self, Gfx::RenderTarget* const rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         self.draw(rt);
 

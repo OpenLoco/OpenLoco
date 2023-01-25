@@ -38,7 +38,7 @@ namespace OpenLoco
     // 0x00469A06
     void CliffEdgeObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(&rt, x - 30, y, image);
         drawingCtx.drawImage(&rt, x - 30, y, image + 16);
     }

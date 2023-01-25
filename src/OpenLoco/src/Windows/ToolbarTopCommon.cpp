@@ -38,7 +38,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x00439DE4
     void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Draw widgets.
         self.draw(rt);

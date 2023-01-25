@@ -15,7 +15,7 @@ namespace OpenLoco
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         if (paintStyle == 0)
         {
             drawingCtx.drawImage(&rt, x, y, colourImage);

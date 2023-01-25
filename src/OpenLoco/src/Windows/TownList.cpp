@@ -144,7 +144,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A0F8
         static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
             drawingCtx.clearSingle(rt, shade);
@@ -211,7 +211,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A0A7
         static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A627
         static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -854,7 +854,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A9C2
         static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1189,7 +1189,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049AA1C
         static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
             drawingCtx.clearSingle(rt, shade);

@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x004439AF
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawRectInset(*rt, self.x, self.y + 20, self.width, 41, self.getColour(WindowColour::primary).u8(), 0);
 
         // Draw widgets.
@@ -341,7 +341,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443D02
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
         drawingCtx.clearSingle(rt, colour);

@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
             StringIds::tutorial_3_title,
         };
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto tutorialNumber = OpenLoco::Tutorial::getTutorialNumber();
         auto args = FormatArguments::common(titleStringIds[tutorialNumber]);

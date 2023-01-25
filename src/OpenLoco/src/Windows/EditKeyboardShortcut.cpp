@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     // 0x004BE8DF
     static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         self.draw(rt);
 

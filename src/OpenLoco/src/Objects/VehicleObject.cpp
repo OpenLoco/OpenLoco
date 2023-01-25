@@ -46,7 +46,7 @@ namespace OpenLoco
     void VehicleObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         ObjectManager::drawGenericDescription(rt, rowPosition, designed, obsolete);
         if (power != 0 && (mode == TransportMode::road || mode == TransportMode::rail))
         {

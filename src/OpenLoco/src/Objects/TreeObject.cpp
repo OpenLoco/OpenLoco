@@ -26,7 +26,7 @@ namespace OpenLoco
             image = Gfx::recolour(image, colour);
         }
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         Ui::Point treePos = Ui::Point{ x, y } + Ui::Point{ 0, 48 };
 
         if (flags & TreeObjectFlags::hasSnowVariation)

@@ -564,7 +564,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::map_key_vegetation,
         };
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         for (auto i = 0; i < kOverallGraphKeySize; i++)
         {
@@ -611,7 +611,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::forbid_ships,
         };
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         for (uint8_t i = 0; i < std::size(_vehicleTypeCounts); i++)
         {
@@ -674,7 +674,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             PaletteIndex::index_12,
         };
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
         {
@@ -709,7 +709,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D5A4
     static void drawGraphKeyRoutes(Window* self, Gfx::RenderTarget* rt, uint16_t x, uint16_t* y)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         for (auto i = 0; _byte_F253DF[i] != 0xFF; i++)
         {
@@ -761,7 +761,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D6E1
     static void drawGraphKeyCompanies(Window* self, Gfx::RenderTarget* rt, uint16_t x, uint16_t* y)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         for (const auto& company : CompanyManager::companies())
         {
@@ -919,7 +919,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B779
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         self.draw(rt);
         drawTabs(&self, rt);
@@ -992,7 +992,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto trainPos = locationToMapWindowPos(vehicle->position);
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.fillRect(*rt, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour);
     }
 
@@ -1001,7 +1001,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         auto newStartPos = locationToMapWindowPos({ stationPos.x, stationPos.y });
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         if (endPos.x != Location::null)
         {
@@ -1067,7 +1067,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (!colour)
             return;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         Point startPos = { Location::null, 0 };
         Point endPos = { Location::null, 0 };
@@ -1181,7 +1181,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             std::swap(top, bottom);
         }
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.fillRect(*rt, left, top, right, bottom, colour);
     }
 
@@ -1354,7 +1354,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046C481
     static void drawTownNames(Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         for (const auto& town : TownManager::towns())
         {
@@ -1381,7 +1381,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (!Game::hasFlags(1u << 0))
             return;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.clearSingle(rt, PaletteIndex::index_0A);
 
         auto element = Gfx::getG1Element(0);

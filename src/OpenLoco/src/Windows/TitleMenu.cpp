@@ -223,7 +223,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     // 0x00438EC7
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Draw widgets.
         window.draw(rt);

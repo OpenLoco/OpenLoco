@@ -228,7 +228,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             return;
         }
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         {
             const auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x00435152
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         auto index = 0;

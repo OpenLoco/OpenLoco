@@ -84,7 +84,7 @@ namespace OpenLoco::Ui::Windows::About
         const int16_t x = window.x + kWindowSize.width / 2;
         int16_t y = window.y + 25;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawStringCentred(*rt, x, y, Colour::black, StringIds::about_locomotion_69, nullptr);
 
         y += 10;

@@ -359,7 +359,7 @@ namespace OpenLoco::Gfx
             /*.zoom_level = */ 0,
         };
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Draw all the images ontop of the one bitmap
         for (size_t i = 0; i < numImages; ++i)

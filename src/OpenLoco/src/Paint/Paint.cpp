@@ -784,7 +784,7 @@ namespace OpenLoco::Paint
         unZoomedRt.width >>= zoom;
         unZoomedRt.height >>= zoom;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.setCurrentFontSpriteBase(zoom == 0 ? Font::medium_bold : Font::small);
 
         char buffer[512]{};

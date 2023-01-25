@@ -614,7 +614,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         uint32_t image = Gfx::recolour(competitorObj->images[company->ownerEmotion], company->mainColours.primary);
         uint16_t x = self.x + self.widgets[Widx::company_select].left + 1;
         uint16_t y = self.y + self.widgets[Widx::company_select].top + 1;
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(rt, x, y, image);
 
         static constexpr std::pair<string_id, string_id> typeToFooterStringIds[]{
@@ -709,7 +709,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
         auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 1);
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.clearSingle(rt, shade);
 
         auto yPos = 0;

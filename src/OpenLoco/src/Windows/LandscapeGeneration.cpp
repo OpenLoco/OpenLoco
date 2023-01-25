@@ -172,7 +172,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DC30
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             Common::draw(window, rt);
 
@@ -375,7 +375,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DF89
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             Common::draw(window, rt);
 
@@ -430,7 +430,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E01C
         static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < kMaxLandObjects; i++)
@@ -761,7 +761,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E53A
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             Common::draw(window, rt);
 
@@ -1001,7 +1001,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E9A3
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             Common::draw(window, rt);
 
@@ -1144,7 +1144,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043EB9D
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             Common::draw(window, rt);
 

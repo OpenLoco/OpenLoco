@@ -36,7 +36,7 @@ namespace OpenLoco::Drawing
 
     void drawFPS()
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Measure FPS
         const float fps = measureFPS();

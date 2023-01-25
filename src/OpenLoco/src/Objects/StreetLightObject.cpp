@@ -16,7 +16,7 @@ namespace OpenLoco
     void StreetLightObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         Ui::Point imgPosition = Ui::Point{ x, y } - Ui::Point{ 20, 1 };
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (auto i = 0; i < 3; i++)
         {
             auto imageId = (i * 4) + image;

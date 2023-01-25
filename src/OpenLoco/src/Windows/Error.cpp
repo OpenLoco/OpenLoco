@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::Error
 
         if (buffer != &_byte_9C64B3[0])
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
             int16_t strWidth;
@@ -214,7 +214,7 @@ namespace OpenLoco::Ui::Windows::Error
             uint16_t width = self.width;
             uint16_t height = self.height;
             auto skin = ObjectManager::get<InterfaceSkinObject>()->colour_09;
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
             drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(skin)));

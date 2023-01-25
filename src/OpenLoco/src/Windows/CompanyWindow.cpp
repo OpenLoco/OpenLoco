@@ -188,7 +188,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432055
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -720,7 +720,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void drawAIdetails(Gfx::RenderTarget& rt, const int32_t x, int32_t& y, const OpenLoco::Company& company)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             const auto competitor = ObjectManager::get<CompetitorObject>(company.competitorId);
             {
@@ -760,7 +760,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432919
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1350,7 +1350,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432F9A
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1671,7 +1671,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x004333D0
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1815,7 +1815,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 format = StringIds::black_stringid;
             }
 
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.drawStringRightUnderline(
                 *rt,
                 x,
@@ -1828,7 +1828,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static currency48_t drawFinanceExpenditureColumn(Gfx::RenderTarget* rt, const int16_t x, int16_t& y, uint8_t columnIndex, Company& company)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             currency48_t sum = 0;
             for (auto j = 0; j < ExpenditureType::Count; j++)
@@ -1855,7 +1855,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void drawFinanceSum(Gfx::RenderTarget* rt, int16_t x, int16_t& y, currency48_t sum)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto mainFormat = StringIds::black_stringid;
             auto sumFormat = StringIds::plus_currency48;
@@ -1876,7 +1876,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043361E
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             int16_t y = 47 - self.widgets[widx::scrollview].top + 14;
 
@@ -2155,7 +2155,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433ACD
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -2345,7 +2345,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433DEB
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -2673,7 +2673,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
             const uint16_t x = self->x + self->widgets[Common::widx::company_select].left + 1;
             const uint16_t y = self->y + self->widgets[Common::widx::company_select].top + 1;
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.drawImage(rt, x, y, image);
         }
 

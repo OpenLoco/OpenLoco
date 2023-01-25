@@ -333,7 +333,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         auto args = FormatArguments::common(StringIds::empty);
         char folderBuffer[256]{};
         StringManager::formatString(folderBuffer, StringIds::window_browse_folder, &args);
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
         const auto folderLabelWidth = drawingCtx.getStringWidth(folderBuffer);
 
@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00445E38
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         window.draw(rt);
 
@@ -446,7 +446,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawSavePreview(Ui::Window& window, Gfx::RenderTarget& rt, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary).u8(), 0x30);
 
         auto imageId = 0;
@@ -502,7 +502,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawLandscapePreview(Ui::Window& window, Gfx::RenderTarget& rt, int32_t x, int32_t y, int32_t width, int32_t height)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary).u8(), 0x30);
 
         if (_previewScenarioOptions->scenarioFlags & Scenario::Flags::landscapeGenerationDone)
@@ -536,7 +536,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawTextInput(Ui::Window* window, Gfx::RenderTarget& rt, const char* text, int32_t caret, bool showCaret)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Draw text box text
         Ui::Point origin = { 0, 1 };
@@ -575,7 +575,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00446314
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Background
         drawingCtx.clearSingle(rt, Colours::getShade(window.getColour(WindowColour::secondary).c(), 4));

@@ -216,7 +216,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             // Draw widgets and tabs.
             self.draw(rt);
@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             // Draw widgets and tabs.
             self.draw(rt);

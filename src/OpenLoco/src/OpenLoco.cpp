@@ -313,7 +313,7 @@ namespace OpenLoco
         }
         Title::start();
         Gui::init();
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.clear(Gfx::getScreenRT(), 0x0A0A0A0A);
     }
 
@@ -517,7 +517,7 @@ namespace OpenLoco
 
         try
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             addr<0x00113E87C, int32_t>() = 0;
             addr<0x0005252E0, int32_t>() = 0;

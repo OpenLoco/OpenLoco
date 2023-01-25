@@ -342,7 +342,7 @@ namespace OpenLoco
             char buffer[255] = {};
             auto args = FormatArguments::common(amount);
             StringManager::formatString(buffer, strFormat, &args);
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
             m->offsetX = -drawingCtx.getStringWidth(buffer) / 2;
             m->wiggle = 0;

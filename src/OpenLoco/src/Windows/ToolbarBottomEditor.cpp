@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     // 0x0043CE65
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         Widget& previous = self.widgets[widx::previous_frame];
         Widget& next = self.widgets[widx::next_frame];

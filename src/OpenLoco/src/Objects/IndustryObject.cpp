@@ -104,7 +104,7 @@ namespace OpenLoco
                                      : Colour::black;
         ImageId baseImage(var_12, c);
         Ui::Point pos{ x, y };
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (const auto part : getBuildingParts(0))
         {
             auto image = baseImage.withIndexOffset(part * 4 + 1);

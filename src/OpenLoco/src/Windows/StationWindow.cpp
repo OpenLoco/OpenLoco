@@ -114,7 +114,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E470
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E8DE
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -470,7 +470,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E986
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
@@ -665,7 +665,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EF02
         static void drawRatingBar(Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y, uint8_t amount, Colour colour)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.fillRectInset(*rt, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary).u8(), 48);
 
             uint16_t rating = (amount * 96) / 256;
@@ -678,7 +678,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048ED2F
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
@@ -931,7 +931,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EFBC
         static void drawTabs(Window* self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto station = StationManager::get(StationId(self->number));

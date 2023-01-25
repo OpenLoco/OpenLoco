@@ -308,6 +308,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Console.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Date.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSprite.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawingContext.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/FPSCounter.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/SoftwareDrawingContext.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/SoftwareDrawingEngine.h"

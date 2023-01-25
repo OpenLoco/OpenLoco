@@ -2652,7 +2652,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         x += self->x;
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         if (_constructionHover != 1)
             drawingCtx.drawStringCentred(*rt, x, y, Colour::black, StringIds::build_this);
@@ -2713,7 +2713,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049CF36
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         self.draw(rt);
         Common::drawTabs(&self, rt);

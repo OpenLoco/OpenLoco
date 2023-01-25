@@ -108,7 +108,7 @@ namespace OpenLoco
         frameIndex *= 8;
         auto colourImage = image + frameIndex;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(&rt, x, y + 15, colourImage);
     }
 }

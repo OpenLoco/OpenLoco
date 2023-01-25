@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::Windows::TitleVersion
     // 0x00439236
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto versionInfo = getVersionInfo();
         drawingCtx.drawString(*rt, window.x, window.y, AdvancedColour(Colour::white).outline(), (void*)versionInfo.c_str());

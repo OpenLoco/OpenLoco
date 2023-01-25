@@ -748,7 +748,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049EFEF
         static void drawRoadTabs(Window* self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto company = CompanyManager::getPlayerCompany();
             auto companyColour = company->mainColours.primary;
@@ -824,7 +824,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049ED40
         static void drawTrackTabs(Window* self, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto company = CompanyManager::getPlayerCompany();
             auto companyColour = company->mainColours.primary;

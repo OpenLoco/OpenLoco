@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static void common(const Window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         StringManager::formatString(_text, stringId, &args);
 
@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
         uint16_t width = window.width;
         uint16_t height = window.height;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
         drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(ObjectManager::get<InterfaceSkinObject>()->colour_08)));

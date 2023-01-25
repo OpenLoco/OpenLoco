@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             auto args = FormatArguments();
             args.push<uint32_t>(_modCost);
 
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
     }
