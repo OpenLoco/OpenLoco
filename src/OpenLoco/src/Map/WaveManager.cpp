@@ -4,7 +4,6 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Interop/Interop.hpp"
-#include "Scenario.h"
 #include "ScenarioManager.h"
 #include "SurfaceElement.h"
 #include "TileManager.h"

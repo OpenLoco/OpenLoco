@@ -59,7 +59,6 @@
 #include "Platform/Crash.h"
 #include "Platform/Platform.h"
 #include "S5/S5.h"
-#include "Scenario.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "StationManager.h"

@@ -11,7 +11,6 @@
 #include "PaintEntity.h"
 #include "PaintTile.h"
 #include "PaintTrack.h"
-#include "Scenario.h"
 #include "StationManager.h"
 #include "TownManager.h"
 #include "Ui.h"

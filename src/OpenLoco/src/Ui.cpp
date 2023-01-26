@@ -1,6 +1,5 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameStateFlags.h"
-#include "Scenario.h"
 #include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>

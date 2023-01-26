@@ -11,7 +11,6 @@
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
-#include "Scenario.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "TownManager.h"

@@ -16,7 +16,6 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/SoundObject.h"
 #include "Objects/TreeObject.h"
-#include "Scenario.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
 #include "VehicleChannel.h"

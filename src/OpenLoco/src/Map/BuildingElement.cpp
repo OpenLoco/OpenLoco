@@ -6,7 +6,6 @@
 #include "GameStateFlags.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
-#include "Scenario.h"
 #include "StationManager.h"
 #include "Tile.h"
 #include "TileManager.h"
