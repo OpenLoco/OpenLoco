@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Math/Vector.hpp"
@@ -75,7 +76,7 @@ namespace OpenLoco::IndustryManager
     // 0x00453234
     void update()
     {
-        if (Game::hasFlags(1u << 0) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
         {
             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
@@ -88,7 +89,7 @@ namespace OpenLoco::IndustryManager
     // 0x00453487
     void updateDaily()
     {
-        if (Game::hasFlags(1u << 0))
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
@@ -500,7 +501,7 @@ namespace OpenLoco::IndustryManager
     // 0x0045383B
     void updateMonthly()
     {
-        if (Game::hasFlags(1u << 0))
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
             tryCreateNewIndustriesMonthly();
@@ -517,7 +518,7 @@ namespace OpenLoco::IndustryManager
     // 0x00459D2D
     void createAllMapAnimations()
     {
-        if (!Game::hasFlags(1u << 0))
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
             return;
 
         for (auto& industry : industries())

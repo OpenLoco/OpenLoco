@@ -3,6 +3,7 @@
 #include "CompanyManager.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameStateFlags.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "StationManager.h"
@@ -196,7 +197,7 @@ namespace OpenLoco::Map
                 }
 
                 auto producedAmount = randArr[i] / 4 + 1;
-                if (Game::hasFlags(1u << 1))
+                if (Game::hasFlags(GameStateFlags::unk2))
                 {
                     producedAmount = (producedAmount + 1) / 2;
                 }

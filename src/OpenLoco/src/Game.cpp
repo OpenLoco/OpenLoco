@@ -5,6 +5,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameException.hpp"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
@@ -99,10 +100,10 @@ namespace OpenLoco::Game
     // 0x00441993
     bool saveLandscapeOpen()
     {
-        S5::getOptions().scenarioFlags &= ~(1 << 0);
-        if (hasFlags(1u << 0))
+        S5::getOptions().scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
+        if (hasFlags(GameStateFlags::tileManagerLoaded))
         {
-            S5::getOptions().scenarioFlags |= (1 << 0);
+            S5::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
             sub_46DB4C();
         }
 
@@ -333,22 +334,22 @@ namespace OpenLoco::Game
         return saveResult;
     }
 
-    uint32_t getFlags()
+    GameStateFlags getFlags()
     {
         return getGameState().flags;
     }
 
-    void setFlags(uint32_t flags)
+    void setFlags(GameStateFlags flags)
     {
         getGameState().flags = flags;
     }
 
-    bool hasFlags(uint32_t flags)
+    bool hasFlags(GameStateFlags flags)
     {
-        return (getFlags() & flags) != 0;
+        return (getFlags() & flags) != GameStateFlags::none;
     }
 
-    void removeFlags(uint32_t flags)
+    void removeFlags(GameStateFlags flags)
     {
         setFlags(getFlags() & ~flags);
     }

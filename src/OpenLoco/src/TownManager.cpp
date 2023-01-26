@@ -2,6 +2,7 @@
 #include "CompanyManager.h"
 #include "Game.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Interop/Interop.hpp"
 #include "Map/BuildingElement.h"
 #include "Map/TileLoop.hpp"
@@ -147,7 +148,7 @@ namespace OpenLoco::TownManager
     // 0x00496B6D
     void update()
     {
-        if (Game::hasFlags(1u << 0) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
         {
             auto ticks = ScenarioManager::getScenarioTicks();
             if (ticks % 8 == 0)

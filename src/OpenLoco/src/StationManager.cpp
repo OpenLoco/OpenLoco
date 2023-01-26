@@ -2,6 +2,7 @@
 #include "CompanyManager.h"
 #include "Game.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
@@ -55,7 +56,7 @@ namespace OpenLoco::StationManager
     // 0x0048B1FA
     void update()
     {
-        if (Game::hasFlags(1u << 0) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
         {
             const auto id = StationId(ScenarioManager::getScenarioTicks() & 0x3FF);
             auto station = get(id);

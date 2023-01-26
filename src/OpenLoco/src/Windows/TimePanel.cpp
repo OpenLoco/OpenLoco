@@ -12,6 +12,7 @@
 #include "Network/Network.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
+#include "Scenario.h"
 #include "ScenarioObjective.h"
 #include "SceneManager.h"
 #include "Ui.h"
@@ -349,7 +350,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             args.push(StringIds::challenge_progress);
             args.push<uint16_t>(playerCompany->challengeProgress);
 
-            if (Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit)
+            if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
             {
                 uint16_t monthsLeft = (Scenario::getObjective().timeLimitYears * 12 - Scenario::getObjectiveProgress().monthsInChallenge);
                 uint16_t yearsLeft = monthsLeft / 12;

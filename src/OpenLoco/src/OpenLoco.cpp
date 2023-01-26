@@ -1,4 +1,5 @@
 #include "CommandLine.h"
+#include "Scenario.h"
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -35,6 +36,7 @@
 #include "Game.h"
 #include "GameException.hpp"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
@@ -57,7 +59,6 @@
 #include "Platform/Crash.h"
 #include "Platform/Platform.h"
 #include "S5/S5.h"
-#include "Scenario.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "StationManager.h"
@@ -903,7 +904,7 @@ namespace OpenLoco
     // 0x004968C7
     static void dateTick()
     {
-        if (Game::hasFlags(1u << 0) && !isEditorMode())
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
         {
             if (updateDayCounter())
             {

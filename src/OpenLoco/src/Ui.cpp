@@ -1,4 +1,5 @@
 #include "Drawing/SoftwareDrawingEngine.h"
+#include "GameStateFlags.h"
 #include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>
@@ -888,7 +889,7 @@ namespace OpenLoco::Ui
             Windows::CompanyWindow::openAndSetName();
         }
 
-        if (Game::hasFlags(1u << 2))
+        if (Game::hasFlags(GameStateFlags::preferredOwnerName))
         {
             if (!isTitleMode() && !isEditorMode())
             {
@@ -897,7 +898,7 @@ namespace OpenLoco::Ui
                     CompanyManager::setPreferredName();
                 }
             }
-            Game::removeFlags(1u << 2);
+            Game::removeFlags(GameStateFlags::preferredOwnerName);
         }
 
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_5))

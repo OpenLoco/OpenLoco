@@ -12,6 +12,7 @@
 
 namespace OpenLoco
 {
+    enum class GameStateFlags : uint32_t;
     class Stream;
 }
 
@@ -81,7 +82,7 @@ namespace OpenLoco::S5
         uint8_t difficulty;                                   // 0x01
         uint16_t scenarioStartYear;                           // 0x02
         uint8_t pad_4[2];                                     // 0x04
-        uint16_t scenarioFlags;                               // 0x06
+        Scenario::ScenarioFlags scenarioFlags;                // 0x06
         uint8_t madeAnyChanges;                               // 0x08
         uint8_t pad_9[1];                                     // 0x09
         LandDistributionPattern landDistributionPatterns[32]; // 0x0A
@@ -266,7 +267,7 @@ namespace OpenLoco::S5
     {
         uint32_t rng[2];                                                                 // 0x000000 (0x00525E18)
         uint32_t unkRng[2];                                                              // 0x000008 (0x00525E20)
-        uint32_t flags;                                                                  // 0x000010 (0x00525E28)
+        GameStateFlags flags;                                                            // 0x000010 (0x00525E28)
         uint32_t currentDay;                                                             // 0x000014 (0x00525E2C)
         uint16_t dayCounter;                                                             // 0x000018
         uint16_t currentYear;                                                            // 0x00001A

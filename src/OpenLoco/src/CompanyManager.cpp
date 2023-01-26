@@ -6,6 +6,7 @@
 #include "Entities/Misc.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
@@ -291,7 +292,7 @@ namespace OpenLoco::CompanyManager
     {
         // Original network logic removed
         auto& gameState = getGameState();
-        gameState.flags |= Scenario::Flags::preferredOwnerName;
+        gameState.flags |= GameStateFlags::preferredOwnerName;
         auto competitorId = selectNewCompetitor(-1);
         gameState.playerCompanies[0] = createCompany(competitorId, true);
         gameState.playerCompanies[1] = CompanyId::null;

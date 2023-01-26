@@ -14,12 +14,14 @@
 
 namespace OpenLoco
 {
+    enum class GameStateFlags : uint32_t;
+
 #pragma pack(push, 1)
     struct GameState
     {
         Core::Prng rng;                                                          // 0x000000 (0x00525E18)
         Core::Prng unkRng;                                                       // 0x000008 (0x00525E20)
-        uint32_t flags;                                                          // 0x000010 (0x00525E28)
+        GameStateFlags flags;                                                    // 0x000010 (0x00525E28)
         uint32_t currentDay;                                                     // 0x000014 (0x00525E2C)
         uint16_t dayCounter;                                                     // 0x000018 (0x00525E30)
         uint16_t currentYear;                                                    // 0x00001A (0x00525E32)

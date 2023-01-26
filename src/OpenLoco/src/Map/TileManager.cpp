@@ -5,6 +5,7 @@
 #include "Entities/Misc.h"
 #include "Game.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "IndustryElement.h"
 #include "IndustryManager.h"
 #include "Input.h"
@@ -74,7 +75,7 @@ namespace OpenLoco::Map::TileManager
             *element = *reinterpret_cast<TileElement*>(&defaultElement);
         }
         updateTilePointers();
-        getGameState().flags |= (1u << 0);
+        getGameState().flags |= GameStateFlags::tileManagerLoaded;
     }
 
     stdx::span<TileElement> getElements()
@@ -834,7 +835,7 @@ namespace OpenLoco::Map::TileManager
     // 0x00463ABA
     void update()
     {
-        if (!Game::hasFlags(1u << 0))
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             return;
         }
