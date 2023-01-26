@@ -5,7 +5,7 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
-#include "GameState.h"
+#include "GameStateFlags.h"
 #include "Gui.h"
 #include "Interop/Interop.hpp"
 #include "Intro.h"

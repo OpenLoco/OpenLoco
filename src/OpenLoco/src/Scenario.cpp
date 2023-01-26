@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "GameException.hpp"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Gui.h"

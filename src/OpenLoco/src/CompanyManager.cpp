@@ -6,6 +6,7 @@
 #include "Entities/Misc.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"

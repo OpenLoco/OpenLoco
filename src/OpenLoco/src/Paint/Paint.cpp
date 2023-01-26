@@ -1,6 +1,6 @@
 #include "Paint.h"
 #include "Game.h"
-#include "GameState.h"
+#include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Interop/Interop.hpp"

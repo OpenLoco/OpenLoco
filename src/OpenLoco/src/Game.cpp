@@ -5,6 +5,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameException.hpp"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"

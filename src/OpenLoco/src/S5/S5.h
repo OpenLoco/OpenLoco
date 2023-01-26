@@ -3,9 +3,7 @@
 #include "CompanyManager.h"
 #include "EditorController.h"
 #include "Engine/Limits.h"
-#include "GameState.h"
 #include "Objects/Object.h"
-#include "Scenario.h"
 #include "ScenarioObjective.h"
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
@@ -14,6 +12,7 @@
 
 namespace OpenLoco
 {
+    enum class GameStateFlags : uint32_t;
     class Stream;
 }
 

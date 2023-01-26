@@ -6,7 +6,7 @@
 #include "Entities/EntityManager.h"
 #include "Environment.h"
 #include "Game.h"
-#include "GameState.h"
+#include "GameStateFlags.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/SurfaceElement.h"

@@ -7,7 +7,7 @@
 #include "Entities/EntityManager.h"
 #include "Game.h"
 #include "GameException.hpp"
-#include "GameState.h"
+#include "GameStateFlags.h"
 #include "Gui.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"

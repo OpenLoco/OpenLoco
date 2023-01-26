@@ -2,6 +2,7 @@
 #include "CompanyManager.h"
 #include "Game.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"

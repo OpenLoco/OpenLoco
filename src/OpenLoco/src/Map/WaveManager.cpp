@@ -2,6 +2,7 @@
 #include "Engine/Limits.h"
 #include "Game.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Interop/Interop.hpp"
 #include "Scenario.h"
 #include "ScenarioManager.h"

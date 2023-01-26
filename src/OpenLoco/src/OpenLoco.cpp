@@ -36,6 +36,7 @@
 #include "Game.h"
 #include "GameException.hpp"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"

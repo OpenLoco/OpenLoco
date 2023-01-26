@@ -5,6 +5,7 @@
 #include "Entities/Misc.h"
 #include "Game.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "IndustryElement.h"
 #include "IndustryManager.h"
 #include "Input.h"

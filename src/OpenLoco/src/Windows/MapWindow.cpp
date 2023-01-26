@@ -3,7 +3,7 @@
 #include "Entities/Entity.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
-#include "GameState.h"
+#include "GameStateFlags.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"

@@ -3,7 +3,7 @@
 #include "CompanyManager.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
-#include "GameState.h"
+#include "GameStateFlags.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Scenario.h"

@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"

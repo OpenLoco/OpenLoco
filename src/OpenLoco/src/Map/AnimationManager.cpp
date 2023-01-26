@@ -2,6 +2,7 @@
 #include "Animation.h"
 #include "Game.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "IndustryElement.h"
 #include "Interop/Interop.hpp"
 #include "Scenario.h"
