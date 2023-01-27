@@ -11,7 +11,6 @@
 #include "Map/BuildingElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
-#include "Math/Bound.hpp"
 #include "MessageManager.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
@@ -25,6 +24,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Math/Bound.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 #include <array>

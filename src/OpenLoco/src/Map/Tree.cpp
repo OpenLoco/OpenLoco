@@ -1,6 +1,5 @@
 #include "Tree.h"
 #include "GameCommands/GameCommands.h"
-#include "Math/Trigonometry.hpp"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
@@ -9,6 +8,7 @@
 #include "SurfaceElement.h"
 #include "TileManager.h"
 #include "Ui.h"
+#include <OpenLoco/Math/Trigonometry.hpp>
 
 namespace OpenLoco::Map
 {

@@ -6,12 +6,12 @@
 #include "Interop/Interop.hpp"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
-#include "Math/Trigonometry.hpp"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "OpenLoco.h"
 #include "ScenarioManager.h"
 #include "Vehicle.h"
+#include <OpenLoco/Math/Trigonometry.hpp>
 #include <cassert>
 
 using namespace OpenLoco::Interop;

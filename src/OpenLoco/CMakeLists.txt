@@ -129,8 +129,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/TrackData.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Tree.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/WaveManager.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Trigonometry.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Vector.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Message.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/MessageManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/MultiPlayer.cpp"
@@ -477,9 +475,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Location.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Map.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileLoop.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Bound.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Trigonometry.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Vector.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Speed.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Types.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/UiTypes.hpp"
@@ -539,6 +534,7 @@ endif ()
 target_link_libraries(OpenLoco
     Core
     Utility
+    Math
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp
@@ -650,6 +646,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         Core
         Utility
+        Math
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
         nonstd::span-lite)

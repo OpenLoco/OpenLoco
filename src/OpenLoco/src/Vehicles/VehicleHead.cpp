@@ -17,8 +17,6 @@
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
 #include "Map/TrackElement.h"
-#include "Math/Bound.hpp"
-#include "Math/Trigonometry.hpp"
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/CargoObject.h"
@@ -37,6 +35,8 @@
 #include "Vehicle.h"
 #include "VehicleManager.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Math/Bound.hpp>
+#include <OpenLoco/Math/Trigonometry.hpp>
 #include <cassert>
 #include <numeric>
 #include <optional>

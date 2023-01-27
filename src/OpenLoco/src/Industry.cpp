@@ -10,7 +10,6 @@
 #include "Map/TileManager.h"
 #include "Map/TreeElement.h"
 #include "Map/WallElement.h"
-#include "Math/Bound.hpp"
 #include "MessageManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
@@ -18,6 +17,7 @@
 #include "OpenLoco.h"
 #include "StationManager.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Math/Bound.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 

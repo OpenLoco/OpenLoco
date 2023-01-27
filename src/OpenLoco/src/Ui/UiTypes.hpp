@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Math/Vector.hpp"
+#include <OpenLoco/Math/Vector.hpp>
+#include <cstdint>
 
 namespace OpenLoco::Ui
 {

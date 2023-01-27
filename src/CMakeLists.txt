@@ -1,5 +1,5 @@
 add_subdirectory(Core)
+add_subdirectory(Math)
 add_subdirectory(OpenLoco)
 add_subdirectory(Resources)
 add_subdirectory(Utility)
-
