@@ -1586,7 +1586,7 @@ namespace OpenLoco::Drawing
         }
 
         // 0x00452DA4
-        void drawLine(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, PaletteIndex_t colour)
+        static void drawLine(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, PaletteIndex_t colour)
         {
             // Check to make sure the line is within the drawing area
             if ((left < rt.x) && (right < rt.x))
