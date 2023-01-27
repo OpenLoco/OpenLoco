@@ -2,8 +2,8 @@
 
 #include "Platform.h"
 #include "Console.h"
-#include "Interop/Interop.hpp"
 #include "OpenLoco.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <iostream>
 #include <pwd.h>
 #include <time.h>

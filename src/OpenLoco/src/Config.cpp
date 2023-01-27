@@ -2,8 +2,8 @@
 #include "ConfigConvert.hpp"
 #include "Environment.h"
 #include "Input/ShortcutManager.h"
-#include "Interop/Interop.hpp"
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Interop/Interop.hpp>
 #include <fstream>
 #include <yaml-cpp/yaml.h>
 

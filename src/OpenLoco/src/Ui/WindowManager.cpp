@@ -10,7 +10,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Intro.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
@@ -24,6 +23,7 @@
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cinttypes>
 #include <memory>

@@ -1,11 +1,11 @@
 #include "Track.h"
-#include "Interop/Interop.hpp"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "TrackData.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

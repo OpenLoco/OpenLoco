@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Interop/Interop.hpp"
 #include "LastGameOptionManager.h"
 #include "Map/TileManager.h"
 #include "Objects/VehicleObject.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

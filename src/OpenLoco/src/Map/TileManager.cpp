@@ -9,7 +9,6 @@
 #include "IndustryElement.h"
 #include "IndustryManager.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Map/Map.hpp"
 #include "Objects/BuildingObject.h"
 #include "Objects/LandObject.h"
@@ -23,6 +22,7 @@
 #include "Ui.h"
 #include "ViewportManager.h"
 #include "WallElement.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

@@ -7,7 +7,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
@@ -23,6 +22,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 
 using namespace OpenLoco::Interop;

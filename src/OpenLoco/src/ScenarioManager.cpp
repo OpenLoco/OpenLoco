@@ -3,7 +3,6 @@
 #include "EditorController.h"
 #include "Environment.h"
 #include "GameState.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
@@ -14,6 +13,7 @@
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "Ui.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <fstream>

@@ -7,13 +7,13 @@
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "MessageManager.h"
 #include "Objects/CargoObject.h"
 #include "Orders.h"
 #include "StationManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <sstream>
 
 using namespace OpenLoco::Interop;

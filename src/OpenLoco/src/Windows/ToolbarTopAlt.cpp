@@ -9,7 +9,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -26,6 +25,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

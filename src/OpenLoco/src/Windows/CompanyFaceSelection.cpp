@@ -5,7 +5,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/CompetitorObject.h"
@@ -15,6 +14,7 @@
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <optional>
 
 using namespace OpenLoco::Interop;

@@ -5,7 +5,6 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
 #include "Map/RoadElement.h"
@@ -24,6 +23,7 @@
 #include "Ui/ScrollView.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 #include <queue>
 

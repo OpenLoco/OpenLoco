@@ -1,13 +1,13 @@
 #include "Screenshot.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Gfx.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
 #include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "Ui.h"
 #include "WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <cstdint>
 #include <fstream>
 #include <png.h>

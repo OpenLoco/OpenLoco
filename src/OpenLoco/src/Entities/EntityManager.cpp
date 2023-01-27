@@ -6,12 +6,12 @@
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/Tile.h"
 #include "SceneManager.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Core/LocoFixedVector.hpp>
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

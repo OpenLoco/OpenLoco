@@ -8,7 +8,6 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Graphics/Colour.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
@@ -27,6 +26,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;

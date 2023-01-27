@@ -3,11 +3,11 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 
 using namespace OpenLoco::Interop;

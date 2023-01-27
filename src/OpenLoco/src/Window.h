@@ -3,7 +3,6 @@
 #include "Company.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Objects/Object.h"
 #include "Types.hpp"
@@ -11,6 +10,7 @@
 #include "Ui/WindowType.h"
 #include "Viewport.hpp"
 #include "ZoomLevel.hpp"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <optional>
 

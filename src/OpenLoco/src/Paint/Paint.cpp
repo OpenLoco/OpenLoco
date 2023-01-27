@@ -4,7 +4,6 @@
 #include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringManager.h"
 #include "Map/SurfaceElement.h"
@@ -16,6 +15,7 @@
 #include "TownManager.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;

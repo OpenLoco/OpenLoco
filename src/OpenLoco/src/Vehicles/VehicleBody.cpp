@@ -3,7 +3,6 @@
 #include "Entities/EntityManager.h"
 #include "Entities/Misc.h"
 #include "Graphics/Gfx.h"
-#include "Interop/Interop.hpp"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
@@ -11,6 +10,7 @@
 #include "OpenLoco.h"
 #include "ScenarioManager.h"
 #include "Vehicle.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <cassert>
 

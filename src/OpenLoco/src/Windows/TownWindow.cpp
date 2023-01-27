@@ -8,7 +8,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/Map.hpp"
@@ -21,6 +20,7 @@
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;

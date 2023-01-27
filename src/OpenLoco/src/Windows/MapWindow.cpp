@@ -10,7 +10,6 @@
 #include "Graphics/ImageIds.h"
 #include "IndustryManager.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
@@ -28,6 +27,7 @@
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::WindowManager;

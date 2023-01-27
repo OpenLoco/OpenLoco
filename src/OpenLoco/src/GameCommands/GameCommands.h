@@ -3,9 +3,9 @@
 #include "Company.h"
 #include "Economy/Currency.h"
 #include "Entities/Entity.h"
-#include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Objects/Object.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

@@ -1,9 +1,9 @@
 #include "SoftwareDrawingContext.h"
 #include "DrawSprite.h"
 #include "Graphics/ImageIds.h"
-#include "Interop/Interop.hpp"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
 

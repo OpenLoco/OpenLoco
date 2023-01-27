@@ -8,7 +8,6 @@
 #include "Graphics/ImageIds.h"
 #include "Gui.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Intro.h"
 #include "Localisation/StringIds.h"
 #include "Map/Tile.h"
@@ -24,6 +23,7 @@
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <string_view>
 

@@ -5,7 +5,6 @@
 #include "Graphics/ImageIds.h"
 #include "Industry.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
@@ -35,6 +34,7 @@
 #include "Station.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 
 using namespace OpenLoco::Interop;

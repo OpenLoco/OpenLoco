@@ -1,12 +1,12 @@
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Types.hpp"
 #include "Vehicle.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <unordered_map>
 

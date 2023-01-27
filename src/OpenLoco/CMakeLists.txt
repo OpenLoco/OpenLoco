@@ -106,9 +106,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/MouseInput.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/ShortcutManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Hook.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Hooks.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Interop.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LastGameOptionManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Conversion.cpp"
@@ -469,7 +467,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteHelper.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteRLE.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameException.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Interop.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/ArgsWrapper.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/FormatArguments.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Location.hpp"
@@ -486,14 +483,6 @@ if (APPLE)
         "${CMAKE_CURRENT_SOURCE_DIR}src/Platform/Platform.Macos.mm")
     set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
-
-# Disable optimizations for interop.cpp for all compilers, to allow optimized
-# builds without need for -fno-omit-frame-pointer
-if (MSVC)
-    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "/Oy- /Od")
-else ()
-    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
-endif ()
 
 if (MINGW)
     loco_add_library(OpenLoco SHARED
@@ -533,6 +522,7 @@ endif ()
 
 target_link_libraries(OpenLoco
     Core
+    Interop
     Utility
     Math
     ${SDL2_LIB}
@@ -645,6 +635,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         Core
+        Interop
         Utility
         Math
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this

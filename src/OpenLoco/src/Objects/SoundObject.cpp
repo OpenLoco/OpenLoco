@@ -1,6 +1,6 @@
 #include "SoundObject.h"
-#include "Interop/Interop.hpp"
 #include "ObjectStringTable.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 
 namespace OpenLoco

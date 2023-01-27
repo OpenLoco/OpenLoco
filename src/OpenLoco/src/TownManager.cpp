@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
-#include "Interop/Interop.hpp"
 #include "Map/BuildingElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
@@ -12,6 +11,7 @@
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;

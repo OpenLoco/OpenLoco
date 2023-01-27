@@ -7,7 +7,6 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GameStateFlags.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
@@ -20,6 +19,7 @@
 #include "Ui/WindowManager.h"
 #include "VehicleChannel.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <array>
 #include <cassert>

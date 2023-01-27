@@ -5,7 +5,6 @@
 #include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "IndustryManager.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
@@ -24,6 +23,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>

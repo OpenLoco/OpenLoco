@@ -38,7 +38,6 @@
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Intro.h"
 #include "MultiPlayer.h"
 #include "SceneManager.h"
@@ -46,6 +45,7 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
 using namespace OpenLoco::Interop;

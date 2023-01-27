@@ -10,7 +10,7 @@
 #else
 #include <sys/mman.h>
 #endif // _WIN32
-#include "Console.h"
+
 #include "Interop.hpp"
 
 namespace OpenLoco::Interop
@@ -155,7 +155,7 @@ namespace OpenLoco::Interop
         done = WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, i, 0);
         if (!done)
         {
-            Console::error("WriteProcessMemory failed! address = 0x%08x, size = %u, GetLastError() = 0x%08x", address, i, GetLastError());
+            fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %u, GetLastError() = 0x%08x", address, i, GetLastError());
         }
 #else
         done = true;
@@ -183,7 +183,7 @@ namespace OpenLoco::Interop
         }
         if (_hookTableOffset > kMaxHooks)
         {
-            Console::error("Failed registering hook for 0x%08x. Ran out of hook table space", address);
+            fprintf(stderr, "Failed registering hook for 0x%08x. Ran out of hook table space", address);
             return;
         }
         // Do a few retries here. This can fail on some versions of wine which inexplicably would fail on
@@ -209,7 +209,7 @@ namespace OpenLoco::Interop
             retries--;
             if (!done)
             {
-                Console::error("Failed registering hook for 0x%08x. Retries left: %d", address, retries);
+                fprintf(stderr, "Failed registering hook for 0x%08x. Retries left: %d", address, retries);
             }
         }
     }
