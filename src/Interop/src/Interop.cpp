@@ -297,7 +297,8 @@ namespace OpenLoco::Interop
 #ifdef _WIN32
         if (!ReadProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
         {
-            fprintf(stderr, "ReadProcessMemory failed! address = 0x%08x, size = %u, GetLastError() = 0x%08x", address, size, GetLastError());
+            const auto errCode = static_cast<uint32_t>(GetLastError());
+            fprintf(stderr, "ReadProcessMemory failed! address = 0x%08x, size = %zu, GetLastError() = 0x%08x", address, size, errCode);
             throw std::runtime_error("ReadProcessMemory failed");
         }
 #else
@@ -311,7 +312,8 @@ namespace OpenLoco::Interop
 #ifdef _WIN32
         if (!WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
         {
-            fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %u, GetLastError() = 0x%08x", address, size, GetLastError());
+            const auto errCode = static_cast<uint32_t>(GetLastError());
+            fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %zu, GetLastError() = 0x%08x", address, size, errCode);
             throw std::runtime_error("WriteProcessMemory failed");
         }
 #else

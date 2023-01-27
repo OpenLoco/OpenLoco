@@ -155,7 +155,8 @@ namespace OpenLoco::Interop
         done = WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, i, 0);
         if (!done)
         {
-            fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %u, GetLastError() = 0x%08x", address, i, GetLastError());
+            const auto errCode = static_cast<uint32_t>(GetLastError());
+            fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %d, GetLastError() = 0x%08x", address, i, errCode);
         }
 #else
         done = true;
