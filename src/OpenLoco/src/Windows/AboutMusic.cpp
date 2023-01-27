@@ -1,3 +1,4 @@
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -137,20 +138,21 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         const int16_t x = 240;
         int16_t y = 2;
 
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (const auto& songStrings : stringsToDraw)
         {
             // TODO: optimisation: don't draw past fold.
 
             // Song name
-            drawStringCentred(rt, x, y, Colour::black, songStrings.first, nullptr);
+            drawingCtx.drawStringCentred(rt, x, y, Colour::black, songStrings.first, nullptr);
             y += 10;
 
             // Credit line
-            drawStringCentred(rt, x, y, Colour::black, songStrings.second, nullptr);
+            drawingCtx.drawStringCentred(rt, x, y, Colour::black, songStrings.second, nullptr);
             y += 10;
 
             // Show CS' copyright after every two lines.
-            drawStringCentred(rt, x, y, Colour::black, StringIds::music_copyright, nullptr);
+            drawingCtx.drawStringCentred(rt, x, y, Colour::black, StringIds::music_copyright, nullptr);
             y += 14;
         }
     }

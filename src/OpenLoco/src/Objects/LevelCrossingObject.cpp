@@ -1,4 +1,5 @@
 #include "LevelCrossingObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "ObjectImageTable.h"
@@ -70,10 +71,11 @@ namespace OpenLoco
         imageId += frameIndex;
         imageId += image;
 
-        Gfx::drawImage(&rt, x, y, imageId);
-        Gfx::drawImage(&rt, x, y, imageId + 1);
-        Gfx::drawImage(&rt, x, y, imageId + 2);
-        Gfx::drawImage(&rt, x, y, imageId + 3);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x, y, imageId);
+        drawingCtx.drawImage(&rt, x, y, imageId + 1);
+        drawingCtx.drawImage(&rt, x, y, imageId + 2);
+        drawingCtx.drawImage(&rt, x, y, imageId + 3);
     }
 
     // 0x004781A4

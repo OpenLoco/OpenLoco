@@ -1,4 +1,5 @@
 #include "ScaffoldingObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -14,9 +15,10 @@ namespace OpenLoco
     {
         auto colourImage = Gfx::recolour(image, Colour::yellow);
 
-        Gfx::drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentBack);
-        Gfx::drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentFront);
-        Gfx::drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1RoofSE);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentBack);
+        drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentFront);
+        drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1RoofSE);
     }
 
     // 0x0042DED8

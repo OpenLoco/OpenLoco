@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Config.h"
 #include "Console.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
 #include "Input.h"
@@ -1461,9 +1462,11 @@ namespace OpenLoco::Ui
     // 0x004CA4DF
     void Window::draw(Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::noBackground))
         {
-            Gfx::fillRect(*rt, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
+            drawingCtx.fillRect(*rt, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
 
         uint64_t pressedWidget = 0;
@@ -1503,7 +1506,7 @@ namespace OpenLoco::Ui
 
         if (this->flags & WindowFlags::whiteBorderMask)
         {
-            Gfx::fillRectInset(
+            drawingCtx.fillRectInset(
                 *rt,
                 this->x,
                 this->y,

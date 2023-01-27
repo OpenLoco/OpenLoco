@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Construction.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -2651,8 +2652,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         x += self->x;
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         if (_constructionHover != 1)
-            Gfx::drawStringCentred(*rt, x, y, Colour::black, StringIds::build_this);
+            drawingCtx.drawStringCentred(*rt, x, y, Colour::black, StringIds::build_this);
 
         y += 11;
 
@@ -2662,7 +2665,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 auto args = FormatArguments();
                 args.push<uint32_t>(_trackCost);
-                Gfx::drawStringCentred(*rt, x, y, Colour::black, StringIds::build_cost, &args);
+                drawingCtx.drawStringCentred(*rt, x, y, Colour::black, StringIds::build_cost, &args);
             }
         }
     }
@@ -2710,6 +2713,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049CF36
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         self.draw(rt);
         Common::drawTabs(&self, rt);
 
@@ -2725,7 +2730,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     auto x = self.x + self.widgets[widx::bridge].left + 2;
                     auto y = self.y + self.widgets[widx::bridge].top + 1;
 
-                    Gfx::drawImage(rt, x, y, imageId);
+                    drawingCtx.drawImage(rt, x, y, imageId);
                 }
             }
         }

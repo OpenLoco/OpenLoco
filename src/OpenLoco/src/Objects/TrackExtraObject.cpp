@@ -1,4 +1,5 @@
 #include "TrackExtraObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -14,15 +15,16 @@ namespace OpenLoco
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         if (paintStyle == 0)
         {
-            Gfx::drawImage(&rt, x, y, colourImage);
+            drawingCtx.drawImage(&rt, x, y, colourImage);
         }
         else
         {
-            Gfx::drawImage(&rt, x, y, colourImage);
-            Gfx::drawImage(&rt, x, y, colourImage + 97);
-            Gfx::drawImage(&rt, x, y, colourImage + 96);
+            drawingCtx.drawImage(&rt, x, y, colourImage);
+            drawingCtx.drawImage(&rt, x, y, colourImage + 97);
+            drawingCtx.drawImage(&rt, x, y, colourImage + 96);
         }
     }
 

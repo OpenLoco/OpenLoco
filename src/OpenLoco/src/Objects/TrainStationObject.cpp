@@ -1,4 +1,5 @@
 #include "TrainStationObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -14,7 +15,8 @@ namespace OpenLoco
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        Gfx::drawImage(&rt, x - 34, y - 34, colourImage);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x - 34, y - 34, colourImage);
 
         auto colour = ExtColour::translucentMutedDarkRed1;
         if (!(flags & TrainStationFlags::recolourable))
@@ -24,7 +26,7 @@ namespace OpenLoco
 
         auto translucentImage = Gfx::recolourTranslucent(image + 1, colour);
 
-        Gfx::drawImage(&rt, x - 34, y - 34, translucentImage);
+        drawingCtx.drawImage(&rt, x - 34, y - 34, translucentImage);
     }
 
     // 0x00490A68

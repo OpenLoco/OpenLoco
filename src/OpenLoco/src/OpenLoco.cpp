@@ -28,6 +28,7 @@
 #include "Config.h"
 #include "Console.h"
 #include "Date.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "EditorController.h"
 #include "Entities/EntityManager.h"
@@ -313,7 +314,8 @@ namespace OpenLoco
         }
         Title::start();
         Gui::init();
-        Gfx::clear(Gfx::getScreenRT(), 0x0A0A0A0A);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.clear(Gfx::getScreenRT(), 0x0A0A0A0A);
     }
 
     static void loadFile(const fs::path& path)
@@ -516,6 +518,8 @@ namespace OpenLoco
 
         try
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             addr<0x00113E87C, int32_t>() = 0;
             addr<0x0005252E0, int32_t>() = 0;
             if (!isInitialised)
@@ -557,7 +561,7 @@ namespace OpenLoco
                 Config::get().old.var_72 = 16;
                 const auto cursor = Ui::getCursorPos();
                 addr<0x00F2538C, Ui::Point32>() = cursor;
-                Gfx::clear(Gfx::getScreenRT(), 0);
+                drawingCtx.clear(Gfx::getScreenRT(), 0);
                 addr<0x00F2539C, int32_t>() = 0;
             }
             else

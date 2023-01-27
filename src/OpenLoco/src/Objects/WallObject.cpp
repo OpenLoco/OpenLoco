@@ -1,4 +1,5 @@
 #include "WallObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -46,16 +47,17 @@ namespace OpenLoco
             image = Gfx::recolour(sprite, Colour::mutedDarkRed);
         }
 
-        Gfx::drawImage(&rt, x + 14, y + 16 + (var_08 * 2), image);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x + 14, y + 16 + (var_08 * 2), image);
         if (flags & (1 << 1))
         {
-            Gfx::drawImage(&rt, x + 14, y + 16 + (var_08 * 2), Gfx::recolourTranslucent(sprite + 6, ExtColour::unk8C));
+            drawingCtx.drawImage(&rt, x + 14, y + 16 + (var_08 * 2), Gfx::recolourTranslucent(sprite + 6, ExtColour::unk8C));
         }
         else
         {
             if (flags & (1 << 4))
             {
-                Gfx::drawImage(&rt, x + 14, y + 16 + (var_08 * 2), image + 1);
+                drawingCtx.drawImage(&rt, x + 14, y + 16 + (var_08 * 2), image + 1);
             }
         }
     }

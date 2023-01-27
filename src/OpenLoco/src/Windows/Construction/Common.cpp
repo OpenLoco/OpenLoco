@@ -1,6 +1,7 @@
 #include "CompanyManager.h"
 #include "Construction.h"
 #include "Date.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
@@ -747,6 +748,8 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049EFEF
         static void drawRoadTabs(Window* self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             auto company = CompanyManager::getPlayerCompany();
             auto companyColour = company->mainColours.primary;
             auto roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
@@ -780,14 +783,14 @@ namespace OpenLoco::Ui::Windows::Construction
                         clipped->y <<= 1;
                         auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
                         auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
-                        Gfx::drawImage(&*clipped, -4, -10, imageId);
+                        drawingCtx.drawImage(&*clipped, -4, -10, imageId);
                         auto colour = Colours::getTranslucent(companyColour);
                         if (!(roadStationObj->flags & RoadStationFlags::recolourable))
                         {
                             colour = ExtColour::unk2E;
                         }
                         imageId = Gfx::recolourTranslucent(roadStationObj->image, colour) + 1;
-                        Gfx::drawImage(&*clipped, -4, -10, imageId);
+                        drawingCtx.drawImage(&*clipped, -4, -10, imageId);
                     }
 
                     Widget::drawTab(self, rt, -2, widx::tab_station);
@@ -809,7 +812,7 @@ namespace OpenLoco::Ui::Windows::Construction
                             auto imageId = roadExtraObj->var_0E;
                             if (self->currentTab == widx::tab_overhead - widx::tab_construction)
                                 imageId += (self->frameNo / 2) % 8;
-                            Gfx::drawImage(rt, x, y, imageId);
+                            drawingCtx.drawImage(rt, x, y, imageId);
                         }
                     }
 
@@ -821,6 +824,8 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049ED40
         static void drawTrackTabs(Window* self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             auto company = CompanyManager::getPlayerCompany();
             auto companyColour = company->mainColours.primary;
             auto trackObj = ObjectManager::get<TrackObject>(_trackType);
@@ -871,7 +876,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
                                 auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
                                 auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
-                                Gfx::drawImage(&*clipped, -4, -9, imageId);
+                                drawingCtx.drawImage(&*clipped, -4, -9, imageId);
 
                                 auto colour = Colours::getTranslucent(companyColour);
                                 if (!(trainStationObj->flags & TrainStationFlags::recolourable))
@@ -879,7 +884,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                     colour = ExtColour::unk2E;
                                 }
                                 imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
-                                Gfx::drawImage(&*clipped, -4, -9, imageId);
+                                drawingCtx.drawImage(&*clipped, -4, -9, imageId);
                             }
 
                             Widget::drawTab(self, rt, -2, widx::tab_station);
@@ -913,7 +918,7 @@ namespace OpenLoco::Ui::Windows::Construction
                             frameIndex <<= 3;
                             imageId += frameIndex;
                         }
-                        Gfx::drawImage(&*clipped, 15, 31, imageId);
+                        drawingCtx.drawImage(&*clipped, 15, 31, imageId);
                     }
 
                     Widget::drawTab(self, rt, -2, widx::tab_signal);
@@ -935,7 +940,7 @@ namespace OpenLoco::Ui::Windows::Construction
                             auto imageId = trackExtraObj->var_0E;
                             if (self->currentTab == widx::tab_overhead - widx::tab_construction)
                                 imageId += (self->frameNo / 2) % 8;
-                            Gfx::drawImage(rt, x, y, imageId);
+                            drawingCtx.drawImage(rt, x, y, imageId);
                         }
                     }
 

@@ -1,4 +1,5 @@
 #include "RoadExtraObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -14,11 +15,12 @@ namespace OpenLoco
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        Gfx::drawImage(&rt, x, y, colourImage + 36);
-        Gfx::drawImage(&rt, x, y, colourImage + 37);
-        Gfx::drawImage(&rt, x, y, colourImage);
-        Gfx::drawImage(&rt, x, y, colourImage + 33);
-        Gfx::drawImage(&rt, x, y, colourImage + 32);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x, y, colourImage + 36);
+        drawingCtx.drawImage(&rt, x, y, colourImage + 37);
+        drawingCtx.drawImage(&rt, x, y, colourImage);
+        drawingCtx.drawImage(&rt, x, y, colourImage + 33);
+        drawingCtx.drawImage(&rt, x, y, colourImage + 32);
     }
 
     // 0x00477E92

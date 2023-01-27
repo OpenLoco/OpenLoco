@@ -1,4 +1,5 @@
 #include "CompanyManager.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Interop/Interop.hpp"
@@ -221,13 +222,15 @@ namespace OpenLoco::Ui::Windows::TextInput
      */
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         window.draw(rt);
 
         *((string_id*)(&_commonFormatArgs[0])) = _message;
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
         Ui::Point position = { (int16_t)(window.x + window.width / 2), (int16_t)(window.y + 30) };
-        Gfx::drawStringCentredWrapped(*rt, position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
+        drawingCtx.drawStringCentredWrapped(*rt, position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[Widx::input];
         auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(widget->left + 1 + window.x, widget->top + 1 + window.y, widget->width() - 2, widget->height() - 2));
@@ -242,7 +245,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
 
         position = { inputSession.xOffset, 1 };
-        Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
+        drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
 
         const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
         const uint16_t maxNumCharacters = inputSession.inputLenLimit;
@@ -252,7 +255,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         args.push<uint16_t>(maxNumCharacters);
 
         widget = &_widgets[Widx::ok];
-        Gfx::drawStringRight(*rt, window.x + widget->left - 5, window.y + widget->top + 1, Colour::black, StringIds::num_characters_left_int_int, &args);
+        drawingCtx.drawStringRight(*rt, window.x + widget->left - 5, window.y + widget->top + 1, Colour::black, StringIds::num_characters_left_int_int, &args);
 
         if ((inputSession.cursorFrame % 32) >= 16)
         {
@@ -264,8 +267,8 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { inputSession.xOffset, 1 };
-        Gfx::drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
-        Gfx::fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9));
+        drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
+        drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9));
     }
 
     // 0x004CE8B6

@@ -214,4 +214,9 @@ namespace OpenLoco::Drawing
         Ui::WindowManager::render(rt, rect);
     }
 
+    SoftwareDrawingContext& SoftwareDrawingEngine::getDrawingContext()
+    {
+        return _ctx;
+    }
+
 }

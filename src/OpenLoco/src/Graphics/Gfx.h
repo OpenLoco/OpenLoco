@@ -104,107 +104,7 @@ namespace OpenLoco::Gfx
     void loadG1();
     void initialiseCharacterWidths();
     void initialiseNoiseMaskMap();
-    void clear(RenderTarget& rt, uint32_t fill);
-    void clearSingle(RenderTarget& rt, uint8_t paletteId);
 
-    int16_t clipString(int16_t width, char* string);
-    uint16_t getStringWidth(const char* buffer);
-    uint16_t getMaxStringWidth(const char* buffer);
-
-    Ui::Point drawString(RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, void* str);
-
-    int16_t drawStringLeftWrapped(
-        RenderTarget& rt,
-        int16_t x,
-        int16_t y,
-        int16_t width,
-        AdvancedColour colour,
-        string_id stringId,
-        const void* args = nullptr);
-    void drawStringLeft(
-        RenderTarget& rt,
-        int16_t x,
-        int16_t y,
-        AdvancedColour colour,
-        string_id stringId,
-        const void* args = nullptr);
-    void drawStringLeft(
-        RenderTarget& rt,
-        Ui::Point* origin,
-        AdvancedColour colour,
-        string_id stringId,
-        const void* args = nullptr);
-    void drawStringLeftClipped(
-        RenderTarget& rt,
-        int16_t x,
-        int16_t y,
-        int16_t width,
-        AdvancedColour colour,
-        string_id stringId,
-        const void* args = nullptr);
-    void drawStringRight(
-        RenderTarget& rt,
-        int16_t x,
-        int16_t y,
-        AdvancedColour colour,
-        string_id stringId,
-        const void* args = nullptr);
-    void drawStringRightUnderline(
-        RenderTarget& rt,
-        int16_t x,
-        int16_t y,
-        AdvancedColour colour,
-        string_id stringId,
-        const void* args);
-    void drawStringLeftUnderline(
-        RenderTarget& rt,
-        int16_t x,
-        int16_t y,
-        AdvancedColour colour,
-        string_id stringId,
-        const void* args = nullptr);
-    void drawStringCentred(
-        RenderTarget& rt,
-        int16_t x,
-        int16_t y,
-        AdvancedColour colour,
-        string_id stringId,
-        const void* args = nullptr);
-    void drawStringCentredClipped(
-        RenderTarget& rt,
-        int16_t x,
-        int16_t y,
-        int16_t width,
-        AdvancedColour colour,
-        string_id stringId,
-        const void* args = nullptr);
-    uint16_t drawStringCentredWrapped(
-        RenderTarget& rt,
-        Ui::Point& origin,
-        uint16_t width,
-        AdvancedColour colour,
-        string_id stringId,
-        const void* args = nullptr);
-    void drawStringCentredRaw(
-        RenderTarget& rt,
-        int16_t x,
-        int16_t y,
-        int16_t width,
-        AdvancedColour colour,
-        const void* args);
-    void drawStringYOffsets(RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets);
-    uint16_t getStringWidthNewLined(const char* buffer);
-    std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
-
-    void fillRect(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
-    void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
-    void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags);
-    void drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags);
-    void drawLine(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
-    void drawImage(Gfx::RenderTarget* rt, int16_t x, int16_t y, uint32_t image);
-    void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image);
-    void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
-    void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage);
     [[nodiscard]] uint32_t recolour(uint32_t image);
     [[nodiscard]] uint32_t recolour(uint32_t image, Colour colour);
     [[nodiscard]] uint32_t recolour(uint32_t image, ExtColour colour);
@@ -231,10 +131,6 @@ namespace OpenLoco::Gfx
     void renderAndUpdate();
 
     G1Element* getG1Element(uint32_t id);
-
-    // 0x0112C876
-    int16_t getCurrentFontSpriteBase();
-    void setCurrentFontSpriteBase(int16_t base);
 
     Drawing::SoftwareDrawingEngine& getDrawingEngine();
 

@@ -1,4 +1,5 @@
 #include "Config.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input/Shortcut.h"
@@ -67,12 +68,14 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     // 0x004BE8DF
     static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         self.draw(rt);
 
         FormatArguments args{};
         args.push(ShortcutManager::getName(static_cast<Shortcut>(*_editingShortcutIndex)));
         auto point = Ui::Point(self.x + 140, self.y + 32);
-        Gfx::drawStringCentredWrapped(*rt, point, 272, Colour::black, StringIds::change_keyboard_shortcut_desc, &args);
+        drawingCtx.drawStringCentredWrapped(*rt, point, 272, Colour::black, StringIds::change_keyboard_shortcut_desc, &args);
     }
 
     // 0x004BE821

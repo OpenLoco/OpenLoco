@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -744,6 +745,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x00439DE4
     static void draw(Window& window, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         Common::draw(window, rt);
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
@@ -778,10 +781,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 bg_image++;
             }
 
-            Gfx::drawImage(rt, x, y, fg_image);
+            drawingCtx.drawImage(rt, x, y, fg_image);
 
             y = window.widgets[Common::Widx::railroad_menu].top + window.y;
-            Gfx::drawImage(rt, x, y, bg_image);
+            drawingCtx.drawImage(rt, x, y, bg_image);
         }
 
         {
@@ -808,10 +811,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 bg_image++;
             }
 
-            Gfx::drawImage(rt, x, y, fg_image);
+            drawingCtx.drawImage(rt, x, y, fg_image);
 
             y = window.widgets[Common::Widx::vehicles_menu].top + window.y;
-            Gfx::drawImage(rt, x, y, bg_image);
+            drawingCtx.drawImage(rt, x, y, bg_image);
         }
 
         {
@@ -834,7 +837,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::build_vehicles_menu))
                 fg_image++;
 
-            Gfx::drawImage(rt, x, y, fg_image);
+            drawingCtx.drawImage(rt, x, y, fg_image);
         }
     }
 

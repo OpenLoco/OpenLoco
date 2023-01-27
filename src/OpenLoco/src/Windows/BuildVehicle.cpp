@@ -1,5 +1,6 @@
 #include "CompanyManager.h"
 #include "Config.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -918,6 +919,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C2F23
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         window.draw(rt);
         drawTransportTypeTabs(&window, rt);
         drawTrackTypeTabs(&window, rt);
@@ -938,7 +941,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            Gfx::drawStringLeftClipped(*rt, x, y, window.width - 186, Colour::black, bottomLeftMessage, &args);
+            drawingCtx.drawStringLeftClipped(*rt, x, y, window.width - 186, Colour::black, bottomLeftMessage, &args);
         }
 
         if (window.rowHover == -1)
@@ -1064,18 +1067,20 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         auto x = window.widgets[widx::scrollview_vehicle_selection].right + window.x + 2;
         auto y = window.widgets[widx::scrollview_vehicle_preview].bottom + window.y + 2;
-        Gfx::drawStringLeftWrapped(*rt, x, y, 180, Colour::black, StringIds::buffer_1250);
+        drawingCtx.drawStringLeftWrapped(*rt, x, y, 180, Colour::black, StringIds::buffer_1250);
     }
 
     // 0x4C3307
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         switch (scrollIndex)
         {
             case scrollIdx::vehicle_selection:
             {
                 auto colour = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
-                Gfx::clear(rt, colour * 0x01010101);
+                drawingCtx.clear(rt, colour * 0x01010101);
                 if (window.var_83C == 0)
                 {
                     auto defaultMessage = StringIds::no_vehicles_available;
@@ -1094,7 +1099,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     auto widget = window.widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
                     auto y = (window.rowHeight - 10) / 2;
-                    Gfx::drawStringLeftWrapped(rt, 3, y, width, Colour::black, defaultMessage, &args);
+                    drawingCtx.drawStringLeftWrapped(rt, 3, y, width, Colour::black, defaultMessage, &args);
                 }
                 else
                 {
@@ -1132,11 +1137,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         {
                             if (rowIsALockedVehicle)
                             {
-                                Gfx::fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, lockedHoverRowColour);
+                                drawingCtx.fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, lockedHoverRowColour);
                             }
                             else
                             {
-                                Gfx::fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, normalHoverRowColour);
+                                drawingCtx.fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, normalHoverRowColour);
                             }
                             colouredString = StringIds::wcolour2_stringid;
                         }
@@ -1144,7 +1149,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         {
                             if (rowIsALockedVehicle)
                             {
-                                Gfx::fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, lockedRowColour);
+                                drawingCtx.fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, lockedRowColour);
                             }
                         }
 
@@ -1155,7 +1160,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         FormatArguments args{};
                         args.push(vehicleObj->name);
                         half = (window.rowHeight - 10) / 2;
-                        Gfx::drawStringLeft(rt, x + 3, y + half, Colour::black, colouredString, &args);
+                        drawingCtx.drawStringLeft(rt, x + 3, y + half, Colour::black, colouredString, &args);
                     }
                 }
                 break;
@@ -1164,7 +1169,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 auto colour = Colours::getShade(window.getColour(WindowColour::secondary).c(), 0);
                 // Gfx::clear needs the colour copied to each byte of eax
-                Gfx::clear(rt, colour * 0x01010101);
+                drawingCtx.clear(rt, colour * 0x01010101);
 
                 if (window.rowHover == -1)
                 {
@@ -1194,7 +1199,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 *buffer++ = '\0';
                 FormatArguments args{};
                 args.push(StringIds::buffer_1250);
-                Gfx::drawStringCentredClipped(rt, 89, 52, 177, Colour::darkOrange, StringIds::wcolour2_stringid, &args);
+                drawingCtx.drawStringCentredClipped(rt, 89, 52, 177, Colour::darkOrange, StringIds::wcolour2_stringid, &args);
                 break;
             }
         }
@@ -1367,6 +1372,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C28F1
     static void drawTrackTypeTabs(Ui::Window* window, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(CompanyId(window->number));
 
@@ -1374,13 +1381,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto top = window->y + 69;
         auto right = left + window->width - 187;
         auto bottom = top;
-        Gfx::fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7));
+        drawingCtx.fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7));
 
         left = window->x + window->width - 187;
         top = window->y + 41;
         right = left;
         bottom = top + 27;
-        Gfx::fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7));
+        drawingCtx.fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7));
 
         for (uint32_t tab = 0; tab < _numTrackTypeTabs; ++tab)
         {
@@ -1391,7 +1398,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 top = widget.top + window->y + 26;
                 right = left + 29;
                 bottom = top;
-                Gfx::fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 5));
+                drawingCtx.fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 5));
             }
 
             auto img = 0;

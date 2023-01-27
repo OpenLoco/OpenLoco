@@ -1,4 +1,5 @@
 #include "Audio/Audio.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
@@ -180,7 +181,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             colour = Colours::getShade(Colour::mutedDarkRed, 5);
         }
 
-        Gfx::clearSingle(*clipped, colour);
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.clearSingle(*clipped, colour);
 
         char* newsString = news->messageString;
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));

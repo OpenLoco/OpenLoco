@@ -1,5 +1,6 @@
 #include "LandObject.h"
 #include "CliffEdgeObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -96,6 +97,7 @@ namespace OpenLoco
     void LandObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         uint32_t imageId = image + (var_03 - 1) * var_0E;
-        Gfx::drawImage(&rt, x, y, imageId);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x, y, imageId);
     }
 }

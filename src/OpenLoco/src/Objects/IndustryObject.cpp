@@ -1,5 +1,6 @@
 #include "IndustryObject.h"
 #include "CargoObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -103,10 +104,11 @@ namespace OpenLoco
                                      : Colour::black;
         ImageId baseImage(var_12, c);
         Ui::Point pos{ x, y };
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (const auto part : getBuildingParts(0))
         {
             auto image = baseImage.withIndexOffset(part * 4 + 1);
-            Gfx::drawImage(*clipped, pos, image);
+            drawingCtx.drawImage(*clipped, pos, image);
             pos.y -= buildingPartHeight[part];
         }
     }

@@ -9,6 +9,7 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Console.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Environment.h"
 #include "Game.h"
@@ -682,7 +683,8 @@ void OpenLoco::Interop::registerHooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto pos = Gfx::drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), regs.cx, regs.dx, static_cast<Colour>(regs.al), X86Pointer<uint8_t>(regs.esi));
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto pos = drawingCtx.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), regs.cx, regs.dx, static_cast<Colour>(regs.al), X86Pointer<uint8_t>(regs.esi));
             regs = backup;
             regs.cx = pos.x;
             regs.dx = pos.y;
@@ -906,7 +908,8 @@ void OpenLoco::Interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             Gfx::RenderTarget* rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
-            Gfx::drawImage(*rt, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            drawingCtx.drawImage(*rt, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
 
             regs = backup;
             return 0;

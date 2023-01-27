@@ -1,4 +1,5 @@
 #include "TrainSignalObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -107,6 +108,7 @@ namespace OpenLoco
         frameIndex *= 8;
         auto colourImage = image + frameIndex;
 
-        Gfx::drawImage(&rt, x, y + 15, colourImage);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x, y + 15, colourImage);
     }
 }

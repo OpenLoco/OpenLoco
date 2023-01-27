@@ -1,4 +1,5 @@
 #include "CompanyManager.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -128,6 +129,8 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         // Draw widgets.
         self.draw(rt);
 
@@ -135,12 +138,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
         {
             auto args = FormatArguments::common(StringIds::tile_inspector_x_coord);
             auto& widget = self.widgets[widx::xPos];
-            Gfx::drawStringLeft(*rt, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            drawingCtx.drawStringLeft(*rt, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
         {
             auto args = FormatArguments::common(StringIds::tile_inspector_y_coord);
             auto& widget = self.widgets[widx::yPos];
-            Gfx::drawStringLeft(*rt, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            drawingCtx.drawStringLeft(*rt, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         // Coord X/Y values
@@ -148,13 +151,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
             FormatArguments args = {};
             args.push<int16_t>(_currentPosition.x);
             auto& widget = self.widgets[widx::xPos];
-            Gfx::drawStringLeft(*rt, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            drawingCtx.drawStringLeft(*rt, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
         {
             FormatArguments args = {};
             args.push<int16_t>(_currentPosition.y);
             auto& widget = self.widgets[widx::yPos];
-            Gfx::drawStringLeft(*rt, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            drawingCtx.drawStringLeft(*rt, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
 
         // Selected element details
@@ -168,7 +171,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
             auto widget = self.widgets[widx::detailsGroup];
-            Gfx::drawString(*rt, self.x + widget.left + 7, self.y + widget.top + 14, Colour::black, buffer);
+            drawingCtx.drawString(*rt, self.x + widget.left + 7, self.y + widget.top + 14, Colour::black, buffer);
         }
     }
 
@@ -308,6 +311,8 @@ namespace OpenLoco::Ui::Windows::TileInspector
         if (_currentPosition == TilePos2(0, 0))
             return;
 
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         auto tile = TileManager::get(_currentPosition);
         auto yPos = 0;
         auto rowNum = 0;
@@ -316,12 +321,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
             string_id formatString;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, enumValue(Colour::darkGreen));
+                drawingCtx.fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, enumValue(Colour::darkGreen));
                 formatString = StringIds::white_stringid;
             }
             else if (self.rowHover == rowNum)
             {
-                Gfx::fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, 0x2000030);
+                drawingCtx.fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, 0x2000030);
                 formatString = StringIds::wcolour2_stringid;
             }
             else
@@ -350,7 +355,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 args.push(elementName);
             }
 
-            Gfx::drawStringLeft(rt, 0, yPos, Colour::black, formatString, &args);
+            drawingCtx.drawStringLeft(rt, 0, yPos, Colour::black, formatString, &args);
             rowNum++;
             yPos += self.rowHeight;
         }

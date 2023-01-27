@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "SoftwareDrawingContext.h"
 #include "Ui/Rect.h"
 #include <algorithm>
 #include <cstddef>
@@ -37,9 +38,12 @@ namespace OpenLoco::Drawing
         SDL_Palette* getPalette() { return _palette; }
         void updatePalette(const PaletteEntry* entries, int32_t index, int32_t count);
 
+        SoftwareDrawingContext& getDrawingContext();
+
     private:
         void render(size_t x, size_t y, size_t dx, size_t dy);
 
         SDL_Palette* _palette;
+        SoftwareDrawingContext _ctx;
     };
 }

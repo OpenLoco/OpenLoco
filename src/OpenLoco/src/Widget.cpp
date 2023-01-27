@@ -1,4 +1,5 @@
 #include "Widget.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -41,9 +42,10 @@ namespace OpenLoco::Ui
     // 0x004CF3EB
     static void drawStationNameBackground(Gfx::RenderTarget* rt, const Window* window, const Widget* widget, int16_t x, int16_t y, AdvancedColour colour, int16_t width)
     {
-        Gfx::drawImage(rt, x - 4, y, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
-        Gfx::drawImage(rt, x + width, y, Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
-        Gfx::fillRect(*rt, x, y, x + width - 1, y + 11, Colours::getShade(colour.c(), 5));
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(rt, x - 4, y, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
+        drawingCtx.drawImage(rt, x + width, y, Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
+        drawingCtx.fillRect(*rt, x, y, x + width - 1, y + 11, Colours::getShade(colour.c(), 5));
     }
 
     void Widget::draw(Gfx::RenderTarget* rt, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex)
@@ -188,20 +190,21 @@ namespace OpenLoco::Ui
     // 0x004CF487
     void Widget::drawViewportCentreButton(Gfx::RenderTarget* rt, const Window* window, const WidgetIndex_t widgetIndex)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto& widget = window->widgets[widgetIndex];
         if (Input::isHovering(window->type, window->number, widgetIndex))
         {
-            Gfx::drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 54);
-            Gfx::drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 52);
+            drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 54);
+            drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 52);
 
             uint8_t flags = 0;
             if (Input::isPressed(window->type, window->number, widgetIndex))
                 flags = 0x20;
 
-            Gfx::drawRectInset(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), window->getColour(WindowColour::secondary).translucent().u8(), flags);
+            drawingCtx.drawRectInset(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), window->getColour(WindowColour::secondary).translucent().u8(), flags);
         }
 
-        Gfx::drawImage(rt, widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, window->getColour(WindowColour::secondary).c()));
+        drawingCtx.drawImage(rt, widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, window->getColour(WindowColour::secondary).c()));
     }
 
     // 0x004CAB8E
@@ -220,7 +223,8 @@ namespace OpenLoco::Ui
         int16_t x = widget->right + window->x - 18;
         int16_t y = widget->bottom + window->y - 18;
         uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour.c());
-        Gfx::drawImage(rt, x, y, image);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(rt, x, y, image);
     }
 
     void Widget::sub_4CADE8(Gfx::RenderTarget* rt, const Window* window, AdvancedColour colour, bool enabled, bool disabled, bool activated)
@@ -237,6 +241,8 @@ namespace OpenLoco::Ui
             }
         }
 
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         if (disabled)
         {
             // TODO: this is odd most likely this is another flag like Widget::kImageIdColourSet
@@ -251,16 +257,16 @@ namespace OpenLoco::Ui
             if (colour.isTranslucent())
             {
                 c = Colours::getShade(colour.c(), 4);
-                Gfx::drawImageSolid(*rt, placeForImage + Ui::Point{ 1, 1 }, pureImage, c);
+                drawingCtx.drawImageSolid(*rt, placeForImage + Ui::Point{ 1, 1 }, pureImage, c);
                 c = Colours::getShade(colour.c(), 2);
-                Gfx::drawImageSolid(*rt, placeForImage, pureImage, c);
+                drawingCtx.drawImageSolid(*rt, placeForImage, pureImage, c);
             }
             else
             {
                 c = Colours::getShade(colour.c(), 6);
-                Gfx::drawImageSolid(*rt, placeForImage + Ui::Point{ 1, 1 }, pureImage, c);
+                drawingCtx.drawImageSolid(*rt, placeForImage + Ui::Point{ 1, 1 }, pureImage, c);
                 c = Colours::getShade(colour.c(), 4);
-                Gfx::drawImageSolid(*rt, placeForImage, pureImage, c);
+                drawingCtx.drawImageSolid(*rt, placeForImage, pureImage, c);
             }
 
             return;
@@ -278,13 +284,14 @@ namespace OpenLoco::Ui
             imageId = imageId.withPrimary(colour.c());
         }
 
-        Gfx::drawImage(*rt, placeForImage, imageId);
+        drawingCtx.drawImage(*rt, placeForImage, imageId);
     }
 
     // 0x004CAB58
     void Widget::drawPanel(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour)
     {
-        Gfx::fillRectInset(*rt, window->x + left, window->y + top, window->x + right, window->y + bottom, colour.u8(), flags);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.fillRectInset(*rt, window->x + left, window->y + top, window->x + right, window->y + bottom, colour.u8(), flags);
 
         draw_resize_handle(rt, window, this, colour);
     }
@@ -292,6 +299,7 @@ namespace OpenLoco::Ui
     // 0x004CAAB9
     void Widget::drawFrame(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(left + window->x, top + window->y, right - left, 41));
         if (clipped)
         {
@@ -304,7 +312,7 @@ namespace OpenLoco::Ui
             {
                 imageId = Gfx::recolour(ImageIds::frame_background_image_alt, colour.c());
             }
-            Gfx::drawImage(&*clipped, 0, 0, imageId);
+            drawingCtx.drawImage(&*clipped, 0, 0, imageId);
         }
 
         uint8_t shade;
@@ -317,7 +325,7 @@ namespace OpenLoco::Ui
             shade = Colours::getShade(colour.c(), 1);
         }
 
-        Gfx::fillRect(
+        drawingCtx.fillRect(
             *rt,
             window->x + right,
             window->y + top,
@@ -341,19 +349,20 @@ namespace OpenLoco::Ui
             flags |= 0x20;
         }
 
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         if (content == kContentUnk)
         {
             flags |= 0x10;
-            Gfx::fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
+            drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
             return;
         }
 
         if (window->flags & WindowFlags::flag_6)
         {
-            Gfx::fillRect(*rt, l, t, r, b, 0x2000000 | 52);
+            drawingCtx.fillRect(*rt, l, t, r, b, 0x2000000 | 52);
         }
 
-        Gfx::fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
+        drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
 
         if (content == kContentNull)
         {
@@ -397,7 +406,8 @@ namespace OpenLoco::Ui
             imageId = imageId.withPrimary(colour.c());
         }
 
-        Gfx::drawImage(*rt, Ui::Point(window->x + left, window->y + top), imageId);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(*rt, Ui::Point(window->x + left, window->y + top), imageId);
     }
 
     // 0x004CACD4
@@ -417,18 +427,19 @@ namespace OpenLoco::Ui
 
         if (activated)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             flags |= 0x20;
             if (content == kContentUnk)
             {
                 // 0x004CABE8
 
                 flags |= 0x10;
-                Gfx::fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
+                drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
 
                 return;
             }
 
-            Gfx::fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
+            drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
         }
 
         if (content == kContentNull)
@@ -467,7 +478,8 @@ namespace OpenLoco::Ui
             imageId = imageId.withPrimary(colour.c());
         }
 
-        Gfx::drawImage(*rt, Ui::Point(window->x + left, window->y + top), imageId);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(*rt, Ui::Point(window->x + left, window->y + top), imageId);
     }
 
     // 0x004CB164
@@ -483,7 +495,8 @@ namespace OpenLoco::Ui
             flags |= 0x20;
         }
 
-        Gfx::fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
     }
 
     // 0x004CB1BE
@@ -529,7 +542,8 @@ namespace OpenLoco::Ui
 
         int16_t centreX = window->x + (widget->left + widget->right + 1) / 2 - 1;
         int16_t width = widget->right - widget->left - 2;
-        Gfx::drawStringCentredClipped(*rt, centreX, y, width, colour, string, _commonFormatArgs);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawStringCentredClipped(*rt, centreX, y, width, colour, string, _commonFormatArgs);
     }
 
     // 0x004CB263
@@ -544,7 +558,8 @@ namespace OpenLoco::Ui
         }
 
         int width = widget->right - widget->left - 2;
-        Gfx::drawStringLeftClipped(*rt, x, y, width, colour, string, _commonFormatArgs);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawStringLeftClipped(*rt, x, y, width, colour, string, _commonFormatArgs);
     }
 
     // 0x4CB2D6
@@ -563,14 +578,15 @@ namespace OpenLoco::Ui
         {
             colour = colour.FD();
         }
-
-        drawStringLeft(*rt, window->x + left + 1, window->y + top, colour, text, _commonFormatArgs);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawStringLeft(*rt, window->x + left + 1, window->y + top, colour, text, _commonFormatArgs);
     }
 
     // 0x4CB29C
     void Widget::drawTextBox(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour)
     {
-        Gfx::fillRectInset(*rt, window->x + left, window->y + top, window->x + right, window->y + bottom, colour.u8(), flags | 0x60);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.fillRectInset(*rt, window->x + left, window->y + top, window->x + right, window->y + bottom, colour.u8(), flags | 0x60);
     }
 
     // 0x004CA6AE
@@ -580,14 +596,16 @@ namespace OpenLoco::Ui
         int r = window->x + right;
         int t = window->y + top;
         int b = window->y + bottom;
-        Gfx::fillRectInset(*rt, l, t, r, b, colour.u8(), flags | 0x60);
-        Gfx::fillRect(*rt, l + 1, t + 1, r - 1, b - 1, 0x2000000 | 46);
+
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags | 0x60);
+        drawingCtx.fillRect(*rt, l + 1, t + 1, r - 1, b - 1, 0x2000000 | 46);
 
         int16_t width = r - l - 4 - 10;
         int16_t y = t + 1;
         int16_t x = l + 2 + (width / 2);
 
-        Gfx::drawStringCentredClipped(*rt, x, y, width, AdvancedColour(Colour::white).outline(), text, _commonFormatArgs);
+        drawingCtx.drawStringCentredClipped(*rt, x, y, width, AdvancedColour(Colour::white).outline(), text, _commonFormatArgs);
     }
 
     // 0x004CA750
@@ -600,15 +618,16 @@ namespace OpenLoco::Ui
         int16_t width = right - left - 4 - 14;
         int16_t x = left + window->x + 2 + (width / 2);
 
-        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
-        width = Gfx::clipString(width - 8, stringBuffer);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+        width = drawingCtx.clipString(width - 8, stringBuffer);
 
         x -= width / 2;
         int16_t y = window->y + top + 1;
 
         drawStationNameBackground(rt, window, this, x, y, colour, width);
 
-        Gfx::drawString(*rt, x, y, Colour::black, stringBuffer);
+        drawingCtx.drawString(*rt, x, y, Colour::black, stringBuffer);
     }
 
     // 0x004CA7F6
@@ -622,11 +641,12 @@ namespace OpenLoco::Ui
         int16_t width = right - left - 4 - 14;
         x = x + (width / 2);
 
-        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
-        int16_t stringWidth = Gfx::clipString(width - 8, stringBuffer);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+        int16_t stringWidth = drawingCtx.clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(*rt, x, window->y + top + 1, AdvancedColour(Colour::black).outline(), stringBuffer);
+        drawingCtx.drawString(*rt, x, window->y + top + 1, AdvancedColour(Colour::black).outline(), stringBuffer);
     }
 
     // 0x004CA88B
@@ -640,11 +660,12 @@ namespace OpenLoco::Ui
         int16_t width = right - left - 4 - 14;
         x = x + (width / 2);
 
-        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
-        int16_t stringWidth = Gfx::clipString(width - 8, stringBuffer);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+        int16_t stringWidth = drawingCtx.clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(*rt, x, window->y + top + 1, AdvancedColour(Colour::black).outline(), stringBuffer);
+        drawingCtx.drawString(*rt, x, window->y + top + 1, AdvancedColour(Colour::black).outline(), stringBuffer);
     }
 
     static void draw_hscroll(Gfx::RenderTarget* rt, const Window* window, Widget* widget, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
@@ -663,6 +684,7 @@ namespace OpenLoco::Ui
         }
 
         uint16_t f;
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // pusha
         f = 0;
@@ -670,11 +692,11 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(*rt, ax, cx, ax + 9, dx, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, ax, cx, ax + 9, dx, colour.u8(), f);
         // popa
 
         // pusha
-        Gfx::drawString(*rt, ax + 2, cx, Colour::black, (char*)0x005045F2);
+        drawingCtx.drawString(*rt, ax + 2, cx, Colour::black, (char*)0x005045F2);
         // popa
 
         // pusha
@@ -683,23 +705,23 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(*rt, bx - 9, cx, bx, dx, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, bx - 9, cx, bx, dx, colour.u8(), f);
         // popa
 
         // pusha
-        Gfx::drawString(*rt, bx - 6 - 1, cx, Colour::black, (char*)0x005045F5);
+        drawingCtx.drawString(*rt, bx - 6 - 1, cx, Colour::black, (char*)0x005045F5);
         // popa
 
         // pusha
-        Gfx::fillRect(*rt, ax + 10, cx, bx - 10, dx, Colours::getShade(colour.c(), 7));
-        Gfx::fillRect(*rt, ax + 10, cx, bx - 10, dx, 0x1000000 | Colours::getShade(colour.c(), 3));
+        drawingCtx.fillRect(*rt, ax + 10, cx, bx - 10, dx, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, ax + 10, cx, bx - 10, dx, 0x1000000 | Colours::getShade(colour.c(), 3));
         // popa
 
         // pusha
-        Gfx::fillRect(*rt, ax + 10, cx + 2, bx - 10, cx + 2, Colours::getShade(colour.c(), 3));
-        Gfx::fillRect(*rt, ax + 10, cx + 3, bx - 10, cx + 3, Colours::getShade(colour.c(), 7));
-        Gfx::fillRect(*rt, ax + 10, cx + 7, bx - 10, cx + 7, Colours::getShade(colour.c(), 3));
-        Gfx::fillRect(*rt, ax + 10, cx + 8, bx - 10, cx + 8, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, ax + 10, cx + 2, bx - 10, cx + 2, Colours::getShade(colour.c(), 3));
+        drawingCtx.fillRect(*rt, ax + 10, cx + 3, bx - 10, cx + 3, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, ax + 10, cx + 7, bx - 10, cx + 7, Colours::getShade(colour.c(), 3));
+        drawingCtx.fillRect(*rt, ax + 10, cx + 8, bx - 10, cx + 8, Colours::getShade(colour.c(), 7));
         // popa
 
         // pusha
@@ -708,7 +730,7 @@ namespace OpenLoco::Ui
         {
             f = 0x20;
         }
-        Gfx::fillRectInset(*rt, ax - 1 + scroll_area->hThumbLeft, cx, ax - 1 + scroll_area->hThumbRight, dx, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, ax - 1 + scroll_area->hThumbLeft, cx, ax - 1 + scroll_area->hThumbRight, dx, colour.u8(), f);
         // popa
     }
 
@@ -728,6 +750,7 @@ namespace OpenLoco::Ui
         }
 
         uint16_t f;
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // pusha
         f = 0;
@@ -735,11 +758,11 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(*rt, ax, cx, bx, cx + 9, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, ax, cx, bx, cx + 9, colour.u8(), f);
         // popa
 
         // pusha
-        Gfx::drawString(*rt, ax + 1, cx - 1, Colour::black, (char*)0x005045EC);
+        drawingCtx.drawString(*rt, ax + 1, cx - 1, Colour::black, (char*)0x005045EC);
         // popa
 
         // pusha
@@ -748,23 +771,23 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(*rt, ax, dx - 9, bx, dx, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, ax, dx - 9, bx, dx, colour.u8(), f);
         // popa
 
         // pusha
-        Gfx::drawString(*rt, ax + 1, dx - 8 - 1, Colour::black, (char*)0x005045EF);
+        drawingCtx.drawString(*rt, ax + 1, dx - 8 - 1, Colour::black, (char*)0x005045EF);
         // popa
 
         // pusha
-        Gfx::fillRect(*rt, ax, cx + 10, bx, dx - 10, Colours::getShade(colour.c(), 7));
-        Gfx::fillRect(*rt, ax, cx + 10, bx, dx - 10, 0x1000000 | Colours::getShade(colour.c(), 3));
+        drawingCtx.fillRect(*rt, ax, cx + 10, bx, dx - 10, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, ax, cx + 10, bx, dx - 10, 0x1000000 | Colours::getShade(colour.c(), 3));
         // popa
 
         // pusha
-        Gfx::fillRect(*rt, ax + 2, cx + 10, ax + 2, dx - 10, Colours::getShade(colour.c(), 3));
-        Gfx::fillRect(*rt, ax + 3, cx + 10, ax + 3, dx - 10, Colours::getShade(colour.c(), 7));
-        Gfx::fillRect(*rt, ax + 7, cx + 10, ax + 7, dx - 10, Colours::getShade(colour.c(), 3));
-        Gfx::fillRect(*rt, ax + 8, cx + 10, ax + 8, dx - 10, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, ax + 2, cx + 10, ax + 2, dx - 10, Colours::getShade(colour.c(), 3));
+        drawingCtx.fillRect(*rt, ax + 3, cx + 10, ax + 3, dx - 10, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, ax + 7, cx + 10, ax + 7, dx - 10, Colours::getShade(colour.c(), 3));
+        drawingCtx.fillRect(*rt, ax + 8, cx + 10, ax + 8, dx - 10, Colours::getShade(colour.c(), 7));
         // popa
 
         // pusha
@@ -773,7 +796,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(*rt, ax, cx - 1 + scroll_area->vThumbTop, bx, cx - 1 + scroll_area->vThumbBottom, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, ax, cx - 1 + scroll_area->vThumbTop, bx, cx - 1 + scroll_area->vThumbBottom, colour.u8(), f);
         // popa
     }
 
@@ -785,7 +808,8 @@ namespace OpenLoco::Ui
         int16_t r = window->x + right;
         int16_t b = window->y + bottom;
 
-        Gfx::fillRectInset(*rt, l, t, r, b, colour.u8(), flags | 0x60);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags | 0x60);
 
         l++;
         t++;
@@ -794,7 +818,7 @@ namespace OpenLoco::Ui
 
         const auto* scroll_area = &window->scrollAreas[scrollview_index];
 
-        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
+        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
         if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarVisible)
         {
             draw_hscroll(rt, window, this, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
@@ -856,9 +880,10 @@ namespace OpenLoco::Ui
     // 0x004CB00B
     void Widget::draw_27_checkbox(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour, bool enabled, bool disabled, bool activated)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         if (enabled)
         {
-            Gfx::fillRectInset(
+            drawingCtx.fillRectInset(
                 *rt,
                 window->x + left,
                 window->y + top,
@@ -870,8 +895,8 @@ namespace OpenLoco::Ui
 
         if (activated)
         {
-            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
-            Gfx::drawString(*rt, window->x + left, window->y + top, colour.opaque(), _strCheckmark);
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+            drawingCtx.drawString(*rt, window->x + left, window->y + top, colour.opaque(), _strCheckmark);
         }
     }
 
@@ -890,7 +915,8 @@ namespace OpenLoco::Ui
             colour = colour.inset();
         }
 
-        Gfx::drawStringLeft(*rt, window->x + left + 14, window->y + top, colour, text, _commonFormatArgs);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawStringLeft(*rt, window->x + left + 14, window->y + top, colour, text, _commonFormatArgs);
     }
 
     // 0x004CA679
@@ -900,7 +926,8 @@ namespace OpenLoco::Ui
         int r = window->x + right;
         int t = window->y + top;
         int b = window->y + bottom;
-        Gfx::fillRect(*rt, l, t, r, b, Colours::getShade(Colour::black, 5));
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.fillRect(*rt, l, t, r, b, Colours::getShade(Colour::black, 5));
     }
 
     void Widget::drawGroupbox(Gfx::RenderTarget* const rt, const Window* window)
@@ -912,14 +939,15 @@ namespace OpenLoco::Ui
         int32_t b = window->y + bottom;
         int32_t textEndPos = l;
 
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         // First, draw the label text, if any.
         if (text != StringIds::null)
         {
             char buffer[512] = { 0 };
             StringManager::formatString(buffer, sizeof(buffer), text);
 
-            Gfx::drawString(*rt, l, t, colour, buffer);
-            textEndPos = l + Gfx::getStringWidth(buffer) + 1;
+            drawingCtx.drawString(*rt, l, t, colour, buffer);
+            textEndPos = l + drawingCtx.getStringWidth(buffer) + 1;
         }
 
         // Prepare border dimensions
@@ -929,24 +957,24 @@ namespace OpenLoco::Ui
         b = window->y + bottom;
 
         // Border left of text
-        Gfx::fillRect(*rt, l, t, l + 4, t, Colours::getShade(colour.c(), 4));
-        Gfx::fillRect(*rt, l + 1, t + 1, l + 4, t + 1, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, l, t, l + 4, t, Colours::getShade(colour.c(), 4));
+        drawingCtx.fillRect(*rt, l + 1, t + 1, l + 4, t + 1, Colours::getShade(colour.c(), 7));
 
         // Border right of text
-        Gfx::fillRect(*rt, textEndPos, t, r - 1, t, Colours::getShade(colour.c(), 4));
-        Gfx::fillRect(*rt, textEndPos, t + 1, r - 2, t + 1, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, textEndPos, t, r - 1, t, Colours::getShade(colour.c(), 4));
+        drawingCtx.fillRect(*rt, textEndPos, t + 1, r - 2, t + 1, Colours::getShade(colour.c(), 7));
 
         // Border right
-        Gfx::fillRect(*rt, r - 1, t + 1, r - 1, b - 1, Colours::getShade(colour.c(), 4));
-        Gfx::fillRect(*rt, r, t, r, b, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, r - 1, t + 1, r - 1, b - 1, Colours::getShade(colour.c(), 4));
+        drawingCtx.fillRect(*rt, r, t, r, b, Colours::getShade(colour.c(), 7));
 
         // Border bottom
-        Gfx::fillRect(*rt, l, b - 1, r - 2, b - 1, Colours::getShade(colour.c(), 4));
-        Gfx::fillRect(*rt, l, b, r - 1, b, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, l, b - 1, r - 2, b - 1, Colours::getShade(colour.c(), 4));
+        drawingCtx.fillRect(*rt, l, b, r - 1, b, Colours::getShade(colour.c(), 7));
 
         // Border left
-        Gfx::fillRect(*rt, l, t + 1, l, b - 2, Colours::getShade(colour.c(), 4));
-        Gfx::fillRect(*rt, l + 1, t + 2, l + 1, b - 2, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, l, t + 1, l, b - 2, Colours::getShade(colour.c(), 4));
+        drawingCtx.fillRect(*rt, l + 1, t + 2, l + 1, b - 2, Colours::getShade(colour.c(), 7));
     }
 
     // 0x004CF194
@@ -978,22 +1006,23 @@ namespace OpenLoco::Ui
             return;
         }
 
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         if (isActivated)
         {
             if (imageId != kContentUnk)
             {
-                Gfx::drawImage(rt, pos.x, pos.y, imageId);
+                drawingCtx.drawImage(rt, pos.x, pos.y, imageId);
             }
         }
         else
         {
             if (imageId != kContentUnk)
             {
-                Gfx::drawImage(rt, pos.x, pos.y + 1, imageId);
+                drawingCtx.drawImage(rt, pos.x, pos.y + 1, imageId);
             }
 
-            Gfx::drawImage(rt, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
-            Gfx::drawRect(*rt, pos.x, pos.y + 26, 31, 1, Colours::getShade(w->getColour(WindowColour::secondary).c(), 7));
+            drawingCtx.drawImage(rt, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
+            drawingCtx.drawRect(*rt, pos.x, pos.y + 26, 31, 1, Colours::getShade(w->getColour(WindowColour::secondary).c(), 7));
         }
     }
 

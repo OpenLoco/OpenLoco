@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Config.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
@@ -143,8 +144,10 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A0F8
         static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            Gfx::clearSingle(rt, shade);
+            drawingCtx.clearSingle(rt, shade);
 
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
@@ -163,7 +166,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 // Highlight selection.
                 if (townId == TownId(self.rowHover))
                 {
-                    Gfx::drawRect(rt, 0, yPos, self.width, kRowHeight, 0x2000030);
+                    drawingCtx.drawRect(rt, 0, yPos, self.width, kRowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
@@ -176,14 +179,14 @@ namespace OpenLoco::Ui::Windows::TownList
                     auto args = FormatArguments();
                     args.push(town->name);
 
-                    Gfx::drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Town Type
                 {
                     auto args = FormatArguments();
                     args.push(town->getTownSizeString());
 
-                    Gfx::drawStringLeftClipped(rt, 200, yPos, 278, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, 200, yPos, 278, Colour::black, text_colour_id, &args);
                 }
                 // Town Population
                 {
@@ -191,7 +194,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push(town->population);
 
-                    Gfx::drawStringLeftClipped(rt, 280, yPos, 68, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, 280, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 // Town Stations
                 {
@@ -199,7 +202,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push<int32_t>(town->numStations);
 
-                    Gfx::drawStringLeftClipped(rt, 350, yPos, 68, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, 350, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 yPos += kRowHeight;
             }
@@ -208,6 +211,8 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A0A7
         static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
             auto args = FormatArguments();
@@ -220,7 +225,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 args.push(StringIds::status_towns_plural);
             args.push(self.var_83C);
 
-            Gfx::drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0049A27F
@@ -632,12 +637,14 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A627
         static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
-            Gfx::drawStringLeft(*rt, self.x + 3, self.y + self.widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
+            drawingCtx.drawStringLeft(*rt, self.x + 3, self.y + self.widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
 
-            Gfx::drawStringLeft(*rt, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::select_town_size);
+            drawingCtx.drawStringLeft(*rt, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::select_town_size);
         }
 
         // 0x0049A675
@@ -847,6 +854,8 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A9C2
         static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
@@ -862,7 +871,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             auto buildingObj = ObjectManager::get<BuildingObject>(buildingId);
 
-            Gfx::drawStringLeftClipped(*rt, self.x + 3, self.y + self.height - 13, self.width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
+            drawingCtx.drawStringLeftClipped(*rt, self.x + 3, self.y + self.height - 13, self.width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
         }
 
         // 0x0049AB31
@@ -1180,8 +1189,10 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049AA1C
         static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            Gfx::clearSingle(rt, shade);
+            drawingCtx.clearSingle(rt, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
@@ -1191,12 +1202,12 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        Gfx::drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
+                        drawingCtx.drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
+                    drawingCtx.drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
                 }
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.rowInfo[i]);

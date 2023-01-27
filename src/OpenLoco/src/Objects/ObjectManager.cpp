@@ -9,6 +9,7 @@
 #include "Console.h"
 #include "CurrencyObject.h"
 #include "DockObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Environment.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -1035,11 +1036,13 @@ namespace OpenLoco::ObjectManager
 
     void drawGenericDescription(Gfx::RenderTarget& rt, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         if (designed != 0)
         {
             FormatArguments args{};
             args.push(designed);
-            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_designed, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_designed, &args);
             rowPosition.y += kDescriptionRowHeight;
         }
 
@@ -1047,7 +1050,7 @@ namespace OpenLoco::ObjectManager
         {
             FormatArguments args{};
             args.push(obsolete);
-            Gfx::drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_obsolete, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_obsolete, &args);
             rowPosition.y += kDescriptionRowHeight;
         }
     }

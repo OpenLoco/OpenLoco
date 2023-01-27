@@ -1,3 +1,4 @@
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "OpenLoco.h"
@@ -38,7 +39,9 @@ namespace OpenLoco::Ui::Windows::TitleVersion
     // 0x00439236
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         auto versionInfo = getVersionInfo();
-        Gfx::drawString(*rt, window.x, window.y, AdvancedColour(Colour::white).outline(), (void*)versionInfo.c_str());
+        drawingCtx.drawString(*rt, window.x, window.y, AdvancedColour(Colour::white).outline(), (void*)versionInfo.c_str());
     }
 }

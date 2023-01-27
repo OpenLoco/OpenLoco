@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Interop/Interop.hpp"
@@ -96,18 +97,20 @@ namespace OpenLoco::Ui::Windows::Error
 
         if (buffer != &_byte_9C64B3[0])
         {
-            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
             int16_t strWidth;
             {
-                strWidth = Gfx::getStringWidthNewLined(&_byte_9C64B3[0]);
+                strWidth = drawingCtx.getStringWidthNewLined(&_byte_9C64B3[0]);
             }
 
             strWidth = std::min<int16_t>(strWidth, 196);
 
-            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
             {
                 uint16_t breakLineCount = 0;
-                std::tie(strWidth, breakLineCount) = Gfx::wrapString(&_byte_9C64B3[0], strWidth);
+                std::tie(strWidth, breakLineCount) = drawingCtx.wrapString(&_byte_9C64B3[0], strWidth);
                 _word_9C66B3 = breakLineCount;
             }
 
@@ -211,23 +214,24 @@ namespace OpenLoco::Ui::Windows::Error
             uint16_t width = self.width;
             uint16_t height = self.height;
             auto skin = ObjectManager::get<InterfaceSkinObject>()->colour_09;
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-            Gfx::drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-            Gfx::drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(skin)));
+            drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
+            drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(skin)));
 
-            Gfx::drawRect(*rt, x, y + 2, 1, height - 4, 0x2000000 | 46);
-            Gfx::drawRect(*rt, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-            Gfx::drawRect(*rt, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-            Gfx::drawRect(*rt, x + 2, y, width - 4, 1, 0x2000000 | 46);
+            drawingCtx.drawRect(*rt, x, y + 2, 1, height - 4, 0x2000000 | 46);
+            drawingCtx.drawRect(*rt, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
+            drawingCtx.drawRect(*rt, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
+            drawingCtx.drawRect(*rt, x + 2, y, width - 4, 1, 0x2000000 | 46);
 
-            Gfx::drawRect(*rt, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-            Gfx::drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-            Gfx::drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-            Gfx::drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+            drawingCtx.drawRect(*rt, x + 1, y + 1, 1, 1, 0x2000000 | 46);
+            drawingCtx.drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
+            drawingCtx.drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+            drawingCtx.drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
             if (_errorCompetitorId == CompanyId::null)
             {
-                Gfx::drawStringCentredRaw(*rt, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
+                drawingCtx.drawStringCentredRaw(*rt, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
             }
             else
             {
@@ -241,14 +245,14 @@ namespace OpenLoco::Ui::Windows::Error
                 imageId = Gfx::recolour(imageId, company->mainColours.primary);
                 imageId++;
 
-                Gfx::drawImage(rt, xPos, yPos, imageId);
+                drawingCtx.drawImage(rt, xPos, yPos, imageId);
 
                 if (company->jailStatus != 0)
                 {
-                    Gfx::drawImage(rt, xPos, yPos, ImageIds::owner_jailed);
+                    drawingCtx.drawImage(rt, xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                Gfx::drawStringCentredRaw(*rt, self.x + 156, self.y + 20, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
+                drawingCtx.drawStringCentredRaw(*rt, self.x + 156, self.y + 20, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
             }
         }
 

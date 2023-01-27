@@ -1,4 +1,5 @@
 #include "BridgeObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -13,7 +14,8 @@ namespace OpenLoco
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        Gfx::drawImage(&rt, x - 21, y - 9, colourImage);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x - 21, y - 9, colourImage);
     }
 
     // 0x0042C651

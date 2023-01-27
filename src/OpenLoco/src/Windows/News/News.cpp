@@ -1,6 +1,7 @@
 #include "News.h"
 #include "CompanyManager.h"
 #include "Date.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
@@ -547,7 +548,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::company:
                 case MessageItemArgumentType::vehicleTab:
                 {
-                    Gfx::drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::black_tiny_font, &args);
+                    auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+                    drawingCtx.drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::black_tiny_font, &args);
                     break;
                 }
 
@@ -561,9 +563,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429872
         static void drawLateNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
-            Gfx::drawImage(rt, self->x, self->y, ImageIds::news_background_new_left);
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-            Gfx::drawImage(rt, self->x + (kWindowSize.width / 2), self->y, ImageIds::news_background_new_right);
+            drawingCtx.drawImage(rt, self->x, self->y, ImageIds::news_background_new_left);
+
+            drawingCtx.drawImage(rt, self->x + (kWindowSize.width / 2), self->y, ImageIds::news_background_new_right);
 
             self->draw(rt);
 
@@ -586,13 +590,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 38;
             Ui::Point origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(*rt, origin, 352, Colour::black, StringIds::buffer_2039);
+            drawingCtx.drawStringCentredWrapped(*rt, origin, 352, Colour::black, StringIds::buffer_2039);
 
             x = self->x + 1;
             y = self->y + 1;
             origin = { x, y };
 
-            Gfx::drawStringLeft(*rt, &origin, Colour::black, StringIds::news_date, &news->date);
+            drawingCtx.drawStringLeft(*rt, &origin, Colour::black, StringIds::news_date, &news->date);
 
             self->drawViewports(rt);
 
@@ -602,6 +606,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429934
         static void drawMiddleNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             const auto& mtd = getMessageTypeDescriptor(news->type);
             if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
             {
@@ -614,7 +620,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport1].width() + 1;
                         auto height = self->widgets[Common::widx::viewport1].height() + 1;
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(*rt, x, y, width, height, colour);
+                        drawingCtx.drawRect(*rt, x, y, width, height, colour);
                     }
                 }
             }
@@ -630,7 +636,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport2].width() + 1;
                         auto height = self->widgets[Common::widx::viewport2].height() + 1;
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(*rt, x, y, width, height, colour);
+                        drawingCtx.drawRect(*rt, x, y, width, height, colour);
                     }
                 }
             }
@@ -639,13 +645,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x004299E7
         static void drawEarlyNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
-            auto imageId = Gfx::recolour(ImageIds::news_background_old_left, ExtColour::translucentBrown1);
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-            Gfx::drawImage(rt, self->x, self->y, imageId);
+            auto imageId = Gfx::recolour(ImageIds::news_background_old_left, ExtColour::translucentBrown1);
+            drawingCtx.drawImage(rt, self->x, self->y, imageId);
 
             imageId = Gfx::recolour(ImageIds::news_background_old_right, ExtColour::translucentBrown1);
 
-            Gfx::drawImage(rt, self->x + (kWindowSize.width / 2), self->y, imageId);
+            drawingCtx.drawImage(rt, self->x + (kWindowSize.width / 2), self->y, imageId);
 
             self->draw(rt);
 
@@ -668,12 +675,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 38;
             Ui::Point origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(*rt, origin, 352, Colour::black, StringIds::buffer_2039);
+            drawingCtx.drawStringCentredWrapped(*rt, origin, 352, Colour::black, StringIds::buffer_2039);
 
             origin.x = self->x + 4;
             origin.y = self->y + 5;
 
-            Gfx::drawStringLeft(*rt, &origin, Colour::black, StringIds::news_date, &news->date);
+            drawingCtx.drawStringLeft(*rt, &origin, Colour::black, StringIds::news_date, &news->date);
 
             self->drawViewports(rt);
 
@@ -684,19 +691,21 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto width = self->width - 6;
             auto height = self->height;
             auto colour = (1 << 25) | PaletteIndex::index_68;
-            Gfx::drawRect(*rt, x, y, width, height, colour);
+            drawingCtx.drawRect(*rt, x, y, width, height, colour);
 
             x = self->widgets[Common::widx::viewport1].left + self->x;
             y = self->widgets[Common::widx::viewport1].top + self->y;
             width = self->widgets[Common::widx::viewport1].width();
             height = self->widgets[Common::widx::viewport1].height();
             colour = (1 << 25) | PaletteIndex::index_68;
-            Gfx::drawRect(*rt, x, y, width, height, colour);
+            drawingCtx.drawRect(*rt, x, y, width, height, colour);
         }
 
         // 0x00429761
         static void drawStationNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self->draw(rt);
 
             char* newsString = news->messageString;
@@ -711,7 +720,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 17;
             Ui::Point origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(*rt, origin, 338, Colour::black, StringIds::buffer_2039);
+            drawingCtx.drawStringCentredWrapped(*rt, origin, 338, Colour::black, StringIds::buffer_2039);
 
             self->drawViewports(rt);
             const auto& mtd = getMessageTypeDescriptor(news->type);
@@ -726,7 +735,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport1].width();
                         auto height = self->widgets[Common::widx::viewport1].height();
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(*rt, x, y, width, height, colour);
+                        drawingCtx.drawRect(*rt, x, y, width, height, colour);
                     }
                 }
             }
@@ -742,7 +751,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport2].width();
                         auto height = self->widgets[Common::widx::viewport2].height();
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(*rt, x, y, width, height, colour);
+                        drawingCtx.drawRect(*rt, x, y, width, height, colour);
                     }
                 }
             }

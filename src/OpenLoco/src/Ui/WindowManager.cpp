@@ -3,6 +3,7 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Console.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
@@ -198,7 +199,8 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 const char* buffer = (const char*)regs.esi;
-                uint16_t width = Gfx::getStringWidth(buffer);
+                auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+                uint16_t width = drawingCtx.getStringWidth(buffer);
                 regs = backup;
                 regs.cx = width;
 

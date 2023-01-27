@@ -1,4 +1,5 @@
 #include "Misc.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "EntityManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -341,8 +342,9 @@ namespace OpenLoco
             char buffer[255] = {};
             auto args = FormatArguments::common(amount);
             StringManager::formatString(buffer, strFormat, &args);
-            Gfx::setCurrentFontSpriteBase(Font::medium_bold);
-            m->offsetX = -Gfx::getStringWidth(buffer) / 2;
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+            m->offsetX = -drawingCtx.getStringWidth(buffer) / 2;
             m->wiggle = 0;
         }
         return m;

@@ -1,4 +1,5 @@
 #include "Tutorial.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
@@ -68,15 +69,17 @@ namespace OpenLoco::Ui::Windows::Tutorial
             StringIds::tutorial_3_title,
         };
 
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         auto tutorialNumber = OpenLoco::Tutorial::getTutorialNumber();
         auto args = FormatArguments::common(titleStringIds[tutorialNumber]);
 
         auto& widget = self.widgets[Widx::frame];
         auto yPos = self.y + widget.top + 4;
-        Gfx::drawStringCentred(*rt, self.x + widget.midX(), yPos, Colour::black, StringIds::tutorial_text, &args);
+        drawingCtx.drawStringCentred(*rt, self.x + widget.midX(), yPos, Colour::black, StringIds::tutorial_text, &args);
 
         yPos += 10;
-        Gfx::drawStringCentred(*rt, self.x + widget.midX(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
+        drawingCtx.drawStringCentred(*rt, self.x + widget.midX(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
     }
 
     static void initEvents()

@@ -1,3 +1,4 @@
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -58,6 +59,8 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         // Draw widgets.
         window.draw(rt);
 
@@ -65,7 +68,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         int16_t y = window.y + window.widgets[Widx::options_button].top + 2;
         Ui::Point origin = { x, y };
 
-        Gfx::drawStringCentredWrapped(*rt, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
+        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
     }
 
     static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)

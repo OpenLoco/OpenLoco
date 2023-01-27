@@ -1,4 +1,5 @@
 #include "RegionObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "ObjectManager.h"
@@ -8,7 +9,8 @@ namespace OpenLoco
     // 0x0043CB93
     void RegionObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        Gfx::drawImage(&rt, x, y, image);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x, y, image);
     }
 
     // 0x0043CA8C

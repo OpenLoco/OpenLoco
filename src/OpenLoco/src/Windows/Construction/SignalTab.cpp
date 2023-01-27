@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Construction.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -300,6 +301,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // 0x0049E501
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         self.draw(rt);
         Common::drawTabs(&self, rt);
 
@@ -313,7 +316,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             auto args = FormatArguments();
             args.push(trainSignalObject->var_0C);
 
-            Gfx::drawStringLeftWrapped(*rt, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
+            drawingCtx.drawStringLeftWrapped(*rt, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
         }
 
         auto imageId = trainSignalObject->image;
@@ -321,14 +324,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         xPos = self.widgets[widx::both_directions].midX() + self.x;
         yPos = self.widgets[widx::both_directions].bottom + self.y - 4;
 
-        Gfx::drawImage(rt, xPos - 8, yPos, imageId);
+        drawingCtx.drawImage(rt, xPos - 8, yPos, imageId);
 
-        Gfx::drawImage(rt, xPos + 8, yPos, imageId + 4);
+        drawingCtx.drawImage(rt, xPos + 8, yPos, imageId + 4);
 
         xPos = self.widgets[widx::single_direction].midX() + self.x;
         yPos = self.widgets[widx::single_direction].bottom + self.y - 4;
 
-        Gfx::drawImage(rt, xPos, yPos, imageId);
+        drawingCtx.drawImage(rt, xPos, yPos, imageId);
 
         if (_signalCost != 0x80000000 && _signalCost != 0)
         {
@@ -338,7 +341,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             xPos = self.x + 69;
             yPos = self.widgets[widx::single_direction].bottom + self.y + 5;
 
-            Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+            drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
     }
 

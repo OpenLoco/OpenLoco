@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
@@ -695,6 +696,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BB8C9
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
@@ -728,12 +731,12 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto xPos = self.x + 3 + self.width - 17;
                 auto yPos = self.y + self.height - 13;
-                Gfx::drawStringRight(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+                drawingCtx.drawStringRight(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
             auto xPos = self.x + 3;
             auto yPos = self.y + self.height - 13;
             auto width = self.width - 19 - xPos;
-            Gfx::drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
+            drawingCtx.drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
         }
 
         static void drawTreeThumb(TreeObject* treeObj, Gfx::RenderTarget* clipped)
@@ -754,14 +757,17 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 image = Gfx::recolour(image, colour);
             }
-            Gfx::drawImage(clipped, 32, 96, image);
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            drawingCtx.drawImage(clipped, 32, 96, image);
         }
 
         // 0x004BB982
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            Gfx::clearSingle(rt, shade);
+            drawingCtx.clearSingle(rt, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
@@ -773,13 +779,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (self.rowInfo[i] == self.var_846)
                     {
                         _lastTreeColourFlag = AdvancedColour::translucentFlag;
-                        Gfx::drawRectInset(rt, xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
+                        drawingCtx.drawRectInset(rt, xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
                     }
                 }
                 else
                 {
                     _lastTreeColourFlag = AdvancedColour::translucentFlag | AdvancedColour::outlineFlag;
-                    Gfx::drawRectInset(rt, xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
+                    drawingCtx.drawRectInset(rt, xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
                 }
 
                 auto treeObj = ObjectManager::get<TreeObject>(self.rowInfo[i]);
@@ -1046,6 +1052,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC5E7
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
@@ -1063,7 +1071,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto args = FormatArguments();
             args.push<uint32_t>(_raiseLandCost);
 
-            Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
+            drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
         }
 
         static void initEvents()
@@ -1548,6 +1556,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC909
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto imgId = skin->img;
             self.widgets[widx::paint_mode].image = imgId + InterfaceSkin::ImageIds::tab_colour_scheme_frame0;
@@ -1567,7 +1577,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseLandCost);
-                    Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
+                    drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1579,7 +1589,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerLandCost);
-                    Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
+                    drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -1833,6 +1843,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCCFF
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
@@ -1848,7 +1860,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseWaterCost);
 
-                    Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
+                    drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1861,7 +1873,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerWaterCost);
 
-                    Gfx::drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
+                    drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -2274,6 +2286,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC0C2
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
@@ -2290,14 +2304,16 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto yPos = self.y + self.height - 13;
             auto width = self.width - 19;
 
-            Gfx::drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
+            drawingCtx.drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
         }
 
         // 0x004BC11C
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, uint32_t scrollIndex)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
-            Gfx::clearSingle(rt, shade);
+            drawingCtx.clearSingle(rt, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
@@ -2307,19 +2323,19 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        Gfx::drawRectInset(rt, xPos, yPos, 40, kRowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
+                        drawingCtx.drawRectInset(rt, xPos, yPos, 40, kRowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(rt, xPos, yPos, 40, kRowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
+                    drawingCtx.drawRectInset(rt, xPos, yPos, 40, kRowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
                 }
 
                 auto wallObj = ObjectManager::get<WallObject>(self.rowInfo[i]);
 
                 auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, 39, 47));
                 if (clipped)
-                    Gfx::drawImage(&*clipped, 34, 28, wallObj->sprite);
+                    drawingCtx.drawImage(&*clipped, 34, 28, wallObj->sprite);
 
                 xPos += 40;
 

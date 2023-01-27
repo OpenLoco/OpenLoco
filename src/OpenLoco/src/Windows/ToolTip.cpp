@@ -1,3 +1,4 @@
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Input.h"
@@ -62,15 +63,17 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static void common(const Window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         StringManager::formatString(_text, stringId, &args);
 
-        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
-        int16_t strWidth = Gfx::getStringWidthNewLined(_text);
+        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+        int16_t strWidth = drawingCtx.getStringWidthNewLined(_text);
         strWidth = std::max<int16_t>(strWidth, 196);
 
-        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
+        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
-        auto [wrappedWidth, breakCount] = Gfx::wrapString(_text, strWidth + 1);
+        auto [wrappedWidth, breakCount] = drawingCtx.wrapString(_text, strWidth + 1);
         _lineBreakCount = breakCount;
 
         int width = wrappedWidth + 3;
@@ -172,20 +175,22 @@ namespace OpenLoco::Ui::Windows::ToolTip
         uint16_t width = window.width;
         uint16_t height = window.height;
 
-        Gfx::drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-        Gfx::drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(ObjectManager::get<InterfaceSkinObject>()->colour_08)));
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        Gfx::drawRect(*rt, x, y + 2, 1, height - 4, 0x2000000 | 46);
-        Gfx::drawRect(*rt, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-        Gfx::drawRect(*rt, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-        Gfx::drawRect(*rt, x + 2, y, width - 4, 1, 0x2000000 | 46);
+        drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
+        drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(ObjectManager::get<InterfaceSkinObject>()->colour_08)));
 
-        Gfx::drawRect(*rt, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-        Gfx::drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-        Gfx::drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-        Gfx::drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        drawingCtx.drawRect(*rt, x, y + 2, 1, height - 4, 0x2000000 | 46);
+        drawingCtx.drawRect(*rt, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
+        drawingCtx.drawRect(*rt, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
+        drawingCtx.drawRect(*rt, x + 2, y, width - 4, 1, 0x2000000 | 46);
 
-        Gfx::drawStringCentredRaw(*rt, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, _text);
+        drawingCtx.drawRect(*rt, x + 1, y + 1, 1, 1, 0x2000000 | 46);
+        drawingCtx.drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
+        drawingCtx.drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        drawingCtx.drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+
+        drawingCtx.drawStringCentredRaw(*rt, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, _text);
     }
 
     // 0x004C94F7

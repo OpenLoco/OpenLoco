@@ -1,4 +1,5 @@
 #include "StreetLightObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "ObjectImageTable.h"
@@ -15,11 +16,12 @@ namespace OpenLoco
     void StreetLightObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         Ui::Point imgPosition = Ui::Point{ x, y } - Ui::Point{ 20, 1 };
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (auto i = 0; i < 3; i++)
         {
             auto imageId = (i * 4) + image;
-            Gfx::drawImage(&rt, imgPosition.x - 14, imgPosition.y, imageId + 2);
-            Gfx::drawImage(&rt, imgPosition.x, imgPosition.y - 7, imageId);
+            drawingCtx.drawImage(&rt, imgPosition.x - 14, imgPosition.y, imageId + 2);
+            drawingCtx.drawImage(&rt, imgPosition.x, imgPosition.y - 7, imageId);
             imgPosition.x += 20;
             imgPosition.y += kDescriptionRowHeight;
         }

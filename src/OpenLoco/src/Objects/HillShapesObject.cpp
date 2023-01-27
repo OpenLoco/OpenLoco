@@ -1,4 +1,5 @@
 #include "HillShapesObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "ObjectImageTable.h"
@@ -13,7 +14,8 @@ namespace OpenLoco
     {
         auto imageId = image + hillHeightMapCount + mountainHeightMapCount;
 
-        Gfx::drawImage(&rt, x, y, imageId);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(&rt, x, y, imageId);
     }
 
     // 0x00463B70

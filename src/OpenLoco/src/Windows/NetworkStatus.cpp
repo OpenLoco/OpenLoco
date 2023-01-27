@@ -1,3 +1,4 @@
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -104,12 +105,14 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         self.draw(rt);
 
         uint16_t x = self.x + (self.width / 2);
         uint16_t y = self.y + (self.height / 2);
         uint16_t width = self.width;
-        Gfx::drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_1250, nullptr);
+        drawingCtx.drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_1250, nullptr);
     }
 
     static void initEvents()

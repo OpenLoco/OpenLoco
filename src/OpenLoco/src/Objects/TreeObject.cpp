@@ -1,4 +1,5 @@
 #include "TreeObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -25,6 +26,7 @@ namespace OpenLoco
             image = Gfx::recolour(image, colour);
         }
 
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         Ui::Point treePos = Ui::Point{ x, y } + Ui::Point{ 0, 48 };
 
         if (flags & TreeObjectFlags::hasSnowVariation)
@@ -42,10 +44,10 @@ namespace OpenLoco
                 snowImage = Gfx::recolour(snowImage, colour);
             }
             treePos.x = x + 28;
-            Gfx::drawImage(&rt, treePos.x, treePos.y, snowImage);
+            drawingCtx.drawImage(&rt, treePos.x, treePos.y, snowImage);
             treePos.x = 28;
         }
-        Gfx::drawImage(&rt, treePos.x, treePos.y, image);
+        drawingCtx.drawImage(&rt, treePos.x, treePos.y, image);
     }
 
     // 0x00500775

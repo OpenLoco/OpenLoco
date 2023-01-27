@@ -1,4 +1,5 @@
 #include "CompanyManager.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -449,8 +450,10 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x0049157F
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
-        Gfx::clearSingle(rt, shade);
+        drawingCtx.clearSingle(rt, shade);
 
         uint16_t yPos = 0;
         for (uint16_t i = 0; i < window.var_83C; i++)
@@ -469,7 +472,7 @@ namespace OpenLoco::Ui::Windows::StationList
             // Highlight selection.
             if (stationId == StationId(window.rowHover))
             {
-                Gfx::drawRect(rt, 0, yPos, window.width, kRowHeight, 0x2000030);
+                drawingCtx.drawRect(rt, 0, yPos, window.width, kRowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
@@ -481,14 +484,14 @@ namespace OpenLoco::Ui::Windows::StationList
             _commonFormatArgs[2] = enumValue(station->town);
             _commonFormatArgs[3] = getTransportIconsFromStationFlags(station->flags);
 
-            Gfx::drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &*_commonFormatArgs);
+            drawingCtx.drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             // Then the station's current status.
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             station->getStatusString(buffer);
 
             _commonFormatArgs[0] = StringIds::buffer_1250;
-            Gfx::drawStringLeftClipped(rt, 200, yPos, 198, Colour::black, text_colour_id, &*_commonFormatArgs);
+            drawingCtx.drawStringLeftClipped(rt, 200, yPos, 198, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             // Total units waiting.
             uint16_t totalUnits = 0;
@@ -497,7 +500,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
             _commonFormatArgs[0] = StringIds::num_units;
             *(uint32_t*)&_commonFormatArgs[1] = totalUnits;
-            Gfx::drawStringLeftClipped(rt, 400, yPos, 88, Colour::black, text_colour_id, &*_commonFormatArgs);
+            drawingCtx.drawStringLeftClipped(rt, 400, yPos, 88, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             // And, finally, what goods the station accepts.
             char* ptr = buffer;
@@ -517,7 +520,7 @@ namespace OpenLoco::Ui::Windows::StationList
             }
 
             _commonFormatArgs[0] = StringIds::buffer_1250;
-            Gfx::drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &*_commonFormatArgs);
+            drawingCtx.drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &*_commonFormatArgs);
 
             yPos += kRowHeight;
         }
@@ -539,6 +542,8 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x004914D8
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         // Draw widgets and tabs.
         window.draw(rt);
         drawTabs(&window, rt);
@@ -549,7 +554,7 @@ namespace OpenLoco::Ui::Windows::StationList
         uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
         uint16_t x = window.x + window.widgets[widx::company_select].left + 1;
         uint16_t y = window.y + window.widgets[widx::company_select].top + 1;
-        Gfx::drawImage(rt, x, y, image);
+        drawingCtx.drawImage(rt, x, y, image);
 
         // TODO: locale-based pluralisation.
         _commonFormatArgs[0] = window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural;
@@ -557,7 +562,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Draw number of stations.
         auto origin = Ui::Point(window.x + 4, window.y + window.height - 12);
-        Gfx::drawStringLeft(*rt, &origin, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
+        drawingCtx.drawStringLeft(*rt, &origin, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
     }
 
     // 0x004917BB

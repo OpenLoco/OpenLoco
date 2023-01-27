@@ -1,4 +1,5 @@
 #include "RoadObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
@@ -9,15 +10,16 @@ namespace OpenLoco
     void RoadObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         if (paintStyle == 1)
         {
-            Gfx::drawImage(&rt, x, y, colourImage + 34);
-            Gfx::drawImage(&rt, x, y, colourImage + 36);
-            Gfx::drawImage(&rt, x, y, colourImage + 38);
+            drawingCtx.drawImage(&rt, x, y, colourImage + 34);
+            drawingCtx.drawImage(&rt, x, y, colourImage + 36);
+            drawingCtx.drawImage(&rt, x, y, colourImage + 38);
         }
         else
         {
-            Gfx::drawImage(&rt, x, y, colourImage + 34);
+            drawingCtx.drawImage(&rt, x, y, colourImage + 34);
         }
     }
 
