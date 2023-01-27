@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static std::vector<fs::path> _files;
 
     static fs::path getDirectory(const fs::path& path);
-    static std::string getBasename(const fs::path& path);
+    static std::u8string getBasename(const fs::path& path);
 
     static void drawSavePreview(Ui::Window& window, Gfx::RenderTarget& rt, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
     static void drawLandscapePreview(Ui::Window& window, Gfx::RenderTarget& rt, int32_t x, int32_t y, int32_t width, int32_t height);
@@ -605,7 +605,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 }
 
                 // Copy name to our work buffer (if drive letter use the full path)
-                const std::string nameBuffer = isRootPath(entry) ? entry.u8string() : entry.stem().u8string();
+                const auto nameBuffer = isRootPath(entry) ? entry.u8string() : entry.stem().u8string();
 
                 // Draw the name
                 auto args = getStringPtrFormatArgs(nameBuffer.c_str());
@@ -668,12 +668,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static std::string getBasename(const fs::path& path)
+    static std::u8string getBasename(const fs::path& path)
     {
         auto baseName = path.stem().u8string();
-        if (baseName == ".")
+        if (baseName == u8".")
         {
-            baseName = "";
+            baseName = u8"";
         }
         return baseName;
     }

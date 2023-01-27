@@ -74,7 +74,8 @@ namespace OpenLoco::Environment
         auto& cfg = Config::get();
 
         // Validate any existing configured install path first
-        auto path = fs::u8path(cfg.locoInstallPath);
+        const auto u8InstallPath = std::u8string(cfg.locoInstallPath.cbegin(), cfg.locoInstallPath.cend());
+        auto path = fs::path(u8InstallPath);
         if (!path.empty())
         {
             if (validateLocoInstallPath(path))
@@ -89,7 +90,8 @@ namespace OpenLoco::Environment
         path = autoDetectLocoInstallPath();
         if (!path.empty())
         {
-            cfg.locoInstallPath = path.make_preferred().u8string();
+            const auto installPath = path.make_preferred().u8string();
+            cfg.locoInstallPath = std::string(installPath.cbegin(), installPath.cend());
             Config::write();
             return path;
         }
@@ -106,7 +108,8 @@ namespace OpenLoco::Environment
         path = Platform::promptDirectory("Locate original Locomotion game files", Ui::hwnd());
         if (validateLocoInstallPath(path))
         {
-            cfg.locoInstallPath = path.make_preferred().u8string();
+            const auto installPath = path.make_preferred().u8string();
+            cfg.locoInstallPath = std::string(installPath.cbegin(), installPath.cend());
             Config::write();
             return path;
         }
@@ -122,7 +125,9 @@ namespace OpenLoco::Environment
 
     static fs::path getLocoInstallPath()
     {
-        return fs::u8path(_pathInstall.get());
+        const auto len = strnlen(_pathInstall.get(), std::size(_pathInstall));
+        const auto u8InstallPath = std::u8string(_pathInstall.get(), _pathInstall.get() + len);
+        return fs::path(u8InstallPath);
     }
 
 #ifndef _WIN32
@@ -200,7 +205,8 @@ namespace OpenLoco::Environment
             if (!fs::is_directory(path))
             {
                 auto path8 = path.u8string();
-                std::printf("Creating directory: %s\n", path8.c_str());
+                const auto path8s = std::string(path8.cbegin(), path8.cend());
+                std::printf("Creating directory: %s\n", path8s.c_str());
                 fs::create_directories(path);
                 // clang-format off
                 fs::permissions(
@@ -232,7 +238,8 @@ namespace OpenLoco::Environment
             // Getting the directory can fail if config is bad.
             try
             {
-                auto directory = fs::u8path(configLastSavePath);
+                const auto lastSavePath = std::u8string(configLastSavePath.cbegin(), configLastSavePath.cend());
+                auto directory = fs::path(lastSavePath);
                 if (fs::is_directory(directory))
                 {
                     saveDirectory = directory;

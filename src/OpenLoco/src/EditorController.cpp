@@ -245,9 +245,13 @@ namespace OpenLoco::EditorController
                 S5::getOptions().editorStep = Step::null;
                 call(0x0046F910); // Sets up new multiplayer related rands
 
-                auto path = fs::u8path(_scenarioFilename.get());
+                const auto len = strnlen(_scenarioFilename.get(), std::size(_scenarioFilename));
+                const auto u8scenarioFilename = std::u8string(_scenarioFilename.get(), _scenarioFilename.get() + len);
+                auto path = fs::path(u8scenarioFilename);
                 path.replace_extension(S5::extensionSC5);
-                strncpy(_activeSavePath, path.u8string().c_str(), 257); // Or 256?
+                const auto u8path = path.u8string();
+                const auto strPath = std::string(u8path.cbegin(), u8path.cend());
+                strncpy(_activeSavePath, strPath.c_str(), 257); // Or 256?
                 uint32_t saveFlags = S5::SaveFlags::scenario;
                 if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
                 {

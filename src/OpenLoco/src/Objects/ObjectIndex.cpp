@@ -66,7 +66,8 @@ namespace OpenLoco::ObjectManager
             {
                 continue;
             }
-            const auto extension = file.path().extension().u8string();
+            const auto u8extension = file.path().extension().u8string();
+            const auto extension = std::string(u8extension.cbegin(), u8extension.cend());
             if (!Utility::iequals(extension, ".DAT"))
             {
                 continue;
@@ -118,7 +119,9 @@ namespace OpenLoco::ObjectManager
         newEntrySize += sizeof(objHeader);
 
         // Filename
-        std::strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), filename.u8string().c_str());
+        const auto u8Filename = filename.u8string();
+        const auto strFilename = std::string(u8Filename.cbegin(), u8Filename.cend());
+        std::strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), strFilename.c_str());
         entry._filename = reinterpret_cast<char*>(&entryBuffer[newEntrySize]);
         newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
 
@@ -161,7 +164,9 @@ namespace OpenLoco::ObjectManager
         newEntrySize += sizeof(objHeader);
 
         // Filename
-        std::strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), filename.u8string().c_str());
+        const auto u8Filename = filename.u8string();
+        const auto strFilename = std::string(u8Filename.cbegin(), u8Filename.cend());
+        std::strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), strFilename.c_str());
         entry._filename = reinterpret_cast<char*>(&entryBuffer[newEntrySize]);
         newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
 
@@ -302,7 +307,9 @@ namespace OpenLoco::ObjectManager
             {
                 continue;
             }
-            const auto extension = file.path().extension().u8string();
+
+            const auto u8extension = file.path().extension().u8string();
+            const auto extension = std::string(u8extension.cbegin(), u8extension.cend());
             if (!Utility::iequals(extension, ".DAT"))
             {
                 continue;

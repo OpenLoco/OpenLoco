@@ -212,7 +212,9 @@ namespace OpenLoco
                 _fstream.open(path, std::ios::out | std::ios::binary);
                 if (!_fstream.is_open())
                 {
-                    throw std::runtime_error("Failed to open '" + path.u8string() + "' for writing");
+                    const auto u8path = path.u8string();
+                    const auto strPath = std::string(u8path.cbegin(), u8path.cend());
+                    throw std::runtime_error("Failed to open '" + strPath + "' for writing");
                 }
                 _reading = true;
                 _writing = true;
@@ -222,7 +224,9 @@ namespace OpenLoco
                 _fstream.open(path, std::ios::in | std::ios::binary);
                 if (!_fstream.is_open())
                 {
-                    throw std::runtime_error("Failed to open '" + path.u8string() + "' for reading");
+                    const auto u8path = path.u8string();
+                    const auto strPath = std::string(u8path.cbegin(), u8path.cend());
+                    throw std::runtime_error("Failed to open '" + strPath + "' for reading");
                 }
                 _reading = true;
             }

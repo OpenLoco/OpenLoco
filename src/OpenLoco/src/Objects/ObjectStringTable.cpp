@@ -67,7 +67,7 @@ namespace OpenLoco::ObjectManager
     StringTableResult loadStringTable(stdx::span<const std::byte> data, const LoadedObjectHandle& handle, uint8_t index)
     {
         StringTableResult res;
-        auto* ptr = data.begin();
+        auto ptr = data.begin();
         const char* engBackupStr = nullptr;
         const char* anyStr = nullptr;
         const char* targetStr = nullptr;
@@ -75,7 +75,7 @@ namespace OpenLoco::ObjectManager
         for (; ptr != data.end() && *ptr != static_cast<std::byte>(0xFF); ++ptr)
         {
             const auto lang = static_cast<Localisation::LocoLanguageId>(*ptr++);
-            const auto str = reinterpret_cast<const char*>(ptr);
+            const auto str = reinterpret_cast<const char*>(&*ptr);
             if (lang == Localisation::LocoLanguageId::english_uk)
             {
                 engBackupStr = str;

@@ -451,7 +451,8 @@ namespace OpenLoco
 
         try
         {
-            auto path = fs::u8path(options.path);
+            const auto u8path = std::u8string(options.path.cbegin(), options.path.cend());
+            auto path = fs::path(u8path);
 
             MemoryStream ms;
             SawyerStreamReader reader(path);

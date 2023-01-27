@@ -42,7 +42,7 @@ endif ()
 project(${PROJECT} LANGUAGES CXX VERSION 23.02)
 
 if (NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD 20)
 endif()
 
 if (APPLE)
