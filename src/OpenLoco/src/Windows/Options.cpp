@@ -863,6 +863,10 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
             }
+            else
+            {
+                Audio::stopMusic();
+            }
 
             w->invalidate();
         }
