@@ -1586,25 +1586,11 @@ namespace OpenLoco::Drawing
         }
 
         // 0x00452DA4
-        static void drawLine(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, PaletteIndex_t colour)
+        static void drawLine(Gfx::RenderTarget& rt, Ui::Point a, Ui::Point b, const PaletteIndex_t colour)
         {
+            const auto bounding = Rect::fromLTRB(a.x, a.y, b.x, b.y);
             // Check to make sure the line is within the drawing area
-            if ((left < rt.x) && (right < rt.x))
-            {
-                return;
-            }
-
-            if ((top < rt.y) && (bottom < rt.y))
-            {
-                return;
-            }
-
-            if ((left > (rt.x + rt.width)) && (right > (rt.x + rt.width)))
-            {
-                return;
-            }
-
-            if ((top > (rt.y + rt.height)) && (bottom > (rt.y + rt.height)))
+            if (!rt.getUiRect().intersects(bounding))
             {
                 return;
             }
@@ -1612,27 +1598,27 @@ namespace OpenLoco::Drawing
             // Bresenham's algorithm
 
             // If vertical plot points upwards
-            const bool isSteep = std::abs(bottom - top) > std::abs(right - left);
+            const bool isSteep = std::abs(a.y - b.y) > std::abs(a.x - b.x);
             if (isSteep)
             {
-                std::swap(bottom, left);
-                std::swap(top, right);
+                std::swap(b.y, a.x);
+                std::swap(a.y, b.x);
             }
 
             // If line is right to left swap direction
-            if (left > right)
+            if (a.x > b.x)
             {
-                std::swap(left, right);
-                std::swap(bottom, top);
+                std::swap(a.x, b.x);
+                std::swap(b.y, a.y);
             }
 
-            const auto deltaX = right - left;
-            const auto deltaY = std::abs(bottom - top);
+            const auto deltaX = b.x - a.x;
+            const auto deltaY = std::abs(b.y - a.y);
             auto error = deltaX / 2;
-            const auto yStep = top < bottom ? 1 : -1;
-            auto y = top;
+            const auto yStep = a.y < b.y ? 1 : -1;
+            auto y = a.y;
 
-            for (auto x = left, xStart = left, length = static_cast<int16_t>(1); x < right; ++x, ++length)
+            for (auto x = a.x, xStart = a.x, length = static_cast<int16_t>(1); x < b.x; ++x, ++length)
             {
                 // Vertical lines are drawn 1 pixel at a time
                 if (isSteep)
@@ -1657,7 +1643,7 @@ namespace OpenLoco::Drawing
                 }
 
                 // Catch the case of the last line
-                if (x + 1 == right && !isSteep)
+                if (x + 1 == b.x && !isSteep)
                 {
                     drawHorizontalLine(rt, colour, { xStart, y }, length);
                 }
@@ -1785,9 +1771,9 @@ namespace OpenLoco::Drawing
         return Impl::drawRectInset(rt, x, y, dx, dy, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawLine(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, PaletteIndex_t colour)
+    void SoftwareDrawingContext::drawLine(Gfx::RenderTarget& rt, const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour)
     {
-        return Impl::drawLine(rt, left, top, right, bottom, colour);
+        return Impl::drawLine(rt, a, b, colour);
     }
 
     void SoftwareDrawingContext::drawImage(Gfx::RenderTarget* rt, int16_t x, int16_t y, uint32_t image)

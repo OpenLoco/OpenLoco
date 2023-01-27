@@ -1006,7 +1006,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         if (endPos.x != Location::null)
         {
-            drawingCtx.drawLine(*rt, endPos.x, endPos.y, newStartPos.x, newStartPos.y, colour);
+            drawingCtx.drawLine(*rt, endPos, newStartPos, colour);
         }
 
         endPos = newStartPos;
@@ -1089,7 +1089,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (startPos.x == Location::null || endPos.x == Location::null)
             return;
 
-        drawingCtx.drawLine(*rt, startPos.x, startPos.y, endPos.x, endPos.y, *colour);
+        drawingCtx.drawLine(*rt, startPos, endPos, *colour);
     }
 
     // 0x0046C426
