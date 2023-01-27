@@ -2,6 +2,7 @@
 
 #include "Platform.h"
 #include "Console.h"
+#include "Interop/Hooks.h"
 #include "OpenLoco.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <iostream>

@@ -43,6 +43,7 @@
 #include "Gui.h"
 #include "IndustryManager.h"
 #include "Input.h"
+#include "Interop/Hooks.h"
 #include "Intro.h"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"

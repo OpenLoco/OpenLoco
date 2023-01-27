@@ -1,3 +1,4 @@
+#include "Hooks.h"
 #include <cassert>
 #include <cstdio>
 #include <cstring>
