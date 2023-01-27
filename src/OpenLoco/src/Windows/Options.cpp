@@ -1867,7 +1867,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void edgeScrollingMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::get().old;
-            cfg.edgeScrolling = ~cfg.edgeScrolling;
+            cfg.edgeScrolling = !cfg.edgeScrolling;
             Config::write();
 
             w->invalidate();
