@@ -858,20 +858,21 @@ namespace OpenLoco::Ui::Windows::Options
             auto& cfg = Config::get();
             cfg.audio.playTitleMusic = !cfg.audio.playTitleMusic;
             Config::write();
+            w->invalidate();
 
-            if (isTitleMode())
+            if (!isTitleMode())
             {
-                if (cfg.audio.playTitleMusic)
-                {
-                    Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
-                }
-                else
-                {
-                    Audio::stopMusic();
-                }
+                return;
             }
 
-            w->invalidate();
+            if (cfg.audio.playTitleMusic)
+            {
+                Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
+            }
+            else
+            {
+                Audio::stopMusic();
+            }
         }
 
         // 0x004C04E0
