@@ -859,13 +859,16 @@ namespace OpenLoco::Ui::Windows::Options
             cfg.audio.playTitleMusic = !cfg.audio.playTitleMusic;
             Config::write();
 
-            if (cfg.audio.playTitleMusic)
+            if (isTitleMode())
             {
-                Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
-            }
-            else
-            {
-                Audio::stopMusic();
+                if (cfg.audio.playTitleMusic)
+                {
+                    Audio::playMusic(Environment::PathId::css5, Config::get().old.volume, true);
+                }
+                else
+                {
+                    Audio::stopMusic();
+                }
             }
 
             w->invalidate();
