@@ -755,7 +755,7 @@ namespace OpenLoco::Ui::Windows::Industry
             auto industry = IndustryManager::get(IndustryId(self->number));
             if (!isEditorMode() && !isSandboxMode())
             {
-                if ((industry->flags & IndustryFlags::flag_04) == 0)
+                if ((industry->flags & IndustryFlags::flag_04) == IndustryFlags::none)
                     return;
                 if (!CompanyManager::isPlayerCompany(industry->owner))
                     return;

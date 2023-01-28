@@ -7,6 +7,7 @@
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/Prng.h>
 #include <OpenLoco/Core/Span.hpp>
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <limits>
 
 namespace OpenLoco
@@ -20,21 +21,23 @@ namespace OpenLoco
     };
     const stdx::span<const Unk4F9274> getBuildingTileOffsets(bool type);
 
-    namespace IndustryFlags
+    enum class IndustryFlags : uint16_t
     {
-        constexpr uint16_t flag_01 = 1 << 0;
-        constexpr uint16_t sorted = 1 << 1;
-        constexpr uint16_t closingDown = 1 << 2;
-        constexpr uint16_t flag_04 = 1 << 3;
-    }
-
+        none = 0U,
+        flag_01 = 1 << 0,
+        sorted = 1 << 1,
+        closingDown = 1 << 2,
+        flag_04 = 1 << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryFlags);
+    
 #pragma pack(push, 1)
     struct Industry
     {
         string_id name;
         coord_t x;                  // 0x02
         coord_t y;                  // 0x04
-        uint16_t flags;             // 0x06
+        IndustryFlags flags;        // 0x06
         Core::Prng prng;            // 0x08
         uint8_t objectId;           // 0x10
         uint8_t under_construction; // 0x11 (0xFF = Finished)

@@ -96,7 +96,7 @@ namespace OpenLoco
         const auto* industryObj = getObject();
 
         // Closing Down
-        if (flags & IndustryFlags::closingDown)
+        if ((flags & IndustryFlags::closingDown) != IndustryFlags::none)
         {
             ptr = StringManager::formatString(ptr, StringIds::industry_closing_down);
             return;
@@ -139,7 +139,7 @@ namespace OpenLoco
     // 0x00453275
     void Industry::update()
     {
-        if (!(flags & IndustryFlags::flag_01) && under_construction == 0xFF)
+        if (((flags & IndustryFlags::flag_01) == IndustryFlags::none) && under_construction == 0xFF)
         {
             // Run tile loop for 100 iterations
             for (int i = 0; i < 100; i++)
@@ -159,7 +159,7 @@ namespace OpenLoco
     // 0x004534BD
     void Industry::updateDaily()
     {
-        if (flags & IndustryFlags::flag_01)
+        if ((flags & IndustryFlags::flag_01) != IndustryFlags::none)
         {
             return;
         }
@@ -259,12 +259,12 @@ namespace OpenLoco
     // 0x00453868
     void Industry::updateMonthly()
     {
-        if (flags & IndustryFlags::flag_01)
+        if ((flags & IndustryFlags::flag_01) != IndustryFlags::none)
         {
             return;
         }
 
-        if (flags & IndustryFlags::closingDown && var_17D[0] == 0 && var_17D[1] == 0)
+        if (((flags & IndustryFlags::closingDown) != IndustryFlags::none) && var_17D[0] == 0 && var_17D[1] == 0)
         {
             GameCommands::IndustryRemovalArgs args;
             args.industryId = id();
@@ -274,7 +274,7 @@ namespace OpenLoco
         bool hasEvent = false;
         const auto* indObj = getObject();
         if (under_construction == 0xFF
-            && !(flags & IndustryFlags::closingDown)
+            && ((flags & IndustryFlags::closingDown) == IndustryFlags::none)
             && indObj->requiredCargoType[0] == 0xFF)
         {
             if (isMonthlyProductionUp())
@@ -295,7 +295,7 @@ namespace OpenLoco
         if (!hasEvent
             && !(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown)
             && under_construction == 0xFF
-            && !(flags & IndustryFlags::closingDown))
+            && ((flags & IndustryFlags::closingDown) == IndustryFlags::none))
         {
             if (isMonthlyProductionClosing())
             {
