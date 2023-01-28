@@ -30,7 +30,7 @@ namespace OpenLoco
         flag_04 = 1 << 3,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryFlags);
-    
+
 #pragma pack(push, 1)
     struct Industry
     {
