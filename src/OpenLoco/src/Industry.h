@@ -5,9 +5,9 @@
 #include "Map/TileLoop.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/BitSet.hpp>
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Prng.h>
 #include <OpenLoco/Core/Span.hpp>
-#include <OpenLoco/Core/EnumFlags.hpp>
 #include <limits>
 
 namespace OpenLoco
