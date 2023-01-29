@@ -5,6 +5,7 @@
 #include "Types.hpp"
 #include "Ui/Rect.h"
 #include "Ui/UiTypes.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <array>
 #include <cstdint>
 #include <optional>
@@ -94,12 +95,15 @@ namespace OpenLoco::Gfx
         constexpr uint16_t duplicatePrevious = 1 << 6; // Duplicates the previous element but with adjusted x/y offsets
     }
 
-    namespace ImageIdFlags
+    enum class ImageIdFlags : uint32_t
     {
-        constexpr uint32_t remap = 1 << 29;
-        constexpr uint32_t translucent = 1 << 30;
-        constexpr uint32_t remap2 = 1 << 31;
-    }
+        none = 0U,
+        remap = 1 << 29,
+        translucent = 1 << 30,
+        remap2 = ~(1 << 31),
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ImageIdFlags);
+
 
     void loadG1();
     void initialiseCharacterWidths();

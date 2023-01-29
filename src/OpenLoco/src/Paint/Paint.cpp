@@ -826,7 +826,7 @@ namespace OpenLoco::Paint
         auto paletteMap = Gfx::PaletteMap::getDefault();
         if (imageId.hasPrimary())
         {
-            _interactionFlags = Gfx::ImageIdFlags::remap;
+            _interactionFlags = uint32_t(Gfx::ImageIdFlags::remap);
             ExtColour index = imageId.hasSecondary() ? static_cast<ExtColour>(imageId.getPrimary()) : imageId.getRemap();
             if (auto pm = Gfx::PaletteMap::getForColour(index))
             {

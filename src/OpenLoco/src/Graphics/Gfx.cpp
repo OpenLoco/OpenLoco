@@ -285,12 +285,12 @@ namespace OpenLoco::Gfx
 
     uint32_t recolour(uint32_t image)
     {
-        return ImageIdFlags::remap | image;
+        return uint32_t(ImageIdFlags::remap) | image;
     }
 
     uint32_t recolour(uint32_t image, ExtColour colour)
     {
-        return ImageIdFlags::remap | (enumValue(colour) << 19) | image;
+        return uint32_t(ImageIdFlags::remap) | (enumValue(colour) << 19) | image;
     }
     uint32_t recolour(uint32_t image, Colour colour)
     {
@@ -299,7 +299,7 @@ namespace OpenLoco::Gfx
 
     uint32_t recolour2(uint32_t image, Colour colour1, Colour colour2)
     {
-        return ImageIdFlags::remap | ImageIdFlags::remap2 | (enumValue(colour1) << 19) | (enumValue(colour2) << 24) | image;
+        return uint32_t(ImageIdFlags::remap) | uint32_t(ImageIdFlags::remap2) | (enumValue(colour1) << 19) | (enumValue(colour2) << 24) | image;
     }
 
     uint32_t recolour2(uint32_t image, ColourScheme colourScheme)
@@ -309,7 +309,7 @@ namespace OpenLoco::Gfx
 
     uint32_t recolourTranslucent(uint32_t image, ExtColour colour)
     {
-        return ImageIdFlags::translucent | (enumValue(colour) << 19) | image;
+        return uint32_t(ImageIdFlags::translucent) | (enumValue(colour) << 19) | image;
     }
 
     G1Element* getG1Element(uint32_t imageId)
