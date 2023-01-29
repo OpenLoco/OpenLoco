@@ -841,38 +841,38 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045EDFC
-    static bool isPSSpriteTypeInFilter(const InteractionItem spriteType, uint32_t filter)
+    static bool isPSSpriteTypeInFilter(const InteractionItem spriteType, InteractionItemFlags filter)
     {
-        constexpr uint32_t interactionItemToFilter[] = { 0,
-                                                         InteractionItemFlags::surface,
-                                                         InteractionItemFlags::surface,
-                                                         InteractionItemFlags::entity,
-                                                         InteractionItemFlags::track,
-                                                         InteractionItemFlags::trackExtra,
-                                                         InteractionItemFlags::signal,
-                                                         InteractionItemFlags::station,
-                                                         InteractionItemFlags::station,
-                                                         InteractionItemFlags::station,
-                                                         InteractionItemFlags::station,
-                                                         InteractionItemFlags::water,
-                                                         InteractionItemFlags::tree,
-                                                         InteractionItemFlags::wall,
-                                                         InteractionItemFlags::townLabel,
-                                                         InteractionItemFlags::stationLabel,
-                                                         InteractionItemFlags::roadAndTram,
-                                                         InteractionItemFlags::roadAndTramExtra,
-                                                         0,
-                                                         InteractionItemFlags::building,
-                                                         InteractionItemFlags::industry,
-                                                         InteractionItemFlags::headquarterBuilding };
+        constexpr InteractionItemFlags interactionItemToFilter[] = { InteractionItemFlags::none,
+                                                                     InteractionItemFlags::surface,
+                                                                     InteractionItemFlags::surface,
+                                                                     InteractionItemFlags::entity,
+                                                                     InteractionItemFlags::track,
+                                                                     InteractionItemFlags::trackExtra,
+                                                                     InteractionItemFlags::signal,
+                                                                     InteractionItemFlags::station,
+                                                                     InteractionItemFlags::station,
+                                                                     InteractionItemFlags::station,
+                                                                     InteractionItemFlags::station,
+                                                                     InteractionItemFlags::water,
+                                                                     InteractionItemFlags::tree,
+                                                                     InteractionItemFlags::wall,
+                                                                     InteractionItemFlags::townLabel,
+                                                                     InteractionItemFlags::stationLabel,
+                                                                     InteractionItemFlags::roadAndTram,
+                                                                     InteractionItemFlags::roadAndTramExtra,
+                                                                     InteractionItemFlags::none,
+                                                                     InteractionItemFlags::building,
+                                                                     InteractionItemFlags::industry,
+                                                                     InteractionItemFlags::headquarterBuilding };
 
         if (spriteType == InteractionItem::noInteraction
             || spriteType == InteractionItem::bridge) // 18 as a type seems to not exist.
             return false;
 
-        uint32_t mask = interactionItemToFilter[static_cast<size_t>(spriteType)];
+        InteractionItemFlags mask = interactionItemToFilter[static_cast<size_t>(spriteType)];
 
-        if (filter & mask)
+        if ((filter & mask) != InteractionItemFlags::none)
         {
             return false;
         }
@@ -881,7 +881,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045ED91
-    [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const uint32_t flags)
+    [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const InteractionItemFlags flags)
     {
         InteractionArg info{};
 
@@ -919,11 +919,11 @@ namespace OpenLoco::Paint
     }
 
     // 0x0048DDE4
-    [[nodiscard]] InteractionArg PaintSession::getStationNameInteractionInfo(const uint32_t flags)
+    [[nodiscard]] InteractionArg PaintSession::getStationNameInteractionInfo(const InteractionItemFlags flags)
     {
         InteractionArg interaction{};
 
-        if (flags & InteractionItemFlags::stationLabel)
+        if ((flags & InteractionItemFlags::stationLabel) != InteractionItemFlags::none)
         {
             return interaction;
         }
@@ -951,11 +951,11 @@ namespace OpenLoco::Paint
     }
 
     // 0x0049773D
-    [[nodiscard]] InteractionArg PaintSession::getTownNameInteractionInfo(const uint32_t flags)
+    [[nodiscard]] InteractionArg PaintSession::getTownNameInteractionInfo(const InteractionItemFlags flags)
     {
         InteractionArg interaction{};
 
-        if (flags & InteractionItemFlags::townLabel)
+        if ((flags & InteractionItemFlags::townLabel) != InteractionItemFlags::none)
         {
             return interaction;
         }

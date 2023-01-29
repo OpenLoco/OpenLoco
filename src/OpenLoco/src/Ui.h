@@ -4,6 +4,7 @@
 #include "Graphics/RenderTarget.h"
 #include "Location.hpp"
 #include "Map/Map.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <string>
 #include <vector>
 
@@ -172,25 +173,27 @@ namespace OpenLoco::Ui
             buildingInfo = 22,
         };
 
-        namespace InteractionItemFlags // Bridge missing?
+        enum class InteractionItemFlags : uint32_t // Bridge missing?
         {
-            constexpr uint32_t surface = 1 << 0;
-            constexpr uint32_t entity = 1 << 1;
-            constexpr uint32_t track = 1 << 2;
-            constexpr uint32_t water = 1 << 3;
-            constexpr uint32_t tree = 1 << 4;
-            constexpr uint32_t roadAndTram = 1 << 5;
-            constexpr uint32_t roadAndTramExtra = 1 << 6;
-            constexpr uint32_t signal = 1 << 7;
-            constexpr uint32_t wall = 1 << 8;
-            constexpr uint32_t headquarterBuilding = 1 << 9;
-            constexpr uint32_t station = 1 << 11;
-            constexpr uint32_t townLabel = 1 << 12;
-            constexpr uint32_t stationLabel = 1 << 13;
-            constexpr uint32_t trackExtra = 1 << 14;
-            constexpr uint32_t building = 1 << 15;
-            constexpr uint32_t industry = 1 << 16;
-        }
+            none = 0U,
+            surface = (1U << 0),
+            entity = (1U << 1),
+            track = (1U << 2),
+            water = (1U << 3),
+            tree = (1U << 4),
+            roadAndTram = (1U << 5),
+            roadAndTramExtra = (1U << 6),
+            signal = (1U << 7),
+            wall = (1U << 8),
+            headquarterBuilding = (1U << 9),
+            station = (1U << 11),
+            townLabel = (1U << 12),
+            stationLabel = (1U << 13),
+            trackExtra = (1U << 14),
+            building = (1U << 15),
+            industry = (1U << 16),
+        };
+        OPENLOCO_ENABLE_ENUM_OPERATORS(InteractionItemFlags);
 
         struct InteractionArg
         {
@@ -216,7 +219,7 @@ namespace OpenLoco::Ui
         InteractionArg getItemLeft(int16_t tempX, int16_t tempY);
         InteractionArg rightOver(int16_t x, int16_t y);
 
-        std::pair<ViewportInteraction::InteractionArg, Ui::Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags);
+        std::pair<ViewportInteraction::InteractionArg, Ui::Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, InteractionItemFlags flags);
         std::optional<Map::Pos2> getSurfaceOrWaterLocFromUi(const Point& screenCoords);
         uint8_t getQuadrantOrCentreFromPos(const Map::Pos2& loc);
         uint8_t getQuadrantFromPos(const Map::Pos2& loc);
