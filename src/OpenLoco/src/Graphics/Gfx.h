@@ -5,6 +5,7 @@
 #include "Types.hpp"
 #include "Ui/Rect.h"
 #include "Ui/UiTypes.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <array>
 #include <cstdint>
 #include <optional>
@@ -39,6 +40,19 @@ namespace OpenLoco::Gfx
         uint32_t totalSize;
     };
 
+    enum class G1ElementFlags : uint16_t
+    {
+        none = 0U,
+        hasTransparancy = 1 << 0,   // Image data contains transparent sections (when not set data is plain bmp)
+        unk1 = 1 << 1,              // Unknown function not used on any entry
+        isRLECompressed = 1 << 2,   // Image data is encoded using CS's form of run length encoding
+        isR8G8B8Palette = 1 << 3,   // Image data is a sequence of palette entries R8G8B8
+        hasZoomSprites = 1 << 4,    // Use a different sprite for higher zoom levels
+        noZoomDraw = 1 << 5,        // Does not get drawn at higher zoom levels (only zoom 0)
+        duplicatePrevious = 1 << 6, // Duplicates the previous element but with adjusted x/y offsets
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(G1ElementFlags);
+
     struct G1Element32
     {
         uint32_t offset;    // 0x00
@@ -46,7 +60,7 @@ namespace OpenLoco::Gfx
         int16_t height;     // 0x06
         int16_t xOffset;    // 0x08
         int16_t yOffset;    // 0x0A
-        uint16_t flags;     // 0x0C
+        G1ElementFlags flags; // 0x0C
         int16_t zoomOffset; // 0x0E
     };
 
@@ -58,7 +72,7 @@ namespace OpenLoco::Gfx
         int16_t height = 0;
         int16_t xOffset = 0;
         int16_t yOffset = 0;
-        uint16_t flags = 0;
+        G1ElementFlags flags = G1ElementFlags::none;
         int16_t zoomOffset = 0;
 
         G1Element() = default;
@@ -82,17 +96,6 @@ namespace OpenLoco::Gfx
         uint8_t heightNegative;
         uint8_t heightPositive;
     };
-
-    namespace G1ElementFlags
-    {
-        constexpr uint16_t hasTransparancy = 1 << 0;   // Image data contains transparent sections (when not set data is plain bmp)
-        constexpr uint16_t unk1 = 1 << 1;              // Unknown function not used on any entry
-        constexpr uint16_t isRLECompressed = 1 << 2;   // Image data is encoded using CS's form of run length encoding
-        constexpr uint16_t isR8G8B8Palette = 1 << 3;   // Image data is a sequence of palette entries R8G8B8
-        constexpr uint16_t hasZoomSprites = 1 << 4;    // Use a different sprite for higher zoom levels
-        constexpr uint16_t noZoomDraw = 1 << 5;        // Does not get drawn at higher zoom levels (only zoom 0)
-        constexpr uint16_t duplicatePrevious = 1 << 6; // Duplicates the previous element but with adjusted x/y offsets
-    }
 
     namespace ImageIdFlags
     {
