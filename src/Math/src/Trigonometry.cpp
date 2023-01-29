@@ -8,6 +8,7 @@ namespace OpenLoco::Math::Trigonometry
         // Excel Function =SIN((A1/16384)*2*PI())*32767
         // Where A1 is 0 : 4095
         // NOTE: this excel func is close but not identical
+        // 0x00501B50
         static constexpr std::array<int16_t, kDirectionPrecisionHigh / 4> kQuarterSine = {
             0,
             12,
