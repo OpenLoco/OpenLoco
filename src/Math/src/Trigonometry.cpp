@@ -8,7 +8,7 @@ namespace OpenLoco::Math::Trigonometry
         // Excel Function =SIN((A1/16384)*2*PI())*32767
         // Where A1 is 0 : 4095
         // NOTE: this excel func is close but not identical
-        static constexpr std::array<int16_t, directionPrecisionHigh / 4> kQuarterSine = {
+        static constexpr std::array<int16_t, kDirectionPrecisionHigh / 4> kQuarterSine = {
             0,
             12,
             25,
@@ -4119,6 +4119,6 @@ namespace OpenLoco::Math::Trigonometry
     int32_t integerCosinePrecisionHigh(uint16_t direction, int32_t magnitude)
     {
         // Cosine is Sine plus pi/2
-        return integerSinePrecisionHigh(direction + directionPrecisionHigh / 4, magnitude);
+        return integerSinePrecisionHigh(direction + kDirectionPrecisionHigh / 4, magnitude);
     }
 }
