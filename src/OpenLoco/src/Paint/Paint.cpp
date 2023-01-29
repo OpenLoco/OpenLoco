@@ -843,28 +843,30 @@ namespace OpenLoco::Paint
     // 0x0045EDFC
     static bool isPSSpriteTypeInFilter(const InteractionItem spriteType, InteractionItemFlags filter)
     {
-        constexpr InteractionItemFlags interactionItemToFilter[] = { InteractionItemFlags::none,
-                                                                     InteractionItemFlags::surface,
-                                                                     InteractionItemFlags::surface,
-                                                                     InteractionItemFlags::entity,
-                                                                     InteractionItemFlags::track,
-                                                                     InteractionItemFlags::trackExtra,
-                                                                     InteractionItemFlags::signal,
-                                                                     InteractionItemFlags::station,
-                                                                     InteractionItemFlags::station,
-                                                                     InteractionItemFlags::station,
-                                                                     InteractionItemFlags::station,
-                                                                     InteractionItemFlags::water,
-                                                                     InteractionItemFlags::tree,
-                                                                     InteractionItemFlags::wall,
-                                                                     InteractionItemFlags::townLabel,
-                                                                     InteractionItemFlags::stationLabel,
-                                                                     InteractionItemFlags::roadAndTram,
-                                                                     InteractionItemFlags::roadAndTramExtra,
-                                                                     InteractionItemFlags::none,
-                                                                     InteractionItemFlags::building,
-                                                                     InteractionItemFlags::industry,
-                                                                     InteractionItemFlags::headquarterBuilding };
+        constexpr InteractionItemFlags interactionItemToFilter[] = {
+            InteractionItemFlags::none,
+            InteractionItemFlags::surface,
+            InteractionItemFlags::surface,
+            InteractionItemFlags::entity,
+            InteractionItemFlags::track,
+            InteractionItemFlags::trackExtra,
+            InteractionItemFlags::signal,
+            InteractionItemFlags::station,
+            InteractionItemFlags::station,
+            InteractionItemFlags::station,
+            InteractionItemFlags::station,
+            InteractionItemFlags::water,
+            InteractionItemFlags::tree,
+            InteractionItemFlags::wall,
+            InteractionItemFlags::townLabel,
+            InteractionItemFlags::stationLabel,
+            InteractionItemFlags::roadAndTram,
+            InteractionItemFlags::roadAndTramExtra,
+            InteractionItemFlags::none,
+            InteractionItemFlags::building,
+            InteractionItemFlags::industry,
+            InteractionItemFlags::headquarterBuilding,
+        };
 
         if (spriteType == InteractionItem::noInteraction
             || spriteType == InteractionItem::bridge) // 18 as a type seems to not exist.
