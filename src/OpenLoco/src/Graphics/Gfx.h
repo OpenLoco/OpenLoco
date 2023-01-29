@@ -104,7 +104,6 @@ namespace OpenLoco::Gfx
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ImageIdFlags);
 
-
     void loadG1();
     void initialiseCharacterWidths();
     void initialiseNoiseMaskMap();
