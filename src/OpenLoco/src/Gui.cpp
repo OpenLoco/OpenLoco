@@ -1,6 +1,5 @@
 #include "Gui.h"
 #include "Graphics/Colour.h"
-#include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
@@ -9,6 +8,7 @@
 #include "ViewportManager.h"
 #include "Widget.h"
 #include "Window.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;

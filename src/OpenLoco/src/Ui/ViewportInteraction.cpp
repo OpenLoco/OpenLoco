@@ -3,7 +3,6 @@
 #include "Entities/EntityManager.h"
 #include "IndustryManager.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
@@ -35,6 +34,7 @@
 #include "ViewportManager.h"
 #include "Window.h"
 #include "WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

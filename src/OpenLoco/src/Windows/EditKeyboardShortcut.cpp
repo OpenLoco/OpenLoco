@@ -4,13 +4,13 @@
 #include "Graphics/ImageIds.h"
 #include "Input/Shortcut.h"
 #include "Input/ShortcutManager.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;

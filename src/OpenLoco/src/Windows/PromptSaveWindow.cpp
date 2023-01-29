@@ -3,13 +3,13 @@
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 #include <array>
 #include <cstring>

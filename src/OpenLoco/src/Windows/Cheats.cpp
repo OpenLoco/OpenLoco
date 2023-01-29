@@ -11,13 +11,13 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
-#include "Math/Bound.hpp"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Scenario.h"
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Math/Bound.hpp>
 
 using OpenLoco::GameCommands::CheatCommand;
 

@@ -2,7 +2,6 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/ArgsWrapper.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Objects/CompetitorObject.h"
@@ -11,6 +10,7 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

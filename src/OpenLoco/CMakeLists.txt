@@ -106,9 +106,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/MouseInput.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/ShortcutManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Hook.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Hooks.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Interop.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LastGameOptionManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Conversion.cpp"
@@ -129,8 +127,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/TrackData.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Tree.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/WaveManager.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Trigonometry.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Vector.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Message.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/MessageManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/MultiPlayer.cpp"
@@ -335,9 +331,10 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Gui.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Industry.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/IndustryManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Shortcut.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/ShortcutManager.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Hooks.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LabelFrame.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LastGameOptionManager.h"
@@ -471,15 +468,11 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteHelper.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteRLE.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameException.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Interop.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/ArgsWrapper.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/FormatArguments.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Location.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Map.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileLoop.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Bound.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Trigonometry.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Math/Vector.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Speed.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Types.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/UiTypes.hpp"
@@ -491,14 +484,6 @@ if (APPLE)
         "${CMAKE_CURRENT_SOURCE_DIR}src/Platform/Platform.Macos.mm")
     set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
-
-# Disable optimizations for interop.cpp for all compilers, to allow optimized
-# builds without need for -fno-omit-frame-pointer
-if (MSVC)
-    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "/Oy- /Od")
-else ()
-    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
-endif ()
 
 if (MINGW)
     loco_add_library(OpenLoco SHARED
@@ -538,7 +523,9 @@ endif ()
 
 target_link_libraries(OpenLoco
     Core
+    Interop
     Utility
+    Math
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp
@@ -649,7 +636,9 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         Core
+        Interop
         Utility
+        Math
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
         nonstd::span-lite)

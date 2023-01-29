@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
-#include "Interop/Interop.hpp"
+#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Paint
 {

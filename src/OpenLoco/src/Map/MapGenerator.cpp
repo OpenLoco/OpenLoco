@@ -1,5 +1,4 @@
 #include "MapGenerator.h"
-#include "Interop/Interop.hpp"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "Objects/LandObject.h"
@@ -15,6 +14,7 @@
 #include "TreeElement.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <cstdint>
 #include <random>

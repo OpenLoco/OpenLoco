@@ -1,9 +1,9 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
-#include "Interop/Interop.hpp"
 #include "Orders.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

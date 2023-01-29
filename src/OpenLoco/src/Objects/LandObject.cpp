@@ -3,10 +3,10 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Interop/Interop.hpp"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
 {

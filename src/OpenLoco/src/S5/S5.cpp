@@ -10,7 +10,6 @@
 #include "GameStateFlags.h"
 #include "Gui.h"
 #include "IndustryManager.h"
-#include "Interop/Interop.hpp"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
@@ -26,6 +25,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Orders.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Exception.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <fstream>

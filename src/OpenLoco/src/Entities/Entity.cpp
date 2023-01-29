@@ -2,9 +2,9 @@
 #include "Config.h"
 #include "EntityManager.h"
 #include "Graphics/Gfx.h"
-#include "Interop/Interop.hpp"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 
 using namespace OpenLoco;

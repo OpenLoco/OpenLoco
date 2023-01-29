@@ -7,7 +7,6 @@
 #include "GameStateFlags.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
-#include "Math/Vector.hpp"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ClimateObject.h"
@@ -17,6 +16,7 @@
 #include "SceneManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Math/Vector.hpp>
 #include <numeric>
 
 namespace OpenLoco::IndustryManager

@@ -2,13 +2,13 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Scenario.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

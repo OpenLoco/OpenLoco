@@ -1,7 +1,7 @@
 #include "TownNamesObject.h"
-#include "Interop/Interop.hpp"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <numeric>
 

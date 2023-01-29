@@ -2,13 +2,13 @@
 #include "Config.h"
 #include "Console.h"
 #include "Entities/EntityManager.h"
-#include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Station.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cassert>
 #include <memory>

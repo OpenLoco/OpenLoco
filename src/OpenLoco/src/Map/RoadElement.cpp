@@ -1,10 +1,10 @@
 #include "RoadElement.h"
 #include "CompanyManager.h"
 #include "GameCommands/GameCommands.h"
-#include "Interop/Interop.hpp"
 #include "Objects/RoadObject.h"
 #include "Tile.h"
 #include "TileManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

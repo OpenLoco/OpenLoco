@@ -415,7 +415,4 @@ namespace OpenLoco::Interop
     void writeNop(uint32_t address, size_t count);
     void hookDump(uint32_t address, void* fn);
     void hookLib(uint32_t address, void* fn);
-
-    void registerHooks();
-    void loadSections();
 }

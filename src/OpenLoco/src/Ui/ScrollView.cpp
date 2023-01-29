@@ -1,9 +1,9 @@
 #include "ScrollView.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Ui.h"
 #include "Widget.h"
 #include "WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <cmath>
 
 using namespace OpenLoco::Interop;

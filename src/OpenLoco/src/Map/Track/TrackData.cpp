@@ -1,5 +1,5 @@
 #include "TrackData.h"
-#include "Interop/Interop.hpp"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <array>
 #include <cassert>

@@ -1,8 +1,8 @@
 #include "RegionObject.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Gfx.h"
-#include "Interop/Interop.hpp"
 #include "ObjectManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
 {

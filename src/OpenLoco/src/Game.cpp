@@ -7,7 +7,6 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
 #include "Objects/ObjectIndex.h"
@@ -18,6 +17,7 @@
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Game
 {

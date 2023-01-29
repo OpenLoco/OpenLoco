@@ -1,8 +1,8 @@
 #include "Environment.h"
 #include "Config.h"
-#include "Interop/Interop.hpp"
 #include "Platform/Platform.h"
 #include "Ui.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Collection.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <cstring>

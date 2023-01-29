@@ -1,12 +1,12 @@
 #include "ObjectIndex.h"
 #include "Environment.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <OpenLoco/Utility/String.hpp>

@@ -1,11 +1,11 @@
 #include "LevelCrossingObject.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Gfx.h"
-#include "Interop/Interop.hpp"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include "ScenarioManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 
 namespace OpenLoco

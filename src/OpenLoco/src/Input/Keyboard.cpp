@@ -5,7 +5,6 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Intro.h"
 #include "Localisation/StringIds.h"
 #include "SceneManager.h"
@@ -14,6 +13,7 @@
 #include "Ui.h"
 #include "Ui/Screenshot.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <cstdint>
 #include <functional>
