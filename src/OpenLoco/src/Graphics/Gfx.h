@@ -55,13 +55,13 @@ namespace OpenLoco::Gfx
 
     struct G1Element32
     {
-        uint32_t offset;    // 0x00
-        int16_t width;      // 0x04
-        int16_t height;     // 0x06
-        int16_t xOffset;    // 0x08
-        int16_t yOffset;    // 0x0A
+        uint32_t offset;      // 0x00
+        int16_t width;        // 0x04
+        int16_t height;       // 0x06
+        int16_t xOffset;      // 0x08
+        int16_t yOffset;      // 0x0A
         G1ElementFlags flags; // 0x0C
-        int16_t zoomOffset; // 0x0E
+        int16_t zoomOffset;   // 0x0E
     };
 
     // A version that can be 64-bit when ready...
