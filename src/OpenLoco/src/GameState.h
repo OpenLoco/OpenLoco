@@ -4,6 +4,7 @@
 #include "Engine/Limits.h"
 #include "Entities/Entity.h"
 #include "Industry.h"
+#include "IndustryManager.h"
 #include "Map/Animation.h"
 #include "Map/Wave.h"
 #include "Message.h"
@@ -93,7 +94,7 @@ namespace OpenLoco
         uint16_t vehiclePreviewRotationFrame;                                    // 0x000416 (0x0052622E)
         Scenario::Objective scenarioObjective;                                   // 0x000418 (0x00526230)
         Scenario::ObjectiveProgress scenarioObjectiveProgress;                   // 0x000429 (0x00526241)
-        uint8_t industryFlags;                                                   // 0x00042F (0x00526247)
+        IndustryManager::Flags industryFlags;                                    // 0x00042F (0x00526247)
         uint16_t forbiddenVehiclesPlayers;                                       // 0x000430 (0x00526248)
         uint16_t forbiddenVehiclesCompetitors;                                   // 0x000432 (0x0052624A)
         uint16_t fixFlags;                                                       // 0x000434 (0x0052624C)
