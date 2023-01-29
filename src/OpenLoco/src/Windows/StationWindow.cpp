@@ -772,7 +772,7 @@ namespace OpenLoco::Ui::Windows::Station
             Ui::Windows::Construction::sub_4A6FAC();
             auto station = StationManager::get(_lastSelectedStation);
 
-            station->setCatchmentDisplay(0);
+            station->setCatchmentDisplay(CatchmentFlags::flag0);
             Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
 
             WindowManager::invalidate(WindowType::station, enumValue(newStationId));
@@ -834,10 +834,13 @@ namespace OpenLoco::Ui::Windows::Station
                 StringIds::label_icons_road_air_water,
                 StringIds::label_icons_rail_road_air_water
             };
+
+            uint16_t stationType = static_cast<std::underlying_type_t<StationFlags>>(station->flags) & 0xF;
+
             auto args = FormatArguments();
             args.push(station->name);
             args.push(station->town);
-            args.push(stationTypeImages[(station->flags & 0xF)]);
+            args.push(stationTypeImages[stationType]);
 
             // Resize common widgets.
             self.widgets[Common::widx::frame].right = self.width - 1;

@@ -1121,7 +1121,7 @@ namespace OpenLoco::Paint
 
         for (auto& station : StationManager::stations())
         {
-            if (station.flags & StationFlags::flag_5)
+            if ((station.flags & StationFlags::flag_5) != StationFlags::none)
             {
                 continue;
             }

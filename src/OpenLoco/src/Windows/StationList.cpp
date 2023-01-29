@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::StationList
         widx widgetIndex;
         string_id windowTitleId;
         uint32_t imageId;
-        uint16_t stationMask;
+        StationFlags stationMask;
     };
 
     static TabDetails tabInformationByType[] = {
@@ -228,14 +228,14 @@ namespace OpenLoco::Ui::Windows::StationList
             if (station.owner != CompanyId(window->number))
                 continue;
 
-            if ((station.flags & StationFlags::flag_5) != 0)
+            if ((station.flags & StationFlags::flag_5) != StationFlags::none)
                 continue;
 
-            const uint16_t mask = tabInformationByType[window->currentTab].stationMask;
-            if ((station.flags & mask) == 0)
+            const StationFlags mask = tabInformationByType[window->currentTab].stationMask;
+            if ((station.flags & mask) == StationFlags::none)
                 continue;
 
-            if ((station.flags & StationFlags::flag_4) != 0)
+            if ((station.flags & StationFlags::flag_4) != StationFlags::none)
                 continue;
 
             if (edi == StationId::null)

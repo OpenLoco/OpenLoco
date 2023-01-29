@@ -688,7 +688,7 @@ namespace OpenLoco
                 }
 
                 const auto& cargoStats = station->cargoStats[cargoType];
-                if (!(cargoStats.flags & (1 << 1)))
+                if ((cargoStats.flags & StationCargoStatsFlags::flag1) == StationCargoStatsFlags::none)
                 {
                     continue;
                 }
