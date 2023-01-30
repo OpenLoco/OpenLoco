@@ -153,7 +153,7 @@ namespace OpenLoco::Ui
             }
 
             bool isHovered = ((Input::getMapSelectionFlags() & Input::MapSelectionFlags::hoveringOverStation) != Input::MapSelectionFlags::none)
-                             && (station.id() == Input::getHoveredStationId());
+                && (station.id() == Input::getHoveredStationId());
 
             drawStationName(unZoomedRt, station, rt.zoomLevel, isHovered);
         }
