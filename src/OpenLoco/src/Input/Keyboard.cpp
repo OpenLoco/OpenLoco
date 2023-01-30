@@ -122,8 +122,7 @@ namespace OpenLoco::Input
 
             case Tutorial::State::playing:
             {
-                const uint16_t next = Tutorial::nextInput();
-                _keyModifier = (KeyModifier)next;
+                _keyModifier = static_cast<KeyModifier>(Tutorial::nextInput());
                 if ((_keyModifier & KeyModifier::unknown) == KeyModifier::none)
                     return;
 
@@ -264,7 +263,7 @@ namespace OpenLoco::Input
             if (cfg.shortcuts[i].keyCode == k->keyCode && cfg.shortcuts[i].modifiers == _keyModifier)
             {
                 cfg.shortcuts[i].keyCode = 0xFFFFFFFF;
-                cfg.shortcuts[i].modifiers = KeyModifier::full;
+                cfg.shortcuts[i].modifiers = KeyModifier::invalid;
             }
         }
 

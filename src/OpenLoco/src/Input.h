@@ -71,7 +71,7 @@ namespace OpenLoco::Input
         control = 1 << 1,
         unknown = 1 << 2,
         cheat = 1 << 7,
-        full = 0xFF,
+        invalid = 0xFF,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(KeyModifier);
 

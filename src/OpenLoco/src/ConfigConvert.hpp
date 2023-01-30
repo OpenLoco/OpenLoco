@@ -89,7 +89,7 @@ namespace YAML
             if (s.empty())
             {
                 rhs.keyCode = 0xFFFFFFFF;
-                rhs.modifiers = KeyModifier::full;
+                rhs.modifiers = KeyModifier::invalid;
                 return true;
             }
 
