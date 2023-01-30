@@ -3,6 +3,7 @@
 #include "Graphics/ImageIds.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
@@ -15,8 +16,19 @@ namespace OpenLoco::Drawing
 {
     namespace Impl
     {
+        // Make this maybe public?
+        enum class TextDrawFlags : uint16_t
+        {
+            none = 0U,
+            inset = (1U << 0),
+            outline = (1U << 1),
+            dark = (1U << 2),
+            extraDark = (1U << 3),
+        };
+        OPENLOCO_ENABLE_ENUM_OPERATORS(TextDrawFlags);
+
         // TODO: Move them into RenderContext once everything is implemented.
-        static loco_global<uint16_t, 0x112C824> _currentFontFlags;
+        static loco_global<TextDrawFlags, 0x112C824> _currentFontFlags;
         static loco_global<int16_t, 0x0112C876> _currentFontSpriteBase;
         static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
         static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
@@ -38,16 +50,6 @@ namespace OpenLoco::Drawing
 
         // TODO: Store in drawing context.
         static PaletteMap::Buffer<8> _textColours{ 0 };
-
-        // Make this maybe public?
-        namespace TextDrawFlags
-        {
-            constexpr uint8_t inset = (1ULL << 0);
-            constexpr uint8_t outline = (1ULL << 1);
-            constexpr uint8_t dark = (1ULL << 2);
-            constexpr uint8_t extraDark = (1ULL << 3);
-        }
-
         static uint16_t getStringWidth(const char* buffer);
         static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
         static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
@@ -374,13 +376,13 @@ namespace OpenLoco::Drawing
 
         static void setTextColours(PaletteIndex_t pal1, PaletteIndex_t pal2, PaletteIndex_t pal3)
         {
-            if ((_currentFontFlags & TextDrawFlags::inset) != 0)
+            if ((_currentFontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
                 return;
 
             _textColours[1] = pal1;
             _textColours[2] = PaletteIndex::transparent;
             _textColours[3] = PaletteIndex::transparent;
-            if ((_currentFontFlags & TextDrawFlags::outline) != 0)
+            if ((_currentFontFlags & TextDrawFlags::outline) != TextDrawFlags::none)
             {
                 _textColours[2] = pal2;
                 _textColours[3] = pal3;
@@ -779,7 +781,7 @@ namespace OpenLoco::Drawing
                         ImageId imageId{ image & 0x7FFFF };
                         str += 4;
 
-                        if ((_currentFontFlags & TextDrawFlags::inset) != 0)
+                        if ((_currentFontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
                         {
                             drawImageSolid(*rt, pos, imageId, _textColours[3]);
                             drawImageSolid(*rt, pos + Ui::Point{ 1, 1 }, imageId, _textColours[1]);
@@ -893,7 +895,7 @@ namespace OpenLoco::Drawing
 
             if (colour.isFD())
             {
-                _currentFontFlags = 0;
+                _currentFontFlags = TextDrawFlags::none;
                 setTextColour(0);
                 return loopNewline(&rt, origin, (uint8_t*)str);
             }
@@ -915,7 +917,7 @@ namespace OpenLoco::Drawing
                 return loopNewline(&rt, origin, (uint8_t*)str);
             }
 
-            _currentFontFlags = 0;
+            _currentFontFlags = TextDrawFlags::none;
             if (getCurrentFontSpriteBase() == Font::m1)
             {
                 setCurrentFontSpriteBase(Font::medium_bold);
@@ -945,15 +947,15 @@ namespace OpenLoco::Drawing
                 _currentFontFlags = _currentFontFlags | TextDrawFlags::inset;
             }
 
-            if ((_currentFontFlags & TextDrawFlags::inset) != 0)
+            if ((_currentFontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
             {
-                if ((_currentFontFlags & TextDrawFlags::dark) != 0 && (_currentFontFlags & TextDrawFlags::extraDark) != 0)
+                if ((_currentFontFlags & TextDrawFlags::dark) != TextDrawFlags::none && (_currentFontFlags & TextDrawFlags::extraDark) != TextDrawFlags::none)
                 {
                     _textColours[1] = Colours::getShade(colour.c(), 2);
                     _textColours[2] = PaletteIndex::transparent;
                     _textColours[3] = Colours::getShade(colour.c(), 4);
                 }
-                else if ((_currentFontFlags & TextDrawFlags::dark) != 0)
+                else if ((_currentFontFlags & TextDrawFlags::dark) != TextDrawFlags::none)
                 {
                     _textColours[1] = Colours::getShade(colour.c(), 3);
                     _textColours[2] = PaletteIndex::transparent;
@@ -1042,7 +1044,7 @@ namespace OpenLoco::Drawing
             else if (_currentFontSpriteBase == Font::large)
                 lineHeight = 18;
 
-            _currentFontFlags = 0;
+            _currentFontFlags = TextDrawFlags::none;
             Ui::Point point = { x, y };
 
             const char* ptr = buffer;
@@ -1302,7 +1304,7 @@ namespace OpenLoco::Drawing
             else if (_currentFontSpriteBase == Font::large)
                 lineHeight = 18;
 
-            _currentFontFlags = 0;
+            _currentFontFlags = TextDrawFlags::none;
             Ui::Point point = origin;
             point.y -= (lineHeight / 2) * (breakCount - 1);
 
