@@ -20,10 +20,10 @@ namespace OpenLoco::Drawing
         enum class TextDrawFlags : uint16_t
         {
             none = 0U,
-            inset = (1ULL << 0),
-            outline = (1ULL << 1),
-            dark = (1ULL << 2),
-            extraDark = (1ULL << 3),
+            inset = (1U << 0),
+            outline = (1U << 1),
+            dark = (1U << 2),
+            extraDark = (1U << 3),
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(TextDrawFlags);
 
