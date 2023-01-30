@@ -152,7 +152,7 @@ namespace OpenLoco::EditorController
             {
                 continue;
             }
-            if (buildingObj->flags & BuildingObjectFlags::isHeadquarters)
+            if ((buildingObj->flags & BuildingObjectFlags::isHeadquarters) != BuildingObjectFlags::none)
             {
                 numHeadquarterTypes++;
             }

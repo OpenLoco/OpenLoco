@@ -1079,7 +1079,7 @@ namespace OpenLoco::Ui::Windows::TownList
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
             Map::TileManager::setMapSelectionCorner(4);
             auto* building = ObjectManager::get<BuildingObject>(placementArgs->type);
-            auto posB = Map::Pos2(placementArgs->pos) + (building->flags & BuildingObjectFlags::largeTile ? Map::Pos2(32, 32) : Map::Pos2(0, 0));
+            auto posB = Map::Pos2(placementArgs->pos) + (((building->flags & BuildingObjectFlags::largeTile) != BuildingObjectFlags::none) ? Map::Pos2(32, 32) : Map::Pos2(0, 0));
             Map::TileManager::setMapSelectionArea(placementArgs->pos, posB);
             Map::TileManager::mapInvalidateSelectionRect();
 
@@ -1337,14 +1337,14 @@ namespace OpenLoco::Ui::Windows::TownList
                     continue;
                 if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
                 {
-                    if (!(buildingObj->flags & BuildingObjectFlags::miscBuilding))
+                    if ((buildingObj->flags & BuildingObjectFlags::miscBuilding) != BuildingObjectFlags::none)
                         continue;
-                    if ((buildingObj->flags & BuildingObjectFlags::isHeadquarters) != 0)
+                    if ((buildingObj->flags & BuildingObjectFlags::isHeadquarters) != BuildingObjectFlags::none)
                         continue;
                 }
                 else
                 {
-                    if ((buildingObj->flags & BuildingObjectFlags::miscBuilding) != 0)
+                    if ((buildingObj->flags & BuildingObjectFlags::miscBuilding) != BuildingObjectFlags::none)
                         continue;
                 }
                 self->rowInfo[buildingCount] = i;
