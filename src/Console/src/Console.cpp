@@ -1,7 +1,6 @@
 #include "Console.h"
 #include <cstdio>
 #include <stdarg.h>
-#include <varargs.h>
 
 namespace OpenLoco::Console
 {

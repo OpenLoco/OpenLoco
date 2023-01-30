@@ -16,6 +16,8 @@ extern "C" __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANC
     return OpenLoco::main(lpCmdLine);
 }
 #else
+#include "Interop/Hooks.h"
+
 int main(int argc, const char** argv)
 {
     OpenLoco::Interop::loadSections();

@@ -8,7 +8,6 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
-#include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "Ui.h"
@@ -18,6 +17,7 @@
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
 
 #include <SDL2/SDL.h>
