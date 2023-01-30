@@ -64,14 +64,16 @@ namespace OpenLoco::Input
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(MapSelectionFlags);
 
-    enum class KeyModifier : uint8_t 
+    enum class KeyModifier : uint8_t
     {
         none = 0U,
         shift = 1 << 0,
         control = 1 << 1,
         unknown = 1 << 2,
         cheat = 1 << 7,
+        full = 0xFF,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(KeyModifier);
 
     void init();
     void initMouse();
@@ -109,7 +111,7 @@ namespace OpenLoco::Input
 
     void enqueueText(const char* text);
     void enqueueKey(uint32_t key);
-    bool hasKeyModifier(uint8_t modifier);
+    bool hasKeyModifier(KeyModifier modifier);
 
     StationId getHoveredStationId();
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Input.h"
 #include "Input/ShortcutManager.h"
 #include "Objects/Object.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -155,7 +156,7 @@ namespace OpenLoco::Config
     struct KeyboardShortcut
     {
         uint32_t keyCode;
-        uint8_t modifiers;
+        Input::KeyModifier modifiers;
     };
 
     struct Network

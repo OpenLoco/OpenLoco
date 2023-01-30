@@ -63,17 +63,17 @@ namespace YAML
             if (rhs.keyCode == 0xFFFFFFFF)
                 return Node(keyName);
 
-            if (rhs.modifiers & KeyModifier::shift)
+            if ((rhs.modifiers & KeyModifier::shift) != KeyModifier::none)
             {
                 keyName += SDL_GetKeyName(SDLK_LSHIFT);
                 keyName += kDelimiter;
             }
-            if (rhs.modifiers & KeyModifier::control)
+            if ((rhs.modifiers & KeyModifier::control) != KeyModifier::none)
             {
                 keyName += SDL_GetKeyName(SDLK_LCTRL);
                 keyName += kDelimiter;
             }
-            if (rhs.modifiers & KeyModifier::unknown)
+            if ((rhs.modifiers & KeyModifier::unknown) != KeyModifier::none)
             {
                 keyName += SDL_GetKeyName(SDLK_LGUI);
                 keyName += kDelimiter;
@@ -89,11 +89,11 @@ namespace YAML
             if (s.empty())
             {
                 rhs.keyCode = 0xFFFFFFFF;
-                rhs.modifiers = 0xFF;
+                rhs.modifiers = KeyModifier::full;
                 return true;
             }
 
-            rhs.modifiers = 0;
+            rhs.modifiers = KeyModifier::none;
             std::size_t current = 0;
             std::size_t pos = s.find_first_of(kDelimiter, 0);
             std::string token = s;
