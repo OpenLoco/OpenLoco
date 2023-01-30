@@ -1509,6 +1509,11 @@ namespace OpenLoco::Drawing
             call(0x004474BA, regs);
         }
 
+        static void drawRectImpl(Gfx::RenderTarget& rt, const Ui::Rect& rect, uint32_t colour)
+        {
+            drawRectImpl(rt, rect.left(), rect.top(), rect.right(), rect.bottom(), colour);
+        }
+
         static void fillRect(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
         {
             drawRectImpl(rt, left, top, right, bottom, colour);
@@ -1522,15 +1527,114 @@ namespace OpenLoco::Drawing
 
         static void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, uint8_t flags)
         {
-            registers regs;
-            regs.ax = left;
-            regs.bx = right;
-            regs.cx = top;
-            regs.dx = bottom;
-            regs.ebp = colour.u8();
-            regs.edi = X86Pointer(&rt);
-            regs.si = flags;
-            call(0x004C58C7, regs);
+            const auto rect = Ui::Rect::fromLTRB(left, top, right, bottom);
+            const auto baseColour = static_cast<OpenLoco::Colour>(colour);
+            // const auto left = rect.left();
+            // const auto top = rect.top();
+            // const auto bottom = rect.bottom();
+            // const auto right = rect.right();
+            // const auto leftTop = Ui::Point32{ rect.left(), rect.top() };
+            // const auto leftBottom = Ui::Point32{ rect.left(), rect.bottom() };
+            // const auto rightTop = Ui::Point32{ rect.right(), rect.top() };
+            // const auto rightBottom = Ui::Point32{ rect.right(), rect.bottom() };
+            assert(!colour.isOutline());
+            assert(!colour.isInset());
+            if (colour.isTranslucent())
+            {
+                // Pass 1 << 25 to drawRectImpl
+                if (flags & (1 << 3) /* INSET_RECT_FLAG_BORDER_NONE*/)
+                {
+                    drawRectImpl(rt, rect, enumValue(Colours::getTranslucent(baseColour, 1)) | (1 << 25));
+                }
+                else if (flags & (1 << 5) /*INSET_RECT_FLAG_BORDER_INSET*/)
+                {
+                    // Draw outline of box
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom), enumValue(Colours::getTranslucent(baseColour, 2)) | (1 << 25));
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, right, top), enumValue(Colours::getTranslucent(baseColour, 2)) | (1 << 25));
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top, right, bottom), enumValue(Colours::getTranslucent(baseColour, 0)) | (1 << 25));
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, bottom, right, bottom), enumValue(Colours::getTranslucent(baseColour, 0)) | (1 << 25));
+
+                    if (!(flags & (1 << 4) /* INSET_RECT_FLAG_FILL_NONE*/))
+                    {
+                        drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), enumValue(Colours::getTranslucent(baseColour, 1)) | (1 << 25));
+                    }
+                }
+                else
+                {
+                    // Draw outline of box
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom), enumValue(Colours::getTranslucent(baseColour, 0)) | (1 << 25));
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, right, top), enumValue(Colours::getTranslucent(baseColour, 0)) | (1 << 25));
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top, right, bottom), enumValue(Colours::getTranslucent(baseColour, 2)) | (1 << 25));
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, bottom, right, bottom), enumValue(Colours::getTranslucent(baseColour, 2)) | (1 << 25));
+
+                    if (!(flags & (1 << 4) /* INSET_RECT_FLAG_FILL_NONE*/))
+                    {
+                        drawRectImpl(
+                            rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), enumValue(Colours::getTranslucent(baseColour, 1)) | (1 << 25));
+                    }
+                }
+            }
+            else
+            {
+                PaletteIndex_t shadow, fill, fill2, hilight;
+                if (flags & (1 << 3) /* INSET_RECT_FLAG_FILL_MID_LIGHT*/)
+                {
+                    shadow = Colours::getShade(baseColour, 1);
+                    fill = Colours::getShade(baseColour, 3);
+                    fill2 = Colours::getShade(baseColour, 4);
+                    hilight = Colours::getShade(baseColour, 5);
+                }
+                else
+                {
+                    shadow = Colours::getShade(baseColour, 3);
+                    fill = Colours::getShade(baseColour, 5);
+                    fill2 = Colours::getShade(baseColour, 6);
+                    hilight = Colours::getShade(baseColour, 7);
+                }
+
+                if (flags & (1 << 3) /* INSET_RECT_FLAG_BORDER_NONE*/)
+                {
+                    drawRectImpl(rt, rect, fill);
+                }
+                else if (flags & (1 << 5) /*INSET_RECT_FLAG_BORDER_INSET*/)
+                {
+                    // Draw outline of box
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom), shadow);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top, right, top), shadow);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top + 1, right, bottom - 1), hilight);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, bottom, right, bottom), hilight);
+
+                    if (!(flags & (1 << 4) /* INSET_RECT_FLAG_FILL_NONE*/))
+                    {
+                        if (!(flags & (1 << 6) /* INSET_RECT_FLAG_FILL_DONT_LIGHTEN*/))
+                        {
+                            fill = fill2;
+                        }
+                        if (flags & (1 << 2) /* INSET_RECT_FLAG_FILL_GREY*/)
+                        {
+                            fill = PaletteIndex::transparent;
+                        }
+                        drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), fill);
+                    }
+                }
+                else
+                {
+                    // Draw outline of box
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom - 1), hilight);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top, right - 1, top), hilight);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top, right, bottom - 1), shadow);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, bottom, right, bottom), shadow);
+
+                    if (!(flags & (1 << 4) /* INSET_RECT_FLAG_FILL_NONE*/))
+                    {
+                        if (flags & (1 << 2) /* INSET_RECT_FLAG_FILL_GREY*/)
+                        {
+                            fill = PaletteIndex::transparent;
+                        }
+                        drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), fill);
+                    }
+                }
+            }
         }
 
         static void drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, uint8_t flags)
