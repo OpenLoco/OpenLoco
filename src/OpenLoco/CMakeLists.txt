@@ -186,9 +186,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTrack.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTree.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintVehicle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Crash.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Platform.Posix.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Platform.Windows.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/SawyerStream.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario.cpp"
@@ -437,8 +434,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTrack.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTree.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintVehicle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Crash.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Platform.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/Limits.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/SawyerStream.h"
@@ -477,12 +472,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/News/News.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolbarTopCommon.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
-
-if (APPLE)
-    set(OLOCO_MM_SOURCES 
-        "${CMAKE_CURRENT_SOURCE_DIR}src/Platform/Platform.Macos.mm")
-    set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
 
 if (MINGW)
     loco_add_library(OpenLoco SHARED
@@ -523,6 +512,7 @@ endif ()
 target_link_libraries(OpenLoco
     Core
     Console
+    Platform
     Interop
     Utility
     Math
@@ -637,6 +627,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         Core
         Console
+        Platform
         Interop
         Utility
         Math

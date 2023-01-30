@@ -26,7 +26,6 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Paint/Paint.h"
-#include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "Station.h"
@@ -43,6 +42,7 @@
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
 
 using namespace OpenLoco;

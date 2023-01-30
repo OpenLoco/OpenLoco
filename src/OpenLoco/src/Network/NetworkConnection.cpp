@@ -1,6 +1,6 @@
 #include "NetworkConnection.h"
-#include "Platform/Platform.h"
 #include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Platform/Platform.h>
 #include <cstring>
 
 using namespace OpenLoco::Network;

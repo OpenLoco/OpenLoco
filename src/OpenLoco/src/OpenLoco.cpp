@@ -56,8 +56,6 @@
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
-#include "Platform/Crash.h"
-#include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
@@ -71,6 +69,8 @@
 #include "ViewportManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Platform/Crash.h>
+#include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
