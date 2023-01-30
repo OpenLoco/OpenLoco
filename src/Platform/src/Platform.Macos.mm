@@ -19,7 +19,7 @@ namespace OpenLoco::Platform
         }
     }
 
-    fs::path promptDirectory(const std::string &title)
+    fs::path promptDirectory(const std::string &title, [[maybe_unused]] void* hwnd)
     {
         @autoreleasepool
         {
