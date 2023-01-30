@@ -1,5 +1,5 @@
 #include "Trigonometry.hpp"
-#include "Interop/Interop.hpp"
+#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Math::Trigonometry
 {

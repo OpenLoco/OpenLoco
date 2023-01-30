@@ -6,7 +6,6 @@
 #include "Entities/EntityManager.h"
 #include "GameState.h"
 #include "IndustryManager.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
@@ -15,6 +14,7 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

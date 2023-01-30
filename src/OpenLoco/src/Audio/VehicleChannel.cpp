@@ -1,10 +1,10 @@
 #include "VehicleChannel.h"
 #include "Entities/EntityManager.h"
-#include "Interop/Interop.hpp"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

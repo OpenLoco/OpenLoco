@@ -1,9 +1,9 @@
 #include "ProgressBar.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringManager.h"
 #include "SceneManager.h"
 #include "WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

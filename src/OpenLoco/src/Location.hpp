@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "Math/Vector.hpp"
+#include <OpenLoco/Math/Vector.hpp>
 
 namespace OpenLoco
 {

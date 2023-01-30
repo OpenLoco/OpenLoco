@@ -4,7 +4,7 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "IndustryElement.h"
-#include "Interop/Interop.hpp"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 
 using namespace OpenLoco::Interop;

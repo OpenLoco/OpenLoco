@@ -4,7 +4,6 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "IndustryManager.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"
@@ -16,6 +15,7 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 #include <bitset>
 #include <numeric>

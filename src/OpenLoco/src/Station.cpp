@@ -1,13 +1,11 @@
 #include "Station.h"
 #include "CompanyManager.h"
 #include "IndustryManager.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
 #include "Map/StationElement.h"
 #include "Map/TileManager.h"
-#include "Math/Bound.hpp"
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/BuildingObject.h"
@@ -19,6 +17,8 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Math/Bound.hpp>
 #include <algorithm>
 #include <cassert>
 

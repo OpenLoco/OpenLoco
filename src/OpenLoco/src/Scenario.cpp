@@ -14,7 +14,6 @@
 #include "Graphics/PaletteMap.h"
 #include "Gui.h"
 #include "IndustryManager.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
@@ -37,6 +36,7 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

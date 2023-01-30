@@ -2,7 +2,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Gfx.h"
 #include "ImageIds.h"
-#include "Interop/Interop.hpp"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cassert>
 #include <cstring>

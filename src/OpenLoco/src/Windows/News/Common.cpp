@@ -2,13 +2,13 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Graphics/Colour.h"
-#include "Interop/Interop.hpp"
 #include "Message.h"
 #include "MessageManager.h"
 #include "News.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Config;

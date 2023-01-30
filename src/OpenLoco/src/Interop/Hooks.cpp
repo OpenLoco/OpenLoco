@@ -1,3 +1,4 @@
+#include "Hooks.h"
 #include <cassert>
 #include <cstdio>
 #include <cstring>
@@ -19,7 +20,6 @@
 #include "Gui.h"
 #include "IndustryManager.h"
 #include "Input.h"
-#include "Interop.hpp"
 #include "Map/AnimationManager.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
@@ -42,6 +42,7 @@
 #include "ViewportManager.h"
 #include "Widget.h"
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
 using namespace OpenLoco;

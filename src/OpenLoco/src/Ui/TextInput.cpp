@@ -1,7 +1,7 @@
 #include "Ui/TextInput.h"
 #include "Drawing/SoftwareDrawingEngine.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 #include <SDL2/SDL.h>
 

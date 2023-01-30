@@ -3,10 +3,10 @@
 #include "Environment.h"
 #include "GameState.h"
 #include "Gui.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Scenario.h"
 #include "Ui.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 #include <fstream>
 #include <iterator>

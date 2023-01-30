@@ -1,8 +1,8 @@
-#include "Interop/Interop.hpp"
 #include "Objects/BridgeObject.h"
 #include "Objects/RoadObject.h"
 #include "Vehicle.h"
 #include "VehicleManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;

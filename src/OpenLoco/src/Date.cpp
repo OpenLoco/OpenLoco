@@ -1,6 +1,6 @@
 #include "Date.h"
 #include "GameState.h"
-#include "Interop/Interop.hpp"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <limits>
 #include <utility>
 

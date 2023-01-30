@@ -4,10 +4,10 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/Tile.h"
 #include "Paint.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <unordered_map>
 

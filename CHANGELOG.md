@@ -1,5 +1,7 @@
 23.01+ (???)
 ------------------------------------------------------------------------
+- Fix: [#1763] Title music does not stop when unchecked in options window.
+- Fix: [#1772] Toggling edge scrolling option does not work.
 
 23.01 (2023-01-25)
 ------------------------------------------------------------------------

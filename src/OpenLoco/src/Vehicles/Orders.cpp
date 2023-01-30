@@ -1,10 +1,10 @@
 #include "Orders.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "StationManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

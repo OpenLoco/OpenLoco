@@ -7,7 +7,6 @@
 #include "GameCommands/GameCommands.h"
 #include "GameStateFlags.h"
 #include "Gui.h"
-#include "Interop/Interop.hpp"
 #include "Intro.h"
 #include "Map/TileManager.h"
 #include "Objects/ObjectManager.h"
@@ -16,6 +15,7 @@
 #include "Scenario.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 #include <variant>
 #include <vector>

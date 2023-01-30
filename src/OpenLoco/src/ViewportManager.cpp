@@ -2,13 +2,13 @@
 #include "Config.h"
 #include "Console.h"
 #include "Entities/EntityManager.h"
-#include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Station.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cassert>
 #include <memory>
@@ -446,7 +446,8 @@ namespace OpenLoco::Ui::ViewportManager
             0x00459E54,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto [interaction, vp] = Ui::ViewportInteraction::getMapCoordinatesFromPos(regs.ax, regs.bx, regs.edx);
+                auto flags = static_cast<Ui::ViewportInteraction::InteractionItemFlags>(regs.edx);
+                auto [interaction, vp] = Ui::ViewportInteraction::getMapCoordinatesFromPos(regs.ax, regs.bx, flags);
                 regs = backup;
                 regs.ax = interaction.pos.x;
                 regs.cx = interaction.pos.y;

@@ -1,9 +1,9 @@
 #pragma once
 #include "Graphics/ImageId.h"
-#include "Interop/Interop.hpp"
 #include "Map/Map.hpp"
 #include "Types.hpp"
 #include "Ui/UiTypes.hpp"
+#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Map
 {
@@ -18,6 +18,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 {
     struct InteractionArg;
     enum class InteractionItem : uint8_t;
+    enum class InteractionItemFlags : uint32_t;
 }
 
 namespace OpenLoco::Gfx
@@ -155,9 +156,9 @@ namespace OpenLoco::Paint
         void drawStructs();
         void drawStringStructs();
         void init(Gfx::RenderTarget& rt, const SessionOptions& options);
-        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
-        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
-        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
         Gfx::RenderTarget* getRenderTarget() { return _renderTarget; }
         uint8_t getRotation() { return currentRotation; }
         int16_t getMaxHeight() { return _maxHeight; }

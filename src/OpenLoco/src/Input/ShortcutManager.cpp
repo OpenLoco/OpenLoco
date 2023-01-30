@@ -2,7 +2,6 @@
 #include "CompanyManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "S5/S5.h"
@@ -11,6 +10,7 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <unordered_map>
 

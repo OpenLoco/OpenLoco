@@ -1,9 +1,9 @@
 #include "Graphics/Gfx.h"
-#include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

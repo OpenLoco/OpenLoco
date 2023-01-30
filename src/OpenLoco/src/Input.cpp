@@ -1,10 +1,10 @@
 #include "Input.h"
 #include "Audio/Audio.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Window.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 #include <map>
 

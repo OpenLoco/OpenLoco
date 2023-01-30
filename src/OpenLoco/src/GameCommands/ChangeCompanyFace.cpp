@@ -1,10 +1,10 @@
 #include "CompanyManager.h"
 #include "GameCommands.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

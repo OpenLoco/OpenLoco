@@ -7,12 +7,12 @@
 #include "Environment.h"
 #include "ImageIds.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/StringManager.h"
 #include "PaletteMap.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <algorithm>
 #include <cassert>

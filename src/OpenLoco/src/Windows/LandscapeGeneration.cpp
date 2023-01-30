@@ -4,7 +4,6 @@
 #include "Graphics/ImageIds.h"
 #include "IndustryManager.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -17,6 +16,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

@@ -1,8 +1,8 @@
 #pragma once
 #include "Company.h"
 #include "Graphics/Gfx.h"
-#include "Interop/Interop.hpp"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

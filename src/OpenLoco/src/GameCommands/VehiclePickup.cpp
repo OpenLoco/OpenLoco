@@ -2,10 +2,10 @@
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands.h"
-#include "Interop/Interop.hpp"
 #include "Types.hpp"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Core/Prng.h>
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

@@ -1,7 +1,7 @@
 #include "Colour.h"
 #include "Gfx.h"
-#include "Interop/Interop.hpp"
 #include "PaletteMap.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <cassert>
 

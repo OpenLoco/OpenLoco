@@ -1,6 +1,5 @@
 #include "Routing.h"
 #include "Entities/EntityManager.h"
-#include "Interop/Interop.hpp"
 #include "Map/AnimationManager.h"
 #include "Map/Map.hpp"
 #include "Map/SignalElement.h"
@@ -11,6 +10,7 @@
 #include "Map/TrackElement.h"
 #include "Vehicle.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Vehicles
 {

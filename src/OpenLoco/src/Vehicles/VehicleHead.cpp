@@ -8,7 +8,6 @@
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Gfx.h"
 #include "IndustryManager.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
@@ -17,8 +16,6 @@
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
 #include "Map/TrackElement.h"
-#include "Math/Bound.hpp"
-#include "Math/Trigonometry.hpp"
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/CargoObject.h"
@@ -37,6 +34,9 @@
 #include "Vehicle.h"
 #include "VehicleManager.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Math/Bound.hpp>
+#include <OpenLoco/Math/Trigonometry.hpp>
 #include <cassert>
 #include <numeric>
 #include <optional>

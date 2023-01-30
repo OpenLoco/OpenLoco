@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
-#include "Interop/Interop.hpp"
 #include "ScenarioManager.h"
 #include "SurfaceElement.h"
 #include "TileManager.h"
@@ -12,6 +11,7 @@
 #include "Wave.h"
 #include <OpenLoco/Core/LocoFixedVector.hpp>
 #include <OpenLoco/Core/Prng.h>
+#include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Map::WaveManager
 {

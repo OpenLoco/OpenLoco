@@ -3,12 +3,12 @@
 #include "Console.h"
 #include "Conversion.h"
 #include "Environment.h"
-#include "Interop/Interop.hpp"
 #include "Platform/Platform.h"
 #include "StringIds.h"
 #include "StringManager.h"
 #include "Ui.h"
 #include "Unicode.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <iostream>
 #include <stdexcept>

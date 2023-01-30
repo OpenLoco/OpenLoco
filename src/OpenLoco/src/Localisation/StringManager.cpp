@@ -5,11 +5,11 @@
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
-#include "Interop/Interop.hpp"
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
 #include "StringIds.h"
 #include "TownManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
 #include <cmath>

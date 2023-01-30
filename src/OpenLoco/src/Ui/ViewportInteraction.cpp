@@ -3,7 +3,6 @@
 #include "Entities/EntityManager.h"
 #include "IndustryManager.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
@@ -35,6 +34,7 @@
 #include "ViewportManager.h"
 #include "Window.h"
 #include "WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
@@ -887,7 +887,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return InteractionArg{};
 
         // Interaction types to exclude by default
-        auto interactionsToExclude = 0 | InteractionItemFlags::surface | InteractionItemFlags::water;
+        auto interactionsToExclude = InteractionItemFlags::none | InteractionItemFlags::surface | InteractionItemFlags::water;
 
         // TODO: Handle in the paint functions
         // Get the viewport and add extra flags for hidden scenery
@@ -979,7 +979,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x00459E54
-    std::pair<ViewportInteraction::InteractionArg, Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags)
+    std::pair<ViewportInteraction::InteractionArg, Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, InteractionItemFlags flags)
     {
         static loco_global<uint8_t, 0x0050BF68> _50BF68; // If in get map coords
         static loco_global<Gfx::RenderTarget, 0x00E0C3E4> _rt1;

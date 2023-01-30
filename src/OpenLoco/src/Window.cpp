@@ -5,7 +5,6 @@
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/Tile.h"
@@ -14,6 +13,7 @@
 #include "Ui/Rect.h"
 #include "Ui/ScrollView.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <cassert>
 #include <cinttypes>
@@ -521,7 +521,7 @@ namespace OpenLoco::Ui
         const auto mouse = Ui::getCursorPos();
 
         // Compute map coordinate by mouse position.
-        auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse.x, mouse.y, 0);
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse.x, mouse.y, ViewportInteraction::InteractionItemFlags::none);
         auto& interaction = res.first;
         *mapX = interaction.pos.x;
         *mapY = interaction.pos.y;

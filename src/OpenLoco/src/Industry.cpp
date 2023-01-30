@@ -2,7 +2,6 @@
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "IndustryManager.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/IndustryElement.h"
@@ -10,7 +9,6 @@
 #include "Map/TileManager.h"
 #include "Map/TreeElement.h"
 #include "Map/WallElement.h"
-#include "Math/Bound.hpp"
 #include "MessageManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
@@ -18,6 +16,8 @@
 #include "OpenLoco.h"
 #include "StationManager.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Math/Bound.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 

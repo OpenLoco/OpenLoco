@@ -16,7 +16,6 @@
 #include "HillShapesObject.h"
 #include "IndustryObject.h"
 #include "InterfaceSkinObject.h"
-#include "Interop/Interop.hpp"
 #include "LandObject.h"
 #include "LevelCrossingObject.h"
 #include "Localisation/FormatArguments.hpp"
@@ -48,6 +47,7 @@
 #include "WallObject.h"
 #include "WaterObject.h"
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <vector>

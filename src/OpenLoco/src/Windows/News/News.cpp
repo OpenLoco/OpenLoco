@@ -6,7 +6,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "IndustryManager.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
@@ -20,6 +19,7 @@
 #include "ViewportManager.h"
 #include "Widget.h"
 #include "Window.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 

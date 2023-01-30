@@ -7,7 +7,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "LabelFrame.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
@@ -37,6 +36,7 @@
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 #include <sstream>
 

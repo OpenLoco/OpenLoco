@@ -6,7 +6,6 @@
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
-#include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
@@ -18,6 +17,7 @@
 #include "ScenarioObjective.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;

@@ -6,7 +6,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
-#include "Interop/Interop.hpp"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -15,7 +14,6 @@
 #include "Map/TileManager.h"
 #include "Map/Tree.h"
 #include "Map/TreeElement.h"
-#include "Math/Trigonometry.hpp"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
@@ -28,6 +26,8 @@
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Math/Trigonometry.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
