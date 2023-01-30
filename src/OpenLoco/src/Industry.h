@@ -24,10 +24,10 @@ namespace OpenLoco
     enum class IndustryFlags : uint16_t
     {
         none = 0U,
-        flag_01 = 1 << 0,
-        sorted = 1 << 1,
-        closingDown = 1 << 2,
-        flag_04 = 1 << 3,
+        flag_01 = 1U << 0,
+        sorted = 1U << 1,
+        closingDown = 1U << 2,
+        flag_04 = 1U << 3,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryFlags);
 
