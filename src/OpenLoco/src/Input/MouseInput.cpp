@@ -108,7 +108,7 @@ namespace OpenLoco::Input
 
     static loco_global<uint32_t, 0x005251C8> _rightMouseButtonStatus;
 
-    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
+    static loco_global<MapSelectionFlags, 0x00F24484> _mapSelectionFlags;
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
@@ -151,7 +151,7 @@ namespace OpenLoco::Input
         _5233AE = 0;
         _5233B2 = 0;
 
-        _mapSelectionFlags = 0;
+        _mapSelectionFlags = MapSelectionFlags::none;
     }
 
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY)
@@ -361,22 +361,22 @@ namespace OpenLoco::Input
         return _hoveredStationId;
     }
 
-    uint16_t getMapSelectionFlags()
+    MapSelectionFlags getMapSelectionFlags()
     {
         return _mapSelectionFlags;
     }
 
-    bool hasMapSelectionFlag(uint8_t flags)
+    bool hasMapSelectionFlag(MapSelectionFlags flags)
     {
-        return (_mapSelectionFlags & flags) != 0;
+        return (_mapSelectionFlags & flags) != MapSelectionFlags::none;
     }
 
-    void setMapSelectionFlags(uint8_t flags)
+    void setMapSelectionFlags(MapSelectionFlags flags)
     {
         _mapSelectionFlags = _mapSelectionFlags | flags;
     }
 
-    void resetMapSelectionFlag(uint8_t flags)
+    void resetMapSelectionFlag(MapSelectionFlags flags)
     {
         _mapSelectionFlags = _mapSelectionFlags & ~flags;
     }

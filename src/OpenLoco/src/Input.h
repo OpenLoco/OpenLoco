@@ -39,7 +39,7 @@ namespace OpenLoco::Input
 
     enum class Flags : uint32_t
     {
-        none = 0,
+        none = 0U,
         widgetPressed = 1 << 0,
         flag1 = 1 << 1,
         flag2 = 1 << 2,
@@ -51,23 +51,26 @@ namespace OpenLoco::Input
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
-    namespace MapSelectionFlags
+    enum class MapSelectionFlags : uint8_t
     {
-        constexpr uint8_t enable = 1 << 0;
-        constexpr uint8_t enableConstruct = (1 << 1);
-        constexpr uint8_t enableConstructionArrow = 1 << 2;
-        constexpr uint8_t unk_03 = 1 << 3;
-        constexpr uint8_t unk_04 = 1 << 4; // Vehicle orders?
-        constexpr uint8_t catchmentArea = 1 << 5;
-        constexpr uint8_t hoveringOverStation = 1 << 6;
+        none = 0U,
+        enable = 1 << 0,
+        enableConstruct = (1 << 1),
+        enableConstructionArrow = 1 << 2,
+        unk_03 = 1 << 3,
+        unk_04 = 1 << 4, // Vehicle orders?
+        catchmentArea = 1 << 5,
+        hoveringOverStation = 1 << 6,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(MapSelectionFlags);
 
-    namespace KeyModifier
+    enum class KeyModifier : uint8_t 
     {
-        constexpr uint8_t shift = 1 << 0;
-        constexpr uint8_t control = 1 << 1;
-        constexpr uint8_t unknown = 1 << 2;
-        constexpr uint8_t cheat = 1 << 7;
+        none = 0U,
+        shift = 1 << 0,
+        control = 1 << 1,
+        unknown = 1 << 2,
+        cheat = 1 << 7,
     };
 
     void init();
@@ -110,10 +113,10 @@ namespace OpenLoco::Input
 
     StationId getHoveredStationId();
 
-    uint16_t getMapSelectionFlags();
-    bool hasMapSelectionFlag(uint8_t flags);
-    void setMapSelectionFlags(uint8_t flags);
-    void resetMapSelectionFlag(uint8_t flags);
+    MapSelectionFlags getMapSelectionFlags();
+    bool hasMapSelectionFlag(MapSelectionFlags flags);
+    void setMapSelectionFlags(MapSelectionFlags flags);
+    void resetMapSelectionFlag(MapSelectionFlags flags);
 
     void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type);
 
