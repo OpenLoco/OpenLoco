@@ -1337,7 +1337,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     continue;
                 if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
                 {
-                    if ((buildingObj->flags & BuildingObjectFlags::miscBuilding) != BuildingObjectFlags::none)
+                    if ((buildingObj->flags & BuildingObjectFlags::miscBuilding) == BuildingObjectFlags::none)
                         continue;
                     if ((buildingObj->flags & BuildingObjectFlags::isHeadquarters) != BuildingObjectFlags::none)
                         continue;
