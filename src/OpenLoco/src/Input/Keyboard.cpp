@@ -40,7 +40,7 @@ namespace OpenLoco::Input
     static void loc_4BED79();
 
     static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
-    static loco_global<uint8_t, 0x00508F18> _keyModifier;
+    static loco_global<KeyModifier, 0x00508F18> _keyModifier;
     static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
     static std::string _cheatBuffer; // 0x0011364A5
@@ -59,10 +59,10 @@ namespace OpenLoco::Input
         { "FREECASH", loc_4BED79 }
     };
 
-    bool hasKeyModifier(uint8_t modifier)
+    bool hasKeyModifier(KeyModifier modifier)
     {
-        uint8_t keyModifier = _keyModifier;
-        return (keyModifier & modifier) != 0;
+        KeyModifier keyModifier = _keyModifier;
+        return (keyModifier & modifier) != KeyModifier::none;
     }
 
     static void loc_4BECDE()
@@ -122,9 +122,8 @@ namespace OpenLoco::Input
 
             case Tutorial::State::playing:
             {
-                const uint16_t next = Tutorial::nextInput();
-                _keyModifier = next;
-                if ((_keyModifier & KeyModifier::unknown) == 0)
+                _keyModifier = static_cast<KeyModifier>(Tutorial::nextInput());
+                if ((_keyModifier & KeyModifier::unknown) == KeyModifier::none)
                     return;
 
                 Windows::ToolTip::closeAndReset();
@@ -184,7 +183,7 @@ namespace OpenLoco::Input
         return out;
     }
 
-    static bool tryShortcut(Shortcut sc, uint32_t keyCode, uint8_t modifiers)
+    static bool tryShortcut(Shortcut sc, uint32_t keyCode, KeyModifier modifiers)
     {
         auto cfg = OpenLoco::Config::get();
         if (cfg.shortcuts[sc].keyCode == keyCode && cfg.shortcuts[sc].modifiers == modifiers)
@@ -209,7 +208,7 @@ namespace OpenLoco::Input
         // Used to handle INSERT cheat
         if ((_keyboardState[SDL_SCANCODE_INSERT] & 0x80) != 0 || (_keyboardState[SDL_SCANCODE_LALT] & 0x80) != 0 || (_keyboardState[SDL_SCANCODE_RALT] & 0x80) != 0)
         {
-            if ((_keyModifier & KeyModifier::cheat) != 0)
+            if ((_keyModifier & KeyModifier::cheat) != KeyModifier::none)
             {
                 return;
             }
@@ -221,7 +220,7 @@ namespace OpenLoco::Input
             }
         }
 
-        if ((_keyModifier & KeyModifier::cheat) == 0)
+        if ((_keyModifier & KeyModifier::cheat) == KeyModifier::none)
             return;
 
         _keyModifier = _keyModifier & (~KeyModifier::cheat);
@@ -264,7 +263,7 @@ namespace OpenLoco::Input
             if (cfg.shortcuts[i].keyCode == k->keyCode && cfg.shortcuts[i].modifiers == _keyModifier)
             {
                 cfg.shortcuts[i].keyCode = 0xFFFFFFFF;
-                cfg.shortcuts[i].modifiers = 0xFF;
+                cfg.shortcuts[i].modifiers = KeyModifier::invalid;
             }
         }
 
@@ -295,7 +294,7 @@ namespace OpenLoco::Input
             if (nextKey->keyCode == SDLK_LCTRL || nextKey->keyCode == SDLK_RCTRL)
                 continue;
 
-            if ((_keyModifier & KeyModifier::cheat) != 0)
+            if ((_keyModifier & KeyModifier::cheat) != KeyModifier::none)
             {
                 if (nextKey->charCode >= 'a' && nextKey->charCode <= 'z')
                 {

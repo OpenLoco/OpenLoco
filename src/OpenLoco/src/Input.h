@@ -3,6 +3,7 @@
 #include "Ui/UiTypes.hpp"
 #include "Ui/WindowManager.h"
 #include "Window.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco::Input
 {
@@ -36,42 +37,49 @@ namespace OpenLoco::Input
         giant = 1,
     };
 
-    namespace Flags
+    enum class Flags : uint32_t
     {
-        constexpr uint32_t widgetPressed = 1 << 0;
-        constexpr uint32_t flag1 = 1 << 1;
-        constexpr uint32_t flag2 = 1 << 2;
-        constexpr uint32_t toolActive = 1 << 3;
-        constexpr uint32_t flag4 = 1 << 4;
-        constexpr uint32_t flag5 = 1 << 5;
-        constexpr uint32_t flag6 = 1 << 6;
-        constexpr uint32_t viewportScrolling = 1 << 7;
-    }
-
-    namespace MapSelectionFlags
-    {
-        constexpr uint8_t enable = 1 << 0;
-        constexpr uint8_t enableConstruct = (1 << 1);
-        constexpr uint8_t enableConstructionArrow = 1 << 2;
-        constexpr uint8_t unk_03 = 1 << 3;
-        constexpr uint8_t unk_04 = 1 << 4; // Vehicle orders?
-        constexpr uint8_t catchmentArea = 1 << 5;
-        constexpr uint8_t hoveringOverStation = 1 << 6;
+        none = 0U,
+        widgetPressed = 1U << 0,
+        flag1 = 1U << 1,
+        flag2 = 1U << 2,
+        toolActive = 1U << 3,
+        flag4 = 1U << 4,
+        flag5 = 1U << 5,
+        flag6 = 1U << 6,
+        viewportScrolling = 1U << 7,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
-    namespace KeyModifier
+    enum class MapSelectionFlags : uint8_t
     {
-        constexpr uint8_t shift = 1 << 0;
-        constexpr uint8_t control = 1 << 1;
-        constexpr uint8_t unknown = 1 << 2;
-        constexpr uint8_t cheat = 1 << 7;
+        none = 0U,
+        enable = 1U << 0,
+        enableConstruct = 1U << 1,
+        enableConstructionArrow = 1U << 2,
+        unk_03 = 1U << 3,
+        unk_04 = 1U << 4, // Vehicle orders?
+        catchmentArea = 1U << 5,
+        hoveringOverStation = 1U << 6,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(MapSelectionFlags);
+
+    enum class KeyModifier : uint8_t
+    {
+        none = 0U,
+        shift = 1U << 0,
+        control = 1U << 1,
+        unknown = 1U << 2,
+        cheat = 1U << 7,
+        invalid = 0xFF,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(KeyModifier);
 
     void init();
     void initMouse();
-    bool hasFlag(uint32_t value);
-    void setFlag(uint32_t value);
-    void resetFlag(uint32_t value);
+    bool hasFlag(Flags value);
+    void setFlag(Flags value);
+    void resetFlag(Flags value);
     State state();
     void state(State);
 
@@ -103,14 +111,14 @@ namespace OpenLoco::Input
 
     void enqueueText(const char* text);
     void enqueueKey(uint32_t key);
-    bool hasKeyModifier(uint8_t modifier);
+    bool hasKeyModifier(KeyModifier modifier);
 
     StationId getHoveredStationId();
 
-    uint16_t getMapSelectionFlags();
-    bool hasMapSelectionFlag(uint8_t flags);
-    void setMapSelectionFlags(uint8_t flags);
-    void resetMapSelectionFlag(uint8_t flags);
+    MapSelectionFlags getMapSelectionFlags();
+    bool hasMapSelectionFlag(MapSelectionFlags flags);
+    void setMapSelectionFlags(MapSelectionFlags flags);
+    void resetMapSelectionFlag(MapSelectionFlags flags);
 
     void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type);
 

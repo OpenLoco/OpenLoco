@@ -152,7 +152,8 @@ namespace OpenLoco::Ui
                 continue;
             }
 
-            bool isHovered = (Input::getMapSelectionFlags() & Input::MapSelectionFlags::hoveringOverStation) && (station.id() == Input::getHoveredStationId());
+            bool isHovered = ((Input::getMapSelectionFlags() & Input::MapSelectionFlags::hoveringOverStation) != Input::MapSelectionFlags::none)
+                && (station.id() == Input::getHoveredStationId());
 
             drawStationName(unZoomedRt, station, rt.zoomLevel, isHovered);
         }
@@ -194,7 +195,7 @@ namespace OpenLoco::Ui
     // 0x00470A62
     static void drawRoutingNumbers(Gfx::RenderTarget& rt)
     {
-        if (!(Input::getMapSelectionFlags() & Input::MapSelectionFlags::unk_04))
+        if ((Input::getMapSelectionFlags() & Input::MapSelectionFlags::unk_04) == Input::MapSelectionFlags::none)
         {
             return;
         }

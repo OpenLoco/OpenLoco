@@ -178,9 +178,9 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
             if (shortcuts[i].keyCode != 0xFFFFFFFF)
             {
-                if (shortcuts[i].modifiers == 1)
+                if (shortcuts[i].modifiers == KeyModifier::shift)
                     modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
-                else if (shortcuts[i].modifiers != 0)
+                else if (shortcuts[i].modifiers == KeyModifier::control)
                     modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
 
                 baseStringId = StringIds::stringptr;
