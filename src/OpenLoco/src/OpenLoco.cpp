@@ -1210,19 +1210,3 @@ namespace OpenLoco
         }
     }
 }
-
-extern "C" {
-
-#ifdef _WIN32
-/**
- * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
- * be built as a stand alone application.
- */
-// Hack to trick mingw into thinking we forward-declared this function.
-__declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
-__declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-    return OpenLoco::main(lpCmdLine);
-}
-#endif
-}

@@ -2,9 +2,6 @@
 
 #include "Platform.h"
 #include "Console.h"
-#include "Interop/Hooks.h"
-#include "OpenLoco.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <iostream>
 #include <pwd.h>
 #include <time.h>
@@ -20,12 +17,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #endif
-
-int main(int argc, const char** argv)
-{
-    OpenLoco::Interop::loadSections();
-    return OpenLoco::main(argc, argv);
-}
 
 namespace OpenLoco::Platform
 {
