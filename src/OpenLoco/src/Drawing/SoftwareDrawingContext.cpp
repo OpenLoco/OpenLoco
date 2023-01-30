@@ -418,7 +418,7 @@ namespace OpenLoco::Drawing
         {
             if constexpr (TZoomLevel > 0)
             {
-                if (element.flags & G1ElementFlags::noZoomDraw)
+                if ((element.flags & G1ElementFlags::noZoomDraw) != G1ElementFlags::none)
                 {
                     return std::nullopt;
                 }
@@ -560,7 +560,7 @@ namespace OpenLoco::Drawing
                 return;
             }
 
-            if (rt.zoomLevel > 0 && (element->flags & G1ElementFlags::hasZoomSprites))
+            if (rt.zoomLevel > 0 && ((element->flags & G1ElementFlags::hasZoomSprites) != G1ElementFlags::none))
             {
                 auto zoomedrt{ rt };
                 zoomedrt.bits = rt.bits;
@@ -577,7 +577,7 @@ namespace OpenLoco::Drawing
                 return;
             }
 
-            const bool isRLE = element->flags & G1ElementFlags::isRLECompressed;
+            const bool isRLE = (element->flags & G1ElementFlags::isRLECompressed) != G1ElementFlags::none;
             if (isRLE)
             {
                 switch (rt.zoomLevel)
