@@ -12,28 +12,28 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Input
 {
-    loco_global<uint32_t, 0x00523368> _flags;
+    loco_global<Flags, 0x00523368> _flags;
     static loco_global<State, 0x0052336D> _state;
     static Ui::Point32 _cursorDragStart;
     loco_global<uint32_t, 0x00525374> _cursorDragState;
 
     void init()
     {
-        _flags = 0;
+        _flags = Flags::none;
         _state = State::reset;
     }
 
-    bool hasFlag(uint32_t value)
+    bool hasFlag(Flags value)
     {
-        return (_flags & value) != 0;
+        return (_flags & value) != Flags::none;
     }
 
-    void setFlag(uint32_t value)
+    void setFlag(Flags value)
     {
         _flags |= value;
     }
 
-    void resetFlag(uint32_t value)
+    void resetFlag(Flags value)
     {
         _flags &= ~value;
     }

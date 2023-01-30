@@ -3,6 +3,7 @@
 #include "Ui/UiTypes.hpp"
 #include "Ui/WindowManager.h"
 #include "Window.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco::Input
 {
@@ -36,17 +37,19 @@ namespace OpenLoco::Input
         giant = 1,
     };
 
-    namespace Flags
+    enum class Flags : uint32_t
     {
-        constexpr uint32_t widgetPressed = 1 << 0;
-        constexpr uint32_t flag1 = 1 << 1;
-        constexpr uint32_t flag2 = 1 << 2;
-        constexpr uint32_t toolActive = 1 << 3;
-        constexpr uint32_t flag4 = 1 << 4;
-        constexpr uint32_t flag5 = 1 << 5;
-        constexpr uint32_t flag6 = 1 << 6;
-        constexpr uint32_t viewportScrolling = 1 << 7;
-    }
+        none = 0,
+        widgetPressed = 1 << 0,
+        flag1 = 1 << 1,
+        flag2 = 1 << 2,
+        toolActive = 1 << 3,
+        flag4 = 1 << 4,
+        flag5 = 1 << 5,
+        flag6 = 1 << 6,
+        viewportScrolling = 1 << 7,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
     namespace MapSelectionFlags
     {
@@ -69,9 +72,9 @@ namespace OpenLoco::Input
 
     void init();
     void initMouse();
-    bool hasFlag(uint32_t value);
-    void setFlag(uint32_t value);
-    void resetFlag(uint32_t value);
+    bool hasFlag(Flags value);
+    void setFlag(Flags value);
+    void resetFlag(Flags value);
     State state();
     void state(State);
 
