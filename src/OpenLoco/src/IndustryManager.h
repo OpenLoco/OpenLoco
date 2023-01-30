@@ -12,8 +12,8 @@ namespace OpenLoco::IndustryManager
     enum class Flags : uint8_t
     {
         none = 0U,
-        disallowIndustriesCloseDown = (1 << 0),
-        disallowIndustriesStartUp = (1 << 1),
+        disallowIndustriesCloseDown = 1U << 0,
+        disallowIndustriesStartUp = 1U << 1,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
