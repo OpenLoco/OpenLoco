@@ -96,6 +96,11 @@ namespace OpenLoco::Ui
     {
         return _hwnd;
     }
+#else
+    void* hwnd()
+    {
+        return nullptr;
+    }
 #endif // _WIN32
 
     int32_t width()
