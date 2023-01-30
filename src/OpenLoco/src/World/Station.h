@@ -84,11 +84,9 @@ namespace OpenLoco
 
     enum class CatchmentFlags : uint8_t
     {
-        none = 0U,
-        flag0 = 0U,
-        flag1 = 1U,
+        flag_0 = 0U,
+        flag_1 = 1U,
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(CatchmentFlags);
 
     struct Station
     {

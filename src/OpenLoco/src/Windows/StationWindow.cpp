@@ -772,7 +772,7 @@ namespace OpenLoco::Ui::Windows::Station
             Ui::Windows::Construction::sub_4A6FAC();
             auto station = StationManager::get(_lastSelectedStation);
 
-            station->setCatchmentDisplay(CatchmentFlags::flag0);
+            station->setCatchmentDisplay(CatchmentFlags::flag_0);
             Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
 
             WindowManager::invalidate(WindowType::station, enumValue(newStationId));

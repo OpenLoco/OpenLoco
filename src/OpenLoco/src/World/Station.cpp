@@ -244,11 +244,11 @@ namespace OpenLoco
 
         cargoSearchState.resetIndustryMap();
 
-        setCatchmentDisplay(CatchmentFlags::flag1);
+        setCatchmentDisplay(CatchmentFlags::flag_1);
 
         if (location.x != -1)
         {
-            sub_491BF5(location, CatchmentFlags::flag0);
+            sub_491BF5(location, CatchmentFlags::flag_1);
         }
 
         cargoSearchState.resetScores();
