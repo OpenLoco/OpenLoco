@@ -293,7 +293,7 @@ namespace OpenLoco
             }
         }
         if (!hasEvent
-            && !(IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown)
+            && ((IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown) == IndustryManager::Flags::none)
             && under_construction == 0xFF
             && ((flags & IndustryFlags::closingDown) == IndustryFlags::none))
         {

@@ -2,23 +2,26 @@
 
 #include "Engine/Limits.h"
 #include "Industry.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/LocoFixedVector.hpp>
 #include <array>
 #include <cstddef>
 
 namespace OpenLoco::IndustryManager
 {
-    namespace Flags
+    enum class Flags : uint8_t
     {
-        constexpr uint8_t disallowIndustriesCloseDown = (1 << 0);
-        constexpr uint8_t disallowIndustriesStartUp = (1 << 1);
-    }
+        none = 0U,
+        disallowIndustriesCloseDown = 1U << 0,
+        disallowIndustriesStartUp = 1U << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
     void reset();
     FixedVector<Industry, Limits::kMaxIndustries> industries();
     Industry* get(IndustryId id);
-    uint8_t getFlags();
-    void setFlags(const uint8_t flags);
+    Flags getFlags();
+    void setFlags(const Flags flags);
     void update();
     void updateDaily();
     void updateMonthly();

@@ -23,7 +23,7 @@ namespace OpenLoco::IndustryManager
 {
     static auto& rawIndustries() { return getGameState().industries; }
     static auto getTotalIndustriesCap() { return getGameState().numberOfIndustries; }
-    uint8_t getFlags() { return getGameState().industryFlags; }
+    Flags getFlags() { return getGameState().industryFlags; }
 
     constexpr int32_t kCloseIndustryDistanceMax = 480;
     constexpr int32_t kIndustryWithinClusterDistance = 960;
@@ -44,7 +44,7 @@ namespace OpenLoco::IndustryManager
     constexpr uint32_t kIndustryNumTreesToBeNearTreesMin = 25;
     constexpr uint32_t kIndustryNumTressToBeOpenSpaceMax = 3;
 
-    void setFlags(const uint8_t flags)
+    void setFlags(const Flags flags)
     {
         getGameState().industryFlags = flags;
     }
@@ -472,7 +472,7 @@ namespace OpenLoco::IndustryManager
     // 0x00459659
     static void tryCreateNewIndustriesMonthly()
     {
-        if (getFlags() & Flags::disallowIndustriesStartUp)
+        if ((getFlags() & Flags::disallowIndustriesStartUp) != Flags::none)
         {
             return;
         }
