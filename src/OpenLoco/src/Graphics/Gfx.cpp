@@ -1,7 +1,6 @@
 #include "Gfx.h"
 #include "Colour.h"
 #include "Config.h"
-#include "Console.h"
 #include "Drawing/DrawSprite.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Environment.h"
@@ -12,6 +11,7 @@
 #include "PaletteMap.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <algorithm>

@@ -26,7 +26,6 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
-#include "Console.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
@@ -70,6 +69,7 @@
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Utility/String.hpp>

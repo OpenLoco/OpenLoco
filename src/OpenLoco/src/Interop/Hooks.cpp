@@ -9,7 +9,6 @@
 #endif
 #include "Audio/Audio.h"
 #include "Config.h"
-#include "Console.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Environment.h"
@@ -41,6 +40,7 @@
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>

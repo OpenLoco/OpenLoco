@@ -1,6 +1,5 @@
 #include "Dropdown.h"
 #include "CompanyManager.h"
-#include "Console.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Engine/Limits.h"
 #include "Graphics/ImageIds.h"
@@ -11,6 +10,7 @@
 #include "Objects/ObjectManager.h"
 #include "Widget.h"
 #include "Window.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>

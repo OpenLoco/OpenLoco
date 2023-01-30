@@ -59,7 +59,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Company.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CompanyManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Console.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Date.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSprite.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/FPSCounter.cpp"
@@ -303,7 +302,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CompanyRecords.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ConfigConvert.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Console.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Date.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSprite.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteBMP.hpp"
@@ -524,6 +522,7 @@ endif ()
 
 target_link_libraries(OpenLoco
     Core
+    Console
     Interop
     Utility
     Math
@@ -637,6 +636,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         Core
+        Console
         Interop
         Utility
         Math
