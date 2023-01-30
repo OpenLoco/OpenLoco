@@ -43,13 +43,13 @@ namespace OpenLoco::Gfx
     enum class G1ElementFlags : uint16_t
     {
         none = 0U,
-        hasTransparancy = 1 << 0,   // Image data contains transparent sections (when not set data is plain bmp)
-        unk1 = 1 << 1,              // Unknown function not used on any entry
-        isRLECompressed = 1 << 2,   // Image data is encoded using CS's form of run length encoding
-        isR8G8B8Palette = 1 << 3,   // Image data is a sequence of palette entries R8G8B8
-        hasZoomSprites = 1 << 4,    // Use a different sprite for higher zoom levels
-        noZoomDraw = 1 << 5,        // Does not get drawn at higher zoom levels (only zoom 0)
-        duplicatePrevious = 1 << 6, // Duplicates the previous element but with adjusted x/y offsets
+        hasTransparancy = 1U << 0,   // Image data contains transparent sections (when not set data is plain bmp)
+        unk1 = 1U << 1,              // Unknown function not used on any entry
+        isRLECompressed = 1U << 2,   // Image data is encoded using CS's form of run length encoding
+        isR8G8B8Palette = 1U << 3,   // Image data is a sequence of palette entries R8G8B8
+        hasZoomSprites = 1U << 4,    // Use a different sprite for higher zoom levels
+        noZoomDraw = 1U << 5,        // Does not get drawn at higher zoom levels (only zoom 0)
+        duplicatePrevious = 1U << 6, // Duplicates the previous element but with adjusted x/y offsets
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(G1ElementFlags);
 
