@@ -920,13 +920,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     if (self.rowInfo[i] == self.var_846)
                     {
                         _word_E0C3C6 = AdvancedColour::translucentFlag;
-                        drawingCtx.drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
+                        drawingCtx.drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary), AdvancedColour::translucentFlag);
                     }
                 }
                 else
                 {
                     _word_E0C3C6 = AdvancedColour::translucentFlag | AdvancedColour::outlineFlag;
-                    drawingCtx.drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
+                    drawingCtx.drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
                 }
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self.rowInfo[i]);

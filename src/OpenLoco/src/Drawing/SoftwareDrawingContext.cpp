@@ -1520,20 +1520,20 @@ namespace OpenLoco::Drawing
             drawRectImpl(rt, x, y, x + dx - 1, y + dy - 1, colour);
         }
 
-        static void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags)
+        static void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, uint8_t flags)
         {
             registers regs;
             regs.ax = left;
             regs.bx = right;
             regs.cx = top;
             regs.dx = bottom;
-            regs.ebp = colour;
+            regs.ebp = colour.u8();
             regs.edi = X86Pointer(&rt);
             regs.si = flags;
             call(0x004C58C7, regs);
         }
 
-        static void drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags)
+        static void drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, uint8_t flags)
         {
             // This makes the function signature more like a drawing application
             fillRectInset(rt, x, y, x + dx - 1, y + dy - 1, colour, flags);
@@ -1761,12 +1761,12 @@ namespace OpenLoco::Drawing
         return Impl::drawRect(rt, x, y, dx, dy, colour);
     }
 
-    void SoftwareDrawingContext::fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags)
+    void SoftwareDrawingContext::fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, uint8_t flags)
     {
         return Impl::fillRectInset(rt, left, top, right, bottom, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags)
+    void SoftwareDrawingContext::drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, uint8_t flags)
     {
         return Impl::drawRectInset(rt, x, y, dx, dy, colour, flags);
     }

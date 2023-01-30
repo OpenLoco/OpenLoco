@@ -201,7 +201,7 @@ namespace OpenLoco::Ui
             if (Input::isPressed(window->type, window->number, widgetIndex))
                 flags = 0x20;
 
-            drawingCtx.drawRectInset(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), window->getColour(WindowColour::secondary).translucent().u8(), flags);
+            drawingCtx.drawRectInset(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), window->getColour(WindowColour::secondary).translucent(), flags);
         }
 
         drawingCtx.drawImage(rt, widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, window->getColour(WindowColour::secondary).c()));
@@ -291,7 +291,7 @@ namespace OpenLoco::Ui
     void Widget::drawPanel(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRectInset(*rt, window->x + left, window->y + top, window->x + right, window->y + bottom, colour.u8(), flags);
+        drawingCtx.fillRectInset(*rt, window->x + left, window->y + top, window->x + right, window->y + bottom, colour, flags);
 
         draw_resize_handle(rt, window, this, colour);
     }
@@ -353,7 +353,7 @@ namespace OpenLoco::Ui
         if (content == kContentUnk)
         {
             flags |= 0x10;
-            drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
+            drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags);
             return;
         }
 
@@ -362,7 +362,7 @@ namespace OpenLoco::Ui
             drawingCtx.fillRect(*rt, l, t, r, b, 0x2000000 | 52);
         }
 
-        drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
+        drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags);
 
         if (content == kContentNull)
         {
@@ -434,12 +434,12 @@ namespace OpenLoco::Ui
                 // 0x004CABE8
 
                 flags |= 0x10;
-                drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
+                drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags);
 
                 return;
             }
 
-            drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
+            drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags);
         }
 
         if (content == kContentNull)
@@ -496,7 +496,7 @@ namespace OpenLoco::Ui
         }
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags);
+        drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags);
     }
 
     // 0x004CB1BE
@@ -586,7 +586,7 @@ namespace OpenLoco::Ui
     void Widget::drawTextBox(Gfx::RenderTarget* rt, const Window* window, uint16_t flags, AdvancedColour colour)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRectInset(*rt, window->x + left, window->y + top, window->x + right, window->y + bottom, colour.u8(), flags | 0x60);
+        drawingCtx.fillRectInset(*rt, window->x + left, window->y + top, window->x + right, window->y + bottom, colour, flags | 0x60);
     }
 
     // 0x004CA6AE
@@ -598,7 +598,7 @@ namespace OpenLoco::Ui
         int b = window->y + bottom;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags | 0x60);
+        drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags | 0x60);
         drawingCtx.fillRect(*rt, l + 1, t + 1, r - 1, b - 1, 0x2000000 | 46);
 
         int16_t width = r - l - 4 - 10;
@@ -692,7 +692,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        drawingCtx.fillRectInset(*rt, ax, cx, ax + 9, dx, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, ax, cx, ax + 9, dx, colour, f);
         // popa
 
         // pusha
@@ -705,7 +705,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        drawingCtx.fillRectInset(*rt, bx - 9, cx, bx, dx, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, bx - 9, cx, bx, dx, colour, f);
         // popa
 
         // pusha
@@ -730,7 +730,7 @@ namespace OpenLoco::Ui
         {
             f = 0x20;
         }
-        drawingCtx.fillRectInset(*rt, ax - 1 + scroll_area->hThumbLeft, cx, ax - 1 + scroll_area->hThumbRight, dx, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, ax - 1 + scroll_area->hThumbLeft, cx, ax - 1 + scroll_area->hThumbRight, dx, colour, f);
         // popa
     }
 
@@ -758,7 +758,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        drawingCtx.fillRectInset(*rt, ax, cx, bx, cx + 9, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, ax, cx, bx, cx + 9, colour, f);
         // popa
 
         // pusha
@@ -771,7 +771,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        drawingCtx.fillRectInset(*rt, ax, dx - 9, bx, dx, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, ax, dx - 9, bx, dx, colour, f);
         // popa
 
         // pusha
@@ -796,7 +796,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        drawingCtx.fillRectInset(*rt, ax, cx - 1 + scroll_area->vThumbTop, bx, cx - 1 + scroll_area->vThumbBottom, colour.u8(), f);
+        drawingCtx.fillRectInset(*rt, ax, cx - 1 + scroll_area->vThumbTop, bx, cx - 1 + scroll_area->vThumbBottom, colour, f);
         // popa
     }
 
@@ -809,7 +809,7 @@ namespace OpenLoco::Ui
         int16_t b = window->y + bottom;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRectInset(*rt, l, t, r, b, colour.u8(), flags | 0x60);
+        drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags | 0x60);
 
         l++;
         t++;
@@ -889,7 +889,7 @@ namespace OpenLoco::Ui
                 window->y + top,
                 window->x + left + 9,
                 window->y + bottom - 1,
-                colour.u8(),
+                colour,
                 flags | 0x60);
         }
 
