@@ -15,15 +15,15 @@ namespace OpenLoco::Config
     enum class Flags : uint32_t
     {
         none = 0U,
-        gridlinesOnLandscape = (1 << 0),
-        showHeightAsUnits = (1 << 1),
-        landscapeSmoothing = (1 << 2),
-        exportObjectsWithSaves = (1 << 3),
+        gridlinesOnLandscape = 1U << 0,
+        showHeightAsUnits = 1U << 1,
+        landscapeSmoothing = 1U << 2,
+        exportObjectsWithSaves = 1U << 3,
 
-        preferredCurrencyForNewGames = (1 << 6),
-        preferredCurrencyAlways = (1 << 7),
+        preferredCurrencyForNewGames = 1U << 6,
+        preferredCurrencyAlways = 1U << 7,
 
-        usePreferredOwnerName = (1 << 9),
+        usePreferredOwnerName = 1U << 9,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
@@ -98,6 +98,11 @@ namespace OpenLoco::Config
         uint8_t stationNamesMinScale;                   // 0x114
         uint8_t scenarioSelectedTab;                    // 0x115
         char preferredName[256];                        // 0x116
+
+        constexpr bool hasFlags(Flags flagsToTest) const
+        {
+            return (flags & flagsToTest) != Flags::none;
+        }
     };
     static_assert(offsetof(LocoConfig, keyboardShortcuts) == 0x2A);
     static_assert(offsetof(LocoConfig, preferredName) == 0x116);

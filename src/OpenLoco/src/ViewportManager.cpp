@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::ViewportManager
         vp->flags = 0;
 
         auto& cfg = OpenLoco::Config::get().old;
-        if ((cfg.flags & Config::Flags::gridlinesOnLandscape) != Config::Flags::none)
+        if (cfg.hasFlags(Config::Flags::gridlinesOnLandscape))
         {
             vp->flags |= ViewportFlags::gridlines_on_landscape;
         }
