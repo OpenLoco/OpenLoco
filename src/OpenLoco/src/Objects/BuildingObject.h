@@ -64,6 +64,11 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
+
+        constexpr bool hasFlags(BuildingObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != BuildingObjectFlags::none;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(BuildingObject) == 0xBE);

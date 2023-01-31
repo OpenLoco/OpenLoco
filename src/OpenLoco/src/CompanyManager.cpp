@@ -690,7 +690,7 @@ namespace OpenLoco::CompanyManager
                 continue;
             }
 
-            if ((buildingObj->flags & BuildingObjectFlags::isHeadquarters) != BuildingObjectFlags::none)
+            if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))
             {
                 return static_cast<uint8_t>(i);
             }
