@@ -898,7 +898,7 @@ namespace OpenLoco::Map::TileManager
                 auto* buildingObj = elBuilding.getObject();
                 if (buildingObj != nullptr)
                 {
-                    if (!(buildingObj->flags & BuildingObjectFlags::miscBuilding))
+                    if (!buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
                     {
                         auto buildingCapacity = -buildingObj->producedQuantity[0];
                         auto removedPopulation = buildingCapacity;

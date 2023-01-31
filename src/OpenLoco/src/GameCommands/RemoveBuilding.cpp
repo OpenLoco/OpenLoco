@@ -55,13 +55,13 @@ namespace OpenLoco::GameCommands
             {
                 if ((flags & (GameCommands::Flags::flag_6 | GameCommands::Flags::flag_7)) == 0)
                 {
-                    if ((buildingObj->flags & BuildingObjectFlags::undestructible) != 0)
+                    if (buildingObj->hasFlags(BuildingObjectFlags::undestructible))
                     {
                         GameCommands::setErrorText(StringIds::demolition_not_allowed);
                         return GameCommands::FAILURE;
                     }
 
-                    if ((buildingObj->flags & BuildingObjectFlags::miscBuilding) == 0)
+                    if (!buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
                     {
                         auto rating = getCompanyRating(pos);
                         if (rating.has_value() && *rating < 0)
@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
                     }
                 }
             }
-            auto animOffsets = getBuildingTileOffsets(buildingObj->flags & BuildingObjectFlags::largeTile);
+            auto animOffsets = getBuildingTileOffsets(buildingObj->hasFlags(BuildingObjectFlags::largeTile));
             for (auto animOffset : animOffsets)
             {
                 const auto subTilePos = animOffset.pos + pos;
