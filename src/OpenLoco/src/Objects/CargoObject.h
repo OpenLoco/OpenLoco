@@ -17,7 +17,7 @@ namespace OpenLoco
         none = 0U,
         unk0 = 1U << 0,
         refit = 1U << 1,
-        unk2 = 1U << 2,
+        delivering = 1U << 2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(CargoObjectFlags);
 
@@ -48,10 +48,11 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
-        CargoObjectFlags getFlags() const;
-        void setFlags(CargoObjectFlags paramFlags);
-        bool hasFlags(CargoObjectFlags paramFlags) const;
-        void removeFlags(CargoObjectFlags paramFlags);
+
+        constexpr bool hasFlags(CargoObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != CargoObjectFlags::none;
+        }
     };
 #pragma pack(pop)
 
