@@ -48,6 +48,10 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
+        CargoObjectFlags getFlags() const;
+        void setFlags(CargoObjectFlags paramFlags);
+        bool hasFlags(CargoObjectFlags paramFlags) const;
+        void removeFlags(CargoObjectFlags paramFlags);
     };
 #pragma pack(pop)
 

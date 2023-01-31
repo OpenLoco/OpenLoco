@@ -55,4 +55,24 @@ namespace OpenLoco
         unitNamePlural = 0;
         unitInlineSprite = 0;
     }
+
+    CargoObjectFlags CargoObject::getFlags() const
+    {
+        return flags;
+    }
+
+    void CargoObject::setFlags(CargoObjectFlags paramFlags)
+    {
+        CargoObject::flags = paramFlags;
+    }
+
+    bool CargoObject::hasFlags(CargoObjectFlags paramFlags) const
+    {
+        return (getFlags() & paramFlags) != CargoObjectFlags::none;
+    }
+
+    void CargoObject::removeFlags(CargoObjectFlags paramFlags)
+    {
+        setFlags(getFlags() & ~paramFlags);
+    }
 }

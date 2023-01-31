@@ -2009,7 +2009,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (cargoObject == nullptr)
                     continue;
 
-                if ((cargoObject->flags & CargoObjectFlags::refit) == CargoObjectFlags::none)
+                if (!cargoObject->hasFlags(CargoObjectFlags::refit))
                     continue;
 
                 string_id format = StringIds::dropdown_stringid;
