@@ -218,7 +218,7 @@ namespace OpenLoco::MessageManager
                 args.push(town->name);
 
                 const auto isDelivering = cargoObj->hasFlags(CargoObjectFlags::unk2);
-                const auto formatStr = isDelievering ? StringIds::message_first_string_delivery_arives_at : StringIds::message_first_string_arrive_at;
+                const auto formatStr = isDelivering ? StringIds::message_first_string_delivery_arives_at : StringIds::message_first_string_arrive_at;
                 StringManager::formatString(tempBuffer, formatStr, &args);
             }
             break;
