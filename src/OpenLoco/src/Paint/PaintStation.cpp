@@ -81,7 +81,7 @@ namespace OpenLoco::Paint
                     }
                 }
                 Map::Pos3 offset;
-                if (cargoObj->flags & CargoObjectFlags::unk0)
+                if (cargoObj->hasFlags(CargoObjectFlags::unk0))
                 {
                     if (flags & (1 << 2))
                     {
