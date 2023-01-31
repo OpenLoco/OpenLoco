@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <limits>
 
 namespace OpenLoco::Audio
@@ -68,14 +69,16 @@ namespace OpenLoco
         null = std::numeric_limits<uint8_t>::max()
     };
 
-    namespace MessageTypeFlags
+    enum class MessageTypeFlags : uint16_t
     {
-        constexpr uint16_t unk0 = 1 << 0;
-        constexpr uint16_t unk1 = 1 << 1;
-        constexpr uint16_t hasFirstItem = 1 << 2;
-        constexpr uint16_t hasSecondItem = 1 << 3;
-        constexpr uint16_t unk5 = 1 << 5; // Never set
-    }
+        none = 0U,
+        unk0 = (1U << 0),
+        unk1 = (1U << 1),
+        hasFirstItem = (1U << 2),
+        hasSecondItem = (1U << 3),
+        unk5 = (1U << 5), // Never set
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(MessageTypeFlags);
 
 #pragma pack(push, 1)
     struct Message
@@ -123,11 +126,14 @@ namespace OpenLoco
     {
         MessageCriticality criticality;
         Audio::SoundId sound;
-        uint16_t flags;
+        MessageTypeFlags flags;
         MessageItemArgumentType argumentTypes[Message::kNumSubjects];
         uint16_t duration;
         uint8_t priority;
-        constexpr bool hasFlag(uint16_t flag) const { return flags & flag; }
+        constexpr bool hasFlag(MessageTypeFlags flag) const
+        {
+            return (flags & flag) != MessageTypeFlags::none;
+        }
     };
 
     const MessageTypeDescriptor& getMessageTypeDescriptor(const MessageType type);

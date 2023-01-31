@@ -1397,7 +1397,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Gfx::getG1Element(0)->height = kMapRows * 2;
         Gfx::getG1Element(0)->xOffset = -8;
         Gfx::getG1Element(0)->yOffset = -8;
-        Gfx::getG1Element(0)->flags = 0;
+        Gfx::getG1Element(0)->flags = Gfx::G1ElementFlags::none;
 
         drawingCtx.drawImage(&rt, 0, 0, 0);
 

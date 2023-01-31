@@ -110,7 +110,7 @@ namespace OpenLoco::Gfx
             // Temporarily convert offsets to absolute indexes
             for (size_t i = 0; i < elements.size(); i++)
             {
-                if (elements[i].flags & G1ElementFlags::hasZoomSprites)
+                if ((elements[i].flags & G1ElementFlags::hasZoomSprites) != G1ElementFlags::none)
                 {
                     elements[i].zoomOffset = static_cast<int16_t>(i - elements[i].zoomOffset);
                 }
@@ -129,7 +129,7 @@ namespace OpenLoco::Gfx
             // Restore relative offsets
             for (size_t i = 0; i < elements.size(); i++)
             {
-                if (elements[i].flags & G1ElementFlags::hasZoomSprites)
+                if ((elements[i].flags & G1ElementFlags::hasZoomSprites) != G1ElementFlags::none)
                 {
                     elements[i].zoomOffset = static_cast<int16_t>(i - elements[i].zoomOffset);
                 }
