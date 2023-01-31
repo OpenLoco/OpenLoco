@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
@@ -11,12 +12,14 @@ namespace OpenLoco
         struct DependentObjects;
     }
 
-    namespace CargoObjectFlags
+    enum class CargoObjectFlags : uint8_t
     {
-        constexpr uint8_t unk0 = (1 << 0);
-        constexpr uint8_t refit = (1 << 1);
-        constexpr uint8_t unk2 = (1 << 2);
-    }
+        none = 0U,
+        unk0 = 1U << 0,
+        refit = 1U << 1,
+        unk2 = 1U << 2,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(CargoObjectFlags);
 
 #pragma pack(push, 1)
     struct CargoObject
@@ -31,7 +34,7 @@ namespace OpenLoco
         string_id unitNamePlural;    // 0xA
         uint32_t unitInlineSprite;   // 0xC
         std::uint8_t pad_10[0x12 - 0x10];
-        uint8_t flags;                 // 0x12
+        CargoObjectFlags flags;        // 0x12
         uint8_t numPlatformVariations; // 0x13
         uint8_t var_14;
         uint8_t premiumDays;       // 0x15
