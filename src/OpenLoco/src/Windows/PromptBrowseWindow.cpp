@@ -447,7 +447,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawSavePreview(Ui::Window& window, Gfx::RenderTarget& rt, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
+        drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary), Drawing::DrawRectInsetFlags::borderInset | Drawing::DrawRectInsetFlags::fillNone);
 
         auto imageId = 0;
         auto g1 = Gfx::getG1Element(imageId);
@@ -503,7 +503,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawLandscapePreview(Ui::Window& window, Gfx::RenderTarget& rt, int32_t x, int32_t y, int32_t width, int32_t height)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
+        drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary), Drawing::DrawRectInsetFlags::borderInset | Drawing::DrawRectInsetFlags::fillNone);
 
         if ((_previewScenarioOptions->scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
         {

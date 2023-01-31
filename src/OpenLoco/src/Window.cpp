@@ -1513,7 +1513,7 @@ namespace OpenLoco::Ui
                 this->x + this->width - 1,
                 this->y + this->height - 1,
                 Colour::white,
-                0x10);
+                Drawing::DrawRectInsetFlags::fillNone);
         }
     }
 

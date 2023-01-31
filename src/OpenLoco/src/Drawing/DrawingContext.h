@@ -4,10 +4,23 @@
 #include "Graphics/PaletteMap.h"
 #include "Types.hpp"
 #include "Ui/Rect.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstdint>
 
 namespace OpenLoco::Drawing
 {
+    enum class DrawRectInsetFlags : uint8_t
+    {
+        fillTransparent = (1u << 2), // ? unused
+        borderNone = (1u << 3),      // ? unused
+        fillNone = (1u << 4),
+        borderInset = (1u << 5),
+        fillDarker = (1u << 6),
+        colourLight = (1u << 7),
+        none = 0u
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(DrawRectInsetFlags);
+
     class DrawingContext
     {
     public:
@@ -133,9 +146,9 @@ namespace OpenLoco::Drawing
 
         virtual void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour) = 0;
 
-        virtual void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, uint8_t flags) = 0;
+        virtual void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, DrawRectInsetFlags flags) = 0;
 
-        virtual void drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, uint8_t flags) = 0;
+        virtual void drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, DrawRectInsetFlags flags) = 0;
 
         virtual void drawLine(Gfx::RenderTarget& rt, const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour) = 0;
 

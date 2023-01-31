@@ -527,7 +527,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        drawingCtx.fillRectInset(*rt, self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), 0);
+        drawingCtx.fillRectInset(*rt, self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Drawing::DrawRectInsetFlags::none);
         self.draw(rt);
 
         drawTabs(&self, rt);
@@ -636,7 +636,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self.currentTab));
         for (auto [i, object] : objects)
         {
-            uint8_t flags = (1 << 7) | (1 << 6) | (1 << 5);
+            Drawing::DrawRectInsetFlags flags = Drawing::DrawRectInsetFlags::colourLight | Drawing::DrawRectInsetFlags::fillDarker | Drawing::DrawRectInsetFlags::borderInset;
             drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, self.getColour(WindowColour::secondary), flags);
 
             uint8_t textColour = ControlCodes::Colour::black;

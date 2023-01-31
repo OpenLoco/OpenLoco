@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             }
 
             // Draw checkbox.
-            drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, window.getColour(WindowColour::secondary), 0xE0);
+            drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, window.getColour(WindowColour::secondary), Drawing::DrawRectInsetFlags::colourLight | Drawing::DrawRectInsetFlags::fillDarker | Drawing::DrawRectInsetFlags::borderInset);
 
             // Draw checkmark if track is enabled.
             if (config.enabledMusic[i])
