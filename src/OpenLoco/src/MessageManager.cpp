@@ -217,7 +217,8 @@ namespace OpenLoco::MessageManager
                 auto* town = TownManager::get(static_cast<TownId>(message.itemSubjects[2] & 0xFF));
                 args.push(town->name);
 
-                const auto formatStr = ((cargoObj->flags & CargoObjectFlags::unk2) != CargoObjectFlags::none) ? StringIds::message_first_string_delivery_arives_at : StringIds::message_first_string_arrive_at;
+                const auto isDelievering = cargoObj->flags & CargoObjectFlags::unk2) != CargoObjectFlags::none;
+                const auto formatStr = isDelievering ? StringIds::message_first_string_delivery_arives_at : StringIds::message_first_string_arrive_at;
                 StringManager::formatString(tempBuffer, formatStr, &args);
             }
             break;
