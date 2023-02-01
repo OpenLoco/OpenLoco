@@ -86,6 +86,12 @@ namespace OpenLoco::Gfx
             , zoomOffset(src.zoomOffset)
         {
         }
+
+        constexpr bool hasFlags(G1ElementFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != G1ElementFlags::none;
+        }
+
     };
 
 #pragma pack(pop)

@@ -26,7 +26,7 @@ namespace OpenLoco::ObjectManager
         {
             auto g1Element = Gfx::G1Element(*g32Ptr);
             g1Element.offset = imageDataBegin + g32Ptr->offset;
-            if ((g1Element.flags & Gfx::G1ElementFlags::duplicatePrevious) != Gfx::G1ElementFlags::none)
+            if (g1Element.hasFlags(Gfx::G1ElementFlags::duplicatePrevious))
             {
                 g1Element = *Gfx::getG1Element(_totalNumImages + i - 1);
                 g1Element.xOffset += g32Ptr->xOffset;
