@@ -91,7 +91,6 @@ namespace OpenLoco::Gfx
         {
             return (flags & flagsToTest) != G1ElementFlags::none;
         }
-
     };
 
 #pragma pack(pop)
