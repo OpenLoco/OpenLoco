@@ -489,7 +489,7 @@ else ()
         loco_add_executable(OpenLoco 
             PRIVATE_FILES
                 ${OLOCO_SOURCES}
-                ${OLOCO_MM_SOURCES})
+        )
         add_dependencies(OpenLoco linkable_sections)
         # set_source_files_properties has to be set in the CMakeLists that uses them
         set_source_files_properties(
