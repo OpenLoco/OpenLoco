@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             for (auto& industry : IndustryManager::industries())
             {
-                if ((industry.flags & IndustryFlags::sorted) != IndustryFlags::none)
+                if (industry.hasFlags(IndustryFlags::sorted))
                     continue;
 
                 if (chosenIndustry == IndustryId::null)
