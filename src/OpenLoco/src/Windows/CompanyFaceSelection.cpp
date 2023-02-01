@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             if (index == self.rowHover)
             {
                 inlineColour = ControlCodes::windowColour2;
-                drawingCtx.fillRect(rt, 0, y, self.width, y + 9, 48, Drawing::RectFlags::transparent);
+                drawingCtx.fillRect(rt, 0, y, self.width, y + 9, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
             }
 
             std::string name(object.second._name);

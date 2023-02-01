@@ -116,7 +116,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw hovered track
             if (i == window.rowHover)
             {
-                drawingCtx.drawRect(rt, 0, y, 800, kRowHeight, 0x30, Drawing::RectFlags::transparent);
+                drawingCtx.drawRect(rt, 0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 

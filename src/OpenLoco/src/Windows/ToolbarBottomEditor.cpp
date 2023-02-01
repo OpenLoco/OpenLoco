@@ -72,9 +72,9 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawRect(*rt, previous.left + self.x, previous.top + self.y, previous.width(), previous.height(), 52, Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, previous.left + self.x, previous.top + self.y, previous.width(), previous.height(), enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
         }
-        drawingCtx.drawRect(*rt, next.left + self.x, next.top + self.y, next.width(), next.height(), 52, Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, next.left + self.x, next.top + self.y, next.width(), next.height(), enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
 
         self.draw(rt);
 

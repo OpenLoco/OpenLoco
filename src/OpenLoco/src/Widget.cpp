@@ -194,8 +194,8 @@ namespace OpenLoco::Ui
         auto& widget = window->widgets[widgetIndex];
         if (Input::isHovering(window->type, window->number, widgetIndex))
         {
-            drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 54, Drawing::RectFlags::transparent);
-            drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 52, Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), enumValue(ExtColour::translucentGrey2), Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
 
             Drawing::RectInsetFlags flags = Drawing::RectInsetFlags::none;
             if (Input::isPressed(window->type, window->number, widgetIndex))
@@ -360,7 +360,7 @@ namespace OpenLoco::Ui
 
         if (window->flags & WindowFlags::flag_6)
         {
-            drawingCtx.fillRect(*rt, l, t, r, b,  52, Drawing::RectFlags::transparent);
+            drawingCtx.fillRect(*rt, l, t, r, b, enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
         }
 
         drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags);
@@ -601,7 +601,7 @@ namespace OpenLoco::Ui
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags | Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillDarker);
-        drawingCtx.fillRect(*rt, l + 1, t + 1, r - 1, b - 1, 46, Drawing::RectFlags::transparent);
+        drawingCtx.fillRect(*rt, l + 1, t + 1, r - 1, b - 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
 
         int16_t width = r - l - 4 - 10;
         int16_t y = t + 1;

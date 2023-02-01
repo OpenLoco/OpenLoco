@@ -977,7 +977,7 @@ namespace OpenLoco::Ui::Windows::Station
                     auto& cargo = cargoStats;
                     if (!cargo.empty())
                     {
-                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset + 22, yOffset + 1, PaletteIndex::index_30, Drawing::RectFlags::transparent);
+                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset + 22, yOffset + 1, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
 
                         auto ratingColour = Colour::green;
                         if (cargo.rating < 100)

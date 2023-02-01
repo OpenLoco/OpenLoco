@@ -405,7 +405,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 // Highlight selection.
                 if (industryId == IndustryId(self.rowHover))
                 {
-                    drawingCtx.drawRect(rt, 0, yPos, self.width, kRowHeight, 0x30, Drawing::RectFlags::transparent);
+                    drawingCtx.drawRect(rt, 0, yPos, self.width, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 

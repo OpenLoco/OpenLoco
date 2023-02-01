@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::Dropdown
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
-                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth, _dropdownItemHeight, PaletteIndex::index_2E, Drawing::RectFlags::transparent);
+                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth, _dropdownItemHeight, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
                     }
 
                     auto args = FormatArguments();

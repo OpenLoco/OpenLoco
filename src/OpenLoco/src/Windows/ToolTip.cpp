@@ -177,18 +177,18 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 45, Drawing::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, (116 + enumValue(ObjectManager::get<InterfaceSkinObject>()->colour_08)), Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(ObjectManager::get<InterfaceSkinObject>()->colour_08)), Drawing::RectFlags::transparent);
 
-        drawingCtx.drawRect(*rt, x, y + 2, 1, height - 4, 46, Drawing::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + width - 1, y + 2, 1, height - 4, 46, Drawing::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + 2, y + height - 1, width - 4, 1, 46, Drawing::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + 2, y, width - 4, 1, 46, Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, x, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, x + width - 1, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, x + 2, y + height - 1, width - 4, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, x + 2, y, width - 4, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
 
-        drawingCtx.drawRect(*rt, x + 1, y + 1, 1, 1, 46, Drawing::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, 46, Drawing::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, 46, Drawing::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 46, Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, x + 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
 
         drawingCtx.drawStringCentredRaw(*rt, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, _text);
     }

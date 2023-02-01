@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         Widget& frame = _widgets[Widx::outer_frame];
-        drawingCtx.drawRect(*rt, self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), 52, Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
 
         // Draw widgets.
         self.draw(rt);

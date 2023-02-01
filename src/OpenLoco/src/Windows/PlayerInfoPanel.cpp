@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         Widget& frame = _widgets[Widx::outer_frame];
-        drawingCtx.drawRect(*rt, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), 52, Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
 
         // Draw widgets.
         window.draw(rt);

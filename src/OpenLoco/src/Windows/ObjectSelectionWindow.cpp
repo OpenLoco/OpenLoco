@@ -647,7 +647,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
                 if (object._name == windowObjectName)
                 {
-                    drawingCtx.fillRect(rt, 0, y, self.width, y + kRowHeight - 1, PaletteIndex::index_30, Drawing::RectFlags::transparent);
+                    drawingCtx.fillRect(rt, 0, y, self.width, y + kRowHeight - 1, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
                     textColour = ControlCodes::windowColour2;
                 }
             }

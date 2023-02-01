@@ -1870,7 +1870,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             drawingCtx.drawStringRight(*rt, x, y, Colour::black, mainFormat, &args);
 
-            drawingCtx.fillRect(*rt, x - expenditureColumnWidth + 10, y - 2, x, y - 2, enumValue(Colour::darkGreen), Drawing::RectFlags::none);
+            drawingCtx.fillRect(*rt, x - expenditureColumnWidth + 10, y - 2, x, y - 2, PaletteIndex::index_0A, Drawing::RectFlags::none);
         }
 
         // 0x0043361E

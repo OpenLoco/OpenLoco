@@ -592,7 +592,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto stringId = StringIds::black_stringid;
                 if (i == window.var_85A)
                 {
-                    drawingCtx.drawRect(rt, 0, y, window.width, lineHeight, 48, Drawing::RectFlags::transparent);
+                    drawingCtx.drawRect(rt, 0, y, window.width, lineHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
                     stringId = StringIds::wcolour2_stringid;
                 }
 

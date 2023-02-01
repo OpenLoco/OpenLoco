@@ -1129,9 +1129,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                         auto colouredString = StringIds::black_stringid;
 
-                        const int32_t lockedHoverRowColour = 0x3D;
-                        const auto normalHoverRowColour = 0x30;
-                        const int32_t lockedRowColour = 0x3F;
+                        const auto lockedHoverRowColour = PaletteIndex::index_3D;
+                        const auto normalHoverRowColour = enumValue(ExtColour::unk30);
+                        const auto lockedRowColour = PaletteIndex::index_3F;
 
                         if (window.rowHover == vehicleType)
                         {

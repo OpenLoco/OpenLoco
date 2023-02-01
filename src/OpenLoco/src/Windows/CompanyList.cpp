@@ -481,7 +481,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (rowItem == self.rowHover)
                 {
-                    drawingCtx.drawRect(rt, 0, yBottom, self.width, 24, PaletteIndex::index_30, Drawing::RectFlags::transparent);
+                    drawingCtx.drawRect(rt, 0, yBottom, self.width, 24, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
 
                     stringId = StringIds::wcolour2_stringid;
                 }
