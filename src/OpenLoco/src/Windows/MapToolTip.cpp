@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             auto right = left + 25;
             auto bottom = top + 25;
 
-            drawingCtx.fillRect(*rt, left, top, right, bottom, enumValue(Colour::darkGreen));
+            drawingCtx.fillRect(*rt, left, top, right, bottom, enumValue(Colour::darkGreen), Drawing::RectFlags::none);
 
             auto* company = CompanyManager::get(_mapTooltipOwner);
             auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);

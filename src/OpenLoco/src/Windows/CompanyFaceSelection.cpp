@@ -236,7 +236,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto t = self.y + 1 + self.widgets[widx::face_frame].top;
             const auto r = self.x - 1 + self.widgets[widx::face_frame].right;
             const auto b = self.y - 1 + self.widgets[widx::face_frame].bottom;
-            drawingCtx.fillRect(*rt, l, t, r, b, colour);
+            drawingCtx.fillRect(*rt, l, t, r, b, colour, Drawing::RectFlags::none);
 
             const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(ObjectManager::getTemporaryObject());
             uint32_t img = competitor->images[0] + 1 + (1 << 29);
@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             if (index == self.rowHover)
             {
                 inlineColour = ControlCodes::windowColour2;
-                drawingCtx.fillRect(rt, 0, y, self.width, y + 9, 0x2000000 | 48);
+                drawingCtx.fillRect(rt, 0, y, self.width, y + 9, 48, Drawing::RectFlags::transparent);
             }
 
             std::string name(object.second._name);

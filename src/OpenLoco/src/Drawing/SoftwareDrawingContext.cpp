@@ -52,7 +52,7 @@ namespace OpenLoco::Drawing
         static PaletteMap::Buffer<8> _textColours{ 0 };
         static uint16_t getStringWidth(const char* buffer);
         static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
-        static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
+        static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags);
         static void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
 
         // 0x0112C876
@@ -1177,9 +1177,9 @@ namespace OpenLoco::Drawing
             drawString(rt, x - width, y, colour, buffer);
 
             // Draw underline
-            drawRect(rt, x - width, y + 11, width, 1, _textColours[1]);
+            drawRect(rt, x - width, y + 11, width, 1, _textColours[1], RectFlags::none);
             if (_textColours[2] != 0)
-                drawRect(rt, x - width, y + 12, width, 1, _textColours[2]);
+                drawRect(rt, x - width, y + 12, width, 1, _textColours[2], RectFlags::none);
         }
 
         // 0x00494D78
@@ -1206,9 +1206,9 @@ namespace OpenLoco::Drawing
             drawString(rt, x, y, colour, buffer);
 
             // Draw underline
-            drawRect(rt, x, y + 11, width, 1, _textColours[1]);
+            drawRect(rt, x, y + 11, width, 1, _textColours[1], RectFlags::none);
             if (_textColours[2] != 0)
-                drawRect(rt, x, y + 12, width, 1, _textColours[2]);
+                drawRect(rt, x, y + 12, width, 1, _textColours[2], RectFlags::none);
         }
 
         // 0x00494DE8
@@ -1497,32 +1497,32 @@ namespace OpenLoco::Drawing
         }
 
         // 0x004474BA
-        static void drawRectImpl(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+        static void drawRectImpl(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
         {
             registers regs;
             regs.ax = left;
             regs.bx = right;
             regs.cx = top;
             regs.dx = bottom;
-            regs.ebp = colour;
+            regs.ebp = colour | enumValue(flags);
             regs.edi = X86Pointer(&rt);
             call(0x004474BA, regs);
         }
 
-        static void drawRectImpl(Gfx::RenderTarget& rt, const Ui::Rect& rect, uint32_t colour)
+        static void drawRectImpl(Gfx::RenderTarget& rt, const Ui::Rect& rect, uint8_t colour, RectFlags flags)
         {
-            drawRectImpl(rt, rect.left(), rect.top(), rect.right(), rect.bottom(), colour);
+            drawRectImpl(rt, rect.left(), rect.top(), rect.right(), rect.bottom(), colour, flags);
         }
 
-        static void fillRect(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+        static void fillRect(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
         {
-            drawRectImpl(rt, left, top, right, bottom, colour);
+            drawRectImpl(rt, left, top, right, bottom, colour, flags);
         }
 
-        static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour)
+        static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags)
         {
             // This makes the function signature more like a drawing application
-            drawRectImpl(rt, x, y, x + dx - 1, y + dy - 1, colour);
+            drawRectImpl(rt, x, y, x + dx - 1, y + dy - 1, colour, flags);
         }
 
         static void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags)
@@ -1544,33 +1544,33 @@ namespace OpenLoco::Drawing
                 // Pass 1 << 25 to drawRectImpl
                 if ((flags & RectInsetFlags::borderNone) != RectInsetFlags::none)
                 {
-                    drawRectImpl(rt, rect, enumValue(Colours::getTranslucent(baseColour, 1)) | (1 << 25));
+                    drawRectImpl(rt, rect, enumValue(Colours::getTranslucent(baseColour, 1)), RectFlags::transparent);
                 }
                 else if ((flags & RectInsetFlags::borderInset) != RectInsetFlags::none)
                 {
                     // Draw outline of box
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom), enumValue(Colours::getTranslucent(baseColour, 2)) | (1 << 25));
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, right, top), enumValue(Colours::getTranslucent(baseColour, 2)) | (1 << 25));
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top, right, bottom), enumValue(Colours::getTranslucent(baseColour, 0)) | (1 << 25));
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, bottom, right, bottom), enumValue(Colours::getTranslucent(baseColour, 0)) | (1 << 25));
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom), enumValue(Colours::getTranslucent(baseColour, 2)), RectFlags::transparent);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, right, top), enumValue(Colours::getTranslucent(baseColour, 2)), RectFlags::transparent);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top, right, bottom), enumValue(Colours::getTranslucent(baseColour, 0)), RectFlags::transparent);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, bottom, right, bottom), enumValue(Colours::getTranslucent(baseColour, 0)), RectFlags::transparent);
 
                     if ((flags & RectInsetFlags::fillNone) == RectInsetFlags::none)
                     {
-                        drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), enumValue(Colours::getTranslucent(baseColour, 1)) | (1 << 25));
+                        drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), enumValue(Colours::getTranslucent(baseColour, 1)), RectFlags::transparent);
                     }
                 }
                 else
                 {
                     // Draw outline of box
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom), enumValue(Colours::getTranslucent(baseColour, 0)) | (1 << 25));
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, right, top), enumValue(Colours::getTranslucent(baseColour, 0)) | (1 << 25));
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top, right, bottom), enumValue(Colours::getTranslucent(baseColour, 2)) | (1 << 25));
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, bottom, right, bottom), enumValue(Colours::getTranslucent(baseColour, 2)) | (1 << 25));
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom), enumValue(Colours::getTranslucent(baseColour, 0)), RectFlags::transparent);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, right, top), enumValue(Colours::getTranslucent(baseColour, 0)), RectFlags::transparent);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top, right, bottom), enumValue(Colours::getTranslucent(baseColour, 2)), RectFlags::transparent);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, bottom, right, bottom), enumValue(Colours::getTranslucent(baseColour, 2)), RectFlags::transparent);
 
                     if ((flags & RectInsetFlags::fillNone) == RectInsetFlags::none)
                     {
                         drawRectImpl(
-                            rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), enumValue(Colours::getTranslucent(baseColour, 1)) | (1 << 25));
+                            rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), enumValue(Colours::getTranslucent(baseColour, 1)), RectFlags::transparent);
                     }
                 }
             }
@@ -1594,15 +1594,15 @@ namespace OpenLoco::Drawing
 
                 if ((flags & RectInsetFlags::borderNone) != RectInsetFlags::none)
                 {
-                    drawRectImpl(rt, rect, fill);
+                    drawRectImpl(rt, rect, fill, RectFlags::none);
                 }
                 else if ((flags & RectInsetFlags::borderInset) != RectInsetFlags::none)
                 {
                     // Draw outline of box
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom), shadow);
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top, right, top), shadow);
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top + 1, right, bottom - 1), hilight);
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, bottom, right, bottom), hilight);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom), shadow, RectFlags::none);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top, right, top), shadow, RectFlags::none);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top + 1, right, bottom - 1), hilight, RectFlags::none);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, bottom, right, bottom), hilight, RectFlags::none);
 
                     if ((flags & RectInsetFlags::fillNone) == RectInsetFlags::none)
                     {
@@ -1614,16 +1614,16 @@ namespace OpenLoco::Drawing
                         {
                             fill = PaletteIndex::transparent;
                         }
-                        drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), fill);
+                        drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), fill, RectFlags::none);
                     }
                 }
                 else
                 {
                     // Draw outline of box
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom - 1), hilight);
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top, right - 1, top), hilight);
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top, right, bottom - 1), shadow);
-                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, bottom, right, bottom), shadow);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, top, left, bottom - 1), hilight, RectFlags::none);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top, right - 1, top), hilight, RectFlags::none);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(right, top, right, bottom - 1), shadow, RectFlags::none);
+                    drawRectImpl(rt, Ui::Rect::fromLTRB(left, bottom, right, bottom), shadow, RectFlags::none);
 
                     if ((flags & RectInsetFlags::fillNone) == RectInsetFlags::none)
                     {
@@ -1631,7 +1631,7 @@ namespace OpenLoco::Drawing
                         {
                             fill = PaletteIndex::transparent;
                         }
-                        drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), fill);
+                        drawRectImpl(rt, Ui::Rect::fromLTRB(left + 1, top + 1, right - 1, bottom - 1), fill, RectFlags::none);
                     }
                 }
             }
@@ -1855,14 +1855,14 @@ namespace OpenLoco::Drawing
         return Impl::wrapString(buffer, stringWidth);
     }
 
-    void SoftwareDrawingContext::fillRect(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    void SoftwareDrawingContext::fillRect(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
     {
-        return Impl::fillRect(rt, left, top, right, bottom, colour);
+        return Impl::fillRect(rt, left, top, right, bottom, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour)
+    void SoftwareDrawingContext::drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags)
     {
-        return Impl::drawRect(rt, x, y, dx, dy, colour);
+        return Impl::drawRect(rt, x, y, dx, dy, colour, flags);
     }
 
     void SoftwareDrawingContext::fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags)

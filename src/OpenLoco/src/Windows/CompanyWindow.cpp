@@ -1716,8 +1716,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 6) | 0x1000000;
-                    drawingCtx.fillRect(*rt, self.x + 4, y, self.x + 129, y + 9, colour);
+                    auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 6);
+                    drawingCtx.fillRect(*rt, self.x + 4, y, self.x + 129, y + 9, colour, Drawing::RectFlags::crossHatching);
                 }
 
                 auto args = FormatArguments::common(ExpenditureLabels[i]);
@@ -1870,7 +1870,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             drawingCtx.drawStringRight(*rt, x, y, Colour::black, mainFormat, &args);
 
-            drawingCtx.fillRect(*rt, x - expenditureColumnWidth + 10, y - 2, x, y - 2, enumValue(Colour::darkGreen));
+            drawingCtx.fillRect(*rt, x - expenditureColumnWidth + 10, y - 2, x, y - 2, enumValue(Colour::darkGreen), Drawing::RectFlags::none);
         }
 
         // 0x0043361E
@@ -1885,8 +1885,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 6) | 0x1000000;
-                    drawingCtx.fillRect(rt, 0, y, expenditureColumnWidth * 17, y + 9, colour);
+                    auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 6);
+                    drawingCtx.fillRect(rt, 0, y, expenditureColumnWidth * 17, y + 9, colour, Drawing::RectFlags::crossHatching);
                 }
 
                 y += 10;

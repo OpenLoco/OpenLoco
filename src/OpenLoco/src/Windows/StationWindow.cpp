@@ -977,7 +977,7 @@ namespace OpenLoco::Ui::Windows::Station
                     auto& cargo = cargoStats;
                     if (!cargo.empty())
                     {
-                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
+                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset + 22, yOffset + 1, PaletteIndex::index_30, Drawing::RectFlags::transparent);
 
                         auto ratingColour = Colour::green;
                         if (cargo.rating < 100)
@@ -988,7 +988,7 @@ namespace OpenLoco::Ui::Windows::Station
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;
-                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colours::getShade(ratingColour, 6));
+                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colours::getShade(ratingColour, 6), Drawing::RectFlags::none);
 
                         yOffset += 3;
                         totalRatingBars++;

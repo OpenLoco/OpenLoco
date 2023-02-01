@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 // Highlight selection.
                 if (townId == TownId(self.rowHover))
                 {
-                    drawingCtx.drawRect(rt, 0, yPos, self.width, kRowHeight, 0x2000030);
+                    drawingCtx.drawRect(rt, 0, yPos, self.width, kRowHeight, 0x30, Drawing::RectFlags::transparent);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 

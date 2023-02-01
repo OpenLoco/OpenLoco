@@ -562,7 +562,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 drawingCtx.drawStringLeft(rt, &origin, Colour::black, StringIds::black_stringid, &args);
 
                 // Draw vertical caret
-                drawingCtx.drawRect(rt, origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9));
+                drawingCtx.drawRect(rt, origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
             }
         }
     }
@@ -592,7 +592,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto stringId = StringIds::black_stringid;
                 if (i == window.var_85A)
                 {
-                    drawingCtx.drawRect(rt, 0, y, window.width, lineHeight, 0x2000000 | 48);
+                    drawingCtx.drawRect(rt, 0, y, window.width, lineHeight, 48, Drawing::RectFlags::transparent);
                     stringId = StringIds::wcolour2_stringid;
                 }
 

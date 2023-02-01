@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     if (row < 1)
                     {
                         auto colour = Colours::getShade(self->getColour(WindowColour::secondary).c(), 7);
-                        drawingCtx.drawRect(*rt, xPos, yPos + 26, 31, 1, colour);
+                        drawingCtx.drawRect(*rt, xPos, yPos + 26, 31, 1, colour, Drawing::RectFlags::none);
                     }
                 }
                 xPos += 31;
@@ -547,13 +547,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 5);
-            drawingCtx.drawRect(*rt, self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour);
+            drawingCtx.drawRect(*rt, self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour, Drawing::RectFlags::none);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
-            drawingCtx.drawRect(*rt, self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
+            drawingCtx.drawRect(*rt, self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Drawing::RectFlags::none);
         }
 
         auto type = self.currentTab;
@@ -647,7 +647,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
                 if (object._name == windowObjectName)
                 {
-                    drawingCtx.fillRect(rt, 0, y, self.width, y + kRowHeight - 1, (1 << 25) | PaletteIndex::index_30);
+                    drawingCtx.fillRect(rt, 0, y, self.width, y + kRowHeight - 1, PaletteIndex::index_30, Drawing::RectFlags::transparent);
                     textColour = ControlCodes::windowColour2;
                 }
             }

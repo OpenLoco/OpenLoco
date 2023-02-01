@@ -1466,7 +1466,7 @@ namespace OpenLoco::Ui
 
         if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::noBackground))
         {
-            drawingCtx.fillRect(*rt, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
+            drawingCtx.fillRect(*rt, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 52, Drawing::RectFlags::transparent);
         }
 
         uint64_t pressedWidget = 0;

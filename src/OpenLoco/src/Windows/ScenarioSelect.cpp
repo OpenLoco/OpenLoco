@@ -366,7 +366,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             auto formatStringId = StringIds::black_stringid;
             if (scenarioInfo == reinterpret_cast<ScenarioIndexEntry*>(self.info))
             {
-                drawingCtx.drawRect(rt, 0, y, self.width, kRowHeight - 1, 0x2000000 | 48);
+                drawingCtx.drawRect(rt, 0, y, self.width, kRowHeight - 1, 48, Drawing::RectFlags::transparent);
                 formatStringId = StringIds::wcolour2_stringid;
             }
 

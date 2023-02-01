@@ -45,7 +45,7 @@ namespace OpenLoco::Ui
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(rt, x - 4, y, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
         drawingCtx.drawImage(rt, x + width, y, Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
-        drawingCtx.fillRect(*rt, x, y, x + width - 1, y + 11, Colours::getShade(colour.c(), 5));
+        drawingCtx.fillRect(*rt, x, y, x + width - 1, y + 11, Colours::getShade(colour.c(), 5), Drawing::RectFlags::none);
     }
 
     void Widget::draw(Gfx::RenderTarget* rt, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex)
@@ -194,8 +194,8 @@ namespace OpenLoco::Ui
         auto& widget = window->widgets[widgetIndex];
         if (Input::isHovering(window->type, window->number, widgetIndex))
         {
-            drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 54);
-            drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 52);
+            drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 54, Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 52, Drawing::RectFlags::transparent);
 
             Drawing::RectInsetFlags flags = Drawing::RectInsetFlags::none;
             if (Input::isPressed(window->type, window->number, widgetIndex))
@@ -331,7 +331,8 @@ namespace OpenLoco::Ui
             window->y + top,
             window->x + right,
             window->y + top + 40,
-            shade);
+            shade,
+            Drawing::RectFlags::none);
 
         draw_resize_handle(rt, window, this, colour);
     }
@@ -359,7 +360,7 @@ namespace OpenLoco::Ui
 
         if (window->flags & WindowFlags::flag_6)
         {
-            drawingCtx.fillRect(*rt, l, t, r, b, 0x2000000 | 52);
+            drawingCtx.fillRect(*rt, l, t, r, b,  52, Drawing::RectFlags::transparent);
         }
 
         drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags);
@@ -600,7 +601,7 @@ namespace OpenLoco::Ui
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         drawingCtx.fillRectInset(*rt, l, t, r, b, colour, flags | Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillDarker);
-        drawingCtx.fillRect(*rt, l + 1, t + 1, r - 1, b - 1, 0x2000000 | 46);
+        drawingCtx.fillRect(*rt, l + 1, t + 1, r - 1, b - 1, 46, Drawing::RectFlags::transparent);
 
         int16_t width = r - l - 4 - 10;
         int16_t y = t + 1;
@@ -714,15 +715,15 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        drawingCtx.fillRect(*rt, ax + 10, cx, bx - 10, dx, Colours::getShade(colour.c(), 7));
-        drawingCtx.fillRect(*rt, ax + 10, cx, bx - 10, dx, 0x1000000 | Colours::getShade(colour.c(), 3));
+        drawingCtx.fillRect(*rt, ax + 10, cx, bx - 10, dx, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, ax + 10, cx, bx - 10, dx, Colours::getShade(colour.c(), 3), Drawing::RectFlags::crossHatching);
         // popa
 
         // pusha
-        drawingCtx.fillRect(*rt, ax + 10, cx + 2, bx - 10, cx + 2, Colours::getShade(colour.c(), 3));
-        drawingCtx.fillRect(*rt, ax + 10, cx + 3, bx - 10, cx + 3, Colours::getShade(colour.c(), 7));
-        drawingCtx.fillRect(*rt, ax + 10, cx + 7, bx - 10, cx + 7, Colours::getShade(colour.c(), 3));
-        drawingCtx.fillRect(*rt, ax + 10, cx + 8, bx - 10, cx + 8, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, ax + 10, cx + 2, bx - 10, cx + 2, Colours::getShade(colour.c(), 3), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, ax + 10, cx + 3, bx - 10, cx + 3, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, ax + 10, cx + 7, bx - 10, cx + 7, Colours::getShade(colour.c(), 3), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, ax + 10, cx + 8, bx - 10, cx + 8, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
         // popa
 
         // pusha
@@ -779,15 +780,15 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        drawingCtx.fillRect(*rt, ax, cx + 10, bx, dx - 10, Colours::getShade(colour.c(), 7));
-        drawingCtx.fillRect(*rt, ax, cx + 10, bx, dx - 10, 0x1000000 | Colours::getShade(colour.c(), 3));
+        drawingCtx.fillRect(*rt, ax, cx + 10, bx, dx - 10, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, ax, cx + 10, bx, dx - 10, Colours::getShade(colour.c(), 3), Drawing::RectFlags::crossHatching);
         // popa
 
         // pusha
-        drawingCtx.fillRect(*rt, ax + 2, cx + 10, ax + 2, dx - 10, Colours::getShade(colour.c(), 3));
-        drawingCtx.fillRect(*rt, ax + 3, cx + 10, ax + 3, dx - 10, Colours::getShade(colour.c(), 7));
-        drawingCtx.fillRect(*rt, ax + 7, cx + 10, ax + 7, dx - 10, Colours::getShade(colour.c(), 3));
-        drawingCtx.fillRect(*rt, ax + 8, cx + 10, ax + 8, dx - 10, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, ax + 2, cx + 10, ax + 2, dx - 10, Colours::getShade(colour.c(), 3), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, ax + 3, cx + 10, ax + 3, dx - 10, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, ax + 7, cx + 10, ax + 7, dx - 10, Colours::getShade(colour.c(), 3), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, ax + 8, cx + 10, ax + 8, dx - 10, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
         // popa
 
         // pusha
@@ -927,7 +928,7 @@ namespace OpenLoco::Ui
         int t = window->y + top;
         int b = window->y + bottom;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRect(*rt, l, t, r, b, Colours::getShade(Colour::black, 5));
+        drawingCtx.fillRect(*rt, l, t, r, b, Colours::getShade(Colour::black, 5), Drawing::RectFlags::none);
     }
 
     void Widget::drawGroupbox(Gfx::RenderTarget* const rt, const Window* window)
@@ -957,24 +958,24 @@ namespace OpenLoco::Ui
         b = window->y + bottom;
 
         // Border left of text
-        drawingCtx.fillRect(*rt, l, t, l + 4, t, Colours::getShade(colour.c(), 4));
-        drawingCtx.fillRect(*rt, l + 1, t + 1, l + 4, t + 1, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, l, t, l + 4, t, Colours::getShade(colour.c(), 4), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, l + 1, t + 1, l + 4, t + 1, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
 
         // Border right of text
-        drawingCtx.fillRect(*rt, textEndPos, t, r - 1, t, Colours::getShade(colour.c(), 4));
-        drawingCtx.fillRect(*rt, textEndPos, t + 1, r - 2, t + 1, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, textEndPos, t, r - 1, t, Colours::getShade(colour.c(), 4), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, textEndPos, t + 1, r - 2, t + 1, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
 
         // Border right
-        drawingCtx.fillRect(*rt, r - 1, t + 1, r - 1, b - 1, Colours::getShade(colour.c(), 4));
-        drawingCtx.fillRect(*rt, r, t, r, b, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, r - 1, t + 1, r - 1, b - 1, Colours::getShade(colour.c(), 4), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, r, t, r, b, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
 
         // Border bottom
-        drawingCtx.fillRect(*rt, l, b - 1, r - 2, b - 1, Colours::getShade(colour.c(), 4));
-        drawingCtx.fillRect(*rt, l, b, r - 1, b, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, l, b - 1, r - 2, b - 1, Colours::getShade(colour.c(), 4), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, l, b, r - 1, b, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
 
         // Border left
-        drawingCtx.fillRect(*rt, l, t + 1, l, b - 2, Colours::getShade(colour.c(), 4));
-        drawingCtx.fillRect(*rt, l + 1, t + 2, l + 1, b - 2, Colours::getShade(colour.c(), 7));
+        drawingCtx.fillRect(*rt, l, t + 1, l, b - 2, Colours::getShade(colour.c(), 4), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, l + 1, t + 2, l + 1, b - 2, Colours::getShade(colour.c(), 7), Drawing::RectFlags::none);
     }
 
     // 0x004CF194
@@ -1022,7 +1023,7 @@ namespace OpenLoco::Ui
             }
 
             drawingCtx.drawImage(rt, pos.x, pos.y, Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33));
-            drawingCtx.drawRect(*rt, pos.x, pos.y + 26, 31, 1, Colours::getShade(w->getColour(WindowColour::secondary).c(), 7));
+            drawingCtx.drawRect(*rt, pos.x, pos.y + 26, 31, 1, Colours::getShade(w->getColour(WindowColour::secondary).c(), 7), Drawing::RectFlags::none);
         }
     }
 

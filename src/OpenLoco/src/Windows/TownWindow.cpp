@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
-                drawingCtx.drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+                drawingCtx.drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
 
                 drawingCtx.drawStringRight(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
@@ -441,7 +441,7 @@ namespace OpenLoco::Ui::Windows::Town
                         drawingCtx.drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    drawingCtx.drawRect(*clipped, xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+                    drawingCtx.drawRect(*clipped, xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
                 }
 
                 // Draw population graph
