@@ -666,12 +666,12 @@ namespace OpenLoco::Ui::Windows::Station
         static void drawRatingBar(Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y, uint8_t amount, Colour colour)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            drawingCtx.fillRectInset(*rt, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary), Drawing::DrawRectInsetFlags::borderInset | Drawing::DrawRectInsetFlags::fillNone);
+            drawingCtx.fillRectInset(*rt, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
 
             uint16_t rating = (amount * 96) / 256;
             if (rating > 2)
             {
-                drawingCtx.fillRectInset(*rt, x + 2, y + 2, x + 1 + rating, y + 8, colour, Drawing::DrawRectInsetFlags::none);
+                drawingCtx.fillRectInset(*rt, x + 2, y + 2, x + 1 + rating, y + 8, colour, Drawing::RectInsetFlags::none);
             }
         }
 

@@ -691,7 +691,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         xPos = self.x + 3;
         yPos = self.widgets[widx::image].bottom + self.y + 16;
         auto width = self.width - 4;
-        drawingCtx.drawRectInset(*rt, xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Drawing::DrawRectInsetFlags::borderInset);
+        drawingCtx.drawRectInset(*rt, xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset);
 
         if (!(_byte_522096 & (1 << 3)))
             return;

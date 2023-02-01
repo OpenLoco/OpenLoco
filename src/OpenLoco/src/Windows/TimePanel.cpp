@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         // Draw widgets.
         self.draw(rt);
 
-        drawingCtx.drawRectInset(*rt, self.x + frame.left + 1, self.y + frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Drawing::DrawRectInsetFlags::borderInset | Drawing::DrawRectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(*rt, self.x + frame.left + 1, self.y + frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
 
         *(uint32_t*)&_commonFormatArgs[0] = getCurrentDay();
         string_id format = StringIds::date_daymonthyear;

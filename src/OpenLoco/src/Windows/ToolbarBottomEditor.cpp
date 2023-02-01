@@ -80,9 +80,9 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawRectInset(*rt, previous.left + self.x + 1, previous.top + self.y + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary), Drawing::DrawRectInsetFlags::borderInset | Drawing::DrawRectInsetFlags::fillNone);
+            drawingCtx.drawRectInset(*rt, previous.left + self.x + 1, previous.top + self.y + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
         }
-        drawingCtx.drawRectInset(*rt, next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Drawing::DrawRectInsetFlags::borderInset | Drawing::DrawRectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(*rt, next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
 
         drawingCtx.drawStringCentred(*rt, (previous.right + next.left) / 2 + self.x, self.y + self.height - 12, self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
 
