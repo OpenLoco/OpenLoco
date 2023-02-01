@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
 
 #define UNUSED_IMG(x) (x)
@@ -2215,7 +2216,7 @@ namespace OpenLoco::ImageIds
 
     constexpr uint32_t getNumberCircle(uint8_t num)
     {
-        constexpr uint32_t numbers[64] = {
+        constexpr std::array numbers = {
             number_circle_00,
             number_circle_01,
             number_circle_02,
@@ -2281,7 +2282,7 @@ namespace OpenLoco::ImageIds
             number_circle_62,
             number_circle_63,
         };
-        if (num > sizeof(numbers) / sizeof(numbers[0]))
+        if (num >= numbers.size())
         {
             return number_circle_00;
         }
