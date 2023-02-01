@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::Windows::Error
             uint16_t y = self.y;
             uint16_t width = self.width;
             uint16_t height = self.height;
-            auto skin = ObjectManager::get<InterfaceSkinObject>()->colour_09;
+            auto skin = ObjectManager::get<InterfaceSkinObject>()->errorColour;
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Drawing::RectFlags::transparent);
