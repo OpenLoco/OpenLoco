@@ -1,6 +1,5 @@
 #include "Network.h"
 #include "CommandLine.h"
-#include "Console.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
@@ -9,6 +8,7 @@
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Socket.h"
+#include <OpenLoco/Console/Console.h>
 #include <cassert>
 #include <stdexcept>
 

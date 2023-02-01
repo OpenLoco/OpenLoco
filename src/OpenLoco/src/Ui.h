@@ -106,9 +106,8 @@ namespace OpenLoco::Ui
         const float step = 1.0f;
     };
 
-#ifdef _WIN32
     void* hwnd();
-#endif
+
     int32_t width();
     int32_t height();
     bool dirtyBlocksInitialised();

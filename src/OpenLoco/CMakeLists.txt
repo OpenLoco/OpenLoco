@@ -59,7 +59,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Company.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CompanyManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Console.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Date.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSprite.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/FPSCounter.cpp"
@@ -102,10 +101,10 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Gui.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Industry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/IndustryManager.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/Keyboard.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/MouseInput.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/ShortcutManager.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Input.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Hooks.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LastGameOptionManager.cpp"
@@ -114,6 +113,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Languages.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/StringManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Unicode.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/AnimationManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/BuildingElement.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/IndustryElement.cpp"
@@ -186,9 +186,6 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTrack.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTree.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintVehicle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Crash.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Platform.Posix.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Platform.Windows.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/SawyerStream.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario.cpp"
@@ -201,6 +198,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Town.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/TownManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Tutorial.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Cursor.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Dropdown.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ProgressBar.cpp"
@@ -209,11 +207,10 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/TextInput.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ViewportInteraction.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/WindowManager.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/CloneVehicle.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/CreateVehicle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Orders.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/OrderSkip.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Orders.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/RenameVehicle.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Routing.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Vehicle.cpp"
@@ -280,11 +277,11 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/TitleMenu.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/TitleOptions.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/TitleVersion.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolTip.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolbarBottomEditor.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolbarTop.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolbarTopAlt.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolbarTopCommon.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolTip.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/TownList.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/TownWindow.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Tutorial.cpp"
@@ -301,9 +298,12 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CompanyManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/CompanyRecords.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Config.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Console.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ConfigConvert.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Date.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSprite.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteBMP.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteHelper.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteRLE.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawingContext.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/FPSCounter.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/SoftwareDrawingContext.h"
@@ -321,6 +321,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Game.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Cheat.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/GameCommands.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameException.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameState.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Colour.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Gfx.h"
@@ -338,16 +339,20 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LabelFrame.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LastGameOptionManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/ArgsWrapper.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Conversion.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/FormatArguments.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/LanguageFiles.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Languages.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/StringIds.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/StringManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Unicode.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Location.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Animation.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/AnimationManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/BuildingElement.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/IndustryElement.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Map.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/MapGenerator.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/QuarterTile.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/RoadElement.h"
@@ -357,6 +362,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Tile.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileElement.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileElementBase.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileLoop.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/SubpositionData.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/Track.h"
@@ -428,8 +434,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTrack.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTree.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintVehicle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Crash.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Platform.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/Limits.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/SawyerStream.h"
@@ -437,12 +441,15 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ScenarioObjective.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/SceneManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Speed.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Station.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/StationManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Title.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Town.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/TownManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Tutorial.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Types.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Cursor.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Dropdown.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ProgressBar.h"
@@ -450,40 +457,21 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Screenshot.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ScrollView.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/TextInput.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/UiTypes.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/WindowManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/WindowType.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Orders.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Routing.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Vehicle.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/VehicleManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Viewport.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ViewportManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Window.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Construction/Construction.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/News/News.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolbarTopCommon.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ConfigConvert.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteBMP.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteHelper.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Drawing/DrawSpriteRLE.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameException.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/ArgsWrapper.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/FormatArguments.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Location.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Map.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileLoop.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Speed.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Types.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/UiTypes.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Viewport.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
-
-if (APPLE)
-    set(OLOCO_MM_SOURCES 
-        "${CMAKE_CURRENT_SOURCE_DIR}src/Platform/Platform.Macos.mm")
-    set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
-endif()
 
 if (MINGW)
     loco_add_library(OpenLoco SHARED
@@ -501,7 +489,7 @@ else ()
         loco_add_executable(OpenLoco 
             PRIVATE_FILES
                 ${OLOCO_SOURCES}
-                ${OLOCO_MM_SOURCES})
+        )
         add_dependencies(OpenLoco linkable_sections)
         # set_source_files_properties has to be set in the CMakeLists that uses them
         set_source_files_properties(
@@ -523,6 +511,8 @@ endif ()
 
 target_link_libraries(OpenLoco
     Core
+    Console
+    Platform
     Interop
     Utility
     Math
@@ -636,6 +626,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         Core
+        Console
+        Platform
         Interop
         Utility
         Math

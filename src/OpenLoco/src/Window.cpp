@@ -1,6 +1,5 @@
 #include "Window.h"
 #include "Config.h"
-#include "Console.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
@@ -13,6 +12,7 @@
 #include "Ui/Rect.h"
 #include "Ui/ScrollView.h"
 #include "Widget.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <cassert>

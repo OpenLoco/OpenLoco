@@ -1,8 +1,8 @@
 #include "Environment.h"
 #include "Config.h"
-#include "Platform/Platform.h"
 #include "Ui.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/Collection.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <cstring>
@@ -100,7 +100,10 @@ namespace OpenLoco::Environment
                                        "Please locate the Locomotion game folder manually.");
 
         // Let user manually specify the Locomotion install folder, and verify files are present
-        path = Platform::promptDirectory("Locate original Locomotion game files");
+        //
+        // FIXME: Instead of passing the hwnd we should have a function to bring the window to the front after
+        // this call.
+        path = Platform::promptDirectory("Locate original Locomotion game files", Ui::hwnd());
         if (validateLocoInstallPath(path))
         {
             cfg.locoInstallPath = path.make_preferred().u8string();

@@ -31,7 +31,6 @@
 
 #include "CompanyManager.h"
 #include "Config.h"
-#include "Console.h"
 #include "Drawing/FPSCounter.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -45,6 +44,7 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
@@ -95,6 +95,11 @@ namespace OpenLoco::Ui
     void* hwnd()
     {
         return _hwnd;
+    }
+#else
+    void* hwnd()
+    {
+        return nullptr;
     }
 #endif // _WIN32
 
