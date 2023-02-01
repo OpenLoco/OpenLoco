@@ -372,7 +372,7 @@ namespace OpenLoco::Ui::Windows::TownList
             TownId chosenTown = TownId::null;
             for (auto& town : TownManager::towns())
             {
-                if ((town.flags & TownFlags::sorted) != 0)
+                if ((town.flags & TownFlags::sorted) != TownFlags::none)
                     continue;
 
                 if (chosenTown == TownId::null)
