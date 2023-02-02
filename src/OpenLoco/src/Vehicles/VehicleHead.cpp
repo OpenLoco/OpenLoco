@@ -58,7 +58,7 @@ namespace OpenLoco::Vehicles
     static loco_global<int16_t, 0x01136168> _vehicleUpdate_targetZ;
     static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
-    static loco_global<uint32_t, 0x00525BB0> _vehicleUpdate_var_525BB0;
+    static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
     static constexpr uint16_t kBusSignalTimeout = 960;   // Time to wait before turning around at barriers
@@ -1399,7 +1399,7 @@ namespace OpenLoco::Vehicles
         _vehicleUpdate_targetZ = targetZ;
 
         // Helicopter
-        if (_vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
+        if ((_vehicleUpdate_helicopterAirportMovement & (AirportMovementNodeFlags::heliTakeoffEnd)) != AirportMovementNodeFlags::none)
         {
             _vehicleUpdate_helicopterTargetYaw = targetYaw;
             targetYaw = spriteYaw;
@@ -1470,7 +1470,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Helicopter
-        if (_vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
+        if ((_vehicleUpdate_helicopterAirportMovement & AirportMovementNodeFlags::heliTakeoffEnd) != AirportMovementNodeFlags::none)
         {
             vehType2->currentSpeed = 8.0_mph;
             if (targetZ != position.z)
@@ -1500,16 +1500,16 @@ namespace OpenLoco::Vehicles
         {
             auto flags = airportGetMovementEdgeTarget(stationId, airportMovementEdge).first;
 
-            if (flags & AirportMovementNodeFlags::touchdown)
+            if ((flags & AirportMovementNodeFlags::touchdown) != AirportMovementNodeFlags::none)
             {
                 produceTouchdownAirportSound();
             }
-            if (flags & AirportMovementNodeFlags::taxiing)
+            if ((flags & AirportMovementNodeFlags::taxiing) != AirportMovementNodeFlags::none)
             {
                 updateLastJourneyAverageSpeed();
             }
 
-            if (flags & AirportMovementNodeFlags::terminal)
+            if ((flags & AirportMovementNodeFlags::terminal) != AirportMovementNodeFlags::none)
             {
                 return sub_4A95CB();
             }
@@ -1684,7 +1684,7 @@ namespace OpenLoco::Vehicles
     {
         auto yaw = spriteYaw;
         // Helicopter
-        if (_vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
+        if ((_vehicleUpdate_helicopterAirportMovement & AirportMovementNodeFlags::heliTakeoffEnd) != AirportMovementNodeFlags::none)
         {
             yaw = _vehicleUpdate_helicopterTargetYaw;
         }
@@ -1956,7 +1956,7 @@ namespace OpenLoco::Vehicles
      */
     std::tuple<uint32_t, uint16_t, uint8_t> VehicleHead::sub_427122()
     {
-        _vehicleUpdate_var_525BB0 = 0;
+        _vehicleUpdate_helicopterAirportMovement = AirportMovementNodeFlags::none;
         StationId targetStationId = StationId::null;
         std::optional<Map::Pos3> targetPos{};
         if (stationId == StationId::null)
@@ -1989,7 +1989,7 @@ namespace OpenLoco::Vehicles
                 else
                 {
                     auto [flags, pos] = airportGetMovementEdgeTarget(stationId, airportMovementEdge);
-                    _vehicleUpdate_var_525BB0 = flags;
+                    _vehicleUpdate_helicopterAirportMovement = flags;
                     targetPos = pos;
                 }
             }
@@ -2053,7 +2053,7 @@ namespace OpenLoco::Vehicles
                 for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                 {
                     const auto& transition = airportObject->movementEdges[movementEdge];
-                    if (!(airportObject->movementNodes[transition.curNode].flags & AirportMovementNodeFlags::flag2))
+                    if (!airportObject->movementNodes[transition.curNode].hasFlags(AirportMovementNodeFlags::flag2))
                     {
                         continue;
                     }
@@ -2081,7 +2081,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 uint8_t targetNode = airportObject->movementEdges[curEdge].nextNode;
-                if (status == Status::takingOff && airportObject->movementNodes[targetNode].flags & AirportMovementNodeFlags::takeoffEnd)
+                if (status == Status::takingOff && airportObject->movementNodes[targetNode].hasFlags(AirportMovementNodeFlags::takeoffEnd))
                 {
                     return cAirportMovementNodeNull;
                 }
@@ -2099,7 +2099,7 @@ namespace OpenLoco::Vehicles
                             continue;
                         }
 
-                        if (airportObject->movementNodes[transition.nextNode].flags & AirportMovementNodeFlags::takeoffBegin)
+                        if (airportObject->movementNodes[transition.nextNode].hasFlags(AirportMovementNodeFlags::takeoffBegin))
                         {
                             continue;
                         }
@@ -2134,7 +2134,7 @@ namespace OpenLoco::Vehicles
                             continue;
                         }
 
-                        if (airportObject->movementNodes[transition.nextNode].flags & AirportMovementNodeFlags::heliTakeoffBegin)
+                        if (airportObject->movementNodes[transition.nextNode].hasFlags(AirportMovementNodeFlags::heliTakeoffBegin))
                         {
                             continue;
                         }
@@ -2168,7 +2168,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00426E26
-    std::pair<uint32_t, Map::Pos3> VehicleHead::airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
+    std::pair<AirportMovementNodeFlags, Map::Pos3> VehicleHead::airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
     {
         auto station = StationManager::get(targetStation);
 
@@ -2198,29 +2198,29 @@ namespace OpenLoco::Vehicles
                 static_cast<int16_t>(airportObject->movementNodes[destinationNode].y - 16)
             };
             loc2 = Math::Vector::rotate(loc2, elStation->rotation());
-            auto airportFlags = airportObject->movementNodes[destinationNode].flags;
+            auto airportMovement = airportObject->movementNodes[destinationNode];
 
             loc2.x += 16 + staionLoc.x;
             loc2.y += 16 + staionLoc.y;
 
             Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(airportObject->movementNodes[destinationNode].z + staionLoc.z) };
 
-            if (!(airportFlags & AirportMovementNodeFlags::taxiing))
+            if (!airportMovement.hasFlags(AirportMovementNodeFlags::taxiing))
             {
                 loc.z = staionLoc.z + 255;
-                if (!(airportFlags & AirportMovementNodeFlags::inFlight))
+                if (!airportMovement.hasFlags(AirportMovementNodeFlags::inFlight))
                 {
                     loc.z = 960;
                 }
             }
 
-            return std::make_pair(airportFlags, loc);
+            return std::make_pair(airportMovement.flags, loc);
         }
 
         // Tile not found. Todo: fail gracefully
         assert(false);
         // Flags, location
-        return std::make_pair(0, Map::Pos3{ 0, 0, 0 });
+        return std::make_pair(AirportMovementNodeFlags::none, Map::Pos3{ 0, 0, 0 });
     }
 
     // 0x004B980A

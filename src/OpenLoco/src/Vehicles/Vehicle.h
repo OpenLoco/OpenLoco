@@ -3,6 +3,7 @@
 #include "Audio/Audio.h"
 #include "Company.h"
 #include "Entities/Entity.h"
+#include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Routing.h"
@@ -372,7 +373,7 @@ namespace OpenLoco::Vehicles
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
         std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
-        std::pair<uint32_t, Map::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge);
+        std::pair<AirportMovementNodeFlags, Map::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge);
         bool updateWater();
         void tryCreateInitialMovementSound();
         void setStationVisitedTypes();
