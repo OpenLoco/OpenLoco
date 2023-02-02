@@ -98,11 +98,6 @@ namespace OpenLoco::Config
         uint8_t stationNamesMinScale;                   // 0x114
         uint8_t scenarioSelectedTab;                    // 0x115
         char preferredName[256];                        // 0x116
-
-        constexpr bool hasFlags(Flags flagsToTest) const
-        {
-            return (flags & flagsToTest) != Flags::none;
-        }
     };
     static_assert(offsetof(LocoConfig, keyboardShortcuts) == 0x2A);
     static_assert(offsetof(LocoConfig, preferredName) == 0x116);
@@ -195,6 +190,11 @@ namespace OpenLoco::Config
         bool cashPopupRendering = true;
         bool allowMultipleInstances = false;
         LocoConfig old;
+
+        constexpr bool hasFlags(Flags flagsToTest) const
+        {
+            return (old.flags & flagsToTest) != Flags::none;
+        }
     };
 
     NewConfig& get();

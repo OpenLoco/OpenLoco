@@ -223,7 +223,7 @@ namespace OpenLoco::Ui::Windows::Station
             }
             else
             {
-                if (Config::get().old.hasFlags(Config::Flags::gridlinesOnLandscape))
+                if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
                     flags |= ViewportFlags::gridlines_on_landscape;
             }
             // Remove station names from viewport

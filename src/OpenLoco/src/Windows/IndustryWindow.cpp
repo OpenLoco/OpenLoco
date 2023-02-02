@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::Industry
             }
             else
             {
-                if (Config::get().old.hasFlags(Config::Flags::gridlinesOnLandscape))
+                if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
                     flags |= ViewportFlags::gridlines_on_landscape;
             }
 

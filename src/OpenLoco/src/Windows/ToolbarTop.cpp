@@ -198,7 +198,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         strncpy(&_currentGameFilePath[0], path.u8string().c_str(), std::size(_currentGameFilePath));
 
         uint32_t flags = 0;
-        if (Config::get().old.hasFlags(Config::Flags::exportObjectsWithSaves))
+        if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
             flags = S5::SaveFlags::packCustomObjects;
 
         if (!S5::exportGameStateToFile(path, flags))
