@@ -59,7 +59,7 @@ namespace OpenLoco::Map
         SmallZ clearZ() const { return _clearZ; }
         int16_t clearHeight() const { return _clearZ * kSmallZStep; }
 
-        bool isGhost() const {return hasFlags(ElementFlags::ghost); }
+        bool isGhost() const { return hasFlags(ElementFlags::ghost); }
         void setGhost(bool state)
         {
             _flags &= ~ElementFlags::ghost;
