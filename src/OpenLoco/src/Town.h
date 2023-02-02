@@ -15,8 +15,8 @@ namespace OpenLoco
     enum class TownFlags : uint16_t
     {
         none = 0U,
-        sorted = (1U << 0),
-        ratingAdjusted = (1U << 1)
+        sorted = 1U << 0,
+        ratingAdjusted = 1U << 1
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TownFlags);
 
