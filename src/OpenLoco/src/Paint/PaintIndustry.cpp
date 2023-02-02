@@ -181,7 +181,7 @@ namespace OpenLoco::Paint
         const Map::Pos3 bbSize = (isMultiTile ? kBBSizeBase2x2 : kBBSizeBase1x1) + Map::Pos3{ 0, 0, bbLengthZ };
 
         session.resetLastPS(); // Odd...
-        if (indObj->flags & IndustryObjectFlags::hasShadows)
+        if (indObj->hasFlags(IndustryObjectFlags::hasShadows))
         {
             if (session.getRenderTarget()->zoomLevel <= 1)
             {

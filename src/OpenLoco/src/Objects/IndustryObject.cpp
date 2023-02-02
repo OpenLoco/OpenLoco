@@ -77,7 +77,7 @@ namespace OpenLoco
 
                 if (requiredCargoCount > 1)
                 {
-                    if ((flags & IndustryObjectFlags::requiresAllCargo) != 0)
+                    if (hasFlags(IndustryObjectFlags::requiresAllCargo))
                         ptr = StringManager::formatString(ptr, StringIds::cargo_and);
                     else
                         ptr = StringManager::formatString(ptr, StringIds::cargo_or);
@@ -338,7 +338,7 @@ namespace OpenLoco
         var_0E = imgRes.imageOffset;
         assert(remainingData.size() == imgRes.tableLength);
         var_12 = var_0E;
-        if (flags & IndustryObjectFlags::hasShadows)
+        if (hasFlags(IndustryObjectFlags::hasShadows))
         {
             var_12 += var_1F * 4;
         }
