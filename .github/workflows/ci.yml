@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
           submodules: true
       - name: Restore artifacts, or setup vcpkg
-        uses: lukka/run-vcpkg@v10.4
+        uses: lukka/run-vcpkg@v10
         with:
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           vcpkgGitCommitId: 01b29f6d8212bc845da64773b18665d682f5ab66 
