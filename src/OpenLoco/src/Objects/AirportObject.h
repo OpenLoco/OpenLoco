@@ -38,9 +38,9 @@ namespace OpenLoco
 
         struct MovementNode
         {
-            int16_t x;      // 0x00
-            int16_t y;      // 0x02
-            int16_t z;      // 0x04
+            int16_t x;                      // 0x00
+            int16_t y;                      // 0x02
+            int16_t z;                      // 0x04
             AirportMovementNodeFlags flags; // 0x06
 
             constexpr bool hasFlags(AirportMovementNodeFlags flagsToTest) const
