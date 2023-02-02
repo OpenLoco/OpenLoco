@@ -127,15 +127,12 @@ namespace OpenLoco::Interop
 #endif
 #endif
 
-    constexpr uintptr_t remapAddress(uintptr_t locoAddress)
-    {
-        return kGoodPlaceForDataSegment - 0x008A4000 + locoAddress;
-    }
-
     template<uint32_t TAddress, typename T>
     constexpr T& addr()
     {
-        return *((T*)remapAddress(TAddress));
+        constexpr auto ptrAddr = kGoodPlaceForDataSegment - 0x008A4000 + TAddress;
+        // We use std::launder to prevent the compiler from doing optimizations that lead to undefined behavior.
+        return *std::launder(reinterpret_cast<T*>(ptrAddr));
     }
 
     /**
