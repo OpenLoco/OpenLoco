@@ -375,6 +375,10 @@ namespace OpenLoco::Ui
         int32_t pitch = surface->pitch;
 
         auto& rt = Gfx::getScreenRT();
+        if (rt.bits != nullptr)
+        {
+            delete[] rt.bits;
+        }
         rt.bits = new uint8_t[surface->pitch * height];
         rt.width = width;
         rt.height = height;
