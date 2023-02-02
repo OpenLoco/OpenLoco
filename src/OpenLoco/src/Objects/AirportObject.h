@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
@@ -16,18 +17,20 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    namespace AirportMovementNodeFlags
+    enum class AirportMovementNodeFlags : uint16_t
     {
-        constexpr uint16_t terminal = (1 << 0);
-        constexpr uint16_t takeoffEnd = (1 << 1);
-        constexpr uint16_t flag2 = (1 << 2);
-        constexpr uint16_t taxiing = (1 << 3);
-        constexpr uint16_t inFlight = (1 << 4);
-        constexpr uint16_t heliTakeoffBegin = (1 << 5);
-        constexpr uint16_t takeoffBegin = (1 << 6);
-        constexpr uint16_t heliTakeoffEnd = (1 << 7);
-        constexpr uint16_t touchdown = (1 << 8);
-    }
+        none = 0U,
+        terminal = 1 << 0,
+        takeoffEnd = 1U << 1,
+        flag2 = 1U << 2,
+        taxiing = 1U << 3,
+        inFlight = 1U << 4,
+        heliTakeoffBegin = 1U << 5,
+        takeoffBegin = 1U << 6,
+        heliTakeoffEnd = 1U << 7,
+        touchdown = 1U << 8,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(AirportMovementNodeFlags);
 
     struct AirportObject
     {
@@ -38,7 +41,12 @@ namespace OpenLoco
             int16_t x;      // 0x00
             int16_t y;      // 0x02
             int16_t z;      // 0x04
-            uint16_t flags; // 0x06 AirportMovementNodeFlags
+            AirportMovementNodeFlags flags; // 0x06
+
+            constexpr bool hasFlags(AirportMovementNodeFlags flagsToTest) const
+            {
+                return (flags & flagsToTest) != AirportMovementNodeFlags::none;
+            }
         };
 
         struct MovementEdge
