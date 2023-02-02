@@ -336,7 +336,7 @@ namespace OpenLoco::Map
         setBaseZ(baseZ);
         setClearZ(clearZ);
         _type |= direction & 0x3;
-        _flags = static_cast<ElementFlags>(quarterTile & 0xF); //Clear the flags (top four bits of quarterTile)
+        clearFlags();
         _4 = (trackId & 0x3F) | (bridge ? 0x80 : 0);
         _5 = (sequenceIndex & 0xF) | ((trackObjId & 0xF) << 4);
         _6 = bridge ? (*bridge << 5) : 0;
