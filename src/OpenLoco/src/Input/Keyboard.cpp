@@ -1,7 +1,6 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
-#include "Console.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Input.h"
@@ -13,6 +12,7 @@
 #include "Ui.h"
 #include "Ui/Screenshot.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <cstdint>

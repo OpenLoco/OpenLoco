@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
@@ -15,34 +16,37 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-    namespace IndustryObjectFlags
+    enum class IndustryObjectFlags : uint32_t
     {
-        constexpr uint32_t builtInClusters = 1 << 0;
-        constexpr uint32_t builtOnHighGround = 1 << 1;
-        constexpr uint32_t builtOnLowGround = 1 << 2;
-        constexpr uint32_t builtOnSnow = 1 << 3;        // above summer snow line
-        constexpr uint32_t builtBelowSnowLine = 1 << 4; // below winter snow line
-        constexpr uint32_t builtOnFlatGround = 1 << 5;
-        constexpr uint32_t builtNearWater = 1 << 6;
-        constexpr uint32_t builtAwayFromWater = 1 << 7;
-        constexpr uint32_t builtOnWater = 1 << 8;
-        constexpr uint32_t builtNearTown = 1 << 9;
-        constexpr uint32_t builtAwayFromTown = 1 << 10;
-        constexpr uint32_t builtNearTrees = 1 << 11;
-        constexpr uint32_t builtRequiresOpenSpace = 1 << 12;
-        constexpr uint32_t oilfield = 1 << 13;
-        constexpr uint32_t mines = 1 << 14;
-        constexpr uint32_t canBeFoundedByPlayer = 1 << 16;
-        constexpr uint32_t requiresAllCargo = 1 << 17;
-        constexpr uint32_t unk18 = 1 << 18;
-        constexpr uint32_t unk19 = 1 << 19;
-        constexpr uint32_t hasShadows = 1 << 21;
-        constexpr uint32_t unk23 = 1 << 23;
-        constexpr uint32_t builtInDesert = 1 << 24;
-        constexpr uint32_t builtNearDesert = 1 << 25;
-        constexpr uint32_t unk27 = 1 << 27;
-        constexpr uint32_t flag_28 = 1 << 28;
-    }
+        none = 0U,
+        builtInClusters = 1U << 0,
+        builtOnHighGround = 1U << 1,
+        builtOnLowGround = 1U << 2,
+        builtOnSnow = 1U << 3,        // above summer snow line
+        builtBelowSnowLine = 1U << 4, // below winter snow line
+        builtOnFlatGround = 1U << 5,
+        builtNearWater = 1U << 6,
+        builtAwayFromWater = 1U << 7,
+        builtOnWater = 1U << 8,
+        builtNearTown = 1U << 9,
+        builtAwayFromTown = 1U << 10,
+        builtNearTrees = 1U << 11,
+        builtRequiresOpenSpace = 1U << 12,
+        oilfield = 1U << 13,
+        mines = 1U << 14,
+        canBeFoundedByPlayer = 1U << 16,
+        requiresAllCargo = 1U << 17,
+        unk18 = 1U << 18,
+        unk19 = 1U << 19,
+        hasShadows = 1U << 21,
+        unk23 = 1U << 23,
+        builtInDesert = 1U << 24,
+        builtNearDesert = 1U << 25,
+        unk27 = 1U << 27,
+        flag_28 = 1U << 28,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryObjectFlags);
+
 #pragma pack(push, 1)
     struct BuildingPartAnimation
     {
@@ -104,7 +108,7 @@ namespace OpenLoco
         uint8_t producedCargoType[2]; // 0xDE (0xFF = null)
         uint8_t requiredCargoType[3]; // 0xE0 (0xFF = null)
         uint8_t pad_E3;
-        uint32_t flags; // 0xE4
+        IndustryObjectFlags flags; // 0xE4
         uint8_t var_E8;
         uint8_t var_E9;
         uint8_t var_EA;
@@ -128,6 +132,11 @@ namespace OpenLoco
         stdx::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
         stdx::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;
         stdx::span<const IndustryObjectUnk38> getUnk38() const;
+
+        constexpr bool hasFlags(IndustryObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != IndustryObjectFlags::none;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryObject) == 0xF4);

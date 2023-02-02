@@ -2,7 +2,6 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
-#include "Console.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
@@ -23,6 +22,7 @@
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cinttypes>

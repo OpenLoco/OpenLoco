@@ -130,7 +130,7 @@ namespace OpenLoco::StationManager
             if (station.updateCargo())
             {
                 auto town = TownManager::get(station.town);
-                if (town != nullptr && !(town->flags & TownFlags::ratingAdjusted))
+                if (town != nullptr && (town->flags & TownFlags::ratingAdjusted) == TownFlags::none)
                 {
                     town->flags |= TownFlags::ratingAdjusted;
                     town->adjustCompanyRating(station.owner, 1);

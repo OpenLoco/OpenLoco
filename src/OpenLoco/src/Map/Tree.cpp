@@ -48,13 +48,13 @@ namespace OpenLoco::Map
 
         auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
         mustNotTreeFlags |= TreeObjectFlags::droughtResistant;
-        if (landObj->flags & LandObjectFlags::isDesert)
+        if (landObj->hasFlags(LandObjectFlags::isDesert))
         {
             mustTreeFlags |= TreeObjectFlags::droughtResistant;
             mustNotTreeFlags &= ~TreeObjectFlags::droughtResistant;
         }
 
-        if (landObj->flags & LandObjectFlags::noTrees)
+        if (landObj->hasFlags(LandObjectFlags::noTrees))
         {
             return {};
         }
@@ -140,7 +140,7 @@ namespace OpenLoco::Map
             // Choose a random offset in a circle
             auto& rng = gPrng();
             auto randomMagnitude = rng.randNext(std::numeric_limits<uint16_t>::max()) * range / 65536;
-            auto randomDirection = rng.randNext(Math::Trigonometry::directionPrecisionHigh - 1);
+            auto randomDirection = rng.randNext(Math::Trigonometry::kDirectionPrecisionHigh - 1);
             Map::Pos2 randomOffset(
                 Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
                 Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));

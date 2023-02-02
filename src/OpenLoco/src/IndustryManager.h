@@ -2,6 +2,7 @@
 
 #include "Engine/Limits.h"
 #include "Industry.h"
+#include "Objects/IndustryObject.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/LocoFixedVector.hpp>
 #include <array>
@@ -27,6 +28,6 @@ namespace OpenLoco::IndustryManager
     void updateDaily();
     void updateMonthly();
     void createAllMapAnimations();
-    bool industryNearPosition(const Map::Pos2& position, uint32_t flags);
+    bool industryNearPosition(const Map::Pos2& position, IndustryObjectFlags flags);
     void updateProducedCargoStats();
 }

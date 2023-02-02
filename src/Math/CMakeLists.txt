@@ -15,7 +15,3 @@ loco_add_library(Math STATIC
     PRIVATE_FILES
         ${private_files}
 )
-
-target_link_libraries(Math PUBLIC
-    Interop
-)

@@ -26,7 +26,6 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
-#include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "ScenarioObjective.h"
@@ -37,6 +36,7 @@
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Platform/Platform.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

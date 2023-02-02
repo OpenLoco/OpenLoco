@@ -748,7 +748,7 @@ namespace OpenLoco::Map::TileManager
             {
                 continue;
             }
-            if (landObj->flags & LandObjectFlags::isDesert)
+            if (landObj->hasFlags(LandObjectFlags::isDesert))
             {
                 surroundingDesertTiles++;
             }

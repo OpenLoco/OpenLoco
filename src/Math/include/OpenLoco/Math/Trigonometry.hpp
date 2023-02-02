@@ -13,7 +13,7 @@ namespace OpenLoco::Math::Trigonometry
     // ROUND(COS((32/64+(L1/64))*(2*PI()))*256,0), ROUND(SIN(((L1/64))*(2*PI())) * 256,0)
     // Where L1 represents an incrementing column 0 - 63
     // Note: Must be at least 32bit to ensure all users do not overflow
-    static constexpr Vector::TVector2<int32_t, 1> yawToDirectionVector[64] = {
+    static constexpr Vector::TVector2<int32_t, 1> kYawToDirectionVector[64] = {
         { -256, 0 },
         { -255, 25 },
         { -251, 50 },
@@ -84,7 +84,7 @@ namespace OpenLoco::Math::Trigonometry
     // -SIN((Y1/360)*2*PI())*256
     // Where Y1 represents the angle of pitch in degrees (0, 5.75, 11.75, 17, 22.5, reverse, 10, -10, 19.25, -19.25)
     // Note: pitch angles not quite correct in the Pitch enum class (decimal points can't go in identifier names)
-    constexpr int16_t pitchHorizontalFactor[] = {
+    constexpr int16_t kPitchHorizontalFactor[] = {
         0,
         -26,
         -52,
@@ -102,19 +102,19 @@ namespace OpenLoco::Math::Trigonometry
 
     constexpr auto computeXYMagnitude(int32_t height, Pitch pitch)
     {
-        return (pitchHorizontalFactor[static_cast<uint8_t>(pitch)] * height) / 256;
+        return (kPitchHorizontalFactor[static_cast<uint8_t>(pitch)] * height) / 256;
     }
 
     constexpr auto computeXYVector(int32_t magnitude, uint8_t yaw)
     {
-        return (yawToDirectionVector[yaw] * magnitude) / 256;
+        return (kYawToDirectionVector[yaw] * magnitude) / 256;
     }
     constexpr auto computeXYVector(int32_t height, Pitch pitch, uint8_t yaw)
     {
         return computeXYVector(computeXYMagnitude(height, pitch), yaw);
     }
 
-    constexpr auto directionPrecisionHigh = 0x4000;
+    constexpr auto kDirectionPrecisionHigh = 0x4000;
     int32_t integerSinePrecisionHigh(uint16_t direction, int32_t magnitude);
     int32_t integerCosinePrecisionHigh(uint16_t direction, int32_t magnitude);
 }

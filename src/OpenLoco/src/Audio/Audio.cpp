@@ -1,7 +1,6 @@
 #include "Audio.h"
 #include "Channel.h"
 #include "Config.h"
-#include "Console.h"
 #include "Date.h"
 #include "Entities/EntityManager.h"
 #include "Environment.h"
@@ -19,6 +18,7 @@
 #include "Ui/WindowManager.h"
 #include "VehicleChannel.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <array>

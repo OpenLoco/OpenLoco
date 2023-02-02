@@ -1,5 +1,4 @@
 #include "Config.h"
-#include "Console.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "EditorController.h"
 #include "GameCommands/GameCommands.h"
@@ -23,6 +22,7 @@
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <string_view>

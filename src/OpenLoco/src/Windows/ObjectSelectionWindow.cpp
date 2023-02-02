@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "Console.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
@@ -43,6 +42,7 @@
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "Window.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
