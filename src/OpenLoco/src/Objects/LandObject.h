@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
@@ -15,13 +16,15 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-    namespace LandObjectFlags
+    enum class LandObjectFlags : uint8_t
     {
-        constexpr uint8_t unk0 = (1 << 0);
-        constexpr uint8_t unk1 = (1 << 1);
-        constexpr uint8_t isDesert = (1 << 2);
-        constexpr uint8_t noTrees = (1 << 3);
-    }
+        none = 0U,
+        unk0 = 1U << 0,
+        unk1 = 1U << 1,
+        isDesert = 1U << 2,
+        noTrees = 1U << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(LandObjectFlags);
 
 #pragma pack(push, 1)
     struct LandObject
@@ -32,7 +35,7 @@ namespace OpenLoco
         uint8_t costIndex; // 0x02
         uint8_t var_03;
         uint8_t var_04;
-        uint8_t flags; // 0x05
+        LandObjectFlags flags; // 0x05
         uint8_t var_06;
         uint8_t var_07;
         int8_t costFactor; // 0x08
@@ -50,6 +53,11 @@ namespace OpenLoco
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+
+        constexpr bool hasFlags(LandObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != LandObjectFlags::none;
+        }
     };
     static_assert(sizeof(LandObject) == 0x1E);
 #pragma pack(pop)

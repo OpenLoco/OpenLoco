@@ -48,13 +48,13 @@ namespace OpenLoco::Map
 
         auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
         mustNotTreeFlags |= TreeObjectFlags::droughtResistant;
-        if (landObj->flags & LandObjectFlags::isDesert)
+        if (landObj->hasFlags(LandObjectFlags::isDesert))
         {
             mustTreeFlags |= TreeObjectFlags::droughtResistant;
             mustNotTreeFlags &= ~TreeObjectFlags::droughtResistant;
         }
 
-        if (landObj->flags & LandObjectFlags::noTrees)
+        if (landObj->hasFlags(LandObjectFlags::noTrees))
         {
             return {};
         }
