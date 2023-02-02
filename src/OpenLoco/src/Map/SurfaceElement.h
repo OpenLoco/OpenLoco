@@ -63,7 +63,7 @@ namespace OpenLoco::Map
             setType(kElementType);
             setBaseZ(baseZ);
             setClearZ(clearZ);
-            _flags = quarterTile;
+            _flags = static_cast<ElementFlags>(quarterTile);
             setIsIndustrialFlag(highTypeFlag);
         }
 

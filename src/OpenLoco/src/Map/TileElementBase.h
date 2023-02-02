@@ -2,6 +2,7 @@
 
 #include "Map.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <array>
 #include <cassert>
 
@@ -24,19 +25,22 @@ namespace OpenLoco::Map
 
     static constexpr size_t kTileElementSize = 8;
 
-    namespace ElementFlags
+    enum class ElementFlags : uint8_t
     {
-        constexpr uint8_t ghost = 1 << 4;
-        constexpr uint8_t flag_5 = 1 << 5;
-        constexpr uint8_t flag_6 = 1 << 6;
-        constexpr uint8_t last = 1 << 7;
-    }
+        none = 0U,
+        ghost = 1U << 4,
+        flag_5 = 1U << 5,
+        flag_6 = 1U << 6,
+        last = 1U << 7,
+        invalid = 0xF,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ElementFlags);
 #pragma pack(push, 1)
     struct TileElementBase
     {
     protected:
         uint8_t _type;
-        uint8_t _flags;
+        ElementFlags _flags;
         uint8_t _baseZ;
         uint8_t _clearZ;
 
@@ -49,24 +53,24 @@ namespace OpenLoco::Map
             // Purposely clobers any other data in _type
             _type = enumValue(t) << 2;
         }
-        uint8_t flags() const { return _flags; }
+        ElementFlags flags() const { return _flags; }
         SmallZ baseZ() const { return _baseZ; }
         int16_t baseHeight() const { return _baseZ * kSmallZStep; }
         SmallZ clearZ() const { return _clearZ; }
         int16_t clearHeight() const { return _clearZ * kSmallZStep; }
 
-        bool isGhost() const { return _flags & ElementFlags::ghost; }
+        bool isGhost() const {return hasFlags(ElementFlags::ghost); }
         void setGhost(bool state)
         {
             _flags &= ~ElementFlags::ghost;
-            _flags |= state == true ? ElementFlags::ghost : 0;
+            _flags |= state == true ? ElementFlags::ghost : ElementFlags::none;
         }
-        bool isFlag5() const { return _flags & ElementFlags::flag_5; }
-        bool isFlag6() const { return _flags & ElementFlags::flag_6; } // in tracks/roads indicates is last tile of multi tile
+        bool isFlag5() const { return hasFlags(ElementFlags::flag_5); }
+        bool isFlag6() const { return hasFlags(ElementFlags::flag_6); } // in tracks/roads indicates is last tile of multi tile
         void setFlag6(bool state)
         {
             _flags &= ~ElementFlags::flag_6;
-            _flags |= state == true ? ElementFlags::flag_6 : 0;
+            _flags |= state == true ? ElementFlags::flag_6 : ElementFlags::none;
         }
         void setBaseZ(uint8_t baseZ) { _baseZ = baseZ; }
         void setClearZ(uint8_t value) { _clearZ = value; }
@@ -74,7 +78,17 @@ namespace OpenLoco::Map
         void setLastFlag(bool state)
         {
             _flags &= ~ElementFlags::last;
-            _flags |= state == true ? ElementFlags::last : 0;
+            _flags |= state == true ? ElementFlags::last : ElementFlags::none;
+        }
+
+        constexpr bool hasFlags(ElementFlags flagsToTest) const
+        {
+            return (_flags & flagsToTest) != ElementFlags::none;
+        }
+
+        void clearFlags()
+        {
+            _flags = _flags & ElementFlags::invalid;
         }
 
         std::array<uint8_t, 8>& rawData()

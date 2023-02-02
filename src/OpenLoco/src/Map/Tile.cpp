@@ -25,7 +25,7 @@ namespace OpenLoco::Map
 
     bool TileElementBase::isLast() const
     {
-        return (_flags & ElementFlags::last) != 0;
+        return hasFlags(ElementFlags::last);
     }
 
     Tile::Tile(const TilePos2& tPos, TileElement* data)
