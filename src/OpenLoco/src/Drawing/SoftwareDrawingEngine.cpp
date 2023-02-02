@@ -13,7 +13,10 @@ namespace OpenLoco::Drawing
 {
     using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
 
-    static loco_global<Ui::ScreenInfo, 0x0050B884> _screenInfo;
+    // TODO: Move both into the renderer.
+    static loco_global<RenderTarget, 0x0050B884> _screenRT;
+    static loco_global<Ui::ScreenInfo, 0x0050B894> _screenInfo;
+
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
     loco_global<SetPaletteFunc, 0x0052524C> _setPaletteCallback;
 
@@ -204,8 +207,8 @@ namespace OpenLoco::Drawing
         rt.height = rect.height();
         rt.x = rect.left();
         rt.y = rect.top();
-        rt.bits = _screenInfo->renderTarget.bits + rect.left() + ((_screenInfo->renderTarget.width + _screenInfo->renderTarget.pitch) * rect.top());
-        rt.pitch = _screenInfo->renderTarget.width + _screenInfo->renderTarget.pitch - rect.width();
+        rt.bits = _screenRT->bits + rect.left() + ((_screenRT->width + _screenRT->pitch) * rect.top());
+        rt.pitch = _screenRT->width + _screenRT->pitch - rect.width();
         rt.zoomLevel = 0;
 
         // TODO: Remove main window and draw that independent from UI.

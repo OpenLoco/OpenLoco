@@ -27,7 +27,6 @@ namespace OpenLoco::Ui
 #pragma pack(push, 1)
     struct ScreenInfo
     {
-        Gfx::RenderTarget renderTarget;
         int16_t width;
         int16_t height;
         int16_t width_2;
@@ -42,6 +41,7 @@ namespace OpenLoco::Ui
         int8_t dirtyBlockRowShift;
         int8_t dirtyBlocksInitialised;
     };
+    static_assert(sizeof(ScreenInfo) == 0x1B);
 #pragma pack(pop)
 
     enum class CursorId : uint8_t
