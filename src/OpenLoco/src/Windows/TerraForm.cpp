@@ -1027,7 +1027,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        // 0x004BC701activatedWidgets
+        // 0x004BC701
         static void toolDragEnd(Window& self, const WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == Common::widx::panel)
