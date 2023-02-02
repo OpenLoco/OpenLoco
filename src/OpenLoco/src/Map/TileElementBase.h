@@ -32,7 +32,6 @@ namespace OpenLoco::Map
         flag_5 = 1U << 5,
         flag_6 = 1U << 6,
         last = 1U << 7,
-        invalid = 0xF,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ElementFlags);
 #pragma pack(push, 1)
@@ -84,11 +83,6 @@ namespace OpenLoco::Map
         constexpr bool hasFlags(ElementFlags flagsToTest) const
         {
             return (_flags & flagsToTest) != ElementFlags::none;
-        }
-
-        void clearFlags()
-        {
-            _flags = _flags & ElementFlags::invalid;
         }
 
         std::array<uint8_t, 8>& rawData()
