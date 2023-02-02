@@ -67,7 +67,8 @@ namespace OpenLoco::Ui
 #ifdef _WIN32
     loco_global<void*, 0x00525320> _hwnd;
 #endif // _WIN32
-    loco_global<ScreenInfo, 0x0050B884> _screenInfo;
+    // TODO: Move this into renderer.
+    static loco_global<ScreenInfo, 0x0050B894> _screenInfo;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<Ui::CursorId, 0x00523393> _currentToolCursor;
@@ -373,13 +374,12 @@ namespace OpenLoco::Ui
 
         int32_t pitch = surface->pitch;
 
-        Gfx::RenderTarget rt{};
+        auto& rt = Gfx::getScreenRT();
         rt.bits = new uint8_t[surface->pitch * height];
         rt.width = width;
         rt.height = height;
         rt.pitch = pitch - width;
 
-        _screenInfo->renderTarget = rt;
         _screenInfo->width = width;
         _screenInfo->height = height;
         _screenInfo->width_2 = width;
