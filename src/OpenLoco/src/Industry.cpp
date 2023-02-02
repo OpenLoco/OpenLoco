@@ -167,7 +167,7 @@ namespace OpenLoco
         auto* indObj = getObject();
 
         uint16_t production = 0;
-        if (indObj->flags & IndustryObjectFlags::requiresAllCargo)
+        if (indObj->hasFlags(IndustryObjectFlags::requiresAllCargo))
         {
             production = std::numeric_limits<uint16_t>::max();
             for (auto i = 0; i < 3; ++i)
@@ -361,7 +361,7 @@ namespace OpenLoco
     bool Industry::isMonthlyProductionUp()
     {
         auto* indObj = getObject();
-        return indObj->flags & IndustryObjectFlags::unk18
+        return indObj->hasFlags(IndustryObjectFlags::unk18)
             && producedCargoPercentTransportedPreviousMonth[0] > 70
             && gPrng().randNext(31) == 0
             && productionRate[0] < 100
@@ -371,7 +371,7 @@ namespace OpenLoco
     bool Industry::isMonthlyProductionDown()
     {
         auto* indObj = getObject();
-        if (!(indObj->flags & IndustryObjectFlags::unk19))
+        if (!indObj->hasFlags(IndustryObjectFlags::unk19))
         {
             return false;
         }
@@ -407,7 +407,7 @@ namespace OpenLoco
                     {
                         // loc_4532E5
                         var_DB++;
-                        if ((!(obj->flags & IndustryObjectFlags::flag_28) && surface->var_4_E0() != 0) || findTree(surface))
+                        if ((!obj->hasFlags(IndustryObjectFlags::flag_28) && surface->var_4_E0() != 0) || findTree(surface))
                         {
                             var_DD++;
                         }
@@ -546,12 +546,12 @@ namespace OpenLoco
         const auto* indObj = ObjectManager::get<IndustryObject>(objectId);
 
         std::optional<Core::Prng> is23prng;
-        if (indObj->flags & IndustryObjectFlags::unk23) // Livestock use this
+        if (indObj->hasFlags(IndustryObjectFlags::unk23)) // Livestock use this
         {
             is23prng = prng;
         }
         std::optional<Core::Prng> is27prng;
-        if (indObj->flags & IndustryObjectFlags::unk27) // Skislope use this
+        if (indObj->hasFlags(IndustryObjectFlags::unk27)) // Skislope use this
         {
             // Vanilla mistake here didn't set the prng! It would just recycle from a previous unk23 caller
             is27prng = prng;
