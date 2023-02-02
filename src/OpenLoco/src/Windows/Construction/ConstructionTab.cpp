@@ -639,7 +639,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         size_t i = 0;
         for (const auto& piece : pieces)
         {
-            if (piece.hasFlags(Map::TrackData::PreviewTrackFlags::diagonal))
+            if (piece.flags & Map::TrackData::PreviewTrackFlags::diagonal)
             {
                 continue;
             }
@@ -2765,7 +2765,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                 Pos3 pos3D = { lastRoadPart.x, lastRoadPart.y, lastRoadPart.z };
 
-                if (lastRoadPart.hasFlags(Map::TrackData::PreviewTrackFlags::unused))
+                if (lastRoadPart.flags & Map::TrackData::PreviewTrackFlags::unused)
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;
@@ -2815,7 +2815,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                 Pos3 pos3D = { lastTrackPart.x, lastTrackPart.y, lastTrackPart.z };
 
-                if (lastTrackPart.hasFlags(Map::TrackData::PreviewTrackFlags::unused))
+                if (lastTrackPart.flags & Map::TrackData::PreviewTrackFlags::unused)
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;

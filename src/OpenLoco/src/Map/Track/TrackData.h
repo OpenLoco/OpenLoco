@@ -3,7 +3,6 @@
 #include "Map/Map.hpp"
 #include "Map/QuarterTile.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 #include <array>
 #include <cstddef>
@@ -13,19 +12,6 @@ namespace OpenLoco::Map::TrackData
 {
     using ConnectionsByRotation = std::array<uint8_t, 4>;
 
-    enum class PreviewTrackFlags : uint8_t
-    {
-        none = 0U,
-        unk0 = 1U << 0,
-        unk1 = 1U << 1,
-        unk2 = 1U << 2,
-        unk3 = 1U << 3,
-        unk4 = 1U << 4,
-        unused = 1U << 6, // Not set on any track piece
-        diagonal = 1U << 7,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(PreviewTrackFlags);
-
     struct PreviewTrack
     {
         uint8_t index;                      // 0x00
@@ -34,14 +20,20 @@ namespace OpenLoco::Map::TrackData
         int16_t z;                          // 0x05
         uint8_t clearZ;                     // 0x07
         QuarterTile subTileClearance;       // 0x08
-        PreviewTrackFlags flags;            // 0x09
+        uint8_t flags;                      // 0x09
         ConnectionsByRotation connectFlags; // From 0x004F78F8 & 0x004F6F1C
-
-        constexpr bool hasFlags(PreviewTrackFlags flagsToTest) const
-        {
-            return (flags & flagsToTest) != PreviewTrackFlags::none;
-        };
     };
+
+    namespace PreviewTrackFlags
+    {
+        constexpr uint8_t unk0 = 1 << 0;
+        constexpr uint8_t unk1 = 1 << 1;
+        constexpr uint8_t unk2 = 1 << 2;
+        constexpr uint8_t unk3 = 1 << 3;
+        constexpr uint8_t unk4 = 1 << 4;
+        constexpr uint8_t unused = 1 << 6; // Not set on any track piece
+        constexpr uint8_t diagonal = 1 << 7;
+    }
 
 #pragma pack(push, 1)
     // Pos is difference from the next first tile and the track first tile
