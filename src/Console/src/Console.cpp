@@ -1,5 +1,5 @@
 #include "Console.h"
-#include <OpenLoco/Utility/String.hpp>
+#include <cstdio>
 #include <stdarg.h>
 
 namespace OpenLoco::Console

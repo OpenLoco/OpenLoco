@@ -11,7 +11,6 @@
 #include <windows.h>
 
 #include "Platform.h"
-#include "Ui.h"
 #include <OpenLoco/Utility/String.hpp>
 
 namespace OpenLoco::Platform
@@ -52,7 +51,7 @@ namespace OpenLoco::Platform
         return pszPath;
     }
 
-    fs::path promptDirectory(const std::string& title)
+    fs::path promptDirectory(const std::string& title, void* hwnd)
     {
         fs::path result;
 
@@ -80,7 +79,10 @@ namespace OpenLoco::Platform
 
         // SHBrowseForFolderW might minimize the main window,
         // so make sure that it's visible again.
-        ShowWindow((HWND)Ui::hwnd(), SW_RESTORE);
+        if (hwnd != nullptr)
+        {
+            ShowWindow(static_cast<HWND>(hwnd), SW_RESTORE);
+        }
 
         return result;
     }

@@ -3539,10 +3539,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             const auto& movementNode = airportObj->movementNodes[node];
             auto nodeOffset = Math::Vector::rotate(Map::Pos2(movementNode.x, movementNode.y) - Map::Pos2(16, 16), elStation->rotation()) + Map::Pos2(16, 16);
             auto nodeLoc = Map::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.y } + Map::Pos3{ station->unk_tile_x, station->unk_tile_y, station->unk_tile_z };
-            if (!(movementNode.flags & AirportMovementNodeFlags::taxiing))
+            if (!movementNode.hasFlags(AirportMovementNodeFlags::taxiing))
             {
                 nodeLoc.z = station->unk_tile_z + 255;
-                if (!(movementNode.flags & AirportMovementNodeFlags::inFlight))
+                if (!movementNode.hasFlags(AirportMovementNodeFlags::inFlight))
                 {
                     nodeLoc.z = 30 * 32;
                 }
@@ -3630,7 +3630,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             for (auto node = airportObj->numMovementNodes - 1; node > -1; node--)
             {
                 const auto& movementNode = airportObj->movementNodes[node];
-                if (!(movementNode.flags & AirportMovementNodeFlags::terminal))
+                if (!movementNode.hasFlags(AirportMovementNodeFlags::terminal))
                 {
                     continue;
                 }

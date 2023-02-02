@@ -1121,7 +1121,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 if (!isEditorMode() && !isSandboxMode())
                 {
-                    if (!(industryObj->flags & IndustryObjectFlags::canBeFoundedByPlayer))
+                    if (!industryObj->hasFlags(IndustryObjectFlags::canBeFoundedByPlayer))
                         continue;
                     if (getCurrentYear() < industryObj->designedYear)
                         continue;

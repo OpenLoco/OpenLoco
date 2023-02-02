@@ -1,7 +1,6 @@
 #include "StringManager.h"
 #include "ArgsWrapper.hpp"
 #include "Config.h"
-#include "Console.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
@@ -9,6 +8,7 @@
 #include "Objects/ObjectManager.h"
 #include "StringIds.h"
 #include "TownManager.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>

@@ -3,6 +3,7 @@
 #include "Company.h"
 #include "LabelFrame.h"
 #include "Map/Tile.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Prng.h>
 #include <limits>
 
@@ -11,11 +12,13 @@ namespace OpenLoco
     constexpr int32_t kMinCompanyRating = -1000;
     constexpr int32_t kMaxCompanyRating = 1000;
 
-    namespace TownFlags
+    enum class TownFlags : uint16_t
     {
-        constexpr uint16_t sorted = 1 << 0;
-        constexpr uint16_t ratingAdjusted = 1 << 1;
-    }
+        none = 0U,
+        sorted = 1U << 0,
+        ratingAdjusted = 1U << 1
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TownFlags);
 
     enum class TownSize : uint8_t
     {
@@ -32,7 +35,7 @@ namespace OpenLoco
         string_id name;               // 0x00
         coord_t x;                    // 0x02
         coord_t y;                    // 0x04
-        uint16_t flags;               // 0x06
+        TownFlags flags;              // 0x06
         LabelFrame labelFrame;        // 0x08
         Core::Prng prng;              // 0x28
         uint32_t population;          // 0x30

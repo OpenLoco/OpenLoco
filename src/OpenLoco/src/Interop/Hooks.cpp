@@ -9,7 +9,6 @@
 #endif
 #include "Audio/Audio.h"
 #include "Config.h"
-#include "Console.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Environment.h"
@@ -27,7 +26,6 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Paint/Paint.h"
-#include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "Station.h"
@@ -41,8 +39,10 @@
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
 
 using namespace OpenLoco;

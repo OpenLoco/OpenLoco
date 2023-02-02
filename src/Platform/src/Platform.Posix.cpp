@@ -1,10 +1,7 @@
 #ifndef _WIN32
 
 #include "Platform.h"
-#include "Console.h"
-#include "Interop/Hooks.h"
-#include "OpenLoco.h"
-#include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Console/Console.h>
 #include <iostream>
 #include <pwd.h>
 #include <time.h>
@@ -20,12 +17,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #endif
-
-int main(int argc, const char** argv)
-{
-    OpenLoco::Interop::loadSections();
-    return OpenLoco::main(argc, argv);
-}
 
 namespace OpenLoco::Platform
 {
@@ -107,7 +98,7 @@ namespace OpenLoco::Platform
         return exePath;
     }
 
-    fs::path promptDirectory(const std::string& Title)
+    fs::path promptDirectory(const std::string& Title, [[maybe_unused]] void* hwnd)
     {
         std::string input;
         std::cout << "Type your Locomotion path: ";

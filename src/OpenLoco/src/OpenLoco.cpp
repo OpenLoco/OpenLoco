@@ -26,7 +26,6 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
-#include "Console.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
@@ -57,8 +56,6 @@
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
-#include "Platform/Crash.h"
-#include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
@@ -70,7 +67,10 @@
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Platform/Crash.h>
+#include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
@@ -1209,20 +1209,4 @@ namespace OpenLoco
             return 1;
         }
     }
-}
-
-extern "C" {
-
-#ifdef _WIN32
-/**
- * The function that is called directly from the host application (loco.exe)'s WinMain. This will be removed when OpenLoco can
- * be built as a stand alone application.
- */
-// Hack to trick mingw into thinking we forward-declared this function.
-__declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
-__declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-    return OpenLoco::main(lpCmdLine);
-}
-#endif
 }

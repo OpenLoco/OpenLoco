@@ -1,5 +1,4 @@
 #include "EntityManager.h"
-#include "Console.h"
 #include "Entities/Misc.h"
 #include "EntityTweener.h"
 #include "Game.h"
@@ -10,6 +9,7 @@
 #include "Map/Tile.h"
 #include "SceneManager.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/LocoFixedVector.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 

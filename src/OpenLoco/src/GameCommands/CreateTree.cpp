@@ -71,7 +71,7 @@ namespace OpenLoco::GameCommands
         }
 
         const auto* landObj = ObjectManager::get<LandObject>(elSurface->terrain());
-        if (landObj->flags & LandObjectFlags::noTrees)
+        if (landObj->hasFlags(LandObjectFlags::noTrees))
         {
             setErrorText(StringIds::land_type_not_suitable);
             return FAILURE;
