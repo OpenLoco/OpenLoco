@@ -36,10 +36,10 @@ namespace OpenLoco
         track = 1U << 1,
         slope = 1U << 2,
         steepSlope = 1U << 3,
-        intersection = 1U << 2, //This is never referenced anywhere and in the same spot as slope
+        intersection = 1U << 2, // This is never referenced anywhere and in the same spot as slope
         oneSided = 1U << 5,
         overtake = 1U << 6,
-        streetLights = 1U << 8, //This is never referenced anywhere and why is it offset by 8 instead of 7?
+        streetLights = 1U << 8, // This is never referenced anywhere and why is it offset by 8 instead of 7?
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(RoadPieceFlags);
 #pragma pack(push, 1)
@@ -49,10 +49,10 @@ namespace OpenLoco
 
         string_id name;
         RoadPieceFlags roadPieces; // 0x02
-        int16_t buildCostFactor;  // 0x04
-        int16_t sellCostFactor;   // 0x06
-        int16_t tunnelCostFactor; // 0x08
-        uint8_t costIndex;        // 0x0A
+        int16_t buildCostFactor;   // 0x04
+        int16_t sellCostFactor;    // 0x06
+        int16_t tunnelCostFactor;  // 0x08
+        uint8_t costIndex;         // 0x0A
         uint8_t var_0B;
         Speed16 maxSpeed;      // 0x0C
         uint32_t image;        // 0x0E
