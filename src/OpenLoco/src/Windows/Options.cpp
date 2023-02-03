@@ -2313,7 +2313,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void usePreferredOwnerNameMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::get();
-            if (!cfg.hasFlags(Config::Flags::usePreferredOwnerName))
+            if (cfg.hasFlags(Config::Flags::usePreferredOwnerName))
             {
                 cfg.old.flags &= ~Config::Flags::usePreferredOwnerName;
             }
