@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
@@ -15,27 +16,31 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-    namespace Flags22
+    enum class Flags22 : uint16_t
     {
-        constexpr uint8_t unk_00 = 1 << 0;
-        constexpr uint8_t unk_01 = 1 << 1;
-        constexpr uint8_t unk_02 = 1 << 2;
-    }
+        none = 0U,
+        unk_00 = 1U << 0,
+        unk_01 = 1U << 1,
+        unk_02 = 1U << 2,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags22);
 
-    namespace TrackPieceFlags
+    enum class TrackPieceFlags : uint16_t
     {
-        constexpr uint16_t diagonal = 1 << 0;
-        constexpr uint16_t largeCurve = 1 << 1;
-        constexpr uint16_t normalCurve = 1 << 2;
-        constexpr uint16_t smallCurve = 1 << 3;
-        constexpr uint16_t verySmallCurve = 1 << 4;
-        constexpr uint16_t slope = 1 << 5;
-        constexpr uint16_t steepSlope = 1 << 6;
-        constexpr uint16_t oneSided = 1 << 7;
-        constexpr uint16_t slopedCurve = 1 << 8;
-        constexpr uint16_t sBend = 1 << 9;
-        constexpr uint16_t junction = 1 << 10;
-    }
+        none = 0U,
+        diagonal = 1U << 0,
+        largeCurve = 1U << 1,
+        normalCurve = 1U << 2,
+        smallCurve = 1U << 3,
+        verySmallCurve = 1U << 4,
+        slope = 1U << 5,
+        steepSlope = 1U << 6,
+        oneSided = 1U << 7,
+        slopedCurve = 1U << 8,
+        sBend = 1U << 9,
+        junction = 1U << 10,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackPieceFlags);
 
 #pragma pack(push, 1)
     struct TrackObject
@@ -43,7 +48,7 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::track;
 
         string_id name;
-        uint16_t trackPieces;        // 0x02
+        TrackPieceFlags trackPieces; // 0x02
         uint16_t stationTrackPieces; // 0x04
         uint8_t var_06;
         uint8_t numCompatible; // 0x07
@@ -60,7 +65,7 @@ namespace OpenLoco
         uint8_t var_1B;
         uint16_t curveSpeed;   // 0x1C
         uint32_t image;        // 0x1E
-        uint16_t flags;        // 0x22
+        Flags22 flags;         // 0x22
         uint8_t numBridges;    // 0x24
         uint8_t bridges[7];    // 0x25
         uint8_t numStations;   // 0x2C
@@ -72,6 +77,17 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
+
+        constexpr bool hasFlags(Flags22 flagsToTest) const
+        {
+            return (flags & flagsToTest) != Flags22::none;
+        }
+
+        constexpr bool hasFlags(TrackPieceFlags flagsToTest) const
+        {
+            return (trackPieces & flagsToTest) != TrackPieceFlags::none;
+        }
+
     };
 #pragma pack(pop)
 
