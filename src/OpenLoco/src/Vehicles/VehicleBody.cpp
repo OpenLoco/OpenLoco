@@ -963,7 +963,7 @@ namespace OpenLoco::Vehicles
         bool stationFound = false;
 
         // Looking for a station
-        if (steamObj->flags & SteamObjectFlags::unk2)
+        if (steamObj->hasFlags(SteamObjectFlags::unk2))
         {
             auto tile = Map::TileManager::get(frontBogie->tileX, frontBogie->tileY);
 
@@ -1015,7 +1015,7 @@ namespace OpenLoco::Vehicles
         else
         {
             auto soundModifier = steamObj->numSoundEffects >> 1;
-            if (!(steamObj->flags & SteamObjectFlags::unk2))
+            if (!steamObj->hasFlags(SteamObjectFlags::unk2))
             {
                 soundModifier = 0;
             }
