@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
 #include <OpenLoco/Math/Trigonometry.hpp>
+#include <gtest/gtest.h>
 
 using namespace OpenLoco::Math;
 
