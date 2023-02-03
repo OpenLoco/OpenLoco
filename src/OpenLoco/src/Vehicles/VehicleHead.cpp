@@ -960,7 +960,7 @@ namespace OpenLoco::Vehicles
         auto param1 = 160;
         auto turnaroundAtSignalTimeout = kBusSignalTimeout;
 
-        if (trackType == 0xFF || ObjectManager::get<RoadObject>(trackType)->flags & Flags12::isRoad)
+        if (trackType == 0xFF || ObjectManager::get<RoadObject>(trackType)->hasFlags(Flags12::isRoad))
         {
             if (train.veh1->trackAndDirection.road.isBackToFront())
             {

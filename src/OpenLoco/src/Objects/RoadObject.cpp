@@ -51,7 +51,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if (flags & Flags12::unk_03)
+        if (hasFlags(Flags12::unk_03))
         {
             return numMods == 0;
         }

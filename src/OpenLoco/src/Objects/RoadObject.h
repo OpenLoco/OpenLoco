@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Speed.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
@@ -16,34 +17,38 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-    namespace Flags12
+    enum class Flags12 : uint16_t // Vehicle type?
     {
-        constexpr uint8_t unk_01 = 1 << 1;
-        constexpr uint8_t unk_02 = 1 << 2;
-        constexpr uint8_t unk_03 = 1 << 3; // Likely isTram
-        constexpr uint8_t unk_04 = 1 << 4;
-        constexpr uint8_t unk_05 = 1 << 5;
-        constexpr uint8_t isRoad = 1 << 6; // If not set this is tram track
-    }
+        none = 0U,
+        unk_01 = 1U << 1,
+        unk_02 = 1U << 2,
+        unk_03 = 1U << 3, // Likely isTram
+        unk_04 = 1U << 4,
+        unk_05 = 1U << 5,
+        isRoad = 1U << 6, // If not set this is tram track
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags12);
 
-    namespace RoadPieceFlags
+    enum class RoadPieceFlags : uint16_t
     {
-        constexpr uint16_t oneWay = 1 << 0;
-        constexpr uint16_t track = 1 << 1;
-        constexpr uint16_t slope = 1 << 2;
-        constexpr uint16_t steepSlope = 1 << 3;
-        constexpr uint16_t intersection = 1 << 2;
-        constexpr uint16_t oneSided = 1 << 5;
-        constexpr uint16_t overtake = 1 << 6;
-        constexpr uint16_t streetLights = 1 << 8;
-    }
+        none = 0U,
+        oneWay = 1U << 0,
+        track = 1U << 1,
+        slope = 1U << 2,
+        steepSlope = 1U << 3,
+        intersection = 1U << 2, //This is never referenced anywhere and in the same spot as slope
+        oneSided = 1U << 5,
+        overtake = 1U << 6,
+        streetLights = 1U << 8, //This is never referenced anywhere and why is it offset by 8 instead of 7?
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadPieceFlags);
 #pragma pack(push, 1)
     struct RoadObject
     {
         static constexpr auto kObjectType = ObjectType::road;
 
         string_id name;
-        uint16_t roadPieces;      // 0x02
+        RoadPieceFlags roadPieces; // 0x02
         int16_t buildCostFactor;  // 0x04
         int16_t sellCostFactor;   // 0x06
         int16_t tunnelCostFactor; // 0x08
@@ -51,7 +56,7 @@ namespace OpenLoco
         uint8_t var_0B;
         Speed16 maxSpeed;      // 0x0C
         uint32_t image;        // 0x0E
-        uint16_t flags;        // 0x12
+        Flags12 flags;         // 0x12
         uint8_t numBridges;    // 0x14
         uint8_t bridges[7];    // 0x15
         uint8_t numStations;   // 0x1C
@@ -66,6 +71,16 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
+
+        constexpr bool hasFlags(Flags12 flagsToTest) const
+        {
+            return (flags & flagsToTest) != Flags12::none;
+        }
+
+        constexpr bool hasFlags(RoadPieceFlags flagsToTest) const
+        {
+            return (roadPieces & flagsToTest) != RoadPieceFlags::none;
+        }
     };
 #pragma pack(pop)
 
