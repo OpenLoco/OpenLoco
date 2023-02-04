@@ -3477,7 +3477,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // Note: dont use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
-            if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            if (head.tileX != -1 && head.hasFlags(Vehicles::Flags38::isGhost))
             {
                 GameCommands::do_63(head.id);
             }
@@ -3663,7 +3663,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // Note: dont use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
-            if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            if (head.tileX != -1 && head.hasFlags(Vehicles::Flags38::isGhost))
             {
                 GameCommands::do_59(head.id);
             }
@@ -3897,7 +3897,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // Note: dont use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
-            if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            if (head.tileX != -1 && head.hasFlags(Vehicles::Flags38::isGhost))
             {
                 GameCommands::do_2(head.id);
             }
@@ -3994,7 +3994,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (*_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
             {
-                if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                if (head.tileX != -1 && head.hasFlags(Vehicles::Flags38::isGhost))
                 {
                     // Will convert inplace vehicle into non ghost
                     placementArgs->convertGhost = true;
@@ -4026,7 +4026,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
             {
-                if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                if (head.tileX != -1 && head.hasFlags(Vehicles::Flags38::isGhost))
                 {
                     // Will convert inplace vehicle into non ghost
                     placementArgs->convertGhost = true;
@@ -4059,7 +4059,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (*_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
             {
-                if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                if (head.tileX != -1 && head.hasFlags(Vehicles::Flags38::isGhost))
                 {
                     // Will convert inplace vehicle into non ghost
                     placementArgs->convertGhost = true;
@@ -4113,7 +4113,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            if (head->tileX == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
+            if (head->tileX == -1 || !head->hasFlags(Vehicles::Flags38::isGhost))
             {
                 self.invalidate();
                 return;
