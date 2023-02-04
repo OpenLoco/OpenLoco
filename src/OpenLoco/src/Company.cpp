@@ -568,7 +568,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (roadObj->hasFlags(Flags12::unk_03))
+            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
             {
                 roads.insert(i | (1 << 7));
             }
@@ -576,7 +576,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
-            return trackObj->hasFlags(Flags12::unk_01);
+            return trackObj->hasFlags(RoadObjectFlags::unk_01);
         });
 
         return result;

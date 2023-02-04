@@ -17,7 +17,7 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-    enum class Flags12 : uint16_t // Made this a uint16_t to maintain the size of the RoadObject struct
+    enum class RoadObjectFlags : uint16_t // Made this a uint16_t to maintain the size of the RoadObject struct
     {
         none = 0U,
         unk_01 = 1U << 1,
@@ -27,9 +27,9 @@ namespace OpenLoco
         unk_05 = 1U << 5,
         isRoad = 1U << 6, // If not set this is tram track
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags12);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadObjectFlags);
 
-    enum class RoadPieceFlags : uint16_t
+    enum class RoadObjectPieceFlags : uint16_t
     {
         none = 0U,
         oneWay = 1U << 0,
@@ -41,14 +41,14 @@ namespace OpenLoco
         overtake = 1U << 6,
         streetLights = 1U << 8, // This is never referenced anywhere and why is it offset by 8 instead of 7?
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadPieceFlags);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadObjectPieceFlags);
 #pragma pack(push, 1)
     struct RoadObject
     {
         static constexpr auto kObjectType = ObjectType::road;
 
         string_id name;
-        RoadPieceFlags roadPieces; // 0x02
+        RoadObjectPieceFlags roadPieces; // 0x02
         int16_t buildCostFactor;   // 0x04
         int16_t sellCostFactor;    // 0x06
         int16_t tunnelCostFactor;  // 0x08
@@ -56,7 +56,7 @@ namespace OpenLoco
         uint8_t var_0B;
         Speed16 maxSpeed;      // 0x0C
         uint32_t image;        // 0x0E
-        Flags12 flags;         // 0x12
+        RoadObjectFlags flags;         // 0x12
         uint8_t numBridges;    // 0x14
         uint8_t bridges[7];    // 0x15
         uint8_t numStations;   // 0x1C
@@ -72,14 +72,14 @@ namespace OpenLoco
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
 
-        constexpr bool hasFlags(Flags12 flagsToTest) const
+        constexpr bool hasFlags(RoadObjectFlags flagsToTest) const
         {
-            return (flags & flagsToTest) != Flags12::none;
+            return (flags & flagsToTest) != RoadObjectFlags::none;
         }
 
-        constexpr bool hasFlags(RoadPieceFlags flagsToTest) const
+        constexpr bool hasPieceFlags(RoadObjectPieceFlags flagsToTest) const
         {
-            return (roadPieces & flagsToTest) != RoadPieceFlags::none;
+            return (roadPieces & flagsToTest) != RoadObjectPieceFlags::none;
         }
     };
 #pragma pack(pop)

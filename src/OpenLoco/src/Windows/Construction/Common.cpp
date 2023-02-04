@@ -375,7 +375,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _lastSelectedMods = 0;
         auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1ULL << 7));
-        if (!roadObj->hasFlags(Flags12::unk_03))
+        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
         {
             _lastSelectedMods = copyElement->mods();
         }
@@ -434,14 +434,14 @@ namespace OpenLoco::Ui::Windows::Construction
                 auto trackType = flags & ~(1 << 7);
                 auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
-                if (roadObj->hasFlags(Flags12::unk_03))
+                if (roadObj->hasFlags(RoadObjectFlags::unk_03))
                 {
                     if (_trackType & (1 << 7))
                     {
                         trackType = _trackType & ~(1 << 7);
                         roadObj = ObjectManager::get<RoadObject>(trackType);
 
-                        if (roadObj->hasFlags(Flags12::unk_03))
+                        if (roadObj->hasFlags(RoadObjectFlags::unk_03))
                         {
                             _trackType = static_cast<uint8_t>(flags);
 
@@ -1037,7 +1037,7 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 newTrackType &= ~(1 << 7);
                 auto roadObj = ObjectManager::get<RoadObject>(newTrackType);
-                if (!roadObj->hasFlags(Flags12::unk_01))
+                if (!roadObj->hasFlags(RoadObjectFlags::unk_01))
                     LastGameOptionManager::setLastRoad(trackType);
                 else
                     LastGameOptionManager::setLastRailRoad(trackType);
