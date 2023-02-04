@@ -272,11 +272,11 @@ namespace OpenLoco
                 {
                     auto obj = ObjectManager::get<RoadStationObject>(stationElement->objectId());
 
-                    if (obj->flags & RoadStationFlags::passenger)
+                    if (obj->hasFlags(RoadStationFlags::passenger))
                     {
                         cargoSearchState.filter(cargoSearchState.filter() | (1 << obj->var_2C));
                     }
-                    else if (obj->flags & RoadStationFlags::freight)
+                    else if (obj->hasFlags(RoadStationFlags::freight))
                     {
                         cargoSearchState.filter(cargoSearchState.filter() | ~(1 << obj->var_2C));
                     }
