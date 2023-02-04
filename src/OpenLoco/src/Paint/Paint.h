@@ -335,6 +335,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00E3F09A> _vpPositionY;
         inline static Interop::loco_global<int16_t, 0x00E3F09C> _unkVpPositionY;
         inline static Interop::loco_global<bool, 0x00E3F09E> _didPassSurface;
+        inline static Interop::loco_global<int16_t, 0x00E3F0A6> _foregroundCullingHeight;
         inline static Interop::loco_global<Ui::ViewportInteraction::InteractionItem, 0x00E3F0AC> _itemType;
         inline static Interop::loco_global<uint8_t, 0x00E3F0AD> _trackModId;
         inline static Interop::loco_global<Map::Pos2, 0x00E3F0B0> _mapPosition;

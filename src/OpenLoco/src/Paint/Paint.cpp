@@ -339,7 +339,7 @@ namespace OpenLoco::Paint
 
         _viewFlags = options.viewFlags;
         currentRotation = options.rotation;
-        addr<0x00E3F0A6, int16_t>() = options.foregroundCullHeight;
+        _foregroundCullingHeight = options.foregroundCullHeight;
     }
 
     // 0x0045A6CA
@@ -761,9 +761,120 @@ namespace OpenLoco::Paint
         }
     }
 
+    static bool isTypeForegroundCullableScenery(const Ui::ViewportInteraction::InteractionItem type)
+    {
+        switch (type)
+        {
+            case Ui::ViewportInteraction::InteractionItem::industryTree:
+            case Ui::ViewportInteraction::InteractionItem::tree:
+            case Ui::ViewportInteraction::InteractionItem::wall:
+            case Ui::ViewportInteraction::InteractionItem::building:
+            case Ui::ViewportInteraction::InteractionItem::industry:
+            case Ui::ViewportInteraction::InteractionItem::headquarterBuilding:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    static bool isTypeForegroundCullableTrack(const Ui::ViewportInteraction::InteractionItem type)
+    {
+        switch (type)
+        {
+            case Ui::ViewportInteraction::InteractionItem::track:
+            case Ui::ViewportInteraction::InteractionItem::trackExtra:
+            case Ui::ViewportInteraction::InteractionItem::signal:
+            case Ui::ViewportInteraction::InteractionItem::trackStation:
+            case Ui::ViewportInteraction::InteractionItem::roadStation:
+            case Ui::ViewportInteraction::InteractionItem::airport:
+            case Ui::ViewportInteraction::InteractionItem::dock:
+            case Ui::ViewportInteraction::InteractionItem::road:
+            case Ui::ViewportInteraction::InteractionItem::roadExtra:
+            case Ui::ViewportInteraction::InteractionItem::bridge:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     // 0x0045EA23
     void PaintSession::drawStructs()
     {
+        // edi
+        Gfx::RenderTarget& rt = **_renderTarget;
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
+        for (const auto* ps = &(*_paintHead)->basic; ps->nextQuadrantPS != nullptr; ps = ps->nextQuadrantPS)
+        {
+            bool shouldCull = false;
+            auto imageId = ps->imageId;
+            if (_viewFlags & Ui::ViewportFlags::hide_foreground_scenery_buildings)
+            {
+                if (isTypeForegroundCullableScenery(ps->type))
+                {
+                    const auto pos = Math::Vector::rotate(Map::Pos2{ ps->bounds.xEnd, ps->bounds.yEnd }, getRotation());
+                    const auto height = (pos.x + pos.y) / 2 - ps->bounds.z;
+                    if (height > _foregroundCullingHeight)
+                    {
+
+                        shouldCull = true;
+                    }
+                }
+            }
+            else if (_viewFlags & Ui::ViewportFlags::hide_foreground_tracks_roads)
+            {
+                if (isTypeForegroundCullableTrack(ps->type))
+                {
+                    const auto pos = Math::Vector::rotate(Map::Pos2{ ps->bounds.xEnd, ps->bounds.yEnd }, getRotation());
+                    const auto height = (pos.x + pos.y) / 2 - ps->bounds.z;
+                    if (height > _foregroundCullingHeight)
+                    {
+
+                        shouldCull = true;
+                    }
+                }
+            }
+            if (shouldCull)
+            {
+                if (_viewFlags & Ui::ViewportFlags::underground_view)
+                {
+                    continue;
+                }
+                if (imageId.isBlended())
+                {
+                    continue;
+                }
+                imageId = ImageId(imageId.getIndex()).withTranslucency(ExtColour::unk30);
+            }
+            Ui::Point imagePos = ps->vpPos;
+            if (ps->type == Ui::ViewportInteraction::InteractionItem::entity)
+            {
+                switch (rt.zoomLevel)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        imagePos.x &= 0xFFFE;
+                        imagePos.y &= 0xFFFE;
+                        break;
+                    case 2:
+                        imagePos.x &= 0xFFFC;
+                        imagePos.y &= 0xFFFC;
+                        break;
+                    case 3:
+                        imagePos.x &= 0xFFF8;
+                        imagePos.y &= 0xFFF8;
+                        break;
+                }
+            }
+            if (ps->flags & PaintStructFlags::hasMaskedImage)
+            {
+            }
+            else
+            {
+                drawingCtx.drawImage(rt, imagePos, imageId);
+            }
+        }
         call(0x0045EA23);
     }
 
