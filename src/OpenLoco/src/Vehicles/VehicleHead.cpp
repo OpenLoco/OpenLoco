@@ -529,7 +529,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleStatus vehStatus{};
 
-        if (var_0C & Flags0C::commandStop || (var_0C & Flags0C::manualControl && var_6E <= -20))
+        if (hasFlags(Flags0C::commandStop) || hasFlags(Flags0C::manualControl) && var_6E <= -20)
         {
             vehStatus.status1 = StringIds::vehicle_status_stopping;
         }
@@ -880,11 +880,11 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (var_0C & Flags0C::commandStop)
+            if (hasFlags(Flags0C::commandStop))
             {
                 return sub_4A8CB6();
             }
-            else if (var_0C & Flags0C::manualControl)
+            else if (hasFlags(Flags0C::manualControl))
             {
                 if (var_6E <= -20)
                 {
@@ -921,9 +921,9 @@ namespace OpenLoco::Vehicles
 
             if (!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered))
             {
-                if (!(var_0C & Flags0C::manualControl) || var_6E > -20)
+                if (!hasFlags(Flags0C::manualControl) || var_6E > -20)
                 {
-                    if (!(var_0C & Flags0C::commandStop))
+                    if (!hasFlags(Flags0C::commandStop))
                     {
                         return landNormalMovementUpdate();
                     }
@@ -1091,7 +1091,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Manual control is going too fast at this point to stop at the station
-        if (var_0C & Flags0C::manualControl)
+        if (hasFlags(Flags0C::manualControl))
         {
             return true;
         }
@@ -1116,7 +1116,7 @@ namespace OpenLoco::Vehicles
         status = Status::stopped;
         advanceToNextRoutableOrder();
 
-        if (var_0C & Flags0C::manualControl)
+        if (hasFlags(Flags0C::manualControl))
         {
             return true;
         }
@@ -1205,7 +1205,7 @@ namespace OpenLoco::Vehicles
             auto* vehType1 = train.veh1;
             vehType1->timeAtSignal++;
 
-            if (var_0C & Flags0C::manualControl)
+            if (hasFlags(Flags0C::manualControl))
             {
                 var_5C = 2;
                 vehType1->var_48 |= 1 << 0;
@@ -1268,7 +1268,7 @@ namespace OpenLoco::Vehicles
             train.veh1->timeAtSignal = 0;
             if (al == 2)
             {
-                if (var_0C & Flags0C::manualControl)
+                if (hasFlags(Flags0C::manualControl))
                 {
                     auto* vehType2 = train.veh2;
                     if (vehType2->routingHandle != routingHandle || vehType2->subPosition != subPosition)
@@ -1322,7 +1322,7 @@ namespace OpenLoco::Vehicles
 
         if (status == Status::stopped)
         {
-            if (!(var_0C & Flags0C::commandStop))
+            if (!hasFlags(Flags0C::commandStop))
             {
                 setStationVisitedTypes();
                 checkIfAtOrderStation();
@@ -1630,7 +1630,7 @@ namespace OpenLoco::Vehicles
     // 0x004A95CB
     bool VehicleHead::sub_4A95CB()
     {
-        if (var_0C & Flags0C::commandStop)
+        if (hasFlags(Flags0C::commandStop))
         {
             status = Status::stopped;
             Vehicle2* vehType2 = _vehicleUpdate_2;
@@ -1871,7 +1871,7 @@ namespace OpenLoco::Vehicles
 
         if (status == Status::stopped)
         {
-            if (var_0C & Flags0C::commandStop)
+            if (hasFlags(Flags0C::commandStop))
             {
                 return true;
             }
@@ -1887,7 +1887,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (var_0C & Flags0C::commandStop)
+        if (hasFlags(Flags0C::commandStop))
         {
             if (!(updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination))
             {
@@ -1930,7 +1930,7 @@ namespace OpenLoco::Vehicles
                 return true;
             }
 
-            if (var_0C & Flags0C::commandStop)
+            if (hasFlags(Flags0C::commandStop))
             {
                 status = Status::stopped;
                 vehType2->currentSpeed = 0.0_mph;

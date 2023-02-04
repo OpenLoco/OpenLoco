@@ -3,7 +3,7 @@
 #include "Location.hpp"
 #include "Map/Map.hpp"
 #include "Types.hpp"
-
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstdint>
 #include <limits>
 
@@ -34,6 +34,18 @@ namespace OpenLoco
         down20deg = 12,
     };
 
+    enum class Flags0C : uint16_t // commands?
+    {
+        none = 0U,
+        unk_0 = 1U << 0,
+        commandStop = 1U << 1, // commanded to stop??
+        sorted = 1U << 3,      // vehicle list
+        unk_5 = 1U << 5,
+        manualControl = 1U << 6,
+        shuntCheat = 1U << 7,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags0C);
+
 #pragma pack(push, 1)
     struct EntityBase
     {
@@ -48,7 +60,7 @@ namespace OpenLoco
         uint8_t linkedListOffset; // 0x8
         uint8_t var_09;
         EntityId id; // 0xA
-        uint16_t var_0C;
+        Flags0C var_0C;
         Map::Pos3 position; // 0x0E
         uint8_t var_14;
         uint8_t var_15;
@@ -81,6 +93,10 @@ namespace OpenLoco
             return isBase<BaseType>() ? reinterpret_cast<const BaseType*>(this) : nullptr;
         }
         bool empty() const;
+        constexpr bool hasFlags(Flags0C flagsToTest) const
+        {
+            return (var_0C & flagsToTest) != Flags0C::none;
+        }
 
     protected:
         constexpr uint8_t getSubType() const { return type; }

@@ -96,8 +96,8 @@ namespace OpenLoco::Vehicles
         // Distance to speed32 would be var_3C * 2 but since maxspeed is interms of speed16 we have this awkward 32768
         maxSpeed = std::min(maxSpeed, Speed16(var_3C / 32768) + 5_mph);
 
-        if ((train.head->var_0C & Flags0C::manualControl && train.head->var_6E <= -20)
-            || (train.head->var_0C & Flags0C::commandStop))
+        if ((train.head->hasFlags(Flags0C::manualControl) && train.head->var_6E <= -20)
+            || train.head->hasFlags(Flags0C::commandStop))
         {
             if (train.veh2->currentSpeed == 0.0_mph)
             {

@@ -11,6 +11,7 @@
 #include "Types.hpp"
 #include "Ui/WindowType.h"
 #include "Window.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco::Vehicles
 {
@@ -24,16 +25,6 @@ namespace OpenLoco::Vehicles
     void rename(OpenLoco::Interop::registers& regs);
     void vehiclePickupWater(OpenLoco::Interop::registers& regs);
     void sell(OpenLoco::Interop::registers& regs);
-
-    namespace Flags0C // commands?
-    {
-        constexpr uint8_t unk_0 = 1 << 0;
-        constexpr uint8_t commandStop = 1 << 1; // commanded to stop??
-        constexpr uint8_t sorted = 1 << 3;      // vehicle list
-        constexpr uint8_t unk_5 = 1 << 5;
-        constexpr uint8_t manualControl = 1 << 6;
-        constexpr uint8_t shuntCheat = 1 << 7;
-    }
 
     namespace Flags38
     {

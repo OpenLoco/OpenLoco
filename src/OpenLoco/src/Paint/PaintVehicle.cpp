@@ -90,7 +90,7 @@ namespace OpenLoco::Paint
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
                     imageId = Gfx::applyGhostToImage(imageIndex);
                 }
-                else if (bogie->var_0C & Flags0C::unk_5)
+                else if (bogie->hasFlags(Flags0C::unk_5))
                 {
                     imageId = ImageId(imageIndex, ExtColour::unk74);
                 }
@@ -433,7 +433,7 @@ namespace OpenLoco::Paint
         {
             imageId = Gfx::applyGhostToImage(bodyImageIndex);
         }
-        else if (body->var_0C & Flags0C::unk_5)
+        else if (body->hasFlags(Flags0C::unk_5))
         {
             imageId = ImageId(bodyImageIndex, ExtColour::unk74);
         }
@@ -448,7 +448,7 @@ namespace OpenLoco::Paint
             Vehicle train(body->head);
             if (train.veh2->var_5B != 0
                 && !(body->getFlags38() & Flags38::isGhost)
-                && !(body->var_0C & Flags0C::unk_5))
+                && !body->hasFlags(Flags0C::unk_5))
             {
                 session.attachToPrevious(ImageId{ *brakingImageIndex }, { 0, 0 });
             }

@@ -66,7 +66,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        if ((train.head->var_0C & Flags0C::manualControl) && train.head->var_6E <= 10)
+        if (train.head->hasFlags(Flags0C::manualControl) && train.head->var_6E <= 10)
         {
             return false;
         }
@@ -135,7 +135,7 @@ namespace OpenLoco::Vehicles
             return sub_4A9F20();
         }
 
-        if (!((*_vehicleUpdate_head)->var_0C & Flags0C::manualControl))
+        if (!(*_vehicleUpdate_head)->hasFlags(Flags0C::manualControl))
         {
             if (speedDiff >= -1.5_mph)
             {
@@ -187,7 +187,7 @@ namespace OpenLoco::Vehicles
         if (!isOnRackRail)
         {
             ebp /= 2;
-            if (!(train.head->var_0C & Flags0C::unk_0))
+            if (!train.head->hasFlags(Flags0C::unk_0))
             {
                 var_5A = 4;
                 if (currentSpeed <= 3.0_mph && train.head->owner == CompanyManager::getControllingId())
@@ -198,7 +198,7 @@ namespace OpenLoco::Vehicles
         }
         if (isOnRackRail && dh == 0)
         {
-            if (train.head->var_0C & Flags0C::manualControl)
+            if (train.head->hasFlags(Flags0C::manualControl))
             {
                 const auto manualSpeed = train.head->var_6E;
                 if (manualSpeed < 0)
@@ -247,7 +247,7 @@ namespace OpenLoco::Vehicles
         if (speedAdjustment < 0.0_mph)
         {
             auto minSpeed = 5.0_mph;
-            if ((train.head->var_0C & Flags0C::manualControl) || !isOnRackRail)
+            if (train.head->hasFlags(Flags0C::manualControl) || !isOnRackRail)
             {
                 minSpeed = 0.0_mph;
             }
@@ -257,7 +257,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (!(train.head->var_0C & Flags0C::manualControl))
+        if (!train.head->hasFlags(Flags0C::manualControl))
         {
             // Vanilla did some funky maths that interpreted signed speeds as unsigned
             // to behave similar we always take the vehicleUpdate_var_1136134 on negative speed
@@ -291,7 +291,7 @@ namespace OpenLoco::Vehicles
 
         if (_vehicleUpdate_var_1136114 & (1 << 0))
         {
-            if (!(train.head->var_0C & Flags0C::manualControl))
+            if (!train.head->hasFlags(Flags0C::manualControl))
             {
                 currentSpeed = 0.0_mph;
                 var_5A = 0;
