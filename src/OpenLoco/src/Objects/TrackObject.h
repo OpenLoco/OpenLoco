@@ -87,7 +87,6 @@ namespace OpenLoco
         {
             return (trackPieces & flagsToTest) != TrackPieceFlags::none;
         }
-
     };
 #pragma pack(pop)
 
