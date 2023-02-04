@@ -69,15 +69,19 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
 list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
 
+# Display source files nicely in IDEs
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+# System dependencies
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
+
+# Thirdparty dependencies
+include(thirdparty/CMakeLists.txt)
 
 if (${OPENLOCO_BUILD_TESTS})
     enable_testing()
 endif()
-
-# Display source files nicely in IDEs
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Handle creating the rct2 text and data files on OS X and Linux
 if (UNIX)
@@ -131,7 +135,6 @@ if (UNIX)
     endif ()
 endif()
 
-include(thirdparty/CMakeLists.txt)
 add_subdirectory(src)
 
 if (MSVC)
