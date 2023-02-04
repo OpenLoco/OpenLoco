@@ -49,14 +49,14 @@ namespace OpenLoco
 
         string_id name;
         RoadObjectPieceFlags roadPieces; // 0x02
-        int16_t buildCostFactor;   // 0x04
-        int16_t sellCostFactor;    // 0x06
-        int16_t tunnelCostFactor;  // 0x08
-        uint8_t costIndex;         // 0x0A
+        int16_t buildCostFactor;         // 0x04
+        int16_t sellCostFactor;          // 0x06
+        int16_t tunnelCostFactor;        // 0x08
+        uint8_t costIndex;               // 0x0A
         uint8_t var_0B;
         Speed16 maxSpeed;      // 0x0C
         uint32_t image;        // 0x0E
-        RoadObjectFlags flags;         // 0x12
+        RoadObjectFlags flags; // 0x12
         uint8_t numBridges;    // 0x14
         uint8_t bridges[7];    // 0x15
         uint8_t numStations;   // 0x1C
