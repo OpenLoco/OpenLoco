@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::Industry
             }
             else
             {
-                if ((Config::get().old.flags & Config::Flags::gridlinesOnLandscape) != Config::Flags::none)
+                if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
                     flags |= ViewportFlags::gridlines_on_landscape;
             }
 
@@ -755,7 +755,7 @@ namespace OpenLoco::Ui::Windows::Industry
             auto industry = IndustryManager::get(IndustryId(self->number));
             if (!isEditorMode() && !isSandboxMode())
             {
-                if ((industry->flags & IndustryFlags::flag_04) == IndustryFlags::none)
+                if (!industry->hasFlags(IndustryFlags::flag_04))
                     return;
                 if (!CompanyManager::isPlayerCompany(industry->owner))
                     return;

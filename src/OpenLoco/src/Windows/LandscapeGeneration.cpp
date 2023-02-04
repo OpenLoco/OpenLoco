@@ -1223,9 +1223,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
             window.activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
-            if ((IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesCloseDown) == IndustryManager::Flags::none)
+            if (!IndustryManager::hasFlags(IndustryManager::Flags::disallowIndustriesCloseDown))
                 window.activatedWidgets |= 1 << widx::check_allow_industries_close_down;
-            if ((IndustryManager::getFlags() & IndustryManager::Flags::disallowIndustriesStartUp) == IndustryManager::Flags::none)
+            if (!IndustryManager::hasFlags(IndustryManager::Flags::disallowIndustriesStartUp))
                 window.activatedWidgets |= 1 << widx::check_allow_industries_start_up;
         }
 

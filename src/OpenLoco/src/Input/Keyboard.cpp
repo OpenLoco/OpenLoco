@@ -123,7 +123,7 @@ namespace OpenLoco::Input
             case Tutorial::State::playing:
             {
                 _keyModifier = static_cast<KeyModifier>(Tutorial::nextInput());
-                if ((_keyModifier & KeyModifier::unknown) == KeyModifier::none)
+                if (!hasKeyModifier(KeyModifier::unknown))
                     return;
 
                 Windows::ToolTip::closeAndReset();
@@ -208,7 +208,7 @@ namespace OpenLoco::Input
         // Used to handle INSERT cheat
         if ((_keyboardState[SDL_SCANCODE_INSERT] & 0x80) != 0 || (_keyboardState[SDL_SCANCODE_LALT] & 0x80) != 0 || (_keyboardState[SDL_SCANCODE_RALT] & 0x80) != 0)
         {
-            if ((_keyModifier & KeyModifier::cheat) != KeyModifier::none)
+            if (hasKeyModifier(KeyModifier::cheat))
             {
                 return;
             }
@@ -220,7 +220,7 @@ namespace OpenLoco::Input
             }
         }
 
-        if ((_keyModifier & KeyModifier::cheat) == KeyModifier::none)
+        if (!hasKeyModifier(KeyModifier::cheat))
             return;
 
         _keyModifier = _keyModifier & (~KeyModifier::cheat);
@@ -294,7 +294,7 @@ namespace OpenLoco::Input
             if (nextKey->keyCode == SDLK_LCTRL || nextKey->keyCode == SDLK_RCTRL)
                 continue;
 
-            if ((_keyModifier & KeyModifier::cheat) != KeyModifier::none)
+            if (hasKeyModifier(KeyModifier::cheat))
             {
                 if (nextKey->charCode >= 'a' && nextKey->charCode <= 'z')
                 {

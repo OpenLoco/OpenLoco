@@ -49,6 +49,11 @@ namespace OpenLoco::IndustryManager
         getGameState().industryFlags = flags;
     }
 
+    bool hasFlags(const Flags flags)
+    {
+        return (getGameState().industryFlags & flags) != Flags::none;
+    }
+
     // 0x00453214
     void reset()
     {
