@@ -223,12 +223,12 @@ namespace OpenLoco::Vehicles
                         var_5A = 2;
                     }
                 }
-                const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
+                const auto power = hasFlags(StatusFlags::isBrokenDown) ? totalPower / 4 : totalPower;
                 ebp += ((power * 2048) * manualSpeed) / (totalWeight * 40);
             }
             else
             {
-                const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
+                const auto power = hasFlags(StatusFlags::isBrokenDown) ? totalPower / 4 : totalPower;
                 ebp += (power * 2048) / totalWeight;
             }
         }

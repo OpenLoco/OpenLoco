@@ -38,11 +38,13 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags38);
 
-    namespace Flags73 // veh2 Train breakdown flags
+    enum class StatusFlags : uint8_t // veh2 Train operating status flags
     {
-        constexpr uint8_t isBrokenDown = 1 << 0;
-        constexpr uint8_t isStillPowered = 1 << 1;
-    }
+        none = 0U,
+        isBrokenDown = 1U << 0,
+        isStillPowered = 1U << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(StatusFlags);
 
     enum class Status : uint8_t
     {
@@ -257,7 +259,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_4F[0x56 - 0x4F];
         uint32_t var_56;
         uint8_t pad_5A[0x73 - 0x5A];
-        uint8_t var_73;
+        uint8_t statusFlags;
     };
     static_assert(sizeof(Vehicle2or6) == 0x74); // Can't use offset_of change this to last field if more found
 
@@ -315,7 +317,7 @@ namespace OpenLoco::Vehicles
         int8_t var_6E;             // manual speed/brake
         int16_t var_6F;            // 0x6F x
         int16_t var_71;            // 0x6F y
-        uint32_t var_73;           // 0x73 ticks since journey start
+        uint32_t statusFlags;           // 0x73 ticks since journey start
         uint16_t lastAverageSpeed; // 0x77
         uint8_t var_79;            // 0x79 timeout before auto starting trams/buses
 
@@ -494,13 +496,17 @@ namespace OpenLoco::Vehicles
         currency32_t curMonthRevenue; // 0x5E monthly revenue
         currency32_t profit[4];       // 0x62 last 4 months net profit
         uint8_t reliability;          // 0x72
-        uint8_t var_73;               // 0x73 (bit 0 = broken down, bit 1 = still powered)
+        StatusFlags statusFlags;      // 0x73 (bit 0 = broken down, bit 1 = still powered)
 
         bool update();
         bool sub_4A9F20();
         currency32_t totalRecentProfit() const
         {
             return profit[0] + profit[1] + profit[2] + profit[3];
+        }
+        constexpr bool hasFlags(StatusFlags flagsToTest) const
+        {
+            return (statusFlags & flagsToTest) != StatusFlags::none;
         }
     };
     static_assert(sizeof(Vehicle2) == 0x74); // Can't use offset_of change this to last field if more found
