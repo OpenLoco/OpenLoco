@@ -652,7 +652,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             drawingCtx.drawImage(rt, xPos, yPos, imageId);
 
             auto colour = Colours::getTranslucent(companyColour);
-            if (!(roadStationObj->flags & RoadStationFlags::recolourable))
+            if (!roadStationObj->hasFlags(RoadStationFlags::recolourable))
             {
                 colour = ExtColour::unk2E;
             }

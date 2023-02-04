@@ -15,15 +15,15 @@ namespace OpenLoco::Config
     enum class Flags : uint32_t
     {
         none = 0U,
-        gridlinesOnLandscape = (1 << 0),
-        showHeightAsUnits = (1 << 1),
-        landscapeSmoothing = (1 << 2),
-        exportObjectsWithSaves = (1 << 3),
+        gridlinesOnLandscape = 1U << 0,
+        showHeightAsUnits = 1U << 1,
+        landscapeSmoothing = 1U << 2,
+        exportObjectsWithSaves = 1U << 3,
 
-        preferredCurrencyForNewGames = (1 << 6),
-        preferredCurrencyAlways = (1 << 7),
+        preferredCurrencyForNewGames = 1U << 6,
+        preferredCurrencyAlways = 1U << 7,
 
-        usePreferredOwnerName = (1 << 9),
+        usePreferredOwnerName = 1U << 9,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
@@ -190,6 +190,11 @@ namespace OpenLoco::Config
         bool cashPopupRendering = true;
         bool allowMultipleInstances = false;
         LocoConfig old;
+
+        constexpr bool hasFlags(Flags flagsToTest) const
+        {
+            return (old.flags & flagsToTest) != Flags::none;
+        }
     };
 
     NewConfig& get();

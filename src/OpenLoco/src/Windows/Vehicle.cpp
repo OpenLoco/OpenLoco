@@ -325,7 +325,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             else
             {
-                if ((Config::get().old.flags & Config::Flags::gridlinesOnLandscape) != Config::Flags::none)
+                if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
                     flags |= ViewportFlags::gridlines_on_landscape;
             }
 

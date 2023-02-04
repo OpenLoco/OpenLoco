@@ -5,6 +5,7 @@ set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/LocoFixedVector.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Prng.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Span.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Traits.hpp"
 )
 
 set(private_files
@@ -13,6 +14,7 @@ set(private_files
 set(test_files
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/EnumFlagsTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/PrngTests.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/TraitsTest.cpp"
 )
 
 loco_add_library(Core STATIC

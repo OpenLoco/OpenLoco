@@ -30,7 +30,7 @@ namespace OpenLoco::Drawing
             // Used for glass.
             op = BlendOp::transparent | BlendOp::dst;
         }
-        else if ((args.sourceImage.flags & Gfx::G1ElementFlags::hasTransparancy) == Gfx::G1ElementFlags::none)
+        else if (!args.sourceImage.hasFlags(Gfx::G1ElementFlags::hasTransparancy))
         {
             // Copy raw bitmap data to target
             op = BlendOp::none;
@@ -41,7 +41,7 @@ namespace OpenLoco::Drawing
             op = BlendOp::transparent;
         }
         // Vanilla did not handle noise image for rle compressed images
-        if (args.noiseImage != nullptr && ((args.sourceImage.flags & Gfx::G1ElementFlags::isRLECompressed) == Gfx::G1ElementFlags::none))
+        if (args.noiseImage != nullptr && (!args.sourceImage.hasFlags(Gfx::G1ElementFlags::isRLECompressed)))
         {
             op |= BlendOp::noiseMask;
         }

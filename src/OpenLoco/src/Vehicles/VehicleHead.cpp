@@ -2585,7 +2585,7 @@ namespace OpenLoco::Vehicles
                         break;
 
                     auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
-                    if (!(roadStationObj->flags & RoadStationFlags::roadEnd))
+                    if (!roadStationObj->hasFlags(RoadStationFlags::roadEnd))
                     {
                         var_5F |= Flags5F::unk_0;
                     }

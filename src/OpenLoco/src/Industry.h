@@ -88,6 +88,11 @@ namespace OpenLoco
         void expandGrounds(const Map::Pos2& pos, uint8_t primaryWallType, uint8_t secondaryWallType, uint8_t dl);
         void createMapAnimations();
         void updateProducedCargoStats();
+
+        constexpr bool hasFlags(IndustryFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != IndustryFlags::none;
+        }
     };
 #pragma pack(pop)
 

@@ -22,6 +22,7 @@ namespace OpenLoco::IndustryManager
     FixedVector<Industry, Limits::kMaxIndustries> industries();
     Industry* get(IndustryId id);
     Flags getFlags();
+    bool hasFlags(const Flags flags);
     void setFlags(const Flags flags);
     void update();
     void updateDaily();

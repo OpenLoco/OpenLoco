@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 #include <utility>
 
@@ -11,13 +12,16 @@ namespace OpenLoco
     {
         struct DependentObjects;
     }
-    namespace SteamObjectFlags
+    enum class SteamObjectFlags : uint16_t
     {
-        constexpr uint16_t applyWind = (1 << 0);
-        constexpr uint16_t disperseOnCollision = (1 << 1);
-        constexpr uint16_t unk2 = (1 << 2);
-        constexpr uint16_t unk3 = (1 << 3);
-    }
+        none = 0U,
+        applyWind = 1U << 0,
+        disperseOnCollision = 1U << 1,
+        unk2 = 1U << 2,
+        unk3 = 1U << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(SteamObjectFlags);
+
 #pragma pack(push, 1)
     struct SteamObject
     {
@@ -34,7 +38,7 @@ namespace OpenLoco
         uint8_t var_05;
         uint8_t var_06;
         uint8_t var_07;
-        uint16_t flags; // 0x08
+        SteamObjectFlags flags; // 0x08
         uint32_t var_0A;
         uint32_t baseImageId;                 // 0x0E
         uint16_t totalNumFramesType0;         // 0x12
@@ -48,6 +52,11 @@ namespace OpenLoco
         bool validate() const { return true; }
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
+
+        constexpr bool hasFlags(SteamObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != SteamObjectFlags::none;
+        }
 
         std::pair<uint16_t, const ImageAndHeight*> getFramesInfo(bool isType1) const
         {

@@ -38,3 +38,36 @@ if ( NOT span-lite_FOUND )
     # Group all the ThirdParty items under a ThirdParty folder in IDEs
     set_target_properties(span-lite PROPERTIES FOLDER "ThirdParty")
 endif()
+
+if (${OPENLOCO_BUILD_TESTS})
+    find_package(GTest REQUIRED)
+endif()
+
+find_package(SDL2 REQUIRED CONFIG)
+if (TARGET SDL2::SDL2-static)
+    set(SDL2_LIB SDL2::SDL2-static)
+elseif (TARGET SDL2::SDL2)
+    set(SDL2_LIB SDL2::SDL2)
+else ()
+    # Even though we asked for SDL2 from a configure mode which would have SDL2 targets
+    # it appears we have been given a raw module mode SDL2 so create a wrapper library
+    # then we can treat it just like a normal configure mode target
+    add_library(SDL2_WRAPPER INTERFACE)
+    target_link_libraries(SDL2_WRAPPER INTERFACE ${SDL2_LIBRARIES})
+    target_include_directories(SDL2_WRAPPER INTERFACE ${SDL2_INCLUDE_DIRS})
+    set(SDL2_LIB SDL2_WRAPPER)
+endif()
+
+find_package(PNG REQUIRED)
+if (NOT APPLE AND NOT MSVC)
+    pkg_check_modules(OPENAL REQUIRED openal)
+else()
+    find_package(OpenAL CONFIG REQUIRED)
+    set(OPENAL_LIBRARIES OpenAL::OpenAL)
+endif()
+
+# breakpad is also required
+if (MSVC)
+    find_package(unofficial-breakpad CONFIG REQUIRED)
+    set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
+endif()
