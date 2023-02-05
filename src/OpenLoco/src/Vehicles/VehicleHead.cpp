@@ -258,17 +258,17 @@ namespace OpenLoco::Vehicles
         {
             if (trainStillPowered)
             {
-                train.veh2->statusFlags |= StatusFlags::isBrokenDown | StatusFlags::isStillPowered;
+                train.veh2->var_73 |= Flags73::isBrokenDown | Flags73::isStillPowered;
             }
             else
             {
-                train.veh2->statusFlags |= StatusFlags::isBrokenDown;
-                train.veh2->statusFlags &= ~StatusFlags::isStillPowered;
+                train.veh2->var_73 |= Flags73::isBrokenDown;
+                train.veh2->var_73 &= ~Flags73::isStillPowered;
             }
         }
         else
         {
-            train.veh2->statusFlags &= ~(StatusFlags::isBrokenDown | StatusFlags::isStillPowered);
+            train.veh2->var_73 &= ~(Flags73::isBrokenDown | Flags73::isStillPowered);
         }
     }
 
@@ -423,7 +423,7 @@ namespace OpenLoco::Vehicles
             return vehStatus;
         }
         Vehicle train(head);
-        if (train.veh2->hasFlags(StatusFlags::isBrokenDown))
+        if (train.veh2->var_73 & Flags73::isBrokenDown)
         {
             vehStatus.status1 = StringIds::vehicle_status_broken_down;
             return vehStatus;
@@ -865,7 +865,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::updateLand()
     {
         Vehicle2* vehType2 = _vehicleUpdate_2;
-        if (!vehType2->hasFlags(StatusFlags::isBrokenDown) || vehType2->hasFlags(StatusFlags::isStillPowered) && status == Status::approaching)
+        if ((!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered)) && status == Status::approaching)
         {
             if (mode == TransportMode::road)
             {
@@ -919,7 +919,7 @@ namespace OpenLoco::Vehicles
         {
             status = Status::travelling;
 
-            if (!vehType2->hasFlags(StatusFlags::isBrokenDown) || vehType2->hasFlags(StatusFlags::isStillPowered))
+            if (!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered))
             {
                 if (!hasFlags(Flags0C::manualControl) || var_6E > -20)
                 {
@@ -1049,7 +1049,7 @@ namespace OpenLoco::Vehicles
         status = Status::stopped;
         vehType2 = _vehicleUpdate_2;
 
-        if (vehType2->hasFlags(StatusFlags::isBrokenDown))
+        if (vehType2->var_73 & Flags73::isBrokenDown)
         {
             stationId = StationId::null;
             status = Status::brokenDown;
@@ -1548,7 +1548,7 @@ namespace OpenLoco::Vehicles
         {
             auto veh2 = train.veh2;
             auto targetSpeed = veh2->maxSpeed;
-            if (veh2->hasFlags(StatusFlags::isBrokenDown))
+            if (veh2->var_73 & Flags73::isBrokenDown)
             {
                 targetSpeed = veh2->rackRailMaxSpeed;
             }
@@ -1606,7 +1606,7 @@ namespace OpenLoco::Vehicles
             if (cl == 2)
             {
                 auto targetSpeed = veh2->maxSpeed;
-                if (veh2->hasFlags(StatusFlags::isBrokenDown))
+                if (veh2->var_73 & Flags73::isBrokenDown)
                 {
                     targetSpeed = veh2->rackRailMaxSpeed;
                 }
@@ -2375,7 +2375,7 @@ namespace OpenLoco::Vehicles
         {
             if (!(flags & WaterMotionFlags::isStopping))
             {
-                if (!veh2->hasFlags(StatusFlags::isBrokenDown))
+                if (!(veh2->var_73 & Flags73::isBrokenDown))
                 {
                     targetSpeed = veh2->maxSpeed;
                 }
@@ -3093,7 +3093,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::beginNewJourney()
     {
         // Set initial position for updateLastJourneyAverageSpeed
-        statusFlags = ScenarioManager::getScenarioTicks();
+        var_73 = ScenarioManager::getScenarioTicks();
         Vehicle train(head);
         var_6F = train.veh2->position.x;
         var_71 = train.veh2->position.y;
@@ -3531,7 +3531,7 @@ namespace OpenLoco::Vehicles
                 Vehicle train(head);
                 if (this->vehicleType == VehicleType::aircraft || this->vehicleType == VehicleType::ship)
                 {
-                    if (train.veh2->hasFlags(StatusFlags::isBrokenDown))
+                    if (train.veh2->var_73 & Flags73::isBrokenDown)
                     {
                         GameCommands::setErrorText(StringIds::vehicle_has_broken_down);
                         return false;

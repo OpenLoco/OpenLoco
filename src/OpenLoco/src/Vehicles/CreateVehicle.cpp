@@ -526,7 +526,7 @@ namespace OpenLoco::Vehicles
         newVeh2->profit[2] = 0;
         newVeh2->profit[3] = 0;
         newVeh2->reliability = 0;
-        newVeh2->statusFlags = StatusFlags::none;
+        newVeh2->var_73 = 0;
         lastVeh->setNextCar(newVeh2->id);
         return newVeh2;
     }
