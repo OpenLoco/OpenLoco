@@ -26,17 +26,15 @@ namespace OpenLoco::Vehicles
     void vehiclePickupWater(OpenLoco::Interop::registers& regs);
     void sell(OpenLoco::Interop::registers& regs);
 
-    enum class Flags38 : uint8_t
+    namespace Flags38
     {
-        none = 0U,
-        unk_0 = 1U << 0,
-        isReversed = 1U << 1,
-        unk_2 = 1U << 2,
-        unk_3 = 1U << 3,
-        isGhost = 1U << 4,
-        unk_5 = 1U << 5,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags38);
+        constexpr uint8_t unk_0 = 1 << 0;
+        constexpr uint8_t isReversed = 1 << 1;
+        constexpr uint8_t unk_2 = 1 << 2;
+        constexpr uint8_t unk_3 = 1 << 3;
+        constexpr uint8_t isGhost = 1 << 4;
+        constexpr uint8_t unk_5 = 1 << 5;
+    }
 
     enum class StatusFlags : uint8_t // veh2 Train operating status flags
     {
@@ -228,15 +226,14 @@ namespace OpenLoco::Vehicles
         bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
         VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
         TransportMode getTransportMode() const;
-        Flags38 getFlags38() const;
+        uint8_t getFlags38() const;
         uint8_t getTrackType() const;
         Map::Pos3 getTrackLoc() const;
         TrackAndDirection getTrackAndDirection() const;
         RoutingHandle getRoutingHandle() const;
         EntityId getHead() const;
         void setNextCar(const EntityId newNextCar);
-        bool hasFlags(Flags38 flagsToTest) const;
-        bool hasFlags(Flags0C flagsToTest) const;
+
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
         bool updateComponent();
@@ -287,7 +284,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles orderId * maxNumRoutingSteps
-        Flags38 var_38;
+        uint8_t var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
         uint32_t var_3C;     // 0x3C
@@ -329,7 +326,7 @@ namespace OpenLoco::Vehicles
         void updateMonthly();
         VehicleStatus getStatus() const;
         OrderRingView getCurrentOrders() const;
-        bool isPlaced() const { return tileX != -1 && !hasFlags(Flags38::isGhost); }
+        bool isPlaced() const { return tileX != -1 && !(var_38 & Flags38::isGhost); }
         char* generateCargoTotalString(char* buffer);
         char* generateCargoCapacityString(char* buffer);
         char* cargoLUTToString(CargoTotalArray& cargoTotals, char* buffer);
@@ -435,7 +432,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;
+        uint8_t var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
         int32_t var_3C;      // 0x3C
@@ -472,7 +469,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;
+        uint8_t var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
@@ -524,7 +521,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;
+        uint8_t var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
@@ -579,7 +576,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;
+        uint8_t var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
@@ -629,7 +626,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;
+        uint8_t var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C

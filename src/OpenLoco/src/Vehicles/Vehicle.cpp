@@ -26,7 +26,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        Flags38 var_38;                      // 0x38
+        uint8_t var_38;                      // 0x38
         uint8_t pad_39;
         EntityId nextCarId; // 0x3A
         uint8_t pad_3C[0x42 - 0x3C];
@@ -52,7 +52,7 @@ namespace OpenLoco::Vehicles
         return veh->mode;
     }
 
-    Flags38 VehicleBase::getFlags38() const
+    uint8_t VehicleBase::getFlags38() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->var_38;
@@ -93,18 +93,6 @@ namespace OpenLoco::Vehicles
         auto* veh = reinterpret_cast<VehicleCommon*>(this);
         veh->nextCarId = newNextCar;
     }
-
-    bool VehicleBase::hasFlags(Flags38 flagsToTest) const
-    {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return (veh->var_38 & flagsToTest) != Flags38::none;
-    }
-
-    bool VehicleBase::hasFlags(Flags0C flagsToTest) const
-    {
-        const auto* ent = reinterpret_cast<const EntityBase*>(this);
-        return (ent->var_0C & flagsToTest) != Flags0C::none;
-    }  
 
     // 0x004AA464
     void VehicleBase::sub_4AA464()

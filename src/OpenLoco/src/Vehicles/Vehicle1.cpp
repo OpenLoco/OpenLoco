@@ -75,7 +75,7 @@ namespace OpenLoco::Vehicles
             maxSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), maxSpeed);
             maxSpeed = std::max(maxSpeed, 12_mph);
 
-            if (train.head->hasFlags(Flags38::unk_5))
+            if (train.head->var_38 & Flags38::unk_5)
             {
                 maxSpeed += maxSpeed / 4;
                 maxSpeed = std::min(roadObj->maxSpeed, maxSpeed);

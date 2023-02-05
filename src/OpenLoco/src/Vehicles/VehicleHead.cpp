@@ -142,7 +142,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::updateMonthly()
     {
         Vehicle train(head);
-        if ((tileX != -1) && !hasFlags(Flags38::isGhost))
+        if ((tileX != -1) && !(var_38 & Flags38::isGhost))
         {
             constexpr ExpenditureType vehTypeToCost[] = {
                 ExpenditureType::TrainRunningCosts,
@@ -587,7 +587,7 @@ namespace OpenLoco::Vehicles
     // 0x004A88A6
     void VehicleHead::updateDrivingSound(Vehicle2or6* vehType2or6)
     {
-        if (tileX == -1 || status == Status::crashed || status == Status::stuck || hasFlags(Flags38::isGhost) || vehType2or6->objectId == 0xFFFF)
+        if (tileX == -1 || status == Status::crashed || status == Status::stuck || (var_38 & Flags38::isGhost) || vehType2or6->objectId == 0xFFFF)
         {
             updateDrivingSoundNone(vehType2or6);
             return;

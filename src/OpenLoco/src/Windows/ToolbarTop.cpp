@@ -578,7 +578,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             if (v->owner != player_company_id)
                 continue;
 
-            if (v->hasFlags(Vehicles::Flags38::isGhost))
+            if ((v->var_38 & Vehicles::Flags38::isGhost) != 0)
                 continue;
 
             vehicle_counts[static_cast<uint8_t>(v->vehicleType)]++;

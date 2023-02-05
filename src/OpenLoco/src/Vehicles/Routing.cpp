@@ -445,7 +445,7 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
 
-                if (vehicle->hasFlags(Vehicles::Flags38::unk_0 | Vehicles::Flags38::unk_2))
+                if (vehicle->getFlags38() & (Vehicles::Flags38::unk_0 | Vehicles::Flags38::unk_2))
                 {
                     continue;
                 }

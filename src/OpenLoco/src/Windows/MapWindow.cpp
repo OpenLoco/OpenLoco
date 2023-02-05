@@ -1132,7 +1132,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             Vehicles::Vehicle train(*vehicle);
 
-            if (train.head->hasFlags(Vehicles::Flags38::isGhost))
+            if (train.head->var_38 & (1 << 4))
                 continue;
 
             if (train.head->position.x == Location::null)
@@ -1150,7 +1150,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             Vehicles::Vehicle train(*vehicle);
 
-            if (train.head->hasFlags(Vehicles::Flags38::isGhost))
+            if (train.head->var_38 & (1 << 4))
                 continue;
 
             if (train.head->position.x == Location::null)
