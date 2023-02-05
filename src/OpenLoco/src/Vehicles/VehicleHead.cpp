@@ -529,7 +529,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleStatus vehStatus{};
 
-        if (hasEntityBaseFlags(EntityBaseFlags::commandStop) || hasEntityBaseFlags(EntityBaseFlags::manualControl) && var_6E <= -20)
+        if (hasEntityBaseFlags(EntityBaseFlags::commandStop) || (hasEntityBaseFlags(EntityBaseFlags::manualControl) && var_6E <= -20))
         {
             vehStatus.status1 = StringIds::vehicle_status_stopping;
         }
