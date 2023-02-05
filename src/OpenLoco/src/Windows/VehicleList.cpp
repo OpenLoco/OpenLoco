@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (vehicle->owner != CompanyId(self->number))
                 continue;
 
-            if (vehicle->hasFlags(EntityBaseFlags::sorted))
+            if (vehicle->hasEntityBaseFlags(EntityBaseFlags::sorted))
                 continue;
 
             if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))

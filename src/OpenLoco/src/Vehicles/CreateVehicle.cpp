@@ -167,7 +167,7 @@ namespace OpenLoco::Vehicles
         {
             return nullptr;
         }
-        newBogie->var_38 = 0;
+        newBogie->var_38 = Flags38::none;
 
         int32_t reliability = vehObject.reliability * 256;
         if (getCurrentYear() + 2 > vehObject.designed)
@@ -443,7 +443,7 @@ namespace OpenLoco::Vehicles
         newHead->var_14 = 0;
         newHead->var_09 = 0;
         newHead->var_15 = 0;
-        newHead->var_38 = 0;
+        newHead->var_38 = Flags38::none;
         newHead->var_3C = 0;
         newHead->vehicleType = vehicleType;
         newHead->name = static_cast<uint8_t>(vehicleType) + 4;
@@ -481,7 +481,7 @@ namespace OpenLoco::Vehicles
         newVeh1->var_14 = 0;
         newVeh1->var_09 = 0;
         newVeh1->var_15 = 0;
-        newVeh1->var_38 = 0;
+        newVeh1->var_38 = Flags38::none;
         newVeh1->var_3C = 0;
         newVeh1->var_44 = 0_mph;
         newVeh1->timeAtSignal = 0;
@@ -512,8 +512,7 @@ namespace OpenLoco::Vehicles
         newVeh2->var_14 = 0;
         newVeh2->var_09 = 0;
         newVeh2->var_15 = 0;
-        newVeh2->var_38 = 0;
-
+        newVeh2->var_38 = Flags38::none;
         newVeh2->currentSpeed = 0.0_mph;
         newVeh2->var_5A = 0;
         newVeh2->var_5B = 0;
@@ -549,7 +548,7 @@ namespace OpenLoco::Vehicles
         newTail->var_14 = 0;
         newTail->var_09 = 0;
         newTail->var_15 = 0;
-        newTail->var_38 = 0;
+        newTail->var_38 = Flags38::none;
         newTail->drivingSoundId = SoundObjectId::null;
         newTail->objectId = -1;
         newTail->var_4A = 0;

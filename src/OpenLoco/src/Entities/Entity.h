@@ -93,10 +93,6 @@ namespace OpenLoco
             return isBase<BaseType>() ? reinterpret_cast<const BaseType*>(this) : nullptr;
         }
         bool empty() const;
-        constexpr bool hasFlags(EntityBaseFlags flagsToTest) const
-        {
-            return (var_0C & flagsToTest) != EntityBaseFlags::none;
-        }
 
     protected:
         constexpr uint8_t getSubType() const { return type; }
