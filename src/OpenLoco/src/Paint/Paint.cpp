@@ -926,21 +926,20 @@ namespace OpenLoco::Paint
 
             drawStruct(rt, drawingCtx, *ps, shouldCull);
 
-            // Draw any children this might have (note children do not mess up next quadrant ps)
-            while (ps->children != nullptr)
+            // Draw any children this might have
+            for (auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
             {
-                ps = ps->children;
-                const bool shouldCullChild = shouldTryCullPaintStruct(*ps, _viewFlags, getRotation(), _foregroundCullingHeight);
+                const bool shouldCullChild = shouldTryCullPaintStruct(*childPs, _viewFlags, getRotation(), _foregroundCullingHeight);
 
                 if (shouldCullChild)
                 {
-                    if (cullPaintStructImage(ps->imageId, _viewFlags))
+                    if (cullPaintStructImage(childPs->imageId, _viewFlags))
                     {
                         continue;
                     }
                 }
 
-                drawStruct(rt, drawingCtx, *ps, shouldCullChild);
+                drawStruct(rt, drawingCtx, *childPs, shouldCullChild);
             }
 
             // Draw any attachments to the struct
