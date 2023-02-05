@@ -61,7 +61,7 @@ namespace OpenLoco
     void Exhaust::update()
     {
         const auto* steamObj = getObject();
-        if (steamObj->flags & SteamObjectFlags::applyWind)
+        if (steamObj->hasFlags(SteamObjectFlags::applyWind))
         {
             // Wind is applied by applying a slight modification (~1 in 10 ticks a pixel change) to the x component of the exhaust
             const auto res = windProgress + 7000;
@@ -98,7 +98,7 @@ namespace OpenLoco
         moveTo(newPos);
         invalidateSprite();
 
-        if (!(steamObj->flags & SteamObjectFlags::disperseOnCollision))
+        if (!steamObj->hasFlags(SteamObjectFlags::disperseOnCollision))
         {
             return;
         }

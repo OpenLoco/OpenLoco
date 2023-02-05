@@ -785,7 +785,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
                         drawingCtx.drawImage(&*clipped, -4, -10, imageId);
                         auto colour = Colours::getTranslucent(companyColour);
-                        if (!(roadStationObj->flags & RoadStationFlags::recolourable))
+                        if (!roadStationObj->hasFlags(RoadStationFlags::recolourable))
                         {
                             colour = ExtColour::unk2E;
                         }

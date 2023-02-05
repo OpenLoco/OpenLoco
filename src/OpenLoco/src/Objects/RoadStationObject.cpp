@@ -16,7 +16,7 @@ namespace OpenLoco
         drawingCtx.drawImage(&rt, x - 34, y - 34, colourImage);
 
         auto colour = ExtColour::translucentMutedDarkRed1;
-        if (!(flags & RoadStationFlags::recolourable))
+        if (!hasFlags(RoadStationFlags::recolourable))
         {
             colour = ExtColour::unk2E;
         }
@@ -56,7 +56,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if ((flags & RoadStationFlags::passenger) && (flags & RoadStationFlags::freight))
+        if (hasFlags(RoadStationFlags::passenger) && hasFlags(RoadStationFlags::freight))
         {
             return false;
         }

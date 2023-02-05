@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
@@ -15,13 +16,15 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-    namespace RoadStationFlags
+    enum class RoadStationFlags : uint8_t
     {
-        constexpr uint8_t recolourable = 1 << 0;
-        constexpr uint8_t passenger = 1 << 1;
-        constexpr uint8_t freight = 1 << 2;
-        constexpr uint8_t roadEnd = 1 << 3;
-    }
+        none = 0U,
+        recolourable = 1U << 0,
+        passenger = 1U << 1,
+        freight = 1U << 2,
+        roadEnd = 1U << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadStationFlags);
 
 #pragma pack(push, 1)
     struct RoadStationObject
@@ -35,7 +38,7 @@ namespace OpenLoco
         int16_t buildCostFactor; // 0x06
         int16_t sellCostFactor;  // 0x08
         uint8_t costIndex;       // 0x0A
-        uint8_t flags;           // 0x0B
+        RoadStationFlags flags;  // 0x0B
         uint32_t image;          // 0x0C
         uint32_t var_10;
         uint32_t var_14;
@@ -54,6 +57,11 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
+
+        constexpr bool hasFlags(RoadStationFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != RoadStationFlags::none;
+        }
     };
 #pragma pack(pop)
 

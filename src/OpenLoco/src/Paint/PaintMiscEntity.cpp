@@ -55,7 +55,7 @@ namespace OpenLoco::Paint
         const auto& frameInfo = steamObject->getFramesInfo(exhaustEntity->isSubObjType1());
         const auto imageId = ImageId{ frameInfo.second[exhaustEntity->frameNum].imageOffset + steamObject->baseImageId + steamObject->var_0A };
 
-        if ((steamObject->flags & SteamObjectFlags::unk3) == 0)
+        if (!steamObject->hasFlags(SteamObjectFlags::unk3))
         {
             session.addToPlotListAsParent(imageId, { 0, 0, exhaustEntity->position.z }, { 1, 1, 0 });
         }
