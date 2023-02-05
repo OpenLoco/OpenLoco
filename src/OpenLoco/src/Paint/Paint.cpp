@@ -797,6 +797,114 @@ namespace OpenLoco::Paint
         }
     }
 
+    bool shouldTryCullPaintStruct(const PaintStruct& ps, const uint16_t viewFlags, const uint8_t rotation, const int16_t foregroundCullingHeight)
+    {
+        if (viewFlags & Ui::ViewportFlags::hide_foreground_scenery_buildings)
+        {
+            if (isTypeForegroundCullableScenery(ps.type))
+            {
+                const auto pos = Math::Vector::rotate(Map::Pos2{ ps.bounds.xEnd, ps.bounds.yEnd }, rotation);
+                const auto height = (pos.x + pos.y) / 2 - ps.bounds.z;
+                if (height > foregroundCullingHeight)
+                {
+
+                    return true;
+                }
+            }
+        }
+        else if (viewFlags & Ui::ViewportFlags::hide_foreground_tracks_roads)
+        {
+            if (isTypeForegroundCullableTrack(ps.type))
+            {
+                const auto pos = Math::Vector::rotate(Map::Pos2{ ps.bounds.xEnd, ps.bounds.yEnd }, rotation);
+                const auto height = (pos.x + pos.y) / 2 - ps.bounds.z;
+                if (height > foregroundCullingHeight)
+                {
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool cullPaintStructImage(const ImageId& imageId, uint16_t viewFlags)
+    {
+        if (viewFlags & Ui::ViewportFlags::underground_view)
+        {
+            return true;
+        }
+        if (imageId.isBlended())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    void drawStruct(Gfx::RenderTarget& rt, Drawing::SoftwareDrawingContext& drawingCtx, const PaintStruct& ps, const bool shouldCull)
+    {
+        auto imageId = ps.imageId;
+
+        if (shouldCull)
+        {
+            imageId = ImageId(imageId.getIndex()).withTranslucency(ExtColour::unk30);
+        }
+        Ui::Point imagePos = ps.vpPos;
+        if (ps.type == Ui::ViewportInteraction::InteractionItem::entity)
+        {
+            switch (rt.zoomLevel)
+            {
+                case 0:
+                    break;
+                case 1:
+                    imagePos.x &= 0xFFFE;
+                    imagePos.y &= 0xFFFE;
+                    break;
+                case 2:
+                    imagePos.x &= 0xFFFC;
+                    imagePos.y &= 0xFFFC;
+                    break;
+                case 3:
+                    imagePos.x &= 0xFFF8;
+                    imagePos.y &= 0xFFF8;
+                    break;
+            }
+        }
+        if (ps.flags & PaintStructFlags::hasMaskedImage)
+        {
+            drawingCtx.drawImageMasked(rt, imagePos, imageId, ps.maskedImageId);
+        }
+        else
+        {
+            drawingCtx.drawImage(rt, imagePos, imageId);
+        }
+    }
+
+    void drawAttachStruct(Gfx::RenderTarget& rt, Drawing::SoftwareDrawingContext& drawingCtx, const PaintStruct& ps, const AttachedPaintStruct& attachPs, const bool shouldCull)
+    {
+        auto imageId = attachPs.imageId;
+
+        if (shouldCull)
+        {
+            imageId = ImageId(imageId.getIndex()).withTranslucency(ExtColour::unk30);
+        }
+        Ui::Point imagePos = ps.vpPos + attachPs.vpPos;
+        if (rt.zoomLevel != 0)
+        {
+            imagePos.x &= 0xFFFE;
+            imagePos.y &= 0xFFFE;
+        }
+
+        if (ps.flags & PaintStructFlags::hasMaskedImage)
+        {
+            drawingCtx.drawImageMasked(rt, imagePos, imageId, attachPs.maskedImageId);
+        }
+        else
+        {
+            drawingCtx.drawImage(rt, imagePos, imageId);
+        }
+    }
+
     // 0x0045EA23
     void PaintSession::drawStructs()
     {
@@ -804,78 +912,52 @@ namespace OpenLoco::Paint
         Gfx::RenderTarget& rt = **_renderTarget;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        for (const auto* ps = &(*_paintHead)->basic; ps->nextQuadrantPS != nullptr; ps = ps->nextQuadrantPS)
+        for (auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
         {
-            bool shouldCull = false;
-            auto imageId = ps->imageId;
-            if (_viewFlags & Ui::ViewportFlags::hide_foreground_scenery_buildings)
-            {
-                if (isTypeForegroundCullableScenery(ps->type))
-                {
-                    const auto pos = Math::Vector::rotate(Map::Pos2{ ps->bounds.xEnd, ps->bounds.yEnd }, getRotation());
-                    const auto height = (pos.x + pos.y) / 2 - ps->bounds.z;
-                    if (height > _foregroundCullingHeight)
-                    {
+            const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags, getRotation(), _foregroundCullingHeight);
 
-                        shouldCull = true;
-                    }
-                }
-            }
-            else if (_viewFlags & Ui::ViewportFlags::hide_foreground_tracks_roads)
-            {
-                if (isTypeForegroundCullableTrack(ps->type))
-                {
-                    const auto pos = Math::Vector::rotate(Map::Pos2{ ps->bounds.xEnd, ps->bounds.yEnd }, getRotation());
-                    const auto height = (pos.x + pos.y) / 2 - ps->bounds.z;
-                    if (height > _foregroundCullingHeight)
-                    {
-
-                        shouldCull = true;
-                    }
-                }
-            }
             if (shouldCull)
             {
-                if (_viewFlags & Ui::ViewportFlags::underground_view)
+                if (cullPaintStructImage(ps->imageId, _viewFlags))
                 {
                     continue;
                 }
-                if (imageId.isBlended())
+            }
+
+            drawStruct(rt, drawingCtx, *ps, shouldCull);
+
+            // Draw any children this might have (note children do not mess up next quadrant ps)
+            while (ps->children != nullptr)
+            {
+                ps = ps->children;
+                const bool shouldCullChild = shouldTryCullPaintStruct(*ps, _viewFlags, getRotation(), _foregroundCullingHeight);
+
+                if (shouldCullChild)
                 {
-                    continue;
+                    if (cullPaintStructImage(ps->imageId, _viewFlags))
+                    {
+                        continue;
+                    }
                 }
-                imageId = ImageId(imageId.getIndex()).withTranslucency(ExtColour::unk30);
+
+                drawStruct(rt, drawingCtx, *ps, shouldCullChild);
             }
-            Ui::Point imagePos = ps->vpPos;
-            if (ps->type == Ui::ViewportInteraction::InteractionItem::entity)
+
+            // Draw any attachments to the struct
+            for (auto* attachPs = ps->attachedPS; attachPs != nullptr; attachPs = attachPs->next)
             {
-                switch (rt.zoomLevel)
+                const bool shouldCullAttach = shouldTryCullPaintStruct(*ps, _viewFlags, getRotation(), _foregroundCullingHeight);
+                if (shouldCullAttach)
                 {
-                    case 0:
-                        break;
-                    case 1:
-                        imagePos.x &= 0xFFFE;
-                        imagePos.y &= 0xFFFE;
-                        break;
-                    case 2:
-                        imagePos.x &= 0xFFFC;
-                        imagePos.y &= 0xFFFC;
-                        break;
-                    case 3:
-                        imagePos.x &= 0xFFF8;
-                        imagePos.y &= 0xFFF8;
-                        break;
+                    if (cullPaintStructImage(attachPs->imageId, _viewFlags))
+                    {
+                        continue;
+                    }
                 }
-            }
-            if (ps->flags & PaintStructFlags::hasMaskedImage)
-            {
-            }
-            else
-            {
-                drawingCtx.drawImage(rt, imagePos, imageId);
+                drawAttachStruct(rt, drawingCtx, *ps, *attachPs, shouldCullAttach);
             }
         }
-        call(0x0045EA23);
+        // call(0x0045EA23);
     }
 
     // 0x0045A60E
