@@ -895,7 +895,7 @@ namespace OpenLoco::Paint
             imagePos.y &= 0xFFFE;
         }
 
-        if (ps.flags & PaintStructFlags::hasMaskedImage)
+        if (attachPs.flags & PaintStructFlags::hasMaskedImage)
         {
             drawingCtx.drawImageMasked(rt, imagePos, imageId, attachPs.maskedImageId);
         }
