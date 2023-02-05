@@ -17,7 +17,7 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-    enum class RoadObjectFlags : uint16_t // Made this a uint16_t to maintain the size of the RoadObject struct
+    enum class RoadObjectFlags : uint16_t
     {
         none = 0U,
         unk_01 = 1U << 1,
