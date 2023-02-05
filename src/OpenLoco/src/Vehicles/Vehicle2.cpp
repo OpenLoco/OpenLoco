@@ -101,12 +101,12 @@ namespace OpenLoco::Vehicles
                 return false;
             }
             const auto* roadObj = ObjectManager::get<RoadObject>(frontBogie.trackType);
-            if (roadObj->flags & Flags12::unk_04)
+            if (roadObj->hasFlags(RoadObjectFlags::unk_04))
             {
                 return false;
             }
 
-            if (roadObj->flags & Flags12::unk_05)
+            if (roadObj->hasFlags(RoadObjectFlags::unk_05))
             {
                 if (frontBogie.isOnRackRail())
                 {

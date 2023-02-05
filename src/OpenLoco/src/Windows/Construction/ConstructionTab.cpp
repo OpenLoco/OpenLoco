@@ -160,12 +160,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         auto* alternativeRoadObj = ObjectManager::get<RoadObject>(_alternateTrackObjectId);
-        if (!(alternativeRoadObj->flags & Flags12::unk_03))
+        if (!alternativeRoadObj->hasFlags(RoadObjectFlags::unk_03))
         {
             return;
         }
         auto* curRoadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
-        if (!(curRoadObj->flags & Flags12::unk_03))
+        if (!curRoadObj->hasFlags(RoadObjectFlags::unk_03))
         {
             return;
         }
@@ -435,7 +435,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
-        if (!(roadObj->flags & Flags12::unk_02))
+        if (!roadObj->hasFlags(RoadObjectFlags::unk_02))
         {
             _113609C->size = 1;
             _113609C->data[1] = 0xFFFF;
@@ -701,7 +701,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::right_hand_curve].left = 91;
         window->widgets[widx::right_hand_curve].right = 112;
 
-        if (roadObj->roadPieces & RoadPieceFlags::track)
+        if (roadObj->hasPieceFlags(RoadObjectPieceFlags::track))
         {
             window->widgets[widx::left_hand_curve_small].left = 25;
             window->widgets[widx::left_hand_curve_small].right = 46;
@@ -716,7 +716,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonWithImage;
         }
 
-        if (roadObj->roadPieces & RoadPieceFlags::oneWay)
+        if (roadObj->hasPieceFlags(RoadObjectPieceFlags::oneWay))
         {
             window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonWithImage;
@@ -725,7 +725,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::s_bend_dual_track_left].type = WidgetType::none;
         window->widgets[widx::s_bend_dual_track_right].type = WidgetType::none;
 
-        if (roadObj->roadPieces & RoadPieceFlags::oneSided)
+        if (roadObj->hasPieceFlags(RoadObjectPieceFlags::oneSided))
         {
             window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonWithImage;
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
@@ -740,13 +740,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::slope_up].type = WidgetType::none;
         window->widgets[widx::steep_slope_up].type = WidgetType::none;
 
-        if (roadObj->roadPieces & RoadPieceFlags::slope)
+        if (roadObj->hasPieceFlags(RoadObjectPieceFlags::slope))
         {
             window->widgets[widx::slope_down].type = WidgetType::buttonWithImage;
             window->widgets[widx::slope_up].type = WidgetType::buttonWithImage;
         }
 
-        if (roadObj->roadPieces & RoadPieceFlags::steepSlope)
+        if (roadObj->hasPieceFlags(RoadObjectPieceFlags::steepSlope))
         {
             window->widgets[widx::steep_slope_down].type = WidgetType::buttonWithImage;
             window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
