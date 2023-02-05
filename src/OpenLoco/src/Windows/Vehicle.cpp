@@ -553,7 +553,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     newWidth += 22;
 
                 uint16_t newHeight = self.height - 59;
-                if (head->hasFlags(Flags0C::manualControl) && head->owner == CompanyManager::getControllingId())
+                if (head->hasFlags(EntityBaseFlags::manualControl) && head->owner == CompanyManager::getControllingId())
                 {
                     newWidth -= 27;
                 }
@@ -601,11 +601,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 0);
 
             auto selected = 0; // Stop
-            if (!head->hasFlags(Flags0C::commandStop))
+            if (!head->hasFlags(EntityBaseFlags::commandStop))
             {
                 selected = 1; // Start
             }
-            if (head->hasFlags(Flags0C::manualControl))
+            if (head->hasFlags(EntityBaseFlags::manualControl))
             {
                 selected = 2; // Manual
             }
@@ -837,11 +837,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head->ordinalNumber);
 
             uint32_t stopStartImage = ImageIds::red_flag;
-            if (head->hasFlags(Flags0C::manualControl))
+            if (head->hasFlags(EntityBaseFlags::manualControl))
             {
                 stopStartImage = ImageIds::yellow_flag;
             }
-            else if (head->hasFlags(Flags0C::commandStop))
+            else if (head->hasFlags(EntityBaseFlags::commandStop))
             {
                 stopStartImage = ImageIds::red_flag;
             }
@@ -866,7 +866,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[Common::widx::closeButton].right = self.width - 3;
 
             int viewportRight = self.width - 26;
-            if (head->hasFlags(Flags0C::manualControl))
+            if (head->hasFlags(EntityBaseFlags::manualControl))
             {
                 if (CompanyManager::isPlayerCompany(head->owner))
                 {

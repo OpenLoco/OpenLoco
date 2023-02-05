@@ -84,7 +84,7 @@ namespace OpenLoco::Vehicles
     {
         sub_4AA464();
         applyDestructionToComponent(*this);
-        var_0C |= Flags0C::unk_5;
+        var_0C |= EntityBaseFlags::unk_5;
 
         // Apply collision to the whole car
         Vehicle train(head);

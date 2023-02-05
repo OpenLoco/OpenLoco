@@ -430,7 +430,7 @@ namespace OpenLoco::Vehicles
         EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicleHead);
         newHead->owner = _updatingCompanyId;
         newHead->head = newHead->id;
-        newHead->var_0C |= Flags0C::commandStop;
+        newHead->var_0C |= EntityBaseFlags::commandStop;
         newHead->trackType = trackType;
         newHead->mode = mode;
         newHead->tileX = -1;

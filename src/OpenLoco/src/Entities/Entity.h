@@ -34,7 +34,7 @@ namespace OpenLoco
         down20deg = 12,
     };
 
-    enum class Flags0C : uint16_t // commands?
+    enum class EntityBaseFlags : uint16_t // commands?
     {
         none = 0U,
         unk_0 = 1U << 0,
@@ -44,7 +44,7 @@ namespace OpenLoco
         manualControl = 1U << 6,
         shuntCheat = 1U << 7,
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags0C);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(EntityBaseFlags);
 
 #pragma pack(push, 1)
     struct EntityBase
@@ -60,7 +60,7 @@ namespace OpenLoco
         uint8_t linkedListOffset; // 0x8
         uint8_t var_09;
         EntityId id; // 0xA
-        Flags0C var_0C;
+        EntityBaseFlags var_0C;
         Map::Pos3 position; // 0x0E
         uint8_t var_14;
         uint8_t var_15;
@@ -93,9 +93,9 @@ namespace OpenLoco
             return isBase<BaseType>() ? reinterpret_cast<const BaseType*>(this) : nullptr;
         }
         bool empty() const;
-        constexpr bool hasFlags(Flags0C flagsToTest) const
+        constexpr bool hasFlags(EntityBaseFlags flagsToTest) const
         {
-            return (var_0C & flagsToTest) != Flags0C::none;
+            return (var_0C & flagsToTest) != EntityBaseFlags::none;
         }
 
     protected:
