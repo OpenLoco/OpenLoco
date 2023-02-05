@@ -1332,7 +1332,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         else
         {
             auto rail_obj = ObjectManager::get<TrackObject>(trackType);
-            if (rail_obj && !(rail_obj->flags & Flags22::unk_02))
+            if (rail_obj && !rail_obj->hasFlags(TrackObjectFlags::unk_02))
             {
                 setRail = true;
             }
