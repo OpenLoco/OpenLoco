@@ -797,7 +797,7 @@ namespace OpenLoco::Paint
         }
     }
 
-    bool shouldTryCullPaintStruct(const PaintStruct& ps, const uint16_t viewFlags, const uint8_t rotation, const int16_t foregroundCullingHeight)
+    static bool shouldTryCullPaintStruct(const PaintStruct& ps, const uint16_t viewFlags, const uint8_t rotation, const int16_t foregroundCullingHeight)
     {
         if (viewFlags & Ui::ViewportFlags::hide_foreground_scenery_buildings)
         {
@@ -828,7 +828,7 @@ namespace OpenLoco::Paint
         return false;
     }
 
-    bool cullPaintStructImage(const ImageId& imageId, uint16_t viewFlags)
+    static bool cullPaintStructImage(const ImageId& imageId, uint16_t viewFlags)
     {
         if (viewFlags & Ui::ViewportFlags::underground_view)
         {
@@ -841,7 +841,7 @@ namespace OpenLoco::Paint
         return false;
     }
 
-    void drawStruct(Gfx::RenderTarget& rt, Drawing::SoftwareDrawingContext& drawingCtx, const PaintStruct& ps, const bool shouldCull)
+    static void drawStruct(Gfx::RenderTarget& rt, Drawing::SoftwareDrawingContext& drawingCtx, const PaintStruct& ps, const bool shouldCull)
     {
         auto imageId = ps.imageId;
 
@@ -880,7 +880,7 @@ namespace OpenLoco::Paint
         }
     }
 
-    void drawAttachStruct(Gfx::RenderTarget& rt, Drawing::SoftwareDrawingContext& drawingCtx, const PaintStruct& ps, const AttachedPaintStruct& attachPs, const bool shouldCull)
+    static void drawAttachStruct(Gfx::RenderTarget& rt, Drawing::SoftwareDrawingContext& drawingCtx, const PaintStruct& ps, const AttachedPaintStruct& attachPs, const bool shouldCull)
     {
         auto imageId = attachPs.imageId;
 
