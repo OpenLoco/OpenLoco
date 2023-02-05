@@ -106,7 +106,6 @@ namespace OpenLoco::Vehicles
         return (ent->var_0C & flagsToTest) != EntityBaseFlags::none;
     }
 
-
     // 0x004AA464
     void VehicleBase::sub_4AA464()
     {
