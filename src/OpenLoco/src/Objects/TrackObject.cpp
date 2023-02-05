@@ -44,8 +44,8 @@ namespace OpenLoco
         {
             return false;
         }
-        if (hasFlags(TrackPieceFlags::diagonal | TrackPieceFlags::largeCurve)
-            && hasFlags(TrackPieceFlags::oneSided | TrackPieceFlags::verySmallCurve))
+        if (hasPieceFlags(TrackObjectPieceFlags::diagonal | TrackObjectPieceFlags::largeCurve)
+            && hasPieceFlags(TrackObjectPieceFlags::oneSided | TrackObjectPieceFlags::verySmallCurve))
         {
             return false;
         }

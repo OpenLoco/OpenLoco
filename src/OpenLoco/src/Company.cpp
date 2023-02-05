@@ -540,7 +540,7 @@ namespace OpenLoco
 
         std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
-            return !trackObj->hasFlags(Flags22::unk_02);
+            return !trackObj->hasFlags(TrackObjectFlags::unk_02);
         });
 
         std::unordered_set<uint8_t> roads;

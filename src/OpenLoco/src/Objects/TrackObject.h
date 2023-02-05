@@ -16,16 +16,16 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-    enum class Flags22 : uint16_t
+    enum class TrackObjectFlags : uint16_t
     {
         none = 0U,
         unk_00 = 1U << 0,
         unk_01 = 1U << 1,
         unk_02 = 1U << 2,
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags22);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackObjectFlags);
 
-    enum class TrackPieceFlags : uint16_t
+    enum class TrackObjectPieceFlags : uint16_t
     {
         none = 0U,
         diagonal = 1U << 0,
@@ -40,7 +40,7 @@ namespace OpenLoco
         sBend = 1U << 9,
         junction = 1U << 10,
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackPieceFlags);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackObjectPieceFlags);
 
 #pragma pack(push, 1)
     struct TrackObject
@@ -48,7 +48,7 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::track;
 
         string_id name;
-        TrackPieceFlags trackPieces; // 0x02
+        TrackObjectPieceFlags trackPieces; // 0x02
         uint16_t stationTrackPieces; // 0x04
         uint8_t var_06;
         uint8_t numCompatible; // 0x07
@@ -65,7 +65,7 @@ namespace OpenLoco
         uint8_t var_1B;
         uint16_t curveSpeed;   // 0x1C
         uint32_t image;        // 0x1E
-        Flags22 flags;         // 0x22
+        TrackObjectFlags flags;         // 0x22
         uint8_t numBridges;    // 0x24
         uint8_t bridges[7];    // 0x25
         uint8_t numStations;   // 0x2C
@@ -78,14 +78,14 @@ namespace OpenLoco
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
 
-        constexpr bool hasFlags(Flags22 flagsToTest) const
+        constexpr bool hasFlags(TrackObjectFlags flagsToTest) const
         {
-            return (flags & flagsToTest) != Flags22::none;
+            return (flags & flagsToTest) != TrackObjectFlags::none;
         }
 
-        constexpr bool hasFlags(TrackPieceFlags flagsToTest) const
+        constexpr bool hasPieceFlags(TrackObjectPieceFlags flagsToTest) const
         {
-            return (trackPieces & flagsToTest) != TrackPieceFlags::none;
+            return (trackPieces & flagsToTest) != TrackObjectPieceFlags::none;
         }
     };
 #pragma pack(pop)

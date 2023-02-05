@@ -82,11 +82,11 @@ namespace OpenLoco::Vehicles
         if (frontBogie.mode == TransportMode::rail)
         {
             const auto* trackObj = ObjectManager::get<TrackObject>(frontBogie.trackType);
-            if (trackObj->hasFlags(Flags22::unk_01))
+            if (trackObj->hasFlags(TrackObjectFlags::unk_01))
             {
                 return false;
             }
-            if (trackObj->hasFlags(Flags22::unk_00))
+            if (trackObj->hasFlags(TrackObjectFlags::unk_00))
             {
                 if (frontBogie.isOnRackRail())
                 {

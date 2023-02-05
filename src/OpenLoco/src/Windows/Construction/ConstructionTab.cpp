@@ -602,7 +602,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
             disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
 
-            if (!trackObj.hasFlags(TrackPieceFlags::slopedCurve))
+            if (!trackObj.hasPieceFlags(TrackObjectPieceFlags::slopedCurve))
                 disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
         }
 
@@ -621,10 +621,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DAF3
     static void disableTrackSlopes(Window* self, TrackObject trackObj, uint64_t disabledWidgets)
     {
-        if (!trackObj.hasFlags(TrackPieceFlags::slope | TrackPieceFlags::slopedCurve))
+        if (!trackObj.hasPieceFlags(TrackObjectPieceFlags::slope)
+            && !trackObj.hasPieceFlags(TrackObjectPieceFlags::slopedCurve))
             disabledWidgets |= (1 << widx::slope_down) | (1 << widx::slope_up);
 
-        if (!trackObj.hasFlags(TrackPieceFlags::steepSlope | TrackPieceFlags::slopedCurve))
+        if (!trackObj.hasPieceFlags(TrackObjectPieceFlags::steepSlope)
+            && !trackObj.hasPieceFlags(TrackObjectPieceFlags::slopedCurve))
             disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::steep_slope_up);
 
         disableUnusedTrackPieces(self, trackObj, disabledWidgets);
@@ -873,7 +875,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::right_hand_curve].left = 91;
         window->widgets[widx::right_hand_curve].right = 112;
 
-        if (trackObj->hasFlags(TrackPieceFlags::verySmallCurve))
+        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::verySmallCurve))
         {
             window->widgets[widx::left_hand_curve_small].left = 25;
             window->widgets[widx::left_hand_curve_small].right = 46;
@@ -888,19 +890,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->hasFlags(TrackPieceFlags::largeCurve))
+        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::largeCurve))
         {
             window->widgets[widx::left_hand_curve_large].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve_large].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->hasFlags(TrackPieceFlags::normalCurve))
+        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::normalCurve))
         {
             window->widgets[widx::left_hand_curve].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->hasFlags(TrackPieceFlags::smallCurve))
+        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::smallCurve))
         {
             window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonWithImage;
@@ -909,7 +911,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::s_bend_dual_track_left].type = WidgetType::none;
         window->widgets[widx::s_bend_dual_track_right].type = WidgetType::none;
 
-        if (trackObj->hasFlags(TrackPieceFlags::oneSided))
+        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::oneSided))
         {
             window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonWithImage;
             window->widgets[widx::s_bend_dual_track_right].type = WidgetType::buttonWithImage;
@@ -945,13 +947,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::slope_up].type = WidgetType::none;
         window->widgets[widx::steep_slope_up].type = WidgetType::none;
 
-        if (trackObj->hasFlags(TrackPieceFlags::slope))
+        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::slope))
         {
             window->widgets[widx::slope_down].type = WidgetType::buttonWithImage;
             window->widgets[widx::slope_up].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->hasFlags(TrackPieceFlags::steepSlope))
+        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::steepSlope))
         {
             window->widgets[widx::steep_slope_down].type = WidgetType::buttonWithImage;
             window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
