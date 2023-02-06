@@ -238,7 +238,7 @@ namespace OpenLoco
 
         for (const auto& bodySprite : bodySprites)
         {
-            if (!(bodySprite.flags & BodySpriteFlags::hasSprites))
+            if (!bodySprite.hasFlags(BodySpriteFlags::hasSprites))
             {
                 continue;
             }
@@ -289,7 +289,7 @@ namespace OpenLoco
 
         for (auto& bogieSprite : bogieSprites)
         {
-            if (!(bogieSprite.flags & BogieSpriteFlags::hasSprites))
+            if (!bogieSprite.hasFlags(BogieSpriteFlags::hasSprites))
             {
                 continue;
             }

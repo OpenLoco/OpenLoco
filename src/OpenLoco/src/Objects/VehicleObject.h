@@ -3,6 +3,7 @@
 #include "Localisation/StringIds.h"
 #include "Object.h"
 #include "Speed.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
@@ -109,19 +110,21 @@ namespace OpenLoco
         uint8_t var_05;
     };
 
-    namespace BogieSpriteFlags
+    enum class BogieSpriteFlags : uint8_t
     {
-        constexpr uint8_t hasSprites = (1 << 0);         // If not set then no bogie will be loaded
-        constexpr uint8_t rotationalSymmetry = (1 << 1); // requires 16 rather than 32 sprites
-        constexpr uint8_t hasGentleSprites = (1 << 2);   // for gentle slopes
-        constexpr uint8_t hasSteepSprites = (1 << 3);    // for steep slopes
-        constexpr uint8_t unk_4 = (1 << 4);              // Increases bounding box size
-    }
+        none = 0U,
+        hasSprites = 1U << 0,         // If not set then no bogie will be loaded
+        rotationalSymmetry = 1U << 1, // requires 16 rather than 32 sprites
+        hasGentleSprites = 1U << 2,   // for gentle slopes
+        hasSteepSprites = 1U << 3,    // for steep slopes
+        unk_4 = 1U << 4,              // Increases bounding box size
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(BogieSpriteFlags);
 
     struct vehicle_object_bogie_sprite
     {
         uint8_t rollStates;      // 0x0 valid values 1, 2, 4 related to bogie->var_46 (identical in value to numRollSprites)
-        uint8_t flags;           // 0x1 BogieSpriteFlags
+        BogieSpriteFlags flags;  // 0x1 BogieSpriteFlags
         uint8_t var_02;          // sprite width
         uint8_t var_03;          // sprite height negative
         uint8_t var_04;          // sprite height positive
@@ -129,20 +132,27 @@ namespace OpenLoco
         uint32_t flatImageIds;   // 0x6 flat sprites
         uint32_t gentleImageIds; // 0xA gentle sprites
         uint32_t steepImageIds;  // 0xE steep sprites
+
+        constexpr bool hasFlags(BogieSpriteFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != BogieSpriteFlags::none;
+        }
     };
 
     static_assert(sizeof(vehicle_object_bogie_sprite) == 0x12);
 
-    namespace BodySpriteFlags
+    enum class BodySpriteFlags : uint8_t
     {
-        constexpr uint8_t hasSprites = (1 << 0);         // If not set then no body will be loaded
-        constexpr uint8_t rotationalSymmetry = (1 << 1); // requires 32 rather than 64 sprites
-        constexpr uint8_t hasUnkSprites = (1 << 2);
-        constexpr uint8_t hasGentleSprites = (1 << 3); // for gentle slopes
-        constexpr uint8_t hasSteepSprites = (1 << 4);  // for steep slopes
-        constexpr uint8_t hasBrakingLights = (1 << 5);
-        constexpr uint8_t hasSpeedAnimation = (1 << 6); // Speed based animation (such as hydrofoil)
-    }
+        none = 0U,
+        hasSprites = 1U << 0,         // If not set then no body will be loaded
+        rotationalSymmetry = 1U << 1, // requires 32 rather than 64 sprites
+        hasUnkSprites = 1U << 2,
+        hasGentleSprites = 1U << 3, // for gentle slopes
+        hasSteepSprites = 1U << 4,  // for steep slopes
+        hasBrakingLights = 1U << 5,
+        hasSpeedAnimation = 1U << 6, // Speed based animation (such as hydrofoil)
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(BodySpriteFlags);
 
     struct VehicleObjectBodySprite
     {
@@ -153,7 +163,7 @@ namespace OpenLoco
         uint8_t numCargoFrames;          // 0x04
         uint8_t numRollFrames;           // 0x05
         uint8_t bogeyPosition;           // 0x06
-        uint8_t flags;                   // 0x07
+        BodySpriteFlags flags;           // 0x07
         uint8_t var_08;                  // sprite width
         uint8_t var_09;                  // sprite height negative
         uint8_t var_0A;                  // sprite height positive
@@ -164,6 +174,11 @@ namespace OpenLoco
         uint32_t unkImageId;             // 0x12
         uint32_t gentleImageId;          // 0x16
         uint32_t steepImageId;           // 0x1A
+
+        constexpr bool hasFlags(BodySpriteFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != BodySpriteFlags::none;
+        }
     };
 
     namespace FlagsE0

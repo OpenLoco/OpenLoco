@@ -147,7 +147,7 @@ namespace OpenLoco::Vehicles
 
         const auto* vehicleObj = getObject();
         uint8_t al = 0;
-        if (vehicleObj->bodySprites[objectSpriteType].flags & BodySpriteFlags::hasSpeedAnimation)
+        if (vehicleObj->bodySprites[objectSpriteType].hasFlags(BodySpriteFlags::hasSpeedAnimation))
         {
             Vehicle2* veh3 = _vehicleUpdate_2;
             al = veh3->currentSpeed / (vehicleObj->speed / vehicleObj->bodySprites[objectSpriteType].numAnimationFrames);
@@ -247,7 +247,7 @@ namespace OpenLoco::Vehicles
         auto bogieDifference = front_bogie->position - back_bogie->position;
         auto distanceBetweenBogies = Math::Vector::distance(front_bogie->position, back_bogie->position);
         const auto* vehObj = getObject();
-        if (vehObj->bodySprites[objectSpriteType].flags & BodySpriteFlags::hasSteepSprites)
+        if (vehObj->bodySprites[objectSpriteType].hasFlags(BodySpriteFlags::hasSteepSprites))
         {
             spritePitch = updateSpritePitchSteepSlopes(distanceBetweenBogies, bogieDifference.z);
         }
