@@ -31,7 +31,6 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TreeObjectFlags);
 
-
 #pragma pack(push, 1)
     struct TreeObject
     {
