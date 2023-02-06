@@ -3,6 +3,7 @@
 #include "Map/Map.hpp"
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 #include <array>
 #include <cstddef>
@@ -18,12 +19,13 @@ namespace OpenLoco
     {
         struct RenderTarget;
     }
-
-    namespace TrainStationFlags
+    enum class TrainStationFlags : uint8_t
     {
-        constexpr uint8_t recolourable = 1 << 0;
-        constexpr uint8_t unk1 = 1 << 1; // Has no canopy??
-    }
+        none = 0U,
+        recolourable = 1U << 0,
+        unk1 = 1U << 1, // Has no canopy??
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TrainStationFlags);
 
 #pragma pack(push, 1)
     struct TrainStationObject
@@ -40,7 +42,7 @@ namespace OpenLoco
         int16_t sellCostFactor;  // 0x08
         uint8_t costIndex;       // 0x0A
         uint8_t var_0B;
-        uint8_t flags; // 0x0C
+        TrainStationFlags flags; // 0x0C
         uint8_t var_0D;
         uint32_t image; // 0x0E
         uint32_t var_12[4];
@@ -57,6 +59,10 @@ namespace OpenLoco
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
         std::vector<CargoOffset> getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const;
+        constexpr bool hasFlags(TrainStationFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != TrainStationFlags::none;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(TrainStationObject) == 0xAE);

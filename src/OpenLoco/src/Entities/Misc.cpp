@@ -139,7 +139,7 @@ namespace OpenLoco
             }
 
             const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
-            if (stationObj->flags & TrainStationFlags::unk1)
+            if (stationObj->hasFlags(TrainStationFlags::unk1))
             {
                 continue;
             }

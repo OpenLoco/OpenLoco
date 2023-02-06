@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 #include <vector>
 
@@ -16,11 +17,13 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-    namespace TrainSignalObjectFlags
+    enum class TrainSignalObjectFlags : uint16_t
     {
-        constexpr uint16_t isLeft = 1 << 0;
-        constexpr uint16_t hasLights = 1 << 1;
-    }
+        none = 0U,
+        isLeft = 1U << 0,
+        hasLights = 1U << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TrainSignalObjectFlags);
 
     namespace TrainSignal::ImageIds
     {
@@ -35,12 +38,12 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::trackSignal;
 
         string_id name;
-        uint16_t flags;         // 0x02
-        uint8_t animationSpeed; // 0x04
-        uint8_t numFrames;      // 0x05
-        int16_t costFactor;     // 0x06
-        int16_t sellCostFactor; // 0x08
-        uint8_t costIndex;      // 0x0A
+        TrainSignalObjectFlags flags; // 0x02
+        uint8_t animationSpeed;       // 0x04
+        uint8_t numFrames;            // 0x05
+        int16_t costFactor;           // 0x06
+        int16_t sellCostFactor;       // 0x08
+        uint8_t costIndex;            // 0x0A
         uint8_t var_0B;
         uint16_t var_0C;
         uint32_t image;        // 0x0E
@@ -53,6 +56,10 @@ namespace OpenLoco
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        constexpr bool hasFlags(TrainSignalObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != TrainSignalObjectFlags::none;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(TrainSignalObject) == 0x1E);

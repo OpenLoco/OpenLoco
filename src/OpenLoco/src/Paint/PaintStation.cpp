@@ -381,7 +381,7 @@ namespace OpenLoco::Paint
         }
         const auto companyColour = CompanyManager::getCompanyColour(elTrack->owner());
         auto translucentColour = Colours::getTranslucent(companyColour);
-        if (!(stationObj->flags & TrainStationFlags::recolourable))
+        if (!stationObj->hasFlags(TrainStationFlags::recolourable))
         {
             translucentColour = ExtColour::unk2E;
         }
