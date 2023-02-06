@@ -881,7 +881,7 @@ namespace OpenLoco::Audio
                     if (passedSurface && elTree != nullptr)
                     {
                         const auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
-                        if (!(treeObj->flags & TreeObjectFlags::droughtResistant))
+                        if (!treeObj->hasFlags(TreeObjectFlags::droughtResistant))
                         {
                             treeCount++;
                         }

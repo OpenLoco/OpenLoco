@@ -61,7 +61,7 @@ namespace OpenLoco::Paint
         const auto seasonBaseImageIndex = treeObj->sprites[altSeason][season];
 
         std::optional<ImageId> shadowImageId = std::nullopt;
-        if (treeObj->flags & TreeObjectFlags::hasShadow)
+        if (treeObj->hasFlags(TreeObjectFlags::hasShadow))
         {
             shadowImageId = ImageId{ treeObj->shadowImageOffset + treeFrameNum + seasonBaseImageIndex }.withTranslucency(ExtColour::unk32);
         }

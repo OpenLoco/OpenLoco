@@ -26,13 +26,13 @@ namespace OpenLoco::Map
             return {};
         }
 
-        uint16_t mustNotTreeFlags = 0;
+        TreeObjectFlags mustNotTreeFlags = TreeObjectFlags::none;
         if (unk)
         {
             mustNotTreeFlags |= TreeObjectFlags::unk1;
         }
 
-        uint16_t mustTreeFlags = 0;
+        TreeObjectFlags mustTreeFlags = TreeObjectFlags::none;
         if (surface->baseZ() - 4 > Scenario::getCurrentSnowLine())
         {
             mustTreeFlags |= TreeObjectFlags::hasSnowVariation;
@@ -73,7 +73,7 @@ namespace OpenLoco::Map
             {
                 continue;
             }
-            if (treeObj->flags & mustNotTreeFlags)
+            if (treeObj->hasFlags(mustNotTreeFlags))
             {
                 continue;
             }

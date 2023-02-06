@@ -29,7 +29,7 @@ namespace OpenLoco
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         Ui::Point treePos = Ui::Point{ x, y } + Ui::Point{ 0, 48 };
 
-        if (flags & TreeObjectFlags::hasSnowVariation)
+        if (hasFlags(TreeObjectFlags::hasSnowVariation))
         {
             auto snowImage = getTreeGrowthDisplayOffset() * numRotations;
             snowImage += rotation;

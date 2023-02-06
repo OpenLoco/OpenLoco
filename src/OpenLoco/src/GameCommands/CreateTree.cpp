@@ -115,7 +115,7 @@ namespace OpenLoco::GameCommands
             {
                 elTree->setUnk5l(treeObj->growth - 1);
                 elTree->setClearZ(treeObj->height / Map::kSmallZStep + elTree->baseZ());
-                if (elTree->baseZ() - 4 > Scenario::getCurrentSnowLine() && (treeObj->flags & TreeObjectFlags::hasSnowVariation))
+                if (elTree->baseZ() - 4 > Scenario::getCurrentSnowLine() && treeObj->hasFlags(TreeObjectFlags::hasSnowVariation))
                 {
                     elTree->setSnow(true);
                 }
