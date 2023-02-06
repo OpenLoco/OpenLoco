@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 #include <array>
 
@@ -16,17 +17,19 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
-    namespace TreeObjectFlags
+    enum class TreeObjectFlags : uint16_t
     {
-        constexpr uint16_t hasSnowVariation = (1 << 0);
-        constexpr uint16_t unk1 = (1 << 1);
-        constexpr uint16_t veryHighAltitude = (1 << 2);
-        constexpr uint16_t highAltitude = (1 << 3);
-        constexpr uint16_t requiresWater = (1 << 4);
-        constexpr uint16_t unk5 = (1 << 5);
-        constexpr uint16_t droughtResistant = (1 << 6);
-        constexpr uint16_t hasShadow = (1 << 7);
-    }
+        none = 0U,
+        hasSnowVariation = 1U << 0,
+        unk1 = 1U << 1,
+        veryHighAltitude = 1U << 2,
+        highAltitude = 1U << 3,
+        requiresWater = 1U << 4,
+        unk5 = 1U << 5,
+        droughtResistant = 1U << 6,
+        hasShadow = 1U << 7,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TreeObjectFlags);
 
 #pragma pack(push, 1)
     struct TreeObject
@@ -40,7 +43,7 @@ namespace OpenLoco
         uint8_t var_05;
         uint8_t numRotations;       // 0x06 (1,2,4)
         uint8_t growth;             // 0x07 (number of tree size images)
-        uint16_t flags;             // 0x08
+        TreeObjectFlags flags;      // 0x08
         uint32_t sprites[2][6];     // 0x0A
         uint16_t shadowImageOffset; // 0x3A
         uint8_t var_3C;
@@ -58,6 +61,10 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
+        constexpr bool hasFlags(TreeObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != TreeObjectFlags::none;
+        }
     };
 #pragma pack(pop)
 
