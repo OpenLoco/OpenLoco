@@ -223,8 +223,9 @@ namespace OpenLoco::Math::Trigonometry
     int32_t integerSinePrecisionHigh(uint16_t direction, int32_t magnitude)
     {
         // Build the full sine wave from the quarter wave by subtraction of direction/magnitude
-        const auto sineIndex = ((direction & (1 << 12)) ? -direction : direction) & 0xFFF;
-        const auto value = (direction & (1 << 13)) ? -Data::kQuarterSine[sineIndex] : Data::kQuarterSine[sineIndex];
+        // Note: ~ bitwise negation important for both to match vanilla
+        const auto sineIndex = ((direction & (1 << 12)) ? ~direction : direction) & 0xFFF;
+        const auto value = (direction & (1 << 13)) ? ~Data::kQuarterSine[sineIndex] : Data::kQuarterSine[sineIndex];
         return value * magnitude / 0x8000;
     }
 
