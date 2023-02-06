@@ -199,7 +199,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         for (auto& car : train.cars)
         {
-            if (car.front->var_5F & Flags5F::brokenDown)
+            if (car.front->hasFlags(Flags5F::brokenDown))
             {
                 if ((ScenarioManager::getScenarioTicks() & 3) == 0)
                 {
@@ -209,7 +209,7 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if ((car.front->var_5F & Flags5F::breakdownPending) && !isTitleMode())
+            if (car.front->hasFlags(Flags5F::breakdownPending) && !isTitleMode())
             {
                 auto newConfig = Config::get();
                 if (!newConfig.breakdownsDisabled)
@@ -245,7 +245,7 @@ namespace OpenLoco::Vehicles
             {
                 continue;
             }
-            if (car.front->var_5F & Flags5F::brokenDown)
+            if (car.front->hasFlags(Flags5F::brokenDown))
             {
                 isBrokenDown = true;
             }
@@ -651,7 +651,7 @@ namespace OpenLoco::Vehicles
                 {
                     assert(false);
                 }
-                if (train.cars.firstCar.front->var_5F & Flags5F::brokenDown)
+                if (train.cars.firstCar.front->hasFlags(Flags5F::brokenDown))
                 {
                     updateDrivingSoundNone(vehType2or6);
                     return;
@@ -744,7 +744,7 @@ namespace OpenLoco::Vehicles
                 {
                     assert(false);
                 }
-                if (train.cars.firstCar.front->var_5F & Flags5F::brokenDown)
+                if (train.cars.firstCar.front->hasFlags(Flags5F::brokenDown))
                 {
                     updateDrivingSoundNone(vehType2or6);
                     return;
@@ -2768,7 +2768,7 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->var_5F & Flags5F::unk_0)
+                if (carComponent.front->hasFlags(Flags5F::unk_0))
                 {
                     carComponent.front->var_5F &= ~Flags5F::unk_0;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
@@ -2778,12 +2778,12 @@ namespace OpenLoco::Vehicles
                     updateUnloadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return;
                 }
-                else if (carComponent.back->var_5F & Flags5F::unk_0)
+                else if (carComponent.back->hasFlags(Flags5F::unk_0))
                 {
                     carComponent.back->var_5F &= ~Flags5F::unk_0;
                     return;
                 }
-                else if (carComponent.body->var_5F & Flags5F::unk_0)
+                else if (carComponent.body->hasFlags(Flags5F::unk_0))
                 {
                     carComponent.body->var_5F &= ~Flags5F::unk_0;
                     if (carComponent.body->primaryCargo.type == 0xFF)
@@ -3000,7 +3000,7 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->var_5F & Flags5F::unk_0)
+                if (carComponent.front->hasFlags(Flags5F::unk_0))
                 {
                     carComponent.front->var_5F &= ~Flags5F::unk_0;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
@@ -3010,12 +3010,12 @@ namespace OpenLoco::Vehicles
                     updateLoadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return true;
                 }
-                else if (carComponent.back->var_5F & Flags5F::unk_0)
+                else if (carComponent.back->hasFlags(Flags5F::unk_0))
                 {
                     carComponent.back->var_5F &= ~Flags5F::unk_0;
                     return true;
                 }
-                else if (carComponent.body->var_5F & Flags5F::unk_0)
+                else if (carComponent.body->hasFlags(Flags5F::unk_0))
                 {
                     carComponent.body->var_5F &= ~Flags5F::unk_0;
                     if (carComponent.body->primaryCargo.type == 0xFF)
@@ -3053,7 +3053,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (carComponent.front->secondaryCargo.type == waitFor->getCargo() && carComponent.front->secondaryCargo.maxQty != carComponent.front->secondaryCargo.qty)
                     {
-                        if (!(var_5F & Flags5F::unk_0))
+                        if (!hasFlags(Flags5F::unk_0))
                         {
                             beginLoading();
                             return true;
@@ -3067,7 +3067,7 @@ namespace OpenLoco::Vehicles
                     }
                     if (carComponent.body->primaryCargo.type == waitFor->getCargo() && carComponent.body->primaryCargo.maxQty != carComponent.body->primaryCargo.qty)
                     {
-                        if (!(var_5F & Flags5F::unk_0))
+                        if (!hasFlags(Flags5F::unk_0))
                         {
                             beginLoading();
                             return true;
