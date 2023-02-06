@@ -64,7 +64,7 @@ namespace OpenLoco::Paint
             case Pitch::up20deg:
                 break;
             default:
-                if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
+                if (sprite.hasFlags(BogieSpriteFlags::rotationalSymmetry))
                 {
                     // Rotational symmetry will have 1 fewer bits of yaw
                     yawIndex ^= (1 << 4);
@@ -79,7 +79,7 @@ namespace OpenLoco::Paint
         {
             case Pitch::flat:
             {
-                if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
+                if (sprite.hasFlags(BogieSpriteFlags::rotationalSymmetry))
                 {
                     yawIndex &= 0xF;
                 }
@@ -113,7 +113,7 @@ namespace OpenLoco::Paint
                     imageId = ImageId(imageIndex, bogie->colourScheme);
                 }
 
-                if (sprite.flags & BogieSpriteFlags::unk_4)
+                if (sprite.hasFlags(BogieSpriteFlags::unk_4))
                 {
                     // larger sprite
                     session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -9, -9, static_cast<coord_t>(bogie->position.z + 3) }, { 18, 18, 5 });
@@ -141,7 +141,7 @@ namespace OpenLoco::Paint
                 {
                     imageId = ImageId(imageIndex, bogie->colourScheme);
                 }
-                if (sprite.flags & BogieSpriteFlags::unk_4)
+                if (sprite.hasFlags(BogieSpriteFlags::unk_4))
                 {
                     // larger sprite
                     session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -8, -8, static_cast<coord_t>(bogie->position.z + 3) }, { 16, 16, 1 });
@@ -174,7 +174,7 @@ namespace OpenLoco::Paint
 
     static uint32_t paintBodyPitchDefault(const VehicleObjectBodySprite& sprite, uint8_t yaw)
     {
-        if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
+        if (sprite.hasFlags(BodySpriteFlags::rotationalSymmetry))
         {
             yaw &= 0x1F;
         }
@@ -185,11 +185,11 @@ namespace OpenLoco::Paint
 
     static uint32_t paintBodyPitchUp12Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
     {
-        if (!(sprite.flags & BodySpriteFlags::hasGentleSprites))
+        if (!sprite.hasFlags(BodySpriteFlags::hasGentleSprites))
         {
             return paintBodyPitchDefault(sprite, yaw);
         }
-        auto imageOffset = sprite.flags & BodySpriteFlags::rotationalSymmetry ? 4 : 8;
+        auto imageOffset = sprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 4 : 8;
         uint32_t imageIndex = ((yaw >> _503F20[sprite.var_0C]) + imageOffset) * sprite.numFramesPerRotation;
         imageIndex += sprite.gentleImageId;
         return imageIndex;
@@ -197,12 +197,12 @@ namespace OpenLoco::Paint
 
     static uint32_t paintBodyPitchDown12Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
     {
-        if (!(sprite.flags & BodySpriteFlags::hasGentleSprites))
+        if (!sprite.hasFlags(BodySpriteFlags::hasGentleSprites))
         {
             return paintBodyPitchDefault(sprite, yaw);
         }
 
-        if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
+        if (sprite.hasFlags(BodySpriteFlags::rotationalSymmetry))
         {
             yaw ^= (1 << 5);
         }
@@ -216,7 +216,7 @@ namespace OpenLoco::Paint
 
     static uint32_t paintBodyPitchUp6Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
     {
-        if (!(sprite.flags & BodySpriteFlags::hasGentleSprites))
+        if (!sprite.hasFlags(BodySpriteFlags::hasGentleSprites))
         {
             return paintBodyPitchDefault(sprite, yaw);
         }
@@ -229,11 +229,11 @@ namespace OpenLoco::Paint
 
     static uint32_t paintBodyPitchDown6Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
     {
-        if (!(sprite.flags & BodySpriteFlags::hasGentleSprites))
+        if (!sprite.hasFlags(BodySpriteFlags::hasGentleSprites))
         {
             return paintBodyPitchDefault(sprite, yaw);
         }
-        if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
+        if (sprite.hasFlags(BodySpriteFlags::rotationalSymmetry))
         {
             yaw ^= (1 << 5);
             return paintBodyPitchUp6Deg(sprite, yaw);
@@ -250,11 +250,11 @@ namespace OpenLoco::Paint
     }
     static uint32_t paintBodyPitchUp25Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
     {
-        if (!(sprite.flags & BodySpriteFlags::hasSteepSprites))
+        if (!sprite.hasFlags(BodySpriteFlags::hasSteepSprites))
         {
             return paintBodyPitchUp12Deg(sprite, yaw);
         }
-        auto imageOffset = sprite.flags & BodySpriteFlags::rotationalSymmetry ? 4 : 8;
+        auto imageOffset = sprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 4 : 8;
         uint32_t imageIndex = ((yaw >> _503F20[sprite.var_0C]) + imageOffset) * sprite.numFramesPerRotation;
         imageIndex += sprite.steepImageId;
         return imageIndex;
@@ -262,12 +262,12 @@ namespace OpenLoco::Paint
 
     static uint32_t paintBodyPitchDown25Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
     {
-        if (!(sprite.flags & BodySpriteFlags::hasSteepSprites))
+        if (!sprite.hasFlags(BodySpriteFlags::hasSteepSprites))
         {
             return paintBodyPitchDown12Deg(sprite, yaw);
         }
 
-        if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
+        if (sprite.hasFlags(BodySpriteFlags::rotationalSymmetry))
         {
             yaw ^= (1 << 5);
         }
@@ -281,7 +281,7 @@ namespace OpenLoco::Paint
 
     static uint32_t paintBodyPitchUp18Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
     {
-        if (!(sprite.flags & BodySpriteFlags::hasSteepSprites))
+        if (!sprite.hasFlags(BodySpriteFlags::hasSteepSprites))
         {
             return paintBodyPitchUp12Deg(sprite, yaw);
         }
@@ -294,11 +294,11 @@ namespace OpenLoco::Paint
 
     static uint32_t paintBodyPitchDown18Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
     {
-        if (!(sprite.flags & BodySpriteFlags::hasSteepSprites))
+        if (!sprite.hasFlags(BodySpriteFlags::hasSteepSprites))
         {
             return paintBodyPitchDown12Deg(sprite, yaw);
         }
-        if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
+        if (sprite.hasFlags(BodySpriteFlags::rotationalSymmetry))
         {
             yaw ^= (1 << 5);
             return paintBodyPitchUp18Deg(sprite, yaw);
@@ -387,7 +387,7 @@ namespace OpenLoco::Paint
         uint32_t bodyImageIndex = getBodyImageIndex(pitchImageIndex, body);
 
         std::optional<uint32_t> brakingImageIndex = {};
-        if (sprite.flags & BodySpriteFlags::hasBrakingLights)
+        if (sprite.hasFlags(BodySpriteFlags::hasBrakingLights))
         {
             brakingImageIndex = getBrakingImageIndex(pitchImageIndex, sprite);
         }
