@@ -151,7 +151,7 @@ namespace OpenLoco::Paint
             session.setTrackModId(isRight ? 1 : 0);
             auto* signalObj = ObjectManager::get<TrainSignalObject>(side.signalObjectId());
             const auto trackRotation = getTrackRotation(isRight, trackId, rotation);
-            const auto& offsetAndBBoffsetArr = (signalObj->flags & TrainSignalObjectFlags::isLeft) ? _4FE870 : _4FE830;
+            const auto& offsetAndBBoffsetArr = signalObj->hasFlags(TrainSignalObjectFlags::isLeft) ? _4FE870 : _4FE830;
             const auto& offsetAndBBoffset = offsetAndBBoffsetArr[trackRotation];
             const auto imageRotationOffset = ((trackRotation & 0x3) << 1) | (trackRotation >= 12 ? 1 : 0);
             const auto imageOffset = imageRotationOffset + signalObj->image + (side.frame() << 3);
@@ -167,7 +167,7 @@ namespace OpenLoco::Paint
             Map::Pos3 bbSize(1, 1, 14);
             session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
 
-            if (signalObj->flags & TrainSignalObjectFlags::hasLights)
+            if (signalObj->hasFlags(TrainSignalObjectFlags::hasLights))
             {
                 if (side.hasRedLight())
                 {

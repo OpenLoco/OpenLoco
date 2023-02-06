@@ -19,7 +19,7 @@ namespace OpenLoco
         drawingCtx.drawImage(&rt, x - 34, y - 34, colourImage);
 
         auto colour = ExtColour::translucentMutedDarkRed1;
-        if (!(flags & TrainStationFlags::recolourable))
+        if (!hasFlags(TrainStationFlags::recolourable))
         {
             colour = ExtColour::unk2E;
         }

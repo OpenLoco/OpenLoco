@@ -879,7 +879,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                 drawingCtx.drawImage(&*clipped, -4, -9, imageId);
 
                                 auto colour = Colours::getTranslucent(companyColour);
-                                if (!(trainStationObj->flags & TrainStationFlags::recolourable))
+                                if (!trainStationObj->hasFlags(TrainStationFlags::recolourable))
                                 {
                                     colour = ExtColour::unk2E;
                                 }
