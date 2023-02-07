@@ -33,7 +33,7 @@ namespace OpenLoco::S5
         isRaw = 1U << 0,
         isDump = 1U << 1,
         isTitleSequence = 1U << 2,
-        hasSaveDetails = 1 << 3,
+        hasSaveDetails = 1U << 3,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(HeaderFlags);
 
