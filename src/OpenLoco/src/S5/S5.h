@@ -417,23 +417,36 @@ namespace OpenLoco::S5
         std::vector<std::pair<ObjectHeader, std::vector<uint8_t>>> packedObjects;
     };
 
-    namespace LoadFlags
+    enum class LoadFlags : uint32_t
     {
-        constexpr uint32_t titleSequence = 1 << 0;
-        constexpr uint32_t twoPlayer = 1 << 1;
-        constexpr uint32_t scenario = 1 << 2;
+        none = 0U,
+        titleSequence = 1U << 0,
+        twoPlayer = 1U << 1,
+        scenario = 1U << 2,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(LoadFlags);
+
+    constexpr bool hasLoadFlags(LoadFlags flags, LoadFlags flagsToTest)
+    {
+        return (flags & flagsToTest) != LoadFlags::none;
     }
 
-    namespace SaveFlags
+    enum class SaveFlags : uint32_t
     {
-        constexpr uint32_t none = 0;
-        constexpr uint32_t packCustomObjects = 1 << 0;
-        constexpr uint32_t scenario = 1 << 1;
-        constexpr uint32_t landscape = 1 << 2;
-        constexpr uint32_t noWindowClose = 1u << 29;
-        constexpr uint32_t raw = 1u << 30;  // Save raw data including pointers with no clean up
-        constexpr uint32_t dump = 1u << 31; // Used for dumping the game state when there is a fatal error
+        none = 0,
+        packCustomObjects = 1U << 0,
+        scenario = 1U << 1,
+        landscape = 1U << 2,
+        noWindowClose = 1U << 29,
+        raw = 1U << 30,  // Save raw data including pointers with no clean up
+        dump = 1U << 31, // Used for dumping the game state when there is a fatal error
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(SaveFlags);
+
+    constexpr bool hasSaveFlags(SaveFlags flags, SaveFlags flagsToTest)
+    {
+        return (flags & flagsToTest) != SaveFlags::none;
+    }
 
     constexpr const char* extensionSC5 = ".SC5";
     constexpr const char* extensionSV5 = ".SV5";
@@ -442,12 +455,12 @@ namespace OpenLoco::S5
     constexpr const char* filterSV5 = "*.SV5";
 
     Options& getOptions();
-    bool exportGameStateToFile(const fs::path& path, uint32_t flags);
-    bool exportGameStateToFile(Stream& stream, uint32_t flags);
+    bool exportGameStateToFile(const fs::path& path, SaveFlags flags);
+    bool exportGameStateToFile(Stream& stream, SaveFlags flags);
     void registerHooks();
 
-    bool importSaveToGameState(const fs::path& path, uint32_t flags);
-    bool importSaveToGameState(Stream& stream, uint32_t flags);
+    bool importSaveToGameState(const fs::path& path, LoadFlags flags);
+    bool importSaveToGameState(Stream& stream, LoadFlags flags);
     std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path);
     std::unique_ptr<Options> readScenarioOptions(const fs::path& path);
 

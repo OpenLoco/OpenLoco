@@ -331,7 +331,7 @@ namespace OpenLoco
         }
         else
         {
-            S5::importSaveToGameState(path, 0);
+            S5::importSaveToGameState(path, S5::LoadFlags::none);
         }
     }
 

@@ -156,7 +156,7 @@ namespace OpenLoco::Game
                 auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
                 std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
-                if (S5::importSaveToGameState(path, 0))
+                if (S5::importSaveToGameState(path, S5::LoadFlags::none))
                 {
                     resetScreenAge();
                     throw GameException::Interrupt;
@@ -287,7 +287,7 @@ namespace OpenLoco::Game
                 auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
                 std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
-                uint32_t flags = 0;
+                S5::SaveFlags flags = S5::SaveFlags::none;
                 if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
                     flags = S5::SaveFlags::packCustomObjects;
 

@@ -56,30 +56,32 @@ namespace OpenLoco::S5
         return _activeOptions;
     }
 
-    static Header prepareHeader(uint32_t flags, size_t numPackedObjects)
+    static Header prepareHeader(SaveFlags flags, size_t numPackedObjects)
     {
         Header result;
         std::memset(&result, 0, sizeof(result));
 
         result.type = S5Type::savedGame;
-        if (flags & SaveFlags::landscape)
+        if (hasSaveFlags(flags, SaveFlags::landscape))
             result.type = S5Type::landscape;
-        if (flags & SaveFlags::scenario)
+        if (hasSaveFlags(flags, SaveFlags::scenario))
             result.type = S5Type::scenario;
 
         result.numPackedObjects = static_cast<uint16_t>(numPackedObjects);
         result.version = kCurrentVersion;
         result.magic = kMagicNumber;
 
-        if (flags & SaveFlags::raw)
+        if (hasSaveFlags(flags, SaveFlags::raw))
         {
             result.flags |= HeaderFlags::isRaw;
         }
-        if (flags & SaveFlags::dump)
+        if (hasSaveFlags(flags, SaveFlags::dump))
         {
             result.flags |= HeaderFlags::isDump;
         }
-        if (!(flags & SaveFlags::scenario) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
+        if (!hasSaveFlags(flags, SaveFlags::scenario)
+            && !hasSaveFlags(flags, SaveFlags::raw)
+            && !hasSaveFlags(flags, SaveFlags::dump))
         {
             result.flags |= HeaderFlags::hasSaveDetails;
         }
@@ -196,7 +198,7 @@ namespace OpenLoco::S5
         }
     }
 
-    static std::unique_ptr<S5File> prepareGameState(uint32_t flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
+    static std::unique_ptr<S5File> prepareGameState(SaveFlags flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
     {
         auto mainWindow = WindowManager::getMainWindow();
         auto savedView = mainWindow != nullptr && mainWindow->viewports[0] != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple{ 0, 0, 0, 0 };
@@ -226,26 +228,31 @@ namespace OpenLoco::S5
         return file;
     }
 
-    static constexpr bool shouldPackObjects(uint32_t flags)
+    static constexpr bool shouldPackObjects(SaveFlags flags)
     {
-        return !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump) && (flags & SaveFlags::packCustomObjects) && !isNetworked();
+        return (flags & SaveFlags::raw) == SaveFlags::none
+            && (flags & SaveFlags::dump) == SaveFlags::none
+            && (flags & SaveFlags::packCustomObjects) != SaveFlags::none
+            && !isNetworked();
     }
 
     // 0x00441C26
-    bool exportGameStateToFile(const fs::path& path, uint32_t flags)
+    bool exportGameStateToFile(const fs::path& path, SaveFlags flags)
     {
         FileStream fs(path, StreamFlags::write);
         return exportGameStateToFile(fs, flags);
     }
 
-    bool exportGameStateToFile(Stream& stream, uint32_t flags)
+    bool exportGameStateToFile(Stream& stream, SaveFlags flags)
     {
-        if (!(flags & SaveFlags::noWindowClose) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
+        if ((flags & SaveFlags::noWindowClose) == SaveFlags::none
+            && (flags & SaveFlags::raw) == SaveFlags::none
+            && (flags & SaveFlags::dump) == SaveFlags::none)
         {
             WindowManager::closeConstructionWindows();
         }
 
-        if (!(flags & SaveFlags::raw))
+        if ((flags & SaveFlags::raw) == SaveFlags::none)
         {
             TileManager::reorganise();
             EntityManager::resetSpatialIndex();
@@ -269,7 +276,8 @@ namespace OpenLoco::S5
             saveResult = exportGameState(stream, *file, packedObjects);
         }
 
-        if (!(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
+        if ((flags & SaveFlags::raw) == SaveFlags::none
+            && (flags & SaveFlags::dump) == SaveFlags::none)
         {
             ObjectManager::reloadAll();
         }
@@ -277,7 +285,7 @@ namespace OpenLoco::S5
         if (saveResult)
         {
             Gfx::invalidateScreen();
-            if (!(flags & SaveFlags::raw))
+            if ((flags & SaveFlags::raw) == SaveFlags::none)
             {
                 resetScreenAge();
             }
@@ -319,7 +327,7 @@ namespace OpenLoco::S5
                 fs.writeChunk(SawyerEncoding::runLengthSingle, file.gameState);
             }
 
-            if (static_cast<uint32_t>(file.header.flags) & SaveFlags::raw)
+            if (static_cast<uint32_t>(file.header.flags) & static_cast<uint32_t>(SaveFlags::raw))
             {
                 throw NotImplementedException();
             }
@@ -515,16 +523,17 @@ namespace OpenLoco::S5
     }
 
     // 0x00441FA7
-    bool importSaveToGameState(const fs::path& path, uint32_t flags)
+    bool importSaveToGameState(const fs::path& path, LoadFlags flags)
     {
         FileStream fs(path, StreamFlags::read);
         return importSaveToGameState(fs, flags);
     }
 
-    bool importSaveToGameState(Stream& stream, uint32_t flags)
+    bool importSaveToGameState(Stream& stream, LoadFlags flags)
     {
         _gameSpeed = 0;
-        if (!(flags & LoadFlags::titleSequence) && !(flags & LoadFlags::twoPlayer))
+        if ((flags & LoadFlags::titleSequence) == LoadFlags::none
+            && (flags & LoadFlags::twoPlayer) == LoadFlags::none)
         {
             WindowManager::closeConstructionWindows();
             WindowManager::closeAllFloatingWindows();
@@ -540,7 +549,7 @@ namespace OpenLoco::S5
             }
 
 #ifdef DO_TITLE_SEQUENCE_CHECKS
-            if (flags & LoadFlags::titleSequence)
+            if ((flags & LoadFlags::titleSequence) != LoadFlags::none)
             {
                 if (!file->header.hasFlags(HeaderFlags::isTitleSequence))
                 {
@@ -578,7 +587,7 @@ namespace OpenLoco::S5
                 // Throws!
                 Game::returnToTitle();
             }
-            if (!(flags & LoadFlags::scenario))
+            if (!hasLoadFlags(flags, LoadFlags::scenario))
             {
                 if (file->header.type == S5Type::scenario)
                 {
@@ -591,14 +600,14 @@ namespace OpenLoco::S5
                 throw LoadException("Unsupported S5 format", StringIds::error_file_contains_invalid_data);
             }
 
-            if (flags & LoadFlags::twoPlayer)
+            if (hasLoadFlags(flags, LoadFlags::twoPlayer))
             {
                 if (file->header.type != S5Type::landscape)
                 {
                     throw LoadException("Not a two player saved game", StringIds::error_file_is_not_two_player_save);
                 }
             }
-            else if (!(flags & LoadFlags::scenario))
+            else if (!hasLoadFlags(flags, LoadFlags::scenario))
             {
                 if (file->header.type != S5Type::savedGame)
                 {
@@ -610,7 +619,7 @@ namespace OpenLoco::S5
             if (!loadObjectResult.success)
             {
                 setObjectErrorMessage(loadObjectResult.problemObject);
-                if (flags & LoadFlags::twoPlayer)
+                if (hasLoadFlags(flags, LoadFlags::twoPlayer))
                 {
                     CompanyManager::reset();
                     addr<0x00525F62, uint16_t>() = 0;
@@ -626,7 +635,7 @@ namespace OpenLoco::S5
             ObjectManager::reloadAll();
 
             _gameState = file->gameState;
-            if (flags & LoadFlags::scenario)
+            if (hasLoadFlags(flags, LoadFlags::scenario))
             {
                 _activeOptions = *file->landscapeOptions;
             }
@@ -639,7 +648,7 @@ namespace OpenLoco::S5
                 World::TileManager::initialise();
                 Scenario::sub_46115C();
             }
-            if (flags & LoadFlags::scenario)
+            if (hasLoadFlags(flags, LoadFlags::scenario))
             {
                 CompanyManager::reset();
                 EntityManager::reset();
@@ -652,12 +661,12 @@ namespace OpenLoco::S5
             IndustryManager::createAllMapAnimations();
             Audio::resetSoundObjects();
 
-            if (flags & LoadFlags::scenario)
+            if (hasLoadFlags(flags, LoadFlags::scenario))
             {
                 _gameState->var_014A = 0;
                 return true;
             }
-            if (!(flags & LoadFlags::titleSequence))
+            if (!hasLoadFlags(flags, LoadFlags::titleSequence))
             {
                 clearScreenFlag(ScreenFlags::title);
                 initialiseViewports();
@@ -687,14 +696,14 @@ namespace OpenLoco::S5
             Gfx::loadCurrency();
             addr<0x00525F62, uint16_t>() = 0;
 
-            if (flags & LoadFlags::titleSequence)
+            if (hasLoadFlags(flags, LoadFlags::titleSequence))
             {
                 ScenarioManager::setScenarioTicks(ScenarioManager::getScenarioTicks() - 1);
                 ScenarioManager::setScenarioTicks2(ScenarioManager::getScenarioTicks2() - 1);
                 addr<0x0050BF6C, uint8_t>() = 1;
             }
 
-            if (!(flags & LoadFlags::titleSequence) && !(flags & LoadFlags::twoPlayer))
+            if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer))
             {
                 resetScreenAge();
                 throw GameException::Interrupt;
@@ -790,13 +799,13 @@ namespace OpenLoco::S5
             0x00441C26,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto path = fs::u8path(std::string(_savePath));
-                return exportGameStateToFile(path, regs.eax) ? 0 : X86_FLAG_CARRY;
+                return exportGameStateToFile(path, static_cast<SaveFlags>(regs.eax)) ? 0 : X86_FLAG_CARRY;
             });
         registerHook(
             0x00441FA7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto path = fs::u8path(std::string(_savePath));
-                return importSaveToGameState(path, regs.eax) ? X86_FLAG_CARRY : 0;
+                return importSaveToGameState(path, static_cast<LoadFlags>(regs.eax)) ? X86_FLAG_CARRY : 0;
             });
     }
 }
