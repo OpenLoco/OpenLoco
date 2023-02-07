@@ -1343,7 +1343,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_max_speed, &args);
             }
 
-            if (vehicleObj->flags & FlagsE0::rackRail)
+            if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
             {
                 FormatArguments args{};
                 args.push(vehicleObj->rackSpeed);
@@ -1785,7 +1785,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto object = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
-            return (object->flags & FlagsE0::refittable);
+            return (object->hasFlags(VehicleObjectFlags::refittable));
         }
 
         // 004B3DDE

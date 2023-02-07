@@ -131,7 +131,7 @@ namespace OpenLoco
                 }
             }
 
-            if (flags & FlagsE0::refittable)
+            if (hasFlags(VehicleObjectFlags::refittable))
             {
                 buffer = StringManager::formatString(buffer, StringIds::stats_refittable);
             }
@@ -204,13 +204,13 @@ namespace OpenLoco
             return false;
         }
 
-        if (flags & FlagsE0::unk_09)
+        if (hasFlags(VehicleObjectFlags::unk_09))
         {
             if (numMods != 0)
             {
                 return false;
             }
-            if (flags & FlagsE0::rackRail)
+            if (hasFlags(VehicleObjectFlags::rackRail))
             {
                 return false;
             }

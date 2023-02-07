@@ -288,7 +288,7 @@ namespace OpenLoco::Vehicles
         auto newObject = ObjectManager::get<VehicleObject>(newVehicleTypeId);       // edi
         auto sourceObject = ObjectManager::get<VehicleObject>(sourceVehicleTypeId); // esi
 
-        if ((newObject->flags & FlagsE0::canCouple) && (sourceObject->flags & FlagsE0::canCouple))
+        if (newObject->hasFlags(VehicleObjectFlags::canCouple) && sourceObject->hasFlags(VehicleObjectFlags::canCouple))
         {
             GameCommands::setErrorText(StringIds::incompatible_vehicle);
             return false;
@@ -1429,7 +1429,7 @@ namespace OpenLoco::Vehicles
             auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             targetPitch = Pitch::up12deg;
             // Slope sprites for taxiing planes??
-            if (!(vehObject->flags & FlagsE0::unk_08))
+            if (!vehObject->hasFlags(VehicleObjectFlags::unk_08))
             {
                 targetPitch = Pitch::flat;
             }
@@ -1450,7 +1450,7 @@ namespace OpenLoco::Vehicles
                 auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
 
                 // looks wrong??
-                if (vehObject->flags & FlagsE0::canCouple)
+                if (vehObject->hasFlags(VehicleObjectFlags::canCouple))
                 {
                     targetPitch = Pitch::up12deg;
                 }
@@ -2088,7 +2088,7 @@ namespace OpenLoco::Vehicles
                 // 0x4272A5
                 Vehicle train(head);
                 auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
-                if (vehObject->flags & FlagsE0::isHelicopter)
+                if (vehObject->hasFlags(VehicleObjectFlags::isHelicopter))
                 {
                     for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                     {

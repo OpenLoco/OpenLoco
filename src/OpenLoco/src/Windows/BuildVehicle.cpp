@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            if (vehicleObj->flags & FlagsE0::rackRail)
+            if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
             {
                 auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rackRailType);
                 FormatArguments args{};
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             args.push(vehicleObj->speed.getRaw());
             buffer = StringManager::formatString(buffer, StringIds::stats_max_speed, &args);
         }
-        if (vehicleObj->flags & FlagsE0::rackRail)
+        if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
         {
             auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rackRailType);
             FormatArguments args{};

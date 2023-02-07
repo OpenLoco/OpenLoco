@@ -300,7 +300,7 @@ namespace OpenLoco::Vehicles
     uint16_t VehicleBogie::getPlaneType()
     {
         auto* vehObj = ObjectManager::get<VehicleObject>(objectId);
-        if (vehObj->flags & FlagsE0::isHelicopter)
+        if (vehObj->hasFlags(VehicleObjectFlags::isHelicopter))
         {
             return 1 << 4;
         }
