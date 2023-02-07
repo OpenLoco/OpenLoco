@@ -350,11 +350,11 @@ namespace OpenLoco::S5
     // 0x00445A4A
     static void fixState(GameState& state)
     {
-        if (state.fixFlags & S5FixFlags::fixFlag0)
+        if (state.hasFixFlags(S5FixFlags::fixFlag0))
         {
             state.fixFlags |= S5FixFlags::fixFlag1;
         }
-        if (!(state.fixFlags & S5FixFlags::fixFlag1))
+        if (!state.hasFixFlags(S5FixFlags::fixFlag1))
         {
             // Shift data after companies to correct location
             auto src = reinterpret_cast<uint8_t*>(&state) + 0x49EA24;

@@ -264,11 +264,13 @@ namespace OpenLoco::S5
     };
     static_assert(sizeof(TileElement) == 8);
 
-    namespace S5FixFlags
+    enum class S5FixFlags : uint16_t
     {
-        constexpr uint16_t fixFlag0 = 1 << 0;
-        constexpr uint16_t fixFlag1 = 1 << 1;
-    }
+        none = 0U,
+        fixFlag0 = 1U << 0,
+        fixFlag1 = 1U << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(S5FixFlags);
 
     struct GameState
     {
@@ -358,7 +360,7 @@ namespace OpenLoco::S5
         uint8_t industryFlags;                                                           // 0x00042F (0x00526247)
         uint16_t forbiddenVehiclesPlayers;                                               // 0x000430 (0x00526248)
         uint16_t forbiddenVehiclesCompetitors;                                           // 0x000432 (0x0052624A)
-        uint16_t fixFlags;                                                               // 0x000434 (0x0052624C)
+        S5FixFlags fixFlags;                                                             // 0x000434 (0x0052624C)
         uint16_t recordSpeed[3];                                                         // 0x000436 (0x0052624E)
         uint8_t recordCompany[4];                                                        // 0x00043C (0x00526254)
         uint32_t recordDate[3];                                                          // 0x000440 (0x00526258)
@@ -402,6 +404,11 @@ namespace OpenLoco::S5
         char userStrings[S5::Limits::kMaxUserStrings][32];                               // 0x432A44 (0x0095885C)
         uint16_t routings[S5::Limits::kMaxVehicles][S5::Limits::kMaxRoutingsPerVehicle]; // 0x442A44 (0x0096885C)
         uint8_t orders[S5::Limits::kMaxOrders];                                          // 0x461E44 (0x00987C5C)
+
+        constexpr bool hasFixFlags(S5FixFlags flagsToTest) const
+        {
+            return (fixFlags & flagsToTest) != S5FixFlags::none;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(GameState) == 0x4A0644);
