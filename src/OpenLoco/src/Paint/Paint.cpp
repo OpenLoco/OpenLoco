@@ -514,7 +514,7 @@ namespace OpenLoco::Paint
         ps->bounds.x = rotBoundBoxOffset.x + getSpritePosition().x;
         ps->bounds.y = rotBoundBoxOffset.y + getSpritePosition().y;
         ps->bounds.z = rotBoundBoxOffset.z;
-        ps->flags = 0;
+        ps->flags = PaintStructFlags::none;
         ps->attachedPS = nullptr;
         ps->children = nullptr;
         ps->type = _itemType;
@@ -599,7 +599,7 @@ namespace OpenLoco::Paint
     }
 
     template<uint8_t _TRotation>
-    static PaintStruct* arrangeStructsHelperRotation(PaintStruct* psNext, const uint16_t quadrantIndex, const uint8_t flag)
+    static PaintStruct* arrangeStructsHelperRotation(PaintStruct* psNext, const uint16_t quadrantIndex, const QuadrantFlags flag)
     {
         PaintStruct* ps = nullptr;
 
@@ -656,12 +656,12 @@ namespace OpenLoco::Paint
                     // End of the current list.
                     return psQuadrantEntry;
                 }
-                if (psNext->quadrantFlags & QuadrantFlags::outsideQuadrant)
+                if (psNext->hasQuadrantFlags(QuadrantFlags::outsideQuadrant))
                 {
                     // Reached point outside of specified quadrant.
                     return psQuadrantEntry;
                 }
-                if (psNext->quadrantFlags & QuadrantFlags::pendingVisit)
+                if (psNext->hasQuadrantFlags(QuadrantFlags::pendingVisit))
                 {
                     // Found node to check on.
                     break;
@@ -681,9 +681,9 @@ namespace OpenLoco::Paint
                 psNext = psNext->nextQuadrantPS;
                 if (psNext == nullptr)
                     break;
-                if (psNext->quadrantFlags & QuadrantFlags::outsideQuadrant)
+                if (psNext->hasQuadrantFlags(QuadrantFlags::outsideQuadrant))
                     break;
-                if (!(psNext->quadrantFlags & QuadrantFlags::neighbour))
+                if (!psNext->hasQuadrantFlags(QuadrantFlags::neighbour))
                     continue;
 
                 const PaintStructBoundBox& currentBBox = psNext->bounds;
@@ -705,7 +705,7 @@ namespace OpenLoco::Paint
         }
     }
 
-    static PaintStruct* arrangeStructsHelper(PaintStruct* psNext, uint16_t quadrantIndex, uint8_t flag, uint8_t rotation)
+    static PaintStruct* arrangeStructsHelper(PaintStruct* psNext, uint16_t quadrantIndex, QuadrantFlags flag, uint8_t rotation)
     {
         switch (rotation)
         {
@@ -757,7 +757,7 @@ namespace OpenLoco::Paint
         quadrantIndex = _quadrantBackIndex;
         while (++quadrantIndex < _quadrantFrontIndex)
         {
-            psCache = arrangeStructsHelper(psCache, quadrantIndex & 0xFFFF, 0, currentRotation);
+            psCache = arrangeStructsHelper(psCache, quadrantIndex & 0xFFFF, QuadrantFlags::none, currentRotation);
         }
     }
 
