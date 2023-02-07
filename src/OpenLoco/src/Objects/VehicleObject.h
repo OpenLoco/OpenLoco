@@ -181,20 +181,22 @@ namespace OpenLoco
         }
     };
 
-    namespace FlagsE0
+    enum class VehicleObjectFlags : uint16_t
     {
-        constexpr uint16_t flag_02 = 1 << 2; // rollable? APT Passenger carriage
-        constexpr uint16_t flag_03 = 1 << 3; // rollable? APT Driving carriage
-        constexpr uint16_t rackRail = 1 << 6;
-        constexpr uint16_t unk_08 = 1 << 8;
-        constexpr uint16_t unk_09 = 1 << 9; // anytrack??
-        constexpr uint16_t speedControl = 1 << 10;
-        constexpr uint16_t canCouple = 1 << 11;
-        constexpr uint16_t unk_12 = 1 << 12; // dualhead??
-        constexpr uint16_t isHelicopter = 1 << 13;
-        constexpr uint16_t refittable = 1 << 14;
-        constexpr uint16_t unk_15 = 1 << 15; // noannounce??
-    }
+        none = 0U,
+        flag_02 = 1U << 2, // rollable? APT Passenger carriage
+        flag_03 = 1U << 3, // rollable? APT Driving carriage
+        rackRail = 1U << 6,
+        unk_08 = 1U << 8,
+        unk_09 = 1U << 9, // anytrack??
+        speedControl = 1U << 10,
+        canCouple = 1U << 11,
+        unk_12 = 1U << 12, // dualhead??
+        isHelicopter = 1U << 13,
+        refittable = 1U << 14,
+        unk_15 = 1U << 15, // noannounce??
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleObjectFlags);
 
     enum class DrivingSoundType : uint8_t
     {
@@ -237,7 +239,7 @@ namespace OpenLoco
         Speed16 speed;                                        // 0xDA
         Speed16 rackSpeed;                                    // 0xDC
         uint16_t weight;                                      // 0xDE
-        uint16_t flags;                                       // 0xE0
+        VehicleObjectFlags flags;                             // 0xE0
         uint8_t maxPrimaryCargo;                              // 0xE2 size is relative to the first primaryCargoTypes
         uint8_t maxSecondaryCargo;                            // 0xE3
         uint32_t primaryCargoTypes;                           // 0xE4
@@ -267,6 +269,10 @@ namespace OpenLoco
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
         uint32_t getLength() const;
+        constexpr bool hasFlags(VehicleObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != VehicleObjectFlags::none;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(VehicleObject) == 0x15E);
