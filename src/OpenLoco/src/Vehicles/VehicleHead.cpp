@@ -3053,7 +3053,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (carComponent.front->secondaryCargo.type == waitFor->getCargo() && carComponent.front->secondaryCargo.maxQty != carComponent.front->secondaryCargo.qty)
                     {
-                        if (!hasFlags(BreakdownFlags::unk_0))
+                        if (!hasBreakdownFlags(BreakdownFlags::unk_0))
                         {
                             beginLoading();
                             return true;
@@ -3067,7 +3067,7 @@ namespace OpenLoco::Vehicles
                     }
                     if (carComponent.body->primaryCargo.type == waitFor->getCargo() && carComponent.body->primaryCargo.maxQty != carComponent.body->primaryCargo.qty)
                     {
-                        if (!hasFlags(BreakdownFlags::unk_0))
+                        if (!hasBreakdownFlags(BreakdownFlags::unk_0))
                         {
                             beginLoading();
                             return true;

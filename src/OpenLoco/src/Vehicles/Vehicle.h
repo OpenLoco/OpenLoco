@@ -348,7 +348,7 @@ namespace OpenLoco::Vehicles
         void applyBreakdownToTrain();
         void sub_4AF7A4();
         uint32_t getVehicleTotalLength() const;
-        constexpr bool hasFlags(BreakdownFlags flagsToTest) const
+        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
         }
