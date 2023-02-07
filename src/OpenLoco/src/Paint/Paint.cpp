@@ -656,12 +656,12 @@ namespace OpenLoco::Paint
                     // End of the current list.
                     return psQuadrantEntry;
                 }
-                if (psNext->hasFlags(QuadrantFlags::outsideQuadrant))
+                if (psNext->hasQuadrantFlags(QuadrantFlags::outsideQuadrant))
                 {
                     // Reached point outside of specified quadrant.
                     return psQuadrantEntry;
                 }
-                if (psNext->hasFlags(QuadrantFlags::pendingVisit))
+                if (psNext->hasQuadrantFlags(QuadrantFlags::pendingVisit))
                 {
                     // Found node to check on.
                     break;
@@ -681,9 +681,9 @@ namespace OpenLoco::Paint
                 psNext = psNext->nextQuadrantPS;
                 if (psNext == nullptr)
                     break;
-                if (psNext->hasFlags(QuadrantFlags::outsideQuadrant))
+                if (psNext->hasQuadrantFlags(QuadrantFlags::outsideQuadrant))
                     break;
-                if (!psNext->hasFlags(QuadrantFlags::neighbour))
+                if (!psNext->hasQuadrantFlags(QuadrantFlags::neighbour))
                     continue;
 
                 const PaintStructBoundBox& currentBBox = psNext->bounds;

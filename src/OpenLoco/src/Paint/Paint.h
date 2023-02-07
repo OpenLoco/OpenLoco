@@ -116,7 +116,7 @@ namespace OpenLoco::Paint
             Map::TileElement* tileElement; // 0x30 (or entity pointer)
             EntityBase* entity;            // 0x30
         };
-        constexpr bool hasFlags(QuadrantFlags flagsToTest) const
+        constexpr bool hasQuadrantFlags(QuadrantFlags flagsToTest) const
         {
             return (quadrantFlags & flagsToTest) != QuadrantFlags::none;
         }
