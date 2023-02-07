@@ -90,6 +90,12 @@ namespace OpenLoco::Map
             _flags = _flags & static_cast<ElementFlags>(0xF); // Protect the lower bits
         }
 
+        constexpr void addFlags(ElementFlags flagsToAdd)
+        {
+            ElementFlags combinedBits = flagsToAdd | static_cast<ElementFlags>(0xF); //Protect the lower bits
+            _flags = _flags & (combinedBits);
+        }
+
         std::array<uint8_t, 8>& rawData()
         {
             auto array = reinterpret_cast<std::array<uint8_t, 8>*>(this);

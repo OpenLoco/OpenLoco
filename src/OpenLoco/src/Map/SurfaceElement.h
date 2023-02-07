@@ -63,7 +63,7 @@ namespace OpenLoco::Map
             setType(kElementType);
             setBaseZ(baseZ);
             setClearZ(clearZ);
-            _flags = static_cast<ElementFlags>(quarterTile);
+            addFlags(static_cast<ElementFlags>(quarterTile & 0xF0)); //Mask off lower bits
             setIsIndustrialFlag(highTypeFlag);
         }
 
