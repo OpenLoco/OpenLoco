@@ -3,6 +3,7 @@
 #include "Map/Map.hpp"
 #include "Types.hpp"
 #include "Ui/UiTypes.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Map
@@ -83,12 +84,14 @@ namespace OpenLoco::Paint
         int16_t yEnd; // 0x12
     };
 
-    namespace QuadrantFlags
+    enum class QuadrantFlags : uint8_t
     {
-        constexpr uint8_t pendingVisit = (1 << 0);
-        constexpr uint8_t outsideQuadrant = (1 << 7);
-        constexpr uint8_t neighbour = (1 << 1);
+        none = 0U,
+        pendingVisit = 1U << 0,
+        outsideQuadrant = 1U << 7,
+        neighbour = 1U << 1,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(QuadrantFlags);
 
     struct PaintStruct
     {
@@ -98,7 +101,7 @@ namespace OpenLoco::Paint
         Ui::Point vpPos;                               // 0x14
         uint16_t quadrantIndex;                        // 0x18
         uint8_t flags;                                 // 0x1A
-        uint8_t quadrantFlags;                         // 0x1B
+        QuadrantFlags quadrantFlags;                   // 0x1B
         AttachedPaintStruct* attachedPS;               // 0x1C
         PaintStruct* children;                         // 0x20
         PaintStruct* nextQuadrantPS;                   // 0x24
@@ -111,6 +114,10 @@ namespace OpenLoco::Paint
             Map::TileElement* tileElement; // 0x30 (or entity pointer)
             EntityBase* entity;            // 0x30
         };
+        constexpr bool hasFlags(QuadrantFlags flagsToTest) const
+        {
+            return (quadrantFlags & flagsToTest) != QuadrantFlags::none;
+        }
     };
     assert_struct_size(PaintStruct, 0x34);
 
