@@ -252,7 +252,7 @@ namespace OpenLoco::GameCommands
         }
         if (flags & Flags::apply)
         {
-            veh->var_0C |= EntityBaseFlags::shuntCheat;
+            veh->vehicleFlags |= VehicleFlags::shuntCheat;
         }
         return 0;
     }

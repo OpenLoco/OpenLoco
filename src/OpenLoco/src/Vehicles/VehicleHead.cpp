@@ -529,7 +529,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleStatus vehStatus{};
 
-        if (hasEntityBaseFlags(EntityBaseFlags::commandStop) || (hasEntityBaseFlags(EntityBaseFlags::manualControl) && var_6E <= -20))
+        if (hasVehicleFlags(VehicleFlags::commandStop) || (hasVehicleFlags(VehicleFlags::manualControl) && var_6E <= -20))
         {
             vehStatus.status1 = StringIds::vehicle_status_stopping;
         }
@@ -880,11 +880,11 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (hasEntityBaseFlags(EntityBaseFlags::commandStop))
+            if (hasVehicleFlags(VehicleFlags::commandStop))
             {
                 return sub_4A8CB6();
             }
-            else if (hasEntityBaseFlags(EntityBaseFlags::manualControl))
+            else if (hasVehicleFlags(VehicleFlags::manualControl))
             {
                 if (var_6E <= -20)
                 {
@@ -921,9 +921,9 @@ namespace OpenLoco::Vehicles
 
             if (!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered))
             {
-                if (!hasEntityBaseFlags(EntityBaseFlags::manualControl) || var_6E > -20)
+                if (!hasVehicleFlags(VehicleFlags::manualControl) || var_6E > -20)
                 {
-                    if (!hasEntityBaseFlags(EntityBaseFlags::commandStop))
+                    if (!hasVehicleFlags(VehicleFlags::commandStop))
                     {
                         return landNormalMovementUpdate();
                     }
@@ -1091,7 +1091,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Manual control is going too fast at this point to stop at the station
-        if (hasEntityBaseFlags(EntityBaseFlags::manualControl))
+        if (hasVehicleFlags(VehicleFlags::manualControl))
         {
             return true;
         }
@@ -1116,7 +1116,7 @@ namespace OpenLoco::Vehicles
         status = Status::stopped;
         advanceToNextRoutableOrder();
 
-        if (hasEntityBaseFlags(EntityBaseFlags::manualControl))
+        if (hasVehicleFlags(VehicleFlags::manualControl))
         {
             return true;
         }
@@ -1205,7 +1205,7 @@ namespace OpenLoco::Vehicles
             auto* vehType1 = train.veh1;
             vehType1->timeAtSignal++;
 
-            if (hasEntityBaseFlags(EntityBaseFlags::manualControl))
+            if (hasVehicleFlags(VehicleFlags::manualControl))
             {
                 var_5C = 2;
                 vehType1->var_48 |= 1 << 0;
@@ -1268,7 +1268,7 @@ namespace OpenLoco::Vehicles
             train.veh1->timeAtSignal = 0;
             if (al == 2)
             {
-                if (hasEntityBaseFlags(EntityBaseFlags::manualControl))
+                if (hasVehicleFlags(VehicleFlags::manualControl))
                 {
                     auto* vehType2 = train.veh2;
                     if (vehType2->routingHandle != routingHandle || vehType2->subPosition != subPosition)
@@ -1322,7 +1322,7 @@ namespace OpenLoco::Vehicles
 
         if (status == Status::stopped)
         {
-            if (!hasEntityBaseFlags(EntityBaseFlags::commandStop))
+            if (!hasVehicleFlags(VehicleFlags::commandStop))
             {
                 setStationVisitedTypes();
                 checkIfAtOrderStation();
@@ -1630,7 +1630,7 @@ namespace OpenLoco::Vehicles
     // 0x004A95CB
     bool VehicleHead::sub_4A95CB()
     {
-        if (hasEntityBaseFlags(EntityBaseFlags::commandStop))
+        if (hasVehicleFlags(VehicleFlags::commandStop))
         {
             status = Status::stopped;
             Vehicle2* vehType2 = _vehicleUpdate_2;
@@ -1871,7 +1871,7 @@ namespace OpenLoco::Vehicles
 
         if (status == Status::stopped)
         {
-            if (hasEntityBaseFlags(EntityBaseFlags::commandStop))
+            if (hasVehicleFlags(VehicleFlags::commandStop))
             {
                 return true;
             }
@@ -1887,7 +1887,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (hasEntityBaseFlags(EntityBaseFlags::commandStop))
+        if (hasVehicleFlags(VehicleFlags::commandStop))
         {
             if (!(updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination))
             {
@@ -1930,7 +1930,7 @@ namespace OpenLoco::Vehicles
                 return true;
             }
 
-            if (hasEntityBaseFlags(EntityBaseFlags::commandStop))
+            if (hasVehicleFlags(VehicleFlags::commandStop))
             {
                 status = Status::stopped;
                 vehType2->currentSpeed = 0.0_mph;

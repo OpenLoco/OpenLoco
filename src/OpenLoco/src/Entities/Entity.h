@@ -34,7 +34,7 @@ namespace OpenLoco
         down20deg = 12,
     };
 
-    enum class EntityBaseFlags : uint16_t // commands?
+    enum class VehicleFlags : uint16_t // commands?
     {
         none = 0U,
         unk_0 = 1U << 0,
@@ -44,7 +44,7 @@ namespace OpenLoco
         manualControl = 1U << 6,
         shuntCheat = 1U << 7,
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(EntityBaseFlags);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleFlags);
 
 #pragma pack(push, 1)
     struct EntityBase
@@ -59,9 +59,9 @@ namespace OpenLoco
         EntityId llPreviousId;    // 0x06
         uint8_t linkedListOffset; // 0x8
         uint8_t var_09;
-        EntityId id; // 0xA
-        EntityBaseFlags var_0C;
-        Map::Pos3 position; // 0x0E
+        EntityId id;               // 0xA
+        VehicleFlags vehicleFlags; // Move these to VehicleBase after full reimplementation
+        Map::Pos3 position;        // 0x0E
         uint8_t var_14;
         uint8_t var_15;
         int16_t spriteLeft;   // 0x16

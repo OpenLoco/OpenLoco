@@ -234,7 +234,7 @@ namespace OpenLoco::Vehicles
         EntityId getHead() const;
         void setNextCar(const EntityId newNextCar);
         bool has38Flags(Flags38 flagsToTest) const;
-        bool hasEntityBaseFlags(EntityBaseFlags flagsToTest) const;
+        bool hasVehicleFlags(VehicleFlags flagsToTest) const;
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
         bool updateComponent();

@@ -100,10 +100,10 @@ namespace OpenLoco::Vehicles
         return (veh->var_38 & flagsToTest) != Flags38::none;
     }
 
-    bool VehicleBase::hasEntityBaseFlags(EntityBaseFlags flagsToTest) const
+    bool VehicleBase::hasVehicleFlags(VehicleFlags flagsToTest) const
     {
         const auto* ent = reinterpret_cast<const EntityBase*>(this);
-        return (ent->var_0C & flagsToTest) != EntityBaseFlags::none;
+        return (ent->vehicleFlags & flagsToTest) != VehicleFlags::none;
     }
 
     // 0x004AA464
