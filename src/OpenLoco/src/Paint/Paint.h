@@ -45,19 +45,21 @@ namespace OpenLoco::Paint
     }
 
     // Used by both AttachedPaintStruct and PaintStruct
-    namespace PaintStructFlags
+    enum class PaintStructFlags : uint8_t
     {
-        constexpr uint8_t hasMaskedImage = (1 << 0);
-    }
+        none = 0U,
+        hasMaskedImage = 1 << 0,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(PaintStructFlags);
 
 #pragma pack(push, 1)
     /* size 0x12 */
     struct AttachedPaintStruct
     {
-        ImageId imageId;       // 0x00
-        ImageId maskedImageId; // 0x04
-        Ui::Point vpPos;       // 0x08
-        uint8_t flags;         // 0x0C
+        ImageId imageId;        // 0x00
+        ImageId maskedImageId;  // 0x04
+        Ui::Point vpPos;        // 0x08
+        PaintStructFlags flags; // 0x0C
         uint8_t pad_0D;
         AttachedPaintStruct* next; // 0x0E
     };
@@ -100,7 +102,7 @@ namespace OpenLoco::Paint
         PaintStructBoundBox bounds;                    // 0x08
         Ui::Point vpPos;                               // 0x14
         uint16_t quadrantIndex;                        // 0x18
-        uint8_t flags;                                 // 0x1A
+        PaintStructFlags flags;                        // 0x1A
         QuadrantFlags quadrantFlags;                   // 0x1B
         AttachedPaintStruct* attachedPS;               // 0x1C
         PaintStruct* children;                         // 0x20

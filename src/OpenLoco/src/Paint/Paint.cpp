@@ -514,7 +514,7 @@ namespace OpenLoco::Paint
         ps->bounds.x = rotBoundBoxOffset.x + getSpritePosition().x;
         ps->bounds.y = rotBoundBoxOffset.y + getSpritePosition().y;
         ps->bounds.z = rotBoundBoxOffset.z;
-        ps->flags = 0;
+        ps->flags = PaintStructFlags::none;
         ps->attachedPS = nullptr;
         ps->children = nullptr;
         ps->type = _itemType;
