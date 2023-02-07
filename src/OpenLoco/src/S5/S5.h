@@ -5,6 +5,7 @@
 #include "Objects/Object.h"
 #include "ScenarioObjective.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
 #include <memory>
@@ -26,23 +27,29 @@ namespace OpenLoco::S5
         landscape = 3,
     };
 
-    namespace S5Flags
+    enum class HeaderFlags : uint8_t
     {
-        constexpr uint8_t isRaw = 1 << 0;
-        constexpr uint8_t isDump = 1 << 1;
-        constexpr uint8_t isTitleSequence = 1 << 2;
-        constexpr uint8_t hasSaveDetails = 1 << 3;
-    }
+        none = 0U,
+        isRaw = 1U << 0,
+        isDump = 1U << 1,
+        isTitleSequence = 1U << 2,
+        hasSaveDetails = 1 << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(HeaderFlags);
 
 #pragma pack(push, 1)
     struct Header
     {
         S5Type type;
-        uint8_t flags;
+        HeaderFlags flags;
         uint16_t numPackedObjects;
         uint32_t version;
         uint32_t magic;
         std::byte padding[20];
+        constexpr bool hasFlags(HeaderFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != HeaderFlags::none;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(Header) == 0x20);

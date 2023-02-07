@@ -73,15 +73,15 @@ namespace OpenLoco::S5
 
         if (flags & SaveFlags::raw)
         {
-            result.flags |= S5Flags::isRaw;
+            result.flags |= HeaderFlags::isRaw;
         }
         if (flags & SaveFlags::dump)
         {
-            result.flags |= S5Flags::isDump;
+            result.flags |= HeaderFlags::isDump;
         }
         if (!(flags & SaveFlags::scenario) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
         {
-            result.flags |= S5Flags::hasSaveDetails;
+            result.flags |= HeaderFlags::hasSaveDetails;
         }
 
         return result;
@@ -207,7 +207,7 @@ namespace OpenLoco::S5
         {
             file->landscapeOptions = std::make_unique<Options>(_activeOptions);
         }
-        if (file->header.flags & S5Flags::hasSaveDetails)
+        if (file->header.hasFlags(HeaderFlags::hasSaveDetails))
         {
             file->saveDetails = prepareSaveDetails(_gameState);
         }
@@ -298,7 +298,7 @@ namespace OpenLoco::S5
             {
                 fs.writeChunk(SawyerEncoding::rotate, *file.landscapeOptions);
             }
-            if (file.header.flags & S5Flags::hasSaveDetails)
+            if (file.header.hasFlags(HeaderFlags::hasSaveDetails))
             {
                 fs.writeChunk(SawyerEncoding::rotate, *file.saveDetails);
             }
@@ -319,7 +319,7 @@ namespace OpenLoco::S5
                 fs.writeChunk(SawyerEncoding::runLengthSingle, file.gameState);
             }
 
-            if (file.header.flags & SaveFlags::raw)
+            if (static_cast<uint32_t>(file.header.flags) & SaveFlags::raw)
             {
                 throw NotImplementedException();
             }
@@ -393,7 +393,7 @@ namespace OpenLoco::S5
         fs.readChunk(&file->header, sizeof(file->header));
 
         // Read saved details 0x00442087
-        if (file->header.flags & S5Flags::hasSaveDetails)
+        if (file->header.hasFlags(HeaderFlags::hasSaveDetails))
         {
             file->saveDetails = std::make_unique<SaveDetails>();
             fs.readChunk(file->saveDetails.get(), sizeof(file->saveDetails));
@@ -542,14 +542,14 @@ namespace OpenLoco::S5
 #ifdef DO_TITLE_SEQUENCE_CHECKS
             if (flags & LoadFlags::titleSequence)
             {
-                if (!(file->header.flags & S5Flags::isTitleSequence))
+                if (!file->header.hasFlags(HeaderFlags::isTitleSequence))
                 {
                     throw LoadException("File was not a title sequence", StringIds::error_file_contains_invalid_data);
                 }
             }
             else
             {
-                if (file->header.flags & S5Flags::isTitleSequence)
+                if (file->header.hasFlags(HeaderFlags::isTitleSequence))
                 {
                     throw LoadException("File is a title sequence", StringIds::error_file_contains_invalid_data);
                 }
@@ -586,7 +586,7 @@ namespace OpenLoco::S5
                 }
             }
 
-            if ((file->header.flags & S5Flags::isRaw) || (file->header.flags & S5Flags::isDump))
+            if (file->header.hasFlags(HeaderFlags::isRaw) || file->header.hasFlags(HeaderFlags::isDump))
             {
                 throw LoadException("Unsupported S5 format", StringIds::error_file_contains_invalid_data);
             }
@@ -738,12 +738,12 @@ namespace OpenLoco::S5
             return nullptr;
         }
 
-        if (s5Header.flags & (S5Flags::isTitleSequence | S5Flags::isDump | S5Flags::isRaw))
+        if (s5Header.hasFlags(HeaderFlags::isTitleSequence | HeaderFlags::isDump | HeaderFlags::isRaw))
         {
             return nullptr;
         }
 
-        if (s5Header.flags & S5Flags::hasSaveDetails)
+        if (s5Header.hasFlags(HeaderFlags::hasSaveDetails))
         {
             // 0x0050AEA8
             auto ret = std::make_unique<SaveDetails>();

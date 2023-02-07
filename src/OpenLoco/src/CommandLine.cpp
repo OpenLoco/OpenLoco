@@ -468,7 +468,7 @@ namespace OpenLoco
             writer.writeChunk(SawyerEncoding::uncompressed, header);
 
             // Optional save details chunk
-            if (header.flags & S5Flags::hasSaveDetails)
+            if (header.hasFlags(HeaderFlags::hasSaveDetails))
             {
                 auto saveDetails = std::make_unique<SaveDetails>();
                 reader.readChunk(saveDetails.get(), sizeof(SaveDetails));
