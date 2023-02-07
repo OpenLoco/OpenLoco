@@ -311,9 +311,9 @@ namespace OpenLoco::Vehicles
         uint16_t cargoTransferTimeout; // 0x56
         uint32_t var_58;
         uint8_t var_5C;
-        Status status;           // 0x5D
-        VehicleType vehicleType; // 0x5E
-        BreakdownFlags breakdownFlags;          // 0x5F
+        Status status;                 // 0x5D
+        VehicleType vehicleType;       // 0x5E
+        BreakdownFlags breakdownFlags; // 0x5F
         uint8_t var_60;
         uint16_t var_61;
         uint8_t pad_63[0x68 - 0x63];
