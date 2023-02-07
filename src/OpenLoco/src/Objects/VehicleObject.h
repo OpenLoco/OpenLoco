@@ -239,7 +239,7 @@ namespace OpenLoco
         Speed16 speed;                                        // 0xDA
         Speed16 rackSpeed;                                    // 0xDC
         uint16_t weight;                                      // 0xDE
-        VehicleObjectFlags flags;                                        // 0xE0
+        VehicleObjectFlags flags;                             // 0xE0
         uint8_t maxPrimaryCargo;                              // 0xE2 size is relative to the first primaryCargoTypes
         uint8_t maxSecondaryCargo;                            // 0xE3
         uint32_t primaryCargoTypes;                           // 0xE4
