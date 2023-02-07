@@ -146,7 +146,7 @@ namespace OpenLoco::Vehicles
         newBogie->secondaryCargo.type = 0xFF;
         newBogie->secondaryCargo.qty = 0;
         newBogie->var_5E = 0;
-        newBogie->var_5F = Flags5F::none;
+        newBogie->breakdownFlags = BreakdownFlags::none;
         newBogie->var_60 = 0; // different to createbody
         newBogie->var_61 = 0; // different to createbody
 
@@ -267,7 +267,7 @@ namespace OpenLoco::Vehicles
         newBody->primaryCargo.qty = 0;
         newBody->var_55 = 0; // different to create bogie
         newBody->var_5E = 0;
-        newBody->var_5F = Flags5F::none;
+        newBody->breakdownFlags = BreakdownFlags::none;
 
         // different to create bogie
         if (bodyNumber == 0)
@@ -453,7 +453,7 @@ namespace OpenLoco::Vehicles
         newHead->var_5C = 0;
         newHead->status = Status::unk_0;
         newHead->stationId = StationId::null;
-        newHead->var_5F = Flags5F::none;
+        newHead->breakdownFlags = BreakdownFlags::none;
         newHead->var_60 = -1;
         newHead->var_61 = -1;
         newHead->totalRefundCost = 0;
