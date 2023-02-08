@@ -797,9 +797,9 @@ namespace OpenLoco::Paint
         }
     }
 
-    static bool shouldTryCullPaintStruct(const PaintStruct& ps, const uint16_t viewFlags, const uint8_t rotation, const int16_t foregroundCullingHeight)
+    static bool shouldTryCullPaintStruct(const PaintStruct& ps, const Ui::ViewportFlags viewFlags, const uint8_t rotation, const int16_t foregroundCullingHeight)
     {
-        if (viewFlags & Ui::ViewportFlags::hide_foreground_scenery_buildings)
+        if ((viewFlags & Ui::ViewportFlags::hide_foreground_scenery_buildings) != Ui::ViewportFlags::none)
         {
             if (isTypeForegroundCullableScenery(ps.type))
             {
@@ -812,7 +812,7 @@ namespace OpenLoco::Paint
                 }
             }
         }
-        else if (viewFlags & Ui::ViewportFlags::hide_foreground_tracks_roads)
+        else if ((viewFlags & Ui::ViewportFlags::hide_foreground_tracks_roads) != Ui::ViewportFlags::none)
         {
             if (isTypeForegroundCullableTrack(ps.type))
             {
@@ -828,9 +828,9 @@ namespace OpenLoco::Paint
         return false;
     }
 
-    static bool cullPaintStructImage(const ImageId& imageId, uint16_t viewFlags)
+    static bool cullPaintStructImage(const ImageId& imageId, Ui::ViewportFlags viewFlags)
     {
-        if (viewFlags & Ui::ViewportFlags::underground_view)
+        if ((viewFlags & Ui::ViewportFlags::underground_view) != Ui::ViewportFlags::none)
         {
             return true;
         }
