@@ -1528,15 +1528,8 @@ namespace OpenLoco::Drawing
         static void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags)
         {
             const auto rect = Ui::Rect::fromLTRB(left, top, right, bottom);
-            const auto baseColour = static_cast<OpenLoco::Colour>(colour);
-            // const auto left = rect.left();
-            // const auto top = rect.top();
-            // const auto bottom = rect.bottom();
-            // const auto right = rect.right();
-            // const auto leftTop = Ui::Point32{ rect.left(), rect.top() };
-            // const auto leftBottom = Ui::Point32{ rect.left(), rect.bottom() };
-            // const auto rightTop = Ui::Point32{ rect.right(), rect.top() };
-            // const auto rightBottom = Ui::Point32{ rect.right(), rect.bottom() };
+            const auto baseColour = static_cast<Colour>(colour);
+
             assert(!colour.isOutline());
             assert(!colour.isInset());
             if (colour.isTranslucent())
