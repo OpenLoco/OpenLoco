@@ -956,7 +956,6 @@ namespace OpenLoco::Paint
                 drawAttachStruct(rt, drawingCtx, *ps, *attachPs, shouldCullAttach);
             }
         }
-        // call(0x0045EA23);
     }
 
     // 0x0045A60E
