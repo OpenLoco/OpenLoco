@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if ((current_viewport_flags & ViewportFlags::height_marks_on_tracks_roads) != ViewportFlags::none)
             Dropdown::setItemSelected(4);
 
-        if ((current_viewport_flags & ViewportFlags::height_marks_on_land) != ViewportFlags::none) 
+        if ((current_viewport_flags & ViewportFlags::height_marks_on_land) != ViewportFlags::none)
             Dropdown::setItemSelected(5);
 
         if ((current_viewport_flags & ViewportFlags::one_way_direction_arrows) != ViewportFlags::none)
