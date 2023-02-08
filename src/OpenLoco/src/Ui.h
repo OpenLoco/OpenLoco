@@ -142,6 +142,7 @@ namespace OpenLoco::Ui
     void minimalHandleInput();
     void setWindowScaling(float newScaleFactor);
     void adjustWindowScale(float adjust_by);
+    bool hasInputFocus();
 
     namespace ViewportInteraction
     {

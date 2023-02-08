@@ -1049,4 +1049,11 @@ namespace OpenLoco::Ui
 
         setWindowScaling(newScaleFactor);
     }
+
+    bool hasInputFocus()
+    {
+        const uint32_t windowFlags = SDL_GetWindowFlags(window);
+        return (windowFlags & SDL_WINDOW_INPUT_FOCUS) != 0;
+    }
+
 }
