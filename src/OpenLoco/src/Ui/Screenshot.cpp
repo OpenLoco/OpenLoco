@@ -144,7 +144,7 @@ namespace OpenLoco::Input
         viewport.viewHeight = viewport.height << zoomLevel;
         viewport.zoom = zoomLevel;
         viewport.pad_11 = 0;
-        viewport.flags = 0;
+        viewport.flags = ViewportFlags::none;
 
         const coord_t centreX = (Map::kMapColumns / 2) * 32 + 16;
         const coord_t centreY = (Map::kMapRows / 2) * 32 + 16;

@@ -422,7 +422,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static void sub_434223(Window* const self, const SavedView& view, const uint16_t vpFlags)
+        static void sub_434223(Window* const self, const SavedView& view, const ViewportFlags vpFlags)
         {
             self->savedView = view;
             sub_434336(self, view);
@@ -440,7 +440,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void noViewportPresent(Window* const self, const SavedView& view)
         {
-            uint16_t vpFlags = 0;
+            ViewportFlags vpFlags = ViewportFlags::none;
             if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
             {
                 vpFlags |= ViewportFlags::gridlines_on_landscape;
@@ -1095,7 +1095,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             };
             view.flags |= (1 << 14);
 
-            uint16_t vpFlags = 0;
+            ViewportFlags vpFlags = ViewportFlags::none;
             if (self.viewports[0] == nullptr)
             {
                 if (Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))

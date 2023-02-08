@@ -422,7 +422,7 @@ namespace OpenLoco::Ui::Windows::Construction
         if (mainWindow)
         {
             auto viewport = mainWindow->viewports[0];
-            _word_1135F86 = viewport->flags;
+            _viewportFlags = viewport->flags;
         }
 
         auto window = WindowManager::find(WindowType::construction);
@@ -465,7 +465,7 @@ namespace OpenLoco::Ui::Windows::Construction
         if (mainWindow)
         {
             auto viewport = mainWindow->viewports[0];
-            viewport->flags = _word_1135F86;
+            viewport->flags = _viewportFlags;
         }
 
         _trackType = static_cast<uint8_t>(flags);

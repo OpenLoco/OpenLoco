@@ -2536,7 +2536,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x004A0AE5
     void drawTrack(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::RenderTarget& rt)
     {
-        const uint16_t backupViewFlags = addr<0x00E3F0BC, uint16_t>(); // After all users of 0x00E3F0BC implemented this is not required
+        const ViewportFlags backupViewFlags = addr<0x00E3F0BC, ViewportFlags>(); // After all users of 0x00E3F0BC implemented this is not required
         Paint::SessionOptions options{};
         options.rotation = WindowManager::getCurrentRotation(); // This shouldn't be needed...
         auto* session = Paint::allocateSession(rt, options);

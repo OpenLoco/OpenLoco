@@ -239,12 +239,12 @@ namespace OpenLoco::Ui
     void Viewport::paint(Gfx::RenderTarget* rt, const Rect& rect)
     {
         Paint::SessionOptions options{};
-        if (flags & (ViewportFlags::hide_foreground_scenery_buildings | ViewportFlags::hide_foreground_tracks_roads))
+        if (hasFlags(ViewportFlags::hide_foreground_scenery_buildings | ViewportFlags::hide_foreground_tracks_roads))
         {
             options.foregroundCullHeight = viewHeight / 2 + viewY;
         }
         PaletteIndex_t fillColour = PaletteIndex::index_D8;
-        if (flags & (ViewportFlags::underground_view | ViewportFlags::flag_7 | ViewportFlags::flag_8))
+        if (hasFlags(ViewportFlags::underground_view | ViewportFlags::flag_7 | ViewportFlags::flag_8))
         {
             fillColour = PaletteIndex::index_0A;
         }
@@ -315,14 +315,14 @@ namespace OpenLoco::Ui
 
             if (!isTitleMode())
             {
-                if (!(options.viewFlags & ViewportFlags::station_names_displayed))
+                if (!options.hasFlags(ViewportFlags::station_names_displayed))
                 {
                     if (columnRt.zoomLevel <= Config::get().old.stationNamesMinScale)
                     {
                         drawStationNames(columnRt);
                     }
                 }
-                if (!(options.viewFlags & ViewportFlags::town_names_displayed))
+                if (!options.hasFlags(ViewportFlags::town_names_displayed))
                 {
                     drawTownNames(columnRt);
                 }

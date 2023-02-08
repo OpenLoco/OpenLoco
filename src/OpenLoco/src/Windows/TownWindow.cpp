@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::Town
                 tileZ,
             };
 
-            uint16_t flags = 0;
+            ViewportFlags flags = ViewportFlags::none;
             if (self.viewports[0] != nullptr)
             {
                 if (self.savedView == view)

@@ -899,7 +899,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             {
                 if (vp != nullptr && vp->containsUi({ screenPos.x, screenPos.y }))
                 {
-                    if (vp->flags & ViewportFlags::hide_foreground_scenery_buildings)
+                    if (vp->hasFlags(ViewportFlags::hide_foreground_scenery_buildings))
                     {
                         interactionsToExclude |= InteractionItemFlags::building | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::industry | InteractionItemFlags::tree | InteractionItemFlags::wall;
                     }
@@ -1022,7 +1022,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             session->generate();
             session->arrangeStructs();
             interaction = session->getNormalInteractionInfo(flags);
-            if (!(vp->flags & ViewportFlags::station_names_displayed))
+            if (!vp->hasFlags(ViewportFlags::station_names_displayed))
             {
                 if (_rt2->zoomLevel <= Config::get().old.stationNamesMinScale)
                 {
@@ -1033,7 +1033,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                     }
                 }
             }
-            if (!(vp->flags & ViewportFlags::town_names_displayed))
+            if (!vp->hasFlags(ViewportFlags::town_names_displayed))
             {
                 auto townInteraction = session->getTownNameInteractionInfo(flags);
                 if (townInteraction.type != InteractionItem::noInteraction)
