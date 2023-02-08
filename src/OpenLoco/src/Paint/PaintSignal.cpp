@@ -199,14 +199,14 @@ namespace OpenLoco::Paint
         {
             if (((session.getViewFlags() & Ui::ViewportFlags::one_way_direction_arrows) != Ui::ViewportFlags::none)
                 && (session.getRenderTarget()->zoomLevel == 0))
-                {
-                    session.setItemType(InteractionItem::noInteraction);
-                    const auto imageId = ImageId{ getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedAvocadoGreen };
-                    const Map::Pos3 offset(0, 0, height + getTrackDecorationHeightOffset(!isRight, trackId) + 2);
-                    const Map::Pos3 bbOffset(15, 15, offset.z + 16);
-                    const Map::Pos3 bbSize(1, 1, 0);
-                    session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
-                }
+            {
+                session.setItemType(InteractionItem::noInteraction);
+                const auto imageId = ImageId{ getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedAvocadoGreen };
+                const Map::Pos3 offset(0, 0, height + getTrackDecorationHeightOffset(!isRight, trackId) + 2);
+                const Map::Pos3 bbOffset(15, 15, offset.z + 16);
+                const Map::Pos3 bbSize(1, 1, 0);
+                session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
+            }
         }
     }
 
