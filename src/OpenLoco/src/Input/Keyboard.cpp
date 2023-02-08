@@ -386,6 +386,9 @@ namespace OpenLoco::Input
 
     static void edgeScroll()
     {
+        if (!Ui::hasInputFocus())
+            return;
+
         if (Tutorial::state() != Tutorial::State::none)
             return;
 
