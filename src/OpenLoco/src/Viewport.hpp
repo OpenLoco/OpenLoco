@@ -40,7 +40,7 @@ namespace OpenLoco::Ui
         }
     };
 
-    enum class ViewportFlags : uint32_t
+    enum class ViewportFlags : uint16_t
     {
         none = 0U,
         underground_view = 1U << 0,
@@ -71,16 +71,16 @@ namespace OpenLoco::Ui
 
     struct Viewport
     {
-        int16_t width;      // 0x00
-        int16_t height;     // 0x02
-        int16_t x;          // 0x04
-        int16_t y;          // 0x06
-        int16_t viewX;      // 0x08
-        int16_t viewY;      // 0x0A
-        int16_t viewWidth;  // 0x0C
-        int16_t viewHeight; // 0x0E
-        uint8_t zoom;       // 0x10
-        uint8_t pad_11;
+        int16_t width;       // 0x00
+        int16_t height;      // 0x02
+        int16_t x;           // 0x04
+        int16_t y;           // 0x06
+        int16_t viewX;       // 0x08
+        int16_t viewY;       // 0x0A
+        int16_t viewWidth;   // 0x0C
+        int16_t viewHeight;  // 0x0E
+        uint8_t zoom;        // 0x10
+        uint8_t pad_11;      // 0x11
         ViewportFlags flags; // 0x12
 
         constexpr bool contains(const viewport_pos& vpos)
@@ -173,6 +173,7 @@ namespace OpenLoco::Ui
     private:
         void paint(Gfx::RenderTarget* rt, const Ui::Rect& rect);
     };
+    static_assert(sizeof(Viewport) == 0x14);
 
     struct ViewportConfig
     {
