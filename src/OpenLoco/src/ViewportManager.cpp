@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::ViewportManager
         vp->viewWidth = size.width << static_cast<uint8_t>(zoom);
         vp->viewHeight = size.height << static_cast<uint8_t>(zoom);
         vp->zoom = static_cast<uint8_t>(zoom);
-        vp->flags = 0;
+        vp->flags = ViewportFlags::none;
 
         if (OpenLoco::Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
         {

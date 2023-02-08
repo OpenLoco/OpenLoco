@@ -245,7 +245,7 @@ namespace OpenLoco::Ui::Windows::Industry
             };
             // view.flags |= (1 << 14);
 
-            uint16_t flags = 0;
+            ViewportFlags flags = ViewportFlags::none;
             if (self.viewports[0] != nullptr)
             {
                 if (self.savedView == view)

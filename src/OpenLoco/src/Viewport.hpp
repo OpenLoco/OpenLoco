@@ -4,6 +4,7 @@
 #include "Location.hpp"
 #include "Map/Map.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <algorithm>
 
 namespace OpenLoco::Ui
@@ -39,20 +40,22 @@ namespace OpenLoco::Ui
         }
     };
 
-    namespace ViewportFlags
+    enum class ViewportFlags : uint32_t
     {
-        constexpr uint32_t underground_view = 1 << 0;
-        constexpr uint32_t hide_foreground_tracks_roads = 1 << 1;
-        constexpr uint32_t height_marks_on_tracks_roads = 1 << 2;
-        constexpr uint32_t height_marks_on_land = 1 << 3;
-        constexpr uint32_t one_way_direction_arrows = 1 << 4;
-        constexpr uint32_t gridlines_on_landscape = 1 << 5;
-        constexpr uint32_t hide_foreground_scenery_buildings = 1 << 6;
-        constexpr uint32_t flag_7 = 1 << 7;
-        constexpr uint32_t flag_8 = 1 << 8;
-        constexpr uint32_t town_names_displayed = 1 << 9;
-        constexpr uint32_t station_names_displayed = 1 << 10;
-    }
+        none = 0U,
+        underground_view = 1U << 0,
+        hide_foreground_tracks_roads = 1U << 1,
+        height_marks_on_tracks_roads = 1U << 2,
+        height_marks_on_land = 1U << 3,
+        one_way_direction_arrows = 1U << 4,
+        gridlines_on_landscape = 1U << 5,
+        hide_foreground_scenery_buildings = 1U << 6,
+        flag_7 = 1U << 7,
+        flag_8 = 1U << 8,
+        town_names_displayed = 1U << 9,
+        station_names_displayed = 1U << 10,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ViewportFlags);
 
     struct Viewport;
 
@@ -78,7 +81,7 @@ namespace OpenLoco::Ui
         int16_t viewHeight; // 0x0E
         uint8_t zoom;       // 0x10
         uint8_t pad_11;
-        uint16_t flags; // 0x12
+        ViewportFlags flags; // 0x12
 
         constexpr bool contains(const viewport_pos& vpos)
         {
@@ -161,6 +164,11 @@ namespace OpenLoco::Ui
         Point getUiCentre() const;
         Map::Pos2 getCentreMapPosition() const;
         std::optional<Map::Pos2> getCentreScreenMapPosition() const;
+
+        constexpr bool hasFlags(ViewportFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != ViewportFlags::none;
+        }
 
     private:
         void paint(Gfx::RenderTarget* rt, const Ui::Rect& rect);

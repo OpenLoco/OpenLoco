@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint32_t, 0x01135F70> _constructingStationId;
     static loco_global<uint32_t, 0x01135F74> _constructingStationAcceptedCargoTypes;
     static loco_global<uint32_t, 0x01135F78> _constructingStationProducedCargoTypes;
-    static loco_global<uint16_t, 0x01135F86> _word_1135F86;
+    static loco_global<ViewportFlags, 0x01135F86> _viewportFlags;
     static loco_global<uint16_t, 0x01135FB4> _x;
     static loco_global<uint16_t, 0x01135FB6> _y;
     static loco_global<uint16_t, 0x01135FB8> _constructionZ;

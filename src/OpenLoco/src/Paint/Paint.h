@@ -3,6 +3,7 @@
 #include "Map/Map.hpp"
 #include "Types.hpp"
 #include "Ui/UiTypes.hpp"
+#include "Viewport.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -152,7 +153,11 @@ namespace OpenLoco::Paint
     {
         uint8_t rotation;
         int16_t foregroundCullHeight;
-        uint16_t viewFlags;
+        Ui::ViewportFlags viewFlags;
+        constexpr bool hasFlags(Ui::ViewportFlags flagsToTest) const
+        {
+            return (viewFlags & flagsToTest) != Ui::ViewportFlags::none;
+        }
     };
 
     static constexpr auto kMaxPaintQuadrants = 1024;
@@ -184,7 +189,7 @@ namespace OpenLoco::Paint
         {
             return Map::Pos2{ _spritePositionX, _spritePositionY };
         }
-        uint16_t getViewFlags() { return _viewFlags; }
+        Ui::ViewportFlags getViewFlags() { return _viewFlags; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
@@ -352,7 +357,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00F00480> _waterHeight;
         inline static Interop::loco_global<uint32_t, 0x0112C300> _112C300;
         inline static Interop::loco_global<uint16_t, 0x0112C306> _112C306;
-        inline static Interop::loco_global<uint16_t, 0x00E3F0BC> _viewFlags;
+        inline static Interop::loco_global<Ui::ViewportFlags, 0x00E3F0BC> _viewFlags;
         uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as seperate item
 
         // From OpenRCT2 equivalent fields not found yet or new

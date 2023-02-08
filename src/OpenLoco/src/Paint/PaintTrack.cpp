@@ -41,7 +41,8 @@ namespace OpenLoco::Paint
         }
         const auto height = elTrack.baseZ() * 4;
         const auto rotation = (session.getRotation() + elTrack.unkDirection()) & 0x3;
-        if ((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_land) && session.getRenderTarget()->zoomLevel == 0)
+        if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_land) != Ui::ViewportFlags::none)
+            && session.getRenderTarget()->zoomLevel == 0)
         {
             const bool isLast = elTrack.isFlag6();
             const bool isFirstTile = elTrack.sequenceIndex() == 0;

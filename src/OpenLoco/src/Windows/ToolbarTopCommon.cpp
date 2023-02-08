@@ -147,30 +147,30 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         Dropdown::add(9, StringIds::dropdown_without_checkmark, StringIds::menu_station_names_displayed);
         Dropdown::showBelow(window, widgetIndex, 10, 0);
 
-        uint32_t current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
+        ViewportFlags current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
 
-        if (current_viewport_flags & ViewportFlags::underground_view)
+        if ((current_viewport_flags & ViewportFlags::underground_view) != ViewportFlags::none)
             Dropdown::setItemSelected(0);
 
-        if (current_viewport_flags & ViewportFlags::hide_foreground_tracks_roads)
+        if ((current_viewport_flags & ViewportFlags::hide_foreground_tracks_roads) != ViewportFlags::none)
             Dropdown::setItemSelected(1);
 
-        if (current_viewport_flags & ViewportFlags::hide_foreground_scenery_buildings)
+        if ((current_viewport_flags & ViewportFlags::hide_foreground_scenery_buildings) != ViewportFlags::none)
             Dropdown::setItemSelected(2);
 
-        if (current_viewport_flags & ViewportFlags::height_marks_on_tracks_roads)
+        if ((current_viewport_flags & ViewportFlags::height_marks_on_tracks_roads) != ViewportFlags::none)
             Dropdown::setItemSelected(4);
 
-        if (current_viewport_flags & ViewportFlags::height_marks_on_land)
+        if ((current_viewport_flags & ViewportFlags::height_marks_on_land) != ViewportFlags::none) 
             Dropdown::setItemSelected(5);
 
-        if (current_viewport_flags & ViewportFlags::one_way_direction_arrows)
+        if ((current_viewport_flags & ViewportFlags::one_way_direction_arrows) != ViewportFlags::none)
             Dropdown::setItemSelected(6);
 
-        if (!(current_viewport_flags & ViewportFlags::town_names_displayed))
+        if ((current_viewport_flags & ViewportFlags::town_names_displayed) == ViewportFlags::none)
             Dropdown::setItemSelected(8);
 
-        if (!(current_viewport_flags & ViewportFlags::station_names_displayed))
+        if ((current_viewport_flags & ViewportFlags::station_names_displayed) == ViewportFlags::none)
             Dropdown::setItemSelected(9);
 
         Dropdown::setHighlightedItem(0);
