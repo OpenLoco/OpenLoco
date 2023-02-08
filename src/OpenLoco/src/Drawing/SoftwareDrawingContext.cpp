@@ -1534,7 +1534,7 @@ namespace OpenLoco::Drawing
             assert(!colour.isInset());
             if (colour.isTranslucent())
             {
-                // Pass 1 << 25 to drawRectImpl
+                // Must pass RectFlags::transparent to drawRectImpl for this codepath
                 if ((flags & RectInsetFlags::borderNone) != RectInsetFlags::none)
                 {
                     drawRectImpl(rt, rect, enumValue(Colours::getTranslucent(baseColour, 1)), RectFlags::transparent);
