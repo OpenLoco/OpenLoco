@@ -4,10 +4,16 @@
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "ObjectImageTable.h"
+#include "ObjectStringTable.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
 {
+    static loco_global<uint8_t, 0x0112C211> _intelligence;    // return of loadTemporaryObject
+    static loco_global<uint8_t, 0x0112C212> _aggressiveness;  // return of loadTemporaryObject
+    static loco_global<uint8_t, 0x0112C213> _competitiveness; // return of loadTemporaryObject
+
     // TODO: Should only be defined in ObjectSelectionWindow
     static constexpr uint8_t kDescriptionRowHeight = 10;
     static constexpr Ui::Size kObjectPreviewSize = { 112, 112 };
@@ -74,11 +80,39 @@ namespace OpenLoco
     // 0x00434CA0
     void CompetitorObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x00434CA0, regs);
+        auto remainingData = data.subspan(sizeof(CompetitorObject));
+
+        // Load object name string
+        auto loadString = [&remainingData, &handle](string_id& dst, uint8_t num) {
+            auto strRes = ObjectManager::loadStringTable(remainingData, handle, num);
+            dst = strRes.str;
+            remainingData = remainingData.subspan(strRes.tableLength);
+        };
+
+        loadString(var_00, 0);
+        loadString(var_02, 1);
+
+        // Load images
+        auto imageRes = ObjectManager::loadImageTable(remainingData);
+        const auto baseImageId = imageRes.imageOffset;
+        std::fill(std::begin(images), std::end(images), baseImageId);
+        for (auto i = 0U, emotionImageOffset = 0U; i < std::size(images); ++i)
+        {
+            if (emotions & (1 << i))
+            {
+                images[i] += emotionImageOffset;
+                emotionImageOffset += 2;
+            }
+        }
+
+        // Ensure we've loaded the entire object
+        assert(remainingData.size() == imageRes.tableLength);
+
+        // Copy competitor stats to global
+        // TODO: Refactor to not pass by global!
+        _intelligence = intelligence;
+        _aggressiveness = aggressiveness;
+        _competitiveness = competitiveness;
     }
 
     // 0x00434D08
