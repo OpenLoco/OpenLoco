@@ -166,6 +166,8 @@ namespace OpenLoco::Drawing
 
         virtual void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image) = 0;
 
+        virtual void drawImageMasked(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage) = 0;
+
         virtual void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex) = 0;
 
         virtual void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, Gfx::PaletteMap::View palette, const Gfx::G1Element* noiseImage) = 0;

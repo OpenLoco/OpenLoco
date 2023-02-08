@@ -638,6 +638,18 @@ namespace OpenLoco::Drawing
             drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
         }
 
+        // 0x00450705
+        static void drawImageMasked(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
+        {
+            registers regs;
+            regs.edi = X86Pointer(&rt);
+            regs.cx = pos.x;
+            regs.dx = pos.y;
+            regs.ebx = image.toUInt32();
+            regs.ebp = maskImage.toUInt32();
+            call(0x00450705, regs);
+        }
+
         static void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
         {
             PaletteMap::Buffer<PaletteMap::kDefaultSize> palette;
@@ -1881,6 +1893,11 @@ namespace OpenLoco::Drawing
     void SoftwareDrawingContext::drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image)
     {
         return Impl::drawImage(rt, pos, image);
+    }
+
+    void SoftwareDrawingContext::drawImageMasked(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
+    {
+        return Impl::drawImageMasked(rt, pos, image, maskImage);
     }
 
     void SoftwareDrawingContext::drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)

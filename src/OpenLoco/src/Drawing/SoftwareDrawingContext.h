@@ -111,6 +111,7 @@ namespace OpenLoco::Drawing
         void drawLine(Gfx::RenderTarget& rt, const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour) override;
         void drawImage(Gfx::RenderTarget* rt, int16_t x, int16_t y, uint32_t image) override;
         void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image) override;
+        void drawImageMasked(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage) override;
         void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex) override;
         void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, Gfx::PaletteMap::View palette, const Gfx::G1Element* noiseImage) override;
 
