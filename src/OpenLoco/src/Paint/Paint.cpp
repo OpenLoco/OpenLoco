@@ -870,7 +870,7 @@ namespace OpenLoco::Paint
                     break;
             }
         }
-        if (ps.flags & PaintStructFlags::hasMaskedImage)
+        if ((ps.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
         {
             drawingCtx.drawImageMasked(rt, imagePos, imageId, ps.maskedImageId);
         }
@@ -895,7 +895,7 @@ namespace OpenLoco::Paint
             imagePos.y &= 0xFFFE;
         }
 
-        if (attachPs.flags & PaintStructFlags::hasMaskedImage)
+        if ((attachPs.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
         {
             drawingCtx.drawImageMasked(rt, imagePos, imageId, attachPs.maskedImageId);
         }
