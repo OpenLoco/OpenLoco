@@ -51,6 +51,20 @@ namespace OpenLoco::Vehicles
         constexpr uint8_t isStillPowered = 1 << 1;
     }
 
+    enum class WaterMotionFlags : uint32_t
+    {
+        none = 0U,
+        isStopping = 1U << 0,
+        isLeavingDock = 1U << 1,
+        hasReachedDock = 1U << 16,
+        hasReachedADestination = 1U << 17,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(WaterMotionFlags);
+    constexpr bool hasFlags(WaterMotionFlags flags, WaterMotionFlags flagsToTest)
+    {
+        return (flags & flagsToTest) != WaterMotionFlags::none;
+    }
+
     enum class Status : uint8_t
     {
         unk_0 = 0, // no position (not placed)
@@ -382,7 +396,7 @@ namespace OpenLoco::Vehicles
         void beginUnloading();
         void beginLoading();
         void movePlaneTo(const Map::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
-        uint32_t updateWaterMotion(uint32_t flags);
+        WaterMotionFlags updateWaterMotion(WaterMotionFlags flags);
         void moveBoatTo(const Map::Pos3& loc, const uint8_t yaw, const Pitch pitch);
         uint8_t getLoadingModifier(const VehicleBogie* bogie);
         bool updateUnloadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
