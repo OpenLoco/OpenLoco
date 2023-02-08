@@ -828,7 +828,7 @@ namespace OpenLoco::Paint
         return false;
     }
 
-    static bool cullPaintStructImage(const ImageId& imageId, Ui::ViewportFlags viewFlags)
+    static bool cullPaintStructImage(const ImageId& imageId, const Ui::ViewportFlags viewFlags)
     {
         if ((viewFlags & Ui::ViewportFlags::underground_view) != Ui::ViewportFlags::none)
         {
@@ -908,11 +908,10 @@ namespace OpenLoco::Paint
     // 0x0045EA23
     void PaintSession::drawStructs()
     {
-        // edi
         Gfx::RenderTarget& rt = **_renderTarget;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        for (auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
+        for (const auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
         {
             const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags, getRotation(), _foregroundCullingHeight);
 
@@ -927,7 +926,7 @@ namespace OpenLoco::Paint
             drawStruct(rt, drawingCtx, *ps, shouldCull);
 
             // Draw any children this might have
-            for (auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
+            for (const auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
             {
                 const bool shouldCullChild = shouldTryCullPaintStruct(*childPs, _viewFlags, getRotation(), _foregroundCullingHeight);
 
@@ -943,7 +942,7 @@ namespace OpenLoco::Paint
             }
 
             // Draw any attachments to the struct
-            for (auto* attachPs = ps->attachedPS; attachPs != nullptr; attachPs = attachPs->next)
+            for (const auto* attachPs = ps->attachedPS; attachPs != nullptr; attachPs = attachPs->next)
             {
                 const bool shouldCullAttach = shouldTryCullPaintStruct(*ps, _viewFlags, getRotation(), _foregroundCullingHeight);
                 if (shouldCullAttach)
