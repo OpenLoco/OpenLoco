@@ -210,12 +210,12 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         Widget& frame = _widgets[Widx::outer_frame];
-        drawingCtx.drawRect(*rt, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        drawingCtx.drawRect(*rt, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
 
         // Draw widgets.
         window.draw(rt);
 
-        drawingCtx.drawRectInset(*rt, window.x + frame.left + 1, window.y + frame.top + 1, frame.width() - 2, frame.height() - 2, window.getColour(WindowColour::secondary).u8(), 0x30);
+        drawingCtx.drawRectInset(*rt, window.x + frame.left + 1, window.y + frame.top + 1, frame.width() - 2, frame.height() - 2, window.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);

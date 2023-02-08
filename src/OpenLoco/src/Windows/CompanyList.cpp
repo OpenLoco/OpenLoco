@@ -481,7 +481,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (rowItem == self.rowHover)
                 {
-                    drawingCtx.drawRect(rt, 0, yBottom, self.width, 24, (1 << 25) | PaletteIndex::index_30);
+                    drawingCtx.drawRect(rt, 0, yBottom, self.width, 24, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
 
                     stringId = StringIds::wcolour2_stringid;
                 }
@@ -1042,7 +1042,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (!(self->var_854 & (1 << cargoCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    drawingCtx.fillRect(*rt, x, y + 3, x + 4, y + 7, palette);
+                    drawingCtx.fillRect(*rt, x, y + 3, x + 4, y + 7, palette, Drawing::RectFlags::none);
                 }
 
                 auto args = FormatArguments();
@@ -1665,7 +1665,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (!(self->var_854 & (1 << companyCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    drawingCtx.fillRect(*rt, x, y + 3, x + 4, y + 7, colour);
+                    drawingCtx.fillRect(*rt, x, y + 3, x + 4, y + 7, colour, Drawing::RectFlags::none);
                 }
 
                 auto args = FormatArguments();

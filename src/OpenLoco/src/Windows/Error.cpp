@@ -213,21 +213,21 @@ namespace OpenLoco::Ui::Windows::Error
             uint16_t y = self.y;
             uint16_t width = self.width;
             uint16_t height = self.height;
-            auto skin = ObjectManager::get<InterfaceSkinObject>()->colour_09;
+            auto skin = ObjectManager::get<InterfaceSkinObject>()->errorColour;
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-            drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-            drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + enumValue(skin)));
+            drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(skin)), Drawing::RectFlags::transparent);
 
-            drawingCtx.drawRect(*rt, x, y + 2, 1, height - 4, 0x2000000 | 46);
-            drawingCtx.drawRect(*rt, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-            drawingCtx.drawRect(*rt, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-            drawingCtx.drawRect(*rt, x + 2, y, width - 4, 1, 0x2000000 | 46);
+            drawingCtx.drawRect(*rt, x, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, x + width - 1, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, x + 2, y + height - 1, width - 4, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, x + 2, y, width - 4, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
 
-            drawingCtx.drawRect(*rt, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-            drawingCtx.drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-            drawingCtx.drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-            drawingCtx.drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+            drawingCtx.drawRect(*rt, x + 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
 
             if (_errorCompetitorId == CompanyId::null)
             {

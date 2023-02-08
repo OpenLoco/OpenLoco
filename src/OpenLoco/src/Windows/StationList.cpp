@@ -472,7 +472,7 @@ namespace OpenLoco::Ui::Windows::StationList
             // Highlight selection.
             if (stationId == StationId(window.rowHover))
             {
-                drawingCtx.drawRect(rt, 0, yPos, window.width, kRowHeight, 0x2000030);
+                drawingCtx.drawRect(rt, 0, yPos, window.width, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 

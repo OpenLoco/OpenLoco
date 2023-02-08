@@ -24,8 +24,8 @@ namespace OpenLoco
         uint32_t img;   // 0x02
         Colour colour_06;
         Colour colour_07;
-        Colour colour_08;
-        Colour colour_09;
+        Colour tooltipColour; // 0x08
+        Colour errorColour;   // 0x09
         Colour colour_0A;
         Colour colour_0B;
         Colour colour_0C;

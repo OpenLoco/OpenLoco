@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 // Highlight selection.
                 if (townId == TownId(self.rowHover))
                 {
-                    drawingCtx.drawRect(rt, 0, yPos, self.width, kRowHeight, 0x2000030);
+                    drawingCtx.drawRect(rt, 0, yPos, self.width, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
@@ -1202,12 +1202,12 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        drawingCtx.drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), AdvancedColour::translucentFlag);
+                        drawingCtx.drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::colourLight);
                     }
                 }
                 else
                 {
-                    drawingCtx.drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary).u8(), (AdvancedColour::translucentFlag | AdvancedColour::outlineFlag));
+                    drawingCtx.drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary), (Drawing::RectInsetFlags::colourLight | Drawing::RectInsetFlags::borderInset));
                 }
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.rowInfo[i]);

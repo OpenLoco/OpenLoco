@@ -268,7 +268,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { inputSession.xOffset, 1 };
         drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
-        drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9));
+        drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
     }
 
     // 0x004CE8B6

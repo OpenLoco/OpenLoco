@@ -248,7 +248,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                 if (self.rowHover == i)
                 {
-                    drawingCtx.drawRect(rt, 0, height, self.width, 38, (1 << 25) | PaletteIndex::index_30);
+                    drawingCtx.drawRect(rt, 0, height, self.width, 38, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
                     stringId = StringIds::wcolour2_stringid;
                 }
 

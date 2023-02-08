@@ -448,7 +448,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 drawingCtx.drawStringLeftClipped(rt, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*_commonFormatArgs);
 
                 // Draw rectangle.
-                drawingCtx.fillRectInset(rt, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary).u8(), 0b110000);
+                drawingCtx.fillRectInset(rt, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillDarker);
 
                 // Draw current distribution setting.
                 const string_id distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
@@ -456,8 +456,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 drawingCtx.drawStringLeftClipped(rt, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
 
                 // Draw rectangle (knob).
-                const uint8_t flags = window.rowHover == i ? 0b110000 : 0;
-                drawingCtx.fillRectInset(rt, 329, yPos + 6, 339, yPos + 15, window.getColour(WindowColour::secondary).u8(), flags);
+                const Drawing::RectInsetFlags flags = window.rowHover == i ? Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillDarker : Drawing::RectInsetFlags::none;
+                drawingCtx.fillRectInset(rt, 329, yPos + 6, 339, yPos + 15, window.getColour(WindowColour::secondary), flags);
 
                 // Draw triangle (knob).
                 drawingCtx.drawStringLeft(rt, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);

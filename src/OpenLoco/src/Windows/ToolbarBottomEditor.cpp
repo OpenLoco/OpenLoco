@@ -72,17 +72,17 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawRect(*rt, previous.left + self.x, previous.top + self.y, previous.width(), previous.height(), 0x2000000 | 52);
+            drawingCtx.drawRect(*rt, previous.left + self.x, previous.top + self.y, previous.width(), previous.height(), enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
         }
-        drawingCtx.drawRect(*rt, next.left + self.x, next.top + self.y, next.width(), next.height(), 0x2000000 | 52);
+        drawingCtx.drawRect(*rt, next.left + self.x, next.top + self.y, next.width(), next.height(), enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
 
         self.draw(rt);
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawRectInset(*rt, previous.left + self.x + 1, previous.top + self.y + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary).u8(), 0x30);
+            drawingCtx.drawRectInset(*rt, previous.left + self.x + 1, previous.top + self.y + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
         }
-        drawingCtx.drawRectInset(*rt, next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary).u8(), 0x30);
+        drawingCtx.drawRectInset(*rt, next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
 
         drawingCtx.drawStringCentred(*rt, (previous.right + next.left) / 2 + self.x, self.y + self.height - 12, self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
 

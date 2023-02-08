@@ -572,7 +572,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto colour = overallColours[i];
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour);
+                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour, Drawing::RectFlags::none);
             }
             auto args = FormatArguments();
             args.push(lineNames[i]);
@@ -620,7 +620,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto colour = vehicleTypeColours[i];
 
-                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour);
+                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour, Drawing::RectFlags::none);
             }
             auto args = FormatArguments();
             args.push(lineNames[i]);
@@ -688,7 +688,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto colour = industryColours[_byte_F253CE[i]];
 
-                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour);
+                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour, Drawing::RectFlags::none);
             }
 
             auto args = FormatArguments();
@@ -719,7 +719,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour);
+                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour, Drawing::RectFlags::none);
             }
 
             auto routeType = StringIds::map_routes_aircraft;
@@ -771,7 +771,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << enumValue(index))) || !(mapFrameNumber & (1 << 2)))
             {
-                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour);
+                drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour, Drawing::RectFlags::none);
             }
 
             auto args = FormatArguments();
@@ -994,7 +994,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto trainPos = locationToMapWindowPos(vehicle->position);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRect(*rt, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour);
+        drawingCtx.fillRect(*rt, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour, Drawing::RectFlags::none);
     }
 
     // 0x0046C294
@@ -1170,7 +1170,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046BE51, 0x0046BE34
-    static void drawRectOnMap(Gfx::RenderTarget* rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    static void drawRectOnMap(Gfx::RenderTarget* rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, Drawing::RectFlags flags)
     {
         if (left > right)
         {
@@ -1183,7 +1183,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRect(*rt, left, top, right, bottom, colour);
+        drawingCtx.fillRect(*rt, left, top, right, bottom, colour, flags);
     }
 
     // 0x0046BE51
@@ -1198,9 +1198,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         right += _4FDC4C[getCurrentRotation()];
         bottom += _4FDC4E[getCurrentRotation()];
 
-        uint32_t colour = (1 << 24) | PaletteIndex::index_0A;
+        const auto colour = PaletteIndex::index_0A;
 
-        drawRectOnMap(rt, left, top, right, bottom, colour);
+        drawRectOnMap(rt, left, top, right, bottom, colour, Drawing::RectFlags::crossHatching);
     }
 
     // 0x0046BE34
@@ -1217,9 +1217,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         right += rightOffset;
         bottom += bottomOffset;
 
-        uint32_t colour = PaletteIndex::index_0A;
+        const auto colour = PaletteIndex::index_0A;
 
-        drawRectOnMap(rt, left, top, right, bottom, colour);
+        drawRectOnMap(rt, left, top, right, bottom, colour, Drawing::RectFlags::none);
     }
 
     // 0x0046BAD5

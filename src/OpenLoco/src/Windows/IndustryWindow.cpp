@@ -603,7 +603,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto args = FormatArguments();
                 args.push(yTick);
 
-                drawingCtx.drawRect(*rt, self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+                drawingCtx.drawRect(*rt, self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
 
                 drawingCtx.drawStringRight(*rt, self.x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
@@ -633,7 +633,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    drawingCtx.drawRect(*rt, xPos, yPos + 11, 1, self.height - 74, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+                    drawingCtx.drawRect(*rt, xPos, yPos + 11, 1, self.height - 74, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
                 }
 
                 const auto history = productionTabWidx == widx::tab_production ? industry->producedCargoMonthlyHistory1 : industry->producedCargoMonthlyHistory2;

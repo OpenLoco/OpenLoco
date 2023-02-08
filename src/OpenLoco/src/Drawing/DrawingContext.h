@@ -4,10 +4,33 @@
 #include "Graphics/PaletteMap.h"
 #include "Types.hpp"
 #include "Ui/Rect.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstdint>
 
 namespace OpenLoco::Drawing
 {
+    enum class RectInsetFlags : uint8_t
+    {
+        fillTransparent = 1U << 2, // ? unused
+        borderNone = 1U << 3,      // ? unused
+        fillNone = 1U << 4,
+        borderInset = 1U << 5,
+        fillDarker = 1U << 6,
+        colourLight = 1U << 7,
+        none = 0U
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RectInsetFlags);
+
+    enum class RectFlags : uint32_t
+    {
+        crossHatching = 1U << 24,
+        transparent = 1U << 25,   // Changes colour parameter from PaletteIndex_t to ExtColour
+        selectPattern = 1U << 26, // unused
+        g1Pattern = 1U << 27,     // unused
+        none = 0U
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RectFlags);
+
     class DrawingContext
     {
     public:
@@ -129,13 +152,13 @@ namespace OpenLoco::Drawing
 
         virtual std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) = 0;
 
-        virtual void fillRect(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour) = 0;
+        virtual void fillRect(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags) = 0;
 
-        virtual void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour) = 0;
+        virtual void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags) = 0;
 
-        virtual void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags) = 0;
+        virtual void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags) = 0;
 
-        virtual void drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags) = 0;
+        virtual void drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags) = 0;
 
         virtual void drawLine(Gfx::RenderTarget& rt, const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour) = 0;
 

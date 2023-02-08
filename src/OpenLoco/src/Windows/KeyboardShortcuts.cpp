@@ -168,7 +168,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             string_id format = StringIds::black_stringid;
             if (i == self.rowHover)
             {
-                drawingCtx.drawRect(rt, 0, yPos, 800, kRowHeight, 0x2000030);
+                drawingCtx.drawRect(rt, 0, yPos, 800, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
                 format = StringIds::wcolour2_stringid;
             }
 
