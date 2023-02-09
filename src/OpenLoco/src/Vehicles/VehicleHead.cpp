@@ -1845,14 +1845,6 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    namespace WaterMotionFlags
-    {
-        constexpr uint32_t isStopping = 1 << 0;
-        constexpr uint32_t isLeavingDock = 1 << 1;
-        constexpr uint32_t hasReachedDock = 1 << 16;
-        constexpr uint32_t hasReachedADestination = 1 << 17;
-    }
-
     // 0x004A9649
     bool VehicleHead::updateWater()
     {
@@ -1889,7 +1881,7 @@ namespace OpenLoco::Vehicles
 
         if (var_0C & Flags0C::commandStop)
         {
-            if (!(updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination))
+            if ((updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination) == WaterMotionFlags::none)
             {
                 return true;
             }
@@ -1925,7 +1917,7 @@ namespace OpenLoco::Vehicles
             status = Status::travelling;
             status = sub_427BF2();
             advanceToNextRoutableOrder();
-            if (!(updateWaterMotion(0) & WaterMotionFlags::hasReachedDock))
+            if ((updateWaterMotion(WaterMotionFlags::none) & WaterMotionFlags::hasReachedDock) == WaterMotionFlags::none)
             {
                 return true;
             }
@@ -2346,7 +2338,7 @@ namespace OpenLoco::Vehicles
     // Output flags:
     // bit 16 : reachedDock
     // bit 17 : reachedADestination
-    uint32_t VehicleHead::updateWaterMotion(uint32_t flags)
+    WaterMotionFlags VehicleHead::updateWaterMotion(WaterMotionFlags flags)
     {
         Vehicle2* veh2 = _vehicleUpdate_2;
 
@@ -2373,7 +2365,7 @@ namespace OpenLoco::Vehicles
         auto targetSpeed = 5_mph;
         if (stationId == StationId::null)
         {
-            if (!(flags & WaterMotionFlags::isStopping))
+            if ((flags & WaterMotionFlags::isStopping) == WaterMotionFlags::none)
             {
                 if (!(veh2->var_73 & Flags73::isBrokenDown))
                 {
@@ -2415,14 +2407,15 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if ((flags & WaterMotionFlags::isLeavingDock) || manhattanDistance <= targetTolerance)
+        if (((flags & WaterMotionFlags::isLeavingDock) != WaterMotionFlags::none) || (manhattanDistance <= targetTolerance))
         {
             flags |= WaterMotionFlags::hasReachedADestination;
-            if (stationId != StationId::null && !(flags & WaterMotionFlags::isLeavingDock))
+            if ((stationId != StationId::null)
+                && ((flags & WaterMotionFlags::isLeavingDock) == WaterMotionFlags::none))
             {
                 flags |= WaterMotionFlags::hasReachedDock;
             }
-            if (flags & WaterMotionFlags::isStopping)
+            if ((flags & WaterMotionFlags::isStopping) != WaterMotionFlags::none)
             {
                 return flags;
             }
@@ -2440,7 +2433,7 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (!(flags & WaterMotionFlags::isLeavingDock) && stationId != StationId::null)
+            if (((flags & WaterMotionFlags::isLeavingDock) == WaterMotionFlags::none) && (stationId != StationId::null))
             {
                 return flags;
             }
