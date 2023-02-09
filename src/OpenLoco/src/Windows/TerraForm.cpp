@@ -37,7 +37,6 @@ using namespace OpenLoco::GameCommands;
 namespace OpenLoco::Ui::Windows::Terraform
 {
 
-
     namespace Common
     {
         enum widx
