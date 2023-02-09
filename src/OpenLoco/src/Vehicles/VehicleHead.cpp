@@ -199,7 +199,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         for (auto& car : train.cars)
         {
-            if (car.front->var_5F & Flags5F::brokenDown)
+            if (car.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
             {
                 if ((ScenarioManager::getScenarioTicks() & 3) == 0)
                 {
@@ -209,13 +209,13 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if ((car.front->var_5F & Flags5F::breakdownPending) && !isTitleMode())
+            if (car.front->hasBreakdownFlags(BreakdownFlags::breakdownPending) && !isTitleMode())
             {
                 auto newConfig = Config::get();
                 if (!newConfig.breakdownsDisabled)
                 {
-                    car.front->var_5F &= ~Flags5F::breakdownPending;
-                    car.front->var_5F |= Flags5F::brokenDown;
+                    car.front->breakdownFlags &= ~BreakdownFlags::breakdownPending;
+                    car.front->breakdownFlags |= BreakdownFlags::brokenDown;
                     car.front->var_6A = 5;
                     applyBreakdownToTrain();
 
@@ -245,7 +245,7 @@ namespace OpenLoco::Vehicles
             {
                 continue;
             }
-            if (car.front->var_5F & Flags5F::brokenDown)
+            if (car.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
             {
                 isBrokenDown = true;
             }
@@ -651,7 +651,7 @@ namespace OpenLoco::Vehicles
                 {
                     assert(false);
                 }
-                if (train.cars.firstCar.front->var_5F & Flags5F::brokenDown)
+                if (train.cars.firstCar.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
                 {
                     updateDrivingSoundNone(vehType2or6);
                     return;
@@ -744,7 +744,7 @@ namespace OpenLoco::Vehicles
                 {
                     assert(false);
                 }
-                if (train.cars.firstCar.front->var_5F & Flags5F::brokenDown)
+                if (train.cars.firstCar.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
                 {
                     updateDrivingSoundNone(vehType2or6);
                     return;
@@ -2290,13 +2290,13 @@ namespace OpenLoco::Vehicles
     // 0x004B99E1
     void VehicleHead::beginUnloading()
     {
-        var_5F &= ~Flags5F::unk_0;
+        breakdownFlags &= ~BreakdownFlags::unk_0;
         status = Status::unloading;
         cargoTransferTimeout = 10;
         var_58 = 0;
 
         Vehicle train(head);
-        train.cars.applyToComponents([](auto& component) { component.var_5F |= Flags5F::unk_0; });
+        train.cars.applyToComponents([](auto& component) { component.breakdownFlags |= BreakdownFlags::unk_0; });
     }
 
     // 0x00426CA4
@@ -2580,7 +2580,7 @@ namespace OpenLoco::Vehicles
                     auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
                     if (!roadStationObj->hasFlags(RoadStationFlags::roadEnd))
                     {
-                        var_5F |= Flags5F::unk_0;
+                        breakdownFlags |= BreakdownFlags::unk_0;
                     }
                     loadingModifier = 1;
                 }
@@ -2745,7 +2745,7 @@ namespace OpenLoco::Vehicles
         cargoTransferTimeout = 10;
 
         Vehicle train(head);
-        train.cars.applyToComponents([](auto& component) { component.var_5F |= Flags5F::unk_0; });
+        train.cars.applyToComponents([](auto& component) { component.breakdownFlags |= BreakdownFlags::unk_0; });
     }
     // 0x004B9A2A
     void VehicleHead::updateUnloadCargo()
@@ -2761,9 +2761,9 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->var_5F & Flags5F::unk_0)
+                if (carComponent.front->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.front->var_5F &= ~Flags5F::unk_0;
+                    carComponent.front->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
                     {
                         return;
@@ -2771,14 +2771,14 @@ namespace OpenLoco::Vehicles
                     updateUnloadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return;
                 }
-                else if (carComponent.back->var_5F & Flags5F::unk_0)
+                else if (carComponent.back->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.back->var_5F &= ~Flags5F::unk_0;
+                    carComponent.back->breakdownFlags &= ~BreakdownFlags::unk_0;
                     return;
                 }
-                else if (carComponent.body->var_5F & Flags5F::unk_0)
+                else if (carComponent.body->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.body->var_5F &= ~Flags5F::unk_0;
+                    carComponent.body->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.body->primaryCargo.type == 0xFF)
                     {
                         return;
@@ -2993,9 +2993,9 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->var_5F & Flags5F::unk_0)
+                if (carComponent.front->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.front->var_5F &= ~Flags5F::unk_0;
+                    carComponent.front->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
                     {
                         return true;
@@ -3003,14 +3003,14 @@ namespace OpenLoco::Vehicles
                     updateLoadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return true;
                 }
-                else if (carComponent.back->var_5F & Flags5F::unk_0)
+                else if (carComponent.back->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.back->var_5F &= ~Flags5F::unk_0;
+                    carComponent.back->breakdownFlags &= ~BreakdownFlags::unk_0;
                     return true;
                 }
-                else if (carComponent.body->var_5F & Flags5F::unk_0)
+                else if (carComponent.body->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.body->var_5F &= ~Flags5F::unk_0;
+                    carComponent.body->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.body->primaryCargo.type == 0xFF)
                     {
                         return true;
@@ -3046,7 +3046,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (carComponent.front->secondaryCargo.type == waitFor->getCargo() && carComponent.front->secondaryCargo.maxQty != carComponent.front->secondaryCargo.qty)
                     {
-                        if (!(var_5F & Flags5F::unk_0))
+                        if (!hasBreakdownFlags(BreakdownFlags::unk_0))
                         {
                             beginLoading();
                             return true;
@@ -3060,7 +3060,7 @@ namespace OpenLoco::Vehicles
                     }
                     if (carComponent.body->primaryCargo.type == waitFor->getCargo() && carComponent.body->primaryCargo.maxQty != carComponent.body->primaryCargo.qty)
                     {
-                        if (!(var_5F & Flags5F::unk_0))
+                        if (!hasBreakdownFlags(BreakdownFlags::unk_0))
                         {
                             beginLoading();
                             return true;
@@ -3090,7 +3090,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         var_6F = train.veh2->position.x;
         var_71 = train.veh2->position.y;
-        var_5F |= Flags5F::unk_3;
+        breakdownFlags |= BreakdownFlags::unk_3;
     }
 
     // 0x004707C0

@@ -905,7 +905,7 @@ namespace OpenLoco::Vehicles
         const auto* vehicleObject = getObject();
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
-        if (frontBogie->var_5F & Flags5F::brokenDown)
+        if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
             return;
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
@@ -1049,7 +1049,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
-        if (frontBogie->var_5F & Flags5F::brokenDown)
+        if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
             return;
 
         VehicleHead* headVeh = _vehicleUpdate_head;
@@ -1107,7 +1107,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
-        if (frontBogie->var_5F & Flags5F::brokenDown)
+        if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
             return;
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
@@ -1155,7 +1155,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
-        if (frontBogie->var_5F & Flags5F::brokenDown)
+        if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
             return;
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
@@ -1192,7 +1192,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
-        if (frontBogie->var_5F & Flags5F::brokenDown)
+        if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
             return;
 
         Vehicle2* veh_2 = _vehicleUpdate_2;

@@ -90,13 +90,15 @@ namespace OpenLoco::Vehicles
 
     struct Vehicle2or6;
 
-    namespace Flags5F
+    enum class BreakdownFlags : uint8_t
     {
-        constexpr uint8_t unk_0 = 1 << 0;
-        constexpr uint8_t breakdownPending = 1 << 1;
-        constexpr uint8_t brokenDown = 1 << 2;
-        constexpr uint8_t unk_3 = 1 << 3;
-    }
+        none = 0U,
+        unk_0 = 1U << 0,
+        breakdownPending = 1U << 1,
+        brokenDown = 1U << 2,
+        unk_3 = 1U << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(BreakdownFlags);
 
     enum class VehicleThingType : uint8_t
     {
@@ -319,9 +321,9 @@ namespace OpenLoco::Vehicles
         uint16_t cargoTransferTimeout; // 0x56
         uint32_t var_58;
         uint8_t var_5C;
-        Status status;           // 0x5D
-        VehicleType vehicleType; // 0x5E
-        uint8_t var_5F;          // 0x5F
+        Status status;                 // 0x5D
+        VehicleType vehicleType;       // 0x5E
+        BreakdownFlags breakdownFlags; // 0x5F
         uint8_t var_60;
         uint16_t var_61;
         uint8_t pad_63[0x68 - 0x63];
@@ -356,6 +358,10 @@ namespace OpenLoco::Vehicles
         void applyBreakdownToTrain();
         void sub_4AF7A4();
         uint32_t getVehicleTotalLength() const;
+        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
+        {
+            return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
+        }
 
     private:
         void updateDrivingSounds();
@@ -551,13 +557,17 @@ namespace OpenLoco::Vehicles
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
         uint8_t var_5E;
-        uint8_t var_5F;
+        BreakdownFlags breakdownFlags;
 
         const VehicleObject* getObject() const;
         bool update();
         void secondaryAnimationUpdate();
         void sub_4AAB0B();
         void updateCargoSprite();
+        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
+        {
+            return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
+        }
 
     private:
         void animationUpdate();
@@ -606,7 +616,7 @@ namespace OpenLoco::Vehicles
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
         uint8_t var_5E;
-        uint8_t var_5F;
+        BreakdownFlags breakdownFlags;
         uint8_t var_60;
         uint8_t var_61;
         uint32_t refundCost;  // 0x62 front bogies only
@@ -619,6 +629,10 @@ namespace OpenLoco::Vehicles
         bool update();
         bool isOnRackRail();
         void carComponent_sub_4AF16A();
+        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
+        {
+            return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
+        }
 
     private:
         void updateRoll();
