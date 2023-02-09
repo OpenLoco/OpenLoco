@@ -99,7 +99,7 @@ namespace OpenLoco
         uint8_t costIndex;              // 0xCF
         int16_t costFactor;             // 0xD0
         int16_t clearCostFactor;        // 0xD2
-        uint8_t scaffoldingSegmentType; // 0xD4
+        uint8_t scaffoldingSegmentFlagsType; // 0xD4
         Colour scaffoldingColour;       // 0xD5
         uint16_t var_D6;
         uint8_t pad_D8[0xDA - 0xD8];

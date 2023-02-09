@@ -59,7 +59,7 @@ namespace OpenLoco::Paint
         // 0x00525D30 (note this should be combined with a applyGhostToImage)
         const auto scaffoldingColour = indObj.scaffoldingColour;
 
-        const auto scaffSegType = indObj.scaffoldingSegmentType;
+        const auto scaffSegType = indObj.scaffoldingSegmentFlagsType;
         if (totalSectionHeight != 0 && scaffSegType != 0xFF)
         {
             const auto* scaffObj = ObjectManager::get<ScaffoldingObject>();
@@ -206,7 +206,7 @@ namespace OpenLoco::Paint
             {
                 paintIndustryBuilding(session, elIndustry, *indObj, imageOffset, bbOffset, bbSize, baseColour, rotation, isMultiTile);
             }
-            session.setSegmentSupportHeight(Segment::all, 0xFFFF, 0);
+            session.setSegmentSupportHeight(SegmentFlags::all, 0xFFFF, 0);
             session.setGeneralSupportHeight(0xFFFF, 0); // TODO: Check if this works previously would not set slope to zero
         }
         else
