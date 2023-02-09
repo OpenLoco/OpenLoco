@@ -28,14 +28,15 @@ namespace OpenLoco
         uint8_t var_07;
         uint32_t image; // 0x08
         uint32_t var_0C;
-        uint8_t pad_10[0x12 - 0x10];
+        uint16_t flags;
         uint8_t numAux01;    // 0x12
-        uint8_t numAux02Ent; // 0x13
-        uint8_t pad_14[0x1C - 0x14];
-        uint32_t var_1C[1];     // odd that this is size 1 but that is how its used
-        uint16_t designedYear;  // 0x20
-        uint16_t obsoleteYear;  // 0x22
-        Map::Pos2 boatPosition; // 0x24
+        uint8_t numAux02Ent; // 0x13 must be 1 or 0
+        const uint8_t* var_14;
+        const uint16_t* var_18;
+        const uint8_t* var_1C[1]; // odd that this is size 1 but that is how its used
+        uint16_t designedYear;    // 0x20
+        uint16_t obsoleteYear;    // 0x22
+        Map::Pos2 boatPosition;   // 0x24
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;

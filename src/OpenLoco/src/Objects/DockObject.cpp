@@ -2,7 +2,9 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "ObjectImageTable.h"
 #include "ObjectManager.h"
+#include "ObjectStringTable.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
@@ -42,11 +44,39 @@ namespace OpenLoco
     // 0x00490E49
     void DockObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x00490E49, regs);
+        auto remainingData = data.subspan(sizeof(DockObject));
+
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        // Load unk?
+        var_14 = reinterpret_cast<const uint8_t*>(remainingData.data());
+        remainingData = remainingData.subspan(numAux01);
+
+        // Load unk2?
+        var_18 = reinterpret_cast<const uint16_t*>(remainingData.data());
+        remainingData = remainingData.subspan(numAux02Ent * sizeof(uint16_t));
+        for (auto i = 0U; i < numAux02Ent; ++i)
+        {
+            var_1C[0] = reinterpret_cast<const uint8_t*>(remainingData.data());
+            while (*remainingData.data() != static_cast<std::byte>(0xFF))
+            {
+                remainingData = remainingData.subspan(1);
+            }
+            remainingData = remainingData.subspan(1);
+        }
+
+        auto imgRes = ObjectManager::loadImageTable(remainingData);
+        image = imgRes.imageOffset;
+
+        // Related to unk2?
+        const auto offset = (flags & (1 << 0)) ? numAux02Ent * 4 : 1;
+        var_0C = imgRes.imageOffset + offset;
+
+        // Unused code numAux01 related
+
+        assert(remainingData.size() == imgRes.tableLength);
     }
 
     // 0x00490EC9
@@ -55,6 +85,8 @@ namespace OpenLoco
         name = 0;
         image = 0;
         var_0C = 0;
-        std::fill(std::begin(var_1C), std::end(var_1C), 0);
+        var_14 = nullptr;
+        var_18 = nullptr;
+        std::fill(std::begin(var_1C), std::end(var_1C), nullptr);
     }
 }
