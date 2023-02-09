@@ -3181,7 +3181,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             Ui::Point loc = { 8, static_cast<int16_t>(y - 1) };
             drawingCtx.drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
-            if (order.hasFlag(Vehicles::OrderFlags::HasNumber))
+            if (order.hasFlags(Vehicles::OrderFlags::HasNumber))
             {
                 if (Input::isToolActive(self.type, self.number))
                 {

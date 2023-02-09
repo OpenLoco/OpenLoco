@@ -214,7 +214,7 @@ namespace OpenLoco::Ui
         {
             auto orderRing = Vehicles::OrderRingView(orderFrame.orderOffset);
             auto* order = orderRing.atIndex(0);
-            if (!order->hasFlag(Vehicles::OrderFlags::HasNumber))
+            if (!order->hasFlags(Vehicles::OrderFlags::HasNumber))
             {
                 continue;
             }
