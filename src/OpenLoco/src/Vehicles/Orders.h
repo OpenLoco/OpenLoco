@@ -19,11 +19,11 @@ namespace OpenLoco::Vehicles
 
     enum class OrderFlags : uint8_t
     {
-       none = 0U,
-       IsRoutable = 1U << 0,
-       HasNumber = 1U << 1,
-       HasCargo = 1U << 2,
-       HasStation = 1U << 3,
+        none = 0U,
+        IsRoutable = 1U << 0,
+        HasNumber = 1U << 1,
+        HasCargo = 1U << 2,
+        HasStation = 1U << 3,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(OrderFlags)
 
@@ -46,7 +46,7 @@ namespace OpenLoco::Vehicles
         std::shared_ptr<Order> clone() const;
         uint64_t getRaw() const;
         bool hasFlags(const OrderFlags flag) const;
-        
+
         template<typename T>
         constexpr bool is() const { return getType() == T::kType; }
 
