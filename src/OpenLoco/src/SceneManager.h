@@ -1,20 +1,24 @@
 #pragma once
+#include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstdint>
 
 namespace OpenLoco
 {
-    namespace ScreenFlags
+    enum class ScreenFlags : uint16_t
     {
-        constexpr uint16_t title = 1 << 0;
-        constexpr uint16_t editor = 1 << 1;
-        constexpr uint16_t networked = 1 << 2;
-        constexpr uint16_t networkHost = 1 << 3;
-        constexpr uint16_t progressBarActive = 1 << 4;
-        constexpr uint16_t initialised = 1 << 5;
-        constexpr uint16_t driverCheatEnabled = 1 << 6;
-        constexpr uint16_t sandboxMode = 1 << 7;          // new in OpenLoco
-        constexpr uint16_t pauseOverrideEnabled = 1 << 8; // new in OpenLoco
-    }
+        none = 0U,
+        title = 1U << 0,
+        editor = 1U << 1,
+        networked = 1U << 2,
+        networkHost = 1U << 3,
+        progressBarActive = 1U << 4,
+        initialised = 1U << 5,
+        driverCheatEnabled = 1U << 6,
+        sandboxMode = 1U << 7,          // new in OpenLoco
+        pauseOverrideEnabled = 1U << 8, // new in OpenLoco
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ScreenFlags);
 
     enum class GameSpeed : uint8_t
     {
@@ -27,10 +31,10 @@ namespace OpenLoco
     void resetScreenAge();
     uint16_t getScreenAge();
     void setScreenAge(uint16_t newAge);
-    uint16_t getScreenFlags();
-    void setAllScreenFlags(uint16_t newScreenFlags);
-    void setScreenFlag(uint16_t value);
-    void clearScreenFlag(uint16_t value);
+    ScreenFlags getScreenFlags();
+    void setAllScreenFlags(ScreenFlags newScreenFlags);
+    void setScreenFlag(ScreenFlags value);
+    void clearScreenFlag(ScreenFlags value);
     bool isEditorMode();
     bool isTitleMode();
     bool isNetworked();
