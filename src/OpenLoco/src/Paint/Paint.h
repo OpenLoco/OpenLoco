@@ -354,8 +354,8 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00F00152> _maxHeight;
         inline static Interop::loco_global<uint16_t, 0x00F003F4> _F003F4;
         inline static Interop::loco_global<uint16_t, 0x00F003F6> _F003F6;
-        inline static Interop::loco_global<uint32_t[9], 0x00F003F8> _unkSegmentFlagss;
-        inline static Interop::loco_global<SupportHeight[9], 0x00F00458> _supportSegmentFlagss;
+        inline static Interop::loco_global<uint32_t[9], 0x00F003F8> _unkSegments;
+        inline static Interop::loco_global<SupportHeight[9], 0x00F00458> _supportSegments;
         inline static Interop::loco_global<SupportHeight, 0x00F0047C> _support;
         inline static Interop::loco_global<int16_t, 0x00F00480> _waterHeight;
         inline static Interop::loco_global<uint32_t, 0x0112C300> _112C300;

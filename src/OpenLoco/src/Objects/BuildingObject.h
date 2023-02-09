@@ -45,7 +45,7 @@ namespace OpenLoco
         BuildingObjectFlags flags;           // 0x98
         uint8_t clearCostIndex;              // 0x99
         uint16_t clearCostFactor;            // 0x9A
-        uint8_t scaffoldingSegmentFlagsType; // 0x9C
+        uint8_t scaffoldingSegmentType; // 0x9C
         Colour scaffoldingColour;            // 0x9D
         uint8_t pad_9E[0xA0 - 0x9E];
         uint8_t producedQuantity[2];     // 0xA0

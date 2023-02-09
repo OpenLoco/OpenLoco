@@ -116,12 +116,12 @@ namespace OpenLoco::Interop
 #pragma pack(pop)
 
 #ifndef USE_MMAP
-    constexpr uintptr_t kGoodPlaceForDataSegmentFlags = 0x008A4000;
+    constexpr uintptr_t kGoodPlaceForDataSegment = 0x008A4000;
 #else
 #if defined(PLATFORM_32BIT)
-    constexpr uintptr_t kGoodPlaceForDataSegmentFlags = 0x09000000;
+    constexpr uintptr_t kGoodPlaceForDataSegment = 0x09000000;
 #elif defined(PLATFORM_64BIT)
-    constexpr uintptr_t kGoodPlaceForDataSegmentFlags = 0x200000000;
+    constexpr uintptr_t kGoodPlaceForDataSegment = 0x200000000;
 #else
 #error "Unknown platform"
 #endif
@@ -130,7 +130,7 @@ namespace OpenLoco::Interop
     template<uint32_t TAddress, typename T>
     constexpr T& addr()
     {
-        constexpr auto ptrAddr = kGoodPlaceForDataSegmentFlags - 0x008A4000 + TAddress;
+        constexpr auto ptrAddr = kGoodPlaceForDataSegment - 0x008A4000 + TAddress;
         // We use std::launder to prevent the compiler from doing optimizations that lead to undefined behavior.
         return *std::launder(reinterpret_cast<T*>(ptrAddr));
     }

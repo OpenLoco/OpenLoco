@@ -54,7 +54,7 @@ namespace OpenLoco::Paint
         _525CF8 = 0;
         _F003F4 = 0;
         _F003F6 = 0;
-        std::fill(std::begin(_unkSegmentFlagss), std::end(_unkSegmentFlagss), 0);
+        std::fill(std::begin(_unkSegments), std::end(_unkSegments), 0);
         std::fill(std::begin(_E400D0), std::end(_E400D0), nullptr);
         std::fill(std::begin(_E400E4), std::end(_E400E4), nullptr);
         _112C300 = 0;
@@ -373,11 +373,11 @@ namespace OpenLoco::Paint
         {
             if ((segments & segmentOffsets[s]) != SegmentFlags::none)
             {
-                _supportSegmentFlagss[s].height = height;
+                _supportSegments[s].height = height;
                 if (height != 0xFFFF)
                 {
-                    _supportSegmentFlagss[s].slope = slope;
-                    _supportSegmentFlagss[s].var_03 = 0;
+                    _supportSegments[s].slope = slope;
+                    _supportSegments[s].var_03 = 0;
                 }
             }
         }

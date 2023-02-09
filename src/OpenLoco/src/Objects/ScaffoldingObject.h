@@ -37,38 +37,38 @@ namespace OpenLoco
 
     namespace Scaffolding::ImageIds
     {
-        constexpr uint32_t type01x1SegmentFlagsBack = 0;
-        constexpr uint32_t type01x1SegmentFlagsFront = 1;
+        constexpr uint32_t type01x1SegmentBack = 0;
+        constexpr uint32_t type01x1SegmentFront = 1;
         constexpr uint32_t type01x1RoofNE = 2;
         constexpr uint32_t type01x1RoofSE = 3;
         constexpr uint32_t type01x1RoofSW = 4;
         constexpr uint32_t type01x1RoofNW = 5;
-        constexpr uint32_t type02x2SegmentFlagsBack = 6;
-        constexpr uint32_t type02x2SegmentFlagsFront = 7;
+        constexpr uint32_t type02x2SegmentBack = 6;
+        constexpr uint32_t type02x2SegmentFront = 7;
         constexpr uint32_t type02x2RoofNE = 8;
         constexpr uint32_t type02x2RoofSE = 9;
         constexpr uint32_t type02x2RoofSW = 10;
         constexpr uint32_t type02x2RoofNW = 11;
-        constexpr uint32_t type11x1SegmentFlagsBack = 12;
-        constexpr uint32_t type11x1SegmentFlagsFront = 13;
+        constexpr uint32_t type11x1SegmentBack = 12;
+        constexpr uint32_t type11x1SegmentFront = 13;
         constexpr uint32_t type11x1RoofNE = 14;
         constexpr uint32_t type11x1RoofSE = 15;
         constexpr uint32_t type11x1RoofSW = 16;
         constexpr uint32_t type11x1RoofNW = 17;
-        constexpr uint32_t type12x2SegmentFlagsBack = 18;
-        constexpr uint32_t type12x2SegmentFlagsFront = 19;
+        constexpr uint32_t type12x2SegmentBack = 18;
+        constexpr uint32_t type12x2SegmentFront = 19;
         constexpr uint32_t type12x2RoofNE = 20;
         constexpr uint32_t type12x2RoofSE = 21;
         constexpr uint32_t type12x2RoofSW = 22;
         constexpr uint32_t type12x2RoofNW = 23;
-        constexpr uint32_t type21x1SegmentFlagsBack = 24;
-        constexpr uint32_t type21x1SegmentFlagsFront = 25;
+        constexpr uint32_t type21x1SegmentBack = 24;
+        constexpr uint32_t type21x1SegmentFront = 25;
         constexpr uint32_t type21x1RoofNE = 26;
         constexpr uint32_t type21x1RoofSE = 27;
         constexpr uint32_t type21x1RoofSW = 28;
         constexpr uint32_t type21x1RoofNW = 29;
-        constexpr uint32_t type22x2SegmentFlagsBack = 30;
-        constexpr uint32_t type22x2SegmentFlagsFront = 31;
+        constexpr uint32_t type22x2SegmentBack = 30;
+        constexpr uint32_t type22x2SegmentFront = 31;
         constexpr uint32_t type22x2RoofNE = 32;
         constexpr uint32_t type22x2RoofSE = 33;
         constexpr uint32_t type22x2RoofSW = 34;
@@ -93,8 +93,8 @@ namespace OpenLoco
     static constexpr std::array<ScaffoldingImages, 3> kScaffoldingImages = {
         ScaffoldingImages{
             ScaffoldingImages::Building{
-                Scaffolding::ImageIds::type01x1SegmentFlagsBack,
-                Scaffolding::ImageIds::type01x1SegmentFlagsFront,
+                Scaffolding::ImageIds::type01x1SegmentBack,
+                Scaffolding::ImageIds::type01x1SegmentFront,
                 {
                     Scaffolding::ImageIds::type01x1RoofNE,
                     Scaffolding::ImageIds::type01x1RoofSE,
@@ -103,8 +103,8 @@ namespace OpenLoco
                 },
             },
             ScaffoldingImages::Building{
-                Scaffolding::ImageIds::type02x2SegmentFlagsBack,
-                Scaffolding::ImageIds::type02x2SegmentFlagsFront,
+                Scaffolding::ImageIds::type02x2SegmentBack,
+                Scaffolding::ImageIds::type02x2SegmentFront,
                 {
                     Scaffolding::ImageIds::type02x2RoofNE,
                     Scaffolding::ImageIds::type02x2RoofSE,
@@ -115,8 +115,8 @@ namespace OpenLoco
         },
         ScaffoldingImages{
             ScaffoldingImages::Building{
-                Scaffolding::ImageIds::type11x1SegmentFlagsBack,
-                Scaffolding::ImageIds::type11x1SegmentFlagsFront,
+                Scaffolding::ImageIds::type11x1SegmentBack,
+                Scaffolding::ImageIds::type11x1SegmentFront,
                 {
                     Scaffolding::ImageIds::type11x1RoofNE,
                     Scaffolding::ImageIds::type11x1RoofSE,
@@ -125,8 +125,8 @@ namespace OpenLoco
                 },
             },
             ScaffoldingImages::Building{
-                Scaffolding::ImageIds::type12x2SegmentFlagsBack,
-                Scaffolding::ImageIds::type12x2SegmentFlagsFront,
+                Scaffolding::ImageIds::type12x2SegmentBack,
+                Scaffolding::ImageIds::type12x2SegmentFront,
                 {
                     Scaffolding::ImageIds::type12x2RoofNE,
                     Scaffolding::ImageIds::type12x2RoofSE,
@@ -137,8 +137,8 @@ namespace OpenLoco
         },
         ScaffoldingImages{
             ScaffoldingImages::Building{
-                Scaffolding::ImageIds::type21x1SegmentFlagsBack,
-                Scaffolding::ImageIds::type21x1SegmentFlagsFront,
+                Scaffolding::ImageIds::type21x1SegmentBack,
+                Scaffolding::ImageIds::type21x1SegmentFront,
                 {
                     Scaffolding::ImageIds::type21x1RoofNE,
                     Scaffolding::ImageIds::type21x1RoofSE,
@@ -147,8 +147,8 @@ namespace OpenLoco
                 },
             },
             ScaffoldingImages::Building{
-                Scaffolding::ImageIds::type22x2SegmentFlagsBack,
-                Scaffolding::ImageIds::type22x2SegmentFlagsFront,
+                Scaffolding::ImageIds::type22x2SegmentBack,
+                Scaffolding::ImageIds::type22x2SegmentFront,
                 {
                     Scaffolding::ImageIds::type22x2RoofNE,
                     Scaffolding::ImageIds::type22x2RoofSE,

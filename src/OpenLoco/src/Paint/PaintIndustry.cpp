@@ -59,7 +59,7 @@ namespace OpenLoco::Paint
         // 0x00525D30 (note this should be combined with a applyGhostToImage)
         const auto scaffoldingColour = indObj.scaffoldingColour;
 
-        const auto scaffSegType = indObj.scaffoldingSegmentFlagsType;
+        const auto scaffSegType = indObj.scaffoldingSegmentType;
         if (totalSectionHeight != 0 && scaffSegType != 0xFF)
         {
             const auto* scaffObj = ObjectManager::get<ScaffoldingObject>();

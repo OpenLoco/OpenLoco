@@ -16,8 +16,8 @@ namespace OpenLoco
         auto colourImage = Gfx::recolour(image, Colour::yellow);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentFlagsBack);
-        drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentFlagsFront);
+        drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentBack);
+        drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentFront);
         drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1RoofSE);
     }
 
