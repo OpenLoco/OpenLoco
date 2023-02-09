@@ -78,9 +78,23 @@ namespace OpenLoco::Ui
         constexpr uint8_t both = horizontal | vertical;
     }
 
+    enum class ScrollFlags : uint16_t
+    {
+        none = 0U,
+        hscrollbarVisible = 1U << 0,
+        hscrollbarThumbPressed = 1U << 1,
+        hscrollbarLeftPressed = 1U << 2,
+        hscrollbarRightPressed = 1U << 3,
+        vscrollbarVisible = 1U << 4,
+        vscrollbarThumbPressed = 1U << 5,
+        vscrollbarUpPressed = 1U << 6,
+        vscrollbarDownPressed = 1U << 7,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ScrollFlags);
+
     struct ScrollArea
     {
-        uint16_t flags;         // 0x00
+        ScrollFlags flags;      // 0x00
         int16_t contentOffsetX; // 0x02
         int16_t contentWidth;   // 0x04
         uint16_t hThumbLeft;    // 0x06
@@ -89,6 +103,11 @@ namespace OpenLoco::Ui
         int16_t contentHeight;  // 0x0C
         uint16_t vThumbTop;     // 0x0E
         uint16_t vThumbBottom;  // 0x10
+
+        constexpr bool hasFlags(ScrollFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != ScrollFlags::none;
+        }
     };
 
     namespace WindowFlags
