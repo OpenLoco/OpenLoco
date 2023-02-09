@@ -23,8 +23,8 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x004FE088 TODO: Rework into class
-    static constexpr uint8_t kOrderFlags[] = {
-        0,
+    static constexpr OrderFlags kOrderFlags[] = {
+        OrderFlags::none,
         OrderFlags::IsRoutable | OrderFlags::HasNumber | OrderFlags::HasStation,
         OrderFlags::IsRoutable | OrderFlags::HasNumber | OrderFlags::HasStation,
         OrderFlags::IsRoutable | OrderFlags::HasNumber,
@@ -32,9 +32,9 @@ namespace OpenLoco::Vehicles
         OrderFlags::HasCargo,
     };
 
-    bool Order::hasFlag(const uint8_t flag) const
+    bool Order::hasFlags(const OrderFlags flag) const
     {
-        return kOrderFlags[static_cast<uint8_t>(getType())] & flag;
+        return (kOrderFlags[static_cast<uint8_t>(getType())] & flag) != OrderFlags::none;
     }
 
     template<typename T>

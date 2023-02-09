@@ -1964,7 +1964,7 @@ namespace OpenLoco::Vehicles
             auto orders = getCurrentOrders();
             auto curOrder = orders.begin();
             auto stationOrder = curOrder->as<OrderStation>();
-            if (curOrder->is<OrderRouteWaypoint>() || !(curOrder->hasFlag(OrderFlags::HasStation)) || stationOrder == nullptr)
+            if (curOrder->is<OrderRouteWaypoint>() || !(curOrder->hasFlags(OrderFlags::HasStation)) || stationOrder == nullptr)
             {
                 targetStationId = stationId;
             }
@@ -2682,7 +2682,7 @@ namespace OpenLoco::Vehicles
             auto orders = getCurrentOrders();
             for (auto& order : orders)
             {
-                if (!(order.hasFlag(OrderFlags::HasCargo)))
+                if (!(order.hasFlags(OrderFlags::HasCargo)))
                 {
                     return false;
                 }
@@ -2850,7 +2850,7 @@ namespace OpenLoco::Vehicles
                 {
                     cargoToWaitFor |= (1 << waitFor->getCargo());
                 }
-                if (order.hasFlag(OrderFlags::IsRoutable))
+                if (order.hasFlags(OrderFlags::IsRoutable))
                 {
                     break;
                 }
@@ -2904,7 +2904,7 @@ namespace OpenLoco::Vehicles
 
         for (auto& order : orders)
         {
-            if (!order.hasFlag(OrderFlags::HasCargo))
+            if (!order.hasFlags(OrderFlags::HasCargo))
             {
                 break;
             }
@@ -3034,7 +3034,7 @@ namespace OpenLoco::Vehicles
         auto orders = getCurrentOrders();
         for (auto& order : orders)
         {
-            if (!order.hasFlag(OrderFlags::HasCargo))
+            if (!order.hasFlags(OrderFlags::HasCargo))
             {
                 currentOrder = order.getOffset() - orderTableOffset;
                 Ui::WindowManager::sub_4B93A5(enumValue(id));
@@ -3110,7 +3110,7 @@ namespace OpenLoco::Vehicles
         OrderRingView orders(orderTableOffset, currentOrder);
         for (auto& order : orders)
         {
-            if (order.hasFlag(OrderFlags::IsRoutable))
+            if (order.hasFlags(OrderFlags::IsRoutable))
             {
                 auto newOrder = order.getOffset() - orderTableOffset;
                 if (newOrder != currentOrder)

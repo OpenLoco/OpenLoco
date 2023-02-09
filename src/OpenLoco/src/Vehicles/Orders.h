@@ -1,6 +1,7 @@
 #pragma once
 #include "Map/Tile.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <iterator>
 #include <memory>
 
@@ -16,13 +17,15 @@ namespace OpenLoco::Vehicles
         WaitFor
     };
 
-    namespace OrderFlags
+    enum class OrderFlags : uint8_t
     {
-        constexpr uint8_t IsRoutable = (1 << 0);
-        constexpr uint8_t HasNumber = (1 << 1);
-        constexpr uint8_t HasCargo = (1 << 2);
-        constexpr uint8_t HasStation = (1 << 3);
-    }
+       none = 0U,
+       IsRoutable = 1U << 0,
+       HasNumber = 1U << 1,
+       HasCargo = 1U << 2,
+       HasStation = 1U << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(OrderFlags)
 
 #pragma pack(push, 1)
     struct Order
@@ -42,8 +45,8 @@ namespace OpenLoco::Vehicles
         uint32_t getOffset() const;
         std::shared_ptr<Order> clone() const;
         uint64_t getRaw() const;
-        bool hasFlag(const uint8_t flag) const;
-
+        bool hasFlags(const OrderFlags flag) const;
+        
         template<typename T>
         constexpr bool is() const { return getType() == T::kType; }
 
