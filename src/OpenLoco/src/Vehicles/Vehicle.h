@@ -60,10 +60,6 @@ namespace OpenLoco::Vehicles
         hasReachedADestination = 1U << 17,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(WaterMotionFlags);
-    constexpr bool hasFlags(WaterMotionFlags flags, WaterMotionFlags flagsToTest)
-    {
-        return (flags & flagsToTest) != WaterMotionFlags::none;
-    }
 
     enum class Status : uint8_t
     {
