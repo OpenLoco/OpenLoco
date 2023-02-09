@@ -36,32 +36,7 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Terraform
 {
-    static loco_global<int16_t, 0x0052337A> _dragLastY;
-    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
-    static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
-    static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
-    static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
-    static loco_global<uint8_t, 0x01136496> _treeRotation;
-    static loco_global<Colour, 0x01136497> _treeColour;
-    static loco_global<uint8_t, 0x0113649A> _terraformGhostPlaced;
-    static loco_global<uint8_t, 0x0113649E> _treeClusterType;
-    static loco_global<int16_t, 0x0050A000> _adjustToolSize;
-    static loco_global<uint32_t, 0x00F2530C> _raiseLandCost;
-    static loco_global<uint32_t, 0x00F25310> _lowerLandCost;
-    static loco_global<uint32_t, 0x01136484> _lastTreeCost;
-    static loco_global<Map::TileElement*, 0x01136470> _lastPlacedWall;
-    static loco_global<Map::TreeElement*, 0x01136470> _lastPlacedTree;
-    static loco_global<Map::Pos2, 0x01136488> _terraformGhostPos;
-    static loco_global<uint16_t, 0x01136490> _lastTreeColourFlag;
-    static loco_global<uint16_t, 0x01136492> _terraformGhostTreeRotationFlag;
-    static loco_global<uint8_t, 0x01136499> _terraformGhostBaseZ;
-    static loco_global<uint8_t, 0x0113649B> _terraformGhostTreeElementType;
-    static loco_global<uint8_t, 0x0113649C> _terraformGhostType;
-    static loco_global<uint8_t, 0x0113649D> _terraformGhostRotation; // wall
-    static loco_global<uint8_t, 0x0113649D> _terraformGhostQuadrant; // tree
-    static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
-    static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
+
 
     namespace Common
     {
@@ -102,13 +77,40 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
         static void sub_4A69DD();
 
-        namespace GhostPlaced
+        enum class GhostPlacedFlags : uint8_t
         {
-            constexpr uint8_t tree = (1 << 0);
-            constexpr uint8_t wall = (1 << 1);
-        }
+            none = 0U,
+            tree = 1 << 0,
+            wall = 1 << 1,
+        };
+        OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
     }
-
+    static loco_global<int16_t, 0x0052337A> _dragLastY;
+    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
+    static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
+    static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
+    static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
+    static loco_global<uint8_t, 0x01136496> _treeRotation;
+    static loco_global<Colour, 0x01136497> _treeColour;
+    static loco_global<Common::GhostPlacedFlags, 0x0113649A> _terraformGhostPlacedFlags;
+    static loco_global<uint8_t, 0x0113649E> _treeClusterType;
+    static loco_global<int16_t, 0x0050A000> _adjustToolSize;
+    static loco_global<uint32_t, 0x00F2530C> _raiseLandCost;
+    static loco_global<uint32_t, 0x00F25310> _lowerLandCost;
+    static loco_global<uint32_t, 0x01136484> _lastTreeCost;
+    static loco_global<Map::TileElement*, 0x01136470> _lastPlacedWall;
+    static loco_global<Map::TreeElement*, 0x01136470> _lastPlacedTree;
+    static loco_global<Map::Pos2, 0x01136488> _terraformGhostPos;
+    static loco_global<uint16_t, 0x01136490> _lastTreeColourFlag;
+    static loco_global<uint16_t, 0x01136492> _terraformGhostTreeRotationFlag;
+    static loco_global<uint8_t, 0x01136499> _terraformGhostBaseZ;
+    static loco_global<uint8_t, 0x0113649B> _terraformGhostTreeElementType;
+    static loco_global<uint8_t, 0x0113649C> _terraformGhostType;
+    static loco_global<uint8_t, 0x0113649D> _terraformGhostRotation; // wall
+    static loco_global<uint8_t, 0x0113649D> _terraformGhostQuadrant; // tree
+    static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
+    static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
     namespace PlantTrees
     {
         static constexpr Ui::Size kWindowSize = { 634, 162 };
@@ -238,7 +240,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Input::toolSet(self, Common::widx::panel, CursorId::plantTree);
             Input::setFlag(Input::Flags::flag6);
-            _terraformGhostPlaced = 0;
+            _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
             _lastTreeCost = 0x80000000;
             self->var_83C = 0;
             self->rowHover = -1;
@@ -410,9 +412,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BD297 (bits of)
         static void removeTreeGhost()
         {
-            if (_terraformGhostPlaced & Common::GhostPlaced::tree)
+            if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::tree) != Common::GhostPlacedFlags::none)
             {
-                _terraformGhostPlaced = _terraformGhostPlaced & ~Common::GhostPlaced::tree;
+                _terraformGhostPlacedFlags = _terraformGhostPlacedFlags & ~Common::GhostPlacedFlags::tree;
                 GameCommands::TreeRemovalArgs args;
                 args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * Map::kSmallZStep);
                 args.type = _terraformGhostType;
@@ -433,7 +435,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 _terraformGhostTreeElementType = (*_lastPlacedTree)->rawData()[0];
                 _terraformGhostType = placementArgs.type;
                 _terraformGhostBaseZ = (*_lastPlacedTree)->baseZ();
-                _terraformGhostPlaced |= Common::GhostPlaced::tree;
+                _terraformGhostPlacedFlags |= Common::GhostPlacedFlags::tree;
 
                 _terraformGhostQuadrant = placementArgs.quadrant;
                 _terraformGhostTreeRotationFlag = placementArgs.rotation | (placementArgs.buildImmediately ? 0x8000 : 0);
@@ -496,7 +498,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Map::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
             Map::TileManager::mapInvalidateSelectionRect();
 
-            if (_terraformGhostPlaced & Common::GhostPlaced::tree)
+            if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::tree) != Common::GhostPlacedFlags::none)
             {
                 if (*_terraformGhostPos == placementArgs->pos
                     && _terraformGhostQuadrant == placementArgs->quadrant
@@ -849,7 +851,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->number = 0;
             window->currentTab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
             window->frameNo = 0;
-            _terraformGhostPlaced = 0;
+            _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
             _lastTreeCost = 0x80000000;
             window->owner = CompanyManager::getControllingId();
             window->var_846 = 0xFFFF;
@@ -1991,7 +1993,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Input::toolSet(self, Common::widx::panel, CursorId::placeFence);
             Input::setFlag(Input::Flags::flag6);
-            _terraformGhostPlaced = 0;
+            _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
             self->var_83C = 0;
             self->rowHover = -1;
             refreshWallList(self);
@@ -2094,9 +2096,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BD297 (bits of)
         static void removeWallGhost()
         {
-            if (_terraformGhostPlaced & Common::GhostPlaced::wall)
+            if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::wall) != Common::GhostPlacedFlags::none)
             {
-                _terraformGhostPlaced = _terraformGhostPlaced & ~Common::GhostPlaced::wall;
+                _terraformGhostPlacedFlags = _terraformGhostPlacedFlags & ~Common::GhostPlacedFlags::wall;
                 GameCommands::WallRemovalArgs args;
                 args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * Map::kSmallZStep);
                 args.rotation = _terraformGhostRotation;
@@ -2116,7 +2118,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 _terraformGhostTreeElementType = placementArgs.rotation; // Unsure why duplicated not used
                 _terraformGhostType = placementArgs.type;
                 _terraformGhostBaseZ = (*_lastPlacedWall)->baseZ();
-                _terraformGhostPlaced |= Common::GhostPlaced::wall;
+                _terraformGhostPlacedFlags |= Common::GhostPlacedFlags::wall;
             }
         }
 
@@ -2172,7 +2174,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Map::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
             Map::TileManager::mapInvalidateSelectionRect();
 
-            if (_terraformGhostPlaced & Common::GhostPlaced::wall)
+            if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::wall) != Common::GhostPlacedFlags::none)
             {
                 if (*_terraformGhostPos == placementArgs->pos && _terraformGhostRotation == placementArgs->rotation && _terraformGhostType == placementArgs->type)
                 {
