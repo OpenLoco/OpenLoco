@@ -446,7 +446,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A4D8
         static void event_09(Window& self)
         {
-            if (!(self.flags & WindowFlags::notScrollView))
+            if (!self.hasFlags(WindowFlags::notScrollView))
                 return;
 
             if (self.rowHover == -1)

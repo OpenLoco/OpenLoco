@@ -334,7 +334,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004362FF
         static void event_09(Window& self)
         {
-            if (!(self.flags & WindowFlags::notScrollView))
+            if (!self.hasFlags(WindowFlags::notScrollView))
                 return;
 
             if (self.rowHover == -1)
@@ -591,7 +591,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             static constexpr Ui::Size kWindowSize = { 640, 272 };
 
-            window = WindowManager::createWindow(WindowType::companyList, kWindowSize, 0, &CompanyList::events);
+            window = WindowManager::createWindow(WindowType::companyList, kWindowSize, WindowFlags::none, &CompanyList::events);
 
             window->frameNo = 0;
             window->savedView.clear();

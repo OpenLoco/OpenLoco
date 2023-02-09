@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Windows::Industry
         if (window == nullptr)
         {
             // 0x00456DBC start
-            const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
+            const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::industry, Industry::kWindowSize, newFlags, &Industry::events);
             window->number = enumValue(industryId);
             window->minWidth = 192;

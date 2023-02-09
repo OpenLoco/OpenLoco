@@ -48,7 +48,7 @@ namespace OpenLoco::Ui::Windows::About
         auto window = WindowManager::createWindowCentred(
             WindowType::about,
             kWindowSize,
-            0,
+            WindowFlags::none,
             &_events);
 
         window->widgets = _widgets;

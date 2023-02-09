@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::Station
         if (window == nullptr)
         {
             // 0x0048F29F start
-            const uint32_t newFlags = WindowFlags::resizable | WindowFlags::flag_11;
+            const WindowFlags newFlags = WindowFlags::resizable | WindowFlags::flag_11;
             window = WindowManager::createWindow(WindowType::station, Station::kWindowSize, newFlags, &Station::events);
             window->number = enumValue(stationId);
             auto station = StationManager::get(stationId);

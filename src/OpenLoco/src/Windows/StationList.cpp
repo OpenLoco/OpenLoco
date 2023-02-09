@@ -382,7 +382,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x00491977
     static void event_09(Window& window)
     {
-        if ((window.flags & WindowFlags::notScrollView) == 0)
+        if (!window.hasFlags(WindowFlags::notScrollView))
             return;
 
         if (window.rowHover == -1)

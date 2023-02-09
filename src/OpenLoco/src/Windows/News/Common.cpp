@@ -15,7 +15,7 @@ using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static void createNewsWindow(Ui::Size kWindowSize, Widget* widgets, AdvancedColour colour, bool isOld, uint32_t flags)
+    static void createNewsWindow(Ui::Size kWindowSize, Widget* widgets, AdvancedColour colour, bool isOld, WindowFlags flags)
     {
         _word_525CE0 = 5;
 
@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 int16_t x = Ui::width() - 138;
                 int16_t y = Ui::height() - 25;
                 Ui::Point origin = { x, y };
-                uint32_t flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
+                WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
 
                 auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::kWindowSize, flags, &Ticker::events);
 
@@ -135,13 +135,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         if (mtd.hasFlag(MessageTypeFlags::unk1))
         {
-            uint32_t flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::noBackground;
+            WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::noBackground;
 
             createNewsWindow(News2::kWindowSize, News2::widgets, Colour::grey, isOld, flags);
         }
         else
         {
-            uint32_t flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent;
+            WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent;
             constexpr auto colour = AdvancedColour(Colour::mutedDarkRed).translucent();
 
             createNewsWindow(News1::kWindowSize, News1::widgets, colour, isOld, flags);

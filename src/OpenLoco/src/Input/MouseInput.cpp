@@ -800,7 +800,7 @@ namespace OpenLoco::Input
                     return;
                 }
 
-                if (window->flags & WindowFlags::viewportNoScrolling)
+                if (window->hasFlags(WindowFlags::viewportNoScrolling))
                 {
                     return;
                 }
@@ -1133,13 +1133,13 @@ namespace OpenLoco::Input
                 _tooltipWindowType = _dragWindowType;
                 _tooltipWindowNumber = _dragWindowNumber;
 
-                if (w->flags & Ui::WindowFlags::flag_15)
+                if (w->hasFlags(Ui::WindowFlags::flag_15))
                 {
                     doDefault = true;
                     break;
                 }
 
-                if (w->flags & Ui::WindowFlags::flag_16)
+                if (w->hasFlags(Ui::WindowFlags::flag_16))
                 {
                     x = window->var_88A - window->width + _dragLastX;
                     y = window->var_88C - window->height + _dragLastY;
@@ -1982,7 +1982,7 @@ namespace OpenLoco::Input
                 {
                     case Ui::WidgetType::panel:
                     case Ui::WidgetType::frame:
-                        if (window->flags & Ui::WindowFlags::resizable)
+                        if (window->hasFlags(Ui::WindowFlags::resizable))
                         {
                             if (window->minWidth != window->maxWidth || window->minHeight != window->maxHeight)
                             {

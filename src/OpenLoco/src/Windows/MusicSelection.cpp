@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window = WindowManager::createWindow(
             WindowType::musicSelection,
             kWindowSize,
-            0,
+            WindowFlags::none,
             &_events);
 
         // TODO: only needs to be called once.

@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         auto window = WindowManager::bringToFront(WindowType::landscapeGenerationConfirm, 0);
         if (window == nullptr)
         {
-            window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, kWindowSize, 0, &events);
+            window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, kWindowSize, WindowFlags::none, &events);
             window->widgets = widgets;
             window->enabledWidgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
             window->initScrollWidgets();

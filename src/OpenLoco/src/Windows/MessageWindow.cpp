@@ -125,7 +125,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A84F
         static void event_09(Window& self)
         {
-            if (!(self.flags & WindowFlags::notScrollView))
+            if (!self.hasFlags(WindowFlags::notScrollView))
                 return;
 
             if (self.rowHover == -1)

@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         window = WindowManager::createWindow(
             WindowType::tileInspector,
             kWindowSize,
-            0,
+            WindowFlags::none,
             &_events);
 
         window->widgets = _widgets;

@@ -2469,7 +2469,7 @@ namespace OpenLoco::Ui::Windows::Options
         window = WindowManager::createWindowCentred(
             WindowType::options,
             Display::kWindowSize,
-            0,
+            WindowFlags::none,
             &Display::_events);
 
         window->widgets = Display::_widgets;

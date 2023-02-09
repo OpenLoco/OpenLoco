@@ -472,7 +472,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x004580E6
         static void event_09(Window& self)
         {
-            if ((self.flags & WindowFlags::notScrollView) == 0)
+            if (!self.hasFlags(WindowFlags::notScrollView))
                 return;
 
             if (self.rowHover == -1)

@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     };
     static loco_global<uint8_t[256], 0x004FDC5C> _byte_4FDC5C;
-    static loco_global<uint32_t, 0x0526284> _lastMapWindowFlags;
+    static loco_global<WindowFlags, 0x0526284> _lastMapWindowFlags;
     static loco_global<Ui::Size, 0x00526288> _lastMapWindowSize;
     static loco_global<uint16_t, 0x0052628C> _lastMapWindowVar88A;
     static loco_global<uint16_t, 0x0052628E> _lastMapWindowVar88C;
@@ -1460,14 +1460,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
         _dword_F253A8 = static_cast<uint8_t*>(ptr);
         Ui::Size size = { 350, 272 };
 
-        if (_lastMapWindowFlags != 0)
+        if (_lastMapWindowFlags != WindowFlags::none)
         {
             size = _lastMapWindowSize;
             size.width = std::clamp<uint16_t>(size.width, 350, Ui::width());
             size.height = std::clamp<uint16_t>(size.height, 272, Ui::height() - 56);
         }
 
-        window = WindowManager::createWindow(WindowType::map, size, 0, &events);
+        window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, &events);
         window->widgets = widgets;
         window->enabledWidgets |= enabledWidgets;
 
@@ -1476,7 +1476,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         window->initScrollWidgets();
         window->frameNo = 0;
 
-        if (_lastMapWindowFlags != 0)
+        if (_lastMapWindowFlags != WindowFlags::none)
         {
             window->var_88A = _lastMapWindowVar88A;
             window->var_88C = _lastMapWindowVar88C;
