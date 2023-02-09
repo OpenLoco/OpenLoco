@@ -199,7 +199,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         for (auto& car : train.cars)
         {
-            if (car.front->hasFlags(BreakdownFlags::brokenDown))
+            if (car.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
             {
                 if ((ScenarioManager::getScenarioTicks() & 3) == 0)
                 {
@@ -209,7 +209,7 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (car.front->hasFlags(BreakdownFlags::breakdownPending) && !isTitleMode())
+            if (car.front->hasBreakdownFlags(BreakdownFlags::breakdownPending) && !isTitleMode())
             {
                 auto newConfig = Config::get();
                 if (!newConfig.breakdownsDisabled)
@@ -245,7 +245,7 @@ namespace OpenLoco::Vehicles
             {
                 continue;
             }
-            if (car.front->hasFlags(BreakdownFlags::brokenDown))
+            if (car.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
             {
                 isBrokenDown = true;
             }
@@ -651,7 +651,7 @@ namespace OpenLoco::Vehicles
                 {
                     assert(false);
                 }
-                if (train.cars.firstCar.front->hasFlags(BreakdownFlags::brokenDown))
+                if (train.cars.firstCar.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
                 {
                     updateDrivingSoundNone(vehType2or6);
                     return;
@@ -744,7 +744,7 @@ namespace OpenLoco::Vehicles
                 {
                     assert(false);
                 }
-                if (train.cars.firstCar.front->hasFlags(BreakdownFlags::brokenDown))
+                if (train.cars.firstCar.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
                 {
                     updateDrivingSoundNone(vehType2or6);
                     return;
@@ -2768,7 +2768,7 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->hasFlags(BreakdownFlags::unk_0))
+                if (carComponent.front->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
                     carComponent.front->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
@@ -2778,12 +2778,12 @@ namespace OpenLoco::Vehicles
                     updateUnloadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return;
                 }
-                else if (carComponent.back->hasFlags(BreakdownFlags::unk_0))
+                else if (carComponent.back->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
                     carComponent.back->breakdownFlags &= ~BreakdownFlags::unk_0;
                     return;
                 }
-                else if (carComponent.body->hasFlags(BreakdownFlags::unk_0))
+                else if (carComponent.body->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
                     carComponent.body->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.body->primaryCargo.type == 0xFF)
@@ -3000,7 +3000,7 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->hasFlags(BreakdownFlags::unk_0))
+                if (carComponent.front->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
                     carComponent.front->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
@@ -3010,12 +3010,12 @@ namespace OpenLoco::Vehicles
                     updateLoadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return true;
                 }
-                else if (carComponent.back->hasFlags(BreakdownFlags::unk_0))
+                else if (carComponent.back->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
                     carComponent.back->breakdownFlags &= ~BreakdownFlags::unk_0;
                     return true;
                 }
-                else if (carComponent.body->hasFlags(BreakdownFlags::unk_0))
+                else if (carComponent.body->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
                     carComponent.body->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.body->primaryCargo.type == 0xFF)

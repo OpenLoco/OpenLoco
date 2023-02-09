@@ -554,7 +554,7 @@ namespace OpenLoco::Vehicles
         void secondaryAnimationUpdate();
         void sub_4AAB0B();
         void updateCargoSprite();
-        constexpr bool hasFlags(BreakdownFlags flagsToTest) const
+        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
         }
@@ -619,7 +619,7 @@ namespace OpenLoco::Vehicles
         bool update();
         bool isOnRackRail();
         void carComponent_sub_4AF16A();
-        constexpr bool hasFlags(BreakdownFlags flagsToTest) const
+        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
         }
