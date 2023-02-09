@@ -453,7 +453,7 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, Ui::Size(regs.bx, (((uint32_t)regs.ebx) >> 16)),  WindowFlags(regs.ecx >> 8), (WindowEventList*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, Ui::Size(regs.bx, (((uint32_t)regs.ebx) >> 16)), WindowFlags(regs.ecx >> 8), (WindowEventList*)regs.edx);
                 regs = backup;
 
                 regs.esi = X86Pointer(w);
