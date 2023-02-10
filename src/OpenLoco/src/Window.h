@@ -7,13 +7,13 @@
 #include "Objects/Object.h"
 #include "Types.hpp"
 #include "Ui.h"
+#include "Ui/ScrollFlags.hpp"
 #include "Ui/WindowType.h"
 #include "Viewport.hpp"
 #include "ZoomLevel.hpp"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <optional>
-#include "Ui/ScrollFlags.hpp"
 
 namespace OpenLoco::Ui
 {
