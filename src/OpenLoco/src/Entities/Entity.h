@@ -54,25 +54,25 @@ namespace OpenLoco
     private:
         uint8_t type; // Use type specific getters/setters as this depends on baseType
     public:
-        EntityId nextQuadrantId;  // 0x02
-        EntityId nextThingId;     // 0x04
-        EntityId llPreviousId;    // 0x06
-        uint8_t linkedListOffset; // 0x8
-        uint8_t var_09;
-        EntityId id;               // 0xA
-        VehicleFlags vehicleFlags; // Move these to VehicleBase after full reimplementation
+        EntityId nextQuadrantId;   // 0x02
+        EntityId nextThingId;      // 0x04
+        EntityId llPreviousId;     // 0x06
+        uint8_t linkedListOffset;  // 0x08
+        uint8_t var_09;            // 0x09
+        EntityId id;               // 0x0A
+        VehicleFlags vehicleFlags; // 0x0C, Move these to VehicleBase after full reimplementation
         Map::Pos3 position;        // 0x0E
-        uint8_t var_14;
-        uint8_t var_15;
-        int16_t spriteLeft;   // 0x16
-        int16_t spriteTop;    // 0x18
-        int16_t spriteRight;  // 0x1A
-        int16_t spriteBottom; // 0x1C
-        uint8_t spriteYaw;    // 0x1E
-        Pitch spritePitch;    // 0x1F
-        uint8_t pad_20;
-        CompanyId owner; // 0x21
-        string_id name;  // 0x22, combined with ordinalNumber on vehicles
+        uint8_t var_14;            // 0x14
+        uint8_t var_15;            // 0x15
+        int16_t spriteLeft;        // 0x16
+        int16_t spriteTop;         // 0x18
+        int16_t spriteRight;       // 0x1A
+        int16_t spriteBottom;      // 0x1C
+        uint8_t spriteYaw;         // 0x1E
+        Pitch spritePitch;         // 0x1F
+        uint8_t pad_20;            // 0x20
+        CompanyId owner;           // 0x21
+        string_id name;            // 0x22, combined with ordinalNumber on vehicles
 
         void moveTo(const Map::Pos3& loc);
         void invalidateSprite();
