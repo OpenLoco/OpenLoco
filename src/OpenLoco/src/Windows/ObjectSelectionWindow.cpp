@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr int kRowHeight = 12;
     static constexpr Ui::Size kWindowSize = { 600, 398 };
 
-    static loco_global<uint8_t[999], 0x004FE384> _4FE384;
+    static loco_global<uint8_t[ObjectManager::maxObjectTypes], 0x004FE384> _objectTypeFlags;
 
 #pragma pack(push, 1)
     struct tabPosition
@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
         {
-            if ((_4FE384[currentType] & (1 << 0)) != 0)
+            if ((_objectTypeFlags[currentType] & (1 << 0)) != 0)
                 continue;
 
             // Skip all types that don't have any objects
@@ -119,17 +119,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 continue;
 
             // Skip certain object types that only have one entry in game
-            if ((_4FE384[currentType] & (1 << 4)) == 0 && _tabObjectCounts[currentType] == 1)
+            if ((_objectTypeFlags[currentType] & (1 << 4)) == 0 && _tabObjectCounts[currentType] == 1)
                 continue;
 
             // Hide advanced object types as needed
-            if ((self->var_856 & (1 << 0)) == 0 && (_4FE384[currentType] & (1 << 1)) != 0)
+            if ((self->var_856 & (1 << 0)) == 0 && (_objectTypeFlags[currentType] & (1 << 1)) != 0)
                 continue;
 
-            if (isEditorMode() && (_4FE384[currentType] & (1 << 3)) != 0)
+            if (isEditorMode() && (_objectTypeFlags[currentType] & (1 << 3)) != 0)
                 continue;
 
-            if ((_4FE384[currentType] & (1 << 2)) != 0)
+            if ((_objectTypeFlags[currentType] & (1 << 2)) != 0)
                 continue;
 
             // Assign tab position
@@ -804,7 +804,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if ((self.var_856 & 1) == 0)
                 {
-                    if (_4FE384[currentTab] & 1 << 1)
+                    if (_objectTypeFlags[currentTab] & 1 << 1)
                     {
                         currentTab = _tabInformation[0].index;
                     }
