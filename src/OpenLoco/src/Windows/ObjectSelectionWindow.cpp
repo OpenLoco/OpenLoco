@@ -99,12 +99,59 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static WindowEventList _events;
 
+    static void sub_4731EE(Window* self, ObjectType eax);
+
     // 0x00473154
-    static void sub_473154(Window* self)
+    static void assignTabPositions(Window* self)
     {
-        registers regs;
-        regs.esi = X86Pointer(self);
-        call(0x00473154, regs);
+        uint8_t currentRow = 0;
+        uint8_t currentPos = 0;
+        uint8_t rowCapacity = 19;
+        uint8_t tabPos = 0;
+
+        for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
+        {
+            if ((_4FE384[currentType] & (1 << 0)) != 0)
+                continue;
+
+            // Skip all types that don't have any objects
+            if (_tabObjectCounts[currentType] == 0)
+                continue;
+
+            // Skip certain object types that only have one entry in game
+            if ((_4FE384[currentType] & (1 << 4)) == 0 && _tabObjectCounts[currentType] == 1)
+                continue;
+
+            // Hide advanced object types as needed
+            if ((self->var_856 & (1 << 0)) == 0 && (_4FE384[currentType] & (1 << 1)) != 0)
+                continue;
+
+            if (isEditorMode() && (_4FE384[currentType] & (1 << 3)) != 0)
+                continue;
+
+            if ((_4FE384[currentType] & (1 << 2)) != 0)
+                continue;
+
+            // Assign tab position
+            _tabInformation[tabPos].index = static_cast<uint8_t>(currentType);
+            _tabInformation[tabPos].row = currentRow;
+            tabPos++;
+
+            // Distribute tabs over two rows -- ensure there's capacity left in current row
+            currentPos++;
+            if (currentPos >= rowCapacity)
+            {
+                currentPos = 0;
+                rowCapacity--;
+                currentRow++;
+            }
+        }
+
+        // Add a marker to denote the last tab
+        _tabInformation[tabPos].index = 0xFF;
+
+        const auto firstTabIndex = ObjectType(_tabInformation[0].index);
+        sub_4731EE(self, firstTabIndex);
     }
 
     // 0x004731EE
@@ -168,7 +215,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         window->object = nullptr;
 
-        sub_473154(window);
+        assignTabPositions(window);
         sub_4731EE(window, ObjectType::region);
         ObjectManager::freeTemporaryObject();
 
@@ -753,7 +800,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             {
                 self.var_856 ^= 1;
                 int currentTab = self.currentTab;
-                sub_473154(&self);
+                assignTabPositions(&self);
 
                 if ((self.var_856 & 1) == 0)
                 {
