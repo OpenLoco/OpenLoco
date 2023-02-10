@@ -1074,7 +1074,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Point endPos = { Location::null, 0 };
         for (auto& order : Vehicles::OrderRingView(train.head->orderTableOffset))
         {
-            if (order.hasFlag(Vehicles::OrderFlags::HasStation))
+            if (order.hasFlags(Vehicles::OrderFlags::HasStation))
             {
                 auto* stationOrder = static_cast<Vehicles::OrderStation*>(&order);
                 auto station = StationManager::get(stationOrder->getStation());

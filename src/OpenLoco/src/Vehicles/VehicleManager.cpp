@@ -290,7 +290,7 @@ namespace OpenLoco::Vehicles::OrderManager
                 ss << ControlCodes::Colour::white;
                 for (auto nextOrder = order + 1; nextOrder != order; ++nextOrder)
                 {
-                    if (!nextOrder->hasFlag(Vehicles::OrderFlags::HasCargo))
+                    if (!nextOrder->hasFlags(Vehicles::OrderFlags::HasCargo))
                     {
                         break;
                     }
@@ -348,7 +348,7 @@ namespace OpenLoco::Vehicles::OrderManager
         uint8_t i = 0;
         for (auto& order : orders)
         {
-            if (!order.hasFlag(Vehicles::OrderFlags::HasNumber))
+            if (!order.hasFlags(Vehicles::OrderFlags::HasNumber))
             {
                 continue;
             }
@@ -399,7 +399,7 @@ namespace OpenLoco::Vehicles::OrderManager
         for (auto& unk : _displayFrames)
         {
             auto order = Vehicles::OrderRingView(unk.orderOffset, 0).begin();
-            if (!order->hasFlag(Vehicles::OrderFlags::HasNumber))
+            if (!order->hasFlags(Vehicles::OrderFlags::HasNumber))
             {
                 continue;
             }
