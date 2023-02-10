@@ -30,20 +30,22 @@ namespace OpenLoco::Gfx
 
 namespace OpenLoco::Paint
 {
-    namespace Segment
+    enum class SegmentFlags : uint16_t
     {
-        constexpr uint16_t _58 = (1 << 0); // TBC: 0
-        constexpr uint16_t _5C = (1 << 1); // TBC: 6
-        constexpr uint16_t _60 = (1 << 2); // TBC: 2
-        constexpr uint16_t _64 = (1 << 3); // TBC: 8
-        constexpr uint16_t _68 = (1 << 4); // TBC: 3
-        constexpr uint16_t _6C = (1 << 5); // TBC: 7
-        constexpr uint16_t _70 = (1 << 6); // TBC: 1
-        constexpr uint16_t _74 = (1 << 7); // TBC: 5
-        constexpr uint16_t _78 = (1 << 8); // TBC: 4
+        none = 0U,
+        _58 = 1U << 0, // TBC: 0
+        _5C = 1U << 1, // TBC: 6
+        _60 = 1U << 2, // TBC: 2
+        _64 = 1U << 3, // TBC: 8
+        _68 = 1U << 4, // TBC: 3
+        _6C = 1U << 5, // TBC: 7
+        _70 = 1U << 6, // TBC: 1
+        _74 = 1U << 7, // TBC: 5
+        _78 = 1U << 8, // TBC: 4
 
-        constexpr uint16_t all = _58 | _5C | _60 | _64 | _68 | _6C | _70 | _74 | _78;
-    }
+        all = _58 | _5C | _60 | _64 | _68 | _6C | _70 | _74 | _78,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(SegmentFlags);
 
     // Used by both AttachedPaintStruct and PaintStruct
     enum class PaintStructFlags : uint8_t
@@ -199,7 +201,7 @@ namespace OpenLoco::Paint
         void setUnkPosition(const Map::Pos2& pos);
         void setVpPosition(const Ui::Point& pos);
         void setUnkVpY(const uint16_t y) { _unkVpPositionY = y; }
-        void setSegmentSupportHeight(const uint16_t segments, const uint16_t height, const uint8_t slope);
+        void setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope);
         void setGeneralSupportHeight(const uint16_t height, const uint8_t slope);
         void setMaxHeight(const Map::Pos2& loc);
         void set525CF8(const uint16_t segments) { _525CF8 = segments; }
