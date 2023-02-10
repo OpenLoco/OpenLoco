@@ -5,22 +5,6 @@
 
 namespace OpenLoco::Ui::ScrollView
 {
-    enum class ScrollPart : int16_t
-    {
-        none = -1,
-        view = 0,
-        hscrollbarButtonLeft = 1,
-        hscrollbarButtonRight = 2,
-        hscrollbarTrackLeft = 3,
-        hscrollbarTrackRight = 4,
-        hscrollbarThumb = 5,
-        vscrollbarButtonTop = 6,
-        vscrollbarButtonBottom = 7,
-        vscrollbarTrackTop = 8,
-        vscrollbarTrackBottom = 9,
-        vscrollbarThumb = 10,
-    };
-
     constexpr uint8_t thumbSize = 10;
     constexpr uint8_t barWidth = 11;
     constexpr uint8_t buttonClickStep = 3;
