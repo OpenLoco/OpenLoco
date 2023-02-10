@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Window.h"
-#include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco::Ui::ScrollView
 {

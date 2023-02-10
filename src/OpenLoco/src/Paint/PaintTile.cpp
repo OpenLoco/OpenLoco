@@ -165,7 +165,7 @@ namespace OpenLoco::Paint
     // Returns std::nullopt on no need to paint
     static std::optional<Ui::viewport_pos> paintTileElementsSetup(PaintSession& session, const Map::Pos2& loc)
     {
-        session.setSegmentSupportHeight(Segment::all, std::numeric_limits<uint16_t>::max(), 0);
+        session.setSegmentSupportHeight(SegmentFlags::all, std::numeric_limits<uint16_t>::max(), 0);
         session.setGeneralSupportHeight(std::numeric_limits<uint16_t>::max(), 0);
         session.resetTunnels();
         session.setUnkPosition(loc);
@@ -218,7 +218,7 @@ namespace OpenLoco::Paint
             {
                 if (sub_42AC9C(session))
                 {
-                    session.setSegmentSupportHeight(Segment::all, 0xFFFF, 0);
+                    session.setSegmentSupportHeight(SegmentFlags::all, 0xFFFF, 0);
                 }
                 if (session.getGeneralSupportHeight().height >= session.get525CE4(0))
                 {
@@ -233,7 +233,7 @@ namespace OpenLoco::Paint
                 for (auto bit = Utility::bitScanForward(session.get525CF8()); bit != -1; bit = Utility::bitScanForward(session.get525CF8()))
                 {
                     session.set525CF8(session.get525CF8() & ~(1 << bit));
-                    session.setSegmentSupportHeight(1 << bit, 0xFFFF, 0);
+                    session.setSegmentSupportHeight(static_cast<SegmentFlags>(1 << bit), 0xFFFF, 0);
                 }
             }
         }
