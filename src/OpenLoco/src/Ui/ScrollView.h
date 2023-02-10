@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Window.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco::Ui::ScrollView
 {
@@ -19,18 +20,6 @@ namespace OpenLoco::Ui::ScrollView
         vscrollbarTrackBottom = 9,
         vscrollbarThumb = 10,
     };
-
-    namespace ScrollFlags
-    {
-        constexpr uint16_t hscrollbarVisible = 1 << 0;
-        constexpr uint16_t hscrollbarThumbPressed = 1 << 1;
-        constexpr uint16_t hscrollbarLeftPressed = 1 << 2;
-        constexpr uint16_t hscrollbarRightPressed = 1 << 3;
-        constexpr uint16_t vscrollbarVisible = 1 << 4;
-        constexpr uint16_t vscrollbarThumbPressed = 1 << 5;
-        constexpr uint16_t vscrollbarUpPressed = 1 << 6;
-        constexpr uint16_t vscrollbarDownPressed = 1 << 7;
-    }
 
     constexpr uint8_t thumbSize = 10;
     constexpr uint8_t barWidth = 11;
