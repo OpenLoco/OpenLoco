@@ -68,7 +68,7 @@ namespace OpenLoco::Vehicles
             component.var_38 &= ~(Vehicles::Flags38::isGhost);
         });
 
-        train.head->var_0C |= Vehicles::Flags0C::commandStop;
+        train.head->vehicleFlags |= VehicleFlags::commandStop;
         for (auto& car : train.cars)
         {
             for (auto& component : car)

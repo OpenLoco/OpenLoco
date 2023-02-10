@@ -47,7 +47,7 @@ namespace OpenLoco::Paint
         uint8_t yaw = (bogie->spriteYaw + (session.getRotation() << 4)) & 0x3F;
         auto pitch = bogie->spritePitch;
 
-        if (bogie->getFlags38() & Flags38::isReversed)
+        if (bogie->has38Flags(Flags38::isReversed))
         {
             // Flip the highest bit to reverse the yaw
             yaw ^= (1 << 5);
@@ -85,12 +85,12 @@ namespace OpenLoco::Paint
                 }
                 const auto imageIndex = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.flatImageIds;
                 ImageId imageId{};
-                if (bogie->getFlags38() & Flags38::isGhost)
+                if (bogie->has38Flags(Flags38::isGhost))
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
                     imageId = Gfx::applyGhostToImage(imageIndex);
                 }
-                else if (bogie->var_0C & Flags0C::unk_5)
+                else if (bogie->hasVehicleFlags(VehicleFlags::unk_5))
                 {
                     imageId = ImageId(imageIndex, ExtColour::unk74);
                 }
@@ -98,7 +98,7 @@ namespace OpenLoco::Paint
                 {
                     // Airplane bogies are the shadows of the plane
 
-                    if (bogie->getFlags38() & Flags38::isGhost)
+                    if (bogie->has38Flags(Flags38::isGhost))
                     {
                         // Ghosts don't cast shadows
                         return;
@@ -132,7 +132,7 @@ namespace OpenLoco::Paint
             {
                 const auto imageIndex = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.gentleImageIds;
                 ImageId imageId{};
-                if (bogie->getFlags38() & Flags38::isGhost)
+                if (bogie->has38Flags(Flags38::isGhost))
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
                     imageId = Gfx::applyGhostToImage(imageIndex);
@@ -157,7 +157,7 @@ namespace OpenLoco::Paint
             {
                 const auto imageIndex = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.steepImageIds;
                 ImageId imageId{};
-                if (bogie->getFlags38() & Flags38::isGhost)
+                if (bogie->has38Flags(Flags38::isGhost))
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
                     imageId = Gfx::applyGhostToImage(imageIndex);
@@ -343,7 +343,7 @@ namespace OpenLoco::Paint
         auto originalYaw = yaw; // edi
         auto pitch = body->spritePitch;
 
-        if (body->getFlags38() & Flags38::isReversed)
+        if (body->has38Flags(Flags38::isReversed))
         {
             yaw ^= (1 << 5);
             pitch = kReversePitch[static_cast<uint8_t>(body->spritePitch)];
@@ -404,7 +404,7 @@ namespace OpenLoco::Paint
         {
             auto& unk = vehObject->var_24[body->bodyIndex];
             auto offsetModifier = unk.length - unk.var_01;
-            if (body->getFlags38() & Flags38::isReversed)
+            if (body->has38Flags(Flags38::isReversed))
             {
                 offsetModifier = -offsetModifier;
             }
@@ -429,11 +429,11 @@ namespace OpenLoco::Paint
         }
 
         ImageId imageId{};
-        if (body->getFlags38() & Flags38::isGhost)
+        if (body->has38Flags(Flags38::isGhost))
         {
             imageId = Gfx::applyGhostToImage(bodyImageIndex);
         }
-        else if (body->var_0C & Flags0C::unk_5)
+        else if (body->hasVehicleFlags(VehicleFlags::unk_5))
         {
             imageId = ImageId(bodyImageIndex, ExtColour::unk74);
         }
@@ -447,8 +447,8 @@ namespace OpenLoco::Paint
         {
             Vehicle train(body->head);
             if (train.veh2->var_5B != 0
-                && !(body->getFlags38() & Flags38::isGhost)
-                && !(body->var_0C & Flags0C::unk_5))
+                && !body->has38Flags(Flags38::isGhost)
+                && !body->hasVehicleFlags(VehicleFlags::unk_5))
             {
                 session.attachToPrevious(ImageId{ *brakingImageIndex }, { 0, 0 });
             }
@@ -458,7 +458,7 @@ namespace OpenLoco::Paint
     // 0x004B0CCE
     void paintVehicleEntity(PaintSession& session, Vehicles::VehicleBase* base)
     {
-        if (base->getFlags38() & Flags38::isGhost)
+        if (base->has38Flags(Flags38::isGhost))
         {
             if (base->owner != CompanyManager::getControllingId())
             {

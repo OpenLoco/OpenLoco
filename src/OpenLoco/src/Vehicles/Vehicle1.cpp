@@ -75,7 +75,7 @@ namespace OpenLoco::Vehicles
             maxSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), maxSpeed);
             maxSpeed = std::max(maxSpeed, 12_mph);
 
-            if (train.head->var_38 & Flags38::unk_5)
+            if (train.head->has38Flags(Flags38::unk_5))
             {
                 maxSpeed += maxSpeed / 4;
                 maxSpeed = std::min(roadObj->maxSpeed, maxSpeed);
@@ -96,8 +96,8 @@ namespace OpenLoco::Vehicles
         // Distance to speed32 would be var_3C * 2 but since maxspeed is interms of speed16 we have this awkward 32768
         maxSpeed = std::min(maxSpeed, Speed16(var_3C / 32768) + 5_mph);
 
-        if ((train.head->var_0C & Flags0C::manualControl && train.head->var_6E <= -20)
-            || (train.head->var_0C & Flags0C::commandStop))
+        if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->var_6E <= -20)
+            || train.head->hasVehicleFlags(VehicleFlags::commandStop))
         {
             if (train.veh2->currentSpeed == 0.0_mph)
             {

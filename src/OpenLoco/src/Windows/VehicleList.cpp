@@ -197,7 +197,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
                 continue;
 
-            vehicle->var_0C &= ~Vehicles::Flags0C::sorted;
+            vehicle->vehicleFlags &= ~VehicleFlags::sorted;
         }
     }
 
@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (vehicle->owner != CompanyId(self->number))
                 continue;
 
-            if (vehicle->var_0C & Vehicles::Flags0C::sorted)
+            if (vehicle->hasVehicleFlags(VehicleFlags::sorted))
                 continue;
 
             if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, StationId(self->var_88C)))
@@ -311,7 +311,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 refreshVehicleList(self);
                 return;
             }
-            vehicle->var_0C |= Vehicles::Flags0C::sorted;
+            vehicle->vehicleFlags |= VehicleFlags::sorted;
 
             if (vehicle->id != EntityId(self->rowInfo[self->rowCount]))
                 self->rowInfo[self->rowCount] = enumValue(vehicle->id);
