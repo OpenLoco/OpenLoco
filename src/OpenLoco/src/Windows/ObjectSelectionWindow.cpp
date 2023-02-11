@@ -62,43 +62,51 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         showEvenIfSingular = 1 << 4,
     };
 
-    // Merge with TabDisplayInfo struct?
-    static const ObjectTabFlags _objectTabFlags[ObjectManager::maxObjectTypes] = {
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
-        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::none,
-        ObjectTabFlags::hideInEditor,
-        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
+    struct TabDisplayInfo
+    {
+        string_id name;
+        uint32_t image;
+        ObjectTabFlags flags;
     };
+
+    // clang-format off
+    static const TabDisplayInfo _tabDisplayInfo[] = {
+        { StringIds::object_interface_styles,      ImageIds::tab_object_settings,        ObjectTabFlags::advanced },
+        { StringIds::object_sounds,                ImageIds::tab_object_audio,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        { StringIds::object_currency,              ImageIds::tab_object_currency,        ObjectTabFlags::advanced },
+        { StringIds::object_animation_effects,     ImageIds::tab_object_smoke,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        { StringIds::object_cliffs,                ImageIds::tab_object_cliff,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        { StringIds::object_water,                 ImageIds::tab_object_water,           ObjectTabFlags::advanced },
+        { StringIds::object_land,                  ImageIds::tab_object_landscape,       ObjectTabFlags::advanced },
+        { StringIds::object_town_names,            ImageIds::tab_object_town_names,      ObjectTabFlags::advanced },
+        { StringIds::object_cargo,                 ImageIds::tab_object_cargo,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        { StringIds::object_walls,                 ImageIds::tab_object_walls,           ObjectTabFlags::advanced },
+        { StringIds::object_signals,               ImageIds::tab_object_signals,         ObjectTabFlags::advanced },
+        { StringIds::object_level_crossing,        ImageIds::tab_object_level_crossings, ObjectTabFlags::advanced },
+        { StringIds::object_street_lights,         ImageIds::tab_object_streetlights,    ObjectTabFlags::advanced },
+        { StringIds::object_tunnels,               ImageIds::tab_object_tunnels,         ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        { StringIds::object_bridges,               ImageIds::tab_object_bridges,         ObjectTabFlags::advanced },
+        { StringIds::object_track_stations,        ImageIds::tab_object_track_stations,  ObjectTabFlags::advanced },
+        { StringIds::object_track_extras,          ImageIds::tab_object_track_mods,      ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
+        { StringIds::object_tracks,                ImageIds::tab_object_track,           ObjectTabFlags::advanced },
+        { StringIds::object_road_stations,         ImageIds::tab_object_road_stations,   ObjectTabFlags::advanced },
+        { StringIds::object_road_extras,           ImageIds::tab_object_road_mods,       ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
+        { StringIds::object_roads,                 ImageIds::tab_object_road,            ObjectTabFlags::advanced },
+        { StringIds::object_airports,              ImageIds::tab_object_airports,        ObjectTabFlags::advanced },
+        { StringIds::object_docks,                 ImageIds::tab_object_docks,           ObjectTabFlags::advanced },
+        { StringIds::object_vehicles,              ImageIds::tab_object_vehicles,        ObjectTabFlags::advanced },
+        { StringIds::object_trees,                 ImageIds::tab_object_trees,           ObjectTabFlags::advanced },
+        { StringIds::object_snow,                  ImageIds::tab_object_snow,            ObjectTabFlags::advanced },
+        { StringIds::object_climate,               ImageIds::tab_object_climate,         ObjectTabFlags::advanced },
+        { StringIds::object_map_generation_data,   ImageIds::tab_object_map,             ObjectTabFlags::advanced },
+        { StringIds::object_buildings,             ImageIds::tab_object_buildings,       ObjectTabFlags::advanced },
+        { StringIds::object_scaffolding,           ImageIds::tab_object_construction,    ObjectTabFlags::advanced },
+        { StringIds::object_industries,            ImageIds::tab_object_industries,      ObjectTabFlags::advanced },
+        { StringIds::object_world_region,          ImageIds::tab_object_world,           ObjectTabFlags::none },
+        { StringIds::object_company_owners,        ImageIds::tab_object_companies,       ObjectTabFlags::hideInEditor },
+        { StringIds::object_scenario_descriptions, ImageIds::tab_object_scenarios,       ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+    };
+    // clang-format on
 
 #pragma pack(push, 1)
     struct tabPosition
@@ -157,7 +165,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
         {
-            if ((_objectTabFlags[currentType] & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
+            const ObjectTabFlags tabFlags = _tabDisplayInfo[currentType].flags;
+
+            if ((tabFlags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
                 continue;
 
             // Skip all types that don't have any objects
@@ -165,17 +175,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 continue;
 
             // Skip certain object types that only have one entry in game
-            if ((_objectTabFlags[currentType] & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[currentType] == 1)
+            if ((tabFlags & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[currentType] == 1)
                 continue;
 
             // Hide advanced object types as needed
-            if ((self->var_856 & (1 << 0)) == 0 && (_objectTabFlags[currentType] & ObjectTabFlags::advanced) != ObjectTabFlags::none)
+            if ((self->var_856 & (1 << 0)) == 0 && (tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
                 continue;
 
-            if (isEditorMode() && (_objectTabFlags[currentType] & ObjectTabFlags::hideInEditor) != 0)
+            if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != 0)
                 continue;
 
-            if ((_objectTabFlags[currentType] & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
+            if ((tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
                 continue;
 
             // Assign tab position
@@ -279,49 +289,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         return window;
     }
-
-    struct TabDisplayInfo
-    {
-        string_id name;
-        uint32_t image;
-    };
-
-    static const TabDisplayInfo _tabDisplayInfo[] = {
-        { StringIds::object_interface_styles, ImageIds::tab_object_settings },
-        { StringIds::object_sounds, ImageIds::tab_object_audio },
-        { StringIds::object_currency, ImageIds::tab_object_currency },
-        { StringIds::object_animation_effects, ImageIds::tab_object_smoke },
-        { StringIds::object_cliffs, ImageIds::tab_object_cliff },
-        { StringIds::object_water, ImageIds::tab_object_water },
-        { StringIds::object_land, ImageIds::tab_object_landscape },
-        { StringIds::object_town_names, ImageIds::tab_object_town_names },
-        { StringIds::object_cargo, ImageIds::tab_object_cargo },
-        { StringIds::object_walls, ImageIds::tab_object_walls },
-        { StringIds::object_signals, ImageIds::tab_object_signals },
-        { StringIds::object_level_crossing, ImageIds::tab_object_level_crossings },
-        { StringIds::object_street_lights, ImageIds::tab_object_streetlights },
-        { StringIds::object_tunnels, ImageIds::tab_object_tunnels },
-        { StringIds::object_bridges, ImageIds::tab_object_bridges },
-        { StringIds::object_track_stations, ImageIds::tab_object_track_stations },
-        { StringIds::object_track_extras, ImageIds::tab_object_track_mods },
-        { StringIds::object_tracks, ImageIds::tab_object_track },
-        { StringIds::object_road_stations, ImageIds::tab_object_road_stations },
-        { StringIds::object_road_extras, ImageIds::tab_object_road_mods },
-        { StringIds::object_roads, ImageIds::tab_object_road },
-        { StringIds::object_airports, ImageIds::tab_object_airports },
-        { StringIds::object_docks, ImageIds::tab_object_docks },
-        { StringIds::object_vehicles, ImageIds::tab_object_vehicles },
-        { StringIds::object_trees, ImageIds::tab_object_trees },
-        { StringIds::object_snow, ImageIds::tab_object_snow },
-        { StringIds::object_climate, ImageIds::tab_object_climate },
-        { StringIds::object_map_generation_data, ImageIds::tab_object_map },
-        { StringIds::object_buildings, ImageIds::tab_object_buildings },
-        { StringIds::object_scaffolding, ImageIds::tab_object_construction },
-        { StringIds::object_industries, ImageIds::tab_object_industries },
-        { StringIds::object_world_region, ImageIds::tab_object_world },
-        { StringIds::object_company_owners, ImageIds::tab_object_companies },
-        { StringIds::object_scenario_descriptions, ImageIds::tab_object_scenarios },
-    };
 
     // 0x004733AC
     static void prepareDraw(Ui::Window& self)
@@ -850,7 +817,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if ((self.var_856 & 1) == 0)
                 {
-                    if ((_objectTabFlags[currentTab] & ObjectTabFlags::advanced) != ObjectTabFlags::none)
+                    const ObjectTabFlags tabFlags = _tabDisplayInfo[currentTab].flags;
+                    if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
                     {
                         currentTab = _tabInformation[0].index;
                     }
