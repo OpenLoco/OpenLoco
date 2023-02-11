@@ -125,8 +125,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint16_t, 0x0052334A> _52334A;
     static loco_global<uint16_t, 0x0052334C> _52334C;
 
+    // _tabObjectCounts can be integrated after implementing sub_473A95
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
-    static loco_global<TabPosition[36], 0x0112C21C> _tabInformation;
+
+    static TabPosition _tabInformation[36]; // was 0x0112C21C
 
     static void initEvents();
 
