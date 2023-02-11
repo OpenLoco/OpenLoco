@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         { StringIds::object_industries,            ImageIds::tab_object_industries,      ObjectTabFlags::advanced },
         { StringIds::object_world_region,          ImageIds::tab_object_world,           ObjectTabFlags::none },
         { StringIds::object_company_owners,        ImageIds::tab_object_companies,       ObjectTabFlags::hideInEditor },
-        { StringIds::object_scenario_descriptions, ImageIds::tab_object_scenarios,       ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        { StringIds::object_scenario_descriptions, ImageIds::tab_object_scenarios,       ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden }
     };
     // clang-format on
 
