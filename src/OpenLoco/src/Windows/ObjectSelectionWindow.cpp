@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     return;
                 // Otherwise, we'll rotate the tabs around, such that this one is in the bottom row
                 else
-                    rotateTabs(i);
+                    return rotateTabs(i);
             }
         }
     }
