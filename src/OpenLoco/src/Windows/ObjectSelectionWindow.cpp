@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0047322A
     static void rotateTabs(uint8_t newStartPosition)
     {
-        TabPosition[36] newPosInfo = {};
+        TabPosition newPosInfo[36] = {};
         uint8_t j = 0;
 
         for (uint8_t i = newStartPosition; _tabInformation[i].index != 0xFF; i++)
