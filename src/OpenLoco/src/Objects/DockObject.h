@@ -3,6 +3,7 @@
 #include "Map/Map.hpp"
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
@@ -16,6 +17,13 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
+    enum class DockObjectFlags : uint16_t
+    {
+        none = 0,
+        unk01 = 1U << 0,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(DockObjectFlags);
+
 #pragma pack(push, 1)
     struct DockObject
     {
@@ -28,9 +36,9 @@ namespace OpenLoco
         uint8_t var_07;
         uint32_t image; // 0x08
         uint32_t var_0C;
-        uint16_t flags;
-        uint8_t numAux01;    // 0x12
-        uint8_t numAux02Ent; // 0x13 must be 1 or 0
+        DockObjectFlags flags; // 0x10
+        uint8_t numAux01;      // 0x12
+        uint8_t numAux02Ent;   // 0x13 must be 1 or 0
         const uint8_t* var_14;
         const uint16_t* var_18;
         const uint8_t* var_1C[1]; // odd that this is size 1 but that is how its used

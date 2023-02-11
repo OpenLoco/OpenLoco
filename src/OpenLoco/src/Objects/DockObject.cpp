@@ -71,7 +71,7 @@ namespace OpenLoco
         image = imgRes.imageOffset;
 
         // Related to unk2?
-        const auto offset = (flags & (1 << 0)) ? numAux02Ent * 4 : 1;
+        const auto offset = (flags & DockObjectFlags::unk01) != DockObjectFlags::none ? numAux02Ent * 4 : 1;
         var_0C = imgRes.imageOffset + offset;
 
         // Unused code numAux01 related
