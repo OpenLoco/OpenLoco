@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
         {
-            if ((_objectTabFlags[currentType] & ObjectTabFlags:alwaysHidden) != ObjectTabFlags::none)
+            if ((_objectTabFlags[currentType] & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
                 continue;
 
             // Skip all types that don't have any objects
@@ -165,13 +165,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 continue;
 
             // Skip certain object types that only have one entry in game
-            if ((_objectTabFlags[currentType] & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none &&
-                _tabObjectCounts[currentType] == 1)
+            if ((_objectTabFlags[currentType] & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[currentType] == 1)
                 continue;
 
             // Hide advanced object types as needed
-            if ((self->var_856 & (1 << 0)) == 0 &&
-                (_objectTabFlags[currentType] & ObjectTabFlags::advanced) != ObjectTabFlags::none)
+            if ((self->var_856 & (1 << 0)) == 0 && (_objectTabFlags[currentType] & ObjectTabFlags::advanced) != ObjectTabFlags::none)
                 continue;
 
             if (isEditorMode() && (_objectTabFlags[currentType] & ObjectTabFlags::hideInEditor) != 0)
