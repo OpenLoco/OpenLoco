@@ -55,34 +55,35 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     enum ObjectTabFlags
     {
         none = 0,
-        flag0 = 1 << 0,
+        alwaysHidden = 1 << 0,
         advanced = 1 << 1,
-        flag2 = 1 << 2,
-        flag3 = 1 << 3,
-        flag4 = 1 << 4,
+        hideInGame = 1 << 2,
+        hideInEditor = 1 << 3,
+        showEvenIfSingular = 1 << 4,
     }
 
+    // Merge with TabDisplayInfo struct?
     static const ObjectTabFlags _objectTabFlags[ObjectManager::maxObjectTypes] = {
         ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
+        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
         ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
-        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
+        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
+        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
         ObjectTabFlags::advanced,
         ObjectTabFlags::advanced,
         ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::flag4,
+        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
         ObjectTabFlags::advanced,
         ObjectTabFlags::advanced,
-        ObjectTabFlags::advanced | ObjectTabFlags::flag4,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular,
         ObjectTabFlags::advanced,
         ObjectTabFlags::advanced,
         ObjectTabFlags::advanced,
@@ -95,8 +96,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         ObjectTabFlags::advanced,
         ObjectTabFlags::advanced,
         ObjectTabFlags::none,
-        ObjectTabFlags::flag3,
-        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
+        ObjectTabFlags::hideInEditor,
+        ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden,
     };
 
 #pragma pack(push, 1)
@@ -156,7 +157,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
         {
-            if ((_objectTabFlags[currentType] & (1 << 0)) != 0)
+            if ((_objectTabFlags[currentType] & ObjectTabFlags:alwaysHidden) != ObjectTabFlags::none)
                 continue;
 
             // Skip all types that don't have any objects
@@ -164,17 +165,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 continue;
 
             // Skip certain object types that only have one entry in game
-            if ((_objectTabFlags[currentType] & (1 << 4)) == 0 && _tabObjectCounts[currentType] == 1)
+            if ((_objectTabFlags[currentType] & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none &&
+                _tabObjectCounts[currentType] == 1)
                 continue;
 
             // Hide advanced object types as needed
-            if ((self->var_856 & (1 << 0)) == 0 && (_objectTabFlags[currentType] & (1 << 1)) != 0)
+            if ((self->var_856 & (1 << 0)) == 0 &&
+                (_objectTabFlags[currentType] & ObjectTabFlags::advanced) != ObjectTabFlags::none)
                 continue;
 
-            if (isEditorMode() && (_objectTabFlags[currentType] & (1 << 3)) != 0)
+            if (isEditorMode() && (_objectTabFlags[currentType] & ObjectTabFlags::hideInEditor) != 0)
                 continue;
 
-            if ((_objectTabFlags[currentType] & (1 << 2)) != 0)
+            if ((_objectTabFlags[currentType] & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
                 continue;
 
             // Assign tab position
