@@ -184,7 +184,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if ((self->var_856 & (1 << 0)) == 0 && (tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
                 continue;
 
-            if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != 0)
+            if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
                 continue;
 
             if ((tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
