@@ -182,8 +182,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Add a marker to denote the last tab
         newPosInfo[j].index = 0xFF;
 
-        // Copy new tab order into
-        std::memcpy(_tabInformation, newPosInfo, std::size(newPosInfo));
+        // Copy new tab order into _tabInformation
+        std::memcpy(_tabInformation, newPosInfo, std::size(newPosInfo) * sizeof(TabPosition));
     }
 
     // 0x004731EE
