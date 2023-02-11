@@ -112,7 +112,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // clang-format on
 
 #pragma pack(push, 1)
-    struct tabPosition
+    struct TabPosition
     {
         uint8_t index;
         uint8_t row;
@@ -126,7 +126,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint16_t, 0x0052334C> _52334C;
 
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
-    static loco_global<tabPosition[36], 0x0112C21C> _tabInformation;
+    static loco_global<TabPosition[36], 0x0112C21C> _tabInformation;
 
     static void initEvents();
 
@@ -156,7 +156,58 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static WindowEventList _events;
 
-    static void sub_4731EE(Window* self, ObjectType eax);
+    // 0x0047322A
+    static void rotateTabs(uint8_t newStartPosition)
+    {
+        TabPosition[36] newPosInfo = {};
+        uint8_t j = 0;
+
+        for (uint8_t i = newStartPosition; _tabInformation[i].index != 0xFF; i++)
+        {
+            newPosInfo[j].index = _tabInformation[i].index;
+            newPosInfo[j].row = j < 19 ? 0 : 1;
+            j++;
+        }
+
+        for (uint8_t i = 0; i < newStartPosition; i++)
+        {
+            newPosInfo[j].index = _tabInformation[i].index;
+            newPosInfo[j].row = j < 19 ? 0 : 1;
+            j++;
+        }
+
+        // Add a marker to denote the last tab
+        newPosInfo[j].index = 0xFF;
+
+        // Copy new tab order into
+        std::memcpy(_tabInformation, newPosInfo, std::size(newPosInfo));
+    }
+
+    // 0x004731EE
+    static void repositionTargetTab(Window* self, ObjectType targetTab)
+    {
+        self->currentTab = targetTab;
+        for (auto i = 0U; i < std::size(_tabInformation); i++)
+        {
+            // Ended up in a position without info? Reassign positions first.
+            if (_tabInformation[i].index == 0xFF)
+            {
+                self->var_856 |= (1 << 0);
+                assignTabPositions(self);
+                continue;
+            }
+
+            if (_tabInformation[i].index == targetTab)
+            {
+                // Found current tab, and its in bottom row? No change required
+                if (_tabInformation[i].row == 0)
+                    return;
+                // Otherwise, we'll rotate the tabs around, such that this one is in the bottom row
+                else
+                    rotateTabs(i);
+            }
+        }
+    }
 
     // 0x00473154
     static void assignTabPositions(Window* self)
@@ -210,16 +261,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         _tabInformation[tabPos].index = 0xFF;
 
         const auto firstTabIndex = ObjectType(_tabInformation[0].index);
-        sub_4731EE(self, firstTabIndex);
-    }
-
-    // 0x004731EE
-    static void sub_4731EE(Window* self, ObjectType eax)
-    {
-        registers regs;
-        regs.eax = static_cast<uint32_t>(eax);
-        regs.esi = X86Pointer(self);
-        call(0x004731EE, regs);
+        repositionTargetTab(self, firstTabIndex);
     }
 
     // 0x00472BBC
@@ -275,7 +317,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         window->object = nullptr;
 
         assignTabPositions(window);
-        sub_4731EE(window, ObjectType::region);
+        repositionTargetTab(window, ObjectType::region);
         ObjectManager::freeTemporaryObject();
 
         auto objIndex = sub_472BBC(window);
@@ -791,7 +833,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if (clickedTab != -1 && self.currentTab != clickedTab)
                 {
-                    sub_4731EE(&self, static_cast<ObjectType>(clickedTab));
+                    repositionTargetTab(&self, static_cast<ObjectType>(clickedTab));
                     self.rowHover = -1;
                     self.object = nullptr;
                     self.scrollAreas[0].contentWidth = 0;
@@ -826,7 +868,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                         currentTab = _tabInformation[0].index;
                     }
                 }
-                sub_4731EE(&self, static_cast<ObjectType>(currentTab));
+                repositionTargetTab(&self, static_cast<ObjectType>(currentTab));
                 self.invalidate();
 
                 break;
