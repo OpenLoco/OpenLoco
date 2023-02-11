@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     // clang-format off
-    static const std::array<TabDisplayInfo, ObjectManager::maxObjectTypes> _tabDisplayInfo = {
+    static constexpr std::array<TabDisplayInfo, ObjectManager::maxObjectTypes> _tabDisplayInfo = {
         { StringIds::object_interface_styles,      ImageIds::tab_object_settings,        ObjectTabFlags::advanced },
         { StringIds::object_sounds,                ImageIds::tab_object_audio,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
         { StringIds::object_currency,              ImageIds::tab_object_currency,        ObjectTabFlags::advanced },
