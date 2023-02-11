@@ -45,6 +45,7 @@
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <array>
 
 using namespace OpenLoco::Interop;
 
@@ -72,7 +73,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     // clang-format off
-    static const TabDisplayInfo _tabDisplayInfo[] = {
+    static const std::array<TabDisplayInfo, ObjectManager::maxObjectTypes> _tabDisplayInfo = {
         { StringIds::object_interface_styles,      ImageIds::tab_object_settings,        ObjectTabFlags::advanced },
         { StringIds::object_sounds,                ImageIds::tab_object_audio,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
         { StringIds::object_currency,              ImageIds::tab_object_currency,        ObjectTabFlags::advanced },
