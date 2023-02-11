@@ -345,6 +345,7 @@ namespace OpenLoco::Ui
     {
     }
 
+    // TODO: Move this into rendering engine, this is just resize and not really an update.
     void update(int32_t width, int32_t height)
     {
         // Scale the width and height by configured scale factor
