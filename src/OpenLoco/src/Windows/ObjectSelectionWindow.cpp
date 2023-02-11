@@ -43,6 +43,7 @@
 #include "Widget.h"
 #include "Window.h"
 #include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -52,15 +53,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr int kRowHeight = 12;
     static constexpr Ui::Size kWindowSize = { 600, 398 };
 
-    enum ObjectTabFlags
+    enum class ObjectTabFlags : uint8_t
     {
-        none = 0,
-        alwaysHidden = 1 << 0,
-        advanced = 1 << 1,
-        hideInGame = 1 << 2,
-        hideInEditor = 1 << 3,
-        showEvenIfSingular = 1 << 4,
+        none = 0U,
+        alwaysHidden = 1U << 0,
+        advanced = 1U << 1,
+        hideInGame = 1U << 2,
+        hideInEditor = 1U << 3,
+        showEvenIfSingular = 1U << 4,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ObjectTabFlags);
 
     struct TabDisplayInfo
     {
