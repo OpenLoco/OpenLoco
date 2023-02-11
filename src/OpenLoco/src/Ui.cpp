@@ -69,6 +69,7 @@ namespace OpenLoco::Ui
 #endif // _WIN32
     // TODO: Move this into renderer.
     static loco_global<ScreenInfo, 0x0050B894> _screenInfo;
+    static loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<Ui::CursorId, 0x00523393> _currentToolCursor;
@@ -116,7 +117,7 @@ namespace OpenLoco::Ui
 
     bool dirtyBlocksInitialised()
     {
-        return _screenInfo->dirtyBlocksInitialised != 0;
+        return _screenInvalidation->dirtyBlocksInitialised != 0;
     }
 
     static sdl_window_desc getWindowDesc(const Config::Display& cfg)
@@ -390,13 +391,14 @@ namespace OpenLoco::Ui
         _screenInfo->height_2 = height;
         _screenInfo->width_3 = width;
         _screenInfo->height_3 = height;
-        _screenInfo->dirtyBlockWidth = blockWidth;
-        _screenInfo->dirtyBlockHeight = blockHeight;
-        _screenInfo->dirtyBlockColumns = (width / blockWidth) + 1;
-        _screenInfo->dirtyBlockRows = (height / blockHeight) + 1;
-        _screenInfo->dirtyBlockColumnShift = widthShift;
-        _screenInfo->dirtyBlockRowShift = heightShift;
-        _screenInfo->dirtyBlocksInitialised = 1;
+
+        _screenInvalidation->dirtyBlockWidth = blockWidth;
+        _screenInvalidation->dirtyBlockHeight = blockHeight;
+        _screenInvalidation->dirtyBlockColumns = (width / blockWidth) + 1;
+        _screenInvalidation->dirtyBlockRows = (height / blockHeight) + 1;
+        _screenInvalidation->dirtyBlockColumnShift = widthShift;
+        _screenInvalidation->dirtyBlockRowShift = heightShift;
+        _screenInvalidation->dirtyBlocksInitialised = 1;
     }
 
     static void positionChanged(int32_t x, int32_t y)

@@ -13,9 +13,10 @@ namespace OpenLoco::Drawing
 {
     using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
 
-    // TODO: Move both into the renderer.
+    // TODO: Move into the renderer.
     static loco_global<RenderTarget, 0x0050B884> _screenRT;
     static loco_global<Ui::ScreenInfo, 0x0050B894> _screenInfo;
+    static loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
 
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
     loco_global<SetPaletteFunc, 0x0052524C> _setPaletteCallback;
@@ -93,13 +94,13 @@ namespace OpenLoco::Drawing
         right--;
         bottom--;
 
-        const int32_t dirtyBlockLeft = left >> _screenInfo->dirtyBlockColumnShift;
-        const int32_t dirtyBlockRight = right >> _screenInfo->dirtyBlockColumnShift;
-        const int32_t dirtyBlockTop = top >> _screenInfo->dirtyBlockRowShift;
-        const int32_t dirtyBlockBottom = bottom >> _screenInfo->dirtyBlockRowShift;
+        const int32_t dirtyBlockLeft = left >> _screenInvalidation->dirtyBlockColumnShift;
+        const int32_t dirtyBlockRight = right >> _screenInvalidation->dirtyBlockColumnShift;
+        const int32_t dirtyBlockTop = top >> _screenInvalidation->dirtyBlockRowShift;
+        const int32_t dirtyBlockBottom = bottom >> _screenInvalidation->dirtyBlockRowShift;
 
-        const size_t columns = _screenInfo->dirtyBlockColumns;
-        const size_t rows = _screenInfo->dirtyBlockRows;
+        const size_t columns = _screenInvalidation->dirtyBlockColumns;
+        const size_t rows = _screenInvalidation->dirtyBlockRows;
         auto grid = Grid<uint8_t>(_E025C4, columns, rows);
 
         for (int16_t y = dirtyBlockTop; y <= dirtyBlockBottom; y++)
@@ -127,8 +128,8 @@ namespace OpenLoco::Drawing
     // 0x004C5CFA
     void SoftwareDrawingEngine::render()
     {
-        const size_t columns = _screenInfo->dirtyBlockColumns;
-        const size_t rows = _screenInfo->dirtyBlockRows;
+        const size_t columns = _screenInvalidation->dirtyBlockColumns;
+        const size_t rows = _screenInvalidation->dirtyBlockRows;
         auto grid = Grid<uint8_t>(_E025C4, columns, rows);
 
         for (size_t x = 0; x < columns; x++)
@@ -151,8 +152,8 @@ namespace OpenLoco::Drawing
 
     void SoftwareDrawingEngine::render(size_t x, size_t y, size_t dx, size_t dy)
     {
-        const auto columns = _screenInfo->dirtyBlockColumns;
-        const auto rows = _screenInfo->dirtyBlockRows;
+        const auto columns = _screenInvalidation->dirtyBlockColumns;
+        const auto rows = _screenInvalidation->dirtyBlockRows;
         auto grid = Grid<uint8_t>(_E025C4, columns, rows);
 
         // Unset dirty blocks
@@ -165,10 +166,10 @@ namespace OpenLoco::Drawing
         }
 
         auto rect = Rect(
-            static_cast<int16_t>(x * _screenInfo->dirtyBlockWidth),
-            static_cast<int16_t>(y * _screenInfo->dirtyBlockHeight),
-            static_cast<uint16_t>(dx * _screenInfo->dirtyBlockWidth),
-            static_cast<uint16_t>(dy * _screenInfo->dirtyBlockHeight));
+            static_cast<int16_t>(x * _screenInvalidation->dirtyBlockWidth),
+            static_cast<int16_t>(y * _screenInvalidation->dirtyBlockHeight),
+            static_cast<uint16_t>(dx * _screenInvalidation->dirtyBlockWidth),
+            static_cast<uint16_t>(dy * _screenInvalidation->dirtyBlockHeight));
 
         this->render(rect);
     }
