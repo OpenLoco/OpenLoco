@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         hideInGame = 1 << 2,
         hideInEditor = 1 << 3,
         showEvenIfSingular = 1 << 4,
-    }
+    };
 
     // Merge with TabDisplayInfo struct?
     static const ObjectTabFlags _objectTabFlags[ObjectManager::maxObjectTypes] = {
@@ -852,7 +852,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if ((self.var_856 & 1) == 0)
                 {
-                    if (_objectTabFlags[currentTab] & 1 << 1)
+                    if ((_objectTabFlags[currentTab] & ObjectTabFlags::advanced) != ObjectTabFlags::none)
                     {
                         currentTab = _tabInformation[0].index;
                     }
