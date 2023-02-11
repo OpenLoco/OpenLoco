@@ -52,7 +52,52 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr int kRowHeight = 12;
     static constexpr Ui::Size kWindowSize = { 600, 398 };
 
-    static loco_global<uint8_t[ObjectManager::maxObjectTypes], 0x004FE384> _objectTypeFlags;
+    enum ObjectTabFlags
+    {
+        none = 0,
+        flag0 = 1 << 0,
+        advanced = 1 << 1,
+        flag2 = 1 << 2,
+        flag3 = 1 << 3,
+        flag4 = 1 << 4,
+    }
+
+    static const ObjectTabFlags _objectTabFlags[ObjectManager::maxObjectTypes] = {
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
+        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced | ObjectTabFlags::flag4,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced | ObjectTabFlags::flag4,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::advanced,
+        ObjectTabFlags::none,
+        ObjectTabFlags::flag3,
+        ObjectTabFlags::advanced | ObjectTabFlags::flag0,
+    };
 
 #pragma pack(push, 1)
     struct tabPosition
@@ -111,7 +156,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
         {
-            if ((_objectTypeFlags[currentType] & (1 << 0)) != 0)
+            if ((_objectTabFlags[currentType] & (1 << 0)) != 0)
                 continue;
 
             // Skip all types that don't have any objects
@@ -119,17 +164,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 continue;
 
             // Skip certain object types that only have one entry in game
-            if ((_objectTypeFlags[currentType] & (1 << 4)) == 0 && _tabObjectCounts[currentType] == 1)
+            if ((_objectTabFlags[currentType] & (1 << 4)) == 0 && _tabObjectCounts[currentType] == 1)
                 continue;
 
             // Hide advanced object types as needed
-            if ((self->var_856 & (1 << 0)) == 0 && (_objectTypeFlags[currentType] & (1 << 1)) != 0)
+            if ((self->var_856 & (1 << 0)) == 0 && (_objectTabFlags[currentType] & (1 << 1)) != 0)
                 continue;
 
-            if (isEditorMode() && (_objectTypeFlags[currentType] & (1 << 3)) != 0)
+            if (isEditorMode() && (_objectTabFlags[currentType] & (1 << 3)) != 0)
                 continue;
 
-            if ((_objectTypeFlags[currentType] & (1 << 2)) != 0)
+            if ((_objectTabFlags[currentType] & (1 << 2)) != 0)
                 continue;
 
             // Assign tab position
@@ -804,7 +849,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if ((self.var_856 & 1) == 0)
                 {
-                    if (_objectTypeFlags[currentTab] & 1 << 1)
+                    if (_objectTabFlags[currentTab] & 1 << 1)
                     {
                         currentTab = _tabInformation[0].index;
                     }
