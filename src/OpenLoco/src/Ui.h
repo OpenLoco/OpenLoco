@@ -38,13 +38,13 @@ namespace OpenLoco::Ui
 
     struct ScreenInvalidationData
     {
-        int16_t dirtyBlockWidth;
-        int16_t dirtyBlockHeight;
-        int32_t dirtyBlockColumns;
-        int32_t dirtyBlockRows;
-        int8_t dirtyBlockColumnShift;
-        int8_t dirtyBlockRowShift;
-        int8_t dirtyBlocksInitialised;
+        int16_t blockWidth;
+        int16_t blockHeight;
+        int32_t columnCount;
+        int32_t rowCount;
+        int8_t columnShift;
+        int8_t rowShift;
+        int8_t initialised;
     };
     static_assert(sizeof(ScreenInvalidationData) == 0xF);
 #pragma pack(pop)

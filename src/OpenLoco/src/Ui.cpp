@@ -117,7 +117,7 @@ namespace OpenLoco::Ui
 
     bool dirtyBlocksInitialised()
     {
-        return _screenInvalidation->dirtyBlocksInitialised != 0;
+        return _screenInvalidation->initialised != 0;
     }
 
     static sdl_window_desc getWindowDesc(const Config::Display& cfg)
@@ -393,13 +393,13 @@ namespace OpenLoco::Ui
         _screenInfo->width_3 = width;
         _screenInfo->height_3 = height;
 
-        _screenInvalidation->dirtyBlockWidth = blockWidth;
-        _screenInvalidation->dirtyBlockHeight = blockHeight;
-        _screenInvalidation->dirtyBlockColumns = (width / blockWidth) + 1;
-        _screenInvalidation->dirtyBlockRows = (height / blockHeight) + 1;
-        _screenInvalidation->dirtyBlockColumnShift = widthShift;
-        _screenInvalidation->dirtyBlockRowShift = heightShift;
-        _screenInvalidation->dirtyBlocksInitialised = 1;
+        _screenInvalidation->blockWidth = blockWidth;
+        _screenInvalidation->blockHeight = blockHeight;
+        _screenInvalidation->columnCount = (width / blockWidth) + 1;
+        _screenInvalidation->rowCount = (height / blockHeight) + 1;
+        _screenInvalidation->columnShift = widthShift;
+        _screenInvalidation->rowShift = heightShift;
+        _screenInvalidation->initialised = 1;
     }
 
     static void positionChanged(int32_t x, int32_t y)

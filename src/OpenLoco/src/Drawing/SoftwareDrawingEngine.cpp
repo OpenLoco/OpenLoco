@@ -96,13 +96,13 @@ namespace OpenLoco::Drawing
         right--;
         bottom--;
 
-        const int32_t dirtyBlockLeft = left >> _screenInvalidation->dirtyBlockColumnShift;
-        const int32_t dirtyBlockRight = right >> _screenInvalidation->dirtyBlockColumnShift;
-        const int32_t dirtyBlockTop = top >> _screenInvalidation->dirtyBlockRowShift;
-        const int32_t dirtyBlockBottom = bottom >> _screenInvalidation->dirtyBlockRowShift;
+        const int32_t dirtyBlockLeft = left >> _screenInvalidation->columnShift;
+        const int32_t dirtyBlockRight = right >> _screenInvalidation->columnShift;
+        const int32_t dirtyBlockTop = top >> _screenInvalidation->rowShift;
+        const int32_t dirtyBlockBottom = bottom >> _screenInvalidation->rowShift;
 
-        const size_t columns = _screenInvalidation->dirtyBlockColumns;
-        const size_t rows = _screenInvalidation->dirtyBlockRows;
+        const size_t columns = _screenInvalidation->columnCount;
+        const size_t rows = _screenInvalidation->rowCount;
         auto grid = Grid<uint8_t>(_screenInvalidationGrid, columns, rows);
 
         for (int16_t y = dirtyBlockTop; y <= dirtyBlockBottom; y++)
@@ -130,8 +130,8 @@ namespace OpenLoco::Drawing
     // 0x004C5CFA
     void SoftwareDrawingEngine::render()
     {
-        const size_t columns = _screenInvalidation->dirtyBlockColumns;
-        const size_t rows = _screenInvalidation->dirtyBlockRows;
+        const size_t columns = _screenInvalidation->columnCount;
+        const size_t rows = _screenInvalidation->rowCount;
         auto grid = Grid<uint8_t>(_screenInvalidationGrid, columns, rows);
 
         for (size_t x = 0; x < columns; x++)
@@ -154,8 +154,8 @@ namespace OpenLoco::Drawing
 
     void SoftwareDrawingEngine::render(size_t x, size_t y, size_t dx, size_t dy)
     {
-        const auto columns = _screenInvalidation->dirtyBlockColumns;
-        const auto rows = _screenInvalidation->dirtyBlockRows;
+        const auto columns = _screenInvalidation->columnCount;
+        const auto rows = _screenInvalidation->rowCount;
         auto grid = Grid<uint8_t>(_screenInvalidationGrid, columns, rows);
 
         // Unset dirty blocks
@@ -168,10 +168,10 @@ namespace OpenLoco::Drawing
         }
 
         auto rect = Rect(
-            static_cast<int16_t>(x * _screenInvalidation->dirtyBlockWidth),
-            static_cast<int16_t>(y * _screenInvalidation->dirtyBlockHeight),
-            static_cast<uint16_t>(dx * _screenInvalidation->dirtyBlockWidth),
-            static_cast<uint16_t>(dy * _screenInvalidation->dirtyBlockHeight));
+            static_cast<int16_t>(x * _screenInvalidation->blockWidth),
+            static_cast<int16_t>(y * _screenInvalidation->blockHeight),
+            static_cast<uint16_t>(dx * _screenInvalidation->blockWidth),
+            static_cast<uint16_t>(dy * _screenInvalidation->blockHeight));
 
         this->render(rect);
     }
