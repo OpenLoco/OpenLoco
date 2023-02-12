@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
-    static loco_global<uint8_t*, 0x50D144> _50D144;
+    static loco_global<uint8_t*, 0x50D144> _objectSelection;
 
     static loco_global<uint16_t, 0x0052334A> _52334A;
     static loco_global<uint16_t, 0x0052334C> _52334C;
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         for (auto [index, object] : objects)
         {
-            if (_50D144[index] & (1 << 0))
+            if (_objectSelection[index] & (1 << 0))
             {
                 return { static_cast<int16_t>(index), object };
             }
@@ -787,7 +787,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 }
             }
 
-            if (_50D144[i] & (1 << 0))
+            if (_objectSelection[i] & (1 << 0))
             {
                 auto x = 2;
                 drawingCtx.setCurrentFontSpriteBase(Font::m2);
@@ -799,7 +799,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 auto checkColour = self.getColour(WindowColour::secondary).opaque();
 
-                if (_50D144[i] & 0x1C)
+                if (_objectSelection[i] & 0x1C)
                 {
                     checkColour = checkColour.inset();
                 }
@@ -984,9 +984,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         if (ObjectManager::getMaxObjects(type) == 1)
         {
-            if (!(_50D144[index] & (1 << 0)))
+            if (!(_objectSelection[index] & (1 << 0)))
             {
-                auto [oldIndex, oldObject] = ObjectManager::getActiveObject(type, _50D144);
+                auto [oldIndex, oldObject] = ObjectManager::getActiveObject(type, _objectSelection);
 
                 if (oldIndex != -1)
                 {
@@ -997,7 +997,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto bx = 0;
 
-        if (!(_50D144[index] & (1 << 0)))
+        if (!(_objectSelection[index] & (1 << 0)))
         {
             bx |= (1 << 0);
         }
@@ -1025,7 +1025,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto objects = ObjectManager::getAvailableObjects(type);
             for (auto [i, object] : objects)
             {
-                if (!(_50D144[i] & (1 << 0)))
+                if (!(_objectSelection[i] & (1 << 0)))
                 {
                     ObjectManager::unload(*object._header);
                 }
@@ -1041,7 +1041,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto objects = ObjectManager::getAvailableObjects(type);
             for (auto [i, object] : objects)
             {
-                if (_50D144[i] & (1 << 0))
+                if (_objectSelection[i] & (1 << 0))
                 {
                     if (!ObjectManager::findObjectHandle(*object._header))
                     {
