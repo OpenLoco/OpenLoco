@@ -274,11 +274,11 @@ namespace OpenLoco
 
                     if (obj->hasFlags(RoadStationFlags::passenger))
                     {
-                        cargoSearchState.filter(cargoSearchState.filter() | (1 << obj->var_2C));
+                        cargoSearchState.filter(cargoSearchState.filter() | (1 << obj->cargoType));
                     }
                     else if (obj->hasFlags(RoadStationFlags::freight))
                     {
-                        cargoSearchState.filter(cargoSearchState.filter() | ~(1 << obj->var_2C));
+                        cargoSearchState.filter(cargoSearchState.filter() | ~(1 << obj->cargoType));
                     }
                 }
                 else

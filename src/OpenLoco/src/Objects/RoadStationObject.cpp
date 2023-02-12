@@ -2,7 +2,9 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "ObjectImageTable.h"
 #include "ObjectManager.h"
+#include "ObjectStringTable.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
@@ -63,14 +65,77 @@ namespace OpenLoco
         return true;
     }
 
+    constexpr std::array<uint32_t, 1> kDrawStyleTotalNumImages = {
+        RoadStation::ImageIds::Style0::totalNumImages,
+    };
+
     // 0x00490ABE
     void RoadStationObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x00490ABE, regs);
+        auto remainingData = data.subspan(sizeof(RoadStationObject));
+
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        std::fill(std::begin(mods), std::end(mods), 0xFF);
+
+        // NOTE: These aren't dependent objects as this can load without the
+        // related object.
+        for (auto i = 0; i < numCompatible; ++i)
+        {
+            auto& mod = mods[i];
+            mod = 0xFF;
+
+            ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(modHeader);
+            if (res.has_value())
+            {
+                mod = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        if (hasFlags(RoadStationFlags::passenger | RoadStationFlags::freight))
+        {
+            ObjectHeader cargoHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(cargoHeader);
+            if (res.has_value())
+            {
+                cargoType = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        for (size_t i = 0; i < 4; ++i)
+        {
+            for (size_t j = 0; j < 4; ++j)
+            {
+                cargoOffsetBytes[i][j] = reinterpret_cast<const std::byte*>(remainingData.data());
+
+                auto* bytes = reinterpret_cast<const int8_t*>(cargoOffsetBytes[i][j]);
+                bytes++; // z
+                auto length = 1;
+                while (*bytes != -1)
+                {
+                    length += 4; // x, y, x, y
+                    bytes += 4;
+                }
+                length += 4;
+                remainingData = remainingData.subspan(length);
+            }
+        }
+
+        auto imgRes = ObjectManager::loadImageTable(remainingData);
+        image = imgRes.imageOffset;
+        assert(remainingData.size() == imgRes.tableLength);
+
+        auto imageOffset = image + RoadStation::ImageIds::totalPreviewImages;
+        for (size_t i = 0; i < std::size(var_10); ++i)
+        {
+            var_10[i] = imageOffset;
+            imageOffset += kDrawStyleTotalNumImages[paintStyle];
+        }
     }
 
     // 0x00490B8E
@@ -78,12 +143,10 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        var_10 = 0;
-        var_14 = 0;
-        var_18 = 0;
-        var_1C = 0;
+
+        std::fill(std::begin(var_10), std::end(var_10), 0);
         std::fill(std::begin(mods), std::end(mods), 0);
-        var_2C = 0;
-        std::fill(std::begin(var_2E), std::end(var_2E), 0);
+        cargoType = 0;
+        std::fill(&cargoOffsetBytes[0][0], &cargoOffsetBytes[0][0] + sizeof(cargoOffsetBytes) / sizeof(std::byte*), nullptr);
     }
 }

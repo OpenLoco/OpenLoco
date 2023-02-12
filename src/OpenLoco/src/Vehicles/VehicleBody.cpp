@@ -27,7 +27,7 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<bool, 0x01136237> _vehicleUpdate_frontBogieHasMoved;
     static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;
-    static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C;    // var_2C related?
+    static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C;    // cargoType related?
     static loco_global<bool[44], 0x004F8A7C> _trackIdToSparkDirection; // bools true for right false for left
     static loco_global<bool, 0x00525FAE> _trafficHandedness;           // boolean true for right false for left
 
