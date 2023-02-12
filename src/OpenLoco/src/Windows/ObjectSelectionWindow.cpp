@@ -130,7 +130,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
 
     // 0x0112C21C
-    static TabPosition _tabInformation[36];
+    static TabPosition _tabPositions[36];
 
     static Ui::TextInput::InputSession inputSession;
 
@@ -169,13 +169,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void rotateTabs(uint8_t newStartPosition)
     {
         auto isSentinel = [](auto& entry) { return entry.index == 0xFF; };
-        auto sentinelPos = std::find_if(std::begin(_tabInformation), std::end(_tabInformation), isSentinel);
+        auto sentinelPos = std::find_if(std::begin(_tabPositions), std::end(_tabPositions), isSentinel);
 
-        std::rotate(std::begin(_tabInformation), std::begin(_tabInformation) + newStartPosition, sentinelPos);
+        std::rotate(std::begin(_tabPositions), std::begin(_tabPositions) + newStartPosition, sentinelPos);
 
-        for (uint8_t i = 0; _tabInformation[i].index != 0xFF; i++)
+        for (uint8_t i = 0; _tabPositions[i].index != 0xFF; i++)
         {
-            _tabInformation[i].row = i < kPrimaryTabRowCapacity ? 0 : 1;
+            _tabPositions[i].row = i < kPrimaryTabRowCapacity ? 0 : 1;
         }
     }
 
@@ -183,20 +183,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void repositionTargetTab(Window* self, ObjectType targetTab)
     {
         self->currentTab = enumValue(targetTab);
-        for (auto i = 0U; i < std::size(_tabInformation); i++)
+        for (auto i = 0U; i < std::size(_tabPositions); i++)
         {
             // Ended up in a position without info? Reassign positions first.
-            if (_tabInformation[i].index == 0xFF)
+            if (_tabPositions[i].index == 0xFF)
             {
                 self->var_856 |= (1 << 0);
                 assignTabPositions(self);
                 return;
             }
 
-            if (_tabInformation[i].index == enumValue(targetTab))
+            if (_tabPositions[i].index == enumValue(targetTab))
             {
                 // Found current tab, and its in bottom row? No change required
-                if (_tabInformation[i].row == 0)
+                if (_tabPositions[i].row == 0)
                     return;
                 // Otherwise, we'll rotate the tabs around, such that this one is in the bottom row
                 else
@@ -239,8 +239,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 continue;
 
             // Assign tab position
-            _tabInformation[tabPos].index = static_cast<uint8_t>(currentType);
-            _tabInformation[tabPos].row = currentRow;
+            _tabPositions[tabPos].index = static_cast<uint8_t>(currentType);
+            _tabPositions[tabPos].row = currentRow;
             tabPos++;
 
             // Distribute tabs over two rows -- ensure there's capacity left in current row
@@ -254,9 +254,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         // Add a marker to denote the last tab
-        _tabInformation[tabPos].index = 0xFF;
+        _tabPositions[tabPos].index = 0xFF;
 
-        const auto firstTabIndex = ObjectType(_tabInformation[0].index);
+        const auto firstTabIndex = ObjectType(_tabPositions[0].index);
         repositionTargetTab(self, firstTabIndex);
     }
 
@@ -373,25 +373,25 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto xPos = x + (row * kRowOffsetX);
             auto yPos = y - (row * kRowOffsetY);
-            for (auto index = 0; _tabInformation[index].index != 0xFF; index++)
+            for (auto index = 0; _tabPositions[index].index != 0xFF; index++)
             {
-                if (_tabInformation[index].row != row)
+                if (_tabPositions[index].row != row)
                     continue;
 
                 auto image = Gfx::recolour(ImageIds::tab, self->getColour(WindowColour::secondary).c());
-                if (_tabInformation[index].index == self->currentTab)
+                if (_tabPositions[index].index == self->currentTab)
                 {
                     image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
                     drawingCtx.drawImage(rt, xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
                     drawingCtx.drawImage(rt, xPos, yPos, image);
                 }
                 else
                 {
                     drawingCtx.drawImage(rt, xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
                     drawingCtx.drawImage(rt, xPos, yPos, image);
 
                     image = Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33);
@@ -843,16 +843,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     auto xPos = x + (row * kRowOffsetX);
                     auto yPos = y - (row * kRowOffsetY);
 
-                    for (int i = 0; _tabInformation[i].index != 0xFF; i++)
+                    for (int i = 0; _tabPositions[i].index != 0xFF; i++)
                     {
-                        if (_tabInformation[i].row != row)
+                        if (_tabPositions[i].row != row)
                             continue;
 
                         if (_52334A >= xPos && _52334C >= yPos)
                         {
                             if (_52334A < xPos + 31 && yPos + 27 > _52334C)
                             {
-                                clickedTab = _tabInformation[i].index;
+                                clickedTab = _tabPositions[i].index;
                                 break;
                             }
                         }
@@ -895,7 +895,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     const ObjectTabFlags tabFlags = _tabDisplayInfo[currentTab].flags;
                     if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
                     {
-                        currentTab = _tabInformation[0].index;
+                        currentTab = _tabPositions[0].index;
                     }
                 }
                 repositionTargetTab(&self, static_cast<ObjectType>(currentTab));
