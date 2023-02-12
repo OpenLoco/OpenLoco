@@ -85,7 +85,6 @@ namespace OpenLoco::Ui
     static std::map<CursorId, SDL_Cursor*> _cursors;
 
     static void setWindowIcon();
-    static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode);
 
@@ -176,9 +175,9 @@ namespace OpenLoco::Ui
         setWindowIcon();
 
         // Create a palette for the window
-        Gfx::getDrawingEngine().createPalette();
-
-        update(desc.width, desc.height);
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        drawingEngine.createPalette();
+        drawingEngine.resize(desc.width, desc.height);
     }
 
     static void setWindowIcon()
@@ -345,63 +344,6 @@ namespace OpenLoco::Ui
     {
     }
 
-    // TODO: Move this into rendering engine, this is just resize and not really an update.
-    void update(int32_t width, int32_t height)
-    {
-        // Scale the width and height by configured scale factor
-        auto scaleFactor = Config::get().scaleFactor;
-        width = (int32_t)(width / scaleFactor);
-        height = (int32_t)(height / scaleFactor);
-
-        int32_t widthShift = 6;
-        int16_t blockWidth = 1 << widthShift;
-        int32_t heightShift = 3;
-        int16_t blockHeight = 1 << heightShift;
-
-        if (surface != nullptr)
-        {
-            SDL_FreeSurface(surface);
-        }
-        if (RGBASurface != nullptr)
-        {
-            SDL_FreeSurface(RGBASurface);
-        }
-
-        surface = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
-
-        RGBASurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
-        SDL_SetSurfaceBlendMode(RGBASurface, SDL_BLENDMODE_NONE);
-
-        SDL_SetSurfacePalette(surface, Gfx::getDrawingEngine().getPalette());
-
-        int32_t pitch = surface->pitch;
-
-        auto& rt = Gfx::getScreenRT();
-        if (rt.bits != nullptr)
-        {
-            delete[] rt.bits;
-        }
-        rt.bits = new uint8_t[surface->pitch * height];
-        rt.width = width;
-        rt.height = height;
-        rt.pitch = pitch - width;
-
-        _screenInfo->width = width;
-        _screenInfo->height = height;
-        _screenInfo->width_2 = width;
-        _screenInfo->height_2 = height;
-        _screenInfo->width_3 = width;
-        _screenInfo->height_3 = height;
-
-        _screenInvalidation->blockWidth = blockWidth;
-        _screenInvalidation->blockHeight = blockHeight;
-        _screenInvalidation->columnCount = (width / blockWidth) + 1;
-        _screenInvalidation->rowCount = (height / blockHeight) + 1;
-        _screenInvalidation->columnShift = widthShift;
-        _screenInvalidation->rowShift = heightShift;
-        _screenInvalidation->initialised = 1;
-    }
-
     static void positionChanged(int32_t x, int32_t y)
     {
         auto displayIndex = SDL_GetWindowDisplayIndex(window);
@@ -416,7 +358,9 @@ namespace OpenLoco::Ui
 
     void resize(int32_t width, int32_t height)
     {
-        update(width, height);
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        drawingEngine.resize(width, height);
+
         Gui::resize();
         Gfx::invalidateScreen();
 

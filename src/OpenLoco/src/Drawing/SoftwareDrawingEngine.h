@@ -25,6 +25,8 @@ namespace OpenLoco::Drawing
     public:
         ~SoftwareDrawingEngine();
 
+        void resize(int32_t width, int32_t height);
+
         // Renders all invalidated regions.
         void render();
 
