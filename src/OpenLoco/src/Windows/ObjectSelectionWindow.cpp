@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00472BBC
-    static ObjectManager::ObjIndexPair sub_472BBC(Window* self)
+    static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject(Window* self)
     {
         const auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self->currentTab));
 
@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         repositionTargetTab(window, ObjectType::region);
         ObjectManager::freeTemporaryObject();
 
-        auto objIndex = sub_472BBC(window);
+        auto objIndex = getFirstAvailableSelectedObject(window);
         if (objIndex.index != -1)
         {
             window->rowHover = objIndex.index;
@@ -868,7 +868,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     self.object = nullptr;
                     self.scrollAreas[0].contentWidth = 0;
                     ObjectManager::freeTemporaryObject();
-                    auto objIndex = sub_472BBC(&self);
+                    auto objIndex = getFirstAvailableSelectedObject(&self);
 
                     if (objIndex.index != -1)
                     {
