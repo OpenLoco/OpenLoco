@@ -3,6 +3,7 @@ set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/EnumFlags.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/FileSystem.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/LocoFixedVector.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Numerics.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Prng.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Span.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Traits.hpp"
