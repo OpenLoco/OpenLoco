@@ -123,8 +123,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<char[2], 0x005045F8> _strCheckmark;
     static loco_global<uint8_t*, 0x50D144> _objectSelection;
 
-    static loco_global<uint16_t, 0x0052334A> _52334A;
-    static loco_global<uint16_t, 0x0052334C> _52334C;
+    static loco_global<uint16_t, 0x0052334A> _mousePosX;
+    static loco_global<uint16_t, 0x0052334C> _mousePosY;
 
     // _tabObjectCounts can be integrated after implementing sub_473A95
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
@@ -848,9 +848,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                         if (_tabPositions[i].row != row)
                             continue;
 
-                        if (_52334A >= xPos && _52334C >= yPos)
+                        if (_mousePosX >= xPos && _mousePosY >= yPos)
                         {
-                            if (_52334A < xPos + 31 && yPos + 27 > _52334C)
+                            if (_mousePosX < xPos + 31 && yPos + 27 > _mousePosY)
                             {
                                 clickedTab = _tabPositions[i].index;
                                 break;
