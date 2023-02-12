@@ -1567,7 +1567,16 @@ namespace OpenLoco::Drawing
 
             Rect drawRect = Rect::fromLTRB(leftX, topY, rightX, bottomY);
 
-            if ((flags & RectFlags::transparent) != RectFlags::none)
+            if (flags == RectFlags::none) // Regular fill
+            {
+                uint8_t* dst = drawRect.top() * (rt.width + rt.pitch) + drawRect.left() + rt.bits;
+                for (int32_t i = 0; i < drawRect.height(); i++)
+                {
+                    std::fill_n(dst, drawRect.width(), colour);
+                    dst += rt.width + rt.pitch;
+                }
+            }
+            else if ((flags & RectFlags::transparent) != RectFlags::none)
             {
                 uint8_t* dst = rt.bits
                     + static_cast<uint32_t>((drawRect.top() >> rt.zoomLevel) * ((rt.width >> rt.zoomLevel) + rt.pitch) + (drawRect.left() >> rt.zoomLevel));
@@ -1623,15 +1632,6 @@ namespace OpenLoco::Drawing
             else if ((flags & RectFlags::selectPattern) != RectFlags::none)
             {
                 assert(false); // unused
-            }
-            else // Regular fill
-            {
-                uint8_t* dst = drawRect.top() * (rt.width + rt.pitch) + drawRect.left() + rt.bits;
-                for (int32_t i = 0; i < drawRect.height(); i++)
-                {
-                    std::fill_n(dst, drawRect.width(), colour);
-                    dst += rt.width + rt.pitch;
-                }
             }
         }
 
