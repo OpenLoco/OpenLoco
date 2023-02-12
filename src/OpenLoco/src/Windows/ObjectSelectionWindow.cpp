@@ -39,6 +39,7 @@
 #include "Objects/WallObject.h"
 #include "Objects/WaterObject.h"
 #include "SceneManager.h"
+#include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "Window.h"
@@ -131,6 +132,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0112C21C
     static TabPosition _tabInformation[36];
 
+    static Ui::TextInput::InputSession inputSession;
+
     static void initEvents();
     static void assignTabPositions(Window* self);
 
@@ -142,6 +145,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         panel,
         tabArea,
         advancedButton,
+        textInput,
         scrollview,
         objectImage,
     };
@@ -153,7 +157,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeWidget({ 0, 65 }, { 600, 333 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_6, WindowColour::secondary),
         makeWidget({ 470, 20 }, { 122, 12 }, WidgetType::button, WindowColour::primary, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
-        makeWidget({ 4, 68 }, { 288, 317 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
+        makeWidget({ 4, 68 }, { 288, 14 }, WidgetType::textbox, WindowColour::secondary),
+        makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary),
         widgetEnd(),
     };
@@ -322,6 +327,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         window->setColour(WindowColour::primary, skin->colour_0B);
         window->setColour(WindowColour::secondary, skin->colour_0C);
+
+        inputSession = Ui::TextInput::InputSession();
+        inputSession.calculateTextOffset(widgets[widx::textInput].width());
 
         return window;
     }
@@ -618,6 +626,36 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    static void drawSearchBox(Window& self, Gfx::RenderTarget* rt)
+    {
+        char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
+        strcpy(textBuffer, inputSession.buffer.c_str());
+
+        auto& widget = widgets[widx::textInput];
+        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(widget.left + 1 + self.x, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
+        if (!clipped)
+            return;
+
+        FormatArguments args{};
+        args.push(StringIds::buffer_2039);
+
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
+        // Draw search box input buffer
+        Ui::Point position = { inputSession.xOffset, 1 };
+        drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, &args);
+
+        // Draw search box cursor, blinking
+        if ((inputSession.cursorFrame % 32) < 16)
+        {
+            // We the string again to figure out where the cursor should go; position.x will be adjusted
+            textBuffer[inputSession.cursorPosition] = '\0';
+            Ui::Point position = { inputSession.xOffset, 1 };
+            drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
+        }
+    }
+
     // 0x004733F5
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
@@ -627,6 +665,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.draw(rt);
 
         drawTabs(&self, rt);
+        drawSearchBox(self, rt);
 
         bool doDefault = true;
         if (self.object != nullptr)
@@ -1046,6 +1085,29 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void onUpdate(Window& self)
     {
         WindowManager::invalidateWidget(WindowType::objectSelection, self.number, widx::objectImage);
+
+        inputSession.cursorFrame++;
+        if ((inputSession.cursorFrame % 16) == 0)
+        {
+            WindowManager::invalidateWidget(WindowType::objectSelection, self.number, widx::textInput);
+        }
+    }
+
+    void handleInput(uint32_t charCode, uint32_t keyCode)
+    {
+        auto w = WindowManager::find(WindowType::objectSelection);
+        if (w == nullptr)
+            return;
+
+        if (!inputSession.handleInput(charCode, keyCode))
+            return;
+
+        int containerWidth = widgets[widx::textInput].width() - 2;
+        if (inputSession.needsReoffsetting(containerWidth))
+            inputSession.calculateTextOffset(containerWidth);
+
+        inputSession.cursorFrame = 0;
+        WindowManager::invalidateWidget(WindowType::objectSelection, 0, widx::textInput);
     }
 
     static void initEvents()

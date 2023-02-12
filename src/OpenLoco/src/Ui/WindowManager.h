@@ -263,6 +263,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         bool tryCloseWindow();
+        void handleInput(uint32_t charCode, uint32_t keyCode);
     }
 
     namespace Options
