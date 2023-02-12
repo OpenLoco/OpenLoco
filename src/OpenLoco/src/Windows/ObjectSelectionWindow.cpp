@@ -169,7 +169,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         std::rotate(std::begin(_tabInformation), std::begin(_tabInformation) + newStartPosition, sentinelPos);
 
         for (uint8_t i = 0; _tabInformation[i].index != 0xFF; i++)
+        {
             _tabInformation[i].row = i < kPrimaryTabRowCapacity ? 0 : 1;
+        }
     }
 
     // 0x004731EE
