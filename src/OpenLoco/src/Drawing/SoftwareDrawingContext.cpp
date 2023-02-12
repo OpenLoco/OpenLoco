@@ -1509,68 +1509,17 @@ namespace OpenLoco::Drawing
             return std::make_pair(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0));
         }
 
-        /** rct2: 0x0097FF04 */
-        // clang-format off
-        static constexpr const uint16_t Pattern[] = {
-            0b0111111110000000,
-            0b0011111111000000,
-            0b0001111111100000,
-            0b0000111111110000,
-            0b0000011111111000,
-            0b0000001111111100,
-            0b0000000111111110,
-            0b0000000011111111,
-            0b1000000001111111,
-            0b1100000000111111,
-            0b1110000000011111,
-            0b1111000000001111,
-            0b1111100000000111,
-            0b1111110000000011,
-            0b1111111000000001,
-            0b1111111100000000,
-        };
-
-        /** rct2: 0x0097FF14 */
-        static constexpr const uint16_t PatternInverse[] = {
-            0b1000000001111111,
-            0b1100000000111111,
-            0b1110000000011111,
-            0b1111000000001111,
-            0b1111100000000111,
-            0b1111110000000011,
-            0b1111111000000001,
-            0b1111111100000000,
-            0b0111111110000000,
-            0b0011111111000000,
-            0b0001111111100000,
-            0b0000111111110000,
-            0b0000011111111000,
-            0b0000001111111100,
-            0b0000000111111110,
-            0b0000000011111111,
-        };
-
-        /** rct2: 0x0097FEFC */
-        static constexpr const uint16_t* Patterns[] = {
-            Pattern,
-            PatternInverse,
-        };
-        // clang-format on
-
         // 0x004474BA
+        // 0x00494E33
+        // ax: left
+        // bx: right
+        // bp: width
+        // cx: top
+        // dx: bottom
+        // ebp: colour | enumValue(flags)
+        // edi: rt
         static void drawRectImpl(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
         {
-            /*
-            registers regs;
-            regs.ax = left;
-            regs.bx = right;
-            regs.cx = top;
-            regs.dx = bottom;
-            regs.ebp = colour | enumValue(flags);
-            regs.edi = X86Pointer(&rt);
-            call(0x004474BA, regs);
-            */
-
             if (left > right)
             {
                 return;
@@ -1582,6 +1531,7 @@ namespace OpenLoco::Drawing
 
             Rect startRect = Rect::fromLTRB(left, top, right, bottom);
             Rect renderTargetRect = Rect(rt.x, rt.y, rt.width, rt.height);
+
             if (!startRect.intersects(renderTargetRect))
             {
                 return;
@@ -1643,6 +1593,37 @@ namespace OpenLoco::Drawing
                     }
                 }
             }
+            else if ((flags & RectFlags::crossHatching) != RectFlags::none)
+            {
+                uint8_t* dst = (drawRect.top() * (rt.width + rt.pitch)) + drawRect.left() + rt.bits;
+                for (int32_t i = 0; i < drawRect.height(); i++)
+                {
+                    uint8_t* nextdst = dst + rt.width + rt.pitch;
+                    uint32_t p = Numerics::ror32(crossPattern, 1);
+                    p = (p & 0xFFFF0000) | drawRect.width();
+
+                    // Fill every other pixel with the colour
+                    for (; (p & 0xFFFF) != 0; p--)
+                    {
+                        p = p ^ 0x80000000;
+                        if (p & 0x80000000)
+                        {
+                            *dst = colour;
+                        }
+                        dst++;
+                    }
+                    crossPattern ^= 1;
+                    dst = nextdst;
+                }
+            }
+            else if ((flags & RectFlags::g1Pattern) != RectFlags::none)
+            {
+                assert(false); // unused
+            }
+            else if ((flags & RectFlags::selectPattern) != RectFlags::none)
+            {
+                assert(false); // unused
+            }
             else // Regular fill
             {
                 uint8_t* dst = drawRect.top() * (rt.width + rt.pitch) + drawRect.left() + rt.bits;
@@ -1652,82 +1633,6 @@ namespace OpenLoco::Drawing
                     dst += rt.width + rt.pitch;
                 }
             }
-            /*
-            if ((flags & RectFlags::crossHatching) != RectFlags::none)
-            {
-                uint8_t* dst = (startY * (rt.width + rt.pitch)) + startX + rt.bits;
-                for (int32_t i = 0; i < height; i++)
-                {
-                    uint8_t* nextdst = dst + rt.width + rt.pitch;
-                    uint32_t p = Numerics::ror32(crossPattern, 1);
-                    p = (p & 0xFFFF0000) | width;
-
-                    // Fill every other pixel with the colour
-                    for (; (p & 0xFFFF) != 0; p--)
-                    {
-                        p = p ^ 0x80000000;
-                        if (p & 0x80000000)
-                        {
-                            *dst = colour & 0xF;
-                        }
-                        dst++;
-                    }
-                    crossPattern ^= 1;
-                    dst = nextdst;
-                }
-            }
-            else if ((flags & RectFlags::transparent) != RectFlags::none)
-            {
-                uint8_t* dst = startY * (rt.width + rt.pitch) + startX + rt.bits;
-
-                // The pattern loops every 15 lines this is which
-                // part the pattern is on.
-                int32_t patternY = (startY + rt.y) % 16;
-
-                // The pattern loops every 15 pixels this is which
-                // part the pattern is on.
-                int32_t startPatternX = (startX + rt.x) % 16;
-                int32_t patternX = startPatternX;
-
-                const uint16_t* patternsrc = Patterns[0]; // or possibly uint8_t)[esi*4] ?
-
-                for (int32_t numLines = height; numLines > 0; numLines--)
-                {
-                    uint8_t* nextdst = dst + rt.width + rt.pitch;
-                    uint16_t pattern = patternsrc[patternY];
-
-                    for (int32_t numPixels = width; numPixels > 0; numPixels--)
-                    {
-                        if (pattern & (1 << patternX))
-                        {
-                            *dst = colour & 0xF;
-                        }
-                        patternX = (patternX + 1) % 16;
-                        dst++;
-                    }
-                    patternX = startPatternX;
-                    patternY = (patternY + 1) % 16;
-                    dst = nextdst;
-                }
-            }
-            else if ((flags & RectFlags::selectPattern) != RectFlags::none)
-            {
-                assert(false);
-            }
-            else if ((flags & RectFlags::g1Pattern) != RectFlags::none)
-            {
-                assert(false);
-            }
-            else
-            {
-                uint8_t* dst = startY * (rt.width + rt.pitch) + startX + rt.bits;
-                for (int32_t i = 0; i < height; i++)
-                {
-                    std::fill_n(dst, width, colour & 0xF);
-                    dst += rt.width + rt.pitch;
-                }
-            }
-            */
         }
 
         static void drawRectImpl(Gfx::RenderTarget& rt, const Ui::Rect& rect, uint8_t colour, RectFlags flags)
