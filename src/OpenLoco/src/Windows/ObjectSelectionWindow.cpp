@@ -52,6 +52,8 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int kRowHeight = 12;
+    static constexpr int kPrimaryTabRowCapacity = 19;
+    static constexpr int kSecondaryTabRowCapacity = 18;
     static constexpr Ui::Size kWindowSize = { 600, 398 };
 
     enum class ObjectTabFlags : uint8_t
@@ -167,14 +169,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (uint8_t i = newStartPosition; _tabInformation[i].index != 0xFF; i++)
         {
             newPosInfo[j].index = _tabInformation[i].index;
-            newPosInfo[j].row = j < 19 ? 0 : 1;
+            newPosInfo[j].row = j < kPrimaryTabRowCapacity ? 0 : 1;
             j++;
         }
 
         for (uint8_t i = 0; i < newStartPosition; i++)
         {
             newPosInfo[j].index = _tabInformation[i].index;
-            newPosInfo[j].row = j < 19 ? 0 : 1;
+            newPosInfo[j].row = j < kPrimaryTabRowCapacity ? 0 : 1;
             j++;
         }
 
@@ -216,7 +218,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         uint8_t currentRow = 0;
         uint8_t currentPos = 0;
-        uint8_t rowCapacity = 19;
+        uint8_t rowCapacity = kPrimaryTabRowCapacity;
         uint8_t tabPos = 0;
 
         for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
@@ -254,7 +256,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if (currentPos >= rowCapacity)
             {
                 currentPos = 0;
-                rowCapacity--;
+                rowCapacity = kSecondaryTabRowCapacity;
                 currentRow++;
             }
         }
