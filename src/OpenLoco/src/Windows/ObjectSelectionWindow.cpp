@@ -981,6 +981,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         for (auto& entry : _tabObjectList)
         {
+            if (!entry.visible)
+                continue;
+
             y -= kRowHeight;
             if (y < 0)
             {
