@@ -1587,62 +1587,36 @@ namespace OpenLoco::Drawing
                 return;
             }
 
-            //Rect drawRect = renderTargetRect.intersection(startRect);
-
-
-            /*
-            if (right < rt.x)
-            {
-                return;
-            }
-            if (left >= (rt.x + rt.width))
-            {
-                return;
-            }
-            if (bottom < rt.y)
-            {
-                return;
-            }
-            if (top >= rt.y + rt.height)
-            {
-                return;
-            }
-            */
-
-            
             uint16_t crossPattern = 0;
 
-            int32_t startX = left - rt.x;
-            if (startX < 0)
+            int32_t leftX = left - rt.x;
+            if (leftX < 0)
             {
-                crossPattern ^= startX;
-                startX = 0;
+                crossPattern ^= leftX;
+                leftX = 0;
             }
 
-            int32_t endX = right - rt.x + 1;
-            if (endX > rt.width)
+            int32_t rightX = right - rt.x + 1;
+            if (rightX > rt.width)
             {
-                endX = rt.width;
+                rightX = rt.width;
             }
 
-            int32_t startY = top - rt.y;
-            if (startY < 0)
+            int32_t topY = top - rt.y;
+            if (topY < 0)
             {
-                crossPattern ^= startY;
-                startY = 0;
+                crossPattern ^= topY;
+                topY = 0;
             }
 
-            int32_t endY = bottom - rt.y + 1;
-            if (endY > rt.height)
+            int32_t bottomY = bottom - rt.y + 1;
+            if (bottomY > rt.height)
             {
-                endY = rt.height;
+                bottomY = rt.height;
             }
 
-            //int32_t width = endX - startX;
-            //int32_t height = endY - startY;
+            Rect drawRect = Rect::fromLTRB(leftX, topY, rightX, bottomY);
 
-            Rect drawRect = Rect::fromLTRB(startX, startY, endX, endY);
-            
             if ((flags & RectFlags::transparent) != RectFlags::none)
             {
                 uint8_t* dst = rt.bits
