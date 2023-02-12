@@ -1,3 +1,6 @@
+#pragma once
+
+#include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco::Ui
 {

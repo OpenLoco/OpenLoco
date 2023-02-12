@@ -455,6 +455,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ProgressBar.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Rect.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Screenshot.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/UI/ScrollFlags.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ScrollView.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/TextInput.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/UiTypes.hpp"
