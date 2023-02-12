@@ -1579,6 +1579,18 @@ namespace OpenLoco::Drawing
             {
                 return;
             }
+
+            Rect startRect = Rect::fromLTRB(left, top, right, bottom);
+            Rect renderTargetRect = Rect(rt.x, rt.y, rt.width, rt.height);
+            if (!startRect.intersects(renderTargetRect))
+            {
+                return;
+            }
+
+            //Rect drawRect = renderTargetRect.intersection(startRect);
+
+
+            /*
             if (right < rt.x)
             {
                 return;
@@ -1595,7 +1607,9 @@ namespace OpenLoco::Drawing
             {
                 return;
             }
+            */
 
+            
             uint16_t crossPattern = 0;
 
             int32_t startX = left - rt.x;
@@ -1624,24 +1638,26 @@ namespace OpenLoco::Drawing
                 endY = rt.height;
             }
 
-            int32_t width = endX - startX;
-            int32_t height = endY - startY;
+            //int32_t width = endX - startX;
+            //int32_t height = endY - startY;
 
+            Rect drawRect = Rect::fromLTRB(startX, startY, endX, endY);
+            
             if ((flags & RectFlags::transparent) != RectFlags::none)
             {
                 uint8_t* dst = rt.bits
-                    + static_cast<uint32_t>((startY >> rt.zoomLevel) * ((rt.width >> rt.zoomLevel) + rt.pitch) + (startX >> rt.zoomLevel));
+                    + static_cast<uint32_t>((drawRect.top() >> rt.zoomLevel) * ((rt.width >> rt.zoomLevel) + rt.pitch) + (drawRect.left() >> rt.zoomLevel));
 
                 // Find colour in colour table?
                 auto paletteMap = Gfx::PaletteMap::getForColour(static_cast<ExtColour>(colour));
                 if (paletteMap.has_value())
                 {
                     const auto& paletteEntries = paletteMap.value();
-                    const int32_t scaled_width = width >> rt.zoomLevel;
+                    const int32_t scaled_width = drawRect.width() >> rt.zoomLevel;
                     const int32_t step = (rt.width >> rt.zoomLevel) + rt.pitch;
 
                     // Fill the rectangle with the colours from the colour table
-                    auto c = height >> rt.zoomLevel;
+                    auto c = drawRect.height() >> rt.zoomLevel;
                     for (int32_t i = 0; i < c; i++)
                     {
                         uint8_t* nextdst = dst + step * i;
@@ -1655,10 +1671,10 @@ namespace OpenLoco::Drawing
             }
             else // Regular fill
             {
-                uint8_t* dst = startY * (rt.width + rt.pitch) + startX + rt.bits;
-                for (int32_t i = 0; i < height; i++)
+                uint8_t* dst = drawRect.top() * (rt.width + rt.pitch) + drawRect.left() + rt.bits;
+                for (int32_t i = 0; i < drawRect.height(); i++)
                 {
-                    std::fill_n(dst, width, colour);
+                    std::fill_n(dst, drawRect.width(), colour);
                     dst += rt.width + rt.pitch;
                 }
             }
