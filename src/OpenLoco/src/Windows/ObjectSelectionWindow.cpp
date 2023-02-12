@@ -705,9 +705,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Draw search box cursor, blinking
         if ((inputSession.cursorFrame % 32) < 16)
         {
-            // We the string again to figure out where the cursor should go; position.x will be adjusted
+            // We draw the string again to figure out where the cursor should go; position.x will be adjusted
             textBuffer[inputSession.cursorPosition] = '\0';
-            Ui::Point position = { inputSession.xOffset, 1 };
+            position = { inputSession.xOffset, 1 };
             drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, &args);
             drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
         }
