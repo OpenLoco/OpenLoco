@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
@@ -24,10 +25,6 @@ namespace OpenLoco::Drawing
 
     loco_global<SetPaletteFunc, 0x0052524C> _setPaletteCallback;
 
-    static SDL_Window* window;
-    static SDL_Surface* surface;
-    static SDL_Surface* RGBASurface;
-
     SoftwareDrawingEngine::~SoftwareDrawingEngine()
     {
         if (_palette != nullptr)
@@ -35,6 +32,12 @@ namespace OpenLoco::Drawing
             SDL_FreePalette(_palette);
             _palette = nullptr;
         }
+    }
+
+    void SoftwareDrawingEngine::initialize(SDL_Window* window)
+    {
+        _window = window;
+        createPalette();
     }
 
     // T[m][n]
@@ -90,30 +93,30 @@ namespace OpenLoco::Drawing
         int32_t heightShift = 3;
         int16_t blockHeight = 1 << heightShift;
 
-        if (surface != nullptr)
+        if (_screenSurface != nullptr)
         {
-            SDL_FreeSurface(surface);
+            SDL_FreeSurface(_screenSurface);
         }
-        if (RGBASurface != nullptr)
+        if (_screenRGBASurface != nullptr)
         {
-            SDL_FreeSurface(RGBASurface);
+            SDL_FreeSurface(_screenRGBASurface);
         }
 
-        surface = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+        _screenSurface = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
 
-        RGBASurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
-        SDL_SetSurfaceBlendMode(RGBASurface, SDL_BLENDMODE_NONE);
+        _screenRGBASurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+        SDL_SetSurfaceBlendMode(_screenRGBASurface, SDL_BLENDMODE_NONE);
 
-        SDL_SetSurfacePalette(surface, Gfx::getDrawingEngine().getPalette());
+        SDL_SetSurfacePalette(_screenSurface, Gfx::getDrawingEngine().getPalette());
 
-        int32_t pitch = surface->pitch;
+        int32_t pitch = _screenSurface->pitch;
 
         auto& rt = Gfx::getScreenRT();
         if (rt.bits != nullptr)
         {
             delete[] rt.bits;
         }
-        rt.bits = new uint8_t[surface->pitch * height];
+        rt.bits = new uint8_t[_screenSurface->pitch * height];
         rt.width = width;
         rt.height = height;
         rt.pitch = pitch - width;
@@ -279,6 +282,59 @@ namespace OpenLoco::Drawing
 
         // Draw UI.
         Ui::WindowManager::render(rt, rect);
+    }
+
+    void SoftwareDrawingEngine::present()
+    {
+        // Lock the surface before setting its pixels
+        if (SDL_MUSTLOCK(_screenSurface))
+        {
+            if (SDL_LockSurface(_screenSurface) < 0)
+            {
+                return;
+            }
+        }
+
+        // Copy pixels from the virtual screen buffer to the surface
+        auto& rt = Gfx::getScreenRT();
+        if (rt.bits != nullptr)
+        {
+            std::memcpy(_screenSurface->pixels, rt.bits, _screenSurface->pitch * _screenSurface->h);
+        }
+
+        // Unlock the surface
+        if (SDL_MUSTLOCK(_screenSurface))
+        {
+            SDL_UnlockSurface(_screenSurface);
+        }
+
+        auto scaleFactor = Config::get().scaleFactor;
+        if (scaleFactor == 1 || scaleFactor <= 0)
+        {
+            if (SDL_BlitSurface(_screenSurface, nullptr, SDL_GetWindowSurface(_window), nullptr))
+            {
+                Console::error("SDL_BlitSurface %s", SDL_GetError());
+                exit(1);
+            }
+        }
+        else
+        {
+            // first blit to rgba surface to change the pixel format
+            if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
+            {
+                Console::error("SDL_BlitSurface %s", SDL_GetError());
+                exit(1);
+            }
+            // then scale to window size. Without changing to RGBA first, SDL complains
+            // about blit configurations being incompatible.
+            if (SDL_BlitScaled(_screenRGBASurface, nullptr, SDL_GetWindowSurface(_window), nullptr))
+            {
+                Console::error("SDL_BlitScaled %s", SDL_GetError());
+                exit(1);
+            }
+        }
+
+        SDL_UpdateWindowSurface(_window);
     }
 
     SoftwareDrawingContext& SoftwareDrawingEngine::getDrawingContext()

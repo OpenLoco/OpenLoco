@@ -80,8 +80,6 @@ namespace OpenLoco::Ui
     std::vector<Resolution> _fsResolutions;
 
     static SDL_Window* window;
-    static SDL_Surface* surface;
-    static SDL_Surface* RGBASurface;
     static std::map<CursorId, SDL_Cursor*> _cursors;
 
     static void setWindowIcon();
@@ -176,7 +174,7 @@ namespace OpenLoco::Ui
 
         // Create a palette for the window
         auto& drawingEngine = Gfx::getDrawingEngine();
-        drawingEngine.createPalette();
+        drawingEngine.initialize(window);
         drawingEngine.resize(desc.width, desc.height);
     }
 
@@ -387,8 +385,10 @@ namespace OpenLoco::Ui
 
     void render()
     {
-        if (window == nullptr || surface == nullptr)
+        if (window == nullptr)
             return;
+
+        auto& drawingEngine = Gfx::getDrawingEngine();
 
         if (!Ui::dirtyBlocksInitialised())
         {
@@ -399,16 +399,7 @@ namespace OpenLoco::Ui
 
         if (!Intro::isActive())
         {
-            Gfx::render();
-        }
-
-        // Lock the surface before setting its pixels
-        if (SDL_MUSTLOCK(surface))
-        {
-            if (SDL_LockSurface(surface) < 0)
-            {
-                return;
-            }
+            drawingEngine.render();
         }
 
         // Draw FPS counter?
@@ -417,46 +408,7 @@ namespace OpenLoco::Ui
             Drawing::drawFPS();
         }
 
-        // Copy pixels from the virtual screen buffer to the surface
-        auto& rt = Gfx::getScreenRT();
-        if (rt.bits != nullptr)
-        {
-            std::memcpy(surface->pixels, rt.bits, surface->pitch * surface->h);
-        }
-
-        // Unlock the surface
-        if (SDL_MUSTLOCK(surface))
-        {
-            SDL_UnlockSurface(surface);
-        }
-
-        auto scaleFactor = Config::get().scaleFactor;
-        if (scaleFactor == 1 || scaleFactor <= 0)
-        {
-            if (SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr))
-            {
-                Console::error("SDL_BlitSurface %s", SDL_GetError());
-                exit(1);
-            }
-        }
-        else
-        {
-            // first blit to rgba surface to change the pixel format
-            if (SDL_BlitSurface(surface, nullptr, RGBASurface, nullptr))
-            {
-                Console::error("SDL_BlitSurface %s", SDL_GetError());
-                exit(1);
-            }
-            // then scale to window size. Without changing to RGBA first, SDL complains
-            // about blit configurations being incompatible.
-            if (SDL_BlitScaled(RGBASurface, nullptr, SDL_GetWindowSurface(window), nullptr))
-            {
-                Console::error("SDL_BlitScaled %s", SDL_GetError());
-                exit(1);
-            }
-        }
-
-        SDL_UpdateWindowSurface(window);
+        drawingEngine.present();
     }
 
     // 0x00406FBA
