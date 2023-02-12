@@ -1662,7 +1662,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             Input::setPressedWidgetIndex(widx::carList);
             auto res = Ui::ScrollView::getPart(&self, &self.widgets[widx::carList], pos.x, pos.y);
-            if (res.area != ScrollView::ScrollPart::view)
+            if (res.area != ScrollPart::view)
             {
                 return nullptr;
             }
