@@ -139,6 +139,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0112C21C
     static TabPosition _tabPositions[36];
     static std::vector<TabObjectEntry> _tabObjectList;
+    static uint16_t _numVisibleObjectsListed;
 
     static Ui::TextInput::InputSession inputSession;
 
@@ -279,11 +280,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void applyFilterToObjectList()
     {
         std::string_view pattern = inputSession.buffer.c_str();
+        _numVisibleObjectsListed = 0;
         for (auto& entry : _tabObjectList)
         {
             if (pattern.empty())
             {
                 entry.visible = true;
+                _numVisibleObjectsListed++;
                 continue;
             }
 
@@ -294,6 +297,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             const bool containsFileName = contains(filename, pattern);
 
             entry.visible = containsName || containsFileName;
+
+            if (entry.visible)
+                _numVisibleObjectsListed++;
         }
     }
 
@@ -965,7 +971,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004738ED
     static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = _tabObjectCounts[self.currentTab] * kRowHeight;
+        *scrollHeight = _numVisibleObjectsListed * kRowHeight;
     }
 
     // 0x00473900
