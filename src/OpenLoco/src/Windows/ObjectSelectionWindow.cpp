@@ -198,7 +198,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             {
                 self->var_856 |= (1 << 0);
                 assignTabPositions(self);
-                continue;
+                return;
             }
 
             if (_tabInformation[i].index == enumValue(targetTab))
@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
                 continue;
 
-            if ((tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
+            if (!isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
                 continue;
 
             // Assign tab position
