@@ -2152,12 +2152,15 @@ namespace OpenLoco::Ui::WindowManager
 
     void render(Gfx::RenderTarget& rt, const Rect& rect)
     {
+        auto* mainWnd = getMainWindow();
         for (size_t i = 0; i < count(); i++)
         {
             auto w = get(i);
-
-            if (w->isTranslucent())
+            if (w == mainWnd)
                 continue;
+
+            // if (w->isTranslucent())
+            // continue;
 
             if (rect.right() <= w->x || rect.bottom() <= w->y)
                 continue;

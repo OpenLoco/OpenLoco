@@ -279,7 +279,9 @@ namespace OpenLoco::Drawing
         rt.zoomLevel = 0;
 
         // TODO: Remove main window and draw that independent from UI.
-
+        auto* viewport = Ui::WindowManager::getMainViewport();
+        viewport->render(&rt);
+        
         // Draw UI.
         Ui::WindowManager::render(rt, rect);
     }
