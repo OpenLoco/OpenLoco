@@ -2,7 +2,9 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "ObjectImageTable.h"
 #include "ObjectManager.h"
+#include "ObjectStringTable.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
@@ -59,26 +61,76 @@ namespace OpenLoco
     // 0x004A6A5F
     void TrackObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x004A6A5F, regs);
-        if (dependencies != nullptr)
+        auto remainingData = data.subspan(sizeof(TrackObject));
+
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        std::fill(std::begin(mods), std::end(mods), 0xFF);
+
+        // NOTE: These aren't dependent objects as this can load without the
+        // related object.
+        for (auto i = 0; i < numCompatible; ++i)
         {
-            auto* depObjs = Interop::addr<0x0050D158, uint8_t*>();
-            dependencies->required.resize(*depObjs++);
-            if (!dependencies->required.empty())
+            auto& mod = mods[i];
+            mod = 0xFF;
+
+            ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(modHeader);
+            if (res.has_value())
             {
-                std::copy(reinterpret_cast<ObjectHeader*>(depObjs), reinterpret_cast<ObjectHeader*>(depObjs) + dependencies->required.size(), dependencies->required.data());
-                depObjs += sizeof(ObjectHeader) * dependencies->required.size();
+                mod = res->id;
             }
-            dependencies->willLoad.resize(*depObjs++);
-            if (!dependencies->willLoad.empty())
-            {
-                std::copy(reinterpret_cast<ObjectHeader*>(depObjs), reinterpret_cast<ObjectHeader*>(depObjs) + dependencies->willLoad.size(), dependencies->willLoad.data());
-            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
+
+        //for (size_t i = 0; i < 4; ++i)
+        //{
+        //    for (size_t j = 0; j < 4; ++j)
+        //    {
+        //        cargoOffsetBytes[i][j] = reinterpret_cast<const std::byte*>(remainingData.data());
+
+        //        auto* bytes = reinterpret_cast<const int8_t*>(cargoOffsetBytes[i][j]);
+        //        bytes++; // z
+        //        auto length = 1;
+        //        while (*bytes != -1)
+        //        {
+        //            length += 4; // x, y, x, y
+        //            bytes += 4;
+        //        }
+        //        length += 4;
+        //        remainingData = remainingData.subspan(length);
+        //    }
+        //}
+
+        //for (size_t i = 0; i < sizeof(var_6E) / sizeof(var_6E[0]); ++i)
+        //{
+        //    var_6E[i] = reinterpret_cast<const std::byte*>(remainingData.data());
+
+        //    auto* bytes = reinterpret_cast<const int8_t*>(var_6E[i]);
+        //    bytes++; // z?
+        //    auto length = 1;
+        //    while (*bytes != -1)
+        //    {
+        //        length += 4; // x, y, x, y
+        //        bytes += 4;
+        //    }
+        //    length += 4;
+
+        //    remainingData = remainingData.subspan(length);
+        //}
+
+        //auto imgRes = ObjectManager::loadImageTable(remainingData);
+        //image = imgRes.imageOffset;
+        //assert(remainingData.size() == imgRes.tableLength);
+
+        //auto imageOffset = image + TrainStation::ImageIds::totalPreviewImages;
+        //for (size_t i = 0; i < sizeof(var_12) / sizeof(var_12[0]); ++i)
+        //{
+        //    var_12[i] = imageOffset;
+        //    imageOffset += kDrawStyleTotalNumImages[drawStyle];
+        //}
     }
 
     // 0x004A6C2D
