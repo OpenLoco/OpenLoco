@@ -268,8 +268,33 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         repositionTargetTab(self, firstTabIndex);
     }
 
+    static bool contains(const std::string_view& a, const std::string_view& b)
+    {
+        return std::search(a.begin(), a.end(), b.begin(), b.end(), [](char a, char b) {
+                   return tolower(a) == tolower(b);
+               })
+            != a.end();
+    }
+
     static void applyFilterToObjectList()
     {
+        std::string_view pattern = inputSession.buffer.c_str();
+        for (auto& entry : _tabObjectList)
+        {
+            if (pattern.empty())
+            {
+                entry.visible = true;
+                continue;
+            }
+
+            const std::string_view name = entry.object._name;
+            const std::string_view filename = entry.object._filename;
+
+            const bool containsName = contains(name, pattern);
+            const bool containsFileName = contains(filename, pattern);
+
+            entry.visible = containsName || containsFileName;
+        }
     }
 
     static void populateTabObjectList(ObjectType objectType)
