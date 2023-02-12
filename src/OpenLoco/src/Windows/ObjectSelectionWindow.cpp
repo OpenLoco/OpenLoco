@@ -111,13 +111,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
     // clang-format on
 
-#pragma pack(push, 1)
     struct TabPosition
     {
         uint8_t index;
         uint8_t row;
     };
-#pragma pack(pop)
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
     static loco_global<uint8_t*, 0x50D144> _50D144;
@@ -128,7 +126,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // _tabObjectCounts can be integrated after implementing sub_473A95
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
 
-    static TabPosition _tabInformation[36]; // was 0x0112C21C
+    // 0x0112C21C
+    static TabPosition _tabInformation[36];
 
     static void initEvents();
     static void assignTabPositions(Window* self);
