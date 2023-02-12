@@ -163,28 +163,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0047322A
     static void rotateTabs(uint8_t newStartPosition)
     {
-        TabPosition newPosInfo[36] = {};
-        uint8_t j = 0;
+        auto isSentinel = [](auto& entry) { return entry.index == 0xFF; };
+        auto sentinelPos = std::find_if(std::begin(_tabInformation), std::end(_tabInformation), isSentinel);
 
-        for (uint8_t i = newStartPosition; _tabInformation[i].index != 0xFF; i++)
-        {
-            newPosInfo[j].index = _tabInformation[i].index;
-            newPosInfo[j].row = j < kPrimaryTabRowCapacity ? 0 : 1;
-            j++;
-        }
+        std::rotate(std::begin(_tabInformation), std::begin(_tabInformation) + newStartPosition, sentinelPos);
 
-        for (uint8_t i = 0; i < newStartPosition; i++)
-        {
-            newPosInfo[j].index = _tabInformation[i].index;
-            newPosInfo[j].row = j < kPrimaryTabRowCapacity ? 0 : 1;
-            j++;
-        }
-
-        // Add a marker to denote the last tab
-        newPosInfo[j].index = 0xFF;
-
-        // Copy new tab order into _tabInformation
-        std::memcpy(_tabInformation, newPosInfo, std::size(newPosInfo) * sizeof(TabPosition));
+        for (uint8_t i = 0; _tabInformation[i].index != 0xFF; i++)
+            _tabInformation[i].row = i < kPrimaryTabRowCapacity ? 0 : 1;
     }
 
     // 0x004731EE
