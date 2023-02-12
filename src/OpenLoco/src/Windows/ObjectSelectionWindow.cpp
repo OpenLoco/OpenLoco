@@ -120,6 +120,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         uint8_t row;
     };
 
+    struct TabObjectEntry
+    {
+        ObjectManager::ObjectIndexId index;
+        ObjectManager::ObjectIndexEntry object;
+        bool visible;
+    };
+
     static loco_global<char[2], 0x005045F8> _strCheckmark;
     static loco_global<uint8_t*, 0x50D144> _objectSelection;
 
@@ -131,6 +138,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     // 0x0112C21C
     static TabPosition _tabPositions[36];
+    static std::vector<TabObjectEntry> _tabObjectList;
 
     static Ui::TextInput::InputSession inputSession;
 
@@ -260,22 +268,38 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         repositionTargetTab(self, firstTabIndex);
     }
 
+    static void applyFilterToObjectList()
+    {
+    }
+
+    static void populateTabObjectList(ObjectType objectType)
+    {
+        _tabObjectList.clear();
+
+        const auto objects = ObjectManager::getAvailableObjects(objectType);
+        for (auto [index, object] : objects)
+        {
+            auto entry = TabObjectEntry{ index, object, true };
+            _tabObjectList.emplace_back(entry);
+        }
+
+        applyFilterToObjectList();
+    }
+
     // 0x00472BBC
     static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject(Window* self)
     {
-        const auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self->currentTab));
-
-        for (auto [index, object] : objects)
+        for (auto& entry : _tabObjectList)
         {
-            if (_objectSelection[index] & (1 << 0))
+            if (_objectSelection[entry.index] & (1 << 0))
             {
-                return { static_cast<int16_t>(index), object };
+                return { static_cast<int16_t>(entry.index), entry.object };
             }
         }
 
-        if (objects.size() > 0)
+        if (_tabObjectList.size() > 0)
         {
-            return { static_cast<int16_t>(objects[0].first), objects[0].second };
+            return { static_cast<int16_t>(_tabObjectList[0].index), _tabObjectList[0].object };
         }
 
         return { -1, ObjectManager::ObjectIndexEntry{} };
@@ -314,6 +338,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         assignTabPositions(window);
         repositionTargetTab(window, ObjectType::region);
+        populateTabObjectList(ObjectType::region);
+
         ObjectManager::freeTemporaryObject();
 
         auto objIndex = getFirstAvailableSelectedObject(window);
@@ -768,9 +794,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         int y = 0;
-        auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self.currentTab));
-        for (auto [i, object] : objects)
+        for (auto& entry : _tabObjectList)
         {
+            if (!entry.visible)
+                continue;
+
             Drawing::RectInsetFlags flags = Drawing::RectInsetFlags::colourLight | Drawing::RectInsetFlags::fillDarker | Drawing::RectInsetFlags::borderInset;
             drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, self.getColour(WindowColour::secondary), flags);
 
@@ -780,14 +808,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if (objectPtr != nullptr)
             {
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
-                if (object._name == windowObjectName)
+                if (entry.object._name == windowObjectName)
                 {
                     drawingCtx.fillRect(rt, 0, y, self.width, y + kRowHeight - 1, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
                     textColour = ControlCodes::windowColour2;
                 }
             }
 
-            if (_objectSelection[i] & (1 << 0))
+            if (_objectSelection[entry.index] & (1 << 0))
             {
                 auto x = 2;
                 drawingCtx.setCurrentFontSpriteBase(Font::m2);
@@ -799,7 +827,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 auto checkColour = self.getColour(WindowColour::secondary).opaque();
 
-                if (_objectSelection[i] & 0x1C)
+                if (_objectSelection[entry.index] & 0x1C)
                 {
                     checkColour = checkColour.inset();
                 }
@@ -809,7 +837,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             char buffer[512]{};
             buffer[0] = textColour;
-            strncpy(&buffer[1], object._name, 510);
+            strncpy(&buffer[1], entry.object._name, 510);
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
             drawingCtx.drawString(rt, 15, y, Colour::black, buffer);
@@ -864,6 +892,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 if (clickedTab != -1 && self.currentTab != clickedTab)
                 {
                     repositionTargetTab(&self, static_cast<ObjectType>(clickedTab));
+                    populateTabObjectList(static_cast<ObjectType>(clickedTab));
+
                     self.rowHover = -1;
                     self.object = nullptr;
                     self.scrollAreas[0].contentWidth = 0;
@@ -896,6 +926,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
                     {
                         currentTab = _tabPositions[0].index;
+                        populateTabObjectList(static_cast<ObjectType>(currentTab));
                     }
                 }
                 repositionTargetTab(&self, static_cast<ObjectType>(currentTab));
@@ -923,14 +954,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00472B54
     static ObjectManager::ObjIndexPair getObjectFromSelection(Window* self, int16_t& y)
     {
-        const auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self->currentTab));
-
-        for (auto [index, object] : objects)
+        for (auto& entry : _tabObjectList)
         {
             y -= kRowHeight;
             if (y < 0)
             {
-                return { static_cast<int16_t>(index), object };
+                return { static_cast<int16_t>(entry.index), entry.object };
             }
         }
 
@@ -1108,6 +1137,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         inputSession.cursorFrame = 0;
         WindowManager::invalidateWidget(WindowType::objectSelection, 0, widx::textInput);
+
+        applyFilterToObjectList();
     }
 
     static void initEvents()
