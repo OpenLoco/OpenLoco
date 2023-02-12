@@ -14,7 +14,7 @@ namespace OpenLoco::Ui::TextInput
     {
         if ((charCode >= SDLK_SPACE && charCode < SDLK_DELETE) || (charCode >= 159 && charCode <= 255))
         {
-            if (buffer.length() == inputLenLimit)
+            if (inputLenLimit > 0 && buffer.length() == inputLenLimit)
             {
                 return false;
             }
