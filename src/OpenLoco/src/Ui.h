@@ -33,15 +33,20 @@ namespace OpenLoco::Ui
         int16_t height_2;
         int16_t width_3;
         int16_t height_3;
-        int16_t dirtyBlockWidth;
-        int16_t dirtyBlockHeight;
-        int32_t dirtyBlockColumns;
-        int32_t dirtyBlockRows;
-        int8_t dirtyBlockColumnShift;
-        int8_t dirtyBlockRowShift;
-        int8_t dirtyBlocksInitialised;
     };
-    static_assert(sizeof(ScreenInfo) == 0x1B);
+    static_assert(sizeof(ScreenInfo) == 0xC);
+
+    struct ScreenInvalidationData
+    {
+        int16_t blockWidth;
+        int16_t blockHeight;
+        int32_t columnCount;
+        int32_t rowCount;
+        int8_t columnShift;
+        int8_t rowShift;
+        int8_t initialised;
+    };
+    static_assert(sizeof(ScreenInvalidationData) == 0xF);
 #pragma pack(pop)
 
     enum class CursorId : uint8_t
