@@ -110,7 +110,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
-            Ui::Size(Ui::width(), 28),
+            Ui::Size(Ui::unscaledWidth(), 28),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             &_events);
         window->widgets = _widgets;
@@ -921,7 +921,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         else
             window.widgets[Common::Widx::port_menu].type = WidgetType::none;
 
-        uint32_t x = std::max(640, Ui::width()) - 1;
+        uint32_t x = std::max(640, Ui::unscaledWidth()) - 1;
         Common::rightAlignTabs(&window, x, { Common::Widx::towns_menu, Common::Widx::stations_menu, Common::Widx::vehicles_menu });
         x -= 11;
         Common::rightAlignTabs(&window, x, { Common::Widx::build_vehicles_menu });

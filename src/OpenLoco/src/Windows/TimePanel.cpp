@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
         auto window = WindowManager::createWindow(
             WindowType::timeToolbar,
-            Ui::Point(Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height),
+            Ui::Point(Ui::unscaledWidth() - kWindowSize.width, Ui::unscaledHeight() - kWindowSize.height),
             Ui::Size(kWindowSize.width, kWindowSize.height),
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             &_events);

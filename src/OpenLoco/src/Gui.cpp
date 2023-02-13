@@ -53,8 +53,8 @@ namespace OpenLoco::Gui
     // 0x004392BD
     void resize()
     {
-        const int32_t uiWidth = Ui::width();
-        const int32_t uiHeight = Ui::height();
+        const int32_t uiWidth = Ui::unscaledWidth();
+        const int32_t uiHeight = Ui::unscaledHeight();
 
         auto window = WindowManager::getMainWindow();
         if (window)

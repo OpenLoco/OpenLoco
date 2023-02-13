@@ -317,6 +317,7 @@ namespace OpenLoco
         Gui::init();
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.clear(Gfx::getScreenRT(), 0x0A0A0A0A);
+        drawingCtx.clear(Gfx::getScreenUiRT(), 0x00000000);
     }
 
     static void loadFile(const fs::path& path)
@@ -736,6 +737,10 @@ namespace OpenLoco
 
     static void tickLogic(int32_t count)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        // drawingCtx.clear(Gfx::getScreenRT(), 0x0A0A0A0A);
+        drawingCtx.clear(Gfx::getScreenUiRT(), 0x0);
+        
         for (int32_t i = 0; i < count; i++)
         {
             tickLogic();

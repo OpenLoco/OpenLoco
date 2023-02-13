@@ -54,8 +54,15 @@ namespace OpenLoco::Drawing
 
         SDL_Window* _window{};
         SDL_Palette* _palette{};
+
         SDL_Surface* _screenSurface{};
         SDL_Surface* _screenRGBASurface{};
+
+        SDL_Surface* _screenUiSurface{};
+        SDL_Surface* _screenUiRGBASurface{};
+
+        SDL_Surface* _finalSurface{};
+
         SoftwareDrawingContext _ctx;
     };
 }

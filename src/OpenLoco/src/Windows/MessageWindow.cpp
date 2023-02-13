@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         if (window == nullptr)
         {
             int16_t y = 29;
-            int16_t x = Ui::width() - 366;
+            int16_t x = Ui::unscaledWidth() - 366;
             Ui::Point origin = { x, y };
 
             window = WindowManager::createWindow(

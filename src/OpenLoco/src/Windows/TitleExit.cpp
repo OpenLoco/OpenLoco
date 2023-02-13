@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleExit,
-            Ui::Point(Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height),
+            Ui::Point(Ui::unscaledWidth() - kWindowSize.width, Ui::unscaledHeight() - kWindowSize.height),
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             &_events);

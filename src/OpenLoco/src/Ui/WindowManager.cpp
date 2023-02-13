@@ -872,10 +872,10 @@ namespace OpenLoco::Ui::WindowManager
         if (position.y < 28)
             return false;
 
-        if (position.x + size.width > Ui::width())
+        if (position.x + size.width > Ui::unscaledWidth())
             return false;
 
-        if (position.y + size.height > Ui::width())
+        if (position.y + size.height > Ui::unscaledWidth())
             return false;
 
         for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
@@ -905,8 +905,8 @@ namespace OpenLoco::Ui::WindowManager
         uint32_t flags,
         WindowEventList* events)
     {
-        origin.x = std::clamp<decltype(origin.x)>(origin.x, 0, std::max(0, Ui::width() - size.width));
-        origin.y = std::clamp<decltype(origin.y)>(origin.y, 28, std::max(28, Ui::height() - size.height));
+        origin.x = std::clamp<decltype(origin.x)>(origin.x, 0, std::max(0, Ui::unscaledWidth() - size.width));
+        origin.y = std::clamp<decltype(origin.y)>(origin.y, 28, std::max(28, Ui::unscaledHeight() - size.height));
 
         return createWindow(type, origin, size, flags, events);
     }

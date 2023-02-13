@@ -6,7 +6,8 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Gfx
 {
     static loco_global<RenderTarget, 0x0050B884> _screenRT;
-
+    static RenderTarget _screenUiRT;
+    
     Ui::Rect RenderTarget::getDrawableRect() const
     {
         auto zoom = zoomLevel;
@@ -25,6 +26,11 @@ namespace OpenLoco::Gfx
     RenderTarget& getScreenRT()
     {
         return _screenRT;
+    }
+
+    RenderTarget& getScreenUiRT()
+    {
+        return _screenUiRT;
     }
 
     // 0x004CEC50
