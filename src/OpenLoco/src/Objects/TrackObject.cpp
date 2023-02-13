@@ -172,6 +172,7 @@ namespace OpenLoco
     {
         name = 0;
         compatibleTracks = 0;
+        compatibleRoads = 0;
         std::fill(std::begin(mods), std::end(mods), 0);
         signals = 0;
         tunnel = 0;
