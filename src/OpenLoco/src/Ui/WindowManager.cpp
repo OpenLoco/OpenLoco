@@ -559,7 +559,7 @@ namespace OpenLoco::Ui::WindowManager
             if (w->hasFlags(WindowFlags::whiteBorderMask))
             {
                 // TODO: Replace with countdown
-                w->flags &~ WindowFlags::whiteBorderOne;
+                w->flags &= ~WindowFlags::whiteBorderOne;
                 if (!w->hasFlags(WindowFlags::whiteBorderMask))
                 {
                     w->invalidate();
