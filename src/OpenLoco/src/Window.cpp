@@ -461,7 +461,7 @@ namespace OpenLoco::Ui
             if (widget->type != WidgetType::scrollview)
                 continue;
 
-            this->scrollAreas[s].flags = 0;
+            this->scrollAreas[s].flags = ScrollFlags::none;
 
             uint16_t scrollWidth = 0, scrollHeight = 0;
             this->callGetScrollSize(s, &scrollWidth, &scrollHeight);
@@ -472,11 +472,11 @@ namespace OpenLoco::Ui
 
             if (widget->content & Scrollbars::horizontal)
             {
-                this->scrollAreas[s].flags |= Ui::ScrollView::ScrollFlags::hscrollbarVisible;
+                this->scrollAreas[s].flags |= Ui::ScrollFlags::hscrollbarVisible;
             }
             if (widget->content & Scrollbars::vertical)
             {
-                this->scrollAreas[s].flags |= Ui::ScrollView::ScrollFlags::vscrollbarVisible;
+                this->scrollAreas[s].flags |= Ui::ScrollFlags::vscrollbarVisible;
             }
 
             Ui::ScrollView::updateThumbs(this, w);

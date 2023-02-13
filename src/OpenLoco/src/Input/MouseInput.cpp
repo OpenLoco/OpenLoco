@@ -126,17 +126,17 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
-    static const std::map<Ui::ScrollView::ScrollPart, string_id> kScrollWidgetTooltips = {
-        { Ui::ScrollView::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
-        { Ui::ScrollView::ScrollPart::hscrollbarButtonRight, StringIds::tooltip_scroll_right },
-        { Ui::ScrollView::ScrollPart::hscrollbarTrackLeft, StringIds::tooltip_scroll_left_fast },
-        { Ui::ScrollView::ScrollPart::hscrollbarTrackRight, StringIds::tooltip_scroll_right_fast },
-        { Ui::ScrollView::ScrollPart::hscrollbarThumb, StringIds::tooltip_scroll_left_right },
-        { Ui::ScrollView::ScrollPart::vscrollbarButtonTop, StringIds::tooltip_scroll_up },
-        { Ui::ScrollView::ScrollPart::vscrollbarButtonBottom, StringIds::tooltip_scroll_down },
-        { Ui::ScrollView::ScrollPart::vscrollbarTrackTop, StringIds::tooltip_scroll_up_fast },
-        { Ui::ScrollView::ScrollPart::vscrollbarTrackBottom, StringIds::tooltip_scroll_down_fast },
-        { Ui::ScrollView::ScrollPart::vscrollbarThumb, StringIds::tooltip_scroll_up_down },
+    static const std::map<Ui::ScrollPart, string_id> kScrollWidgetTooltips = {
+        { Ui::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
+        { Ui::ScrollPart::hscrollbarButtonRight, StringIds::tooltip_scroll_right },
+        { Ui::ScrollPart::hscrollbarTrackLeft, StringIds::tooltip_scroll_left_fast },
+        { Ui::ScrollPart::hscrollbarTrackRight, StringIds::tooltip_scroll_right_fast },
+        { Ui::ScrollPart::hscrollbarThumb, StringIds::tooltip_scroll_left_right },
+        { Ui::ScrollPart::vscrollbarButtonTop, StringIds::tooltip_scroll_up },
+        { Ui::ScrollPart::vscrollbarButtonBottom, StringIds::tooltip_scroll_down },
+        { Ui::ScrollPart::vscrollbarTrackTop, StringIds::tooltip_scroll_up_fast },
+        { Ui::ScrollPart::vscrollbarTrackBottom, StringIds::tooltip_scroll_down_fast },
+        { Ui::ScrollPart::vscrollbarThumb, StringIds::tooltip_scroll_up_down },
     };
 
     constexpr int32_t kDropdownItemUndefined = -1;
@@ -1618,10 +1618,10 @@ namespace OpenLoco::Input
             {
                 auto res = Ui::ScrollView::getPart(window, widget, x, y);
 
-                if (res.area == Ui::ScrollView::ScrollPart::none)
+                if (res.area == Ui::ScrollPart::none)
                 {
                 }
-                else if (res.area == Ui::ScrollView::ScrollPart::view)
+                else if (res.area == Ui::ScrollPart::view)
                 {
                     window->callScrollMouseOver(res.scrollviewLoc.x, res.scrollviewLoc.y, static_cast<uint8_t>(res.index));
                 }
@@ -2011,7 +2011,7 @@ namespace OpenLoco::Input
                             x,
                             y);
 
-                        if (res.area == Ui::ScrollView::ScrollPart::view)
+                        if (res.area == Ui::ScrollPart::view)
                         {
                             cursorId = window->callCursor(widgetIdx, res.scrollviewLoc.x, res.scrollviewLoc.y, cursorId);
                         }

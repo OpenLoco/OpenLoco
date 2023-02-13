@@ -142,7 +142,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::updateMonthly()
     {
         Vehicle train(head);
-        if ((tileX != -1) && !(var_38 & Flags38::isGhost))
+        if ((tileX != -1) && !has38Flags(Flags38::isGhost))
         {
             constexpr ExpenditureType vehTypeToCost[] = {
                 ExpenditureType::TrainRunningCosts,
@@ -199,7 +199,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         for (auto& car : train.cars)
         {
-            if (car.front->var_5F & Flags5F::brokenDown)
+            if (car.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
             {
                 if ((ScenarioManager::getScenarioTicks() & 3) == 0)
                 {
@@ -209,13 +209,13 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if ((car.front->var_5F & Flags5F::breakdownPending) && !isTitleMode())
+            if (car.front->hasBreakdownFlags(BreakdownFlags::breakdownPending) && !isTitleMode())
             {
                 auto newConfig = Config::get();
                 if (!newConfig.breakdownsDisabled)
                 {
-                    car.front->var_5F &= ~Flags5F::breakdownPending;
-                    car.front->var_5F |= Flags5F::brokenDown;
+                    car.front->breakdownFlags &= ~BreakdownFlags::breakdownPending;
+                    car.front->breakdownFlags |= BreakdownFlags::brokenDown;
                     car.front->var_6A = 5;
                     applyBreakdownToTrain();
 
@@ -245,7 +245,7 @@ namespace OpenLoco::Vehicles
             {
                 continue;
             }
-            if (car.front->var_5F & Flags5F::brokenDown)
+            if (car.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
             {
                 isBrokenDown = true;
             }
@@ -529,7 +529,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleStatus vehStatus{};
 
-        if (var_0C & Flags0C::commandStop || (var_0C & Flags0C::manualControl && var_6E <= -20))
+        if (hasVehicleFlags(VehicleFlags::commandStop) || (hasVehicleFlags(VehicleFlags::manualControl) && var_6E <= -20))
         {
             vehStatus.status1 = StringIds::vehicle_status_stopping;
         }
@@ -587,7 +587,7 @@ namespace OpenLoco::Vehicles
     // 0x004A88A6
     void VehicleHead::updateDrivingSound(Vehicle2or6* vehType2or6)
     {
-        if (tileX == -1 || status == Status::crashed || status == Status::stuck || (var_38 & Flags38::isGhost) || vehType2or6->objectId == 0xFFFF)
+        if (tileX == -1 || status == Status::crashed || status == Status::stuck || has38Flags(Flags38::isGhost) || vehType2or6->objectId == 0xFFFF)
         {
             updateDrivingSoundNone(vehType2or6);
             return;
@@ -651,7 +651,7 @@ namespace OpenLoco::Vehicles
                 {
                     assert(false);
                 }
-                if (train.cars.firstCar.front->var_5F & Flags5F::brokenDown)
+                if (train.cars.firstCar.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
                 {
                     updateDrivingSoundNone(vehType2or6);
                     return;
@@ -744,7 +744,7 @@ namespace OpenLoco::Vehicles
                 {
                     assert(false);
                 }
-                if (train.cars.firstCar.front->var_5F & Flags5F::brokenDown)
+                if (train.cars.firstCar.front->hasBreakdownFlags(BreakdownFlags::brokenDown))
                 {
                     updateDrivingSoundNone(vehType2or6);
                     return;
@@ -880,11 +880,11 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (var_0C & Flags0C::commandStop)
+            if (hasVehicleFlags(VehicleFlags::commandStop))
             {
                 return sub_4A8CB6();
             }
-            else if (var_0C & Flags0C::manualControl)
+            else if (hasVehicleFlags(VehicleFlags::manualControl))
             {
                 if (var_6E <= -20)
                 {
@@ -921,9 +921,9 @@ namespace OpenLoco::Vehicles
 
             if (!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered))
             {
-                if (!(var_0C & Flags0C::manualControl) || var_6E > -20)
+                if (!hasVehicleFlags(VehicleFlags::manualControl) || var_6E > -20)
                 {
-                    if (!(var_0C & Flags0C::commandStop))
+                    if (!hasVehicleFlags(VehicleFlags::commandStop))
                     {
                         return landNormalMovementUpdate();
                     }
@@ -1091,7 +1091,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Manual control is going too fast at this point to stop at the station
-        if (var_0C & Flags0C::manualControl)
+        if (hasVehicleFlags(VehicleFlags::manualControl))
         {
             return true;
         }
@@ -1116,7 +1116,7 @@ namespace OpenLoco::Vehicles
         status = Status::stopped;
         advanceToNextRoutableOrder();
 
-        if (var_0C & Flags0C::manualControl)
+        if (hasVehicleFlags(VehicleFlags::manualControl))
         {
             return true;
         }
@@ -1205,7 +1205,7 @@ namespace OpenLoco::Vehicles
             auto* vehType1 = train.veh1;
             vehType1->timeAtSignal++;
 
-            if (var_0C & Flags0C::manualControl)
+            if (hasVehicleFlags(VehicleFlags::manualControl))
             {
                 var_5C = 2;
                 vehType1->var_48 |= 1 << 0;
@@ -1268,7 +1268,7 @@ namespace OpenLoco::Vehicles
             train.veh1->timeAtSignal = 0;
             if (al == 2)
             {
-                if (var_0C & Flags0C::manualControl)
+                if (hasVehicleFlags(VehicleFlags::manualControl))
                 {
                     auto* vehType2 = train.veh2;
                     if (vehType2->routingHandle != routingHandle || vehType2->subPosition != subPosition)
@@ -1322,7 +1322,7 @@ namespace OpenLoco::Vehicles
 
         if (status == Status::stopped)
         {
-            if (!(var_0C & Flags0C::commandStop))
+            if (!hasVehicleFlags(VehicleFlags::commandStop))
             {
                 setStationVisitedTypes();
                 checkIfAtOrderStation();
@@ -1630,7 +1630,7 @@ namespace OpenLoco::Vehicles
     // 0x004A95CB
     bool VehicleHead::sub_4A95CB()
     {
-        if (var_0C & Flags0C::commandStop)
+        if (hasVehicleFlags(VehicleFlags::commandStop))
         {
             status = Status::stopped;
             Vehicle2* vehType2 = _vehicleUpdate_2;
@@ -1845,14 +1845,6 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    namespace WaterMotionFlags
-    {
-        constexpr uint32_t isStopping = 1 << 0;
-        constexpr uint32_t isLeavingDock = 1 << 1;
-        constexpr uint32_t hasReachedDock = 1 << 16;
-        constexpr uint32_t hasReachedADestination = 1 << 17;
-    }
-
     // 0x004A9649
     bool VehicleHead::updateWater()
     {
@@ -1871,7 +1863,7 @@ namespace OpenLoco::Vehicles
 
         if (status == Status::stopped)
         {
-            if (var_0C & Flags0C::commandStop)
+            if (hasVehicleFlags(VehicleFlags::commandStop))
             {
                 return true;
             }
@@ -1887,9 +1879,9 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (var_0C & Flags0C::commandStop)
+        if (hasVehicleFlags(VehicleFlags::commandStop))
         {
-            if (!(updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination))
+            if ((updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination) == WaterMotionFlags::none)
             {
                 return true;
             }
@@ -1925,12 +1917,12 @@ namespace OpenLoco::Vehicles
             status = Status::travelling;
             status = sub_427BF2();
             advanceToNextRoutableOrder();
-            if (!(updateWaterMotion(0) & WaterMotionFlags::hasReachedDock))
+            if ((updateWaterMotion(WaterMotionFlags::none) & WaterMotionFlags::hasReachedDock) == WaterMotionFlags::none)
             {
                 return true;
             }
 
-            if (var_0C & Flags0C::commandStop)
+            if (hasVehicleFlags(VehicleFlags::commandStop))
             {
                 status = Status::stopped;
                 vehType2->currentSpeed = 0.0_mph;
@@ -1964,7 +1956,7 @@ namespace OpenLoco::Vehicles
             auto orders = getCurrentOrders();
             auto curOrder = orders.begin();
             auto stationOrder = curOrder->as<OrderStation>();
-            if (curOrder->is<OrderRouteWaypoint>() || !(curOrder->hasFlag(OrderFlags::HasStation)) || stationOrder == nullptr)
+            if (curOrder->is<OrderRouteWaypoint>() || !(curOrder->hasFlags(OrderFlags::HasStation)) || stationOrder == nullptr)
             {
                 targetStationId = stationId;
             }
@@ -2298,13 +2290,13 @@ namespace OpenLoco::Vehicles
     // 0x004B99E1
     void VehicleHead::beginUnloading()
     {
-        var_5F &= ~Flags5F::unk_0;
+        breakdownFlags &= ~BreakdownFlags::unk_0;
         status = Status::unloading;
         cargoTransferTimeout = 10;
         var_58 = 0;
 
         Vehicle train(head);
-        train.cars.applyToComponents([](auto& component) { component.var_5F |= Flags5F::unk_0; });
+        train.cars.applyToComponents([](auto& component) { component.breakdownFlags |= BreakdownFlags::unk_0; });
     }
 
     // 0x00426CA4
@@ -2346,7 +2338,7 @@ namespace OpenLoco::Vehicles
     // Output flags:
     // bit 16 : reachedDock
     // bit 17 : reachedADestination
-    uint32_t VehicleHead::updateWaterMotion(uint32_t flags)
+    WaterMotionFlags VehicleHead::updateWaterMotion(WaterMotionFlags flags)
     {
         Vehicle2* veh2 = _vehicleUpdate_2;
 
@@ -2373,7 +2365,7 @@ namespace OpenLoco::Vehicles
         auto targetSpeed = 5_mph;
         if (stationId == StationId::null)
         {
-            if (!(flags & WaterMotionFlags::isStopping))
+            if ((flags & WaterMotionFlags::isStopping) == WaterMotionFlags::none)
             {
                 if (!(veh2->var_73 & Flags73::isBrokenDown))
                 {
@@ -2415,14 +2407,15 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if ((flags & WaterMotionFlags::isLeavingDock) || manhattanDistance <= targetTolerance)
+        if (((flags & WaterMotionFlags::isLeavingDock) != WaterMotionFlags::none) || (manhattanDistance <= targetTolerance))
         {
             flags |= WaterMotionFlags::hasReachedADestination;
-            if (stationId != StationId::null && !(flags & WaterMotionFlags::isLeavingDock))
+            if ((stationId != StationId::null)
+                && ((flags & WaterMotionFlags::isLeavingDock) == WaterMotionFlags::none))
             {
                 flags |= WaterMotionFlags::hasReachedDock;
             }
-            if (flags & WaterMotionFlags::isStopping)
+            if ((flags & WaterMotionFlags::isStopping) != WaterMotionFlags::none)
             {
                 return flags;
             }
@@ -2440,7 +2433,7 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (!(flags & WaterMotionFlags::isLeavingDock) && stationId != StationId::null)
+            if (((flags & WaterMotionFlags::isLeavingDock) == WaterMotionFlags::none) && (stationId != StationId::null))
             {
                 return flags;
             }
@@ -2587,7 +2580,7 @@ namespace OpenLoco::Vehicles
                     auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
                     if (!roadStationObj->hasFlags(RoadStationFlags::roadEnd))
                     {
-                        var_5F |= Flags5F::unk_0;
+                        breakdownFlags |= BreakdownFlags::unk_0;
                     }
                     loadingModifier = 1;
                 }
@@ -2682,7 +2675,7 @@ namespace OpenLoco::Vehicles
             auto orders = getCurrentOrders();
             for (auto& order : orders)
             {
-                if (!(order.hasFlag(OrderFlags::HasCargo)))
+                if (!(order.hasFlags(OrderFlags::HasCargo)))
                 {
                     return false;
                 }
@@ -2752,7 +2745,7 @@ namespace OpenLoco::Vehicles
         cargoTransferTimeout = 10;
 
         Vehicle train(head);
-        train.cars.applyToComponents([](auto& component) { component.var_5F |= Flags5F::unk_0; });
+        train.cars.applyToComponents([](auto& component) { component.breakdownFlags |= BreakdownFlags::unk_0; });
     }
     // 0x004B9A2A
     void VehicleHead::updateUnloadCargo()
@@ -2768,9 +2761,9 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->var_5F & Flags5F::unk_0)
+                if (carComponent.front->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.front->var_5F &= ~Flags5F::unk_0;
+                    carComponent.front->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
                     {
                         return;
@@ -2778,14 +2771,14 @@ namespace OpenLoco::Vehicles
                     updateUnloadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return;
                 }
-                else if (carComponent.back->var_5F & Flags5F::unk_0)
+                else if (carComponent.back->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.back->var_5F &= ~Flags5F::unk_0;
+                    carComponent.back->breakdownFlags &= ~BreakdownFlags::unk_0;
                     return;
                 }
-                else if (carComponent.body->var_5F & Flags5F::unk_0)
+                else if (carComponent.body->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.body->var_5F &= ~Flags5F::unk_0;
+                    carComponent.body->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.body->primaryCargo.type == 0xFF)
                     {
                         return;
@@ -2850,7 +2843,7 @@ namespace OpenLoco::Vehicles
                 {
                     cargoToWaitFor |= (1 << waitFor->getCargo());
                 }
-                if (order.hasFlag(OrderFlags::IsRoutable))
+                if (order.hasFlags(OrderFlags::IsRoutable))
                 {
                     break;
                 }
@@ -2904,7 +2897,7 @@ namespace OpenLoco::Vehicles
 
         for (auto& order : orders)
         {
-            if (!order.hasFlag(OrderFlags::HasCargo))
+            if (!order.hasFlags(OrderFlags::HasCargo))
             {
                 break;
             }
@@ -3000,9 +2993,9 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->var_5F & Flags5F::unk_0)
+                if (carComponent.front->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.front->var_5F &= ~Flags5F::unk_0;
+                    carComponent.front->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
                     {
                         return true;
@@ -3010,14 +3003,14 @@ namespace OpenLoco::Vehicles
                     updateLoadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return true;
                 }
-                else if (carComponent.back->var_5F & Flags5F::unk_0)
+                else if (carComponent.back->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.back->var_5F &= ~Flags5F::unk_0;
+                    carComponent.back->breakdownFlags &= ~BreakdownFlags::unk_0;
                     return true;
                 }
-                else if (carComponent.body->var_5F & Flags5F::unk_0)
+                else if (carComponent.body->hasBreakdownFlags(BreakdownFlags::unk_0))
                 {
-                    carComponent.body->var_5F &= ~Flags5F::unk_0;
+                    carComponent.body->breakdownFlags &= ~BreakdownFlags::unk_0;
                     if (carComponent.body->primaryCargo.type == 0xFF)
                     {
                         return true;
@@ -3034,7 +3027,7 @@ namespace OpenLoco::Vehicles
         auto orders = getCurrentOrders();
         for (auto& order : orders)
         {
-            if (!order.hasFlag(OrderFlags::HasCargo))
+            if (!order.hasFlags(OrderFlags::HasCargo))
             {
                 currentOrder = order.getOffset() - orderTableOffset;
                 Ui::WindowManager::sub_4B93A5(enumValue(id));
@@ -3053,7 +3046,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (carComponent.front->secondaryCargo.type == waitFor->getCargo() && carComponent.front->secondaryCargo.maxQty != carComponent.front->secondaryCargo.qty)
                     {
-                        if (!(var_5F & Flags5F::unk_0))
+                        if (!hasBreakdownFlags(BreakdownFlags::unk_0))
                         {
                             beginLoading();
                             return true;
@@ -3067,7 +3060,7 @@ namespace OpenLoco::Vehicles
                     }
                     if (carComponent.body->primaryCargo.type == waitFor->getCargo() && carComponent.body->primaryCargo.maxQty != carComponent.body->primaryCargo.qty)
                     {
-                        if (!(var_5F & Flags5F::unk_0))
+                        if (!hasBreakdownFlags(BreakdownFlags::unk_0))
                         {
                             beginLoading();
                             return true;
@@ -3097,7 +3090,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(head);
         var_6F = train.veh2->position.x;
         var_71 = train.veh2->position.y;
-        var_5F |= Flags5F::unk_3;
+        breakdownFlags |= BreakdownFlags::unk_3;
     }
 
     // 0x004707C0
@@ -3110,7 +3103,7 @@ namespace OpenLoco::Vehicles
         OrderRingView orders(orderTableOffset, currentOrder);
         for (auto& order : orders)
         {
-            if (order.hasFlag(OrderFlags::IsRoutable))
+            if (order.hasFlags(OrderFlags::IsRoutable))
             {
                 auto newOrder = order.getOffset() - orderTableOffset;
                 if (newOrder != currentOrder)

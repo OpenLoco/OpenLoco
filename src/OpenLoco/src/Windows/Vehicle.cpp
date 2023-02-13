@@ -553,7 +553,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     newWidth += 22;
 
                 uint16_t newHeight = self.height - 59;
-                if (head->var_0C & Vehicles::Flags0C::manualControl && head->owner == CompanyManager::getControllingId())
+                if (head->hasVehicleFlags(VehicleFlags::manualControl) && head->owner == CompanyManager::getControllingId())
                 {
                     newWidth -= 27;
                 }
@@ -601,11 +601,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 0);
 
             auto selected = 0; // Stop
-            if (!(head->var_0C & Vehicles::Flags0C::commandStop))
+            if (!head->hasVehicleFlags(VehicleFlags::commandStop))
             {
                 selected = 1; // Start
             }
-            if (head->var_0C & Vehicles::Flags0C::manualControl)
+            if (head->hasVehicleFlags(VehicleFlags::manualControl))
             {
                 selected = 2; // Manual
             }
@@ -837,11 +837,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head->ordinalNumber);
 
             uint32_t stopStartImage = ImageIds::red_flag;
-            if ((head->var_0C & Vehicles::Flags0C::manualControl) != 0)
+            if (head->hasVehicleFlags(VehicleFlags::manualControl))
             {
                 stopStartImage = ImageIds::yellow_flag;
             }
-            else if ((head->var_0C & Vehicles::Flags0C::commandStop) != 0)
+            else if (head->hasVehicleFlags(VehicleFlags::commandStop))
             {
                 stopStartImage = ImageIds::red_flag;
             }
@@ -866,7 +866,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[Common::widx::closeButton].right = self.width - 3;
 
             int viewportRight = self.width - 26;
-            if (head->var_0C & Vehicles::Flags0C::manualControl)
+            if (head->hasVehicleFlags(VehicleFlags::manualControl))
             {
                 if (CompanyManager::isPlayerCompany(head->owner))
                 {
@@ -1662,7 +1662,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             Input::setPressedWidgetIndex(widx::carList);
             auto res = Ui::ScrollView::getPart(&self, &self.widgets[widx::carList], pos.x, pos.y);
-            if (res.area != ScrollView::ScrollPart::view)
+            if (res.area != ScrollPart::view)
             {
                 return nullptr;
             }
@@ -3181,7 +3181,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             Ui::Point loc = { 8, static_cast<int16_t>(y - 1) };
             drawingCtx.drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
-            if (order.hasFlag(Vehicles::OrderFlags::HasNumber))
+            if (order.hasFlags(Vehicles::OrderFlags::HasNumber))
             {
                 if (Input::isToolActive(self.type, self.number))
                 {
@@ -3477,7 +3477,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // Note: dont use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
-            if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
             {
                 GameCommands::do_63(head.id);
             }
@@ -3663,7 +3663,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // Note: dont use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
-            if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
             {
                 GameCommands::do_59(head.id);
             }
@@ -3897,7 +3897,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             // Note: dont use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
-            if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
             {
                 GameCommands::do_2(head.id);
             }
@@ -3994,7 +3994,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (*_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
             {
-                if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
                     // Will convert inplace vehicle into non ghost
                     placementArgs->convertGhost = true;
@@ -4026,7 +4026,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
             {
-                if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
                     // Will convert inplace vehicle into non ghost
                     placementArgs->convertGhost = true;
@@ -4059,7 +4059,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (*_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
             {
-                if (head.tileX != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
                 {
                     // Will convert inplace vehicle into non ghost
                     placementArgs->convertGhost = true;
@@ -4113,7 +4113,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            if (head->tileX == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
+            if (head->tileX == -1 || !head->has38Flags(Vehicles::Flags38::isGhost))
             {
                 self.invalidate();
                 return;

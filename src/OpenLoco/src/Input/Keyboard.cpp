@@ -74,7 +74,7 @@ namespace OpenLoco::Input
 
     static void loc_4BED04()
     {
-        if ((getScreenFlags() & ScreenFlags::driverCheatEnabled) == 0)
+        if (!isDriverCheatEnabled())
         {
             return;
             // Only works when DRIVER mode is active

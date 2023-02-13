@@ -43,24 +43,81 @@
 #include "Widget.h"
 #include "Window.h"
 #include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <array>
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int kRowHeight = 12;
+    static constexpr int kPrimaryTabRowCapacity = 19;
+    static constexpr int kSecondaryTabRowCapacity = 18;
     static constexpr Ui::Size kWindowSize = { 600, 398 };
 
-    static loco_global<uint8_t[999], 0x004FE384> _4FE384;
+    enum class ObjectTabFlags : uint8_t
+    {
+        none = 0U,
+        alwaysHidden = 1U << 0,
+        advanced = 1U << 1,
+        hideInGame = 1U << 2,
+        hideInEditor = 1U << 3,
+        showEvenIfSingular = 1U << 4,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ObjectTabFlags);
 
-#pragma pack(push, 1)
-    struct tabPosition
+    struct TabDisplayInfo
+    {
+        string_id name;
+        uint32_t image;
+        ObjectTabFlags flags;
+    };
+
+    // clang-format off
+    static constexpr std::array<TabDisplayInfo, ObjectManager::maxObjectTypes> _tabDisplayInfo = {
+        TabDisplayInfo{ StringIds::object_interface_styles,      ImageIds::tab_object_settings,        ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_sounds,                ImageIds::tab_object_audio,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        TabDisplayInfo{ StringIds::object_currency,              ImageIds::tab_object_currency,        ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_animation_effects,     ImageIds::tab_object_smoke,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        TabDisplayInfo{ StringIds::object_cliffs,                ImageIds::tab_object_cliff,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        TabDisplayInfo{ StringIds::object_water,                 ImageIds::tab_object_water,           ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_land,                  ImageIds::tab_object_landscape,       ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_town_names,            ImageIds::tab_object_town_names,      ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_cargo,                 ImageIds::tab_object_cargo,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        TabDisplayInfo{ StringIds::object_walls,                 ImageIds::tab_object_walls,           ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_signals,               ImageIds::tab_object_signals,         ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_level_crossing,        ImageIds::tab_object_level_crossings, ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_street_lights,         ImageIds::tab_object_streetlights,    ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_tunnels,               ImageIds::tab_object_tunnels,         ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
+        TabDisplayInfo{ StringIds::object_bridges,               ImageIds::tab_object_bridges,         ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_track_stations,        ImageIds::tab_object_track_stations,  ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_track_extras,          ImageIds::tab_object_track_mods,      ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
+        TabDisplayInfo{ StringIds::object_tracks,                ImageIds::tab_object_track,           ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_road_stations,         ImageIds::tab_object_road_stations,   ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_road_extras,           ImageIds::tab_object_road_mods,       ObjectTabFlags::advanced | ObjectTabFlags::showEvenIfSingular },
+        TabDisplayInfo{ StringIds::object_roads,                 ImageIds::tab_object_road,            ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_airports,              ImageIds::tab_object_airports,        ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_docks,                 ImageIds::tab_object_docks,           ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_vehicles,              ImageIds::tab_object_vehicles,        ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_trees,                 ImageIds::tab_object_trees,           ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_snow,                  ImageIds::tab_object_snow,            ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_climate,               ImageIds::tab_object_climate,         ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_map_generation_data,   ImageIds::tab_object_map,             ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_buildings,             ImageIds::tab_object_buildings,       ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_scaffolding,           ImageIds::tab_object_construction,    ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_industries,            ImageIds::tab_object_industries,      ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_world_region,          ImageIds::tab_object_world,           ObjectTabFlags::none },
+        TabDisplayInfo{ StringIds::object_company_owners,        ImageIds::tab_object_companies,       ObjectTabFlags::hideInEditor },
+        TabDisplayInfo{ StringIds::object_scenario_descriptions, ImageIds::tab_object_scenarios,       ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden }
+    };
+    // clang-format on
+
+    struct TabPosition
     {
         uint8_t index;
         uint8_t row;
     };
-#pragma pack(pop)
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
     static loco_global<uint8_t*, 0x50D144> _50D144;
@@ -68,10 +125,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint16_t, 0x0052334A> _52334A;
     static loco_global<uint16_t, 0x0052334C> _52334C;
 
+    // _tabObjectCounts can be integrated after implementing sub_473A95
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
-    static loco_global<tabPosition[36], 0x0112C21C> _tabInformation;
+
+    // 0x0112C21C
+    static TabPosition _tabInformation[36];
 
     static void initEvents();
+    static void assignTabPositions(Window* self);
 
     enum widx
     {
@@ -99,21 +160,99 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static WindowEventList _events;
 
-    // 0x00473154
-    static void sub_473154(Window* self)
+    // 0x0047322A
+    static void rotateTabs(uint8_t newStartPosition)
     {
-        registers regs;
-        regs.esi = X86Pointer(self);
-        call(0x00473154, regs);
+        auto isSentinel = [](auto& entry) { return entry.index == 0xFF; };
+        auto sentinelPos = std::find_if(std::begin(_tabInformation), std::end(_tabInformation), isSentinel);
+
+        std::rotate(std::begin(_tabInformation), std::begin(_tabInformation) + newStartPosition, sentinelPos);
+
+        for (uint8_t i = 0; _tabInformation[i].index != 0xFF; i++)
+        {
+            _tabInformation[i].row = i < kPrimaryTabRowCapacity ? 0 : 1;
+        }
     }
 
     // 0x004731EE
-    static void sub_4731EE(Window* self, ObjectType eax)
+    static void repositionTargetTab(Window* self, ObjectType targetTab)
     {
-        registers regs;
-        regs.eax = static_cast<uint32_t>(eax);
-        regs.esi = X86Pointer(self);
-        call(0x004731EE, regs);
+        self->currentTab = enumValue(targetTab);
+        for (auto i = 0U; i < std::size(_tabInformation); i++)
+        {
+            // Ended up in a position without info? Reassign positions first.
+            if (_tabInformation[i].index == 0xFF)
+            {
+                self->var_856 |= (1 << 0);
+                assignTabPositions(self);
+                return;
+            }
+
+            if (_tabInformation[i].index == enumValue(targetTab))
+            {
+                // Found current tab, and its in bottom row? No change required
+                if (_tabInformation[i].row == 0)
+                    return;
+                // Otherwise, we'll rotate the tabs around, such that this one is in the bottom row
+                else
+                    return rotateTabs(i);
+            }
+        }
+    }
+
+    // 0x00473154
+    static void assignTabPositions(Window* self)
+    {
+        uint8_t currentRow = 0;
+        uint8_t currentPos = 0;
+        uint8_t rowCapacity = kPrimaryTabRowCapacity;
+        uint8_t tabPos = 0;
+
+        for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
+        {
+            const ObjectTabFlags tabFlags = _tabDisplayInfo[currentType].flags;
+
+            if ((tabFlags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
+                continue;
+
+            // Skip all types that don't have any objects
+            if (_tabObjectCounts[currentType] == 0)
+                continue;
+
+            // Skip certain object types that only have one entry in game
+            if ((tabFlags & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[currentType] == 1)
+                continue;
+
+            // Hide advanced object types as needed
+            if ((self->var_856 & (1 << 0)) == 0 && (tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
+                continue;
+
+            if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
+                continue;
+
+            if (!isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
+                continue;
+
+            // Assign tab position
+            _tabInformation[tabPos].index = static_cast<uint8_t>(currentType);
+            _tabInformation[tabPos].row = currentRow;
+            tabPos++;
+
+            // Distribute tabs over two rows -- ensure there's capacity left in current row
+            currentPos++;
+            if (currentPos >= rowCapacity)
+            {
+                currentPos = 0;
+                rowCapacity = kSecondaryTabRowCapacity;
+                currentRow++;
+            }
+        }
+
+        // Add a marker to denote the last tab
+        _tabInformation[tabPos].index = 0xFF;
+
+        const auto firstTabIndex = ObjectType(_tabInformation[0].index);
+        repositionTargetTab(self, firstTabIndex);
     }
 
     // 0x00472BBC
@@ -168,8 +307,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         window->object = nullptr;
 
-        sub_473154(window);
-        sub_4731EE(window, ObjectType::region);
+        assignTabPositions(window);
+        repositionTargetTab(window, ObjectType::region);
         ObjectManager::freeTemporaryObject();
 
         auto objIndex = sub_472BBC(window);
@@ -186,49 +325,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         return window;
     }
-
-    struct TabDisplayInfo
-    {
-        string_id name;
-        uint32_t image;
-    };
-
-    static const TabDisplayInfo _tabDisplayInfo[] = {
-        { StringIds::object_interface_styles, ImageIds::tab_object_settings },
-        { StringIds::object_sounds, ImageIds::tab_object_audio },
-        { StringIds::object_currency, ImageIds::tab_object_currency },
-        { StringIds::object_animation_effects, ImageIds::tab_object_smoke },
-        { StringIds::object_cliffs, ImageIds::tab_object_cliff },
-        { StringIds::object_water, ImageIds::tab_object_water },
-        { StringIds::object_land, ImageIds::tab_object_landscape },
-        { StringIds::object_town_names, ImageIds::tab_object_town_names },
-        { StringIds::object_cargo, ImageIds::tab_object_cargo },
-        { StringIds::object_walls, ImageIds::tab_object_walls },
-        { StringIds::object_signals, ImageIds::tab_object_signals },
-        { StringIds::object_level_crossing, ImageIds::tab_object_level_crossings },
-        { StringIds::object_street_lights, ImageIds::tab_object_streetlights },
-        { StringIds::object_tunnels, ImageIds::tab_object_tunnels },
-        { StringIds::object_bridges, ImageIds::tab_object_bridges },
-        { StringIds::object_track_stations, ImageIds::tab_object_track_stations },
-        { StringIds::object_track_extras, ImageIds::tab_object_track_mods },
-        { StringIds::object_tracks, ImageIds::tab_object_track },
-        { StringIds::object_road_stations, ImageIds::tab_object_road_stations },
-        { StringIds::object_road_extras, ImageIds::tab_object_road_mods },
-        { StringIds::object_roads, ImageIds::tab_object_road },
-        { StringIds::object_airports, ImageIds::tab_object_airports },
-        { StringIds::object_docks, ImageIds::tab_object_docks },
-        { StringIds::object_vehicles, ImageIds::tab_object_vehicles },
-        { StringIds::object_trees, ImageIds::tab_object_trees },
-        { StringIds::object_snow, ImageIds::tab_object_snow },
-        { StringIds::object_climate, ImageIds::tab_object_climate },
-        { StringIds::object_map_generation_data, ImageIds::tab_object_map },
-        { StringIds::object_buildings, ImageIds::tab_object_buildings },
-        { StringIds::object_scaffolding, ImageIds::tab_object_construction },
-        { StringIds::object_industries, ImageIds::tab_object_industries },
-        { StringIds::object_world_region, ImageIds::tab_object_world },
-        { StringIds::object_company_owners, ImageIds::tab_object_companies },
-        { StringIds::object_scenario_descriptions, ImageIds::tab_object_scenarios },
-    };
 
     // 0x004733AC
     static void prepareDraw(Ui::Window& self)
@@ -728,7 +824,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if (clickedTab != -1 && self.currentTab != clickedTab)
                 {
-                    sub_4731EE(&self, static_cast<ObjectType>(clickedTab));
+                    repositionTargetTab(&self, static_cast<ObjectType>(clickedTab));
                     self.rowHover = -1;
                     self.object = nullptr;
                     self.scrollAreas[0].contentWidth = 0;
@@ -753,16 +849,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             {
                 self.var_856 ^= 1;
                 int currentTab = self.currentTab;
-                sub_473154(&self);
+                assignTabPositions(&self);
 
                 if ((self.var_856 & 1) == 0)
                 {
-                    if (_4FE384[currentTab] & 1 << 1)
+                    const ObjectTabFlags tabFlags = _tabDisplayInfo[currentTab].flags;
+                    if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
                     {
                         currentTab = _tabInformation[0].index;
                     }
                 }
-                sub_4731EE(&self, static_cast<ObjectType>(currentTab));
+                repositionTargetTab(&self, static_cast<ObjectType>(currentTab));
                 self.invalidate();
 
                 break;

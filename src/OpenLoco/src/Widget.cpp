@@ -680,7 +680,7 @@ namespace OpenLoco::Ui
         uint16_t dx = window->y + widget->bottom - 1;
 
         cx = dx - 10;
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::vscrollbarVisible)
+        if (scroll_area->hasFlags(Ui::ScrollFlags::vscrollbarVisible))
         {
             bx -= 11;
         }
@@ -690,7 +690,7 @@ namespace OpenLoco::Ui
 
         // pusha
         f = Drawing::RectInsetFlags::none;
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarLeftPressed)
+        if (scroll_area->hasFlags(Ui::ScrollFlags::hscrollbarLeftPressed))
         {
             f = flags | Drawing::RectInsetFlags::borderInset;
         }
@@ -703,7 +703,7 @@ namespace OpenLoco::Ui
 
         // pusha
         f = Drawing::RectInsetFlags::none;
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarRightPressed)
+        if (scroll_area->hasFlags(Ui::ScrollFlags::hscrollbarRightPressed))
         {
             f = flags | Drawing::RectInsetFlags::borderInset;
         }
@@ -728,7 +728,7 @@ namespace OpenLoco::Ui
 
         // pusha
         f = Drawing::RectInsetFlags::none;
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarThumbPressed)
+        if (scroll_area->hasFlags(Ui::ScrollFlags::hscrollbarThumbPressed))
         {
             f = Drawing::RectInsetFlags::borderInset;
         }
@@ -746,7 +746,7 @@ namespace OpenLoco::Ui
         uint16_t dx = window->y + widget->bottom - 1;
 
         ax = bx - 10;
-        if (scroll_area->flags & ScrollView::ScrollFlags::hscrollbarVisible)
+        if (scroll_area->hasFlags(ScrollFlags::hscrollbarVisible))
         {
             dx -= 11;
         }
@@ -755,7 +755,7 @@ namespace OpenLoco::Ui
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // pusha
-        if (scroll_area->flags & ScrollView::ScrollFlags::vscrollbarUpPressed)
+        if (scroll_area->hasFlags(ScrollFlags::vscrollbarUpPressed))
         {
             f = flags | Drawing::RectInsetFlags::borderInset;
         }
@@ -768,7 +768,7 @@ namespace OpenLoco::Ui
 
         // pusha
         f = Drawing::RectInsetFlags::none;
-        if (scroll_area->flags & ScrollView::ScrollFlags::vscrollbarDownPressed)
+        if (scroll_area->hasFlags(ScrollFlags::vscrollbarDownPressed))
         {
             f = flags | Drawing::RectInsetFlags::borderInset;
         }
@@ -793,7 +793,7 @@ namespace OpenLoco::Ui
 
         // pusha
         f = Drawing::RectInsetFlags::none;
-        if (scroll_area->flags & ScrollView::ScrollFlags::vscrollbarThumbPressed)
+        if (scroll_area->hasFlags(ScrollFlags::vscrollbarThumbPressed))
         {
             f = flags | Drawing::RectInsetFlags::borderInset;
         }
@@ -820,13 +820,13 @@ namespace OpenLoco::Ui
         const auto* scroll_area = &window->scrollAreas[scrollview_index];
 
         drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarVisible)
+        if (scroll_area->hasFlags(Ui::ScrollFlags::hscrollbarVisible))
         {
             draw_hscroll(rt, window, this, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
             b -= 11;
         }
 
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::vscrollbarVisible)
+        if (scroll_area->hasFlags(Ui::ScrollFlags::vscrollbarVisible))
         {
             draw_vscroll(rt, window, this, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
             r -= 11;

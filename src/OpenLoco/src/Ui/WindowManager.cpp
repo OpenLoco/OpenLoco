@@ -1443,18 +1443,18 @@ namespace OpenLoco::Ui::WindowManager
         ScrollArea* scroll = &window->scrollAreas[scrollIndex];
         Ui::Widget* widget = &window->widgets[widgetIndex];
 
-        if (window->scrollAreas[scrollIndex].flags & ScrollView::ScrollFlags::vscrollbarVisible)
+        if (window->scrollAreas[scrollIndex].hasFlags(ScrollFlags::vscrollbarVisible))
         {
             int size = widget->bottom - widget->top - 1;
-            if (scroll->flags & ScrollView::ScrollFlags::hscrollbarVisible)
+            if (scroll->hasFlags(ScrollFlags::hscrollbarVisible))
                 size -= 11;
             size = std::max(0, scroll->contentHeight - size);
             scroll->contentOffsetY = std::clamp(scroll->contentOffsetY + wheel, 0, size);
         }
-        else if (window->scrollAreas[scrollIndex].flags & ScrollView::ScrollFlags::hscrollbarVisible)
+        else if (window->scrollAreas[scrollIndex].hasFlags(ScrollFlags::hscrollbarVisible))
         {
             int size = widget->right - widget->left - 1;
-            if (scroll->flags & ScrollView::ScrollFlags::vscrollbarVisible)
+            if (scroll->hasFlags(ScrollFlags::vscrollbarVisible))
                 size -= 11;
             size = std::max(0, scroll->contentWidth - size);
             scroll->contentOffsetX = std::clamp(scroll->contentOffsetX + wheel, 0, size);
@@ -1477,8 +1477,8 @@ namespace OpenLoco::Ui::WindowManager
                 continue;
 
             scrollIndex++;
-            constexpr uint16_t scrollbarFlags = ScrollView::ScrollFlags::hscrollbarVisible | ScrollView::ScrollFlags::vscrollbarVisible;
-            if (window->scrollAreas[scrollIndex].flags & scrollbarFlags)
+            constexpr ScrollFlags scrollbarFlags = ScrollFlags::hscrollbarVisible | ScrollFlags::vscrollbarVisible;
+            if (window->scrollAreas[scrollIndex].hasFlags(scrollbarFlags))
             {
                 windowScrollWheelInput(window, widgetIndex, wheel);
                 return true;
@@ -1577,8 +1577,8 @@ namespace OpenLoco::Ui::WindowManager
                     if (window->widgets[widgetIndex].type == WidgetType::scrollview)
                     {
                         auto scrollIndex = window->getScrollDataIndex(widgetIndex);
-                        constexpr uint16_t scrollbarFlags = ScrollView::ScrollFlags::hscrollbarVisible | ScrollView::ScrollFlags::vscrollbarVisible;
-                        if (window->scrollAreas[scrollIndex].flags & scrollbarFlags)
+                        constexpr ScrollFlags scrollbarFlags = ScrollFlags::hscrollbarVisible | ScrollFlags::vscrollbarVisible;
+                        if (window->scrollAreas[scrollIndex].hasFlags(scrollbarFlags))
                         {
                             windowScrollWheelInput(window, widgetIndex, wheel);
                             return;

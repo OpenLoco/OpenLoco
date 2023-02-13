@@ -11,6 +11,7 @@
 #include "Types.hpp"
 #include "Ui/WindowType.h"
 #include "Window.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco::Vehicles
 {
@@ -25,31 +26,33 @@ namespace OpenLoco::Vehicles
     void vehiclePickupWater(OpenLoco::Interop::registers& regs);
     void sell(OpenLoco::Interop::registers& regs);
 
-    namespace Flags0C // commands?
+    enum class Flags38 : uint8_t
     {
-        constexpr uint8_t unk_0 = 1 << 0;
-        constexpr uint8_t commandStop = 1 << 1; // commanded to stop??
-        constexpr uint8_t sorted = 1 << 3;      // vehicle list
-        constexpr uint8_t unk_5 = 1 << 5;
-        constexpr uint8_t manualControl = 1 << 6;
-        constexpr uint8_t shuntCheat = 1 << 7;
-    }
-
-    namespace Flags38
-    {
-        constexpr uint8_t unk_0 = 1 << 0;
-        constexpr uint8_t isReversed = 1 << 1;
-        constexpr uint8_t unk_2 = 1 << 2;
-        constexpr uint8_t unk_3 = 1 << 3;
-        constexpr uint8_t isGhost = 1 << 4;
-        constexpr uint8_t unk_5 = 1 << 5;
-    }
+        none = 0U,
+        unk_0 = 1U << 0,
+        isReversed = 1U << 1,
+        unk_2 = 1U << 2,
+        unk_3 = 1U << 3,
+        isGhost = 1U << 4,
+        unk_5 = 1U << 5,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags38);
 
     namespace Flags73 // veh2 Train breakdown flags
     {
         constexpr uint8_t isBrokenDown = 1 << 0;
         constexpr uint8_t isStillPowered = 1 << 1;
     }
+
+    enum class WaterMotionFlags : uint32_t
+    {
+        none = 0U,
+        isStopping = 1U << 0,
+        isLeavingDock = 1U << 1,
+        hasReachedDock = 1U << 16,
+        hasReachedADestination = 1U << 17,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(WaterMotionFlags);
 
     enum class Status : uint8_t
     {
@@ -80,13 +83,15 @@ namespace OpenLoco::Vehicles
 
     struct Vehicle2or6;
 
-    namespace Flags5F
+    enum class BreakdownFlags : uint8_t
     {
-        constexpr uint8_t unk_0 = 1 << 0;
-        constexpr uint8_t breakdownPending = 1 << 1;
-        constexpr uint8_t brokenDown = 1 << 2;
-        constexpr uint8_t unk_3 = 1 << 3;
-    }
+        none = 0U,
+        unk_0 = 1U << 0,
+        breakdownPending = 1U << 1,
+        brokenDown = 1U << 2,
+        unk_3 = 1U << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(BreakdownFlags);
 
     enum class VehicleThingType : uint8_t
     {
@@ -233,14 +238,15 @@ namespace OpenLoco::Vehicles
         bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
         VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
         TransportMode getTransportMode() const;
-        uint8_t getFlags38() const;
+        Flags38 getFlags38() const;
         uint8_t getTrackType() const;
         Map::Pos3 getTrackLoc() const;
         TrackAndDirection getTrackAndDirection() const;
         RoutingHandle getRoutingHandle() const;
         EntityId getHead() const;
         void setNextCar(const EntityId newNextCar);
-
+        bool has38Flags(Flags38 flagsToTest) const;
+        bool hasVehicleFlags(VehicleFlags flagsToTest) const;
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
         bool updateComponent();
@@ -291,7 +297,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles orderId * maxNumRoutingSteps
-        uint8_t var_38;
+        Flags38 var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
         uint32_t var_3C;     // 0x3C
@@ -309,9 +315,9 @@ namespace OpenLoco::Vehicles
         uint16_t cargoTransferTimeout; // 0x56
         uint32_t var_58;
         uint8_t var_5C;
-        Status status;           // 0x5D
-        VehicleType vehicleType; // 0x5E
-        uint8_t var_5F;          // 0x5F
+        Status status;                 // 0x5D
+        VehicleType vehicleType;       // 0x5E
+        BreakdownFlags breakdownFlags; // 0x5F
         uint8_t var_60;
         uint16_t var_61;
         uint8_t pad_63[0x68 - 0x63];
@@ -333,7 +339,7 @@ namespace OpenLoco::Vehicles
         void updateMonthly();
         VehicleStatus getStatus() const;
         OrderRingView getCurrentOrders() const;
-        bool isPlaced() const { return tileX != -1 && !(var_38 & Flags38::isGhost); }
+        bool isPlaced() const { return tileX != -1 && !has38Flags(Flags38::isGhost); }
         char* generateCargoTotalString(char* buffer);
         char* generateCargoCapacityString(char* buffer);
         char* cargoLUTToString(CargoTotalArray& cargoTotals, char* buffer);
@@ -346,6 +352,10 @@ namespace OpenLoco::Vehicles
         void applyBreakdownToTrain();
         void sub_4AF7A4();
         uint32_t getVehicleTotalLength() const;
+        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
+        {
+            return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
+        }
 
     private:
         void updateDrivingSounds();
@@ -382,7 +392,7 @@ namespace OpenLoco::Vehicles
         void beginUnloading();
         void beginLoading();
         void movePlaneTo(const Map::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
-        uint32_t updateWaterMotion(uint32_t flags);
+        WaterMotionFlags updateWaterMotion(WaterMotionFlags flags);
         void moveBoatTo(const Map::Pos3& loc, const uint8_t yaw, const Pitch pitch);
         uint8_t getLoadingModifier(const VehicleBogie* bogie);
         bool updateUnloadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
@@ -439,7 +449,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        uint8_t var_38;
+        Flags38 var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
         int32_t var_3C;      // 0x3C
@@ -476,7 +486,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        uint8_t var_38;
+        Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
@@ -524,7 +534,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        uint8_t var_38;
+        Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
@@ -541,13 +551,17 @@ namespace OpenLoco::Vehicles
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
         uint8_t var_5E;
-        uint8_t var_5F;
+        BreakdownFlags breakdownFlags;
 
         const VehicleObject* getObject() const;
         bool update();
         void secondaryAnimationUpdate();
         void sub_4AAB0B();
         void updateCargoSprite();
+        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
+        {
+            return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
+        }
 
     private:
         void animationUpdate();
@@ -579,7 +593,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        uint8_t var_38;
+        Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
@@ -596,7 +610,7 @@ namespace OpenLoco::Vehicles
         uint32_t creationDay; // 0x56
         uint32_t var_5A;
         uint8_t var_5E;
-        uint8_t var_5F;
+        BreakdownFlags breakdownFlags;
         uint8_t var_60;
         uint8_t var_61;
         uint32_t refundCost;  // 0x62 front bogies only
@@ -609,6 +623,10 @@ namespace OpenLoco::Vehicles
         bool update();
         bool isOnRackRail();
         void carComponent_sub_4AF16A();
+        constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
+        {
+            return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
+        }
 
     private:
         void updateRoll();
@@ -629,7 +647,7 @@ namespace OpenLoco::Vehicles
         Map::SmallZ tileBaseZ;               // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
-        uint8_t var_38;
+        Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C

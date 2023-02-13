@@ -146,7 +146,7 @@ namespace OpenLoco::Vehicles
         newBogie->secondaryCargo.type = 0xFF;
         newBogie->secondaryCargo.qty = 0;
         newBogie->var_5E = 0;
-        newBogie->var_5F = 0;
+        newBogie->breakdownFlags = BreakdownFlags::none;
         newBogie->var_60 = 0; // different to createbody
         newBogie->var_61 = 0; // different to createbody
 
@@ -167,7 +167,7 @@ namespace OpenLoco::Vehicles
         {
             return nullptr;
         }
-        newBogie->var_38 = 0;
+        newBogie->var_38 = Flags38::none;
 
         int32_t reliability = vehObject.reliability * 256;
         if (getCurrentYear() + 2 > vehObject.designed)
@@ -267,7 +267,7 @@ namespace OpenLoco::Vehicles
         newBody->primaryCargo.qty = 0;
         newBody->var_55 = 0; // different to create bogie
         newBody->var_5E = 0;
-        newBody->var_5F = 0;
+        newBody->breakdownFlags = BreakdownFlags::none;
 
         // different to create bogie
         if (bodyNumber == 0)
@@ -430,7 +430,7 @@ namespace OpenLoco::Vehicles
         EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicleHead);
         newHead->owner = _updatingCompanyId;
         newHead->head = newHead->id;
-        newHead->var_0C |= Flags0C::commandStop;
+        newHead->vehicleFlags |= VehicleFlags::commandStop;
         newHead->trackType = trackType;
         newHead->mode = mode;
         newHead->tileX = -1;
@@ -443,7 +443,7 @@ namespace OpenLoco::Vehicles
         newHead->var_14 = 0;
         newHead->var_09 = 0;
         newHead->var_15 = 0;
-        newHead->var_38 = 0;
+        newHead->var_38 = Flags38::none;
         newHead->var_3C = 0;
         newHead->vehicleType = vehicleType;
         newHead->name = static_cast<uint8_t>(vehicleType) + 4;
@@ -453,7 +453,7 @@ namespace OpenLoco::Vehicles
         newHead->var_5C = 0;
         newHead->status = Status::unk_0;
         newHead->stationId = StationId::null;
-        newHead->var_5F = 0;
+        newHead->breakdownFlags = BreakdownFlags::none;
         newHead->var_60 = -1;
         newHead->var_61 = -1;
         newHead->totalRefundCost = 0;
@@ -481,7 +481,7 @@ namespace OpenLoco::Vehicles
         newVeh1->var_14 = 0;
         newVeh1->var_09 = 0;
         newVeh1->var_15 = 0;
-        newVeh1->var_38 = 0;
+        newVeh1->var_38 = Flags38::none;
         newVeh1->var_3C = 0;
         newVeh1->var_44 = 0_mph;
         newVeh1->timeAtSignal = 0;
@@ -512,8 +512,7 @@ namespace OpenLoco::Vehicles
         newVeh2->var_14 = 0;
         newVeh2->var_09 = 0;
         newVeh2->var_15 = 0;
-        newVeh2->var_38 = 0;
-
+        newVeh2->var_38 = Flags38::none;
         newVeh2->currentSpeed = 0.0_mph;
         newVeh2->var_5A = 0;
         newVeh2->var_5B = 0;
@@ -549,7 +548,7 @@ namespace OpenLoco::Vehicles
         newTail->var_14 = 0;
         newTail->var_09 = 0;
         newTail->var_15 = 0;
-        newTail->var_38 = 0;
+        newTail->var_38 = Flags38::none;
         newTail->drivingSoundId = SoundObjectId::null;
         newTail->objectId = -1;
         newTail->var_4A = 0;

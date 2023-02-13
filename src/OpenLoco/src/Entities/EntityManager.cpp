@@ -237,7 +237,7 @@ namespace OpenLoco::EntityManager
         newEntity->var_14 = 16;
         newEntity->var_09 = 20;
         newEntity->var_15 = 8;
-        newEntity->var_0C = 0;
+        newEntity->vehicleFlags = VehicleFlags::none;
         newEntity->spriteLeft = Location::null;
 
         return newEntity;

@@ -69,6 +69,7 @@ namespace OpenLoco::Ui
 #endif // _WIN32
     // TODO: Move this into renderer.
     static loco_global<ScreenInfo, 0x0050B894> _screenInfo;
+    static loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<Ui::CursorId, 0x00523393> _currentToolCursor;
@@ -79,12 +80,9 @@ namespace OpenLoco::Ui
     std::vector<Resolution> _fsResolutions;
 
     static SDL_Window* window;
-    static SDL_Surface* surface;
-    static SDL_Surface* RGBASurface;
     static std::map<CursorId, SDL_Cursor*> _cursors;
 
     static void setWindowIcon();
-    static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode);
 
@@ -116,7 +114,7 @@ namespace OpenLoco::Ui
 
     bool dirtyBlocksInitialised()
     {
-        return _screenInfo->dirtyBlocksInitialised != 0;
+        return _screenInvalidation->initialised != 0;
     }
 
     static sdl_window_desc getWindowDesc(const Config::Display& cfg)
@@ -175,9 +173,9 @@ namespace OpenLoco::Ui
         setWindowIcon();
 
         // Create a palette for the window
-        Gfx::getDrawingEngine().createPalette();
-
-        update(desc.width, desc.height);
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        drawingEngine.initialize(window);
+        drawingEngine.resize(desc.width, desc.height);
     }
 
     static void setWindowIcon()
@@ -344,61 +342,6 @@ namespace OpenLoco::Ui
     {
     }
 
-    void update(int32_t width, int32_t height)
-    {
-        // Scale the width and height by configured scale factor
-        auto scaleFactor = Config::get().scaleFactor;
-        width = (int32_t)(width / scaleFactor);
-        height = (int32_t)(height / scaleFactor);
-
-        int32_t widthShift = 6;
-        int16_t blockWidth = 1 << widthShift;
-        int32_t heightShift = 3;
-        int16_t blockHeight = 1 << heightShift;
-
-        if (surface != nullptr)
-        {
-            SDL_FreeSurface(surface);
-        }
-        if (RGBASurface != nullptr)
-        {
-            SDL_FreeSurface(RGBASurface);
-        }
-
-        surface = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
-
-        RGBASurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
-        SDL_SetSurfaceBlendMode(RGBASurface, SDL_BLENDMODE_NONE);
-
-        SDL_SetSurfacePalette(surface, Gfx::getDrawingEngine().getPalette());
-
-        int32_t pitch = surface->pitch;
-
-        auto& rt = Gfx::getScreenRT();
-        if (rt.bits != nullptr)
-        {
-            delete[] rt.bits;
-        }
-        rt.bits = new uint8_t[surface->pitch * height];
-        rt.width = width;
-        rt.height = height;
-        rt.pitch = pitch - width;
-
-        _screenInfo->width = width;
-        _screenInfo->height = height;
-        _screenInfo->width_2 = width;
-        _screenInfo->height_2 = height;
-        _screenInfo->width_3 = width;
-        _screenInfo->height_3 = height;
-        _screenInfo->dirtyBlockWidth = blockWidth;
-        _screenInfo->dirtyBlockHeight = blockHeight;
-        _screenInfo->dirtyBlockColumns = (width / blockWidth) + 1;
-        _screenInfo->dirtyBlockRows = (height / blockHeight) + 1;
-        _screenInfo->dirtyBlockColumnShift = widthShift;
-        _screenInfo->dirtyBlockRowShift = heightShift;
-        _screenInfo->dirtyBlocksInitialised = 1;
-    }
-
     static void positionChanged(int32_t x, int32_t y)
     {
         auto displayIndex = SDL_GetWindowDisplayIndex(window);
@@ -413,7 +356,9 @@ namespace OpenLoco::Ui
 
     void resize(int32_t width, int32_t height)
     {
-        update(width, height);
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        drawingEngine.resize(width, height);
+
         Gui::resize();
         Gfx::invalidateScreen();
 
@@ -440,8 +385,10 @@ namespace OpenLoco::Ui
 
     void render()
     {
-        if (window == nullptr || surface == nullptr)
+        if (window == nullptr)
             return;
+
+        auto& drawingEngine = Gfx::getDrawingEngine();
 
         if (!Ui::dirtyBlocksInitialised())
         {
@@ -452,16 +399,7 @@ namespace OpenLoco::Ui
 
         if (!Intro::isActive())
         {
-            Gfx::render();
-        }
-
-        // Lock the surface before setting its pixels
-        if (SDL_MUSTLOCK(surface))
-        {
-            if (SDL_LockSurface(surface) < 0)
-            {
-                return;
-            }
+            drawingEngine.render();
         }
 
         // Draw FPS counter?
@@ -470,46 +408,7 @@ namespace OpenLoco::Ui
             Drawing::drawFPS();
         }
 
-        // Copy pixels from the virtual screen buffer to the surface
-        auto& rt = Gfx::getScreenRT();
-        if (rt.bits != nullptr)
-        {
-            std::memcpy(surface->pixels, rt.bits, surface->pitch * surface->h);
-        }
-
-        // Unlock the surface
-        if (SDL_MUSTLOCK(surface))
-        {
-            SDL_UnlockSurface(surface);
-        }
-
-        auto scaleFactor = Config::get().scaleFactor;
-        if (scaleFactor == 1 || scaleFactor <= 0)
-        {
-            if (SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr))
-            {
-                Console::error("SDL_BlitSurface %s", SDL_GetError());
-                exit(1);
-            }
-        }
-        else
-        {
-            // first blit to rgba surface to change the pixel format
-            if (SDL_BlitSurface(surface, nullptr, RGBASurface, nullptr))
-            {
-                Console::error("SDL_BlitSurface %s", SDL_GetError());
-                exit(1);
-            }
-            // then scale to window size. Without changing to RGBA first, SDL complains
-            // about blit configurations being incompatible.
-            if (SDL_BlitScaled(RGBASurface, nullptr, SDL_GetWindowSurface(window), nullptr))
-            {
-                Console::error("SDL_BlitScaled %s", SDL_GetError());
-                exit(1);
-            }
-        }
-
-        SDL_UpdateWindowSurface(window);
+        drawingEngine.present();
     }
 
     // 0x00406FBA

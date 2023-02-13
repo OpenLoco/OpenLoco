@@ -27,7 +27,7 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<bool, 0x01136237> _vehicleUpdate_frontBogieHasMoved;
     static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;
-    static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C;    // var_2C related?
+    static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C;    // cargoType related?
     static loco_global<bool[44], 0x004F8A7C> _trackIdToSparkDirection; // bools true for right false for left
     static loco_global<bool, 0x00525FAE> _trafficHandedness;           // boolean true for right false for left
 
@@ -85,7 +85,7 @@ namespace OpenLoco::Vehicles
     // 0x004AAC4E
     void VehicleBody::animationUpdate()
     {
-        if (var_38 & Flags38::isGhost)
+        if (has38Flags(Flags38::isGhost))
             return;
 
         VehicleHead* headVeh = _vehicleUpdate_head;
@@ -136,7 +136,7 @@ namespace OpenLoco::Vehicles
     void VehicleBody::sub_4AAB0B()
     {
         int32_t eax = _vehicleUpdate_var_1136130 >> 3;
-        if (var_38 & Flags38::isReversed)
+        if (has38Flags(Flags38::isReversed))
         {
             eax = -eax;
         }
@@ -176,7 +176,7 @@ namespace OpenLoco::Vehicles
 
                 if (ah < 0)
                 {
-                    if (var_38 & Flags38::isReversed)
+                    if (has38Flags(Flags38::isReversed))
                     {
                         ah = 2;
                         if (al != 0 && al != ah)
@@ -195,7 +195,7 @@ namespace OpenLoco::Vehicles
                 }
                 else if (ah > 0)
                 {
-                    if (var_38 & Flags38::isReversed)
+                    if (has38Flags(Flags38::isReversed))
                     {
                         ah = 1;
                         if (al != 0 && al != ah)
@@ -905,7 +905,7 @@ namespace OpenLoco::Vehicles
         const auto* vehicleObject = getObject();
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
-        if (frontBogie->var_5F & Flags5F::brokenDown)
+        if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
             return;
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
@@ -922,7 +922,7 @@ namespace OpenLoco::Vehicles
 
         auto _var_44 = var_44;
         // Reversing
-        if (var_38 & Flags38::isReversed)
+        if (has38Flags(Flags38::isReversed))
         {
             var_05 = -var_05;
             _var_44 = -_var_44;
@@ -1049,7 +1049,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
-        if (frontBogie->var_5F & Flags5F::brokenDown)
+        if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
             return;
 
         VehicleHead* headVeh = _vehicleUpdate_head;
@@ -1061,7 +1061,7 @@ namespace OpenLoco::Vehicles
             if (veh_2->currentSpeed == 0.0_mph)
                 return;
 
-            if (var_38 & Flags38::isReversed)
+            if (has38Flags(Flags38::isReversed))
             {
                 var_05 = -var_05;
             }
@@ -1081,7 +1081,7 @@ namespace OpenLoco::Vehicles
             if (veh_2->var_5A != 1)
                 return;
 
-            if (var_38 & Flags38::isReversed)
+            if (has38Flags(Flags38::isReversed))
             {
                 var_05 = -var_05;
             }
@@ -1107,7 +1107,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
-        if (frontBogie->var_5F & Flags5F::brokenDown)
+        if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
             return;
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
@@ -1119,7 +1119,7 @@ namespace OpenLoco::Vehicles
         if (veh_2->currentSpeed > 14.0_mph)
             return;
 
-        if (var_38 & Flags38::isReversed)
+        if (has38Flags(Flags38::isReversed))
         {
             var_05 = -var_05;
         }
@@ -1155,7 +1155,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
-        if (frontBogie->var_5F & Flags5F::brokenDown)
+        if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
             return;
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
@@ -1165,7 +1165,7 @@ namespace OpenLoco::Vehicles
             return;
 
         auto _var_44 = var_44;
-        if (var_38 & Flags38::isReversed)
+        if (has38Flags(Flags38::isReversed))
         {
             var_05 = -var_05;
             _var_44 = -var_44;
@@ -1192,7 +1192,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleBogie* frontBogie = _vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = _vehicleUpdate_backBogie;
-        if (frontBogie->var_5F & Flags5F::brokenDown)
+        if (frontBogie->hasBreakdownFlags(BreakdownFlags::brokenDown))
             return;
 
         Vehicle2* veh_2 = _vehicleUpdate_2;
@@ -1202,7 +1202,7 @@ namespace OpenLoco::Vehicles
             return;
 
         auto _var_44 = var_44;
-        if (var_38 & Flags38::isReversed)
+        if (has38Flags(Flags38::isReversed))
         {
             var_05 = -var_05;
             _var_44 = -var_44;
@@ -1223,7 +1223,7 @@ namespace OpenLoco::Vehicles
 
         // 90 degrees C.W.
         auto yaw = (spriteYaw + 16) & 0x3F;
-        auto firstBogie = var_38 & Flags38::isReversed ? backBogie : frontBogie;
+        auto firstBogie = has38Flags(Flags38::isReversed) ? backBogie : frontBogie;
         auto unkFactor = 5;
         if (!_trackIdToSparkDirection[(firstBogie->trackAndDirection.road._data >> 3)])
         {

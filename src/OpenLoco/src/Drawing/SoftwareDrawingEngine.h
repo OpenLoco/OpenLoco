@@ -7,6 +7,8 @@
 #include <cstddef>
 
 struct SDL_Palette;
+struct SDL_Surface;
+struct SDL_Window;
 
 namespace OpenLoco::Drawing
 {
@@ -25,11 +27,18 @@ namespace OpenLoco::Drawing
     public:
         ~SoftwareDrawingEngine();
 
+        void initialize(SDL_Window* window);
+
+        void resize(int32_t width, int32_t height);
+
         // Renders all invalidated regions.
         void render();
 
         // Renders a specific region.
         void render(const Ui::Rect& rect);
+
+        // Presents the final image to the screen.
+        void present();
 
         // Invalidates a region, this forces it to be rendered next frame.
         void invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom);
@@ -43,7 +52,10 @@ namespace OpenLoco::Drawing
     private:
         void render(size_t x, size_t y, size_t dx, size_t dy);
 
-        SDL_Palette* _palette;
+        SDL_Window* _window{};
+        SDL_Palette* _palette{};
+        SDL_Surface* _screenSurface{};
+        SDL_Surface* _screenRGBASurface{};
         SoftwareDrawingContext _ctx;
     };
 }

@@ -3,7 +3,7 @@
 #include "Location.hpp"
 #include "Map/Map.hpp"
 #include "Types.hpp"
-
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <cstdint>
 #include <limits>
 
@@ -34,6 +34,18 @@ namespace OpenLoco
         down20deg = 12,
     };
 
+    enum class VehicleFlags : uint16_t // commands?
+    {
+        none = 0U,
+        unk_0 = 1U << 0,
+        commandStop = 1U << 1, // commanded to stop??
+        sorted = 1U << 3,      // vehicle list
+        unk_5 = 1U << 5,
+        manualControl = 1U << 6,
+        shuntCheat = 1U << 7,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleFlags);
+
 #pragma pack(push, 1)
     struct EntityBase
     {
@@ -42,25 +54,25 @@ namespace OpenLoco
     private:
         uint8_t type; // Use type specific getters/setters as this depends on baseType
     public:
-        EntityId nextQuadrantId;  // 0x02
-        EntityId nextThingId;     // 0x04
-        EntityId llPreviousId;    // 0x06
-        uint8_t linkedListOffset; // 0x8
-        uint8_t var_09;
-        EntityId id; // 0xA
-        uint16_t var_0C;
-        Map::Pos3 position; // 0x0E
-        uint8_t var_14;
-        uint8_t var_15;
-        int16_t spriteLeft;   // 0x16
-        int16_t spriteTop;    // 0x18
-        int16_t spriteRight;  // 0x1A
-        int16_t spriteBottom; // 0x1C
-        uint8_t spriteYaw;    // 0x1E
-        Pitch spritePitch;    // 0x1F
-        uint8_t pad_20;
-        CompanyId owner; // 0x21
-        string_id name;  // 0x22, combined with ordinalNumber on vehicles
+        EntityId nextQuadrantId;   // 0x02
+        EntityId nextThingId;      // 0x04
+        EntityId llPreviousId;     // 0x06
+        uint8_t linkedListOffset;  // 0x08
+        uint8_t var_09;            // 0x09
+        EntityId id;               // 0x0A
+        VehicleFlags vehicleFlags; // 0x0C, Move these to VehicleBase after full reimplementation
+        Map::Pos3 position;        // 0x0E
+        uint8_t var_14;            // 0x14
+        uint8_t var_15;            // 0x15
+        int16_t spriteLeft;        // 0x16
+        int16_t spriteTop;         // 0x18
+        int16_t spriteRight;       // 0x1A
+        int16_t spriteBottom;      // 0x1C
+        uint8_t spriteYaw;         // 0x1E
+        Pitch spritePitch;         // 0x1F
+        uint8_t pad_20;            // 0x20
+        CompanyId owner;           // 0x21
+        string_id name;            // 0x22, combined with ordinalNumber on vehicles
 
         void moveTo(const Map::Pos3& loc);
         void invalidateSprite();

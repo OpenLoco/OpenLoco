@@ -1,6 +1,8 @@
 #include "SoftwareDrawingEngine.h"
+#include "Config.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
@@ -13,11 +15,14 @@ namespace OpenLoco::Drawing
 {
     using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
 
-    // TODO: Move both into the renderer.
+    // TODO: Move into the renderer.
     static loco_global<RenderTarget, 0x0050B884> _screenRT;
     static loco_global<Ui::ScreenInfo, 0x0050B894> _screenInfo;
 
-    static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
+    // TODO: Combine those into one struct.
+    static loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
+    static loco_global<uint8_t[7500], 0x00E025C4> _screenInvalidationGrid;
+
     loco_global<SetPaletteFunc, 0x0052524C> _setPaletteCallback;
 
     SoftwareDrawingEngine::~SoftwareDrawingEngine()
@@ -27,6 +32,12 @@ namespace OpenLoco::Drawing
             SDL_FreePalette(_palette);
             _palette = nullptr;
         }
+    }
+
+    void SoftwareDrawingEngine::initialize(SDL_Window* window)
+    {
+        _window = window;
+        createPalette();
     }
 
     // T[m][n]
@@ -70,6 +81,62 @@ namespace OpenLoco::Drawing
         }
     };
 
+    void SoftwareDrawingEngine::resize(int32_t width, int32_t height)
+    {
+        // Scale the width and height by configured scale factor
+        auto scaleFactor = Config::get().scaleFactor;
+        width = (int32_t)(width / scaleFactor);
+        height = (int32_t)(height / scaleFactor);
+
+        int32_t widthShift = 6;
+        int16_t blockWidth = 1 << widthShift;
+        int32_t heightShift = 3;
+        int16_t blockHeight = 1 << heightShift;
+
+        if (_screenSurface != nullptr)
+        {
+            SDL_FreeSurface(_screenSurface);
+        }
+        if (_screenRGBASurface != nullptr)
+        {
+            SDL_FreeSurface(_screenRGBASurface);
+        }
+
+        _screenSurface = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+
+        _screenRGBASurface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+        SDL_SetSurfaceBlendMode(_screenRGBASurface, SDL_BLENDMODE_NONE);
+
+        SDL_SetSurfacePalette(_screenSurface, Gfx::getDrawingEngine().getPalette());
+
+        int32_t pitch = _screenSurface->pitch;
+
+        auto& rt = Gfx::getScreenRT();
+        if (rt.bits != nullptr)
+        {
+            delete[] rt.bits;
+        }
+        rt.bits = new uint8_t[_screenSurface->pitch * height];
+        rt.width = width;
+        rt.height = height;
+        rt.pitch = pitch - width;
+
+        _screenInfo->width = width;
+        _screenInfo->height = height;
+        _screenInfo->width_2 = width;
+        _screenInfo->height_2 = height;
+        _screenInfo->width_3 = width;
+        _screenInfo->height_3 = height;
+
+        _screenInvalidation->blockWidth = blockWidth;
+        _screenInvalidation->blockHeight = blockHeight;
+        _screenInvalidation->columnCount = (width / blockWidth) + 1;
+        _screenInvalidation->rowCount = (height / blockHeight) + 1;
+        _screenInvalidation->columnShift = widthShift;
+        _screenInvalidation->rowShift = heightShift;
+        _screenInvalidation->initialised = 1;
+    }
+
     /**
      * 0x004C5C69
      *
@@ -93,14 +160,14 @@ namespace OpenLoco::Drawing
         right--;
         bottom--;
 
-        const int32_t dirtyBlockLeft = left >> _screenInfo->dirtyBlockColumnShift;
-        const int32_t dirtyBlockRight = right >> _screenInfo->dirtyBlockColumnShift;
-        const int32_t dirtyBlockTop = top >> _screenInfo->dirtyBlockRowShift;
-        const int32_t dirtyBlockBottom = bottom >> _screenInfo->dirtyBlockRowShift;
+        const int32_t dirtyBlockLeft = left >> _screenInvalidation->columnShift;
+        const int32_t dirtyBlockRight = right >> _screenInvalidation->columnShift;
+        const int32_t dirtyBlockTop = top >> _screenInvalidation->rowShift;
+        const int32_t dirtyBlockBottom = bottom >> _screenInvalidation->rowShift;
 
-        const size_t columns = _screenInfo->dirtyBlockColumns;
-        const size_t rows = _screenInfo->dirtyBlockRows;
-        auto grid = Grid<uint8_t>(_E025C4, columns, rows);
+        const size_t columns = _screenInvalidation->columnCount;
+        const size_t rows = _screenInvalidation->rowCount;
+        auto grid = Grid<uint8_t>(_screenInvalidationGrid, columns, rows);
 
         for (int16_t y = dirtyBlockTop; y <= dirtyBlockBottom; y++)
         {
@@ -127,9 +194,9 @@ namespace OpenLoco::Drawing
     // 0x004C5CFA
     void SoftwareDrawingEngine::render()
     {
-        const size_t columns = _screenInfo->dirtyBlockColumns;
-        const size_t rows = _screenInfo->dirtyBlockRows;
-        auto grid = Grid<uint8_t>(_E025C4, columns, rows);
+        const size_t columns = _screenInvalidation->columnCount;
+        const size_t rows = _screenInvalidation->rowCount;
+        auto grid = Grid<uint8_t>(_screenInvalidationGrid, columns, rows);
 
         for (size_t x = 0; x < columns; x++)
         {
@@ -151,9 +218,9 @@ namespace OpenLoco::Drawing
 
     void SoftwareDrawingEngine::render(size_t x, size_t y, size_t dx, size_t dy)
     {
-        const auto columns = _screenInfo->dirtyBlockColumns;
-        const auto rows = _screenInfo->dirtyBlockRows;
-        auto grid = Grid<uint8_t>(_E025C4, columns, rows);
+        const auto columns = _screenInvalidation->columnCount;
+        const auto rows = _screenInvalidation->rowCount;
+        auto grid = Grid<uint8_t>(_screenInvalidationGrid, columns, rows);
 
         // Unset dirty blocks
         for (size_t top = y; top < y + dy; top++)
@@ -165,10 +232,10 @@ namespace OpenLoco::Drawing
         }
 
         auto rect = Rect(
-            static_cast<int16_t>(x * _screenInfo->dirtyBlockWidth),
-            static_cast<int16_t>(y * _screenInfo->dirtyBlockHeight),
-            static_cast<uint16_t>(dx * _screenInfo->dirtyBlockWidth),
-            static_cast<uint16_t>(dy * _screenInfo->dirtyBlockHeight));
+            static_cast<int16_t>(x * _screenInvalidation->blockWidth),
+            static_cast<int16_t>(y * _screenInvalidation->blockHeight),
+            static_cast<uint16_t>(dx * _screenInvalidation->blockWidth),
+            static_cast<uint16_t>(dy * _screenInvalidation->blockHeight));
 
         this->render(rect);
     }
@@ -215,6 +282,59 @@ namespace OpenLoco::Drawing
 
         // Draw UI.
         Ui::WindowManager::render(rt, rect);
+    }
+
+    void SoftwareDrawingEngine::present()
+    {
+        // Lock the surface before setting its pixels
+        if (SDL_MUSTLOCK(_screenSurface))
+        {
+            if (SDL_LockSurface(_screenSurface) < 0)
+            {
+                return;
+            }
+        }
+
+        // Copy pixels from the virtual screen buffer to the surface
+        auto& rt = Gfx::getScreenRT();
+        if (rt.bits != nullptr)
+        {
+            std::memcpy(_screenSurface->pixels, rt.bits, _screenSurface->pitch * _screenSurface->h);
+        }
+
+        // Unlock the surface
+        if (SDL_MUSTLOCK(_screenSurface))
+        {
+            SDL_UnlockSurface(_screenSurface);
+        }
+
+        auto scaleFactor = Config::get().scaleFactor;
+        if (scaleFactor == 1 || scaleFactor <= 0)
+        {
+            if (SDL_BlitSurface(_screenSurface, nullptr, SDL_GetWindowSurface(_window), nullptr))
+            {
+                Console::error("SDL_BlitSurface %s", SDL_GetError());
+                exit(1);
+            }
+        }
+        else
+        {
+            // first blit to rgba surface to change the pixel format
+            if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
+            {
+                Console::error("SDL_BlitSurface %s", SDL_GetError());
+                exit(1);
+            }
+            // then scale to window size. Without changing to RGBA first, SDL complains
+            // about blit configurations being incompatible.
+            if (SDL_BlitScaled(_screenRGBASurface, nullptr, SDL_GetWindowSurface(_window), nullptr))
+            {
+                Console::error("SDL_BlitScaled %s", SDL_GetError());
+                exit(1);
+            }
+        }
+
+        SDL_UpdateWindowSurface(_window);
     }
 
     SoftwareDrawingContext& SoftwareDrawingEngine::getDrawingContext()
