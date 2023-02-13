@@ -559,7 +559,12 @@ namespace OpenLoco::Ui::WindowManager
             if (w->hasFlags(WindowFlags::whiteBorderMask))
             {
                 // TODO: Replace with countdown
+                // Countdown is stuffed into WindowFlags extract it out and decrement by 1
+                const auto newCount = enumValue(w->flags & WindowFlags::whiteBorderMask) - enumValue(WindowFlags::whiteBorderOne);
+                // Stuff the new count back into the WindowFlags
                 w->flags &= ~WindowFlags::whiteBorderOne;
+                w->flags |= static_cast<WindowFlags>(newCount);
+
                 if (!w->hasFlags(WindowFlags::whiteBorderMask))
                 {
                     w->invalidate();
