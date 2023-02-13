@@ -67,80 +67,114 @@ namespace OpenLoco
         name = strRes.str;
         remainingData = remainingData.subspan(strRes.tableLength);
 
-        std::fill(std::begin(mods), std::end(mods), 0xFF);
-
-        // NOTE: These aren't dependent objects as this can load without the
+        // NOTE: These aren't dependent (objects unless otherwise stated) as this object can load without the
         // related object.
+        // Load compatible roads/tracks
+        compatibleTracks = 0;
+        compatibleRoads = 0;
         for (auto i = 0; i < numCompatible; ++i)
         {
-            auto& mod = mods[i];
-            mod = 0xFF;
-
             ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             auto res = ObjectManager::findObjectHandle(modHeader);
             if (res.has_value())
             {
-                mod = res->id;
+                if (res->type == ObjectType::track)
+                {
+                    compatibleTracks |= 1U << res->id;
+                }
+                else if (res->type == ObjectType::road)
+                {
+                    compatibleRoads |= 1U << res->id;
+                }
             }
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        //for (size_t i = 0; i < 4; ++i)
-        //{
-        //    for (size_t j = 0; j < 4; ++j)
-        //    {
-        //        cargoOffsetBytes[i][j] = reinterpret_cast<const std::byte*>(remainingData.data());
+        // Load Extra
+        std::fill(std::begin(mods), std::end(mods), 0xFF);
+        for (auto i = 0U, index = 0U; i < numMods; ++i)
+        {
+            ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(modHeader);
+            if (res.has_value() && res->type == ObjectType::trackExtra)
+            {
+                mods[index++] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
 
-        //        auto* bytes = reinterpret_cast<const int8_t*>(cargoOffsetBytes[i][j]);
-        //        bytes++; // z
-        //        auto length = 1;
-        //        while (*bytes != -1)
-        //        {
-        //            length += 4; // x, y, x, y
-        //            bytes += 4;
-        //        }
-        //        length += 4;
-        //        remainingData = remainingData.subspan(length);
-        //    }
-        //}
+        // Load Signals
+        signals = 0;
+        for (auto i = 0; i < numSignals; ++i)
+        {
+            ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(modHeader);
+            if (res.has_value() && res->type == ObjectType::trackSignal)
+            {
+                signals |= 1U << res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
 
-        //for (size_t i = 0; i < sizeof(var_6E) / sizeof(var_6E[0]); ++i)
-        //{
-        //    var_6E[i] = reinterpret_cast<const std::byte*>(remainingData.data());
+        // Load Tunnel (DEPENDENT OBJECT)
+        tunnel = 0xFF;
+        {
+            ObjectHeader unkHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            if (dependencies != nullptr)
+            {
+                dependencies->required.push_back(unkHeader);
+            }
+            auto res = ObjectManager::findObjectHandle(unkHeader);
+            if (res.has_value())
+            {
+                tunnel = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
 
-        //    auto* bytes = reinterpret_cast<const int8_t*>(var_6E[i]);
-        //    bytes++; // z?
-        //    auto length = 1;
-        //    while (*bytes != -1)
-        //    {
-        //        length += 4; // x, y, x, y
-        //        bytes += 4;
-        //    }
-        //    length += 4;
+        // Load bridges (DEPENDENT OBJECT)
+        std::fill(std::begin(bridges), std::end(bridges), 0xFF);
+        for (auto i = 0U; i < numBridges; ++i)
+        {
+            ObjectHeader bridgeHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            if (dependencies != nullptr)
+            {
+                dependencies->required.push_back(bridgeHeader);
+            }
+            auto res = ObjectManager::findObjectHandle(bridgeHeader);
+            if (res.has_value())
+            {
+                bridges[i] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
 
-        //    remainingData = remainingData.subspan(length);
-        //}
+        // Load stations
+        std::fill(std::begin(stations), std::end(stations), 0xFF);
+        for (auto i = 0U; i < numStations; ++i)
+        {
+            ObjectHeader stationHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(stationHeader);
+            if (res.has_value())
+            {
+                stations[i] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
 
-        //auto imgRes = ObjectManager::loadImageTable(remainingData);
-        //image = imgRes.imageOffset;
-        //assert(remainingData.size() == imgRes.tableLength);
-
-        //auto imageOffset = image + TrainStation::ImageIds::totalPreviewImages;
-        //for (size_t i = 0; i < sizeof(var_12) / sizeof(var_12[0]); ++i)
-        //{
-        //    var_12[i] = imageOffset;
-        //    imageOffset += kDrawStyleTotalNumImages[drawStyle];
-        //}
+        auto imgRes = ObjectManager::loadImageTable(remainingData);
+        image = imgRes.imageOffset;
+        assert(remainingData.size() == imgRes.tableLength);
     }
 
     // 0x004A6C2D
     void TrackObject::unload()
     {
         name = 0;
-        var_10 = 0;
+        compatibleTracks = 0;
         std::fill(std::begin(mods), std::end(mods), 0);
-        var_0E = 0;
-        var_1B = 0;
+        signals = 0;
+        tunnel = 0;
         image = 0;
         std::fill(std::begin(bridges), std::end(bridges), 0);
         std::fill(std::begin(stations), std::end(stations), 0);

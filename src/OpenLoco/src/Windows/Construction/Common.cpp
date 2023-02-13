@@ -1477,20 +1477,20 @@ namespace OpenLoco::Ui::Windows::Construction
             auto currentYear = getCurrentYear();
             auto trackObj = ObjectManager::get<TrackObject>(trackType);
             auto signalCount = 0;
-            auto var_0E = trackObj->var_0E;
-            while (var_0E > 0)
+            auto signals = trackObj->signals;
+            while (signals > 0)
             {
-                auto ecx = Utility::bitScanForward(var_0E);
-                if (ecx == -1)
+                const auto signalId = Utility::bitScanForward(signals);
+                if (signalId == -1)
                     break;
-                var_0E &= ~(1 << ecx);
-                auto signalObj = ObjectManager::get<TrainSignalObject>(ecx);
+                signals &= ~(1 << signalId);
+                auto signalObj = ObjectManager::get<TrainSignalObject>(signalId);
 
                 if (currentYear > signalObj->obsoleteYear)
                     continue;
                 if (currentYear < signalObj->designedYear)
                     continue;
-                signalList[signalCount] = ecx;
+                signalList[signalCount] = signalId;
                 signalCount++;
             }
 
