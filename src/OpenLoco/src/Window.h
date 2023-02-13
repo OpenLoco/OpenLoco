@@ -72,7 +72,7 @@ namespace OpenLoco::Ui
         count
     };
 
-    namespace WindowFlags
+    enum class WindowFlags : uint32_t
     {
         none = 0U,
         stickToBack = 1U << 0,
@@ -93,7 +93,7 @@ namespace OpenLoco::Ui
         flag_15 = 1U << 15,
         flag_16 = 1U << 16,
         whiteBorderOne = 1U << 17,
-        whiteBorderMask = WindowFlags::whiteBorderOne | (1U << 18),
+        whiteBorderMask = whiteBorderOne | (1U << 18),
         flag_19 = 1U << 19,
         flag_31 = 1U << 31,
     };
