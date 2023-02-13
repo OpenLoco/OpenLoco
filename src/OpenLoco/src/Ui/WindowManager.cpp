@@ -1662,7 +1662,7 @@ namespace OpenLoco::Ui::WindowManager
     {
         for (auto w = window; w < _windowsEnd; w++)
         {
-            if (!w->hasFlags(WindowFlags::transparent))
+            if (!w->isTranslucent())
                 continue;
 
             if (viewport == w->viewports[0])
