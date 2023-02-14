@@ -1590,13 +1590,13 @@ namespace OpenLoco::Drawing
 
                     // Fill the rectangle with the colours from the colour table
                     auto scaledHeight = drawRect.height() >> rt.zoomLevel;
-                    for (int32_t y = 0; y < scaledHeight; y++)
+                    for (auto y = 0; y < scaledHeight; y++)
                     {
-                        uint8_t* nextdst = dst + step * y;
-                        for (int32_t x = 0; x < scaledWidth; x++)
+                        uint8_t* nextDst = dst + step * y;
+                        for (auto x = 0; x < scaledWidth; x++)
                         {
-                            auto index = *(nextdst + x);
-                            *(nextdst + x) = paletteEntries[index];
+                            auto index = *(nextDst + x);
+                            *(nextDst + x) = paletteEntries[index];
                         }
                     }
                 }
@@ -1604,14 +1604,15 @@ namespace OpenLoco::Drawing
             else if ((flags & RectFlags::crossHatching) != RectFlags::none)
             {
                 uint8_t* dst = (drawRect.top() * (rt.width + rt.pitch)) + drawRect.left() + rt.bits;
-                for (int32_t y = 0; y < drawRect.height(); y++)
-                {
-                    uint8_t* nextDst = dst + rt.width + rt.pitch;
-                    uint32_t p = Utility::ror(crossPattern, 1);
-                    p = (p & 0xFFFF0000) | drawRect.width();
+                const int32_t step = rt.width + rt.pitch;
 
+                for (auto y = 0; y < drawRect.height(); y++)
+                {
+                    uint8_t* nextDst = dst + step;
+                    uint32_t p = Utility::ror(crossPattern, 1);
+        
                     // Fill every other pixel with the colour
-                    for (; (p & 0xFFFF) != 0; p--)
+                    for (auto x = 0; x < drawRect.width(); x++)
                     {
                         p ^= 0x80000000;
                         if (p & 0x80000000)
