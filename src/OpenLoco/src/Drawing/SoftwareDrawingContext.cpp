@@ -1608,7 +1608,7 @@ namespace OpenLoco::Drawing
 
                 for (auto y = 0; y < drawRect.height(); y++)
                 {
-                    uint8_t* nextDst = dst + step;
+                    uint8_t* nextDst = dst + step * y;
                     uint32_t p = Utility::ror(crossPattern, 1);
         
                     // Fill every other pixel with the colour
@@ -1617,12 +1617,10 @@ namespace OpenLoco::Drawing
                         p ^= 0x80000000;
                         if (p & 0x80000000)
                         {
-                            *dst = colour;
+                            *(nextDst + x) = colour;
                         }
-                        dst++;
                     }
                     crossPattern ^= 1;
-                    dst = nextDst;
                 }
             }
             else if ((flags & RectFlags::g1Pattern) != RectFlags::none)
