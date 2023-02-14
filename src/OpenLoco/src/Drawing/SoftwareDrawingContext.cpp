@@ -1529,66 +1529,68 @@ namespace OpenLoco::Drawing
                 return;
             }
 
-            Rect startRect = Rect::fromLTRB(left, top, right, bottom);
-            Rect renderTargetRect = Rect(rt.x, rt.y, rt.width, rt.height);
+            auto startRect = Rect::fromLTRB(left, top, right, bottom);
+            auto renderTargetRect = Rect(rt.x, rt.y, rt.width, rt.height);
 
             if (!startRect.intersects(renderTargetRect))
             {
                 return;
             }
 
-            int32_t leftX = left - rt.x;
+            auto leftX = left - rt.x;
             if (leftX < 0)
             {
                 leftX = 0;
             }
 
-            int32_t rightX = right - rt.x + 1;
+            auto rightX = right - rt.x + 1;
             if (rightX > rt.width)
             {
                 rightX = rt.width;
             }
 
-            int32_t topY = top - rt.y;
+            auto topY = top - rt.y;
             if (topY < 0)
             {
                 topY = 0;
             }
 
-            int32_t bottomY = bottom - rt.y + 1;
+            auto bottomY = bottom - rt.y + 1;
             if (bottomY > rt.height)
             {
                 bottomY = rt.height;
             }
 
-            Rect drawRect = Rect::fromLTRB(leftX, topY, rightX, bottomY);
+            auto drawRect = Rect::fromLTRB(leftX, topY, rightX, bottomY);
 
             if (flags == RectFlags::none) // Regular fill
             {
-                uint8_t* dst = drawRect.top() * (rt.width + rt.pitch) + drawRect.left() + rt.bits;
-                for (int32_t y = 0; y < drawRect.height(); y++)
+                auto* dst = drawRect.top() * (rt.width + rt.pitch) + drawRect.left() + rt.bits;
+                const auto step = rt.width + rt.pitch;
+
+                for (auto y = 0; y < drawRect.height(); y++)
                 {
                     std::fill_n(dst, drawRect.width(), colour);
-                    dst += rt.width + rt.pitch;
+                    dst += step;
                 }
             }
             else if ((flags & RectFlags::transparent) != RectFlags::none)
             {
-                uint8_t* dst = rt.bits
+                auto* dst = rt.bits
                     + static_cast<uint32_t>((drawRect.top() >> rt.zoomLevel) * ((rt.width >> rt.zoomLevel) + rt.pitch) + (drawRect.left() >> rt.zoomLevel));
 
                 auto paletteMap = Gfx::PaletteMap::getForColour(static_cast<ExtColour>(colour));
                 if (paletteMap.has_value())
                 {
                     const auto& paletteEntries = paletteMap.value();
-                    const int32_t scaledWidth = drawRect.width() >> rt.zoomLevel;
-                    const int32_t step = (rt.width >> rt.zoomLevel) + rt.pitch;
+                    const auto scaledWidth = drawRect.width() >> rt.zoomLevel;
+                    const auto scaledHeight = drawRect.height() >> rt.zoomLevel;
+                    const auto step = (rt.width >> rt.zoomLevel) + rt.pitch;
 
                     // Fill the rectangle with the colours from the colour table
-                    auto scaledHeight = drawRect.height() >> rt.zoomLevel;
                     for (auto y = 0; y < scaledHeight; y++)
                     {
-                        uint8_t* nextDst = dst + step * y;
+                        auto* nextDst = dst + step * y;
                         for (auto x = 0; x < scaledWidth; x++)
                         {
                             auto index = *(nextDst + x);
@@ -1599,12 +1601,12 @@ namespace OpenLoco::Drawing
             }
             else if ((flags & RectFlags::crossHatching) != RectFlags::none)
             {
-                uint8_t* dst = (drawRect.top() * (rt.width + rt.pitch)) + drawRect.left() + rt.bits;
-                const int32_t step = rt.width + rt.pitch;
+                auto* dst = (drawRect.top() * (rt.width + rt.pitch)) + drawRect.left() + rt.bits;
+                const auto step = rt.width + rt.pitch;
 
                 for (auto y = 0; y < drawRect.height(); y++)
                 {
-                    uint8_t* nextDst = dst + step * y;
+                    auto* nextDst = dst + step * y;
                     bool fillPixel = y % 2; // alternate filling first pixel for even and odd lines
 
                     // Fill every other pixel with the colour
