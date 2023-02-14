@@ -44,7 +44,7 @@ namespace OpenLoco::Ui
 
     bool Window::canResize()
     {
-        return (this->flags & WindowFlags::resizable) && (this->minWidth != this->maxWidth || this->minHeight != this->maxHeight);
+        return this->hasFlags(WindowFlags::resizable) && (this->minWidth != this->maxWidth || this->minHeight != this->maxHeight);
     }
 
     void Window::capSize(int32_t newMinWidth, int32_t newMinHeight, int32_t newMaxWidth, int32_t newMaxHeight)
@@ -216,7 +216,7 @@ namespace OpenLoco::Ui
         if (diffX == 0 && diffY == 0)
             return;
 
-        if (vp->hasFlags(ViewportFlags::hide_foreground_tracks_roads) || vp->hasFlags(ViewportFlags::hide_foreground_scenery_buildings) || w->flags & WindowFlags::flag_8)
+        if (vp->hasFlags(ViewportFlags::hide_foreground_tracks_roads) || vp->hasFlags(ViewportFlags::hide_foreground_scenery_buildings) || w->hasFlags(WindowFlags::flag_8))
         {
             auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
             Gfx::render(rect);
@@ -341,7 +341,7 @@ namespace OpenLoco::Ui
                 centre.x = config->savedViewX;
                 centre.y = config->savedViewY;
 
-                if (this->flags & WindowFlags::scrollingToLocation)
+                if (this->hasFlags(WindowFlags::scrollingToLocation))
                 {
                     bool flippedX = false;
                     centre.x -= viewport->viewX;
@@ -547,7 +547,7 @@ namespace OpenLoco::Ui
         if (this->viewportConfigurations->viewportTargetSprite != EntityId::null)
             return;
 
-        if (this->flags & WindowFlags::viewportNoScrolling)
+        if (this->hasFlags(WindowFlags::viewportNoScrolling))
             return;
 
         this->viewportConfigurations->savedViewX = pos.x;
@@ -1464,7 +1464,7 @@ namespace OpenLoco::Ui
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::noBackground))
+        if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
         {
             drawingCtx.fillRect(*rt, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
         }
@@ -1504,7 +1504,7 @@ namespace OpenLoco::Ui
             widget->draw(rt, this, pressedWidget, tool_widget, hovered_widget, scrollviewIndex);
         }
 
-        if (this->flags & WindowFlags::whiteBorderMask)
+        if (this->hasFlags(WindowFlags::whiteBorderMask))
         {
             drawingCtx.fillRectInset(
                 *rt,

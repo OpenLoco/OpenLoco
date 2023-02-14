@@ -40,5 +40,4 @@ namespace OpenLoco::Core
     {                                                                                                                       \
         return static_cast<ENM>(~static_cast<std::underlying_type_t<ENM>>(a));                                              \
     }
-
 }

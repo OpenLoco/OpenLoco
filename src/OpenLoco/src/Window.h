@@ -11,6 +11,7 @@
 #include "Ui/WindowType.h"
 #include "Viewport.hpp"
 #include "ZoomLevel.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <optional>
@@ -71,30 +72,32 @@ namespace OpenLoco::Ui
         count
     };
 
-    namespace WindowFlags
+    enum class WindowFlags : uint32_t
     {
-        constexpr uint32_t stickToBack = 1 << 0;
-        constexpr uint32_t stickToFront = 1 << 1;
-        constexpr uint32_t viewportNoScrolling = 1 << 2;
-        constexpr uint32_t scrollingToLocation = 1 << 3;
-        constexpr uint32_t transparent = 1 << 4;
-        constexpr uint32_t noBackground = 1 << 5;
-        constexpr uint32_t flag_6 = 1 << 6;
-        constexpr uint32_t flag_7 = 1 << 7;
-        constexpr uint32_t flag_8 = 1 << 8;
-        constexpr uint32_t resizable = 1 << 9;
-        constexpr uint32_t noAutoClose = 1 << 10;
-        constexpr uint32_t flag_11 = 1 << 11;
-        constexpr uint32_t flag_12 = 1 << 12;
-        constexpr uint32_t openQuietly = 1 << 13;
-        constexpr uint32_t notScrollView = 1 << 14;
-        constexpr uint32_t flag_15 = 1 << 15;
-        constexpr uint32_t flag_16 = 1 << 16;
-        constexpr uint32_t whiteBorderOne = (1 << 17);
-        constexpr uint32_t whiteBorderMask = WindowFlags::whiteBorderOne | (1 << 18);
-        constexpr uint32_t flag_19 = 1 << 19;
-        constexpr uint32_t flag_31 = 1 << 31;
-    }
+        none = 0U,
+        stickToBack = 1U << 0,
+        stickToFront = 1U << 1,
+        viewportNoScrolling = 1U << 2,
+        scrollingToLocation = 1U << 3,
+        transparent = 1U << 4,
+        noBackground = 1U << 5,
+        flag_6 = 1U << 6,
+        flag_7 = 1U << 7,
+        flag_8 = 1U << 8,
+        resizable = 1U << 9,
+        noAutoClose = 1U << 10,
+        flag_11 = 1U << 11,
+        flag_12 = 1U << 12,
+        openQuietly = 1U << 13,
+        notScrollView = 1U << 14,
+        flag_15 = 1U << 15,
+        flag_16 = 1U << 16,
+        whiteBorderOne = 1U << 17,
+        whiteBorderMask = whiteBorderOne | (1U << 18),
+        flag_19 = 1U << 19,
+        flag_31 = 1U << 31,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(WindowFlags);
 
     struct WindowEventList
     {
@@ -242,7 +245,7 @@ namespace OpenLoco::Ui
         uint16_t minHeight;                                // 0x3c
         uint16_t maxHeight;                                // 0x3e
         WindowNumber_t number = 0;                         // 0x40
-        uint32_t flags;                                    // 0x42
+        WindowFlags flags;                                 // 0x42
         ScrollArea scrollAreas[kMaxScrollAreas];           // 0x46
         int16_t rowInfo[1000];                             // 0x6A
         uint16_t rowCount;                                 // 0x83A
@@ -342,6 +345,11 @@ namespace OpenLoco::Ui
             }
         }
 
+        constexpr bool hasFlags(WindowFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != WindowFlags::none;
+        }
+
         bool isVisible()
         {
             return true;
@@ -349,7 +357,7 @@ namespace OpenLoco::Ui
 
         bool isTranslucent()
         {
-            return (this->flags & WindowFlags::transparent) != 0;
+            return this->hasFlags(WindowFlags::transparent);
         }
 
         bool isEnabled(int8_t widgetIndex);

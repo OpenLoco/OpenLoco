@@ -1006,7 +1006,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C2648
     static void event_09(Window& self)
     {
-        if (self.flags & WindowFlags::notScrollView)
+        if (self.hasFlags(WindowFlags::notScrollView))
         {
             self.rowHover = -1;
         }

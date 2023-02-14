@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         initEvents();
 
         // 0x004BF833 (create_options_window)
-        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, 0, &_events);
+        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, WindowFlags::none, &_events);
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::close_button) | (1 << Widx::reset_keys_btn);

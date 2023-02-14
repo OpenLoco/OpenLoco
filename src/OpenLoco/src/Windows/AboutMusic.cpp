@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         auto window = WindowManager::createWindowCentred(
             WindowType::aboutMusic,
             kWindowSize,
-            0,
+            WindowFlags::none,
             &_events);
 
         window->widgets = _widgets;

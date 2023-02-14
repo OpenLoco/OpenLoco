@@ -882,7 +882,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         window = WindowManager::createWindow(
             WindowType::cheats,
             Finances::kWindowSize,
-            0,
+            WindowFlags::none,
             &Finances::_events);
 
         window->widgets = Finances::_widgets;

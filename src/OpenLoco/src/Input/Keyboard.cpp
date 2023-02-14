@@ -420,7 +420,7 @@ namespace OpenLoco::Input
             return;
 
         auto main = WindowManager::getMainWindow();
-        if ((main->flags & WindowFlags::viewportNoScrolling) != 0)
+        if (main->hasFlags(WindowFlags::viewportNoScrolling))
             return;
 
         if (OpenLoco::isTitleMode())
@@ -466,7 +466,7 @@ namespace OpenLoco::Input
             return;
 
         auto main = WindowManager::getMainWindow();
-        if ((main->flags & WindowFlags::viewportNoScrolling) != 0)
+        if (main->hasFlags(WindowFlags::viewportNoScrolling))
             return;
 
         if (OpenLoco::isTitleMode())

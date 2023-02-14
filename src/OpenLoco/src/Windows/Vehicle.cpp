@@ -4210,7 +4210,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B45E5, 0x004B55B6, 0x004B3C23
         static void event9(Window& self)
         {
-            if (self.flags & WindowFlags::notScrollView)
+            if (self.hasFlags(WindowFlags::notScrollView))
             {
                 if (self.rowHover != -1)
                 {

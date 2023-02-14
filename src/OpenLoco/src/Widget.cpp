@@ -50,7 +50,7 @@ namespace OpenLoco::Ui
 
     void Widget::draw(Gfx::RenderTarget* rt, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex)
     {
-        if ((window->flags & WindowFlags::noBackground) == 0)
+        if (!window->hasFlags(WindowFlags::noBackground))
         {
             // Check if widget is outside the draw region
             if (window->x + left >= rt->x + rt->width && window->x + right < rt->x)
@@ -63,7 +63,7 @@ namespace OpenLoco::Ui
         }
 
         Drawing::RectInsetFlags widgetFlags = Drawing::RectInsetFlags::none;
-        if (windowColour == WindowColour::primary && window->flags & WindowFlags::flag_11)
+        if (windowColour == WindowColour::primary && window->hasFlags(WindowFlags::flag_11))
         {
             widgetFlags = Drawing::RectInsetFlags::colourLight;
         }
@@ -210,7 +210,7 @@ namespace OpenLoco::Ui
     // 0x004CAB8E
     static void draw_resize_handle(Gfx::RenderTarget* rt, const Window* window, Widget* widget, AdvancedColour colour)
     {
-        if (!(window->flags & WindowFlags::resizable))
+        if (!window->hasFlags(WindowFlags::resizable))
         {
             return;
         }
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui
         if (clipped)
         {
             uint32_t imageId = image;
-            if (window->flags & WindowFlags::flag_11)
+            if (window->hasFlags(WindowFlags::flag_11))
             {
                 imageId = Gfx::recolour(ImageIds::frame_background_image, colour.c());
             }
@@ -316,7 +316,7 @@ namespace OpenLoco::Ui
         }
 
         uint8_t shade;
-        if (window->flags & WindowFlags::flag_11)
+        if (window->hasFlags(WindowFlags::flag_11))
         {
             shade = Colours::getShade(colour.c(), 3);
         }
@@ -358,7 +358,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        if (window->flags & WindowFlags::flag_6)
+        if (window->hasFlags(WindowFlags::flag_6))
         {
             drawingCtx.fillRect(*rt, l, t, r, b, enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
         }
