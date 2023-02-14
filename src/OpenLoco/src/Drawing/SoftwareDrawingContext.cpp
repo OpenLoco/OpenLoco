@@ -4,8 +4,8 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Utility/Numeric.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
 
@@ -1610,7 +1610,7 @@ namespace OpenLoco::Drawing
                 {
                     uint8_t* nextDst = dst + step * y;
                     uint32_t p = Utility::ror(crossPattern, 1);
-        
+
                     // Fill every other pixel with the colour
                     for (auto x = 0; x < drawRect.width(); x++)
                     {
