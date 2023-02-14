@@ -161,306 +161,106 @@ namespace OpenLoco::ObjectManager
         drawPreview,
     };
 
-    static bool callObjectValidate(const ObjectType type, Object& obj)
+    template<typename TVisitor>
+    static auto visitObject(const ObjectType type, Object& obj, TVisitor&& visitor)
     {
         switch (type)
         {
             case ObjectType::interfaceSkin:
-                return reinterpret_cast<InterfaceSkinObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<InterfaceSkinObject*>(&obj));
             case ObjectType::sound:
-                return reinterpret_cast<SoundObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<SoundObject*>(&obj));
             case ObjectType::currency:
-                return reinterpret_cast<CurrencyObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<CurrencyObject*>(&obj));
             case ObjectType::steam:
-                return reinterpret_cast<SteamObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<SteamObject*>(&obj));
             case ObjectType::cliffEdge:
-                return reinterpret_cast<CliffEdgeObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<CliffEdgeObject*>(&obj));
             case ObjectType::water:
-                return reinterpret_cast<WaterObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<WaterObject*>(&obj));
             case ObjectType::land:
-                return reinterpret_cast<LandObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<LandObject*>(&obj));
             case ObjectType::townNames:
-                return reinterpret_cast<TownNamesObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<TownNamesObject*>(&obj));
             case ObjectType::cargo:
-                return reinterpret_cast<CargoObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<CargoObject*>(&obj));
             case ObjectType::wall:
-                return reinterpret_cast<WallObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<WallObject*>(&obj));
             case ObjectType::trackSignal:
-                return reinterpret_cast<TrainSignalObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<TrainSignalObject*>(&obj));
             case ObjectType::levelCrossing:
-                return reinterpret_cast<LevelCrossingObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<LevelCrossingObject*>(&obj));
             case ObjectType::streetLight:
-                return reinterpret_cast<StreetLightObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<StreetLightObject*>(&obj));
             case ObjectType::tunnel:
-                return reinterpret_cast<TunnelObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<TunnelObject*>(&obj));
             case ObjectType::bridge:
-                return reinterpret_cast<BridgeObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<BridgeObject*>(&obj));
             case ObjectType::trackStation:
-                return reinterpret_cast<TrainStationObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<TrainStationObject*>(&obj));
             case ObjectType::trackExtra:
-                return reinterpret_cast<TrackExtraObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<TrackExtraObject*>(&obj));
             case ObjectType::track:
-                return reinterpret_cast<TrackObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<TrackObject*>(&obj));
             case ObjectType::roadStation:
-                return reinterpret_cast<RoadStationObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<RoadStationObject*>(&obj));
             case ObjectType::roadExtra:
-                return reinterpret_cast<RoadExtraObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<RoadExtraObject*>(&obj));
             case ObjectType::road:
-                return reinterpret_cast<RoadObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<RoadObject*>(&obj));
             case ObjectType::airport:
-                return reinterpret_cast<AirportObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<AirportObject*>(&obj));
             case ObjectType::dock:
-                return reinterpret_cast<DockObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<DockObject*>(&obj));
             case ObjectType::vehicle:
-                return reinterpret_cast<VehicleObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<VehicleObject*>(&obj));
             case ObjectType::tree:
-                return reinterpret_cast<TreeObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<TreeObject*>(&obj));
             case ObjectType::snow:
-                return reinterpret_cast<SnowObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<SnowObject*>(&obj));
             case ObjectType::climate:
-                return reinterpret_cast<ClimateObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<ClimateObject*>(&obj));
             case ObjectType::hillShapes:
-                return reinterpret_cast<HillShapesObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<HillShapesObject*>(&obj));
             case ObjectType::building:
-                return reinterpret_cast<BuildingObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<BuildingObject*>(&obj));
             case ObjectType::scaffolding:
-                return reinterpret_cast<ScaffoldingObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<ScaffoldingObject*>(&obj));
             case ObjectType::industry:
-                return reinterpret_cast<IndustryObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<IndustryObject*>(&obj));
             case ObjectType::region:
-                return reinterpret_cast<RegionObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<RegionObject*>(&obj));
             case ObjectType::competitor:
-                return reinterpret_cast<CompetitorObject*>(&obj)->validate();
+                return visitor(reinterpret_cast<CompetitorObject*>(&obj));
             case ObjectType::scenarioText:
-                return reinterpret_cast<ScenarioTextObject*>(&obj)->validate();
-            default:
-                assert(false);
-                return false;
+                return visitor(reinterpret_cast<ScenarioTextObject*>(&obj));
         }
+#if defined(_MSC_VER) // MSVC
+        __assume(false);
+#elif defined(__GNUC__) // GCC, Clang, ICC
+        __builtin_unreachable();
+#endif
+    }
+
+    static bool callObjectValidate(const ObjectType type, Object& obj)
+    {
+        return visitObject(type, obj, [](auto&& obj) {
+            return obj->validate();
+        });
     }
 
     static void callObjectUnload(const ObjectType type, Object& obj)
     {
-        switch (type)
-        {
-            case ObjectType::interfaceSkin:
-                reinterpret_cast<InterfaceSkinObject*>(&obj)->unload();
-                break;
-            case ObjectType::sound:
-                reinterpret_cast<SoundObject*>(&obj)->unload();
-                break;
-            case ObjectType::currency:
-                reinterpret_cast<CurrencyObject*>(&obj)->unload();
-                break;
-            case ObjectType::steam:
-                reinterpret_cast<SteamObject*>(&obj)->unload();
-                break;
-            case ObjectType::cliffEdge:
-                reinterpret_cast<CliffEdgeObject*>(&obj)->unload();
-                break;
-            case ObjectType::water:
-                reinterpret_cast<WaterObject*>(&obj)->unload();
-                break;
-            case ObjectType::land:
-                reinterpret_cast<LandObject*>(&obj)->unload();
-                break;
-            case ObjectType::townNames:
-                reinterpret_cast<TownNamesObject*>(&obj)->unload();
-                break;
-            case ObjectType::cargo:
-                reinterpret_cast<CargoObject*>(&obj)->unload();
-                break;
-            case ObjectType::wall:
-                reinterpret_cast<WallObject*>(&obj)->unload();
-                break;
-            case ObjectType::trackSignal:
-                reinterpret_cast<TrainSignalObject*>(&obj)->unload();
-                break;
-            case ObjectType::levelCrossing:
-                reinterpret_cast<LevelCrossingObject*>(&obj)->unload();
-                break;
-            case ObjectType::streetLight:
-                reinterpret_cast<StreetLightObject*>(&obj)->unload();
-                break;
-            case ObjectType::tunnel:
-                reinterpret_cast<TunnelObject*>(&obj)->unload();
-                break;
-            case ObjectType::bridge:
-                reinterpret_cast<BridgeObject*>(&obj)->unload();
-                break;
-            case ObjectType::trackStation:
-                reinterpret_cast<TrainStationObject*>(&obj)->unload();
-                break;
-            case ObjectType::trackExtra:
-                reinterpret_cast<TrackExtraObject*>(&obj)->unload();
-                break;
-            case ObjectType::track:
-                reinterpret_cast<TrackObject*>(&obj)->unload();
-                break;
-            case ObjectType::roadStation:
-                reinterpret_cast<RoadStationObject*>(&obj)->unload();
-                break;
-            case ObjectType::roadExtra:
-                reinterpret_cast<RoadExtraObject*>(&obj)->unload();
-                break;
-            case ObjectType::road:
-                reinterpret_cast<RoadObject*>(&obj)->unload();
-                break;
-            case ObjectType::airport:
-                reinterpret_cast<AirportObject*>(&obj)->unload();
-                break;
-            case ObjectType::dock:
-                reinterpret_cast<DockObject*>(&obj)->unload();
-                break;
-            case ObjectType::vehicle:
-                reinterpret_cast<VehicleObject*>(&obj)->unload();
-                break;
-            case ObjectType::tree:
-                reinterpret_cast<TreeObject*>(&obj)->unload();
-                break;
-            case ObjectType::snow:
-                reinterpret_cast<SnowObject*>(&obj)->unload();
-                break;
-            case ObjectType::climate:
-                reinterpret_cast<ClimateObject*>(&obj)->unload();
-                break;
-            case ObjectType::hillShapes:
-                reinterpret_cast<HillShapesObject*>(&obj)->unload();
-                break;
-            case ObjectType::building:
-                reinterpret_cast<BuildingObject*>(&obj)->unload();
-                break;
-            case ObjectType::scaffolding:
-                reinterpret_cast<ScaffoldingObject*>(&obj)->unload();
-                break;
-            case ObjectType::industry:
-                reinterpret_cast<IndustryObject*>(&obj)->unload();
-                break;
-            case ObjectType::region:
-                reinterpret_cast<RegionObject*>(&obj)->unload();
-                break;
-            case ObjectType::competitor:
-                reinterpret_cast<CompetitorObject*>(&obj)->unload();
-                break;
-            case ObjectType::scenarioText:
-                reinterpret_cast<ScenarioTextObject*>(&obj)->unload();
-                break;
-            default:
-                assert(false);
-                break;
-        }
+        return visitObject(type, obj, [](auto&& obj) {
+            return obj->unload();
+        });
     }
 
     static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, stdx::span<const std::byte> data, DependentObjects* dependencies = nullptr)
     {
-        switch (handle.type)
-        {
-            case ObjectType::interfaceSkin:
-                reinterpret_cast<InterfaceSkinObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::sound:
-                reinterpret_cast<SoundObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::currency:
-                reinterpret_cast<CurrencyObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::steam:
-                reinterpret_cast<SteamObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::cliffEdge:
-                reinterpret_cast<CliffEdgeObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::water:
-                reinterpret_cast<WaterObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::land:
-                reinterpret_cast<LandObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::townNames:
-                reinterpret_cast<TownNamesObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::cargo:
-                reinterpret_cast<CargoObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::wall:
-                reinterpret_cast<WallObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::trackSignal:
-                reinterpret_cast<TrainSignalObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::levelCrossing:
-                reinterpret_cast<LevelCrossingObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::streetLight:
-                reinterpret_cast<StreetLightObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::tunnel:
-                reinterpret_cast<TunnelObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::bridge:
-                reinterpret_cast<BridgeObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::trackStation:
-                reinterpret_cast<TrainStationObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::trackExtra:
-                reinterpret_cast<TrackExtraObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::track:
-                reinterpret_cast<TrackObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::roadStation:
-                reinterpret_cast<RoadStationObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::roadExtra:
-                reinterpret_cast<RoadExtraObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::road:
-                reinterpret_cast<RoadObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::airport:
-                reinterpret_cast<AirportObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::dock:
-                reinterpret_cast<DockObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::vehicle:
-                reinterpret_cast<VehicleObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::tree:
-                reinterpret_cast<TreeObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::snow:
-                reinterpret_cast<SnowObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::climate:
-                reinterpret_cast<ClimateObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::hillShapes:
-                reinterpret_cast<HillShapesObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::building:
-                reinterpret_cast<BuildingObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::scaffolding:
-                reinterpret_cast<ScaffoldingObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::industry:
-                reinterpret_cast<IndustryObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::region:
-                reinterpret_cast<RegionObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::competitor:
-                reinterpret_cast<CompetitorObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            case ObjectType::scenarioText:
-                reinterpret_cast<ScenarioTextObject*>(&obj)->load(handle, data, dependencies);
-                break;
-            default:
-                assert(false);
-                break;
-        }
+        return visitObject(handle.type, obj, [&](auto&& obj) {
+            return obj->load(handle, data, dependencies);
+        });
     }
 
     // 0x0047237D
