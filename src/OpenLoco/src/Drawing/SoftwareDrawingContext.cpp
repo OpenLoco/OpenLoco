@@ -4,7 +4,7 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Numerics.hpp>
+#include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
@@ -1537,7 +1537,7 @@ namespace OpenLoco::Drawing
                 return;
             }
 
-            uint16_t crossPattern = 0;
+            uint32_t crossPattern = 0;
 
             int32_t leftX = left - rt.x;
             if (leftX < 0)
@@ -1570,7 +1570,7 @@ namespace OpenLoco::Drawing
             if (flags == RectFlags::none) // Regular fill
             {
                 uint8_t* dst = drawRect.top() * (rt.width + rt.pitch) + drawRect.left() + rt.bits;
-                for (int32_t i = 0; i < drawRect.height(); i++)
+                for (int32_t y = 0; y < drawRect.height(); y++)
                 {
                     std::fill_n(dst, drawRect.width(), colour);
                     dst += rt.width + rt.pitch;
@@ -1581,23 +1581,22 @@ namespace OpenLoco::Drawing
                 uint8_t* dst = rt.bits
                     + static_cast<uint32_t>((drawRect.top() >> rt.zoomLevel) * ((rt.width >> rt.zoomLevel) + rt.pitch) + (drawRect.left() >> rt.zoomLevel));
 
-                // Find colour in colour table?
                 auto paletteMap = Gfx::PaletteMap::getForColour(static_cast<ExtColour>(colour));
                 if (paletteMap.has_value())
                 {
                     const auto& paletteEntries = paletteMap.value();
-                    const int32_t scaled_width = drawRect.width() >> rt.zoomLevel;
+                    const int32_t scaledWidth = drawRect.width() >> rt.zoomLevel;
                     const int32_t step = (rt.width >> rt.zoomLevel) + rt.pitch;
 
                     // Fill the rectangle with the colours from the colour table
-                    auto c = drawRect.height() >> rt.zoomLevel;
-                    for (int32_t i = 0; i < c; i++)
+                    auto scaledHeight = drawRect.height() >> rt.zoomLevel;
+                    for (int32_t y = 0; y < scaledHeight; y++)
                     {
-                        uint8_t* nextdst = dst + step * i;
-                        for (int32_t j = 0; j < scaled_width; j++)
+                        uint8_t* nextdst = dst + step * y;
+                        for (int32_t x = 0; x < scaledWidth; x++)
                         {
-                            auto index = *(nextdst + j);
-                            *(nextdst + j) = paletteEntries[index];
+                            auto index = *(nextdst + x);
+                            *(nextdst + x) = paletteEntries[index];
                         }
                     }
                 }
@@ -1605,16 +1604,16 @@ namespace OpenLoco::Drawing
             else if ((flags & RectFlags::crossHatching) != RectFlags::none)
             {
                 uint8_t* dst = (drawRect.top() * (rt.width + rt.pitch)) + drawRect.left() + rt.bits;
-                for (int32_t i = 0; i < drawRect.height(); i++)
+                for (int32_t y = 0; y < drawRect.height(); y++)
                 {
-                    uint8_t* nextdst = dst + rt.width + rt.pitch;
-                    uint32_t p = Numerics::ror32(crossPattern, 1);
+                    uint8_t* nextDst = dst + rt.width + rt.pitch;
+                    uint32_t p = Utility::ror(crossPattern, 1);
                     p = (p & 0xFFFF0000) | drawRect.width();
 
                     // Fill every other pixel with the colour
                     for (; (p & 0xFFFF) != 0; p--)
                     {
-                        p = p ^ 0x80000000;
+                        p ^= 0x80000000;
                         if (p & 0x80000000)
                         {
                             *dst = colour;
@@ -1622,7 +1621,7 @@ namespace OpenLoco::Drawing
                         dst++;
                     }
                     crossPattern ^= 1;
-                    dst = nextdst;
+                    dst = nextDst;
                 }
             }
             else if ((flags & RectFlags::g1Pattern) != RectFlags::none)
