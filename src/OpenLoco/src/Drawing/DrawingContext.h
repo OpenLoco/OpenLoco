@@ -3,8 +3,8 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Types.hpp"
-#include "Ui/Rect.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <cstdint>
 
 namespace OpenLoco::Drawing

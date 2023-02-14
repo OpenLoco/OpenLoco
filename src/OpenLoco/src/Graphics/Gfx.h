@@ -3,9 +3,8 @@
 #include "Graphics/PaletteMap.h"
 #include "ImageId.h"
 #include "Types.hpp"
-#include "Ui/Rect.h"
-#include "Ui/UiTypes.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <array>
 #include <cstdint>
 #include <optional>

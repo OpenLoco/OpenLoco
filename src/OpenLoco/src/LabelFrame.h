@@ -1,6 +1,6 @@
 #pragma once
-#include "Ui/Rect.h"
 #include "ZoomLevel.hpp"
+#include <OpenLoco/Engine/Ui/Rect.hpp>
 
 namespace OpenLoco
 {
