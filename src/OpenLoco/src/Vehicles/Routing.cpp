@@ -1,7 +1,6 @@
 #include "Routing.h"
 #include "Entities/EntityManager.h"
 #include "Map/AnimationManager.h"
-#include "Map/Map.hpp"
 #include "Map/SignalElement.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
@@ -10,6 +9,7 @@
 #include "Map/TrackElement.h"
 #include "Vehicle.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Engine/Map.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Vehicles

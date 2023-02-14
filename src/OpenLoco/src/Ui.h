@@ -3,8 +3,8 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/RenderTarget.h"
 #include "Location.hpp"
-#include "Map/Map.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Engine/Map.hpp>
 #include <string>
 #include <vector>
 

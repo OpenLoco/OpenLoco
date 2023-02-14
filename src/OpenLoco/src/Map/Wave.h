@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Location.hpp"
-#include "Map.hpp"
+#include <OpenLoco/Engine/Map.hpp>
 
 namespace OpenLoco::Map
 {

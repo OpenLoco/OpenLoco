@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Entity.h"
-#include "Map/Map.hpp"
+#include <OpenLoco/Engine/Map.hpp>
 #include <cstdio>
 #include <iterator>
 

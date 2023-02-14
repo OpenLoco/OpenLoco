@@ -1,8 +1,8 @@
 #pragma once
 #include "LabelFrame.h"
-#include "Map/Map.hpp"
 #include "Routing.h"
 #include "Types.hpp"
+#include <OpenLoco/Engine/Map.hpp>
 #include <iterator>
 #include <optional>
 #include <string>

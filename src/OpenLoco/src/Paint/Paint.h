@@ -1,10 +1,10 @@
 #pragma once
 #include "Graphics/ImageId.h"
-#include "Map/Map.hpp"
 #include "Types.hpp"
 #include "Ui/UiTypes.hpp"
 #include "Viewport.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Engine/Map.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Map

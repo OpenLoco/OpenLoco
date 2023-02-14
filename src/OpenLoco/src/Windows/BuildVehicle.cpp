@@ -10,7 +10,6 @@
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
-#include "Map/Map.hpp"
 #include "Objects/CargoObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
@@ -24,6 +23,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
+#include <OpenLoco/Engine/Map.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>

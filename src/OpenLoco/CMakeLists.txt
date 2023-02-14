@@ -352,7 +352,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/AnimationManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/BuildingElement.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/IndustryElement.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Map.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/MapGenerator.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/QuarterTile.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/RoadElement.h"
@@ -517,6 +516,7 @@ target_link_libraries(OpenLoco
     Interop
     Utility
     Math
+    Engine
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp
@@ -632,6 +632,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         Interop
         Utility
         Math
+        Engine
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
         nonstd::span-lite)

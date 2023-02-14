@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Localisation/StringManager.h"
-#include "Map/Map.hpp"
 #include "Window.h"
+#include <OpenLoco/Engine/Map.hpp>
 #include <cstddef>
 #include <functional>
 #include <string_view>

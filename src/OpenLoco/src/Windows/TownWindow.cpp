@@ -10,7 +10,6 @@
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
-#include "Map/Map.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -20,6 +19,7 @@
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include <OpenLoco/Engine/Map.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
