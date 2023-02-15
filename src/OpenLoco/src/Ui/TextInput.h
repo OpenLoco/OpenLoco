@@ -30,6 +30,7 @@ namespace OpenLoco::Ui::TextInput
         bool handleInput(uint32_t charCode, uint32_t keyCode);
         bool needsReoffsetting(int16_t containerWidth);
         void calculateTextOffset(int16_t containerWidth);
+        void clearInput();
         void sanitizeInput();
     };
 }

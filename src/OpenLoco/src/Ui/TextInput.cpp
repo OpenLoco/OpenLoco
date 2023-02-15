@@ -136,6 +136,14 @@ namespace OpenLoco::Ui::TextInput
         xOffset = std::clamp<int16_t>(xOffset, minOffset, maxOffset);
     }
 
+    void InputSession::clearInput()
+    {
+        buffer.clear();
+        cursorPosition = 0;
+        cursorFrame = 0;
+        xOffset = 0;
+    }
+
     // 0x004CEBFB
     void InputSession::sanitizeInput()
     {

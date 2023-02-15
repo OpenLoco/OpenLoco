@@ -155,6 +155,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         tabArea,
         advancedButton,
         textInput,
+        clearButton,
         scrollview,
         objectImage,
     };
@@ -166,7 +167,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeWidget({ 0, 65 }, { 600, 333 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_6, WindowColour::secondary),
         makeWidget({ 470, 20 }, { 122, 12 }, WidgetType::button, WindowColour::primary, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
-        makeWidget({ 4, 68 }, { 288, 14 }, WidgetType::textbox, WindowColour::secondary),
+        makeWidget({ 4, 68 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
+        makeWidget({ 254, 68 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
         makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary),
         widgetEnd(),
@@ -357,7 +359,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, &_events);
         window->widgets = widgets;
-        window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::advancedButton);
+        window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::advancedButton) | (1ULL << widx::clearButton);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
@@ -964,6 +966,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 self.invalidate();
 
                 break;
+            }
+
+            case widx::clearButton:
+            {
+                inputSession.clearInput();
+                applyFilterToObjectList();
+                self.invalidate();
             }
         }
     }
