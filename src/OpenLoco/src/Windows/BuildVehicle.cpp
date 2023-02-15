@@ -1184,7 +1184,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);
                 auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
                 buffer = StringManager::formatString(buffer, vehicleObj->name);
-                auto usableCargoTypes = vehicleObj->primaryCargoTypes | vehicleObj->secondaryCargoTypes;
+                auto usableCargoTypes = vehicleObj->cargoTypes[0] | vehicleObj->cargoTypes[1];
 
                 for (auto cargoTypes = Utility::bitScanForward(usableCargoTypes); cargoTypes != -1; cargoTypes = Utility::bitScanForward(usableCargoTypes))
                 {

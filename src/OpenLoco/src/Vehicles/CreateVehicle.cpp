@@ -198,8 +198,8 @@ namespace OpenLoco::Vehicles
             // in the front car component body
             if (vehObject.numSimultaneousCargoTypes > 1)
             {
-                newBogie->secondaryCargo.maxQty = vehObject.maxSecondaryCargo;
-                newBogie->secondaryCargo.acceptedTypes = vehObject.secondaryCargoTypes;
+                newBogie->secondaryCargo.maxQty = vehObject.maxCargo[1];
+                newBogie->secondaryCargo.acceptedTypes = vehObject.cargoTypes[1];
                 auto cargoType = Utility::bitScanForward(newBogie->secondaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
@@ -277,8 +277,8 @@ namespace OpenLoco::Vehicles
             // Locomotives do not carry any cargo.
             if (vehObject.numSimultaneousCargoTypes != 0)
             {
-                newBody->primaryCargo.maxQty = vehObject.maxPrimaryCargo;
-                newBody->primaryCargo.acceptedTypes = vehObject.primaryCargoTypes;
+                newBody->primaryCargo.maxQty = vehObject.maxCargo[0];
+                newBody->primaryCargo.acceptedTypes = vehObject.cargoTypes[0];
                 auto cargoType = Utility::bitScanForward(newBody->primaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {

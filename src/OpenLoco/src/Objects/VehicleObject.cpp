@@ -5,7 +5,9 @@
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "ObjectImageTable.h"
 #include "ObjectManager.h"
+#include "ObjectStringTable.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Utility/Numeric.hpp>
 
@@ -89,30 +91,30 @@ namespace OpenLoco
         if (numSimultaneousCargoTypes != 0)
         {
             {
-                auto cargoType = Utility::bitScanForward(primaryCargoTypes);
+                auto cargoType = Utility::bitScanForward(cargoTypes[0]);
                 if (cargoType != -1)
                 {
-                    auto cargoTypes = primaryCargoTypes & ~(1 << cargoType);
+                    auto primaryCargoTypes = cargoTypes[0] & ~(1 << cargoType);
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                         FormatArguments args{};
                         auto cargoUnitName = cargoObj->unitNamePlural;
-                        if (maxPrimaryCargo == 1)
+                        if (maxCargo[0] == 1)
                         {
                             cargoUnitName = cargoObj->unitNameSingular;
                         }
                         args.push(cargoUnitName);
-                        args.push<uint32_t>(maxPrimaryCargo);
+                        args.push<uint32_t>(maxCargo[0]);
                         buffer = StringManager::formatString(buffer, StringIds::stats_capacity, &args);
                     }
-                    cargoType = Utility::bitScanForward(cargoTypes);
+                    cargoType = Utility::bitScanForward(primaryCargoTypes);
                     if (cargoType != -1)
                     {
                         strcpy(buffer, " (");
                         buffer += 2;
-                        for (; cargoType != -1; cargoType = Utility::bitScanForward(cargoTypes))
+                        for (; cargoType != -1; cargoType = Utility::bitScanForward(primaryCargoTypes))
                         {
-                            cargoTypes &= ~(1 << cargoType);
+                            primaryCargoTypes &= ~(1 << cargoType);
                             if (buffer[-1] != '(')
                             {
                                 strcpy(buffer, " ");
@@ -138,31 +140,31 @@ namespace OpenLoco
 
             if (numSimultaneousCargoTypes > 1)
             {
-                auto cargoType = Utility::bitScanForward(secondaryCargoTypes);
+                auto cargoType = Utility::bitScanForward(cargoTypes[1]);
                 if (cargoType != -1)
                 {
-                    auto cargoTypes = secondaryCargoTypes & ~(1 << cargoType);
+                    auto secondaryCargoTypes = cargoTypes[1] & ~(1 << cargoType);
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                         FormatArguments args{};
                         auto cargoUnitName = cargoObj->unitNamePlural;
-                        if (maxSecondaryCargo == 1)
+                        if (maxCargo[1] == 1)
                         {
                             cargoUnitName = cargoObj->unitNameSingular;
                         }
                         args.push(cargoUnitName);
-                        args.push<uint32_t>(maxSecondaryCargo);
+                        args.push<uint32_t>(maxCargo[1]);
                         buffer = StringManager::formatString(buffer, StringIds::stats_plus_string, &args);
                     }
 
-                    cargoType = Utility::bitScanForward(cargoTypes);
+                    cargoType = Utility::bitScanForward(secondaryCargoTypes);
                     if (cargoType != -1)
                     {
                         strcpy(buffer, " (");
                         buffer += 2;
-                        for (; cargoType != -1; cargoType = Utility::bitScanForward(cargoTypes))
+                        for (; cargoType != -1; cargoType = Utility::bitScanForward(secondaryCargoTypes))
                         {
-                            cargoTypes &= ~(1 << cargoType);
+                            secondaryCargoTypes &= ~(1 << cargoType);
                             if (buffer[-1] != '(')
                             {
                                 strcpy(buffer, " ");
@@ -310,26 +312,88 @@ namespace OpenLoco
     // 0x004B841B
     void VehicleObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x004B841B, regs);
-        if (dependencies != nullptr)
+        auto remainingData = data.subspan(sizeof(VehicleObject));
+
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        trackType = 0xFF;
+        if (!hasFlags(VehicleObjectFlags::unk_09) && (mode == TransportMode::rail || mode == TransportMode::road))
         {
-            auto* depObjs = addr<0x0050D158, uint8_t*>();
-            dependencies->required.resize(*depObjs++);
-            if (!dependencies->required.empty())
+            ObjectHeader trackHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            if (dependencies != nullptr)
             {
-                std::copy(reinterpret_cast<ObjectHeader*>(depObjs), reinterpret_cast<ObjectHeader*>(depObjs) + dependencies->required.size(), dependencies->required.data());
-                depObjs += sizeof(ObjectHeader) * dependencies->required.size();
+                dependencies->required.push_back(trackHeader);
             }
-            dependencies->willLoad.resize(*depObjs++);
-            if (!dependencies->willLoad.empty())
+            auto res = ObjectManager::findObjectHandle(trackHeader);
+            if (res.has_value())
             {
-                std::copy(reinterpret_cast<ObjectHeader*>(depObjs), reinterpret_cast<ObjectHeader*>(depObjs) + dependencies->willLoad.size(), dependencies->willLoad.data());
+                trackType = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        // Load Extra
+        for (auto i = 0U, index = 0U; i < numMods; ++i)
+        {
+            ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            if (dependencies != nullptr)
+            {
+                dependencies->required.push_back(modHeader);
+            }
+            auto res = ObjectManager::findObjectHandle(modHeader);
+            if (res.has_value() && res->type == ObjectType::trackExtra)
+            {
+                requiredTrackExtras[index++] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        std::fill(std::begin(cargoTypeSpriteOffsets), std::end(cargoTypeSpriteOffsets), 0);
+        std::fill(std::begin(cargoTypes), std::end(cargoTypes), 0);
+        numSimultaneousCargoTypes = 0;
+
+        for (auto i = 0U, index = 0U; i < std::size(cargoTypes); ++i)
+        {
+            maxCargo[index] = *reinterpret_cast<const uint8_t*>(remainingData.data());
+            remainingData = remainingData.subspan(sizeof(uint8_t));
+            if (maxCargo[index] == 0)
+            {
+                continue;
+            }
+            while (*reinterpret_cast<const uint16_t*>(remainingData.data()) != 0xFFFFU)
+            {
+                const auto cargoMatchFlags = *reinterpret_cast<const uint16_t*>(remainingData.data());
+                const auto unk = *reinterpret_cast<const uint8_t*>(remainingData.data());
+                remainingData = remainingData.subspan(sizeof(uint16_t) + sizeof(uint8_t));
+
+                for (auto cargoType = 0U; cargoType < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoType)
+                {
+                    auto* cargoObj = ObjectManager::get<CargoObject>(cargoType);
+                    if (cargoObj == nullptr)
+                    {
+                        continue;
+                    }
+                    if (cargoObj->matchFlags != cargoMatchFlags)
+                    {
+                        continue;
+                    }
+                    cargoTypes[index] |= (1U << cargoType);
+                    cargoTypeSpriteOffsets[cargoType] = unk;
+                }
+            }
+            remainingData = remainingData.subspan(sizeof(uint16_t));
+            if (cargoTypes[index] == 0)
+            {
+                maxCargo[index] = 0;
+            }
+            else
+            {
+                index++;
             }
         }
+        // 0x004B859C
     }
 
     // 0x004B89FF
@@ -344,10 +408,8 @@ namespace OpenLoco
 
         std::fill(std::begin(requiredTrackExtras), std::end(requiredTrackExtras), 0);
 
-        maxPrimaryCargo = 0;
-        maxSecondaryCargo = 0;
-        primaryCargoTypes = 0;
-        secondaryCargoTypes = 0;
+        std::fill(std::begin(maxCargo), std::end(maxCargo), 0);
+        std::fill(std::begin(cargoTypes), std::end(cargoTypes), 0);
         numSimultaneousCargoTypes = 0;
 
         std::fill(std::begin(cargoTypeSpriteOffsets), std::end(cargoTypeSpriteOffsets), 0);
