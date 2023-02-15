@@ -1537,9 +1537,12 @@ namespace OpenLoco::Drawing
                 return;
             }
 
+            uint32_t crossPattern = 0;
+
             auto leftX = left - rt.x;
             if (leftX < 0)
             {
+                crossPattern ^= leftX;
                 leftX = 0;
             }
 
@@ -1552,6 +1555,7 @@ namespace OpenLoco::Drawing
             auto topY = top - rt.y;
             if (topY < 0)
             {
+                crossPattern ^= topY;
                 topY = 0;
             }
 
@@ -1607,17 +1611,18 @@ namespace OpenLoco::Drawing
                 for (auto y = 0; y < drawRect.height(); y++)
                 {
                     auto* nextDst = dst + step * y;
-                    bool fillPixel = y % 2; // alternate filling first pixel for even and odd lines
+                    auto p = Utility::ror(crossPattern, 1);
 
                     // Fill every other pixel with the colour
                     for (auto x = 0; x < drawRect.width(); x++)
                     {
-                        if (fillPixel)
+                        p ^= 0x80000000;
+                        if (p & 0x80000000)
                         {
                             *(nextDst + x) = colour;
                         }
-                        fillPixel = !fillPixel;
                     }
+                    crossPattern ^= 1;
                 }
             }
             else if ((flags & RectFlags::g1Pattern) != RectFlags::none)
