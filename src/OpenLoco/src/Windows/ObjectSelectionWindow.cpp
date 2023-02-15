@@ -310,6 +310,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         _tabObjectList.clear();
 
         const auto objects = ObjectManager::getAvailableObjects(objectType);
+        _tabObjectList.reserve(objects.size());
         for (auto [index, object] : objects)
         {
             auto entry = TabObjectEntry{ index, object, true };
