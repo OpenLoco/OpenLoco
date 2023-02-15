@@ -63,6 +63,7 @@ include(OpenLocoUtility)
 
 option(STRICT "Build with warnings as errors" YES)
 option(OPENLOCO_BUILD_TESTS "Build tests" YES)
+option(OPENLOCO_HEADER_CHECK "Verify all public interfaces are standalone" NO)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 

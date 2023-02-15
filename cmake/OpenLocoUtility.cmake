@@ -194,18 +194,27 @@ function(_loco_add_target TARGET TYPE)
             INTERFACE
                 "${CMAKE_CURRENT_SOURCE_DIR}/include")
     endif()
-    if (_PUBLIC_FILES) 
+
+    if (_PUBLIC_FILES AND OPENLOCO_HEADER_CHECK)
+        # Creates a source file for every public header and includes only that one header.
+        # This ensures that each header file is standalone.
+        # We also link the public interfaces of the target ensuring that they are available for the public headers.
         foreach(hdr ${_PUBLIC_FILES})
+            cmake_path(RELATIVE_PATH hdr BASE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include" OUTPUT_VARIABLE hdr_rel)
             cmake_path(GET hdr STEM hdr_base)
-            cmake_path(GET hdr FILENAME hdr_filename)
             set(hdr_src "${CMAKE_CURRENT_BINARY_DIR}/${hdr_base}.cpp")
-            file(WRITE ${hdr_src} "#include <OpenLoco/${TARGET}/${hdr_filename}>")
+            file(WRITE ${hdr_src} "#include <${hdr_rel}>")
             list(APPEND hdr_srcs "${hdr_src}")
         endforeach()
-        add_library(${TARGET}HdrCheck STATIC ${hdr_srcs} ${_PUBLIC_FILES})
+        add_library(${TARGET}HdrCheck STATIC
+                ${hdr_srcs}
+                ${_PUBLIC_FILES})
+
         target_link_libraries(${TARGET}HdrCheck PRIVATE ${TARGET})
+        # Group the targets nicely within IDEs
         set_target_properties(${TARGET} ${TARGET}HdrCheck PROPERTIES FOLDER ${TARGET})
     endif()
+
     # Group the files nicely in IDEs into a tree view
     if (_PUBLIC_FILES)
         source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/include" PREFIX "include" FILES ${_PUBLIC_FILES})
