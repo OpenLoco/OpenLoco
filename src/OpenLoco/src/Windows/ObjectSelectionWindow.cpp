@@ -688,7 +688,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void drawSearchBox(Window& self, Gfx::RenderTarget* rt)
     {
         char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
-        strcpy(textBuffer, inputSession.buffer.c_str());
+        strncpy(textBuffer, inputSession.buffer.c_str(), 256);
 
         auto& widget = widgets[widx::textInput];
         auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(widget.left + 1 + self.x, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
@@ -1167,7 +1167,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     void handleInput(uint32_t charCode, uint32_t keyCode)
     {
-        auto w = WindowManager::find(WindowType::objectSelection);
+        auto* w = WindowManager::find(WindowType::objectSelection);
         if (w == nullptr)
             return;
 
