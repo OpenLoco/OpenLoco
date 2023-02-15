@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace Stdx
+namespace stdx
 {
     using nonstd::span;
 }
