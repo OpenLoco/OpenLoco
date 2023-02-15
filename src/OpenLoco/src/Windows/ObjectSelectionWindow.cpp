@@ -281,7 +281,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void applyFilterToObjectList()
     {
-        std::string_view pattern = inputSession.buffer.c_str();
+        std::string_view pattern = inputSession.buffer;
         _numVisibleObjectsListed = 0;
         for (auto& entry : _tabObjectList)
         {
