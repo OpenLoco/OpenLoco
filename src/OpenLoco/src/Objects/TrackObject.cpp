@@ -2,7 +2,9 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "ObjectImageTable.h"
 #include "ObjectManager.h"
+#include "ObjectStringTable.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco
@@ -59,36 +61,121 @@ namespace OpenLoco
     // 0x004A6A5F
     void TrackObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x004A6A5F, regs);
-        if (dependencies != nullptr)
+        auto remainingData = data.subspan(sizeof(TrackObject));
+
+        auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+        name = strRes.str;
+        remainingData = remainingData.subspan(strRes.tableLength);
+
+        // NOTE: These aren't dependent (objects unless otherwise stated) as this object can load without the
+        // related object.
+        // Load compatible roads/tracks
+        compatibleTracks = 0;
+        compatibleRoads = 0;
+        for (auto i = 0; i < numCompatible; ++i)
         {
-            auto* depObjs = Interop::addr<0x0050D158, uint8_t*>();
-            dependencies->required.resize(*depObjs++);
-            if (!dependencies->required.empty())
+            ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(modHeader);
+            if (res.has_value())
             {
-                std::copy(reinterpret_cast<ObjectHeader*>(depObjs), reinterpret_cast<ObjectHeader*>(depObjs) + dependencies->required.size(), dependencies->required.data());
-                depObjs += sizeof(ObjectHeader) * dependencies->required.size();
+                if (res->type == ObjectType::track)
+                {
+                    compatibleTracks |= 1U << res->id;
+                }
+                else if (res->type == ObjectType::road)
+                {
+                    compatibleRoads |= 1U << res->id;
+                }
             }
-            dependencies->willLoad.resize(*depObjs++);
-            if (!dependencies->willLoad.empty())
-            {
-                std::copy(reinterpret_cast<ObjectHeader*>(depObjs), reinterpret_cast<ObjectHeader*>(depObjs) + dependencies->willLoad.size(), dependencies->willLoad.data());
-            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
+
+        // Load Extra
+        std::fill(std::begin(mods), std::end(mods), 0xFF);
+        for (auto i = 0U, index = 0U; i < numMods; ++i)
+        {
+            ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(modHeader);
+            if (res.has_value() && res->type == ObjectType::trackExtra)
+            {
+                mods[index++] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        // Load Signals
+        signals = 0;
+        for (auto i = 0; i < numSignals; ++i)
+        {
+            ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(modHeader);
+            if (res.has_value() && res->type == ObjectType::trackSignal)
+            {
+                signals |= 1U << res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        // Load Tunnel (DEPENDENT OBJECT)
+        tunnel = 0xFF;
+        {
+            ObjectHeader unkHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            if (dependencies != nullptr)
+            {
+                dependencies->required.push_back(unkHeader);
+            }
+            auto res = ObjectManager::findObjectHandle(unkHeader);
+            if (res.has_value())
+            {
+                tunnel = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        // Load bridges (DEPENDENT OBJECT)
+        std::fill(std::begin(bridges), std::end(bridges), 0xFF);
+        for (auto i = 0U; i < numBridges; ++i)
+        {
+            ObjectHeader bridgeHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            if (dependencies != nullptr)
+            {
+                dependencies->required.push_back(bridgeHeader);
+            }
+            auto res = ObjectManager::findObjectHandle(bridgeHeader);
+            if (res.has_value())
+            {
+                bridges[i] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        // Load stations
+        std::fill(std::begin(stations), std::end(stations), 0xFF);
+        for (auto i = 0U; i < numStations; ++i)
+        {
+            ObjectHeader stationHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandle(stationHeader);
+            if (res.has_value())
+            {
+                stations[i] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        auto imgRes = ObjectManager::loadImageTable(remainingData);
+        image = imgRes.imageOffset;
+        assert(remainingData.size() == imgRes.tableLength);
     }
 
     // 0x004A6C2D
     void TrackObject::unload()
     {
         name = 0;
-        var_10 = 0;
+        compatibleTracks = 0;
+        compatibleRoads = 0;
         std::fill(std::begin(mods), std::end(mods), 0);
-        var_0E = 0;
-        var_1B = 0;
+        signals = 0;
+        tunnel = 0;
         image = 0;
         std::fill(std::begin(bridges), std::end(bridges), 0);
         std::fill(std::begin(stations), std::end(stations), 0);

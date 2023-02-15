@@ -157,6 +157,9 @@ namespace OpenLoco::ObjectManager
     bool isTemporaryObjectLoad();
 
     std::optional<LoadedObjectHandle> findObjectHandle(const ObjectHeader& header);
+    // Calls findObjectHandle and if can't find performs a secondary check with slightly looser
+    // definitions of what a matching custom header is (no checksum, partial flags)
+    std::optional<LoadedObjectHandle> findObjectHandleFuzzy(const ObjectHeader& header);
     void reloadAll();
     ObjectHeader& getHeader(const LoadedObjectHandle& handle);
     std::vector<ObjectHeader> getHeaders();

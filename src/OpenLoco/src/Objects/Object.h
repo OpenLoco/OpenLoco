@@ -50,6 +50,7 @@ namespace OpenLoco
     {
     private:
         static constexpr char cFF = static_cast<char>(0xFF);
+        static constexpr uint32_t kFuzzyFlagsMask = 0xFFFE0000;
 
     public:
         uint32_t flags = 0xFFFFFFFF;
@@ -69,6 +70,11 @@ namespace OpenLoco
         constexpr ObjectType getType() const
         {
             return static_cast<ObjectType>(flags & 0x3F);
+        }
+
+        constexpr uint32_t getFuzzyFlags() const
+        {
+            return flags & kFuzzyFlagsMask;
         }
 
         constexpr bool isCustom() const

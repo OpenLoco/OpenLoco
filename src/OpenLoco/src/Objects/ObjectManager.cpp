@@ -153,6 +153,51 @@ namespace OpenLoco::ObjectManager
         return std::nullopt;
     }
 
+    // 0x0047206C
+    // Returns std::nullopt if not loaded
+    std::optional<LoadedObjectHandle> findObjectHandleFuzzy(const ObjectHeader& header)
+    {
+        auto res = findObjectHandle(header);
+        if (res.has_value())
+        {
+            return res;
+        }
+
+        auto objectType = header.getType();
+        const auto& typedObjectList = getRepositoryItem(objectType);
+        auto maxObjectsForType = getMaxObjects(objectType);
+        for (LoadedObjectId i = 0; i < maxObjectsForType; i++)
+        {
+            auto obj = typedObjectList.objects[i];
+            if (obj == nullptr || obj != reinterpret_cast<Object*>(-1))
+            {
+                continue;
+            }
+            const auto& objHeader = typedObjectList.objectEntryExtendeds[i];
+
+            if (!objHeader.isCustom())
+            {
+                continue;
+            }
+            if (header.getType() != objHeader.getType())
+            {
+                continue;
+            }
+            if (header.getName() != objHeader.getName())
+            {
+                continue;
+            }
+            if (header.getFuzzyFlags() != objHeader.getFuzzyFlags())
+            {
+                continue;
+            }
+
+            return { LoadedObjectHandle{ objectType, i } };
+        }
+
+        return std::nullopt;
+    }
+
     enum class ObjectProcedure
     {
         load,
