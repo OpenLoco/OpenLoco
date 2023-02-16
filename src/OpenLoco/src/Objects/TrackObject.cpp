@@ -75,7 +75,7 @@ namespace OpenLoco
         for (auto i = 0; i < numCompatible; ++i)
         {
             ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
-            auto res = ObjectManager::findObjectHandle(modHeader);
+            auto res = ObjectManager::findObjectHandleFuzzy(modHeader);
             if (res.has_value())
             {
                 if (res->type == ObjectType::track)

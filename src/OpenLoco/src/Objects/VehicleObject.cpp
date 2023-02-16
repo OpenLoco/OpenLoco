@@ -343,7 +343,7 @@ namespace OpenLoco
                 dependencies->required.push_back(modHeader);
             }
             auto res = ObjectManager::findObjectHandle(modHeader);
-            if (res.has_value() && res->type == ObjectType::trackExtra)
+            if (res.has_value())
             {
                 requiredTrackExtras[index++] = res->id;
             }
@@ -354,8 +354,9 @@ namespace OpenLoco
         std::fill(std::begin(cargoTypes), std::end(cargoTypes), 0);
         numSimultaneousCargoTypes = 0;
 
-        for (auto i = 0U, index = 0U; i < std::size(cargoTypes); ++i)
+        for (auto i = 0U; i < std::size(cargoTypes); ++i)
         {
+            const auto index = numSimultaneousCargoTypes;
             maxCargo[index] = *reinterpret_cast<const uint8_t*>(remainingData.data());
             remainingData = remainingData.subspan(sizeof(uint8_t));
             if (maxCargo[index] == 0)
@@ -390,10 +391,56 @@ namespace OpenLoco
             }
             else
             {
-                index++;
+                numSimultaneousCargoTypes++;
             }
         }
-        // 0x004B859C
+
+        for (auto& anim : animation)
+        {
+            if (anim.type == simple_animation_type::none)
+            {
+                continue;
+            }
+            ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            if (dependencies != nullptr)
+            {
+                dependencies->required.push_back(modHeader);
+            }
+            auto res = ObjectManager::findObjectHandle(modHeader);
+            if (res.has_value())
+            {
+                anim.objectId = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        for (auto i = 0U, index = 0U; i < numCompat; ++i)
+        {
+            ObjectHeader vehHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            auto res = ObjectManager::findObjectHandleFuzzy(vehHeader);
+            if (res.has_value())
+            {
+                compatibleVehicles[index++] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        if (hasFlags(VehicleObjectFlags::rackRail))
+        {
+            ObjectHeader unkHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            if (dependencies != nullptr)
+            {
+                dependencies->required.push_back(unkHeader);
+            }
+            auto res = ObjectManager::findObjectHandle(unkHeader);
+            if (res.has_value())
+            {
+                rackRailType = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        // 0x004B86D0
     }
 
     // 0x004B89FF
