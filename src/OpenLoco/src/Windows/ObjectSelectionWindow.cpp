@@ -314,7 +314,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto [index, object] : objects)
         {
             auto entry = TabObjectEntry{ index, object, true };
-            _tabObjectList.emplace_back(entry);
+            _tabObjectList.emplace_back(std::move(entry));
         }
 
         applyFilterToObjectList();
