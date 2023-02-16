@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Map/Map.hpp"
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
+#include <OpenLoco/Engine/Map.hpp>
 #include <array>
 #include <cstddef>
 #include <vector>

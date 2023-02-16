@@ -2,9 +2,9 @@
 
 #include "Graphics/Gfx.h"
 #include "Location.hpp"
-#include "Map/Map.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Engine/Map.hpp>
 #include <algorithm>
 
 namespace OpenLoco::Ui

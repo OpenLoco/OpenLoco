@@ -9,7 +9,6 @@
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
-#include "Map/Map.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Map/Tree.h"
@@ -26,6 +25,7 @@
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Engine/Map.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>

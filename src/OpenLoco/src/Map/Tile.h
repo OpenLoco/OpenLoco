@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Map.hpp"
 #include "TileElement.h"
 #include "Types.hpp"
+#include <OpenLoco/Engine/Map.hpp>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>

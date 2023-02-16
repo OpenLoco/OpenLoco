@@ -2,7 +2,7 @@
 
 #include "Graphics/Gfx.h"
 #include "SoftwareDrawingContext.h"
-#include "Ui/Rect.h"
+#include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <algorithm>
 #include <cstddef>
 

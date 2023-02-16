@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Map.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Engine/Map.hpp>
 #include <array>
 #include <cassert>
 

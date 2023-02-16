@@ -352,7 +352,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/AnimationManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/BuildingElement.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/IndustryElement.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Map.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/MapGenerator.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/QuarterTile.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/RoadElement.h"
@@ -453,12 +452,10 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Cursor.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Dropdown.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ProgressBar.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Rect.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/Screenshot.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ScrollFlags.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/ScrollView.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/TextInput.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/UiTypes.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/WindowManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Ui/WindowType.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Vehicles/Orders.h"
@@ -517,6 +514,7 @@ target_link_libraries(OpenLoco
     Interop
     Utility
     Math
+    Engine
     ${SDL2_LIB}
     Threads::Threads
     yaml-cpp
@@ -632,6 +630,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         Interop
         Utility
         Math
+        Engine
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
         nonstd::span-lite)

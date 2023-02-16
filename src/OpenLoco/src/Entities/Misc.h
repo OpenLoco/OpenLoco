@@ -2,8 +2,8 @@
 
 #include "Economy/Currency.h"
 #include "Entity.h"
-#include "Map/Map.hpp"
 #include "Objects/SteamObject.h"
+#include <OpenLoco/Engine/Map.hpp>
 
 namespace OpenLoco
 {

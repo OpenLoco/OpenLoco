@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Ui/Rect.h"
+#include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <cstdint>
 #include <optional>
 

@@ -9,10 +9,10 @@
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Ui.h"
-#include "Ui/Rect.h"
 #include "Ui/ScrollView.h"
 #include "Widget.h"
 #include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <cassert>

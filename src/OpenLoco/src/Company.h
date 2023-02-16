@@ -2,9 +2,9 @@
 
 #include "Economy/Currency.h"
 #include "Economy/Expenditures.h"
-#include "Map/Map.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Engine/Map.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <limits>

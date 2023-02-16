@@ -2,7 +2,6 @@
 #include "CompanyManager.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Map/Map.hpp"
 #include "Map/SignalElement.h"
 #include "Map/TileElement.h"
 #include "Map/Track/TrackData.h"
@@ -13,6 +12,7 @@
 #include "PaintTileDecorations.h"
 #include "Ui.h"
 #include "Viewport.hpp"
+#include <OpenLoco/Engine/Map.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

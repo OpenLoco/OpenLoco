@@ -2,9 +2,9 @@
 
 #include "Company.h"
 #include "Engine/Limits.h"
-#include "Map/Map.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/LocoFixedVector.hpp>
+#include <OpenLoco/Engine/Map.hpp>
 #include <array>
 #include <cstddef>
 

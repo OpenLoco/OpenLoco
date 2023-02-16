@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Location.hpp"
-#include "Map/Map.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Engine/Map.hpp>
 #include <optional>
 #include <string>
 #include <tuple>

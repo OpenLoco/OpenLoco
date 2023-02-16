@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Map/Map.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Engine/Map.hpp>
 #include <cstdint>
 
 namespace OpenLoco

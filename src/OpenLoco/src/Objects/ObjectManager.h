@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Object.h"
-#include "Ui/UiTypes.hpp"
 #include <OpenLoco/Core/Span.hpp>
+#include <OpenLoco/Engine/Ui/Point.hpp>
 #include <optional>
 #include <vector>
 
