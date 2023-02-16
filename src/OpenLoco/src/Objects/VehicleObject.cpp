@@ -309,6 +309,36 @@ namespace OpenLoco
         return true;
     }
 
+    static constexpr uint8_t getNumRotationSpriteTypesFlat(uint8_t numFrames)
+    {
+        switch (numFrames)
+        {
+            case 8:
+                return 1;
+            case 16:
+                return 2;
+            case 32:
+                return 3;
+            default:
+                return 4;
+        }
+    }
+
+    static constexpr uint8_t getNumRotationSpriteTypesSloped(uint8_t numFrames)
+    {
+        switch (numFrames)
+        {
+            case 4:
+                return 0;
+            case 8:
+                return 1;
+            case 16:
+                return 2;
+            default:
+                return 3;
+        }
+    }
+
     // 0x004B841B
     void VehicleObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
@@ -440,7 +470,120 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        // 0x004B86D0
+        if (drivingSoundType != DrivingSoundType::none)
+        {
+            ObjectHeader soundHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            if (dependencies != nullptr)
+            {
+                dependencies->required.push_back(soundHeader);
+            }
+            auto res = ObjectManager::findObjectHandle(soundHeader);
+            if (res.has_value())
+            {
+                sound.friction.soundObjectId = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        for (auto i = 0; i < (numStartSounds & NumStartSounds::mask); ++i)
+        {
+            ObjectHeader soundHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            if (dependencies != nullptr)
+            {
+                dependencies->required.push_back(soundHeader);
+            }
+            auto res = ObjectManager::findObjectHandle(soundHeader);
+            if (res.has_value())
+            {
+                startSounds[i] = res->id;
+            }
+            remainingData = remainingData.subspan(sizeof(ObjectHeader));
+        }
+
+        auto imgRes = ObjectManager::loadImageTable(remainingData);
+        assert(remainingData.size() == imgRes.tableLength);
+
+        auto offset = 0;
+        for (auto& bodySprite : bodySprites)
+        {
+            if (!bodySprite.hasFlags(BodySpriteFlags::hasSprites))
+            {
+                continue;
+            }
+            bodySprite.flatImageId = offset + imgRes.imageOffset;
+            bodySprite.var_0B = getNumRotationSpriteTypesFlat(bodySprite.numFlatRotationFrames);
+
+            bodySprite.numFramesPerRotation = bodySprite.numAnimationFrames * bodySprite.numCargoFrames * bodySprite.numRollFrames + bodySprite.hasFlags(BodySpriteFlags::hasBrakingLights) ? 1 : 0;
+            const auto numFlatFrames = (bodySprite.numFramesPerRotation * bodySprite.numFlatRotationFrames);
+            offset += numFlatFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
+
+            if (bodySprite.hasFlags(BodySpriteFlags::hasGentleSprites))
+            {
+                bodySprite.gentleImageId = offset + imgRes.imageOffset;
+                const auto numGentleFrames = bodySprite.numFramesPerRotation * 8;
+                offset += numGentleFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
+
+                bodySprite.var_0C = getNumRotationSpriteTypesSloped(bodySprite.numSlopedRotationFrames);
+                const auto numSlopedFrames = bodySprite.numFramesPerRotation * bodySprite.numSlopedRotationFrames;
+                offset += numSlopedFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
+
+                if (bodySprite.hasFlags(BodySpriteFlags::hasSteepSprites))
+                {
+                    bodySprite.steepImageId = offset + imgRes.imageOffset;
+                    const auto numSteepFrames = bodySprite.numFramesPerRotation * 8;
+                    offset += numSteepFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
+                    // TODO: add these two together??
+                    const auto numUnkFrames = bodySprite.numSlopedRotationFrames * bodySprite.numFramesPerRotation;
+                    offset += numUnkFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
+                }
+            }
+
+            if (bodySprite.hasFlags(BodySpriteFlags::hasUnkSprites))
+            {
+                bodySprite.unkImageId = offset + imgRes.imageOffset;
+                const auto numUnkFrames = bodySprite.numFlatRotationFrames * 3;
+                offset += numUnkFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
+            }
+
+            const auto numImages = imgRes.imageOffset + offset - bodySprite.flatImageId;
+            const auto extents = Gfx::getImagesMaxExtent(ImageId(bodySprite.flatImageId), numImages);
+            bodySprite.var_08 = extents.width;
+            bodySprite.var_09 = extents.heightNegative;
+            bodySprite.var_0A = extents.heightPositive;
+        }
+
+        for (auto& bogieSprite : bogieSprites)
+        {
+            if (!bogieSprite.hasFlags(BogieSpriteFlags::hasSprites))
+            {
+                continue;
+            }
+            bogieSprite.numRollSprites = bogieSprite.rollStates;
+            bogieSprite.flatImageIds = offset + imgRes.imageOffset;
+
+            const auto numRollFrames = bogieSprite.numRollSprites * 32;
+            offset += numRollFrames / (bogieSprite.hasFlags(BogieSpriteFlags::rotationalSymmetry) ? 2 : 1);
+
+            if (bogieSprite.hasFlags(BogieSpriteFlags::hasGentleSprites))
+            {
+                bogieSprite.gentleImageIds = offset + imgRes.imageOffset;
+                const auto numGentleFrames = bogieSprite.numRollSprites * 64;
+                offset += numGentleFrames / (bogieSprite.hasFlags(BogieSpriteFlags::rotationalSymmetry) ? 2 : 1);
+
+                if (bogieSprite.hasFlags(BogieSpriteFlags::hasSteepSprites))
+                {
+                    bogieSprite.steepImageIds = offset + imgRes.imageOffset;
+                    const auto numSteepFrames = bogieSprite.numRollSprites * 64;
+                    offset += numSteepFrames / (bogieSprite.hasFlags(BogieSpriteFlags::rotationalSymmetry) ? 2 : 1);
+                }
+            }
+
+            const auto numImages = imgRes.imageOffset + offset - bogieSprite.flatImageIds;
+            const auto extents = Gfx::getImagesMaxExtent(ImageId(bogieSprite.flatImageIds), numImages);
+            bogieSprite.var_02 = extents.width;
+            bogieSprite.var_03 = extents.heightNegative;
+            bogieSprite.var_04 = extents.heightPositive;
+        }
     }
 
     // 0x004B89FF
