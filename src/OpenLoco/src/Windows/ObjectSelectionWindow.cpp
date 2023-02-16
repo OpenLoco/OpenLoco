@@ -120,11 +120,17 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         uint8_t row;
     };
 
+    enum class Visibility
+    {
+        hidden = 0,
+        shown = 1,
+    };
+
     struct TabObjectEntry
     {
         ObjectManager::ObjectIndexId index;
         ObjectManager::ObjectIndexEntry object;
-        bool visible;
+        Visibility display;
     };
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
@@ -287,7 +293,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             if (pattern.empty())
             {
-                entry.visible = true;
+                entry.display = Visibility::shown;
                 _numVisibleObjectsListed++;
                 continue;
             }
@@ -298,9 +304,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             const bool containsName = contains(name, pattern);
             const bool containsFileName = contains(filename, pattern);
 
-            entry.visible = containsName || containsFileName;
+            entry.display = containsName || containsFileName ? Visibility::shown : Visibility::hidden;
 
-            if (entry.visible)
+            if (entry.display == Visibility::shown)
                 _numVisibleObjectsListed++;
         }
     }
@@ -313,7 +319,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         _tabObjectList.reserve(objects.size());
         for (auto [index, object] : objects)
         {
-            auto entry = TabObjectEntry{ index, object, true };
+            auto entry = TabObjectEntry{ index, object, Visibility::shown };
             _tabObjectList.emplace_back(std::move(entry));
         }
 
@@ -830,7 +836,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         int y = 0;
         for (auto& entry : _tabObjectList)
         {
-            if (!entry.visible)
+            if (entry.display == Visibility::hidden)
                 continue;
 
             Drawing::RectInsetFlags flags = Drawing::RectInsetFlags::colourLight | Drawing::RectInsetFlags::fillDarker | Drawing::RectInsetFlags::borderInset;
@@ -997,7 +1003,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         for (auto& entry : _tabObjectList)
         {
-            if (!entry.visible)
+            if (entry.display == Visibility::hidden)
                 continue;
 
             y -= kRowHeight;
