@@ -342,6 +342,16 @@ namespace OpenLoco::Input
                 }
             }
 
+            ti = WindowManager::find(WindowType::objectSelection);
+            if (ti != nullptr)
+            {
+                if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
+                    continue;
+
+                Ui::Windows::ObjectSelectionWindow::handleInput(nextKey->charCode, nextKey->keyCode);
+                continue;
+            }
+
             ti = WindowManager::find(WindowType::editKeyboardShortcut);
             if (ti != nullptr)
             {

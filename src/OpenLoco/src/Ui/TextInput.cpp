@@ -14,7 +14,7 @@ namespace OpenLoco::Ui::TextInput
     {
         if ((charCode >= SDLK_SPACE && charCode < SDLK_DELETE) || (charCode >= 159 && charCode <= 255))
         {
-            if (buffer.length() == inputLenLimit)
+            if (inputLenLimit > 0 && buffer.length() == inputLenLimit)
             {
                 return false;
             }
@@ -134,6 +134,14 @@ namespace OpenLoco::Ui::TextInput
             minOffset = -stringWidth + containerWidth - textboxPadding;
         }
         xOffset = std::clamp<int16_t>(xOffset, minOffset, maxOffset);
+    }
+
+    void InputSession::clearInput()
+    {
+        buffer.clear();
+        cursorPosition = 0;
+        cursorFrame = 0;
+        xOffset = 0;
     }
 
     // 0x004CEBFB

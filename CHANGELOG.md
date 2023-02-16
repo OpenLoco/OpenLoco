@@ -1,5 +1,6 @@
 23.01+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1837]: Add search/filter functionality to object selection window.
 - Fix: [#1763] Title music does not stop when unchecked in options window.
 - Fix: [#1772] Toggling edge scrolling option does not work.
 - Fix: [#1798] Memory leak when resizing the window.

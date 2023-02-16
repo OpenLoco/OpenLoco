@@ -39,6 +39,7 @@
 #include "Objects/WallObject.h"
 #include "Objects/WaterObject.h"
 #include "SceneManager.h"
+#include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "Window.h"
@@ -119,17 +120,34 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         uint8_t row;
     };
 
-    static loco_global<char[2], 0x005045F8> _strCheckmark;
-    static loco_global<uint8_t*, 0x50D144> _50D144;
+    enum class Visibility
+    {
+        hidden = 0,
+        shown = 1,
+    };
 
-    static loco_global<uint16_t, 0x0052334A> _52334A;
-    static loco_global<uint16_t, 0x0052334C> _52334C;
+    struct TabObjectEntry
+    {
+        ObjectManager::ObjectIndexId index;
+        ObjectManager::ObjectIndexEntry object;
+        Visibility display;
+    };
+
+    static loco_global<char[2], 0x005045F8> _strCheckmark;
+    static loco_global<uint8_t*, 0x50D144> _objectSelection;
+
+    static loco_global<uint16_t, 0x0052334A> _mousePosX;
+    static loco_global<uint16_t, 0x0052334C> _mousePosY;
 
     // _tabObjectCounts can be integrated after implementing sub_473A95
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
 
     // 0x0112C21C
-    static TabPosition _tabInformation[36];
+    static TabPosition _tabPositions[36];
+    static std::vector<TabObjectEntry> _tabObjectList;
+    static uint16_t _numVisibleObjectsListed;
+
+    static Ui::TextInput::InputSession inputSession;
 
     static void initEvents();
     static void assignTabPositions(Window* self);
@@ -142,6 +160,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         panel,
         tabArea,
         advancedButton,
+        textInput,
+        clearButton,
         scrollview,
         objectImage,
     };
@@ -153,7 +173,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeWidget({ 0, 65 }, { 600, 333 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_6, WindowColour::secondary),
         makeWidget({ 470, 20 }, { 122, 12 }, WidgetType::button, WindowColour::primary, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
-        makeWidget({ 4, 68 }, { 288, 317 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
+        makeWidget({ 4, 68 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
+        makeWidget({ 254, 68 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
+        makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary),
         widgetEnd(),
     };
@@ -164,13 +186,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void rotateTabs(uint8_t newStartPosition)
     {
         auto isSentinel = [](auto& entry) { return entry.index == 0xFF; };
-        auto sentinelPos = std::find_if(std::begin(_tabInformation), std::end(_tabInformation), isSentinel);
+        auto sentinelPos = std::find_if(std::begin(_tabPositions), std::end(_tabPositions), isSentinel);
 
-        std::rotate(std::begin(_tabInformation), std::begin(_tabInformation) + newStartPosition, sentinelPos);
+        std::rotate(std::begin(_tabPositions), std::begin(_tabPositions) + newStartPosition, sentinelPos);
 
-        for (uint8_t i = 0; _tabInformation[i].index != 0xFF; i++)
+        for (uint8_t i = 0; _tabPositions[i].index != 0xFF; i++)
         {
-            _tabInformation[i].row = i < kPrimaryTabRowCapacity ? 0 : 1;
+            _tabPositions[i].row = i < kPrimaryTabRowCapacity ? 0 : 1;
         }
     }
 
@@ -178,20 +200,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void repositionTargetTab(Window* self, ObjectType targetTab)
     {
         self->currentTab = enumValue(targetTab);
-        for (auto i = 0U; i < std::size(_tabInformation); i++)
+        for (auto i = 0U; i < std::size(_tabPositions); i++)
         {
             // Ended up in a position without info? Reassign positions first.
-            if (_tabInformation[i].index == 0xFF)
+            if (_tabPositions[i].index == 0xFF)
             {
                 self->var_856 |= (1 << 0);
                 assignTabPositions(self);
                 return;
             }
 
-            if (_tabInformation[i].index == enumValue(targetTab))
+            if (_tabPositions[i].index == enumValue(targetTab))
             {
                 // Found current tab, and its in bottom row? No change required
-                if (_tabInformation[i].row == 0)
+                if (_tabPositions[i].row == 0)
                     return;
                 // Otherwise, we'll rotate the tabs around, such that this one is in the bottom row
                 else
@@ -234,8 +256,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 continue;
 
             // Assign tab position
-            _tabInformation[tabPos].index = static_cast<uint8_t>(currentType);
-            _tabInformation[tabPos].row = currentRow;
+            _tabPositions[tabPos].index = static_cast<uint8_t>(currentType);
+            _tabPositions[tabPos].row = currentRow;
             tabPos++;
 
             // Distribute tabs over two rows -- ensure there's capacity left in current row
@@ -249,28 +271,75 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         // Add a marker to denote the last tab
-        _tabInformation[tabPos].index = 0xFF;
+        _tabPositions[tabPos].index = 0xFF;
 
-        const auto firstTabIndex = ObjectType(_tabInformation[0].index);
+        const auto firstTabIndex = ObjectType(_tabPositions[0].index);
         repositionTargetTab(self, firstTabIndex);
     }
 
-    // 0x00472BBC
-    static ObjectManager::ObjIndexPair sub_472BBC(Window* self)
+    static bool contains(const std::string_view& a, const std::string_view& b)
     {
-        const auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self->currentTab));
+        return std::search(a.begin(), a.end(), b.begin(), b.end(), [](char a, char b) {
+                   return tolower(a) == tolower(b);
+               })
+            != a.end();
+    }
 
+    static void applyFilterToObjectList()
+    {
+        std::string_view pattern = inputSession.buffer;
+        _numVisibleObjectsListed = 0;
+        for (auto& entry : _tabObjectList)
+        {
+            if (pattern.empty())
+            {
+                entry.display = Visibility::shown;
+                _numVisibleObjectsListed++;
+                continue;
+            }
+
+            const std::string_view name = entry.object._name;
+            const std::string_view filename = entry.object._filename;
+
+            const bool containsName = contains(name, pattern);
+            const bool containsFileName = contains(filename, pattern);
+
+            entry.display = containsName || containsFileName ? Visibility::shown : Visibility::hidden;
+
+            if (entry.display == Visibility::shown)
+                _numVisibleObjectsListed++;
+        }
+    }
+
+    static void populateTabObjectList(ObjectType objectType)
+    {
+        _tabObjectList.clear();
+
+        const auto objects = ObjectManager::getAvailableObjects(objectType);
+        _tabObjectList.reserve(objects.size());
         for (auto [index, object] : objects)
         {
-            if (_50D144[index] & (1 << 0))
+            auto entry = TabObjectEntry{ index, object, Visibility::shown };
+            _tabObjectList.emplace_back(std::move(entry));
+        }
+
+        applyFilterToObjectList();
+    }
+
+    // 0x00472BBC
+    static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject(Window* self)
+    {
+        for (auto& entry : _tabObjectList)
+        {
+            if (_objectSelection[entry.index] & (1 << 0))
             {
-                return { static_cast<int16_t>(index), object };
+                return { static_cast<int16_t>(entry.index), entry.object };
             }
         }
 
-        if (objects.size() > 0)
+        if (_tabObjectList.size() > 0)
         {
-            return { static_cast<int16_t>(objects[0].first), objects[0].second };
+            return { static_cast<int16_t>(_tabObjectList[0].index), _tabObjectList[0].object };
         }
 
         return { -1, ObjectManager::ObjectIndexEntry{} };
@@ -297,7 +366,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, &_events);
         window->widgets = widgets;
-        window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::advancedButton);
+        window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::advancedButton) | (1ULL << widx::clearButton);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
@@ -309,9 +378,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         assignTabPositions(window);
         repositionTargetTab(window, ObjectType::region);
+        populateTabObjectList(ObjectType::region);
+
         ObjectManager::freeTemporaryObject();
 
-        auto objIndex = sub_472BBC(window);
+        auto objIndex = getFirstAvailableSelectedObject(window);
         if (objIndex.index != -1)
         {
             window->rowHover = objIndex.index;
@@ -322,6 +393,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         window->setColour(WindowColour::primary, skin->colour_0B);
         window->setColour(WindowColour::secondary, skin->colour_0C);
+
+        inputSession = Ui::TextInput::InputSession();
+        inputSession.calculateTextOffset(widgets[widx::textInput].width());
 
         return window;
     }
@@ -365,25 +439,25 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto xPos = x + (row * kRowOffsetX);
             auto yPos = y - (row * kRowOffsetY);
-            for (auto index = 0; _tabInformation[index].index != 0xFF; index++)
+            for (auto index = 0; _tabPositions[index].index != 0xFF; index++)
             {
-                if (_tabInformation[index].row != row)
+                if (_tabPositions[index].row != row)
                     continue;
 
                 auto image = Gfx::recolour(ImageIds::tab, self->getColour(WindowColour::secondary).c());
-                if (_tabInformation[index].index == self->currentTab)
+                if (_tabPositions[index].index == self->currentTab)
                 {
                     image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
                     drawingCtx.drawImage(rt, xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
                     drawingCtx.drawImage(rt, xPos, yPos, image);
                 }
                 else
                 {
                     drawingCtx.drawImage(rt, xPos, yPos, image);
 
-                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::mutedSeaGreen);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
                     drawingCtx.drawImage(rt, xPos, yPos, image);
 
                     image = Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33);
@@ -618,6 +692,36 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    static void drawSearchBox(Window& self, Gfx::RenderTarget* rt)
+    {
+        char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
+        strncpy(textBuffer, inputSession.buffer.c_str(), 256);
+
+        auto& widget = widgets[widx::textInput];
+        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(widget.left + 1 + self.x, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
+        if (!clipped)
+            return;
+
+        FormatArguments args{};
+        args.push(StringIds::buffer_2039);
+
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
+        // Draw search box input buffer
+        Ui::Point position = { inputSession.xOffset, 1 };
+        drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, &args);
+
+        // Draw search box cursor, blinking
+        if ((inputSession.cursorFrame % 32) < 16)
+        {
+            // We draw the string again to figure out where the cursor should go; position.x will be adjusted
+            textBuffer[inputSession.cursorPosition] = '\0';
+            position = { inputSession.xOffset, 1 };
+            drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
+        }
+    }
+
     // 0x004733F5
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
@@ -627,6 +731,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.draw(rt);
 
         drawTabs(&self, rt);
+        drawSearchBox(self, rt);
 
         bool doDefault = true;
         if (self.object != nullptr)
@@ -729,9 +834,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         int y = 0;
-        auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self.currentTab));
-        for (auto [i, object] : objects)
+        for (auto& entry : _tabObjectList)
         {
+            if (entry.display == Visibility::hidden)
+                continue;
+
             Drawing::RectInsetFlags flags = Drawing::RectInsetFlags::colourLight | Drawing::RectInsetFlags::fillDarker | Drawing::RectInsetFlags::borderInset;
             drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, self.getColour(WindowColour::secondary), flags);
 
@@ -741,14 +848,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if (objectPtr != nullptr)
             {
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
-                if (object._name == windowObjectName)
+                if (entry.object._name == windowObjectName)
                 {
                     drawingCtx.fillRect(rt, 0, y, self.width, y + kRowHeight - 1, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
                     textColour = ControlCodes::windowColour2;
                 }
             }
 
-            if (_50D144[i] & (1 << 0))
+            if (_objectSelection[entry.index] & (1 << 0))
             {
                 auto x = 2;
                 drawingCtx.setCurrentFontSpriteBase(Font::m2);
@@ -760,7 +867,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 auto checkColour = self.getColour(WindowColour::secondary).opaque();
 
-                if (_50D144[i] & 0x1C)
+                if (_objectSelection[entry.index] & 0x1C)
                 {
                     checkColour = checkColour.inset();
                 }
@@ -770,7 +877,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             char buffer[512]{};
             buffer[0] = textColour;
-            strncpy(&buffer[1], object._name, 510);
+            strncpy(&buffer[1], entry.object._name, 510);
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
             drawingCtx.drawString(rt, 15, y, Colour::black, buffer);
@@ -804,16 +911,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     auto xPos = x + (row * kRowOffsetX);
                     auto yPos = y - (row * kRowOffsetY);
 
-                    for (int i = 0; _tabInformation[i].index != 0xFF; i++)
+                    for (int i = 0; _tabPositions[i].index != 0xFF; i++)
                     {
-                        if (_tabInformation[i].row != row)
+                        if (_tabPositions[i].row != row)
                             continue;
 
-                        if (_52334A >= xPos && _52334C >= yPos)
+                        if (_mousePosX >= xPos && _mousePosY >= yPos)
                         {
-                            if (_52334A < xPos + 31 && yPos + 27 > _52334C)
+                            if (_mousePosX < xPos + 31 && yPos + 27 > _mousePosY)
                             {
-                                clickedTab = _tabInformation[i].index;
+                                clickedTab = _tabPositions[i].index;
                                 break;
                             }
                         }
@@ -825,11 +932,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 if (clickedTab != -1 && self.currentTab != clickedTab)
                 {
                     repositionTargetTab(&self, static_cast<ObjectType>(clickedTab));
+                    populateTabObjectList(static_cast<ObjectType>(clickedTab));
+
                     self.rowHover = -1;
                     self.object = nullptr;
                     self.scrollAreas[0].contentWidth = 0;
                     ObjectManager::freeTemporaryObject();
-                    auto objIndex = sub_472BBC(&self);
+                    auto objIndex = getFirstAvailableSelectedObject(&self);
 
                     if (objIndex.index != -1)
                     {
@@ -856,7 +965,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     const ObjectTabFlags tabFlags = _tabDisplayInfo[currentTab].flags;
                     if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
                     {
-                        currentTab = _tabInformation[0].index;
+                        currentTab = _tabPositions[0].index;
+                        populateTabObjectList(static_cast<ObjectType>(currentTab));
                     }
                 }
                 repositionTargetTab(&self, static_cast<ObjectType>(currentTab));
@@ -864,13 +974,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 break;
             }
+
+            case widx::clearButton:
+            {
+                inputSession.clearInput();
+                applyFilterToObjectList();
+                self.invalidate();
+            }
         }
     }
 
     // 0x004738ED
     static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = _tabObjectCounts[self.currentTab] * kRowHeight;
+        *scrollHeight = _numVisibleObjectsListed * kRowHeight;
     }
 
     // 0x00473900
@@ -884,14 +1001,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00472B54
     static ObjectManager::ObjIndexPair getObjectFromSelection(Window* self, int16_t& y)
     {
-        const auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self->currentTab));
-
-        for (auto [index, object] : objects)
+        for (auto& entry : _tabObjectList)
         {
+            if (entry.display == Visibility::hidden)
+                continue;
+
             y -= kRowHeight;
             if (y < 0)
             {
-                return { static_cast<int16_t>(index), object };
+                return { static_cast<int16_t>(entry.index), entry.object };
             }
         }
 
@@ -945,9 +1063,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         if (ObjectManager::getMaxObjects(type) == 1)
         {
-            if (!(_50D144[index] & (1 << 0)))
+            if (!(_objectSelection[index] & (1 << 0)))
             {
-                auto [oldIndex, oldObject] = ObjectManager::getActiveObject(type, _50D144);
+                auto [oldIndex, oldObject] = ObjectManager::getActiveObject(type, _objectSelection);
 
                 if (oldIndex != -1)
                 {
@@ -958,7 +1076,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto bx = 0;
 
-        if (!(_50D144[index] & (1 << 0)))
+        if (!(_objectSelection[index] & (1 << 0)))
         {
             bx |= (1 << 0);
         }
@@ -986,7 +1104,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto objects = ObjectManager::getAvailableObjects(type);
             for (auto [i, object] : objects)
             {
-                if (!(_50D144[i] & (1 << 0)))
+                if (!(_objectSelection[i] & (1 << 0)))
                 {
                     ObjectManager::unload(*object._header);
                 }
@@ -1002,7 +1120,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto objects = ObjectManager::getAvailableObjects(type);
             for (auto [i, object] : objects)
             {
-                if (_50D144[i] & (1 << 0))
+                if (_objectSelection[i] & (1 << 0))
                 {
                     if (!ObjectManager::findObjectHandle(*object._header))
                     {
@@ -1046,6 +1164,31 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void onUpdate(Window& self)
     {
         WindowManager::invalidateWidget(WindowType::objectSelection, self.number, widx::objectImage);
+
+        inputSession.cursorFrame++;
+        if ((inputSession.cursorFrame % 16) == 0)
+        {
+            WindowManager::invalidateWidget(WindowType::objectSelection, self.number, widx::textInput);
+        }
+    }
+
+    void handleInput(uint32_t charCode, uint32_t keyCode)
+    {
+        auto* w = WindowManager::find(WindowType::objectSelection);
+        if (w == nullptr)
+            return;
+
+        if (!inputSession.handleInput(charCode, keyCode))
+            return;
+
+        int containerWidth = widgets[widx::textInput].width() - 2;
+        if (inputSession.needsReoffsetting(containerWidth))
+            inputSession.calculateTextOffset(containerWidth);
+
+        inputSession.cursorFrame = 0;
+        WindowManager::invalidateWidget(WindowType::objectSelection, 0, widx::textInput);
+
+        applyFilterToObjectList();
     }
 
     static void initEvents()
