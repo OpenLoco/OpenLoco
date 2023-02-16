@@ -513,7 +513,7 @@ namespace OpenLoco
             bodySprite.flatImageId = offset + imgRes.imageOffset;
             bodySprite.var_0B = getNumRotationSpriteTypesFlat(bodySprite.numFlatRotationFrames);
 
-            bodySprite.numFramesPerRotation = bodySprite.numAnimationFrames * bodySprite.numCargoFrames * bodySprite.numRollFrames + bodySprite.hasFlags(BodySpriteFlags::hasBrakingLights) ? 1 : 0;
+            bodySprite.numFramesPerRotation = bodySprite.numAnimationFrames * bodySprite.numCargoFrames * bodySprite.numRollFrames + (bodySprite.hasFlags(BodySpriteFlags::hasBrakingLights) ? 1 : 0);
             const auto numFlatFrames = (bodySprite.numFramesPerRotation * bodySprite.numFlatRotationFrames);
             offset += numFlatFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
 
@@ -524,7 +524,7 @@ namespace OpenLoco
                 offset += numGentleFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
 
                 bodySprite.var_0C = getNumRotationSpriteTypesSloped(bodySprite.numSlopedRotationFrames);
-                const auto numSlopedFrames = bodySprite.numFramesPerRotation * bodySprite.numSlopedRotationFrames;
+                const auto numSlopedFrames = bodySprite.numFramesPerRotation * bodySprite.numSlopedRotationFrames * 2;
                 offset += numSlopedFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
 
                 if (bodySprite.hasFlags(BodySpriteFlags::hasSteepSprites))
@@ -533,7 +533,7 @@ namespace OpenLoco
                     const auto numSteepFrames = bodySprite.numFramesPerRotation * 8;
                     offset += numSteepFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
                     // TODO: add these two together??
-                    const auto numUnkFrames = bodySprite.numSlopedRotationFrames * bodySprite.numFramesPerRotation;
+                    const auto numUnkFrames = bodySprite.numSlopedRotationFrames * bodySprite.numFramesPerRotation * 2;
                     offset += numUnkFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
                 }
             }
@@ -584,6 +584,9 @@ namespace OpenLoco
             bogieSprite.var_03 = extents.heightNegative;
             bogieSprite.var_04 = extents.heightPositive;
         }
+
+        // Verify we haven't overshot any lengths
+        assert(imgRes.imageOffset + offset == ObjectManager::getTotalNumImages());
     }
 
     // 0x004B89FF
