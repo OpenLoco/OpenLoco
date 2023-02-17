@@ -309,7 +309,7 @@ namespace OpenLoco
         return true;
     }
 
-    static constexpr uint8_t getNumRotationSpriteTypesFlat(uint8_t numFrames)
+    static constexpr uint8_t getYawAccuracyFlat(uint8_t numFrames)
     {
         switch (numFrames)
         {
@@ -324,7 +324,7 @@ namespace OpenLoco
         }
     }
 
-    static constexpr uint8_t getNumRotationSpriteTypesSloped(uint8_t numFrames)
+    static constexpr uint8_t getYawAccuracySloped(uint8_t numFrames)
     {
         switch (numFrames)
         {
@@ -427,7 +427,7 @@ namespace OpenLoco
 
         for (auto& anim : animation)
         {
-            if (anim.type == simple_animation_type::none)
+            if (anim.type == SimpleAnimationType::none)
             {
                 continue;
             }
@@ -485,7 +485,7 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        for (auto i = 0; i < (numStartSounds & NumStartSounds::mask); ++i)
+        for (auto i = 0; i < (numStartSounds & NumStartSounds::kMask); ++i)
         {
             ObjectHeader soundHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             if (dependencies != nullptr)
@@ -511,7 +511,7 @@ namespace OpenLoco
                 continue;
             }
             bodySprite.flatImageId = offset + imgRes.imageOffset;
-            bodySprite.var_0B = getNumRotationSpriteTypesFlat(bodySprite.numFlatRotationFrames);
+            bodySprite.flatYawAccuracy = getYawAccuracyFlat(bodySprite.numFlatRotationFrames);
 
             bodySprite.numFramesPerRotation = bodySprite.numAnimationFrames * bodySprite.numCargoFrames * bodySprite.numRollFrames + (bodySprite.hasFlags(BodySpriteFlags::hasBrakingLights) ? 1 : 0);
             const auto numFlatFrames = (bodySprite.numFramesPerRotation * bodySprite.numFlatRotationFrames);
@@ -523,7 +523,7 @@ namespace OpenLoco
                 const auto numGentleFrames = bodySprite.numFramesPerRotation * 8;
                 offset += numGentleFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
 
-                bodySprite.var_0C = getNumRotationSpriteTypesSloped(bodySprite.numSlopedRotationFrames);
+                bodySprite.slopedYawAccuracy = getYawAccuracySloped(bodySprite.numSlopedRotationFrames);
                 const auto numSlopedFrames = bodySprite.numFramesPerRotation * bodySprite.numSlopedRotationFrames * 2;
                 offset += numSlopedFrames / (bodySprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 2 : 1);
 
@@ -547,9 +547,9 @@ namespace OpenLoco
 
             const auto numImages = imgRes.imageOffset + offset - bodySprite.flatImageId;
             const auto extents = Gfx::getImagesMaxExtent(ImageId(bodySprite.flatImageId), numImages);
-            bodySprite.var_08 = extents.width;
-            bodySprite.var_09 = extents.heightNegative;
-            bodySprite.var_0A = extents.heightPositive;
+            bodySprite.width = extents.width;
+            bodySprite.heightNegative = extents.heightNegative;
+            bodySprite.heightPositive = extents.heightPositive;
         }
 
         for (auto& bogieSprite : bogieSprites)
@@ -580,9 +580,9 @@ namespace OpenLoco
 
             const auto numImages = imgRes.imageOffset + offset - bogieSprite.flatImageIds;
             const auto extents = Gfx::getImagesMaxExtent(ImageId(bogieSprite.flatImageIds), numImages);
-            bogieSprite.var_02 = extents.width;
-            bogieSprite.var_03 = extents.heightNegative;
-            bogieSprite.var_04 = extents.heightPositive;
+            bogieSprite.width = extents.width;
+            bogieSprite.heightNegative = extents.heightNegative;
+            bogieSprite.heightPositive = extents.heightPositive;
         }
 
         // Verify we haven't overshot any lengths
@@ -611,15 +611,15 @@ namespace OpenLoco
         for (auto& bodySprite : bodySprites)
         {
             bodySprite.flatImageId = 0;
-            bodySprite.var_0B = 0;
+            bodySprite.flatYawAccuracy = 0;
             bodySprite.numFramesPerRotation = 0;
             bodySprite.gentleImageId = 0;
-            bodySprite.var_0C = 0;
+            bodySprite.slopedYawAccuracy = 0;
             bodySprite.steepImageId = 0;
             bodySprite.unkImageId = 0;
-            bodySprite.var_08 = 0;
-            bodySprite.var_09 = 0;
-            bodySprite.var_0A = 0;
+            bodySprite.width = 0;
+            bodySprite.heightNegative = 0;
+            bodySprite.heightPositive = 0;
         }
 
         for (auto& bogieSprite : bogieSprites)
@@ -627,9 +627,9 @@ namespace OpenLoco
             bogieSprite.flatImageIds = 0;
             bogieSprite.gentleImageIds = 0;
             bogieSprite.steepImageIds = 0;
-            bogieSprite.var_02 = 0;
-            bogieSprite.var_03 = 0;
-            bogieSprite.var_04 = 0;
+            bogieSprite.width = 0;
+            bogieSprite.heightNegative = 0;
+            bogieSprite.heightPositive = 0;
             bogieSprite.numRollSprites = 0;
         }
 

@@ -178,7 +178,7 @@ namespace OpenLoco::Paint
         {
             yaw &= 0x1F;
         }
-        uint32_t imageIndex = (yaw >> _503F20[sprite.var_0B]) * sprite.numFramesPerRotation;
+        uint32_t imageIndex = (yaw >> _503F20[sprite.flatYawAccuracy]) * sprite.numFramesPerRotation;
         imageIndex += sprite.flatImageId;
         return imageIndex;
     }
@@ -190,7 +190,7 @@ namespace OpenLoco::Paint
             return paintBodyPitchDefault(sprite, yaw);
         }
         auto imageOffset = sprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 4 : 8;
-        uint32_t imageIndex = ((yaw >> _503F20[sprite.var_0C]) + imageOffset) * sprite.numFramesPerRotation;
+        uint32_t imageIndex = ((yaw >> _503F20[sprite.slopedYawAccuracy]) + imageOffset) * sprite.numFramesPerRotation;
         imageIndex += sprite.gentleImageId;
         return imageIndex;
     }
@@ -255,7 +255,7 @@ namespace OpenLoco::Paint
             return paintBodyPitchUp12Deg(sprite, yaw);
         }
         auto imageOffset = sprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 4 : 8;
-        uint32_t imageIndex = ((yaw >> _503F20[sprite.var_0C]) + imageOffset) * sprite.numFramesPerRotation;
+        uint32_t imageIndex = ((yaw >> _503F20[sprite.slopedYawAccuracy]) + imageOffset) * sprite.numFramesPerRotation;
         imageIndex += sprite.steepImageId;
         return imageIndex;
     }

@@ -120,7 +120,7 @@ namespace OpenLoco::ObjectManager
         printf("%02X ", data.pad_01[2]);
 
         char name[8 + 1] = { 0 };
-        memcpy(name, data.var_04, 8);
+        memcpy(name, data.name, 8);
         printf("'%s', ", name);
 
         printf("%08X ", data.checksum);

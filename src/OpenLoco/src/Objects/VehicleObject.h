@@ -25,7 +25,7 @@ namespace OpenLoco
         water = 3
     };
 
-    enum class simple_animation_type : uint8_t
+    enum class SimpleAnimationType : uint8_t
     {
         none = 0,
         steam_puff1,
@@ -93,14 +93,14 @@ namespace OpenLoco
         uint8_t speedFreqFactor;    // 0x1A
     };
 
-    struct simple_animation
+    struct VehicleObjectSimpleAnimation
     {
-        uint8_t objectId;           // 0x00 (object loader fills this in)
-        uint8_t height;             // 0x01
-        simple_animation_type type; // 0x02
+        uint8_t objectId;         // 0x00 (object loader fills this in)
+        uint8_t height;           // 0x01
+        SimpleAnimationType type; // 0x02
     };
 
-    struct vehicle_object_unk
+    struct VehicleObjectUnk
     {
         uint8_t length; // 0x00
         uint8_t var_01;
@@ -121,13 +121,13 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BogieSpriteFlags);
 
-    struct vehicle_object_bogie_sprite
+    struct VehicleObjectBogieSprite
     {
         uint8_t rollStates;      // 0x0 valid values 1, 2, 4 related to bogie->var_46 (identical in value to numRollSprites)
         BogieSpriteFlags flags;  // 0x1 BogieSpriteFlags
-        uint8_t var_02;          // sprite width
-        uint8_t var_03;          // sprite height negative
-        uint8_t var_04;          // sprite height positive
+        uint8_t width;           // 0x2 sprite width
+        uint8_t heightNegative;  // 0x3 sprite height negative
+        uint8_t heightPositive;  // 0x4 sprite height positive
         uint8_t numRollSprites;  // 0x5
         uint32_t flatImageIds;   // 0x6 flat sprites
         uint32_t gentleImageIds; // 0xA gentle sprites
@@ -139,7 +139,7 @@ namespace OpenLoco
         }
     };
 
-    static_assert(sizeof(vehicle_object_bogie_sprite) == 0x12);
+    static_assert(sizeof(VehicleObjectBogieSprite) == 0x12);
 
     enum class BodySpriteFlags : uint8_t
     {
@@ -164,11 +164,11 @@ namespace OpenLoco
         uint8_t numRollFrames;           // 0x05
         uint8_t bogeyPosition;           // 0x06
         BodySpriteFlags flags;           // 0x07
-        uint8_t var_08;                  // sprite width
-        uint8_t var_09;                  // sprite height negative
-        uint8_t var_0A;                  // sprite height positive
-        uint8_t var_0B;                  // 0 - 4 rotational sprites types on flat built from numFlatRotationFrames
-        uint8_t var_0C;                  // 0 - 3 rotational sprites types on slopes built from numSlopedRotationFrames
+        uint8_t width;                   // 0x08 sprite width
+        uint8_t heightNegative;          // 0x09 sprite height negative
+        uint8_t heightPositive;          // 0x0A sprite height positive
+        uint8_t flatYawAccuracy;         // 0x0B 0 - 4 accuracy of yaw on flat built from numFlatRotationFrames (0 = lowest accuracy 3bits, 4 = highest accuracy 7bits)
+        uint8_t slopedYawAccuracy;       // 0x0C 0 - 3 accuracy of yaw on slopes built from numSlopedRotationFrames  (0 = lowest accuracy 3bits, 3 = highest accuracy 6bits)
         uint8_t numFramesPerRotation;    // 0x0D numAnimationFrames * numCargoFrames * numRollFrames + 1 (for braking lights)
         uint32_t flatImageId;            // 0x0E
         uint32_t unkImageId;             // 0x12
@@ -208,8 +208,8 @@ namespace OpenLoco
 
     namespace NumStartSounds
     {
-        constexpr uint8_t hasCrossingWhistle = 1 << 7;
-        constexpr uint8_t mask = 0x7F;
+        constexpr uint8_t kHasCrossingWhistle = 1 << 7;
+        constexpr uint8_t kMask = 0x7F;
     }
 
     struct VehicleObject
@@ -232,9 +232,9 @@ namespace OpenLoco
         uint8_t numCompat;              // 0x0F
         uint16_t compatibleVehicles[8]; // 0x10 array of compatible vehicle_types
         uint8_t requiredTrackExtras[4]; // 0x20
-        vehicle_object_unk var_24[4];
+        VehicleObjectUnk var_24[4];
         VehicleObjectBodySprite bodySprites[kMaxBodySprites]; // 0x3C
-        vehicle_object_bogie_sprite bogieSprites[2];          // 0xB4
+        VehicleObjectBogieSprite bogieSprites[2];             // 0xB4
         uint16_t power;                                       // 0xD8
         Speed16 speed;                                        // 0xDA
         Speed16 rackSpeed;                                    // 0xDC
@@ -244,7 +244,7 @@ namespace OpenLoco
         uint32_t cargoTypes[2];                               // 0xE4
         uint8_t cargoTypeSpriteOffsets[32];                   // 0xEC
         uint8_t numSimultaneousCargoTypes;                    // 0x10C
-        simple_animation animation[2];                        // 0x10D
+        VehicleObjectSimpleAnimation animation[2];            // 0x10D
         uint8_t var_113;
         uint16_t designed;                 // 0x114
         uint16_t obsolete;                 // 0x116
@@ -257,7 +257,7 @@ namespace OpenLoco
             VehicleObjectEngine2Sound engine2;
         } sound;
         uint8_t pad_135[0x15A - 0x135];
-        uint8_t numStartSounds;         // 0x15A use mask when accessing hasCrossingWhistle stuffed in (1 << 7)
+        uint8_t numStartSounds;         // 0x15A use mask when accessing kHasCrossingWhistle stuffed in (1 << 7)
         SoundObjectId_t startSounds[3]; // 0x15B sound array length numStartSounds highest sound is the crossing whistle
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;

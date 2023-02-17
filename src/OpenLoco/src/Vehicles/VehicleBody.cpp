@@ -103,26 +103,26 @@ namespace OpenLoco::Vehicles
 
         switch (vehicleObject->animation[0].type)
         {
-            case simple_animation_type::none:
+            case SimpleAnimationType::none:
                 break;
-            case simple_animation_type::steam_puff1:
-            case simple_animation_type::steam_puff2:
-            case simple_animation_type::steam_puff3:
+            case SimpleAnimationType::steam_puff1:
+            case SimpleAnimationType::steam_puff2:
+            case SimpleAnimationType::steam_puff3:
                 steamPuffsAnimationUpdate(0, var_05);
                 break;
-            case simple_animation_type::diesel_exhaust1:
+            case SimpleAnimationType::diesel_exhaust1:
                 dieselExhaust1AnimationUpdate(0, var_05);
                 break;
-            case simple_animation_type::electric_spark1:
+            case SimpleAnimationType::electric_spark1:
                 electricSpark1AnimationUpdate(0, var_05);
                 break;
-            case simple_animation_type::electric_spark2:
+            case SimpleAnimationType::electric_spark2:
                 electricSpark2AnimationUpdate(0, var_05);
                 break;
-            case simple_animation_type::diesel_exhaust2:
+            case SimpleAnimationType::diesel_exhaust2:
                 dieselExhaust2AnimationUpdate(0, var_05);
                 break;
-            case simple_animation_type::ship_wake:
+            case SimpleAnimationType::ship_wake:
                 shipWakeAnimationUpdate(0, var_05);
                 break;
             default:
@@ -264,7 +264,7 @@ namespace OpenLoco::Vehicles
         else
         {
             auto sprite = vehObj->bodySprites[objectSpriteType];
-            uint8_t i = spritePitch == Pitch::flat ? sprite.var_0B : sprite.var_0C;
+            uint8_t i = spritePitch == Pitch::flat ? sprite.flatYawAccuracy : sprite.slopedYawAccuracy;
             switch (i)
             {
                 case 0:
@@ -871,26 +871,26 @@ namespace OpenLoco::Vehicles
 
         switch (vehicleObject->animation[1].type)
         {
-            case simple_animation_type::none:
+            case SimpleAnimationType::none:
                 return;
-            case simple_animation_type::steam_puff1:
-            case simple_animation_type::steam_puff2:
-            case simple_animation_type::steam_puff3:
+            case SimpleAnimationType::steam_puff1:
+            case SimpleAnimationType::steam_puff2:
+            case SimpleAnimationType::steam_puff3:
                 steamPuffsAnimationUpdate(1, var_05);
                 break;
-            case simple_animation_type::diesel_exhaust1:
+            case SimpleAnimationType::diesel_exhaust1:
                 dieselExhaust1AnimationUpdate(1, var_05);
                 break;
-            case simple_animation_type::electric_spark1:
+            case SimpleAnimationType::electric_spark1:
                 electricSpark1AnimationUpdate(1, var_05);
                 break;
-            case simple_animation_type::electric_spark2:
+            case SimpleAnimationType::electric_spark2:
                 electricSpark2AnimationUpdate(1, var_05);
                 break;
-            case simple_animation_type::diesel_exhaust2:
+            case SimpleAnimationType::diesel_exhaust2:
                 dieselExhaust2AnimationUpdate(1, var_05);
                 break;
-            case simple_animation_type::ship_wake:
+            case SimpleAnimationType::ship_wake:
                 shipWakeAnimationUpdate(1, var_05);
                 break;
             default:
