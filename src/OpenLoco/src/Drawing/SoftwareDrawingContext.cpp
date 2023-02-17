@@ -1510,7 +1510,6 @@ namespace OpenLoco::Drawing
         }
 
         // 0x004474BA
-        // 0x00494E33
         // ax: left
         // bx: right
         // bp: width
