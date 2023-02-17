@@ -109,11 +109,101 @@ namespace OpenLoco
     // 0x004BE144
     void TreeObject::load(const LoadedObjectHandle& handle, [[maybe_unused]] stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
+        auto remainingData = data.subspan(sizeof(BuildingObject));
+
+        // Load localised name string
+        {
+            auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+            name = strRes.str;
+            remainingData = remainingData.subspan(strRes.tableLength);
+        }
+
+        // Load image offsets
+        auto imgRes = ObjectManager::loadImageTable(remainingData);
+        imageOffset = imgRes.imageOffset;
+        assert(remainingData.size() == imgRes.tableLength);
+
+        // Initialise sprites array
+        for (auto variant = 0; variant < 6; variant++)
+        {
+            sprites[0][variant] = imageOffset;
+        }
+
+        auto numVariantImages = numRotations * growth;
+        auto nextImageOffset = imageOffset;
+        for (auto variant = 0; variant < 6; variant++)
+        {
+            if (var_3C & (1 << variant) == 0)
+                continue;
+
+            sprites[0][variant] = imageOffset;
+            nextImageOffset += numVariantImages;
+        }
+
+        // 0x004BE186
+        auto numPrimaryImages = nextImageOffset - imageOffset;
+        nextImageOffset = imageOffset;
+
+        /*
+            TODO: here for quick verification; remove later
+            0x0A -> sprites[0][0]
+            0x0E -> sprites[0][1]
+            0x12 -> sprites[0][2]
+            0x16 -> sprites[0][3]
+            0x1A -> sprites[0][4]
+            0x1E -> sprites[0][5]
+            0x22 -> sprites[1][0]
+            0x26 -> sprites[1][1]
+            0x2A -> sprites[1][2]
+            0x2E -> sprites[1][3]
+            0x32 -> sprites[1][4]
+            0x36 -> sprites[1][5]
+        */
+
+        if (var_3C & (1 << 5) == 0 && var_3C & (1 << 4) != 0)
+        {
+            sprites[0][5] = sprites[0][4];
+        }
+
+        if (var_3C & (1 << 5) == 0 && var_3C & (1 << 1) != 0)
+        {
+            sprites[0][5] = sprites[0][1];
+        }
+
+        if (var_3C & (1 << 4) == 0 && var_3C & (1 << 1) != 0)
+        {
+            sprites[0][4] = sprites[0][1];
+        }
+
+        if (var_3C & (1 << 1) == 0 && var_3C & (1 << 0) != 0)
+        {
+            sprites[0][1] = sprites[0][0];
+        }
+
+        if (var_3C & (1 << 0) == 0 && var_3C & (1 << 1) != 0)
+        {
+            sprites[0][0] = sprites[0][1];
+        }
+
+        if ((flags & TreeObjectFlags::hasSnowVariation) != TreeObjectFlags::none)
+        {
+            for (auto variant = 0; variant < 6; variant++)
+            {
+                sprites[1][variant] = sprites[0][variant] + numPrimaryImages;
+            }
+
+            shadowImageOffset = numPrimaryImages * 2;
+        }
+        else
+            shadowImageOffset = numPrimaryImages;
+
+        /*
         Interop::registers regs;
         regs.esi = Interop::X86Pointer(this);
         regs.ebx = handle.id;
         regs.ecx = enumValue(handle.type);
         Interop::call(0x004BE144, regs);
+        */
     }
 
     // 0x004BE231
