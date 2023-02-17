@@ -5,6 +5,7 @@
 - Fix: [#1772] Toggling edge scrolling option does not work.
 - Fix: [#1798] Memory leak when resizing the window.
 - Fix: [#1842] Track, Road and Dock objects incorrectly unloaded causing packing issues.
+- Fix: [#1853] Company list not sorted properly by status.
 - Change: [#1823] Prevent edge scroll if the window has no input focus.
 
 23.01 (2023-01-25)
