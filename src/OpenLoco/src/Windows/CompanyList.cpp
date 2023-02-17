@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             char rhsString[256] = { 0 };
             {
                 auto args = FormatArguments();
-                auto statusString = CompanyManager::getOwnerStatus(lhs.id(), args);
+                auto statusString = CompanyManager::getOwnerStatus(rhs.id(), args);
                 StringManager::formatString(rhsString, statusString, &args);
             }
 
