@@ -38,9 +38,6 @@ namespace OpenLoco::EntityManager
 
     EntityId firstId(EntityListType list);
 
-    template<typename T>
-    T* first();
-
     EntityId firstQuadrantId(const Map::Pos2& loc);
     void resetSpatialIndex();
     void updateSpatialIndex();
@@ -51,10 +48,8 @@ namespace OpenLoco::EntityManager
     EntityBase* createEntityVehicle();
     void freeEntity(EntityBase* const entity);
 
-    void updateVehicles();
     void updateMiscEntities();
     void updateDaily();
-    void updateMonthly();
 
     uint16_t getListCount(const EntityListType list);
     void moveEntityToList(EntityBase* const entity, const EntityListType list);
@@ -140,8 +135,6 @@ namespace OpenLoco::EntityManager
             return T(EntityId::null);
         }
     };
-
-    using VehicleList = EntityList<EntityListIterator<Vehicles::VehicleHead>, EntityListType::vehicleHead>;
 
     class EntityTileList
     {

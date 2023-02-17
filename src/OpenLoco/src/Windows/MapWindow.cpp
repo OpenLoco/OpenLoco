@@ -26,6 +26,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 #include "Widget.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -1128,7 +1129,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             _vehicleTypeCounts[i] = 0;
         }
 
-        for (auto vehicle : EntityManager::VehicleList())
+        for (auto* vehicle : VehicleManager::VehicleList())
         {
             Vehicles::Vehicle train(*vehicle);
 
@@ -1146,7 +1147,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046BE6E, 0x0046C35A
     static void drawVehiclesOnMap(Gfx::RenderTarget* rt, WidgetIndex_t widgetIndex)
     {
-        for (auto vehicle : EntityManager::VehicleList())
+        for (auto* vehicle : VehicleManager::VehicleList())
         {
             Vehicles::Vehicle train(*vehicle);
 

@@ -66,6 +66,7 @@
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -779,7 +780,7 @@ namespace OpenLoco
         Map::WaveManager::update();
         TownManager::update();
         IndustryManager::update();
-        EntityManager::updateVehicles();
+        VehicleManager::update();
         sub_46FFCA();
         StationManager::update();
         EntityManager::updateMiscEntities();
@@ -914,7 +915,7 @@ namespace OpenLoco
             if (updateDayCounter())
             {
                 StationManager::updateDaily();
-                EntityManager::updateDaily();
+                VehicleManager::updateDaily();
                 IndustryManager::updateDaily();
                 MessageManager::updateDaily();
                 call(0x004969DA); // nop this sets the real time not used
@@ -934,7 +935,7 @@ namespace OpenLoco
                     IndustryManager::updateMonthly();
                     CompanyManager::updateMonthly1();
                     CompanyManager::updateMonthlyHeadquarters();
-                    EntityManager::updateMonthly();
+                    VehicleManager::updateMonthly();
 
                     if (today.year <= 2029)
                     {

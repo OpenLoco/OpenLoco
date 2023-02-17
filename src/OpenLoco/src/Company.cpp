@@ -22,6 +22,7 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
@@ -233,7 +234,7 @@ namespace OpenLoco
         }
 
         auto companyId = id();
-        for (auto v : EntityManager::VehicleList())
+        for (auto* v : VehicleManager::VehicleList())
         {
             if (v->owner == companyId)
             {
@@ -453,7 +454,7 @@ namespace OpenLoco
     // 0x004B8ED2
     void Company::updateVehicleColours()
     {
-        for (auto v : EntityManager::VehicleList())
+        for (auto* v : VehicleManager::VehicleList())
         {
             if (v->owner != id())
             {

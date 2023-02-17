@@ -18,6 +18,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 #include "Widget.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
@@ -183,7 +184,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         refreshActiveStation(self);
         self->rowCount = 0;
-        for (auto vehicle : EntityManager::VehicleList())
+        for (auto* vehicle : VehicleManager::VehicleList())
         {
             if (vehicle->vehicleType != static_cast<VehicleType>(self->currentTab))
                 continue;
@@ -267,7 +268,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         EntityId insertId = EntityId::null;
 
-        for (auto vehicle : EntityManager::VehicleList())
+        for (auto* vehicle : VehicleManager::VehicleList())
         {
             if (vehicle->vehicleType != static_cast<VehicleType>(self->currentTab))
                 continue;
