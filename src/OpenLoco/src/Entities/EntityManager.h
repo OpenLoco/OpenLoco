@@ -49,7 +49,6 @@ namespace OpenLoco::EntityManager
     void freeEntity(EntityBase* const entity);
 
     void updateMiscEntities();
-    void updateDaily();
 
     uint16_t getListCount(const EntityListType list);
     void moveEntityToList(EntityBase* const entity, const EntityListType list);
