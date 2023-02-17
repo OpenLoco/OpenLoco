@@ -2,6 +2,9 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "ObjectImageTable.h"
+#include "ObjectManager.h"
+#include "ObjectStringTable.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 
@@ -109,7 +112,7 @@ namespace OpenLoco
     // 0x004BE144
     void TreeObject::load(const LoadedObjectHandle& handle, [[maybe_unused]] stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        auto remainingData = data.subspan(sizeof(BuildingObject));
+        auto remainingData = data.subspan(sizeof(TreeObject));
 
         // Load localised name string
         {
@@ -133,7 +136,7 @@ namespace OpenLoco
         auto nextImageOffset = imageOffset;
         for (auto variant = 0; variant < 6; variant++)
         {
-            if (var_3C & (1 << variant) == 0)
+            if ((var_3C & (1 << variant)) == 0)
                 continue;
 
             sprites[0][variant] = imageOffset;
@@ -160,27 +163,27 @@ namespace OpenLoco
             0x36 -> sprites[1][5]
         */
 
-        if (var_3C & (1 << 5) == 0 && var_3C & (1 << 4) != 0)
+        if ((var_3C & (1 << 5)) == 0 && (var_3C & (1 << 4)) != 0)
         {
             sprites[0][5] = sprites[0][4];
         }
 
-        if (var_3C & (1 << 5) == 0 && var_3C & (1 << 1) != 0)
+        if ((var_3C & (1 << 5)) == 0 && (var_3C & (1 << 1)) != 0)
         {
             sprites[0][5] = sprites[0][1];
         }
 
-        if (var_3C & (1 << 4) == 0 && var_3C & (1 << 1) != 0)
+        if ((var_3C & (1 << 4)) == 0 && (var_3C & (1 << 1)) != 0)
         {
             sprites[0][4] = sprites[0][1];
         }
 
-        if (var_3C & (1 << 1) == 0 && var_3C & (1 << 0) != 0)
+        if ((var_3C & (1 << 1)) == 0 && (var_3C & (1 << 0)) != 0)
         {
             sprites[0][1] = sprites[0][0];
         }
 
-        if (var_3C & (1 << 0) == 0 && var_3C & (1 << 1) != 0)
+        if ((var_3C & (1 << 0)) == 0 && (var_3C & (1 << 1)) != 0)
         {
             sprites[0][0] = sprites[0][1];
         }
