@@ -48,8 +48,6 @@ namespace OpenLoco::EntityManager
     EntityBase* createEntityVehicle();
     void freeEntity(EntityBase* const entity);
 
-    void updateMiscEntities();
-
     uint16_t getListCount(const EntityListType list);
     void moveEntityToList(EntityBase* const entity, const EntityListType list);
     bool checkNumFreeEntities(const size_t numNewEntities);

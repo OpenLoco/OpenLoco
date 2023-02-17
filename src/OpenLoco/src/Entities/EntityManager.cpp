@@ -6,8 +6,6 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Localisation/StringIds.h"
-#include "Map/Tile.h"
-#include "SceneManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/LocoFixedVector.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -290,18 +288,6 @@ namespace OpenLoco::EntityManager
         {
             Console::log("Invalid quadrant ids... Reseting spatial index.");
             resetSpatialIndex();
-        }
-    }
-
-    // 0x004402F4
-    void updateMiscEntities()
-    {
-        if ((getGameState().flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
-        {
-            for (auto* misc : EntityList<EntityListIterator<MiscBase>, EntityListType::misc>())
-            {
-                misc->update();
-            }
         }
     }
 

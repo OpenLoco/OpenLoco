@@ -30,6 +30,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "EditorController.h"
+#include "Effects/EffectsManager.h"
 #include "Entities/EntityManager.h"
 #include "Entities/EntityTweener.h"
 #include "Environment.h"
@@ -783,7 +784,7 @@ namespace OpenLoco
         VehicleManager::update();
         sub_46FFCA();
         StationManager::update();
-        EntityManager::updateMiscEntities();
+        EffectsManager::update();
         sub_46FFCA();
         CompanyManager::update();
         Map::AnimationManager::update();
