@@ -123,7 +123,7 @@ namespace OpenLoco
 
         // Load image offsets
         auto imgRes = ObjectManager::loadImageTable(remainingData);
-        imageOffset = imgRes.imageOffset;
+        auto imageOffset = imgRes.imageOffset;
         assert(remainingData.size() == imgRes.tableLength);
 
         // Initialise sprites array
