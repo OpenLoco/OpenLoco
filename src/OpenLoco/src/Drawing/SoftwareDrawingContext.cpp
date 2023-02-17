@@ -1528,11 +1528,19 @@ namespace OpenLoco::Drawing
             {
                 return;
             }
-
-            auto startRect = Rect::fromLTRB(left, top, right, bottom);
-            auto renderTargetRect = Rect(rt.x, rt.y, rt.width, rt.height);
-
-            if (!startRect.intersects(renderTargetRect))
+            if (right < rt.x)
+            {
+                return;
+            }
+            if (left >= (rt.x + rt.width))
+            {
+                return;
+            }
+            if (bottom < rt.y)
+            {
+                return;
+            }
+            if (top >= rt.y + rt.height)
             {
                 return;
             }
