@@ -219,11 +219,11 @@ namespace OpenLoco::Title
 
             auto& command = *_sequenceIterator++;
             std::visit(overloaded{
-                           [](WaitStep step) {
+                           []([[maybe_unused]] WaitStep step) {
                                // This loop slightly deviates from the original, subtract 1 tick to make up for it.
                                _waitCounter = step.duration - 1;
                            },
-                           [](ReloadStep step) {
+                           []([[maybe_unused]] ReloadStep step) {
                                reload();
                            },
                            [](MoveStep step) {
@@ -241,7 +241,7 @@ namespace OpenLoco::Title
                                    }
                                }
                            },
-                           [](RotateStep step) {
+                           []([[maybe_unused]] RotateStep step) {
                                if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
                                {
                                    auto main = Ui::WindowManager::getMainWindow();
@@ -251,7 +251,7 @@ namespace OpenLoco::Title
                                    }
                                }
                            },
-                           [](ResetStep step) {
+                           []([[maybe_unused]] ResetStep step) {
                                _sequenceIterator = _titleSequence.begin();
                            },
                        },
@@ -271,13 +271,13 @@ namespace OpenLoco::Title
     {
         registerHook(
             0x0046AD7D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 start();
                 return 0;
             });
         registerHook(
             0x004442C4,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 loadTitle();
                 return 0;
             });

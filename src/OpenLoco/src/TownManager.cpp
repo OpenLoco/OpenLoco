@@ -221,7 +221,7 @@ namespace OpenLoco::TownManager
     {
         registerHook(
             0x00497348,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 resetBuildingsInfluence();
                 return 0;
             });

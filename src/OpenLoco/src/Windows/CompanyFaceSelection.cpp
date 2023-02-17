@@ -112,7 +112,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x004352A4
-    static void onClose(Window& self)
+    static void onClose([[maybe_unused]] Window& self)
     {
         ObjectManager::freeTemporaryObject();
     }
@@ -129,7 +129,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x4352BB
-    static void getScrollSize(Window& self, const uint32_t scrollIndex, uint16_t* const scrollWidth, uint16_t* const scrollHeight)
+    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const scrollWidth, uint16_t* const scrollHeight)
     {
         *scrollHeight = _numberCompetitorObjects * kRowHeight;
     }
@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00435314
-    static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scroll_index)
+    static void scrollMouseDown(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scroll_index)
     {
         const auto objRow = getObjectFromSelection(y);
 
@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x004352C7
-    static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scroll_index)
+    static void scrollMouseOver(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scroll_index)
     {
         auto objRow = getObjectFromSelection(y);
         if (self.rowHover == objRow.rowIndex)
@@ -203,7 +203,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x4352B1
-    static std::optional<FormatArguments> tooltip(Window& self, const WidgetIndex_t)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, const WidgetIndex_t)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -259,7 +259,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00435152
-    static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+    static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));

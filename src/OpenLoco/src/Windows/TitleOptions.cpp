@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
     }
 
-    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex)
     {
         if (Intro::isActive())
         {

@@ -411,7 +411,7 @@ namespace OpenLoco::Audio
         }
     }
 
-    static int32_t calculateVolumeFromViewport(SoundId id, const Map::Pos3& mpos, const Viewport& viewport)
+    static int32_t calculateVolumeFromViewport([[maybe_unused]] SoundId id, const Map::Pos3& mpos, const Viewport& viewport)
     {
         auto volume = 0;
         auto zVol = 0;

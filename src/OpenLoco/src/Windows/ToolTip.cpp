@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
             });
     }
 
-    static void common(const Window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
+    static void common([[maybe_unused]] const Window* window, [[maybe_unused]] int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -194,14 +194,14 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C94F7
-    static void onClose(Ui::Window& window)
+    static void onClose([[maybe_unused]] Ui::Window& window)
     {
         auto str337 = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
         str337[0] = '\0';
     }
 
     // 0x004C94FF
-    static void update(Ui::Window& window)
+    static void update([[maybe_unused]] Ui::Window& window)
     {
         if (_52336E == false)
         {

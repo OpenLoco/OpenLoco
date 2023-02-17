@@ -361,7 +361,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004919A4
-    static Ui::CursorId cursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& window, int16_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview)
             return fallback;
@@ -448,7 +448,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049157F
-    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -665,7 +665,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491A0C
-    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         uint16_t currentRow = y / kRowHeight;
         if (currentRow > window.var_83C)
@@ -679,7 +679,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004919D1
-    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         window.flags &= ~(WindowFlags::notScrollView);
 
@@ -711,13 +711,13 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491999
-    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = kRowHeight * window.var_83C;
     }
 
     // 0x00491841
-    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_station_list);

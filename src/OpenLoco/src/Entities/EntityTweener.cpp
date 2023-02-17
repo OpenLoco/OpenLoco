@@ -35,7 +35,7 @@ namespace OpenLoco
     {
         restore();
         reset();
-        PopulateEntities<EntityListType::misc>(_entities, _prePos, [](auto* ent) { return true; });
+        PopulateEntities<EntityListType::misc>(_entities, _prePos, [](auto*) { return true; });
         PopulateEntities<EntityListType::vehicle>(_entities, _prePos, [](auto* ent) {
             const auto* vehicle = ent->template asBase<Vehicles::VehicleBase>();
             if (vehicle == nullptr)

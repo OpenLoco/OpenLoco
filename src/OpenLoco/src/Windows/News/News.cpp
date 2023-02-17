@@ -35,7 +35,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         WindowEventList events;
 
         // 0x00429BB7
-        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        static void onMouseUp([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {

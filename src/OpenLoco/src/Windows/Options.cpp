@@ -42,7 +42,7 @@ namespace OpenLoco::Ui::Windows::Options
     static loco_global<void*, 0x011364A0> __11364A0;
     static loco_global<uint16_t, 0x0112C185> _112C185;
 
-    static void onClose(Window& w)
+    static void onClose([[maybe_unused]] Window& w)
     {
         free(__11364A0);
     }
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::Options
 #pragma mark - Construction Marker (Widget 19)
 
         // 0x004BFE2E
-        static void constructionMarkerMouseDown(Window* w, WidgetIndex_t wi)
+        static void constructionMarkerMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
         {
             Widget dropdown = w->widgets[Widx::construction_marker];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 2, 0x80);
@@ -345,7 +345,7 @@ namespace OpenLoco::Ui::Windows::Options
 #pragma mark - Vehicle zoom (Widget 15)
 
         // 0x004BFEBE
-        static void vehicleZoomMouseDown(Window* w, WidgetIndex_t wi)
+        static void vehicleZoomMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
         {
             Widget dropdown = w->widgets[Widx::vehicles_min_scale];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 4, 0x80);
@@ -375,7 +375,7 @@ namespace OpenLoco::Ui::Windows::Options
 #pragma mark - Station names minimum scale (Widget 17)
 
         // 0x004BFF72
-        static void stationNamesScaleMouseDown(Window* w, WidgetIndex_t wi)
+        static void stationNamesScaleMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
         {
             Widget dropdown = w->widgets[Widx::station_names_min_scale];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 4, 0x80);
@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 #endif
 
-        static void screenModeMouseDown(Window* w, WidgetIndex_t wi)
+        static void screenModeMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
         {
             Widget dropdown = w->widgets[Widx::screen_mode];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), 3, 0x80);
@@ -431,7 +431,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::setItemSelected(selection);
         }
 
-        static void screenModeDropdown(Window* w, int16_t selection)
+        static void screenModeDropdown([[maybe_unused]] Window* w, int16_t selection)
         {
             if (selection == -1)
                 return;
@@ -448,7 +448,7 @@ namespace OpenLoco::Ui::Windows::Options
 #pragma mark - Resolution dropdown (Widget 11)
 
         // 0x004C0026
-        static void resolutionMouseDown(Window* w, WidgetIndex_t wi)
+        static void resolutionMouseDown(Window* w, [[maybe_unused]] WidgetIndex_t wi)
         {
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
@@ -465,7 +465,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C00F4
-        static void resolutionDropdown(Window* w, int16_t index)
+        static void resolutionDropdown([[maybe_unused]] Window* w, int16_t index)
         {
             if (index == -1)
                 return;
@@ -475,7 +475,7 @@ namespace OpenLoco::Ui::Windows::Options
 
 #pragma mark -
 
-        static void displayScaleMouseDown(Window* w, WidgetIndex_t wi, float adjust_by)
+        static void displayScaleMouseDown([[maybe_unused]] Window* w, [[maybe_unused]] WidgetIndex_t wi, float adjust_by)
         {
             OpenLoco::Ui::adjustWindowScale(adjust_by);
         }
@@ -1681,7 +1681,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C0FB3
-        static void distanceSpeedDropdown(Window* w, int16_t ax)
+        static void distanceSpeedDropdown([[maybe_unused]] Window* w, int16_t ax)
         {
             if (ax == -1)
                 return;
@@ -1718,7 +1718,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C106C
-        static void heightsLabelsDropdown(Window* w, int16_t ax)
+        static void heightsLabelsDropdown([[maybe_unused]] Window* w, int16_t ax)
         {
             if (ax == -1)
                 return;

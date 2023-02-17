@@ -541,7 +541,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E42C
-    static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::image)
         {

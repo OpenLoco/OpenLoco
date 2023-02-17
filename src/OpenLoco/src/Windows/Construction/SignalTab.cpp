@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E75A
-    static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::single_direction && widgetIndex != widx::both_directions)
         {

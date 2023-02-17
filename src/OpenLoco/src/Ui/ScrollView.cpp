@@ -462,7 +462,7 @@ namespace OpenLoco::Ui::ScrollView
     }
 
     // Based on 0x004C8689
-    void scrollModalRight(const int16_t x, const int16_t y, Ui::Window* const w, Ui::Widget* const widget, const WidgetIndex_t widgetIndex)
+    void scrollModalRight(const int16_t x, const int16_t y, Ui::Window* const w, Ui::Widget* const widget, [[maybe_unused]] const WidgetIndex_t widgetIndex)
     {
         auto res = getPart(w, widget, x, y);
 

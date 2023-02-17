@@ -706,7 +706,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C21CD
-    static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+    static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 1);
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
@@ -974,7 +974,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C24CA
-    static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_vehicle_list);
@@ -1013,13 +1013,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C265B
-    static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = self.var_83C * self.rowHeight;
     }
 
     // 0x004C266D
-    static CursorId cursor(Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, CursorId fallback)
+    static CursorId cursor(Window& self, int16_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, CursorId fallback)
     {
         if (widgetIdx != Widx::scrollview)
             return fallback;
@@ -1032,7 +1032,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C26A4
-    static void onScrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         Input::setTooltipTimeout(2000);
 
@@ -1096,7 +1096,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C27C0
-    static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         uint16_t currentRow = y / self.rowHeight;
         if (currentRow >= self.var_83C)

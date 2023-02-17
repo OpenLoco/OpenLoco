@@ -136,13 +136,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A871
-        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = _messageCount * messageHeight;
         }
 
         // 0x0042A8B9
-        static void scrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseDown(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scrollIndex)
         {
             auto messageIndex = y / messageHeight;
 
@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A87C
-        static void scrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseOver(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scrollIndex)
         {
             self.flags &= ~(WindowFlags::notScrollView);
 
@@ -192,7 +192,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A70C
-        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_message_list);
@@ -216,7 +216,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A5D7
-        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
 
@@ -468,7 +468,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AAAC
-        static void onDropdown(Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
+        static void onDropdown([[maybe_unused]] Window& self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {

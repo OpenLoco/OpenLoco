@@ -93,7 +93,7 @@ CExceptionHandler crashInit()
 #endif // USE_BREAKPAD
 }
 
-void crashClose(CExceptionHandler exHandler)
+void crashClose([[maybe_unused]] CExceptionHandler exHandler)
 {
 #if defined(USE_BREAKPAD)
     delete exHandler;

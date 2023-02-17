@@ -361,7 +361,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+    static void scrollMouseDown(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
     {
         auto index = y / self.rowHeight;
         if (index >= self.rowCount)
@@ -375,7 +375,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+    static void scrollMouseOver(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
     {
         auto index = y / self.rowHeight;
         if (index >= self.rowCount)
@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         *scrollHeight = self.rowCount * self.rowHeight;
     }
 
-    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::panel)
             return;
@@ -466,7 +466,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         self.invalidate();
     }
 
-    static void onClose(Window& self)
+    static void onClose([[maybe_unused]] Window& self)
     {
         Input::toolCancel();
     }

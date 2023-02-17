@@ -224,7 +224,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00411AC6
-    static void paintTrainStationStyle0DiagonalTrack0NE(PaintSession& session, const Map::StationElement& elStation, const ImageId imageBase, const ImageId imageTranslucentBase)
+    static void paintTrainStationStyle0DiagonalTrack0NE(PaintSession& session, const Map::StationElement& elStation, const ImageId imageBase, [[maybe_unused]] const ImageId imageTranslucentBase)
     {
         const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
         Map::Pos3 bbOffset = Map::Pos3{ 2, 2, 8 } + heightOffset;
@@ -252,13 +252,13 @@ namespace OpenLoco::Paint
     }
 
     // 0x00411BA6
-    static void paintTrainStationStyle0DiagonalTrack2NE(PaintSession& session, const Map::StationElement& elStation, const ImageId imageBase, const ImageId imageTranslucentBase)
+    static void paintTrainStationStyle0DiagonalTrack2NE([[maybe_unused]] PaintSession& session, [[maybe_unused]] const Map::StationElement& elStation, [[maybe_unused]] const ImageId imageBase, [[maybe_unused]] const ImageId imageTranslucentBase)
     {
         return;
     }
 
     // 0x00411BA8
-    static void paintTrainStationStyle0DiagonalTrack3NE(PaintSession& session, const Map::StationElement& elStation, const ImageId imageBase, const ImageId imageTranslucentBase)
+    static void paintTrainStationStyle0DiagonalTrack3NE(PaintSession& session, const Map::StationElement& elStation, const ImageId imageBase, [[maybe_unused]] const ImageId imageTranslucentBase)
     {
         const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
         Map::Pos3 bbOffset = Map::Pos3{ 2, 2, 8 } + heightOffset;
@@ -267,13 +267,13 @@ namespace OpenLoco::Paint
     }
 
     // 0x00411BEB
-    static void paintTrainStationStyle0DiagonalTrack0SE(PaintSession& session, const Map::StationElement& elStation, const ImageId imageBase, const ImageId imageTranslucentBase)
+    static void paintTrainStationStyle0DiagonalTrack0SE([[maybe_unused]] PaintSession& session, [[maybe_unused]] const Map::StationElement& elStation, [[maybe_unused]] const ImageId imageBase, [[maybe_unused]] const ImageId imageTranslucentBase)
     {
         return;
     }
 
     // 0x00411BED
-    static void paintTrainStationStyle0DiagonalTrack1SE(PaintSession& session, const Map::StationElement& elStation, const ImageId imageBase, const ImageId imageTranslucentBase)
+    static void paintTrainStationStyle0DiagonalTrack1SE(PaintSession& session, const Map::StationElement& elStation, const ImageId imageBase, [[maybe_unused]] const ImageId imageTranslucentBase)
     {
         const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
         Map::Pos3 bbOffset = Map::Pos3{ 28, 34, 8 } + heightOffset;
@@ -282,7 +282,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00411C30
-    static void paintTrainStationStyle0DiagonalTrack2SE(PaintSession& session, const Map::StationElement& elStation, const ImageId imageBase, const ImageId imageTranslucentBase)
+    static void paintTrainStationStyle0DiagonalTrack2SE(PaintSession& session, const Map::StationElement& elStation, const ImageId imageBase, [[maybe_unused]] const ImageId imageTranslucentBase)
     {
         const Map::Pos3 heightOffset(0, 0, elStation.baseHeight());
         Map::Pos3 bbOffset = Map::Pos3{ 34, 28, 8 } + heightOffset;
@@ -350,7 +350,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004D78EC
-    static void paintTrainStationStyle0(PaintSession& session, const Map::StationElement& elStation, const uint8_t trackId, const uint8_t sequenceIndex, const ImageId imageBase, const ImageId imageGlassBase)
+    static void paintTrainStationStyle0(PaintSession& session, const Map::StationElement& elStation, const uint8_t trackId, [[maybe_unused]] const uint8_t sequenceIndex, const ImageId imageBase, const ImageId imageGlassBase)
     {
         switch (trackId)
         {

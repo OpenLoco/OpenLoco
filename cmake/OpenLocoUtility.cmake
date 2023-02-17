@@ -58,13 +58,8 @@ function(loco_target_compile_link_flags TARGET)
         /W4                      # Warning level 4
                                  # Poke holes in W4 due to our interop code
         /wd4068                  #   4068: unknown pragma
-        /wd4091                  #   4091: 'keyword' : ignored on left of 'type' when no variable is declared
-        /wd4100                  #   4100: 'identifier' : unreferenced formal parameter
-        /wd4132                  #   4132: 'object' : const object should be initialized
         /wd4200                  #   4200: nonstandard extension used : zero-sized array in struct/union
         /wd4201                  #   4201: nonstandard extension used : nameless struct/union
-        /wd4204                  #   4204: nonstandard extension used : non-constant aggregate initializer
-        /wd4206                  #   4206: nonstandard extension used : translation unit is empty
         /wd4221                  #   4221: nonstandard extension used : 'identifier' : cannot be initialized using address of automatic variable
         /wd4244                  #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
         /wd4245                  #   4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch

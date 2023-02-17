@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x00494BF6
-        static void sub_494BF6(Window* self, Gfx::RenderTarget* rt, string_id stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
+        static void sub_494BF6([[maybe_unused]] Window* self, Gfx::RenderTarget* rt, string_id stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
@@ -197,7 +197,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CD00E
-        static void draw(Window& self, Gfx::RenderTarget* rt)
+        static void draw([[maybe_unused]] Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 

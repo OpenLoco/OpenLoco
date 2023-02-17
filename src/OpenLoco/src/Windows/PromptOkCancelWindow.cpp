@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x00447125
-    void handleInput(uint32_t charCode, uint32_t keyCode)
+    void handleInput([[maybe_unused]] uint32_t charCode, uint32_t keyCode)
     {
         auto window = WindowManager::find(WindowType::confirmationPrompt);
         if (window == nullptr)
@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x00447093
-    static void prepareDraw(Window& self)
+    static void prepareDraw([[maybe_unused]] Window& self)
     {
         // Prepare description string for drawing.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));

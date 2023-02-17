@@ -444,7 +444,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB64
-        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             auto station = StationManager::get(StationId(self.number));
             *scrollHeight = 0;
@@ -460,7 +460,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB4F
-        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_cargo_list);
@@ -468,7 +468,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E986
-        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE4A
-        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             auto station = StationManager::get(StationId(self.number));
             *scrollHeight = 0;
@@ -655,7 +655,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE73
-        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_ratings_list);
@@ -676,7 +676,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048ED2F
-        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));

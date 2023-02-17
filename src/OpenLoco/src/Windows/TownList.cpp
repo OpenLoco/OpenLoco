@@ -142,7 +142,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A0F8
-        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -265,7 +265,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A56D
-        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             uint16_t currentRow = y / kRowHeight;
             if (currentRow > self.var_83C)
@@ -279,7 +279,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A532
-        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             self.flags &= ~(WindowFlags::notScrollView);
 
@@ -457,13 +457,13 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A4FA
-        static void getScrollSize(Ui::Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = kRowHeight * self.var_83C;
         }
 
         // 0x00491841
-        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_town_list);
@@ -471,7 +471,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x004919A4
-        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
@@ -691,13 +691,13 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A7C1
-        static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
         {
             Ui::Windows::hideGridlines();
         }
 
         // 0x0049A710
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             Map::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
@@ -713,7 +713,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A75E
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             auto mapPos = Ui::ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
             if (mapPos)
@@ -730,7 +730,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A69E
-        static void populateTownSizeSelect(Window* self, Widget* widget)
+        static void populateTownSizeSelect(Window* self, [[maybe_unused]] Widget* widget)
         {
             auto& currentSizeWidget = self->widgets[widx::current_size];
 
@@ -993,7 +993,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AD46
-        static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
         {
             removeBuildingGhost();
             Ui::Windows::hideGridlines();
@@ -1065,7 +1065,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ABF0
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             Map::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
@@ -1101,7 +1101,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ACBD
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             removeBuildingGhost();
             auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
@@ -1170,7 +1170,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AE83
-        static void getScrollSize(Ui::Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (4 + self.var_83C) / 5;
             if (*scrollHeight == 0)
@@ -1179,7 +1179,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ABBB
-        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_building_list);
@@ -1187,7 +1187,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AA1C
-        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -1256,7 +1256,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AEFD
-        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             int16_t xPos = (x / 112);
             int16_t yPos = (y / 112) * 5;
@@ -1291,7 +1291,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AEBA
-        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = y;

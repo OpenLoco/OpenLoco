@@ -327,7 +327,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00472BBC
-    static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject(Window* self)
+    static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject([[maybe_unused]] Window* self)
     {
         for (auto& entry : _tabObjectList)
         {
@@ -985,13 +985,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004738ED
-    static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = _numVisibleObjectsListed * kRowHeight;
     }
 
     // 0x00473900
-    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_object_list);
@@ -999,7 +999,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00472B54
-    static ObjectManager::ObjIndexPair getObjectFromSelection(Window* self, int16_t& y)
+    static ObjectManager::ObjIndexPair getObjectFromSelection([[maybe_unused]] Window* self, int16_t& y)
     {
         for (auto& entry : _tabObjectList)
         {
@@ -1017,7 +1017,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x0047390A
-    static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         auto objIndex = getObjectFromSelection(&self, y);
 
@@ -1047,7 +1047,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473948
-    static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         auto objIndex = getObjectFromSelection(&self, y);
         auto index = objIndex.index;
@@ -1138,7 +1138,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004739DD
-    static void onClose(Window& self)
+    static void onClose([[maybe_unused]] Window& self)
     {
         unloadUnselectedObjects();
         editorLoadSelectedObjects();

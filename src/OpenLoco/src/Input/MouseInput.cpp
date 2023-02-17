@@ -1109,7 +1109,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004C7722
-    static void stateResizing(MouseButton button, int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex)
+    static void stateResizing(MouseButton button, int16_t x, int16_t y, Ui::Window* window, [[maybe_unused]] Ui::Widget* widget, [[maybe_unused]] Ui::WidgetIndex_t widgetIndex)
     {
         auto w = WindowManager::find(_dragWindowType, _dragWindowNumber);
         if (w == nullptr)
@@ -1217,7 +1217,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004C7903
-    static void statePositioningWindow(MouseButton button, int16_t x, int16_t y, Ui::Window* window, Ui::Widget* widget, Ui::WidgetIndex_t widgetIndex)
+    static void statePositioningWindow(MouseButton button, int16_t x, int16_t y, [[maybe_unused]] Ui::Window* window, [[maybe_unused]] Ui::Widget* widget, [[maybe_unused]] Ui::WidgetIndex_t widgetIndex)
     {
         auto w = WindowManager::find(_dragWindowType, _dragWindowNumber);
         if (w == nullptr)

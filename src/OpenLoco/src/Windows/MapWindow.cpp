@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B9E7
-    static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         self.callPrepareDraw();
         *scrollWidth = kMapColumns * 2;
@@ -394,7 +394,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B97C
-    static void scrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void scrollMouseDown([[maybe_unused]] Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scrollIndex)
     {
         auto pos = mapWindowPosToLocation({ x, y });
 
@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B946
-    static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_map);
@@ -1377,7 +1377,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B806
-    static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+    static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
             return;

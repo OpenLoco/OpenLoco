@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     }
 
     // 0x004CF78A
-    static void prepareDraw(Window& self)
+    static void prepareDraw([[maybe_unused]] Window& self)
     {
         char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         strncpy(buffer, _captionString.c_str(), 256);

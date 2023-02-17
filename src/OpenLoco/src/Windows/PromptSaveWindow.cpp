@@ -110,7 +110,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     }
 
     // 0x0043C3F4
-    static void onMouseUp(Window& self, const WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     }
 
     // 0x0043C577
-    static void onClose(Window& self)
+    static void onClose([[maybe_unused]] Window& self)
     {
         unsetPauseFlag(2);
         Audio::unpauseSound();

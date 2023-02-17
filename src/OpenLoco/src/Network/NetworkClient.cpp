@@ -128,7 +128,7 @@ bool NetworkClient::hasTimedOut() const
     return false;
 }
 
-void NetworkClient::onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
+void NetworkClient::onReceivePacket([[maybe_unused]] IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
 {
     // TODO do we really need the check, it is possible but unlikely
     //      for something else to hijack the UDP client port

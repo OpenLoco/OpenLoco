@@ -46,7 +46,7 @@ namespace OpenLoco::Map::MapGenerator
         int32_t const height;
         int32_t const pitch;
 
-        HeightMap(int32_t width, int32_t height, int32_t pitch, uint8_t baseHeight)
+        HeightMap(int32_t width, int32_t height, int32_t pitch, [[maybe_unused]] uint8_t baseHeight)
             : _height(width * pitch)
             , width(width)
             , height(height)
@@ -416,7 +416,7 @@ namespace OpenLoco::Map::MapGenerator
     }
 
     // 0x004C4BD7
-    static void generateWater(HeightMap& heightMap)
+    static void generateWater([[maybe_unused]] HeightMap& heightMap)
     {
         static loco_global<uint16_t, 0x00525FB2> _seaLevel;
 
@@ -557,7 +557,7 @@ namespace OpenLoco::Map::MapGenerator
         _heightMap = nullptr;
     }
 
-    static void generateTerrainNull(HeightMap& heightMap, uint8_t surfaceStyle) {}
+    static void generateTerrainNull([[maybe_unused]] HeightMap& heightMap, [[maybe_unused]] uint8_t surfaceStyle) {}
 
     using GenerateTerrainFunc = void (*)(HeightMap&, uint8_t);
     static const GenerateTerrainFunc _generateFuncs[] = {

@@ -126,7 +126,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D695
-    static void loadsaveMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void loadsaveMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -201,7 +201,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D7C1
-    static void audioMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void audioMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -223,7 +223,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x004402DA
-    static void mapGenerationMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void mapGenerationMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();

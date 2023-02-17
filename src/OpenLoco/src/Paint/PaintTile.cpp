@@ -92,31 +92,31 @@ namespace OpenLoco::Paint
     }
 
     // 0x004792E7 streetlights?
-    static void sub_4792E7(PaintSession& session)
+    static void sub_4792E7([[maybe_unused]] PaintSession& session)
     {
         call(0x004792E7);
     }
 
     // 0x0046748F
-    static void sub_46748F(PaintSession& session)
+    static void sub_46748F([[maybe_unused]] PaintSession& session)
     {
         call(0x0046748F);
     }
 
     // 0x0045CA67
-    static void sub_45CA67(PaintSession& session)
+    static void sub_45CA67([[maybe_unused]] PaintSession& session)
     {
         call(0x0045CA67);
     }
 
     // 0x0045CC1B
-    static void sub_45CC1B(PaintSession& session)
+    static void sub_45CC1B([[maybe_unused]] PaintSession& session)
     {
         call(0x0045CC1B);
     }
 
     // 0x0042AC9C
-    static bool sub_42AC9C(PaintSession& session)
+    static bool sub_42AC9C([[maybe_unused]] PaintSession& session)
     {
         registers regs;
         call(0x0042AC9C, regs);
@@ -124,7 +124,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004656BF
-    static void paintSurface(PaintSession& session, Map::SurfaceElement& elSurface)
+    static void paintSurface([[maybe_unused]] PaintSession& session, Map::SurfaceElement& elSurface)
     {
         registers regs;
         regs.esi = X86Pointer(&elSurface);
@@ -133,7 +133,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0042C6C4
-    static void paintBuilding(PaintSession& session, Map::BuildingElement& elBuilding)
+    static void paintBuilding([[maybe_unused]] PaintSession& session, Map::BuildingElement& elBuilding)
     {
         registers regs;
         regs.esi = X86Pointer(&elBuilding);
@@ -143,7 +143,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004C3D7C
-    static void paintWall(PaintSession& session, Map::WallElement& elWall)
+    static void paintWall([[maybe_unused]] PaintSession& session, Map::WallElement& elWall)
     {
         registers regs;
         regs.esi = X86Pointer(&elWall);
@@ -153,7 +153,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004759A6
-    static void paintRoad(PaintSession& session, Map::RoadElement& elRoad)
+    static void paintRoad([[maybe_unused]] PaintSession& session, Map::RoadElement& elRoad)
     {
         registers regs;
         regs.esi = X86Pointer(&elRoad);

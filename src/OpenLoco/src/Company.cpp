@@ -70,7 +70,7 @@ namespace OpenLoco
         call(0x00431035, regs);
     }
 
-    static void nullsub_3(Company* company)
+    static void nullsub_3([[maybe_unused]] Company* company)
     {
     }
 
@@ -95,7 +95,7 @@ namespace OpenLoco
         call(0x004311E7, regs);
     }
 
-    static void nullsub_4(Company* company)
+    static void nullsub_4([[maybe_unused]] Company* company)
     {
     }
 

@@ -31,7 +31,7 @@ namespace OpenLoco::Interop
     *(data + 2) = ((addr)&0x00ff0000) >> 16;  \
     *(data + 3) = ((addr)&0xff000000) >> 24;
 
-    static bool hookFunc(uintptr_t address, uintptr_t hookAddress, int32_t stacksize)
+    static bool hookFunc(uintptr_t address, uintptr_t hookAddress, [[maybe_unused]] int32_t stacksize)
     {
         int32_t i = 0;
         uint8_t data[kHookByteCount] = { 0 };

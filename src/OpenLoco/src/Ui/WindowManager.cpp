@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::WindowManager
 
         registerHook(
             0x0043CB9F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 Windows::TitleMenu::editorInit();
 
                 return 0;
@@ -397,7 +397,7 @@ namespace OpenLoco::Ui::WindowManager
 
         registerHook(
             0x004CD3D0,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 dispatchUpdateAll();
                 return 0;
             });

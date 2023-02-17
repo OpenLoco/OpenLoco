@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A86D
-    void zoomMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    void zoomMenuDropdown(Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A624
-    void rotateMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    void rotateMenuDropdown(Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -303,7 +303,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043AF37
-    void viewMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    void viewMenuDropdown(Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -332,7 +332,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A4A8
-    void terraformMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    void terraformMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -362,7 +362,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A28C
-    void roadMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    void roadMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -375,7 +375,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A932
-    void townsMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    void townsMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -453,7 +453,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
     }
 
-    void onUpdate(Window& window)
+    void onUpdate([[maybe_unused]] Window& window)
     {
         _zoomTicks++;
     }

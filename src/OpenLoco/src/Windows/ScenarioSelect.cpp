@@ -463,7 +463,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443F32
-    static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self.currentTab);
 
@@ -489,7 +489,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443FB2
-    static void onScrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self.currentTab);
 
@@ -510,7 +510,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00444001
-    static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_scenario_list);
