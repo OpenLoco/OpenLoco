@@ -314,7 +314,10 @@ namespace OpenLoco::Scenario
 
         Audio::pauseSound();
         static loco_global<char[512], 0x00112CE04> _scenarioFilename;
-        std::strncpy(&*_scenarioFilename, fullPath.u8string().c_str(), std::size(_scenarioFilename));
+
+        auto fullPath8 = path.u8string();
+        const auto fullPath8s = std::string(fullPath8.cbegin(), fullPath8.cend());
+        std::strncpy(&*_scenarioFilename, fullPath8s.c_str(), std::size(_scenarioFilename));
         auto result = S5::importSaveToGameState(fullPath, S5::LoadFlags::scenario);
         Audio::unpauseSound();
         return result;
@@ -369,7 +372,9 @@ namespace OpenLoco::Scenario
 
         auto savePath = Environment::getPath(Environment::PathId::save);
         savePath /= std::string(S5::getOptions().scenarioName) + S5::extensionSV5;
-        std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
+        auto savePath8 = savePath.u8string();
+        const auto savePath8s = std::string(savePath8.cbegin(), savePath8.cend());
+        std::strncpy(_currentScenarioFilename, savePath8s.c_str(), std::size(_currentScenarioFilename));
 
         call(0x004C159C);
         Gfx::loadCurrency();
@@ -407,7 +412,9 @@ namespace OpenLoco::Scenario
             return false;
 
         gameState.rng = Core::Prng(Platform::getTime() ^ oldRng.srand_0(), oldRng.srand_1());
-        std::strncpy(gameState.scenarioFileName, path.u8string().c_str(), std::size(gameState.scenarioFileName) - 1);
+        auto path8 = path.u8string();
+        const auto path8s = std::string(path8.cbegin(), path8.cend());
+        std::strncpy(gameState.scenarioFileName, path8s.c_str(), std::size(gameState.scenarioFileName) - 1);
         start();
     }
 

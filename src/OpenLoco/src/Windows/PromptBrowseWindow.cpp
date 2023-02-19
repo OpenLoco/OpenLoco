@@ -118,7 +118,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Utility::strlcpy(_filter, filter, _filter.size());
 
         changeDirectory(directory.make_preferred());
-        inputSession = Ui::TextInput::InputSession(baseName, 200);
+        const auto baseName8s = std::string(baseName.cbegin(), baseName.cend());
+        inputSession = Ui::TextInput::InputSession(baseName8s, 200);
 
         initEvents();
 
@@ -245,7 +246,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (Input::state() == Input::State::scrollLeft)
         {
             // Copy the selected filename without extension to text input buffer.
-            inputSession.buffer = entry.stem().u8string();
+            const auto stem8 = entry.stem().u8string();
+            const auto stem8s = std::string(stem8.cbegin(), stem8.cend());
+            inputSession.buffer = stem8s;
             inputSession.cursorPosition = inputSession.buffer.length();
             self.invalidate();
 
@@ -339,7 +342,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // We'll ensure the folder width does not reach the parent button.
         const uint16_t maxWidth = self.widgets[widx::parent_button].left - folderLabelWidth - 10;
-        const std::string nameBuffer = _currentDirectory.u8string();
+
+        const auto currentDirectory8 = _currentDirectory.u8string();
+        const std::string nameBuffer = std::string(currentDirectory8.cbegin(), currentDirectory8.cend());
         strncpy(&_displayFolderBuffer[0], nameBuffer.c_str(), 512);
         uint16_t folderWidth = drawingCtx.getStringWidth(_displayFolderBuffer);
 
@@ -398,9 +403,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto width = window.width - widget.right - 8;
                 auto x = window.x + widget.right + 3;
                 auto y = window.y + 45;
-
-                const std::string nameBuffer = selectedFile.stem().u8string();
-                auto args = getStringPtrFormatArgs(nameBuffer.c_str());
+                const auto stem8 = selectedFile.stem().u8string();
+                const auto stem8s = std::string(stem8.cbegin(), stem8.cend());
+                auto args = getStringPtrFormatArgs(stem8s.c_str());
                 drawingCtx.drawStringCentredClipped(
                     *rt,
                     x + (width / 2),
@@ -606,9 +611,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
                 // Copy name to our work buffer (if drive letter use the full path)
                 const auto nameBuffer = isRootPath(entry) ? entry.u8string() : entry.stem().u8string();
+                const auto nameBuffer8s = std::string(nameBuffer.cbegin(), nameBuffer.cend());
 
                 // Draw the name
-                auto args = getStringPtrFormatArgs(nameBuffer.c_str());
+                auto args = getStringPtrFormatArgs(nameBuffer8s.c_str());
                 drawingCtx.drawStringLeft(rt, x, y, Colour::black, stringId, &args);
             }
             y += lineHeight;
@@ -709,8 +715,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     // Filter files by extension
                     if (file.is_regular_file())
                     {
-                        auto extension = file.path().extension().u8string();
-                        if (!Utility::iequals(extension, filterExtension))
+                        auto extension8 = file.path().extension().u8string();
+                        const auto extension8s = std::string(extension8.cbegin(), extension8.cend());
+                        if (!Utility::iequals(extension8s, filterExtension))
                             continue;
                     }
 
@@ -837,15 +844,25 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         // Copy directory and filename to buffer.
-        strncpy(_savePath.get(), path.u8string().c_str(), std::size(_savePath));
+        auto path8 = path.u8string();
+        const auto path8s = std::string(path8.cbegin(), path8.cend());
+        strncpy(_savePath.get(), path8s.c_str(), std::size(_savePath));
 
         // Remember the current path for saved games
         if (_fileType == BrowseFileType::savedGame)
         {
             if (!fs::is_directory(_currentDirectory))
-                Config::get().lastSavePath = _currentDirectory.parent_path().u8string();
+            {
+                const auto parentDirectory8 = _currentDirectory.parent_path().u8string();
+                const auto parentDirectory8s = std::string(parentDirectory8.cbegin(), parentDirectory8.cend());
+                Config::get().lastSavePath = parentDirectory8s;
+            }
             else
-                Config::get().lastSavePath = _currentDirectory.u8string();
+            {
+                const auto currentDirectory8 = _currentDirectory.u8string();
+                const auto currentDirectory8s = std::string(currentDirectory8.cbegin(), currentDirectory8.cend());
+                Config::get().lastSavePath = currentDirectory8s;
+            }
             Config::write();
             Environment::resolvePaths();
         }
@@ -863,7 +880,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], entry.stem().u8string().c_str(), 512);
+        const auto stem8 = entry.stem().u8string();
+        const auto stem8s = std::string(stem8.cbegin(), stem8.cend());
+        strncpy(&buffer_2039[0], stem8s.c_str(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);

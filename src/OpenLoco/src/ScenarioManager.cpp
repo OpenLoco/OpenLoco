@@ -259,10 +259,11 @@ namespace OpenLoco::ScenarioManager
     static std::optional<uint32_t> findScenario(const fs::path& fileName)
     {
         const auto u8FileName = fileName.filename().u8string();
+        const auto u8sFileName = std::string(u8FileName.cbegin(), u8FileName.cend());
         const auto* begin = &_scenarioList[0];
         const auto* end = &_scenarioList[_scenarioHeader->numScenarios];
-        auto res = std::find_if(begin, end, [&u8FileName](const ScenarioIndexEntry& entry) {
-            return std::strcmp(entry.filename, u8FileName.c_str()) == 0;
+        auto res = std::find_if(begin, end, [&u8sFileName](const ScenarioIndexEntry& entry) {
+            return std::strcmp(entry.filename, u8sFileName.c_str()) == 0;
         });
         if (res != end)
         {
@@ -303,7 +304,10 @@ namespace OpenLoco::ScenarioManager
             {
                 continue;
             }
-            if (!Utility::iequals(file.path().extension().u8string(), ".sc5"))
+
+            auto extension8 = file.path().extension().u8string();
+            const auto extension8s = std::string(extension8.cbegin(), extension8.cend());
+            if (!Utility::iequals(extension8s, ".sc5"))
             {
                 continue;
             }
@@ -356,8 +360,9 @@ namespace OpenLoco::ScenarioManager
             loadScenarioProgress(entry, *options);
             if (!foundId.has_value())
             {
-                _scenarioHeader->numScenarios++;
-                std::strcpy(entry.filename, u8FileName.c_str());
+                _scenarioHeader->numScenarios++; 
+                const auto u8sFileName = std::string(u8FileName.cbegin(), u8FileName.cend());
+                std::strcpy(entry.filename, u8sFileName.c_str());
             }
             loadScenarioDetails(entry, *options);
         }

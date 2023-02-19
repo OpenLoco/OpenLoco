@@ -195,7 +195,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         // Store path to active file
         static loco_global<char[256], 0x0050B745> _currentGameFilePath;
-        strncpy(&_currentGameFilePath[0], path.u8string().c_str(), std::size(_currentGameFilePath));
+        auto path8 = path.u8string();
+        const auto path8s = std::string(path8.cbegin(), path8.cend());
+        strncpy(&_currentGameFilePath[0], path8s.c_str(), std::size(_currentGameFilePath));
 
         uint32_t flags = 0;
         if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))

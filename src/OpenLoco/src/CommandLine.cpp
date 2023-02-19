@@ -451,11 +451,8 @@ namespace OpenLoco
 
         try
         {
-            const auto u8path = std::u8string(options.path.cbegin(), options.path.cend());
-            auto path = fs::path(u8path);
-
             MemoryStream ms;
-            SawyerStreamReader reader(path);
+            SawyerStreamReader reader(options.path);
             SawyerStreamWriter writer(ms);
 
             if (!reader.validateChecksum())
@@ -531,16 +528,19 @@ namespace OpenLoco
             return 2;
         }
 
-        auto inPath = fs::u8path(options.path);
-        auto outPath = fs::u8path(options.outputPath);
-
+        auto inPath = options.path;
+        auto outPath = options.outputPath;
+        auto inPath8 = inPath.u8string();
+        const auto inPath8s = std::string(inPath8.cbegin(), inPath8.cend());
+        auto outPath8 = outPath.u8string();
+        const auto outPath8s = std::string(outPath8.cbegin(), outPath8.cend());
         try
         {
             OpenLoco::simulateGame(inPath, *options.ticks);
         }
         catch (...)
         {
-            std::fprintf(stderr, "Unable to load and simulate %s\n", inPath.u8string().c_str());
+            std::fprintf(stderr, "Unable to load and simulate %s\n", inPath8s.c_str());
         }
 
         auto& gameState = getGameState();
@@ -548,7 +548,7 @@ namespace OpenLoco
         std::printf("- Simulate\n");
         std::printf("--------------------------------\n");
         std::printf("Input:\n");
-        std::printf("  path:  %s\n", inPath.u8string().c_str());
+        std::printf("  path:  %s\n", inPath8s.c_str());
         std::printf("  ticks: %d ticks\n", *options.ticks);
         std::printf("Output:\n");
         std::printf("  scenario ticks: %u\n", gameState.scenarioTicks);
@@ -559,11 +559,11 @@ namespace OpenLoco
             try
             {
                 S5::exportGameStateToFile(outPath, S5::SaveFlags::none);
-                std::printf("  path:           %s\n", outPath.u8string().c_str());
+                std::printf("  path:           %s\n", outPath8s.c_str());
             }
             catch (...)
             {
-                std::fprintf(stderr, "Unable to save game to %s\n", outPath.u8string().c_str());
+                std::fprintf(stderr, "Unable to save game to %s\n", outPath8s.c_str());
             }
         }
 

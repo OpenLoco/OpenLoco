@@ -220,7 +220,8 @@ namespace OpenLoco
         if (fs::exists(tempFilePath))
         {
             auto path8 = tempFilePath.u8string();
-            printf("Removing temp file '%s'\n", path8.c_str());
+            const auto path8s = std::string(path8.cbegin(), path8.cend());
+            printf("Removing temp file '%s'\n", path8s.c_str());
             fs::remove(tempFilePath);
         }
         crashClose(_exHandler);
@@ -322,7 +323,8 @@ namespace OpenLoco
     static void loadFile(const fs::path& path)
     {
         auto extension = path.extension().u8string();
-        if (Utility::iequals(extension, S5::extensionSC5))
+        const auto extension8s = std::string(extension.cbegin(), extension.cend());
+        if (Utility::iequals(extension8s, S5::extensionSC5))
         {
             Scenario::loadAndStart(path);
         }
@@ -330,11 +332,6 @@ namespace OpenLoco
         {
             S5::importSaveToGameState(path, 0);
         }
-    }
-
-    static void loadFile(const std::string& path)
-    {
-        loadFile(fs::u8path(path));
     }
 
     static void launchGame()
@@ -826,7 +823,8 @@ namespace OpenLoco
                     {
                         auto& path = f.path();
                         auto filename = path.filename().u8string();
-                        if (Utility::startsWith(filename, "autosave_") && Utility::endsWith(filename, S5::extensionSV5, true))
+                        const auto filename8s = std::string(filename.cbegin(), filename.cend());
+                        if (Utility::startsWith(filename8s, "autosave_") && Utility::endsWith(filename8s, S5::extensionSV5, true))
                         {
                             autosaveFiles.push_back(path);
                         }
@@ -844,7 +842,8 @@ namespace OpenLoco
                     for (size_t i = 0; i < numToDelete; i++)
                     {
                         auto path8 = autosaveFiles[i].u8string();
-                        std::printf("Deleting old autosave: %s\n", path8.c_str());
+                        const auto path8s = std::string(path8.cbegin(), path8.cend());
+                        std::printf("Deleting old autosave: %s\n", path8s.c_str());
                         fs::remove(autosaveFiles[i]);
                     }
                 }
@@ -882,7 +881,8 @@ namespace OpenLoco
             auto autosaveFullPath = autosaveDirectory / filename;
 
             auto autosaveFullPath8 = autosaveFullPath.u8string();
-            std::printf("Autosaving game to %s\n", autosaveFullPath8.c_str());
+            auto autosaveFullPath8s = std::string(autosaveFullPath8.cbegin(), autosaveFullPath8.cend());
+            std::printf("Autosaving game to %s\n", autosaveFullPath8s.c_str());
             S5::exportGameStateToFile(autosaveFullPath, S5::SaveFlags::noWindowClose);
         }
         catch (const std::exception& e)

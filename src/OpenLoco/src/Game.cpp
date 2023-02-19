@@ -91,7 +91,9 @@ namespace OpenLoco::Game
     bool saveScenarioOpen()
     {
         auto path = fs::u8path(&_pathScenarios[0]).parent_path() / S5::getOptions().scenarioName;
-        strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
+        auto path8 = path.u8string();
+        const auto path8s = std::string(path8.cbegin(), path8.cend());
+        strncpy(&_savePath[0], path8s.c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
         return openBrowsePrompt(StringIds::title_prompt_save_scenario, browse_type::save, S5::filterSC5);
@@ -108,7 +110,9 @@ namespace OpenLoco::Game
         }
 
         auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / S5::getOptions().scenarioName;
-        strncpy(&_savePath[0], path.u8string().c_str(), std::size(_savePath));
+        auto path8 = path.u8string();
+        const auto path8s = std::string(path8.cbegin(), path8.cend());
+        strncpy(&_savePath[0], path8s.c_str(), std::size(_savePath));
         strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
 
         return openBrowsePrompt(StringIds::title_prompt_save_landscape, browse_type::save, S5::filterSC5);
@@ -139,7 +143,9 @@ namespace OpenLoco::Game
             {
                 // 0x0043C087
                 auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
-                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+                auto path8 = path.u8string();
+                const auto path8s = std::string(path8.cbegin(), path8.cend());
+                std::strncpy(&_currentScenarioFilename[0], path8s.c_str(), std::size(_currentScenarioFilename));
 
                 if (sub_4424CE())
                 {
@@ -154,7 +160,9 @@ namespace OpenLoco::Game
             {
                 // 0x0043C033
                 auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
-                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+                auto path8 = path.u8string();
+                const auto path8s = std::string(path8.cbegin(), path8.cend());
+                std::strncpy(&_currentScenarioFilename[0], path8s.c_str(), std::size(_currentScenarioFilename));
 
                 if (S5::importSaveToGameState(path, 0))
                 {
@@ -285,7 +293,9 @@ namespace OpenLoco::Game
             {
                 // 0x0043C446
                 auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
-                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+                auto path8 = path.u8string();
+                const auto path8s = std::string(path8.cbegin(), path8.cend());
+                std::strncpy(&_currentScenarioFilename[0], path8s.c_str(), std::size(_currentScenarioFilename));
 
                 uint32_t flags = 0;
                 if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
@@ -325,7 +335,9 @@ namespace OpenLoco::Game
     {
         // 0x0043C4B3
         auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
-        std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
+        auto path8 = path.u8string();
+        const auto path8s = std::string(path8.cbegin(), path8.cend());
+        std::strncpy(&_currentScenarioFilename[0], path8s.c_str(), std::size(_currentScenarioFilename));
 
         bool saveResult = !S5::exportGameStateToFile(path, S5::SaveFlags::scenario);
         if (saveResult)

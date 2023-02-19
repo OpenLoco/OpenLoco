@@ -1,5 +1,6 @@
 #pragma once
 
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <optional>
 #include <string>
 
@@ -21,9 +22,9 @@ namespace OpenLoco
     {
         CommandLineAction action = CommandLineAction::none;
         std::string address;
-        std::string path;
+        fs::path path;
         std::optional<int32_t> ticks;
-        std::string outputPath;
+        fs::path outputPath;
         std::string bind;
         std::optional<uint16_t> port{};
     };

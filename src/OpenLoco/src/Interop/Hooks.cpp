@@ -649,9 +649,10 @@ void OpenLoco::Interop::registerHooks()
 
             auto buffer = (char*)0x009D0D72;
             auto path = getPath((PathId)regs.ebx);
-
+            auto path8 = path.make_preferred().u8string();
+            const auto path8s = std::string(path8.cbegin(), path8.cend());
             // TODO: use Utility::strlcpy with the buffer size instead of std::strcpy, if possible
-            std::strcpy(buffer, path.make_preferred().u8string().c_str());
+            std::strcpy(buffer, path8s.c_str());
 
             regs.ebx = X86Pointer(buffer);
             return 0;
