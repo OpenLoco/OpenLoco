@@ -57,9 +57,9 @@ namespace OpenLoco
         baseImageId = imgRes.imageOffset;
 
         auto imageExtents = Gfx::getImagesMaxExtent(ImageId(baseImageId), numImages);
-        var_05 = imageExtents.width;
-        var_06 = imageExtents.heightNegative;
-        var_07 = imageExtents.heightPositive;
+        spriteWidth = imageExtents.width;
+        spriteHeightNegative = imageExtents.heightNegative;
+        spriteHeightPositive = imageExtents.heightPositive;
 
         assert(remainingData.size() == imgRes.tableLength);
     }
@@ -73,9 +73,9 @@ namespace OpenLoco
         totalNumFramesType1 = 0;
         frameInfoType0 = nullptr;
         frameInfoType1 = nullptr;
-        var_05 = 0;
-        var_06 = 0;
-        var_07 = 0;
+        spriteWidth = 0;
+        spriteHeightNegative = 0;
+        spriteHeightPositive = 0;
 
         // Unsure of var_1F size 9th position might be a terminator
         std::fill_n(std::begin(soundEffects), 8, 0);

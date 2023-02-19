@@ -28,10 +28,10 @@ void EntityBase::moveTo(const Map::Pos3& loc)
     }
 
     const auto vpPos = Map::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
-    spriteLeft = vpPos.x - var_14;
-    spriteRight = vpPos.x + var_14;
-    spriteTop = vpPos.y - var_09;
-    spriteBottom = vpPos.y + var_15;
+    spriteLeft = vpPos.x - spriteWidth;
+    spriteRight = vpPos.x + spriteWidth;
+    spriteTop = vpPos.y - spriteHeightNegative;
+    spriteBottom = vpPos.y + spriteHeightPositive;
 }
 
 // 0x004CBB01

@@ -2232,8 +2232,8 @@ namespace OpenLoco::Vehicles
         const auto* vehObj = train.cars.firstCar.body->getObject();
         if (vehObj != nullptr && vehObj->numStartSounds != 0)
         {
-            auto numSounds = vehObj->numStartSounds & NumStartSounds::mask;
-            if (vehObj->numStartSounds & NumStartSounds::hasCrossingWhistle)
+            auto numSounds = vehObj->numStartSounds & NumStartSounds::kMask;
+            if (vehObj->numStartSounds & NumStartSounds::kHasCrossingWhistle)
             {
                 // remove the crossing whistle from available sounds to play
                 numSounds = std::max(numSounds - 1, 1);
@@ -3129,7 +3129,7 @@ namespace OpenLoco::Vehicles
         const auto* vehObj = train.cars.firstCar.body->getObject();
         if (vehObj != nullptr && vehObj->numStartSounds != 0)
         {
-            auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::mask) - 1);
+            auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::kMask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
             Vehicle2* veh2 = _vehicleUpdate_2;
             Audio::playSound(randSoundId, veh2->position + Map::Pos3{ 0, 0, 22 }, 0, 22050);
@@ -3155,7 +3155,7 @@ namespace OpenLoco::Vehicles
         if (vehObj != nullptr && vehObj->numStartSounds != 0)
         {
 
-            auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::mask) - 1);
+            auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::kMask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
 
             Vehicle2* veh2 = _vehicleUpdate_2;

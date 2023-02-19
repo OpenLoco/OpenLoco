@@ -150,9 +150,9 @@ namespace OpenLoco::Vehicles
         newBogie->var_60 = 0; // different to createbody
         newBogie->var_61 = 0; // different to createbody
 
-        newBogie->var_14 = 1;
-        newBogie->var_09 = 1;
-        newBogie->var_15 = 1;
+        newBogie->spriteWidth = 1;
+        newBogie->spriteHeightNegative = 1;
+        newBogie->spriteHeightPositive = 1;
 
         newBogie->colourScheme = colourScheme;
         lastVeh->setNextCar(newBogie->id);
@@ -198,8 +198,8 @@ namespace OpenLoco::Vehicles
             // in the front car component body
             if (vehObject.numSimultaneousCargoTypes > 1)
             {
-                newBogie->secondaryCargo.maxQty = vehObject.maxSecondaryCargo;
-                newBogie->secondaryCargo.acceptedTypes = vehObject.secondaryCargoTypes;
+                newBogie->secondaryCargo.maxQty = vehObject.maxCargo[1];
+                newBogie->secondaryCargo.acceptedTypes = vehObject.cargoTypes[1];
                 auto cargoType = Utility::bitScanForward(newBogie->secondaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
@@ -211,9 +211,9 @@ namespace OpenLoco::Vehicles
         newBogie->objectSpriteType = vehObject.var_24[bodyNumber].frontBogieSpriteInd;
         if (newBogie->objectSpriteType != SpriteIndex::null)
         {
-            newBogie->var_14 = vehObject.bogieSprites[newBogie->objectSpriteType].var_02;
-            newBogie->var_09 = vehObject.bogieSprites[newBogie->objectSpriteType].var_03;
-            newBogie->var_15 = vehObject.bogieSprites[newBogie->objectSpriteType].var_04;
+            newBogie->spriteWidth = vehObject.bogieSprites[newBogie->objectSpriteType].width;
+            newBogie->spriteHeightNegative = vehObject.bogieSprites[newBogie->objectSpriteType].heightNegative;
+            newBogie->spriteHeightPositive = vehObject.bogieSprites[newBogie->objectSpriteType].heightPositive;
         }
         return newBogie;
     }
@@ -230,9 +230,9 @@ namespace OpenLoco::Vehicles
         newBogie->objectSpriteType = vehObject.var_24[bodyNumber].backBogieSpriteInd;
         if (newBogie->objectSpriteType != SpriteIndex::null)
         {
-            newBogie->var_14 = vehObject.bogieSprites[newBogie->objectSpriteType].var_02;
-            newBogie->var_09 = vehObject.bogieSprites[newBogie->objectSpriteType].var_03;
-            newBogie->var_15 = vehObject.bogieSprites[newBogie->objectSpriteType].var_04;
+            newBogie->spriteWidth = vehObject.bogieSprites[newBogie->objectSpriteType].width;
+            newBogie->spriteHeightNegative = vehObject.bogieSprites[newBogie->objectSpriteType].heightNegative;
+            newBogie->spriteHeightPositive = vehObject.bogieSprites[newBogie->objectSpriteType].heightPositive;
         }
         return newBogie;
     }
@@ -277,8 +277,8 @@ namespace OpenLoco::Vehicles
             // Locomotives do not carry any cargo.
             if (vehObject.numSimultaneousCargoTypes != 0)
             {
-                newBody->primaryCargo.maxQty = vehObject.maxPrimaryCargo;
-                newBody->primaryCargo.acceptedTypes = vehObject.primaryCargoTypes;
+                newBody->primaryCargo.maxQty = vehObject.maxCargo[0];
+                newBody->primaryCargo.acceptedTypes = vehObject.cargoTypes[0];
                 auto cargoType = Utility::bitScanForward(newBody->primaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
@@ -287,9 +287,9 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        newBody->var_14 = 1;
-        newBody->var_09 = 1;
-        newBody->var_15 = 1;
+        newBody->spriteWidth = 1;
+        newBody->spriteHeightNegative = 1;
+        newBody->spriteHeightPositive = 1;
 
         // different onwards to create bogie
         auto spriteType = vehObject.var_24[bodyNumber].bodySpriteInd;
@@ -305,9 +305,9 @@ namespace OpenLoco::Vehicles
 
         if (newBody->objectSpriteType != SpriteIndex::null)
         {
-            newBody->var_14 = vehObject.bodySprites[newBody->objectSpriteType].var_08;
-            newBody->var_09 = vehObject.bodySprites[newBody->objectSpriteType].var_09;
-            newBody->var_15 = vehObject.bodySprites[newBody->objectSpriteType].var_0A;
+            newBody->spriteWidth = vehObject.bodySprites[newBody->objectSpriteType].width;
+            newBody->spriteHeightNegative = vehObject.bodySprites[newBody->objectSpriteType].heightNegative;
+            newBody->spriteHeightPositive = vehObject.bodySprites[newBody->objectSpriteType].heightPositive;
         }
 
         newBody->colourScheme = colourScheme; // same as create bogie
@@ -440,9 +440,9 @@ namespace OpenLoco::Vehicles
         newHead->subPosition = 0;
         newHead->trackAndDirection = TrackAndDirection(0, 0);
         newHead->routingHandle = routingHandle;
-        newHead->var_14 = 0;
-        newHead->var_09 = 0;
-        newHead->var_15 = 0;
+        newHead->spriteWidth = 0;
+        newHead->spriteHeightNegative = 0;
+        newHead->spriteHeightPositive = 0;
         newHead->var_38 = Flags38::none;
         newHead->var_3C = 0;
         newHead->vehicleType = vehicleType;
@@ -478,9 +478,9 @@ namespace OpenLoco::Vehicles
         newVeh1->subPosition = 0;
         newVeh1->trackAndDirection = TrackAndDirection(0, 0);
         newVeh1->routingHandle = lastVeh->getRoutingHandle();
-        newVeh1->var_14 = 0;
-        newVeh1->var_09 = 0;
-        newVeh1->var_15 = 0;
+        newVeh1->spriteWidth = 0;
+        newVeh1->spriteHeightNegative = 0;
+        newVeh1->spriteHeightPositive = 0;
         newVeh1->var_38 = Flags38::none;
         newVeh1->var_3C = 0;
         newVeh1->var_44 = 0_mph;
@@ -509,9 +509,9 @@ namespace OpenLoco::Vehicles
         newVeh2->subPosition = 0;
         newVeh2->trackAndDirection = TrackAndDirection(0, 0);
         newVeh2->routingHandle = lastVeh->getRoutingHandle();
-        newVeh2->var_14 = 0;
-        newVeh2->var_09 = 0;
-        newVeh2->var_15 = 0;
+        newVeh2->spriteWidth = 0;
+        newVeh2->spriteHeightNegative = 0;
+        newVeh2->spriteHeightPositive = 0;
         newVeh2->var_38 = Flags38::none;
         newVeh2->currentSpeed = 0.0_mph;
         newVeh2->var_5A = 0;
@@ -545,9 +545,9 @@ namespace OpenLoco::Vehicles
         newTail->subPosition = 0;
         newTail->trackAndDirection = TrackAndDirection(0, 0);
         newTail->routingHandle = lastVeh->getRoutingHandle();
-        newTail->var_14 = 0;
-        newTail->var_09 = 0;
-        newTail->var_15 = 0;
+        newTail->spriteWidth = 0;
+        newTail->spriteHeightNegative = 0;
+        newTail->spriteHeightPositive = 0;
         newTail->var_38 = Flags38::none;
         newTail->drivingSoundId = SoundObjectId::null;
         newTail->objectId = -1;

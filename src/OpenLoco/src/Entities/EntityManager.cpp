@@ -234,9 +234,9 @@ namespace OpenLoco::EntityManager
         insertToSpatialIndex(*newEntity);
 
         newEntity->name = StringIds::empty_pop;
-        newEntity->var_14 = 16;
-        newEntity->var_09 = 20;
-        newEntity->var_15 = 8;
+        newEntity->spriteWidth = 16;
+        newEntity->spriteHeightNegative = 20;
+        newEntity->spriteHeightPositive = 8;
         newEntity->vehicleFlags = VehicleFlags::none;
         newEntity->spriteLeft = Location::null;
 

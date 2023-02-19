@@ -186,9 +186,9 @@ namespace OpenLoco
             _exhaust->moveTo(loc);
             _exhaust->objectId = type;
             const auto* obj = _exhaust->getObject();
-            _exhaust->var_14 = obj->var_05;
-            _exhaust->var_09 = obj->var_06;
-            _exhaust->var_15 = obj->var_07;
+            _exhaust->spriteWidth = obj->spriteWidth;
+            _exhaust->spriteHeightNegative = obj->spriteHeightNegative;
+            _exhaust->spriteHeightPositive = obj->spriteHeightPositive;
             _exhaust->setSubType(MiscEntityType::exhaust);
             _exhaust->frameNum = 0;
             _exhaust->stationaryProgress = 0;
@@ -219,9 +219,9 @@ namespace OpenLoco
         auto t = static_cast<Smoke*>(EntityManager::createEntityMisc());
         if (t != nullptr)
         {
-            t->var_14 = 44;
-            t->var_09 = 32;
-            t->var_15 = 34;
+            t->spriteWidth = 44;
+            t->spriteHeightNegative = 32;
+            t->spriteHeightPositive = 34;
             t->baseType = EntityBaseType::misc;
             t->moveTo(loc);
             t->setSubType(MiscEntityType::smoke);
@@ -328,9 +328,9 @@ namespace OpenLoco
         if (m != nullptr)
         {
             m->amount = amount;
-            m->var_14 = 64;
-            m->var_09 = 20;
-            m->var_15 = 30;
+            m->spriteWidth = 64;
+            m->spriteHeightNegative = 20;
+            m->spriteHeightPositive = 30;
             m->baseType = EntityBaseType::misc;
             m->var_2E = company;
             m->moveTo(loc);
@@ -408,9 +408,9 @@ namespace OpenLoco
         auto t = static_cast<ExplosionSmoke*>(EntityManager::createEntityMisc());
         if (t != nullptr)
         {
-            t->var_14 = 44;
-            t->var_09 = 32;
-            t->var_15 = 34;
+            t->spriteWidth = 44;
+            t->spriteHeightNegative = 32;
+            t->spriteHeightPositive = 34;
             t->baseType = EntityBaseType::misc;
             t->moveTo(loc + Map::Pos3{ 0, 0, 4 });
             t->setSubType(MiscEntityType::explosionSmoke);
