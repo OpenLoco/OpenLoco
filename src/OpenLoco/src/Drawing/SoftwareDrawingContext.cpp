@@ -5,6 +5,7 @@
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Utility/Numeric.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
 
@@ -1509,16 +1510,136 @@ namespace OpenLoco::Drawing
         }
 
         // 0x004474BA
+        // ax: left
+        // bx: right
+        // bp: width
+        // cx: top
+        // dx: bottom
+        // ebp: colour | enumValue(flags)
+        // edi: rt
         static void drawRectImpl(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
         {
-            registers regs;
-            regs.ax = left;
-            regs.bx = right;
-            regs.cx = top;
-            regs.dx = bottom;
-            regs.ebp = colour | enumValue(flags);
-            regs.edi = X86Pointer(&rt);
-            call(0x004474BA, regs);
+            if (left > right)
+            {
+                return;
+            }
+            if (top > bottom)
+            {
+                return;
+            }
+            if (right < rt.x)
+            {
+                return;
+            }
+            if (left >= (rt.x + rt.width))
+            {
+                return;
+            }
+            if (bottom < rt.y)
+            {
+                return;
+            }
+            if (top >= rt.y + rt.height)
+            {
+                return;
+            }
+
+            uint32_t crossPattern = 0;
+
+            auto leftX = left - rt.x;
+            if (leftX < 0)
+            {
+                crossPattern ^= leftX;
+                leftX = 0;
+            }
+
+            auto rightX = right - rt.x + 1;
+            if (rightX > rt.width)
+            {
+                rightX = rt.width;
+            }
+
+            auto topY = top - rt.y;
+            if (topY < 0)
+            {
+                crossPattern ^= topY;
+                topY = 0;
+            }
+
+            auto bottomY = bottom - rt.y + 1;
+            if (bottomY > rt.height)
+            {
+                bottomY = rt.height;
+            }
+
+            auto drawRect = Rect::fromLTRB(leftX, topY, rightX, bottomY);
+
+            if (flags == RectFlags::none) // Regular fill
+            {
+                auto* dst = drawRect.top() * (rt.width + rt.pitch) + drawRect.left() + rt.bits;
+                const auto step = rt.width + rt.pitch;
+
+                for (auto y = 0; y < drawRect.height(); y++)
+                {
+                    std::fill_n(dst, drawRect.width(), colour);
+                    dst += step;
+                }
+            }
+            else if ((flags & RectFlags::transparent) != RectFlags::none)
+            {
+                auto* dst = rt.bits
+                    + static_cast<uint32_t>((drawRect.top() >> rt.zoomLevel) * ((rt.width >> rt.zoomLevel) + rt.pitch) + (drawRect.left() >> rt.zoomLevel));
+
+                auto paletteMap = Gfx::PaletteMap::getForColour(static_cast<ExtColour>(colour));
+                if (paletteMap.has_value())
+                {
+                    const auto& paletteEntries = paletteMap.value();
+                    const auto scaledWidth = drawRect.width() >> rt.zoomLevel;
+                    const auto scaledHeight = drawRect.height() >> rt.zoomLevel;
+                    const auto step = (rt.width >> rt.zoomLevel) + rt.pitch;
+
+                    // Fill the rectangle with the colours from the colour table
+                    for (auto y = 0; y < scaledHeight; y++)
+                    {
+                        auto* nextDst = dst + step * y;
+                        for (auto x = 0; x < scaledWidth; x++)
+                        {
+                            auto index = *(nextDst + x);
+                            *(nextDst + x) = paletteEntries[index];
+                        }
+                    }
+                }
+            }
+            else if ((flags & RectFlags::crossHatching) != RectFlags::none)
+            {
+                auto* dst = (drawRect.top() * (rt.width + rt.pitch)) + drawRect.left() + rt.bits;
+                const auto step = rt.width + rt.pitch;
+
+                for (auto y = 0; y < drawRect.height(); y++)
+                {
+                    auto* nextDst = dst + step * y;
+                    auto p = Utility::ror(crossPattern, 1);
+
+                    // Fill every other pixel with the colour
+                    for (auto x = 0; x < drawRect.width(); x++)
+                    {
+                        p ^= 0x80000000;
+                        if (p & 0x80000000)
+                        {
+                            *(nextDst + x) = colour;
+                        }
+                    }
+                    crossPattern ^= 1;
+                }
+            }
+            else if ((flags & RectFlags::g1Pattern) != RectFlags::none)
+            {
+                assert(false); // unused
+            }
+            else if ((flags & RectFlags::selectPattern) != RectFlags::none)
+            {
+                assert(false); // unused
+            }
         }
 
         static void drawRectImpl(Gfx::RenderTarget& rt, const Ui::Rect& rect, uint8_t colour, RectFlags flags)
