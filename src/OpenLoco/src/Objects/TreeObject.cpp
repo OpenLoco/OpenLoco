@@ -196,14 +196,8 @@ namespace OpenLoco
     void TreeObject::unload()
     {
         name = 0;
-        for (auto& sprite : sprites)
-        {
-            sprite = 0;
-        }
-        for (auto& sprite : snowSprites)
-        {
-            sprite = 0;
-        }
+        std::fill(std::begin(sprites), std::end(sprites), 0);
+        std::fill(std::begin(snowSprites), std::end(snowSprites), 0);
         shadowImageOffset = 0;
     }
 }
