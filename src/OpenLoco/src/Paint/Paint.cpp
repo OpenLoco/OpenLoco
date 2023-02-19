@@ -549,10 +549,7 @@ namespace OpenLoco::Paint
     }
 
     template<uint8_t>
-    static bool checkBoundingBox(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
-    {
-        return false;
-    }
+    static bool checkBoundingBox(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox);
 
     template<>
     bool checkBoundingBox<0>(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
