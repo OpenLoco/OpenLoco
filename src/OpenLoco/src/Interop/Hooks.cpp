@@ -72,7 +72,7 @@ static void STDCALL fn_40447f()
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void STDCALL fn_404b68(int a0, int a1, int a2, int a3)
+static void STDCALL fn_404b68(int, int, int, int)
 {
     STUB();
     return;
@@ -114,7 +114,7 @@ static uint32_t STDCALL lib_timeGetTime()
 
 // typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
 FORCE_ALIGN_ARG_POINTER
-static long STDCALL fn_DirectSoundEnumerateA(void* pDSEnumCallback, void* pContext)
+static long STDCALL fn_DirectSoundEnumerateA(void*, void*)
 {
     STUB();
     return 0;
@@ -144,7 +144,7 @@ static void STDCALL fn_407b26()
 /// region Progress bar
 
 FORCE_ALIGN_ARG_POINTER
-static void CDECL fn_4080bb(char* lpWindowName, uint32_t a1)
+static void CDECL fn_4080bb(char*, uint32_t)
 {
     Console::log("Create progress bar");
 }
@@ -402,7 +402,7 @@ static uint32_t STDCALL lib_WriteFile(
     char* buffer,
     size_t nNumberOfBytesToWrite,
     uint32_t* lpNumberOfBytesWritten,
-    uintptr_t lpOverlapped)
+    uintptr_t)
 {
     *lpNumberOfBytesWritten = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile);
     Console::logVerbose("WriteFile(%s)", buffer);
@@ -423,11 +423,11 @@ FORCE_ALIGN_ARG_POINTER
 static int32_t STDCALL lib_CreateFileA(
     char* lpFileName,
     uint32_t dwDesiredAccess,
-    uint32_t dwShareMode,
-    uintptr_t lpSecurityAttributes,
+    uint32_t,
+    uintptr_t,
     uint32_t dwCreationDisposition,
-    uint32_t dwFlagsAndAttributes,
-    uintptr_t hTemplateFile)
+    uint32_t,
+    uintptr_t)
 {
     Console::logVerbose("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
 

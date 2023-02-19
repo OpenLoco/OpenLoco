@@ -101,7 +101,7 @@ namespace OpenLoco::Utility
 #endif
     }
 
-    std::wstring toUtf16(const std::string_view& src)
+    std::wstring toUtf16([[maybe_unused]] const std::string_view& src)
     {
 #ifdef _WIN32
         int srcLen = src.size();
