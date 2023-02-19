@@ -1,4 +1,5 @@
 #pragma once
+#include "Entities/EntityManager.h"
 #include "LabelFrame.h"
 #include "Routing.h"
 #include "Types.hpp"
@@ -23,6 +24,11 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::VehicleManager
 {
+    using VehicleList = EntityManager::EntityList<EntityManager::EntityListIterator<Vehicles::VehicleHead>, EntityManager::EntityListType::vehicleHead>;
+
+    void update();
+    void updateMonthly();
+    void updateDaily();
     void determineAvailableVehicles(Company& company);
     void deleteTrain(Vehicles::VehicleHead& head);
     void deleteCar(Vehicles::Car& car);

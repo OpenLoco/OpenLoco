@@ -403,7 +403,7 @@ namespace OpenLoco::Vehicles
     static uint16_t createUniqueTypeNumber(const VehicleType type)
     {
         std::array<bool, Limits::kMaxVehicles> _unkArr{};
-        for (auto v : EntityManager::VehicleList())
+        for (auto* v : VehicleManager::VehicleList())
         {
             if (v->owner == _updatingCompanyId && v->vehicleType == type)
             {

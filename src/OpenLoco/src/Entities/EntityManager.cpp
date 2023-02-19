@@ -1,14 +1,9 @@
 #include "EntityManager.h"
-#include "Entities/Misc.h"
 #include "EntityTweener.h"
-#include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Localisation/StringIds.h"
-#include "Map/Tile.h"
-#include "SceneManager.h"
-#include "Vehicles/Vehicle.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/LocoFixedVector.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -99,12 +94,6 @@ namespace OpenLoco::EntityManager
     uint16_t getListCount(const EntityListType list)
     {
         return rawListCounts()[static_cast<size_t>(list)];
-    }
-
-    template<>
-    Vehicles::VehicleHead* first()
-    {
-        return get<Vehicles::VehicleHead>(firstId(EntityListType::vehicleHead));
     }
 
     template<>
@@ -297,45 +286,6 @@ namespace OpenLoco::EntityManager
         {
             Console::log("Invalid quadrant ids... Reseting spatial index.");
             resetSpatialIndex();
-        }
-    }
-
-    // 0x004A8826
-    void updateVehicles()
-    {
-        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
-        {
-            for (auto v : VehicleList())
-            {
-                v->updateVehicle();
-            }
-        }
-    }
-
-    // 0x004402F4
-    void updateMiscEntities()
-    {
-        if ((getGameState().flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
-        {
-            for (auto* misc : EntityList<EntityListIterator<MiscBase>, EntityListType::misc>())
-            {
-                misc->update();
-            }
-        }
-    }
-
-    // 0x004B94CF
-    void updateDaily()
-    {
-        call(0x004B94CF);
-    }
-
-    // 0x004C3C54
-    void updateMonthly()
-    {
-        for (auto v : VehicleList())
-        {
-            v->updateMonthly();
         }
     }
 

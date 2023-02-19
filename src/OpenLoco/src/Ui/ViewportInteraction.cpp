@@ -31,6 +31,7 @@
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include "Window.h"
 #include "WindowManager.h"
@@ -393,7 +394,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         Vehicles::VehicleBase* nearestVehicle = nullptr;
         auto targetPosition = viewport->screenToViewport({ tempX, tempY });
 
-        for (auto v : EntityManager::VehicleList())
+        for (auto* v : VehicleManager::VehicleList())
         {
             auto train = Vehicles::Vehicle(*v);
             checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *train.veh2, targetPosition);

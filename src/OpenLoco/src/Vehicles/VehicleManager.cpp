@@ -3,16 +3,20 @@
 #include "CompanyManager.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
+#include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "GameStateFlags.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "MessageManager.h"
 #include "Objects/CargoObject.h"
 #include "Orders.h"
+#include "SceneManager.h"
 #include "StationManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
+
 #include <OpenLoco/Interop/Interop.hpp>
 #include <sstream>
 
@@ -20,6 +24,33 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::VehicleManager
 {
+    // 0x004A8826
+    void update()
+    {
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        {
+            for (auto* v : VehicleList())
+            {
+                v->updateVehicle();
+            }
+        }
+    }
+
+    // 0x004C3C54
+    void updateMonthly()
+    {
+        for (auto v : VehicleList())
+        {
+            v->updateMonthly();
+        }
+    }
+
+    // 0x004B94CF
+    void updateDaily()
+    {
+        call(0x004B94CF);
+    }
+
     // 0x004C3A0C
     void determineAvailableVehicles(Company& company)
     {
@@ -242,7 +273,7 @@ namespace OpenLoco::Vehicles::OrderManager
 
     static void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
     {
-        for (auto head : EntityManager::VehicleList())
+        for (auto head : VehicleManager::VehicleList())
         {
             if (head->orderTableOffset >= removeOrderTableOffset)
             {

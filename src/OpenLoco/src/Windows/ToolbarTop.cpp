@@ -27,6 +27,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 #include "Widget.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <map>
@@ -573,7 +574,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto interface = ObjectManager::get<InterfaceSkinObject>();
 
         uint16_t vehicle_counts[vehicleTypeCount]{ 0 };
-        for (auto v : EntityManager::VehicleList())
+        for (auto* v : VehicleManager::VehicleList())
         {
             if (v->owner != player_company_id)
                 continue;

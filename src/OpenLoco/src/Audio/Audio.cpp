@@ -18,6 +18,7 @@
 #include "Ui/WindowManager.h"
 #include "VehicleChannel.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
@@ -765,7 +766,7 @@ namespace OpenLoco::Audio
             _numActiveVehicleSounds = 0;
         }
 
-        for (auto v : EntityManager::VehicleList())
+        for (auto* v : VehicleManager::VehicleList())
         {
             Vehicles::Vehicle train(*v);
             off_4FEB58(reinterpret_cast<Vehicles::Vehicle2or6*>(train.veh2), x);

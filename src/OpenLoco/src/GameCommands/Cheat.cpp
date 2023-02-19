@@ -13,6 +13,7 @@
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -61,7 +62,7 @@ namespace OpenLoco::GameCommands
             }
 
             // Third phase: change ownership of all vehicles that currently belong to the target company.
-            for (auto vehicle : EntityManager::VehicleList())
+            for (auto* vehicle : VehicleManager::VehicleList())
             {
                 if (vehicle->owner != targetCompanyId)
                     continue;
@@ -171,7 +172,7 @@ namespace OpenLoco::GameCommands
         {
             auto ourCompanyId = CompanyManager::getUpdatingCompanyId();
 
-            for (auto vehicle : EntityManager::VehicleList())
+            for (auto* vehicle : VehicleManager::VehicleList())
             {
                 if (vehicle->owner != ourCompanyId)
                     continue;
